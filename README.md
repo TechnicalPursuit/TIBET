@@ -3,26 +3,26 @@ TIBET v5.0.0
 
 TIBET - a markup-centric, zero-reload, full-stack web platform. Plus tools :)
 
-<http://www.teamtibet.com/tibet> or
 <http://www.technicalpursuit.com/tibet>
 
 Overview
 --------
 
 TIBET 5.0 is a markup-centric, zero-reload, full-stack web platform built to
-solve the unspoken problem in building and scaling enterprise web development
--- a limited and expensive pool of enterprise-class JS developers.
+solve the unspoken problem in building enterprise web applications and scaling
+enterprise web development -- a limited and expensive pool of enterprise-class
+JavaScript developers.
 
 Let's break that down...
 
-TIBET 5.0 is markup centric. Your development efforts focus on configuring,
-combining, and creating tags. TIBET's tag library, and the Tag Store&trade;
+TIBET 5.0 is markup-centric. Your development efforts focus on creating,
+combining, and configuring tags. TIBET's tag library, and our Tag Store&trade;
 ecosystem, give you access to an ever-increasing library of reusable
 functionality in markup form.
 
 TIBET 5.0 is zero-reload. TIBET's client and server are engineered to ultimately
 eliminate costly server restart and client reload cycles. With TIBET you develop
-live -- while your application is running. All of TIBET is hot-reload ready.
+live while your application is running. All of TIBET is hot-reload ready.
 
 TIBET 5.0 is full-stack. TIBET's fully-independent client and server model lets
 you leverage the TIBET server, your existing server components, or no server at
@@ -38,10 +38,10 @@ The TIBET platform is available as a single NPM package installed via:
 Once you've intalled the TIBET platform you utilize the `tibet` command line
 to perform your application creation, configuration, testing, and deployment.
 
-Use the `tibet --help` command to view documentation on the `tibet` command
+Use the `tibet help` command to view documentation on the `tibet` command
 supplied with your release.
 
-    tibet --help
+    tibet help
 
 Quick Start
 -----------
@@ -49,7 +49,7 @@ Quick Start
 To create your first TIBET application use the `tibet` command line's `clone`
 operation. 
 
-## Client-Server App
+### Client-Server App
 
 In the following example we'll create a new application with both a client and
 server component by cloning one of TIBET's default application templates:
@@ -66,7 +66,7 @@ Open the server's default index.html page and you're up and running:
     
     http://localhost:9313/index.html
 
-## Server-Only App
+### Server-Only App
 
 You can also create server-only applications by cloning a server-only template:
 
@@ -80,7 +80,7 @@ default content:
     tibet server start
     http://localhost:9313/index.html
 
-## Client-Only App
+### Client-Only App
 
 Finally, you can use TIBET without a server with a little configuration. We
 won't go into the details here, but if you know your browser is configured to
