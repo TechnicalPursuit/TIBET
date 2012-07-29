@@ -3,7 +3,7 @@ TIBET v5.0.0
 
 TIBET - a markup-centric, zero-reload, full-stack web platform. Plus tools :)
 
-<http://www.technicalpursuit.com/tibet>
+<http://www.technicalpursuit.com/>
 
 Overview
 --------
@@ -103,9 +103,8 @@ Documentation
 
 The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
 is a great place to get started. Documentation in the TIBET wiki is focused on
-topics of particular interest to developers who will be using TIBET via GitHub
-or who want to learn more about TIBET's overall architecture, construction
-standards, and project roadmap.
+topics of particular interest if you want to learn more about TIBET's overall
+architecture, construction standards, and project roadmap.
 
 Full product documentation is hosted at <http://www.technicalpursuit.com/tibet>.
 
