@@ -114,11 +114,20 @@ The Tag Store&trade;
 
 TIBET tags are self-contained packages of web functionality you can create,
 share, and leverage in the construction of your applications. The TIBET Tag
-Store is our hosted clearinghouse for tags and other TIBET-related products
-and services.
+Store&trade; is our hosted clearinghouse for tags and other TIBET-related
+products and services.
 
-TIBET's core tags are available free of charge from the Tag Store. Additional
-tags from both Team TIBET&trade; and other TIBET developers are also offered.
+Visit the TIBET Tag Store at <http://www.technicalpursuit.com/tibet/tagstore/>.
 
-Visit the TIBET Tag Store at <http://www.technicalpursuit.com/tibet/tagstore/>
+Contacting Us
+-------------
 
+The best way to communicate an issue, feature request, or code-related concern
+is to use the GitHub issues list. We monitor this list actively and try to
+leverage it to keep all discussion regarding TIBET centralized on GitHub.
+
+If you have specific code you'd like us to consider we're always open to pull
+requests. Using pull requests is great way to keep discussion of new features
+visible to the entire TIBET community.
+
+Additional contact info is available at <http://www.technicalpursuit.com>. 
