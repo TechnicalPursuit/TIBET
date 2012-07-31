@@ -4,20 +4,27 @@ TIBET v5.0.0
 Overview
 --------
 
-TIBET 5.0 is a markup-centric, zero-reload, full-stack web platform built to
-solve the unspoken problem in building enterprise web applications and scaling
-enterprise web development -- a limited and expensive pool of enterprise-class
-JavaScript developers.
+TIBET 5.0 is a modular, markup-centric, zero-reload, full-stack web platform
+built to solve the unspoken problem in building enterprise web applications and
+scaling enterprise web development -- a limited and expensive pool of
+enterprise-class JavaScript developers.
 
-### TIBET 5.0 is markup-centric.
+#### TIBET 5.0 is modular.
+TIBET 5.0 is a modular client and server system which allows you to choose which
+configuration: client/server, server-only, or client-only, you wish to use. With
+TIBET there's no requirement that you transition in one giant, potentially
+risky, step. You can integrate as much or as little of TIBET as your individual
+projects require and increase your level of integration over time.
+
+#### TIBET 5.0 is markup-centric.
 Tags are the central organizing principle for functionality in TIBET. Just as with HTML, TIBET development focuses on creating, combining, and configuring tags. TIBET's tag library, and our Tag Store&trade; ecosystem, give you access to an ever-increasing library of reusable functionality in markup form.
 
-### TIBET 5.0 is zero-reload.
+#### TIBET 5.0 is zero-reload.
 TIBET's client and server are engineered to ultimately eliminate costly server
 restart and client reload cycles. With TIBET you develop live while your
 application is running. All of TIBET is hot-reload ready.
 
-### TIBET 5.0 is full-stack.
+#### TIBET 5.0 is full-stack.
 TIBET's fully-independent client and server model lets you leverage the TIBET
 server, your existing server components, or no server at all. The TIBET client
 is server-agnostic and can be run offline or not at all.
@@ -65,7 +72,8 @@ See the TIBET documentation for more information on how to take your next step.
 
 ### Server-Only App
 
-You can also create server-only applications by cloning a server-only template:
+You can also create server-only applications, applications where you wish to
+deploy an alternative client-side technology, by cloning a server-only template:
 
     tibet clone server hello-server
 
