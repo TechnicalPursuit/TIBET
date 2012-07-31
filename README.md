@@ -1,10 +1,7 @@
 TIBET v5.0.0
 ============
 
-Overview
---------
-
-TIBET 5.0 is a modular, markup-centric, zero-reload, full-stack web platform
+TIBET 5.0 is a modular, markup-centric, zero-reload web platform
 built to solve the unspoken problem in building enterprise web applications and
 scaling enterprise web development -- a limited and expensive pool of
 enterprise-class JavaScript developers.
@@ -23,11 +20,6 @@ Tags are the central organizing principle for functionality in TIBET. Just as wi
 TIBET's client and server are engineered to ultimately eliminate costly server
 restart and client reload cycles. With TIBET you develop live while your
 application is running. All of TIBET is hot-reload ready.
-
-#### TIBET 5.0 is full-stack.
-TIBET's fully-independent client and server model lets you leverage the TIBET
-server, your existing server components, or no server at all. The TIBET client
-is server-agnostic and can be run offline or not at all.
 
 Installation
 ------------
