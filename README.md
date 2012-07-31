@@ -1,10 +1,6 @@
 TIBET v5.0.0
 ============
 
-TIBET - a markup-centric, zero-reload, full-stack web platform. Plus tools :)
-
-<http://www.technicalpursuit.com/>
-
 Overview
 --------
 
@@ -13,20 +9,18 @@ solve the unspoken problem in building enterprise web applications and scaling
 enterprise web development -- a limited and expensive pool of enterprise-class
 JavaScript developers.
 
-Let's break that down...
+### TIBET 5.0 is markup-centric.
+Tags are the central organizing principle for functionality in TIBET. Just as with HTML, TIBET development focuses on creating, combining, and configuring tags. TIBET's tag library, and our Tag Store&trade; ecosystem, give you access to an ever-increasing library of reusable functionality in markup form.
 
-TIBET 5.0 is markup-centric. Your development efforts focus on creating,
-combining, and configuring tags. TIBET's tag library, and our Tag Store&trade;
-ecosystem, give you access to an ever-increasing library of reusable
-functionality in markup form.
+### TIBET 5.0 is zero-reload.
+TIBET's client and server are engineered to ultimately eliminate costly server
+restart and client reload cycles. With TIBET you develop live while your
+application is running. All of TIBET is hot-reload ready.
 
-TIBET 5.0 is zero-reload. TIBET's client and server are engineered to ultimately
-eliminate costly server restart and client reload cycles. With TIBET you develop
-live while your application is running. All of TIBET is hot-reload ready.
-
-TIBET 5.0 is full-stack. TIBET's fully-independent client and server model lets
-you leverage the TIBET server, your existing server components, or no server at
-all. The TIBET client is server-agnostic and can be run offline or not at all.
+### TIBET 5.0 is full-stack.
+TIBET's fully-independent client and server model lets you leverage the TIBET
+server, your existing server components, or no server at all. The TIBET client
+is server-agnostic and can be run offline or not at all.
 
 Installation
 ------------
@@ -125,8 +119,9 @@ The best way to communicate an issue, feature request, or code-related concern
 is to use the GitHub issues list. We monitor this list actively and try to
 leverage it to keep all discussion regarding TIBET centralized on GitHub.
 
-If you have specific code you'd like us to consider we're always open to pull
-requests. Using pull requests is great way to keep discussion of new features
-visible to the entire TIBET community.
+If you have specific code you'd like us to consider we're always open to [pull
+requests](http://help.github.com/articles/using-pull-requests). Using pull
+requests is great way to keep discussion of new features visible to the entire
+TIBET community.
 
 Additional contact info is available at <http://www.technicalpursuit.com>. 
