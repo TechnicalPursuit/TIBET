@@ -1,10 +1,8 @@
 TIBET v5.0.0
 ============
 
-TIBET 5.0 is a modular, markup-centric, zero-reload web platform
-built to solve the unspoken problem in building enterprise web applications and
-scaling enterprise web development -- a limited and expensive pool of
-enterprise-class JavaScript developers.
+TIBET 5.0 is a modular, markup-centric, zero-reload web platform built to make
+web development more scalable, more maintainable, and more efficient.
 
 #### TIBET 5.0 is modular.
 TIBET 5.0 is a modular client and server system which allows you to choose which
@@ -14,7 +12,10 @@ risky, step. You can integrate as much or as little of TIBET as your individual
 projects require and increase your level of integration over time.
 
 #### TIBET 5.0 is markup-centric.
-Tags are the central organizing principle for functionality in TIBET. Just as with HTML, TIBET development focuses on creating, combining, and configuring tags. TIBET's tag library, and our Tag Store&trade; ecosystem, give you access to an ever-increasing library of reusable functionality in markup form.
+Tags are the central organizing principle for functionality in TIBET. Just as
+with HTML, TIBET development focuses on creating, combining, and configuring
+tags. TIBET's tag library, and our TIBET Tag Store&trade; ecosystem, give you
+access to an ever-increasing library of reusable functionality in markup form. 
 
 #### TIBET 5.0 is zero-reload.
 TIBET's client and server are engineered to ultimately eliminate costly server
@@ -100,7 +101,7 @@ is a great place to get started. Documentation in the TIBET wiki is focused on
 topics of particular interest if you want to learn more about TIBET's overall
 architecture, construction standards, and project roadmap.
 
-Full product documentation is hosted at <http://www.technicalpursuit.com/tibet>.
+Full product documentation is hosted at <http://www.technicalpursuit.com>.
 
 The Tag Store&trade;
 --------------------
@@ -110,7 +111,7 @@ share, and leverage in the construction of your applications. The TIBET Tag
 Store&trade; is our hosted clearinghouse for tags and other TIBET-related
 products and services.
 
-Visit the TIBET Tag Store at <http://www.technicalpursuit.com/tibet/tagstore/>.
+Visit the TIBET Tag Store&trade; at <http://www.technicalpursuit.com/tibet/tagstore/>.
 
 Contacting Us
 -------------
