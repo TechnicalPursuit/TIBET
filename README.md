@@ -1,10 +1,10 @@
 # TIBET v5.0.0
 
-TIBET 5.0 is a markup-centric, server-agnostic, zero-reload client platform
+TIBET 5.0 is a markup-centric, server-agnostic, zero-reload JavaScript platform
 built to make web application development more scalable, more maintainable, and
 more efficient. We emphasize web _application_ because TIBET is specifically
 engineered to make building large web applications, applications with screens
-not pages, applications users often run for hours or often run offline, more
+not pages, applications users often run for hours or must run offline, more
 manageable and enjoyable.
 
 ### TIBET 5.0 is markup-centric.
@@ -16,12 +16,14 @@ markup-centric approach to development is perfectly aligned with the emerging
 Web Components standard.
 
 ### TIBET 5.0 is server-agnostic.
-TIBET 5.0 is server-agnostic, even to the point of being able to run without a
-server of any kind. With TIBET you can use any server technology you desire, or
-build applications that run directly from the desktop or device with no server.
+TIBET 5.0 is completely server-agnostic, even to the point of being able to run
+without a server of any kind. With TIBET you can use any server technology you
+desire, or build applications that run directly from the desktop or device with
+no server. Full-stack TIBET projects are also possible through the use of an
+_optional_ Node.js-based TIBET server.
 
 ### TIBET 5.0 is zero-reload.
-TIBET's client platform, console, and IDE are engineered to ultimately eliminate
+TIBET's web platform, console, and IDE are engineered to ultimately eliminate
 reload cycles. With TIBET you develop live while your application is running,
 allowing you to work more efficiently and effectively. Changes you make to your
 JavaScript, HTML, and CSS are reflected instantly and persisted or rolled back
@@ -54,7 +56,8 @@ where the TIBET Server comes in. Create a full-stack TIBET application using:
 
     tibet clone tibet {path}
 
-This command will clone a TIBET client and server template you can run via:
+This command will clone a TIBET client+server application template you can run
+via:
 
     npm start
 
@@ -65,9 +68,9 @@ your application you can use:
 
     tibet clone nodejs {path}
 
-This command will create a simple node.js application which uses the Connect
-framework and a small set of npm packages to get you started. You can run your
-new application immediately using:
+This command will create a simple node.js application which uses a small set of
+npm packages to get you started. You can run your new application immediately
+using:
 
     npm start
 
@@ -136,15 +139,15 @@ NOTE that some browsers have security constraints which may interfere with
 launching from the file system. Depending on your deployment requirements you
 can choose to configure your browser to allow file-system launching, install
 your application as a browser extension (not available for Safari), or use an
-HTTP server to "bootstrap" your application into the browser where it can then
-run "offline".
+HTTP server to bootstrap your application into the browser where it can then
+run offline.
 
-##### Http-based "Bootstrap"
+##### Http-based Bootstrap
 
 If you're uncomfortable launching directly from the file system you can still
-build applications that are "pure client", you just need to launch the initial
+build applications that are pure client, you just need to launch the initial
 index.html file from a web server, let TIBET load itself into your browser once,
-and from that point on you can run your application as if you're "offline".
+and from that point on you can run your application as if you're offline.
 TIBET is fully capable of running without communicating with a server to launch.
 
 # Documentation
