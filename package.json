@@ -1,0 +1,67 @@
+{
+  "name": "tibet",
+  "version": "0.1.0",
+  "description": "The TIBET Web Platform.",
+  "keywords": [
+    "CLI",
+    "IDE",
+    "Platform",
+    "Framework",
+    "TIBET"
+  ],
+  "homepage": "http://tibet.technicalpursuit.com",
+  "author": {
+    "name": "Technical Pursuit Inc.",
+    "email": "tibet@technicalpursuit.com",
+    "url": "http://www.technicalpursuit.com"
+  },
+  "contributors": [
+    {
+      "name": "Scott Shattuck",
+      "email": "ss@technicalpursuit.com"
+    },
+    {
+      "name": "William J. Edney",
+      "email": "bedney@technicalpursuit.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/TechnicalPursuit/TIBET"
+  },
+  "bugs": {
+    "url": "http://github.com/TechnicalPursuit/TIBET/issues",
+    "email": "tibet@technicalpursuit.com"
+  },
+  "main": "index",
+  "directories": {
+    "bin": "./bin",
+    "doc": "./doc",
+    "example": "examples",
+    "lib": "./lib",
+    "man": "./man"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*",
+    "mockery": "*",
+    "ronn": "*",
+    "uglify-js": "*"
+  },
+  "engines": {
+    "node": ">=0.8",
+    "npm": ">=1"
+  },
+  "scripts": {
+    "test": "mocha",
+    "postinstall": "scripts/post_install.sh"
+  },
+  "preferGlobal": "false",
+  "readme": "ERROR: No README.md file found!",
+  "_id": "tibet@0.1.0",
+  "dist": {
+    "shasum": "0d3506afa1f8e4b18b82aa2106150a4088c44312"
+  },
+  "_from": "tibet"
+}

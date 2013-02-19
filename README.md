@@ -1,43 +1,48 @@
 # TIBET v5.0.0
 
-TIBET 5.0 is a markup-centric, server-agnostic, zero-reload JavaScript platform
-built to make web application development more scalable, more maintainable, and
-more efficient. We emphasize web _application_ because TIBET is specifically
+TIBET 5.0 is a server-agnostic, markup-driven, zero-reload web platform built to
+make large-scale web application development more efficient, scalable, and
+maintainable. We emphasize _large-scale_ because TIBET is specifically
 engineered to make building large web applications, applications with screens
-not pages, applications users often run for hours or must run offline, more
-manageable and enjoyable.
-
-### TIBET 5.0 is markup-centric.
-Tags are the central organizing principle for functionality in TIBET. Just as
-with HTML, TIBET development focuses on creating, combining, and configuring
-tags. TIBET's tag library, and our TIBET Tag Store&trade; ecosystem, give you
-access to a community-supported library of reusable functionality. TIBET's
-markup-centric approach to development is perfectly aligned with the emerging
-Web Components standard.
+not pages, applications users run for hours or must run offline, more
+manageable.
 
 ### TIBET 5.0 is server-agnostic.
 TIBET 5.0 is completely server-agnostic, even to the point of being able to run
 without a server of any kind. With TIBET you can use any server technology you
 desire, or build applications that run directly from the desktop or device with
-no server. Full-stack TIBET projects are also possible through the use of an
-_optional_ Node.js-based TIBET server.
+no server. Full-stack TIBET applications are supported through the use of an
+_optional_ Node.js-based TIBET server which allows well-structured application
+code to migrate between client and server for load-balancing as needed.
+
+### TIBET 5.0 is markup-driven.
+Tags are a central organizing principle for components in TIBET. This makes
+sense since ultimately what makes a web application a _web_ application is that
+it targets a web browser, and browsers render markup. As a result, TIBET
+development focuses on creating, combining, and configuring tags. Unlike
+HTML however, TIBET tags are intelligent macros capable of far more than UI
+generation. TIBET's tag library, and our TIBET Tag Store&trade; ecosystem, give
+you access to a broad set of reusable functionality in the form of custom tags.
+This focus on tags as intelligent components is at the center of the emerging
+W3C Web Components standard, a standard TIBET is perfectly compatible with.
 
 ### TIBET 5.0 is zero-reload.
-TIBET's web platform, console, and IDE are engineered to ultimately eliminate
+TIBET's web platform, CLI, and IDE are engineered to ultimately eliminate
 reload cycles. With TIBET you develop live while your application is running,
 allowing you to work more efficiently and effectively. Changes you make to your
 JavaScript, HTML, and CSS are reflected instantly and persisted or rolled back
 at your discretion. Depending on your server technology you can also choose to
 enable server-side editing so your entire application is developed zero-reload.
 
+
 # Installation
 
-TIBET leverages Node.js for all command-line utilities and tooling. *Node.js is
-_NOT_ required for production or as a server technology.* We simply find that as
-a JavaScript technology it makes sense for TIBET's helper scripts to leverage
-the cross-platform foundation Node.js provides.
+TIBET leverages Node.js for all of its command-line utilities. *Node.js is _not
+required_ for production or as a server technology.* We simply find that, as a
+JavaScript technology, TIBET's helper scripts benefit most from the
+cross-platform foundation Node.js provides.
 
-1. Install Node.js from http://nodejs.org/
+1. Install Node.js version 0.8 or greater from http://nodejs.org/
 
 2. Install TIBET globally using the `npm` command:
 
@@ -57,7 +62,7 @@ where the TIBET Server comes in. Create a full-stack TIBET application using:
     tibet clone tibet {path}
 
 This command will clone a TIBET client+server application template you can run
-via:
+from within your newly created application {path} via:
 
     npm start
 

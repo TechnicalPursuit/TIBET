@@ -1,0 +1,20 @@
+# Directories
+build/
+log/
+tmp/
+# Administrative dev files.
+.git*
+tags
+# OS-generated files.
+.DS_Store
+.fseventsd
+.project
+.Spotlight-V100
+.Trashes
+*.swn
+*.swo
+*.swp
+*~
+ehthumbs.db
+Icon?
+Thumbs.db

@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+
+//  load tibet cli
+require('cli');
+
+process.stdout.write('>\n');
+process.exit();
