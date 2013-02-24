@@ -35,7 +35,7 @@ foundation Node.js provides.
 
 2. Install TIBET globally using the `npm` command:
 
-    npm install -g tibet
+      npm install -g tibet
 
 # Quick Start
 
