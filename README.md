@@ -98,7 +98,8 @@ To create an application of this form:
 
 * make sure your CouchDB server is running,
 * note the URL of your CouchDB server,
-* install a new app into CouchDB via:
+
+Install a new app into CouchDB via:
 
     tibet clone couch {path} {couch-url}
 
@@ -150,7 +151,7 @@ index.html file from a web server, let TIBET load itself into your browser once,
 and from that point on you can run your application as if you're offline.
 TIBET is fully capable of running without communicating with a server to launch.
 
-# Freezing a TIBET version
+### Freezing a TIBET version
 
 All TIBET's clone operations create a link from the globally-installed
 TIBET platform into your application directory. This is a great option
