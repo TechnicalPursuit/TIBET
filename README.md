@@ -1,46 +1,35 @@
 # TIBET v5.0.0
 
 TIBET 5.0 is a server-agnostic, markup-driven, zero-reload web platform built to
-make large-scale web application development more efficient, scalable, and
-maintainable. We emphasize _large-scale_ because TIBET is specifically
-engineered to make building large web applications, applications with screens
-not pages, applications users run for hours or must run offline, more
-manageable.
+make web application development more scalable, maintainable, and efficient.
 
 ### TIBET 5.0 is server-agnostic.
-TIBET 5.0 is completely server-agnostic, even to the point of being able to run
-without a server of any kind. With TIBET you can use any server technology you
-desire, or build applications that run directly from the desktop or device with
-no server. Full-stack TIBET applications are supported through the use of an
-_optional_ Node.js-based TIBET server which allows well-structured application
-code to migrate between client and server for load-balancing as needed.
+TIBET 5.0 is server-agnostic to the point of being able to run without a
+server of any kind. With TIBET you can use any server technology you
+desire, or build applications that run directly from the desktop or
+device with no server. Full-stack multi-tier TIBET applications are also
+supported via an optional Node.js-based TIBET server which allows
+properly modularized code to migrate between client and server.
 
 ### TIBET 5.0 is markup-driven.
-Tags are a central organizing principle for components in TIBET. This makes
-sense since ultimately what makes a web application a _web_ application is that
-it targets a web browser, and browsers render markup. As a result, TIBET
-development focuses on creating, combining, and configuring tags. Unlike
-HTML however, TIBET tags are intelligent macros capable of far more than UI
-generation. TIBET's tag library, and our TIBET Tag Store&trade; ecosystem, give
-you access to a broad set of reusable functionality in the form of custom tags.
-This focus on tags as intelligent components is at the center of the emerging
-W3C Web Components standard, a standard TIBET is perfectly compatible with.
+Tags are a central organizing principle for functionality in TIBET. In TIBET,
+tags are smart macros, macros you can create, combine, and script together to
+create applications of any scope and complexity without sacrificing reuse.
+TIBET's tag library and our TIBET Tag Store&trade; ecosystem give you access to
+a broad set of reusable functionality in the form of intelligent tag bundles.
 
 ### TIBET 5.0 is zero-reload.
-TIBET's web platform, CLI, and IDE are engineered to ultimately eliminate
-reload cycles. With TIBET you develop live while your application is running,
-allowing you to work more efficiently and effectively. Changes you make to your
-JavaScript, HTML, and CSS are reflected instantly and persisted or rolled back
-at your discretion. Depending on your server technology you can also choose to
-enable server-side editing so your entire application is developed zero-reload.
-
+The entire TIBET platform, from our tag set to our IDE, has been engineered to
+eliminate reload cycles. With TIBET you develop _live_, while your application
+runs. Changes you make to your JavaScript, HTML, and CSS are reflected instantly
+and persisted or rolled back at your discretion.
 
 # Installation
 
 TIBET leverages Node.js for all of its command-line utilities. *Node.js is _not
 required_ for production or as a server technology.* We simply find that, as a
-JavaScript technology, TIBET's helper scripts benefit most from the
-cross-platform foundation Node.js provides.
+JavaScript technology, TIBET's helper scripts benefit from the cross-platform
+foundation Node.js provides. 
 
 1. Install Node.js version 0.8 or greater from http://nodejs.org/
 
@@ -51,7 +40,10 @@ cross-platform foundation Node.js provides.
 # Quick Start
 
 Once you've installed the TIBET platform you utilize the `tibet` command to
-assist with application creation, configuration, testing, and deployment.
+assist with application creation, configuration, testing, and deployment. You
+can get help on your options at any time by issuing the help command:
+
+    tibet help
 
 ### TIBET Server
 
@@ -64,6 +56,7 @@ where the TIBET Server comes in. Create a full-stack TIBET application using:
 This command will clone a TIBET client+server application template you can run
 from within your newly created application {path} via:
 
+    cd {path}
     npm start
 
 ### Node.js Server
@@ -73,10 +66,10 @@ your application you can use:
 
     tibet clone nodejs {path}
 
-This command will create a simple node.js application which uses a small set of
-npm packages to get you started. You can run your new application immediately
-using:
+This command will create a simple node.js application based on 'connect' to get
+you started. You can run your new application immediately using:
 
+    cd {path}
     npm start
 
 If you'd like to use a different server framework such as Express you can update
@@ -88,7 +81,7 @@ For Ruby-on-Rails servers invoke:
 
     tibet clone rails {path}
 
-TIBET includes a Rails 3.0 REST-driven application template. The presumption
+TIBET includes a Rails 3.x REST-driven application template. The presumption
 here is that you want TIBET doing most of the UI and interaction work while you
 let Rails manage data access and data transport at the services layer.
 
@@ -98,7 +91,7 @@ TIBET can leverage CouchDB as a server, running your application as a CouchApp.
 To create an application of this form make sure your CouchDB server is running
 and then invoke:
 
-    tibet clone couchapp {path} {url}
+    tibet clone couch {path} {couch-url}
 
 You need to provide TIBET with the URL to your CouchDB server so it can install
 properly into your database. Once the installation has completed you can access
