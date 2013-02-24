@@ -40,37 +40,39 @@ foundation Node.js provides.
 # Quick Start
 
 Once you've installed the TIBET platform you utilize the `tibet` command to
-assist with application creation, configuration, testing, and deployment. You
-can get help on your options at any time by issuing the help command:
+assist with application creation, configuration, testing, and deployment.
+
+You can get help on your options at any time by issuing the help command:
 
     tibet help
 
 ### TIBET Server
 
-While the TIBET platform is server-agnostic we recognize that sometimes it's
-desireable to have a complete full-stack solution from a single vendor. That's
-where the TIBET Server comes in. Create a full-stack TIBET application using:
+Create a full-stack multi-tier TIBET application using:
 
     tibet clone tibet {path}
 
-This command will clone a TIBET client+server application template you can run
-from within your newly created application {path} via:
+This command will clone a TIBET client+server template you can run from
+within your newly created application {path} via: 
 
     cd {path}
     npm start
+
+    open http://127.0.0.1:3000/index.html
 
 ### Node.js Server
 
-If you'd like to use a non-TIBET Node.js server platform as the foundation for
-your application you can use:
+To use a non-TIBET Node.js server use:
 
     tibet clone nodejs {path}
 
-This command will create a simple node.js application based on 'connect' to get
-you started. You can run your new application immediately using:
+This command will create a simple node.js application based on Connect to get
+you started. You can run your new application using:
 
     cd {path}
     npm start
+
+    open http://127.0.0.1:3000/index.html
 
 If you'd like to use a different server framework such as Express you can update
 the package.json and server.js files to launch the framework of your choice.
@@ -81,36 +83,37 @@ For Ruby-on-Rails servers invoke:
 
     tibet clone rails {path}
 
-TIBET includes a Rails 3.x REST-driven application template. The presumption
-here is that you want TIBET doing most of the UI and interaction work while you
-let Rails manage data access and data transport at the services layer.
+TIBET includes a Rails 3.x REST-driven application template. Run your
+new application using:
+
+    cd {path}
+    ./script/server
+
+    open http://127.0.0.1:3000/index.html
 
 ### CouchDB Server
 
 TIBET can leverage CouchDB as a server, running your application as a CouchApp.
-To create an application of this form make sure your CouchDB server is running
-and then invoke:
+To create an application of this form:
+
+* make sure your CouchDB server is running,
+* note the URL of your CouchDB server,
+* install a new app into CouchDB via:
 
     tibet clone couch {path} {couch-url}
 
-You need to provide TIBET with the URL to your CouchDB server so it can install
-properly into your database. Once the installation has completed you can access
-the application's URL to launch your new TIBET-enabled CouchApp.
+    open {couch-url}/{path}
 
 ### Other Server(s)
 
-For most web server technologies you can simply link TIBET into your application
-directory and add a reference to `tibet.js` to your index.html. Linking TIBET in
-this fashion will create a symbolic link to the currently installed global
-version of TIBET.
+In virtually all other cases you can simply link TIBET into the proper
+directory for your server and add a reference to `tibet.js` to your
+index.html. When you open your index.html file TIBET will attempt to
+boot using the URL it was loaded from to find application resources.
 
-    tibet link .
+Link TIBET into your server's directory tree using:
 
-Linking TIBET is a great option during development, but for production
-deployment, or to use a different version of TIBET with different applications,
-you may want to 'freeze' a version of TIBET in your application's directory.
-
-    tibet freeze [@version] .
+    tibet link {path}
 
 ### Zero-Server
 
@@ -136,9 +139,8 @@ OR, in a browser:
 NOTE that some browsers have security constraints which may interfere with
 launching from the file system. Depending on your deployment requirements you
 can choose to configure your browser to allow file-system launching, install
-your application as a browser extension (not available for Safari), or use an
-HTTP server to bootstrap your application into the browser where it can then
-run offline.
+your application as a browser extension, or use a temporary HTTP server to
+bootstrap your application into browser storage where it can then run offline.
 
 ##### Http-based Bootstrap
 
@@ -147,6 +149,19 @@ build applications that are pure client, you just need to launch the initial
 index.html file from a web server, let TIBET load itself into your browser once,
 and from that point on you can run your application as if you're offline.
 TIBET is fully capable of running without communicating with a server to launch.
+
+# Freezing a TIBET version
+
+All TIBET's clone operations create a link from the globally-installed
+TIBET platform into your application directory. This is a great option
+during development, but for production deployment, or to use a different
+version of TIBET with different applications, you may want to 'freeze' a
+version of TIBET in your application's directory.
+
+    tibet freeze [@version] [path]
+
+By default the freeze command will install the currently referenced
+version of TIBET in the current application's directory structure.
 
 # Documentation
 
