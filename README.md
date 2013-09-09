@@ -4,17 +4,19 @@ TIBET 5.0 is a markup-driven, zero-reload web platform built to make web
 application development more scalable, maintainable, and efficient.
 
 ### TIBET 5.0 is markup-driven.
-Tags are a central organizing principle for functionality in TIBET. In TIBET,
-tags are smart macros, macros you can create, combine, and script together to
-create applications of any scope and complexity without sacrificing reuse.
-TIBET's tag library and our TIBET Tag Store&trade; ecosystem give you access to
-a broad set of reusable functionality in the form of intelligent tag bundles.
+Tags are the central organizing principle for development in TIBET. In
+TIBET, tags are smart macros, macros you create, combine, and connect to
+create applications of any scope and complexity without sacrificing
+reuse. TIBET's tag library and our TIBET Tag Store&trade; ecosystem give
+you access to a broad range of reusable functionality in the form of
+modular, intelligent tag bundles.
 
 ### TIBET 5.0 is zero-reload.
-The entire TIBET platform, from our tag set to our IDE, has been engineered to
-eliminate reload cycles. With TIBET you develop _live_, while your application
-runs. Changes you make to your JavaScript, HTML, and CSS are reflected instantly
-and can then be persisted or rolled back at your discretion.
+The entire TIBET platform, from our tag set to our IDE, has been
+engineered to eliminate reload cycles. With TIBET you develop live,
+while your application runs. Changes you make to your JavaScript, HTML,
+and CSS are reflected instantly and can then be persisted or rolled back
+at your discretion.
 
 ### TIBET 5.0 is server-agnostic.
 TIBET 5.0 is server-agnostic to the point of being able to run without a
@@ -26,16 +28,15 @@ modularized code to be load-balanced between client and server.
 # Installation
 
 TIBET leverages Node.js for all of its command-line utilities. *Node.js is _not
-required_ for production or as a server technology.* We simply find that, as a
-JavaScript technology, TIBET's helper scripts benefit from the cross-platform
+required_ as a server technology.* We simply find that, as a JavaScript
+technology, TIBET's helper scripts benefit from the cross-platform
 foundation Node.js provides. 
 
-1. Install Node.js version 0.8 or greater from http://nodejs.org/
+1. Install Node.js version 0.10 or greater from http://nodejs.org/
 
 2. Install TIBET globally using the `npm` command:<br/>
-<pre>
-      npm install -g tibet
-</pre>
+
+  npm install -g tibet
 
 # Quick Start
 
@@ -154,7 +155,7 @@ TIBET is fully capable of running without communicating with a server to launch.
 ### Freezing a TIBET version
 
 All TIBET's clone operations create a link from the globally-installed
-TIBET platform into your application directory. This is a great option
+TIBET platform into your application directory. This is a good option
 during development, but for production deployment, or to use a different
 version of TIBET with different applications, you may want to 'freeze' a
 version of TIBET in your application's directory.
@@ -166,11 +167,12 @@ version of TIBET in the current application's directory structure.
 
 # Documentation
 
-The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
-is a great place to get started. Documentation in the TIBET wiki is focused on
-TIBET's overall architecture, construction standards, and project roadmap.
+Product-specific documentation is hosted at <http://www.technicalpursuit.com>.
 
-Full product documentation is hosted at <http://www.technicalpursuit.com>.
+The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
+provides a blueprint of TIBET's overall architecture, construction
+standards, and project roadmap.
+
 
 # The Tag Store&trade;
 
