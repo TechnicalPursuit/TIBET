@@ -32,9 +32,10 @@ foundation Node.js provides.
 
 1. Install Node.js version 0.8 or greater from http://nodejs.org/
 
-2. Install TIBET globally using the `npm` command:
-
-    npm install -g tibet
+2. Install TIBET globally using the `npm` command:<br/>
+<pre>
+      npm install -g tibet
+</pre>
 
 # Quick Start
 
@@ -95,13 +96,14 @@ new application using:
 TIBET can leverage CouchDB as a server, running your application as a CouchApp.
 To create an application of this form:
 
-* make sure your CouchDB server is running,
-* note the URL of your CouchDB server,
-* install a new app into CouchDB via:
-
+1. Make sure your CouchDB server is running,
+2. Note the URL of your CouchDB server,
+3. Install a new app into CouchDB via:<br/>
+<pre>
     tibet clone couch {path} {couch-url}
 
     open {couch-url}/{path}
+</pre>
 
 ### Other Server(s)
 
@@ -149,7 +151,7 @@ index.html file from a web server, let TIBET load itself into your browser once,
 and from that point on you can run your application as if you're offline.
 TIBET is fully capable of running without communicating with a server to launch.
 
-# Freezing a TIBET version
+### Freezing a TIBET version
 
 All TIBET's clone operations create a link from the globally-installed
 TIBET platform into your application directory. This is a great option
