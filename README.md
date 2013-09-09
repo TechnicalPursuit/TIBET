@@ -1,15 +1,7 @@
 # TIBET v5.0.0
 
-TIBET 5.0 is a server-agnostic, markup-driven, zero-reload web platform built to
-make web application development more scalable, maintainable, and efficient.
-
-### TIBET 5.0 is server-agnostic.
-TIBET 5.0 is server-agnostic to the point of being able to run without a
-server of any kind. With TIBET you can use any server technology you
-desire, or build applications that run directly from the desktop or
-device with no server. Full-stack multi-tier TIBET applications are also
-supported via an optional Node.js-based TIBET server which allows
-properly modularized code to migrate between client and server.
+TIBET 5.0 is a markup-driven, zero-reload web platform built to make web
+application development more scalable, maintainable, and efficient.
 
 ### TIBET 5.0 is markup-driven.
 Tags are a central organizing principle for functionality in TIBET. In TIBET,
@@ -22,7 +14,14 @@ a broad set of reusable functionality in the form of intelligent tag bundles.
 The entire TIBET platform, from our tag set to our IDE, has been engineered to
 eliminate reload cycles. With TIBET you develop _live_, while your application
 runs. Changes you make to your JavaScript, HTML, and CSS are reflected instantly
-and persisted or rolled back at your discretion.
+and can then be persisted or rolled back at your discretion.
+
+### TIBET 5.0 is server-agnostic.
+TIBET 5.0 is server-agnostic to the point of being able to run without a
+server of any kind. With TIBET you can use any REST server technology you
+desire including no server at all. You can also build full-stack with
+TIBET via an optional Node.js-based TIBET server which allows properly
+modularized code to be load-balanced between client and server.
 
 # Installation
 
