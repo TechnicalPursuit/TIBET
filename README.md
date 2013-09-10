@@ -41,10 +41,6 @@ immerses you in the development process, maximizing your efficiency.
 Once you've installed the TIBET platform you utilize the `tibet` command to
 assist with application creation, configuration, testing, and deployment.
 
-You can get help on your options at any time by issuing the help command:
-
-    tibet help
-
 To create a standalone TIBET client/server application enter the
 following command, replacing {path} with the name for your new
 application. Note that the name must represent a valid directory name
@@ -66,8 +62,14 @@ Congratulations. You're running a new TIBET application with the
 development environment ready to support any changes you wish to make.
 For details on the IDE see the documentation at <http://www.technicalpursuit.com>.
 
+# Help
 
-# TIBET Server Technology Options
+You can get help on your options at any time by issuing the help command:
+
+    tibet help
+
+
+# Server Options
 
 A TIBET-based server isn't your only option.
 
@@ -76,7 +78,7 @@ server of any kind. With TIBET you can use any REST server technology
 you desire including no server at all.
 
 
-### TIBET Server
+### TIBET 
 
 Create a full-stack client/server TIBET application using:
 
@@ -90,7 +92,7 @@ within your newly created application {path} via:
 
     open http://127.0.0.1:3000/index.html
 
-### Node.js Server
+### Node.js 
 
 To use a generic Node.js server based on Connect use:
 
@@ -104,7 +106,7 @@ you started. You can run your new application using:
 
     open http://127.0.0.1:3000/index.html
 
-### Ruby-On-Rails Server
+### Ruby-On-Rails 
 
 TIBET also includes a Rails 3.x REST-driven application template. To use this
 option invoke:
@@ -118,7 +120,7 @@ Run your new application using:
 
     open http://127.0.0.1:3000/index.html
 
-### CouchDB Server
+### CouchDB 
 
 TIBET can leverage CouchDB as a server, running your application as a CouchApp.
 To create an application of this form:
@@ -132,7 +134,7 @@ To create an application of this form:
     open {couch-url}/{path}
 </pre>
 
-### Other Server(s)
+### Other(s)
 
 In virtually all other cases you can simply link TIBET into the proper
 directory for your server and add a reference to `tibet.js` to your
@@ -143,7 +145,7 @@ Link TIBET into your server's directory tree using:
 
     tibet link {path}
 
-### Zero-Server
+### Zero Server
 
 TIBET's micro-kernel (tibet.js) supports launching applications directly from
 the file system without a server of any kind. To create a TIBET application of
