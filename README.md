@@ -6,23 +6,22 @@ make web application development more scalable, maintainable, and efficient.
 ### TIBET 5.0 is markup-driven.
 Tags are the central organizing principle for development in TIBET. In
 TIBET, tags are smart macros, macros you create, combine, and connect to
-create applications of any scope and complexity without sacrificing
-reuse. TIBET's tag library and our TIBET Tag Store&trade; ecosystem give
-you access to a broad range of reusable functionality in the form of
-modular, intelligent tag bundles.
+create applications of any scope and complexity. TIBET's tag library and
+our TIBET Tag Store&trade; ecosystem give you access to a broad range of
+reusable functionality in the form of modular, intelligent tag bundles.
 
 ### TIBET 5.0 is zero-reload.
 The entire TIBET platform, from our tag set to our IDE, has been
-engineered to eliminate application reload cycles. Via TIBET's
-client-side tools any changes you make to your JavaScript, HTML,
-and CSS are reflected instantly without reload overhead. Your changes
-can then be persisted or rolled back at your discretion.
+engineered to eliminate reload cycles. Via TIBET's client-side tools, 
+changes you make to your JavaScript, HTML, and CSS are reflected
+instantly without requiring a page reload. These changes can then be
+persisted or rolled back at your discretion.
 
 ### TIBET 5.0 is immersive.
-TIBET is an immersive development environment supported by an
+TIBET is an immersive development platform supported by an
 enterprise-class framework. With TIBET you launch your application and
 then interact with it, altering it while it runs. No more guesswork
-followed by a random number of F5/Reload cycles while you layout your
+followed by a random number of F5/Reload cycles while you lay out your
 UI, hook up your event handlers, or communicate with the server. TIBET
 immerses you in the development process, maximizing your efficiency.
 
