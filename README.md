@@ -15,10 +15,10 @@ TIBET is designed to run offline, sync when online, and limit reliance
 on networks, servers, or anything else the user may not have access to
 when they need to run your application.
 
-You can couple TIBET with any HTTP or WebDAV server from Apache to
-Rails. A particularly interesting pairing is TIBET + CouchDB which lets
-you build "Couch Apps" that leverage TIBET and CouchDB's native HTTP,
-NoSQL, and replication capabilities.
+You can couple TIBET with any HTTP or WebDAV server...or zero server.
+TIBET can boot directly from the file system, localStorage, or IndexedDB.
+Or you can pair TIBET with Apache, CouchDB, Node.js, Rails3 or any other
+server process you can access via HTTP or WebDAV.
 
 ### TIBET is zero-reload.
 The entire TIBET platform, from our tag set to our IDE, is engineered to
