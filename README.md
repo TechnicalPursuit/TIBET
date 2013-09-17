@@ -1,9 +1,9 @@
 # TIBET v5.0.0
 
-TIBET 5.0 is a markup-driven, zero-reload, immersive web platform built to
-make web application development more scalable, maintainable, and efficient.
+TIBET 5.0 is a markup-centric, zero-reload, web platform built to make
+web application development more scalable, maintainable, and efficient.
 
-### TIBET 5.0 is markup-driven.
+### TIBET 5.0 is markup-centric.
 Tags are the central organizing principle for development in TIBET. In
 TIBET, tags are smart macros, macros you create, combine, and connect to
 create applications of any scope and complexity. TIBET's tag library and
@@ -11,19 +11,10 @@ our TIBET Tag Store&trade; ecosystem give you access to a broad range of
 reusable functionality in the form of modular, intelligent tag bundles.
 
 ### TIBET 5.0 is zero-reload.
-The entire TIBET platform, from our tag set to our IDE, has been
-engineered to eliminate reload cycles. Via TIBET's client-side tools, 
-changes you make to your JavaScript, HTML, and CSS are reflected
-instantly without requiring a page reload. These changes can then be
-persisted or rolled back at your discretion.
-
-### TIBET 5.0 is immersive.
-TIBET is an immersive development platform supported by an
-enterprise-class framework. With TIBET you launch your application and
-then interact with it, altering it while it runs. No more guesswork
-followed by a random number of F5/Reload cycles while you lay out your
-UI, hook up your event handlers, or communicate with the server. TIBET
-immerses you in the development process, maximizing your efficiency.
+The entire TIBET platform, from our tag set to our IDE, is engineered to
+eliminate reload cycles. With TIBET's tools the changes you make to your
+JavaScript, HTML, and CSS are reflected instantly without the need to
+reload. These changes can then be persisted or rolled back as needed.
 
 
 # Installation
@@ -37,44 +28,41 @@ immerses you in the development process, maximizing your efficiency.
 
 # Quick Start
 
-Once you've installed the TIBET platform you utilize the `tibet` command to
-assist with application creation, configuration, testing, and deployment.
+Once you've installed TIBET you use the `tibet` command to handle
+application creation, configuration, testing, and deployment. 
 
-To create a standalone TIBET client/server application enter the
-following command, replacing {path} with the name for your new
-application. Note that the name must represent a valid directory name
-for the operating system you are running on:
+To create a standalone TIBET application enter the following command,
+replacing {path} with the name for your new application. Note that the
+name must represent a valid directory name for the operating system you
+are running on:
 
     tibet clone tibet {path}
 
 Navigate to your new application directory and start the TIBET server by
-entering the following (replace {path} with your application name):
+entering the following commands (replace {path} with your application name):
 
-    cd {path}
+    cd {path}     // or your platform's equivalent
     npm start
 
 Open the application's boot page (index.html) in a modern web browser:
 
     http://127.0.0.1:3000/index.html
 
-Congratulations. You're running a new TIBET application with the
+Congratulations. You're running a new TIBET application with the TIBET
 development environment ready to support any changes you wish to make.
-For details on the IDE see the documentation at <http://www.technicalpursuit.com>.
+For TIBET IDE documentation see <http://www.technicalpursuit.com>.
 
 # Help
 
-You can get help on your options at any time by issuing the help command:
+You can get help on the `tibet` command by entering:
 
     tibet help
 
 
 # Server Options
 
-A TIBET-based server isn't your only option.
-
-TIBET 5.0 is server-agnostic to the point of being able to run without a
-server of any kind. With TIBET you can use any REST server technology
-you desire including no server at all.
+With TIBET you can use any REST-capable server you desire -- or no
+server. TIBET is entirely server-agnostic.
 
 
 ### TIBET 
@@ -91,7 +79,7 @@ within your newly created application {path} via:
 
     open http://127.0.0.1:3000/index.html
 
-### Node.js 
+### Node.js + Connect
 
 To use a generic Node.js server based on Connect use:
 
@@ -133,7 +121,7 @@ To create an application of this form:
     open {couch-url}/{path}
 </pre>
 
-### Other(s)
+### Apache et. al.
 
 In virtually all other cases you can simply link TIBET into the proper
 directory for your server and add a reference to `tibet.js` to your
@@ -184,18 +172,18 @@ TIBET is fully capable of running without communicating with a server to launch.
 Product-specific documentation is hosted at <http://www.technicalpursuit.com>.
 
 The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
-provides a blueprint of TIBET's overall architecture, construction
-standards, and project roadmap.
+provides a forward-looking design blueprint and roadmap for TIBET's 
+architecture, components, and construction standards.
 
 
 # The Tag Store&trade;
 
 TIBET tags are self-contained packages of web functionality you can create,
-share, and leverage in the construction of your applications. The TIBET Tag
-Store&trade; is our hosted clearinghouse for tags and other TIBET-related
-products and services.
+share, and leverage in the construction of your applications. The TIBET [Tag
+Store&trade;](http://www.technicalpursuit.com/tibet/tagstore/) is our
+hosted clearinghouse for tags and other TIBET-related products and
+services.
 
-Visit the TIBET Tag Store&trade; at <http://www.technicalpursuit.com/tibet/tagstore/>.
 
 # Contacting Us
 
