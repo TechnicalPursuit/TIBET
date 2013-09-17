@@ -15,18 +15,20 @@ improving maintainability.
 ### TIBET is zero-server.
 TIBET is designed to run offline, sync when online, and limit reliance 
 on networks, servers, or anything else the user may not have access to
-when they need to run your application, greatly reducing user downtime.
+when they need your application, reducing user downtime.
 
-TIBET also lets you minimize the load on your servers and networks,
-improving the scalability and efficiency of your web applications.
+As an offline-ready platform TIBET lets you minimize the load on your
+servers and networks, improving the scalability and efficiency of your
+web applications.
 
 ### TIBET is zero-reload.
-The entire TIBET platform, from our tag set to our IDE, is engineered to
-eliminate reload cycles. With TIBET's tools, changes you make to your
-JavaScript, HTML, and CSS are reflected instantly without reload delays.
+The entire TIBET platform is engineered to eliminate reload cycles. With
+TIBET's tools, changes you make to your JavaScript, HTML, and CSS are
+reflected instantly without reload delays.
 
 Without the overhead of reload thousands of times a day your development
-process "flows" far more efficiently.
+process "flows". TIBET's interactive command line, web shell, and IDE
+support a fully-immersive experience.
 
 # Installation
 
