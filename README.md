@@ -59,7 +59,6 @@ Open the application's boot page (index.html) in a modern web browser:
 
 Congratulations. You're running a new TIBET application with the TIBET
 development environment ready to support any changes you wish to make.
-For TIBET IDE documentation see <http://www.technicalpursuit.com>.
 
 # Server Options
 
@@ -68,7 +67,7 @@ server templates in TIBET's `dna` directory can be listed using:
 
     tibet list dna
 
-Use the `tibet clone` command to clone any `dna` template you wish to
+Use the `tibet clone` command to clone any `dna` template to
 create a new application based on that template.
 
 # Help
@@ -92,8 +91,7 @@ architecture, components, and construction standards.
 TIBET tags are self-contained packages of web functionality you can create,
 share, and leverage in the construction of your applications. The TIBET [Tag
 Store&trade;](http://www.technicalpursuit.com/tibet/tagstore/) is our
-hosted clearinghouse for tags and other TIBET-related products and
-services.
+clearinghouse for tags and other TIBET-related extensions. 
 
 
 # Contacting Us
