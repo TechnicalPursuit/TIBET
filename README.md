@@ -12,12 +12,13 @@ reusable functionality in the form of modular, intelligent tag bundles.
 
 ### TIBET is zero-server.
 TIBET is designed to run offline, sync when online, and limit reliance 
-on networks, servers, or anything else the user may not have access to.
+on networks, servers, or anything else the user may not have access to
 when they need to run your application.
 
-Although TIBET can run without any server at all you can couple TIBET
-with any HTTP or WebDAV server. A particularly interesting pairing is
-TIBET + CouchDB which lets you build "Couch Apps" that leverage TIBET.
+You can couple TIBET with any HTTP or WebDAV server from Apache to
+Rails. A particularly interesting pairing is TIBET + CouchDB which lets
+you build "Couch Apps" that leverage TIBET and CouchDB's native HTTP,
+NoSQL, and replication capabilities.
 
 ### TIBET is zero-reload.
 The entire TIBET platform, from our tag set to our IDE, is engineered to
