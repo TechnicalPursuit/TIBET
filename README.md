@@ -1,21 +1,29 @@
 # TIBET v5.0.0
 
-TIBET 5.0 is a markup-centric, zero-reload, web platform built to make
-web application development more scalable, maintainable, and efficient.
+TIBET 5.0 is a markup-centric, zero-server, zero-reload web platform
+that makes web development more scalable, maintainable, and efficient.
 
-### TIBET 5.0 is markup-centric.
-Tags are the central organizing principle for development in TIBET. In
-TIBET, tags are smart macros, macros you create, combine, and connect to
-create applications of any scope and complexity. TIBET's tag library and
-our TIBET Tag Store&trade; ecosystem give you access to a broad range of
+### TIBET is markup-centric.
+Tags are the focal point of development in TIBET. In TIBET, tags are
+smart macros, macros you create, combine, and connect to create
+applications of any scope and complexity. TIBET's tag library and our
+TIBET Tag Store&trade; ecosystem give you access to a broad range of
 reusable functionality in the form of modular, intelligent tag bundles.
 
-### TIBET 5.0 is zero-reload.
+### TIBET is zero-server.
+TIBET is designed to run offline, sync when online, and limit reliance 
+on networks, servers, or anything else the user may not have access to.
+when they need to run your application.
+
+Although TIBET can run without any server at all you can couple TIBET
+with any HTTP or WebDAV server. A particularly interesting pairing is
+TIBET + CouchDB which lets you build "Couch Apps" that leverage TIBET.
+
+### TIBET is zero-reload.
 The entire TIBET platform, from our tag set to our IDE, is engineered to
 eliminate reload cycles. With TIBET's tools the changes you make to your
 JavaScript, HTML, and CSS are reflected instantly without the need to
 reload. These changes can then be persisted or rolled back as needed.
-
 
 # Installation
 
@@ -52,120 +60,22 @@ Congratulations. You're running a new TIBET application with the TIBET
 development environment ready to support any changes you wish to make.
 For TIBET IDE documentation see <http://www.technicalpursuit.com>.
 
-# Help
-
-You can get help on the `tibet` command by entering:
-
-    tibet help
-
-
 # Server Options
 
-With TIBET you can use any REST-capable server you desire -- or no
-server. TIBET is entirely server-agnostic.
+You can use TIBET with virtually any HTTP or WebDAV server. The built-in
+server templates in TIBET's `dna` directory can be listed using:
 
+    tibet list dna
 
-### TIBET 
+Use the `tibet clone` command to clone any `dna` template you wish to
+create a new application based on that template.
 
-Create a full-stack client/server TIBET application using:
+# Help
 
-    tibet clone tibet {path}
+You can get help on the `tibet` command and its options by entering:
 
-This command will clone a TIBET client/server template you can run from
-within your newly created application {path} via: 
+    tibet help {command}
 
-    cd {path}
-    npm start
-
-    open http://127.0.0.1:3000/index.html
-
-### Node.js + Connect
-
-To use a generic Node.js server based on Connect use:
-
-    tibet clone connect {path}
-
-This command will create a simple node.js application based on Connect to get
-you started. You can run your new application using:
-
-    cd {path}
-    npm start
-
-    open http://127.0.0.1:3000/index.html
-
-### Ruby-On-Rails 
-
-TIBET also includes a Rails 3.x REST-driven application template. To use this
-option invoke:
-
-    tibet clone rails3 {path}
-
-Run your new application using:
-
-    cd {path}
-    ./script/server
-
-    open http://127.0.0.1:3000/index.html
-
-### CouchDB 
-
-TIBET can leverage CouchDB as a server, running your application as a CouchApp.
-To create an application of this form:
-
-1. Make sure your CouchDB server is running,
-2. Note the URL of your CouchDB server,
-3. Install a new app into CouchDB via:<br/>
-<pre>
-    tibet clone couch {couch-url} {path}
-
-    open {couch-url}/{path}
-</pre>
-
-### Apache et. al.
-
-In virtually all other cases you can simply link TIBET into the proper
-directory for your server and add a reference to `tibet.js` to your
-index.html. When you open your index.html file TIBET will attempt to
-boot using the URL it was loaded from to find application resources.
-
-Link TIBET into your server's directory tree using:
-
-    tibet link {path}
-
-### Zero Server
-
-TIBET's micro-kernel (tibet.js) supports launching applications directly from
-the file system without a server of any kind. To create a TIBET application of
-this form use:
-
-    tibet clone zero {path}
-
-TIBET will create a new directory containing a simple application whose entry
-point is the index.html file at the top of the directory tree. You can open this
-file from the command line or by navigating to it from a modern web browser to
-launch your application. (See File-based Security for additional details).
-
-    open index.html 
-
-OR, in a browser:
-
-    file://{path}/index.html
-
-##### File-based Security 
-
-NOTE that some browsers have security constraints which may interfere with
-launching from the file system. Depending on your deployment requirements you
-can choose to configure your browser to allow file-system launching, install
-your application as a browser extension, or use a temporary HTTP server to
-bootstrap your application into browser storage where it can then run offline.
-
-##### Http-based Bootstrap
-
-If you're uncomfortable launching directly from the file system you can still
-build applications that are pure client, you just need to launch the initial
-index.html file from a web server, let TIBET load itself into your browser once,
-and from that point on you can run your application as if you're offline.
-TIBET is fully capable of running without communicating with a server to launch.
 
 # Documentation
 
