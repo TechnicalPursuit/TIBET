@@ -5,31 +5,32 @@ that makes web development more scalable, maintainable, and efficient.
 
 ### TIBET is markup-centric.
 Tags are the focal point of development in TIBET. In TIBET, tags are
-smart macros, macros you create, combine, and connect to create
-applications of any scope and complexity. TIBET's tag library and our
-TIBET Tag Store&trade; ecosystem give you access to a broad range of
-reusable functionality in the form of modular, intelligent tag bundles.
+smart macros, macros you create, combine, and connect to create web
+applications of any scope and complexity.
+
+With TIBET a small group of JavaScript developers can support a much
+larger team using markup, significantly scaling up development while
+improving maintainability.
 
 ### TIBET is zero-server.
 TIBET is designed to run offline, sync when online, and limit reliance 
 on networks, servers, or anything else the user may not have access to
-when they need to run your application.
+when they need to run your application, greatly reducing user downtime.
 
-You can couple TIBET with any HTTP or WebDAV server...or zero server.
-TIBET can boot directly from the file system, localStorage, or IndexedDB.
-Or you can pair TIBET with Apache, CouchDB, Node.js, Rails3 or any other
-server process you can access via HTTP or WebDAV.
+TIBET also lets you minimize the load on your servers and networks,
+improving the scalability and efficiency of your web applications.
 
 ### TIBET is zero-reload.
 The entire TIBET platform, from our tag set to our IDE, is engineered to
-eliminate reload cycles. With TIBET's tools the changes you make to your
-JavaScript, HTML, and CSS are reflected instantly without the need to
-reload. These changes can then be persisted or rolled back as needed.
+eliminate reload cycles. With TIBET's tools, changes you make to your
+JavaScript, HTML, and CSS are reflected instantly without reload delays.
+
+Without the overhead of reload thousands of times a day your development
+process "flows" far more efficiently.
 
 # Installation
 
 1. Install Node.js version 0.10 or greater from http://nodejs.org/
-
 2. Install TIBET globally using the `npm` command:<br/>
 <pre>
   npm install -g tibet
@@ -62,8 +63,12 @@ development environment ready to support any changes you wish to make.
 
 # Server Options
 
-You can use TIBET with virtually any HTTP or WebDAV server. The built-in
-server templates in TIBET's `dna` directory can be listed using:
+You can couple TIBET with any HTTP or WebDAV server...or zero server.
+TIBET can boot directly from the file system, localStorage, or IndexedDB.
+Or you can pair TIBET with Apache, CouchDB, Node.js, Rails3 or any other
+server process you can access via HTTP or WebDAV.
+
+Built-in server templates in TIBET's `dna` directory can be listed using:
 
     tibet list dna
 
