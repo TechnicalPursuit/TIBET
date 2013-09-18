@@ -1,7 +1,7 @@
 # TIBET v5.0.0
 
-TIBET 5.0 is a markup-centric, mobile-ready, zero-reload web platform
-that makes web development more scalable, maintainable, and efficient.
+    TIBET 5.0 is a markup-centric, mobile-ready, zero-reload web platform
+    that makes web development more scalable, maintainable, and efficient.
 
 ### TIBET is markup-centric.
 Tags are the focal point of development in TIBET. In TIBET, tags are
@@ -64,7 +64,7 @@ Open the application's boot page (index.html) in a modern web browser:
 Congratulations. You're running a new TIBET application with the TIBET
 development environment ready to support any changes you wish to make.
 
-# Server Options
+# Servers
 
 You can couple TIBET with any HTTP or WebDAV server...or zero server.
 TIBET can boot directly from the file system, localStorage, or IndexedDB.
