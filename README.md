@@ -9,7 +9,7 @@ smart macros, macros you create, combine, and connect to create web
 applications of any scope and complexity.
 
 With TIBET a small group of JavaScript developers can support a much
-larger team using markup, significantly scaling up development while
+larger team using markup, significantly scaling up development while 
 improving maintainability.
 
 ### TIBET is mobile-ready.
@@ -17,7 +17,7 @@ TIBET is designed to run offline, sync when online, and limit reliance
 on networks, servers, or anything else the user may not have access to
 when they need your application, reducing user downtime.
 
-Online TIBET works with any HTTP or WebDAV server while providing a
+Online, TIBET works with any HTTP or WebDAV server while providing a
 foundation that lets you minimize load on your servers and networks,
 improving scalability and efficiency.
 
@@ -26,9 +26,10 @@ The entire TIBET platform is engineered to eliminate reload cycles. With
 TIBET's tools, changes you make to your JavaScript, HTML, and CSS are
 reflected instantly without reload delays.
 
-Without the overhead of reload thousands of times a day your development
+Without the disruption of thousands of reloads per day your development
 process "flows". TIBET's interactive command line, web shell, and IDE
-support a fully-immersive experience.
+make your development process far more efficient.
+
 
 # Installation
 
