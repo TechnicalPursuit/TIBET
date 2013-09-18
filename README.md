@@ -28,7 +28,7 @@ reflected instantly without reload delays.
 
 Without the disruption of thousands of reloads per day your development
 process "flows". TIBET's interactive command line, web shell, and IDE
-make your development process far more efficient.
+make your development far more efficient.
 
 
 # Installation
@@ -94,7 +94,7 @@ provides a forward-looking design blueprint and roadmap for TIBET's
 architecture, components, and construction standards.
 
 
-# Contacting Us
+# Feedback
 
 The best way to communicate an issue, feature request, or code-related concern
 is to use the GitHub issues list. We monitor this list actively and try to
