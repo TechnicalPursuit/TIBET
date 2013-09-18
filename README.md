@@ -1,6 +1,6 @@
 # TIBET v5.0.0
 
-TIBET 5.0 is a markup-centric, zero-server, zero-reload web platform
+TIBET 5.0 is a markup-centric, mobile-ready, zero-reload web platform
 that makes web development more scalable, maintainable, and efficient.
 
 ### TIBET is markup-centric.
@@ -12,14 +12,14 @@ With TIBET a small group of JavaScript developers can support a much
 larger team using markup, significantly scaling up development while
 improving maintainability.
 
-### TIBET is zero-server.
+### TIBET is mobile-ready.
 TIBET is designed to run offline, sync when online, and limit reliance 
 on networks, servers, or anything else the user may not have access to
 when they need your application, reducing user downtime.
 
-As an offline-ready platform TIBET lets you minimize the load on your
-servers and networks, improving the scalability and efficiency of your
-web applications.
+Online TIBET works with any HTTP or WebDAV server while providing a
+foundation that lets you minimize load on your servers and networks,
+improving scalability and efficiency.
 
 ### TIBET is zero-reload.
 The entire TIBET platform is engineered to eliminate reload cycles. With
@@ -91,14 +91,6 @@ Product-specific documentation is hosted at <http://www.technicalpursuit.com>.
 The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
 provides a forward-looking design blueprint and roadmap for TIBET's 
 architecture, components, and construction standards.
-
-
-# The Tag Store&trade;
-
-TIBET tags are self-contained packages of web functionality you can create,
-share, and leverage in the construction of your applications. The TIBET [Tag
-Store&trade;](http://www.technicalpursuit.com/tibet/tagstore/) is our
-clearinghouse for tags and other TIBET-related extensions. 
 
 
 # Contacting Us
