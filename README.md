@@ -13,22 +13,22 @@ larger team using markup, significantly scaling up development while
 improving maintainability.
 
 ### TIBET is mobile-ready.
-TIBET is designed to run offline, sync when online, and limit reliance 
+TIBET is designed to run offline, sync online, and limit reliance 
 on networks, servers, or anything else the user may not have access to
-when they need your application, reducing user downtime.
+when they need your application, reducing downtime.
 
-Online, TIBET works with any HTTP or WebDAV server while providing a
+TIBET works with any HTTP or WebDAV-compatible server while providing a
 foundation that lets you minimize load on your servers and networks,
 improving scalability and efficiency.
 
 ### TIBET is zero-reload.
 The entire TIBET platform is engineered to eliminate reload cycles. With
-TIBET's tools, changes you make to your JavaScript, HTML, and CSS are
-reflected instantly without reload delays.
+TIBET's tools changes you make to your JavaScript, HTML, and CSS are
+reflected instantly without delay.
 
 Without the disruption of thousands of reloads per day your development
-process "flows". TIBET's interactive command line, web shell, and IDE
-make your development far more efficient.
+process truly "flows". TIBET's interactive command line, web shell, and IDE
+make web development far more efficient.
 
 
 # Installation
@@ -51,10 +51,11 @@ are running on:
 
     tibet clone tibet {path}
 
-Navigate to your new application directory and start the TIBET server by
-entering the following commands (replace {path} with your application name):
+Navigate to your new application directory and start the default TIBET server by
+entering the following commands (again replacing {path} with your application
+name):
 
-    cd {path}     // or your platform's equivalent
+    cd {path}     // or your platform's equivalent for 'cd'
     npm start
 
 Open the application's boot page (index.html) in a modern web browser:
@@ -66,7 +67,7 @@ development environment ready to support any changes you wish to make.
 
 # Servers
 
-You can couple TIBET with any HTTP or WebDAV server...or zero server.
+You can couple TIBET with any HTTP or WebDAV server...or with no server.
 TIBET can boot directly from the file system, localStorage, or IndexedDB.
 Or you can pair TIBET with Apache, CouchDB, Node.js, Rails3 or any other
 server process you can access via HTTP or WebDAV.
@@ -82,7 +83,7 @@ create a new application based on that template.
 
 You can get help on the `tibet` command and its options by entering:
 
-    tibet help {command}
+    tibet help [command]
 
 
 # Documentation
@@ -90,8 +91,8 @@ You can get help on the `tibet` command and its options by entering:
 Product-specific documentation is hosted at <http://www.technicalpursuit.com>.
 
 The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
-provides a forward-looking design blueprint and roadmap for TIBET's 
-architecture, components, and construction standards.
+provides a forward-looking design blueprint, construction standards, and
+a roadmap for TIBET's architecture and primary components.
 
 
 # Feedback
