@@ -23,13 +23,12 @@ improving scalability and efficiency.
 
 ### TIBET is zero-reload.
 The entire TIBET platform is engineered to eliminate reload cycles. With
-TIBET's tools changes you make to your JavaScript, HTML, and CSS are
+TIBET's tools the changes you make to your JavaScript, HTML, and CSS are
 reflected instantly without delay.
 
-Without the disruption of thousands of reloads per day your development
-process truly "flows". TIBET's interactive command line, web shell, and IDE
-make web development far more efficient.
-
+TIBET's interactive command line, web shell, and IDE make you far more
+efficient. Your development process truly "flows" without the disruption
+of thousands of restart/reload cycles per day.
 
 # Installation
 
