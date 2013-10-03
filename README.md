@@ -54,7 +54,7 @@ Navigate to your new application directory and start the default TIBET server by
 entering the following commands (again replacing {path} with your application
 name):
 
-    cd {path}     // or your platform's equivalent for 'cd'
+    cd {path}
     npm start
 
 Open your application's home page (index.html) in a modern web browser:
@@ -64,8 +64,13 @@ Open your application's home page (index.html) in a modern web browser:
 Congratulations. You're running a new TIBET application with the TIBET
 development environment ready to support any changes you wish to make.
 
-Read over the various sources of [documentation](#documentation) to
-learn more.
+# Documentation
+
+The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
+provides a forward-looking design blueprint, construction standards, and
+a roadmap for TIBET's architecture and primary components.
+
+Product-specific documentation is hosted at <http://www.technicalpursuit.com>.
 
 # Servers
 
@@ -87,15 +92,6 @@ create a new application based on that template.
 You can get help on the `tibet` command and its options by entering:
 
     tibet help [command]
-
-<a id="documentation" href="#"></a>
-# Documentation
-
-Product-specific documentation is hosted at <http://www.technicalpursuit.com>.
-
-The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
-provides a forward-looking design blueprint, construction standards, and
-a roadmap for TIBET's architecture and primary components.
 
 # Feedback
 
