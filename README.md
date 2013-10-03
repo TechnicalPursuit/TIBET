@@ -17,9 +17,9 @@ TIBET is designed to run offline, sync online, and limit reliance
 on networks, servers, or anything else the user may not have access to
 when they need your application, reducing downtime.
 
-TIBET works with any HTTP or WebDAV-compatible server while providing a
-foundation that lets you minimize load on your servers and networks,
-improving scalability and efficiency.
+TIBET works with any HTTP-accessible server while providing a foundation
+that lets you minimize load on your servers and networks, improving
+scalability and efficiency.
 
 ### TIBET is zero-reload.
 The entire TIBET platform is engineered to eliminate reload cycles. With
@@ -27,8 +27,8 @@ TIBET's tools the changes you make to your JavaScript, HTML, and CSS are
 reflected instantly without delay.
 
 TIBET's interactive command line, web shell, and IDE make you far more
-efficient. Your development process truly "flows" without the disruption
-of thousands of restart/reload cycles per day.
+efficient. Without the disruption of thousands of restart/reload cycles
+per day your development process truly "flows".
 
 # Installation
 
@@ -57,19 +57,23 @@ name):
     cd {path}     // or your platform's equivalent for 'cd'
     npm start
 
-Open the application's boot page (index.html) in a modern web browser:
+Open your application's home page (index.html) in a modern web browser:
 
     http://127.0.0.1:3000/index.html
 
 Congratulations. You're running a new TIBET application with the TIBET
 development environment ready to support any changes you wish to make.
 
+Read over the various sources of [documentation](#documentation) to
+learn more.
+
 # Servers
 
-You can couple TIBET with any HTTP or WebDAV server...or with no server.
+You can couple TIBET with any HTTP-accessible server...or with no server.
+
 TIBET can boot directly from the file system, localStorage, or IndexedDB.
 Or you can pair TIBET with Apache, CouchDB, Node.js, Rails3 or any other
-server process you can access via HTTP or WebDAV.
+server process you can access via HTTP.
 
 Built-in server templates in TIBET's `dna` directory can be listed using:
 
@@ -84,7 +88,7 @@ You can get help on the `tibet` command and its options by entering:
 
     tibet help [command]
 
-
+<a id="documentation" href="#"></a>
 # Documentation
 
 Product-specific documentation is hosted at <http://www.technicalpursuit.com>.
@@ -92,7 +96,6 @@ Product-specific documentation is hosted at <http://www.technicalpursuit.com>.
 The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
 provides a forward-looking design blueprint, construction standards, and
 a roadmap for TIBET's architecture and primary components.
-
 
 # Feedback
 
