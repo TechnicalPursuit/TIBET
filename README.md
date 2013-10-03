@@ -57,7 +57,7 @@ name):
     cd {path}
     npm start
 
-Open your application's home page (index.html) in a modern web browser:
+Open your application's home page (index.html) in an HTML5 web browser:
 
     http://127.0.0.1:3000/index.html
 
@@ -66,11 +66,11 @@ development environment ready to support any changes you wish to make.
 
 # Documentation
 
-The GitHub-based [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
-provides a forward-looking design blueprint, construction standards, and
+The [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
+provides forward-looking design blueprints, construction standards, and
 a roadmap for TIBET's architecture and primary components.
 
-Product-specific documentation is hosted at <http://www.technicalpursuit.com>.
+Version-specific documentation is hosted at <http://www.technicalpursuit.com>.
 
 # Servers
 
