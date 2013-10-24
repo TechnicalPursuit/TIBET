@@ -33,26 +33,21 @@ per day your development process truly "flows".
 # Installation
 
 1. Install Node.js version 0.10 or greater from http://nodejs.org/
-2. Install TIBET globally using the `npm` command:<br/>
+2. Install TIBET globally using the `npm` command installed via node:<br/>
 <pre>
   npm install -g tibet
 </pre>
+TIBET will self-test to confirm a successful installation.
 
 # Quick Start
 
-Once you've installed TIBET you use the `tibet` command to handle
-application creation, configuration, testing, and deployment. 
-
 To create a standalone TIBET application enter the following command,
-replacing {path} with the name for your new application. Note that the
-name must represent a valid directory name for the operating system you
-are running on:
+replacing {path} with the name of your new application:
 
     tibet clone tibet {path}
 
-Navigate to your new application directory and start the default TIBET server by
-entering the following commands (again replacing {path} with your application
-name):
+Navigate to your application directory and start the default server by
+entering the following commands (replacing {path} as needed):
 
     cd {path}
     npm start
@@ -72,7 +67,7 @@ a roadmap for TIBET's architecture and primary components.
 
 Version-specific documentation is hosted at <http://www.technicalpursuit.com>.
 
-# Servers
+# App Templates
 
 You can couple TIBET with any HTTP-accessible server...or with no server.
 
@@ -80,11 +75,11 @@ TIBET can boot directly from the file system, localStorage, or IndexedDB.
 Or you can pair TIBET with Apache, CouchDB, Node.js, Rails3 or any other
 server process you can access via HTTP.
 
-Built-in server templates in TIBET's `dna` directory can be listed using:
+Built-in application templates can be listed using:
 
     tibet list dna
 
-Use the `tibet clone` command to clone any `dna` template to
+Use the `tibet clone` command to clone any available template to
 create a new application based on that template.
 
 # Help
