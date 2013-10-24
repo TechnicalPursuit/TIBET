@@ -37,6 +37,7 @@ per day your development process truly "flows".
 <pre>
   npm install -g tibet
 </pre>
+
 TIBET will self-test to confirm a successful installation.
 
 # Quick Start
