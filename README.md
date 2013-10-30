@@ -91,7 +91,7 @@ The full list of built-in application templates can be listed using:
     tibet list dna
 
 Use the `tibet clone` command to clone any available template to
-create a new application based on that template.
+create your application.
 
 # Help
 
@@ -102,8 +102,7 @@ You can get help on the `tibet` command and its options by entering:
 # Feedback
 
 The best way to communicate an issue, feature request, or code-related concern
-is to use the GitHub issues list. We monitor this list actively and try to
-leverage it to keep all discussion regarding TIBET centralized on GitHub.
+is to use the GitHub issues list at https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open.
 
 If you have specific code you'd like us to consider we're always open to [pull
 requests](http://help.github.com/articles/using-pull-requests). Using pull
