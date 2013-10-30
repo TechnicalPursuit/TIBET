@@ -92,12 +92,15 @@ Want to shake things up? Try pairing TIBET with an HTTP-accessible
 database in what we call a Direct-to-Database (D2D) design. CouchDB
 template provided :).
 
+##### DNA / Custom
+
 The full list of built-in application templates can be listed using:
 
     tibet list dna
 
 Use the `tibet clone` command to clone any available template to
-create your application.
+create your application. Add your own content to the dna directory to
+support custom templates.
 
 # Help
 
