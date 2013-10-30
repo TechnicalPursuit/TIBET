@@ -8,16 +8,16 @@ Tags are the focal point of development in TIBET. In TIBET, tags are
 smart macros, macros you create, combine, and connect to create web
 applications of any scope and complexity.
 
-With TIBET a small group of JavaScript developers can support a much
-larger team using markup, significantly scaling up development while 
+With TIBET a small team of JavaScript developers can support a much
+larger team using markup, significantly scaling your development while 
 improving maintainability.
 
 ### TIBET is mobile-ready.
 TIBET is designed to run offline, sync online, and limit reliance 
-on networks, servers, or anything else the user may not have access to
+on networks, servers, or anything else your users may not have access to
 when they need your application, reducing downtime.
 
-TIBET works with any HTTP-accessible server while providing a foundation
+TIBET works with or without a server, providing you with a foundation
 that lets you minimize load on your servers and networks, improving
 scalability and efficiency.
 
@@ -26,9 +26,9 @@ The entire TIBET platform is engineered to eliminate reload cycles. With
 TIBET's tools the changes you make to your JavaScript, HTML, and CSS are
 reflected instantly without delay.
 
-TIBET's interactive command line, web shell, and IDE make you far more
-efficient. Without the disruption of thousands of restart/reload cycles
-per day your development process truly "flows".
+Without the disruption of thousands of reload cycles per day your
+development process flows, creating the opportunity for unprecedented
+creativity and productivity.
 
 # Installation
 
@@ -53,30 +53,40 @@ entering the following commands (replacing {path} as needed):
     cd {path}
     npm start
 
-Open your application's home page (index.html) in an HTML5 web browser:
+Open your new application's home page (index.html) in an HTML5 web browser:
 
     http://127.0.0.1:3000/index.html
 
-Congratulations. You're running a new TIBET application with the TIBET
+Congratulations! You're running a new TIBET application with the TIBET
 development environment ready to support any changes you wish to make.
 
 # Documentation
 
 The [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
 provides forward-looking design blueprints, construction standards, and
-a roadmap for TIBET's architecture and primary components.
+a roadmap for TIBET's development. Look there for context and conceptual
+documentation.
 
-Version-specific documentation is hosted at <http://www.technicalpursuit.com>.
+Version-specific API and tool documentation is hosted at
+<http://www.technicalpursuit.com>.
 
 # App Templates
 
-You can couple TIBET with any HTTP-accessible server...or with no server.
+You can combine TIBET with any HTTP-accessible server. Or with no server.
 
-TIBET can boot directly from the file system, localStorage, or IndexedDB.
-Or you can pair TIBET with Apache, CouchDB, Node.js, Rails3 or any other
-server process you can access via HTTP.
+You can boot TIBET from the file system, localStorage, or IndexedDB.
+Creating standalone tablet or Chromebook-based applications? We've got
+templates for that.
 
-Built-in application templates can be listed using:
+Have a current web server? You can pair TIBET with Apache, Node.js,
+Rails3 or whatever HTTP-accessible web server you might have. Or you can
+use the TIBET Server.
+
+Want to shake things up? Try pairing TIBET with an HTTP-accessible
+database in what we call a Direct-to-Database (D2D) design. CouchDB
+template provided :).
+
+The full list of built-in application templates can be listed using:
 
     tibet list dna
 
