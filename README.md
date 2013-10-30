@@ -74,13 +74,19 @@ Version-specific API and tool documentation is hosted at
 
 You can combine TIBET with any HTTP-accessible server. Or with no server.
 
+##### Offline / Standalone
+
 You can boot TIBET from the file system, localStorage, or IndexedDB.
 Creating standalone tablet or Chromebook-based applications? We've got
 templates for that.
 
+##### Online / Web
+
 Have a current web server? You can pair TIBET with Apache, Node.js,
 Rails3 or whatever HTTP-accessible web server you might have. Or you can
 use the TIBET Server.
+
+##### Direct-to-Database (D2D)
 
 Want to shake things up? Try pairing TIBET with an HTTP-accessible
 database in what we call a Direct-to-Database (D2D) design. CouchDB
@@ -101,8 +107,10 @@ You can get help on the `tibet` command and its options by entering:
 
 # Feedback
 
-The best way to communicate an issue, feature request, or code-related concern
-is to use the GitHub [issues list](https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open) for TIBET.
+The best way to communicate an issue, feature request, or code-related
+concern is to use the GitHub [issues
+list](https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open)
+for TIBET.
 
 If you have specific code you'd like us to consider we're always open to [pull
 requests](http://help.github.com/articles/using-pull-requests). Using pull
