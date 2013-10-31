@@ -42,18 +42,18 @@ TIBET will self-test to confirm a successful installation.
 
 # Quick Start
 
-To create a standalone TIBET application enter the following command,
+1. Create a standalone TIBET application with the following command,
 replacing {path} with the name of your new application:
 
     tibet clone tibet {path}
 
-Navigate to your application directory and start the default server by
+2. Navigate to your application directory and start the default server by
 entering the following commands (replacing {path} as needed):
 
     cd {path}
     npm start
 
-Open your new application's home page (index.html) in an HTML5 web browser:
+3. Open your new application's home page (index.html) in an HTML5 web browser:
 
     http://127.0.0.1:3000/index.html
 
@@ -64,7 +64,7 @@ development environment ready to support any changes you wish to make.
 
 The [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
 provides forward-looking design blueprints, construction standards, and
-a roadmap for TIBET's development. Look there for context and conceptual
+a roadmap for TIBET's development. Look there for conceptual and design
 documentation.
 
 Version-specific API and tool documentation is hosted at
