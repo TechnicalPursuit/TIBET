@@ -44,18 +44,20 @@ TIBET will self-test to confirm a successful installation.
 
 1. Create a standalone TIBET application with the following command,
 replacing {path} with the name of your new application:
-
-    tibet clone tibet {path}
+<pre>
+  tibet clone tibet {path}
+</pre>
 
 2. Navigate to your application directory and start the default server by
 entering the following commands (replacing {path} as needed):
-
-    cd {path}
-    npm start
-
+<pre>
+  cd {path}
+  npm start
+</pre>
 3. Open your new application's home page (index.html) in an HTML5 web browser:
-
+<pre>
     http://127.0.0.1:3000/index.html
+</pre>
 
 Congratulations! You're running a new TIBET application with the TIBET
 development environment ready to support any changes you wish to make.
