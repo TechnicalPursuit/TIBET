@@ -36,7 +36,7 @@ creativity and productivity.
 # Installation
 
 1. Install Node.js version 0.10 or greater from <a href="http://nodejs.org"
-   target="_blank">http://nodejs.org</a>.
+   target="_blank">nodejs.org</a>.
 2. Install TIBET globally using the `npm` command installed via node:<br/>
 <pre>
   npm install -g tibet
@@ -62,7 +62,7 @@ TIBET will self-test to confirm a successful installation.
    href="http://127.0.0.1:3000/index.html" target="_blank">index.html</a>) in an
 HTML5 web browser:
 <pre>
-    open http://127.0.0.1:3000/index.html
+    open index.html
 </pre>
 
 Congratulations! You're running a new TIBET application with the <a
