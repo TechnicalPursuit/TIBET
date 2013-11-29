@@ -76,7 +76,7 @@ provides forward-looking design blueprints, construction standards, and
 a roadmap for TIBET's development. Look there for conceptual, design, 
 and developer documentation as well as introductory white papers.
 
-Version-specific API and tool documentation is hosted at <a href="http://technicalpursuit.com" target="_blank">http://technicalpursuit.com</a>
+Version-specific API and tool documentation is hosted at <a href="http://technicalpursuit.com" target="_blank">technicalpursuit.com</a>
 
 # App Templates
 
@@ -130,5 +130,5 @@ requests</a>. Using pull requests is great way to keep discussion of new
 features visible to the entire TIBET community.
 
 Additional contact info is available at <a href="http://technicalpursuit.com"
-target="_blank">http://technicalpursuit.com</a>.
+target="_blank">technicalpursuit.com</a>.
 
