@@ -8,7 +8,7 @@ Tags are the focal point of development in TIBET. In TIBET, tags are
 smart macros, macros you create, combine, and connect to create web
 applications of any scope and complexity.
 
-With TIBET a small team of JavaScript developers can support a much
+With TIBET a small team developing in JavaScript can support a much
 larger team using markup, significantly scaling your development while 
 improving maintainability.
 
@@ -26,13 +26,14 @@ The entire TIBET platform is engineered to eliminate reload cycles. With
 TIBET's tools the changes you make to your JavaScript, HTML, and CSS are
 reflected instantly without delay.
 
-Without the disruption of thousands of reload cycles per day your
+Without the disruption of hundreds of reload cycles per day your
 development process flows, creating the opportunity for unprecedented
 creativity and productivity.
 
 # Installation
 
-1. Install Node.js version 0.10 or greater from http://nodejs.org/
+1. Install Node.js version 0.10 or greater from <a href="http://nodejs.org"
+   target="_blank">http://nodejs.org</a>.
 2. Install TIBET globally using the `npm` command installed via node:<br/>
 <pre>
   npm install -g tibet
@@ -42,32 +43,34 @@ TIBET will self-test to confirm a successful installation.
 
 # Quick Start
 
-1. Create a standalone TIBET application with the following command,
-replacing {path} with the name of your new application:
+1. Create an application using `tibet clone tibet` replacing {name} with your
+   app name:
 <pre>
-  tibet clone tibet {path}
+  tibet clone tibet {name}
 </pre>
 
-2. Navigate to your application directory and start the default server by
-entering the following commands (replacing {path} as needed):
+2. Navigate to your application directory and start the server via
+`npm start`:
 <pre>
-  cd {path}
+  cd {name}
   npm start
 </pre>
-3. Open your new application's home page (index.html) in an HTML5 web browser:
+3. Open your new application's home page (<a
+   href="http://127.0.0.1:3000/index.html" target="_blank">index.html</a>) in an
+HTML5 web browser:
 <pre>
-    http://127.0.0.1:3000/index.html
+    open http://127.0.0.1:3000/index.html
 </pre>
 
-Congratulations! You're running a new TIBET application with the TIBET
-development environment ready to support any changes you wish to make.
+Congratulations! You're running a new TIBET application with the [TIBET
+IDE](The-TIBET-Immersive-Development-Environment) installed.
 
 # Documentation
 
 The [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
 provides forward-looking design blueprints, construction standards, and
-a roadmap for TIBET's development. Look there for conceptual and design
-documentation.
+a roadmap for TIBET's development. Look there for conceptual, design, 
+and developer documentation as well as introductory white papers.
 
 Version-specific API and tool documentation is hosted at
 <http://www.technicalpursuit.com>.
