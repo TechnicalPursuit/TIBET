@@ -8,23 +8,26 @@ Tags are the focal point of development in TIBET. In TIBET, tags are
 smart macros, macros you create, combine, and connect to create web
 applications of any scope and complexity.
 
-With TIBET a small team developing in JavaScript can support a much
-larger team using markup, significantly scaling your development while 
+With TIBET a small team using JavaScript can support a much
+larger team using <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Semantic-Tags" target="_blank">semantic markup</a>, significantly scaling your development while 
 improving maintainability.
 
 ### TIBET is mobile-ready.
 TIBET is designed to run offline, sync online, and limit reliance 
 on networks, servers, or anything else your users may not have access to
-when they need your application, reducing downtime.
+when they need your application.
 
-TIBET works with or without a server, providing you with a foundation
-that lets you minimize load on your servers and networks, improving
-scalability and efficiency.
+TIBET works <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Loader#wiki-zero"
+target="_blank">with or without a server</a>, providing you with a foundation
+that lets you minimize load on your servers and networks, improving scalability
+and efficiency.
 
 ### TIBET is zero-reload.
-The entire TIBET platform is engineered to eliminate reload cycles. With
-TIBET's tools the changes you make to your JavaScript, HTML, and CSS are
-reflected instantly without delay.
+The TIBET platform is engineered to eliminate reload cycles. With TIBET's <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/Home#wiki-tools"
+target="_blank">interactive tools</a> the changes you make to your JavaScript, HTML,
+and CSS are reflected instantly.
 
 Without the disruption of hundreds of reload cycles per day your
 development process flows, creating the opportunity for unprecedented
@@ -62,22 +65,22 @@ HTML5 web browser:
     open http://127.0.0.1:3000/index.html
 </pre>
 
-Congratulations! You're running a new TIBET application with the [TIBET
-IDE](The-TIBET-Immersive-Development-Environment) installed.
+Congratulations! You're running a new TIBET application with the <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Immersive-Development-Environment-(IDE)"
+target="_blank">TIBET IDE</a> installed.
 
 # Documentation
 
-The [TIBET wiki](https://github.com/TechnicalPursuit/TIBET/wiki)
+The <a href="https://github.com/TechnicalPursuit/TIBET/wiki" target="_blank">TIBET Wiki</a>
 provides forward-looking design blueprints, construction standards, and
 a roadmap for TIBET's development. Look there for conceptual, design, 
 and developer documentation as well as introductory white papers.
 
-Version-specific API and tool documentation is hosted at
-<http://www.technicalpursuit.com>.
+Version-specific API and tool documentation is hosted at <a href="http://technicalpursuit.com" target="_blank">http://technicalpursuit.com</a>
 
 # App Templates
 
-You can combine TIBET with any HTTP-accessible server. Or with no server.
+You can combine TIBET with any HTTP-accessible server, or with no (aka 'zero') server.
 
 ##### Offline / Standalone
 
@@ -88,8 +91,9 @@ templates for that.
 ##### Online / Web
 
 Have a current web server? You can pair TIBET with Apache, Node.js,
-Rails3 or whatever HTTP-accessible web server you might have. Or you can
-use the TIBET Server.
+Rails3 or whatever HTTP-accessible web server you might have. Or you can use the
+<a href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Server"
+target="_blank">TIBET Server</a>.
 
 ##### Direct-to-Database (D2D)
 
@@ -116,14 +120,15 @@ You can get help on the `tibet` command and its options by entering:
 # Feedback
 
 The best way to communicate an issue, feature request, or code-related
-concern is to use the GitHub [issues
-list](https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open)
-for TIBET.
+concern is to use the GitHub-based <a
+href="https://github.com/TechnicalPursuit/TIBET/issues?milestone=1&page=1&state=open"
+target="_blank">issues list</a> for TIBET.
 
-If you have specific code you'd like us to consider we're always open to [pull
-requests](http://help.github.com/articles/using-pull-requests). Using pull
-requests is great way to keep discussion of new features visible to the entire
-TIBET community.
+If you have specific code you'd like us to consider we're always open to <a
+href="http://help.github.com/articles/using-pull-requests" target="_blank">pull
+requests</a>. Using pull requests is great way to keep discussion of new
+features visible to the entire TIBET community.
 
-Additional contact info is available at <http://www.technicalpursuit.com>. 
+Additional contact info is available at <a href="http://technicalpursuit.com"
+target="_blank">http://technicalpursuit.com</a>.
 
