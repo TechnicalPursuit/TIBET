@@ -69,7 +69,7 @@ target="_blank">TIBET IDE</a> installed.
 # Documentation
 
 The <a href="https://github.com/TechnicalPursuit/TIBET/wiki" target="_blank">TIBET Wiki</a>
-provides conceptual, design, and use-case documentation as well as introductory white papers.
+provides conceptual, design, and use-case documentation for TIBET.
 
 Detailed API documentation is generated from within TIBET itself
 via the `:man` command.
