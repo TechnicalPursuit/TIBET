@@ -59,11 +59,8 @@ TIBET will self-test to confirm a successful installation.
   npm start
 </pre>
 3. Open your new application's home page (<a
-   href="http://127.0.0.1:3000/index.html" target="_blank">index.html</a>) in an
-HTML5 web browser:
-<pre>
-    open index.html
-</pre>
+   href="http://127.0.0.1:1407/index.html" target="_blank">index.html</a>) in an
+HTML5 web browser.
 
 Congratulations! You're running a new TIBET application with the <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Immersive-Development-Environment-(IDE)"
@@ -72,11 +69,13 @@ target="_blank">TIBET IDE</a> installed.
 # Documentation
 
 The <a href="https://github.com/TechnicalPursuit/TIBET/wiki" target="_blank">TIBET Wiki</a>
-provides forward-looking design blueprints, construction standards, and
-a roadmap for TIBET's development. Look there for conceptual, design, 
-and developer documentation as well as introductory white papers.
+provides conceptual, design, and use-case documentation as well as introductory white papers.
 
-Version-specific API and tool documentation is hosted at <a href="http://technicalpursuit.com" target="_blank">technicalpursuit.com</a>
+Detailed API documentation is generated from within TIBET itself
+via the `:man` command.
+
+For more information on TIBET and TPI products and services see <a
+href="http://technicalpursuit.com" target="_blank">technicalpursuit.com</a>.
 
 # App Templates
 
