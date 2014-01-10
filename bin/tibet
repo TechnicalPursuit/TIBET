@@ -1,7 +1,15 @@
 #!/usr/bin/env node
 
-//  load tibet cli
-require('cli');
+/**
+ * @overview Top-level TIBET command-line script. Heavy-lifting via CLI object.
+ * @author Scott Shattuck (ss)
+ * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-Approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     open source waivers to keep your derivative work source code private.
+ */
 
-process.stdout.write('>\n');
-process.exit();
+var cli = require('../src/cli');
+
+cli.run();

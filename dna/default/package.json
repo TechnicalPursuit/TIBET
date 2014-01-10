@@ -1,0 +1,32 @@
+{
+  "name": "{{appname}}",
+  "version": "0.1.0",
+  "description": ""
+  "keywords": [],
+  "main": "index",
+  "directories": {
+    "bin": "./bin",
+    "doc": "./doc",
+    "example": "examples",
+    "lib": "./lib",
+    "man": "./man"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*",
+    "mockery": "*",
+    "phantomjs": "*",
+    "ronn": "*",
+    "uglify-js": "*"
+  },
+  "engines": {
+    "node": ">=0.10",
+    "npm": ">=1"
+  },
+  "scripts": {
+    "test": "mocha",
+    "postinstall": "scripts/post_install.sh"
+  },
+  "preferGlobal": "false"
+}

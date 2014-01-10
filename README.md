@@ -8,9 +8,11 @@ Tags are the focal point of development in TIBET. In TIBET, tags are
 smart macros, macros you create, combine, and connect to create web
 applications of any scope and complexity.
 
-With TIBET a small team using JavaScript can support a much
-larger team using <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Semantic-Tags" target="_blank">semantic markup</a>, significantly scaling your development while 
-improving maintainability.
+With TIBET a small team using JavaScript can support a much larger team
+using <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Semantic-Tags"
+target="_blank">semantic markup</a>, significantly scaling your
+development while improving maintainability.
 
 ### TIBET is mobile-ready.
 TIBET is designed to run offline, sync online, and limit reliance 
@@ -26,8 +28,8 @@ and efficiency.
 ### TIBET is zero-reload.
 The TIBET platform is engineered to eliminate reload cycles. With TIBET's <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki/Home#wiki-tools"
-target="_blank">interactive tools</a> the changes you make to your JavaScript, HTML,
-and CSS are reflected instantly.
+target="_blank">interactive tools</a> the changes you make to your
+JavaScript, HTML, and CSS are reflected instantly.
 
 Without the disruption of hundreds of reload cycles per day your
 development process flows, creating the opportunity for unprecedented
@@ -68,8 +70,9 @@ target="_blank">TIBET IDE</a> installed.
 
 # Documentation
 
-The <a href="https://github.com/TechnicalPursuit/TIBET/wiki" target="_blank">TIBET Wiki</a>
-provides conceptual, design, and use-case documentation for TIBET.
+The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
+target="_blank">TIBET Wiki</a> provides conceptual, design, and use-case
+documentation for TIBET.
 
 Detailed API documentation is generated from within TIBET itself
 via the `:man` command.
@@ -79,7 +82,8 @@ href="http://technicalpursuit.com" target="_blank">technicalpursuit.com</a>.
 
 # App Templates
 
-You can combine TIBET with any HTTP-accessible server, or with no (aka 'zero') server.
+You can combine TIBET with any HTTP-accessible server, or with no (aka
+'zero') server.
 
 ##### Offline / Standalone
 
@@ -97,8 +101,8 @@ target="_blank">TIBET Server</a>.
 ##### Direct-to-Database (D2D)
 
 Want to shake things up? Try pairing TIBET with an HTTP-accessible
-database in what we call a Direct-to-Database (D2D) design. CouchDB
-template provided :).
+database in what we call a Direct-to-Database (D2D) design. Apache
+CouchDB template provided :).
 
 ##### DNA / Custom
 
