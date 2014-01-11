@@ -48,6 +48,7 @@
     "chai": "*",
     "findit": "*",
     "handlebars": "*",
+    "jshint": "*",
     "mocha": "*",
     "mockery": "*",
     "optimist": "*",

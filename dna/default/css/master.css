@@ -1,0 +1,14 @@
+/**
+ * @overview Top-level css file which loads lib and app root css files.
+ */
+
+/* TODO: replace with a {{tibet_css}} template value */
+@import url("../node_modules/tibet3/base/lib/tibet/css/tibet.css");
+
+/* TODO: remove/integrate with tibet.css? or rename to 'console.css'? */
+@import url("../node_modules/tibet3/base/lib/tibet/css/screen.css");
+
+/* TODO: make this templated. if you add tdc, you get this. */
+@import url("../node_modules/tibet3/base/lib/tibet/css/tdc.css");
+
+@import url("app.css");

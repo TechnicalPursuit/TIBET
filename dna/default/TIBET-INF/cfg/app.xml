@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<project name="{{appname}}" default="full" basedir="~app_src">
+
+<target name="full" depends="">
+  <tibet_module target="base" />
+  <tibet_module target="auto" />
+  <tibet_module target="tool" />
+</target>
+
+<target name="base" depends="">
+  <!--  statically loaded application core goes here -->
+</target>
+
+<target name="auto" depends="">
+  <!--  code you can auto-load on-demand goes here -->
+</target>
+
+<target name="tool" depends="">
+  <!--  uncomment a TIBET tool to load/activate it -->
+  <!--tibet_module cfg="~lib_cfg/tdp.xml" target="full"/-->
+  <echo message="{{appname}} startup complete." />
+</target>
+
+</project>
+
