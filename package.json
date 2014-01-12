@@ -43,8 +43,7 @@
     "lib": "./lib",
     "man": "./man"
   },
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "chai": "*",
     "findit": "*",
     "handlebars": "*",
@@ -56,6 +55,8 @@
     "ronn": "*",
     "shelljs": "*",
     "uglify-js": "*"
+  },
+  "devDependencies": {
   },
   "engines": {
     "node": ">=0.8",
