@@ -63,8 +63,7 @@
     "npm": ">=1"
   },
   "scripts": {
-    "test": "mocha",
-    "postinstall": "scripts/post_install.sh"
+    "test": "mocha"
   },
   "preferGlobal": "false"
 }
