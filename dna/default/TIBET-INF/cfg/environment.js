@@ -5,6 +5,9 @@
  *     (.e.g. development.js for development).
  */
 
+// Ensure we use the tibetdir approach to computing root paths.
+TP.sys.setcfg('boot.rootcomp', 'tibetdir');
+
 //  ---
 //  Sample data base parameters.
 //  ---
