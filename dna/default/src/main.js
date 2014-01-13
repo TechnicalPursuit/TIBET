@@ -2,7 +2,7 @@
  * @overview main.js
  */
 
-var APPNAME = {{appname}};
+var APPNAME = '{{appname}}';
 
 console.log('Loaded ' + APPNAME);
 

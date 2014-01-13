@@ -10,6 +10,7 @@
 
 <target name="base" depends="">
   <!--  statically loaded application core goes here -->
+  <tibet_script src="~app_src/tags/APP.{{appname}}.app.js" />
 </target>
 
 <target name="auto" depends="">
