@@ -33,7 +33,7 @@
 var Cmd = {};
 
 Cmd.DNA_ROOT = '../../../dna/';
-Cmd.USAGE = 'Usage: tibet clone {appname} [--dna {template}]';
+Cmd.USAGE = 'tibet clone {appname} [--dna {template}]';
 
 /**
  * Runs the specific command in question.
@@ -63,7 +63,7 @@ Cmd.run = function(args) {
 
   // Have to get at least one non-option argument (the new appname).
   if (!appname) {
-    console.log(this.USAGE);
+    console.log('Usage: ' + this.USAGE);
     process.exit(1);
   }
 
@@ -116,7 +116,7 @@ Cmd.run = function(args) {
     process.exit(1);
   }
 
-  sh.cp('-r', dna + '/*', target);
+  sh.cp('-R', dna + '/', target + '/');
   if (err = sh.error()) {
     console.log('Error cloning dna directory: ' + err);
     process.exit(1);
@@ -191,6 +191,12 @@ Cmd.run = function(args) {
         code = 1;
         return;
       }
+    }
+
+    // Rename the file if it also has a name which matches our
+    // appname that's templated.
+    if (/__appname__/.test(file)) {
+      sh.mv(file, file.replace(/__appname__/g, appname));
     }
   });
 
