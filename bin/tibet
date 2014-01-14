@@ -10,6 +10,21 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-var cli = require('../src/cli');
+var cli = require('../src/cli/cli.js');
 
-cli.run();
+var options = {};
+
+//  Capture npm metadata about TIBET installation for downstream use.
+require('child_process').exec('npm ll -g tibet --json',
+    function(err, stdout, stderr) {
+        if (err) {
+            require('colors');
+            console.log(('Unable to locate TIBET installation: ' + stderr).red);
+            process.exit(1);
+        }
+
+        // Run the cli once we've found TIBET.
+        options.meta = JSON.parse(stdout);
+        cli.run(options);
+    });
+
