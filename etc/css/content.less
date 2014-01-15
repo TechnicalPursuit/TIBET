@@ -1,0 +1,300 @@
+/**
+ * @file content.css
+ * @overview Styles specific to the various TPI/TIBET content pages.
+ */
+
+@import url("./tibet-reset.less");
+
+a {
+  color: #31A2D8;
+  text-decoration: none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+a.anchor {
+  color: #000;
+  text-decoration: none;
+}
+
+a.anchor:hover {
+  text-decoration: none;
+}
+
+em {
+  color: #444;
+  font-style: normal;
+}
+
+.hr {
+  margin: 24px 48px;
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #ccc;
+}
+
+.clear {
+  clear: both;
+}
+.hr.clear {
+  margin: 0 48px;
+}
+
+#content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 750px;
+  min-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#intro {
+  margin: 24px 48px 0 48px;
+  text-align: center;
+  font-size: 138.5%;
+}
+
+.lead {
+  font-size: 138.5%;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.follow {
+  margin: 12px 0;
+  color: #999;
+}
+
+#testimony {
+  margin: 24px 48px 0 48px;
+  text-align: center;
+  font-size: 108%;
+}
+
+#testimony .author {
+  margin-top: 6px;
+  color: #999;
+  font-size: 92%;
+}
+
+div.services {
+  position: relative;
+  margin: 0 48px;
+}
+
+ul.options {
+  display: block;
+  text-align: center;
+}
+
+ul.options h2 {
+  margin-bottom: 12px;
+}
+
+ul.options li {
+  display: block;
+  float: left;
+  list-style: none;
+  padding: 0;
+  width: 33%;
+}
+
+ul.options li .hr {
+  margin: 0 0 24px 5%;
+  float: left;
+  width: 90%;
+}
+
+a.image-link {
+  color: #000;
+}
+
+a.image-link h2 {
+    font-size: 138.5%;
+}
+
+a.image-link img {
+  border: 1px solid #666;
+  border-radius: 5px;
+  box-shadow: 0 0 2px 2px #999;
+  width: 136px;
+  height: 136px;
+}
+
+a.image-link:hover img {
+  border: 1px solid #000;
+  box-shadow: 0 0 5px 5px #999;
+}
+
+.tagline {
+  position: relative;
+  z-index: 1;
+  font-size: 100%;
+  line-height: 30px;
+}
+
+.blurb {
+  color: #999;
+  text-align: left;
+  margin: 48px 48px 0 48px;
+  font-size: 138.5%;
+}
+
+.mailto {
+  margin-bottom: 0;
+}
+
+.mailto a {
+  display: block;
+  margin: 24px 10px 0 10px;
+  font-size: 138.5%;
+}
+
+#home {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  color: #74060c;
+}
+
+#home a {
+  display: block;
+  font-size: 100%;
+  color: #74060c;
+}
+
+#home img {
+  margin-top: 3px;
+  height: 24px;
+  width: 25px;
+}
+
+#logo {
+}
+
+#tellus {
+  margin: 26px 82px 32px 78px;
+}
+
+#tech_logos {
+  height: 24px;
+  margin-top: 2em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#tech_logos img {
+  height: 24px;
+  width: 76px;
+}
+
+.detail-intro {
+  position: relative;
+  margin: 48px 0 0 48px;
+}
+
+.detail-intro .lead {
+  text-align: left;
+  font-size: 138.5%;
+  margin-left: 192px;
+  margin-right: 48px;
+}
+
+.detail-intro .follow {
+  text-align: left;
+  font-size: 138.5%;
+  margin-left: 192px;
+  margin-right: 48px;
+}
+
+.detail-intro a.image-link {
+}
+
+.detail-intro a.image-link img {
+  margin-bottom: 36px;
+  float: left;
+  border: 1px solid #666;
+  border-radius: 5px;
+  box-shadow: 0 0 2px 2px #999;
+  width: 136px;
+  height: 136px;
+  cursor: default;
+}
+
+.detail-intro a.image-link:hover img {
+  border: 1px solid #666;
+}
+
+.detail-topics {
+  float: left;
+  margin: 24px 48px 0 48px;
+  text-align: left;
+  font-size: 138.5%;
+}
+
+.detail-topics dt {
+  float: left;
+  width: 192px;
+  font-weight: bold;
+}
+
+.detail-topics dt a {
+  text-decoration: none;
+}
+
+.detail-topics dt a:hover {
+  text-decoration: underline;
+}
+
+.detail-topics dd {
+  float: left;
+  width: 65%;
+  color: #999;
+  margin-bottom: 24px;
+}
+
+.client-logo {
+  float: left;
+  margin: 12px 6px 12px 0;
+}
+
+.tagline {
+  font-size: 90%;
+}
+
+.tagline a {
+  margin: 0 32px;
+}
+.tagline span {
+  margin: 0 32px;
+}
+
+.pointer {
+  margin-right: 24px;
+  float: right;
+  color: #999;
+}
+
+#legal {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  color: #aaa;
+}
+

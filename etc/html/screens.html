@@ -15,7 +15,7 @@
 <link rel="icon" href="./etc/images/favicon.ico" type="image/x-icon"/>
 
 <style type="text/css">
-html,body,iframe {
+html,body,iframe{
     position: absolute;
     top: 0;
     left: 0;
@@ -28,10 +28,20 @@ html,body,iframe {
 iframe {
     overflow: hidden;
 }
+body[data-stage="prelaunch"] #console {
+    display: none;
+}
+body[data-stage="liftoff"] #console {
+    display: none;
+}
 </style>
 
 </head>
-<body>
-    <iframe id="UIROOT" frameborder="0" src="./etc/html/framing.html"></iframe>
+<body data-stage="prelaunch">
+    <iframe id="screen_0" src="./content.html"></iframe>
+    <!-- additional generated screens 1-N go here -->
+
+    <!-- console last so when visible it'll overlay -->
+    <iframe id="console" src="./console.html"></iframe>
 </body>
 </html>

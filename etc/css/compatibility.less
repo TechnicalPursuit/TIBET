@@ -1,0 +1,73 @@
+/**
+ * @file compatibility.css
+ * @overview Rules specific to ensuring rough compatibility across browsers.
+ *     Note that these may be obsolete based on evolving data in the standard
+ *     normalize.css implementation.
+ */
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+/*
+    ========================================================================
+    Mozilla styles to match IE capabilities
+    ========================================================================
+*/
+
+/* emulate IE's 'hidefocus' attribute for Mozilla */
+
+/* if an element has 'hidefocus="true"' it should not get a focus rectangle.
+  Focus styling will be handled through the :focus pseudo-class */
+*[hidefocus="true"]::-moz-focus-inner {
+  /* Note the use of 'transparent' border here - if we use 'none', then
+     things shift around */
+  border: 1px solid transparent !important;
+}
+
+/* no, we really mean it. We don't want links with 'hidefocus="true"' to
+  have a focus rectangle either */
+*|*[hidefocus="true"]:-moz-any-link:focus {
+  outline: none !important;
+}
+
+/* new in Gecko 2.0 / Firefox 4.X+ */
+*[hidefocus="true"]:-moz-focusring {
+  outline: none !important;
+}
+
+*|*[hidefocus="true"]:moz-any-link:-moz-focusring {
+  outline: none !important;
+}
+
+/*
+    ========================================================================
+    Webkit styles to match IE capabilities
+    ========================================================================
+*/
+
+/* emulate IE's 'hidefocus' attribute for Webkit */
+
+*[hidefocus="true"] {
+  outline: none !important;
+}
+
+/*
+    ========================================================================
+    Mozilla and Webkit styles to turn off default behavior
+    ========================================================================
+*/
+
+/* do not show the built-in resizer */
+
+* {
+  resize: none;
+}
+
