@@ -26,13 +26,32 @@ a.anchor:hover {
   text-decoration: none;
 }
 
+a.bold {
+    font-weight: bold;
+}
+
 em {
   color: #444;
   font-style: normal;
 }
 
+em.cmd {
+  color: #444;
+  font-size: 93%;
+}
+
+em.param {
+    font-style: italic;
+}
+
+em.bold {
+    font-style: italic;
+    font-weight: bold;
+}
+
+
 .hr {
-  margin: 24px 48px;
+  margin: 18px 48px;
   border-top: 1px solid #999;
   border-bottom: 1px solid #ccc;
 }
@@ -70,13 +89,17 @@ em {
 }
 
 .follow {
+  font-size: 93%;
   margin: 12px 0;
   color: #999;
 }
 
 #testimony {
-  margin: 24px 48px 0 48px;
+  margin: 24px 48px 24px 48px;
   text-align: center;
+}
+
+#testimony .quote {
   font-size: 108%;
 }
 
@@ -84,6 +107,24 @@ em {
   margin-top: 6px;
   color: #999;
   font-size: 92%;
+}
+
+#lastwords {
+  margin: 24px 48px 0 48px;
+  color: #999;
+  font-size: 100%;
+}
+
+#lastwords .lead {
+  font-size: 123.1%;
+  font-weight: normal;
+  margin: 0;
+}
+
+#lastwords .follow {
+  font-size: 123.1%;
+  text-align: left;
+  margin-top: 6px;
 }
 
 div.services {
@@ -144,9 +185,14 @@ a.image-link:hover img {
 
 .blurb {
   color: #999;
-  text-align: left;
-  margin: 48px 48px 0 48px;
+  text-align: center;
+  margin: 24px 48px 0 48px;
   font-size: 138.5%;
+}
+
+.calltoaction {
+    font-size: 93%;
+    font-weight: bold;
 }
 
 .mailto {
@@ -214,7 +260,7 @@ a.image-link:hover img {
 
 .detail-intro .follow {
   text-align: left;
-  font-size: 138.5%;
+  font-size: 123.1%;
   margin-left: 192px;
   margin-right: 48px;
 }
@@ -241,7 +287,7 @@ a.image-link:hover img {
   float: left;
   margin: 24px 48px 0 48px;
   text-align: left;
-  font-size: 138.5%;
+  font-size: 123.1%;
 }
 
 .detail-topics dt {
@@ -282,14 +328,15 @@ a.image-link:hover img {
 }
 
 .pointer {
+  visibility: hidden;
   margin-right: 24px;
   float: right;
   color: #999;
 }
 
 #legal {
-  position: absolute;
-  bottom: 12px;
+  margin-top: 24px;
+  margin-bottom: 12px;
   left: 0;
   right: 0;
   margin-left: auto;
@@ -298,3 +345,7 @@ a.image-link:hover img {
   color: #aaa;
 }
 
+#legal .trade {
+    margin: 6px 0;
+    font-size: 85%;
+}

@@ -278,8 +278,18 @@ div,iframe {
 }
 
 /* -----------------------------*
- * Center area refinements      *
+ * Additional refinements       *
  * ---------------------------- */
+
+.home {
+    height: 100%;
+    width: 100%;
+}
+.home img {
+    margin-top: 3px;
+    height: 24px;
+    width: 25px;
+}
 
 #center {
     box-shadow: 0 0 0 1px #eee;
@@ -317,7 +327,11 @@ function boot() {
 <div id="background">
 
   <div id="northwest" class="corner north west">
-    <div class="drawer"></div>
+    <div class="drawer">
+      <div class="home">
+        <a href="/index.html"><img src="../images/tpi_logo.png" alt="TPI Logo"/></a>
+      </div>
+    </div>
   </div>
 
   <div id="north" class="h-edge north center">
