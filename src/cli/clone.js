@@ -92,10 +92,13 @@ Cmd.prototype.process = function() {
     var code;       // Result code. Set if an error occurs in nested callbacks.
     var dna;        // The dna template we're using.
     var err;        // Error string returned by shelljs.error() test function.
+    var ignore;     // List of extensions we'll ignore when templating.
     var finder;     // The find event emitter we'll handle find events on.
     var target;     // The target directory name (based on appname).
 
     var cmd = this; // Closure'd var for getting back to this command object.
+
+    ignore = ['.png', '.gif', '.jpg', '.ico', 'jpeg'];
 
     argv = this.argv;
     appname = argv._[0];
@@ -188,50 +191,55 @@ Cmd.prototype.process = function() {
         var data;     // File data.
         var template; // The compiled template content.
 
-        cmd.verbose('Processing file: ' + file);
-        try {
-            data = fs.readFileSync(file, {encoding: 'utf8'});
-            if (!data) {
-                throw new Error('NoData');
-            }
-        } catch (e) {
-            cmd.error('Error reading file data: ' + e.message);
-            code = 1;
-            return;
-        }
+        if (ignore.indexOf(path.extname(file)) === -1) {
 
-        try {
-            template = hb.compile(data);
-            if (!template) {
-                throw new Error('InvalidTemplate');
-            }
-        } catch (e) {
-            cmd.error('Error compiling template: ' + file);
-            code = 1;
-            return;
-        }
-
-        try {
-            content = template({appname: appname});
-            if (!content) {
-                throw new Error('InvalidContent');
-            }
-        } catch (e) {
-            cmd.error('Error injecting template data.');
-            code = 1;
-            return;
-        }
-
-        if (data === content) {
-            cmd.verbose('Ignoring static file: ' + file);
-        } else {
-            cmd.verbose('Updating file: ' + file);
+            cmd.verbose('Processing file: ' + file);
             try {
-                fs.writeFileSync(file, content);
+                data = fs.readFileSync(file, {encoding: 'utf8'});
+                if (!data) {
+                    throw new Error('NoData');
+                }
             } catch (e) {
-                cmd.error('Error writing file data: ' + e.message);
+                cmd.error('Error reading file data: ' + e.message);
                 code = 1;
                 return;
+            }
+
+            try {
+                template = hb.compile(data);
+                if (!template) {
+                    throw new Error('InvalidTemplate');
+                }
+            } catch (e) {
+                cmd.error('Error compiling template ' + file + ': ' +
+                    e.message);
+                code = 1;
+                return;
+            }
+
+            try {
+                content = template({appname: appname});
+                if (!content) {
+                    throw new Error('InvalidContent');
+                }
+            } catch (e) {
+                cmd.error('Error injecting template data in ' + file +
+                    ': ' + e.message);
+                code = 1;
+                return;
+            }
+
+            if (data === content) {
+                cmd.verbose('Ignoring static file: ' + file);
+            } else {
+                cmd.verbose('Updating file: ' + file);
+                try {
+                    fs.writeFileSync(file, content);
+                } catch (e) {
+                    cmd.error('Error writing file ' + file + ': ' + e.message);
+                    code = 1;
+                    return;
+                }
             }
         }
 
@@ -256,6 +264,8 @@ Cmd.prototype.process = function() {
         if (code !== 0) {
             cmd.error('Cleaning up incomplete clone: ' + target);
             sh.rm('-rf', target);
+        } else {
+            cmd.info('TIBET dna \'' + path.basename(dna) + '\' cloned to ' + appname + '.');
         }
 
         process.exit(code);
