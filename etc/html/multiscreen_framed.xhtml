@@ -32,7 +32,7 @@ html,body,#background {
 }
 
 #background {
-    background-image: url(../images/dark_fiber.gif);
+    background-image: url(../images/dark_fiber.png);
     background-color: #444;
     overflow: hidden;
 }
@@ -57,7 +57,7 @@ div,iframe {
     box-shadow: 0 0 0 1px #eee;
 
     background-color: #eee;
-    background-image: url(../images/white_fiber.jpg);
+    background-image: url(../images/white_fiber.png);
 }
 
 .corner:hover {
@@ -84,7 +84,7 @@ div,iframe {
     border: 2px solid #aaa;
 
     background-color: #aaa;
-    background-image: url(../images/white_fiber.jpg);
+    background-image: url(../images/white_fiber.png);
 }
 
 .h-edge:hover {
@@ -113,7 +113,7 @@ div,iframe {
     border: 2px solid #aaa;
 
     background-color: #aaa;
-    background-image: url(../images/white_fiber.jpg);
+    background-image: url(../images/white_fiber.png);
 }
 
 .v-edge:hover {
@@ -317,19 +317,15 @@ div,iframe {
 }
 </style>
 
-<script>
-function boot() {
-//    alert('booting');
-}
-</script>
 </head>
-<body onload="boot()">
+<body>
 <div id="background">
 
   <div id="northwest" class="corner north west">
     <div class="drawer">
       <div class="home">
-        <a href="/index.html"><img src="../images/tpi_logo.png" alt="TPI Logo"/></a>
+        <a href="#"
+            onclick="home()"><img src="../images/tpi_logo.png" alt="TPI Logo"/></a>
       </div>
     </div>
   </div>
@@ -348,7 +344,8 @@ function boot() {
 
   <div id="center" class="middle center">
     <div id="content">
-        <iframe id="UISCREENS" frameborder="0" src="./screens.html"></iframe>
+        <!-- multi-screen configuration: SCREEN_0 is preconfigured -->
+        <iframe id="UISCREENS" frameborder="0" src="./screens.xhtml"></iframe>
     </div>
   </div>
 
@@ -369,5 +366,32 @@ function boot() {
   </div>
 
 </div>
+<script>
+/**
+ * The standard location for a home icon is within the framing. The code frame
+ * is one level up (in index.html) and the actual page the user likely thinks of
+ * as 'home' is downstream in UISCREENS.SCREEN_0. The likely desired behavior is
+ * to set UISCREENS.SCREEN_O to its original page content. Before we do that
+ * however we give both the APP and TIBET a chance to be more intelligent.
+ */
+function home() {
+    var screens,
+        screen0;
+
+    if (self.APP && typeof self.APP.home === 'function') {
+        APP.home();
+    } else if (self.TP && typeof self.TP.home === 'function') {
+        TP.home();
+    } else {
+        try {
+            screens = document.getElementById('UISCREENS');
+            screen0 = screens.contentWindow.document.getElementById('SCREEN_0');
+            screen0.contentWindow.location = screen0.src;
+        } catch (e) {
+            alert('Sorry. Unable to find home().');
+        }
+    }
+}
+</script>
 </body>
 </html>

@@ -25,23 +25,12 @@ html,body,iframe{
     padding: 0;
     border: 0;
 }
-iframe {
-    overflow: hidden;
-}
-body[data-stage="prelaunch"] #CONSOLE {
-    display: none;
-}
-body[data-stage="liftoff"] #CONSOLE {
-    display: none;
-}
 </style>
 
 </head>
-<body data-stage="prelaunch">
-    <iframe id="SCREEN_0" src="./content.html"></iframe>
-    <!-- additional generated screens 1-N go here -->
+<body>
 
-    <!-- console last so when visible it'll overlay -->
-    <iframe id="CONSOLE" src="./console.html"></iframe>
+<iframe id="SCREEN_O" frameborder="0" src="./splash.xhtml"></iframe>
+
 </body>
 </html>
