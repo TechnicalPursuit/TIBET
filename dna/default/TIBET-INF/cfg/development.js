@@ -40,8 +40,8 @@ TP.sys.setcfg('break.uri_resource', false);
 TP.sys.setcfg('boot.debugui', true);
 
 //  set these so the boot log will include environment/configuration data
-TP.sys.setcfg('boot.log_cfg', true);
-TP.sys.setcfg('boot.log_env', true);
+TP.sys.setcfg('log.bootcfg', true);
+TP.sys.setcfg('log.bootenv', true);
 
 //  set to false to boot the application's code in one continuous sequence.
 //  this can be useful to avoid dynamic loading issues with debuggers
@@ -50,8 +50,7 @@ TP.sys.setcfg('boot.twophase', true);
 //  turn off content caching for now
 TP.sys.setcfg('content.use_caches', false);
 
-//  set logging to TRACE level so we see all potential messages being logged
-TP.sys.setcfg('log.level', 0);
+TP.sys.setcfg('log.level', 1);
 
 //  turn on logging for the CSS processor's various steps
 TP.sys.setcfg('log.css_processing', true);
@@ -104,7 +103,7 @@ TP.sys.setcfg('security.request_privileges', true);
 TP.sys.setcfg('signal.dom_loaded', true);
 
 //  set debugging and verbose reporting on so we get as much debugging data
-//  as possible 
+//  as possible
 TP.sys.setcfg('tibet.$debug', true);
 TP.sys.setcfg('tibet.$verbose', true);
 

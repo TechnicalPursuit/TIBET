@@ -20,7 +20,6 @@
 <target name="tool" depends="">
   <!--  uncomment a TIBET tool to load/activate it -->
   <!--tibet_module cfg="~lib_cfg/tdp.xml" target="full"/-->
-  <echo message="{{appname}} startup complete." />
 </target>
 
 </project>
