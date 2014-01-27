@@ -11,8 +11,8 @@
 <meta name="description" content="The TIBET 5.0 Web Environment"/>
 <meta name="author" content="Technical Pursuit Inc."/>
 
-<link rel="shortcut icon" href="./etc/images/favicon.png" type="image/x-icon"/>
-<link rel="icon" href="./etc/images/favicon.png" type="image/x-icon"/>
+<link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon"/>
+<link rel="icon" href="./images/favicon.png" type="image/x-icon"/>
 
 <style type="text/css">
 html,body,iframe {
@@ -28,10 +28,88 @@ html,body,iframe {
 iframe {
     overflow: hidden;
 }
+body[data-stage="prelaunch"] #UIBOOT {
+    display: none;
+}
+body[data-stage="liftoff"] #UIBOOT {
+    display: none;
+}
 </style>
 
 </head>
-<body>
-    <iframe id="UIROOT" frameborder="0" src="./etc/html/framing.html"></iframe>
+<body onload="init()">
+
+<!--
+UIROOT Alternatives:
+
+    splash.html     Holds splash and/or site content.
+    screens.html    Multi-screen layout version.
+    framing.html
+
+-->
+
+<!-- Application UI. Configure here or via boot.rootpage parameter -->
+<iframe id="UIROOT" frameborder="0" src="./html/splash.xhtml"></iframe>
+
+<!-- TIBET boot IU. Comment out for silent booting. -->
+<iframe id="UIBOOT" frameborder="0" src="./html/console.xhtml"></iframe>
+
+<!-- TIBET boot JS. -->
+<script src="../js/tibet_boot.js" type="text/javascript"></script>
+
+<!-- initializeCanvas required :( -->
+<script src="../js/tibet_hook.js" type="text/javascript"></script>
+
+<!--
+    //  launch the application with login visible and background loading.
+    TP.boot.launch(true, true);
+
+    //  launch the application with login visible, wait for success to boot.
+    TP.boot.launch(true, false);
+
+    //  launch the application without login required, boot immediately.
+    TP.boot.launch(false);
+-->
+<!--body onload="TP.boot.launch(false, true, false);" class="unsupported"-->
+
+
+<script type="text/javascript">
+<!--
+function init()
+{
+    var nologin;
+
+    // Temporary while we wait on a full port into the new TIBET 5 repo.
+    TP.sys.setcfg('boot.tibetlib', 'tibet3');
+
+    //  avoid cycling when the login page was the first page into the user
+    //  interface (double-click, bookmark, shortcut, etc.)
+    nologin = /\?L=false/.test(window.location.toString());
+    if (nologin == true)
+    {
+        setTimeout(function()
+        {
+            //  turn off logins when we came from a login page already
+            TP.boot.launch(false, true);
+        }, 500);
+    }
+    else
+    {
+        setTimeout(function()
+        {
+            //  login with parallel phase-one booting
+            //TP.boot.launch(true, true);
+
+            //  login with 'wait for authentication' booting
+            //TP.boot.launch(true, false);
+
+            //  no login required, start booting immediately
+            TP.boot.launch(false);
+        }, 500);
+    };
+};
+-->
+</script>
+
 </body>
 </html>

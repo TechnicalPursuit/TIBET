@@ -25,6 +25,9 @@ etc.).
 <link rel="stylesheet/less" type="text/css" href="../css/content.less" />
 <link rel="stylesheet/less" type="text/css" href="../css/progress.css" />
 <style type="text/css">
+
+/* ---  content.css overrides --- */
+
 .detail-intro .lead {
     margin-left: 112px;
 }
@@ -40,8 +43,8 @@ etc.).
     max-height: 136px;
     overflow: hidden;
 }
-/* ---  BOOT COMPONENTS  --- */
 
+/* ---  boot css --- */
 
 #BOOTLOG {
     position: absolute;
@@ -50,6 +53,8 @@ etc.).
     right: 0;
     left: 0;
     margin: 0 48px;
+    overflow: hidden;
+    color: white;
 }
 
 #BOOT-PROGRESS {
@@ -82,13 +87,13 @@ etc.).
     border-radius: 5px;
 }
 
-.log p {
-    font-style: monospace;
+.bootlog {
+    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
     font-size: 85%;
+    text-align: left;
     color: white;
-    margin: 6px 12px;
+    margin: 6px;
 }
-
 </style>
 
 <script src="../../node_modules/less/dist/less-1.6.1.js" type="text/javascript"></script>
@@ -108,13 +113,12 @@ etc.).
 
     <div id="BOOTLOG" class="hole">
         <div class="edge">
-            <div id="LOG" class="log">
-                <p>Yeah baby, we be bootin'....!!!!</p>
+            <div id="LOGVIEW" class="bootlog">
             </div>
         </div>
     </div>
 
-    <div id="BOOT-PROGRESS" class="meter hole">
+    <div id="BOOT-PROGRESS" class="tibet-progress hole">
         <div class="edge">
             <span id="BOOT-PERCENT" class="state"></span>
         </div>
@@ -174,10 +178,9 @@ etc.).
 function init()
 {
 
-return;
-
     var nologin;
 
+    TP.sys.setcfg('boot.bootdir', '/TIBET-INF');
 
     TP.boot.showContent('checking');
 
