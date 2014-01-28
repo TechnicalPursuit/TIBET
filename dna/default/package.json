@@ -5,6 +5,7 @@
     "connect": "*",
     "less": "*",
     "optimist": "*",
+    "phantomjs": "*",
     "tibet3": "*"
   },
   "devDependencies": {
