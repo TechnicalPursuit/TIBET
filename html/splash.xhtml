@@ -4,19 +4,79 @@
 <title>TIBET 5.0</title>
 
 <link rel="stylesheet/less" type="text/css" href="../css/master.css" />
+<link rel="stylesheet/less" type="text/css"
+    href="../node_modules/tibet3/base/lib/tibet/css/tibet_boot.less" />
 <script src="../node_modules/less/dist/less-1.6.1.js" type="text/javascript"></script>
 
 </head>
 <body>
 <div id="content">
+    <div class="detail-intro">
+        <a class="image-link" href="#">
+            <img id="BOOT-IMAGE" alt="Current Stage Icon"
+            src="../node_modules/tibet3/base/lib/tibet/img/boot/tibet_logo.png"/>
+        </a>
+        <blockquote id="BOOT-HEAD" class="lead boot-stage">TIBET&#8482; 5.0 -
+            Enterprise JavaScript+XML</blockquote>
+        <blockquote id="BOOT-SUBHEAD" class="follow"><a target="_blank"
+                    href="../docs/TheZenOfTIBET.pdf">The Zen of TIBET</a>
+                outlines the thinking behind TIBET's design.</blockquote>
+    </div>
 
+    <div id="BOOT-CONSOLE" class="hole">
+        <div class="edge">
+            <div id="BOOT-LOG" class="bootlog">
+                <h1 class="header">Getting Started</h1>
+                <dl class="detail-topics">
+                    <dt>
+                    <span>Step 1</span>
+                    <span class="pointer">=></span>
+                    </dt>
+                    <dd>You did that when you installed TIBET! Thanks!</dd>
+
+                    <dt>
+                    <span>Step 2</span>
+                    <span class="pointer">=></span>
+                    </dt>
+                    <dd>tibet clone {{appname}}</dd>
+
+                    <dt>
+                    <span>Step 3</span>
+                    <span class="pointer">=></span>
+                    </dt>
+                    <dd>cd {{appname}}</dd>
+
+                    <dt>
+                    <span>Step 4</span>
+                    <span class="pointer">=></span>
+                    </dt>
+                    <dd>tibet start</dd>
+
+                    <dt>
+                    <span>Step 5</span>
+                    <span class="pointer">=></span>
+                    </dt>
+                    <dd><a target="_blank" href="http://127.0.0.1:1407">http://127.0.0.1:1407</a></dd>
+                </dl>
+                <h1 class="header">Next Steps</h1>
+                <p class="more">Head to the <a target="_blank"
+                    href="https://github.com/TechnicalPursuit/TIBET/wiki">TIBET Development Wiki</a> for docs, tutorials, and
+                more!</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="BOOT-PROGRESS" class="tibet-progress hole">
+        <div class="edge">
+            <div id="BOOT-VERSION">Version 0.5.0.1a</div>
+            <span id="BOOT-PERCENT" class="state"></span>
+        </div>
+    </div>
+
+    <!--
     <div id="intro">
         <blockquote class="lead">TIBET&#8482; 5.0 - Enterprise JavaScript+XML</blockquote>
         <blockquote class="follow">
-            Imagine applications built with <em>80% markup</em> and <em>20%
-                JavaScript</em>;<br/>
-            Imagine <em>tags as smart components</em> you can share across projects;<br/>
-            Imagine <em>never hitting reload</em>; Imagine how <em>fast</em> you&apos;d create apps.
         </blockquote>
         <blockquote class="follow">
             <em>That&apos;s <a target="_blank"
@@ -68,7 +128,7 @@
           <a target="_blank" href="http://opensource.org/licenses/RPL-1.5">Read
           it.</a> Waivers are <a href="./waivers.html">available.</a></p>
     </div>
-
+-->
 </div>
 </body>
 </html>
