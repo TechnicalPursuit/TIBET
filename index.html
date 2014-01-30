@@ -11,8 +11,8 @@
 <meta name="description" content="The TIBET 5.0 Web Environment"/>
 <meta name="author" content="Technical Pursuit Inc."/>
 
-<link rel="shortcut icon" href="./favicon.png" type="image/x-icon"/>
-<link rel="icon" href="./favicon.png" type="image/x-icon"/>
+<link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon"/>
+<link rel="icon" href="./images/favicon.png" type="image/x-icon"/>
 
 <style type="text/css">
 html,body,iframe {
@@ -28,7 +28,7 @@ html,body,iframe {
 iframe {
     overflow: hidden;
 }
-body[data-stage="prelaunch"] #UIBOOT {
+body[data-stage="silent"] #UIBOOT {
     display: none;
 }
 body[data-stage="liftoff"] #UIBOOT {
@@ -37,60 +37,13 @@ body[data-stage="liftoff"] #UIBOOT {
 </style>
 
 </head>
-<body onload="init()">
+<body data-stage="silent">
 
 <!-- Application UI. Configure here or via boot.rootpage parameter -->
-<iframe id="UIROOT" frameborder="0" src="./etc/html/splash.xhtml"></iframe>
+<iframe id="UIROOT" frameborder="0" src="./html/singlescreen_framed.xhtml"></iframe>
 
 <!-- TIBET boot IU. Comment out for silent booting. -->
-<iframe id="UIBOOT" frameborder="0" src="./etc/html/console.xhtml"></iframe>
-
-<!-- TIBET boot JS. -->
-<script src="../node_modules/tibet3/base/lib/tibet/src/tibet_boot.js" type="text/javascript"></script>
-
-<!-- initializeCanvas required :( -->
-<script src="../node_modules/tibet3/base/lib/tibet/src/tibet_hook.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-<!--
-function init()
-{
-
-return;
-
-    var nologin;
-
-    // Temporary while we wait on a full port into the new TIBET 5 repo.
-    TP.sys.setcfg('boot.tibetlib', 'tibet3');
-
-    //  avoid cycling when the login page was the first page into the user
-    //  interface (double-click, bookmark, shortcut, etc.)
-    nologin = /\?L=false/.test(window.location.toString());
-    if (nologin == true)
-    {
-        setTimeout(function()
-        {
-            //  turn off logins when we came from a login page already
-            TP.boot.launch(false, true);
-        }, 500);
-    }
-    else
-    {
-        setTimeout(function()
-        {
-            //  login with parallel phase-one booting
-            //TP.boot.launch(true, true);
-
-            //  login with 'wait for authentication' booting
-            //TP.boot.launch(true, false);
-
-            //  no login required, start booting immediately
-            TP.boot.launch(false);
-        }, 500);
-    };
-};
--->
-</script>
+<iframe id="UIBOOT" frameborder="0" src="./html/console.xhtml"></iframe>
 
 </body>
 </html>

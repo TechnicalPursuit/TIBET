@@ -11,8 +11,8 @@
 <meta name="description" content="The TIBET 5.0 Web Environment"/>
 <meta name="author" content="Technical Pursuit Inc."/>
 
-<link rel="shortcut icon" href="./etc/images/favicon.ico" type="image/x-icon"/>
-<link rel="icon" href="./etc/images/favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon"/>
+<link rel="icon" href="../images/favicon.ico" type="image/x-icon"/>
 
 <!--
 We inline the style to help ensure that everything works regardless of
@@ -32,7 +32,7 @@ html,body,#background {
 }
 
 #background {
-    background-image: url(../images/dark_fiber.png);
+    background-image: url(../node_modules/tibet3/base/lib/tibet/img/boot/dark_fiber.png);
     background-color: #444;
     overflow: hidden;
 }
@@ -57,7 +57,7 @@ div,iframe {
     box-shadow: 0 0 0 1px #eee;
 
     background-color: #eee;
-    background-image: url(../images/white_fiber.png);
+    background-image: url(../node_modules/tibet3/base/lib/tibet/img/boot/white_fiber.png);
 }
 
 .corner:hover {
@@ -84,7 +84,7 @@ div,iframe {
     border: 2px solid #aaa;
 
     background-color: #aaa;
-    background-image: url(../images/white_fiber.png);
+    background-image: url(../node_modules/tibet3/base/lib/tibet/img/boot/white_fiber.png);
 }
 
 .h-edge:hover {
@@ -113,7 +113,7 @@ div,iframe {
     border: 2px solid #aaa;
 
     background-color: #aaa;
-    background-image: url(../images/white_fiber.png);
+    background-image: url(../node_modules/tibet3/base/lib/tibet/img/boot/white_fiber.png);
 }
 
 .v-edge:hover {
@@ -308,7 +308,7 @@ div,iframe {
     border-radius: 5px;
 }
 
-#SCREEN_0 {
+#UISCREENS {
     top: 0;
     left: 0;
     width: 100%;
@@ -325,7 +325,7 @@ div,iframe {
     <div class="drawer">
       <div class="home">
         <a href="#"
-            onclick="home()"><img src="../images/tpi_logo.png" alt="TPI Logo"/></a>
+            onclick="home()"><img src="../node_modules/tibet3/base/lib/tibet/img/boot/tpi_logo.png" alt="TPI Logo"/></a>
       </div>
     </div>
   </div>
@@ -344,8 +344,8 @@ div,iframe {
 
   <div id="center" class="middle center">
     <div id="content">
-        <!-- single-screen configuration. SCREEN_O remains default screen -->
-        <iframe id="SCREEN_0" frameborder="0" src="./splash.xhtml"></iframe>
+        <!-- multi-screen configuration: SCREEN_0 is preconfigured -->
+        <iframe id="UISCREENS" frameborder="0" src="./screens.xhtml"></iframe>
     </div>
   </div>
 
@@ -367,12 +367,13 @@ div,iframe {
 
 </div>
 <script>
+<![CDATA[
 /**
  * The standard location for a home icon is within the framing. The code frame
- * is one level up (in index.html) and the actual page the user likely thinks of
- * as 'home' is downstream in UISCREENS.SCREEN_0. The likely desired behavior is
- * to set UISCREENS.SCREEN_O to its original page content. Before we do that
- * however we give both the APP and TIBET a chance to be more intelligent.
+ * is one level up (in index.html) and the actual page the user likely thinks
+ * of as 'home' is downstream in UISCREENS.SCREEN_0. The likely desired behavior
+ * is * to set UISCREENS.SCREEN_O to its original page content. Before we do
+ * that however we give both the APP and TIBET a chance to be more intelligent.
  */
 function home() {
     var screens,
@@ -392,6 +393,7 @@ function home() {
         }
     }
 }
+]]>
 </script>
 </body>
 </html>
