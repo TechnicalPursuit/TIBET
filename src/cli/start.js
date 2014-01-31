@@ -149,7 +149,7 @@ Cmd.prototype.process = function() {
             cmd.debug(stdout);
 
             if (json.dependencies.tibet3) {
-                cmd.warn('TIBET v3.0 required. Trying npm link tibet3.');
+                cmd.warn('TIBET v3.0 required. Trying `npm link tibet3`.');
 
                 child.exec('npm link tibet3', function(err, stdout, stderr) {
                     if (err) {
