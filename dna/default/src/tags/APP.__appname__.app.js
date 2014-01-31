@@ -1,17 +1,17 @@
-//  ========================================================================
+//  ============================================================================
 //  APP.{{appname}}:app
-//  ========================================================================
+//  ============================================================================
 
 /**
  * @type {APP.{{appname}}.app}
  * @synopsis APP.{{appname}}.app is the application tag for this application.
  */
 
-//  ------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
 
 TP.core.ApplicationElement.addSubtype('APP.{{appname}}:app');
 
-//  ------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
 
 APP.{{appname}}.app.addTypeMethod('tshAwakenDOM',
 function(aRequest) {
@@ -28,7 +28,7 @@ function(aRequest) {
     return this.callNextMethod();
 });
 
-//  ------------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
 
 APP.{{appname}}.app.addTypeMethod('tshCompile',
 function(aRequest) {
@@ -50,14 +50,17 @@ function(aRequest) {
         return;
     }
 
-    newElem = TP.nodeFromString(
+    newElem = TP.xhtmlnode(
         '<h1 xmlns:tibet="' + TP.w3.Xmlns.TIBET + '" ' +
             'tibet:sourcetag="{{appname}}:app">' +
             'Hello World!' +
         '</h1>');
 
-    TP.elementReplaceWith(elem, newElem);
+    newElem = TP.elementReplaceWith(elem, newElem);
 
     return newElem;
 });
 
+//  ----------------------------------------------------------------------------
+//  end
+//  ============================================================================
