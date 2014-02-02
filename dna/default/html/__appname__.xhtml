@@ -17,13 +17,15 @@ for the {{appname}}:app tag and it will replace the tibet:root tag here.
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 
-<link rel="stylesheet/less" type="text/css" href="../css/master.css"/>
-<script src="../node_modules/less/dist/less-1.6.1.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="../css/master.css"/>
 
 <!-- TODO: add {{libroot}} here -->
-<!-- Hook file should always be the last element in the <head> -->
 <script src="../node_modules/tibet3/base/lib/tibet/src/tibet_hook.js"
-  type="text/javascript"></script>
+    type="text/javascript"></script>
+
+<!-- eventually this will be not be required -->
+<script src="../node_modules/tibet3/base/lib/tibet/src/tibet_pack.js"
+    type="text/javascript"></script>
 
 </head>
 <body>
