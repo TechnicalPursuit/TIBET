@@ -56,7 +56,7 @@ function(aRequest) {
             'Hello World!' +
         '</h1>');
 
-    TP.elementReplaceWith(elem, newElem);
+    newElem = TP.elementReplaceWith(elem, newElem);
 
     return newElem;
 });

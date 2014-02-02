@@ -49,7 +49,6 @@
     "findit": "*",
     "handlebars": "*",
     "jshint": "*",
-    "less": "*",
     "mocha": "*",
     "mockery": "*",
     "optimist": "*",
