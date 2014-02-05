@@ -14,7 +14,7 @@
 //  Create command type.
 //  ---
 
-var parent = require('./cmd');
+var parent = require('./_cmd');
 
 var Cmd = function(){};
 Cmd.prototype = new parent();

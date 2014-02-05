@@ -10,7 +10,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-var cli = require('../src/cli/cli.js');
+var cli = require('../src/cli/_cli.js');
 
 var options = {};
 
