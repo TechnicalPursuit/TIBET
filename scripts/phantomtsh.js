@@ -1,7 +1,7 @@
 /**
- * @name phantomrun.js
+ * @name phantomtsh.js
  * @overview
- * @author Scott Shattuck (ss)
+ * @author Scott Shattuck (ss), William J. Edney (wje)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-Approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -24,11 +24,17 @@ To fire it up:
 Notice how we have to quote things to pass a String to the ':echo' command here.
 */
 
+//  ------------------------------------------------------------------------
+
 /* JSHint checking */
 
 /* global phantom:false,
           require:false
 */
+
+//  ------------------------------------------------------------------------
+
+;(function() {
 
 //  ------------------------------------------------------------------------
 //  waitFor() function from PhantomJS web site (but cleaned up via JSHint)
@@ -61,6 +67,7 @@ function waitFor(testFx, onReady, timeOutMillis) {
 }
 
 //  ------------------------------------------------------------------------
+//
 var EXIT_SUCCESS = 0,
     EXIT_FAILURE = 1,
     EXIT_ERROR = 2;
@@ -87,6 +94,9 @@ url = 'file:///usr/local/src/TIBET/tdp/index.html';
 
 page = require('webpage').create();
 system = require('system');
+
+console.log(system.args);
+
 
 //  ------------------------------------------------------------------------
 
@@ -122,6 +132,12 @@ phantomQuit = function (reason, value) {
 
 //  Wire browser console.log into PhantomJS console.log
 page.onConsoleMessage = function (msg) {
+    if (/31m/.test(msg)) {
+        console.log('see control codes');
+    } else {
+        console.log('me no see control codes');
+    }
+    msg = '\x1B[31m' + msg + '\x1B[39m';
     console.log(msg);
 };
 
@@ -215,7 +231,7 @@ page.open(
 
         //  Check for page load success
         if (status !== 'success') {
-            console.log('Error opening URL: ' + url);
+            console.log('Error opening URL: ' + url + ' status: ' + status);
         } else {
             // Wait for TIBET to be available
             waitFor(
@@ -245,3 +261,6 @@ page.open(
                 10000); //  Wait for up to 10 seconds for TIBET to load
         }
 });
+
+
+}());
