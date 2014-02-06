@@ -1,0 +1,12 @@
+{
+  "dir": "/",
+  "default": "index.html",
+  "run": [
+    "nmp install",
+    "make"
+  ],
+  "notify": [
+    "bedney@technicalpursuit.com",
+    "ss@technicalpursuit.com"
+  ]
+}
