@@ -2,7 +2,7 @@
   "dir": "/",
   "default": "index.html",
   "run": [
-    "nmp install",
+    "npm install",
     "make"
   ],
   "notify": [
