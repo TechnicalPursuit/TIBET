@@ -55,7 +55,8 @@
     "phantomjs": "*",
     "ronn": "*",
     "shelljs": "*",
-    "uglify-js": "*"
+    "uglify-js": "*",
+    "xmldom": "*"
   },
   "devDependencies": {
   },
