@@ -45,6 +45,10 @@ Cmd.prototype.warn = function(msg) {
     return this.options.cli.warn(msg);
 };
 
+Cmd.prototype.raw = function(msg) {
+    return this.options.cli.raw(msg);
+};
+
 
 //  ---
 //  Instance Attributes
@@ -75,7 +79,7 @@ Cmd.prototype.CONTEXT = Cmd.prototype.CONTEXTS.BOTH;
  * TIBET project.
  * @type {string}
  */
-Cmd.prototype.PROJECT_FILE = '.tibetrc.js';
+Cmd.prototype.PROJECT_FILE = 'tibet.json';
 
 
 /**
@@ -151,6 +155,7 @@ Cmd.prototype.inProject = function() {
     // which tells us we're in a TIBET project.
     while (cwd.length > 0) {
         if (sh.test('-f', path.join(cwd, file))) {
+            this.options.app_root = cwd;
             return true;
         }
         cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));

@@ -1,7 +1,7 @@
 /**
  * @overview TIBET command-line processor. Individual command files do the work
  *     specific to each command. The logic here is focused on initial command
- *     identification and command file loading/activation.
+ *     identification, initial argument processing, and command file loading.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -78,6 +78,10 @@ CLI.warn = function(msg) {
     console.warn(msg.warn);
 };
 
+CLI.raw = function(msg) {
+    console.log(msg);
+};
+
 //  ---
 //  Console action API.
 //  ---
@@ -122,7 +126,7 @@ CLI.run = function(options) {
 
     // If the command specified happens to be 'cli' that's bad. We don't want to
     // try to load this file again from within this file.
-    if (command === 'cli') {
+    if (command === '_cli') {
         this.error('Cannot run TIBET CLI as a command.');
         process.exit(1);
     }

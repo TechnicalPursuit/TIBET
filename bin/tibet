@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * @overview Top-level TIBET command-line script. Heavy-lifting via CLI object.
+ * @overview Top-level TIBET command-line script. All the real work is performed
+ * by the CLI object imported by this script.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the

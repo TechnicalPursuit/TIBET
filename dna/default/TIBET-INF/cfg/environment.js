@@ -7,13 +7,3 @@
 
 // Ensure we use the tibetdir approach to computing root paths.
 TP.sys.setcfg('boot.rootcomp', 'tibetdir');
-
-//  ---
-//  Sample data base parameters.
-//  ---
-
-TP.sys.setcfg('tibet.db_name', 'TIBET');
-TP.sys.setcfg('tibet.db_version', '1.0');
-TP.sys.setcfg('tibet.db_description', 'TIBET internal storage');
-TP.sys.setcfg('tibet.db_size', 5000000);
-
