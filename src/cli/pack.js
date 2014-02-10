@@ -1,5 +1,5 @@
 /**
- * @overview The command logic for the 'tibet pack' command.
+ * @overview The 'tibet pack' command.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
