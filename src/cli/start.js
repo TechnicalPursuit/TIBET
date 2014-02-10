@@ -1,5 +1,5 @@
 /**
- * @overview The command logic for the 'tibet start' command.
+ * @overview The 'tibet start' command.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -54,6 +54,7 @@ Cmd.prototype.process = function() {
     var func;   // The startup function used either sync or async.
     var port;   // The port number to start up on.
     var inuse;  // Flag to trap EADDRINUSE exceptions.
+    var msg;    // Shared message content.
 
     cmd = this;
 
@@ -67,147 +68,78 @@ Cmd.prototype.process = function() {
         process.exit(1);
     }
 
+    // If the node_modules directory doesn't exist (but we know there's a
+    // package.json due to earlier check) it means 'npm install' was never run.
+    // We have to do that before we can try to start the server.
+    if (!sh.test('-e', 'node_modules')) {
+        this.error('Project not initialized. Run `tibet init` first.');
+        process.exit(1);
+    }
+
     // Determine the port the user wants to start on.
     port = this.argv.port ||
         process.env.npm_package_config_port ||
         process.env.PORT ||
         this.PORT;
 
-    // Create a function to do the startup. We'll invoke this via callback if we
-    // have to initialize, or directly if the directory has been initialized.
-    func = function() {
+    msg = 'Starting server on port: ' + port;
 
-        cmd.info('Starting server on port: ' + port);
+    // If we can't find server.js our only option is to use npm start. If we
+    // have port information on our command line we've got to use options.
+    if (!sh.test('-f', 'server.js')) {
+        cmd.info(msg + ' via `npm start`');
+        process.env.PORT = port;
+        server = child.spawn('npm', ['start']);
+    } else {
+        cmd.info(msg);
+        server = child.spawn('node',
+            ['server.js', '--port', port]);
+    }
 
-        // If we can't find server.js our only option is to use npm start. If we
-        // have port information on our command line we've got to use options.
-        if (!sh.test('-f', 'server.js')) {
-            process.env.PORT = port;
-            server = child.spawn('npm', ['start']);
-        } else {
-            server = child.spawn('node',
-                ['server.js', '--port', port]);
+    server.stdout.on('data', function(data) {
+        // Why the '' + ?. Apparently to 'copy' the string :)
+        var msg = '' + data;
+        cmd.info(msg);
+    });
+
+    server.stderr.on('data', function(data) {
+        // Why the '' + ?. Apparently to 'copy' the string :)
+        var msg = '' + data;
+
+        // Somebody down below likes to write error output with empty lines.
+        if (msg.trim().length === 0) {
+            return;
         }
 
-        server.stdout.on('data', function(data) {
-            // Why the '' + ?. Apparently to 'copy' the string :)
-            var msg = '' + data;
+        // If we've just trapped EADDRINUSE ignore what follows.
+        if (inuse) {
+            return;
+        }
 
-            cmd.info(msg);
-        });
+        // Most common error is that the port is in use. Trap that.
+        if (/ADDRINUSE/.test(msg)) {
+            // Set a flag so we don't dump a lot of unhelpful output.
+            inuse = true;
+            cmd.error('Unable to start server. Port ' + port + ' is busy.');
+            return;
+        }
 
-        server.stderr.on('data', function(data) {
-            // Why the '' + ?. Apparently to 'copy' the string :)
-            var msg = '' + data;
+        // A lot of errors will include what appears to be a common 'header'
+        // output message from events.js:72 etc. which provides no useful
+        // data but clogs up the output. Filter those messages.
+        if (/throw er;/.test(msg)) {
+            return;
+        }
 
-            // Somebody down below likes to write error output with empty lines.
-            if (msg.trim().length === 0) {
-                return;
-            }
+        cmd.error(msg);
+    });
 
-            // If we've just trapped EADDRINUSE ignore what follows.
-            if (inuse) {
-                return;
-            }
+    server.on('close', function(code) {
+        if (code !== 0) {
+            cmd.error('Server stopped with status: ' + code);
+        }
+    });
 
-            // Most common error is that the port is in use. Trap that.
-            if (/ADDRINUSE/.test(msg)) {
-                // Set a flag so we don't dump a lot of unhelpful output.
-                inuse = true;
-                cmd.error('Unable to start server. Port ' + port + ' is busy.');
-                return;
-            }
-
-            // A lot of errors will include what appears to be a common 'header'
-            // output message from events.js:72 etc. which provides no useful
-            // data but clogs up the output. Filter those messages.
-            if (/throw er;/.test(msg)) {
-                return;
-            }
-
-            cmd.error(msg);
-        });
-
-        server.on('close', function(code) {
-            if (code !== 0) {
-                cmd.error('Server stopped with status: ' + code);
-            }
-        });
-    };
-
-    // If the node_modules directory doesn't exist (but we know there's a
-    // package.json due to earlier check) it means 'npm install' was never run.
-    // We have to do that before we can try to start the server.
-    if (!sh.test('-e', 'node_modules')) {
-
-        this.warn('Project not initialized. Initializing.');
-
-        // Complicated if we're still using two libs (tibet3 and tibet) and the
-        // only way to be sure involves extra work. *sigh*.
-
-        child.exec('npm ll --json', function(err, stdout, stderr) {
-            var json;
-
-            // Due to a current issue with npm ls variants they'll always return
-            // an error if there are unmet dependencies. See issue filed at:
-            // https://github.com/npm/npm/issues/4480.
-            // if (err) {
-            //     cmd.error('Unable to verify dependencies: ' + stderr);
-            //     process.exit(1);
-            // }
-
-            // Instead of checking err above we'll check stdout.
-            if (!stdout) {
-                cmd.error('Unable to verify dependencies: ' + stderr);
-                process.exit(1);
-            }
-
-            json = JSON.parse(stdout);
-            cmd.debug(stdout);
-
-            if (json.dependencies.tibet3) {
-                cmd.warn('TIBET v3.0 required. Trying `npm link tibet3`.');
-
-                child.exec('npm link tibet3', function(err, stdout, stderr) {
-                    if (err) {
-                        cmd.error('Failed to initialize: ' + stderr);
-                        process.exit(1);
-                    }
-
-                    cmd.info('TIBET v3.0 linked successfully.');
-                    cmd.info('Installing remaining dependencies.');
-
-                    child.exec('npm install', function(err, stdout, stderr) {
-                        if (err) {
-                            cmd.error('Failed to initialize: ' + stderr);
-                            process.exit(1);
-                        }
-
-                        cmd.info('Project initialized successfully.');
-                        func();
-                    });
-                });
-
-            } else {
-
-                cmd.info('Installing project dependencies.');
-
-                child.exec('npm install', function(err, stdout, stderr) {
-                    if (err) {
-                        cmd.error('Failed to initialize: ' + stderr);
-                        process.exit(1);
-                    }
-
-                    // If initialization worked invoke startup function.
-                    cmd.info('Project initialized successfully.');
-                    func();
-                });
-            }
-        });
-
-    } else {
-        func();
-    }
 };
 
 //  ---------------------------------------------------------------------------
