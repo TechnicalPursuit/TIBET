@@ -281,6 +281,13 @@ CLI.runViaGrunt = function() {
     var cmd,        // Command string we'll be executing via grunt.
         child;      // spawned child process for grunt execution.
 
+    // If there's no node_modules in place (and in particular no grunt) then
+    // suggest they run `tibet init` first.
+    if (!this.sh.test('-e', 'node_modules')) {
+        this.error('Project not initialized. Run `tibet init` first.');
+        process.exit(1);
+    }
+
     cmd = 'grunt ' + process.argv.slice(2).join(' ');
     this.debug('spawning: ' + cmd);
 
