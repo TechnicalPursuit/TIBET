@@ -97,11 +97,14 @@ Cmd.prototype.process = function() {
                 child.exec('npm link tibet3', function(err, stdout, stderr) {
                     if (err) {
                         cmd.error('Failed to initialize: ' + stderr);
+                        cmd.info(
+                            '`git clone` TIBET 3.x, `npm link` it, and retry.');
                         process.exit(1);
                     }
 
                     cmd.info('TIBET v3.0 linked successfully.');
-                    cmd.info('Installing remaining dependencies.');
+                    cmd.info(
+                        'Installing remaining dependencies via `npm install`.');
 
                     child.exec('npm install', function(err, stdout, stderr) {
                         if (err) {
@@ -130,7 +133,8 @@ Cmd.prototype.process = function() {
         });
 
     } else {
-        func();
+        this.info('Project initialized. ' +
+            'Re-initialize by removing node_modules first.');
     }
 };
 
