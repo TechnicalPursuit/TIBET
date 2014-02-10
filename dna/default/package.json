@@ -8,6 +8,8 @@
     "tibet3": "*"
   },
   "devDependencies": {
+      "grunt": "*",
+      "grunt-contrib-jshint": "*"
   },
   "engines": {
     "node": ">=0.10",
