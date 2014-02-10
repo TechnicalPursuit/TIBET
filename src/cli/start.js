@@ -91,25 +91,41 @@ Cmd.prototype.process = function() {
 
         server.stdout.on('data', function(data) {
             // Why the '' + ?. Apparently to 'copy' the string :)
-            cmd.info('' + data);
+            var msg = '' + data;
+
+            cmd.info(msg);
         });
 
         server.stderr.on('data', function(data) {
-            // If we've trapped an EADDRINUSE just ignore what follows.
+            // Why the '' + ?. Apparently to 'copy' the string :)
+            var msg = '' + data;
+
+            // Somebody down below likes to write error output with empty lines.
+            if (msg.trim().length === 0) {
+                return;
+            }
+
+            // If we've just trapped EADDRINUSE ignore what follows.
             if (inuse) {
                 return;
             }
 
             // Most common error is that the port is in use. Trap that.
-            if (/ADDRINUSE/.test(data)) {
+            if (/ADDRINUSE/.test(msg)) {
                 // Set a flag so we don't dump a lot of unhelpful output.
                 inuse = true;
                 cmd.error('Unable to start server. Port ' + port + ' is busy.');
                 return;
             }
 
-            // Why the '' + ?. Apparently to 'copy' the string :)
-            cmd.error('' + data);
+            // A lot of errors will include what appears to be a common 'header'
+            // output message from events.js:72 etc. which provides no useful
+            // data but clogs up the output. Filter those messages.
+            if (/throw er;/.test(msg)) {
+                return;
+            }
+
+            cmd.error(msg);
         });
 
         server.on('close', function(code) {

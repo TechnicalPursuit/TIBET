@@ -27,14 +27,13 @@ Cmd.prototype = new parent();
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet pack [manifest]';
+Cmd.prototype.USAGE = 'tibet pack --package --config --options';
 
 //  ---
 //  Instance Methods
 //  ---
 
 /**
- * Runs the specific command in question.
  */
 Cmd.prototype.process = function() {
 
@@ -63,16 +62,20 @@ Cmd.prototype.process = function() {
 
     this.loadTIBETPaths();
 
-    file = this.argv.manifest || './TIBET-INF/tibet.xml';
+    file = this.argv.package || './TIBET-INF/tibet.xml';
     config = this.argv.config;
 
     doc = this.expandPackage(file, config);
     list = this.listPackageAssets(file, config);
 
-    var my = this;
+    var cmd = this;
     var ug = require('uglify-js');
+
+// TODO: options for reporting progress, timing, etc.
+// TODO: options for output type (raw file list vs. packed output)
+
     list.forEach(function(file) {
-        my.raw(ug.minify(file).code);
+        cmd.raw(ug.minify(file).code);
     });
 
     process.exit(0);
@@ -89,7 +92,7 @@ Cmd.prototype.isAbsolute = function(aPath) {
     }
 
     return false;
-}
+};
 
 
 Cmd.prototype.expandPackage = function(aPath, aConfig) {
@@ -106,13 +109,13 @@ Cmd.prototype.expandPackage = function(aPath, aConfig) {
     doc = this.PACKAGES[path];
     if (!doc) {
         if (!this.sh.test('-e', path)) {
-            this.error('Unable to find manifest: ' + path);
+            this.error('Unable to find package: ' + path);
             process.exit(1);
         }
 
         xml = this.fs.readFileSync(path, {encoding: 'utf8'});
         if (!xml) {
-            this.error('Unable to read manifest: ' + path);
+            this.error('Unable to read package: ' + path);
             process.exit(1);
         }
 
@@ -141,10 +144,10 @@ Cmd.prototype.expandPackage = function(aPath, aConfig) {
 
 Cmd.prototype.expandConfig = function(aNode) {
 
-    var my,
+    var cmd,
         list;
 
-    my = this;
+    cmd = this;
 
     list = Array.prototype.slice.call(aNode.childNodes, 0);
     list.forEach(function(child) {
@@ -157,29 +160,29 @@ Cmd.prototype.expandConfig = function(aNode) {
             switch (child.tagName) {
                 case 'config':
                     ref = child.getAttribute('ref');
-                    ref = my.expandReference(ref);
+                    ref = cmd.expandReference(ref);
                     config = aNode.ownerDocument.getElementById(ref);
                     if (!config) {
-                        my.error('<config> not found: ' + ref);
+                        cmd.error('<config> not found: ' + ref);
                         process.exit(1);
                     }
-                    my.expandConfig(config);
+                    cmd.expandConfig(config);
                     break;
                 case 'package':
                     src = child.getAttribute('src');
-                    src = my.getFullPath(child, src);
+                    src = cmd.getFullPath(child, src);
                     child.setAttribute('src', src);
 
                     config = child.getAttribute('config');
-                    config = my.expandReference(config);
+                    config = cmd.expandReference(config);
                     child.setAttribute('config', config);
 
-                    my.expandPackage(src, config);
+                    cmd.expandPackage(src, config);
                     break;
                 case 'script':
                     src = child.getAttribute('src');
                     if (src) {
-                        src = my.getFullPath(child, src);
+                        src = cmd.getFullPath(child, src);
                         child.setAttribute('src', src);
                     }
                     break;
@@ -204,9 +207,9 @@ Cmd.prototype.expandPath = function(aPath) {
 
     if (aPath.indexOf('~') === 0) {
         if (aPath === '~') {
-            path = this.tibet.paths['app_root'];
+            path = this.tibet.paths.app_root;
         } else if (aPath === '~tibet') {
-            path = this.tibet.paths['lib_root'];
+            path = this.tibet.paths.lib_root;
         } else {
             parts = aPath.split('/');
             virtual = parts.shift();
@@ -273,6 +276,10 @@ Cmd.prototype.getFullPath = function(aNode, aPath) {
         parent,
         base;
 
+    if (!aPath) {
+        return;
+    }
+
     if (this.isVirtualPath(aPath)) {
         return this.expandPath(aPath);
     }
@@ -282,13 +289,12 @@ Cmd.prototype.getFullPath = function(aNode, aPath) {
     }
 
     node = aNode;
-    while (parent = node.parentNode) {
-        base = parent.getAttribute('basedir');
+    while (node) {
+        base = node.getAttribute('basedir');
         if (base) {
-            // TODO: join paths via Node path module?
             return this.expandPath(this.path.join(base, aPath));
         }
-        node = parent;
+        node = node.parentNode;
     }
 };
 
@@ -317,11 +323,11 @@ Cmd.prototype.isVirtualPath = function(aPath) {
 
 Cmd.prototype.listConfigAssets = function(aNode, aList) {
 
-    var my,
+    var cmd,
         list,
         result;
 
-    my = this;
+    cmd = this;
 
     result = aList || [];
 
@@ -340,16 +346,16 @@ Cmd.prototype.listConfigAssets = function(aNode, aList) {
 
                     config = aNode.ownerDocument.getElementById(ref);
                     if (!config) {
-                        my.error('<config> not found: ' + ref);
+                        cmd.error('<config> not found: ' + ref);
                         process.exit(1);
                     }
-                    my.listConfigAssets(config, result);
+                    cmd.listConfigAssets(config, result);
                     break;
                 case 'package':
                     src = child.getAttribute('src');
                     config = child.getAttribute('config');
 
-                    my.listPackageAssets(src, config, result);
+                    cmd.listPackageAssets(src, config, result);
                     break;
                 case 'echo':
                     // TODO: Have to rewrite these into $stdout() calls.
@@ -361,7 +367,7 @@ Cmd.prototype.listConfigAssets = function(aNode, aList) {
                     }
                     break;
                 default:
-                    my.raw(my.serializer.serializeToString(child));
+                    cmd.log(cmd.serializer.serializeToString(child));
                     break;
             }
         }
@@ -404,7 +410,7 @@ Cmd.prototype.listPackageAssets = function(aPath, aConfig, aList) {
 Cmd.prototype.loadTIBETPaths = function() {
 
     var morepaths,
-        my;
+        cmd;
 
     this.tibet = require(this.path.join(this.options.app_root, 'tibet.json'));
 
@@ -413,10 +419,10 @@ Cmd.prototype.loadTIBETPaths = function() {
                        this.tibet.paths.lib_root,
                        'base/cfg/tibet_paths.json'));
 
-    my = this;
+    cmd = this;
     Object.keys(morepaths.paths).forEach(function(key) {
-        if (!my.tibet.paths.hasOwnProperty(key)) {
-            my.tibet.paths[key] = morepaths.paths[key];
+        if (!cmd.tibet.paths.hasOwnProperty(key)) {
+            cmd.tibet.paths[key] = morepaths.paths[key];
         }
     });
 };

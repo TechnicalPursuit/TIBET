@@ -10,77 +10,40 @@
 
 (function(root) {
 
-//  ---
-//  Configure command type.
-//  ---
-
-var Cmd = function(){};
-
-
-//  ---
-//  Console logging API via invoking CLI instance.
-//  ---
-
-Cmd.prototype.debug = function(msg) {
-    return this.options.cli.debug(msg);
-};
-
-Cmd.prototype.error = function(msg) {
-    return this.options.cli.error(msg);
-};
-
-Cmd.prototype.info = function(msg) {
-    return this.options.cli.info(msg);
-};
-
-Cmd.prototype.log = function(msg) {
-    return this.options.cli.log(msg);
-};
-
-Cmd.prototype.verbose = function(msg) {
-    return this.options.cli.verbose(msg);
-};
-
-Cmd.prototype.warn = function(msg) {
-    return this.options.cli.warn(msg);
-};
-
-Cmd.prototype.raw = function(msg) {
-    return this.options.cli.raw(msg);
-};
-
-
-//  ---
-//  Instance Attributes
-//  ---
+var CLI = require('./_cli');
 
 /**
- * The set of viable "execution contexts" for commands. Both implies a command
- * can be run either inside or outside of a TIBET project context. The others
- * should be self-evident.
+ * Command supertype. All individual commands inherit from this type.
+ * @param {Object} options Command options from the outer CLI instance.
+ *     Common keys include 'cli', 'debug', and 'verbose'.
  */
-Cmd.prototype.CONTEXTS = {
-    BOTH: 'both',
-    INSIDE: 'inside',
-    OUTSIDE: 'outside'
-};
+var Cmd = function(){};
 
 
 /**
  * The context viable for this command. Default is both.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.prototype.CONTEXT = Cmd.prototype.CONTEXTS.BOTH;
+Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
 
 
-/**
- * The default project file for TIBET projects. Existence of this file in a
- * directory is used by TIBET's command line to signify that we're inside a
- * TIBET project.
- * @type {string}
- */
-Cmd.prototype.PROJECT_FILE = 'tibet.json';
+//  ---
+//  Console logging API via invoking CLI instance.
+//  ---
 
+Cmd.prototype.log = CLI.log;
+Cmd.prototype.info = CLI.info;
+Cmd.prototype.warn = CLI.warn;
+Cmd.prototype.error = CLI.error;
+
+Cmd.prototype.debug = CLI.debug;
+Cmd.prototype.verbose = CLI.verbose;
+Cmd.prototype.raw = CLI.raw;
+
+
+//  ---
+//  Instance Attributes
+//  ---
 
 /**
  * A usage string which should _not_ begin with 'Usage: ' since that may be
@@ -109,59 +72,10 @@ Cmd.prototype.options = {};
 //  ---
 
 /**
- * Returns true if the current context is appropriate for the command to run.
- * @return {Boolean}
- */
-Cmd.prototype.canRun = function() {
-
-    if (this.inProject() && (this.CONTEXT === this.CONTEXTS.OUTSIDE)) {
-        return false;
-    }
-
-    return true;
-};
-
-
-/**
  * Outputs expanded help if available, otherwise outputs usage().
  */
 Cmd.prototype.help = function() {
     return this.usage();
-};
-
-
-/**
- * Returns true if the command is currently being invoked from within a project
- * directory, false if it's being run outside of one. Some commands like 'start'
- * operate differently when they are invoked outside vs. inside of a project
- * directory. Some commands are only valid outside. Some are only valid inside.
- * @return {Boolean} True if the command was run inside a TIBET project
- *     directory.
- */
-Cmd.prototype.inProject = function() {
-
-    var path;       // The path utility module.
-    var sh;         // The shelljs module. Used for file existence check.
-
-    var cwd;        // Where are we being run?
-    var file;       // What file are we looking for?
-
-    cwd = process.cwd();
-    file = this.PROJECT_FILE;
-    path = require('path');
-    sh = require('shelljs');
-
-    // Walk the directory path from cwd "up" checking for the signifying file
-    // which tells us we're in a TIBET project.
-    while (cwd.length > 0) {
-        if (sh.test('-f', path.join(cwd, file))) {
-            this.options.app_root = cwd;
-            return true;
-        }
-        cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
-    }
-
-    return false;
 };
 
 
@@ -196,15 +110,7 @@ Cmd.prototype.process = function() {
  */
 Cmd.prototype.run = function(args, options) {
 
-    if (options) {
-        this.options = options;
-    }
-
-    if (!this.canRun()) {
-        this.warn('Command must be run ' + this.CONTEXT +
-            ' a TIBET project.');
-        process.exit(1);
-    }
+    this.options = options || {};
 
     this.parse(args);
     if (this.argv.help) {

@@ -35,6 +35,7 @@
     "url": "http://github.com/TechnicalPursuit/TIBET/issues",
     "email": "tibet@technicalpursuit.com"
   },
+  "license": "RPL-1.5",
   "main": "./bin/tibet",
   "directories": {
     "bin": "./bin",
@@ -44,9 +45,21 @@
     "man": "./man"
   },
   "dependencies": {
+  },
+  "devDependencies": {
     "chai": "*",
     "colors": "*",
     "findit": "*",
+    "grunt": "*",
+    "grunt-init": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-jsbeautifier": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-compress": "*",
     "handlebars": "*",
     "jshint": "*",
     "mocha": "*",
@@ -59,8 +72,6 @@
     "xmldom": "*",
     "xpath": "*"
   },
-  "devDependencies": {
-  },
   "engines": {
     "node": ">=0.8",
     "npm": ">=1"
@@ -68,5 +79,6 @@
   "scripts": {
     "test": "mocha"
   },
-  "preferGlobal": "false"
+  "preferGlobal": true,
+  "private": true
 }

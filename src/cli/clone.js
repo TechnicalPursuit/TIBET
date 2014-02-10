@@ -30,6 +30,8 @@
 
 (function(root) {
 
+var CLI = require('./_cli');
+
 //  ---
 //  Configure command type.
 //  ---
@@ -47,7 +49,7 @@ Cmd.prototype = new parent();
  * The command execution context. Clone can only be done outside of a project.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.prototype.CONTEXT = Cmd.prototype.CONTEXTS.OUTSIDE;
+Cmd.CONTEXT = CLI.CONTEXTS.OUTSIDE;
 
 
 /**
@@ -150,13 +152,15 @@ Cmd.prototype.process = function() {
     // ShellJS doesn't quite follow UNIX convention here. We need to mkdir first
     // and then copy the contents of dna into that target directory to clone.
     sh.mkdir(target);
-    if (err = sh.error()) {
+    err = sh.error();
+    if (err) {
         this.error('Error creating target directory: ' + err);
         process.exit(1);
     }
 
     sh.cp('-R', dna + '/', target + '/');
-    if (err = sh.error()) {
+    err = sh.error();
+    if (err) {
         this.error('Error cloning dna directory: ' + err);
         process.exit(1);
     }
