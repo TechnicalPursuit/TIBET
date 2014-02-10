@@ -57,14 +57,14 @@ Cmd.prototype.USAGE = '';
  * The parsed arguments in node-optimist format.
  * @type {Object}
  */
-Cmd.prototype.argv = {};
+Cmd.prototype.argv;
 
 
 /**
  * Optional configuration data from invoking CLI instance.
  * @type {Object}
  */
-Cmd.prototype.options = {};
+Cmd.prototype.options;
 
 
 //  ---
@@ -86,7 +86,7 @@ Cmd.prototype.help = function() {
  * @return {Object} An object in node-optimist argument format.
  */
 Cmd.prototype.parse = function(args) {
-    this.argv = require('optimist').parse(args);
+    this.argv = require('optimist').parse(args) || [];
     return this.argv;
 };
 

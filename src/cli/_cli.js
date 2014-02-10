@@ -237,9 +237,6 @@ CLI.run = function(options) {
 
     try {
         cmdType = require('./' + command);
-        if (!cmdType) {
-            // TODO: err
-        }
 
         if (!this.canRun(cmdType)) {
             this.warn('Command must be run ' + this.CONTEXT +
@@ -248,10 +245,6 @@ CLI.run = function(options) {
         }
 
         cmd = new cmdType(this.options);
-        if (!cmd) {
-            // TODO: err
-        }
-
     } catch (e) {
         this.error('Error loading ' + command + ': ' + e.message);
         process.exit(1);
@@ -290,9 +283,6 @@ CLI.runViaGrunt = function() {
 
     cmd = 'grunt ' + process.argv.slice(2).join(' ');
     this.debug('spawning: ' + cmd);
-
-// TODO: don't be arbitrary about slice(2). May want to process tibet args
-// separate from grunt args so we'll need to parse more up front.
 
     child = require('child_process').spawn('grunt',
         process.argv.slice(2),
