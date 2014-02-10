@@ -126,12 +126,12 @@ CLI.raw = function(msg) {
  * Returns true if the current context is appropriate for the command to run.
  * @return {Boolean}
  */
-CLI.canRun = function(cmdType) {
+CLI.canRun = function(cmd) {
 
     if (CLI.inProject())
-        return cmdType.CONTEXT !== CLI.CONTEXTS.OUTSIDE;
+        return cmd.CONTEXT !== CLI.CONTEXTS.OUTSIDE;
     else {
-        return cmdType.CONTEXT !== CLI.CONTEXTS.INSIDE;
+        return cmd.CONTEXT !== CLI.CONTEXTS.INSIDE;
     }
 };
 
@@ -238,13 +238,14 @@ CLI.run = function(options) {
     try {
         cmdType = require('./' + command);
 
-        if (!this.canRun(cmdType)) {
-            this.warn('Command must be run ' + this.CONTEXT +
+        cmd = new cmdType(this.options);
+
+        if (!this.canRun(cmd)) {
+            this.warn('Command must be run ' + cmd.CONTEXT +
                 ' a TIBET project.');
             process.exit(1);
         }
 
-        cmd = new cmdType(this.options);
     } catch (e) {
         this.error('Error loading ' + command + ': ' + e.message);
         process.exit(1);

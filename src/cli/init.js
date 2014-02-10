@@ -133,7 +133,7 @@ Cmd.prototype.process = function() {
         });
 
     } else {
-        this.info('Project initialized. ' +
+        this.warn('Project already initialized. ' +
             'Re-initialize by removing node_modules first.');
     }
 };

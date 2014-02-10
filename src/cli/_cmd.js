@@ -21,10 +21,10 @@ var Cmd = function(){};
 
 
 /**
- * The context viable for this command. Default is both.
+ * The context viable for this command. Default is inside.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
+Cmd.prototype.CONTEXT = CLI.CONTEXTS.INSIDE;
 
 
 //  ---

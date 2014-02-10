@@ -10,6 +10,8 @@
 
 (function(root) {
 
+var CLI = require('./_cli');
+
 //  ---
 //  Configure command type.
 //  ---
@@ -22,6 +24,13 @@ Cmd.prototype = new parent();
 //  ---
 //  Instance Attributes
 //  ---
+
+/**
+ * The command execution context. Clone can only be done outside of a project.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.prototype.CONTEXT = CLI.CONTEXTS.BOTH;
+
 
 /**
  * The command usage string.

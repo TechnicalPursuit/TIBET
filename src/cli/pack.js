@@ -20,6 +20,13 @@ var Cmd = function(){};
 Cmd.prototype = new parent();
 
 //  ---
+//  Type Attributes
+//  ---
+
+Cmd.PACKAGE = './TIBET-INF/tibet.xml';
+
+
+//  ---
 //  Instance Attributes
 //  ---
 
@@ -27,7 +34,8 @@ Cmd.prototype = new parent();
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet pack --package --config --options';
+Cmd.prototype.USAGE =
+    'tibet pack [--package {name}] [--config {name}] [options]';
 
 //  ---
 //  Instance Methods
@@ -62,11 +70,12 @@ Cmd.prototype.process = function() {
 
     this.loadTIBETPaths();
 
-    file = this.argv.package || './TIBET-INF/tibet.xml';
-    config = this.argv.config;
+    file = this.argv.package || Cmd.PACKAGE;
+    config = this.argv.config;  // default read from package content.
 
     doc = this.expandPackage(file, config);
     list = this.listPackageAssets(file, config);
+
 
     var cmd = this;
     var ug = require('uglify-js');
@@ -79,19 +88,6 @@ Cmd.prototype.process = function() {
     });
 
     process.exit(0);
-};
-
-
-Cmd.prototype.isAbsolute = function(aPath) {
-    if (aPath.indexOf('~') === 0) {
-        return true;
-    }
-
-    if (/^[a-zA-Z]+:/.test(aPath)) {
-        return true;
-    }
-
-    return false;
 };
 
 
@@ -308,7 +304,7 @@ Cmd.prototype.isAbsolutePath = function(aPath) {
         return true;
     }
 
-    if (/^[a-z]+:/.test(aPath)) {
+    if (/^[a-zA-Z]+:/.test(aPath)) {
         return true;
     }
 
