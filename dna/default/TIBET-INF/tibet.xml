@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<package name="{{appname}}" default="help" basedir="~app_root/TIBET-INF">
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="{{appname}}" default="help" basedir="~app_root/TIBET-INF">
 
 <property name="boot.version" value="20140125"/>
 
