@@ -1,116 +1,103 @@
 <?xml version="1.0"?>
-<project name="{{appname}}" default="help" basedir="~app_root/TIBET-INF">
+<package name="{{appname}}" default="help" basedir="~app_root/TIBET-INF">
 
 <property name="boot.version" value="20140125"/>
 
 <!--  =============================================================   -->
-<!--  TIBET boot_init target                                          -->
+<!--  TIBET boot_prefix config                                        -->
 <!--  =============================================================   -->
-<!--  this block runs during configuration and can alter boot code    -->
-<target name="boot_init">
-<!-- Any change sets for the booter itself -->
-  <tibet_script>
-    <![CDATA[
-    ]]>
-  </tibet_script>
-  <echo>tibet.xml boot_init (pre-config) complete.</echo>
-</target>
-
-<!--  =============================================================   -->
-<!--  TIBET boot_prefix target                                        -->
-<!--  =============================================================   -->
-<!--  this block loads/runs prior to any other targets you specify    -->
-<target name="boot_prefix" if="boot.phaseone">
+<!--  this block loads/runs prior to any other config you specify    -->
+<config id="boot_prefix" if="boot.phaseone">
   <echo>tibet.xml boot_prefix loading complete.</echo>
-</target>
+</config>
 
 <!--  =============================================================   -->
-<!--  Standard application targets                                    -->
+<!--  Standard application config                                    -->
 <!--  =============================================================   -->
 <!--  -->
-<target name="all" depends="code, docs">
-  <tibet_module target="code"/>
-  <tibet_module target="docs"/>
-</target>
-<target name="code" depends="tibet, app">
-  <tibet_module target="boot_prefix"/>
-  <tibet_module target="tibet"/>
-  <tibet_module target="app"/>
-  <tibet_module target="boot_suffix"/>
-</target>
+<config id="all">
+  <config ref="code"/>
+  <config ref="docs"/>
+</config>
+<config id="code">
+  <config ref="boot_prefix"/>
+  <config ref="tibet"/>
+  <config ref="app"/>
+  <config ref="boot_suffix"/>
+</config>
 
-<target name="docs">
-</target>
+<config id="docs">
+</config>
 
-<target name="help">
-</target>
+<config id="help">
+</config>
 
-<target name="test">
-</target>
+<config id="test">
+</config>
 
 <!--  =============================================================   -->
 <!--  TIBET configuration                                             -->
 <!--  =============================================================   -->
 <!--  -->
-<target name="tibet" depends="tibet_img, tibet_chg">
+<config id="tibet">
 
   <!-- NOTE these modules are loaded in phase one -->
-  <tibet_module target="tibet_img" if="boot.phaseone"/>
+  <config ref="tibet_img" if="boot.phaseone"/>
   <echo if="boot.phaseone">tibet image-base loading complete.</echo>
-  <tibet_module target="tibet_chg" if="boot.phaseone"/>
+  <config ref="tibet_chg" if="boot.phaseone"/>
   <echo if="boot.phaseone">tibet change-set loading complete.</echo>
-</target>
+</config>
 
 <!--  -->
-<target name="tibet_img">
-  <tibet_module cfg="~lib_cfg/TIBET.xml" target="{boot.image}"/>
-</target>
+<config id="tibet_img">
+  <package src="~lib_cfg/TIBET.xml" config="{boot.image}"/>
+</config>
 
 <!--  -->
-<target name="tibet_chg">
+<config id="tibet_chg">
 <!-- Any change sets for the TIBET image (patches etc) -->
-  <tibet_script>
+  <script>
     <![CDATA[
     ]]>
-  </tibet_script>
-</target>
+  </script>
+</config>
 
 <!--  =============================================================   -->
 <!--  App configuration                                               -->
 <!--  =============================================================   -->
 <!--  -->
-<target name="app" depends="app_img, app_chg">
+<config id="app">
 
   <!-- NOTE these modules are loaded in phase two -->
-  <tibet_module target="app_img" if="boot.phasetwo"/>
+  <config ref="app_img" if="boot.phasetwo"/>
   <echo if="boot.phasetwo">app image-base loading complete.</echo>
-  <tibet_module target="app_chg" if="boot.phasetwo"/>
+  <config ref="app_chg" if="boot.phasetwo"/>
   <echo if="boot.phasetwo">app change-set loading complete.</echo>
-</target>
+</config>
 
 <!--
 -->
-<target name="app_img">
-  <tibet_module cfg="~app_cfg/app.xml" target="full"/>
-</target>
+<config id="app_img">
+  <package src="~app_cfg/app.xml" config="full"/>
+</config>
 
-<target name="app_chg">
+<config id="app_chg">
   <!--
   Any change sets for the Application image (patches etc)
   -->
-  <tibet_script>
+  <script>
     <![CDATA[
     ]]>
-  </tibet_script>
-</target>
+  </script>
+</config>
 
 <!--  =============================================================   -->
-<!--  TIBET boot_suffix target                                        -->
+<!--  TIBET boot_suffix config                                        -->
 <!--  =============================================================   -->
 <!--  this block runs prior to $$main() but after code has loaded     -->
-<target name="boot_suffix" if="boot.phasetwo">
+<config id="boot_suffix" if="boot.phasetwo">
   <echo>tibet.xml boot_suffix loading complete.</echo>
-</target>
+</config>
 
-</project>
+</package>
 
