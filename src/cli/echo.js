@@ -8,18 +8,19 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function(root) {
+;(function(root) {
 
 var CLI = require('./_cli');
 
 //  ---
-//  Configure command type.
+//  Type Construction
 //  ---
 
 var parent = require('./_cmd');
 
 var Cmd = function(){};
 Cmd.prototype = new parent();
+
 
 //  ---
 //  Instance Attributes
@@ -38,11 +39,13 @@ Cmd.prototype.CONTEXT = CLI.CONTEXTS.BOTH;
  */
 Cmd.prototype.USAGE = 'tibet echo [args]';
 
+
 //  ---
 //  Instance Methods
 //  ---
 
 // NOTE no method overrides here. Echo is what the parent does until overridden.
+// Implement 'process' method here if using this as a command template.
 
 //  ---
 //  Export

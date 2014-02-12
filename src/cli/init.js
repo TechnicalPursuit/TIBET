@@ -8,16 +8,17 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function(root) {
+;(function(root) {
 
 //  ---
-//  Configure command type.
+//  Type Construction
 //  ---
 
 var parent = require('./_cmd');
 
 var Cmd = function(){};
 Cmd.prototype = new parent();
+
 
 //  ---
 //  Instance Attributes
@@ -64,61 +65,51 @@ Cmd.prototype.process = function() {
     // If the node_modules directory doesn't exist (but we know there's a
     // package.json due to earlier check) it means 'npm install' was never run.
     // We have to do that before we can try to start the server.
-    if (!sh.test('-e', 'node_modules')) {
+    if (sh.test('-e', 'node_modules')) {
+        this.warn('Project already initialized. ' +
+            'Re-initialize by removing node_modules first.');
+        process.exit(1);
+    }
 
-        this.warn('Project not initialized. Initializing.');
+    this.warn('Project not initialized. Initializing.');
 
-        // Complicated if we're still using two libs (tibet3 and tibet) and the
-        // only way to be sure involves extra work. *sigh*.
+    // Complicated if we're still using two libs (tibet3 and tibet) and the
+    // only way to be sure involves extra work. *sigh*.
 
-        child.exec('npm ll --json', function(err, stdout, stderr) {
-            var json;
+    child.exec('npm ll --json', function(err, stdout, stderr) {
+        var json;
 
-            // Due to a current issue with npm ls variants they'll always return
-            // an error if there are unmet dependencies. See issue filed at:
-            // https://github.com/npm/npm/issues/4480.
-            // if (err) {
-            //     cmd.error('Unable to verify dependencies: ' + stderr);
-            //     process.exit(1);
-            // }
+        // Due to a current issue with npm ls variants they'll always return
+        // an error if there are unmet dependencies. See issue filed at:
+        // https://github.com/npm/npm/issues/4480.
+        // if (err) {
+        //     cmd.error('Unable to verify dependencies: ' + stderr);
+        //     process.exit(1);
+        // }
 
-            // Instead of checking err above we'll check stdout.
-            if (!stdout) {
-                cmd.error('Unable to verify dependencies: ' + stderr);
-                process.exit(1);
-            }
+        // Instead of checking err above we'll check stdout.
+        if (!stdout) {
+            cmd.error('Unable to verify dependencies: ' + stderr);
+            process.exit(1);
+        }
 
-            json = JSON.parse(stdout);
-            cmd.debug(stdout);
+        json = JSON.parse(stdout);
+        cmd.debug(stdout);
 
-            if (json.dependencies.tibet3) {
-                cmd.warn('TIBET v3.0 required. Trying `npm link tibet3`.');
+        if (json.dependencies.tibet3) {
+            cmd.warn('TIBET v3.0 required. Trying `npm link tibet3`.');
 
-                child.exec('npm link tibet3', function(err, stdout, stderr) {
-                    if (err) {
-                        cmd.error('Failed to initialize: ' + stderr);
-                        cmd.info(
-                            '`git clone` TIBET 3.x, `npm link` it, and retry.');
-                        process.exit(1);
-                    }
-
-                    cmd.info('TIBET v3.0 linked successfully.');
+            child.exec('npm link tibet3', function(err, stdout, stderr) {
+                if (err) {
+                    cmd.error('Failed to initialize: ' + stderr);
                     cmd.info(
-                        'Installing remaining dependencies via `npm install`.');
+                        '`git clone` TIBET 3.x, `npm link` it, and retry.');
+                    process.exit(1);
+                }
 
-                    child.exec('npm install', function(err, stdout, stderr) {
-                        if (err) {
-                            cmd.error('Failed to initialize: ' + stderr);
-                            process.exit(1);
-                        }
-
-                        cmd.info('Project initialized successfully.');
-                    });
-                });
-
-            } else {
-
-                cmd.info('Installing project dependencies.');
+                cmd.info('TIBET v3.0 linked successfully.');
+                cmd.info(
+                    'Installing remaining dependencies via `npm install`.');
 
                 child.exec('npm install', function(err, stdout, stderr) {
                     if (err) {
@@ -126,19 +117,30 @@ Cmd.prototype.process = function() {
                         process.exit(1);
                     }
 
-                    // If initialization worked invoke startup function.
                     cmd.info('Project initialized successfully.');
                 });
-            }
-        });
+            });
 
-    } else {
-        this.warn('Project already initialized. ' +
-            'Re-initialize by removing node_modules first.');
-    }
+        } else {
+
+            cmd.info('Installing project dependencies.');
+
+            child.exec('npm install', function(err, stdout, stderr) {
+                if (err) {
+                    cmd.error('Failed to initialize: ' + stderr);
+                    process.exit(1);
+                }
+
+                // If initialization worked invoke startup function.
+                cmd.info('Project initialized successfully.');
+            });
+        }
+    });
 };
 
-//  ---------------------------------------------------------------------------
+//  ---
+//  Export
+//  ---
 
 if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {

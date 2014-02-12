@@ -12,14 +12,21 @@
  */
 
 /*
- * TODO:    Add --help support to this 'command'.
+ * TODO:    Add --help support
  */
 
-(function(root) {
+;(function(root) {
+
+/*
+ * Required modules we'll bring in once.
+ */
+var path = require('path');
+var sh = require('shelljs');
+var colors = require('colors');
+
 
 // Define a theme for our console output.
-// TODO: replace with ansi.js at some point.
-require('colors').setTheme({
+colors.setTheme({
     log: 'grey',
     info: 'white',
     error: 'red',
@@ -28,20 +35,31 @@ require('colors').setTheme({
     verbose: 'cyan'
 });
 
-/*
+
+//  ---
+//  Object Construction
+//  ---
+
+/**
  * The Command Line object. This object is fairly simply. It parses a command
  * line to determine if there's a viable command name present. If the command
  * name can be identified it tries to load a file with that name from the local
  * directory to process the command. If the command cannot be found an attempt
  * is made to invoke a task of that name using grunt as a fallback build tool.
+ * @type {Object}
  */
-
 var CLI = {};
+
+
+//  ---
+//  Object Attributes
+//  ---
 
 /**
  * The set of viable "execution contexts" for commands. Both implies a command
  * can be run either inside or outside of a TIBET project context. The others
  * should be self-evident.
+ * @type {Object.<string,string>}
  */
 CLI.CONTEXTS = {
     BOTH: 'both',
@@ -49,11 +67,14 @@ CLI.CONTEXTS = {
     OUTSIDE: 'outside'
 };
 
+
 /**
  * Grunt fallback requires that we find this file to be sure we're in a
  * grunt-enabled project.
+ * @type {string}
  */
 CLI.GRUNT_FILE = 'Gruntfile.js';
+
 
 /**
  * The default project file for TIBET projects. Existence of this file in a
@@ -63,20 +84,16 @@ CLI.GRUNT_FILE = 'Gruntfile.js';
  */
 CLI.PROJECT_FILE = 'tibet.json';
 
+
 /**
  * Optional configuration data typically passed into run() via tibet 'binary'.
  * @type {Object}
  */
 CLI.options = {};
 
-/*
- * Required modules we'll bring in once.
- */
-CLI.path = require('path');
-CLI.sh = require('shelljs');
 
 //  ---
-//  Console logging API.
+//  Common Logging
 //  ---
 
 /*
@@ -119,12 +136,13 @@ CLI.raw = function(msg) {
 
 
 //  ---
-//  'Can Run' support
+//  "Can Run" Checking
 //  ---
 
 /**
  * Returns true if the current context is appropriate for the command to run.
- * @return {Boolean}
+ * @param {Object} cmd The command instance to check.
+ * @return {Boolean} True if the command is runnable.
  */
 CLI.canRun = function(cmd) {
 
@@ -137,17 +155,43 @@ CLI.canRun = function(cmd) {
 
 
 /**
+ * Returns the application root directory, the path where the PROJECT_FILE is
+ * found.
+ */
+CLI.getAppRoot = function() {
+
+    var cwd;        // Where are we being run?
+    var file;       // What file are we looking for?
+
+    if (CLI.options.app_root) {
+        return CLI.options.app_root;
+    }
+
+    cwd = process.cwd();
+    file = CLI.PROJECT_FILE;
+
+    // Walk the directory path from cwd "up" checking for the signifying file
+    // which tells us we're in a TIBET project.
+    while (cwd.length > 0) {
+        if (sh.test('-f', path.join(cwd, file))) {
+            CLI.options.app_root = cwd;
+            break;
+        }
+        cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
+    }
+
+    return CLI.options.app_root;
+};
+
+
+/**
  * Returns true if the command is currently being invoked from within a project
  * directory, false if it's being run outside of one. Some commands like 'start'
  * operate differently when they are invoked outside vs. inside of a project
  * directory. Some commands are only valid outside. Some are only valid inside.
- * @return {Boolean} True if the command was run inside a TIBET project
- *     directory.
+ * @return {Boolean} True if the current context is inside a TIBET project.
  */
 CLI.inProject = function() {
-
-    var path;       // The path utility module.
-    var sh;         // The shelljs module. Used for file existence check.
 
     var cwd;        // Where are we being run?
     var file;       // What file are we looking for?
@@ -158,30 +202,35 @@ CLI.inProject = function() {
     // Walk the directory path from cwd "up" checking for the signifying file
     // which tells us we're in a TIBET project.
     while (cwd.length > 0) {
-        if (this.sh.test('-f', this.path.join(cwd, file))) {
+        if (sh.test('-f', path.join(cwd, file))) {
             CLI.options.app_root = cwd;
             return true;
         }
-        cwd = cwd.slice(0, cwd.lastIndexOf(this.path.sep));
+        cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
     }
 
     return false;
 };
 
 //  ---
-//  Console action API.
+//  Command Execution
 //  ---
 
+/**
+ * Executes the current command line, parsing the command line and invoking the
+ * appropriate command in response.
+ * @param {Object} options An object containing command/context information.
+ */
 CLI.run = function(options) {
 
     var opt;            // the optimist module. parses command line.
-
     var argv;           // arguments processed via optimist.
     var command;        // the first non-option argument, the command name.
     var file;           // the command file we check for existence.
     var rest;           // arguments list, minus $0 and command name.
     var cmdType;        // the command type (require'd into existence)
     var cmd;            // the command instance for a command run.
+    var msg;            // error message string.
 
     this.options = options || {};
     this.options.cli = this;
@@ -215,10 +264,10 @@ CLI.run = function(options) {
         process.exit(1);
     }
 
-    file = this.path.join(__dirname, command + '.js');
+    file = path.join(__dirname, command + '.js');
 
     // Test to see if the command file in question exists.
-    if (this.sh.test('-f', file) !== true) {
+    if (sh.test('-f', file) !== true) {
 
         // If the file doesn't exist it's not a "pure TIBET" command. It might
         // be that we're trying to invoke a grunt task via the 'tibet' command
@@ -247,7 +296,11 @@ CLI.run = function(options) {
         }
 
     } catch (e) {
-        this.error('Error loading ' + command + ': ' + e.message);
+        msg = e.message;
+        if (this.options.debug) {
+            msg += ' ' + e.stack;
+        }
+        this.error('Error loading ' + command + ': ' + msg);
         process.exit(1);
     }
 
@@ -264,20 +317,28 @@ CLI.run = function(options) {
     try {
         cmd.run(rest, this.options);
     } catch (e) {
-        this.error('Error processing ' + command + ': ' + e.message);
+        msg = e.message;
+        if (this.options.debug) {
+            msg += ' ' + e.stack;
+        }
+        this.error('Error processing ' + command + ': ' + msg);
         process.exit(1);
     }
 };
 
 
+/**
+ * Executes a command by delegating to 'grunt' and treating the command name as
+ * a grunt task name.
+ */
 CLI.runViaGrunt = function() {
 
-    var cmd,        // Command string we'll be executing via grunt.
-        child;      // spawned child process for grunt execution.
+    var cmd;        // Command string we'll be executing via grunt.
+    var child;      // spawned child process for grunt execution.
 
     // If there's no node_modules in place (and in particular no grunt) then
     // suggest they run `tibet init` first.
-    if (!this.sh.test('-e', 'node_modules')) {
+    if (!sh.test('-e', 'node_modules')) {
         this.error('Project not initialized. Run `tibet init` first.');
         process.exit(1);
     }
@@ -287,7 +348,7 @@ CLI.runViaGrunt = function() {
 
     child = require('child_process').spawn('grunt',
         process.argv.slice(2),
-        { cwd: this.options.app_root }  // depends on inProject having run.
+        { cwd: this.getAppRoot()}
     );
 
 // TODO: add more handlers here for signal handling, cleaner shutdown, etc.
@@ -313,6 +374,7 @@ CLI.runViaGrunt = function() {
     child.on('exit', function(code) {
         process.exit(code);
     });
+
     return;
 };
 

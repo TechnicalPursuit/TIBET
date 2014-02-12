@@ -8,16 +8,17 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function(root) {
+;(function(root) {
 
 //  ---
-//  Configure command type.
+//  Type Construction
 //  ---
 
 var parent = require('./_cmd');
 
 var Cmd = function(){};
 Cmd.prototype = new parent();
+
 
 //  ---
 //  Instance Attributes
@@ -28,6 +29,7 @@ Cmd.prototype = new parent();
  * @type {number}
  */
 Cmd.prototype.PORT = 1407;      // Reserved by us in another lifetime.
+
 
 /**
  * The command usage string.
@@ -139,10 +141,11 @@ Cmd.prototype.process = function() {
             cmd.error('Server stopped with status: ' + code);
         }
     });
-
 };
 
-//  ---------------------------------------------------------------------------
+//  ---
+//  Export
+//  ---
 
 if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {

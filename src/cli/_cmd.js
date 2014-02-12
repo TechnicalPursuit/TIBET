@@ -1,5 +1,7 @@
 /**
- * @overview A root command object used for simple feature inheritance.
+ * @overview A root command object used for simple feature inheritance. All
+ * custom commands within the TIBET command set should inherit from this type or
+ * from a subtype of this type.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -8,9 +10,14 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function(root) {
+;(function(root) {
 
 var CLI = require('./_cli');
+
+
+//  ---
+//  Type Construction
+//  ---
 
 /**
  * Command supertype. All individual commands inherit from this type.
@@ -19,6 +26,9 @@ var CLI = require('./_cli');
  */
 var Cmd = function(){};
 
+//  ---
+//  Instance Attributes
+//  ---
 
 /**
  * The context viable for this command. Default is inside.
@@ -26,24 +36,6 @@ var Cmd = function(){};
  */
 Cmd.prototype.CONTEXT = CLI.CONTEXTS.INSIDE;
 
-
-//  ---
-//  Console logging API via invoking CLI instance.
-//  ---
-
-Cmd.prototype.log = CLI.log;
-Cmd.prototype.info = CLI.info;
-Cmd.prototype.warn = CLI.warn;
-Cmd.prototype.error = CLI.error;
-
-Cmd.prototype.debug = CLI.debug;
-Cmd.prototype.verbose = CLI.verbose;
-Cmd.prototype.raw = CLI.raw;
-
-
-//  ---
-//  Instance Attributes
-//  ---
 
 /**
  * A usage string which should _not_ begin with 'Usage: ' since that may be
@@ -57,14 +49,14 @@ Cmd.prototype.USAGE = '';
  * The parsed arguments in node-optimist format.
  * @type {Object}
  */
-Cmd.prototype.argv;
+Cmd.prototype.argv = null;
 
 
 /**
  * Optional configuration data from invoking CLI instance.
  * @type {Object}
  */
-Cmd.prototype.options;
+Cmd.prototype.options = null;
 
 
 //  ---
@@ -107,6 +99,7 @@ Cmd.prototype.process = function() {
  * template method you should normally leave as is. Override process() to change
  * the core functionality for your command.
  * @param {Array.<string>} args Processed arguments from the command line.
+ * @param {Object.<string, object>} options Command processing options.
  */
 Cmd.prototype.run = function(args, options) {
 
@@ -131,6 +124,20 @@ Cmd.prototype.run = function(args, options) {
 Cmd.prototype.usage = function() {
     this.info('Usage: ' + this.USAGE);
 };
+
+
+//  ---
+//  Console logging API via invoking CLI instance.
+//  ---
+
+Cmd.prototype.log = CLI.log;
+Cmd.prototype.info = CLI.info;
+Cmd.prototype.warn = CLI.warn;
+Cmd.prototype.error = CLI.error;
+
+Cmd.prototype.debug = CLI.debug;
+Cmd.prototype.verbose = CLI.verbose;
+Cmd.prototype.raw = CLI.raw;
 
 
 //  ---

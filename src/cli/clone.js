@@ -28,12 +28,12 @@
  */
 
 
-(function(root) {
+;(function(root) {
 
 var CLI = require('./_cli');
 
 //  ---
-//  Configure command type.
+//  Type Construction
 //  ---
 
 var parent = require('./_cmd');
@@ -276,7 +276,9 @@ Cmd.prototype.process = function() {
     });
 };
 
-//  ---------------------------------------------------------------------------
+//  ---
+//  Export
+//  ---
 
 if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {

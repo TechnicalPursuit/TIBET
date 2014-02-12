@@ -68,6 +68,7 @@
     "phantomjs": "*",
     "ronn": "*",
     "shelljs": "*",
+    "tibet3": "*",
     "uglify-js": "*",
     "xmldom": "*",
     "xpath": "*"
