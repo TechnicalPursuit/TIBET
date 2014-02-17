@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="{{appname}}" default="base" basedir="~app_src">
+
+<config id="base" depends="">
+    <script src="~app_src/tags/APP.{{appname}}.app.js" />
+</config>
+
+</package>
+

@@ -1,11 +1,10 @@
 CACHE MANIFEST
 
-lib/tibet.min.js
-src/{{appname}}.min.js
 
 NETWORK:
 *
 
 FALLBACK:
+
 
 # Version: 0.0.1

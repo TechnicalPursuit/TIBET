@@ -4,12 +4,17 @@
   "dependencies": {
     "connect": "*",
     "optimist": "*",
-    "phantomjs": "*",
     "tibet3": "*"
   },
   "devDependencies": {
-      "grunt": "*",
-      "grunt-contrib-jshint": "*"
+    "colors": "*",
+    "grunt": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-uglify": "*",
+    "phantomjs": "*",
+    "shelljs": "*",
+    "xmldom": "*"
   },
   "engines": {
     "node": ">=0.10",

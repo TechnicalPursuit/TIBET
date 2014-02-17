@@ -11,6 +11,19 @@
 </config>
 
 <config id="boot_prefix" if="boot.phaseone">
+    <property name="debug.use_debugger" value="true"/>
+    <property name="break.dnu" value="true"/>
+    <property name="break.unbound" value="true"/>
+    <property name="log.bootcfg" value="true"/>
+    <property name="log.bootenv" value="true"/>
+    <property name="log.level" value="1"/>
+    <property name="log.inferences" value="true"/>
+    <property name="log.null_namespaces" value="true"/>
+    <property name="log.signal_stack" value="true"/>
+    <property name="security.request_privileges" value="true"/>
+    <property name="tibet.$debug" value="true"/>
+    <property name="tibet.$verbose" value="true"/>
+    <property name="tibet.tdpkey" value="DOM_Alt_Up_Up"/>
     <echo>tibet.xml boot_prefix loading complete.</echo>
 </config>
 
@@ -22,7 +35,7 @@
 </config>
 
 <config id="tibet_img">
-    <package src="~lib_cfg/TIBET.xml"/>
+    <package src="~lib_cfg/TIBET.xml" config="{boot.image}"/>
 </config>
 
 <config id="tibet_chg">
