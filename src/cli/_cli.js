@@ -101,23 +101,43 @@ CLI.options = {};
  */
 
 CLI.log = function(msg) {
+    if (this.options.color === false) {
+        console.log(msg);
+        return;
+    }
     console.log(msg.log);
 };
 
 CLI.info = function(msg) {
+    if (this.options.color === false) {
+        console.info(msg);
+        return;
+    }
     console.info(msg.info);
 };
 
 CLI.warn = function(msg) {
+    if (this.options.color === false) {
+        console.warn(msg);
+        return;
+    }
     console.warn(msg.warn);
 };
 
 CLI.error = function(msg) {
+    if (this.options.color === false) {
+        console.error(msg);
+        return;
+    }
     console.error(msg.error);
 };
 
 CLI.debug = function(msg) {
     if (!this.options.debug) {
+        return;
+    }
+    if (this.options.color === false) {
+        console.log(msg);
         return;
     }
     console.log(msg.debug);
@@ -127,13 +147,12 @@ CLI.verbose = function(msg) {
     if (!this.options.verbose) {
         return;
     }
+    if (this.options.color === false) {
+        console.log(msg);
+        return;
+    }
     console.log(msg.verbose);
 };
-
-CLI.raw = function(msg) {
-    console.log(msg);
-};
-
 
 //  ---
 //  "Can Run" Checking
@@ -246,6 +265,7 @@ CLI.run = function(options) {
     // Configure logging/debugging parameters CLI-wide.
     this.options.debug = argv.debug;
     this.options.verbose = argv.verbose;
+    this.options.stack = argv.stack;
 
     // NOTE: we could inject a more REPL-based approach here in the future.
     if (!command) {
@@ -297,7 +317,7 @@ CLI.run = function(options) {
 
     } catch (e) {
         msg = e.message;
-        if (this.options.debug) {
+        if (this.options.stack) {
             msg += ' ' + e.stack;
         }
         this.error('Error loading ' + command + ': ' + msg);
@@ -318,7 +338,7 @@ CLI.run = function(options) {
         cmd.run(rest, this.options);
     } catch (e) {
         msg = e.message;
-        if (this.options.debug) {
+        if (this.options.stack) {
             msg += ' ' + e.stack;
         }
         this.error('Error processing ' + command + ': ' + msg);

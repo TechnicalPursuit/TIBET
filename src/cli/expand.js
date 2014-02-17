@@ -19,7 +19,6 @@ var serializer = new dom.XMLSerializer();
 var Package = require(path.join(CLI.getAppRoot(),
     'node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
 
-
 //  ---
 //  Type Construction
 //  ---
@@ -64,29 +63,24 @@ Cmd.prototype.process = function() {
 
     file = this.argv.package || Cmd.PACKAGE;
     config = this.argv.config;  // default read from package content.
-    files = this.argv.files;    // dump file names, or nodes?
+
+    var options = {};
+
+    options.files = this.argv.files || false;
+    options.assets = 'script';
 
     cmd = this;
 
     // TODO: work on parameters/options loading here
-    package = new Package(this.argv);
+    package = new Package(options);
 
-    doc = package.expandPackage(file, config);
-    list = package.listPackageAssets(file, config);
+    doc = package.expandPackage(file, 'tibet_img');
+    list = package.listPackageAssets(file, 'tibet_img');
 
-    if (files) {
-        list.forEach(function(node) {
-            var file;
-            file = node.getAttribute('src') || node.getAttribute('href');
-            if (file) {
-                cmd.raw(file);
-            }
-        });
-    } else {
-        list.forEach(function(node) {
-            cmd.raw(serializer.serializeToString(node));
-        });
-    }
+    list.forEach(function(node) {
+        cmd.log('node: ');
+        cmd.log(serializer.serializeToString(node));
+    });
 
     process.exit(0);
 };
