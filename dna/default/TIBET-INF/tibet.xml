@@ -36,7 +36,7 @@
 </config>
 
 <config id="app_img">
-    <package src="~app_cfg/app.xml" config="full"/>
+    <package src="~app_cfg/app.xml" config="base"/>
 </config>
 
 <config id="app_chg">
