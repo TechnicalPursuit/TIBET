@@ -19,15 +19,13 @@ module.exports = function(grunt) {
         config = aConfig ? aConfig : 'tibet_img';
 
         package = new Package({
-            package: path,
-            config: config,
             assets: 'script',
             files: true
         });
 
-        package.expandPackage();
+        package.expandPackage(path, config);
 
-        return package.listPackageAssets();
+        return package.listPackageAssets(path, config);
     };
 
     // configure the tasks
