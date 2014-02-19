@@ -23,7 +23,6 @@
     <property name="security.request_privileges" value="true"/>
     <property name="tibet.$debug" value="true"/>
     <property name="tibet.$verbose" value="true"/>
-    <property name="tibet.tdpkey" value="DOM_Alt_Up_Up"/>
     <echo>tibet.xml boot_prefix loading complete.</echo>
 </config>
 

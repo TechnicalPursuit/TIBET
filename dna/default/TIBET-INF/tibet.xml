@@ -8,6 +8,8 @@
     <config ref="tibet"/>
     <config ref="app"/>
     <config ref="boot_suffix"/>
+
+    <package src="~lib_cfg/tdc.xml" config="standard"/>
 </config>
 
 <config id="boot_prefix" if="boot.phaseone">
@@ -22,7 +24,7 @@
 </config>
 
 <config id="tibet_img">
-    <package src="~lib_cfg/TIBET.xml"/>
+    <package src="~lib_cfg/TIBET.xml" config="standard"/>
 </config>
 
 <config id="tibet_chg">
