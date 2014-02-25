@@ -1,5 +1,5 @@
 /**
- * @overview The 'tibet expand' command.
+ * @overview The 'tibet minify' command.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -44,7 +44,7 @@ Cmd.PACKAGE = './TIBET-INF/tibet.xml';
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet expand [--package {name}] [--config {name}] [options]';
+    'tibet minify [--package {name}] [--config {name}] [options]';
 
 //  ---
 //  Instance Methods
@@ -74,9 +74,10 @@ Cmd.prototype.process = function() {
     doc = package.expandPackage(file, 'tibet_img');
     list = package.listPackageAssets(file, 'tibet_img');
 
+    var ug = require('uglify-js');
+
     list.forEach(function(node) {
-        cmd.log('node: ');
-        cmd.log(serializer.serializeToString(node));
+        console.log(ug.minify(node.getAttribute('src')).code + ';');
     });
 
     process.exit(0);
