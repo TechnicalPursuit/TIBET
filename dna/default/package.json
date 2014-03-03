@@ -3,17 +3,23 @@
   "version": "0.1.0",
   "dependencies": {
     "connect": "*",
+    "connect-gzip-static": "*",
     "optimist": "*",
     "tibet3": "*"
   },
   "devDependencies": {
     "colors": "*",
-    "grunt": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-concat": "*",
-    "grunt-contrib-uglify": "*",
+    "gulp": "*",
+    "gulp-clean": "*",
+    "gulp-concat": "*",
+    "gulp-header": "*",
+    "gulp-jshint": "*",
+    "gulp-uglify": "*",
+    "gulp-rename": "*",
+    "gulp-util": "*",
     "phantomjs": "*",
     "shelljs": "*",
+    "uglify-js": "*",
     "xmldom": "*"
   },
   "engines": {
