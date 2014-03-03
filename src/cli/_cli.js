@@ -2,7 +2,7 @@
  * @overview TIBET command-line processor. Individual command files do the work.
  *     The logic here is focused on command identification, initial argument
  *     processing, and command file loading. If a command isn't found this will
- *     try to find a matching grunt task to invoke to perform the work.
+ *     try to find a matching grunt or gulp task to invoke to perform the work.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -45,7 +45,7 @@ colors.setTheme({
  * line to determine if there's a viable command name present. If the command
  * name can be identified it tries to load a file with that name from the local
  * directory to process the command. If the command cannot be found an attempt
- * is made to invoke a task of that name using grunt as a fallback build tool.
+ * is made to invoke a task of that name using grunt or gulp as a fallback tool.
  * @type {Object}
  */
 var CLI = {};
@@ -73,7 +73,15 @@ CLI.CONTEXTS = {
  * grunt-enabled project.
  * @type {string}
  */
-CLI.GRUNT_FILE = 'Gruntfile.js';
+CLI.GRUNT_FILE = 'gruntfile.js';
+
+
+/**
+ * Gulp fallback requires that we find this file to be sure we're in a
+ * gulp-enabled project.
+ * @type {string}
+ */
+CLI.GULP_FILE = 'gulpfile.js';
 
 
 /**
@@ -204,6 +212,38 @@ CLI.getAppRoot = function() {
 
 
 /**
+ * Returns true if the project appears to be using Grunt as a build tool.
+ * @return {Boolean} true if a CLI.GRUNT_FILE file is found.
+ */
+CLI.inGruntProject = function() {
+
+    var cwd;        // Where are we being run?
+    var file;       // What file are we looking for?
+
+    cwd = process.cwd();
+    file = CLI.GRUNT_FILE;
+
+    return sh.test('-f', path.join(cwd, file));
+};
+
+
+/**
+ * Returns true if the project appears to be using Gulp as a build tool.
+ * @return {Boolean} true if a CLI.GULP_FILE file is found.
+ */
+CLI.inGulpProject = function() {
+
+    var cwd;        // Where are we being run?
+    var file;       // What file are we looking for?
+
+    cwd = process.cwd();
+    file = CLI.GULP_FILE;
+
+    return sh.test('-f', path.join(cwd, file));
+};
+
+
+/**
  * Returns true if the command is currently being invoked from within a project
  * directory, false if it's being run outside of one. Some commands like 'start'
  * operate differently when they are invoked outside vs. inside of a project
@@ -223,6 +263,9 @@ CLI.inProject = function() {
     while (cwd.length > 0) {
         if (sh.test('-f', path.join(cwd, file))) {
             CLI.options.app_root = cwd;
+            // Relocate cwd to the new root so our paths for things like
+            // grunt/gulp work without requiring global installs etc.
+            process.chdir(cwd);
             return true;
         }
         cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
@@ -300,7 +343,12 @@ CLI.run = function(options) {
             process.exit(1);
         }
 
-        CLI.runViaGrunt();
+        if (this.inGulpProject()) {
+            CLI.runViaGulp();
+        } else if (this.inGruntProject()) {
+            CLI.runViaGrunt();
+        }
+
         return;
     }
 
@@ -367,6 +415,57 @@ CLI.runViaGrunt = function() {
     this.debug('spawning: ' + cmd);
 
     child = require('child_process').spawn('grunt',
+        process.argv.slice(2),
+        { cwd: this.getAppRoot()}
+    );
+
+// TODO: add more handlers here for signal handling, cleaner shutdown, etc.
+
+    child.stdout.on('data', function(data) {
+        // Why the '' + ?. Apparently to 'copy' the string :)
+        var msg = '' + data;
+
+        CLI.log(msg);
+    });
+
+    child.stderr.on('data', function(data) {
+        // Why the '' + ?. Apparently to 'copy' the string :)
+        var msg = '' + data;
+
+        CLI.error(msg);
+    });
+
+    child.on('error', function(err) {
+        CLI.error('' + err.message);
+    });
+
+    child.on('exit', function(code) {
+        process.exit(code);
+    });
+
+    return;
+};
+
+/**
+ * Executes a command by delegating to 'gulp' and treating the command name as
+ * a gulp task name.
+ */
+CLI.runViaGulp = function() {
+
+    var cmd;        // Command string we'll be executing via gulp.
+    var child;      // spawned child process for gulp execution.
+
+    // If there's no node_modules in place (and in particular no gulp) then
+    // suggest they run `tibet init` first.
+    if (!sh.test('-e', 'node_modules')) {
+        this.error('Project not initialized. Run `tibet init` first.');
+        process.exit(1);
+    }
+
+    cmd = './node_modules/.bin/gulp ' + process.argv.slice(2).join(' ');
+    this.debug('spawning: ' + cmd);
+
+    child = require('child_process').spawn('./node_modules/.bin/gulp',
         process.argv.slice(2),
         { cwd: this.getAppRoot()}
     );
