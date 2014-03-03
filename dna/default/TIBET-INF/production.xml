@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="{{appname}}" default="base" basedir="~app_root/TIBET-INF">
+
+<config id="base">
+    <script src="~lib_build/tibet_base.min.js" if="boot.phaseone"/>
+    <script src="~app_build/app_base.min.js" if="boot.phasetwo"/>
+</config>
+
+</package>

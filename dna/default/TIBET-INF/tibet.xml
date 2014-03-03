@@ -8,23 +8,18 @@
     <config ref="tibet"/>
     <config ref="app"/>
     <config ref="boot_suffix"/>
-
-    <package src="~lib_cfg/tdc.xml" config="standard"/>
 </config>
 
 <config id="boot_prefix" if="boot.phaseone">
-    <echo>tibet.xml boot_prefix loading complete.</echo>
 </config>
 
 <config id="tibet">
     <config ref="tibet_img" if="boot.phaseone"/>
-    <echo if="boot.phaseone">tibet image-base loading complete.</echo>
     <config ref="tibet_chg" if="boot.phaseone"/>
-    <echo if="boot.phaseone">tibet change-set loading complete.</echo>
 </config>
 
 <config id="tibet_img">
-    <package src="~lib_cfg/TIBET.xml" config="standard"/>
+    <script src="~lib_build/tibet_base.min.js"/>
 </config>
 
 <config id="tibet_chg">
@@ -32,20 +27,18 @@
 
 <config id="app">
     <config ref="app_img" if="boot.phasetwo"/>
-    <echo if="boot.phasetwo">app image-base loading complete.</echo>
     <config ref="app_chg" if="boot.phasetwo"/>
-    <echo if="boot.phasetwo">app change-set loading complete.</echo>
 </config>
 
 <config id="app_img">
-    <package src="~app_cfg/app.xml" config="base"/>
+    <package src="app.xml" config="base"/>
 </config>
 
 <config id="app_chg">
 </config>
 
 <config id="boot_suffix" if="boot.phasetwo">
-    <echo>tibet.xml boot_suffix loading complete.</echo>
+    <package src="~lib_cfg/tdc.xml" config="standard"/>
 </config>
 
 </package>
