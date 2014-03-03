@@ -4,13 +4,11 @@
     name="{{appname}}" default="base" basedir="~app_root/TIBET-INF">
 
 <config id="base">
-    <config ref="boot_prefix"/>
-    <config ref="tibet"/>
-    <config ref="app"/>
-    <config ref="boot_suffix"/>
+    <config ref="properties"/>
+    <package src="tibet.xml" config="base"/>
 </config>
 
-<config id="boot_prefix" if="boot.phaseone">
+<config id="properties" if="boot.phaseone">
     <property name="debug.use_debugger" value="true"/>
     <property name="break.dnu" value="true"/>
     <property name="break.unbound" value="true"/>
@@ -23,39 +21,6 @@
     <property name="security.request_privileges" value="true"/>
     <property name="tibet.$debug" value="true"/>
     <property name="tibet.$verbose" value="true"/>
-    <echo>tibet.xml boot_prefix loading complete.</echo>
-</config>
-
-<config id="tibet">
-    <config ref="tibet_img" if="boot.phaseone"/>
-    <echo if="boot.phaseone">tibet image-base loading complete.</echo>
-    <config ref="tibet_chg" if="boot.phaseone"/>
-    <echo if="boot.phaseone">tibet change-set loading complete.</echo>
-</config>
-
-<config id="tibet_img">
-    <package src="~lib_cfg/TIBET.xml" config="{boot.image}"/>
-</config>
-
-<config id="tibet_chg">
-</config>
-
-<config id="app">
-    <config ref="app_img" if="boot.phasetwo"/>
-    <echo if="boot.phasetwo">app image-base loading complete.</echo>
-    <config ref="app_chg" if="boot.phasetwo"/>
-    <echo if="boot.phasetwo">app change-set loading complete.</echo>
-</config>
-
-<config id="app_img">
-    <package src="~app_cfg/app.xml" config="base"/>
-</config>
-
-<config id="app_chg">
-</config>
-
-<config id="boot_suffix" if="boot.phasetwo">
-    <echo>tibet.xml boot_suffix loading complete.</echo>
 </config>
 
 </package>
