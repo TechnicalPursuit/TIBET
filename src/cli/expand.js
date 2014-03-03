@@ -71,8 +71,13 @@ Cmd.prototype.process = function() {
 
     package = new Package(this.argv);
 
-    doc = package.expandPackage(file, 'tibet_img');
-    list = package.listPackageAssets(file, 'tibet_img');
+    if (this.argv.all) {
+        doc = package.expandAll(file);
+        list = package.listAllAssets(file);
+    } else {
+        doc = package.expandPackage(file, config);
+        list = package.listPackageAssets(file, config);
+    }
 
     list.forEach(function(node) {
         cmd.log('node: ');

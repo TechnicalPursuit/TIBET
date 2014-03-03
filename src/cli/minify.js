@@ -71,8 +71,8 @@ Cmd.prototype.process = function() {
 
     package = new Package(this.argv);
 
-    doc = package.expandPackage(file, 'tibet_img');
-    list = package.listPackageAssets(file, 'tibet_img');
+    doc = package.expandPackage(file, config);
+    list = package.listPackageAssets(file, config);
 
     var ug = require('uglify-js');
 
