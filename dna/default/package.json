@@ -12,7 +12,6 @@
     "gulp": "*",
     "gulp-clean": "*",
     "gulp-concat": "*",
-    "gulp-header": "*",
     "gulp-jshint": "*",
     "gulp-uglify": "*",
     "gulp-rename": "*",

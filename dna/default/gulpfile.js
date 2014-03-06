@@ -9,7 +9,6 @@ var gulp = require('gulp');
 
 var clean = require('gulp-clean');
 var concat = require('gulp-concat');
-var header = require('gulp-header');
 var jshint = require('gulp-jshint');
 var log = require('gulp-util').log;
 var rename = require('gulp-rename');
@@ -24,6 +23,7 @@ var path = require('path');
 var sh = require('shelljs');
 
 var Package = require('./node_modules/tibet3/base/lib/tibet/src/tibet_package.js');
+var header = require('./node_modules/tibet3/base/lib/tibet/src/tibet_header.js');
 
 //  ---
 //  Admin Tasks
@@ -103,12 +103,12 @@ gulp.task('rollup-base', function(){
     }
 
     gulp.src(files).
-        pipe(header('TP.boot.$truePath = \'<%= file.relative %>\';\n', {})).
+        pipe(header()).
         pipe(concat('app_base.js')).
         pipe(gulp.dest('./build'));
 
     gulp.src(files).
-        pipe(header('TP.boot.$truePath = \'<%= file.relative %>\';\n', {})).
+        pipe(header()).
         pipe(uglify()).
         pipe(concat('app_base.min.js')).
         pipe(gulp.dest('./build'));
