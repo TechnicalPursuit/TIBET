@@ -108,16 +108,30 @@ Cmd.prototype.process = function() {
                 }
 
                 cmd.info('TIBET v3.0 linked successfully.');
-                cmd.info(
-                    'Installing remaining dependencies via `npm install`.');
 
-                child.exec('npm install', function(err, stdout, stderr) {
+                cmd.warn('TIBET v5.0 required. Trying `npm link tibet`.');
+
+                child.exec('npm link tibet', function(err, stdout, stderr) {
                     if (err) {
                         cmd.error('Failed to initialize: ' + stderr);
+                        cmd.info(
+                            '`git clone` TIBET 5.x, `npm link` it, and retry.');
                         process.exit(1);
                     }
 
-                    cmd.info('Project initialized successfully.');
+                    cmd.info('TIBET v5.0 linked successfully.');
+
+                    cmd.info(
+                        'Installing remaining dependencies via `npm install`.');
+
+                    child.exec('npm install', function(err, stdout, stderr) {
+                        if (err) {
+                            cmd.error('Failed to initialize: ' + stderr);
+                            process.exit(1);
+                        }
+
+                        cmd.info('Project initialized successfully.');
+                    });
                 });
             });
 

@@ -220,6 +220,50 @@ CLI.getAppRoot = function() {
 
 
 /**
+ * Searches a set of paths including ~app_cmd and ~lib_cmd for an implementation
+ * file for the named command.
+ * @param {string} command The command to find, such as 'start'.
+ * @return {string} The path to the command, if found.
+ */
+CLI.getCommandPath = function(command, options) {
+
+    var roots;      // The directory roots we'll search.
+    var package;
+    var i;
+    var len;
+    var base;
+    var file;
+
+    // First check is for "built-in" commands. If it's one of those we'll use
+    // that without troubling ourselves with trying to load Package etc.
+    base = __dirname;
+    file = path.join(base, command + '.js');
+    if (sh.test('-f', file)) {
+        return file;
+    }
+
+    // Check other potential paths, which are virtual so they require our
+    // package logic.
+    var Package = require(path.join(__dirname,
+        '../../node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
+    package = new Package(options);
+
+    roots = ['~app_cmd', '~lib_cmd'];
+    len = roots.length;
+
+    for (i = 0; i < len; i++) {
+        base = package.expandPath(roots[i]);
+        file = path.join(base, command + '.js');
+        if (sh.test('-f', file)) {
+            return file;
+        }
+    }
+
+    return;
+};
+
+
+/**
  * Returns true if the project appears to be using Grunt as a build tool.
  * @return {Boolean} true if a CLI.GRUNT_FILE file is found.
  */
@@ -284,6 +328,7 @@ CLI.inProject = function() {
     return false;
 };
 
+
 //  ---
 //  Command Execution
 //  ---
@@ -300,6 +345,7 @@ CLI.run = function(options) {
     var command;        // the first non-option argument, the command name.
     var file;           // the command file we check for existence.
     var rest;           // arguments list, minus $0 and command name.
+    var cmdPath;        // the command path (for use with require())
     var cmdType;        // the command type (require'd into existence)
     var cmd;            // the command instance for a command run.
     var msg;            // error message string.
@@ -337,11 +383,10 @@ CLI.run = function(options) {
         process.exit(1);
     }
 
-    file = path.join(__dirname, command + '.js');
+    // Search app_cmd, lib_cmd_ etc. for the command implementation.
+    cmdPath = CLI.getCommandPath(command, options);
 
-    // Test to see if the command file in question exists.
-    if (sh.test('-f', file) !== true) {
-
+    if (!cmdPath) {
         // If the file doesn't exist it's not a "pure TIBET" command. It might
         // be that we're trying to invoke a grunt task via the 'tibet' command
         // so check for that.
@@ -363,7 +408,7 @@ CLI.run = function(options) {
     }
 
     try {
-        cmdType = require('./' + command);
+        cmdType = require(cmdPath);
 
         cmd = new cmdType(this.options);
 
