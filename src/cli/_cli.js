@@ -22,19 +22,19 @@
  */
 var path = require('path');
 var sh = require('shelljs');
-var colors = require('colors');
+var chalk = require('chalk');
 
-
-// Define a theme for our console output.
-colors.setTheme({
-    log: 'grey',
-    info: 'white',
-    error: 'red',
-    warn: 'yellow',
-    debug: 'magenta',
-    verbose: 'cyan'
-});
-
+/*
+ * Color theme:
+ *
+ *  log: 'grey',
+ *  info: 'white',
+ *  warn: 'yellow',
+ *  error: 'red',
+ *  debug: 'magenta',
+ *  verbose: 'cyan'
+ *  system: 'green'
+ */
 
 //  ---
 //  Object Construction
@@ -113,7 +113,7 @@ CLI.log = function(msg) {
         console.log(msg);
         return;
     }
-    console.log(msg.log);
+    console.log(chalk.grey(msg));
 };
 
 CLI.info = function(msg) {
@@ -121,7 +121,7 @@ CLI.info = function(msg) {
         console.info(msg);
         return;
     }
-    console.info(msg.info);
+    console.info(chalk.white(msg));
 };
 
 CLI.warn = function(msg) {
@@ -129,7 +129,7 @@ CLI.warn = function(msg) {
         console.warn(msg);
         return;
     }
-    console.warn(msg.warn);
+    console.warn(chalk.yellow(msg));
 };
 
 CLI.error = function(msg) {
@@ -137,7 +137,7 @@ CLI.error = function(msg) {
         console.error(msg);
         return;
     }
-    console.error(msg.error);
+    console.error(chalk.red(msg));
 };
 
 CLI.debug = function(msg) {
@@ -148,7 +148,7 @@ CLI.debug = function(msg) {
         console.log(msg);
         return;
     }
-    console.log(msg.debug);
+    console.log(chalk.magenta(msg));
 };
 
 CLI.verbose = function(msg) {
@@ -159,7 +159,15 @@ CLI.verbose = function(msg) {
         console.log(msg);
         return;
     }
-    console.log(msg.verbose);
+    console.log(chalk.cyan(msg));
+};
+
+CLI.system = function(msg) {
+    if (this.options.color === false) {
+        console.info(msg);
+        return;
+    }
+    console.info(chalk.green(msg));
 };
 
 //  ---

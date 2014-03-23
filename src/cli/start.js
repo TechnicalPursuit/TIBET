@@ -89,11 +89,11 @@ Cmd.prototype.process = function() {
     // If we can't find server.js our only option is to use npm start. If we
     // have port information on our command line we've got to use options.
     if (!sh.test('-f', 'server.js')) {
-        cmd.info(msg + ' via `npm start`');
+        cmd.system(msg + ' via `npm start`');
         process.env.PORT = port;
         server = child.spawn('npm', ['start']);
     } else {
-        cmd.info(msg);
+        cmd.system(msg);
         server = child.spawn('node',
             ['server.js', '--port', port]);
     }
@@ -101,7 +101,7 @@ Cmd.prototype.process = function() {
     server.stdout.on('data', function(data) {
         // Why the '' + ?. Apparently to 'copy' the string :)
         var msg = '' + data;
-        cmd.info(msg);
+        cmd.log(msg);
     });
 
     server.stderr.on('data', function(data) {

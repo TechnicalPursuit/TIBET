@@ -8,7 +8,7 @@
     "tibet3": "*"
   },
   "devDependencies": {
-    "colors": "*",
+    "chalk": "*",
     "gulp": "*",
     "gulp-clean": "*",
     "gulp-concat": "*",

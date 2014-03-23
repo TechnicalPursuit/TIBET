@@ -137,6 +137,7 @@ Cmd.prototype.error = CLI.error;
 
 Cmd.prototype.debug = CLI.debug;
 Cmd.prototype.verbose = CLI.verbose;
+Cmd.prototype.system = CLI.system;
 
 
 //  ---

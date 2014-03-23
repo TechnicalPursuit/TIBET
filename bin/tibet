@@ -19,8 +19,9 @@ var options = {};
 require('child_process').exec('npm ll -g tibet --json',
     function(err, stdout, stderr) {
         if (err) {
-            require('colors');
-            console.log(('Unable to locate TIBET installation: ' + stderr).red);
+            require('chalk');
+            console.log(chalk.red(
+                'Unable to locate TIBET installation: ' + stderr));
             process.exit(1);
         }
 

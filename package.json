@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "chai": "*",
-    "colors": "*",
+    "chalk": "*",
     "findit": "*",
     "grunt": "*",
     "grunt-init": "*",
