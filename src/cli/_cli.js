@@ -231,7 +231,8 @@ CLI.inGruntProject = function() {
     cwd = process.cwd();
     file = CLI.GRUNT_FILE;
 
-    return sh.test('-f', path.join(cwd, file));
+    return sh.test('-f', path.join(cwd, file)) &&
+        sh.test('-f', path.join(cwd, './node_modules/.bin/grunt'));
 };
 
 
@@ -247,7 +248,8 @@ CLI.inGulpProject = function() {
     cwd = process.cwd();
     file = CLI.GULP_FILE;
 
-    return sh.test('-f', path.join(cwd, file));
+    return sh.test('-f', path.join(cwd, file)) &&
+        sh.test('-f', path.join(cwd, './node_modules/.bin/gulp'));
 };
 
 
@@ -272,7 +274,7 @@ CLI.inProject = function() {
         if (sh.test('-f', path.join(cwd, file))) {
             CLI.options.app_root = cwd;
             // Relocate cwd to the new root so our paths for things like
-            // grunt/gulp work without requiring global installs etc.
+            // grunt and gulp work without requiring global installs etc.
             process.chdir(cwd);
             return true;
         }
@@ -422,7 +424,7 @@ CLI.runViaGrunt = function() {
     cmd = 'grunt ' + process.argv.slice(2).join(' ');
     this.debug('spawning: ' + cmd);
 
-    child = require('child_process').spawn('grunt',
+    child = require('child_process').spawn('./node_modules/.bin/grunt',
         process.argv.slice(2),
         { cwd: this.getAppRoot()}
     );
