@@ -368,8 +368,7 @@ CLI.run = function(options) {
 
     // NOTE: we could inject a more REPL-based approach here in the future.
     if (!command) {
-        this.info('Usage: tibet {command} [arguments]');
-        process.exit(1);
+        command = 'help';
     }
 
     //  ---
