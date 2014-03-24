@@ -85,7 +85,7 @@ Cmd.prototype.process = function(args) {
     // If no specific command was given build up a list. Note that we need to
     // filter out the ones that start with _ since they're "internal" files.
 
-    this.info('tibet commands:')
+    this.info('tibet commands:');
 
     my = this;
     files = sh.ls(__dirname);
