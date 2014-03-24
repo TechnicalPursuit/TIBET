@@ -15,10 +15,6 @@ var path = require('path');
 var dom = require('xmldom');
 var serializer = new dom.XMLSerializer();
 
-// TODO: relocate from tibet3 to a reasonable TIBET 5.0 location.
-var Package = require(path.join(CLI.getAppRoot(),
-    'node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
-
 //  ---
 //  Type Construction
 //  ---
@@ -68,6 +64,10 @@ Cmd.prototype.process = function() {
     this.argv.assets = this.argv.assets || 'script';
 
     cmd = this;
+
+    // TODO: relocate from tibet3 to a reasonable TIBET 5.0 location.
+    var Package = require(path.join(CLI.getAppRoot(),
+        'node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
 
     package = new Package(this.argv);
 
