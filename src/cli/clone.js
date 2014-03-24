@@ -20,8 +20,6 @@
  *
  * TODO: --dna should use what's given if it's a full or relative path.
  *
- * TODO: Add chalk.js support.
- *
  * TODO: Silent except when --verbose is on.
  *
  * TODO: Debugging output based on --debug being set.
