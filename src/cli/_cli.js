@@ -320,6 +320,20 @@ CLI.inProject = function() {
             // Relocate cwd to the new root so our paths for things like
             // grunt and gulp work without requiring global installs etc.
             process.chdir(cwd);
+
+            // Once we find the directory of a project root load any tibet.json
+            // configuration found there.
+            try {
+                this.options.tibet.config = require(
+                    path.join(cwd, 'tibet.json'));
+            } catch (e) {
+                // Ignore "not found" issues, but report others such as bad
+                // formatting of the JSON content etc.
+                if (/Cannot find module/.test(e.message) !== true) {
+                    throw e;
+                }
+            }
+
             return true;
         }
         cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
