@@ -1,5 +1,5 @@
 /**
- * @overview The 'tibet minify' command.
+ * @overview The 'tibet rollup' command.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -40,7 +40,7 @@ Cmd.PACKAGE = './TIBET-INF/tibet.xml';
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet minify [--package {name}] [--config {name}] [options]';
+    'tibet rollup [--package {name}] [--config {name}] [options]';
 
 //  ---
 //  Instance Methods

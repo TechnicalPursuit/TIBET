@@ -26,7 +26,12 @@ require('child_process').exec('npm ll -g tibet --json',
         }
 
         // Run the cli once we've found TIBET.
-        options.tibet = JSON.parse(stdout);
+        options.tibet = {};
+        try {
+            options.tibet.npm = JSON.parse(stdout);
+        } catch (e) {
+            // TODO: control reporting via flag?
+        }
         cli.run(options);
     });
 
