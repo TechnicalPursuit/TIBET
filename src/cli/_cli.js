@@ -351,7 +351,6 @@ CLI.run = function(options) {
     var msg;            // error message string.
 
     this.options = options || {};
-    this.options.cli = this;
 
     //  ---
     //  Process the command-line arguments to find the command name.
