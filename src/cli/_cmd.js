@@ -91,6 +91,10 @@ Cmd.prototype.process = function() {
     if (this.argv) {
         this.log(JSON.stringify(this.argv));
     }
+
+    if (CLI.inProject()) {
+        this.log(JSON.stringify(this.options));
+    }
 };
 
 
