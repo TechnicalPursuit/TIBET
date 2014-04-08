@@ -1,4 +1,5 @@
 /**
+ * @file _cli.js
  * @overview TIBET command-line processor. Individual command files do the work.
  *     The logic here is focused on command identification, initial argument
  *     processing, and command file loading. If a command isn't found this will
@@ -12,7 +13,12 @@
  */
 
 /*
- * TODO:    Add --help support
+ * STANDARD OPTIONS:
+ *      app_root        // Where is the application root? Normally computed.
+ *      color           // Display colored output. Default is true.
+ *      debug           // Display debug-level messages. Default is false.
+ *      verbose         // Display verbose-level messages. Default is false.
+ *      stack           // Dump stack with error messages? Default is false.
  */
 
 ;(function(root) {
@@ -35,6 +41,7 @@ var chalk = require('chalk');
  *  verbose: 'cyan'
  *  system: 'green'
  */
+
 
 //  ---
 //  Object Construction
@@ -110,32 +117,28 @@ CLI.options = {};
 
 CLI.log = function(msg) {
     if (this.options.color === false) {
-        console.log(msg);
-        return;
+        return console.log(msg);
     }
     console.log(chalk.grey(msg));
 };
 
 CLI.info = function(msg) {
     if (this.options.color === false) {
-        console.info(msg);
-        return;
+        return console.info(msg);
     }
     console.info(chalk.white(msg));
 };
 
 CLI.warn = function(msg) {
     if (this.options.color === false) {
-        console.warn(msg);
-        return;
+        return console.warn(msg);
     }
     console.warn(chalk.yellow(msg));
 };
 
 CLI.error = function(msg) {
     if (this.options.color === false) {
-        console.error(msg);
-        return;
+        return console.error(msg);
     }
     console.error(chalk.red(msg));
 };
@@ -144,9 +147,9 @@ CLI.debug = function(msg) {
     if (!this.options.debug) {
         return;
     }
+
     if (this.options.color === false) {
-        console.log(msg);
-        return;
+        return console.log(msg);
     }
     console.log(chalk.magenta(msg));
 };
@@ -155,20 +158,20 @@ CLI.verbose = function(msg) {
     if (!this.options.verbose) {
         return;
     }
+
     if (this.options.color === false) {
-        console.log(msg);
-        return;
+        return console.log(msg);
     }
     console.log(chalk.cyan(msg));
 };
 
 CLI.system = function(msg) {
     if (this.options.color === false) {
-        console.info(msg);
-        return;
+        return console.info(msg);
     }
     console.info(chalk.green(msg));
 };
+
 
 //  ---
 //  "Can Run" Checking
@@ -198,8 +201,8 @@ CLI.getAppRoot = function() {
     var cwd;        // Where are we being run?
     var file;       // What file are we looking for?
 
-    if (CLI.options.app_root) {
-        return CLI.options.app_root;
+    if (this.options.app_root) {
+        return this.options.app_root;
     }
 
     cwd = process.cwd();
@@ -209,13 +212,13 @@ CLI.getAppRoot = function() {
     // which tells us we're in a TIBET project.
     while (cwd.length > 0) {
         if (sh.test('-f', path.join(cwd, file))) {
-            CLI.options.app_root = cwd;
+            this.options.app_root = cwd;
             break;
         }
         cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
     }
 
-    return CLI.options.app_root;
+    return this.options.app_root;
 };
 
 
@@ -260,6 +263,21 @@ CLI.getCommandPath = function(command, options) {
     }
 
     return;
+};
+
+
+/**
+ * Returns a default value if a particular value is undefined, else returns the
+ * original value. Useful for defaulting optional parameters.
+ * @param {Object} suspectValue The value to test.
+ * @param {Object} defaultValue The value to default to when suspect is undef.
+ * @return {Object} The suspect or default value.
+ */
+CLI.ifUndefined = function(suspectValue, defaultValue) {
+    if (suspectValue === undefined) {
+        return defaultValue;
+    }
+    return suspectValue;
 };
 
 
@@ -316,7 +334,7 @@ CLI.inProject = function() {
     // which tells us we're in a TIBET project.
     while (cwd.length > 0) {
         if (sh.test('-f', path.join(cwd, file))) {
-            CLI.options.app_root = cwd;
+            this.options.app_root = cwd;
             // Relocate cwd to the new root so our paths for things like
             // grunt and gulp work without requiring global installs etc.
             process.chdir(cwd);
@@ -486,7 +504,7 @@ CLI.runViaGrunt = function() {
         { cwd: this.getAppRoot()}
     );
 
-// TODO: add more handlers here for signal handling, cleaner shutdown, etc.
+    // TODO: add more handlers here for signal handling, cleaner shutdown, etc.
 
     child.stdout.on('data', function(data) {
         // Why the '' + ?. Apparently to 'copy' the string :)
@@ -537,7 +555,7 @@ CLI.runViaGulp = function() {
         { cwd: this.getAppRoot()}
     );
 
-// TODO: add more handlers here for signal handling, cleaner shutdown, etc.
+    // TODO: add more handlers here for signal handling, cleaner shutdown, etc.
 
     child.stdout.on('data', function(data) {
         // Why the '' + ?. Apparently to 'copy' the string :)

@@ -1,7 +1,8 @@
 /**
+ * @file _cmd.js
  * @overview A root command object used for simple feature inheritance. All
- * custom commands within the TIBET command set should inherit from this type or
- * from a subtype of this type.
+ *     custom commands within the TIBET command set should inherit from this
+ *     type or * from a subtype of this type.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -25,6 +26,7 @@ var CLI = require('./_cli');
  *     Common keys include 'cli', 'debug', and 'verbose'.
  */
 var Cmd = function(){};
+
 
 //  ---
 //  Instance Attributes

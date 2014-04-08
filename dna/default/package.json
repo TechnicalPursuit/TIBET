@@ -1,25 +1,19 @@
 {
+  "//": "{{appname}} npm package configuration.",
   "name": "{{appname}}",
   "version": "0.1.0",
   "dependencies": {
+    "chalk": "*",
     "connect": "*",
     "connect-gzip-static": "*",
     "optimist": "*",
+    "shelljs": "*",
     "tibet3": "*"
   },
   "devDependencies": {
-    "chalk": "*",
-    "gulp": "*",
-    "gulp-clean": "*",
-    "gulp-concat": "*",
-    "gulp-jshint": "*",
-    "gulp-uglify": "*",
-    "gulp-rename": "*",
-    "gulp-util": "*",
+    "couchapp": "*",
     "phantomjs": "*",
-    "shelljs": "*",
-    "uglify-js": "*",
-    "xmldom": "*"
+    "uglify-js": "*"
   },
   "engines": {
     "node": ">=0.10",
@@ -29,3 +23,4 @@
   },
   "preferGlobal": "false"
 }
+

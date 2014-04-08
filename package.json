@@ -49,6 +49,7 @@
   "devDependencies": {
     "chai": "*",
     "chalk": "*",
+    "connect": "*",
     "eslint": "*",
     "findit": "*",
     "grunt": "*",
