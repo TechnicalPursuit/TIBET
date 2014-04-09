@@ -45,7 +45,7 @@ Cmd.prototype.USAGE = 'tibet echo [args]';
 //  ---
 
 // NOTE no method overrides here. Echo is what the parent does until overridden.
-// Implement 'process' method here if using this as a command template.
+// Implement 'execute' method here if using this as a command template.
 
 //  ---
 //  Export

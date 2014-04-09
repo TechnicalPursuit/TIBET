@@ -79,7 +79,7 @@ Cmd.prototype.USAGE = 'tibet clone {appname} [--dna {template}]';
  * Runs the specific command in question.
  * @param {Array.<string>} args The argument array from the command line.
  */
-Cmd.prototype.process = function() {
+Cmd.prototype.execute = function() {
 
     var fs;         // The file system module.
     var hb;         // The handlebars module. Used to inject data in dna files.

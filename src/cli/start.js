@@ -46,7 +46,7 @@ Cmd.prototype.USAGE = 'tibet start [--port {{port}}]';
  * Runs the command. For this type the goal is to provide easy startup of the
  * local TIBET server.
  */
-Cmd.prototype.process = function() {
+Cmd.prototype.execute = function() {
 
     var sh;     // The shelljs module.
     var child;  // The child_process module.

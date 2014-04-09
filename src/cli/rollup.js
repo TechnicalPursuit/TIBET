@@ -85,12 +85,13 @@ Cmd.prototype.USAGE =
  * least provide a package name (since the platform doesn't keep its tibet.xml
  * in the typical application location under TIBET-INF).
  */
-Cmd.prototype.process = function() {
+Cmd.prototype.execute = function() {
 
     var list;       // The result list of asset references.
     var cmd;        // Binding reference to 'this'.
     var Package;    // The tibet_package export.
     var ug;         // The uglify-js compressor export.
+    var uglifyOpts; // Options for uglify.
 
     // Note the default here points to an application-standard package path.
     file = CLI.ifUndefined(this.argv.package, Cmd.PACKAGE);
@@ -137,14 +138,28 @@ Cmd.prototype.process = function() {
     cmd = this;
 
     ug = require('uglify-js');
+    uglifyOpts = CLI.ifUndefined(this.config.uglify, {});
 
     list.forEach(function(node) {
         var src = node.getAttribute('src');
-
-        if (cmd.argv.files) {
-            console.log(src);
+        if (src) {
+            if (cmd.argv.files) {
+                console.log(src);
+            } else {
+                code = ug.minify(src, uglifyOpts).code;
+                if (code && code[code.length - 1] !== ';') {
+                    code += ';';
+                }
+                console.log(code);
+            }
         } else {
-            console.log(ug.minify(src).code + ';');
+            if (cmd.argv.files) {
+                console.log(node);
+            } else {
+                // TODO: have to remove wrapper script node text and then uglify
+                // the node content text.
+                console.log(node.textContent);
+            }
         }
     });
 

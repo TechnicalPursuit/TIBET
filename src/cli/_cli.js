@@ -377,6 +377,7 @@ CLI.run = function(options) {
     var command;        // the first non-option argument, the command name.
     var file;           // the command file we check for existence.
     var rest;           // arguments list, minus $0 and command name.
+    var root;           // App root path for loading project data.
     var cmdPath;        // the command path (for use with require())
     var cmdType;        // the command type (require'd into existence)
     var cmd;            // the command instance for a command run.
@@ -390,28 +391,38 @@ CLI.run = function(options) {
 
     opt = require('optimist');
     argv = opt.argv;
+
     command = argv._[0];
+    if (!command) {
+        // NOTE: we could inject a more REPL-based approach here in the future.
+        command = 'help';
+    }
+
+    // Don't run commands that are prefixed. These will be of two kinds, the
+    // top-level infrastructure stuff (_cli.js, _cmd.js) and command "helpers".
+    if (command.charAt(0) === '_') {
+        this.error('Cannot directly run private command: ' + command);
+        process.exit(1);
+    }
+
+    //  ---
+    //  Config/Arguments
+    //  ---
 
     // Configure logging/debugging parameters CLI-wide.
     this.options.debug = argv.debug;
     this.options.verbose = argv.verbose;
     this.options.stack = argv.stack;
 
-    // NOTE: we could inject a more REPL-based approach here in the future.
-    if (!command) {
-        command = 'help';
-    }
+    // Trim off the $0 portion (node, bin/tibet) and the command name. We pass
+    // the remainder to the command as the argument list for the command.
+    rest = process.argv.slice(2).filter(function(item) {
+        return item !== command;
+    });
 
     //  ---
     //  Verify the command is valid.
     //  ---
-
-    // If the command specified happens to be 'cli' that's bad. We don't want to
-    // try to load this file again from within this file.
-    if (command === '_cli') {
-        this.error('Cannot run TIBET CLI as a command.');
-        process.exit(1);
-    }
 
     // Search app_cmd, lib_cmd_ etc. for the command implementation.
     cmdPath = CLI.getCommandPath(command, options);
@@ -460,14 +471,8 @@ CLI.run = function(options) {
     //  Dispatch the command (if found).
     //  ---
 
-    // Trim off the $0 portion (node, bin/tibet) and the command name. We pass
-    // the remainder to the command as the argument list for the command.
-    rest = process.argv.slice(2).filter(function(item) {
-        return item !== command;
-    });
-
     try {
-        cmd = new cmdType(this.options);
+        cmd = new cmdType();
         cmd.run(rest, this.options);
     } catch (e) {
         msg = e.message;
@@ -583,6 +588,39 @@ CLI.runViaGulp = function() {
 
     return;
 };
+
+/**
+ * Processes any content from the project file into proper configuration
+ * parameter values.
+ */
+CLI.setTIBETOptions = function() {
+
+    var pkg;
+
+    pkg = this;
+
+    Object.keys(this.tibet).forEach(function(key) {
+        var value;
+
+        value = pkg.tibet[key];
+
+        // If the value isn't a primitive it means the key was initially
+        // provided with a prefix. We'll need to recreate that to store the
+        // data properly.
+        if (Object.prototype.toString.call(value) === '[object Object]') {
+
+            Object.keys(value).forEach(function(subkey) {
+                var name;
+
+                name = key + '.' + subkey;
+                TP.sys.setcfg(name, value[subkey]);
+            });
+        } else {
+            TP.sys.setcfg(key, value);
+        }
+    });
+};
+
 
 //  ---
 //  Export

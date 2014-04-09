@@ -89,7 +89,7 @@ Cmd.prototype.parse = function(args) {
  * Perform the actual command processing. Typically you want to override this
  * method. The default implementation simply echoes the command arguments.
  */
-Cmd.prototype.process = function() {
+Cmd.prototype.execute = function() {
     if (this.argv) {
         this.log(JSON.stringify(this.argv));
     }
@@ -101,8 +101,8 @@ Cmd.prototype.process = function() {
 
 
 /**
- * Parses, checks for --usage/--help, and invokes process() as needed. This is a
- * template method you should normally leave as is. Override process() to change
+ * Parses, checks for --usage/--help, and invokes execute() as needed. This is a
+ * template method you should normally leave as is. Override execute() to change
  * the core functionality for your command.
  * @param {Array.<string>} args Processed arguments from the command line.
  * @param {Object.<string, object>} options Command processing options.
@@ -110,6 +110,13 @@ Cmd.prototype.process = function() {
 Cmd.prototype.run = function(args, options) {
 
     this.options = options || {};
+
+    // Create a shortcut to any config data we may have loaded from tibet.json.
+    if (this.options.tibet && this.options.tibet.config) {
+        this.config = this.options.tibet.config;
+    } else {
+        this.config = {};
+    }
 
     this.parse(args);
     if (this.argv.help) {
@@ -120,7 +127,7 @@ Cmd.prototype.run = function(args, options) {
         return this.usage();
     }
 
-    return this.process();
+    return this.execute();
 };
 
 

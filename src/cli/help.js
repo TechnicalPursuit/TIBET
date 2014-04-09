@@ -49,7 +49,7 @@ Cmd.prototype.USAGE = 'tibet help [command]';
  * found.
  * @param {Array.<string>} args The argument array from the command line.
  */
-Cmd.prototype.process = function(args) {
+Cmd.prototype.execute = function(args) {
 
     var path;
     var sh;
