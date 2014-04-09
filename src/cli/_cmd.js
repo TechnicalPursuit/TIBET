@@ -36,7 +36,7 @@ var Cmd = function(){};
  * The context viable for this command. Default is inside.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.prototype.CONTEXT = CLI.CONTEXTS.INSIDE;
+Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
 
 /**

@@ -179,15 +179,15 @@ CLI.system = function(msg) {
 
 /**
  * Returns true if the current context is appropriate for the command to run.
- * @param {Object} cmd The command instance to check.
+ * @param {Object} cmdType The command type to check.
  * @return {Boolean} True if the command is runnable.
  */
-CLI.canRun = function(cmd) {
+CLI.canRun = function(cmdType) {
 
     if (CLI.inProject())
-        return cmd.CONTEXT !== CLI.CONTEXTS.OUTSIDE;
+        return cmdType.CONTEXT !== CLI.CONTEXTS.OUTSIDE;
     else {
-        return cmd.CONTEXT !== CLI.CONTEXTS.INSIDE;
+        return cmdType.CONTEXT !== CLI.CONTEXTS.INSIDE;
     }
 };
 
@@ -440,19 +440,18 @@ CLI.run = function(options) {
     try {
         cmdType = require(cmdPath);
 
-        cmd = new cmdType(this.options);
-
-        if (!this.canRun(cmd)) {
-            this.warn('Command must be run ' + cmd.CONTEXT +
+        if (!this.canRun(cmdType)) {
+            this.warn('Command must be run ' + cmdType.CONTEXT +
                 ' a TIBET project.');
             process.exit(1);
         }
-
     } catch (e) {
         msg = e.message;
+
         if (this.options.stack) {
             msg += ' ' + e.stack;
         }
+
         this.error('Error loading ' + command + ': ' + msg);
         process.exit(1);
     }
@@ -468,12 +467,15 @@ CLI.run = function(options) {
     });
 
     try {
+        cmd = new cmdType(this.options);
         cmd.run(rest, this.options);
     } catch (e) {
         msg = e.message;
+
         if (this.options.stack) {
             msg += ' ' + e.stack;
         }
+
         this.error('Error processing ' + command + ': ' + msg);
         process.exit(1);
     }
