@@ -21,6 +21,8 @@
  *      exclude     Use asset list as exclusions? Default is false.
  *      silent      Toggle error reporting. Default is false.
  *      files       Output files rather than source code? Default is false.
+ *      phaseone    Package phase-one content? Default is false.
+ *      phasetwo    Package phase-two content? Default is true.
  *
  * OTHER OPTIONS:
  *
@@ -69,7 +71,7 @@ Cmd.PACKAGE = '~app/TIBET-INF/tibet.xml';
  */
 Cmd.prototype.USAGE =
     'tibet rollup [--package {package}] [--config {cfg}] ' +
-        '[--assets {asset names}] --exclude';
+        '[--phaseone] [--phasetwo] [--assets {asset names}] --exclude';
 
 
 //  ---
@@ -110,6 +112,12 @@ Cmd.prototype.process = function() {
     this.argv.source = false;
     this.argv.silent = this.argv.nosilent ? false :
         CLI.ifUndefined(this.argv.silent, false);
+
+    // Set boot phase defaults. If we don't manage these then most app package
+    // runs will quietly filter out all their content nodes.
+    this.argv.boot = {};
+    this.argv.boot.phaseone = CLI.ifUndefined(this.argv.phaseone, false);
+    this.argv.boot.phasetwo = CLI.ifUndefined(this.argv.phasetwo, true);
 
     // TODO: relocate from tibet3 to a reasonable TIBET 5.0 location.
     Package = require(path.join(CLI.getAppRoot(),
