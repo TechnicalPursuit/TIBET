@@ -435,7 +435,7 @@ CLI.run = function(options) {
         // We have to be in a project to invoke grunt as a fallback.
         if (!this.inProject()) {
             this.warn('Command not found: ' + command + '.' +
-                    ' Grunt fallback requires a project.');
+                    ' Grunt/gulp fallback requires a project.');
             process.exit(1);
         }
 
@@ -443,6 +443,9 @@ CLI.run = function(options) {
             CLI.runViaGulp();
         } else if (this.inGruntProject()) {
             CLI.runViaGrunt();
+        } else {
+            this.warn('Command not found: ' + command + '.');
+            process.exit(1);
         }
 
         return;
