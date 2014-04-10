@@ -142,7 +142,10 @@ Cmd.prototype.execute = function() {
 
     list.forEach(function(node) {
         var src = node.getAttribute('src');
+        var virtual;
+
         if (src) {
+            virtual = package.getVirtualPath(src);
             if (cmd.argv.files) {
                 console.log(src);
             } else {
@@ -150,14 +153,15 @@ Cmd.prototype.execute = function() {
                 if (code && code[code.length - 1] !== ';') {
                     code += ';';
                 }
+
+                console.log('TP.boot.$srcPath = \'' + virtual + '\'');
                 console.log(code);
             }
         } else {
             if (cmd.argv.files) {
                 console.log(node);
             } else {
-                // TODO: have to remove wrapper script node text and then uglify
-                // the node content text.
+                console.log('TP.boot.$srcPath = \'\'');
                 console.log(node.textContent);
             }
         }
