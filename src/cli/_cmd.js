@@ -11,10 +11,10 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-;(function(root) {
+;(function() {
 
 var CLI = require('./_cli');
-
+var minimist = require('minimist');
 
 //  ---
 //  Type Construction
@@ -27,16 +27,22 @@ var CLI = require('./_cli');
  */
 var Cmd = function(){};
 
+/**
+ * The context viable for this command. Default is inside.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+
 
 //  ---
 //  Instance Attributes
 //  ---
 
 /**
- * The context viable for this command. Default is inside.
- * @type {Cmd.CONTEXTS}
+ * A help string for optional expanded help content.
+ * @type {string}
  */
-Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+Cmd.prototype.HELP = '';
 
 
 /**
@@ -48,7 +54,7 @@ Cmd.prototype.USAGE = '';
 
 
 /**
- * The parsed arguments in node-optimist format.
+ * The parsed arguments in minimist format.
  * @type {Object}
  */
 Cmd.prototype.argv = null;
@@ -61,26 +67,42 @@ Cmd.prototype.argv = null;
 Cmd.prototype.options = null;
 
 
+/**
+ * Command argument parsing options for minimist. The defaults handle the common
+ * flags but can be overridden if the command needs to define specific ones.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = {
+    boolean: ['color', 'help', 'usage', 'debug', 'stack', 'verbose'],
+    string: ['app_root']
+};
+
 //  ---
 //  Instance Methods
 //  ---
 
 /**
- * Outputs expanded help if available, otherwise outputs usage().
+ * Outputs expanded help text if available, otherwise outputs usage().
  */
 Cmd.prototype.help = function() {
-    return this.usage();
+
+    // Dump the usage string as a form of 'summary'. NOTE that this typically
+    // outputs a newline above and below the actual usage text.
+    this.usage();
+
+    // Dump any additional HELP text.
+    this.info((this.HELP || '') + '\n');
 };
 
 
 /**
  * Parse the arguments. By default this routine uses default parsing via
- * node-optimist resulting in arguments being placed in the argv attribute.
+ * minimist resulting in arguments being placed in the argv attribute.
  * @param {Array.<string>} args Processed arguments from the command line.
- * @return {Object} An object in node-optimist argument format.
+ * @return {Object} An object in minimist argument format.
  */
-Cmd.prototype.parse = function(args) {
-    this.argv = require('optimist').parse(args) || [];
+Cmd.prototype.parse = function() {
+    this.argv = minimist(process.argv.slice(2), this.PARSE_OPTIONS) || [];
     return this.argv;
 };
 
@@ -90,13 +112,7 @@ Cmd.prototype.parse = function(args) {
  * method. The default implementation simply echoes the command arguments.
  */
 Cmd.prototype.execute = function() {
-    if (this.argv) {
-        this.log(JSON.stringify(this.argv));
-    }
-
-    if (CLI.inProject()) {
-        this.log(JSON.stringify(this.options));
-    }
+    return;
 };
 
 
@@ -104,10 +120,9 @@ Cmd.prototype.execute = function() {
  * Parses, checks for --usage/--help, and invokes execute() as needed. This is a
  * template method you should normally leave as is. Override execute() to change
  * the core functionality for your command.
- * @param {Array.<string>} args Processed arguments from the command line.
  * @param {Object.<string, object>} options Command processing options.
  */
-Cmd.prototype.run = function(args, options) {
+Cmd.prototype.run = function(options) {
 
     this.options = options || {};
 
@@ -118,13 +133,15 @@ Cmd.prototype.run = function(args, options) {
         this.config = {};
     }
 
-    this.parse(args);
-    if (this.argv.help) {
-        return this.help();
-    }
+    // Re-parse the command line with any localized parser options.
+    this.argv = this.parse();
 
     if (this.argv.usage) {
         return this.usage();
+    }
+
+    if (this.argv.help) {
+        return this.help();
     }
 
     return this.execute();
@@ -135,35 +152,22 @@ Cmd.prototype.run = function(args, options) {
  * Dumps the receiver's usage string as a simple form of help.
  */
 Cmd.prototype.usage = function() {
-    this.info('Usage: ' + this.USAGE);
+    this.info('\nUsage: ' + (this.USAGE || '') + '\n');
 };
-
 
 //  ---
 //  Console logging API via invoking CLI instance.
 //  ---
 
-Cmd.prototype.log = CLI.log;
-Cmd.prototype.info = CLI.info;
-Cmd.prototype.warn = CLI.warn;
-Cmd.prototype.error = CLI.error;
+Cmd.prototype.log = CLI.log.bind(CLI);
+Cmd.prototype.info = CLI.info.bind(CLI);
+Cmd.prototype.warn = CLI.warn.bind(CLI);
+Cmd.prototype.error = CLI.error.bind(CLI);
 
-Cmd.prototype.debug = CLI.debug;
-Cmd.prototype.verbose = CLI.verbose;
-Cmd.prototype.system = CLI.system;
+Cmd.prototype.debug = CLI.debug.bind(CLI);
+Cmd.prototype.verbose = CLI.verbose.bind(CLI);
+Cmd.prototype.system = CLI.system.bind(CLI);
 
+module.exports = Cmd;
 
-//  ---
-//  Export
-//  ---
-
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
-    }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
-
-}(this));
+}());

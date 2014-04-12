@@ -34,7 +34,7 @@
  *      info on the options available through that component.
  */
 
-;(function(root) {
+;(function() {
 
 var CLI = require('./_cli');
 var path = require('path');
@@ -153,7 +153,6 @@ Cmd.prototype.execute = function() {
  * @param {Array.<Node>} list An array of package nodes.
  */
 Cmd.prototype.executeForEach = function(list) {
-
     var cmd,
         pkg;
 
@@ -167,18 +166,6 @@ Cmd.prototype.executeForEach = function(list) {
     process.exit(0);
 };
 
+module.exports = Cmd;
 
-//  ---
-//  Export
-//  ---
-
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
-    }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
-
-}(this));
+}());

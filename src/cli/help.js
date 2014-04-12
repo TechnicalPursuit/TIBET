@@ -8,7 +8,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-;(function(root) {
+;(function() {
 
 var CLI = require('./_cli');
 
@@ -34,6 +34,13 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
 
 
 /**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP = 'Displays this message.';
+
+
+/**
  * The command usage string.
  * @type {string}
  */
@@ -45,24 +52,57 @@ Cmd.prototype.USAGE = 'tibet help [command]';
 //  ---
 
 /**
+ * Processes requests of the form 'tibet --help', 'tibet help --help', and
+ * potentially 'tibet --help <command>'. The last one is a bit tricky since
+ * optimist will parse that and make <command> the value of the help flag.
+ */
+Cmd.prototype.help = function() {
+
+    // The 'tibet --help' command will end up here, but it's not really a
+    // request for help on the help command.
+
+    if (this.argv._[0] !== 'help') {
+        return this.execute();
+    }
+
+    this.usage();
+    this.info(this.HELP + '\n');
+};
+
+
+/**
+ * Processes requests of the form 'tibet --usage', 'tibet help --usage', and
+ * potentially 'tibet --usage <command>'. The last one is a bit tricky since
+ * optimist will parse that and make <command> the value of the usage flag.
+ */
+Cmd.prototype.usage = function() {
+
+    // The 'tibet --usage' command can end up here. It's not really a request
+    // for usage on the help command.
+    if (this.argv._[0] !== 'help') {
+        return this.execute();
+    }
+
+    this.info('\n' + this.USAGE + '\n');
+};
+
+
+/**
  * Runs the help command, outputting a list of usage strings for any commands
  * found.
- * @param {Array.<string>} args The argument array from the command line.
  */
-Cmd.prototype.execute = function(args) {
+Cmd.prototype.execute = function() {
 
     var path;
     var sh;
     var files;
     var my;
-    var argv;
     var command;
 
     path = require('path');
     sh = require('shelljs');
 
-    argv = this.argv;
-    command = argv._[0];
+    command = this.argv._ && this.argv._[1];
 
     // TODO: add logic for ~*_cmd versions of commands.
     // IFF we can find an app root then we can also try to locate any
@@ -99,18 +139,6 @@ Cmd.prototype.execute = function(args) {
     });
 };
 
+module.exports = Cmd;
 
-//  ---
-//  Export
-//  ---
-
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
-    }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
-
-}(this));
+}());

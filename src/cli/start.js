@@ -8,7 +8,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-;(function(root) {
+;(function() {
 
 //  ---
 //  Type Construction
@@ -143,17 +143,6 @@ Cmd.prototype.execute = function() {
     });
 };
 
-//  ---
-//  Export
-//  ---
+module.exports = Cmd;
 
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
-    }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
-
-}(this));
+}());

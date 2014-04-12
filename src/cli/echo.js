@@ -1,5 +1,6 @@
 /**
- * @overview The 'tibet echo' command.
+ * @overview The 'tibet echo' command. A simple command usable as a template for
+ *     custom commands. Echo's the current command line arguments and options.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -8,7 +9,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-;(function(root) {
+;(function() {
 
 var CLI = require('./_cli');
 
@@ -34,6 +35,14 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
 
 
 /**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+    'Echoes the command line arguments and configuration options.';
+
+
+/**
  * The command usage string.
  * @type {string}
  */
@@ -44,20 +53,20 @@ Cmd.prototype.USAGE = 'tibet echo [args]';
 //  Instance Methods
 //  ---
 
-// NOTE no method overrides here. Echo is what the parent does until overridden.
-// Implement 'execute' method here if using this as a command template.
-
-//  ---
-//  Export
-//  ---
-
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
+/**
+ * Perform the actual command processing. Typically you want to override this
+ * method. The default implementation simply echoes the command arguments.
+ */
+Cmd.prototype.execute = function() {
+    if (this.argv) {
+        this.log(JSON.stringify(this.argv));
     }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
 
-}(this));
+    if (CLI.inProject()) {
+        this.log(JSON.stringify(this.options));
+    }
+};
+
+module.exports = Cmd;
+
+}());

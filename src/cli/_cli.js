@@ -19,9 +19,11 @@
  *      debug           // Display debug-level messages. Default is false.
  *      verbose         // Display verbose-level messages. Default is false.
  *      stack           // Dump stack with error messages? Default is false.
+ *      help            // Display help on the command. Default is false.
+ *      usage           // Display usage of the command. Default is false.
  */
 
-;(function(root) {
+;(function() {
 
 /*
  * Required modules we'll bring in once.
@@ -29,6 +31,7 @@
 var path = require('path');
 var sh = require('shelljs');
 var chalk = require('chalk');
+var minimist = require('minimist');
 
 /*
  * Color theme:
@@ -77,7 +80,8 @@ CLI.CONTEXTS = {
 
 /**
  * Grunt fallback requires that we find this file to be sure we're in a
- * grunt-enabled project.
+ * grunt-enabled project. Also, grunt's executable must be installed (which
+ * TIBET does NOT do by default).
  * @type {string}
  */
 CLI.GRUNT_FILE = 'gruntfile.js';
@@ -85,7 +89,8 @@ CLI.GRUNT_FILE = 'gruntfile.js';
 
 /**
  * Gulp fallback requires that we find this file to be sure we're in a
- * gulp-enabled project.
+ * gulp-enabled project. Also, gulp's executable must be installed (which TIBET
+ * does NOT do by default).
  * @type {string}
  */
 CLI.GULP_FILE = 'gulpfile.js';
@@ -179,6 +184,9 @@ CLI.system = function(msg) {
 
 /**
  * Returns true if the current context is appropriate for the command to run.
+ * The primary response here is based on "context" in that some commands are
+ * only useful within a project, some must be outside a project, and some can be
+ * run from any location.
  * @param {Object} cmdType The command type to check.
  * @return {Boolean} True if the command is runnable.
  */
@@ -194,7 +202,9 @@ CLI.canRun = function(cmdType) {
 
 /**
  * Returns the application root directory, the path where the PROJECT_FILE is
- * found.
+ * found. This path is then used by many commands as a "root" for relative path
+ * computations.
+ * @return {string} The application root directory.
  */
 CLI.getAppRoot = function() {
 
@@ -274,16 +284,18 @@ CLI.getCommandPath = function(command, options) {
  * @return {Object} The suspect or default value.
  */
 CLI.ifUndefined = function(suspectValue, defaultValue) {
+
     if (suspectValue === undefined) {
         return defaultValue;
     }
+
     return suspectValue;
 };
 
 
 /**
  * Returns true if the project appears to be using Grunt as a build tool.
- * @return {Boolean} true if a CLI.GRUNT_FILE file is found.
+ * @return {Boolean} true if a CLI.GRUNT_FILE and Grunt binary are found.
  */
 CLI.inGruntProject = function() {
 
@@ -300,7 +312,7 @@ CLI.inGruntProject = function() {
 
 /**
  * Returns true if the project appears to be using Gulp as a build tool.
- * @return {Boolean} true if a CLI.GULP_FILE file is found.
+ * @return {Boolean} true if a CLI.GULP_FILE and gulp binary are found.
  */
 CLI.inGulpProject = function() {
 
@@ -367,13 +379,13 @@ CLI.inProject = function() {
 
 /**
  * Executes the current command line, parsing the command line and invoking the
- * appropriate command in response.
+ * appropriate command in response. The command is invoked via 'execute'. See
+ * the _cmd.js documentation for more detail.
  * @param {Object} options An object containing command/context information.
  */
 CLI.run = function(options) {
 
-    var opt;            // the optimist module. parses command line.
-    var argv;           // arguments processed via optimist.
+    var argv;           // arguments processed via minimist.
     var command;        // the first non-option argument, the command name.
     var file;           // the command file we check for existence.
     var rest;           // arguments list, minus $0 and command name.
@@ -389,13 +401,27 @@ CLI.run = function(options) {
     //  Process the command-line arguments to find the command name.
     //  ---
 
-    opt = require('optimist');
-    argv = opt.argv;
+    // Slice 2 here to remove 'node tibet' from the front. Also ensure that our
+    // binary (boolean) flags are identified as such to avoid parsing glitches.
+    argv = minimist(process.argv.slice(2), {
+        boolean: ['color', 'help', 'usage', 'debug', 'stack', 'verbose'],
+        string: ['app_root']
+    }) || [];
 
     command = argv._[0];
+
     if (!command) {
-        // NOTE: we could inject a more REPL-based approach here in the future.
-        command = 'help';
+
+        // Empty commands often indicate a --flag of some kind on the tibet
+        // command itself. Check for the ones we support here.
+        // NB: don't change these to value tests, we just want existence.
+        if (argv.version) {
+            command = 'version';
+        } else if (argv.help) {
+            command = 'help';
+        } else if (argv.usage) {
+            command = 'help';
+        }
     }
 
     // Don't run commands that are prefixed. These will be of two kinds, the
@@ -413,12 +439,6 @@ CLI.run = function(options) {
     this.options.debug = argv.debug;
     this.options.verbose = argv.verbose;
     this.options.stack = argv.stack;
-
-    // Trim off the $0 portion (node, bin/tibet) and the command name. We pass
-    // the remainder to the command as the argument list for the command.
-    rest = process.argv.slice(2).filter(function(item) {
-        return item !== command;
-    });
 
     //  ---
     //  Verify the command is valid.
@@ -453,37 +473,45 @@ CLI.run = function(options) {
 
     try {
         cmdType = require(cmdPath);
+    } catch (e) {
+        msg = e.message;
+        if (this.options.stack) {
+            msg += ' ' + e.stack;
+        }
+        this.error('Error loading ' + command + ': ' + msg);
+        process.exit(1);
+    }
 
+    try {
+        cmd = new cmdType();
+    } catch (e) {
+        msg = e.message;
+        if (this.options.stack) {
+            msg += ' ' + e.stack;
+        }
+        this.error('Error instantiating ' + command + ': ' + msg);
+        process.exit(1);
+    }
+
+    // If we're not dumping help or usage check context. We can't really run to
+    // completion if we're not in the right context.
+    if (!argv.usage && !argv.help) {
         if (!this.canRun(cmdType)) {
             this.warn('Command must be run ' + cmdType.CONTEXT +
                 ' a TIBET project.');
             process.exit(1);
         }
-    } catch (e) {
-        msg = e.message;
-
-        if (this.options.stack) {
-            msg += ' ' + e.stack;
-        }
-
-        this.error('Error loading ' + command + ': ' + msg);
-        process.exit(1);
     }
 
-    //  ---
-    //  Dispatch the command (if found).
-    //  ---
-
+    //  Dispatch the command with any config options. It will parse the command
+    //  line again itself so it can be certain of flag values.
     try {
-        cmd = new cmdType();
-        cmd.run(rest, this.options);
+        cmd.run(this.options);
     } catch (e) {
         msg = e.message;
-
         if (this.options.stack) {
             msg += ' ' + e.stack;
         }
-
         this.error('Error processing ' + command + ': ' + msg);
         process.exit(1);
     }
@@ -624,18 +652,6 @@ CLI.setTIBETOptions = function() {
     });
 };
 
+module.exports = CLI;
 
-//  ---
-//  Export
-//  ---
-
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = CLI;
-    }
-    exports.CLI = CLI;
-} else {
-    root.CLI = CLI;
-}
-
-}(this));
+}());

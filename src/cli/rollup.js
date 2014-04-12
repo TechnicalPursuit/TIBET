@@ -12,10 +12,11 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-;(function(root) {
+;(function() {
 
 var CLI = require('./_cli');
 var path = require('path');
+
 var dom = require('xmldom');
 var serializer = new dom.XMLSerializer();
 
@@ -52,6 +53,7 @@ Cmd.prototype.USAGE = 'tibet rollup [package options]';
  * TIBET application context. For processing the TIBET platform you must at
  * least provide a package name (since the platform doesn't keep its tibet.xml
  * in the typical application location under TIBET-INF).
+ * @param {Array.<Node>} list An array of package asset nodes.
  */
 Cmd.prototype.executeForEach = function(list) {
 
@@ -96,18 +98,6 @@ Cmd.prototype.executeForEach = function(list) {
     process.exit(0);
 };
 
+module.exports = Cmd;
 
-//  ---
-//  Export
-//  ---
-
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
-    }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
-
-}(this));
+}());

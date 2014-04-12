@@ -1,5 +1,7 @@
 /**
- * @overview The 'tibet init' command.
+ * @overview The 'tibet init' command. Ensures any local tibet repositories are
+ *     linked into place (for TIBET developers ;)) and that npm install is run
+ *     to ensure any other dependencies are installed.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -8,7 +10,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-;(function(root) {
+;(function() {
 
 //  ---
 //  Type Construction
@@ -96,6 +98,8 @@ Cmd.prototype.execute = function() {
         json = JSON.parse(stdout);
         cmd.debug(stdout);
 
+        // NOTE that tibet3 is a short-term dependency while we port from the
+        // older codebase into the new 5.0 repository.
         if (json.dependencies.tibet3) {
             cmd.warn('TIBET v3.0 required. Trying `npm link tibet3`.');
 
@@ -109,6 +113,9 @@ Cmd.prototype.execute = function() {
 
                 cmd.info('TIBET v3.0 linked successfully.');
 
+                // For reasons largely due to how the CLI needs to operate (and
+                // until the code is part of the global npm package install) we
+                // also need an internal link to the tibet 5.0 platform.
                 cmd.warn('TIBET v5.0 required. Trying `npm link tibet`.');
 
                 child.exec('npm link tibet', function(err, stdout, stderr) {
@@ -121,8 +128,11 @@ Cmd.prototype.execute = function() {
 
                     cmd.info('TIBET v5.0 linked successfully.');
 
+                    // Ensure npm install is run once we're sure the things that
+                    // need to be 'npm link'd into place have been. If we don't
+                    // do this last it'll just fail.
                     cmd.info(
-                        'Installing remaining dependencies via `npm install`.');
+                        'Installing project dependencies via `npm install`.');
 
                     child.exec('npm install', function(err, stdout, stderr) {
                         if (err) {
@@ -137,7 +147,7 @@ Cmd.prototype.execute = function() {
 
         } else {
 
-            cmd.info('Installing project dependencies.');
+            cmd.info('Installing project dependencies via `npm install`.');
 
             child.exec('npm install', function(err, stdout, stderr) {
                 if (err) {
@@ -152,17 +162,6 @@ Cmd.prototype.execute = function() {
     });
 };
 
-//  ---
-//  Export
-//  ---
+module.exports = Cmd;
 
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
-    }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
-
-}(this));
+}());

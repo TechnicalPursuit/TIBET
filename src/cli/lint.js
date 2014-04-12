@@ -1,7 +1,8 @@
 /**
  * @file lint.js
  * @overview The 'tibet lint' command. Checks a package/config's script files
- *     for lint.
+ *     for lint. TIBET uses eslint, a configurable linter supporting custom
+ *     rulesets, to perform the actual linting process.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -10,7 +11,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-;(function(root) {
+;(function() {
 
 var CLI = require('./_cli');
 var path = require('path');
@@ -31,13 +32,7 @@ Cmd.prototype = new parent();
 //  Type Attributes
 //  ---
 
-/**
- * The default package to roll up. Note the default is our default for the
- * application's tibet.xml file.
- * @type {string}
- */
-Cmd.PACKAGE = '~app/TIBET-INF/tibet.xml';
-
+Cmd.CONFIG = '~/.eslintrc'
 
 //  ---
 //  Instance Attributes
@@ -47,7 +42,9 @@ Cmd.PACKAGE = '~app/TIBET-INF/tibet.xml';
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet lint [package options] ';
+Cmd.prototype.USAGE = 'tibet lint [package options] [--stop] ' +
+    '[-lintcfg {file}] [--rules {dir}] [--format {name}] ' +
+    '[--eslintrc] [--reset]';
 
 
 //  ---
@@ -61,19 +58,23 @@ Cmd.prototype.USAGE = 'tibet lint [package options] ';
 Cmd.prototype.executeForEach = function(list) {
 
     var cmd,
-        lintArgs;
+        eslint,
+        args;
 
     cmd = this;
-    lintArgs = ['node', 'eslint'];
 
     eslint = require('eslint');
+    args = this.getLintArguments();
 
     list.forEach(function(node) {
         var src = node.getAttribute('src');
         if (src) {
-            eslint.cli.execute(lintArgs.concat(src));
+            result = eslint.cli.execute(args.concat(src));
+            if (result !== 0 && cmd.argv.stop) {
+                process.exit(result);
+            }
         } else {
-            // TODO
+            // TODO: lint raw content
             console.log(node.textContent);
         }
     });
@@ -82,17 +83,37 @@ Cmd.prototype.executeForEach = function(list) {
 };
 
 
-//  ---
-//  Export
-//  ---
+/**
+ */
+Cmd.prototype.getLintArguments = function() {
 
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
+    var args;
+
+    args = ['node', 'eslint'];
+
+    console.log(this.argv);
+
+    // TODO: figure out why this throws errors in eslint...
+    if (this.argv.eslintrc === false) {
+    //    args.push('--no-eslintrc');
     }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
 
-}(this));
+    if (this.argv.lintcfg) {
+        args.push('-c' + this.argv.lintcfg);
+    }
+
+    if (this.argv.format) {
+        args.push('-f ' + this.argv.format);
+    }
+
+    if (this.argv.reset) {
+        args.push('--reset');
+    }
+
+    this.debug('lint args: ' + args);
+    return args;
+};
+
+module.exports = Cmd;
+
+}());

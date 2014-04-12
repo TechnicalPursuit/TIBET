@@ -26,7 +26,7 @@
  */
 
 
-;(function(root) {
+;(function() {
 
 var CLI = require('./_cli');
 
@@ -65,10 +65,18 @@ Cmd.prototype.DNA_ROOT = '../../../dna/';
 
 
 /**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+    'Clones a TIBET application template from a TIBET \'dna\' directory.\n' +
+    '<appname> is required and must be a valid directory name to create.\n';
+
+/**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet clone {appname} [--dna {template}]';
+Cmd.prototype.USAGE = 'tibet clone <appname> [--dna <template>]';
 
 
 //  ---
@@ -101,7 +109,7 @@ Cmd.prototype.execute = function() {
     ignore = ['.png', '.gif', '.jpg', '.ico', 'jpeg'];
 
     argv = this.argv;
-    appname = argv._[0];
+    appname = argv._[1];    // Command is at 0, appname should be [1].
 
     // Have to get at least one non-option argument (the new appname).
     if (!appname) {
@@ -274,17 +282,6 @@ Cmd.prototype.execute = function() {
     });
 };
 
-//  ---
-//  Export
-//  ---
+module.exports = Cmd;
 
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
-    }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
-
-}(this));
+}());
