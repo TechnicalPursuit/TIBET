@@ -37,7 +37,8 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
  * The command help string.
  * @type {string}
  */
-Cmd.prototype.HELP = 'Displays this message.';
+Cmd.prototype.HELP =
+    'Displays usage and help information for a command, or the \'tibet\' command.'
 
 
 /**
@@ -83,7 +84,7 @@ Cmd.prototype.usage = function() {
         return this.execute();
     }
 
-    this.info('\n' + this.USAGE + '\n');
+    this.info('\nUsage: ' + this.USAGE + '\n');
 };
 
 
@@ -98,6 +99,8 @@ Cmd.prototype.execute = function() {
     var files;
     var my;
     var command;
+    var cmdType;
+    var cmd;
 
     path = require('path');
     sh = require('shelljs');
@@ -114,8 +117,9 @@ Cmd.prototype.execute = function() {
     if (command) {
         file = path.join(__dirname, command + '.js');
         if (sh.test('-f', file)) {
-            cmd = require(file);
-            this.info(cmd.prototype.USAGE);
+            cmdType = require(file);
+            cmd = new cmdType();
+            cmd.help();
         } else {
             this.error('Command \'' + command + '\' not found.');
         }
