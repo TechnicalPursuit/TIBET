@@ -58,7 +58,7 @@ Cmd.prototype.USAGE = 'tibet help [command]';
 /**
  * Processes requests of the form 'tibet --help', 'tibet help --help', and
  * potentially 'tibet --help <command>'. The last one is a bit tricky since
- * optimist will parse that and make <command> the value of the help flag.
+ * minimist will parse that and make <command> the value of the help flag.
  */
 Cmd.prototype.help = function() {
 
@@ -77,7 +77,7 @@ Cmd.prototype.help = function() {
 /**
  * Processes requests of the form 'tibet --usage', 'tibet help --usage', and
  * potentially 'tibet --usage <command>'. The last one is a bit tricky since
- * optimist will parse that and make <command> the value of the usage flag.
+ * minimist will parse that and make <command> the value of the usage flag.
  */
 Cmd.prototype.usage = function() {
 

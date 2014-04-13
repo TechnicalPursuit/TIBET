@@ -12,8 +12,8 @@
 
 var Connect = require('connect');
 var gzipStatic = require('connect-gzip-static');
-var opt = require('optimist');
-var argv = opt.argv;
+var minimist = require('minimist');
+var argv = minimist(process.argv.slice(2));
 var port = argv.port ||
     process.env.npm_package_config_port ||
     process.env.PORT ||

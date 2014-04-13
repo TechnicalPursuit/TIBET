@@ -6,14 +6,14 @@
     "chalk": "*",
     "connect": "*",
     "connect-gzip-static": "*",
-    "optimist": "*",
+    "minimist": "*",
+    "phantomjs": "*",
     "shelljs": "*",
-    "tibet3": "*"
+    "tibet3": "*",
+    "uglify-js": "*"
   },
   "devDependencies": {
-    "couchapp": "*",
-    "phantomjs": "*",
-    "uglify-js": "*"
+    "couchapp": "*"
   },
   "engines": {
     "node": ">=0.10",
