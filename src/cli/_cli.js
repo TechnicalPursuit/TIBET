@@ -435,7 +435,7 @@ CLI.run = function(options) {
     // top-level infrastructure stuff (_cli.js, _cmd.js) and command "helpers".
     if (command.charAt(0) === '_') {
         this.error('Cannot directly run private command: ' + command);
-        throw new Error();
+        return;
     }
 
     //  ---
@@ -459,20 +459,14 @@ CLI.run = function(options) {
         // be that we're trying to invoke a grunt task via the 'tibet' command
         // so check for that.
 
-        // We have to be in a project to invoke grunt as a fallback.
-        if (!this.inProject()) {
-            this.warn('Command not found: ' + command + '.' +
-                    ' Grunt/gulp fallback requires a project.');
-            throw new Error();
-        }
-
         if (this.inGulpProject()) {
+            this.warn('Command not found: ' + command + '. Trying gulp...');
             CLI.runViaGulp();
         } else if (this.inGruntProject()) {
+            this.warn('Command not found: ' + command + '. Trying grunt...');
             CLI.runViaGrunt();
         } else {
             this.error('Command not found: ' + command + '.');
-            throw new Error();
         }
 
         return;
@@ -486,7 +480,7 @@ CLI.run = function(options) {
             msg += ' ' + e.stack;
         }
         this.error('Error loading ' + command + ': ' + msg);
-        throw new Error();
+        return;
     }
 
     try {
@@ -497,16 +491,16 @@ CLI.run = function(options) {
             msg += ' ' + e.stack;
         }
         this.error('Error instantiating ' + command + ': ' + msg);
-        throw new Error();
+        return;
     }
 
     // If we're not dumping help or usage check context. We can't really run to
     // completion if we're not in the right context.
     if (!argv.usage && !argv.help) {
         if (!this.canRun(CmdType)) {
-            this.exit('Command must be run ' + CmdType.CONTEXT +
+            this.error('Command must be run ' + CmdType.CONTEXT +
                 ' a TIBET project.');
-            throw new Error();
+            return;
         }
     }
 
@@ -540,7 +534,7 @@ CLI.runViaGrunt = function() {
     // suggest they run `tibet init` first.
     if (!sh.test('-e', 'node_modules')) {
         this.error('Project not initialized. Run `tibet init` first.');
-        throw new Error();
+        return;
     }
 
     cmd = 'grunt ' + process.argv.slice(2).join(' ');
@@ -572,7 +566,7 @@ CLI.runViaGrunt = function() {
     });
 
     child.on('exit', function(code) {
-        throw new Error(code);
+        process.exit(code);
     });
 
     return;
@@ -591,7 +585,7 @@ CLI.runViaGulp = function() {
     // suggest they run `tibet init` first.
     if (!sh.test('-e', 'node_modules')) {
         this.error('Project not initialized. Run `tibet init` first.');
-        throw new Error();
+        return;
     }
 
     cmd = './node_modules/.bin/gulp ' + process.argv.slice(2).join(' ');
@@ -623,7 +617,7 @@ CLI.runViaGulp = function() {
     });
 
     child.on('exit', function(code) {
-        throw new Error(code);
+        process.exit(code);
     });
 
     return;
