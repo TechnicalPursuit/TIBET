@@ -83,8 +83,8 @@ Cmd.prototype.HELP =
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet package [--package {package}] [--config {cfg}] ' +
-        '[--all] [--phase <one|two>] [--assets "asset names"] [--exclude]';
+Cmd.prototype.USAGE = 'tibet package [--package <package>] [--config <cfg>] ' +
+        '[--all]\n\t[--phase <one|two>] [--assets "asset names"] [--exclude]';
 
 /**
  * The package instance which this instance is using to process package data.

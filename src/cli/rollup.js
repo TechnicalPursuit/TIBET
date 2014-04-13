@@ -38,7 +38,7 @@ Cmd.prototype = new Parent();
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet rollup [package options]';
+Cmd.prototype.USAGE = 'tibet rollup [package-opts]';
 
 
 //  ---

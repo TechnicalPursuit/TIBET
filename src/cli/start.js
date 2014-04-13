@@ -38,7 +38,7 @@ Cmd.prototype.PORT = 1407;      // Reserved by us in another lifetime.
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet start [--port {{port}}]';
+Cmd.prototype.USAGE = 'tibet start [--port <port>]';
 
 
 //  ---

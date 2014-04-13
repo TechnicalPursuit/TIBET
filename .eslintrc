@@ -4,9 +4,12 @@
         "node": true
     },
     "globals": {
-        "TP": true
+        "TP": true,
+        "APP": true
     },
     "rules": {
-        "quotes": "single"
+        "quotes": "single",
+        "strict": false,
+        "consistent-return": false
     }
 }

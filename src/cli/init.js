@@ -66,7 +66,7 @@ Cmd.prototype.execute = function() {
     // We can only start if we're in a top-level Node.js project directory.
     if (!sh.test('-f', 'package.json')) {
         this.error(
-            'Cannot start. No package.json found. Are you in a project?');
+            'Cannot init. No package.json found. Are you in a project?');
         throw new Error();
     }
 
