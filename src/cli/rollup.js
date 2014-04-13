@@ -12,24 +12,22 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*eslint no-extra-semi:0*/
 ;(function() {
 
+'use strict';
+
 var CLI = require('./_cli');
-var path = require('path');
-
-var dom = require('xmldom');
-var serializer = new dom.XMLSerializer();
-
 
 //  ---
 //  Type Construction
 //  ---
 
 // NOTE we don't inherit from _cmd, but from package.
-var parent = require('./package');
+var Parent = require('./package');
 
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
 
 
 //  ---
@@ -70,6 +68,7 @@ Cmd.prototype.executeForEach = function(list) {
 
     list.forEach(function(node) {
         var src = node.getAttribute('src');
+        var code;
         var virtual;
 
         if (src) {
@@ -94,8 +93,6 @@ Cmd.prototype.executeForEach = function(list) {
             }
         }
     });
-
-    process.exit(0);
 };
 
 module.exports = Cmd;

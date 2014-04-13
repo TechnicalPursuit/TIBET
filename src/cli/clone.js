@@ -26,7 +26,10 @@
  */
 
 
+/*eslint no-extra-semi:0*/
 ;(function() {
+
+'use strict';
 
 var CLI = require('./_cli');
 
@@ -34,10 +37,10 @@ var CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-var parent = require('./_cmd');
+var Parent = require('./_cmd');
 
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
 
 //  ---
 //  Instance Attributes
@@ -114,7 +117,7 @@ Cmd.prototype.execute = function() {
     // Have to get at least one non-option argument (the new appname).
     if (!appname) {
         this.info('Usage: ' + this.USAGE);
-        process.exit(1);
+        throw new Error();
     }
 
     path = require('path');
@@ -136,7 +139,7 @@ Cmd.prototype.execute = function() {
 
     if (!sh.test('-e', dna)) {
         this.error('DNA selection not found: ' + dna);
-        process.exit(1);
+        throw new Error();
     }
 
     //  ---
@@ -148,7 +151,7 @@ Cmd.prototype.execute = function() {
 
     if (sh.test('-e', target)) {
         this.error('Target already exists: ' + target);
-        process.exit(1);
+        throw new Error();
     }
 
     //  ---
@@ -161,14 +164,14 @@ Cmd.prototype.execute = function() {
     err = sh.error();
     if (err) {
         this.error('Error creating target directory: ' + err);
-        process.exit(1);
+        throw new Error();
     }
 
     sh.cp('-R', dna + '/', target + '/');
     err = sh.error();
     if (err) {
         this.error('Error cloning dna directory: ' + err);
-        process.exit(1);
+        throw new Error();
     }
 
     //  ---
@@ -191,11 +194,11 @@ Cmd.prototype.execute = function() {
     });
 
     // Ignore links. (There shouldn't be any...but just in case.).
-    finder.on('link', function(link, stat) {
+    finder.on('link', function(link) {
         cmd.warn('Warning: ignoring link: ' + link);
     });
 
-    finder.on('file', function(file, stat) {
+    finder.on('file', function(file) {
 
         var content;  // File content after template injection.
         var data;     // File data.
@@ -277,8 +280,6 @@ Cmd.prototype.execute = function() {
         } else {
             cmd.info('TIBET dna \'' + path.basename(dna) + '\' cloned to ' + appname + '.');
         }
-
-        process.exit(code);
     });
 };
 

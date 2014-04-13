@@ -8,7 +8,10 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*eslint no-extra-semi:0*/
 ;(function() {
+
+'use strict';
 
 var CLI = require('./_cli');
 
@@ -16,10 +19,10 @@ var CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-var parent = require('./_cmd');
+var Parent = require('./_cmd');
 
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
 
 
 //  ---
@@ -38,7 +41,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
  * @type {string}
  */
 Cmd.prototype.HELP =
-    'Displays usage and help information for a command, or the \'tibet\' command.'
+'Displays usage and help information for a command, or the \'tibet\' command.';
 
 
 /**
@@ -99,8 +102,9 @@ Cmd.prototype.execute = function() {
     var files;
     var my;
     var command;
-    var cmdType;
+    var CmdType;
     var cmd;
+    var file;
 
     path = require('path');
     sh = require('shelljs');
@@ -117,8 +121,8 @@ Cmd.prototype.execute = function() {
     if (command) {
         file = path.join(__dirname, command + '.js');
         if (sh.test('-f', file)) {
-            cmdType = require(file);
-            cmd = new cmdType();
+            CmdType = require(file);
+            cmd = new CmdType();
             cmd.help();
         } else {
             this.error('Command \'' + command + '\' not found.');

@@ -10,21 +10,32 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*eslint no-extra-semi:0*/
 ;(function() {
+
+'use strict';
 
 //  ---
 //  Type Construction
 //  ---
 
-var parent = require('./_cmd');
+var Parent = require('./_cmd');
 
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
 
 
 //  ---
 //  Instance Attributes
 //  ---
+
+/**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+    'Initializes a TIBET project, linking and installing all dependencies.';
+
 
 /**
  * The command usage string.
@@ -45,12 +56,7 @@ Cmd.prototype.execute = function() {
 
     var sh;     // The shelljs module.
     var child;  // The child_process module.
-
-    var server; // Spawned child process for the server.
     var cmd;    // Closure'd var providing access to the command object.
-    var func;   // The startup function used either sync or async.
-    var port;   // The port number to start up on.
-    var inuse;  // Flag to trap EADDRINUSE exceptions.
 
     cmd = this;
 
@@ -61,7 +67,7 @@ Cmd.prototype.execute = function() {
     if (!sh.test('-f', 'package.json')) {
         this.error(
             'Cannot start. No package.json found. Are you in a project?');
-        process.exit(1);
+        throw new Error();
     }
 
     // If the node_modules directory doesn't exist (but we know there's a
@@ -70,7 +76,7 @@ Cmd.prototype.execute = function() {
     if (sh.test('-e', 'node_modules')) {
         this.warn('Project already initialized. ' +
             'Re-initialize by removing node_modules first.');
-        process.exit(1);
+        throw new Error();
     }
 
     this.warn('Project not initialized. Initializing.');
@@ -84,15 +90,16 @@ Cmd.prototype.execute = function() {
         // Due to a current issue with npm ls variants they'll always return
         // an error if there are unmet dependencies. See issue filed at:
         // https://github.com/npm/npm/issues/4480.
-        // if (err) {
+        if (err) {
         //     cmd.error('Unable to verify dependencies: ' + stderr);
-        //     process.exit(1);
-        // }
+        //     throw new Error();
+            void(0);
+        }
 
         // Instead of checking err above we'll check stdout.
         if (!stdout) {
             cmd.error('Unable to verify dependencies: ' + stderr);
-            process.exit(1);
+            throw new Error();
         }
 
         json = JSON.parse(stdout);
@@ -108,7 +115,7 @@ Cmd.prototype.execute = function() {
                     cmd.error('Failed to initialize: ' + stderr);
                     cmd.info(
                         '`git clone` TIBET 3.x, `npm link` it, and retry.');
-                    process.exit(1);
+                    throw new Error();
                 }
 
                 cmd.info('TIBET v3.0 linked successfully.');
@@ -123,7 +130,7 @@ Cmd.prototype.execute = function() {
                         cmd.error('Failed to initialize: ' + stderr);
                         cmd.info(
                             '`git clone` TIBET 5.x, `npm link` it, and retry.');
-                        process.exit(1);
+                        throw new Error();
                     }
 
                     cmd.info('TIBET v5.0 linked successfully.');
@@ -137,7 +144,7 @@ Cmd.prototype.execute = function() {
                     child.exec('npm install', function(err, stdout, stderr) {
                         if (err) {
                             cmd.error('Failed to initialize: ' + stderr);
-                            process.exit(1);
+                            throw new Error();
                         }
 
                         cmd.info('Project initialized successfully.');
@@ -152,7 +159,7 @@ Cmd.prototype.execute = function() {
             child.exec('npm install', function(err, stdout, stderr) {
                 if (err) {
                     cmd.error('Failed to initialize: ' + stderr);
-                    process.exit(1);
+                    throw new Error();
                 }
 
                 // If initialization worked invoke startup function.

@@ -23,7 +23,10 @@
  *      usage           // Display usage of the command. Default is false.
  */
 
+/*eslint no-extra-semi:0, camelcase:0, consistent-return:0*/
 ;(function() {
+
+'use strict';
 
 /*
  * Required modules we'll bring in once.
@@ -154,7 +157,8 @@ CLI.debug = function(msg) {
     }
 
     if (this.options.color === false) {
-        return console.log(msg);
+        console.log(msg);
+        return;
     }
     console.log(chalk.magenta(msg));
 };
@@ -165,14 +169,16 @@ CLI.verbose = function(msg) {
     }
 
     if (this.options.color === false) {
-        return console.log(msg);
+        console.log(msg);
+        return;
     }
     console.log(chalk.cyan(msg));
 };
 
 CLI.system = function(msg) {
     if (this.options.color === false) {
-        return console.info(msg);
+        console.info(msg);
+        return;
     }
     console.info(chalk.green(msg));
 };
@@ -187,15 +193,15 @@ CLI.system = function(msg) {
  * The primary response here is based on "context" in that some commands are
  * only useful within a project, some must be outside a project, and some can be
  * run from any location.
- * @param {Object} cmdType The command type to check.
+ * @param {Object} CmdType The command type to check.
  * @return {Boolean} True if the command is runnable.
  */
-CLI.canRun = function(cmdType) {
+CLI.canRun = function(CmdType) {
 
-    if (CLI.inProject())
-        return cmdType.CONTEXT !== CLI.CONTEXTS.OUTSIDE;
-    else {
-        return cmdType.CONTEXT !== CLI.CONTEXTS.INSIDE;
+    if (CLI.inProject()) {
+        return CmdType.CONTEXT !== CLI.CONTEXTS.OUTSIDE;
+    } else {
+        return CmdType.CONTEXT !== CLI.CONTEXTS.INSIDE;
     }
 };
 
@@ -236,12 +242,12 @@ CLI.getAppRoot = function() {
  * Searches a set of paths including ~app_cmd and ~lib_cmd for an implementation
  * file for the named command.
  * @param {string} command The command to find, such as 'start'.
- * @return {string} The path to the command, if found.
+ * @return {?string} The path to the command, if found.
  */
 CLI.getCommandPath = function(command, options) {
 
     var roots;      // The directory roots we'll search.
-    var package;
+    var pkg;
     var i;
     var len;
     var base;
@@ -257,22 +263,26 @@ CLI.getCommandPath = function(command, options) {
 
     // Check other potential paths, which are virtual so they require our
     // package logic.
-    var Package = require(path.join(__dirname,
-        '../../node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
-    package = new Package(options);
+    try {
+        var Package = require(path.join(__dirname,
+            '../../node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
+        pkg = new Package(options);
+    } catch (e) {
+        if (e.message && /find app_root/.test(e.message)) {
+            return;
+        }
+    }
 
     roots = ['~app_cmd', '~lib_cmd'];
     len = roots.length;
 
     for (i = 0; i < len; i++) {
-        base = package.expandPath(roots[i]);
+        base = pkg.expandPath(roots[i]);
         file = path.join(base, command + '.js');
         if (sh.test('-f', file)) {
             return file;
         }
     }
-
-    return;
 };
 
 
@@ -387,11 +397,8 @@ CLI.run = function(options) {
 
     var argv;           // arguments processed via minimist.
     var command;        // the first non-option argument, the command name.
-    var file;           // the command file we check for existence.
-    var rest;           // arguments list, minus $0 and command name.
-    var root;           // App root path for loading project data.
     var cmdPath;        // the command path (for use with require())
-    var cmdType;        // the command type (require'd into existence)
+    var CmdType;        // the command type (require'd into existence)
     var cmd;            // the command instance for a command run.
     var msg;            // error message string.
 
@@ -428,7 +435,7 @@ CLI.run = function(options) {
     // top-level infrastructure stuff (_cli.js, _cmd.js) and command "helpers".
     if (command.charAt(0) === '_') {
         this.error('Cannot directly run private command: ' + command);
-        process.exit(1);
+        throw new Error();
     }
 
     //  ---
@@ -456,7 +463,7 @@ CLI.run = function(options) {
         if (!this.inProject()) {
             this.warn('Command not found: ' + command + '.' +
                     ' Grunt/gulp fallback requires a project.');
-            process.exit(1);
+            throw new Error();
         }
 
         if (this.inGulpProject()) {
@@ -464,42 +471,42 @@ CLI.run = function(options) {
         } else if (this.inGruntProject()) {
             CLI.runViaGrunt();
         } else {
-            this.warn('Command not found: ' + command + '.');
-            process.exit(1);
+            this.error('Command not found: ' + command + '.');
+            throw new Error();
         }
 
         return;
     }
 
     try {
-        cmdType = require(cmdPath);
+        CmdType = require(cmdPath);
     } catch (e) {
         msg = e.message;
         if (this.options.stack) {
             msg += ' ' + e.stack;
         }
         this.error('Error loading ' + command + ': ' + msg);
-        process.exit(1);
+        throw new Error();
     }
 
     try {
-        cmd = new cmdType();
+        cmd = new CmdType();
     } catch (e) {
         msg = e.message;
         if (this.options.stack) {
             msg += ' ' + e.stack;
         }
         this.error('Error instantiating ' + command + ': ' + msg);
-        process.exit(1);
+        throw new Error();
     }
 
     // If we're not dumping help or usage check context. We can't really run to
     // completion if we're not in the right context.
     if (!argv.usage && !argv.help) {
-        if (!this.canRun(cmdType)) {
-            this.warn('Command must be run ' + cmdType.CONTEXT +
+        if (!this.canRun(CmdType)) {
+            this.exit('Command must be run ' + CmdType.CONTEXT +
                 ' a TIBET project.');
-            process.exit(1);
+            throw new Error();
         }
     }
 
@@ -509,11 +516,13 @@ CLI.run = function(options) {
         cmd.run(this.options);
     } catch (e) {
         msg = e.message;
+        if (!msg) {
+            return;
+        }
         if (this.options.stack) {
             msg += ' ' + e.stack;
         }
         this.error('Error processing ' + command + ': ' + msg);
-        process.exit(1);
     }
 };
 
@@ -531,7 +540,7 @@ CLI.runViaGrunt = function() {
     // suggest they run `tibet init` first.
     if (!sh.test('-e', 'node_modules')) {
         this.error('Project not initialized. Run `tibet init` first.');
-        process.exit(1);
+        throw new Error();
     }
 
     cmd = 'grunt ' + process.argv.slice(2).join(' ');
@@ -563,7 +572,7 @@ CLI.runViaGrunt = function() {
     });
 
     child.on('exit', function(code) {
-        process.exit(code);
+        throw new Error(code);
     });
 
     return;
@@ -582,7 +591,7 @@ CLI.runViaGulp = function() {
     // suggest they run `tibet init` first.
     if (!sh.test('-e', 'node_modules')) {
         this.error('Project not initialized. Run `tibet init` first.');
-        process.exit(1);
+        throw new Error();
     }
 
     cmd = './node_modules/.bin/gulp ' + process.argv.slice(2).join(' ');
@@ -614,7 +623,7 @@ CLI.runViaGulp = function() {
     });
 
     child.on('exit', function(code) {
-        process.exit(code);
+        throw new Error(code);
     });
 
     return;

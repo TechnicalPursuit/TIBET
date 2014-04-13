@@ -8,7 +8,10 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*eslint no-extra-semi:0*/
 ;(function() {
+
+'use strict';
 
 var CLI = require('./_cli');
 
@@ -16,10 +19,10 @@ var CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-var parent = require('./_cmd');
+var Parent = require('./_cmd');
 
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
 
 
 //  ---

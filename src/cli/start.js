@@ -8,16 +8,19 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*eslint no-extra-semi:0*/
 ;(function() {
+
+'use strict';
 
 //  ---
 //  Type Construction
 //  ---
 
-var parent = require('./_cmd');
+var Parent = require('./_cmd');
 
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
 
 
 //  ---
@@ -53,7 +56,6 @@ Cmd.prototype.execute = function() {
 
     var server; // Spawned child process for the server.
     var cmd;    // Closure'd var providing access to the command object.
-    var func;   // The startup function used either sync or async.
     var port;   // The port number to start up on.
     var inuse;  // Flag to trap EADDRINUSE exceptions.
     var msg;    // Shared message content.
@@ -67,7 +69,7 @@ Cmd.prototype.execute = function() {
     if (!sh.test('-f', 'package.json')) {
         this.error(
             'Cannot start. No package.json found. Are you in a project?');
-        process.exit(1);
+        throw new Error();
     }
 
     // If the node_modules directory doesn't exist (but we know there's a
@@ -75,7 +77,7 @@ Cmd.prototype.execute = function() {
     // We have to do that before we can try to start the server.
     if (!sh.test('-e', 'node_modules')) {
         this.error('Project not initialized. Run `tibet init` first.');
-        process.exit(1);
+        throw new Error();
     }
 
     // Determine the port the user wants to start on.

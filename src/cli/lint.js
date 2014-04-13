@@ -11,40 +11,74 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*eslint no-extra-semi:0*/
 ;(function() {
 
-var CLI = require('./_cli');
-var path = require('path');
+'use strict';
+
+var eslint = require('eslint');
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var parent = require('./package');
+var Parent = require('./package');
 
 // NOTE we don't inherit from _cmd, but from package.
 var Cmd = function(){};
-Cmd.prototype = new parent();
-
+Cmd.prototype = new Parent();
 
 //  ---
 //  Type Attributes
 //  ---
 
-Cmd.CONFIG = '~/.eslintrc'
+Cmd.CONFIG = '~/.eslintrc';
+
 
 //  ---
 //  Instance Attributes
 //  ---
 
 /**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+'Lints files in a package#config. The package#config defaults to\n' +
+'~/TIBET-INF/app.xml and its default config. The eslint utility is\n' +
+'used for JavaScript due to its configurable/customizable rulesets.\n' +
+'The csslint and jsonlint utilities are also leveraged as needed.\n\n' +
+
+'--stop tells the linter to stop after the first file with errors.\n\n' +
+'[package-opts] refers to valid options for a TIBET Package object.\n' +
+'These include --package, --config, --phase, --assets, etc.\n' +
+'See help on the \'tibet package\' command for more information.\n\n' +
+
+'[eslint-opts] refers to --cfg, --rules, and --format which allow\n' +
+'you to configure eslint to meet your specific needs. The linter will\n' +
+'automatically take advantage of an .eslintrc file in your project.\n';
+
+/**
+ * Command argument parsing options for minimist. The defaults handle the common
+ * flags but can be overridden if the command needs to define specific ones.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = {
+    boolean: [
+        'color', 'help', 'usage', 'debug', 'stack', 'verbose', 'stop',
+        'all', 'silent', 'nodes'
+    ],
+    string: ['app_root', 'cfg', 'rules', 'format', 'package', 'config',
+        'phase']
+};
+
+
+/**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet lint [package options] [--stop] ' +
-    '[-lintcfg {file}] [--rules {dir}] [--format {name}] ' +
-    '[--eslintrc] [--reset]';
+Cmd.prototype.USAGE = 'tibet lint [--stop] [package-opts] [eslint-opts]';
 
 
 //  ---
@@ -57,29 +91,31 @@ Cmd.prototype.USAGE = 'tibet lint [package options] [--stop] ' +
  */
 Cmd.prototype.executeForEach = function(list) {
 
-    var cmd,
-        eslint,
-        args;
+    var cmd;
+    var args;
 
     cmd = this;
-
-    eslint = require('eslint');
     args = this.getLintArguments();
 
-    list.forEach(function(node) {
-        var src = node.getAttribute('src');
+    list.forEach(function(item) {
+        var src,
+            result;
+
+        if (cmd.argv.nodes) {
+            src = item.getAttribute('src');
+        } else {
+            src = item;
+        }
+
         if (src) {
             result = eslint.cli.execute(args.concat(src));
             if (result !== 0 && cmd.argv.stop) {
-                process.exit(result);
+                throw new Error(result);
             }
-        } else {
-            // TODO: lint raw content
-            console.log(node.textContent);
+        } else if (cmd.argv.nodes) {
+            console.log(item.textContent);
         }
     });
-
-    process.exit(0);
 };
 
 
@@ -91,14 +127,13 @@ Cmd.prototype.getLintArguments = function() {
 
     args = ['node', 'eslint'];
 
-    console.log(this.argv);
-
     // TODO: figure out why this throws errors in eslint...
     if (this.argv.eslintrc === false) {
     //    args.push('--no-eslintrc');
+        void(0);
     }
 
-    if (this.argv.lintcfg) {
+    if (this.argv.cfg) {
         args.push('-c' + this.argv.lintcfg);
     }
 
@@ -106,11 +141,14 @@ Cmd.prototype.getLintArguments = function() {
         args.push('-f ' + this.argv.format);
     }
 
+    if (this.argv.rules) {
+        args.push('-r ' + this.argv.rules);
+    }
+
     if (this.argv.reset) {
         args.push('--reset');
     }
 
-    this.debug('lint args: ' + args);
     return args;
 };
 

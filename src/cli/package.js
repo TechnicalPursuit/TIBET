@@ -24,8 +24,7 @@
  *
  *      silent      Silence normal logging. Default is true.
  *
- *      phaseone    Package phase-one content? Default is false.
- *      phasetwo    Package phase-two content? Default is true.
+ *      phase       Package phase? Default is 'two' for "app content".
  *
  * OTHER OPTIONS:
  *
@@ -34,7 +33,10 @@
  *      info on the options available through that component.
  */
 
+/*eslint no-extra-semi:0*/
 ;(function() {
+
+'use strict';
 
 var CLI = require('./_cli');
 var path = require('path');
@@ -46,14 +48,18 @@ var serializer = new dom.XMLSerializer();
 //  Type Construction
 //  ---
 
-var parent = require('./_cmd');
+var Parent = require('./_cmd');
 
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
 
 
 //  ---
 //  Type Attributes
+//  ---
+
+//  ---
+//  Instance Attributes
 //  ---
 
 /**
@@ -62,20 +68,23 @@ Cmd.prototype = new parent();
  * default to the common application-centric use case.
  * @type {string}
  */
-Cmd.PACKAGE = '~app/TIBET-INF/tibet.xml';
+Cmd.prototype.PACKAGE = '~/TIBET-INF/tibet.xml';
 
 
-//  ---
-//  Instance Attributes
-//  ---
+/**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+'Outputs a list of package items either as nodes (default) or file names.';
+
 
 /**
  * The command usage string.
  * @type {string}
  */
 Cmd.prototype.USAGE = 'tibet package [--package {package}] [--config {cfg}] ' +
-        '[--all] [--phaseone] [--phasetwo]' +
-        '[--assets "asset names"] [--exclude] [--scripts|--styles|--images]';
+        '[--all] [--phase <one|two>] [--assets "asset names"] [--exclude]';
 
 /**
  * The package instance which this instance is using to process package data.
@@ -101,7 +110,7 @@ Cmd.prototype.execute = function() {
     pkgOpts = {};
 
     // Note the default here points to an application-standard package path.
-    pkgOpts.package = CLI.ifUndefined(this.argv.package, Cmd.PACKAGE);
+    pkgOpts.package = CLI.ifUndefined(this.argv.package, this.PACKAGE);
 
     // This is ignored if --all is used and it will default based on the
     // package if not provided.
@@ -117,7 +126,7 @@ Cmd.prototype.execute = function() {
 
     // Configure settings for the package instance appropriate to rollup. We
     // want the output to be the full node with no color and no warnings.
-    pkgOpts.nodes = true;
+    pkgOpts.nodes = CLI.ifUndefined(this.argv.nodes, true);
     pkgOpts.color = false;
     pkgOpts.silent = this.argv.nosilent ? false :
         CLI.ifUndefined(this.argv.silent, false);
@@ -125,12 +134,26 @@ Cmd.prototype.execute = function() {
     // Set boot phase defaults. If we don't manage these then most app package
     // runs will quietly filter out all their content nodes.
     pkgOpts.boot = {};
-    pkgOpts.boot.phaseone = CLI.ifUndefined(this.argv.phaseone, false);
-    pkgOpts.boot.phasetwo = CLI.ifUndefined(this.argv.phasetwo, true);
+    switch (this.argv.phase) {
+        case 'all':
+            pkgOpts.boot.phaseone = true;
+            pkgOpts.boot.phasetwo = true;
+            break;
+        case 'one':
+            pkgOpts.boot.phaseone = true;
+            pkgOpts.boot.phasetwo = false;
+            break;
+        default:
+            pkgOpts.boot.phaseone = false;
+            pkgOpts.boot.phasetwo = true;
+            break;
+    }
 
     // TODO: relocate from tibet3 to a reasonable TIBET 5.0 location.
     Package = require(path.join(CLI.getAppRoot(),
         'node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
+
+    this.verbose('pkgOpts: ' + JSON.stringify(pkgOpts));
     this.package = new Package(pkgOpts);
 
     if (this.argv.all) {
@@ -153,17 +176,17 @@ Cmd.prototype.execute = function() {
  * @param {Array.<Node>} list An array of package nodes.
  */
 Cmd.prototype.executeForEach = function(list) {
-    var cmd,
-        pkg;
+    var cmd;
 
     cmd = this;
-    pkg = this.package;
 
-    list.forEach(function(node) {
-        cmd.info(serializer.serializeToString(node));
+    list.forEach(function(item) {
+        if (cmd.argv.nodes) {
+            cmd.info(serializer.serializeToString(item));
+        } else {
+            cmd.info(item);
+        }
     });
-
-    process.exit(0);
 };
 
 module.exports = Cmd;

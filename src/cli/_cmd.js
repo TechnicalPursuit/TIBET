@@ -11,7 +11,10 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*eslint no-extra-semi:0*/
 ;(function() {
+
+'use strict';
 
 var CLI = require('./_cli');
 var minimist = require('minimist');
