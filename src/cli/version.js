@@ -8,8 +8,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/*eslint no-extra-semi:0*/
-;(function() {
+(function() {
 
 'use strict';
 

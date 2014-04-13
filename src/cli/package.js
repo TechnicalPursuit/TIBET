@@ -33,8 +33,7 @@
  *      info on the options available through that component.
  */
 
-/*eslint no-extra-semi:0*/
-;(function() {
+(function() {
 
 'use strict';
 

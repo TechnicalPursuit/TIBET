@@ -9,12 +9,13 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/*eslint no-extra-semi:0*/
-;(function() {
+(function() {
 
 'use strict';
 
 var CLI = require('./_cli');
+var beautify = require('js-beautify').js_beautify;
+
 
 //  ---
 //  Type Construction
@@ -61,12 +62,15 @@ Cmd.prototype.USAGE = 'tibet echo [args]';
  * method. The default implementation simply echoes the command arguments.
  */
 Cmd.prototype.execute = function() {
+
     if (this.argv) {
-        this.log(JSON.stringify(this.argv));
+        this.info('\nArguments:\n');
+        this.log(beautify(JSON.stringify(this.argv)));
     }
 
-    if (CLI.inProject()) {
-        this.log(JSON.stringify(this.options));
+    if (this.options) {
+        this.info('\nOptions:\n');
+        this.log(beautify(JSON.stringify(this.options)));
     }
 };
 

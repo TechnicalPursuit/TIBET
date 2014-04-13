@@ -8,12 +8,14 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/*eslint no-extra-semi:0*/
-;(function() {
+(function() {
 
 'use strict';
 
 var CLI = require('./_cli');
+var path = require('path');
+var sh = require('shelljs');
+
 
 //  ---
 //  Type Construction
@@ -34,6 +36,13 @@ Cmd.prototype = new Parent();
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
+
+
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'help';
 
 
 /**
@@ -59,6 +68,7 @@ Cmd.prototype.USAGE = 'tibet help [command]';
  * Processes requests of the form 'tibet --help', 'tibet help --help', and
  * potentially 'tibet --help <command>'. The last one is a bit tricky since
  * minimist will parse that and make <command> the value of the help flag.
+ * @return {Number} A return code.
  */
 Cmd.prototype.help = function() {
 
@@ -71,6 +81,8 @@ Cmd.prototype.help = function() {
 
     this.usage();
     this.info(this.HELP + '\n');
+
+    return 0;
 };
 
 
@@ -78,6 +90,7 @@ Cmd.prototype.help = function() {
  * Processes requests of the form 'tibet --usage', 'tibet help --usage', and
  * potentially 'tibet --usage <command>'. The last one is a bit tricky since
  * minimist will parse that and make <command> the value of the usage flag.
+ * @return {Number} A return code.
  */
 Cmd.prototype.usage = function() {
 
@@ -88,52 +101,39 @@ Cmd.prototype.usage = function() {
     }
 
     this.info('\nUsage: ' + this.USAGE + '\n');
+
+    return 0;
 };
 
 
 /**
  * Runs the help command, outputting a list of usage strings for any commands
  * found.
+ * @return {Number} A return code.
  */
 Cmd.prototype.execute = function() {
 
-    var path;
-    var sh;
+    var command;
     var files;
     var my;
-    var command;
     var CmdType;
     var cmd;
     var file;
 
-    path = require('path');
-    sh = require('shelljs');
-
     command = this.argv._ && this.argv._[1];
-
-    // TODO: add logic for ~*_cmd versions of commands.
-    // IFF we can find an app root then we can also try to locate any
-    // app-specific commands which might exist. Otherwise we'll just list those
-    // which are built-in.
-
-    // If there's a specific command being requested just output for that one
-    // command.
     if (command) {
-        file = path.join(__dirname, command + '.js');
-        if (sh.test('-f', file)) {
-            CmdType = require(file);
-            cmd = new CmdType();
-            cmd.help();
-        } else {
-            this.error('Command \'' + command + '\' not found.');
-        }
-        return;
+        return this.executeForCommand(command);
     }
 
-    // If no specific command was given build up a list. Note that we need to
-    // filter out the ones that start with _ since they're "internal" files.
+    // If no specific command was given dump the full help content.
 
-    this.info('tibet commands:');
+    this.info('\nUsage: tibet <command> <options>\n');
+
+    // ---
+    // Built-ins
+    // ---
+
+    this.info('TIBET commands include:\n');
 
     my = this;
     files = sh.ls(__dirname);
@@ -145,6 +145,37 @@ Cmd.prototype.execute = function() {
             my.info('    ' + cmd.prototype.USAGE.replace(/^tibet /, ''));
         }
     });
+
+    // ---
+    // Add-ons
+    // ---
+
+
+};
+
+
+/**
+ * Processes help for a specific command. This method forwards to the command
+ * and invokes its help() method.
+ * @param {string} command The command name we're running.
+ * @return {Number} A return code.
+ */
+Cmd.prototype.executeForCommand = function(command) {
+    var file;
+    var CmdType;
+    var cmd;
+
+    file = path.join(__dirname, command + '.js');
+    if (sh.test('-f', file)) {
+        CmdType = require(file);
+        cmd = new CmdType();
+        cmd.help();
+    } else {
+        this.error('Command \'' + command + '\' not found.');
+        return 1;
+    }
+
+    return 0;
 };
 
 module.exports = Cmd;

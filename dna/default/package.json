@@ -6,6 +6,8 @@
     "chalk": "*",
     "connect": "*",
     "connect-gzip-static": "*",
+    "eslint": "*",
+    "js-beautify": "*",
     "minimist": "*",
     "phantomjs": "*",
     "shelljs": "*",

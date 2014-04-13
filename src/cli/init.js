@@ -10,8 +10,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/*eslint no-extra-semi:0*/
-;(function() {
+(function() {
 
 'use strict';
 
@@ -67,7 +66,7 @@ Cmd.prototype.execute = function() {
     if (!sh.test('-f', 'package.json')) {
         this.error(
             'Cannot init. No package.json found. Are you in a project?');
-        throw new Error();
+        return 1;
     }
 
     // If the node_modules directory doesn't exist (but we know there's a
@@ -76,7 +75,7 @@ Cmd.prototype.execute = function() {
     if (sh.test('-e', 'node_modules')) {
         this.warn('Project already initialized. ' +
             'Re-initialize by removing node_modules first.');
-        throw new Error();
+        return 1;
     }
 
     this.warn('Project not initialized. Initializing.');
@@ -91,8 +90,8 @@ Cmd.prototype.execute = function() {
         // an error if there are unmet dependencies. See issue filed at:
         // https://github.com/npm/npm/issues/4480.
         if (err) {
-        //     cmd.error('Unable to verify dependencies: ' + stderr);
-        //     throw new Error();
+            // This keeps eslint happy about handling the err and not having an
+            // empty block.
             void(0);
         }
 

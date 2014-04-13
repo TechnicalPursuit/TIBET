@@ -26,8 +26,7 @@
  */
 
 
-/*eslint no-extra-semi:0*/
-;(function() {
+(function() {
 
 'use strict';
 
@@ -117,7 +116,7 @@ Cmd.prototype.execute = function() {
     // Have to get at least one non-option argument (the new appname).
     if (!appname) {
         this.info('Usage: ' + this.USAGE);
-        throw new Error();
+        return 1;
     }
 
     path = require('path');
@@ -139,7 +138,7 @@ Cmd.prototype.execute = function() {
 
     if (!sh.test('-e', dna)) {
         this.error('DNA selection not found: ' + dna);
-        throw new Error();
+        return 1;
     }
 
     //  ---
@@ -151,7 +150,7 @@ Cmd.prototype.execute = function() {
 
     if (sh.test('-e', target)) {
         this.error('Target already exists: ' + target);
-        throw new Error();
+        return 1;
     }
 
     //  ---
@@ -164,14 +163,14 @@ Cmd.prototype.execute = function() {
     err = sh.error();
     if (err) {
         this.error('Error creating target directory: ' + err);
-        throw new Error();
+        return 1;
     }
 
     sh.cp('-R', dna + '/', target + '/');
     err = sh.error();
     if (err) {
         this.error('Error cloning dna directory: ' + err);
-        throw new Error();
+        return 1;
     }
 
     //  ---

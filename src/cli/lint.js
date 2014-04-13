@@ -11,8 +11,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/*eslint no-extra-semi:0*/
-;(function() {
+(function() {
 
 'use strict';
 
@@ -93,29 +92,45 @@ Cmd.prototype.executeForEach = function(list) {
 
     var cmd;
     var args;
+    var sum;
 
     cmd = this;
     args = this.getLintArguments();
+    sum = 0;
 
-    list.forEach(function(item) {
-        var src,
-            result;
+    try {
+        list.forEach(function(item) {
+            var src,
+                result;
 
-        if (cmd.argv.nodes) {
-            src = item.getAttribute('src');
-        } else {
-            src = item;
-        }
-
-        if (src) {
-            result = eslint.cli.execute(args.concat(src));
-            if (result !== 0 && cmd.argv.stop) {
-                throw new Error(result);
+            if (cmd.argv.nodes) {
+                src = item.getAttribute('src');
+            } else {
+                src = item;
             }
-        } else if (cmd.argv.nodes) {
-            console.log(item.textContent);
+
+            if (src) {
+                result = eslint.cli.execute(args.concat(src));
+                sum = sum + result;
+                if (result !== 0 && cmd.argv.stop) {
+                    throw new Error(result);
+                }
+            } else if (cmd.argv.nodes) {
+                console.log(item.textContent);
+            }
+        });
+    } catch (e) {
+        // Don't really care about the error, it's a way to exit the loop while
+        // retaining some control.
+        void(0);
+    } finally {
+        // Report on the total errors output etc.
+        if (sum > 0) {
+            this.error('Lint found ' + sum + ' errors.');
+        } else {
+            this.log('0 errors.');
         }
-    });
+    }
 };
 
 

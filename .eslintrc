@@ -10,6 +10,7 @@
     "rules": {
         "quotes": "single",
         "strict": false,
-        "consistent-return": false
+        "consistent-return": false,
+        "no-underscore-dangle": false
     }
 }
