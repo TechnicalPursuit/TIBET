@@ -230,7 +230,7 @@ CLI.system = function(msg) {
 
 
 //  ---
-//  "Can Run" Checking
+//  Utilities
 //  ---
 
 /**
@@ -248,6 +248,20 @@ CLI.canRun = function(CmdType) {
     } else {
         return CmdType.CONTEXT !== CLI.CONTEXTS.INSIDE;
     }
+};
+
+
+/**
+ * Expands a TIBET virtual path to its equivalent non-virtual path.
+ * @param {String} aPath The path to be expanded.
+ * @return {String} The fully-expanded path value.
+ */
+CLI.expandPath = function(aPath) {
+
+    // Make sure we have a package.
+    this.initPackage();
+
+    return this._package.expandPath(aPath);
 };
 
 
@@ -305,16 +319,7 @@ CLI.getCommandPath = function(command, options) {
         return file;
     }
 
-    // Check other potential paths, which are virtual so they require our
-    // package logic.
-    try {
-        Package = require(path.join(__dirname, this.PACKAGE_FILE));
-        this._package = new Package(options);
-    } catch (e) {
-        if (e.message && /find app_root/.test(e.message)) {
-            return;
-        }
-    }
+    this.initPackage();
 
     roots = ['~app_cmd', '~lib_cmd'];
     len = roots.length;
@@ -377,6 +382,20 @@ CLI.inGulpProject = function() {
 
     return sh.test('-f', path.join(cwd, file)) &&
         sh.test('-f', path.join(cwd, './node_modules/.bin/gulp'));
+};
+
+
+/**
+ * Initializes the package instance we'll use for path resolution and package
+ * processing.
+ */
+CLI.initPackage = function() {
+    if (this._package) {
+        return;
+    }
+
+    Package = require(path.join(__dirname, this.PACKAGE_FILE));
+    this._package = new Package(this.options);
 };
 
 

@@ -114,10 +114,10 @@ Cmd.prototype.usage = function() {
 Cmd.prototype.execute = function() {
 
     var command;
-    var files;
     var my;
+    var files;
     var CmdType;
-    var cmd;
+    var cmds;
     var file;
 
     command = this.argv._ && this.argv._[1];
@@ -127,30 +127,65 @@ Cmd.prototype.execute = function() {
 
     // If no specific command was given dump the full help content.
 
-    this.info('\nUsage: tibet <command> <options>\n');
+    this.info('\nUsage: tibet <command> <options>');
+
+    my = this;
+    cmds = [];
 
     // ---
     // Built-ins
     // ---
 
-    this.info('TIBET commands include:\n');
-
-    my = this;
     files = sh.ls(__dirname);
     files.sort().forEach(function(file) {
-        var cmd;
-
-        if (file.charAt(0) !== '_') {
-            cmd = require('./' + file);
-            my.info('    ' + cmd.prototype.USAGE.replace(/^tibet /, ''));
+        if (file.charAt(0) !== '_' && /\.js$/.test(file)) {
+            cmds.push(file.replace(/\.js$/, ''));
         }
     });
+
+    // TODO: format with "indentation" and "wrap"
+    this.info('\nTIBET <command> choices include:\n');
+    this.info('\t' + cmds.join(', '));
 
     // ---
     // Add-ons
     // ---
 
+    cmds.length = 0;
 
+    files = sh.ls(CLI.expandPath('~app_cmd'));
+    files.sort().forEach(function(file) {
+        if (file.charAt(0) !== '_' && /\.js$/.test(file)) {
+            cmds.push(file.replace(/\.js$/, ''));
+        }
+    });
+
+    // TODO: format with "indentation" and "wrap"
+    this.info('\nCustom <command> choices include:\n');
+    this.info('\t' + cmds.join(', '));
+
+
+
+    // ---
+    // Summary
+    // ---
+
+    this.info('\nCommon <options> include:\n');
+
+    this.info('\t--help         display command help text');
+    this.info('\t--usage        display command usage summary');
+    this.info('\t--color        colorize the log output [true]');
+    this.info('\t--verbose      work with verbose output [false]');
+    this.info('\t--debug        turn on debugging output [false]');
+    this.info('\t--stack        display stack with error [false]');
+
+    this.info('\nConfigure default parameters via tibet.json');
+
+    try {
+        this.info('\n' + this.options.npm.dependencies.tibet._id + ' ' +
+            this.options.npm.dependencies.tibet.path);
+    } catch (e) {
+    }
 };
 
 
