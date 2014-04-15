@@ -121,36 +121,21 @@ Cmd.prototype.usage = function() {
 Cmd.prototype.execute = function() {
 
     var command;
-    var my;
-    var files;
-    var CmdType;
     var cmds;
-    var file;
 
+    // If specific command was given delegate to the command type.
     command = this.argv._ && this.argv._[1];
     if (command) {
         return this.executeForCommand(command);
     }
 
-    // If no specific command was given dump the full help content.
-
     this.info('\nUsage: tibet <command> <options>');
-
-    my = this;
-    cmds = [];
 
     // ---
     // Built-ins
     // ---
 
-    files = sh.ls(__dirname);
-    files.sort().forEach(function(file) {
-        if (file.charAt(0) !== '_' && /\.js$/.test(file)) {
-            cmds.push(file.replace(/\.js$/, ''));
-        }
-    });
-
-    // TODO: format with "indentation" and "wrap"
+    cmds = this.getCommands(__dirname);
     this.info('\nTIBET <command> choices include:\n');
     this.logCommands(cmds);
 
@@ -158,17 +143,8 @@ Cmd.prototype.execute = function() {
     // Add-ons
     // ---
 
-    cmds.length = 0;
-
-    files = sh.ls(CLI.expandPath('~app_cmd'));
-    files.sort().forEach(function(file) {
-        if (file.charAt(0) !== '_' && /\.js$/.test(file)) {
-            cmds.push(file.replace(/\.js$/, ''));
-        }
-    });
-
+    cmds = this.getCommands(CLI.expandPath('~app_cmd'));
     if (cmds.length > 0) {
-        // TODO: format with "indentation" and "wrap"
         this.info('\nCustom <command> choices include:\n');
         this.logCommands(cmds);
     }
@@ -218,6 +194,28 @@ Cmd.prototype.executeForCommand = function(command) {
     }
 
     return 0;
+};
+
+
+/**
+ * Returns a list of command files found in the path provided.
+ * @param {string} aPath The path to search.
+ * @return {Array.<string>} The list of commands.
+ */
+Cmd.prototype.getCommands = function(aPath) {
+    var files;
+    var cmds;
+
+    cmds = [];
+
+    files = sh.ls(aPath);
+    files.sort().forEach(function(file) {
+        if (file.charAt(0) !== '_' && /\.js$/.test(file)) {
+            cmds.push(file.replace(/\.js$/, ''));
+        }
+    });
+
+    return cmds;
 };
 
 
