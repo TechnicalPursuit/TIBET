@@ -39,6 +39,13 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
 
 
 /**
+ * The max number of characters per line in the command lists.
+ * @type {number}
+ */
+Cmd.COMMAND_MARGIN = 50;
+
+
+/**
  * The command name for this type.
  * @type {string}
  */
@@ -145,7 +152,7 @@ Cmd.prototype.execute = function() {
 
     // TODO: format with "indentation" and "wrap"
     this.info('\nTIBET <command> choices include:\n');
-    this.info('\t' + cmds.join(', '));
+    this.logCommands(cmds);
 
     // ---
     // Add-ons
@@ -163,7 +170,7 @@ Cmd.prototype.execute = function() {
     if (cmds.length > 0) {
         // TODO: format with "indentation" and "wrap"
         this.info('\nCustom <command> choices include:\n');
-        this.info('\t' + cmds.join(', '));
+        this.logCommands(cmds);
     }
 
     // ---
@@ -212,6 +219,32 @@ Cmd.prototype.executeForCommand = function(command) {
 
     return 0;
 };
+
+
+/**
+ * Outputs a command list, formatting it so it wraps properly and stays indented
+ * to keep it looking crisp.
+ * @param {Array.<string>} aList The list of command names to output.
+ */
+Cmd.prototype.logCommands = function(aList) {
+
+    var limit = Cmd.COMMAND_MARGIN;
+    var buffer;
+    var cmd;
+
+    if (aList && aList.length > 0) {
+        buffer = '\t';
+        while (cmd = aList.shift()) {
+            if (buffer.length + cmd.length > limit) {
+                buffer += '\n\t'
+            }
+            buffer += cmd + ' ';
+        }
+    }
+
+    this.info(buffer);
+};
+
 
 module.exports = Cmd;
 
