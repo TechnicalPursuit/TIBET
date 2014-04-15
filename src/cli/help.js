@@ -160,11 +160,11 @@ Cmd.prototype.execute = function() {
         }
     });
 
-    // TODO: format with "indentation" and "wrap"
-    this.info('\nCustom <command> choices include:\n');
-    this.info('\t' + cmds.join(', '));
-
-
+    if (cmds.length > 0) {
+        // TODO: format with "indentation" and "wrap"
+        this.info('\nCustom <command> choices include:\n');
+        this.info('\t' + cmds.join(', '));
+    }
 
     // ---
     // Summary
