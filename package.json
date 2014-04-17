@@ -54,6 +54,7 @@
     "findit": "*",
     "handlebars": "*",
     "jshint": "*",
+    "js-beautify": "*",
     "mocha": "*",
     "mockery": "*",
     "minimist": "*",
