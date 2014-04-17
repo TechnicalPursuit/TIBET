@@ -17,14 +17,16 @@
  * STANDARD OPTIONS:
  *
  *      package     The path of the top-level package to begin processing with.
+ *                  The default is ~app_base/app.xml for application content.
  *      config      The name of the top-level package config to process.
  *                  Defaults to the default config for the package.
  *      all         True to expand all configs recursively. Default is false.
- *                  If this is true then config is ignored.
- *
- *      silent      Silence normal logging. Default is true.
- *
- *      phase       Package phase? Default is 'two' for "app content".
+ *                  If this is true then config is ignored since all configs in
+ *                  the package (and descendant packages) will be processed.
+ *      silent      Silence normal logging. Defaults to the value set for 'all'.
+ *                  If 'all' is true we default this to true to suppress
+ *                  warnings about duplicate assets.
+ *      phase       Package phase? Default is phase two (application phase).
  *
  * OTHER OPTIONS:
  *
@@ -52,11 +54,6 @@ var Parent = require('./_cmd');
 var Cmd = function(){};
 Cmd.prototype = new Parent();
 
-
-//  ---
-//  Type Attributes
-//  ---
-
 //  ---
 //  Instance Attributes
 //  ---
@@ -67,7 +64,7 @@ Cmd.prototype = new Parent();
  * default to the common application-centric use case.
  * @type {string}
  */
-Cmd.prototype.PACKAGE = '~/TIBET-INF/tibet.xml';
+Cmd.prototype.PACKAGE = '~app_base/app.xml';
 
 
 /**
@@ -75,21 +72,40 @@ Cmd.prototype.PACKAGE = '~/TIBET-INF/tibet.xml';
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Outputs a list of package items either as nodes (default) or file names.';
+'Outputs a list of package assets either as nodes (default) or file names.';
 
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet package [--package <package>] [--config <cfg>] ' +
-        '[--all]\n\t[--phase <one|two>] [--assets "asset names"] [--exclude]';
+Cmd.prototype.USAGE =
+    'tibet package [--package <package>] [--config <cfg>] [--all]\n' +
+    '\t[--include <asset names>] [--exclude <asset names>]\n' +
+    '\t[--scripts] [--styles] --[images] [--phase <phase>]';
 
 /**
  * The package instance which this instance is using to process package data.
  * @type {Package}
  */
 Cmd.prototype.package = null;
+
+
+/**
+ * Command argument parsing options.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = {
+    boolean: [
+        'color', 'help', 'usage', 'debug', 'stack', 'verbose',
+        'all', 'scripts', 'styles', 'images'
+    ],
+    string: ['package', 'config', 'include', 'exclude', 'phase'],
+    default: {
+        color: true
+    }
+};
+
 
 //  ---
 //  Instance Methods
@@ -111,8 +127,8 @@ Cmd.prototype.execute = function() {
     // Note the default here points to an application-standard package path.
     pkgOpts.package = CLI.ifUndefined(this.argv.package, this.PACKAGE);
 
-    // This is ignored if --all is used and it will default based on the
-    // package if not provided.
+    // Config is ignored if 'all' is true since that means we'll process all
+    // config tags found in the package and descend the resulting tree.
     if (this.argv.all) {
         pkgOpts.all = true;
     } else if (this.argv.config) {
@@ -121,13 +137,14 @@ Cmd.prototype.execute = function() {
 
     // We default to all forms of 'script' produced by package expansion. Both
     // echo and property tags ultimately become script tags.
-    pkgOpts.assets = CLI.ifUndefined(this.argv.assets, 'echo property script');
+    pkgOpts.include = CLI.ifUndefined(this.argv.include, 'echo property script');
 
     // Configure settings for the package instance appropriate to rollup. We
     // want the output to be the full node with no color and no warnings.
     pkgOpts.nodes = CLI.ifUndefined(this.argv.nodes, true);
-    pkgOpts.color = false;
-    pkgOpts.silent = this.argv.nosilent ? false :
+    pkgOpts.color = CLI.ifUndefined(this.argv.color, true);
+
+    pkgOpts.silent = this.argv.nosilent ? this.argv.all :
         CLI.ifUndefined(this.argv.silent, false);
 
     // Set boot phase defaults. If we don't manage these then most app package
