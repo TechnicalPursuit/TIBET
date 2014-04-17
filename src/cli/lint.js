@@ -59,17 +59,20 @@ Cmd.prototype.HELP =
 'automatically take advantage of an .eslintrc file in your project.\n';
 
 /**
- * Command argument parsing options for minimist. The defaults handle the common
- * flags but can be overridden if the command needs to define specific ones.
+ * Command argument parsing options.
  * @type {Object}
  */
 Cmd.prototype.PARSE_OPTIONS = {
     boolean: [
         'color', 'help', 'usage', 'debug', 'stack', 'verbose', 'stop',
-        'all', 'silent', 'nodes'
+        'all', 'silent', 'nodes', 'reset'
     ],
-    string: ['app_root', 'cfg', 'rules', 'format', 'package', 'config',
-        'phase']
+    string: ['app_root', 'lintcfg', 'rules', 'format', 'package', 'config',
+        'phase'],
+    default: {
+        color: true,
+        silent: true
+    }
 };
 
 
@@ -148,7 +151,7 @@ Cmd.prototype.getLintArguments = function() {
         void(0);
     }
 
-    if (this.argv.cfg) {
+    if (this.argv.lintcfg) {
         args.push('-c' + this.argv.lintcfg);
     }
 
