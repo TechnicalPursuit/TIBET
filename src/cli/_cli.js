@@ -228,6 +228,27 @@ CLI.system = function(msg) {
     console.info(chalk.green(msg));
 };
 
+//  ---
+//  Value checks
+//  ---
+
+CLI.isEmpty = function(aReference) {
+    return aReference === null || aReference === undefined ||
+        aReference.length === 0;
+};
+
+CLI.isValid = function(aReference) {
+    return aReference !== null && aReference !== undefined;
+};
+
+CLI.notEmpty = function(aReference) {
+    return aReference !== null && aReference !== undefined &&
+        aReference.length !== 0;
+};
+
+CLI.notValid = function(aReference) {
+    return aReference === null || aReference === undefined;
+};
 
 //  ---
 //  Utilities
@@ -259,7 +280,12 @@ CLI.canRun = function(CmdType) {
 CLI.expandPath = function(aPath) {
 
     // Make sure we have a package.
-    this.initPackage();
+    try {
+        this.initPackage();
+    } catch (e) {
+        this.error(e.message);
+        process.exit(1);
+    }
 
     return this._package.expandPath(aPath);
 };
@@ -319,7 +345,12 @@ CLI.getCommandPath = function(command, options) {
         return file;
     }
 
-    this.initPackage();
+    try {
+        this.initPackage();
+    } catch (e) {
+        this.error(e.message);
+        process.exit(1);
+    }
 
     roots = ['~app_cmd', '~lib_cmd'];
     len = roots.length;
@@ -429,7 +460,7 @@ CLI.inProject = function(CmdType) {
             // Once we find the directory of a project root load any tibet.json
             // configuration found there.
             try {
-                this.options.tibet.config = require(fullpath);
+                this.options.tibet = require(fullpath);
             } catch (e) {
                 // Don't output warnings about project issues when providing
                 // help text.

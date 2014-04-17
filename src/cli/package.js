@@ -43,6 +43,7 @@ var CLI = require('./_cli');
 var path = require('path');
 var dom = require('xmldom');
 var serializer = new dom.XMLSerializer();
+var beautify = require('js-beautify').js_beautify;
 
 
 //  ---
@@ -59,20 +60,24 @@ Cmd.prototype = new Parent();
 //  ---
 
 /**
- * The default package to process. Note the default is our default for the
- * application's tibet.xml file so commands based on tibet package can often
- * default to the common application-centric use case.
- * @type {string}
- */
-Cmd.prototype.PACKAGE = '~app_base/app.xml';
-
-
-/**
  * The command help string.
  * @type {string}
  */
 Cmd.prototype.HELP =
 'Outputs a list of package assets either as nodes (default) or file names.';
+
+
+/**
+ * Command argument parsing options.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = {
+    boolean: [
+        'color', 'help', 'usage', 'debug', 'stack', 'verbose',
+        'all', 'scripts', 'styles', 'images', 'nodes'
+    ],
+    string: ['package', 'config', 'include', 'exclude', 'phase']
+};
 
 
 /**
@@ -84,6 +89,7 @@ Cmd.prototype.USAGE =
     '\t[--include <asset names>] [--exclude <asset names>]\n' +
     '\t[--scripts] [--styles] --[images] [--phase <phase>]';
 
+
 /**
  * The package instance which this instance is using to process package data.
  * @type {Package}
@@ -92,19 +98,10 @@ Cmd.prototype.package = null;
 
 
 /**
- * Command argument parsing options.
+ * The final options used to drive the underlying Package object.
  * @type {Object}
  */
-Cmd.prototype.PARSE_OPTIONS = {
-    boolean: [
-        'color', 'help', 'usage', 'debug', 'stack', 'verbose',
-        'all', 'scripts', 'styles', 'images'
-    ],
-    string: ['package', 'config', 'include', 'exclude', 'phase'],
-    default: {
-        color: true
-    }
-};
+Cmd.prototype.pkgOpts = null;
 
 
 //  ---
@@ -122,46 +119,29 @@ Cmd.prototype.execute = function() {
     var Package;    // The tibet_package export.
     var list;       // The result list of asset references.
 
-    pkgOpts = {};
+    this.pkgOpts = this.argv;
 
-    // Note the default here points to an application-standard package path.
-    pkgOpts.package = CLI.ifUndefined(this.argv.package, this.PACKAGE);
-
-    // Config is ignored if 'all' is true since that means we'll process all
-    // config tags found in the package and descend the resulting tree.
-    if (this.argv.all) {
-        pkgOpts.all = true;
-    } else if (this.argv.config) {
-        pkgOpts.config = this.argv.config;
+    // If silent isn't explicitly set but we're doing a full expansion turn
+    // silent on so we skip duplicate resource warnings.
+    if (CLI.notValid(this.argv.silent) && this.argv.all) {
+        this.pkgOpts.silent = true;
     }
-
-    // We default to all forms of 'script' produced by package expansion. Both
-    // echo and property tags ultimately become script tags.
-    pkgOpts.include = CLI.ifUndefined(this.argv.include, 'echo property script');
-
-    // Configure settings for the package instance appropriate to rollup. We
-    // want the output to be the full node with no color and no warnings.
-    pkgOpts.nodes = CLI.ifUndefined(this.argv.nodes, true);
-    pkgOpts.color = CLI.ifUndefined(this.argv.color, true);
-
-    pkgOpts.silent = this.argv.nosilent ? this.argv.all :
-        CLI.ifUndefined(this.argv.silent, false);
 
     // Set boot phase defaults. If we don't manage these then most app package
     // runs will quietly filter out all their content nodes.
-    pkgOpts.boot = {};
+    this.pkgOpts.boot = {};
     switch (this.argv.phase) {
-        case 'all':
-            pkgOpts.boot.phaseone = true;
-            pkgOpts.boot.phasetwo = true;
-            break;
         case 'one':
-            pkgOpts.boot.phaseone = true;
-            pkgOpts.boot.phasetwo = false;
+            this.pkgOpts.boot.phaseone = true;
+            this.pkgOpts.boot.phasetwo = false;
+            break;
+        case 'two':
+            this.pkgOpts.boot.phaseone = false;
+            this.pkgOpts.boot.phasetwo = true;
             break;
         default:
-            pkgOpts.boot.phaseone = false;
-            pkgOpts.boot.phasetwo = true;
+            this.pkgOpts.boot.phaseone = true;
+            this.pkgOpts.boot.phasetwo = true;
             break;
     }
 
@@ -169,10 +149,10 @@ Cmd.prototype.execute = function() {
     Package = require(path.join(CLI.getAppRoot(),
         'node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
 
-    this.verbose('pkgOpts: ' + JSON.stringify(pkgOpts));
-    this.package = new Package(pkgOpts);
+    this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+    this.package = new Package(this.pkgOpts);
 
-    if (this.argv.all) {
+    if (this.pkgOpts.all) {
         this.package.expandAll();
         list = this.package.listAllAssets();
     } else {
@@ -197,7 +177,7 @@ Cmd.prototype.executeForEach = function(list) {
     cmd = this;
 
     list.forEach(function(item) {
-        if (cmd.argv.nodes) {
+        if (cmd.pkgOpts.nodes) {
             cmd.info(serializer.serializeToString(item));
         } else {
             cmd.info(item);

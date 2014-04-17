@@ -107,11 +107,27 @@ Cmd.prototype.help = function() {
  * @return {Object} An object in minimist argument format.
  */
 Cmd.prototype.parse = function() {
+    var cmd;
+
     this.argv = minimist(process.argv.slice(2), this.PARSE_OPTIONS) || [];
 
-    if (this.argv.verbose) {
-        console.debug('parsed arguments: ' + JSON.stringify(this.argv));
+    // Minimist has a bad habit with boolean values...it will make entries for
+    // them even if they're not on the command line which makes it harder for us
+    // to manage defaulting the way we want. (tibet.json should be part of the
+    // mix if not on the command line explicitly). So remove anything that was
+    // not explicitly on the command line...
+    cmd = this;
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.boolean) {
+        this.PARSE_OPTIONS.boolean.forEach(function(flag) {
+            if (process.argv.indexOf('--' + flag) === -1 &&
+                process.argv.indexOf('--no-' + flag) === -1) {
+                delete(cmd.argv[flag]);
+            }
+        });
     }
+
+    this.debug('process arguments: ' + JSON.stringify(process.argv));
+    this.debug('parsed arguments: ' + JSON.stringify(this.argv));
 
     return this.argv;
 };
