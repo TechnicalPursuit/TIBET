@@ -76,7 +76,10 @@ Cmd.prototype.options = null;
  */
 Cmd.prototype.PARSE_OPTIONS = {
     boolean: ['color', 'help', 'usage', 'debug', 'stack', 'verbose'],
-    string: ['app_root']
+    string: ['app_root'],
+    default: {
+        color: true
+    }
 };
 
 //  ---
@@ -105,6 +108,11 @@ Cmd.prototype.help = function() {
  */
 Cmd.prototype.parse = function() {
     this.argv = minimist(process.argv.slice(2), this.PARSE_OPTIONS) || [];
+
+    if (this.argv.verbose) {
+        console.debug('parsed arguments: ' + JSON.stringify(this.argv));
+    }
+
     return this.argv;
 };
 
