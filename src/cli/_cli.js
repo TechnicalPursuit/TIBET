@@ -148,6 +148,15 @@ CLI.PROJECT_FILE = 'tibet.json';
 
 
 /**
+ * A reference to the current project's associated Makefile.js content. This
+ * will only exist inProject where the project utilizes TIBET's ultra-light
+ * variant on shelljs/make.
+ * @type {Object}
+ */
+CLI.make = null;
+
+
+/**
  * Optional configuration data typically passed into run() via tibet 'binary'.
  * @type {Object}
  */
@@ -526,21 +535,19 @@ CLI.hasMakeTarget = function(target) {
     file = this.MAKE_FILE;
     fullpath = path.join(root, file);
 
-    this.debug('fullpath: ' + fullpath);
-
     if (!sh.test('-f', fullpath)) {
-        this.debug('fullpath not found');
+        this.debug('Makefile not found: ' + fullpath);
         return false;
     }
 
     try {
-        make = require(fullpath);
+        this.make = require(fullpath);
     } catch (e) {
-        this.error('Unable to load makefile: ' + e.message);
+        this.error('Unable to load Makefile: ' + e.message);
         return false;
     }
 
-    return make.targets[target] != null;
+    return CLI.isValid(this.make[target]);
 };
 
 
@@ -645,7 +652,7 @@ CLI.run = function(options) {
 
 
 /**
- * Runs a series of checks for fallback options from shelljs/make to grunt to
+ * Runs a series of checks for fallback options from 'make' to grunt to
  * gulp (in that order).
  * @param {string} command The command to attempt to execute.
  * @param {Object} args Minimist-formatted command line arguments and options.
@@ -654,7 +661,7 @@ CLI.run = function(options) {
  */
 CLI.runFallback = function(command, args, options) {
 
-    // If there's no node_modules in place (and hence no shelljs, grunt, or gulp
+    // If there's no node_modules in place (and hence no tibet, grunt, or gulp
     // that are local) suggest they run `tibet init` first.
     if (!sh.test('-e', 'node_modules')) {
         this.error('Project not initialized. Run `tibet init` first.');
@@ -662,8 +669,8 @@ CLI.runFallback = function(command, args, options) {
     }
 
     if (this.hasMakeTarget(command)) {
-        this.warn('Command not found: ' + command + '. Trying shelljs/make...');
-        return CLI.runViaShelljsMake(command, args, options);
+        this.warn('Command not found: ' + command + '. Trying `tibet make`...');
+        return CLI.runViaMake(command, args, options);
     } else if (this.inGruntProject(command, args, options)) {
         this.warn('Command not found: ' + command + '. Trying grunt...');
         return CLI.runViaGrunt(command, args, options);
@@ -785,45 +792,24 @@ CLI.runViaGulp = function() {
  * @param {Object} options An object containing command/context information.
  * @return {Number} A return code.
  */
-CLI.runViaShelljsMake = function() {
+CLI.runViaMake = function(command, args, options) {
 
-    // TODO: make this real
+    if (!this.make) {
+        this.error('No make targets found.');
+        return 1;
+    }
 
-    this.error('TODO: implement me.');
-    return 1;
-};
+    if (typeof this.make[command] !== 'function') {
+        this.error('TIBET make target not found: ' + command);
+        return 1;
+    }
 
-
-/**
- * Processes any content from the project file into proper configuration
- * parameter values.
- */
-CLI.setTIBETOptions = function() {
-
-    var cli;
-
-    cli = this;
-
-    Object.keys(this.tibet).forEach(function(key) {
-        var value;
-
-        value = cli.tibet[key];
-
-        // If the value isn't a primitive it means the key was initially
-        // provided with a prefix. We'll need to recreate that to store the
-        // data properly.
-        if (Object.prototype.toString.call(value) === '[object Object]') {
-
-            Object.keys(value).forEach(function(subkey) {
-                var name;
-
-                name = key + '.' + subkey;
-                TP.sys.setcfg(name, value[subkey]);
-            });
-        } else {
-            TP.sys.setcfg(key, value);
-        }
-    });
+    try {
+        this.make[command](args);
+    } catch (e) {
+        this.error(e.message);
+        return 1;
+    }
 };
 
 module.exports = CLI;

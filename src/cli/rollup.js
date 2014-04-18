@@ -17,6 +17,7 @@
 'use strict';
 
 var CLI = require('./_cli');
+var beautify = require('js-beautify').js_beautify;
 
 //  ---
 //  Type Construction
@@ -34,10 +35,34 @@ Cmd.prototype = new Parent();
 //  ---
 
 /**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+'Creates a minified and concatenated version of a package#config.\n\n' +
+'Output from this command is written to stdout for use in redirection.\n' +
+'Command-line options mirror those for the `tibet package` command.\n' +
+'See `tibet help package` and the uglify-js documentation for more.\n';
+
+
+/**
+ * Command argument parsing options.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = {
+    boolean: [
+        'color', 'help', 'usage', 'debug', 'stack', 'verbose',
+        'all', 'scripts', 'styles', 'images', 'nodes', 'headers'
+    ],
+    string: ['package', 'config', 'include', 'exclude', 'phase']
+};
+
+
+/**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet rollup [package-opts]';
+Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers]';
 
 
 //  ---
@@ -65,33 +90,48 @@ Cmd.prototype.executeForEach = function(list) {
     ug = require('uglify-js');
     uglifyOpts = CLI.ifUndefined(this.config.uglify, {});
 
-    list.forEach(function(node) {
-        var src = node.getAttribute('src');
+    list.forEach(function(item) {
+        var src;
         var code;
         var virtual;
 
+        // If this doesn't work it's a problem for any 'script' output.
+        src = item.getAttribute('src') || item.getAttribute('href');
+
         if (src) {
             virtual = pkg.getVirtualPath(src);
-            if (cmd.argv.files) {
-                console.log(src);
-            } else {
-                code = ug.minify(src, uglifyOpts).code;
-                if (code && code[code.length - 1] !== ';') {
-                    code += ';';
-                }
 
+            code = ug.minify(src, uglifyOpts).code;
+            if (code && code[code.length - 1] !== ';') {
+                code += ';';
+            }
+
+            if (cmd.options.headers) {
                 console.log('TP.boot.$srcPath = \'' + virtual + '\';');
-                console.log(code);
             }
+            console.log(code);
         } else {
-            if (cmd.argv.files) {
-                console.log(node);
-            } else {
+            if (cmd.options.headers) {
                 console.log('TP.boot.$srcPath = \'\';');
-                console.log(node.textContent);
             }
+            console.log(item.textContent);
         }
     });
+};
+
+
+/**
+ * Perform any last-minute changes to the package options before creation of the
+ * internal Package instance. Intended to be overridden but custom subcommands.
+ */
+Cmd.prototype.finalizePackageOptions = function() {
+
+    // Force nodes to be true for this particular subcommand. Better to handle
+    // the unwrapping ourselves so we have complete access to all
+    // metadata and/or child node content.
+    this.pkgOpts.nodes = true;
+
+    this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
 };
 
 module.exports = Cmd;

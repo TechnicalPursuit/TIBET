@@ -64,8 +64,19 @@ Cmd.prototype = new Parent();
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Outputs a list of package assets either as nodes (default) or file names.';
-
+'Outputs a list of package assets either as asset nodes or asset paths.\n\n' +
+'This command is a useful way to view the files which a `tibet rollup` or\n' +
+'`tibet lint` command will process.\n\n' +
+'--package    the file path to the package to process.\n' +
+'--config     the name of an individual config to process.\n' +
+'--all        process all config tags in the package recursively.\n\n' +
+'--include    a space-separated list of asset tags to include.\n' +
+'--exclude    a space-separated list of asset tags to include.\n\n' +
+'--nodes      output asset nodes rather than asset paths.\n' +
+'--phase      boot phase subset to process <all | one | two>.\n\n' +
+'--images     include all image assets.\n' +
+'--scripts    include all JavaScript source-containing assets.\n' +
+'--styles     include all CSS containing assets.';
 
 /**
  * Command argument parsing options.
@@ -145,11 +156,13 @@ Cmd.prototype.execute = function() {
             break;
     }
 
+    // Give subtypes a hook to make any specific adjustments to
+    // the package options they need.
+    this.finalizePackageOptions();
+
     // TODO: relocate from tibet3 to a reasonable TIBET 5.0 location.
     Package = require(path.join(CLI.getAppRoot(),
         'node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
-
-    this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
     this.package = new Package(this.pkgOpts);
 
     if (this.pkgOpts.all) {
@@ -184,6 +197,16 @@ Cmd.prototype.executeForEach = function(list) {
         }
     });
 };
+
+
+/**
+ * Perform any last-minute changes to the package options before creation of the
+ * internal Package instance. Intended to be overridden but custom subcommands.
+ */
+Cmd.prototype.finalizePackageOptions = function() {
+    this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+};
+
 
 module.exports = Cmd;
 

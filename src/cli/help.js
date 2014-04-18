@@ -238,16 +238,20 @@ Cmd.prototype.logCommands = function(aList) {
 
     var limit = Cmd.COMMAND_MARGIN;
     var buffer;
+    var line;
     var cmd;
 
+    buffer = '';
     if (aList && aList.length > 0) {
-        buffer = '\t';
+        line = '\t';
         while (cmd = aList.shift()) {
-            if (buffer.length + cmd.length > limit) {
-                buffer += '\n\t'
+            if (line.length + cmd.length > limit) {
+                buffer += line + '\n';
+                line = '\t';
             }
-            buffer += cmd + ' ';
+            line += cmd + ' ';
         }
+        buffer += line;
     }
 
     this.info(buffer);

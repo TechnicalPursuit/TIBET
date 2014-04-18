@@ -1,8 +1,7 @@
 /**
- * @overview The 'tibet echo' command. Echoes the current command line arguments
- *     to stdout. This can be useful to help debug how command arguments are
- *     processed by the TIBET CLI. This is also a good command to use as a
- *     template for new custom commands.
+ * @overview The 'tibet config' command. Dumps the current TIBET configuration
+ *     data to stdout for review. When inside a project this data will include
+ *     information from the project's tibet.json file.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -48,14 +47,15 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
  * The command help string.
  * @type {string}
  */
-Cmd.prototype.HELP = 'Echoes the command line arguments to stdout.';
+Cmd.prototype.HELP =
+    'Dumps the current TIBET configuration data to stdout.';
 
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet echo [args]';
+Cmd.prototype.USAGE = 'tibet config';
 
 
 //  ---
@@ -63,12 +63,12 @@ Cmd.prototype.USAGE = 'tibet echo [args]';
 //  ---
 
 /**
- * Perform the actual command processing logic.
+ * Perform the actual command processing.
  */
 Cmd.prototype.execute = function() {
-    if (this.argv) {
-        this.info('\nArguments:\n');
-        this.log(beautify(JSON.stringify(this.argv)));
+    if (this.options) {
+        this.info('\nOptions:\n');
+        this.log(beautify(JSON.stringify(this.options)));
     }
 };
 
