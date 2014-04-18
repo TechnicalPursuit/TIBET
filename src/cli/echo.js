@@ -1,6 +1,6 @@
 /**
  * @overview The 'tibet echo' command. A simple command usable as a template for
- *     custom commands. Echo's the current command line arguments and options.
+ *     custom commands. Echoes the current command line arguments and options.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the

@@ -126,6 +126,10 @@ Cmd.prototype.execute = function() {
     // If specific command was given delegate to the command type.
     command = this.argv._ && this.argv._[1];
     if (command) {
+        if (command === 'help') {
+            // Help on help? Easy
+            return this.help();
+        }
         return this.executeForCommand(command);
     }
 
@@ -143,10 +147,12 @@ Cmd.prototype.execute = function() {
     // Add-ons
     // ---
 
-    cmds = this.getCommands(CLI.expandPath('~app_cmd'));
-    if (cmds.length > 0) {
-        this.info('\nCustom <command> choices include:\n');
-        this.logCommands(cmds);
+    if (CLI.inProject(Cmd)) {
+        cmds = this.getCommands(CLI.expandPath('~app_cmd'));
+        if (cmds.length > 0) {
+            this.info('\nCustom <command> choices include:\n');
+            this.logCommands(cmds);
+        }
     }
 
     // ---
@@ -208,12 +214,16 @@ Cmd.prototype.getCommands = function(aPath) {
 
     cmds = [];
 
-    files = sh.ls(aPath);
-    files.sort().forEach(function(file) {
-        if (file.charAt(0) !== '_' && /\.js$/.test(file)) {
-            cmds.push(file.replace(/\.js$/, ''));
-        }
-    });
+    // Depending on where the command is run the path built might not actually
+    // exist, so check that first.
+    if (sh.test('-d', aPath)) {
+        files = sh.ls(aPath);
+        files.sort().forEach(function(file) {
+            if (file.charAt(0) !== '_' && /\.js$/.test(file)) {
+                cmds.push(file.replace(/\.js$/, ''));
+            }
+        });
+    }
 
     return cmds;
 };
