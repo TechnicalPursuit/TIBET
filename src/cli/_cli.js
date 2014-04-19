@@ -288,13 +288,7 @@ CLI.canRun = function(CmdType) {
  */
 CLI.expandPath = function(aPath) {
 
-    // Make sure we have a package.
-    try {
-        this.initPackage();
-    } catch (e) {
-        this.error(e.message);
-        process.exit(1);
-    }
+    this.initPackage();
 
     return this._package.expandPath(aPath);
 };
@@ -333,6 +327,21 @@ CLI.getAppRoot = function() {
 
 
 /**
+ * Returns the configuration values currently in force. Leverages the logic in a
+ * TIBET Package object for the loading/processing of default TIBET parameters.
+ * If no property is provided the entire set of configuration values is
+ * returned.
+ * @param {string} property A specific property value to check.
+ * @return {Object} The property value, or the entire configuration object.
+ */
+CLI.getcfg = function(property) {
+    this.initPackage();
+
+    return this._package.getcfg(property);
+};
+
+
+/**
  * Searches a set of paths including ~app_cmd and ~lib_cmd for an implementation
  * file for the named command.
  * @param {string} command The command to find, such as 'start'.
@@ -354,12 +363,7 @@ CLI.getCommandPath = function(command, options) {
         return file;
     }
 
-    try {
-        this.initPackage();
-    } catch (e) {
-        this.error(e.message);
-        process.exit(1);
-    }
+    this.initPackage();
 
     roots = ['~app_cmd', '~lib_cmd'];
     len = roots.length;
@@ -434,8 +438,14 @@ CLI.initPackage = function() {
         return;
     }
 
-    Package = require(path.join(__dirname, this.PACKAGE_FILE));
-    this._package = new Package(this.options);
+    // Make sure we have a package.
+    try {
+        Package = require(path.join(__dirname, this.PACKAGE_FILE));
+        this._package = new Package(this.options);
+    } catch (e) {
+        this.error(e.message);
+        process.exit(1);
+    }
 };
 
 
