@@ -66,11 +66,21 @@ Cmd.prototype.USAGE = 'tibet config';
  * Perform the actual command processing.
  */
 Cmd.prototype.execute = function() {
-    if (this.options) {
-        this.info('\nOptions:\n');
-        this.log(beautify(JSON.stringify(this.options)));
+    var cfg;
+    var option;
+
+    if (this.argv._.length > 1) {
+        option = this.argv._[1];
+    }
+
+    cfg = CLI.getcfg(option);
+    if (CLI.notValid(cfg)) {
+        this.info('Config value not found: ' + option);
+    } else {
+        this.info(beautify(JSON.stringify(cfg)));
     }
 };
+
 
 module.exports = Cmd;
 
