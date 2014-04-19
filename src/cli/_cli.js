@@ -438,14 +438,8 @@ CLI.initPackage = function() {
         return;
     }
 
-    // Make sure we have a package.
-    try {
-        Package = require(path.join(__dirname, this.PACKAGE_FILE));
-        this._package = new Package(this.options);
-    } catch (e) {
-        this.error(e.message);
-        process.exit(1);
-    }
+    Package = require(path.join(__dirname, this.PACKAGE_FILE));
+    this._package = new Package(this.options);
 };
 
 
@@ -670,6 +664,11 @@ CLI.run = function(options) {
  * @return {Number} A return code.
  */
 CLI.runFallback = function(command, args, options) {
+
+    if (!CLI.inProject()) {
+        this.error('Command not found: ' + command + '.');
+        return 1;
+    }
 
     // If there's no node_modules in place (and hence no tibet, grunt, or gulp
     // that are local) suggest they run `tibet init` first.
