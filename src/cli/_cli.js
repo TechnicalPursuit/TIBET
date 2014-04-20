@@ -113,7 +113,7 @@ CLI.GULP_FILE = 'gulpfile.js';
 
 
 /**
- * The default shelljs makefile for TIBET projects. Tasks in this file are
+ * The default makefile for TIBET projects. Tasks in this file are
  * potential fallbacks for cli commands.
  * @type {string}
  */
@@ -148,12 +148,12 @@ CLI.PROJECT_FILE = 'tibet.json';
 
 
 /**
- * A reference to the current project's associated Makefile.js content. This
+ * A reference to the current project's associated TIBET make targets. This
  * will only exist inProject where the project utilizes TIBET's ultra-light
  * variant on shelljs/make.
  * @type {Object}
  */
-CLI.make = null;
+CLI.make_targets = null;
 
 
 /**
@@ -540,18 +540,18 @@ CLI.hasMakeTarget = function(target) {
     fullpath = path.join(root, file);
 
     if (!sh.test('-f', fullpath)) {
-        this.debug('Makefile not found: ' + fullpath);
+        this.debug('TIBET make file not found: ' + fullpath);
         return false;
     }
 
     try {
-        this.make = require(fullpath);
+        this.make_targets = require(fullpath);
     } catch (e) {
-        this.error('Unable to load Makefile: ' + e.message);
+        this.error('Unable to load TIBET make file: ' + e.message);
         return false;
     }
 
-    return CLI.isValid(this.make[target]);
+    return typeof this.make_targets[target] === 'function';
 };
 
 
@@ -612,12 +612,23 @@ CLI.run = function(options) {
     //  ---
 
     // Search app_cmd, lib_cmd_ etc. for the command implementation.
-    cmdPath = CLI.getCommandPath(command, options);
+    cmdPath = CLI.getCommandPath(command, this.options);
 
     // Not a 'native TIBET command' so try handling via fallback logic.
     if (!cmdPath) {
-        return this.runFallback(command, argv, options);
+        return this.runFallback(command, argv, this.options);
     }
+
+    this.runCommand(command, argv, this.options, cmdPath);
+};
+
+
+/**
+ */
+CLI.runCommand = function(command, argv, options, cmdPath) {
+
+    var CmdType;
+    var cmd;
 
     // Load the command type
     try {
@@ -646,7 +657,7 @@ CLI.run = function(options) {
     //  Dispatch the command with any config options. It will parse the command
     //  line again itself so it can be certain of flag values.
     try {
-        cmd.run(this.options);
+        cmd.run(this.options, argv);
     } catch (e) {
         return this.handleError(e, 'processing', command);
     }
@@ -678,13 +689,13 @@ CLI.runFallback = function(command, args, options) {
     }
 
     if (this.hasMakeTarget(command)) {
-        this.warn('Command not found: ' + command + '. Trying `tibet make`...');
+        this.warn('Delegating `' + command + '` to tibet make...');
         return CLI.runViaMake(command, args, options);
     } else if (this.inGruntProject(command, args, options)) {
-        this.warn('Command not found: ' + command + '. Trying grunt...');
+        this.warn('Delegating `' + command + '` to grunt...');
         return CLI.runViaGrunt(command, args, options);
     } else if (this.inGulpProject()) {
-        this.warn('Command not found: ' + command + '. Trying gulp...');
+        this.warn('Delegating `' + command + '` to grunt...');
         return CLI.runViaGulp(command, args, options);
     } else {
         this.error('Command not found: ' + command + '.');
@@ -794,7 +805,7 @@ CLI.runViaGulp = function() {
 
 
 /**
- * Executes a command by delegating to shelljs/make and executing the command as
+ * Executes a command by delegating to `tibet make` and executing the command as
  * a make target.
  * @param {string} command The command to attempt to execute.
  * @param {Object} args Minimist-formatted command line arguments and options.
@@ -803,22 +814,7 @@ CLI.runViaGulp = function() {
  */
 CLI.runViaMake = function(command, args, options) {
 
-    if (!this.make) {
-        this.error('No make targets found.');
-        return 1;
-    }
-
-    if (typeof this.make[command] !== 'function') {
-        this.error('TIBET make target not found: ' + command);
-        return 1;
-    }
-
-    try {
-        this.make[command](args);
-    } catch (e) {
-        this.error(e.message);
-        return 1;
-    }
+    this.runCommand('make', args, options, path.join(__dirname, 'make.js'));
 };
 
 module.exports = CLI;
