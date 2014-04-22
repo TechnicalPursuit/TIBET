@@ -83,6 +83,7 @@ Cmd.prototype.execute = function() {
     var targets;
     var command;
     var cmd;
+    var start;
 
     // The CLI loads our makefile to check for targets. We can just leverage
     // that here to execute.
@@ -118,14 +119,42 @@ Cmd.prototype.execute = function() {
     try {
         cmd = this;
 
+        start = new Date();
+
         // NOTE the use of then() here since our task prep makes each task into
         // Promise. We rely on this for more control over async tasks etc.
         targets[command](this).then(
             function(obj) {
-                cmd.log('task success');
+                var msg;
+
+                if (CLI.isValid(obj)) {
+                    if (typeof obj === 'string') {
+                        cmd.info(obj);
+                    } else if ('' + obj === '[object Object]') {
+                        cmd.info(JSON.stringify(obj));
+                    } else {
+                        cmd.info('' + obj);
+                    }
+                }
+
+                msg = 'task success ' +
+                    ((new Date()).getTime() - start) + 'ms.';
+                cmd.log(msg);
             },
             function(err) {
-                cmd.log('task failure');
+                var msg;
+
+                if (CLI.isValid(err)) {
+                    if (err instanceof Error) {
+                        cmd.error(err.message);
+                    } else {
+                        cmd.error(JSON.stringify(err));
+                    }
+                }
+
+                msg = 'task failure ' +
+                    ((new Date()).getTime() - start) + 'ms.';
+                cmd.log(msg);
             });
 
     } catch (e) {
