@@ -1,5 +1,8 @@
 /**
- * @overview The 'tibet help' command.
+ * @overview The 'tibet help' command. Displays the usage and/or help text for a
+ *     command, or for the entire TIBET CLI if no command name is given. Note
+ *     that if `tibet help` is invoked within a project any custom commands for
+ *     that application are also listed.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -65,10 +68,10 @@ Cmd.prototype.USAGE = 'tibet help [command]';
 //  ---
 
 /**
- * Processes requests of the form 'tibet --help', 'tibet help --help', and
- * potentially 'tibet --help <command>'. The last one is a bit tricky since
- * minimist will parse that and make <command> the value of the help flag.
- * @return {Number} A return code.
+ * Processes requests of the form 'tibet --help', 'tibet help --help', or
+ * 'tibet --help <command>'. Each variant has a different target (tibet, help,
+ * or command respectively).
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.help = function() {
 

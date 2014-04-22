@@ -87,7 +87,7 @@ Cmd.prototype.USAGE = 'tibet clone <appname> [--dna <template>]';
 
 /**
  * Runs the specific command in question.
- * @param {Array.<string>} args The argument array from the command line.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
 

@@ -14,6 +14,7 @@
 
 var CLI = require('./_cli');
 
+
 //  ---
 //  Type Construction
 //  ---
@@ -55,6 +56,8 @@ Cmd.prototype.USAGE = 'tibet version';
 //  ---
 
 /**
+ * Perform the actual command processing logic.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
     try {
@@ -63,6 +66,7 @@ Cmd.prototype.execute = function() {
         this.error('Unable to determine TIBET version.');
     }
 };
+
 
 module.exports = Cmd;
 

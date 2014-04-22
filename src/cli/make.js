@@ -28,6 +28,14 @@ var Cmd = function(){};
 Cmd.prototype = new Parent();
 
 
+/**
+ * Millisecond count for how long an individual task can run before it times out
+ * and is rejected automatically. You can set a timeout value using --timeout on
+ * the command line.
+ */
+Cmd.TIMEOUT = 15000;
+
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -48,10 +56,18 @@ Cmd.prototype.HELP =
 
 
 /**
+ * A list of the tasks currently running. Used primarily when a circular task
+ * exception occurs so the command can clear any intermediate timeouts.
+ * @type {Array.<string>}
+ */
+Cmd.prototype.task_list;
+
+
+/**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet make [<target>] [--list]';
+Cmd.prototype.USAGE = 'tibet make [<target>] [--list] [--timeout <ms>]';
 
 
 //  ---
@@ -60,6 +76,7 @@ Cmd.prototype.USAGE = 'tibet make [<target>] [--list]';
 
 /**
  * Perform the actual command processing logic.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
 
@@ -104,12 +121,13 @@ Cmd.prototype.execute = function() {
         // NOTE the use of then() here since our task prep makes each task into
         // Promise. We rely on this for more control over async tasks etc.
         targets[command](this).then(
-            function() {
+            function(obj) {
                 cmd.log('task success');
             },
-            function() {
+            function(err) {
                 cmd.log('task failure');
             });
+
     } catch (e) {
         this.error(e.message);
         return 1;
@@ -121,6 +139,7 @@ Cmd.prototype.execute = function() {
  * Lists available make targets. Ensures only valid function targets are listed
  * and outputs the list in sorted order.
  * @param {Object} targets The object export from the TIBET make file used.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeList = function(targets) {
     var list;
@@ -148,10 +167,13 @@ Cmd.prototype.executeList = function(targets) {
  * instances. The resulting task functions can be chained via then(). The
  * function wrappers also have a resolve() and reject() wrapper placed on them
  * so they can easily invoke the appropriate call on completion of their task.
+ * A timeout option is also injected such that long-running tasks (likely due to
+ * forgetting to reject or resolve) can be rejected automatically.
  * @param {Object} targets An object whose functions serve as make targets.
  */
 Cmd.prototype.prepTargets = function(targets) {
     var cmd;
+    var timeout;
 
     // For control purposes we want to wrap individual make target functions if
     // they're not already wrapped.
@@ -159,8 +181,20 @@ Cmd.prototype.prepTargets = function(targets) {
         return;
     }
 
+    if (CLI.notEmpty(this.argv.timeout)) {
+        timeout = parseInt(this.argv.timeout, 10);
+        if (isNaN(timeout)) {
+            throw new Error('Invalid timeout: ' + this.argv.timeout);
+        }
+    } else {
+        timeout = Cmd.TIMEOUT;
+    }
+
     // Binding reference.
     cmd = this;
+
+    // Ensure we have a clean task list in place.
+    cmd.task_list = [];
 
     Object.keys(targets).forEach(function(key) {
 
@@ -171,33 +205,62 @@ Cmd.prototype.prepTargets = function(targets) {
                 // Replace original with a function returning a Promise.
                 targets[name] = function() {
                     var promise;
-                    promise = new Promise(function(resolve, reject) {
+
+                    if (targets[name].$$active) {
+                        cmd.error(
+                            'Error: Circular invocation of `' + name + '`');
+                        // No easy way to clean up all the potential promises,
+                        // timers, etc. so just exit directly.
+                        process.exit(1);
+                    } else {
+                        targets[name].$$active = true;
+                        cmd.log('making ' + name);
+                    }
+
+                    promise = new Promise(function(resolver, rejector) {
+                        var timer;
+
+                        timer = setTimeout(function() {
+                            cmd.error(name + ' timed out.');
+                            rejector('timeout');
+                        }, timeout);
+
+                        // Hold on to timer to make it easier to clear.
+                        targets[name].timer = timer;
 
                         // Patch on a wrapper for resolve() calls. This ensures
                         // that our outer task-runner level resolve hook runs.
-                        targets[name].resolve = function(reason) {
-                            cmd.debug('resolving...' + (reason || ''));
-                            resolve.apply(resolve, arguments);
+                        targets[name].resolve = function(obj) {
+                            cmd.debug('resolving ' + name + '...');
+                            clearTimeout(timer);
+                            func.$$active = false;
+                            resolver(obj);
                         };
 
                         // Patch on a wrapper for reject() calls. This ensures
                         // that our outer task-runner level reject hook runs.
-                        targets[name].reject = function(reason) {
-                            cmd.debug('rejecting...' + (reason + ''));
-                            reject.apply(reject, arguments);
+                        targets[name].reject = function(err) {
+                            cmd.debug('rejecting ' + name + '...');
+                            clearTimeout(timer);
+                            func.$$active = false;
+                            rejector(err);
                         };
 
-                        cmd.log('running ' + name);
                         try {
-                            func.call(func, cmd);
+                            func.call(func, cmd);           // run it :)
                         } catch (e) {
-                            reject(e);
+                            cmd.error('Error running task `' + name +
+                                '`: ' + e.message);
+                            targets[name].reject(e);
                         }
-
                     });
 
                     return promise;
                 };
+
+                targets[name].displayName = name;
+                targets[name].$$original = func;
+
             }(key, targets[key]));
 
             return;

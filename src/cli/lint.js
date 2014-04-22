@@ -90,6 +90,7 @@ Cmd.prototype.USAGE = 'tibet lint [--stop] [package-opts] [eslint-opts]';
 /**
  * Lints the script content of a package/config pair.
  * @param {Array.<Node>} list An array of package asset nodes.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeForEach = function(list) {
 

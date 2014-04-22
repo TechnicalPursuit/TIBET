@@ -50,6 +50,7 @@ Cmd.prototype.USAGE = 'tibet init';
 /**
  * Runs the command. For this type the goal is to provide easy startup of the
  * local TIBET server.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
 

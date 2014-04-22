@@ -2,9 +2,9 @@
  * @file _cli.js
  * @overview TIBET command-line processor. Individual command files do the work.
  *     The logic here is focused on command identification, initial argument
- *     processing, and command file loading. If a command isn't found this will
- *     check for a Makefile.js target to potentially execute followed by a check
- *     to find a matching grunt or gulp task to invoke to perform the work.
+ *     processing, command file loading, and common utilities for commands.
+ *     If a command isn't found the CLI will check for a TIBET-style makefile.js
+ *     target followed by a grunt or gulp task to invoke to perform the work.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -82,14 +82,15 @@ var CLI = {};
 //  ---
 
 /**
- * The max number of characters per line in the item lists.
+ * The max number of characters per line in the item lists for commands like
+ * `help` and `make`.
  * @type {number}
  */
 CLI.CHARS_PER_LINE = 50;
 
 
 /**
- * The set of viable "execution contexts" for commands. Both implies a command
+ * The set of viable execution contexts for commands. `BOTH` implies a command
  * can be run either inside or outside of a TIBET project context. The others
  * should be self-evident.
  * @type {Object.<string,string>}
@@ -120,11 +121,11 @@ CLI.GULP_FILE = 'gulpfile.js';
 
 
 /**
- * The default makefile for TIBET projects. Tasks in this file are
- * potential fallbacks for cli commands.
+ * The default `make` file for TIBET projects. Functions exported from this file
+ * are potential fallbacks for cli commands.
  * @type {string}
  */
-CLI.MAKE_FILE = 'Makefile.js';
+CLI.MAKE_FILE = 'makefile.js';
 
 
 /**
@@ -407,6 +408,7 @@ CLI.getMakeTargets = function() {
 
     if (!sh.test('-f', fullpath)) {
         this.debug('TIBET make file not found: ' + fullpath);
+        return;
     }
 
     try {
@@ -416,6 +418,23 @@ CLI.getMakeTargets = function() {
     }
 
     return this.make_targets;
+};
+
+
+/**
+ * Checks for a CLI.MAKE_FILE in the application root directory and, if found,
+ * checks it for a matching target.
+ * @param {string} target The target to search for.
+ * @return {boolean} True if the target is found.
+ */
+CLI.hasMakeTarget = function(target) {
+    var targets;
+
+    targets = this.getMakeTargets();
+    if (CLI.notValid(targets)) {
+        return false;
+    }
+    return typeof targets[target] === 'function';
 };
 
 
@@ -570,7 +589,7 @@ CLI.logItems = function(aList) {
  * @param {Error} e The error object.
  * @param {string} phase The phase of command processing.
  * @param {string} command The command that failed.
- * @return {Number} A return code.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 CLI.handleError = function(e, phase, command) {
     var msg;
@@ -586,34 +605,22 @@ CLI.handleError = function(e, phase, command) {
         return 1;
     }
 
-    this.error('Error ' + phase + ' ' + command + ': ' + msg);
+    // Try to avoid Error... Error... messages being built up.
+    if (!/^Error/.test(msg)) {
+        msg = 'Error ' + phase + ' ' + command + ': ' + msg;
+    }
+
+    this.error(msg);
     return 1;
 };
 
 
 /**
- * Checks for a CLI.MAKE_FILE in the application root directory and, if found,
- * checks it for a matching target.
- * @param {string} target The target to search for.
- * @return {boolean} True if the target is found.
- */
-CLI.hasMakeTarget = function(target) {
-    var targets;
-
-    targets = this.getMakeTargets();
-    if (CLI.notValid(targets)) {
-        return false;
-    }
-    return typeof targets[target] === 'function';
-};
-
-
-/**
  * Executes the current command line, parsing the command line and invoking the
- * appropriate command in response. The command is invoked via 'execute'. See
- * the _cmd.js documentation for more detail.
+ * appropriate command in response. Command instances are invoked via their
+ * `execute` method. See the _cmd.js documentation for more detail.
  * @param {Object} options An object containing command/context information.
- * @return {Number} A return code.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 CLI.run = function(options) {
 
@@ -672,11 +679,19 @@ CLI.run = function(options) {
         return this.runFallback(command, argv, this.options);
     }
 
-    this.runCommand(command, argv, this.options, cmdPath);
+    return this.runCommand(command, argv, this.options, cmdPath);
 };
 
 
 /**
+ * Executes a named command which should be found at cmdPath. Command instances
+ * are invoked via their `execute` method. See the _cmd.js documentation for
+ * more detail.
+ * @param {string} command The command name.
+ * @param {Object} argv The parsed command line arguments object.
+ * @param {Object} options An object containing command/context information.
+ * @param {string} cmdPath The path used to require() the command implementation.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 CLI.runCommand = function(command, argv, options, cmdPath) {
 
@@ -690,7 +705,7 @@ CLI.runCommand = function(command, argv, options, cmdPath) {
         return this.handleError(e, 'loading', command);
     }
 
-    // Instantiate the command instance
+    // Instantiate the command instance. Note no arguments here.
     try {
         cmd = new CmdType();
     } catch (e) {
@@ -742,15 +757,22 @@ CLI.runFallback = function(command, args, options) {
     }
 
     if (this.hasMakeTarget(command)) {
+
         this.warn('Delegating `' + command + '` to tibet make...');
         return CLI.runViaMake(command, args, options);
+
     } else if (this.inGruntProject(command, args, options)) {
+
         this.warn('Delegating `' + command + '` to grunt...');
         return CLI.runViaGrunt(command, args, options);
+
     } else if (this.inGulpProject()) {
+
         this.warn('Delegating `' + command + '` to grunt...');
         return CLI.runViaGulp(command, args, options);
+
     } else {
+
         this.error('Command not found: ' + command + '.');
         return 1;
     }
@@ -867,8 +889,12 @@ CLI.runViaGulp = function() {
  */
 CLI.runViaMake = function(command, args, options) {
 
+    // Delegate to the same runCommand used for all other common commands. Note
+    // that the only difference to the `make` command is that it won't be able
+    // to parse quite the same command line from process.argv.
     this.runCommand('make', args, options, path.join(__dirname, 'make.js'));
 };
+
 
 module.exports = CLI;
 

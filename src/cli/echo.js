@@ -65,6 +65,7 @@ Cmd.prototype.USAGE = 'tibet echo [args]';
 
 /**
  * Perform the actual command processing logic.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
     if (this.argv) {

@@ -64,6 +64,7 @@ Cmd.prototype.USAGE = 'tibet config';
 
 /**
  * Perform the actual command processing.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
     var cfg;

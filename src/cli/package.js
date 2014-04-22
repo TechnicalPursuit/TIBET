@@ -55,6 +55,7 @@ var Parent = require('./_cmd');
 var Cmd = function(){};
 Cmd.prototype = new Parent();
 
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -77,6 +78,7 @@ Cmd.prototype.HELP =
 '--images     include all image assets.\n' +
 '--scripts    include all JavaScript source-containing assets.\n' +
 '--styles     include all CSS containing assets.';
+
 
 /**
  * Command argument parsing options.
@@ -123,6 +125,7 @@ Cmd.prototype.pkgOpts = null;
  * Top-level processing of the package to produce an asset list. For this type
  * and subtypes of the package command you should look to the "executeForEach"
  * method for the actual node-by-node processing logic.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
 
@@ -183,6 +186,7 @@ Cmd.prototype.execute = function() {
  * produced by the 'execute' method. The default behavior is to simply output
  * the node text to the log.
  * @param {Array.<Node>} list An array of package nodes.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeForEach = function(list) {
     var cmd;
