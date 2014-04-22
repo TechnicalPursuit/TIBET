@@ -82,6 +82,13 @@ var CLI = {};
 //  ---
 
 /**
+ * The max number of characters per line in the item lists.
+ * @type {number}
+ */
+CLI.CHARS_PER_LINE = 50;
+
+
+/**
  * The set of viable "execution contexts" for commands. Both implies a command
  * can be run either inside or outside of a TIBET project context. The others
  * should be self-evident.
@@ -237,6 +244,7 @@ CLI.system = function(msg) {
     console.info(chalk.green(msg));
 };
 
+
 //  ---
 //  Value checks
 //  ---
@@ -258,6 +266,7 @@ CLI.notEmpty = function(aReference) {
 CLI.notValid = function(aReference) {
     return aReference === null || aReference === undefined;
 };
+
 
 //  ---
 //  Utilities
@@ -379,6 +388,38 @@ CLI.getCommandPath = function(command, options) {
 
 
 /**
+ * Returns the targets exported from any CLI.MAKE_FILE in the application. If
+ * the file isn't loaded yet this call will attempt to load it.
+ * @return {boolean} True if the target is found.
+ */
+CLI.getMakeTargets = function() {
+    var root;
+    var file;
+    var fullpath;
+
+    if (this.make_targets) {
+        return this.make_targets;
+    }
+
+    root = this.getAppRoot();
+    file = this.MAKE_FILE;
+    fullpath = path.join(root, file);
+
+    if (!sh.test('-f', fullpath)) {
+        this.debug('TIBET make file not found: ' + fullpath);
+    }
+
+    try {
+        this.make_targets = require(fullpath);
+    } catch (e) {
+        this.error('Unable to load TIBET make file: ' + e.message);
+    }
+
+    return this.make_targets;
+};
+
+
+/**
  * Returns a default value if a particular value is undefined, else returns the
  * original value. Useful for defaulting optional parameters.
  * @param {Object} suspectValue The value to test.
@@ -491,6 +532,34 @@ CLI.inProject = function(CmdType) {
 };
 
 
+/**
+ * Outputs a list of items, formatting them to indent and wrap properly.
+ * @param {Array.<string>} aList The list of items to output.
+ */
+CLI.logItems = function(aList) {
+
+    var limit = CLI.CHARS_PER_LINE;
+    var buffer;
+    var line;
+    var cmd;
+
+    buffer = '';
+    if (aList && aList.length > 0) {
+        line = '\t';
+        while (cmd = aList.shift()) {
+            if (line.length + cmd.length > limit) {
+                buffer += line + '\n';
+                line = '\t';
+            }
+            line += cmd + ' ';
+        }
+        buffer += line;
+    }
+
+    this.info(buffer);
+};
+
+
 //  ---
 //  Command Execution
 //  ---
@@ -529,29 +598,13 @@ CLI.handleError = function(e, phase, command) {
  * @return {boolean} True if the target is found.
  */
 CLI.hasMakeTarget = function(target) {
+    var targets;
 
-    var root;
-    var file;
-    var fullpath;
-    var make;
-
-    root = this.getAppRoot();
-    file = this.MAKE_FILE;
-    fullpath = path.join(root, file);
-
-    if (!sh.test('-f', fullpath)) {
-        this.debug('TIBET make file not found: ' + fullpath);
+    targets = this.getMakeTargets();
+    if (CLI.notValid(targets)) {
         return false;
     }
-
-    try {
-        this.make_targets = require(fullpath);
-    } catch (e) {
-        this.error('Unable to load TIBET make file: ' + e.message);
-        return false;
-    }
-
-    return typeof this.make_targets[target] === 'function';
+    return typeof targets[target] === 'function';
 };
 
 

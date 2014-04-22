@@ -39,13 +39,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
 
 
 /**
- * The max number of characters per line in the command lists.
- * @type {number}
- */
-Cmd.COMMAND_MARGIN = 50;
-
-
-/**
  * The command name for this type.
  * @type {string}
  */
@@ -235,26 +228,7 @@ Cmd.prototype.getCommands = function(aPath) {
  * @param {Array.<string>} aList The list of command names to output.
  */
 Cmd.prototype.logCommands = function(aList) {
-
-    var limit = Cmd.COMMAND_MARGIN;
-    var buffer;
-    var line;
-    var cmd;
-
-    buffer = '';
-    if (aList && aList.length > 0) {
-        line = '\t';
-        while (cmd = aList.shift()) {
-            if (line.length + cmd.length > limit) {
-                buffer += line + '\n';
-                line = '\t';
-            }
-            line += cmd + ' ';
-        }
-        buffer += line;
-    }
-
-    this.info(buffer);
+    CLI.logItems(aList);
 };
 
 

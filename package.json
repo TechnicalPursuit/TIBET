@@ -63,6 +63,7 @@
     "shelljs": "*",
     "tibet3": "*",
     "uglify-js": "*",
+    "when": "*",
     "xmldom": "*",
     "xpath": "*"
   },
