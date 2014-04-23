@@ -16,6 +16,7 @@
 'use strict';
 
 var eslint = require('eslint');
+var beautify = require('js-beautify').js_beautify;
 
 
 //  ---
@@ -71,6 +72,7 @@ Cmd.prototype.PARSE_OPTIONS = {
         'phase'],
     default: {
         color: true,
+        nodes: true,
         silent: true
     }
 };
@@ -108,6 +110,9 @@ Cmd.prototype.executeForEach = function(list) {
                 result;
 
             if (cmd.argv.nodes) {
+                if (item.getAttribute('no-lint') === 'true') {
+                    return;
+                }
                 src = item.getAttribute('src');
             } else {
                 src = item;
@@ -135,6 +140,21 @@ Cmd.prototype.executeForEach = function(list) {
             this.log('0 errors.');
         }
     }
+};
+
+
+/**
+ * Perform any last-minute changes to the package options before creation of the
+ * internal Package instance. Intended to be overridden but custom subcommands.
+ */
+Cmd.prototype.finalizePackageOptions = function() {
+
+    // Force nodes to be true for this particular subcommand. Better to handle
+    // the unwrapping ourselves so we have complete access to all
+    // metadata and/or child node content.
+    this.pkgOpts.nodes = true;
+
+    this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
 };
 
 

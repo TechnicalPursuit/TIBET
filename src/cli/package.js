@@ -100,7 +100,7 @@ Cmd.prototype.PARSE_OPTIONS = {
 Cmd.prototype.USAGE =
     'tibet package [--package <package>] [--config <cfg>] [--all]\n' +
     '\t[--include <asset names>] [--exclude <asset names>]\n' +
-    '\t[--scripts] [--styles] --[images] [--phase <phase>]';
+    '\t[--scripts] [--styles] --[images] [--phase <phase>] [--nodes]';
 
 
 /**
