@@ -71,8 +71,12 @@ Cmd.prototype.DNA_ROOT = '../../../dna/';
  * @type {string}
  */
 Cmd.prototype.HELP =
-    'Clones a TIBET application template from a TIBET \'dna\' directory.\n' +
-    '<appname> is required and must be a valid directory name to create.\n';
+'Clones a TIBET application template from a TIBET \'dna\' directory.\n' +
+'<appname> is required and must be a valid directory name to create.\n' +
+'The optional --dna parameter lets you clone any valid template in\n' +
+'TIBET\'s `dna` directory or a directory of your choosing. This latter\n' +
+'option lets you create your own reusable custom application templates.\n\n' +
+'--dna <template>       Provides for cloning any directory or template.\n';
 
 /**
  * The command usage string.
