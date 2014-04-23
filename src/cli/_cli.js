@@ -28,7 +28,7 @@
  *      usage           // Display usage of the command. Default is false.
  */
 
-/*eslint camelcase:0, consistent-return:0 no-process-exit:0*/
+/*eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0*/
 (function() {
 
 'use strict';
@@ -627,8 +627,6 @@ CLI.run = function(options) {
     var argv;           // arguments processed via minimist.
     var command;        // the first non-option argument, the command name.
     var cmdPath;        // the command path (for use with require())
-    var CmdType;        // the command type (require'd into existence)
-    var cmd;            // the command instance for a command run.
 
     this.options = options || {};
 

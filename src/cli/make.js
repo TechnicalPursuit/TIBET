@@ -9,12 +9,12 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*eshint no-process-exit:0*/
 (function() {
 
 'use strict';
 
 var CLI = require('./_cli');
-var sh = require('shelljs');
 var Promise = require('when/es6-shim/Promise');
 
 
@@ -32,6 +32,7 @@ Cmd.prototype = new Parent();
  * Millisecond count for how long an individual task can run before it times out
  * and is rejected automatically. You can set a timeout value using --timeout on
  * the command line.
+ * @type {Number}
  */
 Cmd.TIMEOUT = 15000;
 
@@ -53,14 +54,6 @@ Cmd.prototype.HELP =
 'per se but the TIBET make file does leverage ES6 Promises to help manage\n' +
 'tasks and their interactions, particularly when calling tasks from within\n' +
 'tasks and when dealing with asynchronous tasks.';
-
-
-/**
- * A list of the tasks currently running. Used primarily when a circular task
- * exception occurs so the command can clear any intermediate timeouts.
- * @type {Array.<string>}
- */
-Cmd.prototype.task_list;
 
 
 /**
@@ -221,9 +214,6 @@ Cmd.prototype.prepTargets = function(targets) {
 
     // Binding reference.
     cmd = this;
-
-    // Ensure we have a clean task list in place.
-    cmd.task_list = [];
 
     Object.keys(targets).forEach(function(key) {
 

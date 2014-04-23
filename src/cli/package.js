@@ -129,7 +129,6 @@ Cmd.prototype.pkgOpts = null;
  */
 Cmd.prototype.execute = function() {
 
-    var pkgOpts;    // Package instance options.
     var Package;    // The tibet_package export.
     var list;       // The result list of asset references.
 
