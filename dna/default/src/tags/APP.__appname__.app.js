@@ -9,11 +9,11 @@
 
 //  ----------------------------------------------------------------------------
 
-TP.core.ApplicationElement.addSubtype('APP.{{appname}}:app');
+TP.core.ApplicationElement.defineSubtype('APP.{{appname}}:app');
 
 //  ----------------------------------------------------------------------------
 
-APP.{{appname}}.app.addTypeMethod('tshAwakenDOM',
+APP.{{appname}}.app.Type.defineMethod('tshAwakenDOM',
 function(aRequest) {
 
     /**
@@ -25,12 +25,12 @@ function(aRequest) {
      *     the children of this element.
      */
 
-    return this.callNextMethod();
+    return this.callNextMethod(aRequest);
 });
 
 //  ----------------------------------------------------------------------------
 
-APP.{{appname}}.app.addTypeMethod('tshCompile',
+APP.{{appname}}.app.Type.defineMethod('tshCompile',
 function(aRequest) {
 
     /**

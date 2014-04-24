@@ -8,8 +8,8 @@
         "APP": true
     },
     "rules": {
-        "quotes": "single"
-        "strict": false,
-        "consistent-return": false
+        "consistent-return": false,
+        "quotes": "single",
+        "strict": false
     }
 }

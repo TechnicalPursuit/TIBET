@@ -8,6 +8,16 @@
     <package src="tibet.xml" config="base"/>
 </config>
 
+<config id="teamtibet-base">
+    <config ref="properties"/>
+    <package src="~lib_cfg/TIBET.xml" config="base"/>
+</config>
+
+<config id="teamtibet-full">
+    <config ref="properties"/>
+    <package src="~lib_cfg/TIBET.xml" config="full"/>
+</config>
+
 <config id="properties" if="boot.phaseone">
     <property name="debug.use_debugger" value="true"/>
     <property name="break.dnu" value="true"/>

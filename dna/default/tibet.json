@@ -1,7 +1,3 @@
 {
-    "//" : "TIBET project file. Set configuration parameters here.",
-
-    "uglify": {
-      "//": "Put uglify options here to customize rollup output."
-    }
+    "//" : "TIBET project file. Set configuration parameters here."
 }

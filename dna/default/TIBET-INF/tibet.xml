@@ -13,7 +13,7 @@
 <config id="boot_prefix" if="boot.phaseone">
 </config>
 
-<config id="tibet">
+<config id="tibet" no-lint=true">
     <config ref="tibet_img" if="boot.phaseone"/>
     <config ref="tibet_chg" if="boot.phaseone"/>
 </config>
@@ -38,7 +38,7 @@
 </config>
 
 <config id="boot_suffix" if="boot.phasetwo">
-    <package src="~lib_cfg/tdc.xml" config="standard"/>
+    <package src="~lib_cfg/tdc.xml" config="standard" no-lint="true"/>
 </config>
 
 </package>
