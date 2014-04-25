@@ -13,7 +13,7 @@
 <config id="boot_prefix" if="boot.phaseone">
 </config>
 
-<config id="tibet" no-lint=true">
+<config id="tibet" no-lint="true">
     <config ref="tibet_img" if="boot.phaseone"/>
     <config ref="tibet_chg" if="boot.phaseone"/>
 </config>
