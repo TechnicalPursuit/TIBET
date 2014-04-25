@@ -18,6 +18,13 @@
     <package src="~lib_cfg/TIBET.xml" config="full"/>
 </config>
 
+<config id="teamtibet-developer">
+    <config ref="properties"/>
+    <property name="project.homepage" value="~app_html/multiscreen.xhtml"/>
+
+    <package src="~lib_cfg/TIBET.xml" config="developer"/>
+</config>
+
 <config id="properties" if="boot.phaseone">
     <property name="debug.use_debugger" value="true"/>
     <property name="break.dnu" value="true"/>
