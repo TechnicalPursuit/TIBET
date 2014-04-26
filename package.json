@@ -50,7 +50,7 @@
     "chai": "*",
     "chalk": "*",
     "connect": "*",
-    "eslint": "idearat/eslint",
+    "eslint": "TechnicalPursuit/eslint",
     "findit": "*",
     "handlebars": "*",
     "js-beautify": "*",
@@ -60,6 +60,7 @@
     "phantomjs": "*",
     "ronn": "*",
     "shelljs": "*",
+    "shelljs-nodecli": "*",
     "tibet3": "*",
     "uglify-js": "*",
     "when": "*",
@@ -71,7 +72,7 @@
     "npm": ">=1"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "tibet test"
   },
   "preferGlobal": true,
   "private": true
