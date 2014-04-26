@@ -72,7 +72,7 @@
     "npm": ">=1"
   },
   "scripts": {
-    "test": "tibet test"
+    "test": "./bin/tibet test"
   },
   "preferGlobal": true,
   "private": true

@@ -40,7 +40,6 @@ child.exec('npm ll -g tibet --json',
                 console.log(chalk.red('Error locating TIBET installation: ' +
                     ('' + err).replace(/^Error: /, '')));
             }
-            process.exit(1);
         }
 
         // Run the cli once we've found TIBET.
