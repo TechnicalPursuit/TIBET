@@ -61,7 +61,7 @@
     "ronn": "*",
     "shelljs": "*",
     "shelljs-nodecli": "*",
-    "tibet3": "Bedney/TIBET#develop",
+    "tibet3": "*",
     "uglify-js": "*",
     "when": "*",
     "xmldom": "*",
