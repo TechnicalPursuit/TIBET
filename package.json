@@ -1,79 +1,75 @@
 {
-  "name": "tibet",
-  "version": "5.0.0",
-  "description": "The TIBET Environment.",
-  "keywords": [
-    "CLI",
-    "IDE",
-    "JavaScript",
-    "Environment",
-    "Platform",
-    "Framework",
-    "TIBET"
-  ],
-  "homepage": "http://technicalpursuit.com",
-  "author": {
-    "name": "Technical Pursuit Inc.",
-    "email": "tibet@technicalpursuit.com",
-    "url": "http://technicalpursuit.com"
-  },
-  "contributors": [
-    {
-      "name": "Scott Shattuck",
-      "email": "ss@technicalpursuit.com"
+    "name": "tibet",
+    "version": "5.0.0",
+    "description": "The TIBET Environment.",
+    "keywords": [
+        "CLI",
+        "IDE",
+        "JavaScript",
+        "Environment",
+        "Platform",
+        "Framework",
+        "TIBET"
+    ],
+    "homepage": "http://technicalpursuit.com",
+    "author": {
+        "name": "Technical Pursuit Inc.",
+        "email": "tibet@technicalpursuit.com",
+        "url": "http://technicalpursuit.com"
     },
-    {
-      "name": "William J. Edney",
-      "email": "bedney@technicalpursuit.com"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/TechnicalPursuit/TIBET"
-  },
-  "bugs": {
-    "url": "http://github.com/TechnicalPursuit/TIBET/issues",
-    "email": "tibet@technicalpursuit.com"
-  },
-  "license": "RPL-1.5",
-  "main": "./bin/tibet",
-  "directories": {
-    "bin": "./bin",
-    "doc": "./doc",
-    "example": "examples",
-    "lib": "./lib",
-    "man": "./man"
-  },
-  "dependencies": {
-  },
-  "devDependencies": {
-    "chai": "*",
-    "chalk": "*",
-    "connect": "*",
-    "eslint": "TechnicalPursuit/eslint",
-    "findit": "*",
-    "handlebars": "*",
-    "js-beautify": "*",
-    "mocha": "*",
-    "mockery": "*",
-    "minimist": "*",
-    "phantomjs": "*",
-    "ronn": "*",
-    "shelljs": "*",
-    "shelljs-nodecli": "*",
-    "tibet3": "*",
-    "uglify-js": "*",
-    "when": "*",
-    "xmldom": "*",
-    "xpath": "*"
-  },
-  "engines": {
-    "node": ">=0.8",
-    "npm": ">=1"
-  },
-  "scripts": {
-    "test": "./bin/tibet test"
-  },
-  "preferGlobal": true,
-  "private": true
+    "contributors": [{
+        "name": "Scott Shattuck",
+        "email": "ss@technicalpursuit.com"
+    }, {
+        "name": "William J. Edney",
+        "email": "bedney@technicalpursuit.com"
+    }],
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/TechnicalPursuit/TIBET"
+    },
+    "bugs": {
+        "url": "http://github.com/TechnicalPursuit/TIBET/issues",
+        "email": "tibet@technicalpursuit.com"
+    },
+    "license": "RPL-1.5",
+    "main": "./bin/tibet",
+    "directories": {
+        "bin": "./bin",
+        "doc": "./doc",
+        "example": "examples",
+        "lib": "./lib",
+        "man": "./man"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "chai": "*",
+        "chalk": "*",
+        "connect": "*",
+        "eslint": "TechnicalPursuit/eslint",
+        "findit": "*",
+        "handlebars": "*",
+        "js-beautify": "*",
+        "mocha": "*",
+        "mockery": "*",
+        "minimist": "*",
+        "phantomjs": "*",
+        "ronn": "*",
+        "shelljs": "*",
+        "shelljs-nodecli": "*",
+        "tibet3": "*",
+        "uglify-js": "*",
+        "when": "*",
+        "xmldom": "*",
+        "xpath": "*"
+    },
+    "engines": {
+        "node": ">=0.8",
+        "npm": ">=1"
+    },
+    "scripts": {
+        "test": "./bin/tibet test"
+    },
+    "preferGlobal": true,
+    "private": true
 }
