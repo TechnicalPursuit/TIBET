@@ -23,6 +23,7 @@
   },
   "scripts": {
   },
-  "preferGlobal": "false"
+  "preferGlobal": "false",
+  "private": true
 }
 

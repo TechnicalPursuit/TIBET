@@ -131,7 +131,6 @@ Cmd.prototype.execute = function() {
 
     var Package;    // The tibet_package export.
     var list;       // The result list of asset references.
-    var result;     // The return value.
 
     this.pkgOpts = this.argv;
 

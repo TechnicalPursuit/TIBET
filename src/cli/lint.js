@@ -11,6 +11,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*eslint no-process-exit:0*/
 (function() {
 
 'use strict';
@@ -129,13 +130,15 @@ Cmd.prototype.executeForEach = function(list) {
             }
         });
     } catch (e) {
-        // Don't really care about the error, it's a way to exit the loop while
-        // retaining some control.
-        void(0);
+        if (!cmd.argv.stop) {
+            this.error(e.message);
+            sum += 1;
+        }
     } finally {
         // Report on the total errors output etc.
         if (sum > 0) {
             this.error('Lint found ' + sum + ' errors.');
+            process.exit(1);
         } else {
             this.log('0 errors.');
         }

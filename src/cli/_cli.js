@@ -694,7 +694,6 @@ CLI.runCommand = function(command, argv, options, cmdPath) {
 
     var CmdType;
     var cmd;
-    var result;
 
     // Load the command type
     try {
