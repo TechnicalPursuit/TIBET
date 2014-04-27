@@ -1,5 +1,5 @@
 /**
- * @overview The command logic for the 'tibet clone' command.
+ * @overview The 'tibet clone' command.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -20,24 +20,26 @@
  *
  * TODO: --dna should use what's given if it's a full or relative path.
  *
- * TODO: Add colors.js support.
- *
  * TODO: Silent except when --verbose is on.
  *
  * TODO: Debugging output based on --debug being set.
  */
 
 
-(function(root) {
+(function() {
+
+'use strict';
+
+var CLI = require('./_cli');
 
 //  ---
-//  Configure command type.
+//  Type Construction
 //  ---
 
-var parent = require('./cmd');
+var Parent = require('./_cmd');
 
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
 
 //  ---
 //  Instance Attributes
@@ -47,7 +49,7 @@ Cmd.prototype = new parent();
  * The command execution context. Clone can only be done outside of a project.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.prototype.CONTEXT = Cmd.prototype.CONTEXTS.OUTSIDE;
+Cmd.CONTEXT = CLI.CONTEXTS.OUTSIDE;
 
 
 /**
@@ -65,10 +67,22 @@ Cmd.prototype.DNA_ROOT = '../../../dna/';
 
 
 /**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+'Clones a TIBET application template from a TIBET \'dna\' directory.\n' +
+'<appname> is required and must be a valid directory name to create.\n' +
+'The optional --dna parameter lets you clone any valid template in\n' +
+'TIBET\'s `dna` directory or a directory of your choosing. This latter\n' +
+'option lets you create your own reusable custom application templates.\n\n' +
+'--dna <template>       Provides for cloning any directory or template.\n';
+
+/**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet clone {appname} [--dna {template}]';
+Cmd.prototype.USAGE = 'tibet clone <appname> [--dna <template>]';
 
 
 //  ---
@@ -77,9 +91,9 @@ Cmd.prototype.USAGE = 'tibet clone {appname} [--dna {template}]';
 
 /**
  * Runs the specific command in question.
- * @param {Array.<string>} args The argument array from the command line.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
-Cmd.prototype.process = function() {
+Cmd.prototype.execute = function() {
 
     var fs;         // The file system module.
     var hb;         // The handlebars module. Used to inject data in dna files.
@@ -92,18 +106,21 @@ Cmd.prototype.process = function() {
     var code;       // Result code. Set if an error occurs in nested callbacks.
     var dna;        // The dna template we're using.
     var err;        // Error string returned by shelljs.error() test function.
+    var ignore;     // List of extensions we'll ignore when templating.
     var finder;     // The find event emitter we'll handle find events on.
     var target;     // The target directory name (based on appname).
 
     var cmd = this; // Closure'd var for getting back to this command object.
 
+    ignore = ['.png', '.gif', '.jpg', '.ico', 'jpeg'];
+
     argv = this.argv;
-    appname = argv._[0];
+    appname = argv._[1];    // Command is at 0, appname should be [1].
 
     // Have to get at least one non-option argument (the new appname).
     if (!appname) {
         this.info('Usage: ' + this.USAGE);
-        process.exit(1);
+        return 1;
     }
 
     path = require('path');
@@ -125,7 +142,7 @@ Cmd.prototype.process = function() {
 
     if (!sh.test('-e', dna)) {
         this.error('DNA selection not found: ' + dna);
-        process.exit(1);
+        return 1;
     }
 
     //  ---
@@ -137,7 +154,7 @@ Cmd.prototype.process = function() {
 
     if (sh.test('-e', target)) {
         this.error('Target already exists: ' + target);
-        process.exit(1);
+        return 1;
     }
 
     //  ---
@@ -147,15 +164,17 @@ Cmd.prototype.process = function() {
     // ShellJS doesn't quite follow UNIX convention here. We need to mkdir first
     // and then copy the contents of dna into that target directory to clone.
     sh.mkdir(target);
-    if (err = sh.error()) {
+    err = sh.error();
+    if (err) {
         this.error('Error creating target directory: ' + err);
-        process.exit(1);
+        return 1;
     }
 
     sh.cp('-R', dna + '/', target + '/');
-    if (err = sh.error()) {
+    err = sh.error();
+    if (err) {
         this.error('Error cloning dna directory: ' + err);
-        process.exit(1);
+        return 1;
     }
 
     //  ---
@@ -178,60 +197,65 @@ Cmd.prototype.process = function() {
     });
 
     // Ignore links. (There shouldn't be any...but just in case.).
-    finder.on('link', function(link, stat) {
+    finder.on('link', function(link) {
         cmd.warn('Warning: ignoring link: ' + link);
     });
 
-    finder.on('file', function(file, stat) {
+    finder.on('file', function(file) {
 
         var content;  // File content after template injection.
         var data;     // File data.
         var template; // The compiled template content.
 
-        cmd.verbose('Processing file: ' + file);
-        try {
-            data = fs.readFileSync(file, {encoding: 'utf8'});
-            if (!data) {
-                throw new Error('NoData');
-            }
-        } catch (e) {
-            cmd.error('Error reading file data: ' + e.message);
-            code = 1;
-            return;
-        }
+        if (ignore.indexOf(path.extname(file)) === -1) {
 
-        try {
-            template = hb.compile(data);
-            if (!template) {
-                throw new Error('InvalidTemplate');
-            }
-        } catch (e) {
-            cmd.error('Error compiling template: ' + file);
-            code = 1;
-            return;
-        }
-
-        try {
-            content = template({appname: appname});
-            if (!content) {
-                throw new Error('InvalidContent');
-            }
-        } catch (e) {
-            cmd.error('Error injecting template data.');
-            code = 1;
-            return;
-        }
-
-        if (data === content) {
-            cmd.verbose('Ignoring static file: ' + file);
-        } else {
-            cmd.verbose('Updating file: ' + file);
+            cmd.verbose('Processing file: ' + file);
             try {
-                fs.writeFileSync(file, content);
+                data = fs.readFileSync(file, {encoding: 'utf8'});
+                if (!data) {
+                    throw new Error('NoData');
+                }
             } catch (e) {
-                cmd.error('Error writing file data: ' + e.message);
+                cmd.error('Error reading file data: ' + e.message);
                 code = 1;
                 return;
+            }
+
+            try {
+                template = hb.compile(data);
+                if (!template) {
+                    throw new Error('InvalidTemplate');
+                }
+            } catch (e) {
+                cmd.error('Error compiling template ' + file + ': ' +
+                    e.message);
+                code = 1;
+                return;
+            }
+
+            try {
+                content = template({appname: appname});
+                if (!content) {
+                    throw new Error('InvalidContent');
+                }
+            } catch (e) {
+                cmd.error('Error injecting template data in ' + file +
+                    ': ' + e.message);
+                code = 1;
+                return;
+            }
+
+            if (data === content) {
+                cmd.verbose('Ignoring static file: ' + file);
+            } else {
+                cmd.verbose('Updating file: ' + file);
+                try {
+                    fs.writeFileSync(file, content);
+                } catch (e) {
+                    cmd.error('Error writing file ' + file + ': ' + e.message);
+                    code = 1;
+                    return;
+                }
             }
         }
 
@@ -256,21 +280,12 @@ Cmd.prototype.process = function() {
         if (code !== 0) {
             cmd.error('Cleaning up incomplete clone: ' + target);
             sh.rm('-rf', target);
+        } else {
+            cmd.info('TIBET dna \'' + path.basename(dna) + '\' cloned to ' + appname + '.');
         }
-
-        process.exit(code);
     });
 };
 
-//  ---------------------------------------------------------------------------
+module.exports = Cmd;
 
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
-    }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
-
-}(this));
+}());

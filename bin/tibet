@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * @overview Top-level TIBET command-line script. Heavy-lifting via CLI object.
+ * @overview The TIBET command-line entry point. Ensures TIBET was installed
+ *     globally and captures npm metadata. The actual cli is then activated.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -10,21 +11,38 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-var cli = require('../src/cli/cli.js');
-
-var options = {};
+var chalk = require('chalk');               // Error reporting with color.
+var child = require('child_process');       // To run our npm command.
+var cli = require('../src/cli/_cli.js');    // The actual TIBET cli.
 
 //  Capture npm metadata about TIBET installation for downstream use.
-require('child_process').exec('npm ll -g tibet --json',
+child.exec('npm ll -g tibet --json',
     function(err, stdout, stderr) {
-        if (err) {
-            require('colors');
-            console.log(('Unable to locate TIBET installation: ' + stderr).red);
+        var options = {
+            tibet: {}
+        };
+
+        // Parse any output we may have received from npm.
+        try {
+            options.npm = JSON.parse(stdout);
+        } catch (e) {
+            console.log(chalk.red('Error parsing npm metadata: ' + e));
             process.exit(1);
         }
 
-        // Run the cli once we've found TIBET.
-        options.meta = JSON.parse(stdout);
-        cli.run(options);
-    });
+        // If there was a child process error try to qualify it. Was it a 'not
+        // found' or a true exception running the child process?
+        if (err) {
+            if (options.npm && options.npm._found === false) {
+                console.log(chalk.red('TIBET package not found.' +
+                    ' Did you \'npm install -g tibet\'?'));
+            } else {
+                console.log(chalk.red('Error locating TIBET installation: ' +
+                    ('' + err).replace(/^Error: /, '')));
+            }
+        }
 
+        // Run the cli once we've found TIBET.
+        cli.run(options);
+    }
+);

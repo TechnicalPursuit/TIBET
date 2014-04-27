@@ -7,7 +7,6 @@ tmp/
 node_modules/
 
 # Application-generated files.
-tags
 
 # OS-generated files.
 .DS_Store

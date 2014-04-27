@@ -1,5 +1,8 @@
 /**
- * @overview The command logic for the 'tibet lint' command.
+ * @file lint.js
+ * @overview The 'tibet lint' command. Checks a package/config's script files
+ *     for lint. TIBET uses eslint, a configurable linter supporting custom
+ *     rulesets, to perform the actual linting process.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -8,133 +11,186 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function(root) {
+(function() {
+
+'use strict';
+
+var eslint = require('eslint');
+var beautify = require('js-beautify').js_beautify;
+
 
 //  ---
-//  Create command type.
+//  Type Construction
 //  ---
 
-var parent = require('./cmd');
+var Parent = require('./package');
 
+// NOTE we don't inherit from _cmd, but from package.
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
+
+//  ---
+//  Type Attributes
+//  ---
+
+Cmd.CONFIG = '~/.eslintrc';
+
 
 //  ---
 //  Instance Attributes
 //  ---
+
+/**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+'Lints files in a package#config. The package#config defaults to\n' +
+'~/TIBET-INF/app.xml and its default config. The eslint utility is\n' +
+'used for JavaScript due to its configurable/customizable rulesets.\n' +
+'The csslint and jsonlint utilities are also leveraged as needed.\n\n' +
+
+'--stop tells the linter to stop after the first file with errors.\n\n' +
+'[package-opts] refers to valid options for a TIBET Package object.\n' +
+'These include --package, --config, --phase, --assets, etc.\n' +
+'See help on the \'tibet package\' command for more information.\n\n' +
+
+'[eslint-opts] refers to --cfg, --rules, and --format which allow\n' +
+'you to configure eslint to meet your specific needs. The linter will\n' +
+'automatically take advantage of an .eslintrc file in your project.\n';
+
+/**
+ * Command argument parsing options.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = {
+    boolean: [
+        'color', 'help', 'usage', 'debug', 'stack', 'verbose', 'stop',
+        'all', 'silent', 'nodes', 'reset'
+    ],
+    string: ['app_root', 'lintcfg', 'rules', 'format', 'package', 'config',
+        'phase'],
+    default: {
+        color: true,
+        nodes: true,
+        silent: true
+    }
+};
 
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.USAGE = 'tibet lint';
+Cmd.prototype.USAGE = 'tibet lint [--stop] [package-opts] [eslint-opts]';
+
+
+//  ---
+//  Instance Methods
+//  ---
+
+/**
+ * Lints the script content of a package/config pair.
+ * @param {Array.<Node>} list An array of package asset nodes.
+ * @return {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executeForEach = function(list) {
+
+    var cmd;
+    var args;
+    var sum;
+
+    cmd = this;
+    args = this.getLintArguments();
+    sum = 0;
+
+    try {
+        list.forEach(function(item) {
+            var src,
+                result;
+
+            if (cmd.argv.nodes) {
+                if (item.getAttribute('no-lint') === 'true') {
+                    return;
+                }
+                src = item.getAttribute('src');
+            } else {
+                src = item;
+            }
+
+            if (src) {
+                result = eslint.cli.execute(args.concat(src));
+                sum = sum + result;
+                if (result !== 0 && cmd.argv.stop) {
+                    throw new Error(result);
+                }
+            } else if (cmd.argv.nodes) {
+                console.log(item.textContent);
+            }
+        });
+    } catch (e) {
+        // Don't really care about the error, it's a way to exit the loop while
+        // retaining some control.
+        void(0);
+    } finally {
+        // Report on the total errors output etc.
+        if (sum > 0) {
+            this.error('Lint found ' + sum + ' errors.');
+        } else {
+            this.log('0 errors.');
+        }
+    }
+};
 
 
 /**
- * Runs the specific command in question.
+ * Perform any last-minute changes to the package options before creation of the
+ * internal Package instance. Intended to be overridden but custom subcommands.
  */
-Cmd.process = function() {
+Cmd.prototype.finalizePackageOptions = function() {
 
-    var find;   // The findit module. Used to traverse and process files.
-    var fs;     // The file access module.
-    var hint;   // The jshint module.
-    var path;   // The path utilities module.
+    // Force nodes to be true for this particular subcommand. Better to handle
+    // the unwrapping ourselves so we have complete access to all
+    // metadata and/or child node content.
+    this.pkgOpts.nodes = true;
 
-    var argv;   // The hash of options after parsing.
-    var code;   // Result code. Set if an error occurs in nested callbacks.
-    var finder; // The find event emitter we'll handle find events on.
-
-    var cmd = this; // Closure'd var for getting back to this command object.
-
-    //  ---
-    //  Parse command-specific arguments.
-    //  ---
-
-    argv = require('optimist').parse(args);
-
-    //  ---
-    //  ---
-
-    find = require('findit');
-    fs = require('fs');
-
-    // TODO: minimatch for jshintignore processing
-
-    // TODO: file ancestor traversal for jshintrc search
-
-    // TODO: load config data if provided
-
-    // TODO: support full descent and various termination options
-    //    such as max errors, first error, etc.
-
-    finder = find(target);
-
-    // Ignore hidden directories and the node_modules directory.
-    finder.on('directory', function(dir, stat, stop) {
-        var base = path.basename(dir);
-        if ((base.charAt(0) === '.') || (base === 'node_modules')) {
-            stop();
-        }
-    });
-
-    // Ignore links. (There shouldn't be any...but just in case.).
-    finder.on('link', function(link, stat) {
-        cmd.warn('Warning: ignoring link: ' + link);
-    });
-
-    finder.on('file', function(file, stat) {
-
-        var content;  // File content after template injection.
-        var data;     // File data.
-        var template; // The compiled template content.
-
-        cmd.verbose('Processing file: ' + file);
-        try {
-            data = fs.readFileSync(file, {encoding: 'utf8'});
-        } catch (e) {
-            cmd.error('Error reading file data: ' + e.message);
-            code = 1;
-            return;
-        }
-
-        //  ---
-        //  Perform the lint process.
-        //  ---
-
-        //  ---
-        //  Save as needed.
-        //  ---
-
-        if (data === content) {
-            cmd.verbose('Ignoring static file: ' + file);
-        } else {
-            cmd.verbose('Updating file: ' + file);
-            try {
-                fs.writeFileSync(file, content);
-            } catch (e) {
-                cmd.error('Error writing file data: ' + e.message);
-                code = 1;
-                return;
-            }
-        }
-    });
-
-    finder.on('end', function() {
-        process.exit(code);
-    });
-
+    this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
 };
 
-//  ---------------------------------------------------------------------------
 
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
+/**
+ */
+Cmd.prototype.getLintArguments = function() {
+
+    var args;
+
+    args = ['node', 'eslint'];
+
+    // TODO: figure out why this throws errors in eslint...
+    if (this.argv.eslintrc === false) {
+    //    args.push('--no-eslintrc');
+        void(0);
     }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
 
-}(this));
+    if (this.argv.lintcfg) {
+        args.push('-c' + this.argv.lintcfg);
+    }
+
+    if (this.argv.format) {
+        args.push('-f ' + this.argv.format);
+    }
+
+    if (this.argv.rules) {
+        args.push('-r ' + this.argv.rules);
+    }
+
+    if (this.argv.reset) {
+        args.push('--reset');
+    }
+
+    return args;
+};
+
+module.exports = Cmd;
+
+}());

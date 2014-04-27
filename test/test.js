@@ -27,8 +27,13 @@ describe('Array', function() {
     });
   });
 
-});
+  describe('#pop()', function() {
+    it('returns the element on the front', function() {
+      expect([1, 2, 3].shift()).to.equal(1);
+    });
+  });
 
+});
 
 // -----------------------------------------------------------------------------
 // end

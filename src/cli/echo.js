@@ -1,5 +1,8 @@
 /**
- * @overview The command logic for the 'tibet echo' command.
+ * @overview The 'tibet echo' command. Echoes the current command line arguments
+ *     to stdout. This can be useful to help debug how command arguments are
+ *     processed by the TIBET CLI. The echo command is also a good template for
+ *     creating your own custom commands.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -8,20 +11,46 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function(root) {
+(function() {
+
+'use strict';
+
+var CLI = require('./_cli');
+var beautify = require('js-beautify').js_beautify;
+
 
 //  ---
-//  Configure command type.
+//  Type Construction
 //  ---
 
-var parent = require('./cmd');
+var Parent = require('./_cmd');
 
 var Cmd = function(){};
-Cmd.prototype = new parent();
+Cmd.prototype = new Parent();
+
+
+//  ---
+//  Type Attributes
+//  ---
+
+/**
+ * The command execution context.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
+
 
 //  ---
 //  Instance Attributes
 //  ---
+
+/**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+    'Echoes the command line arguments to stdout.';
+
 
 /**
  * The command usage string.
@@ -29,23 +58,23 @@ Cmd.prototype = new parent();
  */
 Cmd.prototype.USAGE = 'tibet echo [args]';
 
+
 //  ---
 //  Instance Methods
 //  ---
 
-// NOTE no method overrides here. Echo is what the parent does until overridden.
-
-//  ---
-//  Export
-//  ---
-
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = Cmd;
+/**
+ * Perform the actual command processing logic.
+ * @return {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.execute = function() {
+    if (this.argv) {
+        this.info('\nArguments:\n');
+        this.info(beautify(JSON.stringify(this.argv)));
     }
-    exports.Cmd = Cmd;
-} else {
-    root.Cmd = Cmd;
-}
+};
 
-}(this));
+
+module.exports = Cmd;
+
+}());

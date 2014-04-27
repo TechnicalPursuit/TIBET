@@ -1,0 +1,12 @@
+{
+  "dir": "/",
+  "default": "index.html",
+  "run": [
+    "npm install",
+    "make"
+  ],
+  "notify": [
+    "bedney@technicalpursuit.com",
+    "ss@technicalpursuit.com"
+  ]
+}

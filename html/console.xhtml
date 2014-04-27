@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+<title>TIBET 5.0</title>
+<meta name="description" content="The TIBET 5.0 Web Environment"/>
+<meta name="author" content="Technical Pursuit Inc."/>
+
+<link rel="shortcut icon" href="../images/favicon.png" type="image/x-icon"/>
+<link rel="icon" href="../images/favicon.png" type="image/x-icon"/>
+
+
+<!-- NOTE NOTE NOTE -->
+<!--
+Eventually we need to inline the actual CSS used here. We can't have the boot
+code relying on LESS (since LESS won't play nice re: errors on Chrome file://
+etc. and won't be there when trying to display the noscript block.
+-->
+<link rel="stylesheet" type="text/css" href="../css/master.css" />
+<link rel="stylesheet" type="text/css"
+    href="../node_modules/tibet3/base/lib/tibet/css/tibet_boot.css" />
+
+</head>
+
+<body>
+<div id="content">
+
+<div class="yesscript">
+    <div class="detail-intro">
+        <a class="image-link" href="#" onclick="stageAction()">
+            <img id="BOOT-IMAGE" alt="Current Stage Icon"
+            src="../node_modules/tibet3/base/lib/tibet/img/boot/tpi_logo.png"/>
+        </a>
+        <blockquote id="BOOT-HEAD" class="lead boot-stage">Pre-Launch</blockquote>
+        <blockquote id="BOOT-SUBHEAD" class="follow">Verifying environment...</blockquote>
+    </div>
+
+    <div id="BOOT-CONSOLE" class="hole">
+        <div class="edge">
+            <div id="BOOT-LOG" class="bootlog">
+            </div>
+        </div>
+    </div>
+
+    <div id="BOOT-PROGRESS" class="tibet-progress hole">
+        <div class="edge">
+            <span id="BOOT-PERCENT" class="state"></span>
+        </div>
+    </div>
+</div>
+
+<noscript>
+    <div class="detail-intro">
+        <a class="image-link" href="#">
+            <img alt="Current Stage Icon"
+            src="../node_modules/tibet3/base/lib/tibet/img/boot/nojs.png"/>
+        </a>
+        <blockquote class="lead">JavaScript disabled?</blockquote>
+        <blockquote class="follow"></blockquote>
+    </div>
+
+    <div class="hr clear"></div>
+
+    <dl class="detail-topics">
+        <dt>
+        <span>Preferences</span>
+        <span class="pointer">=></span>
+        </dt>
+        <dd>For this site you'll need to update your browser preferences to
+        re-enable JavaScript. Once you've done that you can reload this page.</dd>
+
+        <dt>
+        <span>Browser Choice</span>
+        <span class="pointer">=></span>
+        </dt>
+        <dd>Alternatively you may be on a browser with limited or no JavaScript
+        support. In that case you'll need to return to this page in a supported
+        browser.</dd>
+    </dl>
+</noscript>
+
+</div>
+<script>
+<![CDATA[
+function stageAction() {
+    /**
+     * Respond to user clicks on the stage image, which can serve as an action
+     * trigger. The most common action is to continue after a pause.
+     */
+
+    // For now TIBET always uses 'top' as the code frame.
+    try {
+        top.TP.boot.$stageAction();
+    } catch (e) {
+        // TODO: continue to ignore this?
+    }
+}
+]]>
+</script>
+</body>
+</html>

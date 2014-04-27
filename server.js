@@ -11,8 +11,9 @@
 (function() {
 
 var Connect = require('connect');
-var opt = require('optimist');
-var argv = opt.argv;
+var gzipStatic = require('connect-gzip-static');
+var minimist = require('minimist');
+var argv = minimist(process.argv.slice(2));
 var port = argv.port ||
     process.env.npm_package_config_port ||
     process.env.PORT ||
@@ -20,7 +21,7 @@ var port = argv.port ||
 
 Connect.createServer(
   Connect.logger(),
-  Connect.static(__dirname)
+  gzipStatic(__dirname)
 ).listen(port);
 
 }());

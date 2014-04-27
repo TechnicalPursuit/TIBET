@@ -1,12 +1,21 @@
 {
+  "//": "{{appname}} npm package configuration.",
   "name": "{{appname}}",
   "version": "0.1.0",
   "dependencies": {
+    "chalk": "*",
     "connect": "*",
-    "optimist": "*",
-    "tibet3": "*"
+    "connect-gzip-static": "*",
+    "eslint": "*",
+    "js-beautify": "*",
+    "minimist": "*",
+    "phantomjs": "*",
+    "shelljs": "*",
+    "tibet3": "*",
+    "uglify-js": "*"
   },
   "devDependencies": {
+    "couchapp": "*"
   },
   "engines": {
     "node": ">=0.10",
@@ -16,3 +25,4 @@
   },
   "preferGlobal": "false"
 }
+

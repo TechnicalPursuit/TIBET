@@ -1,0 +1,16 @@
+{
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "globals": {
+        "TP": true,
+        "APP": true
+    },
+    "rules": {
+        "quotes": "single",
+        "strict": false,
+        "consistent-return": false,
+        "no-underscore-dangle": false
+    }
+}
