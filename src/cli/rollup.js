@@ -18,6 +18,7 @@
 
 var CLI = require('./_cli');
 var beautify = require('js-beautify').js_beautify;
+var sh = require('shelljs');
 
 //  ---
 //  Type Construction
@@ -79,7 +80,6 @@ Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers]';
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeForEach = function(list) {
-
     var pkg;
     var cmd;
     var ug;         // The uglify-js compressor export.
@@ -102,15 +102,26 @@ Cmd.prototype.executeForEach = function(list) {
         if (src) {
             virtual = pkg.getVirtualPath(src);
 
-            code = ug.minify(src, uglifyOpts).code;
-            if (code && code[code.length - 1] !== ';') {
-                code += ';';
+            if (!sh.test('-e', src)) {
+                console.log();
+                throw new Error('NotFound: ' + src);
+            }
+
+            try {
+                code = ug.minify(src, uglifyOpts).code;
+                if (code && code[code.length - 1] !== ';') {
+                    code += ';';
+                }
+            } catch (e) {
+                // TODO: refine error messaging.
+                throw e;
             }
 
             if (cmd.options.headers) {
                 console.log('TP.boot.$srcPath = \'' + virtual + '\';');
             }
             console.log(code);
+
         } else {
             if (cmd.options.headers) {
                 console.log('TP.boot.$srcPath = \'\';');
@@ -134,6 +145,7 @@ Cmd.prototype.finalizePackageOptions = function() {
 
     this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
 };
+
 
 module.exports = Cmd;
 

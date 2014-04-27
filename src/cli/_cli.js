@@ -589,7 +589,6 @@ CLI.logItems = function(aList) {
  * @param {Error} e The error object.
  * @param {string} phase The phase of command processing.
  * @param {string} command The command that failed.
- * @return {Number} A return code. Non-zero indicates an error.
  */
 CLI.handleError = function(e, phase, command) {
     var msg;
@@ -611,7 +610,8 @@ CLI.handleError = function(e, phase, command) {
     }
 
     this.error(msg);
-    return 1;
+
+    process.exit(1);
 };
 
 
@@ -620,7 +620,6 @@ CLI.handleError = function(e, phase, command) {
  * appropriate command in response. Command instances are invoked via their
  * `execute` method. See the _cmd.js documentation for more detail.
  * @param {Object} options An object containing command/context information.
- * @return {Number} A return code. Non-zero indicates an error.
  */
 CLI.run = function(options) {
 
@@ -674,10 +673,11 @@ CLI.run = function(options) {
 
     // Not a 'native TIBET command' so try handling via fallback logic.
     if (!cmdPath) {
-        return this.runFallback(command, argv, this.options);
+        this.runFallback(command, argv, this.options);
+        return;
     }
 
-    return this.runCommand(command, argv, this.options, cmdPath);
+    this.runCommand(command, argv, this.options, cmdPath);
 };
 
 
@@ -689,17 +689,18 @@ CLI.run = function(options) {
  * @param {Object} argv The parsed command line arguments object.
  * @param {Object} options An object containing command/context information.
  * @param {string} cmdPath The path used to require() the command implementation.
- * @return {Number} A return code. Non-zero indicates an error.
  */
 CLI.runCommand = function(command, argv, options, cmdPath) {
 
     var CmdType;
     var cmd;
+    var result;
 
     // Load the command type
     try {
         CmdType = require(cmdPath);
     } catch (e) {
+        this.debug('cmdPath: ' + cmdPath);
         return this.handleError(e, 'loading', command);
     }
 
@@ -727,8 +728,6 @@ CLI.runCommand = function(command, argv, options, cmdPath) {
     } catch (e) {
         return this.handleError(e, 'processing', command);
     }
-
-    return 0;
 };
 
 
@@ -738,7 +737,6 @@ CLI.runCommand = function(command, argv, options, cmdPath) {
  * @param {string} command The command to attempt to execute.
  * @param {Object} args Minimist-formatted command line arguments and options.
  * @param {Object} options An object containing command/context information.
- * @return {Number} A return code.
  */
 CLI.runFallback = function(command, args, options) {
 
@@ -757,25 +755,23 @@ CLI.runFallback = function(command, args, options) {
     if (this.hasMakeTarget(command)) {
 
         this.warn('Delegating `' + command + '` to tibet make...');
-        return CLI.runViaMake(command, args, options);
+        CLI.runViaMake(command, args, options);
 
     } else if (this.inGruntProject(command, args, options)) {
 
         this.warn('Delegating `' + command + '` to grunt...');
-        return CLI.runViaGrunt(command, args, options);
+        CLI.runViaGrunt(command, args, options);
 
     } else if (this.inGulpProject()) {
 
         this.warn('Delegating `' + command + '` to grunt...');
-        return CLI.runViaGulp(command, args, options);
+        CLI.runViaGulp(command, args, options);
 
     } else {
 
         this.error('Command not found: ' + command + '.');
         return 1;
     }
-
-    return 0;
 };
 
 
@@ -785,7 +781,6 @@ CLI.runFallback = function(command, args, options) {
  * @param {string} command The command to attempt to execute.
  * @param {Object} args Minimist-formatted command line arguments and options.
  * @param {Object} options An object containing command/context information.
- * @return {Number} A return code.
  */
 CLI.runViaGrunt = function() {
 
@@ -834,7 +829,6 @@ CLI.runViaGrunt = function() {
  * @param {string} command The command to attempt to execute.
  * @param {Object} args Minimist-formatted command line arguments and options.
  * @param {Object} options An object containing command/context information.
- * @return {Number} A return code.
  */
 CLI.runViaGulp = function() {
 
@@ -883,7 +877,6 @@ CLI.runViaGulp = function() {
  * @param {string} command The command to attempt to execute.
  * @param {Object} args Minimist-formatted command line arguments and options.
  * @param {Object} options An object containing command/context information.
- * @return {Number} A return code.
  */
 CLI.runViaMake = function(command, args, options) {
 

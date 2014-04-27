@@ -138,10 +138,9 @@ Cmd.prototype.parse = function() {
 /**
  * Perform the actual command processing. Typically you want to override this
  * method. The default implementation simply echoes the command arguments.
- * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    return 0;
+    return;
 };
 
 
@@ -150,7 +149,6 @@ Cmd.prototype.execute = function() {
  * template method you should normally leave as is. Override execute() to change
  * the core functionality for your command.
  * @param {Object.<string, object>} options Command processing options.
- * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.run = function(options) {
 
@@ -167,14 +165,14 @@ Cmd.prototype.run = function(options) {
     this.argv = this.parse();
 
     if (this.argv.usage) {
-        return this.usage();
+        this.usage();
     }
 
     if (this.argv.help) {
-        return this.help();
+        this.help();
     }
 
-    return this.execute();
+    this.execute();
 };
 
 
