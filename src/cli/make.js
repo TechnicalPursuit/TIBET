@@ -148,6 +148,8 @@ Cmd.prototype.execute = function() {
                 msg = 'task failure ' +
                     ((new Date()).getTime() - start) + 'ms.';
                 cmd.log(msg);
+
+                throw new Error(err);
             });
 
     } catch (e) {
@@ -222,7 +224,7 @@ Cmd.prototype.prepTargets = function(targets) {
             (function(name, func) {
 
                 // Replace original with a function returning a Promise.
-                targets[name] = function() {
+                targets[name] = function(make) {
                     var promise;
 
                     if (targets[name].$$active) {
@@ -250,8 +252,8 @@ Cmd.prototype.prepTargets = function(targets) {
                         // Patch on a wrapper for resolve() calls. This ensures
                         // that our outer task-runner level resolve hook runs.
                         targets[name].resolve = function(obj) {
-                            cmd.debug('resolving ' + name + '...');
                             clearTimeout(timer);
+                            cmd.debug('resolving ' + name + '...');
                             func.$$active = false;
                             resolver(obj);
                         };
@@ -259,8 +261,9 @@ Cmd.prototype.prepTargets = function(targets) {
                         // Patch on a wrapper for reject() calls. This ensures
                         // that our outer task-runner level reject hook runs.
                         targets[name].reject = function(err) {
-                            cmd.debug('rejecting ' + name + '...');
                             clearTimeout(timer);
+                            cmd.debug('rejecting ' + name + '...');
+                            cmd.error(err);
                             func.$$active = false;
                             rejector(err);
                         };
@@ -275,7 +278,7 @@ Cmd.prototype.prepTargets = function(targets) {
                     });
 
                     return promise;
-                };
+                }.bind(targets, cmd);   // ensure 'this' and 'make' exist.
 
                 targets[name].displayName = name;
                 targets[name].$$original = func;

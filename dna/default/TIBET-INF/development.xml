@@ -24,7 +24,7 @@
 </config>
 
 <config id="app-base" if="boot.phasetwo">
-    <package src="~app_base/app.xml" config="base"/>
+    <package src="~app_cfg/app.xml" config="base"/>
     <package src="~lib_cfg/tdc.xml" config="standard" no-lint="true"/>
 </config>
 
