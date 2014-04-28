@@ -991,6 +991,7 @@ Package.prototype.getArgumentPrimitive = function(value) {
  */
 Package.prototype.getcfg = function(property) {
     var name;
+    var value;
     var keys;
     var cfg;
     var pkg;
@@ -999,32 +1000,37 @@ Package.prototype.getcfg = function(property) {
         return this.cfg;
     }
 
+    // Make simple access as fast as possible.
+    value = this.cfg[property];
+    if (value !== undefined) {
+        return value;
+    }
+
+    // Secondary check is for prefixed lookups.
     if (/\./.test(property)) {
         name = property.replace(/\./g, '_');
         return this.cfg[name];
-    } else {
-        // When no '.' indicating a prefix we find all keys with a matching
-        // prefix and return them.
-        cfg = {};
-        pkg = this;
-
-        keys = Object.keys(this.cfg);
-        keys.forEach(function(key) {
-            if (key.indexOf(property + '_') === 0) {
-                cfg[key] = pkg.cfg[key];
-            }
-        });
-
-        //this.debug('getcfg(' + name + '): ' + Object.keys(cfg).length);
-
-        // Now, if we thought we were going after a set...but only found one (or
-        // no) value, return just the individual lookup.
-        if (Object.keys(cfg).length < 2) {
-            return this.cfg[name];
-        }
-
-        return cfg;
     }
+
+    // When no '.' indicating a prefix we find all keys with a matching
+    // prefix and return them.
+    cfg = {};
+    pkg = this;
+
+    keys = Object.keys(this.cfg);
+    keys.forEach(function(key) {
+        if (key.indexOf(property) === 0) {
+            cfg[key] = pkg.cfg[key];
+        }
+    });
+
+    // Now, if we thought we were going after a set...but only found one (or
+    // no) value, return just the individual lookup.
+    if (Object.keys(cfg).length < 2) {
+        return this.cfg[name];
+    }
+
+    return cfg;
 };
 
 
