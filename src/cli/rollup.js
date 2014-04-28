@@ -19,6 +19,7 @@
 var CLI = require('./_cli');
 var beautify = require('js-beautify').js_beautify;
 var sh = require('shelljs');
+var fs = require('fs');
 
 //  ---
 //  Type Construction
@@ -103,30 +104,41 @@ Cmd.prototype.executeForEach = function(list) {
             virtual = pkg.getVirtualPath(src);
 
             if (!sh.test('-e', src)) {
-                console.log();
                 throw new Error('NotFound: ' + src);
             }
 
-            try {
-                code = ug.minify(src, uglifyOpts).code;
-                if (code && code[code.length - 1] !== ';') {
-                    code += ';';
+            // Don't minify .min.js files, assume they're done.
+            if (/\.min\.js$/.test(src) ||
+                item.getAttribute('no-minify') === 'true') {
+                code = fs.readFileSync(src, {encoding: 'utf8'});
+            } else {
+                try {
+                    code = ug.minify(src, uglifyOpts).code;
+                    if (code && code[code.length - 1] !== ';') {
+                        code += ';';
+                    }
+                } catch (e) {
+                    pkg.error('Error minifying: ' + e.message);
+                    throw e;
                 }
-            } catch (e) {
-                // TODO: refine error messaging.
-                throw e;
             }
 
             if (cmd.options.headers) {
-                console.log('TP.boot.$srcPath = \'' + virtual + '\';');
+                pkg.log('TP.boot.$srcPath = \'' + virtual + '\';');
             }
-            console.log(code);
+
+            if (pkg.getcfg('debug') !== true) {
+                pkg.log(code);
+            }
 
         } else {
             if (cmd.options.headers) {
-                console.log('TP.boot.$srcPath = \'\';');
+                pkg.log('TP.boot.$srcPath = \'\';');
             }
-            console.log(item.textContent);
+
+            if (pkg.getcfg('debug') !== true) {
+                pkg.log(item.textContent);
+            }
         }
     });
 };
