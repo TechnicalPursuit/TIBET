@@ -1,7 +1,7 @@
 /**
  * @file package.js
  * @overview The 'tibet package' command. Front-end to the Package object found
- *     in tibet_package.js which provides utilities for processing TIBET package
+ *     in _Package.js which provides utilities for processing TIBET package
  *     files and their contents. This command also serves as a "supertype" for
  *     other commands whose operations focus on processing file lists produced
  *     from TIBET packages such as 'tibet rollup' and 'tibet lint'.
@@ -31,7 +31,7 @@
  * OTHER OPTIONS:
  *
  *      Note that other options are passed through to the Package instance which
- *      does the actual expand/list processing. See tibet_package.js for more
+ *      does the actual expand/list processing. See _Package.js for more
  *      info on the options available through that component.
  */
 
@@ -129,7 +129,7 @@ Cmd.prototype.pkgOpts = null;
  */
 Cmd.prototype.execute = function() {
 
-    var Package;    // The tibet_package export.
+    var Package;    // The _Package.js export.
     var list;       // The result list of asset references.
 
     this.pkgOpts = this.argv;
@@ -162,9 +162,7 @@ Cmd.prototype.execute = function() {
     // the package options they need.
     this.finalizePackageOptions();
 
-    // TODO: relocate from tibet3 to a reasonable TIBET 5.0 location.
-    Package = require(path.join(CLI.getAppRoot(),
-        'node_modules/tibet3/base/lib/tibet/src/tibet_package.js'));
+    Package = require(path.join(__dirname, CLI.PACKAGE_FILE));
     this.package = new Package(this.pkgOpts);
 
     if (this.pkgOpts.all) {

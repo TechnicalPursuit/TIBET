@@ -129,10 +129,10 @@ CLI.MAKE_FILE = 'makefile.js';
 
 
 /**
- * The location of TIBET's Package object. TODO: migrate from TIBET3.x.
+ * The location of TIBET's Package object.
  * @type {string}
  */
-CLI.PACKAGE_FILE = '../../node_modules/tibet3/base/lib/tibet/src/tibet_package.js';
+CLI.PACKAGE_FILE = '_Package.js';
 
 
 /**

@@ -69,17 +69,33 @@ Cmd.prototype.USAGE = 'tibet config';
 Cmd.prototype.execute = function() {
     var cfg;
     var option;
+    var str;
 
     if (this.argv._.length > 1) {
         option = this.argv._[1];
     }
 
     cfg = CLI.getcfg(option);
-    if (CLI.notValid(cfg)) {
+
+    if (typeof cfg === 'undefined')  {
         this.info('Config value not found: ' + option);
-    } else {
-        this.info(beautify(JSON.stringify(cfg)));
+        return;
     }
+
+    str = '{\n';
+
+    // Object.keys will throw for anything other than Object/Array...
+    try {
+        Object.keys(cfg).sort().forEach(function(key) {
+            str += '\t"' + key.replace(/_/g, '.') + '": "' + cfg[key] + '",\n';
+        });
+        str = str.slice(0, -2);
+        str += '\n}';
+    } catch (e) {
+        str = '' + cfg;
+    }
+
+    this.info(str);
 };
 
 
