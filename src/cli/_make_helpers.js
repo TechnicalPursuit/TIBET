@@ -19,15 +19,18 @@
     /**
      *
      */
-    helpers.rollup = function(make, name, pkg, config, headers, promise) {
+    helpers.rollup = function(make, name, pkg, config, headers, minify, promise) {
         var result;
         var cmd;
+        var ext;
+        var file;
 
         make.log('rolling up ' + name);
 
         cmd = 'tibet rollup --package \'' + pkg +
             '\' --config ' + config +
-            (headers ? '' : ' --no-headers');
+            (headers ? '' : ' --no-headers') +
+            (minify ? ' --minify' : '');
 
         make.log('executing ' + cmd);
         result = sh.exec(cmd, {
@@ -39,10 +42,20 @@
             return;
         }
 
+        if (minify) {
+            ext = '.min.js';
+        } else {
+            ext = '.js';
+        }
+
+        file = './build/tibet_' + name + ext;
+
         try {
-            result.output.to('./build/tibet_' + name + '.min.js');
+            make.log('Writing ' + result.output.length + ' chars to: ' + file);
+            result.output.to(file);
             promise.resolve();
         } catch (e) {
+            make.error('Unable to write to: ' + file);
             promise.reject(e);
         }
     };

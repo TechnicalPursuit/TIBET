@@ -24,8 +24,6 @@ var minimist = require('minimist');
 
 /**
  * Command supertype. All individual commands inherit from this type.
- * @param {Object} options Command options from the outer CLI instance.
- *     Common keys include 'cli', 'debug', and 'verbose'.
  */
 var Cmd = function(){};
 
@@ -61,6 +59,13 @@ Cmd.prototype.USAGE = '';
  * @type {Object}
  */
 Cmd.prototype.argv = null;
+
+
+/**
+ * A reference to the CLI configuration data, potentially augmented by loading
+ * CLI.PROJECT_FILE config data.
+ */
+Cmd.prototype.config = null;
 
 
 /**
@@ -152,23 +157,20 @@ Cmd.prototype.execute = function() {
  */
 Cmd.prototype.run = function(options) {
 
+    // Options passed in are those computed by the CLI.
     this.options = options || {};
 
-    // Create a shortcut to any config data we may have loaded from tibet.json.
-    if (this.options.tibet && this.options.tibet.config) {
-        this.config = this.options.tibet.config;
-    } else {
-        this.config = {};
-    }
+    // Config data can be pulled directly from the CLI.
+    this.config = CLI.config;
 
     // Re-parse the command line with any localized parser options.
     this.argv = this.parse();
 
-    if (this.argv.usage) {
+    if (this.argv.usage || this.options.usage) {
         this.usage();
     }
 
-    if (this.argv.help) {
+    if (this.argv.help || this.options.help) {
         this.help();
     }
 

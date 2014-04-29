@@ -9,48 +9,7 @@
 
     var sh = require('shelljs');
     var nodeCLI = require('shelljs-nodecli');
-
-    //  ---
-    //  helpers
-    //  ---
-
-    /**
-     * Canonical `helper` object for internal utility functions.
-     */
-    var helpers = {};
-
-
-    /**
-     *
-     */
-    helpers.rollup = function(make, name, pkg, config, headers, promise) {
-        var result;
-        var cmd;
-
-        make.log('rolling up ' + name);
-
-        cmd = 'tibet rollup --package \'' + pkg +
-            '\' --config ' + config +
-            (headers ? '' : ' --no-headers');
-
-        make.log('executing ' + cmd);
-        result = sh.exec(cmd, {
-            silent: true
-        });
-
-        if (result.code !== 0) {
-            promise.reject(result.output);
-            return;
-        }
-
-        try {
-            result.output.to('./build/tibet_' + name + '.min.js');
-            promise.resolve();
-        } catch (e) {
-            promise.reject(e);
-        }
-    };
-
+    var helpers = require('tibet/src/cli/_make_helpers');
 
     //  ---
     //  targets

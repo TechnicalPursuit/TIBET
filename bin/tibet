@@ -18,31 +18,34 @@ var cli = require('../src/cli/_cli.js');    // The actual TIBET cli.
 //  Capture npm metadata about TIBET installation for downstream use.
 child.exec('npm ll -g tibet --json',
     function(err, stdout, stderr) {
-        var options = {
+        var config = {
             tibet: {}
         };
 
         // Parse any output we may have received from npm.
         try {
-            options.npm = JSON.parse(stdout);
+            config.npm = JSON.parse(stdout);
         } catch (e) {
-            console.log(chalk.red('Error parsing npm metadata: ' + e));
-            process.exit(1);
+            config.npm = {};
+            console.log(chalk.red('Error parsing npm metadata: ' + e.message));
         }
 
         // If there was a child process error try to qualify it. Was it a 'not
         // found' or a true exception running the child process?
         if (err) {
-            if (options.npm && options.npm._found === false) {
-                console.log(chalk.red('TIBET package not found.' +
+            if (config.npm && config.npm._found !== true) {
+                console.log(chalk.yellow('TIBET package not found.' +
                     ' Did you \'npm install -g tibet\'?'));
+                // Note we don't exit here. Not all tibet operation requires a
+                // global installation.
             } else {
-                console.log(chalk.red('Error locating TIBET installation: ' +
+                console.log(chalk.red('`tibet` command error: ' +
                     ('' + err).replace(/^Error: /, '')));
+                process.exit(1);
             }
         }
 
         // Run the cli once we've found TIBET.
-        cli.run(options);
+        cli.run(config);
     }
 );

@@ -142,7 +142,10 @@ CLI.PACKAGE_FILE = '_Package.js';
  */
 CLI.PARSE_OPTIONS = {
     boolean: ['color', 'help', 'usage', 'debug', 'stack', 'verbose'],
-    string: ['app_root', 'lib_root']
+    string: ['app_root', 'lib_root'],
+    default: {
+        color: true
+    }
 };
 
 
@@ -156,6 +159,13 @@ CLI.PROJECT_FILE = 'tibet.json';
 
 
 /**
+ * Optional configuration data typically passed into run() via tibet 'binary'.
+ * @type {Object}
+ */
+CLI.config = {};
+
+
+/**
  * A reference to the current project's associated TIBET make targets. This
  * will only exist inProject where the project utilizes TIBET's ultra-light
  * variant on shelljs/make.
@@ -165,7 +175,7 @@ CLI.make_targets = null;
 
 
 /**
- * Optional configuration data typically passed into run() via tibet 'binary'.
+ * Command options, typically populated by parameters found in process.argv.
  * @type {Object}
  */
 CLI.options = {};
@@ -357,7 +367,7 @@ CLI.getcfg = function(property) {
  * @param {string} command The command to find, such as 'start'.
  * @return {?string} The path to the command, if found.
  */
-CLI.getCommandPath = function(command, options) {
+CLI.getCommandPath = function(command) {
 
     var roots;      // The directory roots we'll search.
     var i;
@@ -526,6 +536,7 @@ CLI.inProject = function(CmdType) {
         fullpath = path.join(cwd, file);
         if (sh.test('-f', fullpath)) {
             this.options.app_root = cwd;
+
             // Relocate cwd to the new root so our paths for things like
             // grunt and gulp work without requiring global installs etc.
             process.chdir(cwd);
@@ -533,8 +544,11 @@ CLI.inProject = function(CmdType) {
             // Once we find the directory of a project root load any tibet.json
             // configuration found there.
             try {
-                this.options.tibet = require(fullpath);
+                this.config.tibet = require(fullpath);
             } catch (e) {
+                // Make sure we default to some value.
+                this.config.tibet = {};
+
                 // Don't output warnings about project issues when providing
                 // help text.
                 if (CmdType && CmdType.NAME !== 'help') {
@@ -619,15 +633,16 @@ CLI.handleError = function(e, phase, command) {
  * Executes the current command line, parsing the command line and invoking the
  * appropriate command in response. Command instances are invoked via their
  * `execute` method. See the _cmd.js documentation for more detail.
- * @param {Object} options An object containing command/context information.
+ * @param {Object} config An object containing context/config information.
  */
-CLI.run = function(options) {
+CLI.run = function(config) {
 
-    var argv;           // arguments processed via minimist.
     var command;        // the first non-option argument, the command name.
     var cmdPath;        // the command path (for use with require())
 
-    this.options = options || {};
+    // Typically contains npm config data under a 'npm' key and a slot for TIBET
+    // config data (normally read in by _cmd) under a 'tibet' key.
+    this.config = config || {};
 
     //  ---
     //  Process the command-line arguments to find the command name.
@@ -635,14 +650,14 @@ CLI.run = function(options) {
 
     // Slice 2 here to remove 'node tibet' from the front. Also ensure that our
     // binary (boolean) flags are identified as such to avoid parsing glitches.
-    argv = minimist(process.argv.slice(2), this.PARSE_OPTIONS) || {_:[]};
+    this.options = minimist(process.argv.slice(2), this.PARSE_OPTIONS) || {_:[]};
 
-    command = argv._[0];
+    command = this.options._[0];
     if (!command) {
         // Empty commands often indicate a --flag of some kind on the tibet
         // command itself. Check for the ones we support here.
         // NB: don't change these to value tests, we just want existence.
-        if (argv.version) {
+        if (this.options.version) {
             command = 'version';
         } else {
             command = 'help';
@@ -656,28 +671,19 @@ CLI.run = function(options) {
     }
 
     //  ---
-    //  Config/Arguments
-    //  ---
-
-    // Configure logging/debugging parameters CLI-wide.
-    this.options.debug = argv.debug;
-    this.options.verbose = argv.verbose;
-    this.options.stack = argv.stack;
-
-    //  ---
     //  Verify the command is valid.
     //  ---
 
     // Search app_cmd, lib_cmd_ etc. for the command implementation.
-    cmdPath = CLI.getCommandPath(command, this.options);
+    cmdPath = CLI.getCommandPath(command);
 
     // Not a 'native TIBET command' so try handling via fallback logic.
     if (!cmdPath) {
-        this.runFallback(command, argv, this.options);
+        this.runFallback(command);
         return;
     }
 
-    this.runCommand(command, argv, this.options, cmdPath);
+    this.runCommand(command, cmdPath);
 };
 
 
@@ -686,11 +692,9 @@ CLI.run = function(options) {
  * are invoked via their `execute` method. See the _cmd.js documentation for
  * more detail.
  * @param {string} command The command name.
- * @param {Object} argv The parsed command line arguments object.
- * @param {Object} options An object containing command/context information.
- * @param {string} cmdPath The path used to require() the command implementation.
+ * @param {string} cmdPath The path used to require the command implementation.
  */
-CLI.runCommand = function(command, argv, options, cmdPath) {
+CLI.runCommand = function(command, cmdPath) {
 
     var CmdType;
     var cmd;
@@ -712,7 +716,7 @@ CLI.runCommand = function(command, argv, options, cmdPath) {
 
     // If we're not dumping help or usage check context. We can't really run to
     // completion if we're not in the right context.
-    if (!argv.usage && !argv.help) {
+    if (!this.options.usage && !this.options.help) {
         if (!this.canRun(CmdType)) {
             this.error('Command must be run ' + CmdType.CONTEXT +
                 ' a TIBET project.');
@@ -723,7 +727,7 @@ CLI.runCommand = function(command, argv, options, cmdPath) {
     //  Dispatch the command with any config options. It will parse the command
     //  line again itself so it can be certain of flag values.
     try {
-        cmd.run(this.options, argv);
+        cmd.run(this.options);
     } catch (e) {
         return this.handleError(e, 'processing', command);
     }
@@ -734,10 +738,8 @@ CLI.runCommand = function(command, argv, options, cmdPath) {
  * Runs a series of checks for fallback options from 'make' to grunt to
  * gulp (in that order).
  * @param {string} command The command to attempt to execute.
- * @param {Object} args Minimist-formatted command line arguments and options.
- * @param {Object} options An object containing command/context information.
  */
-CLI.runFallback = function(command, args, options) {
+CLI.runFallback = function(command) {
 
     if (!CLI.inProject()) {
         this.error('Command not found: ' + command + '.');
@@ -754,17 +756,17 @@ CLI.runFallback = function(command, args, options) {
     if (this.hasMakeTarget(command)) {
 
         this.warn('Delegating `' + command + '` to tibet make...');
-        CLI.runViaMake(command, args, options);
+        CLI.runViaMake(command);
 
-    } else if (this.inGruntProject(command, args, options)) {
+    } else if (this.inGruntProject(command)) {
 
         this.warn('Delegating `' + command + '` to grunt...');
-        CLI.runViaGrunt(command, args, options);
+        CLI.runViaGrunt(command);
 
     } else if (this.inGulpProject()) {
 
         this.warn('Delegating `' + command + '` to grunt...');
-        CLI.runViaGulp(command, args, options);
+        CLI.runViaGulp(command);
 
     } else {
 
@@ -778,10 +780,8 @@ CLI.runFallback = function(command, args, options) {
  * Executes a command by delegating to 'grunt' and treating the command name as
  * a grunt task name.
  * @param {string} command The command to attempt to execute.
- * @param {Object} args Minimist-formatted command line arguments and options.
- * @param {Object} options An object containing command/context information.
  */
-CLI.runViaGrunt = function() {
+CLI.runViaGrunt = function(command) {
 
     var cmd;        // Command string we'll be executing via grunt.
     var child;      // spawned child process for grunt execution.
@@ -826,10 +826,8 @@ CLI.runViaGrunt = function() {
  * Executes a command by delegating to 'gulp' and treating the command name as
  * a gulp task name.
  * @param {string} command The command to attempt to execute.
- * @param {Object} args Minimist-formatted command line arguments and options.
- * @param {Object} options An object containing command/context information.
  */
-CLI.runViaGulp = function() {
+CLI.runViaGulp = function(command) {
 
     var cmd;        // Command string we'll be executing via gulp.
     var child;      // spawned child process for gulp execution.
@@ -874,15 +872,13 @@ CLI.runViaGulp = function() {
  * Executes a command by delegating to `tibet make` and executing the command as
  * a make target.
  * @param {string} command The command to attempt to execute.
- * @param {Object} args Minimist-formatted command line arguments and options.
- * @param {Object} options An object containing command/context information.
  */
-CLI.runViaMake = function(command, args, options) {
+CLI.runViaMake = function(command) {
 
     // Delegate to the same runCommand used for all other common commands. Note
     // that the only difference to the `make` command is that it won't be able
     // to parse quite the same command line from process.argv.
-    this.runCommand('make', args, options, path.join(__dirname, 'make.js'));
+    this.runCommand('make', path.join(__dirname, 'make.js'));
 };
 
 

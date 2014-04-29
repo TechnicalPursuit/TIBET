@@ -61,7 +61,7 @@ Cmd.prototype.USAGE = 'tibet version';
  */
 Cmd.prototype.execute = function() {
     try {
-        this.info(this.options.npm.dependencies.tibet.version);
+        this.info(this.config.npm.dependencies.tibet.version);
     } catch (e) {
         this.error('Unable to determine TIBET version.');
     }

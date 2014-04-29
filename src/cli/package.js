@@ -89,7 +89,10 @@ Cmd.prototype.PARSE_OPTIONS = {
         'color', 'help', 'usage', 'debug', 'stack', 'verbose',
         'all', 'scripts', 'styles', 'images', 'nodes'
     ],
-    string: ['package', 'config', 'include', 'exclude', 'phase']
+    string: ['package', 'config', 'include', 'exclude', 'phase'],
+    default: {
+        color: true
+    }
 };
 
 

@@ -54,9 +54,14 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = {
     boolean: [
         'color', 'help', 'usage', 'debug', 'stack', 'verbose',
-        'all', 'scripts', 'styles', 'images', 'nodes', 'headers'
+        'all', 'scripts', 'styles', 'images', 'nodes', 'headers',
+        'minify'
     ],
-    string: ['package', 'config', 'include', 'exclude', 'phase']
+    string: ['package', 'config', 'include', 'exclude', 'phase'],
+    default: {
+        color: false,
+        headers: true
+    }
 };
 
 
@@ -64,7 +69,7 @@ Cmd.prototype.PARSE_OPTIONS = {
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers]';
+Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify]';
 
 
 //  ---
@@ -90,7 +95,7 @@ Cmd.prototype.executeForEach = function(list) {
     pkg = this.package;
 
     ug = require('uglify-js');
-    uglifyOpts = CLI.ifUndefined(this.config.uglify, {});
+    uglifyOpts = CLI.ifUndefined(this.config.tibet.uglify, {});
 
     list.forEach(function(item) {
         var src;
@@ -107,9 +112,11 @@ Cmd.prototype.executeForEach = function(list) {
                 throw new Error('NotFound: ' + src);
             }
 
-            // Don't minify .min.js files, assume they're done.
+            // Don't minify .min.js files, assume they're done. Also respect
+            // either command-line option or element attribute to that effect.
             if (/\.min\.js$/.test(src) ||
-                item.getAttribute('no-minify') === 'true') {
+                item.getAttribute('no-minify') === 'true' ||
+                !cmd.options.minify) {
                 code = fs.readFileSync(src, {encoding: 'utf8'});
             } else {
                 try {
@@ -118,7 +125,7 @@ Cmd.prototype.executeForEach = function(list) {
                         code += ';';
                     }
                 } catch (e) {
-                    pkg.error('Error minifying: ' + e.message);
+                    cmd.error('Error minifying: ' + e.message);
                     throw e;
                 }
             }
@@ -127,7 +134,7 @@ Cmd.prototype.executeForEach = function(list) {
                 pkg.log('TP.boot.$srcPath = \'' + virtual + '\';');
             }
 
-            if (pkg.getcfg('debug') !== true) {
+            if (cmd.options.debug !== true) {
                 pkg.log(code);
             }
 
@@ -136,7 +143,7 @@ Cmd.prototype.executeForEach = function(list) {
                 pkg.log('TP.boot.$srcPath = \'\';');
             }
 
-            if (pkg.getcfg('debug') !== true) {
+            if (cmd.options.debug !== true) {
                 pkg.log(item.textContent);
             }
         }

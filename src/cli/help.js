@@ -173,8 +173,8 @@ Cmd.prototype.execute = function() {
     this.info('\nConfigure default parameters via tibet.json');
 
     try {
-        this.info('\n' + this.options.npm.dependencies.tibet._id + ' ' +
-            this.options.npm.dependencies.tibet.path);
+        this.info('\n' + this.config.npm.dependencies.tibet._id + ' ' +
+            this.config.npm.dependencies.tibet.path);
     } catch (e) {
     }
 };

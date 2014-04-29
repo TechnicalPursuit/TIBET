@@ -268,6 +268,9 @@ Cmd.prototype.prepTargets = function(targets) {
                             rejector(err);
                         };
 
+                        // Make sure all targets start from app root.
+                        process.chdir(CLI.getAppRoot());
+
                         try {
                             func.call(func, cmd);           // run it :)
                         } catch (e) {
