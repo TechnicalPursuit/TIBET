@@ -80,13 +80,7 @@ Cmd.prototype.options = null;
  * default to false so we need to default some to true explicitly.
  * @type {Object}
  */
-Cmd.prototype.PARSE_OPTIONS = {
-    boolean: ['color', 'help', 'usage', 'debug', 'stack', 'verbose'],
-    string: ['app_root'],
-    default: {
-        color: true
-    }
-};
+Cmd.prototype.PARSE_OPTIONS = CLI.extend({}, CLI.PARSE_OPTIONS);
 
 //  ---
 //  Instance Methods

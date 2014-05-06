@@ -16,6 +16,7 @@
 
 'use strict';
 
+var CLI = require('./_cli');
 var eslint = require('eslint');
 var beautify = require('js-beautify').js_beautify;
 
@@ -64,19 +65,16 @@ Cmd.prototype.HELP =
  * Command argument parsing options.
  * @type {Object}
  */
-Cmd.prototype.PARSE_OPTIONS = {
-    boolean: [
-        'color', 'help', 'usage', 'debug', 'stack', 'verbose', 'stop',
-        'all', 'silent', 'nodes', 'reset'
-    ],
-    string: ['app_root', 'lintcfg', 'rules', 'format', 'package', 'config',
-        'phase'],
-    default: {
-        color: true,
-        nodes: true,
-        silent: true
-    }
-};
+Cmd.prototype.PARSE_OPTIONS = CLI.extend(
+    {
+        boolean: ['stop', 'all', 'silent', 'nodes', 'reset'],
+        string: ['lintcfg', 'rules', 'format', 'package', 'config', 'phase'],
+        default: {
+            nodes: true,
+            silent: true
+        }
+    },
+    Parent.prototype.PARSE_OPTIONS);
 
 
 /**

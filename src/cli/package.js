@@ -84,16 +84,12 @@ Cmd.prototype.HELP =
  * Command argument parsing options.
  * @type {Object}
  */
-Cmd.prototype.PARSE_OPTIONS = {
-    boolean: [
-        'color', 'help', 'usage', 'debug', 'stack', 'verbose',
-        'all', 'scripts', 'styles', 'images', 'nodes'
-    ],
-    string: ['package', 'config', 'include', 'exclude', 'phase'],
-    default: {
-        color: true
-    }
-};
+Cmd.prototype.PARSE_OPTIONS = CLI.extend(
+    {
+        boolean: ['all', 'scripts', 'styles', 'images', 'nodes'],
+        string: ['package', 'config', 'include', 'exclude', 'phase']
+    },
+    Parent.prototype.PARSE_OPTIONS);
 
 
 /**
