@@ -315,6 +315,43 @@ CLI.expandPath = function(aPath) {
 
 
 /**
+ * A simple variation on extend() sufficient for parameter block copies. The
+ * objects passed are expected to be simple JavaScript objects. No checking is
+ * done to support more complex cases. Slots in the target are only overwritten
+ * if they don't already exist. Only slots owned by the source will be copied.
+ * @param {Object} target The object which will potentially be modified.
+ * @param {Object} source The object which provides new property values.
+ */
+CLI.extend = function (target, source) {
+
+    var isObject = function(obj) {
+        return Object.prototype.toString.call(obj) === '[object Object]';
+    };
+
+    Object.keys(source).forEach(function(key) {
+        if (key in target) {
+            if (isObject(target[key]) && isObject(source[key])) {
+                CLI.extend(target[key], source[key]);
+            }
+            return;
+        }
+
+        if (Array.isArray(source[key])) {
+            // Make a quick copy of array objects.
+            target[key] = source[key].slice(0);
+        } else if (isObject(source[key])) {
+            // Deeply copy other non-primitive objects.
+            target[key] = CLI.extend({}, source[key]);
+        } else {
+            target[key] = source[key];
+        }
+    });
+
+    return target;
+};
+
+
+/**
  * Returns the application root directory, the path where the PROJECT_FILE is
  * found. This path is then used by many commands as a "root" for relative path
  * computations.
