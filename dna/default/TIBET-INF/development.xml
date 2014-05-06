@@ -12,6 +12,7 @@
     <property name="log.level" value="1"/>
     <property name="log.inferences" value="true"/>
     <property name="log.null_namespaces" value="true"/>
+    <property name="log.stack" value="true"/>
     <property name="log.signal_stack" value="true"/>
     <property name="security.request_privileges" value="true"/>
     <property name="tibet.$debug" value="true"/>
