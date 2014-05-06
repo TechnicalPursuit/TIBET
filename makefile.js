@@ -26,8 +26,7 @@
     targets.test = function(make) {
         var result;
 
-        make.log('testing...');
-
+        make.log('starting mocha...');
         result = nodeCLI.exec('mocha', '--ui bdd', '--reporter dot');
 
         if (result.code !== 0) {
