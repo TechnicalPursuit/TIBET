@@ -21,6 +21,10 @@ var beautify = require('js-beautify').js_beautify;
 var sh = require('shelljs');
 var fs = require('fs');
 
+var esprima = require('esprima');
+var esmangle = require('esmangle');
+var escodegen = require('escodegen');
+
 //  ---
 //  Type Construction
 //  ---
@@ -44,14 +48,14 @@ Cmd.prototype.HELP =
 'Creates a minified and concatenated version of a package#config.\n\n' +
 'Output from this command is written to stdout for use in redirection.\n' +
 'Command-line options mirror those for the `tibet package` command.\n' +
-'See `tibet help package` and the uglify-js documentation for more.\n';
+'See `tibet help package` documentation for more.\n';
 
 
 /**
  * Command argument parsing options.
  * @type {Object}
  */
-Cmd.prototype.PARSE_OPTIONS = CLI.extend(
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         boolean: ['all', 'scripts', 'styles', 'images', 'nodes', 'headers',
             'minify'
@@ -88,16 +92,16 @@ Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify]';
 Cmd.prototype.executeForEach = function(list) {
     var pkg;
     var cmd;
-    var ug;         // The uglify-js compressor export.
-    var uglifyOpts; // Options for uglify.
+    var minifyOpts; // Options for minify
 
     cmd = this;
     pkg = this.package;
 
-    ug = require('uglify-js');
-    uglifyOpts = CLI.ifUndefined(this.config.tibet.uglify, {});
+    minifyOpts = CLI.ifUndefined(this.config.tibet.minify, {});
 
     list.forEach(function(item) {
+        var ast;
+        var mangled;
         var src;
         var code;
         var virtual;
@@ -120,12 +124,18 @@ Cmd.prototype.executeForEach = function(list) {
                 code = fs.readFileSync(src, {encoding: 'utf8'});
             } else {
                 try {
-                    code = ug.minify(src, uglifyOpts).code;
+                    code = fs.readFileSync(src, {encoding: 'utf8'});
+
+                    // Parse, reorg/mangle, & then re-generate JS code.
+                    ast = esprima.parse(code);
+                    mangled = esmangle.mangle(ast);
+                    code = escodegen.generate(mangled, minifyOpts);
+
                     if (code && code[code.length - 1] !== ';') {
                         code += ';';
                     }
                 } catch (e) {
-                    cmd.error('Error minifying: ' + e.message);
+                    cmd.error('Error minifying ' + src + ': ' + e.message);
                     throw e;
                 }
             }

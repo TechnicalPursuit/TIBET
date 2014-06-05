@@ -1,8 +1,10 @@
 {
     "//" : "TIBET project file. Set configuration parameters here.",
 
-    "uglify": {
-        "mangle": false
+    "minify": {
+        "format": {
+            "compact": true
+        }
     },
 
     "package": "~lib_cfg/TIBET.xml"

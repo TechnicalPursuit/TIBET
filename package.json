@@ -47,6 +47,9 @@
         "chalk": "*",
         "connect": "*",
         "eslint": "TechnicalPursuit/eslint",
+        "esprima": "*",
+        "escodegen": "*",
+        "esmangle": "*",
         "findit": "*",
         "handlebars": "*",
         "js-beautify": "*",
@@ -58,7 +61,6 @@
         "shelljs": "*",
         "shelljs-nodecli": "*",
         "tibet3": "*",
-        "uglify-js": "*",
         "when": "*",
         "xmldom": "*",
         "xpath": "*"
