@@ -91,7 +91,8 @@ Cmd.prototype.execute = function() {
     // mechanism argv[0] is the make target.
     command = this.argv._[1] || this.argv._[0];
 
-    // Might be 'tibet make --list' etc.
+    // Might be 'tibet make --list' etc. NOTE the ._. portion is correct here,
+    // the '_' object is from the options parser.
     if (command === 'make' && this.argv._.length === 1) {
         if (this.argv.list === true) {
             return this.executeList(targets);
@@ -115,7 +116,8 @@ Cmd.prototype.execute = function() {
         start = new Date();
 
         // NOTE the use of then() here since our task prep makes each task into
-        // Promise. We rely on this for more control over async tasks etc.
+        // a function returning a new Promise. We rely on this for more control
+        // over async tasks etc.
         targets[command](this).then(
             function(obj) {
                 var msg;
@@ -188,11 +190,11 @@ Cmd.prototype.executeList = function(targets) {
 
 /**
  * Wraps individual target functions in functions returning ES6 Promise
- * instances. The resulting task functions can be chained via then(). The
- * function wrappers also have a resolve() and reject() wrapper placed on them
- * so they can easily invoke the appropriate call on completion of their task.
- * A timeout option is also injected such that long-running tasks (likely due to
- * forgetting to reject or resolve) can be rejected automatically.
+ * instances. The resulting task function invocations can be chained via then().
+ * The function wrappers also have a resolve() and reject() wrapper placed on
+ * them so they can easily invoke the appropriate call on completion of their
+ * task. A timeout option is also injected such that long-running tasks (likely
+ * due to forgetting to reject or resolve) can be rejected automatically.
  * @param {Object} targets An object whose functions serve as make targets.
  */
 Cmd.prototype.prepTargets = function(targets) {

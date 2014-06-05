@@ -65,7 +65,7 @@ Cmd.prototype.HELP =
  * Command argument parsing options.
  * @type {Object}
  */
-Cmd.prototype.PARSE_OPTIONS = CLI.extend(
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         boolean: ['stop', 'all', 'silent', 'nodes', 'reset'],
         string: ['lintcfg', 'rules', 'format', 'package', 'config', 'phase'],

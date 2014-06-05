@@ -59,6 +59,8 @@ Cmd.prototype.USAGE = 'tibet test [options]';
 Cmd.prototype.execute = function() {
     this.info('testing...');
 
+// TODO: make this work :)
+
     return;
 };
 

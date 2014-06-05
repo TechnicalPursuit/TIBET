@@ -84,7 +84,7 @@ Cmd.prototype.HELP =
  * Command argument parsing options.
  * @type {Object}
  */
-Cmd.prototype.PARSE_OPTIONS = CLI.extend(
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         boolean: ['all', 'scripts', 'styles', 'images', 'nodes'],
         string: ['package', 'config', 'include', 'exclude', 'phase']

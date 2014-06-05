@@ -315,33 +315,79 @@ CLI.expandPath = function(aPath) {
 
 
 /**
- * A simple variation on extend() sufficient for parameter block copies. The
- * objects passed are expected to be simple JavaScript objects. No checking is
- * done to support more complex cases. Slots in the target are only overwritten
- * if they don't already exist. Only slots owned by the source will be copied.
+ * Returns true if the object provided is an 'Object' as opposed to a string,
+ * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
+ * hash of keys.
+ * @param {Object} obj The object to test.
+ * @return {Boolean} True if the object is an Object.
+ */
+CLI.isObject = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]';
+};
+
+
+/**
+ * A useful variation on extend from other libs sufficient for parameter block
+ * copies. The objects passed are expected to be simple JavaScript objects. No
+ * checking is done to support more complex cases. Slots in the target are only
+ * overwritten if they don't already exist. Only slots owned by the source will
+ * be copied. Arrays are treated with some limited deep copy semantics as well.
  * @param {Object} target The object which will potentially be modified.
  * @param {Object} source The object which provides new property values.
  */
-CLI.extend = function (target, source) {
+CLI.blend = function (target, source) {
 
-    var isObject = function(obj) {
-        return Object.prototype.toString.call(obj) === '[object Object]';
-    };
+    if (CLI.notValid(source)) {
+        return target;
+    }
+
+    if (Array.isArray(target)) {
+        if (!Array.isArray(source)) {
+            CLI.handleError(new Error('Incompatible Types'),
+                'blending', 'blend');
+            process.exit(1);
+        }
+
+        // Both arrays. Blend as best we can.
+        source.forEach(function(item, index) {
+            var value = CLI.blend(target[index], item);
+            if (target[index] !== value) {
+                target[index] = value;
+            }
+        });
+
+        return target;
+    }
+
+    if (CLI.isValid(target)) {
+        if (!CLI.isObject(target)) {
+            return target;
+        }
+
+        if (!CLI.isObject(source)) {
+            return target;
+        }
+    } else {
+        // Target not valid, source should overlay.
+        return source;
+    }
 
     Object.keys(source).forEach(function(key) {
         if (key in target) {
-            if (isObject(target[key]) && isObject(source[key])) {
-                CLI.extend(target[key], source[key]);
+            if (CLI.isObject(target[key])) {
+                CLI.blend(target[key], source[key]);
+            } else if (Array.isArray(target[key])) {
+                CLI.blend(target[key], source[key]);
             }
             return;
         }
 
         if (Array.isArray(source[key])) {
-            // Make a quick copy of array objects.
-            target[key] = source[key].slice(0);
-        } else if (isObject(source[key])) {
+            // Copy array/object slots deeply as needed.
+            target[key] = CLI.blend([], source[key]);
+        } else if (CLI.isObject(source[key])) {
             // Deeply copy other non-primitive objects.
-            target[key] = CLI.extend({}, source[key]);
+            target[key] = CLI.blend({}, source[key]);
         } else {
             target[key] = source[key];
         }

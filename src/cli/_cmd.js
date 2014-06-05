@@ -80,7 +80,7 @@ Cmd.prototype.options = null;
  * default to false so we need to default some to true explicitly.
  * @type {Object}
  */
-Cmd.prototype.PARSE_OPTIONS = CLI.extend({}, CLI.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, CLI.PARSE_OPTIONS);
 
 //  ---
 //  Instance Methods
