@@ -19,7 +19,8 @@
 </config>
 
 <config id="tibet_img">
-    <script src="~lib_build/tibet_base.min.js"/>
+    <script src="~lib_build/tibet_base.js" if="boot.unminified" />
+    <script src="~lib_build/tibet_base.min.js" unless="boot.unminified" />
 </config>
 
 <config id="tibet_chg">
