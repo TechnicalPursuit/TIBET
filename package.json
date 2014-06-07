@@ -41,8 +41,7 @@
         "lib": "./lib",
         "man": "./man"
     },
-    "dependencies": {},
-    "devDependencies": {
+    "dependencies": {
         "chai": "*",
         "chalk": "*",
         "connect": "*",
