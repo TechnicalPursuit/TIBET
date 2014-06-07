@@ -57,11 +57,11 @@
         "mockery": "*",
         "minimist": "*",
         "phantomjs": "*",
+        "q": "TechnicalPursuit/q#v1",
         "ronn": "*",
         "shelljs": "*",
         "shelljs-nodecli": "*",
         "tibet3": "*",
-        "when": "*",
         "xmldom": "*",
         "xpath": "*"
     },

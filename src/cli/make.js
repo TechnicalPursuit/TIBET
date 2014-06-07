@@ -15,7 +15,7 @@
 'use strict';
 
 var CLI = require('./_cli');
-var Promise = require('when/es6-shim/Promise');
+var Q = require('q');
 
 
 //  ---
@@ -51,7 +51,7 @@ Cmd.prototype.HELP =
 'command line interface.\n' +
 'The purpose here is to support lightweight custom commands in the form of\n' +
 'functions. There\'s no dependency checking or true \'make\' functionality\n' +
-'per se but the TIBET make file does leverage ES6 Promises to help manage\n' +
+'per se but the TIBET make file does leverage Q-style Promises to manage\n' +
 'tasks and their interactions, particularly when calling tasks from within\n' +
 'tasks and when dealing with asynchronous tasks.';
 
@@ -189,7 +189,7 @@ Cmd.prototype.executeList = function(targets) {
 
 
 /**
- * Wraps individual target functions in functions returning ES6 Promise
+ * Wraps individual target functions in functions returning Q-style Promise
  * instances. The resulting task function invocations can be chained via then().
  * The function wrappers also have a resolve() and reject() wrapper placed on
  * them so they can easily invoke the appropriate call on completion of their
@@ -240,7 +240,7 @@ Cmd.prototype.prepTargets = function(targets) {
                         cmd.log('making ' + name);
                     }
 
-                    promise = new Promise(function(resolver, rejector) {
+                    promise = Q.Promise(function(resolver, rejector) {
                         var timer;
 
                         timer = setTimeout(function() {
