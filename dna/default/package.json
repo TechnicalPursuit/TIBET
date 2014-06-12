@@ -12,7 +12,8 @@
     "phantomjs": "*",
     "shelljs": "*",
     "tibet3": "*",
-    "uglify-js": "*"
+    "uglify-js": "*",
+    "watch": "*"
   },
   "devDependencies": {
     "couchapp": "*"
