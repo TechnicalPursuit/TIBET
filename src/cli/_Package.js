@@ -12,8 +12,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* jshint node:true, onevar:false */
-/* global TP:true */
+/*eslint camelcase:0, no-extra-semi:0*/
 
 ;(function(root) {
 
@@ -21,9 +20,9 @@ var fs = require('fs'),
     path = require('path'),
     chalk = require('chalk'),
     sh = require('shelljs'),
+    dom = require('xmldom');
 
-    dom = require('xmldom'),
-    parser = new dom.DOMParser(),
+var parser = new dom.DOMParser(),
     serializer = new dom.XMLSerializer(),
 
     isEmpty = function(aReference) {
