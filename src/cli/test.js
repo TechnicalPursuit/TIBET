@@ -54,7 +54,7 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['ignore_only', 'ignore_defer'],
+        boolean: ['ignore_only', 'ignore_skip'],
         string: ['target'],
         default: {}
     },
