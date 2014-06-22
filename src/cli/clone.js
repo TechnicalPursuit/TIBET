@@ -149,26 +149,35 @@ Cmd.prototype.execute = function() {
     //  Verify the target.
     //  ---
 
-    target = process.cwd() + '/' + appname;
-    this.verbose('Checking for pre-existing target: ' + target);
+    if (appname === '.') {
+        // Target will be our current directory, and we'll end up adjusting our
+        // appname to be whatever the current directory name is.
+        target = process.cwd();
+        appname = target.slice(target.lastIndexOf('/') + 1);
+    } else {
+        target = process.cwd() + '/' + appname;
+        this.verbose('Checking for pre-existing target: ' + target);
 
-    if (sh.test('-e', target)) {
-        this.error('Target already exists: ' + target);
-        return 1;
+        if (sh.test('-e', target)) {
+            this.error('Target already exists: ' + target);
+            return 1;
+        }
     }
 
     //  ---
     //  Clone to the target directory.
     //  ---
 
-    // ShellJS doesn't quite follow UNIX convention here. We need to mkdir first
-    // and then copy the contents of dna into that target directory to clone.
-    sh.mkdir(target);
-    err = sh.error();
-    if (err) {
-        this.error('Error creating target directory: ' + err);
-        return 1;
-    }
+    if (target !== process.cwd()) {
+        // ShellJS doesn't quite follow UNIX convention here. We need to mkdir first
+        // and then copy the contents of dna into that target directory to clone.
+        sh.mkdir(target);
+        err = sh.error();
+        if (err) {
+            this.error('Error creating target directory: ' + err);
+            return 1;
+        }
+    };
 
     sh.cp('-R', dna + '/', target + '/');
     err = sh.error();
