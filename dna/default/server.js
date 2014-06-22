@@ -1,6 +1,6 @@
 /**
  * @overview A baseline web server leveraging Connect.
- * @author Scott Shattuck (ss)
+ * @author Scott Shattuck (ss), William J. Edney (wje)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -10,7 +10,9 @@
 
 (function() {
 
-var Connect = require('connect');
+var http = require('http');
+var connect = require('connect');
+var morgan = require('morgan');
 var gzipStatic = require('connect-gzip-static');
 var minimist = require('minimist');
 var watch = require('watch');
@@ -118,10 +120,12 @@ watch.watchTree(
 //  SERVER EXECUTION
 //  ------------------------------------------------------------------------
 
-Connect.createServer(
-    fileWatcher,
-  Connect.logger(),
-  gzipStatic(__dirname)
-).listen(port);
+var app = connect();
+
+app.use(fileWatcher);
+app.use(morgan());
+app.use(gzipStatic(__dirname));
+
+http.createServer(app).listen(port);
 
 }());
