@@ -76,6 +76,7 @@ Cmd.prototype.execute = function() {
     if (sh.test('-e', 'node_modules')) {
         this.warn('Project already initialized. ' +
             'Re-initialize by removing node_modules first.');
+        // TODO: add a force option
         return 1;
     }
 
