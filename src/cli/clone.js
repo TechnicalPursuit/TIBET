@@ -72,7 +72,10 @@ Cmd.prototype.DNA_ROOT = '../../../dna/';
  */
 Cmd.prototype.HELP =
 'Clones a TIBET application template from a TIBET \'dna\' directory.\n' +
-'<appname> is required and must be a valid directory name to create.\n' +
+'<dirname> is required and must be a valid directory name to clone to.\n' +
+'By default the dirname will be the appname unless otherwise specified.\n'+
+'The optional --name parameter lets you rename from the directory name\n' +
+'to an alternative name. This lets the directory and appname vary.\n' +
 'The optional --dna parameter lets you clone any valid template in\n' +
 'TIBET\'s `dna` directory or a directory of your choosing. This latter\n' +
 'option lets you create your own reusable custom application templates.\n\n' +
@@ -82,7 +85,8 @@ Cmd.prototype.HELP =
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet clone <appname> [--dna <template>]';
+Cmd.prototype.USAGE =
+    'tibet clone <dirname> [--name <appname>] [--dna <template>]';
 
 
 //  ---
@@ -101,6 +105,7 @@ Cmd.prototype.execute = function() {
     var path;       // The path utilities module.
     var sh;         // The shelljs module. Used for cloning dna etc.
 
+    var dirname;    // The directory we're cloning the template into.
     var appname;    // The application name we're creating via clone.
     var argv;       // The hash of options after parsing.
     var code;       // Result code. Set if an error occurs in nested callbacks.
@@ -115,10 +120,10 @@ Cmd.prototype.execute = function() {
     ignore = ['.png', '.gif', '.jpg', '.ico', 'jpeg'];
 
     argv = this.argv;
-    appname = argv._[1];    // Command is at 0, appname should be [1].
+    dirname = argv._[1];    // Command is at 0, dirname should be [1].
 
-    // Have to get at least one non-option argument (the new appname).
-    if (!appname) {
+    // Have to get at least one non-option argument (the target dirname).
+    if (!dirname) {
         this.info('Usage: ' + this.USAGE);
         return 1;
     }
@@ -146,22 +151,23 @@ Cmd.prototype.execute = function() {
     }
 
     //  ---
-    //  Verify the target.
+    //  Verify the target.directory and application name.
     //  ---
 
-    if (appname === '.') {
+    if (dirname === '.') {
         // Target will be our current directory, and we'll end up adjusting our
-        // appname to be whatever the current directory name is.
+        // dirname to be whatever the current directory name is.
         target = process.cwd();
-        appname = target.slice(target.lastIndexOf('/') + 1);
+        appname = argv.name || target.slice(target.lastIndexOf('/') + 1);
     } else {
-        target = process.cwd() + '/' + appname;
+        target = process.cwd() + '/' + dirname;
         this.verbose('Checking for pre-existing target: ' + target);
 
         if (sh.test('-e', target)) {
             this.error('Target already exists: ' + target);
             return 1;
         }
+        appname = argv.name || dirname;
     }
 
     //  ---
@@ -290,7 +296,8 @@ Cmd.prototype.execute = function() {
             cmd.error('Cleaning up incomplete clone: ' + target);
             sh.rm('-rf', target);
         } else {
-            cmd.info('TIBET dna \'' + path.basename(dna) + '\' cloned to ' + appname + '.');
+            cmd.info('TIBET dna \'' + path.basename(dna) + '\' cloned to ' +
+                dirname + ' as ' + appname + '.';
         }
     });
 };
