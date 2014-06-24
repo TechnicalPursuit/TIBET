@@ -1,0 +1,206 @@
+<?xml version="1.0"?>
+<!--    =============================================================   -->
+<!--
+NAME:   xmpp.xml
+AUTH:   Scott Shattuck (ss)
+NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
+        Reserved. Patent Pending, Technical Pursuit Inc.
+
+        Unless explicitly acquired and licensed under the Technical
+        Pursuit License ("TPL") Version 1.5, the contents of this file
+        are subject to the Reciprocal Public License ("RPL") Version 1.5
+        and You may not copy or use this file in either source code or
+        executable form, except in compliance with the terms and
+        conditions of the RPL.
+
+        You may obtain a copy of both the TPL and RPL (the "Licenses")
+        from Technical Pursuit Inc. at http://www.technicalpursuit.com.
+
+        All software distributed under the Licenses is provided strictly
+        on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+        EXPRESS OR IMPLIED, AND TECHNICAL PURSUIT INC. HEREBY DISCLAIMS
+        ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY
+        WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+        QUIET ENJOYMENT, OR NON-INFRINGEMENT. See Licenses for specific
+        language governing rights and limitations under the Licenses.
+
+-->
+<!--    =============================================================   -->
+
+<!--    =============================================================   -->
+<!--    TIBET XMPP module build file                                    -->
+<!--    =============================================================   -->
+
+<!--
+-->
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="xmpp" default="standard" basedir="~lib_src/xmpp">
+
+<!--
+TIBET XMPP targets.
+-->
+<config id="standard">
+    <config ref="xmpp_base"/>
+</config>
+
+<config id="full">
+    <config ref="standard"/>
+    <config ref="xmpp_signals"/>
+    <config ref="xmpp_service"/>
+    <config ref="xmpp_iq"/>
+    <config ref="xmpp_x"/>
+    <config ref="xmpp_pubsub"/>
+</config>
+
+<config id="xmpp_base">
+
+    <script src="base/TPJID.js"/>
+
+    <script src="base/XMPP.js"/>
+    <script src="base/XMPPURL.js"/>
+    <script src="base/XMPPURLHandler.js"/>
+
+    <script src="base/XMPPConnection.js"/>
+
+    <script src="base/XMPPTransport.js"/>
+    <script src="base/XMPPBOSHTransport.js"/>
+
+    <script src="base/XMPPNode.js"/>
+
+    <script src="base/XMPPPacket.js"/>
+    <script src="base/XMPPPayload.js"/>
+
+    <script src="base/XMPPStanza.js"/>
+    <script src="base/XMPPStream.js"/>
+
+    <script src="base/XMPPQuery.js"/>
+    <script src="base/XMPPVCard.js"/>
+
+    <script src="base/XMPPMessage.js"/>
+    <script src="base/XMPPPresence.js"/>
+
+    <script src="base/XMPPInputStream.js"/>
+    <script src="base/XMPPOutputStream.js"/>
+
+    <script src="base/XMPPError.js"/>
+    <script src="base/XMPPStreamError.js"/>
+    <script src="base/XMPPStanzaError.js"/>
+
+    <script src="stream/XMPPStreamFeatures.js"/>
+
+    <script src="sasl/XMPPSASLAuth.js"/>
+    <script src="sasl/XMPPSASLChallenge.js"/>
+    <script src="sasl/XMPPSASLFailure.js"/>
+    <script src="sasl/XMPPSASLResponse.js"/>
+    <script src="sasl/XMPPSASLSuccess.js"/>
+
+    <script src="bind/XMPPBindResource.js"/>
+
+    <script src="session/XMPPSession.js"/>
+
+</config>
+
+<config id="xmpp_service">
+
+    <script src="service/XMPPResponse.js"/>
+    <script src="service/XMPPRequest.js"/>
+    <script src="service/XMPPService.js"/>
+
+</config>
+
+<config id="xmpp_iq">
+
+    <script src="iq/XMPPIq.js"/>
+    <script src="iq/XMPPIqPayload.js"/>
+    <script src="iq/XMPPIqRosterItem.js"/>
+
+    <script src="iq/XMPPIqGet.js"/>
+    <script src="iq/XMPPIqResult.js"/>
+    <script src="iq/XMPPIqSet.js"/>
+
+    <script src="iq/XMPPIqAgent.js"/>
+    <script src="iq/XMPPIqAgents.js"/>
+    <script src="iq/XMPPIqAuth.js"/>
+    <script src="iq/XMPPIqAutoupdate.js"/>
+    <script src="iq/XMPPIqBrowse.js"/>
+    <script src="iq/XMPPIqConference.js"/>
+    <script src="iq/XMPPIqGateway.js"/>
+    <script src="iq/XMPPIqLast.js"/>
+    <script src="iq/XMPPIqOOB.js"/>
+    <script src="iq/XMPPIqPass.js"/>
+    <script src="iq/XMPPIqPrivate.js"/>
+    <script src="iq/XMPPIqRPC.js"/>
+    <script src="iq/XMPPIqRegister.js"/>
+    <script src="iq/XMPPIqRoster.js"/>
+    <script src="iq/XMPPIqSearch.js"/>
+    <script src="iq/XMPPIqTime.js"/>
+    <script src="iq/XMPPIqVersion.js"/>
+
+</config>
+
+<config id="xmpp_signals">
+
+    <script src="signals/XMPPSignal.js"/>
+
+    <script src="signals/XMPPInputSignals.js"/>
+
+    <script src="signals/XMPPIqInputSignals.js"/>
+    <script src="signals/XMPPMessageInputSignals.js"/>
+    <script src="signals/XMPPPresenceInputSignals.js"/>
+
+    <script src="signals/XMPPPubsubInputSignals.js"/>
+
+    <script src="signals/XMPPExceptionSignals.js"/>
+
+    <script src="signals/XMPPAuthExceptionSignals.js"/>
+    <script src="signals/XMPPConnectionExceptionSignals.js"/>
+
+</config>
+
+<config id="xmpp_x">
+
+    <script src="x/XMPPXHTML.js"/>
+
+    <script src="x/XMPPXPayload.js"/>
+
+    <script src="x/XMPPXAutoupdate.js"/>
+    <script src="x/XMPPXConference.js"/>
+    <script src="x/XMPPXData.js"/>
+    <script src="x/XMPPXDataField.js"/>
+    <script src="x/XMPPXDelay.js"/>
+    <script src="x/XMPPXEncrypted.js"/>
+    <script src="x/XMPPXEnvelope.js"/>
+    <script src="x/XMPPXEvent.js"/>
+    <script src="x/XMPPXExpire.js"/>
+    <script src="x/XMPPXOOB.js"/>
+    <script src="x/XMPPXRoster.js"/>
+    <script src="x/XMPPXSXPM.js"/>
+    <script src="x/XMPPXSigned.js"/>
+
+</config>
+
+<config id="xmpp_pubsub">
+
+    <script src="pubsub/XMPPPubsub.js"/>
+
+    <script src="pubsub/XMPPPubsubPubsub.js"/>
+
+    <script src="pubsub/XMPPPubsubCreate.js"/>
+    <script src="pubsub/XMPPPubsubDelete.js"/>
+
+    <script src="pubsub/XMPPPubsubPublish.js"/>
+    <script src="pubsub/XMPPPubsubRetract.js"/>
+
+    <script src="pubsub/XMPPPubsubSubscribe.js"/>
+    <script src="pubsub/XMPPPubsubUnsubscribe.js"/>
+
+    <script src="pubsub/XMPPPubsubEvent.js"/>
+
+    <script src="pubsub/XMPPPubsubSubscription.js"/>
+    <script src="pubsub/XMPPPubsubSubscriptions.js"/>
+
+    <script src="pubsub/XMPPSignalPayload.js"/>
+</config>
+
+</package>
+

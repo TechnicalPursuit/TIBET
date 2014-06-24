@@ -1,0 +1,19 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+
+sherpa|world
+{
+    display: block;
+	position: absolute;
+
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+
+	-moz-transform-origin: 0px 0px;
+	-webkit-transform-origin: 0px 0px;
+
+	background-image: url('~lib_img/tibet_world.gif');
+	background-position: center center;
+	background-repeat: no-repeat;
+}

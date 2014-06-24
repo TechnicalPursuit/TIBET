@@ -7,5 +7,9 @@
         }
     },
 
+    "boot": {
+        "package": "~lib_cfg/TIBET.xml"
+    },
+
     "package": "~lib_cfg/TIBET.xml"
 }

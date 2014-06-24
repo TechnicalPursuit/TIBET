@@ -1,0 +1,101 @@
+/*
+	CSS styles for the 'xctrls:drawerbox' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+xctrls|drawerbox
+{
+	display: block;
+
+	position: absolute;
+
+	background-color: gray;
+}
+
+xctrls|drawerbox[xctrls|edge="top"]
+{
+	left: 25%;
+	top: -25%;
+
+	width: 50%;
+	height: 25%;
+}
+
+/* doesn't work in any browser:
+xctrls|drawerbox[xctrls|edge="top"]:visible
+*/
+xctrls|drawerbox[xctrls|edge="top"]:not([pclass|hidden])
+{
+	top: 0px;
+}
+
+xctrls|drawerbox[xctrls|edge="bottom"]
+{
+	left: 25%;
+	bottom: -25%;
+
+	width: 50%;
+	height: 25%;
+}
+
+/* doesn't work in any browser:
+xctrls|drawerbox[xctrls|edge="bottom"]:visible
+*/
+xctrls|drawerbox[xctrls|edge="bottom"]:not([pclass|hidden])
+{
+	bottom: 0px;
+}
+
+xctrls|drawerbox[xctrls|edge="left"]
+{
+	left: -25%;
+	top: 25%;
+
+	width: 25%;
+	height: 50%;
+}
+
+/* doesn't work in any browser:
+xctrls|drawerbox[xctrls|edge="left"]:visible
+*/
+xctrls|drawerbox[xctrls|edge="left"]:not([pclass|hidden])
+{
+	left: 0px;
+}
+
+xctrls|drawerbox[xctrls|edge="right"]
+{
+	top: 25%;
+	right: -25%;
+
+	width: 25%;
+	height: 50%;
+}
+
+/* doesn't work in any browser:
+xctrls|drawerbox[xctrls|edge="right"]:visible
+*/
+xctrls|drawerbox[xctrls|edge="right"]:not([pclass|hidden])
+{
+	right: 0px;
+}
+
+xctrls|drawerbox > xctrls|body
+{
+	width: 100%;
+	height: 100%;
+}
+
+/* The drawerbox is disabled */
+
+/* doesn't work in any browser:
+xctrls|drawerbox:disabled
+*/
+xctrls|drawerbox[pclass|disabled]
+{
+	opacity: 0.5;
+}

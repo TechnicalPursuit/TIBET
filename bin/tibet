@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @overview The TIBET command-line entry point. Ensures TIBET was installed
- *     globally and captures npm metadata. The actual cli is then activated.
+ * @overview The TIBET command-line entry point.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -11,41 +10,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-var chalk = require('chalk');               // Error reporting with color.
-var child = require('child_process');       // To run our npm command.
-var cli = require('../src/cli/_cli.js');    // The actual TIBET cli.
+var cli = require('../src/tibet/cli/_cli.js');    // The actual TIBET cli.
 
-//  Capture npm metadata about TIBET installation for downstream use.
-child.exec('npm ll -g tibet --json',
-    function(err, stdout, stderr) {
-        var config = {
-            tibet: {}
-        };
-
-        // Parse any output we may have received from npm.
-        try {
-            config.npm = JSON.parse(stdout);
-        } catch (e) {
-            config.npm = {};
-            console.log(chalk.red('Error parsing npm metadata: ' + e.message));
-        }
-
-        // If there was a child process error try to qualify it. Was it a 'not
-        // found' or a true exception running the child process?
-        if (err) {
-            if (config.npm && config.npm._found !== true) {
-                console.log(chalk.yellow('TIBET package not found.' +
-                    ' Did you \'npm install -g tibet\'?'));
-                // Note we don't exit here. Not all tibet operation requires a
-                // global installation.
-            } else {
-                console.log(chalk.red('`tibet` command error: ' +
-                    ('' + err).replace(/^Error: /, '')));
-                process.exit(1);
-            }
-        }
-
-        // Run the cli once we've found TIBET.
-        cli.run(config);
-    }
-);
+cli.run({tibet: {}, npm: {}});

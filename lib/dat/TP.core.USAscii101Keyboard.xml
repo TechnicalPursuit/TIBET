@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!DOCTYPE keyboard [
+  <!ATTLIST key id ID #IMPLIED>
+]>
+<keyboard xmlns="http://www.technicalpursuit.com/1999/tibet"
+  name="USAscii101Keyboard">
+
+  <!--
+  Keyboard definition for a typical US Ascii 101 Keyboard.
+
+  ID values are prefixed with an underscore ('_') to avoid issues with XML.
+  A leading underscore simply makes a numeric code into a valid ID. When a
+  map entry is for a keycode in combination with the Shift key a suffix of
+  '_shifted' is appended.
+
+  NOTE that keyboard maps of this type rely on logic in the matching
+  TP.core.Keyboard subtype to normalize keycode/charcode values for browser
+  and platform differences, at least to the extent that a unique ID can be
+  used to provide a mapping. TIBET 'normalizes' the keycode to whatever the
+  'keydown' event uses ('keypress' events often get their keyCode wrong).
+
+  TIBET signal names are computed from this map using the following algorithm:
+
+  1.  The name starts with the String 'DOM_'
+  2.  If any of the modifier keys (Meta, Ctrl, Alt or Shift) are pressed,
+      that word is added to the name (i.e. 'Ctrl_'). There is an order by
+      which multiple modifiers can be specified:
+
+        a.  'Meta'
+        b.  'Ctrl'
+        c.  'Alt'
+        d.  'Shift'
+
+      So a signal name could be: 'DOM_Ctrl_Shift_Tab_Down', but *not*
+      'DOM_Shift_Ctrl_Tab_Down'
+
+  3.  If the key has a value for the 'key=' attribute in this map, that
+      value is used:
+
+        DOM_Ctrl_Percent_Up
+        DOM_Ctrl_A_Up           //  NB: Lowercase 'a'
+        DOM_Ctrl_Shift_A_Up     //  NB: Uppercase 'A'
+
+  4.  If the key does not have a value for the 'key=' attribute in this
+      map, the value in the 'glyph=' attribute is used:
+
+        DOM_1_Up
+
+  5.  In addition to either the 'key' or 'glyph' value being used in a
+      signal name, TIBET will also generate a second signal name using the
+      Unicode value stored in the 'char=' attribute. This allows
+      difficult-to-encode keys to be observed:
+
+        DOM_U0027_Up            //  NB: Same as 'DOM_Right_Up'
+
+  If a key code is representing more than one entry, that means it will have
+  qualifiers depending on operating system (the 'platform' attribute) and the
+  browser (the 'browser' attribute). These entries are sorted in the following
+  order:
+
+    - no qualifier
+    - 'platform' qualifier
+    - 'browser' qualifier
+    - 'browser' AND 'platform' qualifier
+
+  The entry that is found last is then used to dispatch the key.
+
+  This keymap, tested on 5-APR-2013, was tested on the following browsers and
+  operating systems:
+
+    - IE8
+    - Firefox 20.0 (Mac and Windows)
+    - Chrome 26.0 (Mac and Windows)
+    - Safari 6.0 (Mac)
+  -->
+
+  <!-- ** <key id="_3" char="U0018" key="Cancel"/> -->
+  <!-- ** <key id="_6" key="Help"/> -->
+  <key id="_8" char="U0008" key="Backspace"/>
+  <key id="_9" char="U0009" key="Tab"/>
+
+  <!-- ** <key id="_10" key="Enter"/> -->
+  <key id="_12" platform="macosx" key="Clear"/>
+  <key id="_13" key="Enter"/>
+
+  <key id="_16" key="Shift"/>
+  <key id="_17" key="Control"/>
+  <key id="_18" key="Alt"/>
+  <key id="_19" platform="win" key="Pause"/>
+  <key id="_20" key="CapsLock"/>
+
+  <key id="_27" char="U001B" key="Esc"/>
+
+  <key id="_32" key="Spacebar"/>
+
+  <key id="_33" key="PageUp"/>
+  <!-- ** <key id="_33_shifted" key="Excl"/> -->
+  <key id="_34" key="PageDown"/>
+  <!-- ** <key id="_34_shifted" key="???"/> -->
+  <key id="_35" key="End"/>
+  <!-- ** <key id="_35_shifted" key="Num"/> -->
+  <key id="_36" key="Home"/>
+  <!-- ** <key id="_36_shifted" key="Dollar"/> -->
+
+  <!-- Arrow keys -->
+  <key id="_37" key="Left"/>
+  <key id="_38" key="Up"/>
+  <key id="_39" key="Right"/>
+  <key id="_40" key="Down"/>
+
+  <!-- NOTE!!: This only reports this keycode on key up! -->
+  <key id="_44" platform="win" key="PrintScreen"/>
+
+  <key id="_45" platform="win" key="Insert"/>
+  <!-- Forward delete -->
+  <key id="_46" key="Del"/>
+
+  <!-- Alphabetic / Shift-ed Alphabetic -->
+
+  <key id="_65" char="U0061" glyph="a"/>
+  <key id="_65_shifted" char="U0041" glyph="A"/>
+
+  <key id="_66" char="U0062" glyph="b"/>
+  <key id="_66_shifted" char="U0042" glyph="B"/>
+
+  <key id="_67" char="U0063" glyph="c"/>
+  <key id="_67_shifted" char="U0043" glyph="C"/>
+
+  <key id="_68" char="U0064" glyph="d"/>
+  <key id="_68_shifted" char="U0044" glyph="D"/>
+
+  <key id="_69" char="U0065" glyph="e"/>
+  <key id="_69_shifted" char="U0045" glyph="E"/>
+
+  <key id="_70" char="U0066" glyph="f"/>
+  <key id="_70_shifted" char="U0046" glyph="F"/>
+
+  <key id="_71" char="U0067" glyph="g"/>
+  <key id="_71_shifted" char="U0047" glyph="G"/>
+
+  <key id="_72" char="U0068" glyph="h"/>
+  <key id="_72_shifted" char="U0048" glyph="H"/>
+
+  <key id="_73" char="U0069" glyph="i"/>
+  <key id="_73_shifted" char="U0049" glyph="I"/>
+
+  <key id="_74" char="U006A" glyph="j"/>
+  <key id="_74_shifted" char="U004A" glyph="J"/>
+
+  <key id="_75" char="U006B" glyph="k"/>
+  <key id="_75_shifted" char="U004B" glyph="K"/>
+
+  <key id="_76" char="U006C" glyph="l"/>
+  <key id="_76_shifted" char="U004C" glyph="L"/>
+
+  <key id="_77" char="U006D" glyph="m"/>
+  <key id="_77_shifted" char="U004D" glyph="M"/>
+
+  <key id="_78" char="U006E" glyph="n"/>
+  <key id="_78_shifted" char="U004E" glyph="N"/>
+
+  <key id="_79" char="U006F" glyph="o"/>
+  <key id="_79_shifted" char="U004F" glyph="O"/>
+
+  <key id="_80" char="U0070" glyph="p"/>
+  <key id="_80_shifted" char="U0050" glyph="P"/>
+
+  <key id="_81" char="U0071" glyph="q"/>
+  <key id="_81_shifted" char="U0051" glyph="Q"/>
+
+  <key id="_82" char="U0072" glyph="r"/>
+  <key id="_82_shifted" char="U0052" glyph="R"/>
+
+  <key id="_83" char="U0073" glyph="s"/>
+  <key id="_83_shifted" char="U0053" glyph="S"/>
+
+  <key id="_84" char="U0074" glyph="t"/>
+  <key id="_84_shifted" char="U0054" glyph="T"/>
+
+  <key id="_85" char="U0075" glyph="u"/>
+  <key id="_85_shifted" char="U0055" glyph="U"/>
+
+  <key id="_86" char="U0076" glyph="v"/>
+  <key id="_86_shifted" char="U0056" glyph="V"/>
+
+  <key id="_87" char="U0077" glyph="w"/>
+  <key id="_87_shifted" char="U0057" glyph="W"/>
+
+  <key id="_88" char="U0078" glyph="x"/>
+  <key id="_88_shifted" char="U0058" glyph="X"/>
+
+  <key id="_89" char="U0079" glyph="y"/>
+  <key id="_89_shifted" char="U0059" glyph="Y"/>
+
+  <key id="_90" char="U007A" glyph="z"/>
+  <key id="_90_shifted" char="U005A" glyph="Z"/>
+
+  <!-- Numeric / Shift-ed Numeric -->
+
+  <key id="_48" char="U0030" glyph="0"/>
+  <key id="_48_shifted" char="U0029" key="RightParen" glyph=")"/>
+
+  <key id="_49" char="U0031" glyph="1"/>
+  <key id="_49_shifted" char="U0021" key="Exclamation" glyph="!"/>
+
+  <key id="_50" char="UU032" glyph="2"/>
+  <key id="_50_shifted" char="U0040" key="At" glyph="@"/>
+
+  <key id="_51" char="UU033" glyph="3"/>
+  <key id="_51_shifted" char="U0023" key="Hash" glyph="#"/>
+
+  <key id="_52" char="UU034" glyph="4"/>
+  <key id="_52_shifted" char="U0024" key="Dollar" glyph="$"/>
+
+  <key id="_53" char="UU035" glyph="5"/>
+  <key id="_53_shifted" char="U0025" key="Percent" glyph="%"/>
+
+  <key id="_54" char="UU036" glyph="6"/>
+  <key id="_54_shifted" char="U005E" key="Circumflex" glyph="^"/>
+
+  <key id="_55" char="UU037" glyph="7"/>
+  <key id="_55_shifted" char="U0026" key="Ampersand" glyph="&amp;"/>
+
+  <key id="_56" char="UU038" glyph="8"/>
+  <key id="_56_shifted" char="U002A" key="Asterisk" glyph="*"/>
+
+  <key id="_57" char="UU039" glyph="9"/>
+  <key id="_57_shifted" char="U0028" key="LeftParen" glyph="("/>
+
+  <!-- The 'Equals' character -->
+  <key id="_187" char="UU03D" key="Equals" glyph="="/>
+  <key id="_61" browser="firefox" char="UU03D" key="Equals" glyph="="/>
+
+  <!-- The 'Plus' character -->
+  <key id="_187_shifted" char="U002B" key="Plus" glyph="+"/>
+  <key id="_61_shifted" browser="firefox" char="U002B" key="Plus" glyph="+"/>
+
+  <!-- The 'HyphenMinus' character -->
+  <key id="_189" char="U002D" key="HyphenMinus" glyph="-"/>
+  <key id="_173" browser="firefox" char="U002D" key="HyphenMinus" glyph="-"/>
+
+  <!-- The 'Underscore' character -->
+  <key id="_189_shifted" char="U005F" key="Underscore" glyph="_"/>
+  <key id="_173_shifted" browser="firefox" char="U005F" key="Underscore" glyph="_"/>
+
+  <key id="_192" char="U0060" key="Grave" glyph="`"/>
+  <key id="_192_shifted" char="U007E" key="Tilde" glyph="~"/> <!-- 'Tilde' not a DOM L3 name -->
+
+  <!-- Numeric keypad (when in numeric mode) -->
+
+  <key id="_96" char="U0030" glyph="0"/>
+  <key id="_97" char="U0031" glyph="1"/>
+  <key id="_98" char="UU032" glyph="2"/>
+  <key id="_99" char="UU033" glyph="3"/>
+  <key id="_100" char="UU034" glyph="4"/>
+  <key id="_101" char="UU035" glyph="5"/>
+  <key id="_102" char="UU036" glyph="6"/>
+  <key id="_103" char="UU037" glyph="7"/>
+  <key id="_104" char="UU038" glyph="8"/>
+  <key id="_105" char="UU039" glyph="9"/>
+
+  <!-- Numeric keypad -->
+
+  <key id="_106" key="Multiply" glyph="*"/>
+
+  <!-- The 'Add' key -->
+  <key id="_107" key="Add" glyph="+"/>
+  <key id="_187" platform="macosx" browser="safari" key="Add" glyph="+"/>
+
+  <!-- ** <key id="_108" key="Separator"/> -->
+
+  <!-- The 'Subtract' key -->
+  <key id="_109" key="Subtract" glyph="-"/>
+  <key id="_189" platform="macosx" browser="safari" key="Subtract" glyph="-"/>
+
+  <!-- The 'Decimal' key -->
+  <key id="_110" key="Decimal" glyph="."/>
+  <key id="_190" platform="macosx" browser="safari" key="Decimal" glyph="."/>
+
+  <!-- The 'Divide' key -->
+  <key id="_111" key="Divide" glyph="/"/>
+  <key id="_191" platform="macosx" browser="safari" key="Divide" glyph="/"/>
+
+  <!-- Function keys -->
+
+  <key id="_112" key="F1"/>
+  <key id="_113" key="F2"/>
+  <key id="_114" key="F3"/>
+  <key id="_115" key="F4"/>
+  <key id="_116" key="F5"/>
+  <key id="_117" key="F6"/>
+  <key id="_118" key="F7"/>
+  <key id="_119" key="F8"/>
+  <key id="_120" key="F9"/>
+  <key id="_121" key="F10"/>
+  <key id="_122" key="F11"/>
+  <key id="_123" key="F12"/>
+
+  <!--
+  <key id="_124" key="F13"/>
+  <key id="_124_shifted" key="Verbar"/>
+  <key id="_125" key="F14"/>
+  <key id="_126" key="F15"/>
+  <key id="_126_shifted" key="Tilde"/>
+  <key id="_127" key="F16"/>
+  <key id="_128" key="F17"/>
+  <key id="_129" key="F18"/>
+  <key id="_130" key="F19"/>
+  <key id="_131" key="F20"/>
+  <key id="_132" key="F21"/>
+  <key id="_133" key="F22"/>
+  <key id="_134" key="F23"/>
+  <key id="_135" key="F24"/>
+  -->
+
+  <key id="_144" platform="win" key="NumLock"/>
+  <key id="_145" platform="win" key="Scroll"/>
+
+  <key id="_188" char="U002C" key="Comma" glyph=","/>
+  <key id="_188_shifted" char="U003C" key="LessThan" glyph="&lt;"/>
+
+  <key id="_190" char="U002E" key="Period" glyph="."/>
+  <key id="_190_shifted" char="U003E" key="GreaterThan" glyph="&gt;"/>
+
+  <key id="_191" char="U002F" key="Solidus" glyph="/"/>
+  <key id="_191_shifted" char="U003F" key="QuestionMark" glyph="?"/>
+
+  <!-- The 'Semicolon' character -->
+  <key id="_59" browser="firefox" char="U003B" key="Semicolon" glyph=";"/>
+  <key id="_186" char="U003B" key="Semicolon" glyph=";"/>
+
+  <!-- The 'Colon' character -->
+  <key id="_59_shifted" browser="firefox" char="U003A" key="Colon" glyph=":"/>
+  <key id="_186_shifted" char="U003A" key="Colon" glyph=":"/>
+
+  <key id="_222" char="U0027" key="Apostrophe" glyph="&apos;"/> 
+  <key id="_222_shifted" char="U0022" key="DoubleQuote" glyph="&quot;"/>
+
+  <key id="_219" char="U005B" key="LeftSquareBracket" glyph="["/>
+  <key id="_219_shifted" char="U007B" key="LeftCurlyBracket" glyph="{"/>
+
+  <key id="_221" char="U005D" key="RightSquareBracket" glyph="]"/>
+  <key id="_221_shifted" char="U007D" key="RightCurlyBracket" glyph="}"/>
+
+  <key id="_220" char="U005C" key="Backslash" glyph="\"/>
+  <key id="_220_shifted" char="U007C" key="Pipe" glyph="|"/>
+
+  <!-- NB: Firefox cannot distinguish between meta keys, so it will always
+       report 'left' key -->
+
+  <!-- The left meta key -->
+  <key id="_91" key="Meta"/>
+
+  <!-- The right meta key -->
+  <key id="_92" platform="win" key="Meta"/>
+
+</keyboard>

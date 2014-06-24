@@ -1,0 +1,20 @@
+/*
+	CSS styles for the 'xctrls:chart' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+
+xctrls|chart
+{
+	display: block;
+
+	position: absolute;
+
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+

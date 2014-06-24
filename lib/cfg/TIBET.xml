@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<!--    =============================================================   -->
+<!--
+NAME:   TIBET.xml
+AUTH:   Scott Shattuck (ss)
+NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
+        Reserved. Patent Pending, Technical Pursuit Inc.
+
+        Unless explicitly acquired and licensed under the Technical
+        Pursuit License ("TPL") Version 1.5, the contents of this file
+        are subject to the Reciprocal Public License ("RPL") Version 1.5
+        and You may not copy or use this file in either source code or
+        executable form, except in compliance with the terms and
+        conditions of the RPL.
+
+        You may obtain a copy of both the TPL and RPL (the "Licenses")
+        from Technical Pursuit Inc. at http://www.technicalpursuit.com.
+
+        All software distributed under the Licenses is provided strictly
+        on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+        EXPRESS OR IMPLIED, AND TECHNICAL PURSUIT INC. HEREBY DISCLAIMS
+        ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY
+        WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+        QUIET ENJOYMENT, OR NON-INFRINGEMENT. See Licenses for specific
+        language governing rights and limitations under the Licenses.
+
+-->
+<!--    =============================================================   -->
+
+<!--    =============================================================   -->
+<!--    TIBET 3.0 module file                                           -->
+<!--    =============================================================   -->
+
+<!--
+This file contains boot configs for the TIBET Client/SOA framework in
+various configurations. Most references are to external build files which
+describe individual modules. This approach allows the individual module
+owners to alter the content of their modules without affecting the main
+build file content, one of the benefits of TIBET's boot system.
+-->
+<package xmlns="http://www.technicalpursuit.com/1999//tibet"
+    name="TIBET" default="base" basedir="~lib_cfg">
+
+<config id="init">
+    <script src="~lib_src/tibet/boot/tibet_pre.js" />
+    <script src="~lib_src/tibet/boot/tibet_cfg.js" />
+    <script src="~lib_src/tibet/boot/tibet_post.js" />
+    <script src="~lib_src/tibet/boot/tibet_hook.js" />
+</config>
+
+<config id="hook">
+    <script src="~lib_src/tibet/boot/tibet_hook.js" />
+</config>
+
+<config id="base" if="boot.phaseone">
+    <package src="tibet_kernel.xml" config="full"/>
+    <package src="tibet_extensions.xml" config="standard"/>
+    <package src="lib_namespaces.xml" config="standard"/>
+</config>
+
+<!--    typical config for autoloader, fastest loading -->
+<config id="kernel" if="boot.phaseone">
+    <package src="tibet_kernel.xml" config="full"/>
+</config>
+
+<config id="small" if="boot.phaseone">
+    <package src="tibet_kernel.xml" config="standard"/>
+    <package src="tibet_extensions.xml" config="standard"/>
+    <package src="tibet_graphics.xml" config="standard"/>
+    <package src="tibet_presentation.xml" config="standard"/>
+    <package src="tibet_css.xml" config="standard"/>
+</config>
+
+<!--    the code 80-90% of all projects actually use -->
+<config id="standard" if="boot.phaseone">
+    <config ref="small"/>
+    <package src="tibet_services.xml" config="standard"/>
+    <package src="lib_namespaces.xml" config="standard"/>
+</config>
+
+<!--    everything short of dev tools and unit tests -->
+<config id="full" if="boot.phaseone">
+    <package src="tibet_kernel.xml" config="full"/>
+    <package src="tibet_extensions.xml" config="full"/>
+    <package src="tibet_graphics.xml" config="full"/>
+    <package src="tibet_services.xml" config="full"/>
+    <package src="lib_namespaces.xml" config="full"/>
+</config>
+
+<!--    full, plus developer tools and testing -->
+<config id="developer" if="boot.phaseone">
+    <config ref="full"/>
+
+    <package src="tibet_testing.xml" config="full"/>
+
+    <package src="sherpa.xml" config="standard"/>
+</config>
+
+</package>
+

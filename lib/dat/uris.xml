@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+  <!--
+  The uri element is from XML Catalog, but we extend it quite a bit to
+  support the various use cases we have for URI rewriting and routing.
+
+  In XML Catalog you have name and uri attributes which define the 'key'
+  and 'value' of a particular mapping and the first matching entry wins.
+  These entries are checked explicitly by TIBET rewrite operations along
+  with rewriteURI node entries which are pattern based.
+
+  To support alternative rewrite mappings based on the user and their
+  potential role/unit assignments we add the tibet:unit, tibet:role, and
+  tibet:user attributes. Mappings which leverage these can be used to
+  provide role-specific UI templates, CSS, or other components, perhaps
+  filtering URI resolution for managers vs. regular staff.
+
+  To support filtering on application configuration and current state we
+  use tibet:env, tibet:state, and tibet:offline attributes which support
+  filters for common application state infrastructure. These types of
+  filters can be used to manage different content during development vs.
+  test vs. production, or to provide alternative URI mappings when the
+  user is offline, or to shift templates based on current state.
+
+  To support localized mappings we also add support for filtering based
+  on xml:lang values which are acquired from the TP.core.Locale type. As a
+  variant of "localization" we also support a tibet:browser attribute that
+  allows a URI to be remapped for a particular browser. This is sometimes
+  useful for files such as XSLTs which may require slightly different
+  content across browsers. The tibet:browserUI attribute is useful for
+  testing the specific rendering engine rather than the overall browser.
+
+  To support local disk caches we add tibet:localuri, tibet:updated, and
+  tibet:duration attributes to define the local disk URI, last updated
+  date/time, and duration defining how long before a refresh. NOTE that
+  the last update times require that this file be updated whenever the
+  file is actually refreshed, which can add overhead if the local cache
+  files aren't being used for a particular file. As a result these values
+  are only saved if the local cache file is actually updated.
+
+  To support type-based URI handling we add a tibet:urihandler attribute
+  which should name a TIBET type responsible for operations related to
+  this URI. This data is used by the TP.core.URIRouter type and optionally
+  by its subtypes as part of URI routing.
+
+  A tibet:contenthandler attribute can be used to provide type mappings to
+  manage the actual content to be found at the end of a URI. It should
+  also name a TIBET type responsible for operations related to this URI.
+  This is particularly useful for URIs which access raw JSON where you'd
+  like to force a specific object type to be used as the content wrapper.
+  -->
+
+  <!--  simple XML Catalog entry mapping catalog.xml to uris.xml -->
+  <uri name="tibet:///~lib_cfg/catalog.xml"
+    uri="tibet:///~lib_cfg/uris.xml"/>
+
+  <!--  state code cache file entry with http source and 30 days -->
+  <uri name="tibet:///~lib_dat/statecodes.xml"
+    uri="http://technicalpursuit.com/tibet/app/tdc/TIBET-INF/dat/statecodes.xml"
+    tibet:localuri="tibet:///~app_inf/dat/statecodes.xml"
+    tibet:duration="P30D" tibet:updated="20060130T10:01:23"/>
+
+  <!--  different system uri catalog for a manager than public user -->
+  <uri name="tibet:///~lib_cfg/uris.xml"
+    uri="tibet:///~lib_cfg/mgr_uris.xml"
+    tibet:role="Manager" />
+
+  <!--  mapping a server file to a type when we're running offline -->
+  <uri name="http://technicalpursuit.com/dat/test_data.xml"
+    tibet:offline="true" tibet:urihandler="MyFakeServer"/>
+
+  <!--  mapping a server file to a file when we're in a test env -->
+  <uri name="http://technicalpursuit.com/dat/data.xml"
+    uri="tibet:///~app_dat/test/test_data.xml"
+    tibet:env="test"/>
+
+  <!--  mapping a handler type for a specific URI -->
+  <uri name="tibet:///~app_dat/tricky.xml"
+    tibet:urihandler="TrickyURIHandler" />
+
+  <!--  mapping a browserUI-specific URI (XSLT namespace workaround) -->
+  <uri name="tibet:///~app_xsl/tp_nodetree.xsl"
+    uri="tibet:///~app_xsl/tp_nodetree_gecko.xsl"
+    tibet:browserUI="gecko"/>
+
+  <!--  map the URI for CSS for XControls on Firefox -->
+  <uri name="tibet:///~lib_src/xctrls/xmlns/xctrls.css"
+    uri="tibet:///~lib_src/xctrls/xmlns/xctrls_firefox.css"
+    tibet:browser="firefox"/>
+
+  <!--  map the URI for CSS for XControls on IE -->
+  <uri name="tibet:///~lib_src/xctrls/xmlns/xctrls.css"
+    uri="tibet:///~lib_src/xctrls/xmlns/xctrls_ie.css"
+    tibet:browser="ie"/>
+
+  <!--  map the URI for CSS for XControls on Safari -->
+  <uri name="tibet:///~lib_src/xctrls/xmlns/xctrls.css"
+    uri="tibet:///~lib_src/xctrls/xmlns/xctrls_safari.css"
+    tibet:browser="safari"/>
+
+  <!--  map the URI for the app CSS file on Gecko -->
+  <uri name="tibet:///~app_css/app.css"
+    uri="tibet:///~app_css/app_gecko.css"
+    tibet:browserUI="gecko"/>
+
+  <!--  map the URI for the app CSS file on Trident -->
+  <uri name="tibet:///~app_css/app.css"
+    uri="tibet:///~app_css/app_trident.css"
+    tibet:browserUI="trident"/>
+
+  <!--  map the URI for the app CSS file on Webkit -->
+  <uri name="tibet:///~app_css/app.css"
+    uri="tibet:///~app_css/app_webkit.css"
+    tibet:browserUI="webkit"/>
+
+  <!--
+  The XML Catalog specification defines a rewriteURI element which allows
+  the uriStartString to be rewritten with a new rewritePrefix. These rules
+  are applied when a specific match isn't found above, and since they're
+  replacements they essentially all have to be run, so you want to limit
+  their number if possible.
+  -->
+
+  <!--  a redirect from www.technicalpursuit.com to technicalpursuit.com
+  <rewriteURI uriStartString="http://www.technicalpursuit.com"
+    rewritePrefix="http://technicalpursuit.com"/>
+  -->
+
+  <!--
+  The XML Catalog delegateURI entry tells the system that resolution of
+  URIs prefixed with the uriStartString should be looked up in the XML
+  Catalog file provided. This delegation check is done after direct lookup
+  and rewriting have been performed without success.
+
+  TIBET extends this element in multiple ways:
+
+    1.  by allowing a powerful tibet:uriMatchString attribute that
+        contains a regular expression.
+
+    2.  by allowing a tibet:urihandler attribute to delegate
+        responsibility for handling URIs to some TIBET type.
+
+    3.  by allowing a tibet:contenthandler attribute to delegate
+        responsibility for handling the content at the end of the URI to
+        some TIBET type.
+  -->
+
+  <!-- look in another catalog -->
+  <delegateURI uriStartString="http://www.delegated.com"
+    catalog="~lib_dat/uris_delegated.xml" />
+
+  <!-- rely on the specified type (sample only)  -->
+  <delegateURI tibet:uriMatchString="http://s3.amazonaws.com.*"
+    tibet:urihandler="TP.amz.AmazonS3Handler" />
+
+  <delegateURI tibet:uriMatchString="https://sdb.amazonaws.com.*"
+    tibet:urihandler="TP.amz.AmazonSimpleDBHandler" />
+
+  <delegateURI tibet:uriMatchString="http://demo.sabredav.org.*"
+    tibet:urihandler="TP.core.WebDAVHandler" />
+
+  <delegateURI tibet:uriMatchString="http://docs.google.com.*"
+    tibet:urihandler="TP.goog.GoogleDocsHandler" />
+
+  <delegateURI tibet:uriMatchString="ws://.*:10081"
+    tibet:urihandler="TP.test.WSEchoHandler" />
+
+  <delegateURI uriStartString="jsonp://ajax.googleapis.com/ajax/services/search/web"
+    tibet:contenthandler="TP.goog.GoogleSearchData" />
+
+  <!-- Generic mapping for all JSONP content not otherwise mapped -->
+  <delegateURI uriStartString="jsonp://"
+    tibet:contenthandler="TP.core.JSONContent" />
+
+  <!--
+  The XML Catalog nextCatalog element lets you create composite catalogs
+  by listing additional catalog files to check. This lets you modularize
+  URI mappings more effectively. These entries are only checked when all
+  else fails, regardless of where they may be found in the file. Putting
+  them at the end in the order you'd like them searched seems like the
+  best practice though.
+  -->
+  <nextCatalog catalog="tibet:///~lib_dat/uris_next.xml" />
+
+</catalog>
+

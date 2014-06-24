@@ -1,0 +1,22 @@
+/*
+	CSS styles for the 'xctrls:clipbox' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+
+xctrls|clipbox
+{
+	display: inline-block;
+
+	overflow: hidden;
+}
+
+xctrls|clipbox > xctrls|body
+{
+	display: block;
+
+	position: relative;
+}
+

@@ -1,0 +1,178 @@
+/*
+	------------------------------------------------------------------------
+	Input frame and cell
+	------------------------------------------------------------------------
+*/
+
+/* The div wrapper for the entire input construct */
+.cmdline_wrapper
+{
+	position: absolute;
+	
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+
+	padding: 2px 0px 2px 0px;
+}
+
+/* The cell holding the input cell's prompt */
+.cmdline_prompt
+{
+	font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+	font-weight: bold;
+	font-size: 12px;
+
+	line-height: 12px;
+	text-align: right;
+
+    padding-top: 2px;
+
+	width: 36px;
+
+	white-space: nowrap;
+
+	color: white;
+}
+
+/* The cell holding the input cell's frame */
+.cmdline_input
+{
+	position: absolute;
+
+	top: 0px;
+	right: 7px;
+	bottom: 0px;
+	left: 40px;
+
+	font-weight: normal;
+	color: #000000;
+}
+
+.cmdline_textarea
+{
+	border: 1px inset #CCC;
+    border-radius: 6px;
+
+	position: relative;
+
+	top: 1px;
+	left: 0px;
+	width: 100%;
+
+	padding: 2px;
+
+	overflow: hidden;
+    resize: none;
+
+	font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+	font-size: 11px;
+	font-weight: normal;
+	line-height: 12px;
+
+	background-color: rgba(0, 0, 0, .5);
+	color: #FFF;
+
+	white-space: pre-wrap;
+}
+
+.inputcell
+{
+    position: relative;
+
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+.inputcell .hid
+{
+    text-decoration: none;
+}
+
+.inputcell .hid:hover
+{
+    font-weight: bold;
+}
+
+.inputcell .content
+{
+    position: absolute;
+    right: 250px;
+    left: 50px;
+
+    white-space: pre-line;
+}
+
+.inputcell .typeinfo
+{
+    color: yellow;
+
+    position: absolute;
+    right: 0px;
+    width: 250px;
+
+    white-space: pre-line;
+
+    text-align: right;
+}
+
+.outputcell > span
+{
+    white-space: pre-line;
+}
+
+/*
+	------------------------------------------------------------------------
+	tsh:pp formatting
+	------------------------------------------------------------------------
+*/
+
+.tsh_pp > span
+{
+    display: table;
+
+	border-collapse: collapse;
+
+	border-width: 1px;
+	border-style: dotted;
+}
+
+.tsh_pp > span span[data-name]
+{
+    display: table-row;
+    text-align: left;
+
+	border-width: 1px;
+	border-style: solid;
+
+	padding: 3px;
+
+	white-space: pre-wrap;
+}
+
+.tsh_pp > span span[data-name]:before
+{
+    content: attr(data-name) " ";
+
+	vertical-align: top;
+
+    display: table-cell;
+    text-align: left;
+
+	white-space: pre-wrap;
+}
+
+.tsh_pp > span.Array span,
+.tsh_pp > span.Object span,
+.tsh_pp > span.TP_lang_Hash span
+{
+	border-color: white;
+}
+
+.tsh_pp > span.Object span[data-name]:before,
+.tsh_pp > span.TP_lang_Hash span[data-name]:before
+{
+	vertical-align: top;
+}
+

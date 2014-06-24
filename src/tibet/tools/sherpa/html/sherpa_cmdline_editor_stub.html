@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<!--	=================================================================  -->
+<!--
+NAME:	sherpa_cmdline_editor_stub.html
+AUTH:	William J. Edney (wje)
+NOTE:	Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
+		Reserved. Patent Pending, Technical Pursuit Inc.
+
+		Unless explicitly acquired and licensed under the Technical
+		Pursuit License ("TPL") Version 1.2, the contents of this file
+		are subject to the Reciprocal Public License ("RPL") Version 1.1
+		and You may not copy or use this file in either source code or
+		executable form, except in compliance with the terms and
+		conditions of the RPL.
+
+		You may obtain a copy of both the TPL and RPL (the "Licenses")
+		from Technical Pursuit Inc. at http://www.technicalpursuit.com.
+
+		All software distributed under the Licenses is provided strictly
+		on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+		EXPRESS OR IMPLIED, AND TECHNICAL PURSUIT INC. HEREBY DISCLAIMS
+		ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY
+		WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+		QUIET ENJOYMENT, OR NON-INFRINGEMENT. See Licenses for specific
+		language governing rights and limitations under the Licenses.
+
+-->
+<!--	=================================================================  -->
+
+<!--
+-->
+
+<html>
+
+<head>
+<title></title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!-- Base CodeMirror JS and CSS -->
+<script type="text/javascript" src="~lib_deps/codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" type="text/css" href="~lib_deps/codemirror/lib/codemirror.css">
+
+<!-- XML mode JS -->
+<script type="text/javascript" src="~lib_deps/codemirror/mode/xml/xml.js"></script>
+
+<!-- JavaScript mode JS -->
+<script type="text/javascript" src="~lib_deps/codemirror/mode/javascript/javascript.js"></script>
+
+<!-- CSS mode JS -->
+<script type="text/javascript" src="~lib_deps/codemirror/mode/css/css.js"></script>
+
+<!-- Theme CSS -->
+<link rel="stylesheet" type="text/css" href="~lib_deps/codemirror/theme/tibet_code.css">
+
+<script type="text/javascript">
+function setup()
+{
+	window.cmEditor = CodeMirror.fromTextArea(
+		document.getElementById('cmEditor'),
+		{
+			theme: 'tibet_code',
+			mode: 'javascript',
+			tabMode: 'indent',
+			lineNumbers: true,
+            viewportMargin: Infinity
+		});
+
+	window.frameElement.frameLoad();
+};
+</script>
+
+<style type="text/css">
+html, body
+{
+	width: 100%;
+	height: 100%;
+}
+
+body
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+.CodeMirror-scroll
+{
+	height: auto;
+	width: 100%;
+
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+</style>
+
+</head>
+
+<body onload="setup()">
+	<textarea id="cmEditor"></textarea>
+</body>
+</html>

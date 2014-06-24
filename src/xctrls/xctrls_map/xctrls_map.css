@@ -1,0 +1,24 @@
+/*
+	CSS styles for the 'xctrls:map' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+
+xctrls|map
+{
+	display: inline-block;
+
+	position: absolute;
+
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+
+	padding: 2px;
+	border: dashed 1px red;
+}
+
+

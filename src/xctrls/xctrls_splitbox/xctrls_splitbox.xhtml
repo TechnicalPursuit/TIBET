@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<xctrls:splitbox xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+	xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+	tibet:nodetype="xctrls:splitbox"
+	hidefocus="true"
+	ev:event="ValueChange"
+    ev:observer="{{@id}}_splitter">
+    {{./xctrls:panel[1]}}
+    <xctrls:splitbar id="{{@id}}_splitter"/>
+    {{./xctrls:panel[2]}}
+</xctrls:splitbox>
+

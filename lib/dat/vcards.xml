@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<vCards xmlns="vcard-temp">
+  <!--
+  A file of sample vCard entries, similar to those you might leverage
+  as part of TIBET's TP.core.User type and its org/unit/role permission
+  model.
+
+  These entries are based on the XMPP (Jabber) community XEP-0054 spec
+  which is also used by TIBET's XMPP support. The FN element provides the
+  "id" or "profile name" represented by the vCard. TIBET will use this
+  value to locate/register a vCard instance. Note that by using FN in this
+  fashion you can create either user-specific vCards or more general
+  "user-profile" vCards that are reused by all users fitting that profile.
+
+  Once a user has logged in you may find it useful to query for a vCard
+  by ID and associate it with that user. The information in that vCard is
+  used by TIBET to associate organization-specialized unit and role data
+  with the user, effectively granting them the permissions found in the
+  designated role and unit types.
+
+  To avoid the requirement for a custom web service to vend unit and role
+  information TIBET uses types, which can be autoloaded, to contain the
+  specific role and unit data. The type names are qualified by the ORGNAME
+  as a namespace to avoid conflicts while ORG and ROLE information is used
+  as the "local" portion of the name.
+
+  In the sample entries below we've defined the TP.core.Roles
+  Public:Guest, TeamTIBET:Administrator, TeamTIBET:Developer,
+  TeamTIBET:Manager, TeamTIBET:QualityControl, and TeamTIBET:User. (i.e.
+  these are the unique combinations formed by looking at the
+  <ORGNAME>:<ROLE> values.)
+
+  We've also defined the TP.core.Unit types Public:Public,
+  TeamTIBET:Operations, TeamTIBET:Development, TeamTIBET:Management, and
+  TeamTIBET:Staff. (i.e. these are the unique combinations formed by
+  <ORGNAME>:<ORGUNIT> values.)
+
+  NOTE that according to the vCard 2.1 RFC, the VERSION, FN, and N
+  elements are required in any valid vCard so we reflect that here. Also
+  NOTE that the ORG content in a standard vCard is represented as a string
+  of structured text of the form orgname;orgunit;orgunit;orgunit which
+  allows the specification of unit hierarchy data. The XMPP vCard spec
+  doesn't speak to that issue, but we follow that convention within the
+  ORGUNIT text content, allowing you to define a semicolon-separated list
+  of UNITS in top-down hierarchy order. Since this approach allows you to
+  convey multiple unit assignments within a single vCard we extend ROLE
+  to follow a similar convention, allowing you to define a set of roles
+  as semicolon-separated values as well. The goal here is to avoid having
+  to alter the schema defined by XMPP XEP-0054, while adding the support
+  necessary to avoid having to create multiple vCards just to define
+  multi-unit and/or multi-role assignments.
+  -->
+
+  <!-- sample guest account -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>demo</FN>
+    <N>demo</N>
+    <JABBERID>{USER}</JABBERID>
+    <X-PASSWORD>{USER}</X-PASSWORD>
+    <ROLE>Guest</ROLE>
+    <ORG>
+      <ORGNAME>Public</ORGNAME>
+      <ORGUNIT>Public</ORGUNIT>
+    </ORG>
+  </vCard>
+
+  <!-- sample administrator -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>admin</FN>
+    <N>admin</N>
+    <JABBERID>{USER}</JABBERID>
+    <X-PASSWORD>{USER}</X-PASSWORD>
+    <ROLE>Administrator</ROLE>
+    <ORG>
+      <ORGNAME>TeamTIBET</ORGNAME>
+      <ORGUNIT>Operations</ORGUNIT>
+    </ORG>
+  </vCard>
+
+  <!-- sample developer login -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>devl</FN>
+    <N>devl</N>
+    <JABBERID>{USER}</JABBERID>
+    <X-PASSWORD>{USER}</X-PASSWORD>
+    <ROLE>Developer</ROLE>
+    <ORG>
+      <ORGNAME>TeamTIBET</ORGNAME>
+      <ORGUNIT>Development</ORGUNIT>
+    </ORG>
+  </vCard>
+
+  <!-- sample manager login -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>mgr</FN>
+    <N>mgr</N>
+    <JABBERID>{USER}</JABBERID>
+    <X-PASSWORD>{USER}</X-PASSWORD>
+    <ROLE>Manager</ROLE>
+    <ORG>
+      <ORGNAME>TeamTIBET</ORGNAME>
+      <ORGUNIT>Management</ORGUNIT>
+    </ORG>
+  </vCard>
+
+  <!-- sample QA login -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>qa</FN>
+    <N>qa</N>
+    <JABBERID>{USER}</JABBERID>
+    <X-PASSWORD>{USER}</X-PASSWORD>
+    <ROLE>QualityControl</ROLE>
+    <ORG>
+      <ORGNAME>TeamTIBET</ORGNAME>
+      <ORGUNIT>Development</ORGUNIT>
+    </ORG>
+  </vCard>
+
+  <!-- sample "user" login -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>user</FN>
+    <N>user</N>
+    <JABBERID>{USER}</JABBERID>
+    <X-PASSWORD>{USER}</X-PASSWORD>
+    <ROLE>User</ROLE>
+    <ORG>
+      <ORGNAME>TeamTIBET</ORGNAME>
+      <ORGUNIT>Staff</ORGUNIT>
+    </ORG>
+  </vCard>
+
+  <!-- sample user-specific login, showing single-role/single-unit -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>bedney</FN>
+    <N>bedney</N>
+    <JABBERID>bedney@localhost</JABBERID>
+    <X-PASSWORD>{USER}</X-PASSWORD>
+    <ROLE>Evangelist</ROLE>
+    <ORG>
+      <ORGNAME>TeamTIBET</ORGNAME>
+      <ORGUNIT>Marketing</ORGUNIT>
+    </ORG>
+  </vCard>
+
+  <!-- sample user-specific login, showing multi-role/multi-unit -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>idearat</FN>
+    <N>idearat</N>
+    <JABBERID>{USER}</JABBERID>
+    <X-PASSWORD>{USER}</X-PASSWORD>
+    <ROLE>Manager;Developer</ROLE>
+    <ORG>
+      <ORGNAME>TeamTIBET</ORGNAME>
+      <ORGUNIT>Management;Development</ORGUNIT>
+    </ORG>
+  </vCard>
+
+  <!-- sample user-specific login, showing multi-role/multi-unit -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>ss</FN>
+    <N>ss</N>
+    <JABBERID>{USER}</JABBERID>
+    <X-PASSWORD>{USER}</X-PASSWORD>
+    <ROLE>Manager;Developer</ROLE>
+    <ORG>
+      <ORGNAME>TeamTIBET</ORGNAME>
+      <ORGUNIT>Management;Development</ORGUNIT>
+    </ORG>
+  </vCard>
+
+  <!-- Server configuration vCards - like many you will find in the
+    XMPP/Jabber world.
+
+    NB: We've added some custom keys to vCard support in TIBET. These
+    are used for vCard entries that point to server resources. They
+    include:
+
+    X-USERNAME      <key value>     Used as the 'username'
+                      for servers that require login information.
+    X-PASSWORD      <key value>     Used as the 'password'
+                      for servers that require login information.
+    X-AUTH        [BASIC|DIGEST]    What kind of authentication
+                      the server uses to authenticate users. If this is known
+                      beforehand, TIBET can perform the authentication itself to
+                      avoid the initial roundtrip to the server to determine
+                      authentication schemes.
+    X-SECRET-KEY    <key value>     Used as the 'secret key'
+                        for servers that require login information. This
+                        complements the standard vCard 'KEY' key which is
+                        the public key for these types of servers.
+    X-IS-WEBDAV     [true|false]    Whether or not the server is
+                        capable of processing WebDAV queries.
+    X-XMPP-CONN-TYPE  [BINDING|POLLING] Used for XMPP servers.
+                        Indicates whether the connection to the server
+                        will use XMPP 'binding' or 'polling' (deprecated)
+                        support.
+  -->
+
+  <!-- An XMPP server set up on 'localhost' and using an XMPP 'binding'
+    (XEP-124) connection -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>XMPPServiceDefault</FN>
+    <N>localhost</N>
+    <DESC>The default Jabber server</DESC>
+    <URL>http://localhost:5280/http-bind/</URL>
+    <X-XMPP-CONN-TYPE>BINDING</X-XMPP-CONN-TYPE>
+  </vCard>
+
+  <!-- The Amazon S3 server's vCard -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>AmazonS3ServiceDefault</FN>
+    <DESC>The Amazon S3 Service</DESC>
+
+    <!-- Note no trailing slash here! -->
+    <URL>http://s3.amazonaws.com</URL>
+
+    <!-- The keys aren't supplied here ;-) -->
+    <!-- Your Amazon key (prompt for it) -->
+    <KEY>{USER}</KEY>
+    <!-- Your Amazon secret key (prompt for it) -->
+    <X-SECRET-KEY>{USER}</X-SECRET-KEY>
+  </vCard>
+
+  <!-- The WebDAV test server's vCard -->
+  <vCard xmlns="vcard-temp">
+    <VERSION>1.1</VERSION>
+    <FN>TPWebDAVServiceDefault</FN>
+    <DESC>The WebDAV test Service</DESC>
+    <URL>http://demo.sabredav.org/</URL>
+    <X-IS-WEBDAV>true</X-IS-WEBDAV>
+  </vCard>
+
+</vCards>
+

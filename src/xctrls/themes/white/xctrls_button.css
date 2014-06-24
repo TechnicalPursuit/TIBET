@@ -1,0 +1,131 @@
+/*
+	CSS styles for 'xctrls:button' controls for the 'white' theme.
+*/
+
+@import url('../xctrls_button_all.css');
+@import url('xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+/* The button */
+
+*[data-theme="white"] xctrls|button
+{
+	border: 1px solid		#ccc /*{c-bup-border}*/;
+	background: 			#eee /*{c-bup-background-color}*/;
+	color: 					#444 /*{c-bup-color}*/;
+	text-shadow:	0 /*{c-bup-shadow-x}*/
+					1px /*{c-bup-shadow-y}*/
+					1px /*{c-bup-shadow-radius}*/
+					#f6f6f6 /*{c-bup-shadow-color}*/;
+
+	background-image: -webkit-linear-gradient(#fdfdfd /*{c-bup-background-start}*/, #eee /*{c-bup-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient(#fdfdfd /*{c-bup-background-start}*/, #eee /*{c-bup-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient(#fdfdfd /*{c-bup-background-start}*/, #eee /*{c-bup-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient(#fdfdfd /*{c-bup-background-start}*/, #eee /*{c-bup-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient(#fdfdfd /*{c-bup-background-start}*/, #eee /*{c-bup-background-end}*/);
+
+	-moz-box-shadow: 0px 1px 4px /*{global-box-shadow-size}*/           rgba(0,0     ,0,.3) /*{global-box-shadow-color}*/;
+	-webkit-box-shadow: 0px 1px 4px /*{global-box-shadow-size}*/        rgba(0,0     ,0,.3) /*{global-box-shadow-color}*/;
+	box-shadow: 0px 1px 4px /*{global-box-shadow-size}*/                rgba(0,0     ,0,.3) /*{global-box-shadow-color}*/;
+
+	-moz-border-radius: 				1em /*{global-radii-buttons}*/;
+	-webkit-border-radius: 				1em /*{global-radii-buttons}*/;
+	border-radius: 						1em /*{global-radii-buttons}*/;
+}
+
+/* Hovering over the button */
+
+*[data-theme="white"] xctrls|button:hover
+{
+	border: 1px solid 		#bbbbbb /*{c-bhover-border}*/;
+	background: 			#dadada /*{c-bhover-background-color}*/;
+	font-weight: bold;
+	color: 					#101010 /*{c-bhover-color}*/;
+	text-shadow:	0 /*{c-bhover-shadow-x}*/
+					1px /*{c-bhover-shadow-y}*/
+					1px /*{c-bhover-shadow-radius}*/
+					#fff /*{c-bhover-shadow-color}*/;
+
+	background-image: -webkit-linear-gradient(#ededed /*{c-bhover-background-start}*/, #dadada /*{c-bhover-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient(#ededed /*{c-bhover-background-start}*/, #dadada /*{c-bhover-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient(#ededed /*{c-bhover-background-start}*/, #dadada /*{c-bhover-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient(#ededed /*{c-bhover-background-start}*/, #dadada /*{c-bhover-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient(#ededed /*{c-bhover-background-start}*/, #dadada /*{c-bhover-background-end}*/);
+}
+
+/* Focusing on the button */
+
+/* doesn't work in any browser:
+*[data-theme="white"] xctrls|button:focus
+*/
+*[data-theme="white"] xctrls|button[pclass|focus]
+{
+}
+
+/* Clicking down on the button */
+
+/* doesn't work in IE9:
+*[data-theme="white"] xctrls|button:active
+*/
+*[data-theme="white"] xctrls|button[pclass|active]
+{
+	border: 1px solid 		#808080 /*{c-bdown-border}*/;
+	background: 			#fdfdfd /*{c-bdown-background-color}*/;
+	font-weight: bold;
+	color: 					#111111 /*{c-bdown-color}*/;
+	text-shadow: 0 /*{c-bdown-shadow-x}*/ 1px /*{c-bdown-shadow-y}*/ 1px /*{c-bdown-shadow-radius}*/ #ffffff /*{c-bdown-shadow-color}*/;
+	background-image: -webkit-linear-gradient(#eee /*{c-bdown-background-start}*/, #fdfdfd /*{c-bdown-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient(#eee /*{c-bdown-background-start}*/, #fdfdfd /*{c-bdown-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient(#eee /*{c-bdown-background-start}*/, #fdfdfd /*{c-bdown-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient(#eee /*{c-bdown-background-start}*/, #fdfdfd /*{c-bdown-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient(#eee /*{c-bdown-background-start}*/, #fdfdfd /*{c-bdown-background-end}*/);
+}
+
+/* The button is disabled */
+
+/* doesn't work in any browser:
+*[data-theme="white"] xctrls|button:disabled
+*/
+*[data-theme="white"] xctrls|button[pclass|disabled]
+{
+}
+
+/* The button label */
+
+*[data-theme="white"] xctrls|button > xctrls|label
+{
+	color: 					#2F3E46 /*{c-bup-color}*/;
+
+	-moz-border-radius: 				1em /*{global-radii-buttons}*/;
+	-webkit-border-radius: 				1em /*{global-radii-buttons}*/;
+	border-radius: 						1em /*{global-radii-buttons}*/;
+}
+
+/* Hovering over the button, label must change */
+
+*[data-theme="white"] xctrls|button:hover > xctrls|label
+{
+	color: 					#2F3E46 /*{c-bhover-color}*/;
+}
+
+/* Clicking down on the button, label must highlight */
+
+/* doesn't work in IE9:
+*[data-theme="white"] xctrls|button:active > xctrls|label
+*/
+*[data-theme="white"] xctrls|button[pclass|active] > xctrls|label
+{
+	color: 					#2F3E46 /*{c-bhover-color}*/;
+}
+
+/* The button is disabled, so is the label */
+
+/* doesn't work in any browser:
+*[data-theme="white"] xctrls|button:disabled > xctrls|label
+*/
+*[data-theme="white"] xctrls|button[pclass|disabled] > xctrls|label
+{
+}
+

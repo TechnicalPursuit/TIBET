@@ -1,0 +1,128 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace html url(http://www.w3.org/1999/xhtml);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+sherpa|quickbar
+{
+    display: none;
+	position: absolute;
+
+	left: 50%;
+    top: 20%;
+
+	width: 430px;
+
+    margin-left: -215px;
+
+    border: solid 1px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+}
+
+sherpa|quickbar:not([pclass|hidden])
+{
+    display: block;
+}
+
+sherpa|quickbar > xctrls|codeeditor
+{
+	position: absolute;
+
+    top: 0px;
+    left: 0px;
+
+    width: 100%;
+    height: 25px;
+
+    border: solid 1px black;
+}
+
+sherpa|quickbar[showresults]
+{
+    height: 250px;
+}
+
+.quickbar_outer_wrapper
+{
+    position: absolute;
+
+    top: 0px;
+    left: 0px;
+
+    width: 30em;
+}
+
+.quickbar_results
+{
+    font: 14px/1.4 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+
+    background-color: white;
+
+    position: absolute;
+    display: none;
+
+    top: 25px;
+    bottom: 0px;
+
+    width: 100%;
+}
+
+sherpa|quickbar[showresults] > .quickbar_results
+{
+    display: block;
+}
+
+.results_list
+{
+    position: absolute;
+
+    top: 0px;
+    right: 50%;
+    bottom: 0px;
+    left: 0px;
+
+    border: solid 1px red;
+
+    overflow: auto;
+}
+
+.results_list h1
+{
+    display: block;
+
+    color: #73767D;
+    background-color: rgba(222, 222, 222, 0.6);
+}
+
+.results_list ul
+{
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+
+    cursor: pointer;
+}
+
+.results_list li:selected
+{
+    background-color: #BBBBBB;
+}
+
+.results_list li:hover
+{
+    background-color: #EFEFEF;
+}
+
+.result_detail
+{
+    border: solid 1px blue;
+
+    position: absolute;
+
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 50%;
+}
+

@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!--    =============================================================   -->
+<!--
+NAME:   tibet_services.xml
+AUTH:   Scott Shattuck (ss)
+NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
+        Reserved. Patent Pending, Technical Pursuit Inc.
+
+        Unless explicitly acquired and licensed under the Technical
+        Pursuit License ("TPL") Version 1.5, the contents of this file
+        are subject to the Reciprocal Public License ("RPL") Version 1.5
+        and You may not copy or use this file in either source code or
+        executable form, except in compliance with the terms and
+        conditions of the RPL.
+
+        You may obtain a copy of both the TPL and RPL (the "Licenses")
+        from Technical Pursuit Inc. at http://www.technicalpursuit.com.
+
+        All software distributed under the Licenses is provided strictly
+        on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+        EXPRESS OR IMPLIED, AND TECHNICAL PURSUIT INC. HEREBY DISCLAIMS
+        ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY
+        WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+        QUIET ENJOYMENT, OR NON-INFRINGEMENT. See Licenses for specific
+        language governing rights and limitations under the Licenses.
+
+-->
+<!--    =============================================================   -->
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="tibet_services" default="standard" basedir="~tibet_src/services">
+
+<config id="standard">
+    <config ref="rest"/>
+    <config ref="json"/>
+</config>
+
+<config id="full">
+    <config ref="standard"/>
+
+    <config ref="soap"/>
+    <config ref="webdav"/>
+    <config ref="xmlrpc"/>
+</config>
+
+<config id="rest">
+    <script src="rest/TPRESTRequest.js"/>
+    <script src="rest/TPRESTResponse.js"/>
+    <script src="rest/TPRESTService.js"/>
+</config>
+
+<config id="json">
+    <script src="json/TPJSONRequest.js"/>
+    <script src="json/TPJSONResponse.js"/>
+    <script src="json/TPJSONService.js"/>
+
+    <script src="json/TPJSONPURL.js"/>
+    <script src="json/TPJSONPURLHandler.js"/>
+</config>
+
+<config id="soap">
+    <script src="soap/TPSOAPRequest.js"/>
+    <script src="soap/TPSOAPResponse.js"/>
+    <script src="soap/TPSOAPService.js"/>
+</config>
+
+<config id="webdav">
+    <script src="webdav/TPWebDAVPrimitives.js"/>
+    <script src="webdav/TPWebDAVRequest.js"/>
+    <script src="webdav/TPWebDAVResponse.js"/>
+    <script src="webdav/TPWebDAVService.js"/>
+    <script src="webdav/TPWebDAVHandler.js"/>
+</config>
+
+<config id="xmlrpc">
+    <script src="xmlrpc/TPXMLRPCRequest.js"/>
+    <script src="xmlrpc/TPXMLRPCResponse.js"/>
+    <script src="xmlrpc/TPXMLRPCService.js"/>
+</config>
+
+</package>
+

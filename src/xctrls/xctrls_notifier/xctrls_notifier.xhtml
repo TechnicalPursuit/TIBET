@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<xctrls:notifier xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:pclass="urn:tibet:pseudoclass"
+		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+		xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:smil="http://www.w3.org/2005/SMIL21/"
+        class="CURTAIN_TIER {{@class}}"
+		tibet:nodetype="xctrls:notifier"
+		pclass:hidden="true"
+		ev:event="TP.sig.UIShow TP.sig.UIHide"
+        ev:observer="{{@id}}">
+
+        <smil:animate id="{{@id}}_animator" ev:event="TP.sig.UIDidShow" ev:target="{{@id}}" targetElement="{{@id}}" attributeName="opacity" to="0" dur="{{@xctrls:duration}}" begin="{{@xctrls:delay}}"/>
+
+	<!-- Note how its the target element that signals TP.sig.PropertyDidTransition -->
+    <sig:dispatch ev:event="TP.sig.PropertyDidTransition" ev:observer="{{@id}}" name="TP.sig.DOMHide" origin="{{@id}}"/>
+
+    {{./xctrls:body}}
+
+</xctrls:notifier>

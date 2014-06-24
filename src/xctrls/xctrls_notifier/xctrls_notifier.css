@@ -1,0 +1,44 @@
+/*
+	CSS styles for the 'xctrls:notifier' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+xctrls|notifier
+{
+	display: block;
+
+	position: absolute;
+
+	background-color: yellow;
+
+	visibility: hidden;
+
+	opacity: 0.6;
+}
+
+/* The notifier is visible */
+
+/* xctrls|notifier:visible */
+xctrls|notifier:not([pclass|hidden])
+{
+	visibility: visible;
+}
+
+xctrls|notifier[xctrls|edge="left"]
+{
+	top: 25%;
+
+	width: 25%;
+	height: 25%;
+}
+
+xctrls|notifier > xctrls|body
+{
+	width: 100%;
+	height: 100%;
+}
+

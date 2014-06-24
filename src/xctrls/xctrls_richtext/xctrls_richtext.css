@@ -1,0 +1,11 @@
+/*
+	CSS styles for the 'xctrls:richtext' control.
+*/
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+
+xctrls|richtext
+{
+	display: block;
+}
+

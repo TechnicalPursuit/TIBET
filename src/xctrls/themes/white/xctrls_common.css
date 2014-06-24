@@ -1,0 +1,29 @@
+
+/*
+	CSS styles common across all 'xctrls:' controls for the 'white' theme.
+*/
+
+@import url('../xctrls_common_all.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+/* All focused controls */
+
+*[data-theme="white"] xctrls|*[pclass|focus]
+{
+	-moz-box-shadow: 0px 0px 12px 		#387bbe /*{global-active-background-color}*/;
+	-webkit-box-shadow: 0px 0px 12px 	#387bbe /*{global-active-background-color}*/;
+	box-shadow: 0px 0px 12px 			#387bbe /*{global-active-background-color}*/;
+}
+
+/* All disabled controls */
+
+*[data-theme="white"] xctrls|*[pclass|disabled]
+{
+	pointer-events: none;
+	cursor: default;
+
+	opacity: 0.3;
+}
+

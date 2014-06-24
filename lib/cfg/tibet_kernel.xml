@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<!--    =============================================================   -->
+<!--
+NAME:   tibet_kernel.xml
+AUTH:   Scott Shattuck (ss)
+NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
+        Reserved. Patent Pending, Technical Pursuit Inc.
+
+        Unless explicitly acquired and licensed under the Technical
+        Pursuit License ("TPL") Version 1.5, the contents of this file
+        are subject to the Reciprocal Public License ("RPL") Version 1.5
+        and You may not copy or use this file in either source code or
+        executable form, except in compliance with the terms and
+        conditions of the RPL.
+
+        You may obtain a copy of both the TPL and RPL (the "Licenses")
+        from Technical Pursuit Inc. at http://www.technicalpursuit.com.
+
+        All software distributed under the Licenses is provided strictly
+        on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+        EXPRESS OR IMPLIED, AND TECHNICAL PURSUIT INC. HEREBY DISCLAIMS
+        ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY
+        WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+        QUIET ENJOYMENT, OR NON-INFRINGEMENT. See Licenses for specific
+        language governing rights and limitations under the Licenses.
+
+-->
+<!--    =============================================================   -->
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="tibet_kernel" default="standard" basedir="~tibet_src/kernel">
+
+<config id="vm" depends="">
+
+    <!--    KERNEL STAGE 1, BASE PRIMITIVES -->
+    <script src="tibet_pack.js"/>
+    <script src="TIBETGlobals.js"/>
+    <script src="TIBETVersion.js"/>
+
+    <script src="TIBETPrimitivesPre.js"/>
+    <script src="TIBETPrimitivesBase.js"/>
+    <script src="TIBETPrimitivesPlatform.js"/>
+    <script src="TIBETPrimitivesPost.js"/>
+
+    <script src="TIBETDOMPrimitivesPre.js"/>
+    <script src="TIBETDOMPrimitivesBase.js"/>
+    <script src="TIBETDOMPrimitivesPlatform.js"/>
+    <script src="TIBETDOMPrimitivesPost.js"/>
+
+    <!--    KERNEL STAGE 2, "LANGUAGE" BASE -->
+
+    <script src="TIBETEncapsulation.js"/>
+    <script src="TIBETRegistration.js"/>
+    <script src="TIBETFoundation.js"/>
+
+    <script src="~lib_deps/q-tpi.min.js" no-lint="true"/>
+
+    <script src="~lib_deps/forge-tpi.min.js" no-lint="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.forge = forge;
+        ]]>
+    </script>
+    <script src="TIBETCryptoPost.js"/>
+
+    <!--    KERNEL STAGE 3, OO/EVENT CORE -->
+
+    <script src="TIBETInheritance.js"/>
+    <script src="TIBETNotification.js"/>
+    <script src="TIBETJobControl.js"/>
+    <script src="TIBETSyncControl.js"/>
+    <script src="TIBETProxyTypes.js"/>
+
+    <script src="TIBETUnicode.js"/>
+
+    <!--    KERNEL STAGE 4, WEB/XML PRIMITIVES -->
+
+    <script src="TIBETDevicePrimitivesPre.js"/>
+    <script src="TIBETDevicePrimitivesBase.js"/>
+    <script src="TIBETDevicePrimitivesPlatform.js"/>
+    <script src="TIBETDevicePrimitivesPost.js"/>
+
+    <script src="TIBETDHTMLPrimitivesPre.js"/>
+    <script src="TIBETDHTMLPrimitivesBase.js"/>
+    <script src="TIBETDHTMLPrimitivesPlatform.js"/>
+    <script src="TIBETDHTMLPrimitivesPost.js"/>
+
+    <script src="TIBETStringPrimitivesPost.js"/>
+
+    <script src="TIBETCSSPrimitivesPre.js"/>
+    <script src="TIBETCSSPrimitivesBase.js"/>
+    <script src="TIBETCSSPrimitivesPlatform.js"/>
+    <script src="TIBETCSSPrimitivesPost.js"/>
+
+    <script src="~lib_deps/jquery-sizzle-tpi.js" no-lint="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.Sizzle = Sizzle;
+        ]]>
+    </script>
+    <script src="~lib_deps/jquery-jquery-tpi.js" no-lint="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.jQuery = jQuery;
+        ]]>
+    </script>
+    <script src="~lib_deps/jquery-xmlns-tpi.js" no-lint="true"/>
+    <script src="TIBETCSSQueryPost.js"/>
+
+    <script src="TIBETHTTPPrimitivesPre.js"/>
+    <script src="TIBETHTTPPrimitivesBase.js"/>
+    <script src="TIBETHTTPPrimitivesPlatform.js"/>
+    <script src="TIBETHTTPPrimitivesPost.js"/>
+
+    <script src="TIBETWebSocketPrimitives.js"/>
+
+    <script src="TIBETURIPrimitivesPre.js"/>
+    <script src="TIBETURIPrimitivesBase.js"/>
+    <script src="TIBETURIPrimitivesPlatform.js"/>
+    <script src="TIBETURIPrimitivesPost.js"/>
+
+    <script src="TIBETXSLTPrimitivesBase.js"/>
+    <script src="TIBETXSLTPrimitivesPlatform.js"/>
+    <script src="TIBETXSLTPrimitivesPost.js"/>
+
+    <script src="TIBETContentPrimitives.js"/>
+
+    <script src="TIBETImportExport.js"/>
+
+    <script src="TIBETPrimitivesShortcuts.js"/>
+    <script src="TIBETHousekeeping.js"/>
+
+</config>
+
+<config id="core" depends="vm">
+
+    <config ref="vm"/>
+
+</config>
+
+<config id="standard" depends="">
+
+    <config ref="core"/>
+
+    <!--    KERNEL STAGE 5, CORE TYPES -->
+    <script src="TIBETLocalization.js"/>
+    <script src="TIBETFormatting.js"/>
+    <script src="TIBETCalendaring.js"/>
+
+    <script src="TIBETNativeTypes.js"/>
+    <script src="TIBETCollections.js"/>
+
+    <!-- NB: These must come before TIBETDeviceTypes -->
+    <script src="TIBETURITypes.js"/>
+    <script src="TIBETWWWTypes.js"/>
+
+    <script src="TIBETBrowserTypesPre.js"/>
+    <script src="TIBETBrowserTypesBase.js"/>
+    <script src="TIBETBrowserTypesPost.js"/>
+
+    <script src="TIBETUICanvasTypesPre.js"/>
+    <script src="TIBETUICanvasTypesBase.js"/>
+    <script src="TIBETUICanvasTypesPost.js"/>
+
+    <script src="TIBETStateMachineTypes.js"/>
+    <script src="TIBETWorkflowTypes.js"/>
+
+    <script src="TIBETDeviceTypes.js"/>
+    <script src="TIBETSignalTypes.js"/>
+
+    <script src="TIBETHTTPTypes.js"/>
+    <script src="TIBETWebSocketTypes.js"/>
+
+    <!-- NB: This must come after TIBETHTTPTypes -->
+    <script src="TIBETContentTypes.js"/>
+    <script src="TIBETTemplating.js"/>
+
+    <!-- NB: These must come before TIBETDHTMLTypes -->
+    <script src="TIBETDOMTypes.js"/>
+    <script src="TIBETUIDOMTypes.js"/>
+
+    <script src="TIBETDHTMLTypes.js"/>
+    <script src="TIBETGraphicsTypes.js"/>
+
+    <script src="TIBETCSSTypes.js"/>
+    <script src="TIBETCSSTypesW3C.js" unless="ie"/>
+
+    <script src="TIBETWorkflowDOMTypes.js"/>
+
+    <!--script src="TIBETDataBinding.js"/-->
+    <script src="TIBETCoreTags.js"/>
+
+    <!--    KERNEL STAGE 6, FINALIZATION -->
+    <script src="TIBETFinalization.js"/>
+
+</config>
+
+<config id="full" depends="standard">
+    <config ref="standard"/>
+</config>
+
+</package>
+

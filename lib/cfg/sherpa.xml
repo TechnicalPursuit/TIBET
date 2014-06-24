@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!--    =============================================================   -->
+<!--
+NAME:   sherpa.xml
+AUTH:   Scott Shattuck (ss)
+NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
+        Reserved. Patent Pending, Technical Pursuit Inc.
+
+        Unless explicitly acquired and licensed under the Technical
+        Pursuit License ("TPL") Version 1.5, the contents of this file
+        are subject to the Reciprocal Public License ("RPL") Version 1.5
+        and You may not copy or use this file in either source code or
+        executable form, except in compliance with the terms and
+        conditions of the RPL.
+
+        You may obtain a copy of both the TPL and RPL (the "Licenses")
+        from Technical Pursuit Inc. at http://www.technicalpursuit.com.
+
+        All software distributed under the Licenses is provided strictly
+        on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+        EXPRESS OR IMPLIED, AND TECHNICAL PURSUIT INC. HEREBY DISCLAIMS
+        ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY
+        WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+        QUIET ENJOYMENT, OR NON-INFRINGEMENT. See Licenses for specific
+        language governing rights and limitations under the Licenses.
+
+-->
+<!--    =============================================================   -->
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="sherpa" default="standard" basedir="~ide_root">
+
+<config id="standard">
+    <script src="./src/TP.sherpa.sherpa.js"/>
+
+    <script src="./src/TP.sherpa.quickbar.js"/>
+    <script src="./src/Searchers.js"/>
+    <property name="TP.sherpa.quickbar.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.quickbar.xhtml"/>
+    <property name="TP.sherpa.quickbar.css_uri" value="~ide_root/css/TP.sherpa.quickbar.css"/>
+
+    <script src="./src/TP.sherpa.cmdline.js"/>
+    <property name="TP.sherpa.cmdline.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.cmdline.xhtml"/>
+    <property name="TP.sherpa.cmdline.css_uri" value="~ide_root/css/TP.sherpa.cmdline.css"/>
+
+    <script src="./src/TP.sherpa.notebook.js"/>
+    <property name="TP.sherpa.notebook.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.notebook.xhtml"/>
+    <property name="TP.sherpa.notebook.css_uri" value="~ide_root/css/TP.sherpa.notebook.css"/>
+
+    <script src="./src/TP.sherpa.hud.js"/>
+    <property name="TP.sherpa.hud.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.hud.xhtml"/>
+    <property name="TP.sherpa.hud.css_uri" value="~ide_root/css/TP.sherpa.hud.css"/>
+
+    <script src="./src/TP.sherpa.world.js"/>
+    <property name="TP.sherpa.world.css_uri" value="~ide_root/css/TP.sherpa.world.css"/>
+
+    <script src="./src/TP.sherpa.screen.js"/>
+    <property name="TP.sherpa.screen.css_uri" value="~ide_root/css/TP.sherpa.screen.css"/>
+
+    <script src="./src/TP.sherpa.tile.js"/>
+    <property name="TP.sherpa.tile.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.tile.xhtml"/>
+    <property name="TP.sherpa.tile.css_uri" value="~ide_root/css/TP.sherpa.tile.css"/>
+
+</config>
+
+</package>
+

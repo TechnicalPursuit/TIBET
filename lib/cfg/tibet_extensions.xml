@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!--    =============================================================   -->
+<!--
+NAME:   tibet_extensions.xml
+AUTH:   Scott Shattuck (ss)
+NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
+        Reserved. Patent Pending, Technical Pursuit Inc.
+
+        Unless explicitly acquired and licensed under the Technical
+        Pursuit License ("TPL") Version 1.5, the contents of this file
+        are subject to the Reciprocal Public License ("RPL") Version 1.5
+        and You may not copy or use this file in either source code or
+        executable form, except in compliance with the terms and
+        conditions of the RPL.
+
+        You may obtain a copy of both the TPL and RPL (the "Licenses")
+        from Technical Pursuit Inc. at http://www.technicalpursuit.com.
+
+        All software distributed under the Licenses is provided strictly
+        on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+        EXPRESS OR IMPLIED, AND TECHNICAL PURSUIT INC. HEREBY DISCLAIMS
+        ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY
+        WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+        QUIET ENJOYMENT, OR NON-INFRINGEMENT. See Licenses for specific
+        language governing rights and limitations under the Licenses.
+
+-->
+<!--    =============================================================   -->
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="tibet_extensions" default="standard" basedir="~tibet_src">
+
+<config id="standard">
+    <config ref="local_storage"/>
+    <config ref="workflow"/>
+    <config ref="shells"/>
+</config>
+
+<config id="full">
+    <config ref="content"/>
+    <config ref="parsers"/>
+    <config ref="local_storage"/>
+    <config ref="pouchdb_storage"/>
+    <config ref="workflow"/>
+    <config ref="shells"/>
+</config>
+
+<config id="content">
+    <script src="./content/TPRSSTypes.js"/>
+</config>
+
+<config id="parsers">
+    <script src="~lib_deps/xpath-tpi.js"/>
+    <script>
+        <![CDATA[
+        TP.extern.XPathParser = XPathParser;
+        ]]>
+    </script>
+
+</config>
+
+<config id="shells">
+    <script src="./shells/TPShellResponse.js"/>
+    <script src="./shells/TPShellRequest.js"/>
+
+    <script src="./shells/TPShell.js"/>
+    <script src="./shells/TPShellExtensions.js"/>
+
+    <script src="./shells/TSH.js"/>
+    <script src="./shells/YAK.js"/>
+
+    <!--script src="./shells/001_CreateTPShellRequest.js"/-->
+</config>
+
+<config id="local_storage">
+    <script src="./storage/TP.core.DeviceStorage.js"/>
+    <script src="./storage/TP.core.LocalStorage.js"/>
+
+    <script src="./storage/localdb/TP.sig.LocalDBStorageRequest.js"/>
+    <script src="./storage/localdb/TP.sig.LocalDBStorageResponse.js"/>
+    <script src="./storage/localdb/TP.core.LocalDBStorageService.js"/>
+
+    <script src="./storage/localdb/TP.core.LocalDBURL.js"/>
+    <script src="./storage/localdb/TP.core.LocalDBURLHandler.js"/>
+</config>
+
+<config id="pouchdb_storage">
+    <script src="~lib_deps/pouchdb-tpi.min.js" no-lint="true" no-minify="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.PouchDB = PouchDB;
+        ]]>
+    </script>
+
+    <script src="./storage/pouchdb/TP.sig.PouchDBRequest.js"/>
+    <script src="./storage/pouchdb/TP.sig.PouchDBResponse.js"/>
+    <script src="./storage/pouchdb/TP.core.PouchDBService.js"/>
+
+    <script src="./storage/pouchdb/TP.core.PouchDBURL.js"/>
+    <script src="./storage/pouchdb/TP.core.PouchDBURLHandler.js"/>
+</config>
+
+<config id="workflow">
+    <script src="./workflow/UserIOSignal.js"/>
+    <script src="./workflow/UserIORequest.js"/>
+    <script src="./workflow/UserIOResponse.js"/>
+    <script src="./workflow/UserIOService.js"/>
+
+    <script src="./workflow/UserInputRequest.js"/>
+    <script src="./workflow/UserInputSeries.js"/>
+
+    <script src="./workflow/UserOutputRequest.js"/>
+
+    <script src="./workflow/TPSignalCoalescer.js"/>
+    <script src="./workflow/TPOrJoin.js"/>
+    <script src="./workflow/TPAndJoin.js"/>
+    <script src="./workflow/TPRequestCoalescer.js"/>
+</config>
+
+</package>
+

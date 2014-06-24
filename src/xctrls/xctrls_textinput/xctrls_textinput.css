@@ -1,0 +1,105 @@
+/*
+	CSS styles for the 'xctrls:textinput' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+xctrls|textinput
+{
+	display: inline-block;
+
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+/* Hovering over the textinput */
+
+xctrls|textinput:hover
+{
+}
+
+/* Focusing on the textinput */
+
+/* doesn't work in any browser:
+xctrls|textinput:focus
+*/
+xctrls|textinput[pclass|focus]
+{
+	color: blue;
+}
+
+/* Clicking down on the textinput */
+
+/* doesn't work in IE9:
+xctrls|textinput:active::value
+*/
+xctrls|textinput[pclass|active] > *[tibet|pelem="value"]
+{
+	border: solid 1px red;
+}
+
+/* The textinput is disabled */
+
+/* doesn't work in any browser:
+xctrls|textinput:disabled
+*/
+xctrls|textinput[pclass|disabled] > *[tibet|pelem="value"]
+{
+	border: solid 1px gray;
+}
+
+/* The textinput is invalid */
+
+/* doesn't work in any browser:
+xctrls|textinput:invalid
+*/
+xctrls|textinput[pclass|invalid]
+{
+	content: url(../../../../lib/img/boot/alert.png);
+}
+
+xctrls|textinput > xctrls|label
+{
+	color: #333333;
+}
+
+/* Clicking down on the textinput, label must highlight */
+
+/* doesn't work in IE9:
+xctrls|textinput:active > xctrls|label
+*/
+xctrls|textinput[pclass|active] > xctrls|label
+{
+	color: red;
+}
+
+/* The textinput is disabled, so is the label */
+
+/* doesn't work in any browser:
+xctrls|textinput:disabled > xctrls|label
+*/
+xctrls|textinput[pclass|disabled] > xctrls|label
+{
+	color: #EFEFEF;
+
+	cursor: default;
+}
+
+xctrls|textinput > xctrls|hint
+{
+	display: inline-block;
+
+	padding: 1px 1px 0px 0px;
+
+	font-size: 10px;
+	white-space: normal;
+
+	vertical-align: text-top;
+	clear: both;
+}
+

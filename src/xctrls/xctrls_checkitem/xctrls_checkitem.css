@@ -1,0 +1,142 @@
+/*
+	CSS styles for the 'xctrls:checkitem' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+xctrls|checkitem
+{
+	display: inline;
+
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+xctrls|checkitem > *[tibet|pelem="value"]
+{
+	display: inline-block;
+
+	position: relative;
+	top: 3px;
+
+	width: 20px;
+	height: 20px;
+
+	background: url(xctrls_checkitem.gif) no-repeat;
+
+	cursor: pointer;
+}
+
+/* Hovering over the checkitem */
+
+xctrls|checkitem:hover
+{
+}
+
+/* Focusing on the checkitem */
+
+/* doesn't work in any browser:
+xctrls|checkitem:focus
+*/
+xctrls|checkitem[pclass|focus]
+{
+}
+
+/* Clicking down on the checkitem */
+
+/* doesn't work in IE9:
+xctrls|checkitem:active::value
+*/
+xctrls|checkitem[pclass|active] > *[tibet|pelem="value"]
+{
+	background-position: 0 -25px;
+}
+
+xctrls|checkitem[pclass|active][pclass|checked] > *[tibet|pelem="value"]
+{
+	background-position: 0 -75px;
+}
+
+/* The checkitem is disabled */
+
+/* doesn't work in any browser:
+xctrls|checkitem:disabled
+*/
+xctrls|checkitem[pclass|disabled] > *[tibet|pelem="value"]
+{
+	opacity: 0.5;
+
+	cursor: default;
+}
+
+xctrls|checkitem[pclass|disabled][pclass|active] > *[tibet|pelem="value"]
+{
+	background-position: 0 0;
+}
+
+xctrls|checkitem[pclass|disabled][pclass|active][pclass|checked] > *[tibet|pelem="value"]
+{
+	background-position: 0 -50px;
+}
+
+/* The checkitem is checked */
+
+/* doesn't work in any browser:
+xctrls|checkitem:checked
+*/
+xctrls|checkitem[pclass|checked] > *[tibet|pelem="value"]
+{
+	background-position: 0 -50px;
+}
+
+xctrls|checkitem > xctrls|label
+{
+}
+
+/* Clicking down on the checkitem, label must highlight */
+
+/* doesn't work in IE9:
+xctrls|checkitem:active > xctrls|label
+*/
+xctrls|checkitem[pclass|active]:not([pclass|disabled]) > xctrls|label
+{
+	color: red;
+}
+
+xctrls|checkitem[pclass|active][pclass|checked]:not([pclass|disabled]) > xctrls|label
+{
+	color: green;
+}
+
+/* The checkitem is disabled, so is the label */
+
+/* doesn't work in any browser:
+xctrls|checkitem:disabled > xctrls|label
+*/
+xctrls|checkitem[pclass|disabled] > xctrls|label
+{
+	opacity: 0.5;
+
+	cursor: default;
+}
+
+/* Any hint that goes along with the checkitem  */
+
+xctrls|checkitem > xctrls|hint
+{
+	display: inline-block;
+
+	padding: 1px 1px 0px 0px;
+
+	font-size: 10px;
+	white-space: normal;
+
+	vertical-align: text-top;
+	clear: both;
+}
+

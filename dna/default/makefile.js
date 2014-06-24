@@ -16,7 +16,7 @@
 
     /*
      * Uncomment to include TIBET's default make helper routines.
-    var helpers = require('tibet/src/cli/_make_helpers');
+    var helpers = require('tibet/src/tibet/cli/_make_helpers');
     */
 
     //  ---

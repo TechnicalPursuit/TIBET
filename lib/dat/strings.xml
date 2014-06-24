@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<tmx xmlns="http://www.lisa.org/tmx14" version="1.4"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace">
+
+<header creationtool="TIBET" 
+  creationtoolversion="3.0"
+  segtype="sentence"
+  o-tmf=""
+  adminlang="en-us"
+  srclang="EN"
+  datatype="plaintext">
+</header>
+
+<body>
+
+  <tu tuid="hello">
+    <tuv xml:lang="en"><seg>Hello World</seg></tuv>
+    <tuv xml:lang="de"><seg>Hallo Welt</seg></tuv>
+    <tuv xml:lang="fr"><seg>Bonjour Monde</seg></tuv>
+  </tu>
+
+  <tu tuid="true">
+    <tuv xml:lang="en"><seg>true</seg></tuv>
+    <tuv xml:lang="de"><seg>zutreffend</seg></tuv>
+    <tuv xml:lang="fr"><seg>vrai</seg></tuv>
+  </tu>
+
+  <tu tuid="false">
+    <tuv xml:lang="en"><seg>false</seg></tuv>
+    <tuv xml:lang="de"><seg>falsch</seg></tuv>
+    <tuv xml:lang="fr"><seg>faux</seg></tuv>
+  </tu>
+
+  <tu tuid="yes">
+    <tuv xml:lang="en"><seg>yes</seg></tuv>
+    <tuv xml:lang="de"><seg>ja</seg></tuv>
+    <tuv xml:lang="fr"><seg>oui</seg></tuv>
+  </tu>
+
+  <tu tuid="no">
+    <tuv xml:lang="en"><seg>no</seg></tuv>
+    <tuv xml:lang="de"><seg>nein</seg></tuv>
+    <tuv xml:lang="fr"><seg>non</seg></tuv>
+  </tu>
+
+</body>
+
+</tmx>
+

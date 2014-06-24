@@ -1,0 +1,62 @@
+/*
+	CSS styles for 'xctrls:listbox' controls.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+xctrls|listbox
+{
+	display: inline-block;
+
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+/* Focusing on the listbox */
+
+/* doesn't work in any browser:
+xctrls|listbox:focus
+*/
+xctrls|listbox[pclass|focus]
+{
+	/* IE9: */
+	background: green;
+
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(248, 248, 248)), to(rgb(221, 221, 221)));
+	background: -moz-linear-gradient(center top, rgb(248, 248, 248), rgb(221, 221, 221));
+}
+
+/* The listbox is disabled */
+
+/* doesn't work in any browser:
+xctrls|listbox:disabled
+*/
+xctrls|listbox[pclass|disabled]
+{
+	background: gray;
+
+	cursor: default;
+}
+
+/* The listbox is disabled, so is the label */
+
+/* doesn't work in any browser:
+xctrls|listbox:disabled > xctrls|label
+*/
+xctrls|listbox[pclass|disabled] > xctrls|label
+{
+	color: #EFEFEF;
+
+	cursor: default;
+}
+
+/* Any items that are under a listbox should have 'block' display */
+xctrls|listbox *[class~="item"]
+{
+	display: block;
+}
+

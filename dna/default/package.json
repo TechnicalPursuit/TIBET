@@ -12,7 +12,7 @@
     "morgan": "*",
     "phantomjs": "*",
     "shelljs": "*",
-    "tibet3": "*",
+    "tibet": "*",
     "uglify-js": "*",
     "watch": "*"
   },

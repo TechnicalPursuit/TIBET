@@ -1,8 +1,0 @@
-/**
- * @overview Top-level css file which loads lib and app root css files.
- */
-
-/* TODO: replace with a {{tibet_css}} template value */
-@import url("../node_modules/tibet3/base/lib/tibet/css/tibet_content.css");
-
-@import url("app.css");

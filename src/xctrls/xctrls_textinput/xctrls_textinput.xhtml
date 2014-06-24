@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<xctrls:textinput xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+	xmlns:pclass="urn:tibet:pseudoclass"
+	xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    tibet:captures="TP.sig.DOMMouseDown TP.sig.DOMMouseUp TP.sig.DOMMouseOver TP.sig.DOMMouseOut TP.sig.DOMFocus TP.sig.DOMBlur TP.sig.DOMClick"
+	hidefocus="true">
+    {{./xctrls:label}}
+    <html:input id="{{@id}}_value" type="text" tibet:pelem="value" xsi:type="{{@xsi:type}}" tibet:incremental="{{@tibet:incremental}}" disabled="{{@disabled}}"/>
+    {{./xctrls:hint}}
+</xctrls:textinput>
+

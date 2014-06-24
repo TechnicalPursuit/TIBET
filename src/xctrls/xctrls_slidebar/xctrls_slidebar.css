@@ -1,0 +1,143 @@
+/*
+	CSS styles for the 'xctrls:slidebar' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+/* Overall 'div' element representing 'xctrls:slidebar' */
+
+xctrls|slidebar
+{
+	display: inline-block;
+
+	position: relative;
+
+	/* Default height - instances should override */
+	height: 200px;
+}
+
+xctrls|slidebar[class~="vertical"]
+{
+	top: 0px;
+	bottom: 0px;
+	width: 6px;
+}
+
+/* INTERNAL */
+xctrls|slidebar
+{
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+
+	width: 6px;
+}
+
+xctrls|slidebar *
+{
+	position: absolute;
+}
+
+xctrls|slidebar > *[tibet|pelem="track_piece"]
+{
+	left: 0px;
+	right: 0px;
+}
+
+xctrls|slidebar > *[tibet|pelem="track_piece"].proportion
+{
+	top: 5px;
+	bottom: 13px;
+	background: -moz-linear-gradient(center top, #FEB06A, #FE8525);
+}
+
+xctrls|slidebar > *[tibet|pelem="thumb"] > *[tibet|pelem="button"].decrement
+{
+	top: 0px;
+	width: 10px;
+	height: 12px;
+
+	left: 50%;
+	margin-left: -5px;
+
+	background: -moz-linear-gradient(center top, #CCCCCC, #E0E0E0);
+
+	-moz-border-radius: 4px 4px 0px 0px;
+	-webkit-border-radius: 4px 4px 0px 0px;
+	border-radius: 4px 4px 0px 0px;
+}
+
+xctrls|slidebar > *[tibet|pelem="thumb"] > *[tibet|pelem="drag"]
+{
+	top: 10px;
+
+	width: 16px;
+	height: 20px;
+
+	left: 50%;
+	margin-left: -9px;
+
+	border: solid 1px black;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
+	border-radius: 10px 10px 10px 10px;
+
+	background: -moz-linear-gradient(center top, #E0E0E0, #F7F7F7);
+
+	-moz-box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+	box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+xctrls|slidebar > *[tibet|pelem="thumb"] > *[tibet|pelem="drag"]:hover
+{
+	background: -moz-linear-gradient(center top, #FEB06A, #FE8525);
+}
+
+xctrls|slidebar > *[tibet|pelem="thumb"] > *[tibet|pelem="button"].increment
+{
+	bottom: 0px;
+	width: 10px;
+	height: 12px;
+
+	left: 50%;
+	margin-left: -5px;
+
+	background: -moz-linear-gradient(center top, #F7F7F7, #FFFFFF);
+
+	-moz-border-radius: 0px 0px 4px 4px;
+	-webkit-border-radius: 0px 0px 4px 4px;
+	border-radius: 0px 0px 4px 4px;
+}
+
+xctrls|slidebar > *[tibet|pelem="thumb"] > *[tibet|pelem="button"]:hover
+{
+	background: -moz-linear-gradient(center top, #FEB06A, #FE8525);
+}
+
+xctrls|slidebar > *[tibet|pelem="thumb"]
+{
+	position: absolute;
+
+	top: 0px;
+	left: 50%;
+
+	margin-left: -6px;
+
+	width: 10px;
+	height: 40px;
+
+	border: solid 1px black;
+
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+
+	-moz-box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+	-webkit-box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+	box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+

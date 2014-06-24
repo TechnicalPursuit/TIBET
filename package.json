@@ -42,9 +42,13 @@
         "man": "./man"
     },
     "dependencies": {
-        "chai": "*",
+        "browserify": "*",
         "chalk": "*",
+        "codemirror": "TechnicalPursuit/codemirror",
         "connect": "*",
+        "connect-gzip-static": "*",
+        "d3": "TechnicalPursuit/d3",
+        "jquery": "TechnicalPursuit/jquery",
         "eslint": "TechnicalPursuit/eslint",
         "esprima": "*",
         "escodegen": "*",
@@ -54,22 +58,26 @@
         "js-beautify": "*",
         "mocha": "*",
         "mockery": "*",
+        "morgan": "*",
         "minimist": "*",
+        "node-forge": "TechnicalPursuit/forge",
         "phantomjs": "*",
+        "pouchdb": "TechnicalPursuit/pouchdb",
         "q": "TechnicalPursuit/q#v1",
-        "ronn": "*",
         "shelljs": "*",
         "shelljs-nodecli": "*",
-        "tibet3": "*",
-        "xmldom": "*",
-        "xpath": "*"
+        "watch": "*",
+        "xpath": "TechnicalPursuit/xpath",
+        "xmldom": "*"
     },
     "engines": {
         "node": ">=0.8",
         "npm": ">=1"
     },
     "scripts": {
-        "test": "./bin/tibet test"
+        "test": "./bin/tibet test",
+        "test_all": "phantomjs ./test/phantom/phantomtsh.js --profile '~app/phantom' --script ':test -ignore_only'",
+        "test_cli": "mocha ./test/mocha/cli_test.js"
     },
     "preferGlobal": true,
     "private": true

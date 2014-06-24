@@ -3,6 +3,6 @@
  */
 
 /* TODO: replace with a {{tibet_css}} template value */
-@import url("../node_modules/tibet3/base/lib/tibet/css/tibet_content.css");
+@import url("../node_modules/tibet/lib/css/tibet_content.css");
 
 @import url("app.css");

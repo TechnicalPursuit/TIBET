@@ -4,15 +4,13 @@
 
 ;(function(root) {
 
-// TODO: this should work via 'tibet/src/cli/_cli' but won't until 3x and 5x
-// merge. Meanwhile 'tibet init' has to link both tibet3 and tibet :(.
-var CLI = require('tibet/src/cli/_cli');
+var CLI = require('tibet/src/tibet/cli/_cli');
 
 //  ---
 //  Type Construction
 //  ---
 
-var parent = require('tibet/src/cli/_cmd');
+var parent = require('tibet/src/tibet/cli/_cmd');
 
 var Cmd = function(){};
 Cmd.prototype = new parent();

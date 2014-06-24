@@ -3,8 +3,8 @@ Reciprocal Public License (RPL)
 Version 1.5, July 15, 2007
 
 Copyright (C) 2001-2007
-Technical Pursuit Inc., 
-All Rights Reserved. 
+Technical Pursuit Inc.,
+All Rights Reserved.
 
 
 PREAMBLE
@@ -45,7 +45,7 @@ The specific terms and conditions of the license are defined in the remainder
 of this document.
 
 
-LICENSE TERMS 
+LICENSE TERMS
 
 1.0 General; Applicability & Definitions. This Reciprocal Public License
 Version 1.5 ("License") applies to any programs or other works as well as any
@@ -53,70 +53,70 @@ and all updates or maintenance releases of said programs or works ("Software")
 not already covered by this License which the Software copyright holder
 ("Licensor") makes available containing a License Notice (hereinafter defined)
 from the Licensor specifying or allowing use or distribution under the terms of
-this License. As used in this License: 
+this License. As used in this License:
 
 1.1 "Contributor" means any person or entity who created or contributed to the
-creation of an Extension. 
+creation of an Extension.
 
 1.2 "Deploy" means to use, Serve, sublicense or distribute Licensed Software
 other than for Your internal Research and/or Personal Use, and includes
 without limitation, any and all internal use or distribution of Licensed
 Software within Your business or organization other than for Research and/or
 Personal Use, as well as direct or indirect sublicensing or distribution of
-Licensed Software by You to any third party in any form or manner. 
+Licensed Software by You to any third party in any form or manner.
 
 1.3 "Derivative Works" as used in this License is defined under U.S. copyright
-law. 
+law.
 
 1.4 "Electronic Distribution Mechanism" means a mechanism generally accepted
 in the software development community for the electronic transfer of data such
 as download from an FTP server or web site, where such mechanism is publicly
-accessible. 
+accessible.
 
 1.5 "Extensions" means any Modifications, Derivative Works, or Required
-Components as those terms are defined in this License. 
+Components as those terms are defined in this License.
 
-1.6 "License" means this Reciprocal Public License. 
+1.6 "License" means this Reciprocal Public License.
 
 1.7 "License Notice" means any notice contained in EXHIBIT A.
 
 1.8 "Licensed Software" means any Software licensed pursuant to this License.
 Licensed Software also includes all previous Extensions from any Contributor
-that You receive. 
+that You receive.
 
 1.9 "Licensor" means the copyright holder of any Software previously not
 covered by this License who releases the Software under the terms of this
-License. 
+License.
 
 1.10 "Modifications" means any additions to or deletions from the substance or
 structure of (i) a file or other storage containing Licensed Software, or (ii)
 any new file or storage that contains any part of Licensed Software, or (iii)
 any file or storage which replaces or otherwise alters the original
-functionality of Licensed Software at runtime. 
+functionality of Licensed Software at runtime.
 
 1.11 "Personal Use" means use of Licensed Software by an individual solely for
 his or her personal, private and non-commercial purposes. An individual's use
 of Licensed Software in his or her capacity as an officer, employee, member,
 independent contractor or agent of a corporation, business or organization
-(commercial or non-commercial) does not qualify as Personal Use. 
+(commercial or non-commercial) does not qualify as Personal Use.
 
 1.12 "Required Components" means any text, programs, scripts, schema,
 interface definitions, control files, or other works created by You which are
 required by a third party of average skill to successfully install and run
 Licensed Software containing Your Modifications, or to install and run Your
-Derivative Works. 
+Derivative Works.
 
 1.13 "Research" means investigation or experimentation for the purpose of
 understanding the nature and limits of the Licensed Software and its potential
-uses. 
+uses.
 
 1.14 "Serve" means to deliver Licensed Software and/or Your Extensions by
 means of a computer network to one or more computers for purposes of execution
-of Licensed Software and/or Your Extensions. 
+of Licensed Software and/or Your Extensions.
 
 1.15 "Software" means any computer programs or other works as well as any
 updates or maintenance releases of those programs or works which are
-distributed publicly by Licensor. 
+distributed publicly by Licensor.
 
 1.16 "Source Code" means the preferred form for making modifications to the
 Licensed Software and/or Your Extensions, including all modules contained
@@ -133,7 +133,7 @@ which controls, is controlled by, or is under common control with, You, where
 "control" means (a) the power, direct or indirect, to cause the direction or
 management of such entity, whether by contract or otherwise, or (b) ownership
 of fifty percent (50%) or more of the outstanding shares or beneficial
-ownership of such entity. 
+ownership of such entity.
 
 2.0 Acceptance Of License. You are not required to accept this License since
 you have not signed it, however nothing else grants you permission to use,
@@ -145,50 +145,50 @@ all its terms and conditions. IF YOU DO NOT AGREE WITH ALL THE TERMS AND
 CONDITIONS OF THIS LICENSE DO NOT USE, MODIFY, CREATE DERIVATIVES, OR
 DISTRIBUTE THE SOFTWARE. IF IT IS IMPOSSIBLE FOR YOU TO COMPLY WITH ALL THE
 TERMS AND CONDITIONS OF THIS LICENSE THEN YOU CAN NOT USE, MODIFY, CREATE
-DERIVATIVES, OR DISTRIBUTE THE SOFTWARE. 
+DERIVATIVES, OR DISTRIBUTE THE SOFTWARE.
 
 3.0 Grant of License From Licensor. Subject to the terms and conditions of
 this License, Licensor hereby grants You a world-wide, royalty-free, non-
 exclusive license, subject to Licensor's intellectual property rights, and any
 third party intellectual property claims derived from the Licensed Software
-under this License, to do the following: 
+under this License, to do the following:
 
 3.1 Use, reproduce, modify, display, perform, sublicense and distribute
 Licensed Software and Your Extensions in both Source Code form or as an
-executable program. 
+executable program.
 
 3.2 Create Derivative Works (as that term is defined under U.S. copyright law)
 of Licensed Software by adding to or deleting from the substance or structure
-of said Licensed Software. 
+of said Licensed Software.
 
 3.3 Under claims of patents now or hereafter owned or controlled by Licensor,
 to make, use, have made, and/or otherwise dispose of Licensed Software or
 portions thereof, but solely to the extent that any such claim is necessary to
 enable You to make, use, have made, and/or otherwise dispose of Licensed
-Software or portions thereof. 
+Software or portions thereof.
 
 3.4 Licensor reserves the right to release new versions of the Software with
 different features, specifications, capabilities, functions, licensing terms,
 general availability or other characteristics. Title, ownership rights, and
 intellectual property rights in and to the Licensed Software shall remain in
-Licensor and/or its Contributors. 
+Licensor and/or its Contributors.
 
 4.0 Grant of License From Contributor. By application of the provisions in
 Section 6 below, each Contributor hereby grants You a world-wide, royalty-
 free, non-exclusive license, subject to said Contributor's intellectual
 property rights, and any third party intellectual property claims derived from
-the Licensed Software under this License, to do the following: 
+the Licensed Software under this License, to do the following:
 
 4.1 Use, reproduce, modify, display, perform, sublicense and distribute any
 Extensions Deployed by such Contributor or portions thereof, in both Source
 Code form or as an executable program, either on an unmodified basis or as
-part of Derivative Works. 
+part of Derivative Works.
 
 4.2 Under claims of patents now or hereafter owned or controlled by
 Contributor, to make, use, have made, and/or otherwise dispose of Extensions
 or portions thereof, but solely to the extent that any such claim is necessary
 to enable You to make, use, have made, and/or otherwise dispose of
-Licensed Software or portions thereof. 
+Licensed Software or portions thereof.
 
 5.0 Exclusions From License Grant. Nothing in this License shall be deemed to
 grant any rights to trademarks, copyrights, patents, trade secrets or any
@@ -214,7 +214,7 @@ hereby assume sole responsibility to secure any other intellectual property
 rights needed, if any. For example, if a third party patent license is
 required to allow You to distribute the Licensed Software, it is Your
 responsibility to acquire that license before distributing the Licensed
-Software. 
+Software.
 
 6.0 Your Obligations And Grants. In consideration of, and as an express
 condition to, the licenses granted to You under this License You hereby agree
@@ -233,7 +233,7 @@ include a copy of this License or directions on how to obtain a copy with
 every copy of the Extensions You distribute. You agree not to offer or impose
 any terms on any Source Code or executable version of the Licensed Software,
 or its Extensions that alter or restrict the applicable version of this
-License or the recipients' rights hereunder. 
+License or the recipients' rights hereunder.
 
 6.1 Availability of Source Code. You must make available, under the terms of
 this License, the Source Code of any Extensions that You Deploy, via an
@@ -258,7 +258,7 @@ Software. You may not modify or delete any pre-existing copyright notices,
 change notices or License text in the Licensed Software without written
 permission of the respective Licensor or Contributor.
 
-6.3 Intellectual Property Matters. 
+6.3 Intellectual Property Matters.
 
 a. Third Party Claims. If You have knowledge that a license to a third party's
 intellectual property right is required to exercise the rights granted by this
@@ -269,14 +269,14 @@ recipient will know whom to contact.
 b. Contributor APIs. If Your Extensions include an application programming
 interface ("API") and You have knowledge of patent licenses that are
 reasonably necessary to implement that API, You must also include this
-information in a human-readable file supplied with Your distribution. 
+information in a human-readable file supplied with Your distribution.
 
 c. Representations. You represent that, except as disclosed pursuant to 6.3(a)
 above, You believe that any Extensions You distribute are Your original
 creations and that You have sufficient rights to grant the rights conveyed by
-this License. 
+this License.
 
-6.4 Required Notices. 
+6.4 Required Notices.
 
 a. License Text. You must duplicate this License or instructions on how to
 acquire a copy in any documentation You provide along with the Source Code of
@@ -331,7 +331,7 @@ honored however You must also make Your Extensions available under this
 License. If the terms of this License continue to conflict with the terms of
 the other license you may write the Licensor for permission to resolve the
 conflict in a fashion that remains consistent with the intent of this License.
-Such permission will be granted at the sole discretion of the Licensor. 
+Such permission will be granted at the sole discretion of the Licensor.
 
 7.0 Versions of This License. Licensor may publish from time to time revised
 versions of the License. Once Licensed Software has been published under a
@@ -371,7 +371,7 @@ UPDATES TO THIS SOFTWARE. LICENSOR HAS NO KNOWLEDGE OF ERRANT CODE OR VIRUS IN
 THIS SOFTWARE, BUT DOES NOT WARRANT THAT THE SOFTWARE IS FREE FROM SUCH ERRORS
 OR VIRUSES. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS
 LICENSE. NO USE OF LICENSED SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS
-DISCLAIMER. 
+DISCLAIMER.
 
 9.0 Limitation of Liability. UNDER NO CIRCUMSTANCES AND UNDER NO LEGAL THEORY,
 WHETHER TORT (INCLUDING NEGLIGENCE), CONTRACT, OR OTHERWISE, SHALL THE
@@ -385,7 +385,7 @@ DAMAGES. THIS LIMITATION OF LIABILITY SHALL NOT APPLY TO LIABILITY FOR DEATH
 OR PERSONAL INJURY RESULTING FROM SUCH PARTY'S NEGLIGENCE TO THE EXTENT
 APPLICABLE LAW PROHIBITS SUCH LIMITATION. SOME JURISDICTIONS DO NOT ALLOW THE
 EXCLUSION OR LIMITATION OF INCIDENTAL OR CONSEQUENTIAL DAMAGES, SO THIS
-EXCLUSION AND LIMITATION MAY NOT APPLY TO YOU. 
+EXCLUSION AND LIMITATION MAY NOT APPLY TO YOU.
 
 10.0 High Risk Activities. THE LICENSED SOFTWARE IS NOT FAULT-TOLERANT AND IS
 NOT DESIGNED, MANUFACTURED, OR INTENDED FOR USE OR DISTRIBUTION AS ON-LINE
@@ -395,7 +395,7 @@ COMMUNICATIONS SYSTEMS, AIR TRAFFIC CONTROL, DIRECT LIFE SUPPORT MACHINES, OR
 WEAPONS SYSTEMS, IN WHICH THE FAILURE OF THE LICENSED SOFTWARE COULD LEAD
 DIRECTLY TO DEATH, PERSONAL INJURY, OR SEVERE PHYSICAL OR ENVIRONMENTAL DAMAGE
 ("HIGH RISK ACTIVITIES"). LICENSOR AND CONTRIBUTORS SPECIFICALLY DISCLAIM ANY
-EXPRESS OR IMPLIED WARRANTY OF FITNESS FOR HIGH RISK ACTIVITIES. 
+EXPRESS OR IMPLIED WARRANTY OF FITNESS FOR HIGH RISK ACTIVITIES.
 
 11.0 Responsibility for Claims. As between Licensor and Contributors, each
 party is responsible for claims and damages arising, directly or indirectly,
@@ -408,14 +408,14 @@ has thereby disclaimed all warranties and limited any damages that it is or
 may be liable for. You agree to work with Licensor and Contributors to
 distribute such responsibility on an equitable basis consistent with the terms
 of this License including Sections 8, 9, and 10. Nothing herein is intended or
-shall be deemed to constitute any admission of liability. 
+shall be deemed to constitute any admission of liability.
 
 12.0 Termination. This License and all rights granted hereunder will terminate
 immediately in the event of the circumstances described in Section 13.6 or if
 applicable law prohibits or restricts You from fully and or specifically
 complying with Sections 3, 4 and/or 6, or prevents the enforceability of any
 of those Sections, and You must immediately discontinue any use of Licensed
-Software. 
+Software.
 
 12.1 Automatic Termination Upon Breach. This License and the rights granted
 hereunder will terminate automatically if You fail to comply with the terms
@@ -423,7 +423,7 @@ herein and fail to cure such breach within thirty (30) days of becoming aware
 of the breach. All sublicenses to the Licensed Software that are properly
 granted shall survive any termination of this License. Provisions that, by
 their nature, must remain in effect beyond the termination of this License,
-shall survive. 
+shall survive.
 
 12.2 Termination Upon Assertion of Patent Infringement. If You initiate
 litigation by asserting a patent infringement claim (excluding declaratory
@@ -440,7 +440,7 @@ Software against such Respondent. If within said Notice Period a reasonable
 royalty and payment arrangement are not mutually agreed upon in writing by the
 parties or the litigation claim is not withdrawn, the rights granted by
 Licensor to You under Sections 3 and 4 automatically terminate at the
-expiration of said Notice Period. 
+expiration of said Notice Period.
 
 12.3 Reasonable Value of This License. If You assert a patent infringement
 claim against Respondent alleging that Licensed Software directly or
@@ -448,14 +448,14 @@ indirectly infringes any patent where such claim is resolved (such as by
 license or settlement) prior to the initiation of patent infringement
 litigation, then the reasonable value of the licenses granted by said
 Respondent under Sections 3 and 4 shall be taken into account in determining
-the amount or value of any payment or license. 
+the amount or value of any payment or license.
 
 12.4 No Retroactive Effect of Termination. In the event of termination under
 this Section all end user license agreements (excluding licenses to
 distributors and resellers) that have been validly granted by You or any
-distributor hereunder prior to termination shall survive termination. 
+distributor hereunder prior to termination shall survive termination.
 
-13.0 Miscellaneous. 
+13.0 Miscellaneous.
 
 13.1 U.S. Government End Users. The Licensed Software is a "commercial item,"
 as that term is defined in 48 C.F.R. 2.101 (Oct. 1995), consisting of
@@ -463,38 +463,39 @@ as that term is defined in 48 C.F.R. 2.101 (Oct. 1995), consisting of
 documentation," as such terms are used in 48 C.F.R. 12.212 (Sept. 1995).
 Consistent with 48 C.F.R. 12.212 and 48 C.F.R. 227.7202-1 through 227.7202-4
 (June 1995), all U.S. Government End Users acquire Licensed Software with only
-those rights set forth herein. 
+those rights set forth herein.
 
 13.2 Relationship of Parties. This License will not be construed as creating
 an agency, partnership, joint venture, or any other form of legal association
 between or among You, Licensor, or any Contributor, and You will not represent
-to the contrary, whether expressly, by implication, appearance, or otherwise. 
+to the contrary, whether expressly, by implication, appearance, or otherwise.
 
 13.3 Independent Development. Nothing in this License will impair Licensor's
 right to acquire, license, develop, subcontract, market, or distribute
 technology or products that perform the same or similar functions as, or
 otherwise compete with, Extensions that You may develop, produce, market, or
-distribute. 
+distribute.
 
 13.4 Consent To Breach Not Waiver. Failure by Licensor or Contributor to
-enforce any provision of this License will not be deemed a waiver of future enforcement of that or any other provision. 
+enforce any provision of this License will not be deemed a waiver of future
+enforcement of that or any other provision.
 
 13.5 Severability. This License represents the complete agreement concerning
 the subject matter hereof. If any provision of this License is held to be
 unenforceable, such provision shall be reformed only to the extent necessary
-to make it enforceable. 
+to make it enforceable.
 
 13.6 Inability to Comply Due to Statute or Regulation. If it is impossible for
 You to comply with any of the terms of this License with respect to some or
 all of the Licensed Software due to statute, judicial order, or regulation,
-then You cannot use, modify, or distribute the software. 
+then You cannot use, modify, or distribute the software.
 
 13.7 Export Restrictions. You may be restricted with respect to downloading or
 otherwise acquiring, exporting, or reexporting the Licensed Software or any
 underlying information or technology by United States and other applicable
 laws and regulations. By downloading or by otherwise obtaining the Licensed
 Software, You are agreeing to be responsible for compliance with all
-applicable laws and regulations. 
+applicable laws and regulations.
 
 13.8 Arbitration, Jurisdiction & Venue. This License shall be governed by
 Colorado law provisions (except to the extent applicable law, if any, provides
@@ -514,12 +515,12 @@ Convention on Contracts for the International Sale of Goods is expressly
 excluded. You and Licensor expressly waive any rights to a jury trial in any
 litigation concerning Licensed Software or this License. Any law or regulation
 that provides that the language of a contract shall be construed against the
-drafter shall not apply to this License. 
+drafter shall not apply to this License.
 
 13.9 Entire Agreement. This License constitutes the entire agreement between
-the parties with respect to the subject matter hereof. 
+the parties with respect to the subject matter hereof.
 
-EXHIBIT A 
+EXHIBIT A
 
 The License Notice below must appear in each file of the Source Code of any
 copy You distribute of the Licensed Software or any Extensions thereto:
@@ -535,7 +536,7 @@ copy You distribute of the Licensed Software or any Extensions thereto:
   LICENSOR HEREBY DISCLAIMS ALL SUCH WARRANTIES, INCLUDING WITHOUT
   LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
   PURPOSE, QUIET ENJOYMENT, OR NON-INFRINGEMENT. See the RPL for specific
-  language governing rights and limitations under the RPL. 
+  language governing rights and limitations under the RPL.
 
 
 

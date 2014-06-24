@@ -1,0 +1,194 @@
+
+/*
+	CSS styles common across 'xctrls:button' controls for any theme.
+*/
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+/* All themed 'xctrls:button' controls */
+
+*[data-theme] xctrls|button
+{
+	text-align: center;
+
+	cursor: pointer;
+
+	margin: .5em 5px;
+	padding: 0px;
+}
+
+/* All themed, non-disabled 'xctrls:button' controls */
+
+*[data-theme] xctrls|button
+{
+	border: 1px solid       #155678 /*{global-active-border}*/;
+	background:             #4596ce /*{global-active-background-color}*/;
+
+	font-weight: bold;
+	font-family: Helvetica, Arial, sans-serif /*{global-font-family}*/;
+
+	color:                  #FFF /*{global-active-color}*/;
+
+	text-shadow:			0 /*{global-active-shadow-x}*/
+							-1px /*{global-active-shadow-y}*/
+							1px /*{global-active-shadow-radius}*/
+							#145072 /*{global-active-shadow-color}*/;
+	text-decoration: none;
+
+	background-image: -webkit-linear-gradient(#85bae4 /*{global-active-background-start}*/, #5393c5 /*{global-active-background-end}*/); /* Chrome 10+, Saf5.1+ */
+	background-image:    -moz-linear-gradient(#85bae4 /*{global-active-background-start}*/, #5393c5 /*{global-active-background-end}*/); /* FF3.6 */
+	background-image:     -ms-linear-gradient(#85bae4 /*{global-active-background-start}*/, #5393c5 /*{global-active-background-end}*/); /* IE10 */
+	background-image:      -o-linear-gradient(#85bae4 /*{global-active-background-start}*/, #5393c5 /*{global-active-background-end}*/); /* Opera 11.10+ */
+	background-image:         linear-gradient(#85bae4 /*{global-active-background-start}*/, #5393c5 /*{global-active-background-end}*/);
+}
+
+/* All themed, non-disabled 'xctrls:button' controls with an 'appearance' of
+	'minimal' */
+
+*[data-theme] xctrls|button[appearance="minimal"]
+{
+	margin: .25em 5px;
+}
+
+/* All themed, non-disabled 'xctrls:button' control content elements */
+
+*[data-theme] xctrls|button > .content
+{
+	display: block;
+	position: relative;
+
+	padding: 0.6em 25px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	white-space: nowrap;
+}
+
+/* All themed, non-disabled 'xctrls:button' control labels */
+
+*[data-theme] xctrls|button xctrls|label
+{
+	position: relative;
+
+	color:                  #fff /*{global-active-color}*/;
+
+	border-top: 1px solid 	#fff;
+	border-color: 			rgba(255, 255, 255, .3);
+}
+
+/* All themed, non-disabled 'xctrls:button' control content elements with an
+	'appearance' of 'minimal' */
+
+*[data-theme] xctrls|button[appearance="minimal"] > .content
+{
+	font-size: 13px;
+	padding: .55em 1.5em .5em;
+}
+
+/* All themed, non-disabled 'xctrls:button' controls with an image but no
+	label */
+
+*[data-theme] xctrls|button[image]:not([label])
+{
+	width: 24px;
+	height: 24px;
+}
+
+/* All themed, non-disabled 'xctrls:button' control content elements with an
+	image but no label */
+
+*[data-theme] xctrls|button[image]:not([label]) > .content
+{
+	padding: 0px;
+	height: 100%;
+}
+
+*[data-theme] xctrls|button[image="left"] > .content
+{
+	padding-left: 33px;
+}
+
+*[data-theme] xctrls|button[image="right"] > .content
+{
+	padding-right: 33px;
+}
+
+*[data-theme] xctrls|button[image="top"] > .content
+{
+	padding-top: 33px;
+}
+
+*[data-theme] xctrls|button[image="bottom"] > .content
+{
+	padding-bottom: 33px;
+}
+
+/* All themed, non-disabled 'xctrls:button' control image elements with an
+	image but no label */
+
+*[data-theme] xctrls|button[image]:not([label]) xctrls|image
+{
+	margin: 2px 1px 2px 3px;
+}
+
+*[data-theme] xctrls|button[image="left"] xctrls|image,
+*[data-theme] xctrls|button[image="right"] xctrls|image
+{
+	position: absolute;
+
+	top: 50%;
+
+	margin-top: -9px;
+}
+
+*[data-theme] xctrls|button[image="top"] xctrls|image,
+*[data-theme] xctrls|button[image="bottom"] xctrls|image
+{
+	position: absolute;
+
+	left: 50%;
+
+	margin-left: -9px;
+}
+
+*[data-theme] xctrls|button[image="left"] xctrls|image
+{
+	left: 10px;
+}
+
+*[data-theme] xctrls|button[image="right"] xctrls|image
+{
+	right: 10px;
+}
+
+*[data-theme] xctrls|button[image="top"] xctrls|image
+{
+	top: 10px;
+}
+
+*[data-theme] xctrls|button[image="bottom"] xctrls|image
+{
+	bottom: 10px;
+}
+
+*[data-theme] xctrls|button[image="left"][appearance="minimal"] xctrls|image
+{
+	left: 8px;
+}
+
+*[data-theme] xctrls|button[image="right"][appearance="minimal"] xctrls|image
+{
+	right: 8px;
+}
+
+*[data-theme] xctrls|button[image="top"][appearance="minimal"] xctrls|image
+{
+	top: 8px;
+}
+
+*[data-theme] xctrls|button[image="bottom"][appearance="minimal"] xctrls|image
+{
+	bottom: 8px;
+}
+

@@ -1,0 +1,35 @@
+/*
+	CSS styles for the 'xctrls:scrollbox' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+
+xctrls|scrollbox
+{
+	display: block;
+
+	position: relative;
+
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+xctrls|scrollbox > xctrls|clipbox
+{
+	position: absolute;
+
+	top: 0px;
+	right: 18px;
+	bottom: 0px;
+	left: 0px;
+}
+
+xctrls|scrollbox > xctrls|slidebar
+{
+	position: absolute;
+
+	right: 6px;
+}

@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!--    =============================================================   -->
+<!--
+NAME:   tdp.xml
+AUTH:   Scott Shattuck (ss)
+NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
+        Reserved. Patent Pending, Technical Pursuit Inc.
+
+        Unless explicitly acquired and licensed under the Technical
+        Pursuit License ("TPL") Version 1.5, the contents of this file
+        are subject to the Reciprocal Public License ("RPL") Version 1.5
+        and You may not copy or use this file in either source code or
+        executable form, except in compliance with the terms and
+        conditions of the RPL.
+
+        You may obtain a copy of both the TPL and RPL (the "Licenses")
+        from Technical Pursuit Inc. at http://www.technicalpursuit.com.
+
+        All software distributed under the Licenses is provided strictly
+        on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+        EXPRESS OR IMPLIED, AND TECHNICAL PURSUIT INC. HEREBY DISCLAIMS
+        ALL SUCH WARRANTIES, INCLUDING WITHOUT LIMITATION, ANY
+        WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+        QUIET ENJOYMENT, OR NON-INFRINGEMENT. See Licenses for specific
+        language governing rights and limitations under the Licenses.
+
+-->
+<!--    =============================================================   -->
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="tdp" default="standard" basedir="~lib/tdp">
+
+<config id="standard">
+    <package src="~lib_cfg/lib_namespaces.xml" config="html"/>
+
+    <property name="tibet.tdpkey" value="DOM_Alt_Up_Up"/>
+    <property name="boot.profile" value="development"/>
+
+    <package src="~lib_cfg/tibet_extensions.xml" config="workflow"/>
+    <package src="~lib_cfg/tibet_extensions.xml" config="shells"/>
+
+    <script src="~tdp_src/TP.tdp.TDPApplication.js"/>
+
+    <script src="~tdp_src/ConsoleRequest.js"/>
+    <script src="~tdp_src/KnockKnock.js"/>
+
+    <script src="~tdp_src/TP.tdp.Console.js"/>
+    <script src="~tdp_src/TP.tdp.TDP.js"/>
+    <script src="~tdp_src/TP.tdp.TDPOutputCell.js"/>
+    <script src="~tdp_src/TP.tdp.HUD.js"/>
+    <script src="~tdp_src/TP.tdp.TDPDataExplorer.js"/>
+    <script src="~tdp_src/TP.tdp.TDPEditor.js"/>
+</config>
+
+<config id="full">
+    <config ref="standard"/>
+    <config ref="builder"/>
+</config>
+
+<config id="builder">
+    <script src="~tdp_src/builder/TPGUIBundle.js"/>
+    <script src="~tdp_src/builder/TPUIBuilderPart.js"/>
+
+    <script src="~tdp_src/builder/TPUIBuilderSignals.js"/>
+
+    <script src="~tdp_src/builder/TPUIElementNodeAdditions.js"/>
+
+    <script src="~tdp_src/builder/TPHalo.js"/>
+    <script src="~tdp_src/builder/TPConnector.js"/>
+
+    <script src="~tdp_src/builder/TPUIEditor.js"/>
+    <script src="~tdp_src/builder/TPUINodeEditor.js"/>
+    <script src="~tdp_src/builder/TPUIElementNodeEditor.js"/>
+
+    <script src="~tdp_src/builder/TPUIBuilderDragDropService.js"/>
+
+    <script src="~tdp_src/builder/TPUITool.js"/>
+    <script src="~tdp_src/builder/TPUIDispenserTool.js"/>
+
+    <script src="~tdp_src/builder/TPUIBuilderTargetIndicator.js"/>
+</config>
+
+</package>
+

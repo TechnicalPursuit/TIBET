@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<xctrls:scrollbox xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+	xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+	tibet:nodetype="xctrls:scrollbox"
+	hidefocus="true">
+    <xctrls:clipbox id="{{@id}}_clip" ev:event="ValueChange" ev:observer="{{@id}}_slide">
+        {{./xctrls:body}}
+	</xctrls:clipbox>
+    <xctrls:slidebar id="{{@id}}_slide"/>
+</xctrls:scrollbox>
+

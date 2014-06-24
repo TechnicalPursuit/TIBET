@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<!-- The hud (heads-up-display) tag supports screen edge tool docking. -->
+<sherpa:hud xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:sherpa="http://www.technicalpursuit.com/2014/sherpa"
+        xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+        id="SherpaHUD" pclass:hidden="true">
+		<sherpa:huddrawer sherpa:edge="topleft" pclass:hidden="true">
+		</sherpa:huddrawer>
+		<sherpa:huddrawer sherpa:edge="top" pclass:hidden="true">
+		</sherpa:huddrawer>
+		<sherpa:huddrawer sherpa:edge="topright" pclass:hidden="true">
+		</sherpa:huddrawer>
+        <sherpa:huddrawer sherpa:edge="right" pclass:hidden="true">
+            <button onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().setView(TP.rtc(512, 384, 1536, 1152))">X</button>
+		</sherpa:huddrawer>
+		<sherpa:huddrawer sherpa:edge="bottomright" pclass:hidden="true">
+		</sherpa:huddrawer>
+        <sherpa:huddrawer sherpa:edge="bottom" pclass:hidden="true">
+            <input type="range" min="0" max="1.0" step="0.01" oninput="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().zoom(this.value)"/>
+		</sherpa:huddrawer>
+		<sherpa:huddrawer sherpa:edge="bottomleft" pclass:hidden="true">
+		</sherpa:huddrawer>
+		<sherpa:huddrawer sherpa:edge="left" pclass:hidden="true">
+		</sherpa:huddrawer>
+</sherpa:hud>

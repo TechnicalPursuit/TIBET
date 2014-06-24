@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!DOCTYPE countries [
+  <!ATTLIST country id ID #IMPLIED>
+]>
+
+<countries>
+  <country id="AF" desc="Afghanistan"/>
+  <country id="AN" desc="Algeria"/>
+  <country id="AD" desc="Andorra"/>
+  <country id="AO" desc="Angola"/>
+  <country id="AI" desc="Antigua and Barbuda"/>
+  <country id="AT" desc="Argentina"/>
+  <country id="AJ" desc="Aruba"/>
+  <country id="AH" desc="Ashmore and Cartier Islands, Territory of"/>
+  <country id="AU" desc="Austria"/>
+  <country id="AV" desc="Azerbaijan"/>
+  <country id="AQ" desc="Azores Islands"/>
+  <country id="BD" desc="Bahamas"/>
+  <country id="BE" desc="Bahrain/Bahrein"/>
+  <country id="BW" desc="Balearic Islands"/>
+  <country id="BL" desc="Bangladesh"/>
+  <country id="BB" desc="Barbados"/>
+  <country id="BF" desc="Bassas Da India"/>
+  <country id="BG" desc="Belgium"/>
+  <country id="BH" desc="Belize"/>
+  <country id="DH" desc="Benin"/>
+  <country id="BM" desc="Bermuda, Dependent Territory of"/>
+  <country id="BN" desc="Bhutan"/>
+  <country id="BV" desc="Bolivia"/>
+  <country id="BP" desc="Bosnia and Herzegovina"/>
+  <country id="BT" desc="Botswana"/>
+  <country id="BQ" desc="Bouvet Island"/>
+  <country id="BZ" desc="Brazil"/>
+  <country id="BO" desc="British Indian Ocean Territory"/>
+  <country id="VB" desc="British Virgin Islands"/>
+  <country id="BX" desc="Brunei"/>
+  <country id="BU" desc="Bulgaria"/>
+  <country id="UV" desc="Burkina Faso"/>
+  <country id="BR" desc="Burma"/>
+  <country id="BI" desc="Burundi"/>
+  <country id="BY" desc="Byelarus"/>
+  <country id="CJ" desc="Cambodia"/>
+  <country id="CM" desc="Cameroon"/>
+  <country id="CD" desc="Canada"/>
+  <country id="ZI" desc="Canary Islands"/>
+  <country id="CV" desc="Cape Verde Islands"/>
+  <country id="CP" desc="Cayman Islands"/>
+  <country id="CW" desc="Central African Republic"/>
+  <country id="CF" desc="Chad"/>
+  <country id="CQ" desc="Chile, Republic of"/>
+  <country id="HR" desc="Christmas Island, Territory of"/>
+  <country id="DB" desc="Clipperton Island"/>
+  <country id="DD" desc="Cocos (Keeling) Islands, Territory of"/>
+  <country id="CB" desc="Colombia, Republic of"/>
+  <country id="DG" desc="Comoros, Federal Islamic Republic of"/>
+  <country id="DI" desc="Cook Islands"/>
+  <country id="DJ" desc="Coral Sea Islands, Territory of"/>
+  <country id="CR" desc="Costa Rica, Republic of"/>
+  <country id="IY" desc="Cote d'Ivoire"/>
+  <country id="KC" desc="Croatia"/>
+  <country id="CC" desc="Cuba, Republic of"/>
+  <country id="CS" desc="Cyprus, Republic of"/>
+  <country id="EZ" desc="Czech Republic"/>
+  <country id="DK" desc="Denmark, Kingdom of"/>
+  <country id="DN" desc="Djibouti, Republic of"/>
+  <country id="DM" desc="Dominica"/>
+  <country id="DR" desc="Dominican Republic"/>
+  <country id="EU" desc="Ecuador"/>
+  <country id="EY" desc="Egypt"/>
+  <country id="EL" desc="El Salvador"/>
+  <country id="EN" desc="England"/>
+  <country id="EK" desc="Equatorial Guinea"/>
+  <country id="ET" desc="Eritrea"/>
+  <country id="ES" desc="Estonia"/>
+  <country id="EO" desc="Ethiopia"/>
+  <country id="ER" desc="Europa Island"/>
+  <country id="FA" desc="Falkland Islands, Colony of the"/>
+  <country id="FO" desc="Faroe Islands"/>
+  <country id="FS" desc="Federated States of Micronesia"/>
+  <country id="FJ" desc="Fiji"/>
+  <country id="FD" desc="Finland"/>
+  <country id="FN" desc="France"/>
+  <country id="FG" desc="French Guiana"/>
+  <country id="FP" desc="French Polynesia, Territory of"/>
+  <country id="FR" desc="French Southern and Antarctic Lands, Territory of"/>
+  <country id="GB" desc="Gabon"/>
+  <country id="GK" desc="Gambia, The"/>
+  <country id="GZ" desc="Gaza"/>
+  <country id="GD" desc="Georgia (formerly Gruzinskaya)"/>
+  <country id="GE" desc="Germany"/>
+  <country id="GG" desc="Ghana"/>
+  <country id="RG" desc="Gibraltar"/>
+  <country id="GO" desc="Glorioso Islands"/>
+  <country id="GC" desc="Greece"/>
+  <country id="GN" desc="Greenland"/>
+  <country id="GP" desc="Guadeloupe, Department of"/>
+  <country id="GT" desc="Guatemala"/>
+  <country id="GF" desc="Guernsey, Bailiwick of"/>
+  <country id="GI" desc="Guinea"/>
+  <country id="PG" desc="Guinea-Bissau"/>
+  <country id="GY" desc="Guyana"/>
+  <country id="HT" desc="Haiti"/>
+  <country id="HE" desc="Heard Island and McDonald Islands, Territory of"/>
+  <country id="HD" desc="Honduras"/>
+  <country id="HK" desc="Hong Kong"/>
+  <country id="HU" desc="Hungary"/>
+  <country id="IC" desc="Iceland"/>
+  <country id="II" desc="India"/>
+  <country id="IO" desc="Indonesia (now includes Portugese Timor)"/>
+  <country id="IR" desc="Iran"/>
+  <country id="IQ" desc="Iraq"/>
+  <country id="IE" desc="Ireland (does not include Northern Ireland)"/>
+  <country id="IB" desc="Isle of Man"/>
+  <country id="IS" desc="Israel"/>
+  <country id="IT" desc="Italy (includes Sicily and Sardinia)"/>
+  <country id="JM" desc="Jamaica"/>
+  <country id="JN" desc="Jan Mayen"/>
+  <country id="JA" desc="Japan"/>
+  <country id="JE" desc="Jersey, Bailiwick of"/>
+  <country id="JO" desc="Jordan"/>
+  <country id="JU" desc="Juan de Nova Island"/>
+  <country id="KT" desc="Kazakhstan"/>
+  <country id="KE" desc="Kenya"/>
+  <country id="KB" desc="Kiribati"/>
+  <country id="KU" desc="Kuwait"/>
+  <country id="KZ" desc="Kyrgyzstan"/>
+  <country id="LS" desc="Laos"/>
+  <country id="LT" desc="Latvia"/>
+  <country id="LN" desc="Lebanon"/>
+  <country id="LE" desc="Lesotho"/>
+  <country id="LB" desc="Liberia"/>
+  <country id="LY" desc="Libya"/>
+  <country id="LI" desc="Liechtenstein"/>
+  <country id="LH" desc="Lithuania"/>
+  <country id="LX" desc="Luxembourg"/>
+  <country id="OC" desc="Macau"/>
+  <country id="ZD" desc="Macedonia"/>
+  <country id="IM" desc="Madeira Islands"/>
+  <country id="MF" desc="Malawi"/>
+  <country id="MZ" desc="Malaysia"/>
+  <country id="MV" desc="Maldives"/>
+  <country id="ML" desc="Mali"/>
+  <country id="MY" desc="Malta"/>
+  <country id="KH" desc="Manahiki Island"/>
+  <country id="ZB" desc="Martinique"/>
+  <country id="MU" desc="Mauritania"/>
+  <country id="UM" desc="Mauritius"/>
+  <country id="YO" desc="Mayotte"/>
+  <country id="MX" desc="Mexico"/>
+  <country id="LD" desc="Moldova"/>
+  <country id="MJ" desc="Monaco"/>
+  <country id="MG" desc="Mongolia"/>
+  <country id="RR" desc="Montserrat"/>
+  <country id="ZO" desc="Mozambique"/>
+  <country id="SJ" desc="Namibia (South-West Africa)"/>
+  <country id="NR" desc="Nauru"/>
+  <country id="NP" desc="Nepal"/>
+  <country id="TS" desc="Nevis and Saint Christopher (Saint Kitts)"/>
+  <country id="NQ" desc="New Caledonia"/>
+  <country id="NZ" desc="New Zealand"/>
+  <country id="NN" desc="Niger"/>
+  <country id="NG" desc="Nigeria"/>
+  <country id="IU" desc="Niue"/>
+  <country id="OF" desc="Norfolk Island, Territory of"/>
+  <country id="KN" desc="North Korea"/>
+  <country id="NI" desc="Northern Ireland"/>
+  <country id="NW" desc="Norway"/>
+  <country id="OI" desc="Okinawa"/>
+  <country id="OM" desc="Oman"/>
+  <country id="PK" desc="Pakistan"/>
+  <country id="PD" desc="Palau, Republic of"/>
+  <country id="PM" desc="Panama"/>
+  <country id="NO" desc="Papua New Guinea"/>
+  <country id="PF" desc="Paracel Islands"/>
+  <country id="PV" desc="Paraguay"/>
+  <country id="RC" desc="People's Republic of China"/>
+  <country id="PU" desc="Peru"/>
+  <country id="PI" desc="Philippines"/>
+  <country id="PC" desc="Pitcairn, Henderson, Ducie, and Oeno Islands"/>
+  <country id="PO" desc="Poland"/>
+  <country id="PT" desc="Portugal"/>
+  <country id="QA" desc="Qatar"/>
+  <country id="RB" desc="Republic of Congo, Brazzaville"/>
+  <country id="RY" desc="Republic of Yemen"/>
+  <country id="RE" desc="Reunion, Department of"/>
+  <country id="RU" desc="Romania/Rumania"/>
+  <country id="RA" desc="Russia"/>
+  <country id="RF" desc="Russian Federation"/>
+  <country id="RW" desc="Rwanda"/>
+  <country id="HS" desc="Saint Helena"/>
+  <country id="LU" desc="Saint Lucia"/>
+  <country id="VV" desc="Saint Vincent and the Grenadines"/>
+  <country id="SH" desc="San Marino"/>
+  <country id="TP" desc="Sao Tome and Principe"/>
+  <country id="SB" desc="Saudi Arabia"/>
+  <country id="SS" desc="Scotland"/>
+  <country id="SG" desc="Senegal"/>
+  <country id="SE" desc="Seychelles"/>
+  <country id="SA" desc="Sierre Leone"/>
+  <country id="SR" desc="Singapore"/>
+  <country id="LF" desc="Slovakia"/>
+  <country id="LO" desc="Slovenia"/>
+  <country id="RV" desc="Socialist Republic of Vietnam"/>
+  <country id="BS" desc="Solomon Islands"/>
+  <country id="SM" desc="Somalia"/>
+  <country id="SF" desc="South Africa"/>
+  <country id="GS" desc="South Georgia and the South Sandwich Islands"/>
+  <country id="KO" desc="South Korea"/>
+  <country id="SP" desc="Spain"/>
+  <country id="TE" desc="Spratly Islands"/>
+  <country id="CY" desc="Sri Lanka"/>
+  <country id="SU" desc="Sudan"/>
+  <country id="ZC" desc="Surinam"/>
+  <country id="SV" desc="Svalbard"/>
+  <country id="SW" desc="Swaziland"/>
+  <country id="SQ" desc="Sweden"/>
+  <country id="SZ" desc="Switzerland"/>
+  <country id="SY" desc="Syria"/>
+  <country id="TW" desc="Taiwan, Republic of China"/>
+  <country id="TJ" desc="Tajikistan"/>
+  <country id="TZ" desc="Tanzania, United Republic of"/>
+  <country id="TH" desc="Thailand"/>
+  <!-- Sadly Tibet does not have a country code. -->
+  <country id="TO" desc="Togo"/>
+  <country id="TK" desc="Tokelau"/>
+  <country id="TG" desc="Tonga"/>
+  <country id="TQ" desc="Tongareva"/>
+  <country id="TT" desc="Trinidad and Tobago"/>
+  <country id="TM" desc="Tromelin Island (French possession)"/>
+  <country id="TD" desc="Trust Territory of the Pacific Islands"/>
+  <country id="TF" desc="Tuamotu Archipelago"/>
+  <country id="TU" desc="Tunisia"/>
+  <country id="TY" desc="Turkey"/>
+  <country id="UR" desc="Turkmenistan"/>
+  <country id="TR" desc="Turks and Caicos Islands"/>
+  <country id="TV" desc="Tuvalu"/>
+  <country id="UG" desc="Uganda"/>
+  <country id="UK" desc="Ukraine"/>
+  <country id="TC" desc="United Arab Emirates (formerly Trucial States)"/>
+  <country id="US" desc="United States of America (USA)"/>
+  <country id="UY" desc="Uruguay"/>
+  <country id="USMIL" desc="USMilitary"/>
+  <country id="USTP" desc="USTerritorialPossession"/>
+  <country id="UZ" desc="Uzbekistan, Republic of"/>
+  <country id="HN" desc="Vanuatu, Republic of"/>
+  <country id="VY" desc="Vatican City"/>
+  <country id="VZ" desc="Venezuela, Republic of"/>
+  <country id="WL" desc="Wales"/>
+  <country id="WF" desc="Wallis and Futuna, Territory of"/>
+  <country id="WB" desc="West Bank"/>
+  <country id="RS" desc="Western Sahara, Independent State of"/>
+  <country id="WS" desc="Western Samoa"/>
+  <country id="YG" desc="Yugoslavia"/>
+  <country id="ZR" desc="Zaire, Republic of"/>
+  <country id="ZM" desc="Zambia, Republic of"/>
+  <country id="RH" desc="Zimbabwe, Republic of"/>
+</countries>

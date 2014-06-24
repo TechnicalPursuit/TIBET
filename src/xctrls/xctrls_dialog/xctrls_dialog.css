@@ -1,0 +1,65 @@
+/*
+	CSS styles for the 'xctrls:dialog' control.
+*/
+
+@import url('../xctrls_common.css');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+xctrls|dialog
+{
+	position: absolute;
+	display: block;
+}
+
+xctrls|dialog > *[tibet|pelem="header"]
+{
+	position: absolute;
+
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
+xctrls|dialog > *[tibet|pelem="body"]
+{
+	position: absolute;
+}
+
+xctrls|dialog > *[tibet|pelem="footer"]
+{
+	position: absolute;
+}
+
+xctrls|dialog > *[tibet|pelem="body"] > xctrls|textitem
+{
+	/* Empty rule - showing selector for documentation purposes */
+}
+
+xctrls|dialog[modal="true"]
+{
+	/* Empty rule - showing selector for documentation purposes */
+}
+
+xctrls|dialog[modal="true"][pclass|closed]
+{
+	display: none;
+}
+
+xctrls|dialog[modal="true"] > *[tibet|pelem="header"]
+{
+	/* Empty rule - showing selector for documentation purposes */
+}
+
+xctrls|dialog[modal="true"] > *[tibet|pelem="body"]
+{
+	/* Empty rule - showing selector for documentation purposes */
+}
+
+xctrls|dialog[modal="true"] > *[tibet|pelem="footer"]
+{
+	/* Empty rule - showing selector for documentation purposes */
+}
+
