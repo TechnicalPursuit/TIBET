@@ -461,11 +461,7 @@ CLI.getCommandPath = function(command) {
 
     // Bootstrapping issue if the command in question is 'clone' or 'init' since
     // we may not have node_modules in place yet and hence no way to find cfg.
-    try {
-        this.initPackage();
-    } catch (e) {
-        // If no package init we can check native commands directly so we can
-        // still run clone/init to get things kicked off.
+    if (command === 'clone' || command === 'init') {
         base = __dirname;
         file = path.join(base, command + '.js');
         if (sh.test('-f', file)) {
@@ -474,8 +470,8 @@ CLI.getCommandPath = function(command) {
         return this.handleError(e, 'loading', command);
     }
 
-    // If we have already initialized we search the app first, then lib. This
-    // lets individual dna templates or applications override built-in commands.
+    this.initPackage();
+
     roots = ['~app_cmd', '~lib_cmd'];
     len = roots.length;
 
