@@ -12,6 +12,9 @@
 
 'use strict';
 
+var CLI = require('./_cli');
+
+
 //  ---
 //  Type Construction
 //  ---
@@ -72,12 +75,8 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    // If the node_modules directory doesn't exist (but we know there's a
-    // package.json due to earlier check) it means 'npm install' was never run.
-    // We have to do that before we can try to start the server.
-    if (!sh.test('-e', 'node_modules')) {
-        this.error('Project not initialized. Run `tibet init` first.');
-        return 1;
+    if (!CLI.isInitialized()) {
+        return CLI.notInitialized();
     }
 
     // Determine the port the user wants to start on.

@@ -33,7 +33,7 @@ Cmd.prototype = new Parent();
  * The default path to the TIBET-specific phantomjs test runner.
  * @type {String}
  */
-Cmd.DEFAULT_RUNNER = './tst/phantomtsh.js';
+Cmd.DEFAULT_RUNNER = './test/phantom/phantomtsh.js';
 
 
 //  ---
@@ -82,6 +82,10 @@ Cmd.prototype.execute = function() {
     var testpath;   // Path to the TIBET test runner script.
     var cmd;        // Local binding variable.
 
+    if (!CLI.isInitialized()) {
+        return CLI.notInitialized();
+    }
+
     path = require('path');
     sh = require('shelljs');
     child = require('child_process');
@@ -99,7 +103,7 @@ Cmd.prototype.execute = function() {
     cmd = this;
 
     process = child.spawn('phantomjs', [testpath,
-        '--profile', '~app/tst/phantom',
+        '--profile', '~app/test/phantom/phantom',
         '--script', ':test -ignore_only']);
 
     process.stdout.on('data', function(data) {

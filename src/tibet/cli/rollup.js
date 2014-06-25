@@ -97,6 +97,10 @@ Cmd.prototype.executeForEach = function(list) {
     cmd = this;
     pkg = this.package;
 
+    if (!CLI.isInitialized()) {
+        return CLI.notInitialized();
+    }
+
     minifyOpts = CLI.ifUndefined(this.config.tibet.minify, {});
 
     list.forEach(function(item) {

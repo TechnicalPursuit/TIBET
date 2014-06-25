@@ -60,8 +60,17 @@ Cmd.prototype.USAGE = 'tibet version';
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
+
+    var path,
+        file,
+        json;
+
+    path = require('path');
+    file = path.join(module.filename, '../../../..', 'package.json');
+
     try {
-        this.info(this.config.npm.dependencies.tibet.version);
+        json = require(file);
+        this.info(json.version);
     } catch (e) {
         this.error('Unable to determine TIBET version.');
     }

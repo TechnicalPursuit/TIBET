@@ -150,10 +150,12 @@ Cmd.prototype.execute = function() {
             this.logCommands(cmds);
         }
 
-        cmds = this.getMakeTargets();
-        if (cmds.length > 0) {
-            this.info('\nCustom `tibet make` targets include:\n');
-            this.logCommands(cmds);
+        if (CLI.isInitialized()) {
+            cmds = this.getMakeTargets();
+            if (cmds.length > 0) {
+                this.info('\nCustom `tibet make` targets include:\n');
+                this.logCommands(cmds);
+            }
         }
     }
 

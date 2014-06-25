@@ -1,5 +1,7 @@
 /**
- * @overview The 'tibet clone' command.
+ * @overview The 'tibet clone' command. This command copies project 'dna' into
+ *     a TIBET project directory, creating the directory if necessary. The dna
+ *     is essentially a named set of files found in a directory.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -17,8 +19,6 @@
  * TODO: Take any/all additional parameters and make them part of the injected
  * data object. Basically allow arbitrary params to be matched to custom
  * templates.
- *
- * TODO: --dna should use what's given if it's a full or relative path.
  *
  * TODO: Silent except when --verbose is on.
  *
@@ -60,7 +60,8 @@ Cmd.prototype.DNA_DEFAULT = 'default';
 
 
 /**
- * Where are the dna templates we should clone from?
+ * Where are the dna templates we should clone from? This value will be joined
+ * with the current file's load path to create the absolute root path.
  * @type {string}
  */
 Cmd.prototype.DNA_ROOT = '../../../../dna/';
@@ -132,22 +133,33 @@ Cmd.prototype.execute = function() {
     sh = require('shelljs');
 
     //  ---
-    //  Confirm the DNA selection.
+    //  Confirm the DNA
     //  ---
 
-    dna = this.DNA_ROOT + this.DNA_DEFAULT;
     if (argv.dna) {
-        dna = this.DNA_ROOT + argv.dna;
-    }
 
-    // Adjust for current module load path.
-    dna = path.join(module.filename, dna);
+        // Try to resolve as an absolute reference.
+        dna = argv.dna;
+        if (!sh.test('-e', dna)) {
 
-    this.verbose('Checking for dna existence: ' + dna);
+            // Try to resolve as a relative reference.
+            dna = path.join(process.cwd(), argv.dna);
+            if (!sh.test('-e', dna)) {
 
-    if (!sh.test('-e', dna)) {
-        this.error('DNA selection not found: ' + dna);
-        return 1;
+                // Try to resolve as pre-built library dna.
+                dna = path.join(module.filename, this.DNA_ROOT, argv.dna);
+                if (!sh.test('-e', dna)) {
+                    this.error('Unable to locate dna: ' + argv.dna);
+                    return 1;
+                }
+            }
+        }
+    } else {
+        dna = path.join(module.filename, this.DNA_ROOT, this.DNA_DEFAULT);
+        if (!sh.test('-e', dna)) {
+            this.error('Default project dna not found: ' + dna);
+            return 1;
+        }
     }
 
     //  ---
@@ -288,16 +300,9 @@ Cmd.prototype.execute = function() {
     });
 
     finder.on('end', function() {
-
-        //  ---
-        //  Clean up our mess if we error'd out.
-        //  ---
-        if (code !== 0) {
-            cmd.error('Cleaning up incomplete clone: ' + target);
-            sh.rm('-rf', target);
-        } else {
+        if (code === 0) {
             cmd.info('TIBET dna \'' + path.basename(dna) + '\' cloned to ' +
-                dirname + ' as ' + appname + '.');
+                dirname + ' as app \'' + appname + '\'.');
         }
     });
 };

@@ -93,6 +93,8 @@ var Package = function(options) {
 
     // Expand options into working properties.
     this.expandOptions();
+
+    this.initialized = true;
 };
 
 //  ---
@@ -875,15 +877,15 @@ Package.prototype.getAppRoot = function() {
         return;
     }
 
-    this.debug('Using app_root: ' + this.app_root);
-
     return this.app_root;
 };
 
 
 /**
  * Returns the library root directory, the path where the tibet library is
- * found.
+ * found. The search is a bit complex because we want to give precedence to
+ * option settings and application-specific settings rather than simply working
+ * from the assumption that we're using the library containing the current CLI.
  */
 Package.prototype.getLibRoot = function() {
 
@@ -906,39 +908,37 @@ Package.prototype.getLibRoot = function() {
         return this.lib_root;
     }
 
-    // App root will be empty if we're not in a project.
+    // Check for any application-specific copy which may have been
+    // installed/frozen.
     app_root = this.getAppRoot();
     if (notEmpty(app_root)) {
-        root = app_root;
-    } else {
-        root = process.env.TIBET_HOME;
-        if (isEmpty(root)) {
-            this.debug('Unable to find lib_root.');
-            return;
-        }
-    }
 
-    testpath = path.join(root, 'node_modules');
-
-    // Look around for node_modules, then try to find tibet.
-    if (!sh.test('-e', testpath)) {
-        testpath = path.join(root, 'TIBET-INF/lib/');
+        // NPM version is best.
+        testpath = path.join(app_root, 'node_modules/tibet');
         if (sh.test('-e', testpath)) {
             this.lib_root = testpath;
             return this.lib_root;
         }
-    } else {
-        testpath = path.join(root, 'node_modules/tibet');
+
+        // Older TIBET-INF library path.
+        testpath = path.join(app_root, 'TIBET-INF/lib/');
         if (sh.test('-e', testpath)) {
             this.lib_root = testpath;
             return this.lib_root;
         }
     }
 
-    // Another option is that we're in the TIBET lib itself...
-    testpath = path.join(root, 'lib/cfg/TIBET.xml');
+    // May be set via environment variable.
+    testpath = process.env.TIBET_HOME;
     if (sh.test('-e', testpath)) {
-        this.lib_root = root;
+        this.lib_root = testpath;
+        return this.lib_root;
+    }
+
+    // Use the information we have about the currently running CLI.
+    testpath = path.join(module.filename, '../../../..', Package.PROJECT_FILE);
+    if (sh.test('-e', testpath)) {
+        this.lib_root = testpath;
         return this.lib_root;
     }
 
@@ -1769,7 +1769,7 @@ Package.prototype.debug = function(msg) {
         return;
     }
 
-    if (!this.getcfg('debug')) {
+    if (this.initialized && !this.getcfg('debug')) {
         return;
     }
 
@@ -1784,7 +1784,7 @@ Package.prototype.verbose = function(msg) {
         return;
     }
 
-    if (!this.getcfg('verbose')) {
+    if (this.initialized && !this.getcfg('verbose')) {
         return;
     }
 

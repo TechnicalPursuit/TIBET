@@ -459,18 +459,27 @@ CLI.getCommandPath = function(command) {
     var base;
     var file;
 
-    // Bootstrapping issue if the command in question is 'clone' or 'init' since
-    // we may not have node_modules in place yet and hence no way to find cfg.
-    if (command === 'clone' || command === 'init') {
-        base = __dirname;
-        file = path.join(base, command + '.js');
-        if (sh.test('-f', file)) {
-            return file;
-        }
-        return this.handleError(e, 'loading', command);
+    // First check is for "built-in" commands. If it's one of those we'll use
+    // that without troubling ourselves with trying to load Package etc.
+    base = __dirname;
+    file = path.join(base, command + '.js');
+    if (sh.test('-f', file)) {
+        return file;
     }
 
-    this.initPackage();
+    // If we're in a project but not initialized make sure they do that first.
+    if (CLI.inProject()) {
+        if (!sh.test('-e', 'node_modules')) {
+            this.error('Project not initialized. Run `tibet init` first.');
+            return 1;
+        }
+    }
+
+    try {
+        this.initPackage();
+    } catch (e) {
+        return this.handleError(e, 'loading', command);
+    }
 
     roots = ['~app_cmd', '~lib_cmd'];
     len = roots.length;
@@ -653,6 +662,21 @@ CLI.inProject = function(CmdType) {
 
 
 /**
+ * Returns true if the current operation is happening in a project (inProject)
+ * and that project has been initialized (has node_modules etc).
+ */
+CLI.isInitialized = function() {
+    var file;
+
+    if (!this.inProject()) {
+        return false;
+    }
+
+    return sh.test('-e', path.join(this.getAppRoot(), 'node_modules/tibet'));
+};
+
+
+/**
  * Outputs a list of items, formatting them to indent and wrap properly.
  * @param {Array.<string>} aList The list of items to output.
  */
@@ -677,6 +701,16 @@ CLI.logItems = function(aList) {
     }
 
     this.info(buffer);
+};
+
+
+/**
+ * Outputs a standard error message and exits. This function is typically called
+ * by commands that require project initialization to run properly.
+ */
+CLI.notInitialized = function() {
+    this.error('Project not initialized. Run `tibet init` first.');
+    return 1;
 };
 
 
@@ -836,8 +870,7 @@ CLI.runFallback = function(command) {
     // If there's no node_modules in place (and hence no tibet, grunt, or gulp
     // that are local) suggest they run `tibet init` first.
     if (!sh.test('-e', 'node_modules')) {
-        this.error('Project not initialized. Run `tibet init` first.');
-        return 1;
+        this.notInitialized();
     }
 
     if (this.hasMakeTarget(command)) {

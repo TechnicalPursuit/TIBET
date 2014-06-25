@@ -78,6 +78,10 @@ Cmd.prototype.execute = function() {
     var cmd;
     var start;
 
+    if (!CLI.isInitialized()) {
+        return CLI.notInitialized();
+    }
+
     // The CLI loads our makefile to check for targets. We can just leverage
     // that here to execute.
     targets = CLI.getMakeTargets();
