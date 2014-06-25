@@ -1110,6 +1110,8 @@ Package.prototype.getVirtualPath = function(aPath) {
       return aPath;
     }
 
+    // TODO: best to replace with a better list derived from reflection on
+    // the sys.cfg path.* properties.
     path = aPath.replace(this.expandPath('~app_cfg'), '~app_cfg');
     path = path.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
     path = path.replace(this.expandPath('~app_src'), '~app_src');

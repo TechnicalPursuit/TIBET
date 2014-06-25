@@ -1361,7 +1361,7 @@ function(aPath, resourceOnly) {
     //  with the path portion extracted we can check for the most common
     //  cases now, which are those involving ~ references (otherwise why use
     //  a TIBET URI :))
-    if (path === '~tibet') {
+    if (path === '~tibet' || path === '~lib') {
         return TP.sys.getLibRoot();
     } else if (path === '~app') {
         return TP.sys.getAppRoot();
@@ -1371,6 +1371,9 @@ function(aPath, resourceOnly) {
         return TP.sys.getLaunchRoot();
     } else if (path.indexOf('~tibet/') === 0) {
         arr = path.match(/~tibet\/(.*)/);
+        path = TP.uriJoinPaths(TP.sys.getLibRoot(), arr.last());
+    } else if (path.indexOf('~lib/') === 0) {
+        arr = path.match(/~lib\/(.*)/);
         path = TP.uriJoinPaths(TP.sys.getLibRoot(), arr.last());
     } else if (path.indexOf('~app/') === 0) {
         arr = path.match(/~app\/(.*)/);

@@ -64,7 +64,7 @@ function(aRequest) {
 
                 elem = TP.documentCreateScriptElement(
                     doc,
-                    TP.uc('~lib_src/tibet/boot/tibet_hook.js').getLocation());
+                    TP.uc('~lib_build/tibet_hook.min.js').getLocation());
 
                 head = TP.documentEnsureHeadElement(doc);
 

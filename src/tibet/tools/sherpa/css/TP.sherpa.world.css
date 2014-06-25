@@ -13,7 +13,7 @@ sherpa|world
 	-moz-transform-origin: 0px 0px;
 	-webkit-transform-origin: 0px 0px;
 
-	background-image: url('~lib_img/tibet_world.gif');
+	background-image: url('../../../../../lib/img/tibet_world.gif');
 	background-position: center center;
 	background-repeat: no-repeat;
 }

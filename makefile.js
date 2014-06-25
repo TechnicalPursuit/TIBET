@@ -113,7 +113,8 @@
         npmdir = path.join(__dirname, 'node_modules');
         sh.cd(path.join(npmdir, 'codemirror'));
         sh.exec('npm install -d');
-        sh.exec('cp -f -R lib/ ../../deps/codemirror/lib');
+        sh.exec('mkdir ../../deps/codemirror');
+        sh.exec('cp -f -R lib ../../deps/codemirror/lib');
         sh.exec('mkdir ../../deps/codemirror/mode');
         sh.exec('cp -f -R mode/javascript ../../deps/codemirror/mode');
         sh.exec('cp -f -R mode/xml ../../deps/codemirror/mode');

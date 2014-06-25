@@ -1490,11 +1490,13 @@ function() {
                     TP.hc('uri', TP.w3.Xmlns.SIGNALS,
                             'mimetype', TP.ietf.Mime.XML,
                             'prefix', 'sig'),
+/*
             TP.w3.Xmlns.SMIL,
                     TP.hc('uri', TP.w3.Xmlns.SMIL,
                             'mimetype', TP.ietf.Mime.SMIL,
                             'prefix', 'smil',
                             'rootElement', 'smil'),
+*/
             TP.w3.Xmlns.SVG,
                     TP.hc('uri', TP.w3.Xmlns.SVG,
                             'mimetype', TP.ietf.Mime.SVG,

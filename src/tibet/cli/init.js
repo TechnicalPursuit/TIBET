@@ -96,14 +96,12 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    this.warn('Project not initialized. Initializing.');
-
     if (this.argv.link === true) {
 
         // For reasons largely due to how the CLI needs to operate (and
         // until the code is part of the global npm package install) we
         // also need an internal link to the tibet 5.0 platform.
-        cmd.warn('TIBET v5.0 required. Trying `npm link tibet`.');
+        cmd.warn('Linking TIBET dynamically via `npm link tibet`.');
 
         child.exec('npm link tibet', function(err, stdout, stderr) {
             if (err) {
@@ -113,13 +111,12 @@ Cmd.prototype.execute = function() {
                 throw new Error();
             }
 
-            cmd.info('TIBET v5.0 linked successfully.');
+            cmd.info('TIBET development dependency linked successfully.');
 
             // Ensure npm install is run once we're sure the things that
             // need to be 'npm link'd into place have been. If we don't
             // do this last it'll just fail.
-            cmd.info(
-                'Installing project dependencies via `npm install`.');
+            cmd.info('Installing additional dependencies via `npm install`.');
 
             child.exec('npm install', function(err, stdout, stderr) {
                 if (err) {

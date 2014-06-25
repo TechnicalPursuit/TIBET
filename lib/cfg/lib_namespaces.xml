@@ -48,7 +48,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
     <config ref="xctrls"/>
 
-    <config ref="smil"/>
     <config ref="svg" unless="ie"/>
     <config ref="xmpp"/>
     <config ref="xs"/>
@@ -125,11 +124,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     <script src="sig/sig_.js"/>
     <script src="sig/sig_dispatch.js"/>
     <script src="sig/sig_action.js"/>
-</config>
-
-<config id="smil">
-    <script src="smil/smil_.js"/>
-    <script src="smil/smil_animate.js"/>
 </config>
 
 <config id="svg">

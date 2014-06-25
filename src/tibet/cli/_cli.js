@@ -459,16 +459,23 @@ CLI.getCommandPath = function(command) {
     var base;
     var file;
 
-    // First check is for "built-in" commands. If it's one of those we'll use
-    // that without troubling ourselves with trying to load Package etc.
-    base = __dirname;
-    file = path.join(base, command + '.js');
-    if (sh.test('-f', file)) {
-        return file;
+    // Bootstrapping issue if the command in question is 'clone' or 'init' since
+    // we may not have node_modules in place yet and hence no way to find cfg.
+    try {
+        this.initPackage();
+    } catch (e) {
+        // If no package init we can check native commands directly so we can
+        // still run clone/init to get things kicked off.
+        base = __dirname;
+        file = path.join(base, command + '.js');
+        if (sh.test('-f', file)) {
+            return file;
+        }
+        return this.handleError(e, 'loading', command);
     }
 
-    this.initPackage();
-
+    // If we have already initialized we search the app first, then lib. This
+    // lets individual dna templates or applications override built-in commands.
     roots = ['~app_cmd', '~lib_cmd'];
     len = roots.length;
 
