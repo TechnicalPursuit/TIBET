@@ -80,9 +80,12 @@ Cmd.prototype.execute = function() {
     var process;    // The spawned child process.
     var path;       // The path module.
     var testpath;   // Path to the TIBET test runner script.
+    var profile;    // The test profile to use.
     var cmd;        // Local binding variable.
 
-    if (!CLI.isInitialized()) {
+    // We can run in the TIBET library, or in a project, but not in an
+    // un-initialized project.
+    if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
     }
 
@@ -90,18 +93,22 @@ Cmd.prototype.execute = function() {
     sh = require('shelljs');
     child = require('child_process');
 
-    // Run phantomjs with a manufactured command line which reflects the :test
-    // command we'd run if we were in the TIBET Shell environment.
+    cmd = this;
 
-    testpath = CLI.expandPath(
-        path.join('~/node_modules/tibet/', Cmd.DEFAULT_RUNNER));
+    // Verify we can find the test runner script.
+    testpath = CLI.expandPath(path.join('~lib_root/', Cmd.DEFAULT_RUNNER));
     if (!sh.test('-e', testpath)) {
         this.log('cannot find runner at: ' + testpath);
         return;
     }
 
-    cmd = this;
+    if (CLI.inProject()) {
+        profile = '~app/test/phantom/phantom';
+    } else {
+        profile = '~lib/test/phantom/phantom';
+    }
 
+    // Run a manufactured tsh:test command just as we would in the TDC/Sherpa.
     process = child.spawn('phantomjs', [testpath,
         '--profile', '~app/test/phantom/phantom',
         '--script', ':test -ignore_only']);

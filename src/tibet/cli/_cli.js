@@ -130,10 +130,10 @@ CLI.MAKE_FILE = 'makefile.js';
 
 
 /**
- * The location of TIBET's Package object.
+ * The name of the npm package file.
  * @type {string}
  */
-CLI.PACKAGE_FILE = '_Package.js';
+CLI.PACKAGE_FILE = 'package.json';
 
 
 /**
@@ -604,7 +604,7 @@ CLI.initPackage = function() {
         return;
     }
 
-    Package = require(path.join(__dirname, this.PACKAGE_FILE));
+    Package = require(path.join(__dirname, '_Package.js'));
     this._package = new Package(this.options);
 };
 
@@ -643,13 +643,34 @@ CLI.inProject = function(CmdType) {
                 this.config.tibet = require(fullpath);
             } catch (e) {
                 // Make sure we default to some value.
-                this.config.tibet = {};
+                this.config.tibet = this.config.tibet || {};
 
                 // Don't output warnings about project issues when providing
                 // help text.
                 if (CmdType && CmdType.NAME !== 'help') {
                     this.warn('Error loading project file: ' + e.message);
                 }
+            }
+
+            // Load the package.json file as well so we can access current
+            // project configuration info specific to npm.
+            try {
+                this.config.npm = require(path.join(cwd, this.PACKAGE_FILE));
+            } catch (e) {
+                // Make sure we default to some value.
+                this.config.npm = this.config.npm || {};
+
+                // Don't output warnings about project issues when providing
+                // help text.
+                if (CmdType && CmdType.NAME !== 'help') {
+                    this.warn('Error loading project file: ' + e.message);
+                }
+            }
+
+            // One last check. The TIBET library will have a package and project
+            // file but we don't consider it to be a "project" per se.
+            if (this.config.npm.name === 'tibet') {
+                return false;
             }
 
             return true;
