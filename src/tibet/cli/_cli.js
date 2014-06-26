@@ -610,6 +610,16 @@ CLI.initPackage = function() {
 
 
 /**
+ * Returns true if the command context is the TIBET library.
+ * @param {Object} CmdType The command type currently being processed.
+ * @return {Boolean} True if the current context is inside the TIBET library.
+ */
+CLI.inLibrary = function(CmdType) {
+    return !this.inProject(CmdType) && this.config.npm.name === 'tibet';
+};
+
+
+/**
  * Returns true if the command is currently being invoked from within a project
  * directory, false if it's being run outside of one. Some commands like 'start'
  * operate differently when they are invoked outside vs. inside of a project
@@ -659,12 +669,6 @@ CLI.inProject = function(CmdType) {
             } catch (e) {
                 // Make sure we default to some value.
                 this.config.npm = this.config.npm || {};
-
-                // Don't output warnings about project issues when providing
-                // help text.
-                if (CmdType && CmdType.NAME !== 'help') {
-                    this.warn('Error loading project file: ' + e.message);
-                }
             }
 
             // One last check. The TIBET library will have a package and project
@@ -883,7 +887,7 @@ CLI.runCommand = function(command, cmdPath) {
  */
 CLI.runFallback = function(command) {
 
-    if (!CLI.inProject()) {
+    if (!CLI.inProject() && !CLI.inLibrary()) {
         this.error('Command not found: ' + command + '.');
         return 1;
     }

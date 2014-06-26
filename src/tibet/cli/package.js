@@ -161,7 +161,7 @@ Cmd.prototype.execute = function() {
     // the package options they need.
     this.finalizePackageOptions();
 
-    Package = require(path.join(__dirname, CLI.PACKAGE_FILE));
+    Package = require(path.join(__dirname, '_Package.js'));
     this.package = new Package(this.pkgOpts);
 
     if (this.pkgOpts.all) {

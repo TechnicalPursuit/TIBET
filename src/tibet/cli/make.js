@@ -78,7 +78,7 @@ Cmd.prototype.execute = function() {
     var cmd;
     var start;
 
-    if (!CLI.isInitialized()) {
+    if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
     }
 

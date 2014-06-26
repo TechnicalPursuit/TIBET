@@ -10646,7 +10646,7 @@ TP.boot.$configurePackage = function() {
         TP.boot.$$bootxml = xml;
         TP.boot.$$bootfile = file;
     } else {
-        throw new Error('Boot package not found: ' + package);
+        throw new Error('Boot package not found: ' + file);
     }
 
     return xml;

@@ -97,7 +97,7 @@ Cmd.prototype.executeForEach = function(list) {
     cmd = this;
     pkg = this.package;
 
-    if (!CLI.isInitialized()) {
+    if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
     }
 

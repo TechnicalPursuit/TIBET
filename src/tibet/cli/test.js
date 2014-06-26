@@ -55,7 +55,7 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         boolean: ['ignore_only', 'ignore_skip'],
-        string: ['target'],
+        string: ['script', 'profile'],
         default: {}
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -81,6 +81,7 @@ Cmd.prototype.execute = function() {
     var path;       // The path module.
     var testpath;   // Path to the TIBET test runner script.
     var profile;    // The test profile to use.
+    var script;     // The test script to run.
     var cmd;        // Local binding variable.
 
     // We can run in the TIBET library, or in a project, but not in an
@@ -102,16 +103,26 @@ Cmd.prototype.execute = function() {
         return;
     }
 
+    if (CLI.notEmpty(this.argv.script)) {
+        script = this.argv.script;
+    }
+
+    if (CLI.notEmpty(this.argv.profile)) {
+        profile = this.argv.profile;
+    }
+
     if (CLI.inProject()) {
-        profile = '~app/test/phantom/phantom';
+        script = script || ':test';
+        profile = profile || '~app/test/phantom';
     } else {
-        profile = '~lib/test/phantom/phantom';
+        script = script || ':test -ignore_only';
+        profile = profile || '~lib/test/phantom/phantom';
     }
 
     // Run a manufactured tsh:test command just as we would in the TDC/Sherpa.
     process = child.spawn('phantomjs', [testpath,
-        '--profile', '~app/test/phantom/phantom',
-        '--script', ':test -ignore_only']);
+        '--profile', profile,
+        '--script', script]);
 
     process.stdout.on('data', function(data) {
         var msg = data.slice(0, -1);
