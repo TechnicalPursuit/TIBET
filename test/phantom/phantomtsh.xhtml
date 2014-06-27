@@ -35,10 +35,25 @@ iframe {
 <script type="text/javascript">
 //<![CDATA[
 function init() {
+
+    var approot,
+        libroot,
+        location;
+
+    // The harness can boot from either inside a project or within the library
+    // itself. As a result we need to adjust approot based on context.
+    location = window.location.toString();
+    libroot = '~/../..';
+    if (/node_modules/.test(location)) {
+        approot = '~/../../../..';
+    } else {
+        approot = libroot;
+    }
+
     TP.boot.launch({
         boot: {
-            approot: '~/../..',
-            libroot: '~/../..',
+            approot: approot,
+            libroot: libroot,
             app_html: '~/test/phantom'
         },
         log: {
