@@ -47,19 +47,24 @@ Cmd.CONFIG = '~/.eslintrc';
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Lints files in a package#config. The package#config defaults to\n' +
-'~/TIBET-INF/app.xml and its default config. The eslint utility is\n' +
-'used for JavaScript due to its configurable/customizable rulesets.\n' +
-'The csslint and jsonlint utilities are also leveraged as needed.\n\n' +
+'Runs one or more lint tools on various files in a package#config.\n\n' +
+
+'The package#config defaults to ~app_cfg/app.xml and its default\n' +
+'config (usually #base). The eslint utility is used for JavaScript\n' +
+'due to its focus on configurable and customizable rulesets.\n\n' +
 
 '--stop tells the linter to stop after the first file with errors.\n\n' +
+
 '[package-opts] refers to valid options for a TIBET Package object.\n' +
 'These include --package, --config, --phase, --assets, etc.\n' +
 'See help on the \'tibet package\' command for more information.\n\n' +
 
 '[eslint-opts] refers to --cfg, --rules, and --format which allow\n' +
 'you to configure eslint to meet your specific needs. The linter will\n' +
-'automatically take advantage of an .eslintrc file in your project.\n';
+'automatically take advantage of an .eslintrc file in your project.\n\n' +
+
+'In the future this command will also support css, html, xml, and other\n' +
+'formats using appropriate linters for those mime types.\n';
 
 /**
  * Command argument parsing options.

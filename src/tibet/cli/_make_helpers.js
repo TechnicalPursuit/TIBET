@@ -1,65 +1,71 @@
 /**
- * Sample TIBET-style makefile. Target functions are converted to promise
- * objects so you can use then() to chain tasks easily.
+ * @file _make_helpers.js
+ * @overview Common shared utility functions for TIBET-style 'make' operations.
+ *     See the make.js command file for more information on 'tibet make'.
+ * @author Scott Shattuck (ss)
+ * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     open source waivers to keep your derivative work source code private.
  */
 
 (function() {
 
-    'use strict';
+'use strict';
 
-    var sh = require('shelljs');
+var sh = require('shelljs');
 
+/**
+ * Canonical `helper` object for internal utility functions.
+ */
+var helpers = {};
 
-    /**
-     * Canonical `helper` object for internal utility functions.
-     */
-    var helpers = {};
+/**
+ * A common utility used by rollup operations to avoid duplication of the
+ * logic behind building specific rollup products.
+ */
+helpers.rollup = function(make, name, pkg, config, headers, minify, promise) {
+    var result;
+    var cmd;
+    var ext;
+    var file;
 
+    make.log('rolling up ' + name);
 
-    /**
-     *
-     */
-    helpers.rollup = function(make, name, pkg, config, headers, minify, promise) {
-        var result;
-        var cmd;
-        var ext;
-        var file;
+    cmd = 'tibet rollup --package \'' + pkg +
+        '\' --config ' + config +
+        (headers ? '' : ' --no-headers') +
+        (minify ? ' --minify' : '');
 
-        make.log('rolling up ' + name);
+    make.log('executing ' + cmd);
+    result = sh.exec(cmd, {
+        silent: true
+    });
 
-        cmd = 'tibet rollup --package \'' + pkg +
-            '\' --config ' + config +
-            (headers ? '' : ' --no-headers') +
-            (minify ? ' --minify' : '');
+    if (result.code !== 0) {
+        promise.reject(result.output);
+        return;
+    }
 
-        make.log('executing ' + cmd);
-        result = sh.exec(cmd, {
-            silent: true
-        });
+    if (minify) {
+        ext = '.min.js';
+    } else {
+        ext = '.js';
+    }
 
-        if (result.code !== 0) {
-            promise.reject(result.output);
-            return;
-        }
+    file = './build/tibet_' + name + ext;
 
-        if (minify) {
-            ext = '.min.js';
-        } else {
-            ext = '.js';
-        }
+    try {
+        make.log('Writing ' + result.output.length + ' chars to: ' + file);
+        result.output.to(file);
+        promise.resolve();
+    } catch (e) {
+        make.error('Unable to write to: ' + file);
+        promise.reject(e);
+    }
+};
 
-        file = './build/tibet_' + name + ext;
-
-        try {
-            make.log('Writing ' + result.output.length + ' chars to: ' + file);
-            result.output.to(file);
-            promise.resolve();
-        } catch (e) {
-            make.error('Unable to write to: ' + file);
-            promise.reject(e);
-        }
-    };
-
-    module.exports = helpers;
+module.exports = helpers;
 
 }());

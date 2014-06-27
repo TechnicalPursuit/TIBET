@@ -285,49 +285,6 @@ CLI.notValid = function(aReference) {
 //  ---
 
 /**
- * Returns true if the current context is appropriate for the command to run.
- * The primary response here is based on "context" in that some commands are
- * only useful within a project, some must be outside a project, and some can be
- * run from any location.
- * @param {Object} CmdType The command type to check.
- * @return {Boolean} True if the command is runnable.
- */
-CLI.canRun = function(CmdType) {
-
-    if (CLI.inProject(CmdType)) {
-        return CmdType.CONTEXT !== CLI.CONTEXTS.OUTSIDE;
-    } else {
-        return CmdType.CONTEXT !== CLI.CONTEXTS.INSIDE;
-    }
-};
-
-
-/**
- * Expands a TIBET virtual path to its equivalent non-virtual path.
- * @param {String} aPath The path to be expanded.
- * @return {String} The fully-expanded path value.
- */
-CLI.expandPath = function(aPath) {
-
-    this.initPackage();
-
-    return this._package.expandPath(aPath);
-};
-
-
-/**
- * Returns true if the object provided is an 'Object' as opposed to a string,
- * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
- * hash of keys.
- * @param {Object} obj The object to test.
- * @return {Boolean} True if the object is an Object.
- */
-CLI.isObject = function(obj) {
-    return Object.prototype.toString.call(obj) === '[object Object]';
-};
-
-
-/**
  * A useful variation on extend from other libs sufficient for parameter block
  * copies. The objects passed are expected to be simple JavaScript objects. No
  * checking is done to support more complex cases. Slots in the target are only
@@ -395,6 +352,37 @@ CLI.blend = function (target, source) {
     });
 
     return target;
+};
+
+
+/**
+ * Returns true if the current context is appropriate for the command to run.
+ * The primary response here is based on "context" in that some commands are
+ * only useful within a project, some must be outside a project, and some can be
+ * run from any location.
+ * @param {Object} CmdType The command type to check.
+ * @return {Boolean} True if the command is runnable.
+ */
+CLI.canRun = function(CmdType) {
+
+    if (CLI.inProject(CmdType)) {
+        return CmdType.CONTEXT !== CLI.CONTEXTS.OUTSIDE;
+    } else {
+        return CmdType.CONTEXT !== CLI.CONTEXTS.INSIDE;
+    }
+};
+
+
+/**
+ * Expands a TIBET virtual path to its equivalent non-virtual path.
+ * @param {String} aPath The path to be expanded.
+ * @return {String} The fully-expanded path value.
+ */
+CLI.expandPath = function(aPath) {
+
+    this.initPackage();
+
+    return this._package.expandPath(aPath);
 };
 
 
@@ -698,6 +686,18 @@ CLI.isInitialized = function() {
     }
 
     return sh.test('-e', path.join(this.getAppRoot(), 'node_modules/tibet'));
+};
+
+
+/**
+ * Returns true if the object provided is an 'Object' as opposed to a string,
+ * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
+ * hash of keys.
+ * @param {Object} obj The object to test.
+ * @return {Boolean} True if the object is an Object.
+ */
+CLI.isObject = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]';
 };
 
 

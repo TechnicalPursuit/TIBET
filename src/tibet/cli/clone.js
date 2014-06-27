@@ -10,7 +10,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-
 /*
  * TODO:  Add search for {{libroot}} (node_modules) etc. etc. and inject that
  * as part of templating. We need to have certain locations (css paths,
@@ -24,7 +23,6 @@
  *
  * TODO: Debugging output based on --debug being set.
  */
-
 
 (function() {
 
@@ -72,15 +70,20 @@ Cmd.prototype.DNA_ROOT = '../../../../dna/';
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Clones a TIBET application template from a TIBET \'dna\' directory.\n' +
+'Clones a TIBET application template from a supplied \'dna\' directory.\n\n' +
+
 '<dirname> is required and must be a valid directory name to clone to.\n' +
 'By default the dirname will be the appname unless otherwise specified.\n'+
+'You can use \'.\' to clone to the current directory. Existing files are\n'+
+'ignored in such cases and you may need to merge/copy manually as needed.\n\n' +
+
 'The optional --name parameter lets you rename from the directory name\n' +
-'to an alternative name. This lets the directory and appname vary.\n' +
+'to an alternative name. This lets the directory and appname vary. This\n' +
+'is common when cloning to existing directories or poorly named ones.\n\n' +
+
 'The optional --dna parameter lets you clone any valid template in\n' +
 'TIBET\'s `dna` directory or a directory of your choosing. This latter\n' +
-'option lets you create your own reusable custom application templates.\n\n' +
-'--dna <template>       Provides for cloning any directory or template.\n';
+'option lets you create your own reusable custom application templates.\n';
 
 /**
  * The command usage string.

@@ -30,6 +30,20 @@ Cmd.prototype = new Parent();
 //  ---
 
 /**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+'Starts the current TIBET project development server, if any.\n\n' +
+
+'Many TIBET dna templates provide a simple Node.js-based server\n' +
+'for use during development. If the current project contains either\n' +
+'a server.js file or can invoke \'npm start\' this command will\n' +
+'try to start that server.\n\n' +
+'The optional --port parameter lets you specify a port other than\n' +
+'the default (which is port 1407).\n';
+
+/**
  * The default TIBET port.
  * @type {number}
  */

@@ -47,14 +47,26 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
  * @type {string}
  */
 Cmd.prototype.HELP =
-    'Dumps the current TIBET configuration data to stdout.';
-
+    'Displays the current TIBET configuration data to stdout.\n\n' +
+    'The config command will output one or more configuration\n' +
+    'values to the console using the current configuration data\n' +
+    'for your application.\n\n' +
+    'You can view the entire configuration list by leaving off\n' +
+    'any specific value. You can view all values for a particular\n' +
+    'prefix by listing just the prefix. You can view a specific\n' +
+    'value by naming that value in particular\n\n' +
+    'Examples:\n\n' +
+    'tibet config -> list all configuration values\n' +
+    'tibet config boot -> list all boot.* values\n' +
+    'tibet config boot.bootstrap -> list a value\n\n' +
+    'In the future you will be able to use this command to set the\n' +
+    'value for specific parameters, further simplifying configuration.\n';
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet config';
+Cmd.prototype.USAGE = 'tibet config [property]';
 
 
 //  ---

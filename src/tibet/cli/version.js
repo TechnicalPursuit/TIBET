@@ -41,7 +41,8 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
  * @type {string}
  */
 Cmd.prototype.HELP =
-    'Displays the current version of TIBET.';
+    'Displays the current version of TIBET. Also available as the\n' +
+    '--version flag on the \'tibet\' command (tibet --version).\n';
 
 
 /**
@@ -65,12 +66,8 @@ Cmd.prototype.execute = function() {
         file,
         json;
 
-    path = require('path');
-    file = path.join(module.filename, '../../../..', 'package.json');
-
     try {
-        json = require(file);
-        this.info(json.version);
+        this.info(CLI.config.npm.version);
     } catch (e) {
         this.error('Unable to determine TIBET version.');
     }

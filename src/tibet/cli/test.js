@@ -45,7 +45,16 @@ Cmd.DEFAULT_RUNNER = './test/phantom/phantomtsh.js';
  * @type {String}
  */
 Cmd.prototype.HELP =
-    'Runs unit and functional tests for the library and application.';
+'Runs the TIBET phantomtsh test runner to test your application.\n\n' +
+'The default operation makes use of ~app_test/phantom.xml as the\n' +
+'boot.profile (which controls what code is loaded) and a TSH shell\n' +
+'command of \':test\' which will run all test suites in the profile.\n\n' +
+'Output is to the console in colorized TAP format by default.\n' +
+'Future versions will support additional test output formatters.\n\n' +
+'Changing the boot profile is not normally required however you\n' +
+'can easily test components simply by naming them via the --script\n' +
+'parameter. For example, you can run all String tests via:\n\n' +
+'tibet test --script \':test String\'\n';
 
 
 /**
@@ -64,7 +73,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [options]';
+Cmd.prototype.USAGE = 'tibet test [--profile <url>] [--script <tsh>]';
 
 //  ---
 //  Instance Methods
