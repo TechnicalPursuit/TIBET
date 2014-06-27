@@ -1,5 +1,7 @@
 /**
- * @overview The 'tibet test' command.
+ * @overview The 'tibet test' command. Runs phantomjs via TIBET's phantomtsh
+ *     script runner. The script run is typically the TSH script ':test' which
+ *     will run the tsh:test command tag to invoke all test suites.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the

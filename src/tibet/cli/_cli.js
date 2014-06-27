@@ -1,10 +1,10 @@
 /**
  * @file _cli.js
- * @overview TIBET command-line processor. Individual command files do the work.
- *     The logic here is focused on command identification, initial argument
- *     processing, command file loading, and common utilities for commands.
- *     If a command isn't found the CLI will check for a TIBET-style makefile.js
- *     target followed by a grunt or gulp task to invoke to perform the work.
+ * @overview The TIBET command-line harness. Logic here is focused on command
+ *     identification, initial argument processing, command file loading, and
+ *     common utilities for commands. If a command isn't found the CLI will
+ *     check for a TIBET-style makefile.js target followed by a grunt or gulp
+ *     task to perform the work.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -264,6 +264,17 @@ CLI.system = function(msg) {
 CLI.isEmpty = function(aReference) {
     return aReference === null || aReference === undefined ||
         aReference.length === 0;
+};
+
+/**
+ * Returns true if the object provided is an 'Object' as opposed to a string,
+ * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
+ * hash of keys.
+ * @param {Object} obj The object to test.
+ * @return {Boolean} True if the object is an Object.
+ */
+CLI.isObject = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Object]';
 };
 
 CLI.isValid = function(aReference) {
@@ -686,18 +697,6 @@ CLI.isInitialized = function() {
     }
 
     return sh.test('-e', path.join(this.getAppRoot(), 'node_modules/tibet'));
-};
-
-
-/**
- * Returns true if the object provided is an 'Object' as opposed to a string,
- * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
- * hash of keys.
- * @param {Object} obj The object to test.
- * @return {Boolean} True if the object is an Object.
- */
-CLI.isObject = function(obj) {
-    return Object.prototype.toString.call(obj) === '[object Object]';
 };
 
 

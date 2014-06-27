@@ -49,10 +49,10 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
  * @type {string}
  */
 Cmd.prototype.HELP =
-    'Echoes the command line arguments to stdout.\n\n' +
-    'This command can be used as a template for your own custom\n' +
-    'commands or to help view how arguments are being parsed.\n';
+'Echoes the command line arguments to stdout.\n\n' +
 
+'This command can be used as a template for your own custom commands or\n' +
+'to help view how arguments are being parsed.\n';
 
 /**
  * The command usage string.

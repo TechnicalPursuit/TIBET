@@ -1,5 +1,7 @@
 /**
- * @overview The 'tibet start' command.
+ * @overview The 'tibet start' command. Starts any local TIBET development
+ *     server which might exist, or simply runs 'npm start' to start any
+ *     process associated with npm via the current package.json file.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the

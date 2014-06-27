@@ -41,8 +41,8 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
  * @type {string}
  */
 Cmd.prototype.HELP =
-    'Displays the current version of TIBET. Also available as the\n' +
-    '--version flag on the \'tibet\' command (tibet --version).\n';
+'Displays the current version of TIBET. Also available as the\n' +
+'--version flag on the \'tibet\' command (tibet --version).\n';
 
 
 /**

@@ -21,6 +21,7 @@ var sh = require('shelljs');
  */
 var helpers = {};
 
+
 /**
  * A common utility used by rollup operations to avoid duplication of the
  * logic behind building specific rollup products.

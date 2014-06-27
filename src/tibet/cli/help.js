@@ -1,8 +1,8 @@
 /**
  * @overview The 'tibet help' command. Displays the usage and/or help text for a
  *     command, or for the entire TIBET CLI if no command name is given. Note
- *     that if `tibet help` is invoked within a project any custom commands for
- *     that application are also listed.
+ *     that if `tibet help` is invoked within a project any custom commands or
+ *     makefile.js targets for that application are also listed.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -53,10 +53,10 @@ Cmd.NAME = 'help';
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Displays usage and help information for a specific command, or for the\n' +
-'\'tibet\' command if no specific command is given. This command is also\n' +
-'run if you do not provide a command to the \'tibet\' command itself.\n';
+'Displays usage and help for a specific command, or the \'tibet\' command\n\n' +
 
+'You can alternatively get usage data via the --usage flag on each command\n' +
+'or complete help output by using the --help flag on the target command.\n';
 
 /**
  * The command usage string.

@@ -52,10 +52,9 @@ Cmd.prototype.HELP =
 
 'You can minify output via the --minify flag, and turn off headers via\n' +
 '--no-headers should you choose. Normally these flags are managed by one\n' +
-'or more makefile.js targets used to build library or application bundles.\n\n' +
+'or more makefile.js targets used to build library or app-level bundles.\n\n' +
 
-'<package-opts> refers to options which mirror those for the \'package\'\n' +
-'command. See \'tibet help package\' documentation for more.\n';
+'<package-opts> refers to options for the \'tibet package\' command.\n';
 
 
 /**

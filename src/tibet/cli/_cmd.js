@@ -96,7 +96,8 @@ Cmd.prototype.help = function() {
     this.usage();
 
     // Dump any additional HELP text.
-    this.info((this.HELP || '') + '\n');
+    this.info((this.HELP || '') + '\n' +
+    'For more visit http://github.com/TechnicalPursuit/TIBET/wiki.\n');
 };
 
 
@@ -161,11 +162,11 @@ Cmd.prototype.run = function(options) {
     this.argv = this.parse();
 
     if (this.argv.usage || this.options.usage) {
-        this.usage();
+        return this.usage();
     }
 
     if (this.argv.help || this.options.help) {
-        this.help();
+        return this.help();
     }
 
     this.execute();

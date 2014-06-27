@@ -1,27 +1,14 @@
 /**
  * @overview The 'tibet clone' command. This command copies project 'dna' into
- *     a TIBET project directory, creating the directory if necessary. The dna
- *     is essentially a named set of files found in a directory.
+ *     a TIBET project directory, creating the directory if necessary. Files in
+ *     the DNA containing handlebars templates are processed with an object
+ *     containing the appname and any other argument values for the command.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     open source waivers to keep your derivative work source code private.
- */
-
-/*
- * TODO:  Add search for {{libroot}} (node_modules) etc. etc. and inject that
- * as part of templating. We need to have certain locations (css paths,
- * index.html paths to boot code) know where the root of the TIBET lib is.
- *
- * TODO: Take any/all additional parameters and make them part of the injected
- * data object. Basically allow arbitrary params to be matched to custom
- * templates.
- *
- * TODO: Silent except when --verbose is on.
- *
- * TODO: Debugging output based on --debug being set.
  */
 
 (function() {
@@ -118,6 +105,7 @@ Cmd.prototype.execute = function() {
     var ignore;     // List of extensions we'll ignore when templating.
     var finder;     // The find event emitter we'll handle find events on.
     var target;     // The target directory name (based on appname).
+    var params;     // Parameter data for template processing.
 
     var cmd = this; // Closure'd var for getting back to this command object.
 
@@ -207,6 +195,8 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
+    params = CLI.blend({appname: appname}, argv);
+
     //  ---
     //  Process templated content to inject appname.
     //  ---
@@ -264,7 +254,7 @@ Cmd.prototype.execute = function() {
             }
 
             try {
-                content = template({appname: appname});
+                content = template(params);
                 if (!content) {
                     throw new Error('InvalidContent');
                 }
