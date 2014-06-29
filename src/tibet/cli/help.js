@@ -80,7 +80,7 @@ Cmd.prototype.help = function() {
     // The 'tibet --help' command will end up here, but it's not really a
     // request for help on the help command.
 
-    if (this.argv._[0] !== 'help') {
+    if (this.options._[0] !== 'help') {
         return this.execute();
     }
 
@@ -101,7 +101,7 @@ Cmd.prototype.usage = function() {
 
     // The 'tibet --usage' command can end up here. It's not really a request
     // for usage on the help command.
-    if (this.argv._[0] !== 'help') {
+    if (this.options._[0] !== 'help') {
         return this.execute();
     }
 
@@ -123,7 +123,7 @@ Cmd.prototype.execute = function() {
     var intro;
 
     // If specific command was given delegate to the command type.
-    command = this.argv._ && this.argv._[1];
+    command = this.options._ && this.options._[1];
     if (command) {
         if (command === 'help') {
             // Help on help? Easy

@@ -10036,7 +10036,7 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 /**
  */
-TP.boot.$ifUnlessPassed = function(anElement) {
+TP.boot.$ifUnlessPassedLite = function(anElement) {
 
     /**
      * Tests if and unless conditions on the node, returning true if the node

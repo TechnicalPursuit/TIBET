@@ -98,7 +98,7 @@ Cmd.prototype.execute = function() {
 
     var dirname;    // The directory we're cloning the template into.
     var appname;    // The application name we're creating via clone.
-    var argv;       // The hash of options after parsing.
+    var options;    // The hash of options after parsing.
     var code;       // Result code. Set if an error occurs in nested callbacks.
     var dna;        // The dna template we're using.
     var err;        // Error string returned by shelljs.error() test function.
@@ -111,8 +111,8 @@ Cmd.prototype.execute = function() {
 
     ignore = ['.png', '.gif', '.jpg', '.ico', 'jpeg'];
 
-    argv = this.argv;
-    dirname = argv._[1];    // Command is at 0, dirname should be [1].
+    options = this.options;
+    dirname = options._[1];    // Command is at 0, dirname should be [1].
 
     // Have to get at least one non-option argument (the target dirname).
     if (!dirname) {
@@ -127,20 +127,20 @@ Cmd.prototype.execute = function() {
     //  Confirm the DNA
     //  ---
 
-    if (argv.dna) {
+    if (options.dna) {
 
         // Try to resolve as an absolute reference.
-        dna = argv.dna;
+        dna = options.dna;
         if (!sh.test('-e', dna)) {
 
             // Try to resolve as a relative reference.
-            dna = path.join(process.cwd(), argv.dna);
+            dna = path.join(process.cwd(), options.dna);
             if (!sh.test('-e', dna)) {
 
                 // Try to resolve as pre-built library dna.
-                dna = path.join(module.filename, this.DNA_ROOT, argv.dna);
+                dna = path.join(module.filename, this.DNA_ROOT, options.dna);
                 if (!sh.test('-e', dna)) {
-                    this.error('Unable to locate dna: ' + argv.dna);
+                    this.error('Unable to locate dna: ' + options.dna);
                     return 1;
                 }
             }
@@ -161,7 +161,7 @@ Cmd.prototype.execute = function() {
         // Target will be our current directory, and we'll end up adjusting our
         // dirname to be whatever the current directory name is.
         target = process.cwd();
-        appname = argv.name || target.slice(target.lastIndexOf('/') + 1);
+        appname = options.name || target.slice(target.lastIndexOf('/') + 1);
     } else {
         target = process.cwd() + '/' + dirname;
         this.verbose('Checking for pre-existing target: ' + target);
@@ -170,7 +170,7 @@ Cmd.prototype.execute = function() {
             this.error('Target already exists: ' + target);
             return 1;
         }
-        appname = argv.name || dirname;
+        appname = options.name || dirname;
     }
 
     //  ---
@@ -195,7 +195,7 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    params = CLI.blend({appname: appname}, argv);
+    params = CLI.blend({appname: appname}, options);
 
     //  ---
     //  Process templated content to inject appname.

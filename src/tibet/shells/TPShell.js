@@ -3126,10 +3126,10 @@ TP.core.Shell.Inst.defineMethod('executeWatchFS',
 function(aRequest) {
 
     var watcher;
-    
+
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         watcher = TP.core.SSESignalSource.construct(
-                            TP.sys.cfg('boot.approot') + '/fileWatcher');
+            TP.uriJoinPaths(TP.sys.cfg('boot.approot'), TP.tds.FILE_WATCH_URI));
         this.set('watcherSSESource', watcher);
     }
 
@@ -3146,10 +3146,10 @@ TP.core.Shell.Inst.defineMethod('executeUnwatchFS',
 function(aRequest) {
 
     var watcher;
-    
+
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         watcher = TP.core.SSESignalSource.construct(
-                            TP.sys.cfg('boot.approot') + '/fileWatcher');
+            TP.uriJoinPaths(TP.sys.cfg('boot.approot'), TP.tds.FILE_WATCH_URI));
     }
 
     this.ignore(watcher, 'TP.sig.FileChangedEvent');
@@ -3165,7 +3165,7 @@ TP.core.Shell.Inst.defineMethod('handleTP_sig_FileChangedEvent',
 function(aSignal) {
 
     var payload,
-    
+
         str,
         req;
 

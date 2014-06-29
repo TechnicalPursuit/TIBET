@@ -14,6 +14,7 @@
 
 'use strict';
 
+var CLI = require('./_cli');
 var sh = require('shelljs');
 
 /**
@@ -41,7 +42,7 @@ helpers.rollup = function(make, name, pkg, config, headers, minify, promise) {
 
     make.log('executing ' + cmd);
     result = sh.exec(cmd, {
-        silent: true
+        silent: (CLI.options.silent !== true)
     });
 
     if (result.code !== 0) {

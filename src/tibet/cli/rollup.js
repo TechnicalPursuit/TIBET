@@ -159,6 +159,7 @@ Cmd.prototype.executeForEach = function(list) {
             }
 
         } else {
+
             if (cmd.options.headers) {
                 pkg.log('TP.boot.$srcPath = \'\';');
             }

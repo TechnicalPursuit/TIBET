@@ -91,12 +91,12 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    if (!CLI.isInitialized()) {
+    if (!CLI.isInitialized() && !CLI.inLibrary()) {
         return CLI.notInitialized();
     }
 
     // Determine the port the user wants to start on.
-    port = this.argv.port ||
+    port = this.options.port ||
         process.env.npm_package_config_port ||
         process.env.PORT ||
         this.PORT;

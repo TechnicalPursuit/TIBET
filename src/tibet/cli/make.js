@@ -96,14 +96,14 @@ Cmd.prototype.execute = function() {
     }
 
     // Two cases here. When 'tibet make' is invoked directly the value at
-    // argv[0] is 'make'. When make is invoked indirectly via the CLI fallback
-    // mechanism argv[0] is the make target.
-    command = this.argv._[1] || this.argv._[0];
+    // options[0] is 'make'. When make is invoked indirectly via the CLI
+    // fallback mechanism options[0] is the make target.
+    command = this.options._[1] || this.options._[0];
 
     // Might be 'tibet make --list' etc. NOTE the ._. portion is correct here,
     // the '_' object is from the options parser.
-    if (command === 'make' && this.argv._.length === 1) {
-        if (this.argv.list === true) {
+    if (command === 'make' && this.options._.length === 1) {
+        if (this.options.list === true) {
             return this.executeList(targets);
         }
 
@@ -216,10 +216,10 @@ Cmd.prototype.prepTargets = function(targets) {
         return;
     }
 
-    if (CLI.notEmpty(this.argv.timeout)) {
-        timeout = parseInt(this.argv.timeout, 10);
+    if (CLI.notEmpty(this.options.timeout)) {
+        timeout = parseInt(this.options.timeout, 10);
         if (isNaN(timeout)) {
-            throw new Error('Invalid timeout: ' + this.argv.timeout);
+            throw new Error('Invalid timeout: ' + this.options.timeout);
         }
     } else {
         timeout = Cmd.TIMEOUT;

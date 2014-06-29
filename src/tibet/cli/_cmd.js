@@ -55,21 +55,16 @@ Cmd.prototype.USAGE = '';
 
 
 /**
- * The parsed arguments in minimist format.
+ * A reference to the CLI configuration data. primarily CLI.PROJECT_FILE data.
+ * The common keys in this object are 'tibet' and 'npm' respectively.
  * @type {Object}
- */
-Cmd.prototype.argv = null;
-
-
-/**
- * A reference to the CLI configuration data, potentially augmented by loading
- * CLI.PROJECT_FILE config data.
  */
 Cmd.prototype.config = null;
 
 
 /**
- * Optional configuration data from invoking CLI instance.
+ * The command-line arguments as parsed by this command, combined with data
+ * specific to this command from the config data in the CLI.PROJECT_FILE.
  * @type {Object}
  */
 Cmd.prototype.options = null;
@@ -102,36 +97,66 @@ Cmd.prototype.help = function() {
 
 
 /**
- * Parse the arguments. By default this routine uses parsing via minimist
- * and placed the resulting arguments in the receiver's argv attribute.
+ * Parse the arguments and blend with default values. This routine uses parsing
+ * via minimist and places the resulting arguments in the receiver's options
+ * attribute. Note that the options from the CLI as well as any command-specific
+ * options in the CLI.PROJECT_FILE are used in constructing the final arglist.
  * @param {Array.<string>} args Processed arguments from the command line.
  * @return {Object} An object in minimist argument format.
  */
-Cmd.prototype.parse = function() {
+Cmd.prototype.parse = function(options) {
+    var command;
+    var opts;
     var cmd;
 
     // Note we use the command's own version of PARSE_OPTIONS here.
-    this.argv = minimist(process.argv.slice(2), this.PARSE_OPTIONS) || [];
+    this.options = minimist(process.argv.slice(2), this.PARSE_OPTIONS || {});
 
-    // Minimist has a bad habit with boolean values...it will make entries for
-    // them even if they're not on the command line which makes it harder for us
-    // to manage defaulting the way we want. (tibet.json should be part of the
-    // mix if not on the command line explicitly). Remove anything that was
-    // not explicitly on the command line...
+    // Now overlay any options provided as input.
+    this.options = CLI.blend(this.options, options);
+
+    // Unfortunately our approach to defaulting means we have to apply CLI
+    // defaults _after_ we blend any CLI.PACKAGE_FILE values. So we have to do a
+    // shuffle here to remove them, blend in the package file stuff, then add
+    // anything missing back in.
+
     cmd = this;
+
+    // Booleans get default values of false unless otherwise set to true.
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.boolean) {
         this.PARSE_OPTIONS.boolean.forEach(function(flag) {
             if (process.argv.indexOf('--' + flag) === -1 &&
                 process.argv.indexOf('--no-' + flag) === -1) {
-                delete(cmd.argv[flag]);
+                delete(cmd.options[flag]);
             }
         });
     }
 
-    this.debug('process.argv: ' + JSON.stringify(process.argv));
-    this.debug('minimist.argv: ' + JSON.stringify(this.argv));
+    // Strings, numbers, etc. with explicit defaults also need to be handled.
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS['default']) {
+        Object.keys(this.PARSE_OPTIONS['default']).forEach(function(flag) {
+            if (process.argv.indexOf('--' + flag) === -1 &&
+                process.argv.indexOf('--no-' + flag) === -1) {
+                delete(cmd.options[flag]);
+            }
+        });
+    }
 
-    return this.argv;
+    // Now overlay any options missing but provided by the CLI.PROJECT_FILE.
+    command = CLI.options._[0];
+    if (CLI.config.tibet.cli && CLI.config.tibet.cli[command]) {
+        this.options = CLI.blend(this.options, CLI.config.tibet.cli[command]);
+    }
+
+    // Now we have to reverse that process...sigh...
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS['default']) {
+        this.options = CLI.blend(this.options, this.PARSE_OPTIONS['default']);
+    }
+
+    this.debug('process.argv: ' + JSON.stringify(process.argv));
+    this.debug('minimist.argv: ' + JSON.stringify(this.options));
+
+    return this.options;
 };
 
 
@@ -152,20 +177,17 @@ Cmd.prototype.execute = function() {
  */
 Cmd.prototype.run = function(options) {
 
-    // Options passed in are those computed by the CLI.
-    this.options = options || {};
-
     // Config data can be pulled directly from the CLI.
     this.config = CLI.config;
 
     // Re-parse the command line with any localized parser options.
-    this.argv = this.parse();
+    this.options = this.parse(options);
 
-    if (this.argv.usage || this.options.usage) {
+    if (this.options.usage) {
         return this.usage();
     }
 
-    if (this.argv.help || this.options.help) {
+    if (this.options.help) {
         return this.help();
     }
 

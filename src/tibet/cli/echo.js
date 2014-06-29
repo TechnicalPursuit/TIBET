@@ -70,9 +70,9 @@ Cmd.prototype.USAGE = 'tibet echo [args]';
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    if (this.argv) {
-        this.info('\nArguments:\n');
-        this.info(beautify(JSON.stringify(this.argv)));
+    if (this.options) {
+        this.info('Options:');
+        this.info(beautify(JSON.stringify(this.options)));
     }
 };
 

@@ -200,57 +200,57 @@ CLI._package = null;
  */
 
 CLI.log = function(msg) {
-    if (this.options.color === false) {
+    if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
     console.log(chalk.grey(msg));
 };
 
 CLI.info = function(msg) {
-    if (this.options.color === false) {
+    if (this.isFalse(this.options.color)) {
         return console.info(msg);
     }
     console.info(chalk.white(msg));
 };
 
 CLI.warn = function(msg) {
-    if (this.options.color === false) {
+    if (this.isFalse(this.options.color)) {
         return console.warn(msg);
     }
     console.warn(chalk.yellow(msg));
 };
 
 CLI.error = function(msg) {
-    if (this.options.color === false) {
+    if (this.isFalse(this.options.color)) {
         return console.error(msg);
     }
     console.error(chalk.red(msg));
 };
 
 CLI.debug = function(msg) {
-    if (!this.options.debug) {
+    if (!this.isTrue(this.options.debug)) {
         return;
     }
 
-    if (this.options.color === false) {
+    if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
     console.log(chalk.magenta(msg));
 };
 
 CLI.verbose = function(msg) {
-    if (!this.options.verbose) {
+    if (!this.isTrue(this.options.verbose)) {
         return;
     }
 
-    if (this.options.color === false) {
+    if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
     console.log(chalk.cyan(msg));
 };
 
 CLI.system = function(msg) {
-    if (this.options.color === false) {
+    if (this.isFalse(this.options.color)) {
         return console.info(msg);
     }
     console.info(chalk.green(msg));
@@ -266,6 +266,10 @@ CLI.isEmpty = function(aReference) {
         aReference.length === 0;
 };
 
+CLI.isFalse = function(aReference) {
+    return aReference === false;
+};
+
 /**
  * Returns true if the object provided is an 'Object' as opposed to a string,
  * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
@@ -275,6 +279,10 @@ CLI.isEmpty = function(aReference) {
  */
 CLI.isObject = function(obj) {
     return Object.prototype.toString.call(obj) === '[object Object]';
+};
+
+CLI.isTrue = function(aReference) {
+    return aReference === true;
 };
 
 CLI.isValid = function(aReference) {
@@ -306,13 +314,13 @@ CLI.notValid = function(aReference) {
  */
 CLI.blend = function (target, source) {
 
-    if (CLI.notValid(source)) {
+    if (this.notValid(source)) {
         return target;
     }
 
     if (Array.isArray(target)) {
         if (!Array.isArray(source)) {
-            CLI.handleError(new Error('Incompatible Types'),
+            this.handleError(new Error('Incompatible Types'),
                 'blending', 'blend');
             process.exit(1);
         }
@@ -328,12 +336,12 @@ CLI.blend = function (target, source) {
         return target;
     }
 
-    if (CLI.isValid(target)) {
-        if (!CLI.isObject(target)) {
+    if (this.isValid(target)) {
+        if (!this.isObject(target)) {
             return target;
         }
 
-        if (!CLI.isObject(source)) {
+        if (!this.isObject(source)) {
             return target;
         }
     } else {
@@ -376,10 +384,10 @@ CLI.blend = function (target, source) {
  */
 CLI.canRun = function(CmdType) {
 
-    if (CLI.inProject(CmdType)) {
-        return CmdType.CONTEXT !== CLI.CONTEXTS.OUTSIDE;
+    if (this.inProject(CmdType)) {
+        return CmdType.CONTEXT !== this.CONTEXTS.OUTSIDE;
     } else {
-        return CmdType.CONTEXT !== CLI.CONTEXTS.INSIDE;
+        return CmdType.CONTEXT !== this.CONTEXTS.INSIDE;
     }
 };
 
@@ -408,24 +416,24 @@ CLI.getAppRoot = function() {
     var cwd;        // Where are we being run?
     var file;       // What file are we looking for?
 
-    if (this.options.app_root) {
-        return this.options.app_root;
+    if (this.config.app_root) {
+        return this.config.app_root;
     }
 
     cwd = process.cwd();
-    file = CLI.PROJECT_FILE;
+    file = this.PROJECT_FILE;
 
     // Walk the directory path from cwd "up" checking for the signifying file
     // which tells us we're in a TIBET project.
     while (cwd.length > 0) {
         if (sh.test('-f', path.join(cwd, file))) {
-            this.options.app_root = cwd;
+            this.config.app_root = cwd;
             break;
         }
         cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
     }
 
-    return this.options.app_root;
+    return this.config.app_root;
 };
 
 
@@ -467,9 +475,10 @@ CLI.getCommandPath = function(command) {
     }
 
     // If we're in a project but not initialized make sure they do that first.
-    if (CLI.inProject()) {
+    if (this.inProject()) {
         if (!sh.test('-e', 'node_modules')) {
-            this.error('Project not initialized. Run `tibet init` first.');
+            this.error(
+                'Project not initialized. Run `tibet init [--link]` first.');
             return 1;
         }
     }
@@ -536,7 +545,7 @@ CLI.hasMakeTarget = function(target) {
     var targets;
 
     targets = this.getMakeTargets();
-    if (CLI.notValid(targets)) {
+    if (this.notValid(targets)) {
         return false;
     }
     return typeof targets[target] === 'function';
@@ -570,7 +579,7 @@ CLI.inGruntProject = function() {
     var file;       // What file are we looking for?
 
     cwd = process.cwd();
-    file = CLI.GRUNT_FILE;
+    file = this.GRUNT_FILE;
 
     return sh.test('-f', path.join(cwd, file)) &&
         sh.test('-f', path.join(cwd, './node_modules/.bin/grunt'));
@@ -587,7 +596,7 @@ CLI.inGulpProject = function() {
     var file;       // What file are we looking for?
 
     cwd = process.cwd();
-    file = CLI.GULP_FILE;
+    file = this.GULP_FILE;
 
     return sh.test('-f', path.join(cwd, file)) &&
         sh.test('-f', path.join(cwd, './node_modules/.bin/gulp'));
@@ -633,14 +642,14 @@ CLI.inProject = function(CmdType) {
     var fullpath;   // What full path are we checking?
 
     cwd = process.cwd();
-    file = CLI.PROJECT_FILE;
+    file = this.PROJECT_FILE;
 
     // Walk the directory path from cwd "up" checking for the signifying file
     // which tells us we're in a TIBET project.
     while (cwd.length > 0) {
         fullpath = path.join(cwd, file);
         if (sh.test('-f', fullpath)) {
-            this.options.app_root = cwd;
+            this.config.app_root = cwd;
 
             // Relocate cwd to the new root so our paths for things like
             // grunt and gulp work without requiring global installs etc.
@@ -706,7 +715,7 @@ CLI.isInitialized = function() {
  */
 CLI.logItems = function(aList) {
 
-    var limit = CLI.CHARS_PER_LINE;
+    var limit = this.CHARS_PER_LINE;
     var buffer;
     var line;
     var cmd;
@@ -820,7 +829,7 @@ CLI.run = function(config) {
     //  ---
 
     // Search app_cmd, lib_cmd_ etc. for the command implementation.
-    cmdPath = CLI.getCommandPath(command);
+    cmdPath = this.getCommandPath(command);
 
     // Not a 'native TIBET command' so try handling via fallback logic.
     if (!cmdPath) {
@@ -886,7 +895,7 @@ CLI.runCommand = function(command, cmdPath) {
  */
 CLI.runFallback = function(command) {
 
-    if (!CLI.inProject() && !CLI.inLibrary()) {
+    if (!this.inProject() && !this.inLibrary()) {
         this.error('Command not found: ' + command + '.');
         return 1;
     }
@@ -900,17 +909,17 @@ CLI.runFallback = function(command) {
     if (this.hasMakeTarget(command)) {
 
         this.warn('Delegating `' + command + '` to tibet make...');
-        CLI.runViaMake(command);
+        this.runViaMake(command);
 
     } else if (this.inGruntProject(command)) {
 
         this.warn('Delegating `' + command + '` to grunt...');
-        CLI.runViaGrunt(command);
+        this.runViaGrunt(command);
 
     } else if (this.inGulpProject()) {
 
         this.warn('Delegating `' + command + '` to grunt...');
-        CLI.runViaGulp(command);
+        this.runViaGulp(command);
 
     } else {
 
@@ -944,18 +953,18 @@ CLI.runViaGrunt = function(command) {
         // Why the '' + ?. Apparently to 'copy' the string :)
         var msg = '' + data;
 
-        CLI.log(msg);
+        this.log(msg);
     });
 
     child.stderr.on('data', function(data) {
         // Why the '' + ?. Apparently to 'copy' the string :)
         var msg = '' + data;
 
-        CLI.error(msg);
+        this.error(msg);
     });
 
     child.on('error', function(err) {
-        CLI.error('' + err.message);
+        this.error('' + err.message);
     });
 
     child.on('exit', function(code) {
@@ -981,7 +990,7 @@ CLI.runViaGulp = function(command) {
 
     child = require('child_process').spawn('./node_modules/.bin/gulp',
         process.argv.slice(2),
-        { cwd: this.getAppRoot()}
+        { cwd: this.getAppRoot() }
     );
 
     // TODO: add more handlers here for signal handling, cleaner shutdown, etc.
@@ -990,18 +999,18 @@ CLI.runViaGulp = function(command) {
         // Why the '' + ?. Apparently to 'copy' the string :)
         var msg = '' + data;
 
-        CLI.log(msg);
+        this.log(msg);
     });
 
     child.stderr.on('data', function(data) {
         // Why the '' + ?. Apparently to 'copy' the string :)
         var msg = '' + data;
 
-        CLI.error(msg);
+        this.error(msg);
     });
 
     child.on('error', function(err) {
-        CLI.error('' + err.message);
+        this.error('' + err.message);
     });
 
     child.on('exit', function(code) {

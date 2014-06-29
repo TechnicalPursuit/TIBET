@@ -275,7 +275,7 @@ TP.hc(
         //  with request mapping ensured we can now test for viable target
         //  URI
         url = targetUrl || request.at('uri');
-        if (TP.isEmpty(url)) {
+        if (TP.isEmpty(url) || TP.uriIsVirtual(url)) {
             return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
                                 request);
         }
@@ -535,7 +535,7 @@ TP.hc(
         //  with request mapping ensured we can now test for viable target
         //  URI
         url = targetUrl || request.at('uri');
-        if (TP.isEmpty(url)) {
+        if (TP.isEmpty(url) || TP.uriIsVirtual(url)) {
             return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
                                 request);
         }
@@ -753,7 +753,7 @@ TP.hc(
         //  with request mapping ensured we can now test for viable target
         //  URI
         url = targetUrl || request.at('uri');
-        if (TP.isEmpty(url)) {
+        if (TP.isEmpty(url) || TP.uriIsVirtual(url)) {
             return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
                                 request);
         }
@@ -947,7 +947,7 @@ TP.hc(
          * @name httpCreate
          * @synopsis Returns a platform-specific XMLHttpRequest object for use.
          * @param {String} targetUrl The request's target URL.
-         * @returns {XMLHttpRequest} 
+         * @returns {XMLHttpRequest}
          */
 
         var xhr,
@@ -988,7 +988,7 @@ TP.hc(
          * @name httpCreate
          * @synopsis Returns a platform-specific XMLHttpRequest object for use.
          * @param {String} targetUrl The request's target URL.
-         * @returns {XMLHttpRequest} 
+         * @returns {XMLHttpRequest}
          */
 
         var xhr,
@@ -1040,7 +1040,7 @@ TP.hc(
          * @name httpCreate
          * @synopsis Returns a platform-specific XMLHttpRequest object for use.
          * @param {String} targetUrl The request's target URL.
-         * @returns {XMLHttpRequest} 
+         * @returns {XMLHttpRequest}
          */
 
         var xhr,

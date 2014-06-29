@@ -85,8 +85,8 @@ Cmd.prototype.execute = function() {
     var option;
     var str;
 
-    if (this.argv._.length > 1) {
-        option = this.argv._[1];
+    if (this.options._.length > 1) {
+        option = this.options._[1];
     }
 
     cfg = CLI.getcfg(option);

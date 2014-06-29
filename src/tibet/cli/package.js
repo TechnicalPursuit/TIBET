@@ -137,18 +137,18 @@ Cmd.prototype.execute = function() {
     var Package;    // The _Package.js export.
     var list;       // The result list of asset references.
 
-    this.pkgOpts = this.argv;
+    this.pkgOpts = this.options;
 
     // If silent isn't explicitly set but we're doing a full expansion turn
     // silent on so we skip duplicate resource warnings.
-    if (CLI.notValid(this.argv.silent) && this.argv.all) {
+    if (CLI.notValid(this.options.silent) && this.options.all) {
         this.pkgOpts.silent = true;
     }
 
     // Set boot phase defaults. If we don't manage these then most app package
     // runs will quietly filter out all their content nodes.
     this.pkgOpts.boot = {};
-    switch (this.argv.phase) {
+    switch (this.options.phase) {
         case 'one':
             this.pkgOpts.boot.phaseone = true;
             this.pkgOpts.boot.phasetwo = false;

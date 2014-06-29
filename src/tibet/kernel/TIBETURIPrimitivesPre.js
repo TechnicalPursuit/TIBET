@@ -568,6 +568,26 @@ function(aPath) {
     }
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriIsVirtual',
+function(aPath) {
+
+    /**
+     * Returns true if the path provided appears to be a virtual path.
+     * @param {string} aPath The path to be tested.
+     * @return {Boolean} True if the path is virtual.
+     */
+
+    if (TP.isEmpty(aPath)) {
+        return false;
+    }
+
+    return aPath.indexOf('~') === 0 ||
+        aPath.indexOf('tibet:') === 0 ||
+        aPath.indexOf('urn:') === 0;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('uriJoinPaths',

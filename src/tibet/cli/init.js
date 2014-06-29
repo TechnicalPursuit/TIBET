@@ -109,7 +109,7 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    if (this.argv.link === true) {
+    if (this.options.link === true) {
 
         // For reasons largely due to how the CLI needs to operate (and
         // until the code is part of the global npm package install) we

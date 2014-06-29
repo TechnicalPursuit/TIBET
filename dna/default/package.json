@@ -4,12 +4,10 @@
   "version": "0.1.0",
   "dependencies": {
     "chalk": "*",
-    "connect": "3.*",
-    "connect-gzip-static": "*",
     "eslint": "*",
+    "express": "*",
     "js-beautify": "*",
     "minimist": "*",
-    "morgan": "*",
     "phantomjs": "*",
     "shelljs": "*",
     "tibet": "*",

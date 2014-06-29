@@ -114,12 +114,12 @@ Cmd.prototype.execute = function() {
         return;
     }
 
-    if (CLI.notEmpty(this.argv.script)) {
-        script = this.argv.script;
+    if (CLI.notEmpty(this.options.script)) {
+        script = this.options.script;
     }
 
-    if (CLI.notEmpty(this.argv.profile)) {
-        profile = this.argv.profile;
+    if (CLI.notEmpty(this.options.profile)) {
+        profile = this.options.profile;
     }
 
     if (CLI.inProject()) {
