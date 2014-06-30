@@ -663,6 +663,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         }
     }
 
+    TP.elementAddNamespace(aDocument.documentElement,
+                            'pclass',
+                            TP.w3.Xmlns.PCLASS);
+
     //  Go to every element in the document and try to bubble its namespaces
     if (TP.notEmpty(allElems = aDocument.getElementsByTagName('*'))) {
         for (i = 0; i < allElems.length; i++) {
