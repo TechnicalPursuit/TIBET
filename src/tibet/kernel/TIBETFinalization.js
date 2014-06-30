@@ -480,7 +480,7 @@ function() {
                     didStartHandler.ignore(null, 'TP.sig.AppDidStart');
 
                     //  Queue to allow any pending processing to clear.
-                    window.setTimeout(function() {
+                    (function() {
                         try {
                             TP.boot.$setStage('liftoff');
                         } finally{
@@ -489,7 +489,7 @@ function() {
                             //  states (ie. no more boot log usage etc.)
                             TP.sys.hasStarted(true);
                         }
-                    }, 0);
+                    }).afterUnwind();
                 };
 
                 didStartHandler.observe(null, 'TP.sig.AppDidStart');
@@ -512,7 +512,8 @@ function() {
         TP.boot.showUIBoot();
 
         txt = req.getFaultText();
-        msg = 'UIRoot Initialization Error' + (txt ? ': ' + txt + '.' : '.');
+        msg = TP.sc('UIRoot Initialization Error') +
+                (txt ? ': ' + txt + '.' : '.');
 
         // TODO: Dig around and figure out what went wrong. getFaultText
         // is pretty limited in terms of details.
