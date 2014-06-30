@@ -498,7 +498,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
         i,
         oldScript,
-        newScript;
+        newScript,
+        
+        allElems;
 
     if (!TP.isXMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
@@ -658,6 +660,13 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             TP.nodeReplaceChild(scripts[i].parentNode,
                                 newScripts.at(i), scripts[i],
                                 false);
+        }
+    }
+
+    //  Go to every element in the document and try to bubble its namespaces
+    if (TP.notEmpty(allElems = aDocument.getElementsByTagName('*'))) {
+        for (i = 0; i < allElems.length; i++) {
+            TP.elementBubbleXMLNSAttributes(allElems[i]);
         }
     }
 
