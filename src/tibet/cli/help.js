@@ -1,8 +1,8 @@
 /**
  * @overview The 'tibet help' command. Displays the usage and/or help text for a
  *     command, or for the entire TIBET CLI if no command name is given. Note
- *     that if `tibet help` is invoked within a project any custom commands for
- *     that application are also listed.
+ *     that if `tibet help` is invoked within a project any custom commands or
+ *     makefile.js targets for that application are also listed.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -53,8 +53,10 @@ Cmd.NAME = 'help';
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Displays usage and help information for a command, or the \'tibet\' command.';
+'Displays usage and help for a specific command, or the \'tibet\' command\n\n' +
 
+'You can alternatively get usage data via the --usage flag on each command\n' +
+'or complete help output by using the --help flag on the target command.\n';
 
 /**
  * The command usage string.
@@ -78,7 +80,7 @@ Cmd.prototype.help = function() {
     // The 'tibet --help' command will end up here, but it's not really a
     // request for help on the help command.
 
-    if (this.argv._[0] !== 'help') {
+    if (this.options._[0] !== 'help') {
         return this.execute();
     }
 
@@ -99,7 +101,7 @@ Cmd.prototype.usage = function() {
 
     // The 'tibet --usage' command can end up here. It's not really a request
     // for usage on the help command.
-    if (this.argv._[0] !== 'help') {
+    if (this.options._[0] !== 'help') {
         return this.execute();
     }
 
@@ -118,9 +120,10 @@ Cmd.prototype.execute = function() {
 
     var command;
     var cmds;
+    var intro;
 
     // If specific command was given delegate to the command type.
-    command = this.argv._ && this.argv._[1];
+    command = this.options._ && this.options._[1];
     if (command) {
         if (command === 'help') {
             // Help on help? Easy
@@ -132,11 +135,22 @@ Cmd.prototype.execute = function() {
     this.info('\nUsage: tibet <command> <options>');
 
     // ---
+    // Introduction
+    // ---
+
+    intro =
+        '\nThe tibet command can invoke TIBET built-ins, custom commands,\n' +
+        'tibet makefile.js targets, grunt targets, or gulp targets based\n' +
+        'on your project configuration and your specific customizations.';
+
+    this.info(intro);
+
+    // ---
     // Built-ins
     // ---
 
     cmds = this.getCommands(__dirname);
-    this.info('\nTIBET <command> choices include:\n');
+    this.info('\n<command> built-ins include:\n');
     this.logCommands(cmds);
 
     // ---
@@ -146,16 +160,16 @@ Cmd.prototype.execute = function() {
     if (CLI.inProject(Cmd)) {
         cmds = this.getCommands(CLI.expandPath('~app_cmd'));
         if (cmds.length > 0) {
-            this.info('\nCustom <command> choices include:\n');
+            this.info('\n<command> extensions include:\n');
             this.logCommands(cmds);
         }
+    }
 
-        if (CLI.isInitialized()) {
-            cmds = this.getMakeTargets();
-            if (cmds.length > 0) {
-                this.info('\nCustom `tibet make` targets include:\n');
-                this.logCommands(cmds);
-            }
+    if (CLI.isInitialized() || CLI.inLibrary()) {
+        cmds = this.getMakeTargets();
+        if (cmds.length > 0) {
+            this.info('\nmakefile.js targets include:\n');
+            this.logCommands(cmds);
         }
     }
 
@@ -163,7 +177,7 @@ Cmd.prototype.execute = function() {
     // Summary
     // ---
 
-    this.info('\nCommon <options> include:\n');
+    this.info('\n<options> always include:\n');
 
     this.info('\t--help         display command help text');
     this.info('\t--usage        display command usage summary');
@@ -175,8 +189,8 @@ Cmd.prototype.execute = function() {
     this.info('\nConfigure default parameters via tibet.json');
 
     try {
-        this.info('\n' + this.config.npm.dependencies.tibet._id + ' ' +
-            this.config.npm.dependencies.tibet.path);
+        this.info('\n' + CLI.config.npm.name + '@' + CLI.config.npm.version +
+            ' ' + sh.which('tibet'));
     } catch (e) {
     }
 };

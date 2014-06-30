@@ -49,8 +49,10 @@ Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
  * @type {string}
  */
 Cmd.prototype.HELP =
-    'Echoes the command line arguments to stdout.';
+'Echoes the command line arguments to stdout.\n\n' +
 
+'This command can be used as a template for your own custom commands or\n' +
+'to help view how arguments are being parsed.\n';
 
 /**
  * The command usage string.
@@ -68,9 +70,9 @@ Cmd.prototype.USAGE = 'tibet echo [args]';
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    if (this.argv) {
-        this.info('\nArguments:\n');
-        this.info(beautify(JSON.stringify(this.argv)));
+    if (this.options) {
+        this.info('Options:');
+        this.info(beautify(JSON.stringify(this.options)));
     }
 };
 

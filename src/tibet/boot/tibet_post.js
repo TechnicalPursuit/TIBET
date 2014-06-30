@@ -7404,8 +7404,10 @@ TP.boot.$getAppRoot = function() {
      * @name $getAppRoot
      * @summary Returns the root path for the application, the point from which
      *     most if not all "app path" resolution occurs. Unless this has been
-     *     defined otherwise the return value is always the parent of the
-     *     directory found via $getAppBootDir();
+     *     defined otherwise the return value is computed based on the value
+     *     found via $getAppHead. If the application launch path includes a
+     *     reference to node_modules the app root is presumed to be the location
+     *     containing node_modules and it is adjusted accordingly.
      * @return {String} The computed path.
      */
 
@@ -7424,6 +7426,9 @@ TP.boot.$getAppRoot = function() {
 
     root = TP.boot.$getAppHead();
     if (root) {
+        if (/node_modules/.test(root)) {
+            root = root.slice(0, root.indexOf('/node_modules'));
+        }
         return TP.boot.$setAppRoot(root);
     }
 
@@ -7742,7 +7747,8 @@ TP.boot.$configurePackage = function() {
         TP.boot.$$bootxml = xml;
         TP.boot.$$bootfile = file;
     } else {
-        throw new Error('Boot package not found: ' + package);
+        throw new Error('Boot package \'' + package +
+            '\' not found in: ' + file);
     }
 
     return xml;
@@ -9857,7 +9863,7 @@ TP.boot.$expandPath = function(aPath) {
         if (aPath === '~') {
             return TP.boot.$getAppHead();
         } else if (aPath === '~app' ||
-            aPath === '~app_root') {
+                   aPath === '~app_root') {
             return TP.boot.$getAppRoot();
         } else if (aPath === '~tibet' ||
                    aPath === '~lib' ||
@@ -10030,7 +10036,7 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 /**
  */
-TP.boot.$ifUnlessPassed = function(anElement) {
+TP.boot.$ifUnlessPassedLite = function(anElement) {
 
     /**
      * Tests if and unless conditions on the node, returning true if the node

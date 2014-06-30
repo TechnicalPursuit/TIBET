@@ -49,7 +49,20 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.HELP =
-    'Initializes a TIBET project, linking and installing all dependencies.';
+'Initializes a TIBET project, linking and installing dependencies.\n\n' +
+
+'This command must be run prior to most activity within a TIBET\n' +
+'project. Many of the TIBET cli commands will fail to run until\n' +
+'you have run a \'tibet init\' command.\n\n' +
+
+'The optional link parameter will use \'npm link tibet\' to link\n' +
+'TIBET into the project rather than attempting to install it via\n' +
+'the current npm package.\n\n' +
+
+'--link is useful/necessary when you are working with a copy of\n' +
+'TIBET cloned from the public repository. For --link to work\n' +
+'properly you need to have a local TIBET repository and you need\n' +
+'to have run \'npm link .\' in that repository prior to tibet init.\n';
 
 
 /**
@@ -96,7 +109,7 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    if (this.argv.link === true) {
+    if (this.options.link === true) {
 
         // For reasons largely due to how the CLI needs to operate (and
         // until the code is part of the global npm package install) we

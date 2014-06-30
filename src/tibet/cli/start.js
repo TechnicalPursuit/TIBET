@@ -1,5 +1,7 @@
 /**
- * @overview The 'tibet start' command.
+ * @overview The 'tibet start' command. Starts any local TIBET development
+ *     server which might exist, or simply runs 'npm start' to start any
+ *     process associated with npm via the current package.json file.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -28,6 +30,20 @@ Cmd.prototype = new Parent();
 //  ---
 //  Instance Attributes
 //  ---
+
+/**
+ * The command help string.
+ * @type {string}
+ */
+Cmd.prototype.HELP =
+'Starts the current TIBET project development server, if any.\n\n' +
+
+'Many TIBET dna templates provide a simple Node.js-based server\n' +
+'for use during development. If the current project contains either\n' +
+'a server.js file or can invoke \'npm start\' this command will\n' +
+'try to start that server.\n\n' +
+'The optional --port parameter lets you specify a port other than\n' +
+'the default (which is port 1407).\n';
 
 /**
  * The default TIBET port.
@@ -75,12 +91,12 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    if (!CLI.isInitialized()) {
+    if (!CLI.isInitialized() && !CLI.inLibrary()) {
         return CLI.notInitialized();
     }
 
     // Determine the port the user wants to start on.
-    port = this.argv.port ||
+    port = this.options.port ||
         process.env.npm_package_config_port ||
         process.env.PORT ||
         this.PORT;

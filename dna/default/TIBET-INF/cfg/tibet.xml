@@ -10,6 +10,11 @@
     <config ref="boot_suffix"/>
 </config>
 
+<config id="full">
+    <!-- how does this work? if/unless checks in "tibet_img" -->
+    <config ref="base"/>
+</config>
+
 <config id="boot_prefix" if="boot.phaseone">
 </config>
 
@@ -19,8 +24,15 @@
 </config>
 
 <config id="tibet_img">
-    <script src="~lib_build/tibet_base.js" if="boot.unminified" />
-    <script src="~lib_build/tibet_base.min.js" unless="boot.unminified" />
+    <script src="~lib_build/tibet_base.js"
+        if="boot.unminified=true boot.config=base" />
+    <script src="~lib_build/tibet_base.min.js"
+        unless="boot.unminified" if="boot.config=base" />
+
+    <script src="~lib_build/tibet_full.js"
+        if="boot.unminified=true boot.config=full" />
+    <script src="~lib_build/tibet_full.min.js"
+        unless="boot.unminified" if="boot.config=full" />
 </config>
 
 <config id="tibet_chg">

@@ -2,8 +2,9 @@
  * @file _Package.js
  * @overview TIBET package/config processing. Routines here provide ways to get
  *     asset listings from TIBET package files and their configurations. This is
- *     a Node.js routine primarily focused on CLI support. The TIBET boot system
- *     has its own ability to leverage package file metadata for client code.
+ *     a Node.js routine primarily focused on CLI support. The various commands
+ *     which operate on files such as lint, package, and rollup leverage this
+ *     functionality to provide them with project-specific asset lists.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -1721,85 +1722,81 @@ Package.prototype.setRuntimeOptions = function() {
  */
 
 Package.prototype.log = function(msg) {
-    if (this.getcfg('silent')) {
+    if (this.getcfg('silent') === true) {
         return;
     }
 
-    if (!this.getcfg('color')) {
+    if (this.getcfg('color') === false) {
         return console.log(msg);
     }
     console.log(chalk.grey(msg));
 };
 
 Package.prototype.info = function(msg) {
-    if (this.getcfg('silent')) {
+    if (this.getcfg('silent') === true) {
         return;
     }
 
-    if (!this.getcfg('color')) {
+    if (this.getcfg('color') === false) {
         return console.info(msg);
     }
     console.info(chalk.white(msg));
 };
 
 Package.prototype.warn = function(msg) {
-    if (this.getcfg('silent')) {
+    if (this.getcfg('silent') === true) {
         return;
     }
 
-    if (!this.getcfg('color')) {
+    if (this.getcfg('color') === false) {
         return console.warn(msg);
     }
     console.warn(chalk.yellow(msg));
 };
 
 Package.prototype.error = function(msg) {
-    if (this.getcfg('silent')) {
+    if (this.getcfg('silent') === true) {
         return;
     }
 
-    if (!this.getcfg('color')) {
+    if (this.getcfg('color') === false) {
         return console.error(msg);
     }
     console.error(chalk.red(msg));
 };
 
 Package.prototype.debug = function(msg) {
-    if (this.getcfg('silent')) {
+    if (this.getcfg('silent') === true) {
         return;
     }
 
-    if (this.initialized && !this.getcfg('debug')) {
-        return;
+    if (this.getcfg('debug') === true) {
+        if (this.getcfg('color') === false) {
+            return console.log(msg);
+        }
+        console.log(chalk.magenta(msg));
     }
-
-    if (!this.getcfg('color')) {
-        return console.log(msg);
-    }
-    console.log(chalk.magenta(msg));
 };
 
 Package.prototype.verbose = function(msg) {
-    if (this.getcfg('silent')) {
+    if (this.getcfg('silent') === true) {
         return;
     }
 
-    if (this.initialized && !this.getcfg('verbose')) {
-        return;
+    if (this.getcfg('verbose') === true) {
+        if (this.getcfg('color') === false) {
+            return console.log(msg);
+        }
+        console.log(chalk.cyan(msg));
     }
-
-    if (!this.getcfg('color')) {
-        return console.log(msg);
-    }
-    console.log(chalk.cyan(msg));
 };
 
 Package.prototype.system = function(msg) {
-    if (this.getcfg('silent')) {
+    if (this.getcfg('silent') === true) {
         return;
     }
 
-    if (!this.getcfg('color')) {
+    if (this.getcfg('color') === false) {
         return console.log(msg);
     }
     console.log(chalk.green(msg));

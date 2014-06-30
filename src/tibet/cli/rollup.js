@@ -47,8 +47,14 @@ Cmd.prototype = new Parent();
 Cmd.prototype.HELP =
 'Creates a minified and concatenated version of a package#config.\n\n' +
 'Output from this command is written to stdout for use in redirection.\n' +
-'Command-line options mirror those for the `tibet package` command.\n' +
-'See `tibet help package` documentation for more.\n';
+'By default the output is not minified, but it does it contain filename\n' +
+'data (aka \'headers\') to assist TIBET by providing file load metadata.\n\n' +
+
+'You can minify output via the --minify flag, and turn off headers via\n' +
+'--no-headers should you choose. Normally these flags are managed by one\n' +
+'or more makefile.js targets used to build library or app-level bundles.\n\n' +
+
+'<package-opts> refers to options for the \'tibet package\' command.\n';
 
 
 /**
@@ -97,7 +103,7 @@ Cmd.prototype.executeForEach = function(list) {
     cmd = this;
     pkg = this.package;
 
-    if (!CLI.isInitialized()) {
+    if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
     }
 
@@ -153,6 +159,7 @@ Cmd.prototype.executeForEach = function(list) {
             }
 
         } else {
+
             if (cmd.options.headers) {
                 pkg.log('TP.boot.$srcPath = \'\';');
             }

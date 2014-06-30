@@ -258,10 +258,10 @@ function(anObject, optFormat) {
     return '<span class="tsh_pp">' +
                 '<span class="TP_boot_Annotation">' +
                     '<span data-name="object">' +
-                        TP.htmlstr(anObject.get('object')) +
+                        TP.htmlstr(anObject.object) +
                     '<\/span>' +
                     '<span data-name="message">' +
-                        TP.htmlstr(anObject.get('message')) +
+                        TP.htmlstr(anObject.message) +
                     '<\/span>' +
                 '<\/span>' +
             '<\/span>';
@@ -273,7 +273,7 @@ TP.tsh.pp.Type.defineMethod('fromTP_boot_Log',
 function(anObject, optFormat) {
 
     var obj,
-    
+
         str,
         len,
         i;

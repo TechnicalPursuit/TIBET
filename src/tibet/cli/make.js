@@ -46,14 +46,19 @@ Cmd.TIMEOUT = 15000;
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Runs a target function in a TIBET project \'make\' file as a Promise.\n\n' +
-'Inspired by shelljs/make but adjusted to meet the requirements of TIBET\'s\n' +
-'command line interface.\n' +
-'The purpose here is to support lightweight custom commands in the form of\n' +
-'functions. There\'s no dependency checking or true \'make\' functionality\n' +
-'per se but the TIBET make file does leverage Q-style Promises to manage\n' +
-'tasks and their interactions, particularly when calling tasks from within\n' +
-'tasks and when dealing with asynchronous tasks.';
+'Runs a target function in a TIBET \'makefile.js\' file via a JS Promise.\n\n' +
+
+'This command supports lightweight commands in the form of functions, much\n' +
+'like Grunt or Gulp. There\'s no dependency checking or true \'make\'-like \n' +
+'functionality but the makefile.js code does leverage Q-style Promises to\n' +
+'coordinate tasks and their interactions, particularly when calling tasks\n' +
+'within tasks and when dealing with asynchronous tasks. This makes it a bit\n' +
+'more predictable and consistent than some other task management options.\n\n' +
+
+'--list can be used to list the available makefile.js targets you can run.\n\n' +
+
+'--timeout <ms> gives you a way to provide a millisecond timeout value in\n' +
+'which each task must complete successfully. The default is 15 seconds.\n';
 
 
 /**
@@ -78,7 +83,7 @@ Cmd.prototype.execute = function() {
     var cmd;
     var start;
 
-    if (!CLI.isInitialized()) {
+    if (CLI.inProject() && !CLI.isInitialized()) {
         return CLI.notInitialized();
     }
 
@@ -91,14 +96,14 @@ Cmd.prototype.execute = function() {
     }
 
     // Two cases here. When 'tibet make' is invoked directly the value at
-    // argv[0] is 'make'. When make is invoked indirectly via the CLI fallback
-    // mechanism argv[0] is the make target.
-    command = this.argv._[1] || this.argv._[0];
+    // options[0] is 'make'. When make is invoked indirectly via the CLI
+    // fallback mechanism options[0] is the make target.
+    command = this.options._[1] || this.options._[0];
 
     // Might be 'tibet make --list' etc. NOTE the ._. portion is correct here,
     // the '_' object is from the options parser.
-    if (command === 'make' && this.argv._.length === 1) {
-        if (this.argv.list === true) {
+    if (command === 'make' && this.options._.length === 1) {
+        if (this.options.list === true) {
             return this.executeList(targets);
         }
 
@@ -211,10 +216,10 @@ Cmd.prototype.prepTargets = function(targets) {
         return;
     }
 
-    if (CLI.notEmpty(this.argv.timeout)) {
-        timeout = parseInt(this.argv.timeout, 10);
+    if (CLI.notEmpty(this.options.timeout)) {
+        timeout = parseInt(this.options.timeout, 10);
         if (isNaN(timeout)) {
-            throw new Error('Invalid timeout: ' + this.argv.timeout);
+            throw new Error('Invalid timeout: ' + this.options.timeout);
         }
     } else {
         timeout = Cmd.TIMEOUT;

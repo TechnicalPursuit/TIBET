@@ -1,7 +1,8 @@
 /**
  * @overview The 'tibet clone' command. This command copies project 'dna' into
- *     a TIBET project directory, creating the directory if necessary. The dna
- *     is essentially a named set of files found in a directory.
+ *     a TIBET project directory, creating the directory if necessary. Files in
+ *     the DNA containing handlebars templates are processed with an object
+ *     containing the appname and any other argument values for the command.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -9,22 +10,6 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     open source waivers to keep your derivative work source code private.
  */
-
-
-/*
- * TODO:  Add search for {{libroot}} (node_modules) etc. etc. and inject that
- * as part of templating. We need to have certain locations (css paths,
- * index.html paths to boot code) know where the root of the TIBET lib is.
- *
- * TODO: Take any/all additional parameters and make them part of the injected
- * data object. Basically allow arbitrary params to be matched to custom
- * templates.
- *
- * TODO: Silent except when --verbose is on.
- *
- * TODO: Debugging output based on --debug being set.
- */
-
 
 (function() {
 
@@ -72,15 +57,20 @@ Cmd.prototype.DNA_ROOT = '../../../../dna/';
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Clones a TIBET application template from a TIBET \'dna\' directory.\n' +
+'Clones a TIBET application template from a supplied \'dna\' directory.\n\n' +
+
 '<dirname> is required and must be a valid directory name to clone to.\n' +
 'By default the dirname will be the appname unless otherwise specified.\n'+
+'You can use \'.\' to clone to the current directory. Existing files are\n'+
+'ignored in such cases and you may need to merge/copy manually as needed.\n\n' +
+
 'The optional --name parameter lets you rename from the directory name\n' +
-'to an alternative name. This lets the directory and appname vary.\n' +
+'to an alternative name. This lets the directory and appname vary. This\n' +
+'is common when cloning to existing directories or poorly named ones.\n\n' +
+
 'The optional --dna parameter lets you clone any valid template in\n' +
 'TIBET\'s `dna` directory or a directory of your choosing. This latter\n' +
-'option lets you create your own reusable custom application templates.\n\n' +
-'--dna <template>       Provides for cloning any directory or template.\n';
+'option lets you create your own reusable custom application templates.\n';
 
 /**
  * The command usage string.
@@ -108,20 +98,21 @@ Cmd.prototype.execute = function() {
 
     var dirname;    // The directory we're cloning the template into.
     var appname;    // The application name we're creating via clone.
-    var argv;       // The hash of options after parsing.
+    var options;    // The hash of options after parsing.
     var code;       // Result code. Set if an error occurs in nested callbacks.
     var dna;        // The dna template we're using.
     var err;        // Error string returned by shelljs.error() test function.
     var ignore;     // List of extensions we'll ignore when templating.
     var finder;     // The find event emitter we'll handle find events on.
     var target;     // The target directory name (based on appname).
+    var params;     // Parameter data for template processing.
 
     var cmd = this; // Closure'd var for getting back to this command object.
 
     ignore = ['.png', '.gif', '.jpg', '.ico', 'jpeg'];
 
-    argv = this.argv;
-    dirname = argv._[1];    // Command is at 0, dirname should be [1].
+    options = this.options;
+    dirname = options._[1];    // Command is at 0, dirname should be [1].
 
     // Have to get at least one non-option argument (the target dirname).
     if (!dirname) {
@@ -136,20 +127,20 @@ Cmd.prototype.execute = function() {
     //  Confirm the DNA
     //  ---
 
-    if (argv.dna) {
+    if (options.dna) {
 
         // Try to resolve as an absolute reference.
-        dna = argv.dna;
+        dna = options.dna;
         if (!sh.test('-e', dna)) {
 
             // Try to resolve as a relative reference.
-            dna = path.join(process.cwd(), argv.dna);
+            dna = path.join(process.cwd(), options.dna);
             if (!sh.test('-e', dna)) {
 
                 // Try to resolve as pre-built library dna.
-                dna = path.join(module.filename, this.DNA_ROOT, argv.dna);
+                dna = path.join(module.filename, this.DNA_ROOT, options.dna);
                 if (!sh.test('-e', dna)) {
-                    this.error('Unable to locate dna: ' + argv.dna);
+                    this.error('Unable to locate dna: ' + options.dna);
                     return 1;
                 }
             }
@@ -170,7 +161,7 @@ Cmd.prototype.execute = function() {
         // Target will be our current directory, and we'll end up adjusting our
         // dirname to be whatever the current directory name is.
         target = process.cwd();
-        appname = argv.name || target.slice(target.lastIndexOf('/') + 1);
+        appname = options.name || target.slice(target.lastIndexOf('/') + 1);
     } else {
         target = process.cwd() + '/' + dirname;
         this.verbose('Checking for pre-existing target: ' + target);
@@ -179,7 +170,7 @@ Cmd.prototype.execute = function() {
             this.error('Target already exists: ' + target);
             return 1;
         }
-        appname = argv.name || dirname;
+        appname = options.name || dirname;
     }
 
     //  ---
@@ -203,6 +194,8 @@ Cmd.prototype.execute = function() {
         this.error('Error cloning dna directory: ' + err);
         return 1;
     }
+
+    params = CLI.blend({appname: appname}, options);
 
     //  ---
     //  Process templated content to inject appname.
@@ -261,7 +254,7 @@ Cmd.prototype.execute = function() {
             }
 
             try {
-                content = template({appname: appname});
+                content = template(params);
                 if (!content) {
                     throw new Error('InvalidContent');
                 }

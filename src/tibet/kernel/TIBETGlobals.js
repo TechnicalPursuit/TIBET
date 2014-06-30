@@ -1017,6 +1017,16 @@ TP.OLDVAL = 'oldval';
 TP.NEWVAL = 'newval';
 
 //  ---
+//  TDS server URIs
+//  ---
+
+TP.defineNamespace('tds', 'TP');
+
+TP.tds.FILE_WATCH_URI = 'watcher';
+TP.tds.TIBET_CLI_URI = 'cli';
+TP.tds.WEBDAV_URI = 'webdav';
+
+//  ---
 //  IO/URI support
 //  ---
 

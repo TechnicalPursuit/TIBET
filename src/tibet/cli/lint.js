@@ -47,19 +47,24 @@ Cmd.CONFIG = '~/.eslintrc';
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Lints files in a package#config. The package#config defaults to\n' +
-'~/TIBET-INF/app.xml and its default config. The eslint utility is\n' +
-'used for JavaScript due to its configurable/customizable rulesets.\n' +
-'The csslint and jsonlint utilities are also leveraged as needed.\n\n' +
+'Runs one or more lint tools on various files in a package#config.\n\n' +
+
+'The package#config defaults to ~app_cfg/app.xml and its default\n' +
+'config (usually #base). The eslint utility is used for JavaScript\n' +
+'due to its focus on configurable and customizable rulesets.\n\n' +
 
 '--stop tells the linter to stop after the first file with errors.\n\n' +
+
 '[package-opts] refers to valid options for a TIBET Package object.\n' +
 'These include --package, --config, --phase, --assets, etc.\n' +
 'See help on the \'tibet package\' command for more information.\n\n' +
 
 '[eslint-opts] refers to --cfg, --rules, and --format which allow\n' +
 'you to configure eslint to meet your specific needs. The linter will\n' +
-'automatically take advantage of an .eslintrc file in your project.\n';
+'automatically take advantage of an .eslintrc file in your project.\n\n' +
+
+'In the future this command will also support css, html, xml, and other\n' +
+'formats using appropriate linters for those mime types.\n';
 
 /**
  * Command argument parsing options.
@@ -108,7 +113,7 @@ Cmd.prototype.executeForEach = function(list) {
             var src,
                 result;
 
-            if (cmd.argv.nodes) {
+            if (cmd.options.nodes) {
                 if (item.getAttribute('no-lint') === 'true') {
                     return;
                 }
@@ -120,15 +125,15 @@ Cmd.prototype.executeForEach = function(list) {
             if (src) {
                 result = eslint.cli.execute(args.concat(src));
                 sum = sum + result;
-                if (result !== 0 && cmd.argv.stop) {
+                if (result !== 0 && cmd.options.stop) {
                     throw new Error(result);
                 }
-            } else if (cmd.argv.nodes) {
+            } else if (cmd.options.nodes) {
                 console.log(item.textContent);
             }
         });
     } catch (e) {
-        if (!cmd.argv.stop) {
+        if (!cmd.options.stop) {
             this.error(e.message);
             sum += 1;
         }
@@ -168,24 +173,24 @@ Cmd.prototype.getLintArguments = function() {
     args = ['node', 'eslint'];
 
     // TODO: figure out why this throws errors in eslint...
-    if (this.argv.eslintrc === false) {
+    if (this.options.eslintrc === false) {
     //    args.push('--no-eslintrc');
         void(0);
     }
 
-    if (this.argv.lintcfg) {
-        args.push('-c' + this.argv.lintcfg);
+    if (this.options.lintcfg) {
+        args.push('-c' + this.options.lintcfg);
     }
 
-    if (this.argv.format) {
-        args.push('-f ' + this.argv.format);
+    if (this.options.format) {
+        args.push('-f ' + this.options.format);
     }
 
-    if (this.argv.rules) {
-        args.push('-r ' + this.argv.rules);
+    if (this.options.rules) {
+        args.push('-r ' + this.options.rules);
     }
 
-    if (this.argv.reset) {
+    if (this.options.reset) {
         args.push('--reset');
     }
 

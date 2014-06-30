@@ -1,5 +1,7 @@
 /**
- * @overview The 'tibet test' command.
+ * @overview The 'tibet test' command. Runs phantomjs via TIBET's phantomtsh
+ *     script runner. The script run is typically the TSH script ':test' which
+ *     will run the tsh:test command tag to invoke all test suites.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -45,7 +47,16 @@ Cmd.DEFAULT_RUNNER = './test/phantom/phantomtsh.js';
  * @type {String}
  */
 Cmd.prototype.HELP =
-    'Runs unit and functional tests for the library and application.';
+'Runs the TIBET phantomtsh test runner to test your application.\n\n' +
+'The default operation makes use of ~app_test/phantom.xml as the\n' +
+'boot.profile (which controls what code is loaded) and a TSH shell\n' +
+'command of \':test\' which will run all test suites in the profile.\n\n' +
+'Output is to the console in colorized TAP format by default.\n' +
+'Future versions will support additional test output formatters.\n\n' +
+'Changing the boot profile is not normally required however you\n' +
+'can easily test components simply by naming them via the --script\n' +
+'parameter. For example, you can run all String tests via:\n\n' +
+'tibet test --script \':test String\'\n';
 
 
 /**
@@ -55,7 +66,7 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         boolean: ['ignore_only', 'ignore_skip'],
-        string: ['target'],
+        string: ['script', 'profile'],
         default: {}
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -64,7 +75,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [options]';
+Cmd.prototype.USAGE = 'tibet test [--profile <url>] [--script <tsh>]';
 
 //  ---
 //  Instance Methods
@@ -81,6 +92,7 @@ Cmd.prototype.execute = function() {
     var path;       // The path module.
     var testpath;   // Path to the TIBET test runner script.
     var profile;    // The test profile to use.
+    var script;     // The test script to run.
     var cmd;        // Local binding variable.
 
     // We can run in the TIBET library, or in a project, but not in an
@@ -102,16 +114,26 @@ Cmd.prototype.execute = function() {
         return;
     }
 
+    if (CLI.notEmpty(this.options.script)) {
+        script = this.options.script;
+    }
+
+    if (CLI.notEmpty(this.options.profile)) {
+        profile = this.options.profile;
+    }
+
     if (CLI.inProject()) {
-        profile = '~app/test/phantom/phantom';
+        script = script || ':test';
+        profile = profile || '~app/test/phantom';
     } else {
-        profile = '~lib/test/phantom/phantom';
+        script = script || ':test -ignore_only';
+        profile = profile || '~lib/test/phantom/phantom';
     }
 
     // Run a manufactured tsh:test command just as we would in the TDC/Sherpa.
     process = child.spawn('phantomjs', [testpath,
-        '--profile', '~app/test/phantom/phantom',
-        '--script', ':test -ignore_only']);
+        '--profile', profile,
+        '--script', script]);
 
     process.stdout.on('data', function(data) {
         var msg = data.slice(0, -1);
