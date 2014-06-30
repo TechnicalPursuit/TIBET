@@ -1352,7 +1352,7 @@ function(anElement) {
             //  the same value) then it has this namespace attribute and we can
             //  remove it from ourself.
             if (TP.isValid(entry) && entry === nsURIVal) {
-                TP.elementRemoveAttribute(anElement, wholeName, true);
+                TP.elementRemoveNamespace(anElement, wholeName);
 
                 return;
             }
@@ -1376,7 +1376,7 @@ function(anElement) {
                 //  ourself and take no further action.
                 if (nsVal === nsURIVal) {
 
-                    TP.elementRemoveAttribute(anElement, wholeName, true);
+                    TP.elementRemoveNamespace(anElement, wholeName);
 
                     return;
                 }
@@ -1389,7 +1389,7 @@ function(anElement) {
 
                     TP.elementAddNamespace(
                             ancestors.at(i - 1), wholeName, nsURIVal);
-                    TP.elementRemoveAttribute(anElement, wholeName, true);
+                    TP.elementRemoveNamespace(anElement, wholeName);
 
                     return;
                 }
@@ -3256,6 +3256,80 @@ function(anElement, attributeName, oldValue, newValue, checkAttrNSURI) {
     value = value.replace(re, '$1' + newValue + '$2');
 
     TP.elementSetAttribute(anElement, attributeName, value, checkAttrNSURI);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementRemoveNamespace',
+function(anElement, aPrefix) {
+
+    /**
+     * @name elementRemoveNamespace
+     * @synopsis Removes an 'xmlns:<aPrefix>' attribute from the element. Note
+     *     that 'aPrefix' *must* be valid (i.e. you cannot use this
+     *     mechanism to change the default namespace - no current DOM
+     *     environment supports that). Note also that namespaces can only be
+     *     remoed from elements in an XML document.
+     * @param {Element} anElement The Element node to remove a namespace from.
+     * @param {String} aPrefix The prefix of the namespace being removed. This
+     *     can have the 'xmlns:' already prepended to it.
+     * @param {String} aURI The URI of the namespace being added.
+     * @example Add a namespace to an element in an XML document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com"
+     *          xmlns:svg="http://www.w3.org/2000/svg"/>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.elementRemoveNamespace(xmlDoc.documentElement,
+     *          'svg');
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp>&lt;foo xmlns="http://www.foo.com"/&gt;</samp>
+     *     </code>
+     * @raise TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     * @raise TP.sig.InvalidXMLDocument Raised when the element supplied is
+     *     not part of an XML document.
+     * @raise TP.sig.InvalidString Raised when a null or empty prefix or URI
+     *     is provided to the method.
+     * @todo
+     */
+
+    var xmlnsAttrName,
+
+        attrs,
+        i;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+    }
+
+    if (!TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+    }
+
+    if (TP.isEmpty(aPrefix)) {
+        return TP.raise(this, 'TP.sig.InvalidString', arguments,
+                        'Invalid or empty prefix or URI');
+    }
+
+    //  If the prefix is just 'xmlns', we return - can't change the default
+    //  namespace.
+    if (aPrefix === 'xmlns') {
+        return;
+    }
+
+    //  If the 'xmlns:' part was provided in the supplied prefix, split that off
+    //  - this call doesn't want that.
+    if (/xmlns:/g.test(aPrefix)) {
+        xmlnsAttrName = aPrefix.slice(6);
+    } else {
+        //  Otherwise, just use it as is.
+        xmlnsAttrName = aPrefix;
+    }
+
+    anElement.removeAttributeNS(TP.w3.Xmlns.XMLNS, xmlnsAttrName);
 
     return;
 });
