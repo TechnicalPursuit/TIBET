@@ -195,7 +195,7 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    params = CLI.blend({appname: appname}, options);
+    params = CLI.blend({appname: appname, dna: dna}, options);
 
     //  ---
     //  Process templated content to inject appname.
