@@ -45,7 +45,7 @@
         "browserify": "*",
         "chalk": "*",
         "chai": "*",
-        "codemirror": "TechnicalPursuit/codemirror",
+        "codemirror": "TechnicalPursuit/codemirror#4.3.0",
         "connect": "*",
         "connect-gzip-static": "*",
         "d3": "TechnicalPursuit/d3",
