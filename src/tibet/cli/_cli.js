@@ -528,7 +528,13 @@ CLI.getMakeTargets = function() {
     try {
         this.make_targets = require(fullpath);
     } catch (e) {
-        this.error('Unable to load TIBET make file: ' + e.message);
+        // If we're inside the library this can occur due to a failure to link
+        // TIBET into the local git repo clone.
+        if (this.inLibrary()) {
+            this.warn('\nTIBET not linked locally. Try `npm link tibet` to access make targets.');
+        } else {
+            this.error('Unable to load TIBET make file: ' + e.message);
+        }
     }
 
     return this.make_targets;
