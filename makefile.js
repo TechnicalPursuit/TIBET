@@ -113,12 +113,19 @@
         npmdir = path.join(__dirname, 'node_modules');
         sh.cd(path.join(npmdir, 'codemirror'));
         sh.exec('npm install -d');
+
         sh.exec('mkdir ../../deps/codemirror');
-        sh.exec('cp -f -R lib ../../deps/codemirror/lib');
+        sh.exec('cp -f -R lib ../../deps/codemirror/');
+
         sh.exec('mkdir ../../deps/codemirror/mode');
         sh.exec('cp -f -R mode/javascript ../../deps/codemirror/mode');
         sh.exec('cp -f -R mode/xml ../../deps/codemirror/mode');
         sh.exec('cp -f -R mode/css ../../deps/codemirror/mode');
+
+        sh.exec('mkdir ../../deps/codemirror/addon');
+        sh.exec('mkdir ../../deps/codemirror/addon/search');
+        sh.exec('cp -f -R addon/search/searchcursor.js ' +
+                '../../deps/codemirror/addon/search');
 
         targets.rollup_codemirror.resolve();
     };
