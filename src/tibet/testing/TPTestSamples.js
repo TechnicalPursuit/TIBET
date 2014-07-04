@@ -11,6 +11,10 @@
  */
 //  ------------------------------------------------------------------------
 
+/* global Q:true,
+          AssertionFailed:true
+*/
+
 /**
  * Sample tests built specifically to exercise all the different ways a test
  * could pass, fail, or error out. A rough version of tests for the
@@ -52,13 +56,17 @@ function() {
     });
 
     this.it('errors implicitly via syntax or other error', function() {
-        var foo = thiswontwork;
+        var thiswontwork;
+        var foo;
+        foo = thiswontwork;
     });
 });
 
 Array.prototype.describe('slice (syntax error in describe())',
 function() {
-    var foo = thiswontwork;
+        var thiswontwork;
+        var foo;
+        foo = thiswontwork;
     this.it('slices and dices', function() {
     });
 });
@@ -66,7 +74,9 @@ function() {
 Array.prototype.describe('slice (syntax error in it())',
 function() {
     this.it('makes julienne fries (syntax error)', function() {
-        var foo = thiswontwork;
+        var thiswontwork;
+        var foo;
+        foo = thiswontwork;
     });
 });
 

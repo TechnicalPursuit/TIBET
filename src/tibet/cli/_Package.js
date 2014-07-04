@@ -891,7 +891,6 @@ Package.prototype.getAppRoot = function() {
 Package.prototype.getLibRoot = function() {
 
     var app_root,
-        root,
         testpath;
 
     // Return cached value if available.

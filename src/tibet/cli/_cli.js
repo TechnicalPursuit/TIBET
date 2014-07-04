@@ -705,8 +705,6 @@ CLI.inProject = function(CmdType) {
  * and that project has been initialized (has node_modules etc).
  */
 CLI.isInitialized = function() {
-    var file;
-
     if (!this.inProject()) {
         return false;
     }
@@ -729,7 +727,7 @@ CLI.logItems = function(aList) {
     buffer = '';
     if (aList && aList.length > 0) {
         line = '\t';
-        while (cmd = aList.shift()) {
+        while ((cmd = aList.shift())) {
             if (line.length + cmd.length > limit) {
                 buffer += line + '\n';
                 line = '\t';

@@ -168,7 +168,7 @@ function(aValue, aFacet) {
     inst = Date.normalizeDuration(TP.elementGetAttribute(aFacet, 'value'));
     value = Date.normalizeDuration(aValue);
 
-    return inst == value;
+    return inst === value;
 });
 
 //  ------------------------------------------------------------------------

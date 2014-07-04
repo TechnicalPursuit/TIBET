@@ -360,6 +360,10 @@ function(targetUrl, openCallback) {
                                         'object', TP.ec(errorEvt),
                                         'wsObj', wsObj));
 
+            //  TODO: This needs to be made real. The reason that we have this
+            //  'var' statement is purely to avoid the jshint warning message.
+            var request = null;
+
             //  we must do this to avoid having multiple requests which
             //  share the same WebSocket object also sharing the same status
             //  text

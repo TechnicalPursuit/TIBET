@@ -3317,10 +3317,7 @@ function(anElement, aPrefix) {
      * @todo
      */
 
-    var xmlnsAttrName,
-
-        attrs,
-        i;
+    var xmlnsAttrName;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement', arguments);

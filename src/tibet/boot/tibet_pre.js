@@ -18,11 +18,6 @@
           nonstandard:true,
           node:true
 */
-/* global ActiveXObject:false,
-          netscape:false,
-          Components:false,
-          $STATUS:true
-*/
 
 ;(function(root) {
 

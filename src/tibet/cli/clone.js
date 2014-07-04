@@ -186,7 +186,7 @@ Cmd.prototype.execute = function() {
             this.error('Error creating target directory: ' + err);
             return 1;
         }
-    };
+    }
 
     sh.cp('-R', dna + '/', target + '/');
     err = sh.error();

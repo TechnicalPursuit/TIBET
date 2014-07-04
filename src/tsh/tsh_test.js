@@ -92,7 +92,7 @@ function(aRequest) {
 
         obj = shell.resolveObjectReference(target, aRequest);
         if (TP.notValid(obj)) {
-            aRequest.fail(TP.FAILURE, 'Unable to resolve object: ' + ref);
+            aRequest.fail(TP.FAILURE, 'Unable to resolve object: ' + target);
             return;
         }
 

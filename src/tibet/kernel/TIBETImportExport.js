@@ -584,18 +584,7 @@ function(aTypeName, shouldReload, isProxy) {
     var reload,
         proxy,
         type,
-        notfounds,
-        typeinfo,
-        typename,
-        entries,
-        types,
-        entry,
-        len,
-        i,
-        parts,
-        file,
-        url,
-        request;
+        typeinfo;
 
     TP.debug('break.require');
 
@@ -635,6 +624,18 @@ function(aTypeName, shouldReload, isProxy) {
     /*
      * TODO Scott: Both metadata and packaging has changed since this was
      * written... is this logic still valid?
+
+    var notfounds,
+        typename,
+        entries,
+        types,
+        entry,
+        len,
+        i,
+        parts,
+        file,
+        url,
+        request;
 
     typeinfo = TP.ifInvalid(typeinfo, TP.sys.getMetadata('types'));
 
