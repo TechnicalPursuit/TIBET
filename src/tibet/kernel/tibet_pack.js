@@ -1217,7 +1217,9 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
 
                 //  if newlines are defaulted, or set explicitly to false
                 //  then we don't remove them...except blank lines
+                /* jshint -W041, eqeqeq:false */
                 if (newlines == null || newlines === false) {
+                /* jshint +W041, eqeqeq:true */
                     if (!last || (last.name === 'newline')) {
                         continue;
                     }
@@ -1258,7 +1260,9 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
             case 'space':
 
                 //  if spaces is explicity false then we skip removal
+                /* jshint -W041, eqeqeq:false */
                 if ((spaces != null) && (spaces === false)) {
+                /* jshint +W041, eqeqeq:true */
                     result.push(tokens ? token : token.value);
                     last = token;
                     break;

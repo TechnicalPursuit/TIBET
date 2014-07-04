@@ -216,13 +216,13 @@ function(aSignal) {
      * @todo
      */
 
-return;
-
+    /*
     var xml;
 
     xml = this.getBoundContent();
 
     this.setContent(TP.str(xml));
+    */
 
     return;
 });

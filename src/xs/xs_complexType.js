@@ -351,16 +351,6 @@ function(aValue, anElem) {
     }
 
     return passCount;
-
-    //  If we're a sequence, all test must've passed in order to return true
-    //  from this method.
-    if (isSequence) {
-        //return passCount === list.getSize();
-    } else {
-        //  Otherwise, if we're a choice, only one test must've passed in order
-        //  to return true from this method.
-        //return passCount > 0;
-    }
 });
 
 //  ------------------------------------------------------------------------

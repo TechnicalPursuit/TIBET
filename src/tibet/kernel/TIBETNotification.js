@@ -6544,8 +6544,8 @@ function(aDocument) {
 
     var observer;
 
-    // PhantomJS (at least at the time of this writing, doesn't support these).
-    if (TP.notValid(self['MutationObserver'])) {
+    //  PhantomJS (at least at the time of this writing, doesn't support these).
+    if (TP.notValid(self.MutationObserver)) {
         return this;
     }
 

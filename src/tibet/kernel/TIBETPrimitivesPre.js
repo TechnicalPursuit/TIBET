@@ -3467,8 +3467,10 @@ function(anObject, aContext, aTrack,
 //  those kinds of properties onto the correct target with the correct owner and
 //  track.
 
+/* jshint -W054 */
 var NativeTypeStub = new Function();
 NativeTypeStub.prototype = {};
+/* jshint +W054 */
 
 //  ---
 
@@ -3606,8 +3608,10 @@ Window.Type[TP.OWNER] = Window;
 
 //  ---
 
+/* jshint -W054 */
 var NativeInstStub = new Function();
 NativeInstStub.prototype = {};
+/* jshint +W054 */
 
 //  ---
 
@@ -3815,8 +3819,10 @@ main tree but notice that you can have other trees.
 */
 
 //  NB: We don't want closures here...
+/* jshint -W054 */
 TP.lang.RootObject$$Type = new Function();
 TP.lang.RootObject$$Inst = new Function();
+/* jshint +W054 */
 
 TP.lang.RootObject$$Type.prototype = Object.$constructPrototype();
 TP.lang.RootObject$$Inst.prototype = Object.$constructPrototype();
@@ -5726,7 +5732,9 @@ function(aFlagOrParam) {
     }
 
     try {
+        /* jshint -W087 */
         debugger;
+        /* jshint +W087 */
     } catch (e) {
     }
 

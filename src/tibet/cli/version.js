@@ -62,10 +62,6 @@ Cmd.prototype.USAGE = 'tibet version';
  */
 Cmd.prototype.execute = function() {
 
-    var path,
-        file,
-        json;
-
     try {
         this.info(CLI.config.npm.version);
     } catch (e) {

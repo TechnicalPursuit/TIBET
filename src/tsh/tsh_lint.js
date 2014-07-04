@@ -60,7 +60,9 @@ function(aRequest) {
 
     var node,
         shell,
-        target;
+        target,
+    
+        obj;
 
     TP.debug('break.tsh_lint');
 
@@ -74,10 +76,10 @@ function(aRequest) {
         // Try to resolve object reference.
         obj = shell.resolveObjectReference(target, aRequest);
         if (TP.notValid(obj)) {
-            aRequest.fail(TP.FAILURE, 'Unable to resolve object: ' + ref);
+            aRequest.fail(TP.FAILURE, 'Unable to resolve object: ' + target);
             return;
         }
-        aRequest.stdout('Assembling ' + ref + '-only worklist.');
+        aRequest.stdout('Assembling ' + target + '-only worklist.');
     }
 
     return;

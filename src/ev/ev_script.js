@@ -215,7 +215,9 @@ function(aRequest) {
             //  build the function such that its internal references
             //  to window/document are proper
             win = TP.nodeGetWindow(node) || window;
+            /* jshint -W061 */
             eval('win.$$handler = ' + source);
+            /* jshint +W061 */
             win[funcID] = win.$$handler;
         } catch (e) {
             return aRequest.fail(

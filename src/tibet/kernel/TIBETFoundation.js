@@ -6305,7 +6305,9 @@ function(aContext) {
         //  on IE or Mozilla this will foreground the native debugger, if
         //  installed and open. but it's a bit flakey.
         try {
+            /* jshint -W087 */
             debugger;
+            /* jshint +W087 */
         } catch (e) {
         }
     }

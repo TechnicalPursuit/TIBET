@@ -106,7 +106,6 @@ Cmd.prototype.help = function() {
  */
 Cmd.prototype.parse = function(options) {
     var command;
-    var opts;
     var cmd;
 
     // Note we use the command's own version of PARSE_OPTIONS here.

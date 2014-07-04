@@ -62,7 +62,13 @@ TP.core.Unicode.Type.defineConstant('Extender',
 TP.core.Unicode.Type.defineConstant('NameChar',
             TP.join(TP.core.Unicode.Letter, '|',
                     TP.core.Unicode.Digit, '|',
+                    //  TODO: JSHint was complaining about 'bad or unnecessary
+                    //  escaping' here, which might be true... we didn't have
+                    //  time to change it and test, but that needs to be done
+                    //  and then these jshint switches can be removed.
+                    /* jshint -W044 */
                     '\\\.', '|',    //  . escaped
+                    /* jshint +W044 */
                     ':', '|',
                     '_', '|',
                     '-', '|',

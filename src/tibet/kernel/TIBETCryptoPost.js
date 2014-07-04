@@ -291,7 +291,6 @@ function(aSalt, params) {
      */
 
     var str,
-        saltVal,
 
         keySize,
         iterationCount,
@@ -343,7 +342,8 @@ function(aKey, params) {
         opts,
         iv,
 
-        cipher;
+        cipher,
+        buffer;
 
     if (!TP.isString(aKey)) {
         return this.raise('TP.sig.InvalidString', arguments);

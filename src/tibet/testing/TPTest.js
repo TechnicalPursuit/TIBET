@@ -14,6 +14,10 @@
 /**
  */
 
+/* global Q:true,
+          AssertionFailed:true
+*/
+
 //  ========================================================================
 //  TP.test namespace (and friends...)
 //  ------------------------------------------------------------------------
@@ -21,7 +25,7 @@
 TP.defineNamespace('test', 'TP');
 
 //  Create a custom Error for use in Assert processing.
-AssertionFailed = function(message) { this.message = message };
+AssertionFailed = function(message) { this.message = message;};
 AssertionFailed.prototype = new Error();
 AssertionFailed.prototype.name = 'AssertionFailed';
 
@@ -363,7 +367,8 @@ TP.test.Suite.Type.defineMethod('runTargetSuites', function(target, options) {
         suitelist,
         promise,
         exclusives,
-        summarize;
+        summarize,
+        total;
 
     // Note we pass options here to deal with potential for wanting inherited
     // tests etc.
@@ -454,7 +459,7 @@ TP.test.Suite.Type.defineMethod('runTargetSuites', function(target, options) {
             }
         }, 0);
 
-        if (statistics.at('failed') !== 0 || statistics.at('errored') !== 0) {
+        if (failed !== 0 || errored !== 0) {
             prefix = '# FAIL: ';
         } else {
             prefix = '# PASS: ';
@@ -848,7 +853,9 @@ TP.test.Suite.Inst.defineMethod('it', function(caseName, caseFunc) {
 //  ------------------------------------------------------------------------
 
 TP.test.Suite.Inst.defineMethod('report', function(options) {
-    var caseList,
+    var statistics,
+
+        caseList,
         passed,
         failed,
         errored,
@@ -991,7 +998,7 @@ TP.test.Suite.Inst.defineMethod('runTestCases', function(options) {
     // Filter for exclusivity. We might get more than one if authoring was off
     // so check for that as well.
     if (!params.at('ignore_only')) {
-        if (caselist.some(function(test) { return test.isExclusive() })) {
+        if (caselist.some(function(test) { return test.isExclusive();})) {
             TP.sys.logTest('# filtering for exclusive test cases.', TP.TRACE);
             caselist = caselist.filter(function(test) {
                 return test.isExclusive();
@@ -1247,7 +1254,9 @@ TP.test.Case.Inst.defineMethod('$reject', function() {
 
 TP.test.Case.Inst.defineMethod('$resolve', function() {
     if (!this.$resolver) {
+        /* jshint -W087 */
         debugger;
+        /* jshint +W087 */
     }
 
     this.$resolver();
@@ -1280,9 +1289,7 @@ TP.test.Case.Inst.defineMethod('run', function(options) {
      * @return {Promise} A Promise to be used as necessary.
      */
 
-    var target,
-        params,
-        fixture,
+    var params,
         promise,
         testcase,
         timeout;
@@ -1519,17 +1526,16 @@ function(options) {
     var methods,
         names,
         suites,
-        testnames;
+        suitenames;
 
     methods = this.getMethods();
-    names = methods.map(function(method) { return TP.name(method) });
+    names = methods.map(function(method) { return TP.name(method);});
 
     suitenames = TP.ac();
 
     suites = this.getTestSuites(options);
     suites.getKeys().forEach(function(key) {
-        var suitehash,
-            suitelist;
+        var suitehash;
 
         suitehash = suites.at(key);
         suitenames.addAll(suitehash.getKeys());
