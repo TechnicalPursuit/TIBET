@@ -663,6 +663,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         }
     }
 
+    TP.elementAddNamespace(aDocument.documentElement,
+                            'pclass',
+                            TP.w3.Xmlns.PCLASS);
+
     //  Go to every element in the document and try to bubble its namespaces
     if (TP.notEmpty(allElems = aDocument.getElementsByTagName('*'))) {
         for (i = 0; i < allElems.length; i++) {
@@ -1374,10 +1378,18 @@ function(anElement) {
                 ancestor = ancestors.at(i);
                 nsVal = TP.elementGetAttribute(ancestor, wholeName, true);
 
-                //  If the ancestor has no value and it's not the document
-                //  element, then continue
-                if (TP.isEmpty(nsVal) && ancestor !== docElem) {
-                    continue;
+                //  If the ancestor has no value
+                if (TP.isEmpty(nsVal)) {
+                    //  If it's not the document element, then continue on up.
+                    if (ancestor !== docElem) {
+                        continue;
+                    } else {
+                        //  If it is the document element, then go ahead and
+                        //  place the attribute, and remove it from ourself.
+                        TP.elementAddNamespace(ancestor, wholeName, nsURIVal);
+                        TP.elementRemoveNamespace(anElement, wholeName);
+                        return;
+                    }
                 }
 
                 //  If we find one that defines both the same namespace prefix
