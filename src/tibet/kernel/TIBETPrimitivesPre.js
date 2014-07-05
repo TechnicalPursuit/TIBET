@@ -2071,6 +2071,9 @@ TP.defineMethod = function(target, name, value, track, desc, display,
             return retVal;
         };
 
+        //  Let's make sure we can get back to the original function here.
+        method.$realFunc = value;
+
         //  So this is a little tricky. We've defined a patch function to 'stand
         //  in' for (and wrap a call to) our method. We do want to distinguish
         //  the real method from the erstaz for reflection purposes, so we tell
