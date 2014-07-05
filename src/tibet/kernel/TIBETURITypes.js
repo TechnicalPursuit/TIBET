@@ -281,6 +281,11 @@ function(aURI, $$vetted) {
                 return inst;
             }
 
+            //  One last adjustment is when a developer uses a typical url of
+            //  the form '/' or './' etc. In those cases we need to update the
+            //  url to include the current root. We can adjust for that.
+            url = TP.uriWithRoot(url);
+
             //  here we construct the instance and init() it using the root
             type = this.getConcreteType(url);
             if (TP.isType(type)) {
@@ -288,8 +293,7 @@ function(aURI, $$vetted) {
                 //  and ready to use without additional processing.
                 inst = type.construct(url, true);
             } else {
-                //  no appearance of being a TIBET URL, and no concrete type
-                //  for what we do have.
+                //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
                 return this.raise(
                         'TP.sig.NoConcreteType',
                         arguments,

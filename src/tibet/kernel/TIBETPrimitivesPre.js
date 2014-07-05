@@ -210,9 +210,11 @@ TP.canInvoke = function(anObj, anInterface) {
      */
 
     var i,
-        len;
+        len,
+        obj;
 
-    if (TP.notValid(anObj)) {
+    if (anObj === undefined || anObj === null ||
+            anInterface === undefined || anInterface === null) {
         return false;
     }
 
@@ -225,11 +227,11 @@ TP.canInvoke = function(anObj, anInterface) {
     } else if (TP.isArray(anInterface)) {
         len = anInterface.length;
         for (i = 0; i < len; i++) {
-            if (!TP.isCallable(anObj[anInterface[i]])) {
+            obj = anObj[anInterface[i]];
+            if (!obj || !obj.apply || obj.$$dnu === true) {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -11554,7 +11556,7 @@ functions are really only useful when TP.sys.$httpBased is true.
 //  first define whether we were loaded from file url or a web server
 TP.sys.$httpBased = (window.location.protocol.indexOf('file') !== 0);
 
-TP.sys.$scheme = window.location.protocol;
+TP.sys.$scheme = window.location.protocol.slice(0, -1);
 TP.sys.$pathname = decodeURI(window.location.pathname);
 
 if (TP.sys.$httpBased) {
@@ -11619,7 +11621,7 @@ function() {
 
     if (TP.sys.isHTTPBased()) {
         //  on http uris you need the host:port portion as a root
-        str = TP.sys.getScheme() + '//' + TP.sys.getHost();
+        str = TP.sys.getScheme() + '://' + TP.sys.getHost();
         if (TP.isValid(port = TP.sys.getPort()) &&
             (port.toString() !== '80')) {
             str += ':' + port;

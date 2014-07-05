@@ -15,8 +15,24 @@
  */
 
 /*
- * TODO: migrate TIBET middleware portions to a location we can require() under
- * the tibet node_modules path.
+ * Parameters:
+ *
+ *  --app_root <string>         // Defaults to '.'
+ *
+ *  --no-cli                    // Defaults to false.
+ *  --no-watcher                // Defaults to false.
+ *  --no-webdav                 // Defaults to false.
+ *
+ *  --tds.port <number>         // Defaults to 1407.
+ *  --tds.secret <string>       // Should change from tibet_cfg value.
+ *
+ *  --tds.cli_uri  <string>     // URL path for TIBET cli route
+ *
+ *  --tds.dav_root <string>     // Directory mounted for webdav.
+ *  --tds.dav_uri  <string>     // URL path for webdav routing.
+ *
+ *  --tds.watch_root <string>   // Directory mounted for watch.
+ *  --tds.watch_uri  <string>   // URL path for file watcher.
  */
 
 (function() {
@@ -24,10 +40,9 @@
 'use strict';
 
 var http = require('http');
-var path = require('path');
-
 var minimist = require('minimist');
 
+// Express baseline components.
 var express = require('express');
 var bodyParser = require('body-parser');
 var compression = require('compression');
@@ -36,222 +51,28 @@ var morgan = require('morgan');
 var session = require('express-session');
 var serveStatic = require('serve-static');
 
-var sh = require('shelljs');
-var child = require('child_process');
-var jsDAV = require('jsDAV/lib/jsdav');
-var watch = require('watch');
+// TIBET Development Server addons.
+var TDS = require('tibet/etc/tds-middleware');
 
 //  ---
 //  Argument Processing
 //  ---
 
 var argv = minimist(process.argv.slice(2));
-var port = argv.port ||
+
+// Since server.js typically sits in the project root directory we can work with
+// __dirname here as a default.
+var app_root = argv.app_root || __dirname;
+
+// Ensure the TDS loads configuration data from our computed root.
+TDS.initPackage({app_root: app_root});
+
+// Lots of options for where to get a port number but try to leverage TDS first.
+var port = TDS.getcfg('tds.port') ||
+    TDS.getcfg('port') ||
     process.env.npm_package_config_port ||
     process.env.PORT ||
     1407;
-
-//  ---
-//  TIBET Middleware Root
-//  ---
-
-var TDS = {};
-
-//  ---
-//  TIBET CLI Middleware
-//  ---
-
-TDS.cli = {};
-
-/**
- * Processes command execution requests by passing the argument list to the
- * TIBET command. For the most part this is "ok" given that the command list
- * is constrained, however commands are extensible so it's possible this could
- * open a security hole. You shouldn't enable this without authentication.
- *
- * You can test whether it works by using URLs of the form:
- * TP.uc('~/cli?cmd=echo&argv0=fluff&--testing=123&--no-color').getContent();
- */
-TDS.cli.middleware = function (req, res, next) {
-
-    var out;    // Output buffer.
-    var cli;    // Spawned child process for the server.
-    var msg;    // Shared message content.
-    var cmd;    // The command being requested.
-    var argv;   // Non-named argument collector.
-    var params; // Named argument collector.
-
-    cmd = req.param('cmd')
-    if (!cmd) {
-        res.send('Invalid command.');
-        return;
-    }
-
-    out = [];
-    argv = [];
-    params = [];
-
-    Object.keys(req.query).forEach(function(key) {
-        if (key === 'cmd') {
-            void(0);    // skip
-        } else if (/argv\d/.test(key)) {
-            argv[key.charAt(4)] = req.query[key];
-        } else {
-            params.push(key, req.query[key]);
-        }
-    });
-
-    // Build up the list but filter any "gaps" in the form of missing args in
-    // argv or -- flags for booleans etc.
-    params = [cmd].concat(argv).concat(params);
-    params = params.filter(function(item) {
-        return item !== '' && item !== null &&
-            item !== undefined;
-    });
-
-    console.log('executing \'tibet\' with args: ' + JSON.stringify(params));
-
-    cli = child.spawn('tibet', params);
-
-    cli.stdout.on('data', function(data) {
-        var msg = '' + data;
-        if (msg.trim().length === 0) {
-            return;
-        }
-        out.push('' + data);
-    });
-
-    cli.stderr.on('data', function(data) {
-        var msg = '' + data;
-        if (msg.trim().length === 0) {
-            return;
-        }
-        out.push(msg);
-    });
-
-    cli.on('close', function(code) {
-        if (code !== 0) {
-            out.push('not ok - ' + code);
-        }
-
-// TODO: SSE the result so we can be async and update the client when ready.
-
-        res.send(out.join('\n'));
-    });
-};
-
-//  ---
-//  File Watcher Middleware
-//  ---
-
-TDS.watcher = {};
-
-TDS.watcher.pathToWatch = path.resolve(__dirname, './src');
-TDS.watcher.changedFileName = '';
-
-TDS.watcher.middleware = function (req, res, next) {
-    var writeSSEHead,
-        writeSSEData;
-
-    writeSSEHead = function (req, res, cb) {
-        res.writeHead(
-            200,
-            {
-                'Content-Type': 'text/event-stream',
-                'Cache-Control': 'no-cache',
-                'Connection': 'keep-alive'
-            });
-
-        res.write('retry: 1000\n');
-
-        if (cb) {
-            return cb(req, res);
-        }
-    };
-
-    writeSSEData = function (req, res, eventName, eventData, cb) {
-        var id;
-
-        id = (new Date()).getTime();
-
-        res.write('id: ' + id + '\n');
-        res.write('event: ' + eventName + '\n');
-        res.write('data: ' + JSON.stringify(eventData) + '\n\n');
-
-        if (cb) {
-            return cb(req, res);
-        }
-    };
-
-    if (req.headers.accept && req.headers.accept === 'text/event-stream') {
-
-        var eventName;
-
-        if (TDS.watcher.changedFileName !== '') {
-            // NOTE this must match the NATIVE_NAME in the corresponding listen
-            // calls in the client.
-            eventName = 'fileChanged';
-        } else {
-            eventName = '';
-        }
-
-        //  Write the SSE HEAD and then in that method's callback, write the SSE
-        //  data.
-        writeSSEHead(
-            req, res,
-            function(req, res) {
-                writeSSEData(
-                    req, res, eventName, TDS.watcher.changedFileName,
-                    function(req, res) {
-
-                        if (TDS.watcher.changedFileName !== '') {
-                            TDS.watcher.changedFileName = '';
-                        }
-
-                        res.end();
-                    });
-        });
-    }
-};
-
-// Start watching...
-// TODO: control this via a flag (and perhaps a command-line API)
-
-// TODO: start this on activation of the require'd module
-watch.watchTree(
-    TDS.watcher.pathToWatch,
-    function (fileName, curr, prev) {
-        if (typeof fileName === 'object' && prev === null && curr === null) {
-            // Finished walking the tree
-        } else if (prev === null) {
-            // fileName is a new file
-        } else if (curr.nlink === 0) {
-            // fileName was removed
-        } else {
-            //console.log('the file changed: ' + fileName);
-            // fileName was changed
-            TDS.watcher.changedFileName = fileName;
-        }
-    });
-
-//  ---
-//  WebDAV Middleware
-//  ---
-
-TDS.webdav = {};
-
-TDS.webdav.jsDAV_CORS_Plugin = require("jsDAV/lib/DAV/plugins/cors");
-
-TDS.webdav.middleware = function (req, res, next) {
-  jsDAV.mount({
-    node: __dirname + "/dav",
-    mount: "/webdav",
-    server: req.app,
-    standalone: false,
-    plugins: [jsDAV_CORS_Plugin]
-    }
-  ).exec(req, res);
-};
 
 //  ---
 //  Server Stack Configuration
@@ -259,42 +80,68 @@ TDS.webdav.middleware = function (req, res, next) {
 
 var app = express();
 
-// TODO: add login authentication based on params or some such
+// TODO: add login authentication based on params or some such.
+// get data from tibet.json for user/pass lists.
 
-// TODO make the secret configurable via tibet.json
-app.use(session({ secret: "fix this soon" }));
+// Configure a basic session. We look up the secret here which allows it to be
+// set on the command line or via the project's tibet.json file.
+// TODO: warn if it's still the one coded into the library as a default value.
+app.use(session({ secret: TDS.getcfg('tds.secret') }));
 
 // TODO: if we ever actually do a "form" or some other template we can try to
-// reactivate this...
+// reactivate this. for now it isn't being sent to the client appropriately.
 //app.use(csurf());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// NOTE: path must match with TP.tds.FILE_WATCH_URI in TIBETGlobals.js
-app.get('/watcher', TDS.watcher.middleware);
+//  ---
+//  ---
 
-// NOTE: path must match with TP.tds.TIBET_CLI_URI in TIBETGlobals.js
 // TODO: convert this to POST once testing is done.
-app.get('/cli', TDS.cli.middleware);
+// Let the client access the tibet command line functionality. Potentially not
+// secure, but at least the command being run and the command set is somewhat
+// constrained.
+if (argv.cli !== false) {
+    app.get(TDS.getcfg('tds.cli_uri'), TDS.cli());
+}
 
-// NOTE: path must match with TP.tds.WEBDAV_URI in TIBETGlobals.js
-app.use('/webdav', TDS.webdav.middleware);
+// Configure the file watcher so changes on the server can be propogated to the
+// client. SSE must be active in the client for this to work.
+if (argv.watcher !== false) {
+    app.get(TDS.getcfg('tds.watch_uri'), TDS.watcher());
+}
 
-// Do these after the file watcher.
+// Configure the webdav component so changes in the client can be propogated to
+// the server.
+if (argv.webdav !== false) {
+    app.use(TDS.getcfg('tds.dav_uri'), TDS.webdav());
+}
+
+//  ---
+//  Server Wrapup
+//  ---
+
+//  Express logger.
 app.use(morgan());
+
+//  Express gzip compression. Send data compressed if possible.
 app.use(compression());
-app.use(serveStatic(__dirname));
+
+//  By default we assume the entire site is accessible statically. That's a
+//  side-effect of TIBET not making any assumptions about server-side logic.
+app.use(serveStatic(app_root));
+
 
 // Serve a general 404 if no other handler too care of the request.
 app.use(function(req, res, next){
-  res.send(404, 'Sorry cant find that!');
+  res.send(404, TDS.getcfg('tds.404'));
 });
 
 // Provide simple error handler middleware here.
 app.use(function(err, req, res, next){
   console.error(err.stack);
 // TODO: dump stack/error back to the client...?
-  res.send(500, 'Something broke!');
+  res.send(500, TDS.getcfg('tds.500'));
 });
 
 

@@ -398,7 +398,6 @@ CLI.canRun = function(CmdType) {
  * @return {String} The fully-expanded path value.
  */
 CLI.expandPath = function(aPath) {
-
     this.initPackage();
 
     return this._package.expandPath(aPath);
@@ -618,7 +617,7 @@ CLI.initPackage = function() {
         return;
     }
 
-    Package = require(path.join(__dirname, '_Package.js'));
+    Package = require('./_Package');
     this._package = new Package(this.options);
 };
 

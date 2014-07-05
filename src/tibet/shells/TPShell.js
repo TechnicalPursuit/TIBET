@@ -3118,18 +3118,21 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SourceSignal.defineSubtype('FileChangedEvent');
-TP.sig.FileChangedEvent.Type.defineConstant('NATIVE_NAME', 'fileChanged');
+TP.sig.FileChangedEvent.Type.defineConstant('NATIVE_NAME',
+    TP.sys.cfg('tds.watch_event'));
 
 //  ------------------------------------------------------------------------
 
 TP.core.Shell.Inst.defineMethod('executeWatchFS',
 function(aRequest) {
-
-    var watcher;
+    var watcher,
+        url;
 
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
-        watcher = TP.core.SSESignalSource.construct(
-            TP.uriJoinPaths(TP.sys.cfg('boot.approot'), TP.tds.FILE_WATCH_URI));
+        url = TP.uriJoinPaths(TP.sys.cfg('boot.approot'),
+            TP.sys.cfg('tds.watch_uri'));
+console.log(url);
+        watcher = TP.core.SSESignalSource.construct(url);
         this.set('watcherSSESource', watcher);
     }
 
@@ -3144,12 +3147,16 @@ function(aRequest) {
 
 TP.core.Shell.Inst.defineMethod('executeUnwatchFS',
 function(aRequest) {
+    var watcher,
+        url;
 
-    var watcher;
-
+    // TODO: why? if we are 'unwatching' what is the construct() process doing
+    // for us? Shouldn't there be a 'getInstance' or something instead?
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
-        watcher = TP.core.SSESignalSource.construct(
-            TP.uriJoinPaths(TP.sys.cfg('boot.approot'), TP.tds.FILE_WATCH_URI));
+        url = TP.uriJoinPaths(TP.sys.cfg('boot.approot'),
+            TP.sys.cfg('tds.watch_uri'));
+console.log(url);
+        watcher = TP.core.SSESignalSource.construct(url);
     }
 
     this.ignore(watcher, 'TP.sig.FileChangedEvent');

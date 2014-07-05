@@ -1201,6 +1201,25 @@ TP.sys.setcfg('tdc.type_collections', true);
 TP.sys.setcfg('tdc.bubble_fade_time', 2000);
 
 //  ---
+//  tds support
+//  ---
+
+TP.sys.setcfg('tds.cli_uri', '/tds/cli');
+
+TP.sys.setcfg('tds.dav_root', '~');
+TP.sys.setcfg('tds.dav_uri', '/tds/webdav');
+
+TP.sys.setcfg('tds.port', 1407);
+TP.sys.setcfg('tds.secret', 'change this in your tibet.json file');
+
+TP.sys.setcfg('tds.404', 'NotFound');
+TP.sys.setcfg('tds.500', 'ServerError');
+
+TP.sys.setcfg('tds.watch_event', 'fileChanged');
+TP.sys.setcfg('tds.watch_root', '~');
+TP.sys.setcfg('tds.watch_uri', '/tds/watcher');
+
+//  ---
 //  tsh processing
 //  ---
 

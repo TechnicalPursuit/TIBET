@@ -39,11 +39,20 @@ Cmd.prototype.HELP =
 'Starts the current TIBET project development server, if any.\n\n' +
 
 'Many TIBET dna templates provide a simple Node.js-based server\n' +
-'for use during development. If the current project contains either\n' +
-'a server.js file or can invoke \'npm start\' this command will\n' +
-'try to start that server.\n\n' +
+'based on Connect and/or Express for use during development. If\n' +
+'the current project contains either a server.js file or can invoke\n' +
+'\'npm start\' this command will try to start that server.\n\n' +
 'The optional --port parameter lets you specify a port other than\n' +
-'the default (which is port 1407).\n';
+'the default (which is port 1407).\n\n' +
+'When a local server.js file is used it can be augmented with code\n' +
+'for TIBET Development Server (TDS) functionality. Use require()\n' +
+'with a path of \'tibet/etc/tds-middleware\' to load that module.\n\n' +
+'If your server includes TDS features you can optionally add\n' +
+'command-line parameters to provide the various modules of the TDS\n' +
+'with config data. Use \'tds-{module}\' plus \'-{var}\' in these\n' +
+'cases, replacing {var} with the config variable you need. As an\n' +
+'example \'--tds-watch-root\' provides the tds file watch module\n' +
+'with the root path to watch for source code changes.\n';
 
 /**
  * The default TIBET port.
@@ -56,7 +65,7 @@ Cmd.prototype.PORT = 1407;      // Reserved by us in another lifetime.
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet start [--port <port>]';
+Cmd.prototype.USAGE = 'tibet start [--port <port>] [<tds options>]';
 
 
 //  ---
@@ -96,12 +105,16 @@ Cmd.prototype.execute = function() {
     }
 
     // Determine the port the user wants to start on.
-    port = this.options.port ||
+    port = CLI.getcfg('tds.port') ||
+        CLI.getcfg('port') ||
         process.env.npm_package_config_port ||
         process.env.PORT ||
         this.PORT;
 
     msg = 'Starting server on port: ' + port;
+
+// TODO:    process command line arguments such that we can add them to the
+//          array of parameters given to spawn() calls below.
 
     // If we can't find server.js our only option is to use npm start. If we
     // have port information on our command line we've got to use options.
@@ -112,7 +125,8 @@ Cmd.prototype.execute = function() {
     } else {
         cmd.system(msg);
         server = child.spawn('node',
-            ['server.js', '--port', port]);
+            ['server.js', '--port', port,
+                '--app-root', CLI.getAppRoot()]);
     }
 
     server.stdout.on('data', function(data) {

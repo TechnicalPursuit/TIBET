@@ -184,6 +184,16 @@ function(aPath) {
         return '';
     }
 
+    if (aPath === '/') {
+        return TP.sys.getLaunchRoot();
+    }
+
+    if (aPath.indexOf('/') === 0) {
+        // Launch root doesn't include a trailing slash, so avoid possible
+        // recursion via uriJoinPaths and just concatenate.
+        return TP.sys.getLaunchRoot() + aPath;
+    }
+
     start = aPath.replace('tibet:///~', '~');
 
     //  if the path starts with '~' we adjust to the proper root
@@ -491,662 +501,662 @@ function(aPath, aRoot) {
      *     the rest of TIBET's functions and in the form more readable/typical
      *     for an end user.
      * @param {String} aPath The path to repair.
-     * @param {String} aRoot The root to use for relative path resolution.
-     *     Default is TP.sys.getAppRoot();.
-     * @returns {String}
-     * @todo
-     */
+         * @param {String} aRoot The root to use for relative path resolution.
+         *     Default is TP.sys.getAppRoot();.
+         * @returns {String}
+         * @todo
+         */
 
-    var path;
+        var path;
 
-    if (TP.isEmpty(aPath)) {
-        return aPath;
-    }
-
-    //  already has a scheme and it's not tibet:? consider it done
-    if (TP.regex.HAS_SCHEME.test(aPath) &&
-        !TP.regex.TIBET_SCHEME.test(aPath)) {
-        return aPath;
-    }
-
-    //  local? definately need to convert
-    if (TP.regex.WINDOWS_PATH.test(aPath) ||
-        TP.regex.UNC_PATH.test(aPath)) {
-        path = aPath.replace(/\\\\/g, '/').replace(/\\/g, '/');
-        return TP.uriPlusFileScheme(path.unquoted());
-    }
-
-    //  may be virtual, in which case we'll just expand and return
-    path = TP.uriExpandPath(aPath);
-    if (path !== aPath) {
-        return path;
-    }
-
-    //  last option is a path that probably needs a root. we expand out here
-    //  and then make sure we add on the necessary file scheme if a scheme
-    //  doesn't come back from our root expansion
-    return TP.uriPlusFileScheme(TP.uriWithRoot(aPath));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('uriIsAbsolute',
-function(aPath) {
-
-    /**
-     * @name uriIsAbsolute
-     * @synopsis Returns true if the path provided is an absolute path.
-     * @param {String} aPath The path to test.
-     * @returns {Boolean} True if the path is absolute rather than relative to
-     *     some root.
-     */
-
-    var path;
-
-    if (TP.isEmpty(aPath)) {
-        return false;
-    }
-
-    //  expand any virtual paths so our test will function properly. if this
-    //  doesn't expand a path into a leading scheme it's likely relative
-    path = TP.uriExpandPath(aPath);
-
-    //  tilde prefixes are absolute, as are scheme'd paths
-    if (TP.regex.VIRTUAL_URI_PREFIX.test(path) ||
-        TP.regex.HAS_SCHEME.test(path)) {
-        return true;
-    }
-
-    if (TP.boot.isWin()) {
-        //  on Windows we can also have either drive:\blah, or \\blah paths
-        //  which are considered absolute
-        return TP.regex.WINDOWS_PATH.test(path) ||
-            TP.regex.UNC_PATH.test(path);
-    } else {
-        //  non-Windows paths need a leading slash
-        return path.first() === '/';
-    }
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.definePrimitive('uriIsVirtual',
-function(aPath) {
-
-    /**
-     * Returns true if the path provided appears to be a virtual path.
-     * @param {string} aPath The path to be tested.
-     * @return {Boolean} True if the path is virtual.
-     */
-
-    if (TP.isEmpty(aPath)) {
-        return false;
-    }
-
-    return aPath.indexOf('~') === 0 ||
-        aPath.indexOf('tibet:') === 0 ||
-        aPath.indexOf('urn:') === 0;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('uriJoinPaths',
-function(firstPath, secondPath) {
-
-    /**
-     * @name uriJoinPaths
-     * @synopsis Returns the two path components joined appropriately. Note that
-     *     the second path has precedence, meaning that if the second path
-     *     appears to be an absolute path the first path isn't used.
-     * @param {String} firstPath The 'root' path.
-     * @param {String} secondPath The 'tail' path.
-     * @returns {String} The two paths joined together in an appropriate
-     *     fashion.
-     * @todo
-     */
-
-    var i,
-        val,
-        first,
-        second,
-        path;
-
-    TP.debug('break.uri_resolve');
-
-    //  deal with looping when more than two args
-    if (arguments.length > 2) {
-        path = arguments[0];
-        for (i = 1; i < arguments.length; i++) {
-            path = TP.uriJoinPaths(path, arguments[i]);
+        if (TP.isEmpty(aPath)) {
+            return aPath;
         }
 
-        return path;
-    }
-
-    if (TP.isEmpty(firstPath)) {
-        return secondPath;
-    }
-
-    if (TP.isEmpty(secondPath)) {
-        return firstPath;
-    }
-
-    //  any other absolute path in the second position is valid
-    if (TP.uriIsAbsolute(secondPath)) {
-        return secondPath;
-    }
-
-    //  work around mozilla bug
-    if (firstPath.indexOf('about:blank') === 0) {
-        first = firstPath.slice('about:blank'.getSize());
-    } else {
-        first = firstPath;
-    }
-
-    //  if the first path starts with '~' we adjust to the proper root
-    if (first.indexOf('~') === 0) {
-        path = TP.uriExpandPath(first);
-
-        if (path !== firstPath) {
-            //  cause re-evaluation with the expanded variable
-            //  value
-            return TP.uriJoinPaths(path, secondPath);
-        }
-    }
-
-    //  copy to a local so we can manipulate as needed
-    second = secondPath;
-
-    //  adjust for an OSX bug around "absolute paths"
-    if (second.indexOf('/Volumes') === 0) {
-        //  one case is where path is completely contained in first path
-        if (first.indexOf(second) !== TP.NOT_FOUND) {
-            return first;
+        //  already has a scheme and it's not tibet:? consider it done
+        if (TP.regex.HAS_SCHEME.test(aPath) &&
+            !TP.regex.TIBET_SCHEME.test(aPath)) {
+            return aPath;
         }
 
-        if (second.indexOf(first) !== TP.NOT_FOUND) {
-            return second;
+        //  local? definately need to convert
+        if (TP.regex.WINDOWS_PATH.test(aPath) ||
+            TP.regex.UNC_PATH.test(aPath)) {
+            path = aPath.replace(/\\\\/g, '/').replace(/\\/g, '/');
+            return TP.uriPlusFileScheme(path.unquoted());
         }
 
-        if (first.indexOf(TP.uriPlusFileScheme(second))) {
-            return first;
+        //  may be virtual, in which case we'll just expand and return
+        path = TP.uriExpandPath(aPath);
+        if (path !== aPath) {
+            return path;
         }
 
-        if (second.indexOf(TP.uriPlusFileScheme(first)) !== TP.NOT_FOUND) {
-            return second;
+        //  last option is a path that probably needs a root. we expand out here
+        //  and then make sure we add on the necessary file scheme if a scheme
+        //  doesn't come back from our root expansion
+        return TP.uriPlusFileScheme(TP.uriWithRoot(aPath, aRoot));
+    });
+
+    //  ------------------------------------------------------------------------
+
+    TP.definePrimitive('uriIsAbsolute',
+    function(aPath) {
+
+        /**
+         * @name uriIsAbsolute
+         * @synopsis Returns true if the path provided is an absolute path.
+         * @param {String} aPath The path to test.
+         * @returns {Boolean} True if the path is absolute rather than relative to
+         *     some root.
+         */
+
+        var path;
+
+        if (TP.isEmpty(aPath)) {
+            return false;
         }
 
-        if (TP.uriPlusFileScheme(first).indexOf(second) !== TP.NOT_FOUND) {
-            return TP.uriPlusFileScheme(first);
+        //  expand any virtual paths so our test will function properly. if this
+        //  doesn't expand a path into a leading scheme it's likely relative
+        path = TP.uriExpandPath(aPath);
+
+        //  tilde prefixes are absolute, as are scheme'd paths
+        if (TP.regex.VIRTUAL_URI_PREFIX.test(path) ||
+            TP.regex.HAS_SCHEME.test(path)) {
+            return true;
         }
 
-        if (TP.uriPlusFileScheme(second).indexOf(first) !== TP.NOT_FOUND) {
+        if (TP.boot.isWin()) {
+            //  on Windows we can also have either drive:\blah, or \\blah paths
+            //  which are considered absolute
+            return TP.regex.WINDOWS_PATH.test(path) ||
+                TP.regex.UNC_PATH.test(path);
+        } else {
+            //  non-Windows paths need a leading slash
+            return path.first() === '/';
+        }
+    });
+
+    //  ----------------------------------------------------------------------------
+
+    TP.definePrimitive('uriIsVirtual',
+    function(aPath) {
+
+        /**
+         * Returns true if the path provided appears to be a virtual path.
+         * @param {string} aPath The path to be tested.
+         * @return {Boolean} True if the path is virtual.
+         */
+
+        if (TP.isEmpty(aPath)) {
+            return false;
+        }
+
+        return aPath.indexOf('~') === 0 ||
+            aPath.indexOf('tibet:') === 0 ||
+            aPath.indexOf('urn:') === 0;
+    });
+
+    //  ------------------------------------------------------------------------
+
+    TP.definePrimitive('uriJoinPaths',
+    function(firstPath, secondPath) {
+
+        /**
+         * @name uriJoinPaths
+         * @synopsis Returns the two path components joined appropriately. Note that
+         *     the second path has precedence, meaning that if the second path
+         *     appears to be an absolute path the first path isn't used.
+         * @param {String} firstPath The 'root' path.
+         * @param {String} secondPath The 'tail' path.
+         * @returns {String} The two paths joined together in an appropriate
+         *     fashion.
+         * @todo
+         */
+
+        var i,
+            val,
+            first,
+            second,
+            path;
+
+        TP.debug('break.uri_resolve');
+
+        //  deal with looping when more than two args
+        if (arguments.length > 2) {
+            path = arguments[0];
+            for (i = 1; i < arguments.length; i++) {
+                path = TP.uriJoinPaths(path, arguments[i]);
+            }
+
+            return path;
+        }
+
+        if (TP.isEmpty(firstPath)) {
+            return secondPath;
+        }
+
+        if (TP.isEmpty(secondPath)) {
+            return firstPath;
+        }
+
+        //  any other absolute path in the second position is valid
+        if (TP.uriIsAbsolute(secondPath)) {
+            return secondPath;
+        }
+
+        //  work around mozilla bug
+        if (firstPath.indexOf('about:blank') === 0) {
+            first = firstPath.slice('about:blank'.getSize());
+        } else {
+            first = firstPath;
+        }
+
+        //  if the first path starts with '~' we adjust to the proper root
+        if (first.indexOf('~') === 0) {
+            path = TP.uriExpandPath(first);
+
+            if (path !== firstPath) {
+                //  cause re-evaluation with the expanded variable
+                //  value
+                return TP.uriJoinPaths(path, secondPath);
+            }
+        }
+
+        //  copy to a local so we can manipulate as needed
+        second = secondPath;
+
+        //  adjust for an OSX bug around "absolute paths"
+        if (second.indexOf('/Volumes') === 0) {
+            //  one case is where path is completely contained in first path
+            if (first.indexOf(second) !== TP.NOT_FOUND) {
+                return first;
+            }
+
+            if (second.indexOf(first) !== TP.NOT_FOUND) {
+                return second;
+            }
+
+            if (first.indexOf(TP.uriPlusFileScheme(second))) {
+                return first;
+            }
+
+            if (second.indexOf(TP.uriPlusFileScheme(first)) !== TP.NOT_FOUND) {
+                return second;
+            }
+
+            if (TP.uriPlusFileScheme(first).indexOf(second) !== TP.NOT_FOUND) {
+                return TP.uriPlusFileScheme(first);
+            }
+
+            if (TP.uriPlusFileScheme(second).indexOf(first) !== TP.NOT_FOUND) {
+                return TP.uriPlusFileScheme(second);
+            }
+
+            //  second is still an absolute path so go with that since the first
+            //  is usually a "prefix" which is probably incorrect for the
+            //  typically more concrete second path
             return TP.uriPlusFileScheme(second);
         }
 
-        //  second is still an absolute path so go with that since the first
-        //  is usually a "prefix" which is probably incorrect for the
-        //  typically more concrete second path
-        return TP.uriPlusFileScheme(second);
-    }
-
-    //  deal with second path starting with './'
-    if (second.indexOf('./') === 0) {
-        //  note we leave on the slash, that will be dealt with later
-        second = second.slice(1);
-    }
-
-    //  now for the '../' case...first we'll need to remove any trailing
-    //  slash from the first path so we can back up accurately
-    if (first.charAt(first.getSize() - 1) === '/') {
-        //  strange IE question here...reading a basedir ending in /
-        //  gives us //. check for it and adjust as needed here
-        if (first.lastIndexOf('//') === first.getSize() - 2) {
-            first = first.slice(0, first.getSize() - 2);
-        } else {
-            first = first.slice(0, first.getSize() - 1);
+        //  deal with second path starting with './'
+        if (second.indexOf('./') === 0) {
+            //  note we leave on the slash, that will be dealt with later
+            second = second.slice(1);
         }
-    }
 
-    //  while we're being told to 'back up' the path, do so
-    while (second.indexOf('../') === 0) {
-        second = second.slice(3, second.getSize());
-        first = first.slice(0, first.lastIndexOf('/'));
-    }
-
-    //  join what's left
-    if (second.charAt(0) !== '/') {
-        val = first + '/' + second;
-    } else {
-        val = first + second;
-    }
-
-    return val;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('uriJoinQuery',
-function(aPath, aQuery) {
-
-    /**
-     * @name uriJoinQuery
-     * @synopsis Joins a URI and query fragment, ensuring the proper join
-     *     character is used. The path is a String, while the query can be a
-     *     string or hash of key/value pairs.
-     * @param {String} aPath The URI string used as the prefix.
-     * @param {String} aQuery The query fragment.
-     * @raises TP.sig.InvalidURI
-     * @returns {String} A properly joined URI/Query string.
-     * @todo
-     */
-
-    var url,
-        query,
-        fragment,
-        parts,
-        delim;
-
-    if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
-    }
-
-    if (TP.isEmpty(aQuery)) {
-        return aPath;
-    }
-
-    url = aPath;
-
-    //  convert hashes to viable query string components
-    query = TP.isString(aQuery) ? aQuery : aQuery.asQueryString();
-
-    //  may need to remove any XPointer from tail before joining
-    fragment = '';
-    if (TP.regex.URI_FRAGMENT.test(url)) {
-        parts = url.split('#');
-        url = parts.first();
-        fragment = parts.last();
-    }
-
-    //  if the URI already has a portion of a query we don't want another ?
-    //  as the prefix to our new set of query parameters
-    delim = /\?/.test(url) ? '&' : '?';
-
-    if (TP.notEmpty(fragment)) {
-        return url + delim + query + '#' + fragment;
-    } else {
-        return url + delim + query;
-    }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('uriMinusFileScheme',
-function(aPath) {
-
-    /**
-     * @name uriMinusFileScheme
-     * @synopsis Returns the filename trimmed of any leading file://[/] chars.
-     *     This is often necessary for proper use based on host platform.
-     * @param {String} aPath The path to trim.
-     * @raises TP.sig.InvalidURI
-     * @returns {String} The path with any leading file:// portion trimmed off.
-     */
-
-    var path;
-
-    if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
-    }
-
-    if (aPath.toLowerCase().indexOf('file:') !== 0) {
-        return aPath;
-    }
-
-    //  slice off the file:// number of chars, removing the base prefix
-    path = aPath.slice('file://'.length);
-
-    //  on Windows we may need to slice 1 more character if the path
-    //  matches /drive: rather than a UNC path
-    if (TP.boot.isWin() && /^\/\w:/.test(path)) {
-        path = path.slice(1);
-    }
-
-    return path;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('uriNeedsPrivileges',
-function(aPath) {
-
-    /**
-     * @name uriNeedsPrivileges
-     * @synopsis Returns true if accessing the supplied path requires special
-     *     browser security privileges to be accessed, based on where TIBET got
-     *     launched from.
-     * @param {String} aPath The path to test.
-     * @raises TP.sig.InvalidURI
-     * @returns {Boolean} True if the path requires special privileges to
-     *     access.
-     */
-
-    if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
-    }
-
-    //  If the path doesn't start with the launch root, then we can assume
-    //  that it needs special security privileges.
-    return (aPath.indexOf(TP.sys.getLaunchRoot()) !== 0);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('uriPlusFileScheme',
-function(aPath) {
-
-    /**
-     * @name uriPlusFileScheme
-     * @synopsis Returns the filename padded with leading file://[/] characters
-     *     appropriate for the current operating system platform.
-     * @param {String} aPath The path to pad.
-     * @raises TP.sig.InvalidURI
-     * @returns {String}
-     */
-
-    var prefix,
-        path;
-
-    if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
-    }
-
-    if (aPath.toLowerCase().indexOf('file:') === 0) {
-        return aPath;
-    }
-
-    prefix = 'file://';
-
-    if (TP.boot.isWin() && /^\w:/.test(aPath)) {
-        prefix = prefix + '/';
-    }
-
-    path = prefix + aPath;
-
-    //  one last check for UNC paths on windows is that we don't want to end
-    //  up with four slashes...
-    if (/file:\/\/\/\//.test(path)) {
-        path = path.replace(/file:\/\//, 'file:');
-    }
-
-    return path;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('uriRelativeToPath',
-function(firstPath, secondPath, filePath) {
-
-    /**
-     * @name uriRelativeToPath
-     * @synopsis Returns a "relativized" version of the firstPath at it relates
-     *     to the second path. In essence, what path would you have to append to
-     *     the secondPath to acquire the resource defined by the first path.
-     * @description This method is a core method for helping stored files remain
-     *     "relocatable". When storing TIBET metadata or compiled pages their
-     *     internal references are automatically adjusted to relative paths
-     *     using this routine. For example, given a path of ~lib_cfg/tibet.xml
-     *     as the firstPath and a path of ~lib_dat as the secondPath we'd
-     *     expect the return value to be ./cfg/tibet.xml. Note that since the
-     *     path returned is relative to a directory it is occasionally necessary
-     *     to assist TIBET with whether it should treat the last element of the
-     *     second path as a file or not. For example, if our secondPath in the
-     *     previous example were ~lib_cfg/tibet_kernel.xml we'd want the path to
-     *     be returned as ./tibet.xml, not ../tibet.xml as it would be if the
-     *     last element were a directory.
-     * @param {String} firstPath The path to convert.
-     * @param {String} secondPath The path to be relative to.
-     * @param {Boolean} filePath True if the absolute path includes a file
-     *     reference. This is important since the offset is relative to
-     *     directories, not files. Defaults to true since the vast majority of
-     *     URI references are to files.
-     * @returns {String}
-     * @todo
-     */
-
-    var file,
-        first,
-        second,
-        prefix,
-        path,
-        count,
-        ndx,
-        i,
-        partial;
-
-    TP.debug('break.uri_resolve');
-
-    //  the "path we append" to the second path to get the first path when
-    //  the first path doesn't exist is null
-    if (TP.isEmpty(firstPath)) {
-        return;
-    }
-
-    //  a "valid path" relative to some non-existent path is presumed to be
-    //  the original path itself. we don't presume a "default root" here
-    if (TP.isEmpty(secondPath)) {
-        return firstPath;
-    }
-
-    //  are they the same path? then the relative path is '.'
-    if (firstPath === secondPath) {
-        return '.';
-    }
-
-    //  expand the paths to avoid issues with ~ prefixing and collapse out
-    //  any relative '.' or '..' paths, so that the logic below works.
-    first = TP.uriCollapsePath(TP.uriExpandPath(firstPath));
-    second = TP.uriCollapsePath(TP.uriExpandPath(secondPath));
-
-    //  get the first path normalized
-    if ((first.length > 1) && (first.lastIndexOf('/') === first.length - 1)) {
-        //  if the first path ended in a '/' we can safely remove it since
-        //  it's the same directory path with or without the trailing /
-        first = first.slice(0, -1);
-    }
-
-    //  normalize the second path next
-
-    if (TP.isTrue(filePath)) {
-        //  forced to interpret second path as a file path, so if there's
-        //  any / in the second path we use that as the point of trimming
-        //  the last segment
-        if ((ndx = second.lastIndexOf('/')) !== TP.NOT_FOUND) {
-            if (second.lastIndexOf('/') === (second.length - 1)) {
-                second = second.slice(0, -1);
-                second = second.slice(0, second.lastIndexOf('/'));
+        //  now for the '../' case...first we'll need to remove any trailing
+        //  slash from the first path so we can back up accurately
+        if (first.charAt(first.getSize() - 1) === '/') {
+            //  strange IE question here...reading a basedir ending in /
+            //  gives us //. check for it and adjust as needed here
+            if (first.lastIndexOf('//') === first.getSize() - 2) {
+                first = first.slice(0, first.getSize() - 2);
             } else {
-                second = second.slice(0, second.lastIndexOf('/'));
-            }
-        } else {
-            //  entire second path is a file name, so our example is
-            //  something like file:///thisdir relative to foo.xml. We can't
-            //  know where foo.xml is, but we might presume that it's in the
-            //  same location as the first path's file (if first has a file
-            //  reference, or that it's in the same directory as the first
-            //  when the first is a directory path
-            if (TP.regex.FILE_PATH.test(firstPath)) {
-                //  first path has a file location, and we're assuming we're
-                //  in the same directory, so the path would be '.'
-                return '.' + first.slice(first.lastIndexOf('/'));
-            } else {
-                //  assuming second path file is in first path directory
-                //  we'll return '.'
-                return '.';
+                first = first.slice(0, first.getSize() - 1);
             }
         }
-    } else if (TP.isFalse(filePath)) {
-        //  not able to alter second path too much, we're being forced to
-        //  interpret it as a directory no matter what, but
-        if (second.lastIndexOf('/') === (second.length - 1)) {
-            second = second.slice(0, -1);
+
+        //  while we're being told to 'back up' the path, do so
+        while (second.indexOf('../') === 0) {
+            second = second.slice(3, second.getSize());
+            first = first.slice(0, first.lastIndexOf('/'));
         }
-    } else {
-        //  try to determine if the second path is a file path or a
-        //  directory path...the easiest check is does it end with a '/',
-        //  after which we can check for an extension on the last portion
-        if (second.lastIndexOf('/') === (second.length - 1)) {
-            file = false;
-            second = second.slice(0, -1);
+
+        //  join what's left
+        if (second.charAt(0) !== '/') {
+            val = first + '/' + second;
         } else {
-            //  if we can split the last element (having already split on
-            //  '/') and find an extension then it's likely a file path
-            if (TP.regex.FILE_PATH.test(second)) {
-                file = true;
-                second = second.slice(0, second.lastIndexOf('/'));
-            } else {
-                file = false;
-            }
+            val = first + second;
         }
-    }
 
-    //  after normalization we run our quick checks again
+        return val;
+    });
 
-    //  the "path we append" to the second path to get the first path when
-    //  the first path doesn't exist is null
-    if (TP.isEmpty(first)) {
-        return;
-    }
+    //  ------------------------------------------------------------------------
 
-    //  a "valid path" relative to some non-existent path is presumed to be
-    //  the original path itself. we don't presume a "default root" here
-    if (TP.isEmpty(second)) {
-        return first;
-    }
+    TP.definePrimitive('uriJoinQuery',
+    function(aPath, aQuery) {
 
-    //  are they the same path? then the relative path is '.'
-    if (first === second) {
-        return '.';
-    }
+        /**
+         * @name uriJoinQuery
+         * @synopsis Joins a URI and query fragment, ensuring the proper join
+         *     character is used. The path is a String, while the query can be a
+         *     string or hash of key/value pairs.
+         * @param {String} aPath The URI string used as the prefix.
+         * @param {String} aQuery The query fragment.
+         * @raises TP.sig.InvalidURI
+         * @returns {String} A properly joined URI/Query string.
+         * @todo
+         */
 
-    //  now for the other common cases, which hopefully helps us keep this
-    //  running a little faster
+        var url,
+            query,
+            fragment,
+            parts,
+            delim;
 
-    //  page compilation often wants a path relative to the cache directory
-    //  or similar structure, meaning the first path is a subset of the
-    //  second path (~ vs. ~app_tmp) so check for that
-    if (second.indexOf(first) !== TP.NOT_FOUND) {
-        path = second.strip(first);
-        if (path.indexOf('/') === 0) {
+        if (!TP.isString(aPath)) {
+            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        }
+
+        if (TP.isEmpty(aQuery)) {
+            return aPath;
+        }
+
+        url = aPath;
+
+        //  convert hashes to viable query string components
+        query = TP.isString(aQuery) ? aQuery : aQuery.asQueryString();
+
+        //  may need to remove any XPointer from tail before joining
+        fragment = '';
+        if (TP.regex.URI_FRAGMENT.test(url)) {
+            parts = url.split('#');
+            url = parts.first();
+            fragment = parts.last();
+        }
+
+        //  if the URI already has a portion of a query we don't want another ?
+        //  as the prefix to our new set of query parameters
+        delim = /\?/.test(url) ? '&' : '?';
+
+        if (TP.notEmpty(fragment)) {
+            return url + delim + query + '#' + fragment;
+        } else {
+            return url + delim + query;
+        }
+    });
+
+    //  ------------------------------------------------------------------------
+
+    TP.definePrimitive('uriMinusFileScheme',
+    function(aPath) {
+
+        /**
+         * @name uriMinusFileScheme
+         * @synopsis Returns the filename trimmed of any leading file://[/] chars.
+         *     This is often necessary for proper use based on host platform.
+         * @param {String} aPath The path to trim.
+         * @raises TP.sig.InvalidURI
+         * @returns {String} The path with any leading file:// portion trimmed off.
+         */
+
+        var path;
+
+        if (!TP.isString(aPath)) {
+            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        }
+
+        if (aPath.toLowerCase().indexOf('file:') !== 0) {
+            return aPath;
+        }
+
+        //  slice off the file:// number of chars, removing the base prefix
+        path = aPath.slice('file://'.length);
+
+        //  on Windows we may need to slice 1 more character if the path
+        //  matches /drive: rather than a UNC path
+        if (TP.boot.isWin() && /^\/\w:/.test(path)) {
             path = path.slice(1);
         }
 
-        path = path.split('/');
-        for (i = 0; i < path.length; i++) {
-            path[i] = '..';
+        return path;
+    });
+
+    //  ------------------------------------------------------------------------
+
+    TP.definePrimitive('uriNeedsPrivileges',
+    function(aPath) {
+
+        /**
+         * @name uriNeedsPrivileges
+         * @synopsis Returns true if accessing the supplied path requires special
+         *     browser security privileges to be accessed, based on where TIBET got
+         *     launched from.
+         * @param {String} aPath The path to test.
+         * @raises TP.sig.InvalidURI
+         * @returns {Boolean} True if the path requires special privileges to
+         *     access.
+         */
+
+        if (!TP.isString(aPath)) {
+            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
         }
 
-        return path.join('/');
-    }
+        //  If the path doesn't start with the launch root, then we can assume
+        //  that it needs special security privileges.
+        return (aPath.indexOf(TP.sys.getLaunchRoot()) !== 0);
+    });
 
-    //  a large (predominant) number of these calls are asking for a full
-    //  path relative to a directory higher up the tree (as in an app file
-    //  relative to either the lib root or app root). in these cases the
-    //  second path is completely contained in the first path and we're
-    //  simply trying to detemine how many segments to remove from the path
-    //  before we tack on a leading './'. we can determine that condition by
-    //  simply replacing the secondPath with a '.' and seeing if we end up
-    //  with a './' path meaning the replacement was clean on a directory
-    //  boundary
-    if ((path = first.replace(second, '.')) !== first) {
-        //  we know there was at least a match, but did it produce a valid
-        //  relative path?
-        if (path.indexOf('./') === 0) {
-            return path;
-        }
-    }
+    //  ------------------------------------------------------------------------
 
-    //  if the first path is relative we can shortcut the test
-    if (first.indexOf('.') === 0) {
-        //  we're often forced, when resolving two paths, to adapt a path
-        //  relative to a file (think about href values being resolved
-        //  against their window.location) so we need an extra .. prefix
-        if (file) {
-            //  if it's a "local" file we don't want to return .././foo so
-            //  we remove the internal ./ portion and make it ../foo,
-            //  otherwise it's ../something and we want ../../something to
-            //  ensure we skip past the file element of the second path
-            if (first.indexOf('./') === 0) {
-                return '../' + first.slice(2);
-            } else {
-                return '../' + first;
-            }
+    TP.definePrimitive('uriPlusFileScheme',
+    function(aPath) {
+
+        /**
+         * @name uriPlusFileScheme
+         * @synopsis Returns the filename padded with leading file://[/] characters
+         *     appropriate for the current operating system platform.
+         * @param {String} aPath The path to pad.
+         * @raises TP.sig.InvalidURI
+         * @returns {String}
+         */
+
+        var prefix,
+            path;
+
+        if (!TP.isString(aPath)) {
+            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
         }
 
-        return first;
-    }
-
-    //  a second common case is when we're looking for a directory in
-    //  the middle of a larger absolute path (as when trying to locate
-    //  basedir or libroot references)
-    if ((ndx = second.indexOf(first)) !== TP.NOT_FOUND) {
-        //  looks like the first path is a point in the second path, so the
-        //  question now is how many segments "up" in the second path is it
-
-        //  get the 'tail' from the match down as our starting point and
-        //  remove the matching portion. so if we had something like
-        //  file://foo/bar/tibet/baz/tp_cfg.html and 'tibet' or '/tibet' as
-        //  a relative portion we're now holding /baz/tp_cfg.html...
-        partial = second.slice(ndx).strip(first);
-
-        count = partial.split('/').length;
-        prefix = '';
-        for (i = 0; i < count; i++) {
-            prefix = prefix + '../';
+        if (aPath.toLowerCase().indexOf('file:') === 0) {
+            return aPath;
         }
 
-        return prefix + first;
-    }
+        prefix = 'file://';
 
-    //  neither path is contained in the other, which means we're going to
-    //  have to work a bit harder by looking for a common branch point in
-    //  the middle of the two paths...
+        if (TP.boot.isWin() && /^\w:/.test(aPath)) {
+            prefix = prefix + '/';
+        }
 
-    count = 0;
-    ndx = second.lastIndexOf('/');
-    while (ndx !== -1) {
-        //  peel off the last segment
-        second = second.slice(0, ndx);
+        path = prefix + aPath;
 
-        //  see if we can replace it as a subset of the first path now...
-        if ((path = first.replace(second, '..')) !== first) {
-            //  if we can then all we need to do is put the proper number of
-            //  jumps (../) on the front so we've adjusted
-            if (path.indexOf('../') === 0) {
-                prefix = '';
-                for (i = 0; i < count; i++) {
-                    prefix = prefix + '../';
+        //  one last check for UNC paths on windows is that we don't want to end
+        //  up with four slashes...
+        if (/file:\/\/\/\//.test(path)) {
+            path = path.replace(/file:\/\//, 'file:');
+        }
+
+        return path;
+    });
+
+    //  ------------------------------------------------------------------------
+
+    TP.definePrimitive('uriRelativeToPath',
+    function(firstPath, secondPath, filePath) {
+
+        /**
+         * @name uriRelativeToPath
+         * @synopsis Returns a "relativized" version of the firstPath at it relates
+         *     to the second path. In essence, what path would you have to append to
+         *     the secondPath to acquire the resource defined by the first path.
+         * @description This method is a core method for helping stored files remain
+         *     "relocatable". When storing TIBET metadata or compiled pages their
+         *     internal references are automatically adjusted to relative paths
+         *     using this routine. For example, given a path of ~lib_cfg/tibet.xml
+         *     as the firstPath and a path of ~lib_dat as the secondPath we'd
+         *     expect the return value to be ./cfg/tibet.xml. Note that since the
+         *     path returned is relative to a directory it is occasionally necessary
+         *     to assist TIBET with whether it should treat the last element of the
+         *     second path as a file or not. For example, if our secondPath in the
+         *     previous example were ~lib_cfg/tibet_kernel.xml we'd want the path to
+         *     be returned as ./tibet.xml, not ../tibet.xml as it would be if the
+         *     last element were a directory.
+         * @param {String} firstPath The path to convert.
+         * @param {String} secondPath The path to be relative to.
+         * @param {Boolean} filePath True if the absolute path includes a file
+         *     reference. This is important since the offset is relative to
+         *     directories, not files. Defaults to true since the vast majority of
+         *     URI references are to files.
+         * @returns {String}
+         * @todo
+         */
+
+        var file,
+            first,
+            second,
+            prefix,
+            path,
+            count,
+            ndx,
+            i,
+            partial;
+
+        TP.debug('break.uri_resolve');
+
+        //  the "path we append" to the second path to get the first path when
+        //  the first path doesn't exist is null
+        if (TP.isEmpty(firstPath)) {
+            return;
+        }
+
+        //  a "valid path" relative to some non-existent path is presumed to be
+        //  the original path itself. we don't presume a "default root" here
+        if (TP.isEmpty(secondPath)) {
+            return firstPath;
+        }
+
+        //  are they the same path? then the relative path is '.'
+        if (firstPath === secondPath) {
+            return '.';
+        }
+
+        //  expand the paths to avoid issues with ~ prefixing and collapse out
+        //  any relative '.' or '..' paths, so that the logic below works.
+        first = TP.uriCollapsePath(TP.uriExpandPath(firstPath));
+        second = TP.uriCollapsePath(TP.uriExpandPath(secondPath));
+
+        //  get the first path normalized
+        if ((first.length > 1) && (first.lastIndexOf('/') === first.length - 1)) {
+            //  if the first path ended in a '/' we can safely remove it since
+            //  it's the same directory path with or without the trailing /
+            first = first.slice(0, -1);
+        }
+
+        //  normalize the second path next
+
+        if (TP.isTrue(filePath)) {
+            //  forced to interpret second path as a file path, so if there's
+            //  any / in the second path we use that as the point of trimming
+            //  the last segment
+            if ((ndx = second.lastIndexOf('/')) !== TP.NOT_FOUND) {
+                if (second.lastIndexOf('/') === (second.length - 1)) {
+                    second = second.slice(0, -1);
+                    second = second.slice(0, second.lastIndexOf('/'));
+                } else {
+                    second = second.slice(0, second.lastIndexOf('/'));
                 }
-
-                return prefix + path;
+            } else {
+                //  entire second path is a file name, so our example is
+                //  something like file:///thisdir relative to foo.xml. We can't
+                //  know where foo.xml is, but we might presume that it's in the
+                //  same location as the first path's file (if first has a file
+                //  reference, or that it's in the same directory as the first
+                //  when the first is a directory path
+                if (TP.regex.FILE_PATH.test(firstPath)) {
+                    //  first path has a file location, and we're assuming we're
+                    //  in the same directory, so the path would be '.'
+                    return '.' + first.slice(first.lastIndexOf('/'));
+                } else {
+                    //  assuming second path file is in first path directory
+                    //  we'll return '.'
+                    return '.';
+                }
+            }
+        } else if (TP.isFalse(filePath)) {
+            //  not able to alter second path too much, we're being forced to
+            //  interpret it as a directory no matter what, but
+            if (second.lastIndexOf('/') === (second.length - 1)) {
+                second = second.slice(0, -1);
+            }
+        } else {
+            //  try to determine if the second path is a file path or a
+            //  directory path...the easiest check is does it end with a '/',
+            //  after which we can check for an extension on the last portion
+            if (second.lastIndexOf('/') === (second.length - 1)) {
+                file = false;
+                second = second.slice(0, -1);
+            } else {
+                //  if we can split the last element (having already split on
+                //  '/') and find an extension then it's likely a file path
+                if (TP.regex.FILE_PATH.test(second)) {
+                    file = true;
+                    second = second.slice(0, second.lastIndexOf('/'));
+                } else {
+                    file = false;
+                }
             }
         }
 
-        //  count so we know to add when we find a match
-        count++;
+        //  after normalization we run our quick checks again
 
+        //  the "path we append" to the second path to get the first path when
+        //  the first path doesn't exist is null
+        if (TP.isEmpty(first)) {
+            return;
+        }
+
+        //  a "valid path" relative to some non-existent path is presumed to be
+        //  the original path itself. we don't presume a "default root" here
+        if (TP.isEmpty(second)) {
+            return first;
+        }
+
+        //  are they the same path? then the relative path is '.'
+        if (first === second) {
+            return '.';
+        }
+
+        //  now for the other common cases, which hopefully helps us keep this
+        //  running a little faster
+
+        //  page compilation often wants a path relative to the cache directory
+        //  or similar structure, meaning the first path is a subset of the
+        //  second path (~ vs. ~app_tmp) so check for that
+        if (second.indexOf(first) !== TP.NOT_FOUND) {
+            path = second.strip(first);
+            if (path.indexOf('/') === 0) {
+                path = path.slice(1);
+            }
+
+            path = path.split('/');
+            for (i = 0; i < path.length; i++) {
+                path[i] = '..';
+            }
+
+            return path.join('/');
+        }
+
+        //  a large (predominant) number of these calls are asking for a full
+        //  path relative to a directory higher up the tree (as in an app file
+        //  relative to either the lib root or app root). in these cases the
+        //  second path is completely contained in the first path and we're
+        //  simply trying to detemine how many segments to remove from the path
+        //  before we tack on a leading './'. we can determine that condition by
+        //  simply replacing the secondPath with a '.' and seeing if we end up
+        //  with a './' path meaning the replacement was clean on a directory
+        //  boundary
+        if ((path = first.replace(second, '.')) !== first) {
+            //  we know there was at least a match, but did it produce a valid
+            //  relative path?
+            if (path.indexOf('./') === 0) {
+                return path;
+            }
+        }
+
+        //  if the first path is relative we can shortcut the test
+        if (first.indexOf('.') === 0) {
+            //  we're often forced, when resolving two paths, to adapt a path
+            //  relative to a file (think about href values being resolved
+            //  against their window.location) so we need an extra .. prefix
+            if (file) {
+                //  if it's a "local" file we don't want to return .././foo so
+                //  we remove the internal ./ portion and make it ../foo,
+                //  otherwise it's ../something and we want ../../something to
+                //  ensure we skip past the file element of the second path
+                if (first.indexOf('./') === 0) {
+                    return '../' + first.slice(2);
+                } else {
+                    return '../' + first;
+                }
+            }
+
+            return first;
+        }
+
+        //  a second common case is when we're looking for a directory in
+        //  the middle of a larger absolute path (as when trying to locate
+        //  basedir or libroot references)
+        if ((ndx = second.indexOf(first)) !== TP.NOT_FOUND) {
+            //  looks like the first path is a point in the second path, so the
+            //  question now is how many segments "up" in the second path is it
+
+            //  get the 'tail' from the match down as our starting point and
+            //  remove the matching portion. so if we had something like
+            //  file://foo/bar/tibet/baz/tp_cfg.html and 'tibet' or '/tibet' as
+            //  a relative portion we're now holding /baz/tp_cfg.html...
+            partial = second.slice(ndx).strip(first);
+
+            count = partial.split('/').length;
+            prefix = '';
+            for (i = 0; i < count; i++) {
+                prefix = prefix + '../';
+            }
+
+            return prefix + first;
+        }
+
+        //  neither path is contained in the other, which means we're going to
+        //  have to work a bit harder by looking for a common branch point in
+        //  the middle of the two paths...
+
+        count = 0;
         ndx = second.lastIndexOf('/');
-    }
+        while (ndx !== -1) {
+            //  peel off the last segment
+            second = second.slice(0, ndx);
 
-    //  no common elements in the paths at all if we got here..., and the
-    //  path wasn't relative so we have to assume absolute and just return
-    return first;
-});
+            //  see if we can replace it as a subset of the first path now...
+            if ((path = first.replace(second, '..')) !== first) {
+                //  if we can then all we need to do is put the proper number of
+                //  jumps (../) on the front so we've adjusted
+                if (path.indexOf('../') === 0) {
+                    prefix = '';
+                    for (i = 0; i < count; i++) {
+                        prefix = prefix + '../';
+                    }
 
-//  ------------------------------------------------------------------------
+                    return prefix + path;
+                }
+            }
 
-TP.definePrimitive('uriResolvePaths',
-function(aRootPath, aRelativePath, filePath) {
+            //  count so we know to add when we find a match
+            count++;
+
+            ndx = second.lastIndexOf('/');
+        }
+
+        //  no common elements in the paths at all if we got here..., and the
+        //  path wasn't relative so we have to assume absolute and just return
+        return first;
+    });
+
+    //  ------------------------------------------------------------------------
+
+    TP.definePrimitive('uriResolvePaths',
+    function(aRootPath, aRelativePath, filePath) {
 
     /**
      * @name uriResolvePaths
@@ -1740,18 +1750,21 @@ function(targetUrl, aRoot) {
      * @todo
      */
 
-    var root;
+    var root,
+        url;
 
     if (!TP.isString(targetUrl)) {
         return TP.raise(this, 'TP.sig.InvalidURI', arguments);
     }
 
     if (TP.uriIsAbsolute(targetUrl)) {
-        return TP.uriResolvePaths(targetUrl);
+        url = TP.uriResolvePaths(targetUrl);
     } else {
-        root = TP.ifInvalid(aRoot, TP.sys.getLibRoot());
-        return TP.uriResolvePaths(root, targetUrl);
+        root = TP.ifInvalid(aRoot, TP.sys.getLaunchRoot());
+        url = TP.uriResolvePaths(root, targetUrl);
     }
+
+    return TP.uriExpandPath(url);
 });
 
 //  ------------------------------------------------------------------------

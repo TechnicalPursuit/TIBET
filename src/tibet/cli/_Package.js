@@ -42,6 +42,54 @@ var parser = new dom.DOMParser(),
     };
 
 //  ---
+//  Require Utilities
+//  ---
+
+/*
+ * tibet_cfg.js needs to actually _run_ when required. If we don't clear the
+ * cache of any prior version before loading it via require() we don't get the
+ * configuration data in any but the first package instance. The routines here
+ * are from:
+ * http://stackoverflow.com/questions/9210542/node-js-require-cache-possible-to-invalidate
+ */
+
+/**
+ * Removes a module from the cache.
+ */
+require.uncache = function (moduleName) {
+    // Run over the cache looking for the files
+    // loaded by the specified module name
+    require.searchCache(moduleName, function (mod) {
+        delete require.cache[mod.id];
+    });
+};
+
+/**
+ * Runs over the cache to search for all the cached files.
+ */
+require.searchCache = function (moduleName, callback) {
+    // Resolve the module identified by the specified name
+    var mod = require.resolve(moduleName);
+
+    // Check if the module has been resolved and found within
+    // the cache
+    if (mod && ((mod = require.cache[mod]) !== undefined)) {
+        // Recursively go over the results
+        (function run(mod) {
+            // Go over each of the module's children and
+            // run over it
+            mod.children.forEach(function (child) {
+                run(child);
+            });
+
+            // Call the specified callback providing the
+            // found module
+            callback(mod);
+        })(mod);
+    }
+};
+
+//  ---
 //  Type Construction
 //  ---
 
@@ -56,6 +104,7 @@ var Package = function(options) {
 
     this.packages = {};
     this.paths = {};
+    this.config = null;
 
     this.options = options || {};
     this.cfg = {};
@@ -74,13 +123,9 @@ var Package = function(options) {
     };
     this.setcfg = TP.sys.setcfg;
 
-    TP.sys.cfg = function(property) {
-        var name;
-
-        name = property.replace(/\./g, '_');
-        return pkg.cfg[name];
-    };
-    this.cfg = TP.sys.cfg;
+    // For get requests we rely on a more powerful method.
+    TP.sys.getcfg = this.getcfg;
+    TP.sys.cfg = this.getcfg;
 
     // Load remaining TIBET configuration data for paths/virtual paths etc.
     this.loadTIBETBaseline();
@@ -1569,12 +1614,16 @@ Package.prototype.loadTIBETBaseline = function() {
  */
 Package.prototype.loadTIBETProperties = function() {
 
-    var lib_root;
+    var lib_root,
+        lib_path;
 
     lib_root = this.getLibRoot();
+    lib_path = path.join(lib_root, 'src/tibet/boot/tibet_cfg');
+
+    require.uncache(lib_path);
 
     // NOTE this relies upon TP.sys.setcfg having been properly configured.
-    require(path.join(lib_root, 'src/tibet/boot/tibet_cfg.js'));
+    require(lib_path);
 };
 
 
