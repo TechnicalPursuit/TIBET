@@ -10,6 +10,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-var cli = require('../src/tibet/cli/_cli.js');    // The actual TIBET cli.
+var cli = require('../src/tibet/cli/_cli.js');
 
 cli.run({tibet: {}, npm: {}});

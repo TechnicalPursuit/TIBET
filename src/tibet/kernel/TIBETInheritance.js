@@ -404,9 +404,19 @@ function(name) {
         TP.sys.logCodeChange(codestr, TP.TRACE, arguments);
     }
 
-    //  put the type *constructor* under the 'meta' namespace as well
+    //  Put the type *constructor* under the 'meta' namespace as well.
     TP.defineNamespace('meta.' + nsName, root);
-    self[root].meta[nsName][subtypeName] = typeConstructor;
+    if (TP.regex.HAS_PERIOD.test(nsName)) {
+        // Have to iterate our way down.
+        parts = nsName.split('.');
+        root = self[root].meta;
+        parts.forEach(function(part) {
+            root = root[part];
+        });
+        root[subtypeName] = typeConstructor;
+    } else {
+        self[root].meta[nsName][subtypeName] = typeConstructor;
+    }
 
     //  hand back the new subtype so it can be captured by caller if needed
     return realType;
