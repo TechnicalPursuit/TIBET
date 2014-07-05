@@ -18,11 +18,6 @@
           nonstandard:true,
           node:true
 */
-/* global ActiveXObject:false,
-          netscape:false,
-          Components:false,
-          $STATUS:true
-*/
 
 ;(function(root) {
 
@@ -2675,6 +2670,25 @@ TP.sys.setcfg('tdc.type_collections', true);
 TP.sys.setcfg('tdc.bubble_fade_time', 2000);
 
 //  ---
+//  tds support
+//  ---
+
+TP.sys.setcfg('tds.cli_uri', '/tds/cli');
+
+TP.sys.setcfg('tds.dav_root', '~');
+TP.sys.setcfg('tds.dav_uri', '/tds/webdav');
+
+TP.sys.setcfg('tds.port', 1407);
+TP.sys.setcfg('tds.secret', 'change this in your tibet.json file');
+
+TP.sys.setcfg('tds.404', 'NotFound');
+TP.sys.setcfg('tds.500', 'ServerError');
+
+TP.sys.setcfg('tds.watch_event', 'fileChanged');
+TP.sys.setcfg('tds.watch_root', '~');
+TP.sys.setcfg('tds.watch_uri', '/tds/watcher');
+
+//  ---
 //  tsh processing
 //  ---
 
@@ -4223,7 +4237,7 @@ and pathname which were used to load TIBET, as well as the 'launch path'.
 //  first define whether we were loaded from file url or a web server
 TP.sys.$httpBased = (window.location.protocol.indexOf('file') !== 0);
 
-TP.sys.$scheme = window.location.protocol;
+TP.sys.$scheme = window.location.protocol.slice(0, -1);
 TP.sys.$pathname = decodeURI(window.location.pathname);
 
 if (TP.sys.$httpBased) {
@@ -4273,7 +4287,7 @@ TP.sys.getLaunchRoot = function() {
 
     if (TP.sys.isHTTPBased()) {
         //  on http uris you need the host:port portion as a root
-        str = TP.sys.getScheme() + '//' + TP.sys.getHost();
+        str = TP.sys.getScheme() + '://' + TP.sys.getHost();
         if (TP.boot.$isValid(port = TP.sys.getPort()) &&
             port.toString() !== '80') {
             str += ':' + port;
@@ -4670,6 +4684,12 @@ TP.boot.$uriExpandPath = function(aPath) {
         return TP.sys.getLaunchRoot();
     }
 
+    if (aPath.indexOf('/') === 0) {
+        // Launch root doesn't include a trailing slash, so avoid possible
+        // recursion via uriJoinPaths and just concatenate.
+        return TP.sys.getLaunchRoot() + aPath;
+    }
+
     if (aPath.indexOf('~') !== 0) {
         return aPath;
     }
@@ -4889,6 +4909,11 @@ TP.boot.$uriJoinPaths = function(firstPath, secondPath) {
     //  tibet URIs are absolute, so we can return them immediately
     if (secondPath.indexOf('~') === 0) {
         return secondPath;
+    }
+
+    //  'typical' absolute paths can be expanded.
+    if (secondPath.indexOf('/') === 0) {
+        return TP.boot.$uriExpandPath(secondPath);
     }
 
     //  if the second path uses a scheme prefix we can return it right away
@@ -5332,7 +5357,7 @@ TP.boot.$uriRelativeToPath = function(firstPath, secondPath, filePath) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$uriWithRoot = function(targetUrl) {
+TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
 
     /**
      * @name $uriWithRoot
@@ -5342,6 +5367,7 @@ TP.boot.$uriWithRoot = function(targetUrl) {
      * the lib or app root at the time of the call depending on the current
      * settings.
      * @param {String} targetUrl A url to expand as needed.
+     * @param {String} aRoot The root path to use. Default is launch root.
      * @return {String} The url - after ensuring a root exists.
      */
 
@@ -5362,7 +5388,11 @@ TP.boot.$uriWithRoot = function(targetUrl) {
 
     //  note the use of the 'current root' path here since we can't assume
     //  that this should be rooted against libroot or approot without help
-    root = TP.boot.$getRootPath();
+    if (TP.boot.$notValid(aRoot)) {
+        root = TP.sys.getLaunchRoot();
+    } else {
+        root = aRoot;
+    }
 
     return TP.boot.$uriJoinPaths(root, targetUrl);
 };
@@ -9658,7 +9688,14 @@ TP.boot.$displayMessage = function(aString, flush) {
             '<div xmlns="http://www.w3.org/1999/xhtml"><div><pre>' +
             message + '</pre></div></div>');
         if (!msgNode) {
-            console.log('Unable to create log message element.');
+            msgNode = TP.boot.$documentFromString(
+                '<div xmlns="http://www.w3.org/1999/xhtml"><div><pre>' +
+                TP.boot.$htmlEscape(message) + '</pre></div></div>');
+            if (!msgNode) {
+                console.log('Unable to create log message element.');
+            } else {
+                msgNode = msgNode.firstChild.firstChild;
+            }
         } else {
             msgNode = msgNode.firstChild.firstChild;
         }
@@ -13638,7 +13675,6 @@ NOTE:   Copyright (C) 1999-2013 Technical Pursuit Inc., All Rights
           maxerr:999
 */
 /* global Window:true,
-          Event:false,
           $$checked:true,
           $$tibet:true,
           $$getNextWindow:true,
@@ -13648,9 +13684,6 @@ NOTE:   Copyright (C) 1999-2013 Technical Pursuit Inc., All Rights
           CSS2Properties:false,
           CSSPrimitiveValue:false,
           Document:false,
-          HTMLDocument:false,
-          NamedNodeMap:true,
-          NodeList:false,
           XMLDocument:false
 */
 

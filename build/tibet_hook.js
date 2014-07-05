@@ -32,7 +32,6 @@ NOTE:   Copyright (C) 1999-2013 Technical Pursuit Inc., All Rights
           maxerr:999
 */
 /* global Window:true,
-          Event:false,
           $$checked:true,
           $$tibet:true,
           $$getNextWindow:true,
@@ -42,9 +41,6 @@ NOTE:   Copyright (C) 1999-2013 Technical Pursuit Inc., All Rights
           CSS2Properties:false,
           CSSPrimitiveValue:false,
           Document:false,
-          HTMLDocument:false,
-          NamedNodeMap:true,
-          NodeList:false,
           XMLDocument:false
 */
 
