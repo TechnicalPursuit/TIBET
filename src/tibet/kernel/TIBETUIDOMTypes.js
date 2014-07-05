@@ -3228,6 +3228,8 @@ function(stateAttribute, stateFlag) {
         } else {
             this.removeAttribute(stateAttribute);
         }
+
+        this.changed(stateAttribute.slice(7), TP.UPDATE);
     }
 
     return this.hasAttribute(stateAttribute);
