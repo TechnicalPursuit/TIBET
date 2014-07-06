@@ -6324,6 +6324,16 @@ TP.boot.Log.prototype.report = function(entry) {
         TP.boot[reporterName](entry);
     } catch (e) {
 
+        // One special case here is failed file launches due to security issues.
+        // The goal in that case is to let the rest of the system do this
+        // without spamming the error log with all the security warnings.
+        if (window.location.protocol.indexOf('file') === 0) {
+            if (/[sS]ecurity|[bB]locked/.test(e.message)) {
+                TP.boot.$consoleReporter(entry);
+                return;
+            }
+        }
+
         // If we don't count these the cycle can continue without respecting
         // boot.error_max.
         TP.boot.$$errors += 1;
@@ -10363,6 +10373,10 @@ TP.boot.launch = function(options) {
 
     var nologin;
 
+    if (window.offerror.failedlaunch) {
+        alert('crap');
+    }
+
     //  set up the environment variables appropriate for the browser. this
     //  information can then help drive the remaining parts of the process
     TP.boot.$configureEnvironment();
@@ -10381,8 +10395,33 @@ TP.boot.launch = function(options) {
                     TP.SYSTEM);
     TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
 
-    //  set the initial stage. this will also capture a start time.
-    TP.boot.$setStage('prelaunch');
+    try {
+        //  set the initial stage. this will also capture a start time.
+        TP.boot.$setStage('prelaunch');
+    } catch (e) {
+        if (window.location.protocol.indexOf('file') === 0) {
+            // File launch issue.
+            if (TP.boot.isUA('chrome')) {
+                TP.boot.$stderr(
+                    'File launch aborted. ' +
+                    'On Chrome you need to start the browser with ' +
+                    'the --allow-file-access-from-files flag.',
+                    TP.FATAL);
+            } else if (TP.boot.isUA('firefox')) {
+                TP.boot.$stderr(
+                    'File launch aborted. ' +
+                    'On Firefox you must set the config flag ' +
+                    '\'security.fileuri.strict_origin_policy\' to false,' +
+                    ' via about:config, quit the browser and restart.',
+                    TP.FATAL);
+            } else {
+                TP.boot.$stderr(
+                    'File launch aborted. Check browser security settings.',
+                    TP.FATAL);
+            }
+            return;
+        }
+    }
 
     // If the browser is considered obsolete we can stop right now.
     if (TP.boot.isObsolete()) {

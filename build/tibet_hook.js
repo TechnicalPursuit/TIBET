@@ -44,12 +44,11 @@ NOTE:   Copyright (C) 1999-2013 Technical Pursuit Inc., All Rights
           XMLDocument:false
 */
 
+;(function(root) {
+
 //  ------------------------------------------------------------------------
 //  PRIVATE GLOBALS
 //  ------------------------------------------------------------------------
-
-//  We're not religious about "no globals" for a variety of reasons, but we
-//  do use $$ prefixes (TIBETan for "internal") to keep things manageable.
 
 //  window search routine will use this to avoid recursions
 $$checked = null;
@@ -58,6 +57,39 @@ $$checked = null;
 //  can locate a TIBET installation. if this variable is set it identifies
 //  the shared codebase for the application.
 $$tibet = null;
+
+//  save old error handler.
+window.offerror = window.onerror;
+
+window.onerror = function(msg, url, line, column, errorObj) {
+    var str;
+
+    try {
+        str = msg || 'Error';
+        str += ' in file: ' + url + ' line: ' + line + ' column: ' + column;
+
+        if (errorObj) {
+            str += '\nSTACK:\n' + errorObj.stack;
+        }
+
+        // specifically watch for file launch issues.
+        if (window.location.protocol.indexOf('file') === 0) {
+            if (window.onerror.failedlaunch) {
+                return;
+            }
+            window.onerror.failedlaunch = true;
+            //alert('File launch error. Check browser security settings.');
+        } else {
+            top.console.error(str);
+        }
+    } catch (e) {
+        // don't let log errors trigger recursion, but don't bury them either.
+        top.console.error('Error logging onerror: ' + e.message);
+        top.console.error(str || msg);
+    }
+
+    return false;
+};
 
 //  ------------------------------------------------------------------------
 //  TIBET DETECTION
@@ -215,8 +247,12 @@ $$findTIBET = function(aWindow) {
 //  Define the only publicly available global in TIBET - 'TP'
 
 if (self.TP == null) {
-    //  Try to find the window containing TIBET
-    $$findTIBET();
+
+    try {
+        $$findTIBET();
+    } catch (e) {
+        return;
+    }
 
     //  If a window containing TIBET was found (and it wasn't ourself), wire
     //  over the TP reference.
@@ -543,20 +579,19 @@ NOTE ALSO: This only works for HTML documents, not XHTML documents.
 
 //  ------------------------------------------------------------------------
 
-if (window !== top &&
+if (window.onerror.failedlaunch !== true &&
+    window !== top &&
     top.TP != null &&
     top.TP.sys != null &&
     top.TP.sys.hasLoaded() === true &&
     top.TP.isHTMLDocument(document) === true &&
     top.TP.core.Window.$$isDocumentWriting !== true &&
     window.frameElement != null &&
-    window.frameElement.hasAttribute('tibet_settinglocation') !== true)
-{
+    window.frameElement.hasAttribute('tibet_settinglocation') !== true) {
     //  if we're here because of a document.write then TIBET is
     //  processing the content already, otherwise we want to effectively
     //  snag the current location and ask TIBET to process that URI and
     //  return it to the current window as properly managed content
-
     top.TP.windowResetLocation(window);
 } else {
 
@@ -2882,7 +2917,10 @@ if (window !== top &&
     //  THIS HAS TO BE THE LAST THING IN THIS FILE -- DO NOT ADD CODE BELOW IT
     //  ========================================================================
 
-    if ($$findTIBET() == null) {
+    if (window.onerror.failedlaunch === true) {
+        //  we're done. the script already blew up with a file launch issue.
+        void(0);
+    } else if ($$findTIBET() == null) {
         //  we're in a page containing tibet_hook.js, but we can't find TIBET,
         //  which means it hasn't booted yet...so let's try to fix that :)
         TP.boot.autoBoot();
@@ -2995,6 +3033,8 @@ if (window !== top &&
     }
 
 }  //  DO NOT DELETE!!!    End 'location =' trap 'else' clause.
+
+}(this));
 
 //  ------------------------------------------------------------------------
 //  end

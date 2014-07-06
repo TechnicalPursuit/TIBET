@@ -80,6 +80,15 @@
 </div>
 <script>
 <![CDATA[
+try {
+  var check = top.document;
+} catch (e) {
+  if (window.location.protocol.indexOf('file') === 0) {
+    document.getElementById('BOOT-SUBHEAD').innerHTML =
+      'File launch failed. Check console for more information.';
+  }
+}
+
 function stageAction() {
     /**
      * Respond to user clicks on the stage image, which can serve as an action
