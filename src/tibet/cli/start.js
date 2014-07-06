@@ -116,11 +116,11 @@ Cmd.prototype.execute = function() {
 // TODO:    process command line arguments such that we can add them to the
 //          array of parameters given to spawn() calls below.
 
-    // If we can't find server.js our only option is to use npm start. If we
-    // have port information on our command line we've got to use options.
+    // If there's no server.js assume a 'noserver' template or 'couchdb'
+    // template of some sort and default to opening the index.html.
     if (!sh.test('-f', 'server.js')) {
         process.env.PORT = port;
-        server = child.spawn('npm', ['start']);
+        server = child.spawn('open', ['index.html']);
     } else {
         cmd.system(msg);
         server = child.spawn('node',
