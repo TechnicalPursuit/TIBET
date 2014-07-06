@@ -32,6 +32,7 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 <config id="standard">
     <script src="./src/TP.sherpa.sherpa.js"/>
+    <script src="./src/TP.sherpa.ConsoleService.js"/>
 
     <script src="./src/TP.sherpa.pp.js"/>
 
@@ -39,6 +40,10 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     <script src="./src/Searchers.js"/>
     <property name="TP.sherpa.quickbar.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.quickbar.xhtml"/>
     <property name="TP.sherpa.quickbar.css_uri" value="~ide_root/css/TP.sherpa.quickbar.css"/>
+
+    <script src="./src/TP.sherpa.console.js"/>
+    <property name="TP.sherpa.console.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.console.xhtml"/>
+    <property name="TP.sherpa.console.css_uri" value="~ide_root/css/TP.sherpa.console.css"/>
 
     <script src="./src/TP.sherpa.cmdline.js"/>
     <property name="TP.sherpa.cmdline.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.cmdline.xhtml"/>

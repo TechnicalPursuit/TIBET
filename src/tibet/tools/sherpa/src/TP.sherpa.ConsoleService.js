@@ -1,60 +1,57 @@
 //  ============================================================================
-//  TP.core.ConsoleService
+//  TP.sherpa.ConsoleService
 //  ============================================================================
 
 /**
- * @type {TP.core.ConsoleService}
+ * @type {TP.sherpa.ConsoleService}
  * @synopsis
  */
 
 //  ----------------------------------------------------------------------------
 
-TP.core.UserIOService.defineSubtype('ConsoleService');
+TP.core.UserIOService.defineSubtype('sherpa.ConsoleService');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  whether or not the console is displayed
-TP.core.ConsoleService.Inst.defineAttribute('consoleDisplayed', false);
-
-//  hash of the last cell for each request/thread so append output to a
-//  request's conversational thread has a reference
-TP.core.ConsoleService.Inst.defineAttribute('$cellHash');
-
-//  a linear reference to the list of cells allocated
-TP.core.ConsoleService.Inst.defineAttribute('$cellList');
+//  the input cell textarea itself
+TP.sherpa.ConsoleService.Inst.defineAttribute('$consoleGUI');
 
 //  an Array that is used to collect 'all results of a command sequence' (i.e
 //  multiple shell statements separated by ';' or pipes, etc.)
-TP.core.ConsoleService.Inst.defineAttribute('$multiResults');
+TP.sherpa.ConsoleService.Inst.defineAttribute('$multiResults');
 
 //  how many characters wide should the output display be? too large a
 //  number here will cause horizontal scrolling.
-TP.core.ConsoleService.Inst.defineAttribute('width', 80);
+TP.sherpa.ConsoleService.Inst.defineAttribute('width', 80);
 
 //  the underlying TP.core.Shell instance serving as the model for this console
-TP.core.ConsoleService.Inst.defineAttribute('model');
+TP.sherpa.ConsoleService.Inst.defineAttribute('model');
 
 //  are we currently blocking on input from the user
-TP.core.ConsoleService.Inst.defineAttribute('awaitingInput', false);
+TP.sherpa.ConsoleService.Inst.defineAttribute('awaitingInput', false);
+
+//  should IO be concealed? this is used to simulate "password" mode
+TP.sherpa.ConsoleService.Inst.defineAttribute('conceal', false);
+TP.sherpa.ConsoleService.Inst.defineAttribute('concealedInput');
 
 //  the last input request processed by the receiver
-TP.core.ConsoleService.Inst.defineAttribute('lastInputRequest');
+TP.sherpa.ConsoleService.Inst.defineAttribute('lastInputRequest');
 
 //  is this a system console, i.e. should it have logging?
-TP.core.ConsoleService.Inst.defineAttribute('systemConsole', false);
+TP.sherpa.ConsoleService.Inst.defineAttribute('systemConsole', false);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Type.defineMethod('construct',
+TP.sherpa.ConsoleService.Type.defineMethod('construct',
 function(aResourceID, aRequest) {
 
     /**
      * @name construct
-     * @synopsis Constructs a new console instance.
+     * @synopsis Constructs a new console service instance.
      * @description The primary purpose of this custom constructor is to provide
      *     defaulting for the resource ID so we can ensure that a default
      *     SystemConsole instance can be constructed. By leaving the resource ID
@@ -66,15 +63,16 @@ function(aResourceID, aRequest) {
      *     containing parameters including: consoleWindow and consoleNode which
      *     name the window and node to use for the console. A consoleTabs
      *     parameter determines whether a tabset is used.
-     * @returns {TP.core.ConsoleService} A new instance.
+     * @returns {TP.sherpa.ConsoleService} A new instance.
      * @todo
      */
 
     var name;
 
     if (TP.isEmpty(aResourceID)) {
-        if (TP.notValid(TP.core.Resource.getResourceById('SystemConsole'))) {
-            name = 'SystemConsole';
+        if (TP.notValid(
+                TP.core.Resource.getResourceById('SherpaConsoleService'))) {
+            name = 'SherpaConsoleService';
         } else {
             name = 'Console' + Date.now();
         }
@@ -89,7 +87,7 @@ function(aResourceID, aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('init',
+TP.sherpa.ConsoleService.Inst.defineMethod('init',
 function(aResourceID, aRequest) {
 
     /**
@@ -101,7 +99,7 @@ function(aResourceID, aRequest) {
      *     containing parameters including: consoleWindow and consoleNode which
      *     name the window and node to use for the console. A consoleTabs
      *     parameter determines whether a tabset is used.
-     * @returns {TP.core.ConsoleService} A new instance.
+     * @returns {TP.sherpa.ConsoleService} A new instance.
      * @todo
      */
 
@@ -114,11 +112,12 @@ function(aResourceID, aRequest) {
     //  assist us with producing both our user interface and responses
     request = TP.request(aRequest);
 
-    //  NB: We *must* use $set(...) here, instead of set(...), since
-    //  setModel() is implemented and depends on a lot of this already
-    //  being set up.
+    this.set('$consoleGUI', request.at('consoleView'));
+
+    //  set up our model -- the shell
     this.set('model', request.at('consoleModel'));
 
+    //  Make sure that we have a real model
     if (TP.notValid(model = this.getModel())) {
         this.raise('TP.sig.InvalidParameter', arguments,
             'Console configuration did not include a shell.');
@@ -126,25 +125,20 @@ function(aResourceID, aRequest) {
         return;
     }
 
-    //  hash of output nodes, keyed by request/thread ID. we keep only the
-    //  last node from each thread so we can provide it (when append) or
-    //  use it as the preceding node when building new nodes for that thread
-    this.set('$cellHash', TP.hc());
-
-    //  list of output nodes, in the order in which they were allocated
-    this.set('$cellList', TP.ac());
-
     //  list of results from a 'command sequence' that can all be output at once
     this.set('$multiResults', TP.ac());
 
-    //  get the console display elements ready for action
-    this.configure(request);
+    //  set up this object to manage stdin, stdout and stderr
+    this.configureSTDIO();
+
+    //  this will default to either the model's prompt or our default
+    this.get('$consoleGUI').setPrompt();
 
     //  get our shell to start by triggering its start method
     model.start(request);
 
     //  update our overall status
-    this.updateStatus();
+    this.get('$consoleGUI').updateStatus();
 
     //  put our project identifier in place in the notifier bar
     this.notify(TP.sys.cfg('project.ident'));
@@ -152,155 +146,24 @@ function(aResourceID, aRequest) {
     //  Process whatever initial request(s) might be sitting in the queue
     this.handleNextRequest();
 
-    //  Note that we do *not* focus the input cell here because there is further
-    //  setup to do and we don't want the browser to think that the cell has
-    //  already been focused.
-    //this.focusInputCell();
-
     //  TODO:   add TP.sig.DocumentUnloaded logout hook observation/method
 
-    //  Not sure why we need this... probably some coordination in how
-    //  observes get set up.
+    //  Not sure why we need this... probably some coordination in how observes
+    //  get set up.
     this.shouldSignalChange(true);
-
-    //  set up keyboard toggle to show/hide us
-    (function () {
-            this.toggleConsole();
-
-            /*
-            (function () {
-               TP.boot.$flushLog(true);
-            }).fork(2000);
-            */
-
-        }.bind(this)).observe(
-            TP.core.Keyboard, 'TP.sig.' + request.at('triggerKey'));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('configure',
-function() {
-
-    /**
-     * @name configure
-     * @returns {TP.core.ConsoleService} The receiver.
-     * @abstract
-     * @todo
-     */
-
-    //  configure the input cell
-    this.configureInputCell();
-
-    //  set up this object to manage stdin, stdout and stderr
-    this.configureSTDIO();
-
-    //  now that we have a viable input cell, configure the event handlers
-    this.configureHandlers();
-
-    //  register so we'll receiver UserIO signals
-    //this.register();
 
     //  get started by scrolling to the end (causes the scroller to
     //  resize/reposition)
-    this.scrollToEnd();
+    this.get('$consoleGUI').scrollToEnd();
+
+    this.observe(TP.byOID('SherpaConsole'), 'HiddenChange');
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('configureInputCell',
-function() {
-
-    /**
-     * @name configureInputCell
-     * @returns {TP.core.ConsoleService} The receiver.
-     * @abstract
-     * @todo
-     */
-
-    var cell,
-        outerWrapper,
-        fieldStyle,
-        rowHeight,
-        styleVals,
-        offset;
-
-    cell = TP.byCSS('#consoleInput', TP.win('UIBOOT'), true);
-    this.set('$inputCell', cell);
-
-    //  initialize a minHeight on the elem so we never shrink smaller than
-    //  what the system laid out to start things off
-    outerWrapper = TP.byCSS('#BOOT-PROGRESS', TP.win('UIBOOT'), true);
-    this.set('$outerWrapper', outerWrapper);
-
-    outerWrapper.$minHeight = TP.elementGetHeight(outerWrapper, TP.CONTENT_BOX);
-
-    fieldStyle = TP.elementGetComputedStyleObj(cell);
-
-    //  need to know the pixel-per line count for computations around input
-    //  field sizing
-    rowHeight = fieldStyle.lineHeight.asNumber();
-    cell.$linepx = rowHeight;
-
-    //  Grab the computed style of the cell and add in the border &
-    //  padding, top & bottom, as an offset to our calculation.
-    styleVals = TP.elementGetStyleValuesInPixels(
-                cell,
-                TP.ac('borderTopWidth', 'borderBottomWidth',
-                        'paddingTop', 'paddingBottom'));
-
-    offset = styleVals.at('borderTopWidth') +
-                styleVals.at('borderBottomWidth') +
-                styleVals.at('paddingTop') +
-                styleVals.at('paddingBottom');
-
-    //  do a one-time computation of offsets we may need for size
-    //  adjustment. here we're saying that the "perimeter" around the cell
-    //  is all the pixels that can't be attributed to showing one line
-    cell.$perimeter = outerWrapper.$minHeight - (rowHeight + offset);
-
-    //  start off by making sure width/height are properly configured
-    this.adjustInputCellSize();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('configureHandlers',
-function() {
-
-    /**
-     * @name configureHandlers
-     * @synopsis Configures the receiver so it is ready for operation.
-     * @returns {TP.core.ConsoleService} The receiver.
-     */
-
-    //  set up root keyboard observations
-
-    this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
-    this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
-    this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
-
-    this.observe(TP.core.Keyboard,
-                    'TP.sig.DOM_Alt_Down_Up',
-                    function(evt) {
-                        evt.preventDefault();
-                        this.focusInputCell();
-                    }.bind(this));
-
-    this.observe(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('configureSTDIO',
+TP.sherpa.ConsoleService.Inst.defineMethod('configureSTDIO',
 function() {
 
     /**
@@ -308,7 +171,7 @@ function() {
      * @synopsis Configures TIBET's stdio hooks to look at the receiver. This
      *     method can be run to cause the receiver to 'own' stdio from the TIBET
      *     system and is usually invoked for system consoles.
-     * @returns {TP.core.ConsoleService} The receiver.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var model,
@@ -320,7 +183,7 @@ function() {
     }
 
     if (TP.isWindow(tibetWin = self.$$findTIBET(window)) &&
-        this.get('vWin') !== tibetWin) {
+        this.get('$consoleGUI').getNativeWindow() !== tibetWin) {
 
         TP.tpwin(tibetWin).attachSTDIO(this);
     }
@@ -332,210 +195,7 @@ function() {
 //  Display Primitives
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('scrollContent',
-function() {
-
-    /**
-     * @name scrollContent
-     * @returns {TP.core.ConsoleService} The receiver.
-     * @abstract
-     * @todo
-     */
-
-    TP.info('fix TP.core.ConsoleService::scrollContent', TP.LOG, arguments);
-
-    return this;
-
-    var contentDiv,
-        scrollGrip,
-        scrollBar,
-        scrollFactor;
-
-    contentDiv = this.$get('contentDiv');
-
-    if (contentDiv.scrollHeight === contentDiv.offsetHeight) {
-        //  Nothing to do.
-        return this;
-    }
-
-    //  Get the console scroll bar
-    scrollGrip = this.$get('scrollGrip');
-    scrollBar = TP.elementGetOffsetParent(scrollGrip);
-
-    scrollFactor = (contentDiv.scrollHeight - contentDiv.offsetHeight) /
-        (TP.elementGetHeight(scrollBar) - TP.elementGetHeight(scrollGrip));
-
-    contentDiv.scrollTop = scrollGrip.offsetTop * scrollFactor;
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('scrollToEnd',
-function() {
-
-    /**
-     * @name scrollToEnd
-     * @synopsis Scrolls the console to the end of the content area.
-     * @returns {TP.core.ConsoleService} The receiver.
-     */
-
-    TP.boot.$scrollLog();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-//  Input Cell Methods
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('adjustInputCellSize',
-function() {
-
-    /**
-     * @name adjustInputCellSize
-     * @synopsis Adjust the height of the input cell based on its contents.
-     */
-
-    var outerWrapper,
-        cell,
-        rows,
-        scrollHeight,
-        height;
-
-    //  We adjust our outerWrapper, since our inner wrapper will auto-grow
-    outerWrapper = this.get('$outerWrapper');
-
-    cell = this.get('$inputCell');
-
-    //  First we set the cell's height to 0. This will cause 'scrollHeight'
-    //  to get its proper value.
-    cell.style.height = '0px';
-
-    //  Grab the cell's scrollHeight
-    scrollHeight = cell.scrollHeight;
-
-    //  The number of rows is the scrollHeight divided by the number of
-    //  pixels for the lineHeight, rounded down.
-    rows = (scrollHeight / cell.$linepx).floor();
-
-    //  Make sure that we have at least one row.
-    rows = rows.max(1);
-
-    //  Set the cell's number of rows and put its height back to 'auto' so
-    //  that it will draw properly.
-    cell.rows = rows;
-    cell.style.height = '';
-
-    //  Now, resize the content surrounding the cell
-
-    //  Grab the current height of the cell.
-    height = TP.elementGetHeight(cell);
-
-    //  Add the surrounding 'chrome' height.
-    height = height + cell.$perimeter;
-
-    //  don't set outerWrapper height smaller than its initial height
-    if (height > outerWrapper.$minHeight) {
-        TP.elementSetHeight(outerWrapper, height);
-    } else {
-        TP.elementSetHeight(outerWrapper, outerWrapper.$minHeight);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('clearInputCell',
-function() {
-
-    /**
-     * @name clearInputCell
-     * @synopsis Clears the input cell.
-     * @returns {TP.core.ConsoleService} The receiver.
-     */
-
-    TP.wrap(this.get('$inputCell')).clearValue();
-
-    this.adjustInputCellSize();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('focusInputCell',
-function(select) {
-
-    /**
-     * @name focusInputCell
-     * @synopsis Focuses the input cell so the cursor is visible/blinking.
-     * @param {Boolean} select True to select in addition.
-     * @returns {TP.core.ConsoleService} The receiver.
-     */
-
-    //  We wrap this in a try...catch that does nothing because, on startup,
-    //  it seems like the textfield isn't focusable on IE and this will
-    //  throw an exception. It's not a big deal, except that this means that
-    //  the text field will not focus on startup.
-    try {
-        if (select) {
-            TP.wrap(this.get('$inputCell')).select();
-        } else {
-            TP.wrap(this.get('$inputCell')).focus();
-        }
-    } catch (e) {
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('getInputValue',
-function() {
-
-    /**
-     * @name getInputValue
-     * @synopsis Returns the value of the current input cell.
-     * @returns {String} The user's input.
-     */
-
-    var tpElem;
-
-    tpElem = TP.wrap(this.get('$inputCell'));
-    if (TP.isValid(tpElem)) {
-        return tpElem.get('value');
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('insertInputContent',
-function(anObject) {
-
-    /**
-     * @name insertInputContent
-     * @synopsis Inserts to the value of the input cell.
-     * @param {Object} anObject The object defining the additional input.
-     * @returns {TP.core.ConsoleService} The receiver.
-     */
-
-    var str;
-
-    str = TP.str(anObject);
-    TP.wrap(this.get('$inputCell')).insertAfterSelection(str);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('isAwaitingInput',
+TP.sherpa.ConsoleService.Inst.defineMethod('isAwaitingInput',
 function(aFlag) {
 
     /**
@@ -545,12 +205,11 @@ function(aFlag) {
      *     process.
      * @param {Boolean} aFlag An optional new setting.
      * @returns {Boolean} The current input state.
-     * @todo
      */
 
     var inputCell;
 
-    inputCell = this.get('$inputCell');
+    inputCell = this.get('$consoleGUI');
 
     if (TP.isBoolean(aFlag)) {
         this.$set('awaitingInput', aFlag);
@@ -561,145 +220,46 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('setCursorToEnd',
-function() {
+TP.sherpa.ConsoleService.Inst.defineMethod('handleHiddenChange',
+function(aSignal) {
 
     /**
-     * @name setCursorToEnd
-     * @synopsis Moves the cursor to the end of the current input data.
-     * @returns {TP.core.ConsoleService} The receiver.
+     * @name handleHiddenChange
      */
 
-    TP.wrap(this.get('$inputCell')).setCursorToEnd();
+    var isHidden;
 
-    return this;
-});
+    isHidden = aSignal.getOrigin().get('hidden');
 
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('setInputContent',
-function(anObject, shouldAppend) {
-
-    /**
-     * @name setInputContent
-     * @synopsis Sets the value of the input cell, essentially 'pre-filling' the
-     *     input area with content.
-     * @description If shouldAppend is true, and the input cell already has
-     *     content, a '.;\n' is appended to the front of the content.
-     * @param {Object} anObject The object defining the input.
-     * @param {Boolean} shouldAppend Whether or not to append the value of
-     *     anObject to any existing content.
-     * @returns {TP.core.ConsoleService} The receiver.
-     * @todo
-     */
-
-    var wrappedInputCell,
-        val;
-
-    if (TP.isEmpty(anObject)) {
-        this.clearInputCell();
-        return this;
-    }
-
-    wrappedInputCell = TP.wrap(this.get('$inputCell'));
-
-    if (TP.isTrue(shouldAppend)) {
-        if (TP.notEmpty(val = wrappedInputCell.get('value'))) {
-            val += '.;\n';
-        }
-
-        wrappedInputCell.set('value', val + this.formatInput(anObject));
+    if (isHidden) {
+        this.removeHandlers();
     } else {
-        wrappedInputCell.set('value', this.formatInput(anObject));
+        this.installHandlers();
     }
-
-    this.adjustInputCellSize();
-
-    (function() {
-        this.focusInputCell();
-        this.setCursorToEnd();
-    }.bind(this)).afterUnwind();
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('shouldConcealInput',
+TP.sherpa.ConsoleService.Inst.defineMethod('shouldConcealInput',
 function(aFlag) {
 
     /**
      * @name shouldConcealInput
      * @synopsis Returns false for now.
      * @param {Boolean} aFlag The new value to set.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return false;
 });
 
 //  ------------------------------------------------------------------------
-//  Output Cell Methods
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('getCellFromSignal',
-function(aSignal) {
-
-    var targetElem,
-        outElem,
-        outCellIndex;
-
-    if (!TP.isElement(targetElem = aSignal.getTarget())) {
-        return null;
-    }
-
-    if (!TP.isElement(outElem = TP.nodeGetFirstElementAncestorByAttribute(
-                                    targetElem, 'cellPosition'))) {
-        return null;
-    }
-
-    outCellIndex = TP.elementGetAttribute(outElem, 'cellPosition').asNumber();
-
-    if (TP.isNumber(outCellIndex)) {
-        return this.get('$cellList').at(outCellIndex);
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('removeOutputCell',
-function(aCell) {
-
-    var cellList,
-        deletionIndex,
-        i;
-
-    //  First, remove it from the cellHash
-    this.get('$cellHash').removeValue(aCell, TP.IDENTITY);
-
-    //  Then, remove it from the cellList and shift the indexes
-    cellList = this.get('$cellList');
-    deletionIndex = cellList.getPosition(aCell, 0, TP.IDENTITY);
-    cellList.removeAt(deletionIndex);
-
-    if (TP.notEmpty(cellList)) {
-        for (i = deletionIndex; i < cellList.getSize(); i++) {
-            cellList.at(i).setCellPosition(i);
-        }
-    }
-
-    aCell.removeFromCanvasElement();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
 //  String I/O Formatting
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('formatInput',
+TP.sherpa.ConsoleService.Inst.defineMethod('formatInput',
 function(plainText) {
 
     /**
@@ -707,7 +267,7 @@ function(plainText) {
      * @synopsis Converts text intended for the input cell so it's properly
      *     displayed.
      * @param {String} plainText The string to convert.
-     * @returns {String} 
+     * @returns {String}
      */
 
     //  For now, we just return the plain text that was handed to us.
@@ -718,7 +278,7 @@ function(plainText) {
 //  Event Handling
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('isCommandEvent',
+TP.sherpa.ConsoleService.Inst.defineMethod('isCommandEvent',
 function(anEvent) {
 
     /**
@@ -733,22 +293,22 @@ function(anEvent) {
     keyname = TP.domkeysigname(anEvent);
 
     switch (keyname) {
-        case 'DOM_Tab_Down':
-        case 'DOM_Tab_Press':
-        case 'DOM_Tab_Up':
-
         case 'DOM_Shift_Enter_Down':
         case 'DOM_Shift_Enter_Press':
         case 'DOM_Shift_Enter_Up':
 
+        case 'DOM_Shift_Down_Down':
         case 'DOM_Shift_Down_Up':
+        case 'DOM_Shift_Up_Down':
         case 'DOM_Shift_Up_Up':
+        case 'DOM_Shift_Right_Down':
         case 'DOM_Shift_Right_Up':
+        case 'DOM_Shift_Left_Down':
         case 'DOM_Shift_Left_Up':
 
-        case 'DOM_Shift_Del_Down':
-        case 'DOM_Shift_Del_Press':
-        case 'DOM_Shift_Del_Up':
+        case 'DOM_Shift_Backspace_Down':
+        case 'DOM_Shift_Backspace_Press':
+        case 'DOM_Shift_Backspace_Up':
 
         case 'DOM_Esc_Up':
 
@@ -761,7 +321,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleCommandEvent',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleCommandEvent',
 function(anEvent) {
 
     /**
@@ -775,10 +335,6 @@ function(anEvent) {
     keyname = TP.domkeysigname(anEvent);
 
     switch (keyname) {
-        case 'DOM_Tab_Up':
-            this.handleTab(anEvent);
-            break;
-
         case 'DOM_Shift_Enter_Up':
             this.handleRawInput(anEvent);
             break;
@@ -791,7 +347,7 @@ function(anEvent) {
             this.handleHistoryPrev(anEvent);
             break;
 
-        case 'DOM_Shift_Del_Up':
+        case 'DOM_Shift_Backspace_Up':
             this.handleClearInput(anEvent);
             break;
 
@@ -810,58 +366,188 @@ function(anEvent) {
 //  Key Handling
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleDOMModifierKeyChange',
+TP.sherpa.ConsoleService.Inst.defineMethod('installHandlers',
+function() {
+
+    /**
+     * @name installHandlers
+     * @synopsis
+     * @returns {TP.sherpa.ConsoleService} The receiver.
+     */
+
+    //  set up root keyboard observations
+
+    this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
+    this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
+    this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+
+    this.observe(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('removeHandlers',
+function() {
+
+    /**
+     * @name removeHandlers
+     * @synopsis
+     * @returns {TP.sherpa.ConsoleService} The receiver.
+     */
+
+    //  remove root keyboard observations
+
+    this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
+    this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
+    this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+
+    this.ignore(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyDown',
+function(aSignal) {
+
+    /**
+     * @name handleDOMKeyDown
+     * @synopsis Handles notifications of keydown events. If the key is one the
+     *     console maps then the default action is overidden.
+     * @param {DOMKeyDown} aSignal The TIBET signal which triggered this method.
+     * @todo
+     */
+
+    var evt,
+        inputCell,
+
+        keyname;
+
+    evt = aSignal.getEvent();
+    inputCell = this.get('$consoleGUI');
+
+    //  Make sure that the key event happened in our document
+    if (!inputCell.eventIsInInput(evt)) {
+        return;
+    }
+
+    keyname = TP.domkeysigname(evt);
+    if (keyname === 'DOM_Shift_Enter_Down') {
+        inputCell.setupEvalMark();
+    }
+
+    if (this.isCommandEvent(evt) || this.shouldConcealInput()) {
+        TP.eventPreventDefault(evt);
+        TP.eventStopPropagation(evt);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyPress',
+function(aSignal) {
+
+    /**
+     * @name handleTP_sig_DOMKeyPress
+     * @synopsis Handles notifications of keypress events. If the key is one the
+     *     console maps then the default action is overidden.
+     * @param {DOMKeyPress} aSignal The TIBET signal which triggered this
+     *     method.
+     * @todo
+     */
+
+    var evt,
+        inputCell;
+
+    evt = aSignal.getEvent();
+    inputCell = this.get('$consoleGUI');
+
+    //  Make sure that the key event happened in our document
+    if (!inputCell.eventIsInInput(evt)) {
+        return;
+    }
+
+    if (this.isCommandEvent(evt) || this.shouldConcealInput()) {
+        TP.eventPreventDefault(evt);
+        TP.eventStopPropagation(evt);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyUp',
+function(aSignal) {
+
+    /**
+     * @name handleDOMKeyUp
+     * @synopsis Handles notifications of keyup events. If the key is one we
+     *     care about then we forward the event to the shell for processing.
+     * @param {DOMKeyUp} aSignal The TIBET signal which triggered this handler.
+     */
+
+    var evt,
+        inputCell,
+        keyname,
+        input,
+        code;
+
+    evt = aSignal.getEvent();
+    inputCell = this.get('$consoleGUI');
+
+    //  Make sure that the key event happened in our document
+    if (!inputCell.eventIsInInput(evt)) {
+        return;
+    }
+
+    keyname = TP.domkeysigname(evt);
+
+    if (this.isCommandEvent(evt)) {
+        TP.eventPreventDefault(evt);
+        TP.eventStopPropagation(evt);
+
+        this.handleCommandEvent(evt);
+    } else if (this.shouldConcealInput()) {
+        TP.eventPreventDefault(evt);
+        TP.eventStopPropagation(evt);
+
+        input = TP.ifInvalid(this.$get('concealedInput'), '');
+        keyname = TP.domkeysigname(evt);
+
+        if (keyname === 'DOM_Backspace_Up') {
+            if (input.getSize() > 0) {
+                this.$set('concealedInput', input.slice(0, -1));
+            }
+        } else if (TP.core.Keyboard.isPrintable(evt)) {
+            code = TP.eventGetKeyCode(evt);
+            this.$set('concealedInput', input + String.fromCharCode(code));
+        }
+
+        this.get('$consoleGUI').setInputContent(
+                '*'.times(this.$get('concealedInput').getSize()));
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMModifierKeyChange',
 function(aSignal) {
 
     /**
      * @name handleDOMModifierKeyChange
      * @param {TP.sig.DOMModifierKeyChange} aSignal The TIBET signal which
      *     triggered this handler.
-     * @abstract
-     * @todo
      */
 
-    var evt,
-        arr,
-        str;
-
-    //TP.info('fix TP.core.ConsoleService::handleDOMModifierKeyChange', TP.LOG, arguments);
-
-    return;
-
-    evt = aSignal.getEvent();
-
-    arr = TP.ac();
-    arr.push(aSignal.getCtrlKey() ? 'Ctrl' : null);
-    arr.push(aSignal.getAltKey() ? 'Alt' : null);
-    arr.push(aSignal.getMetaKey() ? 'Meta' : null);
-    arr.push(aSignal.getShiftKey() ? 'Shift' : null);
-    arr.compact();
-
-    str = arr.join(':');
-    TP.htmlElementSetContent(TP.byId('status1', this.$get('vWin')),
-        str, null, false);
-
-    if (TP.isTrue(this.get('open')) &&
-        aSignal.getAltKey() &&
-        aSignal.getShiftKey()) {
-        this.toggleScrollViewOpen();
-    }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('handleTab',
-function(anEvent) {
-
-    /**
-     * @name handleTab
-     * @synopsis Processes requests to insert a tab character at the current
-     *     selection point.
-     * @param {Event} anEvent A JS/DOM Event object.
-     */
-
-    this.insertInputContent('\t');
+    this.get('$consoleGUI').updateStatus(aSignal);
 
     return;
 });
@@ -870,7 +556,7 @@ function(anEvent) {
 //  Request Handling
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('cancelUserInputRequest',
+TP.sherpa.ConsoleService.Inst.defineMethod('cancelUserInputRequest',
 function(aRequest) {
 
     /**
@@ -908,10 +594,10 @@ function(aRequest) {
     this.stdout('Request cancelled.');
 
     //  reset the prompt and input cell
-    this.clearInputCell();
+    this.get('$consoleGUI').clearInput();
 
     //  this will default to either the model's prompt or our default
-    this.setPrompt();
+    this.get('$consoleGUI').setPrompt();
 
     //this.showInputCell();
 
@@ -923,7 +609,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleConsoleRequest',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleConsoleRequest',
 function(aRequest) {
 
     /**
@@ -956,7 +642,7 @@ function(aRequest) {
             break;
 
         case 'input':
-            this.setInputContent(aRequest.at('body'));
+            this.get('$consoleGUI').setInputContent(aRequest.at('body'));
             break;
 
         default:
@@ -971,7 +657,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleNoMoreRequests',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleNoMoreRequests',
 function(aRequest) {
 
     /**
@@ -985,11 +671,11 @@ function(aRequest) {
 
     if (!this.isSystemConsole()) {
         if (TP.isValid(aRequest) && (!aRequest.at('cmdInput'))) {
-            this.clearInputCell();
+            //this.get('$consoleGUI').clearInput();
 
             //  this will default to either the model's prompt or our
             //  default
-            this.setPrompt();
+            this.get('$consoleGUI').setPrompt();
         }
     }
 
@@ -998,7 +684,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleRequestCompleted',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleRequestCompleted',
 function(aSignal) {
 
     /**
@@ -1030,7 +716,7 @@ function(aSignal) {
         this.ignore(aSignal.getOrigin(), 'TP.sig.RequestModified');
 
         //  this will default to either the model's prompt or our default
-        this.setPrompt();
+        this.get('$consoleGUI').setPrompt();
 
         //  if the registered request was the last input request, then clear it
         //  and reset 'awaiting input' and 'should conceal input'
@@ -1049,7 +735,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleRequestModified',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleRequestModified',
 function(aSignal) {
 
     /**
@@ -1071,7 +757,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleShellRequestCompleted',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleShellRequestCompleted',
 function(aSignal) {
 
     /**
@@ -1081,7 +767,7 @@ function(aSignal) {
      * @param {TP.sig.ShellResponse} aSignal
      */
 
-    this.updateStatus(aSignal.getRequest());
+    this.get('$consoleGUI').updateStatus(aSignal.getRequest());
     this.handleNextRequest(aSignal);
 
     return;
@@ -1089,7 +775,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleUserInputRequest',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleUserInputRequest',
 function(aSignal) {
 
     /**
@@ -1155,7 +841,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleUserInputSeries',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleUserInputSeries',
 function(aSignal) {
 
     /**
@@ -1172,7 +858,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleUserOutputRequest',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleUserOutputRequest',
 function(aRequest) {
 
     /**
@@ -1204,15 +890,14 @@ function(aRequest) {
 
     aRequest.complete();
 
-    //  NOTE that some shell execution pathways use a
-    //  TP.sig.UserOutputRequest as their way of doing all the work, so we
-    //  update from that request
-    this.updateStatus(aRequest);
+    //  NOTE that some shell execution pathways use a TP.sig.UserOutputRequest
+    //  as their way of doing all the work, so we update from that request
+    this.get('$consoleGUI').updateStatus(aRequest);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('refreshFromRequest',
+TP.sherpa.ConsoleService.Inst.defineMethod('refreshFromRequest',
 function(aRequest) {
 
     /**
@@ -1229,11 +914,11 @@ function(aRequest) {
         hide;
 
     if (TP.notEmpty(query = aRequest.at('query'))) {
-        this.setPrompt(query, 'inbound_prompt');
+        this.get('$consoleGUI').setPrompt(query);
     }
 
     if (TP.notEmpty(def = aRequest.at('default'))) {
-        this.setInputContent(def);
+        this.get('$consoleGUI').setInputContent(def);
     }
 
     if (TP.isValid(hide = aRequest.at('hideInput'))) {
@@ -1244,10 +929,10 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  Model Events
+//  Model Signals
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleCancel',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleCancel',
 function(anEvent) {
 
     /**
@@ -1271,7 +956,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleChange',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleChange',
 function(aSignal) {
 
     /**
@@ -1292,7 +977,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleClearInput',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleClearInput',
 function(anEvent) {
 
     /**
@@ -1302,14 +987,14 @@ function(anEvent) {
      */
 
     TP.eventPreventDefault(anEvent);
-    this.clearInputCell();
+    this.get('$consoleGUI').clearInput();
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleHistoryNext',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleHistoryNext',
 function(anEvent) {
 
     /**
@@ -1331,9 +1016,9 @@ function(anEvent) {
 
     cmd = model.getHistory(model.incrementHistoryIndex());
     if (TP.isValid(cmd)) {
-        this.setInputContent(cmd);
+        this.get('$consoleGUI').setInputContent(cmd);
     } else {
-        this.clearInputCell();
+        this.get('$consoleGUI').clearInput();
     }
 
     return;
@@ -1341,7 +1026,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleHistoryPrev',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleHistoryPrev',
 function(anEvent) {
 
     /**
@@ -1363,9 +1048,9 @@ function(anEvent) {
 
     cmd = model.getHistory(model.decrementHistoryIndex());
     if (TP.isValid(cmd)) {
-        this.setInputContent(cmd);
+        this.get('$consoleGUI').setInputContent(cmd);
     } else {
-        this.clearInputCell();
+        this.get('$consoleGUI').clearInput();
     }
 
     return;
@@ -1373,7 +1058,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleRawInput',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleRawInput',
 function(anEvent) {
 
     /**
@@ -1386,22 +1071,72 @@ function(anEvent) {
      * @param {Event} anEvent A JS/DOM Event object.
      */
 
-    var input,
-        res,
-        req,
-        model;
+    var input;
 
     //  capture the text content of the input cell. we'll be passing this
     //  along to the responder if it's got any content
-    input = this.getInputValue();
+    input = this.get('$consoleGUI').getEvalValue();
     if (TP.notValid(input)) {
-        //  oops, not even an empty string value
+        //  oops, not even an empty string value - the value must not be 'ready'
         return;
     }
 
     //  always clear the cell to provide visual feedback that we've accepted
     //  the input and are working on it
-    this.clearInputCell();
+    //this.get('$consoleGUI').clearInput();
+
+    this.execRawInput(input);
+
+    this.get('$consoleGUI').teardownEvalMark();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Console Request Handling
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('clearConsole',
+function() {
+
+    /**
+     * @name clearConsole
+     * @synopsis Clears the receiver's content, removing all HTML elements and
+     *     resetting the console to an empty input field.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
+     */
+
+    //  Refocus the input cell and set its cursor to the end.
+    this.get('$consoleGUI').clearAllContent();
+
+    this.get('$consoleGUI').focusInput();
+    this.get('$consoleGUI').setCursorToEnd();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  General Purpose
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('execRawInput',
+function(rawInput) {
+
+    /**
+     * @name execRawInput
+     * @synopsis
+     * @param {String} rawInput A String of raw input
+     */
+
+    var input,
+        res,
+        req,
+        model;
+
+    if (TP.notValid(input = rawInput)) {
+        //  oops, not even an empty string value
+        return;
+    }
 
     //  two options here...one is we find an input request that caused
     //  display of the input cell (in which case that request "owns" the
@@ -1443,133 +1178,8 @@ function(anEvent) {
 });
 
 //  ------------------------------------------------------------------------
-//  Console Request Operations
-//  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('clearConsole',
-function() {
-
-    /**
-     * @name clearConsole
-     * @synopsis Clears the receiver's content, removing all HTML elements and
-     *     resetting the console to an empty input field.
-     * @returns {TP.core.ConsoleService} The receiver.
-     */
-
-    //  clear the node search elements, there are no output nodes now
-    this.get('$cellHash').empty();
-
-    this.get('$cellList').perform(
-        function(aCell) {
-            aCell.uninstallFromParent();
-        });
-
-    this.get('$cellList').empty();
-
-    this.set('$insertionNode', null);
-
-    TP.boot.$clearLog();
-
-    this.clearStatus();
-
-    //  Refocus the input cell and set its cursor to the end.
-    this.clearInputCell();
-    this.focusInputCell();
-    this.setCursorToEnd();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('clearStatus',
-function() {
-
-    /**
-     * @name clearStatus
-     * @synopsis Clears any status information such as window.status and/or any
-     *     status bar content, resetting it to the default state.
-     * @returns {TP.core.ConsoleService} The receiver.
-     * @todo
-     */
-
-    //TP.info('fix TP.core.ConsoleService::clearStatus', TP.LOG, arguments);
-
-    return this;
-
-    TP.status('');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('updateStatus',
-function(aSignal) {
-
-    /**
-     * @name updateStatus
-     * @synopsis Updates the status bar with information which is drawn from the
-     *     current environment and the signal provided. The signal is typically
-     *     a TP.sig.UserIOResponse containing information about the processing
-     *     which just occurred.
-     * @param {TP.sig.ShellRequest} aSignal The request that the status is being
-     *     updated for.
-     */
-
-    //TP.info('fix TP.core.ConsoleService::updateStatus', TP.LOG, arguments);
-
-    return this;
-
-    var model,
-        doc,
-        outCell,
-        str,
-        canvasWin;
-
-    model = this.getModel();
-    doc = this.get('vWin').document;
-
-    //  Make sure that we have a valid signal and that we actually have
-    //  cells to update the status of.
-    if (TP.isValid(aSignal) && TP.notEmpty(this.get('$cellHash'))) {
-        //  fake "reuse" here so we get back the original command cell
-        aSignal.atPut('cmdAppend', true);
-        outCell = this.getOutputCell(aSignal);
-
-        if (TP.isValid(outCell)) {
-            outCell.updateStats(aSignal);
-        }
-    }
-
-    //  ---
-    //  status context ID (execution window's global ID)
-    //  ---
-
-    str = '';
-    if (TP.isWindow(canvasWin = TP.sys.getUICanvas(true))) {
-        str = '' + TP.gid(canvasWin).sliceFrom('.', false, true);
-
-        TP.htmlElementSetContent(TP.byId('status2', this.$get('vWin')),
-            str, null, false);
-    }
-
-    //  ---
-    //  logging level
-    //  ---
-
-    str = '' + TP.boot.Log.getStringForLevel(TP.sys.getLogLevel());
-    TP.htmlElementSetContent(TP.byId('status3', this.$get('vWin')),
-        str, null, false);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-//  General Purpose
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('getModel',
+TP.sherpa.ConsoleService.Inst.defineMethod('getModel',
 function() {
 
     /**
@@ -1583,7 +1193,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('getWidth',
+TP.sherpa.ConsoleService.Inst.defineMethod('getWidth',
 function() {
 
     /**
@@ -1617,7 +1227,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('isSystemConsole',
+TP.sherpa.ConsoleService.Inst.defineMethod('isSystemConsole',
 function(aFlag) {
 
     /**
@@ -1641,14 +1251,14 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('setModel',
+TP.sherpa.ConsoleService.Inst.defineMethod('setModel',
 function(aModel) {
 
     /**
      * @name setModel
      * @synopsis Sets the model (shell) the console is interacting with.
      * @param {TP.core.Shell} aModel The model instance.
-     * @returns {TP.core.ConsoleService} The receiver.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var model;
@@ -1666,7 +1276,7 @@ function(aModel) {
     this.$set('model', aModel);
 
     //  this will default to either the model's prompt or our default
-    this.setPrompt();
+    this.get('$consoleGUI').setPrompt();
 
     //  watch model for events so we keep things loosly coupled
     this.observe(aModel, TP.ANY);
@@ -1676,7 +1286,7 @@ function(aModel) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('setWidth',
+TP.sherpa.ConsoleService.Inst.defineMethod('setWidth',
 function(aWidth) {
 
     /**
@@ -1704,7 +1314,7 @@ function(aWidth) {
 //  STDIO Handling
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('notify',
+TP.sherpa.ConsoleService.Inst.defineMethod('notify',
 function(anObject, aRequest) {
 
     /**
@@ -1725,7 +1335,7 @@ function(anObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('stderr',
+TP.sherpa.ConsoleService.Inst.defineMethod('stderr',
 function(anError, aRequest) {
 
     /**
@@ -1736,12 +1346,16 @@ function(anError, aRequest) {
      * @param {String} anError The error to output.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.core.ConsoleService} The receiver.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      * @todo
      */
 
     var req,
-        err;
+        err,
+
+        cssClass,
+
+        outputData;
 
     TP.debug('break.tdc_stderr');
 
@@ -1754,14 +1368,18 @@ function(anError, aRequest) {
     req.atPutIfAbsent('messageLevel', TP.ERROR);
 
     err = TP.isError(anError) ? TP.str(anError) : anError;
-    this.stdout(err, req);
+
+    cssClass = '';
+    outputData = TP.hc('output', err, 'outputclass', cssClass);
+
+    this.get('$consoleGUI').addLoggedValue(outputData);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('stdin',
+TP.sherpa.ConsoleService.Inst.defineMethod('stdin',
 function(anObject, aDefault, aRequest) {
 
     /**
@@ -1780,209 +1398,15 @@ function(anObject, aDefault, aRequest) {
 
     TP.debug('break.tdc_stdin');
 
-    this.setPrompt(anObject, 'inbound_prompt');
-    this.setInputContent(aDefault);
+    this.get('$consoleGUI').setPrompt(anObject);
+    this.get('$consoleGUI').setInputContent(aDefault);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
-//  STDOUT stuff
-//  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('getOutputCanvasElem',
-function(aRequest) {
-
-    return TP.boot.$getBootLogElement();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('getOutputCell',
-function(aRequest) {
-
-    /**
-     * @name getOutputCell
-     * @synopsis Returns an output node appropriate for the request provided.
-     * @description Parameters in the request help determine what kind of node
-     *     is returned, and whether it's a new node or an existing one.
-     *     Parameters of interest are:
-     *
-     *     reuse boolean true -> output is placed in the last node used,
-     *     allowing a single cell to be used over a series of requests. when a
-     *     thread ID is provided the last cell of that thread is reused. cmdID
-     *     String A string which, when present, is used to keep cells from a
-     *     common command buffer together so that all output from that buffer
-     *     stays in a single block of cells. offset Number an offset which can
-     *     be used to lock cells next to the input cell. default is 0.
-     * @param {TP.sig.UserIORequest} aRequest The specific request instance.
-     * @returns {Node} A DOM Node.
-     * @todo
-     */
-
-    var cellList,
-        canvasElem,
-        openCells,
-        closableCells,
-        outCell,
-        last,
-        append,
-        recycle,
-        reuse,
-        cellHash,
-        tid,
-        insertion,
-        position,
-        insertionIndex,
-        i;
-
-    cellList = this.get('$cellList');
-    canvasElem = this.getOutputCanvasElem();
-    openCells = TP.sys.cfg('tdc.expanded_cells');
-
-    //  ---
-    //  no-request node configuration
-    //  ---
-
-    //  no request? presume we want a new output cell at the end
-    if (TP.notValid(aRequest)) {
-        //  without a request to tell us differently we presume this cell
-        //  is a standard output cell, meaning we insert it in the common
-        //  content area at the tail.
-
-        outCell = TP.tsh.ConsoleOutputCell.construct(
-                    null, canvasElem,
-                    canvasElem, TP.BEFORE_END);
-
-        outCell.setCellPosition(cellList.getSize());
-        cellList.add(outCell);
-
-        closableCells = cellList.getSize() - openCells;
-
-        for (i = 0; i < closableCells; i++) {
-            cellList.at(i).collapse();
-        }
-
-        return outCell;
-    }
-
-    //  determine if we're being asked to either append content or reuse a
-    //  prior command/thread node
-    append = TP.ifInvalid(aRequest.at('cmdAppend'), false);
-    recycle = TP.ifInvalid(aRequest.at('cmdRecycle'), false);
-    reuse = append || recycle;
-
-    //  commands are ID'd but they can be part of a larger "thread" in
-    //  which case they're asking for their output to be part of that
-    //  thread's container rather than one specific to the command ID
-    tid = TP.ifInvalid(aRequest.at('cmdThread'), aRequest.at('cmdID'));
-
-    cellHash = this.get('$cellHash');
-
-    if (TP.isEmpty(tid)) {
-
-        last = cellList.last();
-        if (TP.isValid(last) && TP.isTrue(aRequest.at('cmdAppend'))) {
-            //  we mark output nodes as logging nodes so we can properly
-            //  append
-            if (aRequest.at('messageType') === 'log') {
-                if (last.isLogging()) {
-                    return last;
-                }
-            } else {
-                return last;
-            }
-        }
-
-        //  if we're configured for reuse, even without a TID, then we'll
-        //  reuse the last cell if we have one (unless we're a logging
-        //  call).
-        if (reuse &&
-            TP.isValid(last) &&
-            aRequest.at('messageType') !== 'log') {
-            return last;
-        }
-
-        //  fall out to the "generic insertion logic" at the bottom
-    } else {
-        //  exiting command ID, we'll use any registered cell we have as our
-        //  starting point
-        insertion = cellHash.at(tid);
-        if (TP.isValid(insertion)) {
-            if (reuse) {
-                return insertion;
-            }
-
-            //  we have a current node for this TID, but we're not going to
-            //  reuse it in any way. that means we're going to be creating a
-            //  new node and placing it after_end of the existing cell so
-            //  that all cells related to that TID stay together.
-            outCell = TP.tsh.ConsoleOutputCell.construct(
-                        aRequest, canvasElem,
-                        insertion.get('visualElem'), TP.AFTER_END);
-
-            //  get the index of the thread's node. We'll insert just after
-            //  it.
-            insertionIndex = cellList.getPosition(insertion, 0, TP.IDENTITY);
-            cellList.addAt(outCell, insertionIndex + 1);
-            for (i = insertionIndex; i < cellList.getSize(); i++) {
-                cellList.at(i).setCellPosition(i);
-            }
-
-            //  register the last cell for the thread as the new "insertion
-            //  node" for that thread.
-            cellHash.atPut(tid, outCell);
-
-            closableCells = cellList.getSize() - openCells;
-            for (i = 0; i < closableCells; i++) {
-                if (cellList.at(i) === outCell) {
-                    continue;
-                }
-
-                cellList.at(i).collapse();
-            }
-
-            return outCell;
-        }
-
-        //  fall out to the "generic insertion logic" at the bottom
-    }
-
-    //  we're not reusing, or there's no last cell to reuse. either way
-    //  we need a new cell to use for output and a viable insertion node
-
-    //  when insertion node is real then position is TP.BEFORE_BEGIN,
-    //  otherwise we insert TP.BEFORE_END on the content div
-    insertion = TP.ifInvalid(
-                    aRequest.at('cmdInsertion'),
-                    this.get('$insertionNode'));
-
-    position = TP.isValid(insertion) ? TP.BEFORE_BEGIN : TP.BEFORE_END;
-    insertion = TP.ifInvalid(insertion, canvasElem);
-
-    outCell = TP.tsh.ConsoleOutputCell.construct(
-                aRequest, canvasElem,
-                insertion, position);
-
-    outCell.setCellPosition(cellList.getSize());
-    cellList.add(outCell);
-
-    if (TP.notEmpty(tid)) {
-        //  register this node by TID for lookup if we had one
-        cellHash.atPut(tid, outCell);
-    }
-
-    closableCells = cellList.getSize() - openCells;
-    for (i = 0; i < closableCells; i++) {
-        cellList.at(i).collapse();
-    }
-
-    return outCell;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('stdout',
+TP.sherpa.ConsoleService.Inst.defineMethod('stdout',
 function(anObject, aRequest) {
 
     /**
@@ -1993,7 +1417,7 @@ function(anObject, aRequest) {
      * @param {Object} anObject The object to output in string form.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.core.ConsoleService} The receiver.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      * @todo
      */
 
@@ -2003,11 +1427,15 @@ function(anObject, aRequest) {
 
         outObject,
 
-        append,
-        outCell,
-        visualElem;
+        append;
 
     TP.debug('break.tdc_stdout');
+
+    //  We should see multiple output calls, at least one of which is the
+    //  cmdConstruct notifier which tells us to build our output cell.
+    if (aRequest && aRequest.at('cmdConstruct') === true) {
+        return;
+    }
 
     request = TP.request(aRequest);
 
@@ -2031,7 +1459,7 @@ function(anObject, aRequest) {
     }
 
     //  when a command is set as silent it means we don't do console output
-    if (request.at('cmdSilent') || TP.sys.cfg('tdc.silent')) {
+    if (request.at('cmdSilent') || TP.sys.cfg('sherpa.silent')) {
         if (request.atIfInvalid('messageLevel', 0) <= TP.ERROR) {
             return this;
         }
@@ -2044,138 +1472,187 @@ function(anObject, aRequest) {
     }
 
     try {
-        //  this call will either return a prior cell, or construct a new cell,
-        //  based on the request's data values, in particular it's cmdID.
-        outCell = this.getOutputCell(request);
 
-        visualElem = outCell.get('visualElem');
+        //  Write input content
+        this.writeInputContent(request);
 
-        //  we mark output nodes as logging nodes so we can properly append
-        if (request.at('messageType') === 'log') {
-            TP.elementSetAttribute(
-                            outCell.get('visualElem'),
-                            'tsh:logging',
-                            request.at('cmd'),
-                            true);
-        }
+        //  Write output content
+        this.writeOutputContent(outObject, request);
 
-        //  set 'head' content
-        outCell.setInputContent(request);
-
-        //  set 'body' content
-        outCell.setOutputContent(outObject, request);
-
-        /*
-        this.resizeOutputCell(
-            outCell,
-            !this.get('scrollViewOpen'),
-            TP.ifKeyInvalid(request, 'cmdMinHeight', null));
-
-        //  If we're not constructing the cell, but really printing the
-        //  results, set it up to do the proper thing depending on whether
-        //  we have the scroll view open or not.
-        if (TP.notTrue(request.at('cmdConstruct'))) {
-            //  make output cell 'float' if we're not showing the scroll
-            //  view
-            if (TP.isTrue(this.get('open')) &&
-                TP.isFalse(this.get('scrollViewOpen'))) {
-                floatDiv = this.get('floatDiv');
-
-                TP.elementSetOpacity(floatDiv, 1.0);
-
-                outCell.set('isFloating', true);
-
-                (function() {
-
-                    TP.effect(
-                        floatDiv,
-                        'Fade',
-                        TP.hc('limit', 'PT0.35S',
-                        'post',
-                        function() {
-                            this.switchOutputCellMode(outCell, false);
-                        }.bind(this)));
-                }.bind(this)).fork(TP.sys.cfg('tdc.bubble_fade_time', 2000));
-
-            } else {
-                this.switchOutputCellMode(outCell, false);
-            }
-        }
-        */
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(
                         e,
-                        TP.join('TP.core.ConsoleService.stdout(',
+                        TP.join('TP.sherpa.ConsoleService.stdout(',
                                 TP.str(outObject), ') generated error.')
                      ),
                 TP.LOG, arguments) : 0;
     }
 
-    this.scrollToEnd();
+    this.get('$consoleGUI').scrollToEnd();
 
     this.get('$multiResults').empty();
 
     return this;
 });
 
-//  ----------------------------------------------------------------------------
-//  Console toggling
-//  ----------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('toggleConsole',
+TP.sherpa.ConsoleService.Inst.defineMethod('writeInputContent',
 function(aRequest) {
 
     /**
-     * @name toggleConsole
-     * @synopsis
-     * @returns {TP.core.ConsoleService} The receiver.
+     * @name writeInputContent
+     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     *     values for messageType, cmdAsIs, etc.
+     * @returns {TP.tsh.ConsoleOutputCell} The receiver.
+     * @abstract
+     * @todo
      */
 
-    var uiRootElem,
-        bootFrameElem;
+    var request,
+        rootRequest,
 
-    uiRootElem = TP.byId('UIROOT', top);
-    bootFrameElem = TP.byId('UIBOOT', top);
+        hid,
+        str,
+        cssClass,
 
-    if (this.get('consoleDisplayed')) {
+        inputData,
+    
+        tileID;
 
-        TP.elementHide(bootFrameElem);
-        TP.elementShow(uiRootElem);
+    request = TP.request(aRequest);
 
-        this.set('consoleDisplayed', false);
+    if (TP.isTrue(request.at('echoRequest'))) {
 
-        //  TODO: Put back reporter we stored.
+        //  update the command title bar based on the latest output from
+        //  the particular cmdID this request represents.
+        if (TP.notValid(rootRequest = request.at('rootRequest'))) {
+            hid = TP.ifKeyInvalid(request, 'cmdHistoryID', '');
+            if (TP.isEmpty(str = TP.ifKeyInvalid(request, 'cmdTitle', ''))) {
+                str = TP.ifKeyInvalid(request, 'cmd', '');
+            }
+        } else {
+            hid = TP.ifKeyInvalid(rootRequest, 'cmdHistoryID', '');
+            if (TP.isEmpty(str =
+                            TP.ifKeyInvalid(rootRequest, 'cmdTitle', ''))) {
+                str = TP.ifKeyInvalid(rootRequest, 'cmd', '');
+            }
+        }
+    }
 
+    if (TP.isValid(request.at('messageLevel'))) {
+        cssClass = TP.boot.Log.getStringForLevel(
+                request.at('messageLevel'));
+        cssClass = TP.ifInvalid(cssClass, 'trace');
+    }
+
+    inputData = TP.hc('hid', hid,
+                        'cmdtext', str,
+                        'inputclass', cssClass,
+                        'request', request);
+
+    tileID = aRequest.at('cmdID');
+
+    if (TP.isEmpty(tileID)) {
+        this.get('$consoleGUI').addLoggedValue(TP.hc('output', str));
     } else {
+        tileID = tileID.replace(/\$/g, '_');
 
-        TP.elementHide(uiRootElem);
-        TP.elementShow(bootFrameElem);
-
-        this.set('consoleDisplayed', true);
-
-        (function() {
-            this.focusInputCell();
-            this.setCursorToEnd();
-        }).bind(this).afterUnwind();
+        this.get('$consoleGUI').createOutputMark(tileID, inputData);
     }
 
     return this;
 });
 
-//  ========================================================================
+//  ------------------------------------------------------------------------
 
-/**
- * @type {TP.sig.ConsoleRequest}
- * @synopsis Request type specific to asking the console to perform some
- *     activity. Requests are used to avoid hard linkages between various
- *     requestors and the console itself. These requests can be made by shells
- *     when they can't be sure there even _is_ a console that's listening.
- */
+TP.sherpa.ConsoleService.Inst.defineMethod('writeOutputContent',
+function(anObject, aRequest) {
 
-//  ----------------------------------------------------------------------------
+    /**
+     * @name writeOutputContent
+     * @param {Object} anObject The object to output in string form.
+     * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
+     *     values for messageType, cmdAsIs, etc.
+     * @returns {TP.tdp.Console} The receiver.
+     * @abstract
+     * @todo
+     */
 
-TP.sig.Signal.defineSubtype('ToggleConsole');
+    var request,
+        data,
+        asIs,
+
+        cssClass,
+        outputData,
+    
+        tileID;
+
+    request = TP.request(aRequest);
+
+    //  ---
+    //  Produce valid XHTML node to test string content, otherwise do our best
+    //  to get an XHTML node we can serialize and inject. There are two flags
+    //  that drive the logic here: the 'cmdAsIs' flag and the 'cmdBox' flag.
+    //  If the 'cmdAsIs' flag is set, then no further operation will be
+    //  performed on the output.
+
+    //  ---
+    //  asIs() processing
+    //  ---
+
+    //  a "common flag" is the asIs flag telling us to skip formatting
+    asIs = TP.ifInvalid(request.at('cmdAsIs'), false);
+
+    //  if 'asIs' is not true, we format the data.
+    if (TP.notTrue(asIs)) {
+        request.atPutIfAbsent('shouldWrap', false);
+
+        data = TP.format(
+                anObject,
+                TP.sys.cfg('sherpa.default_format', 'sherpa:pp').asType(),
+                request);
+    } else {
+        //  Otherwise it's 'as is' - take it as it is.
+
+        //  For 'as is' content, we typically are 'rendering markup'. If we
+        //  got an Array (a distinct possibility, given the nature of pipes,
+        //  etc.), we don't want separators such as commas (',') showing up
+        //  in the rendered output. So we set the Array's delimiter to ''
+        //  perform an 'asString()' on it.
+        if (TP.isArray(anObject)) {
+            anObject.set('delimiter', '');
+            data = anObject.asString();
+        } else {
+            data = anObject;
+        }
+
+        //  make sure its always a String though.
+        data = TP.str(data);
+    }
+
+    if (TP.isValid(request.at('messageLevel'))) {
+        cssClass = TP.boot.Log.getStringForLevel(request.at('messageLevel'));
+        cssClass = TP.ifInvalid(cssClass, 'trace');
+    }
+
+    cssClass = TP.ifInvalid(cssClass, '');
+
+    outputData = TP.hc('output', data, 'outputclass', cssClass);
+
+    tileID = aRequest.at('cmdID');
+
+    if (TP.isEmpty(tileID)) {
+        this.get('$consoleGUI').addLoggedValue(TP.hc('output', data));
+    } else {
+        tileID = tileID.replace(/\$/g, '_');
+
+        this.get('$consoleGUI').updateOutputMark(tileID, outputData);
+    }
+
+    return this;
+});
 
 //  ========================================================================
 

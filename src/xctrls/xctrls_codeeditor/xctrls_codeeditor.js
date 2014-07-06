@@ -145,6 +145,42 @@ TP.xctrls.codeeditor.Inst.defineAttribute('$currentKeyHandler');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.codeeditor.Inst.defineMethod('appendToLine',
+function(aText, line) {
+
+    /**
+     * @name appendToLine
+     * @synopsis
+     * @param {String} aText The text to insert.
+     * @param {String} line The line number to insert the text at the end of.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    var editor,
+        theLine,
+        lineInfo;
+
+    editor = this.$getEditorInstance();
+
+    if (line === TP.LAST) {
+        theLine = editor.lastLine();
+    } else {
+        theLine = line;
+    }
+
+    lineInfo = editor.lineInfo(theLine);
+    editor.replaceRange(
+        aText,
+        this.createPos(theLine, lineInfo.text.length));
+
+    this.changed('selection', TP.INSERT,
+                        TP.hc(TP.OLDVAL, '', TP.NEWVAL, aText));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.codeeditor.Inst.defineMethod('configure',
 function() {
 
@@ -162,6 +198,22 @@ function() {
     //  Make sure to 'call up' so that signaling of 'TP.sig.DOMReady'
     //  occurs.
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('createPos',
+function(line, ch) {
+
+    /**
+     * @name createPos
+     * @synopsis
+     * @param
+     * @param
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    return this.$getEditorConstructor().Pos(line, ch);
 });
 
 //  ------------------------------------------------------------------------
@@ -203,6 +255,21 @@ function() {
     this.$getEditorInstance().focus();
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('getCursor',
+function(start) {
+
+    /**
+     * @name getCursor
+     * @synopsis
+     * @param
+     * @returns
+     */
+
+    return this.$getEditorInstance().getCursor(start);
 });
 
 //  ------------------------------------------------------------------------
@@ -251,6 +318,46 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.codeeditor.Inst.defineMethod('getEditorHeight',
+function() {
+
+    /**
+     * @name getEditorHeight
+     * @synopsis Returns the overall height of the editor in pixels.
+     * @returns {Number} The height of the editor in pixels.
+     */
+
+    return TP.elementGetHeight(this.$getEditorInstance().display.sizer);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('insertAtCursor',
+function(aText) {
+
+    /**
+     * @name insertAtCursor
+     * @synopsis Inserts the supplied text at the cursor position. Note that
+     *     this method alters the current selection.
+     * @param {String} aText The text to insert.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    var editor;
+
+    editor = this.$getEditorInstance();
+    
+    editor.setSelection(editor.getCursor(), editor.getCursor());
+    editor.replaceSelection(aText);
+
+    this.changed('selection', TP.INSERT,
+                        TP.hc(TP.OLDVAL, '', TP.NEWVAL, aText));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.codeeditor.Inst.defineMethod('refresh',
 function(aSignal) {
 
@@ -270,6 +377,22 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.codeeditor.Inst.defineMethod('refreshEditor',
+function() {
+
+    /**
+     * @name refreshEditor
+     * @synopsis Redraws the editor, flushing any DOM changes.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    this.$getEditorInstance().refresh();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.codeeditor.Inst.defineMethod('select',
 function() {
 
@@ -284,12 +407,12 @@ function() {
         lastLineInfo;
 
     editor = this.$getEditorInstance();
-    if (TP.notValid(lastLineInfo = editor.lineInfo(editor.lineCount() - 1))) {
+    if (TP.notValid(lastLineInfo = editor.lineInfo(editor.lastLine()))) {
         return this;
     }
 
     editor.setSelection({line: 0, ch: 0},
-                        {line: editor.lineCount() - 1,
+                        {line: lastLineInfo.line,
                             ch: lastLineInfo.text.length});
 
     this.focus();
@@ -328,6 +451,28 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.codeeditor.Inst.defineMethod('setEditorEventHandler',
+function(eventName, aHandlerFunc) {
+
+    /**
+     * @name setEditorEventHandler
+     * @synopsis Registers the supplied handler Function as the event handler
+     *     for the named event.
+     * @param {String} eventName The CodeMirror event name.
+     * @param {Function} aHandlerFunc The function to supply to CodeMirror as
+     *     the event handler function. This Function takes different parameters
+     *     depending on the event, but there is always 1: the editor instance
+     *     itself.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    this.$getEditorInstance().on(eventName, aHandlerFunc);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.codeeditor.Inst.defineMethod('setEditorMode',
 function(modeConst) {
 
@@ -336,10 +481,12 @@ function(modeConst) {
      * @synopsis Sets the editor 'mode' (i.e. the CodeMirror mode that is used
      *     for tokenization).
      * @param {String} modeConst The CodeMirror mode name.
-     * @returns {Object} The visual value of the receiver's UI node.
+     * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    return this.$getEditorInstance().setOption('mode', modeConst);
+    this.$getEditorInstance().setOption('mode', modeConst);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -352,10 +499,12 @@ function(themeName) {
      * @synopsis Sets the editor 'theme' (i.e. the CodeMirror theme currently in
      *     force.
      * @param {String} themeName The CodeMirror theme name.
-     * @returns {Object} The visual value of the receiver's UI node.
+     * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    return this.$getEditorInstance().setOption('theme', themeName);
+    this.$getEditorInstance().setOption('theme', themeName);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -399,12 +548,31 @@ function(shouldShow) {
 
     /**
      * @name setShowLineNumbers
-     * @synopsis
-     * @param {Boolean} shouldShow The CodeMirror mode name.
-     * @returns {Object} The visual value of the receiver's UI node.
+     * @synopsis Sets whether or not the editor will show line numbers.
+     * @param {Boolean} shouldShow Whether or not to show line numbers.
+     * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    return this.$getEditorInstance().setOption('lineNumbers', shouldShow);
+    this.$getEditorInstance().setOption('lineNumbers', shouldShow);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('setWrap',
+function(shouldWrap) {
+
+    /**
+     * @name setWrap
+     * @synopsis Sets whether the editor should wrap its text or not.
+     * @param {Boolean} shouldWrap Whether or not the editor content should wrap.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    this.$getEditorInstance().lineWrapping = shouldWrap;
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -432,6 +600,28 @@ function() {
 
     this.set('$currentKeyHandler', null);
     
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Inst.defineMethod('unsetEditorEventHandler',
+function(eventName, aHandlerFunc) {
+
+    /**
+     * @name unsetEditorEventHandler
+     * @synopsis Unregisters the supplied handler Function as the event handler
+     *     for the named event.
+     * @param {String} eventName The CodeMirror event name.
+     * @param {Function} aHandlerFunc The function to supply to CodeMirror as
+     *     the event handler function. This Function takes different parameters
+     *     depending on the event, but there is always 1: the editor instance
+     *     itself.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    this.$getEditorInstance().off(eventName, aHandlerFunc);
+
     return this;
 });
 
@@ -498,23 +688,49 @@ function(toStart) {
      * @todo
      */
 
-    /* TODO: Needs to be updated to CodeMirror 4.X codebase
     var editor,
 
-        startCoords,
-        endCoords;
+        selections,
+        selection,
+
+        first,
+        last;
 
     editor = this.$getEditorInstance();
 
-    startCoords = editor.coordsFromIndex(0);
-    endCoords = editor.coordsFromIndex(this.getValue().getSize() - 1);
-
-    if (toStart) {
-        editor.setSelection(startCoords, startCoords);
-    } else {
-        editor.setSelection(endCoords, endCoords);
+    //  We collapse only the first selection
+    selections = editor.listSelections();
+    if (TP.isEmpty(selections) || TP.notValid(selection = selections.first())) {
+        return this;
     }
-    */
+
+    //  If selection is already collapsed, just exit here.
+    if (selection.anchor.line === selection.head.line &&
+        selection.anchor.ch === selection.head.ch) {
+        return this;
+    }
+
+    if (selection.anchor.line < selection.head.line) {
+        first = selection.anchor;
+        last = selection.head;
+    } else if (selection.anchor.line === selection.head.line) {
+        if (selection.anchor.ch < selection.head.ch) {
+            first = selection.anchor;
+            last = selection.head;
+        } else {
+            first = selection.head;
+            last = selection.anchor;
+        }
+    } else if (selection.anchor.line > selection.head.line) {
+        first = selection.head;
+        last = selection.anchor;
+    }
+    
+    if (toStart) {
+        editor.setSelection(first, last);
+    } else {
+        editor.setSelection(last, first);
+    }
 
     return this;
 });
@@ -526,13 +742,13 @@ function() {
 
     /**
      * @name getSelection
-     * @synopsis Returns the currently selected text.
+     * @synopsis Returns the currently selected text. Note that if there are
+     *      multiple selections present, they are returned with a value of
+     *      TP.JOIN between them.
      * @returns {String} The currently selected text.
      */
 
-    /* TODO: Needs to be updated to CodeMirror 4.X codebase
-    return this.$getEditorInstance().getSelection();
-    */
+    return this.$getEditorInstance().getSelection(TP.JOIN);
 });
 
 //  ------------------------------------------------------------------------
@@ -546,9 +762,7 @@ function() {
      * @returns {Number} The ending index of the current selection.
      */
 
-    /* TODO: Needs to be updated to CodeMirror 4.X codebase
-    return this.$getEditorInstance().getCursor().ch;
-    */
+    return this.$getEditorInstance().getCursor('to').ch;
 });
 
 //  ------------------------------------------------------------------------
@@ -562,9 +776,7 @@ function() {
      * @returns {Number} The starting index of the current selection.
      */
 
-    /* TODO: Needs to be updated to CodeMirror 4.X codebase
-    return this.$getEditorInstance().getCursor(true).ch;
-    */
+    return this.$getEditorInstance().getCursor('from').ch;
 });
 
 //  ------------------------------------------------------------------------
@@ -660,10 +872,8 @@ function(aStartIndex, anEndIndex) {
      * @param {Number} aStartIndex The starting index.
      * @param {Number} aEndIndex The ending index.
      * @returns {TP.xctrls.codeeditor} The receiver.
-     * @todo
      */
 
-    /* TODO: Needs to be updated to CodeMirror 4.X codebase
     var editor,
 
         startCoords,
@@ -671,11 +881,10 @@ function(aStartIndex, anEndIndex) {
 
     editor = this.$getEditorInstance();
 
-    startCoords = editor.coordsFromIndex(aStartIndex);
-    endCoords = editor.coordsFromIndex(anEndIndex);
+    startCoords = editor.posFromIndex(aStartIndex);
+    endCoords = editor.posFromIndex(anEndIndex);
 
     editor.setSelection(startCoords, endCoords);
-    */
 
     return this;
 });
@@ -699,7 +908,7 @@ function() {
         return this;
     }
 
-    editor.setCursor({line: editor.lastLine(),
+    editor.setCursor({line: lastLineInfo.line,
                         ch: lastLineInfo.text.length});
 
     return this;
@@ -741,23 +950,6 @@ function(aText) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.codeeditor.Inst.defineMethod('setWrap',
-function(shouldWrap) {
-
-    /**
-     * @name setWrap
-     * @synopsis Sets whether the editor should wrap its text or not.
-     * @param {String} shouldWrap Whether or not the editor content should wrap.
-     * @returns {TP.xctrls.codeeditor} The receiver.
-     */
-
-    this.$getEditorInstance().lineWrapping = shouldWrap;
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.codeeditor.Inst.defineMethod('wrapSelection',
 function(beforeText, afterText) {
 
@@ -767,7 +959,6 @@ function(beforeText, afterText) {
      * @param {String} beforeText The text to insert before the selection.
      * @param {String} afterText The text to insert after the selection.
      * @returns {TP.xctrls.codeeditor} The receiver.
-     * @todo
      */
 
     this.replaceSelection(TP.join(beforeText, this.getSelection(), afterText));
