@@ -26,8 +26,8 @@
     targets.build = function(make) {
         make.log('building packages....');
 
-        if (!sh.test('-d', './build')) {
-            sh.mkdir('./build');
+        if (!sh.test('-d', './lib/src')) {
+            sh.mkdir('./lib/src');
         }
 
         targets.clean().then(
@@ -46,8 +46,8 @@
     targets.clean = function(make) {
         make.log('removing build artifacts...');
 
-        if (sh.test('-d', './build')) {
-            sh.rm('-rf', './build/*');
+        if (sh.test('-d', './lib/src')) {
+            sh.rm('-rf', './lib/src/*');
         }
 
         targets.clean.resolve();
@@ -86,8 +86,8 @@
     targets.build_deps = function(make) {
         make.log('building dependency packages....');
 
-        if (!sh.test('-d', './build')) {
-            sh.mkdir('./build');
+        if (!sh.test('-d', './lib/src')) {
+            sh.mkdir('./lib/src');
         }
 
         targets.rollup_codemirror().then(
@@ -219,8 +219,8 @@
     targets.build_tibet = function(make) {
         make.log('building TIBET packages....');
 
-        if (!sh.test('-d', './build')) {
-            sh.mkdir('./build');
+        if (!sh.test('-d', './lib/src')) {
+            sh.mkdir('./lib/src');
         }
 
         targets.rollup_init().then(

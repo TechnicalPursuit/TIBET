@@ -126,16 +126,15 @@ if (argv.webdav !== false) {
 //  Server Wrapup
 //  ---
 
-//  Express logger.
-app.use(morgan());
-
-//  Express gzip compression. Send data compressed if possible.
-app.use(compression());
-
 //  By default we assume the entire site is accessible statically. That's a
 //  side-effect of TIBET not making any assumptions about server-side logic.
 app.use(serveStatic(app_root));
 
+//  Express gzip compression. Send data compressed if possible.
+app.use(compression());
+
+//  Express logger.
+app.use(morgan());
 
 // Serve a general 404 if no other handler too care of the request.
 app.use(function(req, res, next){

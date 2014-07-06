@@ -9,7 +9,7 @@
     "eslint": "*",
     "express": "*",
     "express-session": "*",
-    "compression": "*",
+    "compression": "1.0.6",
     "csurf": "*",
     "js-beautify": "*",
     "jsDAV": "*",

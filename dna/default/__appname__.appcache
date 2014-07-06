@@ -2,10 +2,10 @@ CACHE MANIFEST
 
 node_modules/tibet/tibet.json
 
-node_modules/tibet/build/tibet_base.min.js
-node_modules/tibet/build/tibet_full.min.js
-node_modules/tibet/build/tibet_init.min.js
-node_modules/tibet/build/tibet_hook.min.js
+node_modules/tibet/lib/src/tibet_base.min.js
+node_modules/tibet/lib/src/tibet_full.min.js
+node_modules/tibet/lib/src/tibet_init.min.js
+node_modules/tibet/lib/src/tibet_hook.min.js
 
 node_modules/tibet/lib/img/boot/tpi_logo.png
 node_modules/tibet/lib/img/boot/tibet_logo.png

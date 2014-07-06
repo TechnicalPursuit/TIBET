@@ -160,6 +160,7 @@ Cmd.prototype.execute = function() {
         // output message from events.js:72 etc. which provides no useful
         // data but clogs up the output. Filter those messages.
         if (/throw er;/.test(msg)) {
+            cmd.error(msg);
             return;
         }
 

@@ -56,7 +56,7 @@ helpers.rollup = function(make, name, pkg, config, headers, minify, promise) {
         ext = '.js';
     }
 
-    file = './build/tibet_' + name + ext;
+    file = './lib/src/tibet_' + name + ext;
 
     try {
         make.log('Writing ' + result.output.length + ' chars to: ' + file);
