@@ -102,7 +102,7 @@ Cmd.prototype.execute = function() {
     // If the node_modules directory doesn't exist (but we know there's a
     // package.json due to earlier check) it means 'npm install' was never run.
     // We have to do that before we can try to start the server.
-    if (sh.test('-e', 'node_modules')) {
+    if (sh.test('-e', 'node_modules/tibet')) {
         this.warn('Project already initialized. ' +
             'Re-initialize by removing node_modules first.');
         // TODO: add a force option
