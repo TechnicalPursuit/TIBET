@@ -292,11 +292,8 @@ function() {
 
         // If we initialized without error move on to rendering the UI.
         TP.boot.$setStage('rendering');
-        if (TP.sys.cfg('break.rendering')) {
-            /* jshint -W087 */
-            debugger;
-            /* jshint +W087 */
-        }
+
+        TP.debug('break.rendering');
 
         //  Recapture starting time in case we broke for debugging.
         TP.boot.$uitime = new Date();

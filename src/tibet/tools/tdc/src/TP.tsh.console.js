@@ -287,9 +287,7 @@ function(aResourceID, aRequest) {
     //  set up our window
     this.set('vWin', request.at('consoleWindow'));
 
-    //  NB: We *must* use $set(...) here, instead of set(...), since
-    //  setModel() is implemented and depends on a lot of this already
-    //  being set up.
+    //  set up our model -- the shell
     this.set('model', request.at('consoleModel'));
 
     if (TP.notValid(model = this.getModel())) {
@@ -498,6 +496,119 @@ function() {
 //  Display Primitives
 //  ------------------------------------------------------------------------
 
+TP.core.ConsoleService.Inst.defineMethod('getInputStats',
+function(aSignal) {
+
+    /**
+     * @name updateStats
+     * @param {TP.sig.ShellRequest} aSignal The request that the status is being
+     *     updated for.
+     * @returns {TP.tsh.ConsoleOutputCell} The receiver.
+     * @abstract
+     * @todo
+     */
+
+    var val,
+        str;
+
+    //  TODO: Isn't aSignal the same as our signal and, if not, is that an
+    //  error?
+
+    //  ---
+    //  execution statistics, when available
+    //  ---
+
+    //  update the last command execution time
+    val = aSignal.get('evaltime');
+    str = TP.ifInvalid(val, '0');
+
+    val = aSignal.get('tagtime');
+    str += ' | ' + TP.ifInvalid(val, '0');
+
+    val = aSignal.get('exectime');
+    str += ' | ' + TP.ifInvalid(val, '0');
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ConsoleService.Inst.defineMethod('getInputTypeInfo',
+function(aSignal) {
+
+    /**
+     * @name updateStats
+     * @param {TP.sig.ShellRequest} aSignal The request that the status is being
+     *     updated for.
+     * @returns {TP.tsh.ConsoleOutputCell} The receiver.
+     * @abstract
+     * @todo
+     */
+
+    var val,
+        str,
+        values,
+        len,
+        startTN,
+        wasSame,
+        i;
+
+    //  TODO: Isn't aSignal the same as our signal and, if not, is that an
+    //  error?
+
+    //  if no action pending then display current result type/id
+    if (TP.canInvoke(aSignal, 'getResult')) {
+        val = aSignal.getResult();
+    }
+
+    if (TP.notValid(val)) {
+        return '';
+    }
+
+    if (TP.isValid(val)) {
+
+        str = '' + TP.tname(val);
+
+        if (TP.isCollection(val) && TP.sys.cfg('tdc.type_collections', true)) {
+            if (TP.isEmpty(val)) {
+                str += '()';
+            } else {
+                values = val.getValues();
+                len = values.getSize();
+                startTN = TP.tname(values.at(0));
+                wasSame = true;
+
+                for (i = 1; i < len; i++) {
+                    if (TP.tname(values.at(i)) !== startTN) {
+                        wasSame = false;
+                        break;
+                    }
+                }
+
+                if (TP.isTrue(wasSame)) {
+                    str += '(' + startTN + ')';
+                } else {
+                    str += '(Object)';
+                }
+
+                str += ' (' + len + ')';
+            }
+        }
+
+        if (TP.isEmpty(str) || (str === 'ready')) {
+            str = 'Object';
+        }
+    } else if (TP.isNull(val)) {
+        str = 'null';
+    } else {
+        str = 'undefined';
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ConsoleService.Inst.defineMethod('scrollContent',
 function() {
 
@@ -656,119 +767,6 @@ function(select) {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('getInputStats',
-function(aSignal) {
-
-    /**
-     * @name updateStats
-     * @param {TP.sig.ShellRequest} aSignal The request that the status is being
-     *     updated for.
-     * @returns {TP.tsh.ConsoleOutputCell} The receiver.
-     * @abstract
-     * @todo
-     */
-
-    var val,
-        str;
-
-    //  TODO: Isn't aSignal the same as our signal and, if not, is that an
-    //  error?
-
-    //  ---
-    //  execution statistics, when available
-    //  ---
-
-    //  update the last command execution time
-    val = aSignal.get('evaltime');
-    str = TP.ifInvalid(val, '0');
-
-    val = aSignal.get('tagtime');
-    str += ' | ' + TP.ifInvalid(val, '0');
-
-    val = aSignal.get('exectime');
-    str += ' | ' + TP.ifInvalid(val, '0');
-
-    return str;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('getInputTypeInfo',
-function(aSignal) {
-
-    /**
-     * @name updateStats
-     * @param {TP.sig.ShellRequest} aSignal The request that the status is being
-     *     updated for.
-     * @returns {TP.tsh.ConsoleOutputCell} The receiver.
-     * @abstract
-     * @todo
-     */
-
-    var val,
-        str,
-        values,
-        len,
-        startTN,
-        wasSame,
-        i;
-
-    //  TODO: Isn't aSignal the same as our signal and, if not, is that an
-    //  error?
-
-    //  if no action pending then display current result type/id
-    if (TP.canInvoke(aSignal, 'getResult')) {
-        val = aSignal.getResult();
-    }
-
-    if (TP.notValid(val)) {
-        return '';
-    }
-
-    if (TP.isValid(val)) {
-
-        str = '' + TP.tname(val);
-
-        if (TP.isCollection(val) && TP.sys.cfg('tdc.type_collections', true)) {
-            if (TP.isEmpty(val)) {
-                str += '()';
-            } else {
-                values = val.getValues();
-                len = values.getSize();
-                startTN = TP.tname(values.at(0));
-                wasSame = true;
-
-                for (i = 1; i < len; i++) {
-                    if (TP.tname(values.at(i)) !== startTN) {
-                        wasSame = false;
-                        break;
-                    }
-                }
-
-                if (TP.isTrue(wasSame)) {
-                    str += '(' + startTN + ')';
-                } else {
-                    str += '(Object)';
-                }
-
-                str += ' (' + len + ')';
-            }
-        }
-
-        if (TP.isEmpty(str) || (str === 'ready')) {
-            str = 'Object';
-        }
-    } else if (TP.isNull(val)) {
-        str = 'null';
-    } else {
-        str = 'undefined';
-    }
-
-    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -1590,7 +1588,7 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  Model Events
+//  Model Signals
 //  ------------------------------------------------------------------------
 
 TP.core.ConsoleService.Inst.defineMethod('handleCancel',
@@ -1752,7 +1750,7 @@ function(anEvent) {
 });
 
 //  ------------------------------------------------------------------------
-//  Console Request Operations
+//  Console Request Handling
 //  ------------------------------------------------------------------------
 
 TP.core.ConsoleService.Inst.defineMethod('clearConsole',
@@ -1777,6 +1775,8 @@ function() {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+//  Status bar management
 //  ------------------------------------------------------------------------
 
 TP.core.ConsoleService.Inst.defineMethod('clearStatus',
@@ -2522,11 +2522,8 @@ function(aRequest) {
 //  ========================================================================
 
 /**
- * @type {TP.sig.ConsoleRequest}
- * @synopsis Request type specific to asking the console to perform some
- *     activity. Requests are used to avoid hard linkages between various
- *     requestors and the console itself. These requests can be made by shells
- *     when they can't be sure there even _is_ a console that's listening.
+ * @type {TP.sig.ToggleConsole}
+ * @synopsis
  */
 
 //  ----------------------------------------------------------------------------

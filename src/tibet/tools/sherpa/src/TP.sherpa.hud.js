@@ -79,9 +79,7 @@ function() {
     triggerElement = TP.documentCreateElement(
                             doc, 'div', TP.w3.Xmlns.XHTML);
 
-    //  We don't normally do this, but we need this to work no matter what -
-    //  it's the hook into the entire environment.
-    TP.elementSetStyle(triggerElement, 'position: absolute; top: 0px; right: 0px; width: 10px; height: 10px; border: solid 1px red');
+    TP.elementSetAttribute(triggerElement, 'id', 'triggerHUD');
 
     TP.nodeAppendChild(TP.documentGetBody(doc), triggerElement);
 

@@ -112,10 +112,10 @@ function(info) {
     this.setupHUD();
 
     //  Initialize the quick bar
-    this.setupQuickBar();
+    //this.setupQuickBar();
 
-    //  Initialize the command line
-    //this.setupCommandLine();
+    //  Initialize the console
+    this.setupConsole();
 
     //  set up keyboard toggle to show/hide us
     (function () {
@@ -134,22 +134,6 @@ function(info) {
         }).bind(this).observe(
             TP.core.Keyboard, 'TP.sig.DOM_T_Up__TP.sig.DOM_T_Up');
     */
-
-    (function () {
-
-        var noteBookTile = TP.byOID('Sherpa').makeTile('notebookTile');
-
-        var noteBook = TP.sherpa.notebook.addResourceContentTo(
-                            TP.ietf.Mime.XHTML,
-                            noteBookTile);
-        noteBook.setID('newNotebook');
-
-        noteBookTile.toggle('hidden');
-
-        noteBookTile.setPagePositionAndSize(TP.rtc(100, 100, 300, 300));
-
-        }).bind(this).observe(
-            TP.core.Keyboard, 'TP.sig.DOM_N_Up__TP.sig.DOM_N_Up');
 
     //  Manually 'display: none' the boot iframe. It's already
     //  'visibility:hidden', but we need to get it out of the way.
@@ -262,18 +246,18 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('setupCommandLine',
+TP.core.sherpa.Inst.defineMethod('setupConsole',
 function() {
 
     var uiRootDoc,
-        cmdLineTPElem;
+        consoleTPElem;
 
     uiRootDoc = TP.doc(TP.win('UIROOT'));
 
-    cmdLineTPElem = TP.sherpa.cmdline.addResourceContentTo(
+    consoleTPElem = TP.sherpa.console.addResourceContentTo(
                             TP.ietf.Mime.XHTML,
                             TP.documentGetBody(uiRootDoc));
-    cmdLineTPElem.setup();
+    consoleTPElem.setup();
 
     return this;
 });
