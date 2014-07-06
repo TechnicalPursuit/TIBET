@@ -966,7 +966,7 @@ Package.prototype.getLibRoot = function() {
         }
 
         // Older TIBET-INF library path.
-        testpath = path.join(app_root, 'TIBET-INF/lib/');
+        testpath = path.join(app_root, 'TIBET-INF/tibet/');
         if (sh.test('-e', testpath)) {
             this.lib_root = testpath;
             return this.lib_root;
