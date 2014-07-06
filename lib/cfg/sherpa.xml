@@ -33,6 +33,8 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 <config id="standard">
     <script src="./src/TP.sherpa.sherpa.js"/>
 
+    <script src="./src/TP.sherpa.pp.js"/>
+
     <script src="./src/TP.sherpa.quickbar.js"/>
     <script src="./src/Searchers.js"/>
     <property name="TP.sherpa.quickbar.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.quickbar.xhtml"/>
