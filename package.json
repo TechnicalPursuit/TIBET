@@ -57,6 +57,7 @@
         "findit": "*",
         "handlebars": "*",
         "js-beautify": "*",
+        "jsDAV": "*",
         "mocha": "*",
         "mockery": "*",
         "morgan": "*",

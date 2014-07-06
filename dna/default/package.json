@@ -12,7 +12,6 @@
     "compression": "1.0.6",
     "csurf": "*",
     "js-beautify": "*",
-    "jsDAV": "*",
     "minimist": "*",
     "morgan": "*",
     "phantomjs": "*",
