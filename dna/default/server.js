@@ -58,18 +58,19 @@ var TDS = require('tibet/etc/tds-middleware');
 //  Argument Processing
 //  ---
 
-var argv = minimist(process.argv.slice(2));
+var argv = minimist(process.argv.slice(2)) || {_:[]};
 
 // Since server.js typically sits in the project root directory we can work with
 // __dirname here as a default.
 var app_root = argv.app_root || __dirname;
 
 // Ensure the TDS loads configuration data from our computed root.
-TDS.initPackage({app_root: app_root});
+argv.app_root = app_root;
+TDS.initPackage(argv);
 
 // Lots of options for where to get a port number but try to leverage TDS first.
-var port = TDS.getcfg('tds.port') ||
-    TDS.getcfg('port') ||
+var port = TDS.getcfg('port') ||
+    TDS.getcfg('tds.port') ||
     process.env.npm_package_config_port ||
     process.env.PORT ||
     1407;
@@ -86,7 +87,11 @@ var app = express();
 // Configure a basic session. We look up the secret here which allows it to be
 // set on the command line or via the project's tibet.json file.
 // TODO: warn if it's still the one coded into the library as a default value.
-app.use(session({ secret: TDS.getcfg('tds.secret') }));
+app.use(session({
+    secret: TDS.getcfg('tds.secret'),
+    resave: true,                       // TODO: remove when possible.
+    saveUninitialized: true             // TODO: remove when possible.
+}));
 
 // TODO: if we ever actually do a "form" or some other template we can try to
 // reactivate this. for now it isn't being sent to the client appropriately.

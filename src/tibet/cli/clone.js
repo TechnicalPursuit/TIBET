@@ -60,13 +60,14 @@ Cmd.prototype.HELP =
 'Clones a TIBET application template from a supplied \'dna\' directory.\n\n' +
 
 '<dirname> is required and must be a valid directory name to clone to.\n' +
-'By default the dirname will be the appname unless otherwise specified.\n'+
-'You can use \'.\' to clone to the current directory. Existing files are\n'+
-'ignored in such cases and you may need to merge/copy manually as needed.\n\n' +
+'By default the dirname will be the appname unless otherwise specified.\n' +
+'You can use \'.\' to clone to the current directory HOWEVER no checks\n' +
+'are currently done to prevent potential data loss. Be careful!\n\n' +
 
 'The optional --name parameter lets you rename from the directory name\n' +
 'to an alternative name. This lets the directory and appname vary. This\n' +
-'is common when cloning to existing directories or poorly named ones.\n\n' +
+'is common when cloning to existing directories or poorly named ones\n' +
+'like those produced by GitHub Pages repositories.\n\n' +
 
 'The optional --dna parameter lets you clone any valid template in\n' +
 'TIBET\'s `dna` directory or a directory of your choosing. This latter\n' +

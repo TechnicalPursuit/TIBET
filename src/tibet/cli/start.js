@@ -105,8 +105,8 @@ Cmd.prototype.execute = function() {
     }
 
     // Determine the port the user wants to start on.
-    port = CLI.getcfg('tds.port') ||
-        CLI.getcfg('port') ||
+    port = CLI.getcfg('port') ||
+        CLI.getcfg('tds.port') ||
         process.env.npm_package_config_port ||
         process.env.PORT ||
         this.PORT;
