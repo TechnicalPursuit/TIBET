@@ -284,12 +284,9 @@ function(aResourceID, aRequest) {
     //  assist us with producing both our user interface and responses
     request = TP.request(aRequest);
 
-    //  set up our window
     this.set('vWin', request.at('consoleWindow'));
 
-    //  NB: We *must* use $set(...) here, instead of set(...), since
-    //  setModel() is implemented and depends on a lot of this already
-    //  being set up.
+    //  set up our model -- the shell
     this.set('model', request.at('consoleModel'));
 
     if (TP.notValid(model = this.getModel())) {
