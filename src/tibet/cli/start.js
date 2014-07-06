@@ -119,7 +119,6 @@ Cmd.prototype.execute = function() {
     // If we can't find server.js our only option is to use npm start. If we
     // have port information on our command line we've got to use options.
     if (!sh.test('-f', 'server.js')) {
-        cmd.system(msg + ' via `npm start`');
         process.env.PORT = port;
         server = child.spawn('npm', ['start']);
     } else {
