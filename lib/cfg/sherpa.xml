@@ -42,9 +42,9 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     <property name="TP.sherpa.cmdline.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.cmdline.xhtml"/>
     <property name="TP.sherpa.cmdline.css_uri" value="~ide_root/css/TP.sherpa.cmdline.css"/>
 
-    <script src="./src/TP.sherpa.notebook.js"/>
-    <property name="TP.sherpa.notebook.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.notebook.xhtml"/>
-    <property name="TP.sherpa.notebook.css_uri" value="~ide_root/css/TP.sherpa.notebook.css"/>
+    <script src="./src/TP.sherpa.logview.js"/>
+    <property name="TP.sherpa.logview.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.logview.xhtml"/>
+    <property name="TP.sherpa.logview.css_uri" value="~ide_root/css/TP.sherpa.logview.css"/>
 
     <script src="./src/TP.sherpa.hud.js"/>
     <property name="TP.sherpa.hud.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.hud.xhtml"/>

@@ -1,0 +1,29 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+sherpa|logview
+{
+    display: none;
+	position: absolute;
+
+	top: 30px;
+	right: 30px;
+	bottom: 30px;
+	width: 300px;
+
+    border: solid 1px red;
+}
+
+sherpa|logview:not([pclass|hidden])
+{
+    display: block;
+}
+
+sherpa|logview > .body
+{
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+}

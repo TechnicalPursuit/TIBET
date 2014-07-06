@@ -1,6 +1,6 @@
 //  ========================================================================
 /*
-NAME:   TP.sherpa.notebook.js
+NAME:   TP.sherpa.logview.js
 AUTH:   William J. Edney (wje)
 NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
         Reserved. Patent Pending, Technical Pursuit Inc.
@@ -24,15 +24,15 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.notebook}
+ * @type {TP.sherpa.logview}
  * @synopsis 
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:notebook');
+TP.core.UIElementNode.defineSubtype('sherpa:logview');
 
-TP.sherpa.notebook.Inst.defineAttribute(
+TP.sherpa.logview.Inst.defineAttribute(
         'body',
         {'value': TP.cpc('.body', true)});
 
@@ -40,7 +40,7 @@ TP.sherpa.notebook.Inst.defineAttribute(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.notebook.Type.defineMethod('tshAwakenDOM',
+TP.sherpa.logview.Type.defineMethod('tshAwakenDOM',
 function(aRequest) {
 
     /**
@@ -65,7 +65,15 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.notebook.Inst.defineMethod('setProcessedContent',
+TP.sherpa.logview.Inst.defineMethod('addProcessedContent',
+function(newContent, aRequest) {
+
+    return this.get('body').addProcessedContent(newContent, aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.logview.Inst.defineMethod('setProcessedContent',
 function(newContent, aRequest) {
 
     /**
