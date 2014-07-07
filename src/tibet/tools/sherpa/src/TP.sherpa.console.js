@@ -85,6 +85,7 @@ TP.sherpa.console.Inst.defineAttribute(
 
 TP.sherpa.console.Inst.defineAttribute('currentEvalMarker');
 TP.sherpa.console.Inst.defineAttribute('readyForEval');
+TP.sherpa.console.Inst.defineAttribute('evalMarkAnchorMatcher');
 
 TP.sherpa.console.Inst.defineAttribute('currentInputMarker');
 
@@ -370,6 +371,21 @@ function() {
 //  Prompt Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('getPrompt',
+function() {
+
+    /**
+     * @name getPrompt
+     * @synopsis
+     * @returns {String}
+     * @todo
+     */
+
+    return '>';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('setPrompt',
 function(aPrompt, aCSSClass) {
 
@@ -391,6 +407,9 @@ function(aPrompt, aCSSClass) {
     //this.get('textInput').insertAfterSelection(aPrompt);
 
     //  TODO: Do something with the class...
+
+    //  We need to invalidate the marker matcher since we changed the prompt.
+    this.set('evalMarkAnchorMatcher', null);
 
     return this;
 });
@@ -1184,6 +1203,9 @@ function() {
     var editor,
     
         head,
+
+        matcher,
+
         searchCursor,
         lineInfo,
         retVal,
@@ -1191,10 +1213,22 @@ function() {
 
     editor = this.get('textInput').$getEditorInstance();
 
-    //  Find the last '>' (actually the start of a line followed by zero-or-more
-    //  whitespace followed by a '>')
+    //  Look for the following, in this order (at the beginning of a line)
+    //      - The current prompt (preceded by zero-or-more whitespace)
+    //      - A newline
+    //      - One of the TSH characters
     head = editor.getCursor();
-    searchCursor = editor.getSearchCursor(/^(\s*>|\n|:)/, head);
+
+    if (!TP.isRegExp(matcher = this.get('evalMarkAnchorMatcher'))) {
+        matcher = TP.rc('^(\\s*' +
+                        this.getPrompt() + '|' +
+                        '\\n' + '|' +
+                        TP.regExpEscape(TP.TSH_OPERATOR_CHARS) +
+                        ')');
+        this.set('evalMarkAnchorMatcher', matcher);
+    }
+
+    searchCursor = editor.getSearchCursor(matcher, head);
 
     if (searchCursor.findPrevious()) {
         //  We want the 'to', since that's the end of the '^\s*>' match
@@ -1215,9 +1249,9 @@ function() {
     //  'ch' to 0
     lineInfo = editor.lineInfo(retVal.line);
 
-    //  If we matched a leading colon (':'), then it was a TSH command and we
-    //  want the leading colon included.
-    if (lineInfo.text[retVal.ch - 1] === ':') {
+    //  If we matched one of the TSH operator characters then it was a TSH
+    //  command and we want that character included.
+    if (lineInfo.text.contains(TP.TSH_OPERATOR_CHARS)) {
         retVal.ch -= 1;
     }
 

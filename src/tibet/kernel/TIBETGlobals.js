@@ -2563,6 +2563,8 @@ TP.regex.VIRTUAL_URI_PREFIX = /^~/;
 //  TSH support
 //  ---
 
+TP.TSH_OPERATOR_CHARS = '`#~!@%^&*=\\;:,./?';
+
 TP.regex.TSH_TEMPLATE = /\$\{/;
 TP.regex.TSH_SUBSHELL = /\.\(\((.*)?\.\)\)/;
 TP.regex.TSH_SUBGROUP = /\.\{\{(.*)?\.\}\}/;
