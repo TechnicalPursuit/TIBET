@@ -8,9 +8,11 @@
         "APP": true
     },
     "rules": {
-        "quotes": "single",
-        "strict": false,
-        "consistent-return": false,
-        "no-underscore-dangle": false
+        "camelcase": 0,
+        "consistent-return": 0,
+        "no-unused-expressions": 0,
+        "no-underscore-dangle": 0,
+        "quotes": [2, "single"],
+        "strict": 0
     }
 }
