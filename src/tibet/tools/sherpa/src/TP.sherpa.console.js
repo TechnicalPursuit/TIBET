@@ -693,9 +693,9 @@ function(aRange) {
             'className': 'bordered-input',
             'startStyle': 'bordered-input-left',
             'endStyle': 'bordered-input-right',
-            'atomic': true,
+            'atomic': false,
             'inclusiveLeft': false,
-            'inclusiveRight': false,
+            'inclusiveRight': true,
         }
     );
 });
@@ -1116,19 +1116,30 @@ function() {
      * @returns {TP.sherpa.console} The receiver.
      */
 
+    var currentInputRange,
+        newEvalRange;
+
     //  If the text input is empty, there is no reason to setup anything... exit
     //  here.
     if (TP.isEmpty(this.get('textInput').getValue())) {
         return this;
     }
 
-    //  TODO: If there's an input marker, use it's range instead of computing a
-    //  new one.
+    if (TP.isValid(this.get('currentInputMarker'))) {
+        currentInputRange = this.get('currentInputMarker').find();
+        newEvalRange = {'anchor': currentInputRange.from,
+                        'head': currentInputRange.to};
 
-    if (TP.notValid(this.get('currentEvalMarker'))) {
-        this.set('currentEvalMarker',
-            this.markEvalRange(this.computeEvalMarkRange()));
+        this.teardownInputMark();
     
+        this.set('currentEvalMarker', this.markEvalRange(newEvalRange));
+
+        this.set('readyForEval', false);
+    } else if (TP.notValid(this.get('currentEvalMarker'))) {
+        newEvalRange = this.computeEvalMarkRange();
+    
+        this.set('currentEvalMarker', this.markEvalRange(newEvalRange));
+
         this.set('readyForEval', false);
     }
 
