@@ -22,7 +22,6 @@
     "watch": "*"
   },
   "devDependencies": {
-    "couchapp": "*"
   },
   "engines": {
     "node": ">=0.10",
