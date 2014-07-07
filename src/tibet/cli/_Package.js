@@ -94,7 +94,6 @@ require.searchCache = function (moduleName, callback) {
 //  ---
 
 var Package = function(options) {
-
     var pkg;
 
     this.packageStack = [];
@@ -109,6 +108,9 @@ var Package = function(options) {
     this.options = options || {};
     this.cfg = {};
 
+    this.npm = {};
+    this.tibet = {};
+
     pkg = this;
 
     // NOTE, this is a global. Defined so we can load tibet_cfg.js via require()
@@ -116,16 +118,16 @@ var Package = function(options) {
     TP = {};
     TP.sys = {};
     TP.sys.setcfg = function(property, value) {
-        var name;
-
-        name = property.replace(/\./g, '_');
+        var name = property.replace(/\./g, '_');
         pkg.cfg[name] = value;
     };
     this.setcfg = TP.sys.setcfg;
 
-    // For get requests we rely on a more powerful method.
-    TP.sys.getcfg = this.getcfg;
-    TP.sys.cfg = this.getcfg;
+    // For get requests we rely on the instance copy.
+    TP.sys.getcfg = function(property) {
+        return pkg.getcfg(property);
+    };
+    TP.sys.cfg = TP.sys.getcfg;
 
     // Load remaining TIBET configuration data for paths/virtual paths etc.
     this.loadTIBETBaseline();
@@ -164,10 +166,25 @@ Package.MAPPED_ATTRS = {
 
 
 /**
+ * The name of the npm package file.
+ * @type {string}
+ */
+Package.NPM_FILE = 'package.json';
+
+
+/**
  * The default package file to process.
  * @type {string}
  */
 Package.PACKAGE = '~app_cfg/app.xml';
+
+
+/**
+ * The filename used to assist in locating a project root directory.
+ * @type {string}
+ */
+Package.PROJECT_FILE = 'tibet.json';
+
 
 /**
  * A list of the options which are considered standard. Any option values not in
@@ -200,13 +217,6 @@ Package.STANDARD_OPTIONS = [
     'debug',            // Output debugging-level messages?
     'stack'             // Display stack on errors? Default is false.
 ];
-
-
-/**
- * The filename used to assist in locating a project root directory.
- * @type {string}
- */
-Package.PROJECT_FILE = 'tibet.json';
 
 
 //  ---
@@ -304,10 +314,25 @@ Package.prototype.paths = null;
 
 
 /**
+ * Contents of any NPM_FILE (package.json) relative to the processed project.
+ * @type {Object.<string, object>}
+ */
+Package.prototype.npm = null;
+
+
+/**
  * A dictionary of processing options for package/config expansion and listing.
  * @type {Object.<string, object>}
  */
 Package.prototype.options = null;
+
+
+/**
+ * Contents of any PROJECT_FILE (tibet.json) relative to the processed project.
+ * @type {Object.<string, object>}
+ */
+Package.prototype.tibet = null;
+
 
 //  ---
 //  Instance Methods
@@ -790,7 +815,6 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
  * @return {String} The fully-expanded path value.
  */
 Package.prototype.expandPath = function(aPath) {
-
     var path,
         parts,
         virtual;
@@ -804,38 +828,28 @@ Package.prototype.expandPath = function(aPath) {
     // TIBET virtual paths all start with '~'
     if (aPath.indexOf('~') === 0) {
 
-        if (aPath === '~' ||
-            aPath === '~app' ||
-            aPath === '~app_root') {
-            return this.getAppRoot();
-        } else if (aPath === '~tibet' ||
-                   aPath === '~lib' ||
-                   aPath === '~lib_root') {
-            return this.getLibRoot();
+        parts = aPath.split('/');
+        virtual = parts.shift();
+
+        // If the path was ~/...something it's app_root prefixed.
+        if (virtual === '~' ||
+            virtual === '~app' ||
+            virtual === '~app_root') {
+            path = this.getAppRoot();
+        } else if (virtual === '~tibet' ||
+                   virtual === '~lib' ||
+                   virtual === '~lib_root') {
+            path = this.getLibRoot();
         } else {
-            parts = aPath.split('/');
-            virtual = parts.shift();
-
-            // If the path was ~/...something it's app_root prefixed.
-            if (virtual === '~' ||
-                virtual === '~app' ||
-                virtual === '~app_root') {
-                path = this.getAppRoot();
-            } else if (virtual === '~tibet' ||
-                       virtual === '~lib' ||
-                       virtual === '~lib_root') {
-                path = this.getLibRoot();
-            } else {
-                // Keys are of the form: path.app_root etc. so adjust.
-                path = this.getcfg('path.' + virtual.slice(1));
-                if (!path) {
-                    throw new Error('Virtual path not found: ' + virtual);
-                }
+            // Keys are of the form: path.app_root etc. so adjust.
+            path = this.getcfg('path.' + virtual.slice(1));
+            if (!path) {
+                throw new Error('Virtual path not found: ' + virtual);
             }
-
-            parts.unshift(path);
-            path = parts.join('/');
         }
+
+        parts.unshift(path);
+        path = parts.join('/');
 
         // Paths can expand into other virtual paths, so keep going until we
         // no longer get back a virtual path.
@@ -881,10 +895,11 @@ Package.prototype.expandReference = function(aRef) {
 
 /**
  * Returns the application root directory, the path where the PROJECT_FILE is
- * found.
+ * found. If the app_root is set via comand line options that value is used.
+ * When searching for app root we rely on PROJECT_FILE and NPM_FILE existence to
+ * determine a location relative to the current CLI and execution directory.
  */
 Package.prototype.getAppRoot = function() {
-
     var cwd;        // Where are we being run?
     var file;       // What file are we looking for?
 
@@ -898,8 +913,11 @@ Package.prototype.getAppRoot = function() {
     if (this.options && this.options.app_root) {
         this.app_root = this.options.app_root;
         return this.app_root;
-    } else if (this.tibet && this.tibet.app_root) {
+    } else if (this.tibet.app_root) {
         this.app_root = this.tibet.app_root;
+        return this.app_root;
+    } else if (this.tibet.tibet && this.tibet.tibet.app_root) {
+        this.app_root = this.tibet.tibet.app_root;
         return this.app_root;
     }
 
@@ -934,9 +952,9 @@ Package.prototype.getAppRoot = function() {
  * from the assumption that we're using the library containing the current CLI.
  */
 Package.prototype.getLibRoot = function() {
-
     var app_root,
-        testpath;
+        testpath,
+        app_inf;
 
     // Return cached value if available.
     if (this.lib_root) {
@@ -948,8 +966,11 @@ Package.prototype.getLibRoot = function() {
     if (this.options && this.options.lib_root) {
         this.lib_root = this.options.lib_root;
         return this.lib_root;
-    } else if (this.tibet && this.tibet.lib_root) {
+    } else if (this.tibet.lib_root) {
         this.lib_root = this.tibet.lib_root;
+        return this.lib_root;
+    } else if (this.tibet.tibet && this.tibet.tibet.lib_root) {
+        this.lib_root = this.tibet.tibet.lib_root;
         return this.lib_root;
     }
 
@@ -965,23 +986,35 @@ Package.prototype.getLibRoot = function() {
             return this.lib_root;
         }
 
-        // Older TIBET-INF library path.
-        testpath = path.join(app_root, 'TIBET-INF/tibet');
+        // Alternative ~app_inf as a root (defaulted to TIBET-INF).
+        // Check command line options and tibet.json configuration data. NOTE
+        // that we can't use getcfg() here due to ordering/bootstrapping
+        // considerations.
+        if (this.options && this.options.app_inf) {
+            app_inf = this.options.app_inf;
+        } else if (this.tibet.app_inf) {
+            app_inf = this.tibet.app_inf;
+        } else if (this.tibet.tibet && this.tibet.tibet.app_inf) {
+            app_inf = this.tibet.tibet.app_inf;
+        } else {
+            app_inf = 'TIBET-INF';
+        }
+
+        testpath = path.join(app_root, app_inf, 'tibet');
         if (sh.test('-e', testpath)) {
             this.lib_root = testpath;
             return this.lib_root;
         }
     }
 
-    // May be set via environment variable.
-    testpath = process.env.TIBET_HOME;
-    if (sh.test('-e', testpath)) {
-        this.lib_root = testpath;
-        return this.lib_root;
-    }
+    // If we're here either app_root is empty, or apparently the lib_root is not
+    // relative to the app_root but "somewhere else".
+
+
+
 
     // Use the information we have about the currently running CLI. Segments
-    // here represent [root]/tibet/src/cli being peeled off the current path.
+    // here represent [root]/tibet/src/cli
     testpath = path.join(module.filename, '../../../..');
     if (sh.test('-e', path.join(testpath, Package.PROJECT_FILE))) {
         this.lib_root = testpath;
@@ -989,6 +1022,8 @@ Package.prototype.getLibRoot = function() {
     }
 
     this.debug('Unable to find lib_root.');
+
+    return this.lib_root;
 };
 
 
@@ -1050,7 +1085,8 @@ Package.prototype.getcfg = function(property) {
     // Secondary check is for prefixed lookups.
     if (/\./.test(property)) {
         name = property.replace(/\./g, '_');
-        return this.cfg[name];
+        value = this.cfg[name];
+        return value;
     }
 
     // When no '.' indicating a prefix we find all keys with a matching
@@ -1289,6 +1325,96 @@ Package.prototype.ifUnlessPassed = function(anElement) {
     }
 
     return !invalid;
+};
+
+
+/**
+ * Returns true if the current context is the TIBET library.
+ * @return {Boolean} True if the current context is inside the TIBET library.
+ */
+Package.prototype.inLibrary = function() {
+    return !this.inProject() && this.npm.name === 'tibet';
+};
+
+
+/**
+ * Returns true if the current context is inside a TIBET project. The check here
+ * is based on loading the TIBET project file and checking for specific content
+ * (or the lack thereof).
+ * @param {Boolean} silent True to turn off warnings about certain errors.
+ * @return {Boolean} True if the current context is inside a TIBET project.
+ */
+Package.prototype.inProject = function(silent) {
+    var cwd;        // Where are we being run?
+    var file;       // What file are we looking for?
+    var fullpath;   // What full path are we checking?
+
+    cwd = process.cwd();
+    file = Package.PROJECT_FILE;
+
+    // Walk the directory path from cwd "up" checking for the signifying file
+    // which tells us we're in a TIBET project.
+    while (cwd.length > 0) {
+        fullpath = path.join(cwd, file);
+        if (sh.test('-f', fullpath)) {
+            this.cfg.app_root = cwd;
+
+            // Relocate cwd to the new root so our paths for things like
+            // grunt and gulp work without requiring global installs etc.
+            process.chdir(cwd);
+
+            // Once we find the directory of a project root load any tibet.json
+            // configuration found there.
+            try {
+                this.tibet = require(fullpath);
+            } catch (e) {
+                // Make sure we default to some value.
+                this.tibet = this.tibet || {};
+
+                // Don't output warnings about project issues when providing
+                // help text.
+                if (!silent) {
+                    this.warn('Error loading project file: ' + e.message);
+                }
+            }
+
+            // Load the package.json file as well so we can access current
+            // project configuration info specific to npm.
+            try {
+                this.npm = require(path.join(cwd, Package.NPM_FILE));
+            } catch (e) {
+                // Make sure we default to some value.
+                this.npm = this.npm || {};
+            }
+
+            // One last check. The TIBET library will have a package and project
+            // file but we don't consider it to be a "project" per se.
+            if (this.npm.name === 'tibet') {
+                return false;
+            }
+
+            return true;
+        }
+        cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
+    }
+
+    return false;
+};
+
+
+/**
+ * Returns true if the current context is within a TIBET project (inProject)
+ * and that project has been initialized (has node_modules/tibet or similar).
+ * @return {Boolean} True if the package context is initialized.
+ */
+Package.prototype.isInitialized = function() {
+    if (!this.inProject()) {
+        return false;
+    }
+
+    // TODO: can we work from a config flag for ~lib_root here?
+    return sh.test('-e', path.join(this.getAppRoot(), 'node_modules/tibet')) ||
+        sh.test('-e', path.join(this.getAppRoot(), 'TIBET-INF/tibet'));
 };
 
 
@@ -1616,13 +1742,13 @@ Package.prototype.loadTIBETBaseline = function() {
  * approach can be overwritten by the tibet.json file and/or command line.
  */
 Package.prototype.loadTIBETProperties = function() {
-
     var lib_root,
         lib_path;
 
     lib_root = this.getLibRoot();
     lib_path = path.join(lib_root, 'src/tibet/boot/tibet_cfg');
 
+    // Uncache so this is sure to load with each new Package instance.
     require.uncache(lib_path);
 
     // NOTE this relies upon TP.sys.setcfg having been properly configured.
@@ -1689,9 +1815,22 @@ Package.prototype.setProjectOptions = function() {
     }
 
     try {
-        this.tibet = require(path.join(root, Package.PROJECT_FILE)) || {};
+        // Load project file, or default to an object we can test to see that we
+        // are not in a project (see inProject).
+        this.tibet = require(path.join(root, Package.PROJECT_FILE)) ||
+            { tibet_project: false };
     } catch (e) {
-        msg = 'Error loading config file: ' + e.message;
+        msg = 'Error loading project file: ' + e.message;
+        if (this.options.stack === true) {
+            msg += ' ' + e.stack;
+        }
+        throw new Error(msg);
+    }
+
+    try {
+        this.npm = require(path.join(root, Package.NPM_FILE)) || {};
+    } catch (e) {
+        msg = 'Error loading npm file: ' + e.message;
         if (this.options.stack === true) {
             msg += ' ' + e.stack;
         }
@@ -1729,7 +1868,6 @@ Package.prototype.setProjectOptions = function() {
  * information on what flags are set.
  */
 Package.prototype.setRuntimeOptions = function() {
-
     var pkg;
 
     pkg = this;

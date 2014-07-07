@@ -133,7 +133,7 @@ CLI.MAKE_FILE = 'makefile.js';
  * The name of the npm package file.
  * @type {string}
  */
-CLI.PACKAGE_FILE = 'package.json';
+CLI.NPM_FILE = 'package.json';
 
 
 /**
@@ -437,6 +437,19 @@ CLI.getAppRoot = function() {
 
 
 /**
+ * Returns the application root directory, the path where the PROJECT_FILE is
+ * found. This path is then used by many commands as a "root" for relative path
+ * computations.
+ * @return {string} The application root directory.
+ */
+CLI.getAppRoot = function() {
+    this.initPackage();
+
+    return this._package.getAppRoot();
+};
+
+
+/**
  * Returns the library root directory, the path where the TIBET library is
  * found. In combination with the application root this path is one of the
  * critical paths for proper operation.
@@ -632,6 +645,10 @@ CLI.initPackage = function() {
 
     Package = require('./_Package');
     this._package = new Package(this.options);
+
+    // TODO: clean this up, messy non-encapsulation.
+    this.config.tibet = this._package.tibet;
+    this.config.npm = this._package.npm;
 };
 
 
@@ -641,7 +658,9 @@ CLI.initPackage = function() {
  * @return {Boolean} True if the current context is inside the TIBET library.
  */
 CLI.inLibrary = function(CmdType) {
-    return !this.inProject(CmdType) && this.config.npm.name === 'tibet';
+    this.initPackage();
+
+    return this._package.inLibrary();
 };
 
 
@@ -654,74 +673,26 @@ CLI.inLibrary = function(CmdType) {
  * @return {Boolean} True if the current context is inside a TIBET project.
  */
 CLI.inProject = function(CmdType) {
+    var silent;
 
-    var cwd;        // Where are we being run?
-    var file;       // What file are we looking for?
-    var fullpath;   // What full path are we checking?
+    silent = CmdType && CmdType.NAME === 'help';
+    this.initPackage();
 
-    cwd = process.cwd();
-    file = this.PROJECT_FILE;
-
-    // Walk the directory path from cwd "up" checking for the signifying file
-    // which tells us we're in a TIBET project.
-    while (cwd.length > 0) {
-        fullpath = path.join(cwd, file);
-        if (sh.test('-f', fullpath)) {
-            this.config.app_root = cwd;
-
-            // Relocate cwd to the new root so our paths for things like
-            // grunt and gulp work without requiring global installs etc.
-            process.chdir(cwd);
-
-            // Once we find the directory of a project root load any tibet.json
-            // configuration found there.
-            try {
-                this.config.tibet = require(fullpath);
-            } catch (e) {
-                // Make sure we default to some value.
-                this.config.tibet = this.config.tibet || {};
-
-                // Don't output warnings about project issues when providing
-                // help text.
-                if (CmdType && CmdType.NAME !== 'help') {
-                    this.warn('Error loading project file: ' + e.message);
-                }
-            }
-
-            // Load the package.json file as well so we can access current
-            // project configuration info specific to npm.
-            try {
-                this.config.npm = require(path.join(cwd, this.PACKAGE_FILE));
-            } catch (e) {
-                // Make sure we default to some value.
-                this.config.npm = this.config.npm || {};
-            }
-
-            // One last check. The TIBET library will have a package and project
-            // file but we don't consider it to be a "project" per se.
-            if (this.config.npm.name === 'tibet') {
-                return false;
-            }
-
-            return true;
-        }
-        cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
-    }
-
-    return false;
+    return this._package.inProject(silent);
 };
 
 
 /**
  * Returns true if the current operation is happening in a project (inProject)
  * and that project has been initialized (has node_modules etc).
+ * @return {Boolean} True if the current context is in an initialized project.
  */
 CLI.isInitialized = function() {
     if (!this.inProject()) {
         return false;
     }
 
-    return sh.test('-e', path.join(this.getAppRoot(), 'node_modules/tibet'));
+    return this._package.isInitialized();
 };
 
 
