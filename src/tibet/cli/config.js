@@ -54,11 +54,13 @@ Cmd.prototype.HELP =
 
 'You can view the entire configuration list by leaving off any specific\n' +
 'value. You can view all values for a particular prefix by listing just\n' +
-'the prefix. You can view a specific value by naming that value directly.\n\n' +
+'the prefix. You can view a specific value by naming that value directly.\n' +
+'You can dump virtual paths by quoting them. \'~\' will show them all.\n\n'+
 
 'Examples:\n\n' +
 
 'tibet config -> list all configuration values.\n' +
+'tibet config \'~\' -> list all path values.\n' +
 'tibet config boot -> list all boot.* values.\n' +
 'tibet config boot.bootstrap -> list a single value.\n\n' +
 
@@ -87,6 +89,14 @@ Cmd.prototype.execute = function() {
 
     if (this.options._.length > 1) {
         option = this.options._[1];
+    }
+
+    if (CLI.notEmpty(option) && option.charAt(0) === '~') {
+        if (option === '~') {
+            option = 'path';
+        } else {
+            option = 'path.' + option.slice(1);
+        }
     }
 
     if (option === 'app_root') {
