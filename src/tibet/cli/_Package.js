@@ -1010,11 +1010,12 @@ Package.prototype.getLibRoot = function() {
     }
 
     // If we're here either app_root is empty, or apparently the lib_root is not
-    // relative to the app_root but "somewhere else".
+    // relative to the app_root but "somewhere else". A common case is when
+    // we're running on behalf of the CLI and we're outside of a project.
 
     // Walk the directory path from cwd "up" checking for the signifying file
     // which tells us we're in a TIBET project.
-    cwd = process.cwd();
+    cwd = module.filename.slice(0, module.filename.lastIndexOf('/'));
     file = Package.PROJECT_FILE;
     while (cwd.length > 0) {
         if (sh.test('-f', path.join(cwd, file))) {
@@ -1028,12 +1029,6 @@ Package.prototype.getLibRoot = function() {
     if (notValid(this.lib_root)) {
         this.debug('Unable to find lib_root.');
         return;
-    }
-
-    // We may have found the project file...but we need to be sure it's in the
-    // library, not a project.
-    if (!this.inLibrary()) {
-        this.lib_root = null;
     }
 
     return this.lib_root;
