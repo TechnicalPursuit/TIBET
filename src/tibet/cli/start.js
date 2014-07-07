@@ -159,8 +159,9 @@ Cmd.prototype.execute = function() {
         // A lot of errors will include what appears to be a common 'header'
         // output message from events.js:72 etc. which provides no useful
         // data but clogs up the output. Filter those messages.
-        if (/throw er;/.test(msg)) {
-            cmd.error(msg);
+        if (/throw er;/.test(msg) || /:72/.test(msg)) {
+            // Uncomment for more debugging.
+            //cmd.error(msg);
             return;
         }
 
