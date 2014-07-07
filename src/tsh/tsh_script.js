@@ -1247,6 +1247,10 @@ function(source, shell, sibling, request) {
 
                     case 'operator':
 
+                        //  !!! Make sure to keep the global
+                        //  TP.TSH_OPERATOR_CHARS RegExp up-to-date with
+                        //  this list of tokens!!!
+                        //
                         //  TSH supports a number of 'operator sugars',
                         //  particularly when the operator is a prefix. We
                         //  watch for those here because many are sugar for
@@ -1412,8 +1416,8 @@ function(source, shell, sibling, request) {
 
                         //  case '$':
                         //      //  Valid JS identifier, we don't process
-                        //      //  into a tag. When followed by { this is
-                        //      //  tokenized as a [variable] substitution.
+                        //      //  into a tag
+                        //      //  (not in TP.TSH_OPERATOR_CHARS). 
 
                             case '%':
                                 //  TSH "job" syntax.
@@ -1477,6 +1481,7 @@ function(source, shell, sibling, request) {
 
                         //  case '|':
                         //      //  potential confusion with pipes
+                        //      //  (not in TP.TSH_OPERATOR_CHARS). 
 
                         //  case ';':
                         //      //  leading ; is used by TP.tsh.command as the
@@ -1502,6 +1507,7 @@ function(source, shell, sibling, request) {
 
                         //  case '<':
                         //      //  potential confusion with pipes
+                        //      //  (not in TP.TSH_OPERATOR_CHARS). 
 
                             case '.':
                                 //  An alias for the 'source' or 'import'
@@ -1584,6 +1590,7 @@ function(source, shell, sibling, request) {
                                 break;
                         //  case '>':
                         //      //  potential confusion with pipes
+                        //      //  (not in TP.TSH_OPERATOR_CHARS). 
 
                             case '/':
                                 //  flag syntax, provides access to TIBET's
