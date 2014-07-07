@@ -115,7 +115,7 @@ Cmd.prototype.parse = function(options) {
     this.options = CLI.blend(this.options, options);
 
     // Unfortunately our approach to defaulting means we have to apply CLI
-    // defaults _after_ we blend any CLI.PACKAGE_FILE values. So we have to do a
+    // defaults _after_ we blend any CLI.NPM_FILE values. So we have to do a
     // shuffle here to remove them, blend in the package file stuff, then add
     // anything missing back in.
 
