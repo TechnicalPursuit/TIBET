@@ -99,6 +99,9 @@ app.use(session({
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
+//  Express logger.
+app.use(morgan());
+
 //  ---
 //  ---
 
@@ -132,9 +135,6 @@ app.use(serveStatic(app_root));
 
 //  Express gzip compression. Send data compressed if possible.
 app.use(compression());
-
-//  Express logger.
-app.use(morgan());
 
 // Serve a general 404 if no other handler too care of the request.
 app.use(function(req, res, next){
