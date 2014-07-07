@@ -116,9 +116,9 @@ Cmd.prototype.execute = function() {
 
     // Object.keys will throw for anything other than Object/Array...
     try {
-        if (CLI.isEmpty(option)) {
+        if (CLI.isEmpty(option) || option.indexOf('path') === 0) {
             str += '\t"app_root": "' + CLI.getAppRoot() + '",\n';
-            str += '\t"lib_root": "' + CLI.getAppRoot() + '",\n';
+            str += '\t"lib_root": "' + CLI.getLibRoot() + '",\n';
         }
         Object.keys(cfg).sort().forEach(function(key) {
             str += '\t"' + key.replace(/_/g, '.') + '": "' + cfg[key] + '",\n';

@@ -954,7 +954,9 @@ Package.prototype.getAppRoot = function() {
 Package.prototype.getLibRoot = function() {
     var app_root,
         testpath,
-        app_inf;
+        app_inf,
+        cwd,
+        file;
 
     // Return cached value if available.
     if (this.lib_root) {
@@ -1010,18 +1012,29 @@ Package.prototype.getLibRoot = function() {
     // If we're here either app_root is empty, or apparently the lib_root is not
     // relative to the app_root but "somewhere else".
 
-
-
-
-    // Use the information we have about the currently running CLI. Segments
-    // here represent [root]/tibet/src/cli
-    testpath = path.join(module.filename, '../../../..');
-    if (sh.test('-e', path.join(testpath, Package.PROJECT_FILE))) {
-        this.lib_root = testpath;
-        return this.lib_root;
+    // Walk the directory path from cwd "up" checking for the signifying file
+    // which tells us we're in a TIBET project.
+    cwd = process.cwd();
+    file = Package.PROJECT_FILE;
+    while (cwd.length > 0) {
+        if (sh.test('-f', path.join(cwd, file))) {
+            this.lib_root = cwd;
+            break;
+        }
+        cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
     }
 
-    this.debug('Unable to find lib_root.');
+    // If we didn't find a project file we're essentially lost.
+    if (notValid(this.lib_root)) {
+        this.debug('Unable to find lib_root.');
+        return;
+    }
+
+    // We may have found the project file...but we need to be sure it's in the
+    // library, not a project.
+    if (!this.inLibrary()) {
+        this.lib_root = null;
+    }
 
     return this.lib_root;
 };
