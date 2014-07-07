@@ -66,7 +66,7 @@
         "phantomjs": "*",
         "pouchdb": "TechnicalPursuit/pouchdb",
         "q": "TechnicalPursuit/q#v1",
-        "shelljs": "*",
+        "shelljs": "TechnicalPursuit/shelljs",
         "shelljs-nodecli": "*",
         "watch": "*",
         "xpath": "TechnicalPursuit/xpath",

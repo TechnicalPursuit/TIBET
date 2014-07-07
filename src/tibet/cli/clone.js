@@ -64,6 +64,9 @@ Cmd.prototype.HELP =
 'You can use \'.\' to clone to the current directory HOWEVER no checks\n' +
 'are currently done to prevent potential data loss. Be careful!\n\n' +
 
+'The --force option is required if you use \'.\' as a simple reminder\n' +
+'to be careful. You can also use --force with existing directories.\n\n' +
+
 'The optional --name parameter lets you rename from the directory name\n' +
 'to an alternative name. This lets the directory and appname vary. This\n' +
 'is common when cloning to existing directories or poorly named ones\n' +
@@ -78,7 +81,7 @@ Cmd.prototype.HELP =
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet clone <dirname> [--name <appname>] [--dna <template>]';
+    'tibet clone <dirname> [--force] [--name <appname>] [--dna <template>]';
 
 
 //  ---
@@ -155,7 +158,7 @@ Cmd.prototype.execute = function() {
     }
 
     //  ---
-    //  Verify the target.directory and application name.
+    //  Verify the target directory and application name.
     //  ---
 
     if (dirname === '.') {
@@ -163,10 +166,13 @@ Cmd.prototype.execute = function() {
         // dirname to be whatever the current directory name is.
         target = process.cwd();
         appname = options.name || target.slice(target.lastIndexOf('/') + 1);
+
+        // TODO: add --force support
     } else {
         target = process.cwd() + '/' + dirname;
-        this.verbose('Checking for pre-existing target: ' + target);
 
+        // TODO: add --force support
+        this.verbose('Checking for pre-existing target: ' + target);
         if (sh.test('-e', target)) {
             this.error('Target already exists: ' + target);
             return 1;
@@ -178,9 +184,10 @@ Cmd.prototype.execute = function() {
     //  Clone to the target directory.
     //  ---
 
+    // NOTE there are some minor quirks/deviations from how the same command
+    // might work at the command line depending on your shell etc.
+
     if (target !== process.cwd()) {
-        // ShellJS doesn't quite follow UNIX convention here. We need to mkdir first
-        // and then copy the contents of dna into that target directory to clone.
         sh.mkdir(target);
         err = sh.error();
         if (err) {
@@ -189,7 +196,10 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    sh.cp('-R', dna + '/', target + '/');
+    // TODO: add --force support
+
+    // NOTE: a trailing slash says to copy source content, not source directory.
+    sh.cp('-r', dna + '/', target);
     err = sh.error();
     if (err) {
         this.error('Error cloning dna directory: ' + err);
