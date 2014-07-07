@@ -12,14 +12,14 @@
 
 'use strict';
 
-var CLI = require('./_cli');
+var CLI = require('tibet/src/tibet/cli/_cli');
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+var Parent = require('tibet/src/tibet/cli/_cmd');
 
 var Cmd = function(){};
 Cmd.prototype = new Parent();
