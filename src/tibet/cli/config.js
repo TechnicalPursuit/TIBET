@@ -89,7 +89,13 @@ Cmd.prototype.execute = function() {
         option = this.options._[1];
     }
 
-    cfg = CLI.getcfg(option);
+    if (option === 'app_root') {
+        cfg = CLI.getAppRoot();
+    } else if (option === 'lib_root') {
+        cfg = CLI.getLibRoot();
+    } else {
+        cfg = CLI.getcfg(option);
+    }
 
     if (typeof cfg === 'undefined')  {
         this.info('Config value not found: ' + option);
@@ -100,6 +106,10 @@ Cmd.prototype.execute = function() {
 
     // Object.keys will throw for anything other than Object/Array...
     try {
+        if (CLI.isEmpty(option)) {
+            str += '\t"app_root": "' + CLI.getAppRoot() + '",\n';
+            str += '\t"lib_root": "' + CLI.getAppRoot() + '",\n';
+        }
         Object.keys(cfg).sort().forEach(function(key) {
             str += '\t"' + key.replace(/_/g, '.') + '": "' + cfg[key] + '",\n';
         });

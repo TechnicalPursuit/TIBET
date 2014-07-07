@@ -966,7 +966,7 @@ Package.prototype.getLibRoot = function() {
         }
 
         // Older TIBET-INF library path.
-        testpath = path.join(app_root, 'TIBET-INF/tibet/');
+        testpath = path.join(app_root, 'TIBET-INF/tibet');
         if (sh.test('-e', testpath)) {
             this.lib_root = testpath;
             return this.lib_root;
@@ -980,9 +980,10 @@ Package.prototype.getLibRoot = function() {
         return this.lib_root;
     }
 
-    // Use the information we have about the currently running CLI.
-    testpath = path.join(module.filename, '../../../..', Package.PROJECT_FILE);
-    if (sh.test('-e', testpath)) {
+    // Use the information we have about the currently running CLI. Segments
+    // here represent [root]/tibet/src/cli being peeled off the current path.
+    testpath = path.join(module.filename, '../../../..');
+    if (sh.test('-e', path.join(testpath, Package.PROJECT_FILE))) {
         this.lib_root = testpath;
         return this.lib_root;
     }
@@ -1067,7 +1068,9 @@ Package.prototype.getcfg = function(property) {
     // Now, if we thought we were going after a set...but only found one (or
     // no) value, return just the individual lookup.
     if (Object.keys(cfg).length < 2) {
-        return this.cfg[name];
+        if (Object.keys(cfg)[0] === name) {
+            return this.cfg[name];
+        }
     }
 
     return cfg;

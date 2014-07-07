@@ -437,6 +437,19 @@ CLI.getAppRoot = function() {
 
 
 /**
+ * Returns the library root directory, the path where the TIBET library is
+ * found. In combination with the application root this path is one of the
+ * critical paths for proper operation.
+ * @return {string} The library root directory.
+ */
+CLI.getLibRoot = function() {
+    this.initPackage();
+
+    return this._package.getLibRoot();
+};
+
+
+/**
  * Returns the configuration values currently in force. Leverages the logic in a
  * TIBET Package object for the loading/processing of default TIBET parameters.
  * If no property is provided the entire set of configuration values is
