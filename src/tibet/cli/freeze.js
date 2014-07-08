@@ -70,42 +70,52 @@ Cmd.prototype.execute = function() {
     var path;
     var sh;
     var err;
+    var app_inf;
+    var libroot;
 
     path = require('path');
     sh = require('shelljs');
+    app_inf = CLI.expandPath('~app_inf');
 
-    sh.mkdir('TIBET-INF/tibet');
+    // TODO: verify app_inf exists...
+
+    libroot = path.join(app_inf, 'tibet');
+
+    // TODO: verify node_modules/tibet exists...
+
+
+    sh.mkdir(libroot);
     err = sh.error();
     if (err) {
         this.error('Error creating target directory: ' + err);
         return 1;
     }
 
-    sh.cp('-R', 'node_modules/tibet/bin', 'TIBET-INF/tibet');
+    sh.cp('-R', 'node_modules/tibet/bin', libroot);
     err = sh.error();
     if (err) {
-        this.error('Error cloning node_modules TIBET: ' + err);
+        this.error('Error cloning tibet/bin' + err);
         return 1;
     }
 
-    sh.cp('-R', 'node_modules/tibet/etc', 'TIBET-INF/tibet');
+    sh.cp('-R', 'node_modules/tibet/etc', libroot);
     err = sh.error();
     if (err) {
-        this.error('Error cloning node_modules TIBET: ' + err);
+        this.error('Error cloning tibet/etc: ' + err);
         return 1;
     }
 
-    sh.cp('-R', 'node_modules/tibet/lib', 'TIBET-INF/tibet');
+    sh.cp('-R', 'node_modules/tibet/lib', libroot);
     err = sh.error();
     if (err) {
-        this.error('Error cloning node_modules TIBET: ' + err);
+        this.error('Error cloning tibet/lib: ' + err);
         return 1;
     }
 
-    sh.cp('-R', 'node_modules/tibet/src', 'TIBET-INF/tibet');
+    sh.cp('-R', 'node_modules/tibet/src', libroot);
     err = sh.error();
     if (err) {
-        this.error('Error cloning node_modules TIBET: ' + err);
+        this.error('Error cloning tibet/src: ' + err);
         return 1;
     }
 };

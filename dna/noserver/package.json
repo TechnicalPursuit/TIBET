@@ -9,7 +9,7 @@
     "js-beautify": "*",
     "minimist": "*",
     "phantomjs": "*",
-    "shelljs": "TechnicalPursuit/shelljs",
+    "shelljs": "*",
     "tibet": "*",
     "uglify-js": "*"
   },

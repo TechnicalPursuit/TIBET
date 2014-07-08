@@ -198,6 +198,15 @@ Cmd.prototype.executeList = function(targets) {
 
 
 /**
+ * Returns the name of the current project as defined in the Package.NPM_FILE.
+ * @return {String} The project name.
+ */
+Cmd.prototype.getProjectName = function() {
+    return CLI.getProjectName();
+};
+
+
+/**
  * Wraps individual target functions in functions returning Q-style Promise
  * instances. The resulting task function invocations can be chained via then().
  * The function wrappers also have a resolve() and reject() wrapper placed on
@@ -252,6 +261,7 @@ Cmd.prototype.prepTargets = function(targets) {
                     promise = Q.Promise(function(resolver, rejector) {
                         var timer;
 
+                        // TODO: replace with Promise-based timeout() call.
                         timer = setTimeout(function() {
                             cmd.error(name + ' timed out.');
                             rejector('timeout');

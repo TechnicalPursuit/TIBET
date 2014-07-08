@@ -3,23 +3,17 @@
   "name": "{{appname}}",
   "version": "0.1.0",
   "dependencies": {
-    "body-parser": "*",
     "chalk": "*",
+    "couchapp": "TechnicalPursuit/node.couchapp.js",
     "diff": "*",
     "eslint": "*",
-    "express": "*",
-    "express-session": "*",
-    "compression": "1.0.6",
-    "csurf": "*",
     "js-beautify": "*",
     "minimist": "*",
-    "morgan": "*",
+    "nano": "*",
     "phantomjs": "*",
-    "serve-static": "*",
     "shelljs": "*",
     "tibet": "*",
-    "uglify-js": "*",
-    "watch": "*"
+    "uglify-js": "*"
   },
   "devDependencies": {
   },

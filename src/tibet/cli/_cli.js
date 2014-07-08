@@ -502,9 +502,7 @@ CLI.getCommandPath = function(command) {
     // If we're in a project but not initialized make sure they do that first.
     if (this.inProject()) {
         if (!sh.test('-e', 'node_modules')) {
-            this.error(
-                'Project not initialized. Run `tibet init [--link]` first.');
-            return 1;
+            return CLI.notInitialized();
         }
     }
 
@@ -563,6 +561,15 @@ CLI.getMakeTargets = function() {
     }
 
     return this.make_targets;
+};
+
+
+/**
+ * Returns the name of the current project as defined in the Package.NPM_FILE.
+ * @return {String} The project name.
+ */
+CLI.getProjectName = function() {
+    return this.config.npm.name;
 };
 
 
@@ -729,7 +736,7 @@ CLI.logItems = function(aList) {
  * by commands that require project initialization to run properly.
  */
 CLI.notInitialized = function() {
-    this.error('Project not initialized. Run `tibet init` first.');
+    this.error('Project not initialized. Run `tibet init [--link]` first.');
     return 1;
 };
 

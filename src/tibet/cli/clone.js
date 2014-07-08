@@ -206,6 +206,14 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
+    // HACK: due to a bug in shelljs with hidden files copy any at the root.
+    sh.cp('-r', dna + '/.*', target);
+    err = sh.error();
+    if (err) {
+        this.error('Error copying hidden files: ' + err);
+        return 1;
+    }
+
     params = CLI.blend({appname: appname, dna: dna}, options);
 
     //  ---

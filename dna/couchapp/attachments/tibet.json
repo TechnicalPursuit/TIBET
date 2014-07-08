@@ -1,0 +1,10 @@
+{
+    "//" : "TIBET project file. Set configuration parameters here.",
+
+    "tibet": {
+        "dna": "{{dna}}"
+    },
+    "path": {
+      "app.inf": "~/TIBET-INF"
+    }
+}
