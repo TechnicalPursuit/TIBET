@@ -1,140 +1,148 @@
 /**
- * Sample TIBET-style makefile. Target functions are converted to promise
- * objects so you can use then() to chain tasks easily.
+ * @overview TIBET + CouchDB makefile.js
  */
 
 (function() {
 
-    'use strict';
+'use strict';
 
-    var CLI = require('tibet/src/tibet/cli/_cli');
-    var sh = require('shelljs');
+var sh = require('shelljs');
 
+// Uncomment to run node_modules-based utilities via shelljs.
+// var nodeCLI = require('shelljs-nodecli');
 
-    /*
-     * Uncomment to run node_modules-based utilities.
-    var nodeCLI = require('shelljs-nodecli');
-    */
+// Uncomment to include TIBET's make helper routines for rollups.
+// var helpers = require('tibet/src/tibet/cli/_make_helpers');
 
-    /*
-     * Uncomment to include TIBET's default make helper routines.
-    var helpers = require('tibet/src/tibet/cli/_make_helpers');
-    */
+/**
+ * Canonical `targets` object for exporting the various target functions.
+ */
+var targets = {};
 
-    //  ---
-    //  targets
-    //  ---
+/**
+ * Run lint and test commands to verify the code is in good shape.
+ */
+targets.check = function(make) {
+    var result;
 
-    /**
-     * Canonical `targets` object for exporting the various target functions.
-     */
-    var targets = {};
+    make.log('checking for lint...');
 
-    /**
-     * Database targets.
-     */
-    targets.createdb = function(make) {
-        make.log('creating CouchDB database: ' + make.getProjectName());
+    result = sh.exec('tibet lint');
+    if (result.code !== 0) {
+        targets.check.reject();
+        return;
+    }
 
-        // TODO: pull command line arguments if they're here. We need to support
-        // changing the database url and the database name.
+    make.log('running unit tests...');
 
-        var db_url = 'http://127.0.0.1:5984';
-        var nano = require('nano')(db_url);
+    result = sh.exec('tibet test');
+    if (result.code !== 0) {
+        targets.check.reject();
+        return;
+    }
 
-        nano.db.create(make.getProjectName(),
-            function(error) {
-              if (error) {
-                targets.createdb.reject(error);
-                return;
-              }
+    targets.check.resolve();
+};
 
-              make.log('database created.');
-              targets.createdb.resolve();
-            });
-    };
+/**
+ * Create a new CouchDB database.
+ */
+targets.createdb = function(make) {
+    var db_url;
+    var db_name;
+    var nano;
 
-    /**
-     * Database targets.
-     */
-    targets.pushdb = function(make) {
+    // TODO: pull command line arguments if they're here. We need to support
+    // changing the database url and the database name.
 
-        var result;
-        var sh = require('shelljs');
-        var db_url = 'http://127.0.0.1:5984';
-        var db_name = make.getProjectName();
+    db_url = 'http://127.0.0.1:5984';
+    db_name = make.getProjectName();
 
-        make.log('pushing to CouchDB database: ' + db_name);
+    make.log('creating CouchDB database: ' + db_name);
 
-        // TODO: pull command line arguments if they're here. We need to support
-        // changing the database url and the database name.
-
-        // TODO: copy the tibet.json from the top level into the attachments
-        // directory but remove 'attachments' from the app.inf reference and any
-        // other paths which might include attachments.
-
-        result = sh.exec('couchapp push app.js ' + db_url + '/' + db_name, {
-          silent: (CLI.options.silent !== true)
-        });
-
-        if (result.code !== 0) {
-          make.log('push failed.');
-          targets.pushdb.reject(result.output);
-          return;
-        }
-
-        make.log('push complete.');
-        targets.pushdb.resolve();
-    };
-
-    /**
-     * Remove the database whose name matches the current project.
-     */
-    targets.removedb = function(make) {
-        make.log('deleting CouchDB database: ' + make.getProjectName());
-
-        // TODO: pull command line arguments if they're here. We need to support
-        // changing the database url and the database name.
-
-        var db_url = 'http://127.0.0.1:5984';
-        var nano = require('nano')(db_url);
-
-        nano.db.destroy(make.getProjectName(),
-            function(error) {
-              if (error) {
-                targets.removedb.reject(error);
-                return;
-              }
-
-              make.log('database removed.');
-              targets.removedb.resolve();
-            });
-    };
-
-    /**
-     * Canonical test target.
-     */
-    targets.test = function(make) {
-        var result;
-
-        make.log('checking for lint...');
-
-        result = sh.exec('tibet lint');
-        if (result.code !== 0) {
-            targets.test.reject();
+    nano = require('nano')(db_url);
+    nano.db.create(db_name,
+        function(error) {
+          if (error) {
+            targets.createdb.reject(error);
             return;
-        }
+          }
 
-        make.log('running unit tests...');
-        make.warn('add some tests... ;)');
-        targets.test.resolve();
-    };
+          make.log('database created.');
+          targets.createdb.resolve();
+        });
+};
 
+/**
+ * Push the current app.js and attachments content to CouchDB.
+ */
+targets.pushdb = function(make) {
+    var result;
+    var db_url;
+    var db_name;
 
-    //  ---
-    //  export
-    //  ---
+    // TODO: pull command line arguments if they're here. We need to support
+    // changing the database url and the database name.
 
-    module.exports = targets;
+    db_url = 'http://127.0.0.1:5984';
+    db_name = make.getProjectName();
+
+    make.log('pushing to CouchDB database: ' + db_name);
+
+    // TODO: copy the tibet.json from the top level into the attachments
+    // directory but remove 'attachments' from the app.inf reference and any
+    // other paths which might include attachments.
+
+    result = sh.exec('couchapp push app.js ' + db_url + '/' + db_name, {
+      silent: (make.options.silent !== true)
+    });
+
+    if (result.code !== 0) {
+      make.log('push failed.');
+      targets.pushdb.reject(result.output);
+      return;
+    }
+
+    make.log('push complete.');
+    targets.pushdb.resolve();
+};
+
+/**
+ * Remove the current CouchDB database.
+ */
+targets.removedb = function(make) {
+    var response;
+    var db_url;
+    var db_name;
+    var nano;
+
+    // TODO: pull command line arguments if they're here. We need to support
+    // changing the database url and the database name.
+
+    db_url = 'http://127.0.0.1:5984';
+    db_name = make.getProjectName();
+
+    response = make.prompt('Delete the database? Enter \'yes\' to confirm: ');
+    if (response.toLowerCase() !== 'yes') {
+        make.log('database removal cancelled.');
+        targets.removedb.resolve();
+        return;
+    }
+
+    make.log('deleting database at ' + db_url + '/' + db_name);
+
+    nano = require('nano')(db_url);
+    nano.db.destroy(db_name,
+        function(error) {
+          if (error) {
+            targets.removedb.reject(error);
+            return;
+          }
+
+          make.log('database removed.');
+          targets.removedb.resolve();
+        });
+};
+module.exports = targets;
 
 }());

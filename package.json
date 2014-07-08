@@ -68,6 +68,7 @@
         "q": "TechnicalPursuit/q#v1",
         "shelljs": "*",
         "shelljs-nodecli": "*",
+        "sync-prompt": "*",
         "watch": "*",
         "xpath": "TechnicalPursuit/xpath",
         "xmldom": "*"
