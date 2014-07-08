@@ -862,6 +862,11 @@ TP.SELECTION_NONE = 0;
 TP.SELECTION_TEXT = 1;
 TP.SELECTION_ELEMENT = 2;
 
+//  selection endpoints (the values here are used in their lowercase form -
+//  don't change)
+TP.ANCHOR = 'anchor';
+TP.HEAD = 'head';
+
 //  formatting
 TP.DEFAULT_STRPAD = ' ';                //  char to left pad strings
 TP.DEFAULT_NUMPAD = '0';                //  char to left pad numbers
