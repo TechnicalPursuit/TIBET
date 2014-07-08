@@ -321,7 +321,8 @@
         var result;
 
         make.log('starting mocha...');
-        result = nodeCLI.exec('mocha', '--ui bdd', '--reporter dot');
+        result = nodeCLI.exec('mocha', '--ui bdd', '--reporter dot',
+                './test/mocha/cli_test.js');
 
         if (result.code !== 0) {
             targets.test_cli.reject();
