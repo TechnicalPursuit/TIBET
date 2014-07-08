@@ -35,7 +35,7 @@ Cmd.prototype = new Parent();
  * The command execution context.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.CONTEXT = CLI.CONTEXTS.BOTH;
+Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 
 
 //  ---

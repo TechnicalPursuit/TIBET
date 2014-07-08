@@ -97,7 +97,9 @@ CLI.CHARS_PER_LINE = 50;
  * @type {Object.<string,string>}
  */
 CLI.CONTEXTS = {
-    BOTH: 'both',
+    ANY: 'any',
+    PROJECT: 'project',
+    LIBRARY: 'library',
     INSIDE: 'inside',
     OUTSIDE: 'outside'
 };
@@ -384,10 +386,24 @@ CLI.blend = function (target, source) {
  */
 CLI.canRun = function(CmdType) {
 
-    if (this.inProject(CmdType)) {
-        return CmdType.CONTEXT !== this.CONTEXTS.OUTSIDE;
-    } else {
-        return CmdType.CONTEXT !== this.CONTEXTS.INSIDE;
+    var context = CmdType.CONTEXT;
+
+    // Simple case if the context is "anywhere".
+    if (context === CLI.CONTEXTS.ANY) {
+        return true;
+    }
+
+    switch (context) {
+        case CLI.CONTEXTS.PROJECT:
+            return this.inProject(CmdType);
+        case CLI.CONTEXTS.LIBRARY:
+            return this.inLibrary(CmdType);
+        case CLI.CONTEXTS.INSIDE:
+            return this.inProject(CmdType) || this.inLibrary(CmdType);
+        case CLI.CONTEXTS.OUTSIDE:
+            return !this.inProject(CmdType) && !this.inLibrary(CmdType);
+        default:
+            return false;
     }
 };
 
@@ -827,6 +843,7 @@ CLI.runCommand = function(command, cmdPath) {
 
     var CmdType;
     var cmd;
+    var msg;
 
     // Load the command type
     try {
@@ -847,8 +864,24 @@ CLI.runCommand = function(command, cmdPath) {
     // completion if we're not in the right context.
     if (!this.options.usage && !this.options.help) {
         if (!this.canRun(CmdType)) {
-            this.error('Command must be run ' + CmdType.CONTEXT +
-                ' a TIBET project.');
+            switch (CmdType.CONTEXT) {
+                case CLI.CONTEXTS.PROJECT:
+                    msg = 'in a TIBET project.';
+                    break;
+                case CLI.CONTEXTS.LIBRARY:
+                    msg = 'in the TIBET library.';
+                    break;
+                case CLI.CONTEXTS.INSIDE:
+                    msg = 'in a TIBET project or within the TIBET library.';
+                    break;
+                case CLI.CONTEXTS.OUTSIDE:
+                    msg = 'outside a TIBET project or the TIBET library.';
+                    break;
+                default:
+                    msg = 'in a different context.';
+                    break;
+            }
+            this.error('Command must be run ' + msg);
             return 1;
         }
     }

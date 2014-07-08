@@ -33,6 +33,13 @@ Cmd.prototype = new Parent();
 //  Type Attributes
 //  ---
 
+/**
+ * The command execution context.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
+
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -83,6 +90,8 @@ Cmd.prototype.execute = function() {
 
     // TODO: verify node_modules/tibet exists...
 
+
+    // TODO: replace node_modules with ~npm or whatever it is.
 
     sh.mkdir(libroot);
     err = sh.error();
