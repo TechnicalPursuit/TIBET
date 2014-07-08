@@ -2497,6 +2497,23 @@ function(aTPElem) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('setHeight',
+function(aHeight) {
+
+    /**
+     * @name setHeight
+     * @synopsis Sets the receiver's height.
+     * @description If a Number is supplied to aHeight a default unit of 'px' is
+     *     assumed.
+     * @param {Number|String} aHeight The height dimension to set the receiver's
+     *     height to.
+     */
+
+    return TP.elementSetHeight(this.getNativeNode(), aHeight);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('setPagePosition',
 function(aPointOrObject) {
 
@@ -2596,6 +2613,23 @@ function(aTransformStr) {
     TP.elementSetTransform(this.getNativeNode(), aTransformStr);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('setWidth',
+function(aWidth) {
+
+    /**
+     * @name setWidth
+     * @synopsis Sets the receiver's width.
+     * @description If a Number is supplied to aWidth a default unit of 'px' is
+     *     assumed.
+     * @param {Number|String} aWidth The width dimension to set the receiver's
+     *     width to.
+     */
+
+    return TP.elementSetWidth(this.getNativeNode(), aWidth);
 });
 
 //  ------------------------------------------------------------------------
