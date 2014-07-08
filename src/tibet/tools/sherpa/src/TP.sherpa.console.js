@@ -84,7 +84,6 @@ TP.sherpa.console.Inst.defineAttribute(
         {'value': TP.cpc('xctrls|codeeditor', true)});
 
 TP.sherpa.console.Inst.defineAttribute('currentEvalMarker');
-TP.sherpa.console.Inst.defineAttribute('readyForEval');
 TP.sherpa.console.Inst.defineAttribute('evalMarkAnchorMatcher');
 
 TP.sherpa.console.Inst.defineAttribute('currentInputMarker');
@@ -1134,13 +1133,10 @@ function() {
     
         this.set('currentEvalMarker', this.markEvalRange(newEvalRange));
 
-        this.set('readyForEval', false);
     } else if (TP.notValid(this.get('currentEvalMarker'))) {
         newEvalRange = this.computeEvalMarkRange();
     
         this.set('currentEvalMarker', this.markEvalRange(newEvalRange));
-
-        this.set('readyForEval', false);
     }
 
     return this;
@@ -1160,8 +1156,6 @@ function() {
     if (TP.isValid(this.get('currentEvalMarker'))) {
         this.get('currentEvalMarker').clear();
         this.set('currentEvalMarker', null);
-    
-        this.set('readyForEval', false);
     }
 
     return this;
@@ -1179,22 +1173,26 @@ function() {
      */
 
     var inputText,
-    
+   
+        marker,
+
         editor,
         range;
 
     inputText = null;
 
-    if (TP.isValid(this.get('currentEvalMarker'))) {
-        if (TP.isTrue(this.get('readyForEval'))) {
+    //  Try to set up an eval mark
+    if (TP.notValid(this.get('currentEvalMarker'))) {
+        this.setupEvalMark();
+    }
 
-            editor = this.get('textInput').$getEditorInstance();
-            range = this.get('currentEvalMarker').find();
-            inputText = editor.getRange(range.from, range.to);
-
-        } else {
-            this.set('readyForEval', true);
-        }
+    //  Only compute the text if you get a valid range
+    if (TP.isValid(marker = this.get('currentEvalMarker')) &&
+            TP.isValid(range = marker.find())) {
+        editor = this.get('textInput').$getEditorInstance();
+        inputText = editor.getRange(range.from, range.to);
+    } else {
+        this.teardownEvalMark();
     }
 
     return inputText;

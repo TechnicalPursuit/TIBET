@@ -42,6 +42,10 @@ TP.sherpa.ConsoleService.Inst.defineAttribute('lastInputRequest');
 //  is this a system console, i.e. should it have logging?
 TP.sherpa.ConsoleService.Inst.defineAttribute('systemConsole', false);
 
+//  a timer that runs to mark the current text to be processed after a certain
+//  key is held down for a particular amount of time
+TP.sherpa.ConsoleService.Inst.defineAttribute('markingTimer');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -424,7 +428,9 @@ function(aSignal) {
     var evt,
         inputCell,
 
-        keyname;
+        keyname,
+    
+        markingTimer;
 
     evt = aSignal.getEvent();
     inputCell = this.get('$consoleGUI');
@@ -434,9 +440,17 @@ function(aSignal) {
         return;
     }
 
+    if (TP.isValid(markingTimer = this.get('markingTimer'))) {
+        clearTimeout(markingTimer);
+        this.set('markingTimer', null);
+    }
+
     keyname = TP.domkeysigname(evt);
-    if (keyname === 'DOM_Shift_Enter_Down') {
-        inputCell.setupEvalMark();
+    if (keyname === 'DOM_Shift_Down') {
+        markingTimer = setTimeout(function() {
+                                        inputCell.setupEvalMark();
+                                    }, TP.sys.cfg('sherp.edit_mark_time', 750));
+        this.set('markingTimer', markingTimer);
     }
 
     if (this.isCommandEvent(evt) || this.shouldConcealInput()) {
@@ -494,6 +508,9 @@ function(aSignal) {
 
     var evt,
         inputCell,
+
+        markingTimer,
+
         keyname,
         input,
         code;
@@ -504,6 +521,11 @@ function(aSignal) {
     //  Make sure that the key event happened in our document
     if (!inputCell.eventIsInInput(evt)) {
         return;
+    }
+
+    if (TP.isValid(markingTimer = this.get('markingTimer'))) {
+        clearTimeout(markingTimer);
+        this.set('markingTimer', null);
     }
 
     keyname = TP.domkeysigname(evt);

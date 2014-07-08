@@ -1210,6 +1210,10 @@ TP.sys.setcfg('sherpa.default_format', 'sherpa:pp');
 //  should the console suspend normal output?
 TP.sys.setcfg('sherpa.silent', false);
 
+//  how long should the sherpa console wait before allowing 'eval mark'
+//  editing (in ms) ?
+TP.sys.setcfg('sherpa.edit_mark_time', 750);
+
 //  ---
 //  tds support
 //  ---
