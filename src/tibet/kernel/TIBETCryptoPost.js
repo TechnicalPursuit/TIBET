@@ -5,7 +5,7 @@ AUTH:	See below for credits.
 NOTE:	Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 		Reserved. Patent Pending, Technical Pursuit Inc.
 
-        Public TIBET api to ~tibet/deps/forge-tpi.js See that file
+        Public TIBET api to ~lib/deps/forge-tpi.js See that file
         for more information.
 */
 //	========================================================================

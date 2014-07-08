@@ -229,7 +229,14 @@ Package.STANDARD_OPTIONS = [
 //  ---
 
 /**
- * The root location of the application being processed/packaged.
+ * The launch location of the application being processed/packaged.
+ * @type {string}
+ */
+Package.prototype.app_head = null;
+
+
+/**
+ * The root location for application components for the current project.
  * @type {string}
  */
 Package.prototype.app_root = null;
@@ -832,12 +839,12 @@ Package.prototype.expandPath = function(aPath) {
         virtual = parts.shift();
 
         // If the path was ~/...something it's app_root prefixed.
-        if (virtual === '~' ||
-            virtual === '~app' ||
-            virtual === '~app_root') {
+        if (virtual === '~') {
+            path = this.getLaunchRoot();
+        } else if (virtual === '~app' ||
+                   virtual === '~app_root') {
             path = this.getAppRoot();
-        } else if (virtual === '~tibet' ||
-                   virtual === '~lib' ||
+        } else if (virtual === '~lib' ||
                    virtual === '~lib_root') {
             path = this.getLibRoot();
         } else {
@@ -854,6 +861,13 @@ Package.prototype.expandPath = function(aPath) {
         // Paths can expand into other virtual paths, so keep going until we
         // no longer get back a virtual path.
         if (path.indexOf('~') === 0) {
+
+            // If the newly constructed path has the same virtual component then
+            // we're going to recurse.
+            if (virtual === path.split('/')[0]) {
+                throw new Error('Recursive virtual path: ' + aPath);
+            }
+
             path = this.expandPath(path);
         }
 
@@ -894,10 +908,10 @@ Package.prototype.expandReference = function(aRef) {
 
 
 /**
- * Returns the application root directory, the path where the PROJECT_FILE is
- * found. If the app_root is set via comand line options that value is used.
- * When searching for app root we rely on PROJECT_FILE and NPM_FILE existence to
- * determine a location relative to the current CLI and execution directory.
+ * Returns the application root directory. If the app_root is set via comand
+ * line options that value is used. When searching for app root we rely on
+ * PROJECT_FILE and NPM_FILE existence to determine a location relative to the
+ * current CLI and execution directory.
  */
 Package.prototype.getAppRoot = function() {
     var cwd;        // Where are we being run?
@@ -916,32 +930,72 @@ Package.prototype.getAppRoot = function() {
     } else if (this.tibet.app_root) {
         this.app_root = this.tibet.app_root;
         return this.app_root;
-    } else if (this.tibet.tibet && this.tibet.tibet.app_root) {
-        this.app_root = this.tibet.tibet.app_root;
+    } else if (this.tibet.path && this.tibet.path.app_root) {
+        this.app_root = this.tibet.path.app_root;
         return this.app_root;
     }
 
-    // Walk the directory path from cwd "up" checking for the signifying file
-    // which tells us we're in a TIBET project.
-    cwd = process.cwd();
-    file = Package.PROJECT_FILE;
-    while (cwd.length > 0) {
-        if (sh.test('-f', path.join(cwd, file))) {
-            this.app_root = cwd;
-            break;
-        }
-        cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
-    }
+    this.app_root = this.getLaunchRoot();
 
-
-    // Not everything happens in a project. Some things can still function with
-    // respect to lib_root etc.
     if (notValid(this.app_root)) {
         this.debug('Unable to find app_root.');
         return;
     }
 
     return this.app_root;
+};
+
+
+/**
+ * Returns the application launch root also referred to as the 'app head'. This
+ * is the location where the * tibet.json and/or package.json files are found
+ * for the current context. This value is always computed and never set via
+ * property values. The virtual path for this root is '~' or '~/'. The search
+ * for this location works upward from the current directory to attempt to find
+ * either a PROJECT_FILE or NPM_FILE. If that fails the search is done relative
+ * to the module.filename, ie. the _Package.js file location itself.
+ */
+Package.prototype.getLaunchRoot = function() {
+    var cwd;
+    var moduleDir;
+    var checks;
+    var len;
+    var i;
+    var check;
+    var dir;
+    var file;
+
+    if (this.app_head) {
+        return this.app_head;
+    }
+
+    // Iterate over a set of potential locations. Note that for launch root we
+    // stick to the NPM file rather than tibet.json since some configurations
+    // may actually place that file in different or multiple locations.
+    cwd = process.cwd();
+    moduleDir = module.filename.slice(0, module.filename.lastIndexOf('/'));
+    checks = [[cwd, Package.NPM_FILE], [moduleDir, Package.NPM_FILE]];
+
+    len = checks.length;
+    for (i = 0; i < len; i++) {
+        check = checks[i];
+        dir = check[0];
+        file = check[1];
+
+        while (dir.length > 0) {
+            if (sh.test('-f', path.join(dir, file))) {
+                this.app_head = dir;
+                break;
+            }
+            dir = dir.slice(0, dir.lastIndexOf(path.sep));
+        }
+
+        if (isValid(this.app_head)) {
+            break;
+        }
+    }
+
+    return this.app_head;
 };
 
 
@@ -971,8 +1025,8 @@ Package.prototype.getLibRoot = function() {
     } else if (this.tibet.lib_root) {
         this.lib_root = this.tibet.lib_root;
         return this.lib_root;
-    } else if (this.tibet.tibet && this.tibet.tibet.lib_root) {
-        this.lib_root = this.tibet.tibet.lib_root;
+    } else if (this.tibet.path && this.tibet.path.lib_root) {
+        this.lib_root = this.tibet.path.lib_root;
         return this.lib_root;
     }
 
@@ -1009,23 +1063,8 @@ Package.prototype.getLibRoot = function() {
         }
     }
 
-    // If we're here either app_root is empty, or apparently the lib_root is not
-    // relative to the app_root but "somewhere else". A common case is when
-    // we're running on behalf of the CLI and we're outside of a project.
+    this.lib_root = this.getLaunchRoot();
 
-    // Walk the directory path from cwd "up" checking for the signifying file
-    // which tells us we're in a TIBET project.
-    cwd = module.filename.slice(0, module.filename.lastIndexOf('/'));
-    file = Package.PROJECT_FILE;
-    while (cwd.length > 0) {
-        if (sh.test('-f', path.join(cwd, file))) {
-            this.lib_root = cwd;
-            break;
-        }
-        cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
-    }
-
-    // If we didn't find a project file we're essentially lost.
     if (notValid(this.lib_root)) {
         this.debug('Unable to find lib_root.');
         return;
@@ -1210,7 +1249,6 @@ Package.prototype.getVirtualPath = function(aPath) {
     path = path.replace(this.expandPath('~lib_src'), '~lib_src');
     path = path.replace(this.expandPath('~app'), '~app');
     path = path.replace(this.expandPath('~lib'), '~lib');
-    path = path.replace(this.expandPath('~tibet'), '~tibet');
     path = path.replace(this.expandPath('~'), '~');
 
     return path;
@@ -1420,9 +1458,10 @@ Package.prototype.isInitialized = function() {
         return false;
     }
 
-    // TODO: can we work from a config flag for ~lib_root here?
-    return sh.test('-e', path.join(this.getAppRoot(), 'node_modules/tibet')) ||
-        sh.test('-e', path.join(this.getAppRoot(), 'TIBET-INF/tibet'));
+    return sh.test('-e',
+            path.join(this.getLaunchRoot(), 'node_modules/tibet')) ||
+        sh.test('-e',
+            path.join(this.getLaunchRoot(), 'TIBET-INF/tibet'));
 };
 
 
@@ -1806,6 +1845,7 @@ Package.prototype.setProjectOptions = function() {
 
     var pkg;
     var msg;
+    var root;
 
     // We need app root to load tibet.json, which hopefully has additional
     // configuration information we can leverage such as the lib_root path.
@@ -1826,6 +1866,7 @@ Package.prototype.setProjectOptions = function() {
         // Load project file, or default to an object we can test to see that we
         // are not in a project (see inProject).
         this.tibet = require(path.join(root, Package.PROJECT_FILE)) ||
+            // TODO: this key should be a constant somewhere.
             { tibet_project: false };
     } catch (e) {
         msg = 'Error loading project file: ' + e.message;
@@ -1867,6 +1908,48 @@ Package.prototype.setProjectOptions = function() {
             TP.sys.setcfg(key, value);
         }
     });
+
+    Object.keys(this.npm).forEach(function(key) {
+        var value;
+
+        value = pkg.npm[key];
+
+        // If the value isn't a primitive it means the key was initially
+        // provided with a prefix. We'll need to recreate that to store the
+        // data properly.
+        if (Object.prototype.toString.call(value) === '[object Object]') {
+
+            Object.keys(value).forEach(function(subkey) {
+                var name;
+
+                name = 'npm.' + key + '.' + subkey;
+                TP.sys.setcfg(name, value[subkey]);
+            });
+        } else {
+            TP.sys.setcfg('npm.' + key, value);
+        }
+    });
+
+    // Update any cached values based on what we've read in from tibet.json
+    if (isValid(this.tibet.path) && isValid(this.tibet.path.app_root)) {
+        root = this.tibet.path.app_root;
+    } else if (isValid(this.tibet.path) && isValid(this.tibet.path.app)) {
+        root = this.tibet.path.app.root;
+    }
+
+    if (isValid(root)) {
+        this.app_root = root;
+    }
+
+    if (isValid(this.tibet.path) && isValid(this.tibet.path.lib_root)) {
+        root = this.tibet.path.lib_root;
+    } else if (isValid(this.tibet.path) && isValid(this.tibet.path.lib)) {
+        root = this.tibet.path.lib.root;
+    }
+
+    if (isValid(root)) {
+        this.lib_root = root;
+    }
 };
 
 

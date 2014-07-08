@@ -35,7 +35,7 @@ Cmd.prototype = new Parent();
 //  Type Attributes
 //  ---
 
-Cmd.CONFIG = '~/.eslintrc';
+Cmd.CONFIG = '~app/.eslintrc';
 
 
 //  ---

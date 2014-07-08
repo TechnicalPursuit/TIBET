@@ -375,7 +375,7 @@ process, virtual URIs add even more flexibility.
 A common use of virtual URIs is to avoid defining whether a resource is local or
 remote. Instead TIBET will resolve the "root" of the URI on demand. A leading ~
 (with no scheme) is a form of convenient shorthand. For example, ~app/...
-and ~tibet/... represent your application's root directory and the TIBET library
+and ~lib/... represent your application's root directory and the TIBET library
 "root" your application is using respectively. By using a virtual URI you can
 develop code without tying it to a specific location, or even a specific
 protocol (http: vs. localdb: for example).

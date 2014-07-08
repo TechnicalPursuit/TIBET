@@ -35,7 +35,7 @@ Cmd.prototype = new Parent();
  * The default path to the TIBET-specific phantomjs test runner.
  * @type {String}
  */
-Cmd.DEFAULT_RUNNER = './test/phantom/phantomtsh.js';
+Cmd.DEFAULT_RUNNER = '~lib_tst/phantom/phantomtsh.js';
 
 
 //  ---
@@ -112,7 +112,7 @@ Cmd.prototype.execute = function() {
     cmd = this;
 
     // Verify we can find the test runner script.
-    testpath = CLI.expandPath(path.join('~lib_root/', Cmd.DEFAULT_RUNNER));
+    testpath = CLI.expandPath(Cmd.DEFAULT_RUNNER);
     if (!sh.test('-e', testpath)) {
         this.log('cannot find runner at: ' + testpath);
         return;

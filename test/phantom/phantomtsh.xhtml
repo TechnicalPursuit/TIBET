@@ -41,7 +41,8 @@ function init() {
         location;
 
     // The harness can boot from either inside a project or within the library
-    // itself. As a result we need to adjust approot based on context.
+    // itself. As a result we need to adjust approot based on context. NOTE that
+    // the ~/ syntax specifies 'launch root' which is always computed.
     location = window.location.toString();
     libroot = '~/../..';
     if (/node_modules/.test(location)) {

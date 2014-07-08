@@ -5,6 +5,6 @@
         "dna": "{{dna}}"
     },
     "path": {
-      "app.inf": "~/attachments/TIBET-INF"
+      "app.inf": "~app/attachments/TIBET-INF"
     }
 }

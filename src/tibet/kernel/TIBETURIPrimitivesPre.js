@@ -207,7 +207,7 @@ function(aPath) {
         return TP.sys.getAppHead();
     } else if (path === '~app') {
         return TP.sys.getAppRoot();
-    } else if (path === '~tibet') {
+    } else if (path === '~lib') {
         return TP.sys.getLibRoot();
     } else if (path.indexOf('~/') === 0) {
         //  Note here how we also slice off the leading slash so that
@@ -216,11 +216,11 @@ function(aPath) {
     } else if (path.indexOf('~app/') === 0) {
         //  Note here how we also slice off the leading slash so that
         //  TP.uriJoinPaths() doesn't think 'path' is an absolute path.
-        path = TP.uriJoinPaths(TP.sys.getAppRoot(), path.slice(2));
-    } else if (path.indexOf('~tibet/') === 0) {
+        path = TP.uriJoinPaths(TP.sys.getAppRoot(), path.slice(5));
+    } else if (path.indexOf('~lib/') === 0) {
         //  Note here how we also slice off the leading slash so that
         //  TP.uriJoinPaths() doesn't think 'path' is an absolute path.
-        path = TP.uriJoinPaths(TP.sys.getLibRoot(), path.slice(7));
+        path = TP.uriJoinPaths(TP.sys.getLibRoot(), path.slice(5));
     } else {
         arr = path.match(/~([^\/]*)\/(.*)/);
         if (TP.notValid(arr)) {
@@ -1391,23 +1391,20 @@ function(aPath, resourceOnly) {
     //  with the path portion extracted we can check for the most common
     //  cases now, which are those involving ~ references (otherwise why use
     //  a TIBET URI :))
-    if (path === '~tibet' || path === '~lib') {
-        return TP.sys.getLibRoot();
-    } else if (path === '~app') {
+    if (path === '~app') {
         return TP.sys.getAppRoot();
+    } else if (path === '~lib') {
+        return TP.sys.getLibRoot();
     } else if (path === '~') {
         return TP.sys.getAppHead();
     } else if (path === '/') {
         return TP.sys.getLaunchRoot();
-    } else if (path.indexOf('~tibet/') === 0) {
-        arr = path.match(/~tibet\/(.*)/);
-        path = TP.uriJoinPaths(TP.sys.getLibRoot(), arr.last());
-    } else if (path.indexOf('~lib/') === 0) {
-        arr = path.match(/~lib\/(.*)/);
-        path = TP.uriJoinPaths(TP.sys.getLibRoot(), arr.last());
     } else if (path.indexOf('~app/') === 0) {
         arr = path.match(/~app\/(.*)/);
         path = TP.uriJoinPaths(TP.sys.getAppRoot(), arr.last());
+    } else if (path.indexOf('~lib/') === 0) {
+        arr = path.match(/~lib\/(.*)/);
+        path = TP.uriJoinPaths(TP.sys.getLibRoot(), arr.last());
     } else if (path.indexOf('~/') === 0) {
         arr = path.match(/~\/(.*)/);
         path = TP.uriJoinPaths(TP.sys.getAppHead(), arr.last());

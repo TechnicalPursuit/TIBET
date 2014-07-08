@@ -125,7 +125,7 @@ A final TIBET extension, the tibet: scheme, allows you to use what we call
 current application's environment and configuration parameters. A common use
 of this is to avoid defining whether a resource is local or remote. Instead
 TIBET can resolve the "root" of the URI when needed. A leading ~ is a form
-of convenient shorthand for many tibet: URIs including ~app/... and ~tibet/...
+of convenient shorthand for many tibet: URIs including ~app/... and ~lib/...
 which represent your application's root directory and the TIBET library your
 application is using respectively.
 

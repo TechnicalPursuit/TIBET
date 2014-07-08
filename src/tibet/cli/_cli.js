@@ -411,41 +411,23 @@ CLI.expandPath = function(aPath) {
  * @return {string} The application root directory.
  */
 CLI.getAppRoot = function() {
-
-    var cwd;        // Where are we being run?
-    var file;       // What file are we looking for?
-
-    if (this.config.app_root) {
-        return this.config.app_root;
-    }
-
-    cwd = process.cwd();
-    file = this.PROJECT_FILE;
-
-    // Walk the directory path from cwd "up" checking for the signifying file
-    // which tells us we're in a TIBET project.
-    while (cwd.length > 0) {
-        if (sh.test('-f', path.join(cwd, file))) {
-            this.config.app_root = cwd;
-            break;
-        }
-        cwd = cwd.slice(0, cwd.lastIndexOf(path.sep));
-    }
-
-    return this.config.app_root;
+    this.initPackage();
+    return this._package.getAppRoot();
 };
 
 
 /**
- * Returns the application root directory, the path where the PROJECT_FILE is
- * found. This path is then used by many commands as a "root" for relative path
- * computations.
- * @return {string} The application root directory.
+ * Returns the application launch root also referred to as the 'app head'. This
+ * is the location where the * tibet.json and/or package.json files are found
+ * for the current context. This value is always computed and never set via
+ * property values. The virtual path for this root is '~' or '~/'. The search
+ * for this location works upward from the current directory to attempt to find
+ * either a PROJECT_FILE or NPM_FILE. If that fails the search is done relative
+ * to the module.filename, ie. the _Package.js file location itself.
  */
-CLI.getAppRoot = function() {
+CLI.getLaunchRoot = function() {
     this.initPackage();
-
-    return this._package.getAppRoot();
+    return this._package.getLaunchRoot();
 };
 
 
@@ -457,7 +439,6 @@ CLI.getAppRoot = function() {
  */
 CLI.getLibRoot = function() {
     this.initPackage();
-
     return this._package.getLibRoot();
 };
 

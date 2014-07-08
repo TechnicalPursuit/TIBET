@@ -1801,9 +1801,9 @@ function(aPath) {
      *     relative and are expanded as follows.
      *
      *     When a ~ is used as the start of a path the expansion is done
-     *     relative to the current HOME directory for the application or the
-     *     default value of TP.sys.getAppRoot() or the library root if ~tibet is
-     *     specified.
+     *     relative to the current launch directory for the application, the
+     *     default value of TP.sys.getAppRoot() for ~app, or the library root if
+     *     ~lib is specified.
      *
      *     Paths starting with an = followed by either - or a digit will be
      *     resolved to an entry in the path stack and replaced with that entry's
@@ -1861,18 +1861,18 @@ function(aPath) {
     }
 
     //  handle leading characters a bit differently since they're special
-    if (aPath.toLowerCase().startsWith('~tibet/')) {
+    if (aPath.startsWith('~app/')) {
         //  NB: We slice off the slash here too, so that TP.uriJoinPaths()
         //  doesn't think its absolute.
-        url = TP.uriJoinPaths(TP.sys.getLibRoot(), aPath.slice(7));
-    } else if (aPath.startsWith('~app/')) {
+        url = TP.uriJoinPaths(home, aPath.slice(5));
+    } else if (aPath.toLowerCase().startsWith('~lib/')) {
         //  NB: We slice off the slash here too, so that TP.uriJoinPaths()
         //  doesn't think its absolute.
-        url = TP.uriJoinPaths(home, aPath.slice(2));
+        url = TP.uriJoinPaths(TP.sys.getLibRoot(), aPath.slice(5));
     } else if (aPath.startsWith('~/')) {
         //  NB: We slice off the slash here too, so that TP.uriJoinPaths()
         //  doesn't think its absolute.
-        url = TP.uriJoinPaths(TP.sys.getAppHead(), aPath.slice(7));
+        url = TP.uriJoinPaths(TP.sys.getAppHead(), aPath.slice(2));
     } else if (aPath.first() === '=') {
         arr = aPath.split('/');
         ndx = arr.shift().slice(1);

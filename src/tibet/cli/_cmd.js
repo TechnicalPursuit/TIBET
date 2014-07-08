@@ -82,6 +82,19 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, CLI.PARSE_OPTIONS);
 //  ---
 
 /**
+ * Returns the configuration values currently in force. Leverages the logic in a
+ * TIBET Package object for the loading/processing of default TIBET parameters.
+ * If no property is provided the entire set of configuration values is
+ * returned.
+ * @param {string} property A specific property value to check.
+ * @return {Object} The property value, or the entire configuration object.
+ */
+Cmd.prototype.getcfg = function(property) {
+    return CLI.getcfg(property);
+};
+
+
+/**
  * Outputs expanded help text if available, otherwise outputs usage().
  */
 Cmd.prototype.help = function() {

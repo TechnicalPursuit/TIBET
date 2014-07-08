@@ -52,7 +52,7 @@ TP.core.TIBETURL (urn:tibet:*) is a TIBET-specific URL type which provides
 extensions to the general URI addressing model. In particular, TIBET URLs allow
 for dynamic resolution and targeting of objects in "browser space". TIBET URLs
 will be created when a virtual URI path is specified (i.e. one that uses a
-leading ~ prefix to create paths such as ~tibet/ or ~app/ which refer to "the
+leading ~ prefix to create paths such as ~lib/ or ~app/ which refer to "the
 TIBET library root" and "the current application root" respectively. See below
 for more information on virtual URIs.
 
@@ -79,7 +79,7 @@ named 'path.lib_xsl'. There are a number of shortcuts that can be used with
 virtual URIs:
 
     ~app    The application root
-    ~tibet  The library root
+    ~lib    The library root
 
 */
 
@@ -4755,9 +4755,9 @@ function(secondPath, filePath) {
      *     relative path is always produced with respect to a directory target.
      * @description Note that there is one special case to this process which
      *     revolves around how to resolve against paths which end with a file
-     *     reference. When dealing with ~tibet/foo.xml relative to ~tibet we can
+     *     reference. When dealing with ~lib/foo.xml relative to ~lib we can
      *     see it should be ./foo.xml, but what about when we have
-     *     ~tibet/foo.xml relative to ~tibet/bar.xml? Is that ./foo.xml or
+     *     ~lib/foo.xml relative to ~lib/bar.xml? Is that ./foo.xml or
      *     ../foo.xml. The answer depends on whether bar.xml is a file or
      *     directory reference, hence the flag.
      * @param {String} secondPath The path to be relative to.
@@ -6322,14 +6322,14 @@ function(schemeSpecificString) {
  *     Specific examples are:
  *
  *     tibet:///~app        app root
- *     tibet:///~tibet      lib root
+ *     tibet:///~lib        lib root
  *     tibet:///~lib_xsl    the library's xslt path
  *
  *     When using a TIBET URL of this form you can leave off the leading
  *     tibet:/// as in:
  *
  *     ~app         app root
- *     ~tibet       lib root
+ *     ~lib         lib root
  *     ~lib_xsl     the library's xslt path
  *
  *     Note that in these cases the canvas is empty so it defaults to the 'code

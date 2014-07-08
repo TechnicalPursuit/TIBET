@@ -91,18 +91,14 @@ Cmd.prototype.execute = function() {
         option = this.options._[1];
     }
 
-    if (CLI.notEmpty(option) && option.charAt(0) === '~') {
-        if (option === '~') {
-            option = 'path';
-        } else {
-            option = 'path.' + option.slice(1);
-        }
-    }
-
-    if (option === 'app_root') {
+    if (option === '~') {
+        cfg = CLI.getLaunchRoot();
+    } else if (option === '~app' || option === '~app_root') {
         cfg = CLI.getAppRoot();
-    } else if (option === 'lib_root') {
+    } else if (option === '~lib' || option === '~lib_root') {
         cfg = CLI.getLibRoot();
+    } else if (option && option.charAt(0) === '~') {
+        cfg = CLI.getcfg('path.' + option.slice(1));
     } else {
         cfg = CLI.getcfg(option);
     }
@@ -117,8 +113,9 @@ Cmd.prototype.execute = function() {
     // Object.keys will throw for anything other than Object/Array...
     try {
         if (CLI.isEmpty(option) || option.indexOf('path') === 0) {
-            str += '\t"app_root": "' + CLI.getAppRoot() + '",\n';
-            str += '\t"lib_root": "' + CLI.getLibRoot() + '",\n';
+            str += '\t"~": "' + CLI.getLaunchRoot() + '",\n';
+            str += '\t"~app": "' + CLI.getAppRoot() + '",\n';
+            str += '\t"~lib": "' + CLI.getLibRoot() + '",\n';
         }
         Object.keys(cfg).sort().forEach(function(key) {
             str += '\t"' + key.replace(/_/g, '.') + '": "' + cfg[key] + '",\n';
