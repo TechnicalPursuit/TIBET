@@ -289,6 +289,18 @@ function(anEvent) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('showingEvalMark',
+function() {
+
+    /**
+     * @name showingEvalMark
+     */
+
+    return TP.isValid(this.get('currentEvalMarker'));
+});
+
+//  ------------------------------------------------------------------------
 //  View Management Methods
 //  ------------------------------------------------------------------------
 
@@ -1168,6 +1180,155 @@ function() {
     
         this.set('currentEvalMarker', this.markEvalRange(newEvalRange));
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('shiftEvalMark',
+function(direction, endPoint) {
+
+    /**
+     * @name shiftEvalMark
+     * @synopsis
+     * @param
+     * @param
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var currentEvalMarker,
+    
+        cimRange,
+
+        editor,
+        currentLineInfo,
+        lastLineInfo;
+
+    if (TP.notValid(currentEvalMarker = this.get('currentEvalMarker'))) {
+        return this;
+    }
+
+    cimRange = currentEvalMarker.find();
+    if (TP.notValid(cimRange)) {
+        return this;
+    }
+
+    editor = this.get('textInput').$getEditorInstance();
+
+    lastLineInfo = editor.lineInfo(editor.lastLine());
+
+    cimRange.anchor = cimRange.from;
+    cimRange.head = cimRange.to;
+
+    if (direction === TP.LEFT) {
+
+        if (endPoint === TP.HEAD) {
+            if (cimRange.anchor.line === cimRange.head.line &&
+                cimRange.head.ch === cimRange.anchor.ch + 1) {
+                    return this;
+            }
+        } else {
+
+            if (cimRange.anchor.line === 0 &&
+                cimRange.anchor.ch === 0) {
+                    return this;
+            }
+
+            if (cimRange.anchor.line === cimRange.head.line &&
+                cimRange.anchor.ch === cimRange.head.ch + 1) {
+                    return this;
+            }
+        }
+
+        if (cimRange[endPoint].ch === 0) {
+
+            //  If the line isn't 0, jump to the previous line
+            if (cimRange[endPoint].line !== 0) {
+                cimRange[endPoint].line = Math.max(
+                                        cimRange[endPoint].line - 1,
+                                        0);
+                currentLineInfo = editor.lineInfo(
+                                        cimRange[endPoint].line);
+                cimRange[endPoint].ch = currentLineInfo.text.length - 1;
+            }
+        } else {
+            cimRange[endPoint].ch -= 1;
+        }
+    }
+
+    if (direction === TP.RIGHT) {
+
+        if (endPoint === TP.HEAD) {
+            if (cimRange.head.line === lastLineInfo.line &&
+                cimRange.head.ch === lastLineInfo.ch) {
+                    return this;
+            }
+
+            if (cimRange.anchor.line === cimRange.head.line &&
+                cimRange.head.ch === cimRange.anchor.ch - 1) {
+                    return this;
+            }
+        } else {
+            if (cimRange.anchor.line === cimRange.head.line &&
+                cimRange.anchor.ch === cimRange.head.ch - 1) {
+                    return this;
+            }
+        }
+
+        currentLineInfo = editor.lineInfo(
+                                cimRange[endPoint].line);
+
+        if (cimRange[endPoint].ch === currentLineInfo.text.length - 1) {
+            //  If the line isn't the last, jump to the next line
+            if (cimRange[endPoint].line !== lastLineInfo.line) {
+                cimRange[endPoint].line = Math.min(
+                                        cimRange[endPoint].line + 1,
+                                        lastLineInfo.line);
+                cimRange[endPoint].ch = 0;
+            } else {
+                //  Otherwise, let the very last character be selected
+                cimRange[endPoint].ch += 1;
+            }
+        } else {
+            cimRange[endPoint].ch += 1;
+        }
+    }
+
+    if (direction === TP.UP) {
+
+        if (endPoint === TP.HEAD) {
+            if (cimRange.head.line === cimRange.anchor.line) {
+                return this;
+            }
+        }
+
+        if (cimRange[endPoint].line === 0) {
+            return this;
+        }
+
+        cimRange[endPoint].line -= 1;
+    }
+
+    if (direction === TP.DOWN) {
+
+        if (endPoint === TP.HEAD) {
+        } else {
+            if (cimRange.anchor.line === cimRange.head.line) {
+                return this;
+            }
+        }
+
+        if (cimRange[endPoint].line === lastLineInfo.line) {
+            return this;
+        }
+
+        cimRange[endPoint].line += 1;
+    }
+
+    currentEvalMarker.clear();
+
+    this.set('currentEvalMarker', this.markEvalRange(cimRange));
 
     return this;
 });

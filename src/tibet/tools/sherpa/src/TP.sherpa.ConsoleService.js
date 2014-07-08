@@ -310,6 +310,15 @@ function(anEvent) {
         case 'DOM_Shift_Left_Down':
         case 'DOM_Shift_Left_Up':
 
+        case 'DOM_Shift_Alt_Down_Down':
+        case 'DOM_Shift_Alt_Down_Up':
+        case 'DOM_Shift_Alt_Up_Down':
+        case 'DOM_Shift_Alt_Up_Up':
+        case 'DOM_Shift_Alt_Right_Down':
+        case 'DOM_Shift_Alt_Right_Up':
+        case 'DOM_Shift_Alt_Left_Down':
+        case 'DOM_Shift_Alt_Left_Up':
+
         case 'DOM_Shift_Backspace_Down':
         case 'DOM_Shift_Backspace_Press':
         case 'DOM_Shift_Backspace_Up':
@@ -334,9 +343,11 @@ function(anEvent) {
      * @param {Event} anEvent The native event that fired.
      */
 
-    var keyname;
+    var keyname,
+        inputCell;
 
     keyname = TP.domkeysigname(anEvent);
+    inputCell = this.get('$consoleGUI');
 
     switch (keyname) {
         case 'DOM_Shift_Enter_Up':
@@ -344,11 +355,55 @@ function(anEvent) {
             break;
 
         case 'DOM_Shift_Down_Up':
-            this.handleHistoryNext(anEvent);
+            if (inputCell.showingEvalMark()) {
+                inputCell.shiftEvalMark(TP.DOWN, TP.ANCHOR);
+            } else {
+                this.handleHistoryNext(anEvent);
+            }
             break;
 
         case 'DOM_Shift_Up_Up':
-            this.handleHistoryPrev(anEvent);
+            if (inputCell.showingEvalMark()) {
+                inputCell.shiftEvalMark(TP.UP, TP.ANCHOR);
+            } else {
+                this.handleHistoryPrev(anEvent);
+            }
+            break;
+
+        case 'DOM_Shift_Right_Up':
+            if (inputCell.showingEvalMark()) {
+                inputCell.shiftEvalMark(TP.RIGHT, TP.ANCHOR);
+            }
+            break;
+
+        case 'DOM_Shift_Left_Up':
+            if (inputCell.showingEvalMark()) {
+                inputCell.shiftEvalMark(TP.LEFT, TP.ANCHOR);
+            }
+            break;
+
+        case 'DOM_Shift_Alt_Down_Up':
+            if (inputCell.showingEvalMark()) {
+                inputCell.shiftEvalMark(TP.DOWN, TP.HEAD);
+            }
+            break;
+
+        case 'DOM_Shift_Alt_Up_Up':
+            if (inputCell.showingEvalMark()) {
+                inputCell.shiftEvalMark(TP.UP, TP.HEAD);
+            }
+            break;
+
+        case 'DOM_Shift_Alt_Right_Up':
+            if (inputCell.showingEvalMark()) {
+                inputCell.shiftEvalMark(TP.RIGHT, TP.HEAD);
+            }
+            break;
+
+        case 'DOM_Shift_Alt_Left_Up':
+            if (inputCell.showingEvalMark()) {
+                inputCell.shiftEvalMark(TP.LEFT, TP.HEAD);
+            }
             break;
 
         case 'DOM_Shift_Backspace_Up':
