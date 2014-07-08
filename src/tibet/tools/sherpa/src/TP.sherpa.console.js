@@ -305,10 +305,8 @@ function() {
 
     textInput = this.get('textInput');
 
-    newHeight = Math.min(textInput.getEditorHeight(), 500);
-
-    TP.elementSetHeight(this.getNativeNode(), newHeight);
-    TP.elementSetHeight(textInput.getNativeNode(), newHeight);
+    newHeight = textInput.getEditorHeight();
+    this.setHeight(newHeight);
 
     var body = textInput.getNativeContentDocument().body;
     body.scrollTop = body.scrollHeight;
@@ -364,6 +362,38 @@ function() {
     body.scrollTop = body.scrollHeight;
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('toggleMaximized',
+function() {
+
+    /**
+     * @name toggleMaximized
+     * @synopsis
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var textInput,
+        editorElem;
+
+    textInput = this.get('textInput');
+    editorElem = TP.byCSS('.CodeMirror',
+                            textInput.getNativeContentDocument(),
+                            true);
+
+    if (this.hasAttribute('maximized')) {
+        this.removeAttribute('maximized');
+        TP.elementRemoveAttribute(editorElem, 'maximized');
+    } else {
+        this.setAttribute('maximized', true);
+        TP.elementSetAttribute(editorElem, 'maximized', 'true');
+    }
+
+    this.focusInput();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -15,6 +15,8 @@ sherpa|console
 
     height: 18px;
 
+    max-height: calc(100% - 60px);
+
     border: solid 1px rgba(0, 0, 0, 0.1);
     border-radius: 6px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
@@ -23,6 +25,12 @@ sherpa|console
 sherpa|console:not([pclass|hidden])
 {
     display: block;
+}
+
+sherpa|console[maximized]
+{
+    top: 30px;
+    height: auto !important;
 }
 
 sherpa|console > xctrls|codeeditor

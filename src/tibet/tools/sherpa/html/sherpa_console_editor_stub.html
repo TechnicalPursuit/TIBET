@@ -105,6 +105,16 @@ body
 	overflow-y: hidden;
 }
 
+.CodeMirror[maximized]
+{
+    height: 100%;
+}
+.CodeMirror[maximized] .CodeMirror-scroll
+{
+	overflow-x: auto;
+	overflow-y: auto;
+}
+
 .output
 {
     display: inline-block;
@@ -121,7 +131,6 @@ body
     outline: solid 1px yellow;
     font-size: 11px;
 }
-
 .output-text
 {
     margin-left: 5px;
