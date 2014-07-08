@@ -9,7 +9,7 @@
     },
     "rules": {
         "consistent-return": 0,
-        "quotes": [2, "single"],
+        "quotes": [1, "single"],
         "strict": 0
     }
 }
