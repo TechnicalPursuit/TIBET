@@ -447,9 +447,9 @@ CLI.getAppRoot = function() {
  * either a PROJECT_FILE or NPM_FILE. If that fails the search is done relative
  * to the module.filename, ie. the _Package.js file location itself.
  */
-CLI.getLaunchRoot = function() {
+CLI.getAppHead = function() {
     this.initPackage();
-    return this._package.getLaunchRoot();
+    return this._package.getAppHead();
 };
 
 

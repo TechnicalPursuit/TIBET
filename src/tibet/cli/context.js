@@ -76,7 +76,7 @@ Cmd.prototype.execute = function() {
     context.in_library = CLI.inLibrary(Cmd);
     context.in_project = CLI.inProject(Cmd);
 
-    context['~'] = CLI.getLaunchRoot();
+    context['~'] = CLI.getAppHead();
     context['~app'] = CLI.getAppRoot();
     context['~lib'] = CLI.getLibRoot();
 

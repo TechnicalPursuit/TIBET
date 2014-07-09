@@ -121,7 +121,7 @@ Cmd.prototype.execute = function() {
 //          array of parameters given to spawn() calls below.
 
     // Make sure we work from the launch (and hence server.js) location.
-    process.chdir(CLI.getLaunchRoot());
+    process.chdir(CLI.getAppHead());
 
     // If there's no server.js assume a 'noserver' template or 'couchdb'
     // template of some sort and default to opening the index.html.

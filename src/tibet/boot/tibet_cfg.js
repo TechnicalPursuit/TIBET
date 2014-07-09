@@ -180,17 +180,15 @@ TP.sys.setcfg('log.reporter', 'bootui');
 //  code roots
 //  ---
 
-//  what is the base directory for computing application package paths?
-//  default is empty to support computation from the load url
-TP.sys.setcfg('boot.approot', null);
-
-//  what is the base directory for library package path expansion?
-//  default is empty to support computation from the app root and boot.tibet*
-//  parameters found below.
-TP.sys.setcfg('boot.libroot', null);
-
-TP.sys.setcfg('boot.npm_dir', 'node_modules');
-TP.sys.setcfg('boot.npm_file', 'package.json');
+//  what approach should we default to when no other data is available for lib
+//  root? 'apphead' sets it to app_head. 'approot' sets it to app_root.
+//  'location' sets it to the last collection/directory on window.location.
+//  'indexed' uses a string to locate an indexed point on window.location.
+//  'tibetdir' will look for root + tibetdir + tibetlib. 'frozen' will look for
+//  root + tibetinf + tibetlib. 'script' will check the loader's script src.
+//  When using 'indexed' you need to set boot.libtest to the test string or it
+//  will default to boot.tibetlib.
+TP.sys.setcfg('boot.libcomp', 'script');
 
 //  these three values provide search data for the getAppHead routine, which is
 //  leveraged by both app root and lib root computations.
@@ -203,17 +201,6 @@ TP.sys.setcfg('boot.tibetlib', 'tibet');
 TP.sys.setcfg('boot.tibetinit', 'tibet_init');
 //  how deep under lib_root is the tibet_init file?
 TP.sys.setcfg('boot.initoffset', '../../..');
-
-
-//  what approach should we default to when no other data is available for lib
-//  root? 'apphead' sets it to app_head. 'approot' sets it to app_root.
-//  'location' sets it to the last collection/directory on window.location.
-//  'indexed' uses a string to locate an indexed point on window.location.
-//  'tibetdir' will look for root + tibetdir + tibetlib. 'frozen' will look for
-//  root + tibetinf + tibetlib. 'script' will check the loader's script src.
-//  When using 'indexed' you need to set boot.libtest to the test string or it
-//  will default to boot.tibetlib.
-TP.sys.setcfg('boot.libcomp', 'script');
 
 
 //  ---
@@ -591,6 +578,10 @@ TP.sys.setcfg('path.tdc_src', '~tdc_root/src');
 //  Sherpa (external IDE components).
 TP.sys.setcfg('path.ide_root', '~lib_src/tibet/tools/sherpa');
 TP.sys.setcfg('path.ide_src', '~ide_root/src');
+
+//  Node.js project information.
+TP.sys.setcfg('path.npm_dir', 'node_modules');
+TP.sys.setcfg('path.npm_file', 'package.json');
 
 
 //  ---
