@@ -242,6 +242,9 @@
     };
 
     /**
+     * NOTE that if you change the 'init' here so the final file name changes
+     * from tibet_init you need to update tibet_cfg.js to have the new value for
+     * the 'tibetinit' flag. Also adjust the offset if the file target moves.
      */
     targets.rollup_init = function(make) {
         helpers.rollup(make,
