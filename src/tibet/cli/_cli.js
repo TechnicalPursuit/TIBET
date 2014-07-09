@@ -646,9 +646,8 @@ CLI.initPackage = function() {
     Package = require('./_Package');
     this._package = new Package(this.options);
 
-    // TODO: clean this up, messy non-encapsulation.
-    this.config.tibet = this._package.tibet;
-    this.config.npm = this._package.npm;
+    this.config.tibet = this._package.getProjectConfig();
+    this.config.npm = this._package.getPackageConfig();
 };
 
 
@@ -944,19 +943,13 @@ CLI.runViaGrunt = function(command) {
         { cwd: this.getAppRoot() }
     );
 
-    // TODO: add more handlers here for signal handling, cleaner shutdown, etc.
-
     child.stdout.on('data', function(data) {
-        // Why the '' + ?. Apparently to 'copy' the string :)
         var msg = '' + data;
-
         this.log(msg);
     });
 
     child.stderr.on('data', function(data) {
-        // Why the '' + ?. Apparently to 'copy' the string :)
         var msg = '' + data;
-
         this.error(msg);
     });
 
@@ -990,19 +983,13 @@ CLI.runViaGulp = function(command) {
         { cwd: this.getAppRoot() }
     );
 
-    // TODO: add more handlers here for signal handling, cleaner shutdown, etc.
-
     child.stdout.on('data', function(data) {
-        // Why the '' + ?. Apparently to 'copy' the string :)
         var msg = '' + data;
-
         this.log(msg);
     });
 
     child.stderr.on('data', function(data) {
-        // Why the '' + ?. Apparently to 'copy' the string :)
         var msg = '' + data;
-
         this.error(msg);
     });
 
