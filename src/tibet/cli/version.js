@@ -68,6 +68,8 @@ Cmd.prototype.execute = function() {
 
     var msg;
 
+// TODO: output both app and lib when possible, and prefix with name.
+
     msg = 'Unable to determine TIBET version.';
     try {
         this.info(CLI.getcfg('npm.version') || msg);

@@ -1920,16 +1920,14 @@ Package.prototype.setProjectOptions = function() {
 
     // We need app root to load tibet.json, which hopefully has additional
     // configuration information we can leverage such as the lib_root path.
-    try {
-        root = this.getAppRoot();
-        if (isEmpty(root)) {
-            // If we're not in a project that's ok. Not everything
-            // we'll do with a Package instance relies on being in a project.
-            return;
-        }
-    } catch (e) {
-        // Ignore if we're simply not in a project that's ok. Not everything
-        // we'll do with a Package instance relies on being in a project.
+    root = this.getAppRoot();
+    if (isEmpty(root)) {
+        // We can use package and project data from the library for some
+        // features such as the CLI's version command.
+        root = this.getLibRoot();
+    }
+
+    if (isEmpty(root)) {
         return;
     }
 
