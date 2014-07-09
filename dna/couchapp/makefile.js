@@ -55,7 +55,7 @@ targets.createdb = function(make) {
     // TODO: pull command line arguments if they're here. We need to support
     // changing the database url and the database name.
 
-    db_url = 'http://127.0.0.1:5984';
+    db_url = 'http://0.0.0.0:5984';
     db_name = make.getProjectName();
 
     make.log('creating CouchDB database: ' + db_name);
@@ -84,7 +84,7 @@ targets.pushdb = function(make) {
     // TODO: pull command line arguments if they're here. We need to support
     // changing the database url and the database name.
 
-    db_url = 'http://127.0.0.1:5984';
+    db_url = 'http://0.0.0.0:5984';
     db_name = make.getProjectName();
 
     make.log('pushing to CouchDB database: ' + db_name);
@@ -119,7 +119,7 @@ targets.removedb = function(make) {
     // TODO: pull command line arguments if they're here. We need to support
     // changing the database url and the database name.
 
-    db_url = 'http://127.0.0.1:5984';
+    db_url = 'http://0.0.0.0:5984';
     db_name = make.getProjectName();
 
     response = make.prompt('Delete the database? Enter \'yes\' to confirm: ');

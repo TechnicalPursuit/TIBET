@@ -54,7 +54,7 @@ var parser = new dom.DOMParser(),
  */
 
 /**
- * Removes a module from the cache.
+ * Removes a module from the npm require cache.
  */
 require.uncache = function (moduleName) {
     // Run over the cache looking for the files
@@ -65,7 +65,7 @@ require.uncache = function (moduleName) {
 };
 
 /**
- * Runs over the cache to search for all the cached files.
+ * Runs over the npm cache to search for a cached module.
  */
 require.searchCache = function (moduleName, callback) {
     // Resolve the module identified by the specified name
@@ -141,8 +141,15 @@ var Package = function(options) {
         // issues, either we don't have a valid lib_root or there's a syntax
         // error or other path issue relative to the baseline config file.
         if (this.getLibRoot()) {
-            this.error('Error loading TIBET baseline config data: ' +
-                e.message);
+            // Short-term patch for running prior to a full publication to the
+            // public npm repository. Until then you must use tibet init --link.
+            if (/node_modules\/tibet/.test(e.message)) {
+                this.error('Error loading baseline config. ' +
+                    'Did you `tibet init --link` ?');
+            } else {
+                this.error('Error loading baseline config: ' +
+                    e.message);
+            }
         }
         return this;
     }
@@ -1017,6 +1024,7 @@ Package.prototype.getAppRoot = function() {
  * found. The search is a bit complex because we want to give precedence to
  * option settings and application-specific settings rather than simply working
  * from the assumption that we're using the library containing the current CLI.
+ * @return {String} The library root.
  */
 Package.prototype.getLibRoot = function() {
     var app_root,
@@ -1276,6 +1284,24 @@ Package.prototype.getFullPath = function(anElement, aPath) {
         }
         elem = elem.parentNode;
     }
+};
+
+
+/**
+ * Returns the package configuration data from the NPM_FILE.
+ * @return {Object} Returns the npm package.json content.
+ */
+Package.prototype.getPackageConfig = function() {
+    return this.npm;
+};
+
+
+/**
+ * Returns the project configuration data from the PROJECT_FILE.
+ * @return {Object} Returns the tibet.json content.
+ */
+Package.prototype.getProjectConfig = function() {
+    return this.tibet;
 };
 
 

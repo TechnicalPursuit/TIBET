@@ -33,17 +33,17 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
  *     XMLHttpRequest object.
  * @examples
  // construct a simple request, this one's for Flickr:
- *     
+ *
  *     request = TP.sig.XMLRPCRequest.construct(); request.atPut('uri',
  *     'http://api.flickr.com/services/xmlrpc/');
  *     request.atPut('method','flickr.test.echo'); request.atPut('body',
  *     TP.hc('api_key', '67769adc70ee70b5f666167c9d3b11db', 'test','echo' ));
  *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
- *     
+ *
  *     TP.log(aResponse.getResult(), TP.LOG, arguments); });
- *     
+ *
  *     // activate the request:
- *     
+ *
  *     request.fire();
  * @todo
  */
@@ -130,14 +130,14 @@ function(aRequest) {
     url = TP.uc(aRequest.at('uri'));
     if (TP.isURI(url)) {
         //  have to watch out here for a couple of potential gotchas. First,
-        //  we don't really want to use 'localhost', better to use 127.0.0.1
+        //  we don't really want to use 'localhost', better to use 0.0.0.0
         //  and second we don't want to throw away the port number if it's
         //  not 80.
         port = url.get('port');
         port = port === 80 ? '' : ':' + port;
 
         host = url.get('host');
-        host = host === 'localhost' ? '127.0.0.1' : host;
+        host = host === 'localhost' ? '0.0.0.0' : host;
 
         headers.atPut('Host', host + port);
     }

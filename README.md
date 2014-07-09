@@ -15,7 +15,7 @@ target="_blank">semantic markup</a>, significantly scaling your
 development while improving maintainability.
 
 ### TIBET is mobile-ready.
-TIBET is designed to run offline, sync online, and limit reliance 
+TIBET is designed to run offline, sync online, and limit reliance
 on networks, servers, or anything else your users may not have access to
 when they need your application.
 
@@ -61,7 +61,7 @@ TIBET will self-test to confirm a successful installation.
   npm start
 </pre>
 3. Open your new application's home page (<a
-   href="http://127.0.0.1:1407/index.html" target="_blank">index.html</a>) in an
+   href="http://0.0.0.0:1407/index.html" target="_blank">index.html</a>) in an
 HTML5 web browser.
 
 Congratulations! You're running a new TIBET application with the <a
