@@ -31,6 +31,14 @@ Cmd.prototype = new Parent();
 //  Type Attributes
 //  ---
 
+
+/**
+ * The context viable for this command.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+
+
 /**
  * The default path to the TIBET-specific phantomjs test runner.
  * @type {String}
@@ -79,7 +87,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [--profile <url>] [--script <tsh>]';
+Cmd.prototype.USAGE = 'tibet test [--profile <url>] [--config <params>] [--script <tsh>]';
 
 //  ---
 //  Instance Methods
@@ -93,11 +101,11 @@ Cmd.prototype.execute = function() {
     var sh;         // The shelljs module.
     var child;      // The child_process module.
     var process;    // The spawned child process.
-    var path;       // The path module.
     var testpath;   // Path to the TIBET test runner script.
     var profile;    // The test profile to use.
     var script;     // The test script to run.
     var cmd;        // Local binding variable.
+    var arglist;    // Array of parameters to spawn.
 
     // We can run in the TIBET library, or in a project, but not in an
     // un-initialized project.
@@ -105,7 +113,6 @@ Cmd.prototype.execute = function() {
         return CLI.notInitialized();
     }
 
-    path = require('path');
     sh = require('shelljs');
     child = require('child_process');
 
@@ -134,10 +141,13 @@ Cmd.prototype.execute = function() {
         profile = profile || '~lib/test/phantom/phantom';
     }
 
+    arglist = [testpath, '--profile', profile, '--script', script];
+    if (CLI.notEmpty(this.options.config)) {
+        arglist.push('--config', this.options.config);
+    }
+
     // Run a manufactured tsh:test command just as we would in the TDC/Sherpa.
-    process = child.spawn('phantomjs', [testpath,
-        '--profile', profile,
-        '--script', script]);
+    process = child.spawn('phantomjs', arglist);
 
     process.stdout.on('data', function(data) {
         var msg = data.slice(0, -1);

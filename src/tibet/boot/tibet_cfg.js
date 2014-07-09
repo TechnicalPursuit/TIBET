@@ -189,24 +189,31 @@ TP.sys.setcfg('boot.approot', null);
 //  parameters found below.
 TP.sys.setcfg('boot.libroot', null);
 
-//  lib root is computed from ~app + tibetdir + tibetlib. Hence the default here
-//  is that we expect lib_root to be ~app/node_modules/tibet since we set up for
-//  the default template cloned via `tibet clone`. For non-Node.js projects we
-//  typically suggest using ~app/TIBET-INF/tibet.
+TP.sys.setcfg('boot.npm_dir', 'node_modules');
+TP.sys.setcfg('boot.npm_file', 'package.json');
+
+//  these three values provide search data for the getAppHead routine, which is
+//  leveraged by both app root and lib root computations.
 TP.sys.setcfg('boot.tibetdir', 'node_modules');
+TP.sys.setcfg('boot.tibetinf', 'TIBET-INF');
 TP.sys.setcfg('boot.tibetlib', 'tibet');
 
-//  Default information used to find the tibet.xml file.
-TP.sys.setcfg('boot.tibetinf', 'TIBET-INF');
+//  text pattern matching the init file used to check script tags during lib
+//  root computation if no other method is specified.
+TP.sys.setcfg('boot.tibetinit', 'tibet_init');
+//  how deep under lib_root is the tibet_init file?
+TP.sys.setcfg('boot.initoffset', '../../..');
 
-//  Many web servers return 404 if you ask about directories. We have to ask for
-//  a real file so we check for a file unlikely to be typical outside of TIBET.
-TP.sys.setcfg('boot.tibetyyz', 'yyz');
 
-//  which computation approach should we use first? there are three and we try
-//  to avoid 404s for inappropriate attempts. choices here are 'tibetdir',
-//  'tibetinf', and 'tibetapp' (for internal apps).
-TP.sys.setcfg('boot.libcomp', 'tibetdir');
+//  what approach should we default to when no other data is available for lib
+//  root? 'apphead' sets it to app_head. 'approot' sets it to app_root.
+//  'location' sets it to the last collection/directory on window.location.
+//  'indexed' uses a string to locate an indexed point on window.location.
+//  'tibetdir' will look for root + tibetdir + tibetlib. 'frozen' will look for
+//  root + tibetinf + tibetlib. 'script' will check the loader's script src.
+//  When using 'indexed' you need to set boot.libtest to the test string or it
+//  will default to boot.tibetlib.
+TP.sys.setcfg('boot.libcomp', 'script');
 
 
 //  ---
@@ -1403,6 +1410,8 @@ TP.sys.setcfg('tibet.sherpa', false);
 //  the code frame. when booting in a single phase this page replaces the
 //  index file and booting has to be restarted by the page returned from
 //  your server on successful login.
+TP.sys.setcfg('tibet.indexpage', '~/index.html');
+
 TP.sys.setcfg('tibet.loginpage', '~app_html/login.html');
 
 TP.sys.setcfg('tibet.splashpage', '~app_html/splash.html');

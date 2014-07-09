@@ -29,6 +29,13 @@ Cmd.prototype = new Parent();
 //  Type Attributes
 //  ---
 
+/**
+ * The context viable for this command.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
+
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -57,9 +64,9 @@ Cmd.prototype.USAGE = 'tibet sample [args]';
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    if (this.argv) {
+    if (this.options) {
         this.info('\nArguments:\n');
-        this.info(JSON.stringify(this.argv));
+        this.info(JSON.stringify(this.options));
     }
 };
 

@@ -2471,7 +2471,7 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
     //  note the use of the 'current root' path here since we can't assume
     //  that this should be rooted against libroot or approot without help
     if (TP.boot.$notValid(aRoot)) {
-        root = TP.sys.getLaunchRoot();
+        root = TP.sys.getAppHead();
     } else {
         root = aRoot;
     }
@@ -7329,23 +7329,25 @@ TP.boot.getURLArguments = function(url) {
     args = {};
     params = hash.split('&');
     params.forEach(function(item) {
-      var key,
-          value;
+        var parts,
+            key,
+            value;
 
-      if (item.indexOf('=') !== TP.NOT_FOUND) {
-        key = item.slice(0, item.indexOf('='));
-        value = item.slice(item.indexOf('=') + 1);
-        // Remove quoting if found.
-        if ((value.length > 1) &&
-            (/^".*"$/.test(value) || /^'.*'$/.test(value))) {
-          value = value.slice(1, value.length - 1);
+        parts = item.split('=');
+        key = parts[0];
+        value = parts[1];
+
+        if (parts.length > 1) {
+            if ((value.length > 1) &&
+                    (/^".*"$/.test(value) || /^'.*'$/.test(value))) {
+                value = value.slice(1, -1);
+            }
+        } else {
+            key = item;
+            value = true;
         }
-      } else {
-        key = item;
-        value = true;
-      }
 
-      args[key] = TP.boot.$getArgumentPrimitive(value);
+        args[key] = TP.boot.$getArgumentPrimitive(value);
     });
 
     return args;
@@ -7405,9 +7407,12 @@ TP.boot.$getAppHead = function() {
      * @return {String} The computed path.
      */
 
-    var root,
-        path,
-        ndx;
+    var path,
+        offset,
+        parts,
+        keys,
+        key,
+        lib;
 
     if (TP.boot.$$apphead != null) {
         return TP.boot.$$apphead;
@@ -7417,16 +7422,47 @@ TP.boot.$getAppHead = function() {
     // (which means it won't work on Node.js etc by default).
     path = decodeURI(window.location.toString());
     path = path.split(/[#?]/)[0];
-    ndx = path.lastIndexOf('/');
-    if (ndx !== TP.NOT_FOUND) {
-        root = path.slice(0, ndx);
-        TP.boot.$$apphead = root;
 
-        return root;
+    // From a semantic viewpoint the app head can't be inside the library
+    // area, it has to be above it, typically where we'd think of app root
+    keys = [TP.sys.cfg('boot.tibetdir'), TP.sys.cfg('boot.tibetinf')];
+    len = keys.length;
+    for (i = 0; i < len; i++) {
+        key = '/' + keys[i] + '/';
+        if (path.indexOf(key) !== -1) {
+            TP.boot.$$apphead = path.slice(0, path.indexOf(key));
+            return TP.boot.$$apphead;
+        }
     }
 
-    TP.boot.$stderr('TP.boot.$getAppHead() unable to find/compute apphead.',
-                    TP.FATAL);
+    // Didn't find a typical project library location on the path. Check to see
+    // if we're _in_ the library.
+    lib = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibetlib');
+    if (path.indexOf('/' + lib + '/') !== -1) {
+        TP.boot.$$apphead = path.slice(0,
+            path.indexOf('/' + lib + '/') + lib.length + 1);
+        return TP.boot.$$apphead;
+    }
+
+    // Should have found boot.tibetlib but just in case we can just use an
+    // offset from the current window location (minus noise for # etc.)
+    offset = TP.sys.getcfg('path.head_offset');
+    if (TP.boot.$notEmpty(offset)) {
+        TP.boot.$$apphead = TP.boot.$uriCollapsePath(
+            TP.boot.$uriJoinPaths(path, offset));
+        return TP.boot.$$apphead;
+    }
+
+    // If we're not launching from somewhere below the typical library root we
+    // try to work from the last portion of the path prior to any hash value.
+    parts = path.split('/');
+    if (parts[parts.length - 1].match(/\./)) {
+        parts.length = parts.length - 1;
+    }
+    path = parts.join('/');
+
+    TP.boot.$$apphead = path;
+    return path;
 };
 
 //  ----------------------------------------------------------------------------
@@ -7452,22 +7488,15 @@ TP.boot.$getAppRoot = function() {
     }
 
     //  if specified it should be an absolute path we can expand and use
-    root = TP.sys.cfg('boot.approot');
-    if (root) {
+    root = TP.sys.cfg('path.app_root');
+    if (TP.boot.$notEmpty(root)) {
         return TP.boot.$setAppRoot(root);
     }
 
-    root = TP.boot.$getAppHead();
-    if (root) {
-        if (/node_modules/.test(root)) {
-            root = root.slice(0, root.indexOf('/node_modules'));
-        }
-        return TP.boot.$setAppRoot(root);
-    }
-
-    TP.boot.shouldStop('boot.approot not found.');
-    TP.boot.$stderr('TP.boot.$getAppRoot() unable to find/compute approot.',
-                    TP.FATAL);
+    // If app root isn't going to match up with app head it's going to typically
+    // be set via launch parameters, url parameters, or via tibet.json. We can
+    // set it initially here and it'll be reset once those are processed.
+    return TP.boot.$setAppRoot(TP.boot.$getAppHead());
 };
 
 //  ----------------------------------------------------------------------------
@@ -7477,27 +7506,25 @@ TP.boot.$getLibRoot = function() {
     /**
      * @name $getLibRoot
      * @summary Returns the root path for the TIBET codebase.
-     * @description When the value for boot.libroot is not specified this
-     *     method will try to compute one. The standard location for the library
-     *     is inside node_modules/tibet but this can vary based on
-     *     configuration settings.
+     * @description When the value for path.lib_root is not specified this
+     *     method will try to compute one. The computation can be altered via
+     *     the boot.libcomp setting.
      * @return {String} The root path for the TIBET codebase.
      * @todo
      */
 
     var comp,
         root,
-        dir,
-        json,
-        base,
-        lib,
         file,
         loc,
-        re,
-        match,
-        str,
+        test,
         ndx,
-        path;
+        path,
+        parts,
+        list,
+        scripts,
+        i,
+        len;
 
     //  first check for a cached value. this is what's used during booting
     if (TP.boot.$$libroot != null) {
@@ -7505,80 +7532,97 @@ TP.boot.$getLibRoot = function() {
     }
 
     //  if specified it should be an absolute path we can expand and use
-    root = TP.sys.cfg('boot.libroot');
-    if (root) {
+    root = TP.sys.cfg('path.lib_root');
+    if (TP.boot.$notEmpty(root)) {
         return TP.boot.$setLibRoot(root);
     }
 
+    // Default starting point is the current window location minus any fragment
+    // and file reference.
+    loc = decodeURI(window.location.toString());
+    root = loc.split(/[#?]/)[0];
+
+    parts = root.split('/');
+    if (parts[parts.length - 1].match(/\./)) {
+        parts.length = parts.length - 1;
+    }
+    root = parts.join('/');
+
     comp = TP.sys.cfg('boot.libcomp');
     switch (comp) {
-    case 'tibetdir':
+    case 'apphead':
+        // force to match app_head.
+        return TP.boot.$setLibRoot(TP.boot.$getAppHead());
 
-      base = TP.boot.$getAppRoot();
-      dir = TP.sys.cfg('boot.tibetdir');
-      lib = TP.sys.cfg('boot.tibetlib');
-      json = TP.sys.cfg('boot.bootstrap');
+    case 'approot':
+        // force to match app_root.
+        return TP.boot.$setLibRoot(TP.boot.$getAppRoot());
 
-      root = TP.boot.$uriJoinPaths(base, dir);
-      path = TP.boot.$uriJoinPaths(root, lib);
-      file = TP.boot.$uriJoinPaths(path, json);
-
-      if (TP.boot.$uriExists(file)) {
+    case 'frozen':
+        // frozen applications typically have TIBET-INF/tibet in them
+        path = TP.boot.$uriJoinPaths(
+                TP.boot.$uriJoinPaths(root, TP.sys.cfg('boot.tibetinf')),
+                TP.sys.cfg('boot.tibetlib'));
         return TP.boot.$setLibRoot(path);
-      }
-      break;
 
-    case 'tibetapp':
-
-      // Strategy is to work up the URL a path segment at a time, looking for the 'base'
-      // directory which should be hard-coded into the older lib versions.
-
-      //  capture the string version of our current launch file location,
-      //  minus the actual file itself
-      loc = decodeURI(window.location.toString());
-      loc = loc.split(/[#?]/)[0];
-      loc = loc.slice(0, loc.lastIndexOf('/'));
-
-      //  could be qualified with a Number but has to start with 'tibet' (case
-      //  insensitive - also cannot be trailed with a dash)
-      re = /\/TIBET[^-]/i;
-      if (re.test(loc)) {
-        match = loc.match(re);
-        str = match[0];
-        ndx = loc.lastIndexOf(str);
-
-        path = loc.slice(0, ndx + str.length);
-        if (path) {
-          return TP.boot.$setLibRoot(path);
+    case 'indexed':
+        // find location match using a string index on window location.
+        test = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibetlib');
+        if (TP.boot.$notEmpty(test)) {
+            ndx = root.lastIndexOf(test);
+            if (ndx !== -1) {
+                ndx += test.length + 1;
+                path = root.slice(0, ndx);
+                return TP.boot.$setLibRoot(path);
+            }
         }
-      }
+        break;
 
-      //  other choice, a bit of a last resort, is to see if 'base' is a peer
-      //  of the app root directory (and has our yyz file)
+    case 'location':
+        // force to last 'collection' in the window location.
+        return TP.boot.$setLibRoot(root);
 
-      //  make sure that what we have is longer than the launch root -
-      //  otherwise we'll end up slicing back into the slashes following the
-      //  scheme.
-      if (loc.length > TP.sys.getLaunchRoot().length) {
-          base = loc.slice(0, loc.lastIndexOf('/'));
-      } else {
-          base = loc;
-      }
+    case 'tibetdir':
+        // npmdir applications typically have node_modules/tibet in them
+        path = TP.boot.$uriJoinPaths(
+                TP.boot.$uriJoinPaths(root, TP.sys.cfg('boot.tibetdir')),
+                TP.sys.cfg('boot.tibetlib'));
+        return TP.boot.$setLibRoot(path);
 
-      //  Note that 'base' is the hardcoded library base directory.
-      root = TP.boot.$uriJoinPaths(base, 'base');
-      file = TP.sys.cfg('boot.tibetyyz');
-      if (TP.boot.$uriExists(TP.boot.$uriJoinPaths(root, file))) {
-          return TP.boot.$setLibRoot(base);
-      }
-
-      break;
-
+        /* eslint-disable no-fallthrough */
+    case 'script':
+        void(0);
     default:
-      break;
+        /* eslint-enable no-fallthrough */
+
+        // Find script tags and turn into an array instead of collection.
+        scripts = Array.prototype.slice.call(
+            document.getElementsByTagName('script'), 0);
+        len = scripts.length;
+        for (i = 0; i < len; i++) {
+            if (/tibet_init/.test(scripts[i].src)) {
+                path = scripts[i].src;
+                break;
+            }
+        }
+
+        // Combine current path with the src path in case of relative path
+        // specification (common) and we should end up with a workable offset.
+        if (TP.boot.$notEmpty(path)) {
+            return TP.boot.$setLibRoot(
+                TP.boot.$uriCollapsePath(
+                    TP.boot.$uriJoinPaths(TP.boot.$uriJoinPaths(root, path),
+                    TP.sys.cfg('boot.initoffset'))));
+        }
+
+        break;
     }
 
-    TP.boot.shouldStop('boot.libroot not found.');
+    if (TP.boot.$isValid(TP.boot.$$libroot)) {
+        return TP.boot.$$libroot;
+    }
+
+    TP.boot.shouldStop('unable to compute lib_root');
     TP.boot.$stderr('TP.boot.$getLibRoot() unable to find/compute libroot.',
                    TP.FATAL);
 };
@@ -7636,7 +7680,7 @@ TP.boot.$setAppRoot = function(aPath) {
     path = decodeURI(path);
     TP.boot.$$approot = path;
 
-    TP.sys.setcfg('boot.approot', path);
+    TP.sys.setcfg('path.app_root', path);
 
     debug = TP.sys.cfg('debug.path');
     if (debug && TP.boot.$$debug) {
@@ -7666,7 +7710,7 @@ TP.boot.$setLibRoot = function(aPath) {
     path = decodeURI(path);
     TP.boot.$$libroot = path;
 
-    TP.sys.setcfg('boot.libroot', path);
+    TP.sys.setcfg('path.lib_root', path);
 
     debug = TP.sys.cfg('debug.path');
     if (debug && TP.boot.$$debug) {
@@ -7699,7 +7743,8 @@ TP.boot.$configurePackage = function() {
         config,
         parts,
         file,
-        xml;
+        xml,
+        err;
 
     // First phase is about giving boot.profile precedence over boot.package.
     profile = TP.sys.cfg('boot.profile');
@@ -7780,8 +7825,11 @@ TP.boot.$configurePackage = function() {
         TP.boot.$$bootxml = xml;
         TP.boot.$$bootfile = file;
     } else {
-        throw new Error('Boot package \'' + package +
-            '\' not found in: ' + file);
+
+        err = 'Boot package \'' + package + '\' not found in: ' + file,
+        TP.boot.$stderr(err, TP.FATAL);
+
+        throw new Error(err);
     }
 
     return xml;
@@ -8230,6 +8278,19 @@ TP.boot.$configureOptions = function(anObject) {
 
                 name = key + '.' + subkey;
                 TP.sys.setcfg(name, value[subkey]);
+
+                TP.boot.$stdout('$configureOption ' + name + ' = ' + value[subkey], TP.TRACE);
+
+                // Update cached values as needed.
+                if (name === 'path.app_root') {
+                    TP.boot.$stdout('Overriding path.app_root cache with: ' +
+                        value[subkey], TP.TRACE);
+                    TP.boot.$$approot = TP.boot.$uriExpandPath(value[subkey]);
+                } else if (name === 'path.lib_root') {
+                    TP.boot.$stdout('Overriding path.lib_root cache with: ' +
+                        value[subkey], TP.TRACE);
+                    TP.boot.$$libroot = TP.boot.$uriExpandPath(value[subkey]);
+                }
             });
         } else {
             TP.sys.setcfg(key, value);
@@ -10373,9 +10434,7 @@ TP.boot.launch = function(options) {
 
     var nologin;
 
-    if (window.offerror.failedlaunch) {
-        alert('crap');
-    }
+    TP.boot.$$launchOptions = options;
 
     //  set up the environment variables appropriate for the browser. this
     //  information can then help drive the remaining parts of the process

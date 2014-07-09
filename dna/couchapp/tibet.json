@@ -2,9 +2,12 @@
     "//" : "TIBET project file. Set configuration parameters here.",
 
     "tibet": {
-        "dna": "{{dna}}"
+        "dna": "{{dna}}",
+        "indexpage": "~app/index.html"
     },
     "path": {
-      "app.inf": "~app/attachments/TIBET-INF"
+        "app_root": "~/attachments",
+        "lib_root": "~/node_modules/tibet"
     }
 }
+

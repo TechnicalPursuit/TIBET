@@ -38,6 +38,13 @@ Cmd.prototype = new Parent();
 Cmd.CONFIG = '~app/.eslintrc';
 
 
+/**
+ * The context viable for this command.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -123,6 +130,7 @@ Cmd.prototype.executeForEach = function(list) {
             }
 
             if (src) {
+                cmd.verbose('linting: ' + src);
                 result = eslint.cli.execute(args.concat(src));
                 sum = sum + result;
                 if (result !== 0 && cmd.options.stop) {
@@ -160,7 +168,7 @@ Cmd.prototype.finalizePackageOptions = function() {
     // metadata and/or child node content.
     this.pkgOpts.nodes = true;
 
-    this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+    this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);
 };
 
 

@@ -6312,7 +6312,7 @@ function(schemeSpecificString) {
  *     Any embedded URI starting with ~ is resolved to either a file or http
  *     URI using a simple set of rules modeled on the UNIX concept of "home".
  *     Using this model a single ~ resolves to "app home" or what TIBET refers
- *     to as "approot". All other references can be thought of as "$foo home"
+ *     to as "app root". All other references can be thought of as "$foo home"
  *     where $foo is "tibet", "lib_xsl", etc.
  *
  *     Note that these virtual URIs ensure that whether you boot from the file

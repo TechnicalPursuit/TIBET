@@ -1,5 +1,6 @@
 /**
- * @overview A simple sample command you can modify for custom processing needs.
+ * @overview The 'tibet context' command. Dumps basic TIBET config/context data
+ *     useful for debugging within a project or library context.
  * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -12,14 +13,15 @@
 
 'use strict';
 
-var CLI = require('tibet/src/tibet/cli/_cli');
+var CLI = require('./_cli');
+var beautify = require('js-beautify').js_beautify;
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('tibet/src/tibet/cli/_cmd');
+var Parent = require('./_cmd');
 
 var Cmd = function(){};
 Cmd.prototype = new Parent();
@@ -30,10 +32,10 @@ Cmd.prototype = new Parent();
 //  ---
 
 /**
- * The context viable for this command.
+ * The command execution context.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
+Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 
 
 //  ---
@@ -45,14 +47,14 @@ Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
  * @type {string}
  */
 Cmd.prototype.HELP =
-    'A simple sample command.';
+'Outputs current context information to stdout.\n';
 
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet sample [args]';
+Cmd.prototype.USAGE = 'tibet context';
 
 
 //  ---
@@ -64,10 +66,21 @@ Cmd.prototype.USAGE = 'tibet sample [args]';
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    if (this.options) {
-        this.info('\nArguments:\n');
-        this.info(JSON.stringify(this.options));
-    }
+    var context;
+
+    context = {};
+
+    context.name = CLI.getcfg('npm.name');
+    context.version = CLI.getcfg('npm.version');
+
+    context.in_library = CLI.inLibrary(Cmd);
+    context.in_project = CLI.inProject(Cmd);
+
+    context['~'] = CLI.getLaunchRoot();
+    context['~app'] = CLI.getAppRoot();
+    context['~lib'] = CLI.getLibRoot();
+
+    this.info(beautify(JSON.stringify(context)));
 };
 
 

@@ -143,6 +143,7 @@ targets.removedb = function(make) {
           targets.removedb.resolve();
         });
 };
+
 module.exports = targets;
 
 }());

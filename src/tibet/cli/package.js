@@ -57,6 +57,17 @@ Cmd.prototype = new Parent();
 
 
 //  ---
+//  Type Attributes
+//  ---
+
+/**
+ * The context viable for this command.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+
+
+//  ---
 //  Instance Attributes
 //  ---
 

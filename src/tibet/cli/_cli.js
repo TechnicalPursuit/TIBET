@@ -125,10 +125,11 @@ CLI.GULP_FILE = 'gulpfile.js';
 
 /**
  * The default `make` file for TIBET projects. Functions exported from this file
- * are potential fallbacks for cli commands.
+ * are potential fallbacks for cli commands. NOTE that this is targeted at the
+ * launch root location, not app root or lib root.
  * @type {string}
  */
-CLI.MAKE_FILE = 'makefile.js';
+CLI.MAKE_FILE = '~/makefile.js';
 
 
 /**
@@ -229,8 +230,13 @@ CLI.error = function(msg) {
     console.error(chalk.red(msg));
 };
 
-CLI.debug = function(msg) {
+CLI.debug = function(msg, verbose) {
     if (!this.isTrue(this.options.debug)) {
+        return;
+    }
+
+    if (verbose === true &&
+        !this.isTrue(this.options.verbose)) {
         return;
     }
 
@@ -506,7 +512,7 @@ CLI.getCommandPath = function(command) {
     try {
         this.initPackage();
     } catch (e) {
-        return this.handleError(e, 'loading', command);
+        this.handleError(e, 'loading', command);
     }
 
     roots = ['~app_cmd', '~lib_cmd'];
@@ -528,17 +534,13 @@ CLI.getCommandPath = function(command) {
  * @return {boolean} True if the target is found.
  */
 CLI.getMakeTargets = function() {
-    var root;
-    var file;
     var fullpath;
 
     if (this.make_targets) {
         return this.make_targets;
     }
 
-    root = this.getAppRoot();
-    file = this.MAKE_FILE;
-    fullpath = path.join(root, file);
+    fullpath = this.expandPath(this.MAKE_FILE);
 
     if (!sh.test('-f', fullpath)) {
         this.debug('TIBET make file not found: ' + fullpath);
@@ -548,13 +550,7 @@ CLI.getMakeTargets = function() {
     try {
         this.make_targets = require(fullpath);
     } catch (e) {
-        // If we're inside the library this can occur due to a failure to link
-        // TIBET into the local git repo clone.
-        if (this.inLibrary()) {
-            this.warn('\nTIBET not linked locally. Try `npm link tibet` to access make targets.');
-        } else {
-            this.error('Unable to load TIBET make file: ' + e.message);
-        }
+        this.error('Unable to load TIBET make file: ' + e.message);
     }
 
     return this.make_targets;
@@ -734,7 +730,7 @@ CLI.logItems = function(aList) {
  */
 CLI.notInitialized = function() {
     this.error('Project not initialized. Run `tibet init [--link]` first.');
-    return 1;
+    process.exit(1);
 };
 
 
@@ -812,7 +808,7 @@ CLI.run = function(config) {
     // Don't run commands that are prefixed, they're considered 'cli internals'.
     if (command.charAt(0) === '_') {
         this.error('Cannot directly run private command: ' + command);
-        return 1;
+        process.exit(1);
     }
 
     //  ---
@@ -850,14 +846,14 @@ CLI.runCommand = function(command, cmdPath) {
         CmdType = require(cmdPath);
     } catch (e) {
         this.debug('cmdPath: ' + cmdPath);
-        return this.handleError(e, 'loading', command);
+        this.handleError(e, 'loading', command);
     }
 
     // Instantiate the command instance. Note no arguments here.
     try {
         cmd = new CmdType();
     } catch (e) {
-        return this.handleError(e, 'instantiating', command);
+        this.handleError(e, 'instantiating', command);
     }
 
     // If we're not dumping help or usage check context. We can't really run to
@@ -891,7 +887,7 @@ CLI.runCommand = function(command, cmdPath) {
     try {
         cmd.run(this.options);
     } catch (e) {
-        return this.handleError(e, 'processing', command);
+        this.handleError(e, 'processing', command);
     }
 };
 
@@ -905,7 +901,7 @@ CLI.runFallback = function(command) {
 
     if (!this.inProject() && !this.inLibrary()) {
         this.error('Command not found: ' + command + '.');
-        return 1;
+        process.exit(1);
     }
 
     // If there's no node_modules in place (and hence no tibet, grunt, or gulp
@@ -915,24 +911,17 @@ CLI.runFallback = function(command) {
     }
 
     if (this.hasMakeTarget(command)) {
-
         this.warn('Delegating `' + command + '` to tibet make...');
         this.runViaMake(command);
-
     } else if (this.inGruntProject(command)) {
-
         this.warn('Delegating `' + command + '` to grunt...');
         this.runViaGrunt(command);
-
     } else if (this.inGulpProject()) {
-
         this.warn('Delegating `' + command + '` to grunt...');
         this.runViaGulp(command);
-
     } else {
-
         this.error('Command not found: ' + command + '.');
-        return 1;
+        process.exit(1);
     }
 };
 

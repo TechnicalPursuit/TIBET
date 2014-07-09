@@ -26,7 +26,7 @@ Cmd.prototype = new Parent();
 
 
 //  ---
-//  Instance Attributes
+//  Type Attributes
 //  ---
 
 /**
@@ -35,6 +35,10 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 
+
+//  ---
+//  Instance Attributes
+//  ---
 
 /**
  * The command help string.
@@ -62,10 +66,13 @@ Cmd.prototype.USAGE = 'tibet version';
  */
 Cmd.prototype.execute = function() {
 
+    var msg;
+
+    msg = 'Unable to determine TIBET version.';
     try {
-        this.info(CLI.config.npm.version);
+        this.info(CLI.getcfg('npm.version') || msg);
     } catch (e) {
-        this.error('Unable to determine TIBET version.');
+        this.error(msg);
     }
 };
 
