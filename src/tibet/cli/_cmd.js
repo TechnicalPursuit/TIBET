@@ -29,7 +29,7 @@ var Cmd = function(){};
 
 
 /**
- * The context viable for this command. Default is INSIDE.
+ * The context viable for this command.
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;

@@ -3129,7 +3129,7 @@ function(aRequest) {
         url;
 
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
-        url = TP.uriJoinPaths(TP.sys.cfg('boot.approot'),
+        url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
             TP.sys.cfg('tds.watch_uri'));
 console.log(url);
         watcher = TP.core.SSESignalSource.construct(url);
@@ -3153,7 +3153,7 @@ function(aRequest) {
     // TODO: why? if we are 'unwatching' what is the construct() process doing
     // for us? Shouldn't there be a 'getInstance' or something instead?
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
-        url = TP.uriJoinPaths(TP.sys.cfg('boot.approot'),
+        url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
             TP.sys.cfg('tds.watch_uri'));
 console.log(url);
         watcher = TP.core.SSESignalSource.construct(url);

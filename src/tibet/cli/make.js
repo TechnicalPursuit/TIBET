@@ -29,6 +29,13 @@ Cmd.prototype = new Parent();
 
 
 /**
+ * The context viable for this command.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+
+
+/**
  * Millisecond count for how long an individual task can run before it times out
  * and is rejected automatically. You can set a timeout value using --timeout on
  * the command line.
@@ -90,7 +97,7 @@ Cmd.prototype.execute = function() {
     var start;
 
     if (CLI.inProject() && !CLI.isInitialized()) {
-        return CLI.notInitialized();
+        CLI.notInitialized();
     }
 
     // The CLI loads our makefile to check for targets. We can just leverage
@@ -98,7 +105,7 @@ Cmd.prototype.execute = function() {
     targets = CLI.getMakeTargets();
     if (CLI.notValid(targets)) {
         // Errors are reported by the getMakeTargets call, just exit.
-        return 1;
+        process.exit(1);
     }
 
     // Two cases here. When 'tibet make' is invoked directly the value at
@@ -114,12 +121,12 @@ Cmd.prototype.execute = function() {
         }
 
         this.error('No make target provided.');
-        return 1;
+        process.exit(1);
     }
 
     if (typeof targets[command] !== 'function') {
         this.error('TIBET make target not found: ' + command);
-        return 1;
+        process.exit(1);
     }
 
     // Make sure the targets have been pre-processed for better control.
@@ -150,6 +157,8 @@ Cmd.prototype.execute = function() {
                 msg = 'task success ' +
                     ((new Date()).getTime() - start) + 'ms.';
                 cmd.log(msg);
+
+                process.exit(0);
             },
             function(err) {
                 var msg;
@@ -166,12 +175,12 @@ Cmd.prototype.execute = function() {
                     ((new Date()).getTime() - start) + 'ms.';
                 cmd.log(msg);
 
-                throw new Error(err);
+                process.exit(1);
             });
 
     } catch (e) {
         this.error(e.message);
-        return 1;
+        process.exit(1);
     }
 };
 
@@ -199,7 +208,7 @@ Cmd.prototype.executeList = function(targets) {
     this.info('Available targets:\n');
     CLI.logItems(list);
 
-    return 0;
+    return;
 };
 
 
@@ -261,7 +270,6 @@ Cmd.prototype.prepTargets = function(targets) {
                         process.exit(1);
                     } else {
                         targets[name].$$active = true;
-                        cmd.log('making ' + name);
                     }
 
                     promise = Q.Promise(function(resolver, rejector) {
@@ -295,8 +303,9 @@ Cmd.prototype.prepTargets = function(targets) {
                             rejector(err);
                         };
 
-                        // Make sure all targets start from app root.
-                        process.chdir(CLI.getAppRoot());
+                        // Make sure all targets start from the makefile.js
+                        // location.
+                        process.chdir(CLI.getLaunchRoot());
 
                         try {
                             func.call(func, cmd);           // run it :)

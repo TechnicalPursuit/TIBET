@@ -26,6 +26,21 @@ var Cmd = function(){};
 Cmd.prototype = new Parent();
 
 
+//  ---
+//  Type Attributes
+//  ---
+
+/**
+ * The context viable for this command.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+
+
+//  ---
+//  Instance Attributes
+//  ---
+
 /**
  * Command argument parsing options.
  * @type {Object}
@@ -39,10 +54,6 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     },
     Parent.prototype.PARSE_OPTIONS);
 
-
-//  ---
-//  Instance Attributes
-//  ---
 
 /**
  * The command help string.
@@ -102,7 +113,7 @@ Cmd.prototype.execute = function() {
     // If the node_modules directory doesn't exist (but we know there's a
     // package.json due to earlier check) it means 'npm install' was never run.
     // We have to do that before we can try to start the server.
-    if (sh.test('-e', 'node_modules/tibet')) {
+    if (sh.test('-e', 'node_modules')) {
         this.warn('Project already initialized. ' +
             'Re-initialize by removing node_modules first.');
         // TODO: add a force option

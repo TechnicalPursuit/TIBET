@@ -1693,7 +1693,7 @@ function() {
      * @returns {String}
      */
 
-    return TP.boot.$$apphead || TP.boot.$getAppHead();
+    return TP.boot.$getAppHead();
 });
 
 //  ------------------------------------------------------------------------
@@ -1709,7 +1709,7 @@ function() {
      * @returns {String}
      */
 
-    return TP.boot.$$approot || TP.boot.$getAppRoot();
+    return TP.boot.$getAppRoot();
 });
 
 //  ------------------------------------------------------------------------
@@ -1727,7 +1727,7 @@ function() {
      * @returns {String}
      */
 
-    return TP.boot.$$libroot || TP.boot.$getLibRoot();
+    return TP.boot.$getLibRoot();
 });
 
 //  ------------------------------------------------------------------------

@@ -129,6 +129,9 @@ var Package = function(options) {
     };
     TP.sys.cfg = TP.sys.getcfg;
 
+    // NOTE we do this early, and a second time later to overlay values we read.
+    this.setRuntimeOptions();
+
     // Load remaining TIBET configuration data for paths/virtual paths etc.
     this.loadTIBETBaseline();
 
@@ -919,6 +922,7 @@ Package.prototype.getAppRoot = function() {
 
     // Return cached value if available.
     if (this.app_root) {
+        this.debug('getAppRoot: ' + this.app_root, true);
         return this.app_root;
     }
 
@@ -926,12 +930,11 @@ Package.prototype.getAppRoot = function() {
     // we can't use getcfg() here due to ordering/bootstrapping considerations.
     if (this.options && this.options.app_root) {
         this.app_root = this.options.app_root;
-        return this.app_root;
-    } else if (this.tibet.app_root) {
-        this.app_root = this.tibet.app_root;
+        this.debug('getAppRoot via options: ' + this.app_root, true);
         return this.app_root;
     } else if (this.tibet.path && this.tibet.path.app_root) {
         this.app_root = this.tibet.path.app_root;
+        this.debug('getAppRoot via path.app_root: ' + this.app_root, true);
         return this.app_root;
     }
 
@@ -941,6 +944,8 @@ Package.prototype.getAppRoot = function() {
         this.debug('Unable to find app_root.');
         return;
     }
+
+    this.debug('getAppRoot defaulted to launch root: ' + this.app_root, true);
 
     return this.app_root;
 };
@@ -1000,10 +1005,10 @@ Package.prototype.getLaunchRoot = function() {
 
 
 /**
- * Returns the library root directory, the path where the tibet library is
+ * Returns the apprary root directory, the path where the tibet apprary is
  * found. The search is a bit complex because we want to give precedence to
  * option settings and application-specific settings rather than simply working
- * from the assumption that we're using the library containing the current CLI.
+ * from the assumption that we're using the apprary containing the current CLI.
  */
 Package.prototype.getLibRoot = function() {
     var app_root,
@@ -1013,7 +1018,8 @@ Package.prototype.getLibRoot = function() {
         file;
 
     // Return cached value if available.
-    if (this.lib_root) {
+    if (this.app_root) {
+        this.debug('getLibRoot: ' + this.lib_root, true);
         return this.lib_root;
     }
 
@@ -1021,12 +1027,11 @@ Package.prototype.getLibRoot = function() {
     // we can't use getcfg() here due to ordering/bootstrapping considerations.
     if (this.options && this.options.lib_root) {
         this.lib_root = this.options.lib_root;
-        return this.lib_root;
-    } else if (this.tibet.lib_root) {
-        this.lib_root = this.tibet.lib_root;
+        this.debug('getLibRoot via options: ' + this.lib_root, true);
         return this.lib_root;
     } else if (this.tibet.path && this.tibet.path.lib_root) {
         this.lib_root = this.tibet.path.lib_root;
+        this.debug('getLibRoot via path.lib_root: ' + this.lib_root, true);
         return this.lib_root;
     }
 
@@ -1037,8 +1042,10 @@ Package.prototype.getLibRoot = function() {
 
         // NPM version is best.
         testpath = path.join(app_root, 'node_modules/tibet');
+        this.debug('getLibRoot checking ' + testpath, true);
         if (sh.test('-e', testpath)) {
             this.lib_root = testpath;
+            this.debug('getLibRoot: ' + this.lib_root, true);
             return this.lib_root;
         }
 
@@ -1057,8 +1064,10 @@ Package.prototype.getLibRoot = function() {
         }
 
         testpath = path.join(app_root, app_inf, 'tibet');
+        this.debug('getLibRoot checking ' + testpath, true);
         if (sh.test('-e', testpath)) {
             this.lib_root = testpath;
+            this.debug('getLibRoot: ' + this.lib_root, true);
             return this.lib_root;
         }
     }
@@ -1069,6 +1078,8 @@ Package.prototype.getLibRoot = function() {
         this.debug('Unable to find lib_root.');
         return;
     }
+
+    this.debug('getLibRoot defaulted to launch root: ' + this.lib_root, true);
 
     return this.lib_root;
 };
@@ -1379,7 +1390,24 @@ Package.prototype.ifUnlessPassed = function(anElement) {
  * @return {Boolean} True if the current context is inside the TIBET library.
  */
 Package.prototype.inLibrary = function() {
-    return !this.inProject() && this.npm.name === 'tibet';
+    var dir;
+    var file;
+    var found;
+
+    // Since the CLI can be invoked from anywhere we need to be explicit here
+    // relative to the cwd. If we find a project file, and it's 'tibet' we're
+    // truly _inside_ the library.
+    dir = process.cwd();
+    file = Package.NPM_FILE;
+    while (dir.length > 0) {
+        if (sh.test('-f', path.join(dir, file))) {
+            found = true;
+            break;
+        }
+        dir = dir.slice(0, dir.lastIndexOf(path.sep));
+    }
+
+    return found === true && this.npm.name === 'tibet';
 };
 
 
@@ -1930,24 +1958,25 @@ Package.prototype.setProjectOptions = function() {
         }
     });
 
+    // Clear this so the value from above doesn't affect our next steps.
+    root = null;
+
     // Update any cached values based on what we've read in from tibet.json
     if (isValid(this.tibet.path) && isValid(this.tibet.path.app_root)) {
         root = this.tibet.path.app_root;
-    } else if (isValid(this.tibet.path) && isValid(this.tibet.path.app)) {
-        root = this.tibet.path.app.root;
     }
 
-    if (isValid(root)) {
+    if (notEmpty(root) && root !== this.app_root) {
+        this.debug('setting app_root to ' + root, true);
         this.app_root = root;
     }
 
     if (isValid(this.tibet.path) && isValid(this.tibet.path.lib_root)) {
         root = this.tibet.path.lib_root;
-    } else if (isValid(this.tibet.path) && isValid(this.tibet.path.lib)) {
-        root = this.tibet.path.lib.root;
     }
 
-    if (isValid(root)) {
+    if (notEmpty(root) && root !== this.lib_root) {
+        this.debug('setting lib_root to ' + root, true);
         this.lib_root = root;
     }
 };
@@ -2045,8 +2074,13 @@ Package.prototype.error = function(msg) {
     console.error(chalk.red(msg));
 };
 
-Package.prototype.debug = function(msg) {
+Package.prototype.debug = function(msg, verbose) {
     if (this.getcfg('silent') === true) {
+        return;
+    }
+
+    if (verbose === true &&
+            this.getcfg('verbose') !== true) {
         return;
     }
 

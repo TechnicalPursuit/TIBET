@@ -28,6 +28,17 @@ Cmd.prototype = new Parent();
 
 
 //  ---
+//  Type Attributes
+//  ---
+
+/**
+ * The command execution context.
+ * @type {Cmd.CONTEXTS}
+ */
+Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
+
+
+//  ---
 //  Instance Attributes
 //  ---
 
@@ -93,13 +104,6 @@ Cmd.prototype.execute = function() {
     sh = require('shelljs');
     child = require('child_process');
 
-    // We can only start if we're in a top-level Node.js project directory.
-    if (!sh.test('-f', 'package.json')) {
-        this.error(
-            'Cannot start. No package.json found. Are you in a project?');
-        return 1;
-    }
-
     if (!CLI.isInitialized() && !CLI.inLibrary()) {
         return CLI.notInitialized();
     }
@@ -116,11 +120,16 @@ Cmd.prototype.execute = function() {
 // TODO:    process command line arguments such that we can add them to the
 //          array of parameters given to spawn() calls below.
 
+    // Make sure we work from the launch (and hence server.js) location.
+    process.chdir(CLI.getLaunchRoot());
+
     // If there's no server.js assume a 'noserver' template or 'couchdb'
     // template of some sort and default to opening the index.html.
     if (!sh.test('-f', 'server.js')) {
+        console.warn('No server.js found. Launching index.html.');
         process.env.PORT = port;
-        server = child.spawn('open', ['index.html']);
+        server = child.spawn('open',
+            [CLI.expandPath(CLI.getcfg('tibet.indexpage'))]);
     } else {
         cmd.system(msg);
         server = child.spawn('node',
@@ -159,9 +168,10 @@ Cmd.prototype.execute = function() {
         // A lot of errors will include what appears to be a common 'header'
         // output message from events.js:72 etc. which provides no useful
         // data but clogs up the output. Filter those messages.
-        if (/throw er;/.test(msg) || /:72/.test(msg)) {
-            // Uncomment for more debugging.
-            //cmd.error(msg);
+        if (/throw er;/.test(msg) || /events\.js/.test(msg)) {
+            if (cmd.getcfg('debug') && cmd.getcfg('verbose')) {
+                cmd.error(msg);
+            }
             return;
         }
 
@@ -170,7 +180,11 @@ Cmd.prototype.execute = function() {
 
     server.on('close', function(code) {
         if (code !== 0) {
-            cmd.error('Server stopped with status: ' + code);
+            cmd.error('Stopped with status: ' + code);
+            /* eslint-disable */
+            // exit with status code so command line sees proper exit code.
+            process.exit(code);
+            /* eslint-enable */
         }
     });
 };
