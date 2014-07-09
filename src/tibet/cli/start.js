@@ -98,6 +98,7 @@ Cmd.prototype.execute = function() {
     var port;   // The port number to start up on.
     var inuse;  // Flag to trap EADDRINUSE exceptions.
     var msg;    // Shared message content.
+    var url;    // Url for file-based launch messaging.
 
     cmd = this;
 
@@ -115,8 +116,6 @@ Cmd.prototype.execute = function() {
         process.env.PORT ||
         this.PORT;
 
-    msg = 'Starting server on port: ' + port;
-
 // TODO:    process command line arguments such that we can add them to the
 //          array of parameters given to spawn() calls below.
 
@@ -126,12 +125,17 @@ Cmd.prototype.execute = function() {
     // If there's no server.js assume a 'noserver' template or 'couchdb'
     // template of some sort and default to opening the index.html.
     if (!sh.test('-f', 'server.js')) {
-        console.warn('No server.js found. Launching index.html.');
+        url = CLI.expandPath(CLI.getcfg('tibet.indexpage'));
+        msg = 'No server.js. Opening ' + url;
+        cmd.system(msg);
+
         process.env.PORT = port;
         server = child.spawn('open',
             [CLI.expandPath(CLI.getcfg('tibet.indexpage'))]);
     } else {
+        msg = 'Starting server at http://0.0.0.0:' + port;
         cmd.system(msg);
+
         server = child.spawn('node',
             ['server.js', '--port', port,
                 '--app-root', CLI.getAppRoot()]);
