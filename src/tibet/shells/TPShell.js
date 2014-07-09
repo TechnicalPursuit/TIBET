@@ -3131,7 +3131,6 @@ function(aRequest) {
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
             TP.sys.cfg('tds.watch_uri'));
-console.log(url);
         watcher = TP.core.SSESignalSource.construct(url);
         this.set('watcherSSESource', watcher);
     }
@@ -3155,7 +3154,6 @@ function(aRequest) {
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
             TP.sys.cfg('tds.watch_uri'));
-console.log(url);
         watcher = TP.core.SSESignalSource.construct(url);
     }
 

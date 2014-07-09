@@ -129,11 +129,23 @@ var Package = function(options) {
     };
     TP.sys.cfg = TP.sys.getcfg;
 
-    // NOTE we do this early, and a second time later to overlay values we read.
+    // NOTE we do this early so command-line can affect debugging output etc for
+    // the later steps.
     this.setRuntimeOptions();
 
-    // Load remaining TIBET configuration data for paths/virtual paths etc.
-    this.loadTIBETBaseline();
+    try {
+        // Load remaining TIBET configuration data for paths/virtual paths etc.
+        this.loadTIBETBaseline();
+    } catch (e) {
+        // If loading the baseline failed it's typically due to one of two
+        // issues, either we don't have a valid lib_root or there's a syntax
+        // error or other path issue relative to the baseline config file.
+        if (this.getLibRoot()) {
+            this.error('Error loading TIBET baseline config data: ' +
+                e.message);
+        }
+        return this;
+    }
 
     // Process local project file content into proper configuration data.
     this.setProjectOptions();
@@ -843,7 +855,7 @@ Package.prototype.expandPath = function(aPath) {
 
         // If the path was ~/...something it's app_root prefixed.
         if (virtual === '~') {
-            path = this.getLaunchRoot();
+            path = this.getAppHead();
         } else if (virtual === '~app' ||
                    virtual === '~app_root') {
             path = this.getAppRoot();
@@ -911,18 +923,73 @@ Package.prototype.expandReference = function(aRef) {
 
 
 /**
- * Returns the application root directory. If the app_root is set via comand
- * line options that value is used. When searching for app root we rely on
- * PROJECT_FILE and NPM_FILE existence to determine a location relative to the
- * current CLI and execution directory.
+ * Returns the initial application root also referred to as the 'app head'. This
+ * is the location where the tibet.json and/or package.json files are found
+ * for the current context. This value is always computed and never set via
+ * property values. The virtual path for this root is '~' or '~/'.
+ * @return {String} The application's 'head' location.
+ */
+Package.prototype.getAppHead = function() {
+    var cwd;
+    var checks;
+    var len;
+    var i;
+    var check;
+    var dir;
+    var file;
+
+    if (this.app_head) {
+        this.debug('getAppHead via cache: ' + this.app_head, true);
+        return this.app_head;
+    }
+
+    // One tricky aspect is that we don't want to confuse lib root and app head.
+    // That means for the app head computation we don't work from the module
+    // filename, but only from the current working directory.
+
+    cwd = process.cwd();
+    checks = [
+        [cwd, Package.NPM_FILE],
+        [cwd, Package.PROJECT_FILE],
+    ];
+
+    len = checks.length;
+    for (i = 0; i < len; i++) {
+        check = checks[i];
+        dir = check[0];
+        file = check[1];
+
+        while (dir.length > 0) {
+            this.debug('getAppHead checking: ' + path.join(dir, file), true);
+            if (sh.test('-f', path.join(dir, file))) {
+                this.app_head = dir;
+                break;
+            }
+            dir = dir.slice(0, dir.lastIndexOf(path.sep));
+        }
+
+        if (isValid(this.app_head)) {
+            break;
+        }
+    }
+
+    this.debug('getAppHead: ' + this.app_head, true);
+    return this.app_head;
+};
+
+
+/**
+ * Returns the application root directory. If path.app_root is set via command
+ * line options that value is used. When not provided app_root typically
+ * defaults to app_head since the majority of application structures don't
+ * separate the two (TIBET's couchapp dna is an exception).
+ * @return {String} The application root.
  */
 Package.prototype.getAppRoot = function() {
-    var cwd;        // Where are we being run?
-    var file;       // What file are we looking for?
 
     // Return cached value if available.
     if (this.app_root) {
-        this.debug('getAppRoot: ' + this.app_root, true);
+        this.debug('getAppRoot via cache: ' + this.app_root, true);
         return this.app_root;
     }
 
@@ -938,13 +1005,7 @@ Package.prototype.getAppRoot = function() {
         return this.app_root;
     }
 
-    this.app_root = this.getLaunchRoot();
-
-    if (notValid(this.app_root)) {
-        this.debug('Unable to find app_root.');
-        return;
-    }
-
+    this.app_root = this.getAppHead();
     this.debug('getAppRoot defaulted to launch root: ' + this.app_root, true);
 
     return this.app_root;
@@ -952,74 +1013,28 @@ Package.prototype.getAppRoot = function() {
 
 
 /**
- * Returns the application launch root also referred to as the 'app head'. This
- * is the location where the * tibet.json and/or package.json files are found
- * for the current context. This value is always computed and never set via
- * property values. The virtual path for this root is '~' or '~/'. The search
- * for this location works upward from the current directory to attempt to find
- * either a PROJECT_FILE or NPM_FILE. If that fails the search is done relative
- * to the module.filename, ie. the _Package.js file location itself.
- */
-Package.prototype.getLaunchRoot = function() {
-    var cwd;
-    var moduleDir;
-    var checks;
-    var len;
-    var i;
-    var check;
-    var dir;
-    var file;
-
-    if (this.app_head) {
-        return this.app_head;
-    }
-
-    // Iterate over a set of potential locations. Note that for launch root we
-    // stick to the NPM file rather than tibet.json since some configurations
-    // may actually place that file in different or multiple locations.
-    cwd = process.cwd();
-    moduleDir = module.filename.slice(0, module.filename.lastIndexOf('/'));
-    checks = [[cwd, Package.NPM_FILE], [moduleDir, Package.NPM_FILE]];
-
-    len = checks.length;
-    for (i = 0; i < len; i++) {
-        check = checks[i];
-        dir = check[0];
-        file = check[1];
-
-        while (dir.length > 0) {
-            if (sh.test('-f', path.join(dir, file))) {
-                this.app_head = dir;
-                break;
-            }
-            dir = dir.slice(0, dir.lastIndexOf(path.sep));
-        }
-
-        if (isValid(this.app_head)) {
-            break;
-        }
-    }
-
-    return this.app_head;
-};
-
-
-/**
- * Returns the apprary root directory, the path where the tibet apprary is
+ * Returns the library root directory, the path where the tibet library is
  * found. The search is a bit complex because we want to give precedence to
  * option settings and application-specific settings rather than simply working
- * from the assumption that we're using the apprary containing the current CLI.
+ * from the assumption that we're using the library containing the current CLI.
  */
 Package.prototype.getLibRoot = function() {
     var app_root,
-        testpath,
-        app_inf,
-        cwd,
+        moduleDir,
+        tibetdir,
+        tibetinf,
+        tibetlib,
+        offset,
+        checks,
+        check,
+        i,
+        len,
+        dir,
         file;
 
     // Return cached value if available.
-    if (this.app_root) {
-        this.debug('getLibRoot: ' + this.lib_root, true);
+    if (this.lib_root) {
+        this.debug('getLibRoot via cache: ' + this.lib_root, true);
         return this.lib_root;
     }
 
@@ -1035,51 +1050,79 @@ Package.prototype.getLibRoot = function() {
         return this.lib_root;
     }
 
-    // Check for any application-specific copy which may have been
-    // installed/frozen.
+    // Our base options here are a little different. We want to use app root as
+    // our first choice followed by the module directory where the CLI is
+    // running. This latter path gives us a fallback when we're being run
+    // outside a project, or in a non-node project.
     app_root = this.getAppRoot();
-    if (notEmpty(app_root)) {
+    moduleDir = module.filename.slice(0, module.filename.lastIndexOf('/'));
 
-        // NPM version is best.
-        testpath = path.join(app_root, 'node_modules/tibet');
-        this.debug('getLibRoot checking ' + testpath, true);
-        if (sh.test('-e', testpath)) {
-            this.lib_root = testpath;
-            this.debug('getLibRoot: ' + this.lib_root, true);
-            return this.lib_root;
-        }
+    // Our file checks are looking for the library so we need to leverage the
+    // standard boot settings for tibetdir, tibetinf, and tibetlib just as the
+    // boot system would.
 
-        // Alternative ~app_inf as a root (defaulted to TIBET-INF).
-        // Check command line options and tibet.json configuration data. NOTE
-        // that we can't use getcfg() here due to ordering/bootstrapping
-        // considerations.
-        if (this.options && this.options.app_inf) {
-            app_inf = this.options.app_inf;
-        } else if (this.tibet.app_inf) {
-            app_inf = this.tibet.app_inf;
-        } else if (this.tibet.tibet && this.tibet.tibet.app_inf) {
-            app_inf = this.tibet.tibet.app_inf;
-        } else {
-            app_inf = 'TIBET-INF';
-        }
-
-        testpath = path.join(app_root, app_inf, 'tibet');
-        this.debug('getLibRoot checking ' + testpath, true);
-        if (sh.test('-e', testpath)) {
-            this.lib_root = testpath;
-            this.debug('getLibRoot: ' + this.lib_root, true);
-            return this.lib_root;
-        }
+    if (this.options && this.options.tibetdir) {
+        tibetdir = this.options.tibetdir;
+    } else if (this.tibet.boot && this.tibet.boot.tibetdir) {
+        tibetdir = this.tibet.boot.tibetdir;
+    } else {
+        tibetdir = 'node_modules';
     }
 
-    this.lib_root = this.getLaunchRoot();
+    if (this.options && this.options.tibetinf) {
+        tibetinf = this.options.tibetinf;
+    } else if (this.tibet.boot && this.tibet.boot.tibetinf) {
+        tibetinf = this.tibet.boot.tibetinf;
+    } else {
+        tibetinf = 'TIBET-INF';
+    }
+
+    if (this.options && this.options.tibetlib) {
+        tibetlib = this.options.tibetlib;
+    } else if (this.tibet.boot && this.tibet.boot.tibetlib) {
+        tibetlib = this.tibet.boot.tibetlib;
+    } else {
+        tibetlib = 'tibet';
+    }
+
+    // How far is this file from the library root?
+    offset = '../../../..';
+
+    checks = [
+        [moduleDir, path.join(offset, tibetlib.toUpperCase())],
+        [moduleDir, path.join(offset, tibetlib)]
+    ];
+
+    if (app_root) {
+        checks.unshift([app_root, path.join(tibetinf, tibetlib)]);
+        checks.unshift([app_root, path.join(tibetdir, tibetlib)]);
+    }
+
+    len = checks.length;
+    for (i = 0; i < len; i++) {
+        check = checks[i];
+        dir = check[0];
+        file = check[1];
+
+        this.debug('getLibRoot checking: ' + path.join(dir, file), true);
+        // NOTE we're using -d here since we're doing a directory check.
+        if (sh.test('-d', path.join(dir, file))) {
+            if (dir === moduleDir) {
+                // Have to adjust dir by offset
+                dir = path.join(dir, offset, tibetlib);
+            } else {
+                // Have to adjust dir without offset
+                dir = path.join(dir, file);
+            }
+            this.lib_root = dir;
+            break;
+        }
+    }
 
     if (notValid(this.lib_root)) {
-        this.debug('Unable to find lib_root.');
+        this.error('Unable to find lib_root.');
         return;
     }
-
-    this.debug('getLibRoot defaulted to launch root: ' + this.lib_root, true);
 
     return this.lib_root;
 };
@@ -1482,14 +1525,14 @@ Package.prototype.inProject = function(silent) {
  * @return {Boolean} True if the package context is initialized.
  */
 Package.prototype.isInitialized = function() {
-    if (!this.inProject()) {
+    if (!this.initialized || !this.inProject()) {
         return false;
     }
 
     return sh.test('-e',
-            path.join(this.getLaunchRoot(), 'node_modules/tibet')) ||
+            path.join(this.getAppHead(), 'node_modules/tibet')) ||
         sh.test('-e',
-            path.join(this.getLaunchRoot(), 'TIBET-INF/tibet'));
+            path.join(this.getAppHead(), 'TIBET-INF/tibet'));
 };
 
 

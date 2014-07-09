@@ -92,7 +92,7 @@ Cmd.prototype.execute = function() {
     }
 
     if (option === '~') {
-        cfg = CLI.getLaunchRoot();
+        cfg = CLI.getAppHead();
     } else if (option === '~app' || option === '~app_root') {
         cfg = CLI.getAppRoot();
     } else if (option === '~lib' || option === '~lib_root') {
@@ -113,7 +113,7 @@ Cmd.prototype.execute = function() {
     // Object.keys will throw for anything other than Object/Array...
     try {
         if (CLI.isEmpty(option) || option.indexOf('path') === 0) {
-            str += '\t"~": "' + CLI.getLaunchRoot() + '",\n';
+            str += '\t"~": "' + CLI.getAppHead() + '",\n';
             str += '\t"~app": "' + CLI.getAppRoot() + '",\n';
             str += '\t"~lib": "' + CLI.getLibRoot() + '",\n';
         }

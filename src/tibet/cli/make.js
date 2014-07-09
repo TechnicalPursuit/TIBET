@@ -305,7 +305,7 @@ Cmd.prototype.prepTargets = function(targets) {
 
                         // Make sure all targets start from the makefile.js
                         // location.
-                        process.chdir(CLI.getLaunchRoot());
+                        process.chdir(CLI.getAppHead());
 
                         try {
                             func.call(func, cmd);           // run it :)
