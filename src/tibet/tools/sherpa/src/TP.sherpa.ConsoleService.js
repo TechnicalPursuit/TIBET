@@ -323,7 +323,12 @@ function(anEvent) {
         case 'DOM_Shift_Backspace_Press':
         case 'DOM_Shift_Backspace_Up':
 
-        case 'DOM_Esc_Up':
+        case 'DOM_Shift_Esc_Down':
+        case 'DOM_Shift_Esc_Up':
+
+        case 'DOM_Ctrl_Enter_Down':
+        case 'DOM_Ctrl_Enter_Press':
+        case 'DOM_Ctrl_Enter_Up':
 
             return true;
 
@@ -410,7 +415,7 @@ function(anEvent) {
             this.handleClearInput(anEvent);
             break;
 
-        case 'DOM_Esc_Up':
+        case 'DOM_Shift_Esc_Up':
             this.handleCancel(anEvent);
             break;
 
