@@ -519,8 +519,10 @@ function() {
         promptStr,
 
         textInput,
+        editor,
+
         cursorRange,
-        range;
+        markerRange;
 
     marker = this.get('currentPromptMarker');
 
@@ -528,9 +530,15 @@ function() {
     cssClass = TP.elementGetClass(elem);
     promptStr = elem.innerHTML;
 
+    textInput = this.get('textInput');
+
+    //  Clear the marker
+    markerRange = marker.find();
     marker.clear();
 
-    textInput = this.get('textInput');
+    //  Make sure to remove the space that was used as the text for the marker.
+    editor = this.get('textInput').$getEditorInstance();
+    editor.replaceRange('', markerRange.from, markerRange.to);
 
     cursorRange = textInput.getCursor();
 
@@ -541,7 +549,7 @@ function() {
 
     textInput.insertAtCursor(' ');
 
-    marker = this.generatePromptMarkAt(range, cssClass, promptStr);
+    marker = this.generatePromptMarkAt(markerRange, cssClass, promptStr);
     this.set('currentPromptMarker', marker);
 
     return this;
@@ -586,7 +594,9 @@ function(aPrompt, aCSSClass) {
 
     doc = textInput.getNativeContentDocument();
 
-    if (TP.notValid(elem = TP.byId(TP.sys.cfg('sherpa.console_prompt'), doc))) {
+    if (!TP.isElement(
+                elem = TP.byId(TP.sys.cfg('sherpa.console_prompt'), doc))) {
+
         cursorRange = textInput.getCursor();
 
         range = {
