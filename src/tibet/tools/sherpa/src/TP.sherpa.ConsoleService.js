@@ -805,6 +805,9 @@ function(aSignal) {
         //  if the registered request was the last input request, then clear it
         //  and reset 'awaiting input' and 'should conceal input'
         if (request === this.get('lastInputRequest')) {
+
+            this.get('$consoleGUI').clearInput();
+
             this.set('lastInputRequest', null);
 
             this.isAwaitingInput(false);

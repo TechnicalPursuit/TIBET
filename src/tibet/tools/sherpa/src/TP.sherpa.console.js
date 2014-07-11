@@ -303,6 +303,33 @@ function() {
 //  View Management Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('addLoggedValue',
+function(dataRecord) {
+
+    /**
+     * @name addLoggedValue
+     * @synopsis
+     * @param
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var outputText,
+        outputClass;
+
+    outputText = dataRecord.at('output');
+
+    //  TODO: Use this CSS class
+    outputClass = dataRecord.at('outputclass');
+
+    TP.byOID('SherpaLogView').addProcessedContent(outputText + '\n');
+
+    console.log('Echo logged text: ' + outputText);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('adjustTextInputSize',
 function() {
 
@@ -337,6 +364,9 @@ function() {
      */
 
     this.get('textInput').clearValue();
+
+    this.teardownInputMark();
+    this.teardownEvalMark();
 
     this.clearStatus();
 
@@ -812,7 +842,7 @@ function(anObject, shouldAppend) {
     }
 
     this.set('currentInputMarker',
-                this.markInputRange({anchor: start, head: end}));
+                this.generateInputMarkAt({anchor: start, head: end}));
 
     (function() {
         this.focusInput();
@@ -842,14 +872,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('markInputRange',
+TP.sherpa.console.Inst.defineMethod('generateInputMarkAt',
 function(aRange) {
 
     /**
-     * @name markInputRange
+     * @name generateInputMarkAt
      */
 
-    return this.get('textInput').$getEditorInstance().markText(
+    var marker;
+
+    marker = this.get('textInput').$getEditorInstance().markText(
         aRange.anchor,
         aRange.head,
         {
@@ -861,6 +893,8 @@ function(aRange) {
             'inclusiveRight': true,
         }
     );
+
+    return marker;
 });
 
 //  ------------------------------------------------------------------------
@@ -1071,10 +1105,11 @@ function(uniqueID, dataRecord) {
                     statsStr + ' ' +
                     resultTypeStr;
 
-        outElem = this.createOutputMarkerAt(
-            outputRange,
-            uniqueID,
-            recordStr);
+        marker = this.generateOutputMarkAt(
+                        outputRange,
+                        uniqueID,
+                        recordStr);
+        outElem = marker.widgetNode.firstChild;
     }
 
     outElem.innerHTML = '&hellip;';
@@ -1142,38 +1177,11 @@ function(uniqueID, dataRecord) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('addLoggedValue',
-function(dataRecord) {
-
-    /**
-     * @name addLoggedValue
-     * @synopsis
-     * @param
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    var outputText,
-        outputClass;
-
-    outputText = dataRecord.at('output');
-
-    //  TODO: Use this CSS class
-    outputClass = dataRecord.at('outputclass');
-
-    TP.byOID('SherpaLogView').addProcessedContent(outputText + '\n');
-
-    console.log('Echo logged text: ' + outputText);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('createOutputElement',
+TP.sherpa.console.Inst.defineMethod('generateOutputElement',
 function(uniqueID) {
 
     /**
-     * @name createOutputElement
+     * @name generateOutputElement
      * @synopsis
      * @param
      * @returns
@@ -1193,11 +1201,11 @@ function(uniqueID) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('createOutputMarkerAt',
+TP.sherpa.console.Inst.defineMethod('generateOutputMarkAt',
 function(range, uniqueID, titleText) {
 
     /**
-     * @name createOutputMarkerAt
+     * @name generateOutputMarkAt
      * @synopsis
      * @param
      * @param
@@ -1208,7 +1216,7 @@ function(range, uniqueID, titleText) {
     var elem,
         marker;
 
-    elem = this.createOutputElement(uniqueID);
+    elem = this.generateOutputElement(uniqueID);
 
     marker = this.get('textInput').$getEditorInstance().markText(
         range.from,
@@ -1228,7 +1236,7 @@ function(range, uniqueID, titleText) {
     //  Wire a reference to the marker back onto our output element
     elem.marker = marker;
 
-    return elem;
+    return marker;
 });
 
 //  ------------------------------------------------------------------------
@@ -1291,18 +1299,23 @@ function() {
     }
 
     if (TP.isValid(this.get('currentInputMarker'))) {
-        currentInputRange = this.get('currentInputMarker').find();
-        newEvalRange = {'anchor': currentInputRange.from,
-                        'head': currentInputRange.to};
+        if (TP.isValid(
+                currentInputRange = this.get('currentInputMarker').find())) {
+            
+            newEvalRange = {'anchor': currentInputRange.from,
+                            'head': currentInputRange.to};
 
-        this.teardownInputMark();
+            this.set('currentEvalMarker', this.generateEvalMarkAt(newEvalRange));
+        }
+    }
     
-        this.set('currentEvalMarker', this.markEvalRange(newEvalRange));
-
-    } else if (TP.notValid(this.get('currentEvalMarker'))) {
+    if (TP.notValid(this.get('currentEvalMarker'))) {
         newEvalRange = this.computeEvalMarkRange();
     
-        this.set('currentEvalMarker', this.markEvalRange(newEvalRange));
+        this.set('currentInputMarker',
+                    this.generateInputMarkAt({anchor: newEvalRange.anchor,
+                                            head: newEvalRange.head}));
+        this.set('currentEvalMarker', this.generateEvalMarkAt(newEvalRange));
     }
 
     return this;
@@ -1452,7 +1465,7 @@ function(direction, endPoint) {
 
     currentEvalMarker.clear();
 
-    this.set('currentEvalMarker', this.markEvalRange(cimRange));
+    this.set('currentEvalMarker', this.generateEvalMarkAt(cimRange));
 
     return this;
 });
@@ -1524,7 +1537,11 @@ function() {
      * @returns
      */
 
-    var editor,
+    var promptMark,
+   
+        range,
+
+        editor,
     
         head,
 
@@ -1673,18 +1690,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('markEvalRange',
-function(aRange) {
+TP.sherpa.console.Inst.defineMethod('generateEvalMarkAt',
+function(range) {
 
     /**
-     * @name markEvalRange
+     * @name generateEvalMarkAt
      * @synopsis
      * @returns
      */
 
-    return this.get('textInput').$getEditorInstance().markText(
-        aRange.anchor,
-        aRange.head,
+    var marker;
+
+    marker = this.get('textInput').$getEditorInstance().markText(
+        range.anchor,
+        range.head,
         {
             'className': 'bordered-eval',
             'startStyle': 'bordered-eval-left',
@@ -1694,6 +1713,8 @@ function(aRange) {
             'inclusiveRight': false,
         }
     );
+
+    return marker;
 });
 
 //  ========================================================================
