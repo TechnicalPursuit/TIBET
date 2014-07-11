@@ -335,7 +335,6 @@ function(aSignal) {
 
         notifyFunc =
             function() {
-
                 var req;
 
                 req = TP.sig.UserOutputRequest.construct(
@@ -344,25 +343,12 @@ function(aSignal) {
                                 'output',
                                 TP.elem(
                                     TP.join(
-                                        '<span xmlns="', TP.w3.Xmlns.XHTML, '">',
-                                    'There is a new version: ',
-                                        updateInfo.at('hash'),
-                                    '<br/>Named: ',
-                                        updateInfo.at('name'),
-                                    '<br/>Version #: ',
-                                        updateInfo.at('major') +
-                                        '.' +
-                                        updateInfo.at('minor'),
-                                    '<br/>Date: ',
-                                        updateInfo.at('date'),
-                                    '<br/>Download here: ',
-                                        '<a href="javascript: void(0)" onclick="javascript: TP.open(\'', updateInfo.at('url'), '\',\'TIBET Releases\'); return null">',
-                                        updateInfo.at('url'),
-                                        '</a>',
+                                    '<span xmlns="', TP.w3.Xmlns.XHTML, '">',
+                                    'There is a new TIBET version: ',
+                                    TP.sys.getLibVersion(updateInfo),
                                     '</span>')),
                             'cmdAsIs', true,
                             'cmdBox', false));
-
                 req.fire(this);
             };
 

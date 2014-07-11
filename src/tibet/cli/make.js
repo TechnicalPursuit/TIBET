@@ -78,7 +78,7 @@ Cmd.prototype.USAGE = 'tibet make [<target>] [--list] [--timeout <ms>]';
 /**
  * Common synchronous prompt for make target processing.
  */
-Cmd.prototype.prompt = require('sync-prompt').prompt;
+Cmd.prototype.prompt = CLI.prompt;
 
 
 //  ---

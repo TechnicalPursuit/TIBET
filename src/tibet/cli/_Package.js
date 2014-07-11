@@ -1943,6 +1943,7 @@ Package.prototype.setProjectOptions = function() {
     var pkg;
     var msg;
     var root;
+    var fullpath;
 
     // We need app root to load tibet.json, which hopefully has additional
     // configuration information we can leverage such as the lib_root path.
@@ -1957,28 +1958,33 @@ Package.prototype.setProjectOptions = function() {
         return;
     }
 
-    try {
-        // Load project file, or default to an object we can test to see that we
-        // are not in a project (see inProject).
-        this.tibet = require(path.join(root, Package.PROJECT_FILE)) ||
+    fullpath =  path.join(root, Package.PROJECT_FILE);
+    if (sh.test('-f', fullpath)) {
+        try {
+            // Load project file, or default to an object we can test to see
+            // that we are not in a project (see inProject).
             // TODO: this key should be a constant somewhere.
-            { tibet_project: false };
-    } catch (e) {
-        msg = 'Error loading project file: ' + e.message;
-        if (this.options.stack === true) {
-            msg += ' ' + e.stack;
+            this.tibet = require(fullpath) || { tibet_project: false };
+        } catch (e) {
+            msg = 'Error loading project file: ' + e.message;
+            if (this.options.stack === true) {
+                msg += ' ' + e.stack;
+            }
+            throw new Error(msg);
         }
-        throw new Error(msg);
     }
 
-    try {
-        this.npm = require(path.join(root, Package.NPM_FILE)) || {};
-    } catch (e) {
-        msg = 'Error loading npm file: ' + e.message;
-        if (this.options.stack === true) {
-            msg += ' ' + e.stack;
+    fullpath =  path.join(root, Package.NPM_FILE);
+    if (sh.test('-f', fullpath)) {
+        try {
+            this.npm = require(fullpath) || {};
+        } catch (e) {
+            msg = 'Error loading npm file: ' + e.message;
+            if (this.options.stack === true) {
+                msg += ' ' + e.stack;
+            }
+            throw new Error(msg);
         }
-        throw new Error(msg);
     }
 
     pkg = this;

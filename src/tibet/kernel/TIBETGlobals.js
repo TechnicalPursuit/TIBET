@@ -316,6 +316,29 @@ TP.sys.getGlobals[TP.DISPLAY] = 'TP.getGlobals';
 TP.sys.getGlobals[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
 //  ------------------------------------------------------------------------
+
+/**
+ * Processes inbound release data. This is provided by the TIBETVersion.js file.
+ * A similarly named function is used as a callback name for the checkVersion
+ * call. This particular function is mapped to that name in TIBETVersion.js.
+ * @param {Object} data The release data structure.
+ */
+TP.sys.release = function(data) {
+    // Only set this once.
+    if (TP.sys.$version) {
+        return;
+    }
+
+    TP.sys.$version = data;
+};
+
+TP.sys.release[TP.NAME] = 'release';
+TP.sys.release[TP.OWNER] = TP.sys;
+TP.sys.release[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.sys.release[TP.DISPLAY] = 'TP.release';
+TP.sys.release[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+
+//  ------------------------------------------------------------------------
 //  JAVASCRIPT LANGUAGE GLOBALS / KEYWORDS ETC.
 //  ------------------------------------------------------------------------
 
@@ -536,6 +559,9 @@ TP.sys.defineGlobal('$STATUS', 0);             //  last status code (0 is
 //  Add the common namespaces as tracked globals
 TP.sys.defineGlobal('TP', TP);
 TP.sys.defineGlobal('APP', APP);
+
+
+
 
 //  ------------------------------------------------------------------------
 //  COUNTERS/TIMERS

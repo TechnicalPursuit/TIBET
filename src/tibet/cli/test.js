@@ -150,15 +150,17 @@ Cmd.prototype.execute = function() {
     process = child.spawn('phantomjs', arglist);
 
     process.stdout.on('data', function(data) {
+        // Copy and remove newline.
         var msg = data.slice(0, -1);
         cmd.log(msg);
     });
 
     process.stderr.on('data', function(data) {
+        // Copy and remove newline.
         var msg = data.slice(0, -1);
 
         // Somebody down below likes to write error output with empty lines.
-        if (msg.trim().length === 0) {
+        if (msg && typeof msg.trim === 'function' && msg.trim().length === 0) {
             return;
         }
 

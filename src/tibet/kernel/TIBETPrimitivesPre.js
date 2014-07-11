@@ -11134,25 +11134,26 @@ whether the current version is up-to-date.
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('checkVersion',
-function(logDetails) {
+TP.sys.defineMethod('checkLibVersion',
+function() {
 
     /**
-     * @name checkVersion
+     * @name checkLibVersion
      * @synopsis Checks whether the current kernel version is the latest
-     *     available version by comparing the version ID against the latest
-     *     published TIBET kernel build ID.
+     *     available version by comparing current version data against a
+     *     published TIBET release reference.
      * @description This method expects to find a file at the location pointed
      *     to by '~lib_version_file' with the following content:
      *
-     *     versionCheck({'$LATEST_HASH': <buildHash>,
-     *                      '$LATEST_NAME': <buildName>,
-     *                      '$LATEST_MAJOR': <buildVersionMajor>,
-     *                      '$LATEST_MINOR': <buildVersionMinor>,
-     *                      '$LATEST_STATE': <buildVersionState>,
-     *                      '$LATEST_DATE': <buildDate>,
-     *                      '$LATEST_URL':<buildURL>})
-     *
+     *      release({
+     *          "name": "{{name}}",
+     *          "major": "{{major}}",
+     *          "minor": "{{minor}}",
+     *          "patch": "{{patch}}",
+     *          "state": "{{state}}",
+     *          "root": "{{describe}}",
+     *          "date": "{{isodate}}"
+     *      });
      *
      * @param {Boolean} logDetails If true, details about new versions will be
      *     written to the TIBET activity log and an 'TP.sig.UpdateAvailable'
@@ -11160,105 +11161,46 @@ function(logDetails) {
      */
 
     var path,
-        show,
         current,
         callback;
 
     path = TP.uriExpandPath('~lib_version_file');
-
-    //  if true this will cause the manifest to be dumped to the console
-    show = TP.ifInvalid(logDetails, false);
-
-    //  get the version identifier
-    current = TP.sys.getVersionHash();
+    current = TP.sys.getLibVersion();
 
     TP.ifTrace() ?
-        TP.trace('Checking version ' + current + ' for updates.',
+        TP.trace('Checking for updates to ' + TP.sys.getLibVersion(),
             TP.LOG, arguments) : 0;
 
     //  build up a callback function that'll handle the work once the
     //  actual call is complete
-    callback = function(resultData) {
+    callback = function(data) {
 
-        var hash,
-            name,
-            major,
-            minor,
-            state,
-            date,
-            url;
+        var latest;
 
-        //  first callback (this one) wants the $LATEST_HASH if
-        //  provided...
-        if (TP.isString(hash = resultData.at('$LATEST_HASH'))) {
+        if (TP.notEmpty(data)) {
 
-            if (hash === current) {
+            latest = TP.sys.getLibVersion(data);
+            if (latest === current) {
                 //  this build is up to date...
                 TP.ifTrace() ?
-                    TP.trace('Current version ' + current + ' is latest.',
-                            TP.LOG, arguments) : 0;
-
+                    TP.trace(current + ' is the latest.',
+                        TP.LOG, arguments) : 0;
                 return;
             }
 
             TP.ifTrace() ? TP.trace(
-                        'Latest version is version ' + hash + '.',
+                        'Latest version is version ' +
+                        latest + '.',
                         TP.LOG, arguments) : 0;
 
-            if (TP.isTrue(show)) {
-                if (TP.notEmpty(name = resultData.at('$LATEST_NAME'))) {
-                    TP.ifTrace() ?
-                        TP.trace('Latest version name for ' +
-                                    hash + ': ' + name + '\n',
-                                TP.LOG, arguments) : 0;
-                }
-                if (TP.notEmpty(major = resultData.at('$LATEST_MAJOR'))) {
-                    TP.ifTrace() ?
-                        TP.trace('Latest version major for ' +
-                                    hash + ': ' + major + '\n',
-                                TP.LOG, arguments) : 0;
-                }
-                if (TP.notEmpty(minor = resultData.at('$LATEST_MINOR'))) {
-                    TP.ifTrace() ?
-                        TP.trace('Latest version minor for ' +
-                                    hash + ': ' + minor + '\n',
-                                TP.LOG, arguments) : 0;
-                }
-                if (TP.notEmpty(state = resultData.at('$LATEST_STATE'))) {
-                    TP.ifTrace() ?
-                        TP.trace('Latest version state for ' +
-                                    hash + ': ' + state + '\n',
-                                TP.LOG, arguments) : 0;
-                }
-                if (TP.notEmpty(date = resultData.at('$LATEST_DATE'))) {
-                    TP.ifTrace() ?
-                        TP.trace('Latest version date for ' +
-                                    hash + ': ' + date + '\n',
-                                TP.LOG, arguments) : 0;
-                }
-                if (TP.notEmpty(url = resultData.at('$LATEST_URL'))) {
-                    TP.ifTrace() ?
-                        TP.trace('Latest version url for ' +
-                                    hash + ': ' + url + '\n',
-                                TP.LOG, arguments) : 0;
-                }
-            }
-
-            TP.sys.signal(
-                'TP.sig.UpdateAvailable',
-                arguments,
-                TP.hc('hash', hash, 'name', name,
-                        'major', major, 'minor', minor,
-                        'state', state, 'date', date,
-                        'url', url));
+            TP.signal(TP.sys, 'TP.sig.UpdateAvailable', arguments, data);
         } else {
             TP.ifWarn() ?
                 TP.warn('Unable to access ' + path + ' for version data.',
                         TP.LOG, arguments) : 0;
 
             TP.ifTrace() ?
-                TP.trace('Assuming version ' + TP.sys.getVersionHash() +
-                            ' is current.',
+                TP.trace('Assuming version ' + current + ' is current.',
                         TP.LOG, arguments) : 0;
         }
     };
@@ -11271,11 +11213,11 @@ function(logDetails) {
         //  a security issue, but no, the browsers are never going to close
         //  it because then how would all those ad servers work? ;)
 
-        //  Note the hardcoded 'versionCheck' callback function name. This
+        //  Note the hardcoded 'release' callback function name. This
         //  is to avoid having to have anything more than a file with the
         //  content as described in the method discussion above - no CGI
         //  necessary to read the 'callback=' parameter, etc. etc.
-        TP.jsonpCall(path, callback, 'versionCheck', null, null, false);
+        TP.jsonpCall(path, callback, 'release', null, null, false);
     } catch (e) {
         TP.ifError() ? TP.error(TP.ec(e, 'Unable to access ' + path),
                                 TP.LOG, arguments) : 0;
@@ -11288,98 +11230,50 @@ function(logDetails) {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('getVersionDate',
-function() {
+TP.sys.defineMethod('getLibVersion',
+function(release, long) {
 
     /**
-     * @name getVersionDate
-     * @synopsis Returns the value of the version datestamp for this kernel.
-     * @returns {String} The version datestamp of this kernel.
-     */
-
-    return TP.sys.$VERSION_DATE;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getVersionHash',
-function() {
-
-    /**
-     * @name getVersionHash
-     * @synopsis Returns the build ID for this version of the kernel. This is a
-     *     unique identifier identifying the build (usually a Git hash
-     *     identifier).
-     * @returns {String} The build ID of this kernel.
-     */
-
-    return TP.sys.$VERSION_HASH;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getVersionName',
-function() {
-
-    /**
-     * @name getVersionName
-     * @synopsis Returns the value of the version name for this kernel.
-     * @returns {String} The version name of this kernel.
-     */
-
-    return TP.sys.$VERSION_NAME;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getVersionNumber',
-function() {
-
-    /**
-     * @name getVersionNumber
-     * @synopsis Returns the value of the version number for this kernel.
-     * @returns {String} The version number of this kernel.
-     */
-
-    return TP.sys.$VERSION_MAJOR + '.' + TP.sys.$VERSION_MINOR;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getVersionState',
-function() {
-
-    /**
-     * @name getVersionState
-     * @synopsis Returns the value of the version state (beta, rc, final, etc.)
-     *     for this kernel.
-     * @returns {String} The version state of this kernel.
-     */
-
-    return TP.sys.$VERSION_STATE;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getVersionString',
-function() {
-
-    /**
-     * @name getVersionString
-     * @synopsis Returns the value of the version identification data for this
-     *     kernel as a string.
-     * @returns {String} The version string identifier of this kernel.
+     * @name getLibVersion
+     * @synopsis Returns the value of the version identification data as a
+     *     string. If release data is provided the string for that data is
+     *     returned, otherwise the string for the current kernel is returned.
+     * @param {Object} data A release data structure. See
+     *     TIBETVersionTemplate.js for content.
+     * @returns {String} The version string identifier.
      */
 
     var str;
+    var data;
 
-    if (TP.isEmpty(str = TP.sys.$VERSION_STRING)) {
-        str = TP.sys.getVersionNumber() + ' ' +
-                TP.sys.getVersionState() + ' ' +
-                'Built on: ' + TP.sys.getVersionDate() +
-                ' (' + TP.sys.getVersionName() + ')';
+    if (TP.isEmpty(release)) {
+        if (TP.notEmpty(TP.sys.$versionString)) {
+            return TP.sys.$versionString;
+        }
+    }
 
-        TP.sys.$VERSION_STRING = str;
+    data = TP.hc(TP.ifInvalid(release, TP.sys.$version));
+
+    str = 'TIBET ';
+    str += TP.ifEmpty(data.at('name'), '');
+    str += str.length === 6 ? '' : ' ';
+    str += TP.ifEmpty(data.at('major'), '0');
+    str += '.';
+    str += TP.ifEmpty(data.at('minor'), '0');
+    str += '.';
+    str += TP.ifEmpty(data.at('patch'), '0');
+    str += TP.ifEmpty(data.at('state'), '');
+
+    if (TP.isTrue(long)) {
+        str += ' (';
+        str += TP.ifEmpty(data.at('root'), '');
+        str += ' @ ';
+        str += TP.ifEmpty(data.at('date'), '');
+        str += ')';
+    }
+
+    if (TP.isEmpty(release)) {
+        TP.sys.$versionString = str;
     }
 
     return str;

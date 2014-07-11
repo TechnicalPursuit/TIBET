@@ -126,6 +126,9 @@ Cmd.prototype.execute = function() {
         str = '' + cfg;
     }
 
+    if (str.indexOf('~') === 0) {
+        str += ' => ' + CLI.expandPath(str);
+    }
     this.info(str);
 };
 

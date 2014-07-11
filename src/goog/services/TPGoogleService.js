@@ -147,6 +147,7 @@ function(aRequest) {
      */
 
     var params;
+    var version;
 
     //  All requests to Google are async...
     aRequest.atPut('async', true);
@@ -163,11 +164,8 @@ function(aRequest) {
             //  The GData APIs like to see a 'source' of:
             //      companyName-applicationName-versionID
 
-            params.atPutIfAbsent('source',
-                                    TP.join('TPI-TIBET-',
-                                                TP.sys.$VERSION_MAJOR,
-                                                '.',
-                                                TP.sys.$VERSION_MINOR));
+            params.atPutIfAbsent('source', TP.join('TPI-TIBET-' +
+                TP.sys.$version.root));
 
         break;
     }

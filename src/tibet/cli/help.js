@@ -157,7 +157,7 @@ Cmd.prototype.execute = function() {
     // Add-ons
     // ---
 
-    if (CLI.inProject(Cmd)) {
+    if (CLI.inProject(Cmd) || CLI.inLibrary()) {
         cmds = this.getCommands(CLI.expandPath('~app_cmd'));
         if (cmds.length > 0) {
             this.info('\n<command> extensions include:\n');

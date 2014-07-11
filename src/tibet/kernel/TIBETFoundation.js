@@ -8663,7 +8663,7 @@ function(aLogName) {
             flag = TP.sys.shouldLogActivities();
             TP.sys.shouldLogActivities(false);
 
-            TP.sys.signal(aLogName + 'LogChange');
+            TP.signal(TP.sys, aLogName + 'LogChange');
         } catch (e) {
         } finally {
             TP.sys.shouldLogActivities(flag);

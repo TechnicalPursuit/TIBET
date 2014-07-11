@@ -41,6 +41,8 @@ var path = require('path');
 var sh = require('shelljs');
 var chalk = require('chalk');
 var minimist = require('minimist');
+var prompt = require('sync-prompt').prompt;
+
 
 /**
  * The TIBET Package object used for path resolution and package-related asset
@@ -731,6 +733,13 @@ CLI.notInitialized = function() {
     this.error('Project not initialized. Run `tibet init [--link]` first.');
     process.exit(1);
 };
+
+
+/**
+ * A common prompting interface accessible via CLI.prompt or Cmd.prompt. (See
+ * _cmd.js for the mapping).
+ */
+CLI.prompt = prompt;
 
 
 //  ---

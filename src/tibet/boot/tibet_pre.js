@@ -312,8 +312,8 @@ TP.TIBET_URI_SPLITTER =
                 /tibet:([^\/]*?)\/([^\/]*?)\/([^\/]*)(\/([^#]*)(.*))*/;
 
 //  Version strings for manifests (root manifests) are like IP addresses,
-//  with a . separator and 4 parts for major, minor, build, and patch level.
-TP.TIBET_VERSION_SPLITTER = /(\d*)\.(\d*)\.(\d*)\.(\d*)/;
+//  with a . separator and parts for major, minor, and patch level.
+TP.TIBET_VERSION_SPLITTER = /(\d*)\.(\d*)\.(\d*)/;
 
 //  ----------------------------------------------------------------------------
 //  Internal Boot Properties
@@ -667,7 +667,7 @@ activating: {
 initializing: {
     order: 10,
     log: 'Initialization',
-    head: 'Initializating',
+    head: 'Initializing',
     sub: 'Initializing loaded components...',
     image: '~lib_img/boot/tpi_logo.png',
     fatal: true

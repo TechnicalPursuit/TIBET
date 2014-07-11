@@ -471,11 +471,8 @@ TP.sys.setcfg('tibet.locale', null);
 //  ---
 
 //  path to the json file (which avoids x-domain security issues) with the
-//  latest TIBET version number for version checking the root library.
-TP.sys.setcfg('path.lib_version_file', 'https://gist.github.com/raw/4651885');
-//TP.sys.setcfg('path.lib_version_file',
-//                'http://technicalpursuit.com/tibet/latest_build.js');
-
+//  latest TIBET release data for version checking the root library.
+TP.sys.setcfg('path.lib_version_file', 'http://0.0.0.0:1234/latest.js');
 
 //  ---
 //  obsolete ???

@@ -76,15 +76,10 @@ TP.core.YAK.Inst.defineAttribute('userJID');
 
 //  this shell's initial announcement text
 TP.core.YAK.Inst.defineAttribute('announcement',
-    TP.join('TIBET&#8482; Instant Messaging Shell (TP.core.YAK&#8482;) v',
-            TP.sys.getVersionString(), '<br/>',
-            'Copyright (C) 1999-2009, Technical Pursuit Inc, ',
+    TP.join('TIBET&#8482; Instant Messaging Shell (TP.core.YAK&#8482;) ',
+            TP.sys.getLibVersion(), '<br/>',
+            'Copyright (C) 1999, Technical Pursuit Inc, ',
             'All Rights Reserved. Patents Pending.<br/>',
-            'Licensed exclusively under the ',
-            '<a href="#" onclick="TP.shell(',
-                '\':help tpl\', false, false, false, \'', '`getID()`', '\'); ',
-                'return false;">TPL</a>. ',
-            'Be sure to review your rights and responsibilities.<br/>',
             'Agent: ', navigator.userAgent, '<br/><br/>'));
 
 //  additional information presented when a shell of this type starts up
@@ -151,7 +146,7 @@ function() {
      * @name canSend
      * @synopsis Returns true if the receiver has an open, authenticated
      *     connection which will support a send operation.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var yakService;
