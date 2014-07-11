@@ -41,9 +41,6 @@ TP.sherpa.console.shouldRegisterInstances(true);
 //  the default prompt separator/string (>>)
 TP.sherpa.console.Type.defineConstant('DEFAULT_PROMPT', '&#160;&#187;');
 
-//  the margin between the prompt and the input cell
-TP.sherpa.console.Type.defineConstant('PROMPT_RIGHT_MARGIN', 4);
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -87,6 +84,8 @@ TP.sherpa.console.Inst.defineAttribute('currentEvalMarker');
 TP.sherpa.console.Inst.defineAttribute('evalMarkAnchorMatcher');
 
 TP.sherpa.console.Inst.defineAttribute('currentInputMarker');
+
+TP.sherpa.console.Inst.defineAttribute('currentPromptMarker');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -427,6 +426,97 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('generatePromptMarkAt',
+function(range, cssClass, promptText) {
+
+    /**
+     * @name generatePromptMarkAt
+     * @synopsis
+     * @param
+     * @param
+     * @returns
+     */
+
+    var textInput,
+
+        doc,
+        elem,
+        marker;
+
+    textInput = this.get('textInput');
+
+    doc = textInput.getNativeContentDocument();
+
+    elem = doc.createElement('span');
+    elem.className = cssClass;
+    elem.id = TP.sys.cfg('sherpa.console_prompt');
+    elem.innerHTML = promptText;
+
+    marker = textInput.$getEditorInstance().markText(
+        range.from,
+        range.to,
+        {
+            'atomic': true,
+            'readOnly': true,
+            'collapsed': true,
+            'replacedWith': elem,
+            'inclusiveLeft': false,
+            'inclusiveRight': false
+        }
+    );
+
+    //  Wire a reference to the marker back onto our output element
+    elem.marker = marker;
+
+    return marker;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('movePromptMarkToCursor',
+function() {
+
+    /**
+     * @name movePromptMarkToCursor
+     * @synopsis
+     * @returns
+     */
+
+    var marker,
+
+        elem,
+        cssClass,
+        promptStr,
+
+        textInput,
+        cursorRange,
+        range;
+
+    elem = marker.widgetNode.firstChild;
+    cssClass = TP.elementGetClass(elem);
+    promptStr = elem.innerHTML;
+
+    marker.clear();
+
+    textInput = this.get('textInput');
+
+    cursorRange = textInput.getCursor();
+
+    range = {
+                'from': {line: cursorRange.line, ch: cursorRange.ch},
+                'to': {line:cursorRange.line, ch:cursorRange.ch + 1}
+            };
+
+    textInput.insertAtCursor(' ');
+
+    marker = this.generatePromptMarkAt(range, cssClass, promptStr);
+    this.set('currentPromptMarker', marker);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('setPrompt',
 function(aPrompt, aCSSClass) {
 
@@ -440,17 +530,49 @@ function(aPrompt, aCSSClass) {
      * @todo
      */
 
-    //  TODO: Get the code for this from the current TDC
+    var cssClass,
+        promptStr,
 
-    //this.appendToEnd(aPrompt);
+        textInput,
 
-    //this.get('textInput').selectFromTo(0, 0);
-    //this.get('textInput').insertAfterSelection(aPrompt);
+        doc,
+        range,
+        marker,
+        elem,
 
-    //  TODO: Do something with the class...
+        editor,
 
-    //  We need to invalidate the marker matcher since we changed the prompt.
-    this.set('evalMarkAnchorMatcher', null);
+        cursorRange;
+
+    TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
+
+    cssClass = TP.ifInvalid(aCSSClass, 'console_prompt');
+
+    promptStr = TP.ifInvalid(aPrompt, this.getType().DEFAULT_PROMPT);
+
+    textInput = this.get('textInput');
+
+    doc = textInput.getNativeContentDocument();
+
+    if (TP.notValid(elem = TP.byId(TP.sys.cfg('sherpa.console_prompt'), doc))) {
+        cursorRange = textInput.getCursor();
+
+        range = {
+                    'from': {line: cursorRange.line, ch: cursorRange.ch},
+                    'to': {line:cursorRange.line, ch:cursorRange.ch + 1}
+                };
+
+        textInput.insertAtCursor(' ');
+
+        marker = this.generatePromptMarkAt(range, cssClass, promptStr);
+        this.set('currentPromptMarker', marker);
+
+        editor = this.get('textInput').$getEditorInstance();
+        editor.setCursor(range.to);
+    } else {
+        TP.elementSetClass(elem, cssClass);
+        elem.innerHTML = promptStr;
+    }
 
     return this;
 });
@@ -968,6 +1090,8 @@ function(uniqueID, dataRecord) {
 
     console.log('Echo input text: ' + recordStr);
 
+    this.movePromptMarkToCursor();
+
     return this;
 });
 
@@ -1411,53 +1535,57 @@ function() {
         retVal,
         marks;
 
-    editor = this.get('textInput').$getEditorInstance();
-
-    //  Look for the following, in this order (at the beginning of a line)
-    //      - The current prompt (preceded by zero-or-more whitespace)
-    //      - A newline
-    //      - One of the TSH characters
-    head = editor.getCursor();
-
-    if (!TP.isRegExp(matcher = this.get('evalMarkAnchorMatcher'))) {
-        matcher = TP.rc('^(\\s*' +
-                        this.getPrompt() + '|' +
-                        '\\n' + '|' +
-                        TP.regExpEscape(TP.TSH_OPERATOR_CHARS) +
-                        ')');
-        this.set('evalMarkAnchorMatcher', matcher);
-    }
-
-    searchCursor = editor.getSearchCursor(matcher, head);
-
-    if (searchCursor.findPrevious()) {
-        //  We want the 'to', since that's the end of the '^\s*>' match
-        retVal = searchCursor.to();
+    if (TP.isValid(promptMark = this.get('currentPromptMarker'))) {
+        range = promptMark.find();
+        retVal = range.to;
     } else {
-        //  Couldn't find a starting '>', so we just use the beginning of the
-        //  editor
-        retVal = {line: 0, ch:0};
-    }
+        editor = this.get('textInput').$getEditorInstance();
 
-    //  See if there are any output marks between the anchor and head
-    marks = this.findOutputMarks(retVal, head);
-    if (marks.length > 0) {
-        retVal = marks[marks.length - 1].find().to;
-    }
+        //  Look for the following, in this order (at the beginning of a line)
+        //      - The current prompt (preceded by zero-or-more whitespace)
+        //      - A newline
+        //      - One of the TSH characters
+        head = editor.getCursor();
 
-    //  If the 'ch' is at the end of the line, increment the line and set the
-    //  'ch' to 0
-    lineInfo = editor.lineInfo(retVal.line);
+        if (!TP.isRegExp(matcher = this.get('evalMarkAnchorMatcher'))) {
+            matcher = TP.rc('^(\\s*' +
+                            '\\n' + '|' +
+                            TP.regExpEscape(TP.TSH_OPERATOR_CHARS) +
+                            ')');
+            this.set('evalMarkAnchorMatcher', matcher);
+        }
 
-    //  If we matched one of the TSH operator characters then it was a TSH
-    //  command and we want that character included.
-    if (lineInfo.text.contains(TP.TSH_OPERATOR_CHARS)) {
-        retVal.ch -= 1;
-    }
+        searchCursor = editor.getSearchCursor(matcher, head);
 
-    if (retVal.ch === lineInfo.text.length) {
-        retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
-                    ch: 0};
+        if (searchCursor.findPrevious()) {
+            //  We want the 'to', since that's the end of the '^\s*>' match
+            retVal = searchCursor.to();
+        } else {
+            //  Couldn't find a starting '>', so we just use the beginning of the
+            //  editor
+            retVal = {line: 0, ch:0};
+        }
+
+        //  See if there are any output marks between the anchor and head
+        marks = this.findOutputMarks(retVal, head);
+        if (marks.length > 0) {
+            retVal = marks[marks.length - 1].find().to;
+        }
+
+        //  If the 'ch' is at the end of the line, increment the line and set the
+        //  'ch' to 0
+        lineInfo = editor.lineInfo(retVal.line);
+
+        //  If we matched one of the TSH operator characters then it was a TSH
+        //  command and we want that character included.
+        if (lineInfo.text.contains(TP.TSH_OPERATOR_CHARS)) {
+            retVal.ch -= 1;
+        }
+
+        if (retVal.ch === lineInfo.text.length) {
+            retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
+                        ch: 0};
+        }
     }
 
     return retVal;

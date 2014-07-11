@@ -1212,6 +1212,9 @@ TP.sys.setcfg('sherpa.silent', false);
 //  editing (in ms) ?
 TP.sys.setcfg('sherpa.edit_mark_time', 750);
 
+//  the id of the element under the mark holding the prompt
+TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
+
 //  ---
 //  tds support
 //  ---
