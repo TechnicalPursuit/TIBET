@@ -1088,8 +1088,6 @@ function(uniqueID, dataRecord) {
             }
         }
 
-        textInput.refreshEditor();
-
         hid = dataRecord.at('hid');
         hidStr = TP.isEmpty(hid) ? '&#160;&#160;' : '!' + hid;
 
@@ -1115,7 +1113,6 @@ function(uniqueID, dataRecord) {
     }
 
     outElem.innerHTML = '&hellip;';
-    textInput.refreshEditor();
 
     if (outputRange.to.line === textInput.$getEditorInstance().lastLine()) {
         textInput.appendToLine('\n', TP.LAST);
@@ -1124,6 +1121,7 @@ function(uniqueID, dataRecord) {
     this.teardownInputMark();
 
     this.adjustTextInputSize();
+    textInput.refreshEditor();
 
     console.log('Echo input text: ' + recordStr);
 
@@ -1171,6 +1169,7 @@ function(uniqueID, dataRecord) {
     outElem.innerHTML = outputText;
 
     this.adjustTextInputSize();
+    textInput.refreshEditor();
 
     console.log('Echo output text: ' + outputText);
 
