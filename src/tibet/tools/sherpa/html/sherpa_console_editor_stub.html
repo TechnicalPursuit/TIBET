@@ -69,18 +69,28 @@ function setup()
 			tabMode: 'indent',
 			lineNumbers: true,
             viewportMargin: Infinity,
+            electricChars: false,
             extraKeys:
             {
                 //  NB: These should match keys that are used by the console in
                 //  TP.sherpa.ConsoleService
+                'Shift-Enter': function() {return true},
+
                 'Shift-Up': function() {return true},
                 'Shift-Right': function() {return true},
                 'Shift-Down': function() {return true},
                 'Shift-Left': function() {return true},
+
                 'Shift-Alt-Up': function() {return true},
                 'Shift-Alt-Right': function() {return true},
                 'Shift-Alt-Down': function() {return true},
-                'Shift-Alt-Left': function() {return true}
+                'Shift-Alt-Left': function() {return true},
+
+                'Shift-Backspace': function() {return true},
+
+                'Shift-Esc': function() {return true},
+
+                'Ctrl-Enter': function() {return true}
             }
 		});
 
@@ -121,14 +131,29 @@ body
 	overflow-y: auto;
 }
 
+.console_prompt
+{
+    display: inline-block;
+
+    cursor: default;
+
+    margin-left: 2px;
+    margin-right: 2px;
+
+    font-family: monospace;
+    color: rgb(188, 190, 143);
+
+    font-size: 11px;
+}
+
 .output
 {
     display: inline-block;
 
     cursor: default;
 
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
 
     font-family: monospace;
     background: rgba(255, 255, 255, 0.10);

@@ -2050,7 +2050,37 @@ function(aRequest) {
     }
 
     if (TP.notValid(obj = this.$get('executionInstance'))) {
-        obj = TP.lang.Hash.construct();
+
+        //  NOTE! This *MUST* be an object that 'slots' can be placed directly
+        //  on. In order for the shell to work properly, it will use a with(...)
+        //  statement in conjunction with this object (which will become $SCOPE)
+        //  to do things like resolve object references.
+        obj = {};
+
+        //  We do go ahead and instance program these methods onto this object
+        //  for cleanliness in other places in the code. Note that we hide these
+        //  methods so that they don't show up when we dump $SCOPE.
+        TP.defineSlot(obj,
+                        'at',
+                        function(slotName) {
+                            return this[slotName];
+                        },
+                        TP.METHOD, TP.LOCAL_TRACK, TP.HIDDEN_DESCRIPTOR);
+
+        TP.defineSlot(obj,
+                        'atPut',
+                        function(slotName, slotValue) {
+                            this[slotName] = slotValue;
+                        },
+                        TP.METHOD, TP.LOCAL_TRACK, TP.HIDDEN_DESCRIPTOR);
+
+        TP.defineSlot(obj,
+                        'removeKey',
+                        function(slotName) {
+                            delete this[slotName];
+                        },
+                        TP.METHOD, TP.LOCAL_TRACK, TP.HIDDEN_DESCRIPTOR);
+
         this.$set('executionInstance', obj);
     }
 

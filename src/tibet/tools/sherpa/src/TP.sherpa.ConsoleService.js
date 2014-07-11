@@ -135,9 +135,6 @@ function(aResourceID, aRequest) {
     //  set up this object to manage stdin, stdout and stderr
     this.configureSTDIO();
 
-    //  this will default to either the model's prompt or our default
-    this.get('$consoleGUI').setPrompt();
-
     //  get our shell to start by triggering its start method
     model.start(request);
 
@@ -323,7 +320,12 @@ function(anEvent) {
         case 'DOM_Shift_Backspace_Press':
         case 'DOM_Shift_Backspace_Up':
 
-        case 'DOM_Esc_Up':
+        case 'DOM_Shift_Esc_Down':
+        case 'DOM_Shift_Esc_Up':
+
+        case 'DOM_Ctrl_Enter_Down':
+        case 'DOM_Ctrl_Enter_Press':
+        case 'DOM_Ctrl_Enter_Up':
 
             return true;
 
@@ -410,8 +412,12 @@ function(anEvent) {
             this.handleClearInput(anEvent);
             break;
 
-        case 'DOM_Esc_Up':
+        case 'DOM_Shift_Esc_Up':
             this.handleCancel(anEvent);
+            break;
+
+        case 'DOM_Ctrl_Enter_Up':
+            inputCell.movePromptMarkToCursor();
             break;
 
         default:
@@ -673,8 +679,9 @@ function(aRequest) {
     //  reset the prompt and input cell
     this.get('$consoleGUI').clearInput();
 
-    //  this will default to either the model's prompt or our default
-    this.get('$consoleGUI').setPrompt();
+    //  this will default to the GUI's prompt if the model (TSH) doesn't have
+    //  one.
+    this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
 
     //this.showInputCell();
 
@@ -748,11 +755,10 @@ function(aRequest) {
 
     if (!this.isSystemConsole()) {
         if (TP.isValid(aRequest) && (!aRequest.at('cmdInput'))) {
-            //this.get('$consoleGUI').clearInput();
 
-            //  this will default to either the model's prompt or our
-            //  default
-            this.get('$consoleGUI').setPrompt();
+            //  this will default to the GUI's prompt if the model (TSH) doesn't
+            //  have one.
+            this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
         }
     }
 
@@ -792,12 +798,16 @@ function(aSignal) {
         this.ignore(aSignal.getOrigin(), 'TP.sig.RequestCompleted');
         this.ignore(aSignal.getOrigin(), 'TP.sig.RequestModified');
 
-        //  this will default to either the model's prompt or our default
-        this.get('$consoleGUI').setPrompt();
+        //  this will default to the GUI's prompt if the model (TSH) doesn't
+        //  have one.
+        this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
 
         //  if the registered request was the last input request, then clear it
         //  and reset 'awaiting input' and 'should conceal input'
         if (request === this.get('lastInputRequest')) {
+
+            this.get('$consoleGUI').clearInput();
+
             this.set('lastInputRequest', null);
 
             this.isAwaitingInput(false);
@@ -1352,8 +1362,9 @@ function(aModel) {
 
     this.$set('model', aModel);
 
-    //  this will default to either the model's prompt or our default
-    this.get('$consoleGUI').setPrompt();
+    //  this will default to the GUI's prompt if the model (TSH) doesn't have
+    //  one.
+    this.get('$consoleGUI').setPrompt(aModel.getPrompt());
 
     //  watch model for events so we keep things loosly coupled
     this.observe(aModel, TP.ANY);
