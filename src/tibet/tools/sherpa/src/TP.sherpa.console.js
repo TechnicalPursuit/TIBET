@@ -522,6 +522,8 @@ function() {
         cursorRange,
         range;
 
+    marker = this.get('currentPromptMarker');
+
     elem = marker.widgetNode.firstChild;
     cssClass = TP.elementGetClass(elem);
     promptStr = elem.innerHTML;
