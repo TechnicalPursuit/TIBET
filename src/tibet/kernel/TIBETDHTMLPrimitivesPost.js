@@ -1930,7 +1930,7 @@ function(anElement, wantsTransformed) {
     //      OR
     //      b) the element is not transformed (because BCR is a faster way to
     //      obtain box coordinates than iterating through the offset ancestor
-    //      hierarchy.
+    //      hierarchy).
     //  In other words, only if the caller has expressly said it doesn't want
     //  transformed coordinates and the element is transformed do we use offset
     //  ancestor iteration.
