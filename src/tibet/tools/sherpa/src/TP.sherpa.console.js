@@ -534,9 +534,9 @@ function() {
 
     cursorRange = textInput.getCursor();
 
-    range = {
-                'from': {line: cursorRange.line, ch: cursorRange.ch},
-                'to': {line:cursorRange.line, ch:cursorRange.ch + 1}
+    markerRange = {
+                'from': {'line': cursorRange.line, 'ch': cursorRange.ch},
+                'to': {'line': cursorRange.line, 'ch': cursorRange.ch + 1}
             };
 
     textInput.insertAtCursor(' ');
@@ -590,8 +590,8 @@ function(aPrompt, aCSSClass) {
         cursorRange = textInput.getCursor();
 
         range = {
-                    'from': {line: cursorRange.line, ch: cursorRange.ch},
-                    'to': {line:cursorRange.line, ch:cursorRange.ch + 1}
+                    'from': {'line': cursorRange.line, 'ch': cursorRange.ch},
+                    'to': {'line': cursorRange.line, 'ch': cursorRange.ch + 1}
                 };
 
         textInput.insertAtCursor(' ');
@@ -1582,7 +1582,7 @@ function() {
         } else {
             //  Couldn't find a starting '>', so we just use the beginning of the
             //  editor
-            retVal = {line: 0, ch:0};
+            retVal = {'line': 0, 'ch': 0};
         }
 
         //  See if there are any output marks between the anchor and head
@@ -1602,8 +1602,8 @@ function() {
         }
 
         if (retVal.ch === lineInfo.text.length) {
-            retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
-                        ch: 0};
+            retVal = {'line': Math.min(retVal.line + 1, editor.lastLine()),
+                        'ch': 0};
         }
     }
 
@@ -1640,7 +1640,7 @@ function() {
     } else {
         //  Couldn't find an ending '<', so we just use the end of the editor
         lineInfo = editor.lineInfo(editor.lastLine());
-        retVal = {line: lineInfo.line, ch: lineInfo.text.length};
+        retVal = {'line': lineInfo.line, 'ch': lineInfo.text.length};
     }
 
     //  See if there are any output marks between the anchor and head
@@ -1653,8 +1653,8 @@ function() {
     //  the 'ch' to end of the line
     if (retVal.ch === 0) {
         lineInfo = editor.lineInfo(retVal.line - 1);
-        retVal = {line: Math.max(retVal.line - 1, 0),
-                    ch: lineInfo.text.length};
+        retVal = {'line': Math.max(retVal.line - 1, 0),
+                    'ch': lineInfo.text.length};
     }
 
     return retVal;
