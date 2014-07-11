@@ -346,9 +346,6 @@ function() {
     newHeight = textInput.getEditorHeight();
     this.setHeight(newHeight);
 
-    var body = textInput.getNativeContentDocument().body;
-    body.scrollTop = body.scrollHeight;
-
     return;
 });
 
@@ -399,8 +396,10 @@ function() {
      * @synopsis Adjust the height of the input cell based on its contents.
      */
 
-    var body = this.get('textInput').getNativeContentDocument().body;
-    body.scrollTop = body.scrollHeight;
+    var editor;
+
+    editor = this.get('textInput').$getEditorInstance();
+    editor.scrollIntoView(null);
 
     return;
 });
@@ -1130,8 +1129,8 @@ function(uniqueID, dataRecord) {
 
     this.teardownInputMark();
 
-    this.adjustTextInputSize();
     textInput.refreshEditor();
+    this.adjustTextInputSize();
 
     console.log('Echo input text: ' + recordStr);
 
@@ -1178,8 +1177,8 @@ function(uniqueID, dataRecord) {
 
     outElem.innerHTML = outputText;
 
-    this.adjustTextInputSize();
     textInput.refreshEditor();
+    this.adjustTextInputSize();
 
     console.log('Echo output text: ' + outputText);
 
