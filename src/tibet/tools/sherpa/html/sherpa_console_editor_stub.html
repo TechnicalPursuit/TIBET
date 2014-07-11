@@ -55,7 +55,7 @@ NOTE:	Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 <script type="text/javascript" src="../../../../../deps/codemirror/mode/css/css.js"></script>
 
 <!-- Theme CSS -->
-<link rel="stylesheet" type="text/css" href="../cm_theme/tibet_code.css">
+<link rel="stylesheet" type="text/css" href="../cm_theme/solarized.css">
 <link rel="stylesheet" type="text/css" href="../cm_theme/sherpa_pp.css">
 
 <script type="text/javascript">
@@ -64,7 +64,7 @@ function setup()
 	window.cmEditor = CodeMirror.fromTextArea(
 		document.getElementById('cmEditor'),
 		{
-			theme: 'tibet_code',
+			theme: 'solarized dark',
 			mode: 'javascript',
 			tabMode: 'indent',
 			lineNumbers: true,
@@ -136,13 +136,13 @@ body
 
     cursor: default;
 
-    margin-left: 2px;
     margin-right: 2px;
 
     font-family: monospace;
     color: rgb(188, 190, 143);
 
-    font-size: 11px;
+    font-size: 13px;
+    font-weight: bold;
 }
 
 .output
@@ -151,52 +151,51 @@ body
 
     cursor: default;
 
-    margin-left: 2px;
-    margin-right: 2px;
+    margin-left: 5px;
+    margin-right: 5px;
+
+    padding: 3px;
 
     font-family: monospace;
     background: rgba(255, 255, 255, 0.10);
     color: rgb(188, 190, 143);
 
-    outline: solid 1px yellow;
-    font-size: 11px;
-}
-.output-text
-{
-    margin-left: 5px;
-    margin-right: 5px;
+    border: dotted 1px rgb(188, 190, 143);
+    border-radius: 3px;
+
+    font-size: 13px;
 }
 
 .bordered-input
 {
-    border-top: solid 1px green;
-    border-bottom: solid 1px green;
+    border-top: dashed 1px #2AA198;
+    border-bottom: dashed 1px #2AA198;
 }
 
 .bordered-input-left
 {
-    border-left: solid 1px green;
+    border-left: dashed 1px #2AA198;
 }
 
 .bordered-input-right
 {
-    border-right: solid 1px green;
+    border-right: dashed 1px #2AA198;
 }
 
 .bordered-eval
 {
-    border-top: solid 1px red;
-    border-bottom: solid 1px red;
+    border-top: dashed 1px #D33682;
+    border-bottom: dashed 1px #D33682;
 }
 
 .bordered-eval-left
 {
-    border-left: solid 1px red;
+    border-left: dashed 1px #D33682;
 }
 
 .bordered-eval-right
 {
-    border-right: solid 1px red;
+    border-right: dashed 1px #D33682;
 }
 </style>
 
