@@ -609,6 +609,7 @@ Cmd.prototype.phaseThree = function(meta) {
             release.warn('dry-run. bypassing ' + cmd);
         } else {
             release.log('executing ' + cmd);
+// TODO: uncomment when ready to release/debug.
 //        result = release.shexec(cmd);
         }
 
@@ -650,6 +651,7 @@ Cmd.prototype.phaseThree = function(meta) {
             release.warn('dry-run. bypassing ' + cmd);
         } else {
             release.log('executing ' + cmd);
+// TODO: uncomment when ready to release/debug.
 //        result = release.shexec(cmd);
         }
 
