@@ -2720,10 +2720,10 @@ function(anObj) {
      *     by the platform. This function will return an appropriate name for
      *     them.
      * @description This method has environment-specific checks in it. This is,
-     *     unfortunately, the only way to do this since a) it comes early in the
-     *     boot process and b) there is no way to automatically determine which
-     *     constructors are non-Function (in general, most Host constructors are
-     *     not enumerable on the global in the environment).
+     *     unfortunately, the only way to do this since a) it comes early in
+     *     the boot process and b) there is no way to automatically determine
+     *     which constructors are non-Function (in general, most Host
+     *     constructors are not enumerable on the global in the environment).
      * @param {Object} anObj The Object to return the name for.
      * @returns {String} The name for the supplied non-Function constructor
      *     object.
@@ -2913,8 +2913,8 @@ function(anObj) {
      * @synopsis Returns true if the object provided is a native type for the
      *     current browser.
      * @description Because the browsers don't have a common set of types the
-     *     results of this method may vary based on the browser in question. The
-     *     results are consistent for the "big 8" and the major types which
+     *     results of this method may vary based on the browser in question.
+     *     The results are consistent for the "big 8" and the major types which
      *     extend those 8 such as Event, but most HTML/DOM types will vary
      *     between implementations. By also checking for 'non Function'
      *     constructors here, we try to mitigate this problem.
