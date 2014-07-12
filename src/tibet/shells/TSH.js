@@ -2552,11 +2552,10 @@ function(aRequest) {
     //  NB: We supply 'null' as the default value if 'tsh:ref' wasn't
     //  specified.
     input = this.getArgument(aRequest, 'tsh:ref', null, true);
-
     if (TP.notValid(input)) {
         if (TP.isEmpty(input = aRequest.stdin())) {
             return aRequest.fail(TP.FAILURE,
-                'Unable to find reference for ' + TP.str(ref));
+                'Unable to find reference for ' + TP.str(input));
         }
     } else {
         input = TP.ac(input);
@@ -2727,6 +2726,8 @@ function(aRequest) {
     aRequest.stdout(keys.sort().join('\n'));
 
     aRequest.complete(keys);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
