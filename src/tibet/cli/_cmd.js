@@ -182,6 +182,12 @@ Cmd.prototype.execute = function() {
 
 
 /**
+ * Common synchronous prompt for user input.
+ */
+Cmd.prototype.prompt = CLI.prompt;
+
+
+/**
  * Parses, checks for --usage/--help, and invokes execute() as needed. This is a
  * template method you should normally leave as is. Override execute() to change
  * the core functionality for your command.
@@ -204,6 +210,29 @@ Cmd.prototype.run = function(options) {
     }
 
     this.execute();
+};
+
+
+/**
+ * A synchronous call to shelljs's exec utility which standardizes silent flag
+ * and error handling to simplify usage for command subtypes.
+ * @param {String} cmd The command string to run.
+ * @return {Object} A shelljs return value containing a 'code' and 'output'.
+ */
+Cmd.prototype.shexec = function(cmd) {
+
+    var result;
+    var sh = require('shelljs');
+
+    result = sh.exec(cmd, {
+        silent: (CLI.options.silent !== true)
+    });
+
+    if (result.code !== 0) {
+        throw new Error(result.output);
+    }
+
+    return result;
 };
 
 

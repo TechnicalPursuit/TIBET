@@ -122,8 +122,9 @@ targets.removedb = function(make) {
     db_url = 'http://0.0.0.0:5984';
     db_name = make.getProjectName();
 
-    response = make.prompt('Delete the database? Enter \'yes\' to confirm: ');
-    if (response.toLowerCase() !== 'yes') {
+    response = make.prompt.question(
+        'Delete the database? Enter \'yes\' to confirm: ');
+    if (!response || response.trim().toLowerCase() !== 'yes') {
         make.log('database removal cancelled.');
         targets.removedb.resolve();
         return;
