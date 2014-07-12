@@ -654,6 +654,10 @@ function(aRequest) {
                     (function() {
 
                         shell.initProfile();
+
+                        //  notify any observers that we've logged in
+                        shell.signal('TP.sig.TSH_Login');
+
                      }).fork(20);
 
                     return;
@@ -1922,9 +1926,22 @@ function(aRequest) {
      * @todo
      */
 
+    var req;
+
     this.logout();
 
-    return aRequest.complete();
+    //  output any startup announcement for the shell
+    req = TP.sig.UserOutputRequest.construct(
+                TP.hc('output', 'Logging out user ' + this.get('username'),
+                        'cssClass', 'inbound_announce',
+                        'cmdAsIs', true,
+                        'cmdBox', false,
+                        'cmdRecycle', true,
+                        'cmdID', aRequest.at('cmdID')));
+
+    req.fire(this);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

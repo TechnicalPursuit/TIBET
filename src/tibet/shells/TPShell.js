@@ -712,9 +712,8 @@ function(aRequest) {
         }
     }
 
-    //  notify any observers that we've logged out just to ensure the
-    //  shell gets removed from the responder list
-    this.signal('TP.sig.Logout');
+    //  notify any observers that we've logged out
+    this.signal('TP.sig.TSH_Logout');
 
     return this;
 });
