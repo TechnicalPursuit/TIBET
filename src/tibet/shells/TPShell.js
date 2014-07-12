@@ -2074,6 +2074,13 @@ function(aRequest) {
                         TP.METHOD, TP.LOCAL_TRACK, TP.HIDDEN_DESCRIPTOR);
 
         TP.defineSlot(obj,
+                        'hasKey',
+                        function(slotName) {
+                            return this[slotName] !== undefined;
+                        },
+                        TP.METHOD, TP.LOCAL_TRACK, TP.HIDDEN_DESCRIPTOR);
+
+        TP.defineSlot(obj,
                         'removeKey',
                         function(slotName) {
                             delete this[slotName];

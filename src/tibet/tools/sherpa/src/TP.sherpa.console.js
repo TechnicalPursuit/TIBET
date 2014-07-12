@@ -124,13 +124,6 @@ function() {
 
     textInputStartupComplete.observe(textInput, 'TP.sig.DOMReady');
 
-    (function () {
-
-        this.toggle('hidden');
-
-        }).bind(this).observe(
-            TP.core.Keyboard, 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
-
     return this;
 });
 

@@ -921,20 +921,11 @@ function() {
      * @synopsis Returns an object containing the names and type objects for all
      *     native types. These types are those which are defined at some level
      *     in JavaScript or the DOM.
-     * @description Not all types have an actual type object associated with
-     *     them. Some types are apparently created on-demand by the browser
-     *     implementation. For example, in Moz/FF there isn't actually an Anchor
-     *     type at the root level -- but you occasionally will get handed a
-     *     reference to an instance that implements the Anchor API.
      * @returns {Object} A hash containing all of the native types in the
      *     system.
      */
 
-    var nativeTypesKeys,
-        len,
-        i,
-        name,
-        item;
+    var nativeTypesKeys;
 
     //  Already computed this? Exit here.
     if (TP.isValid(TP.sys.$nativeTypes)) {
@@ -948,12 +939,7 @@ function() {
     //  (like a native type name would have) or where it starts with '__'.
     nativeTypesKeys = TP.sys.$extraglobals.getKeys().select(
                 function(aKey) {
-                    if (aKey.charAt(0) === aKey.charAt(0).toUpperCase() &&
-                        !aKey.startsWith('__')) {
-                        return true;
-                    }
-
-                    return false;
+                    return TP.isNativeType(TP.global[aKey]);
                 });
 
     //  Allocate the native types hash and initialize with the key and the value
@@ -963,6 +949,17 @@ function() {
             function(aKey) {
                 TP.sys.$nativeTypes.atPut(aKey, TP.global[aKey]);
             });
+
+    /*
+       TODO: Figure out what we want to do about metadata here. These days it
+       *is* possible to determine the 'supertype' chain of a native type, so
+       we could be more sophisticated here rather than just supplying
+       'Object' as the supertype of all.
+    var len,
+        i,
+        name,
+        item;
+
 
     //  Iterate and add metadata for the native types.
     len = nativeTypesKeys.getSize();
@@ -981,6 +978,7 @@ function() {
             TP.sys.addMetadata(Object, item, TP.SUBTYPE);
         }
     }
+    */
 
     return TP.sys.$nativeTypes;
 });
