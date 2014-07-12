@@ -1128,8 +1128,9 @@ Package.prototype.getLibRoot = function() {
     }
 
     if (notValid(this.lib_root)) {
-        this.error('Unable to find lib_root.');
-        return;
+        // Usually means a) running outside a project, b) didn't call the TIBET
+        // library 'tibet' or 'TIBET'. Just default based on current file path.
+        this.lib_root = path.join(module.filename, offset);
     }
 
     return this.lib_root;
