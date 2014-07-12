@@ -107,10 +107,16 @@ function(beHidden) {
         return this;
     }
 
+    TP.byOID('SherpaConsole').set('hidden', beHidden);
+
     if (TP.isTrue(beHidden)) {
         this.hideAllHUDDrawers();
+
+        this.getNativeWindow().focus();
     } else {
         this.showAllHUDDrawers();
+    
+        TP.byOID('SherpaConsole').focusInput();
     }
 
     return this.callNextMethod();
