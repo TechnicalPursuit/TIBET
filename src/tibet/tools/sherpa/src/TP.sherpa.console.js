@@ -323,7 +323,7 @@ function(dataRecord) {
 
     TP.byOID('SherpaLogView').addProcessedContent(outputText + '\n');
 
-    console.log('Echo logged text: ' + outputText);
+    //console.log('Echo logged text: ' + outputText);
 
     return this;
 });
@@ -1138,7 +1138,7 @@ function(uniqueID, dataRecord) {
     textInput.refreshEditor();
     this.adjustTextInputSize();
 
-    console.log('Echo input text: ' + recordStr);
+    //console.log('Echo input text: ' + recordStr);
 
     this.movePromptMarkToCursor();
 
@@ -1186,7 +1186,7 @@ function(uniqueID, dataRecord) {
     textInput.refreshEditor();
     this.adjustTextInputSize();
 
-    console.log('Echo output text: ' + outputText);
+    //console.log('Echo output text: ' + outputText);
 
     return this;
 });
