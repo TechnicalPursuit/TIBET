@@ -1100,7 +1100,7 @@ function(uniqueID, dataRecord) {
         hid = dataRecord.at('hid');
         hidStr = TP.isEmpty(hid) ? '&#160;&#160;' : '!' + hid;
 
-        cmdText = dataRecord.at('cmdtext');
+        cmdText = TP.ifInvalid(dataRecord.at('cmdtext'), '');
         cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
 
         //  TODO: Use this CSS class
