@@ -919,7 +919,7 @@ CLI.runFallback = function(command) {
     }
 
     if (this.hasMakeTarget(command)) {
-        this.warn('Delegating `' + command + '` to tibet make...');
+        this.warn('Delegating `' + command + '` to tibet make ' + command);
         this.runViaMake(command);
     } else if (this.inGruntProject(command)) {
         this.warn('Delegating `' + command + '` to grunt...');

@@ -148,9 +148,9 @@ Cmd.prototype.execute = function() {
                     }
                 }
 
-                msg = 'task success ' +
+                msg = 'Task success: ' +
                     ((new Date()).getTime() - start) + 'ms.';
-                cmd.log(msg);
+                cmd.system(msg);
 
                 process.exit(0);
             },
@@ -165,9 +165,9 @@ Cmd.prototype.execute = function() {
                     }
                 }
 
-                msg = 'task failure ' +
+                msg = 'Task failure: ' +
                     ((new Date()).getTime() - start) + 'ms.';
-                cmd.log(msg);
+                cmd.error(msg);
 
                 process.exit(1);
             });
