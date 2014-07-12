@@ -432,6 +432,12 @@ function() {
 
     this.focusInput();
 
+    (function() {
+        this.focusInput();
+        this.scrollToEnd();
+
+    }.bind(this)).afterUnwind();
+
     return this;
 });
 
