@@ -396,10 +396,16 @@ function() {
      * @synopsis Adjust the height of the input cell based on its contents.
      */
 
-    var editor;
+    var editor,
+        body;
 
     editor = this.get('textInput').$getEditorInstance();
     editor.scrollIntoView(null);
+
+    //  When the console is in 'collapsible' mode, this is important to get it
+    //  to scroll to the bottom properly.
+    body = this.get('textInput').getNativeContentDocument().body;
+    body.scrollTop = body.scrollHeight;
 
     return;
 });
