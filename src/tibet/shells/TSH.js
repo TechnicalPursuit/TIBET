@@ -2241,7 +2241,19 @@ function(aRequest) {
 
     var node,
         shell,
-        input;
+
+        input,
+        supertypeNames,
+        subtypeNames,
+
+        inheritedProps,
+
+        result,
+   
+        instResults,
+
+        inputType,
+        typeResults;
 
     if (TP.notValid(node = aRequest.at('cmdNode'))) {
         return aRequest.fail();
@@ -2254,17 +2266,92 @@ function(aRequest) {
     input = this.getArgument(aRequest, 'tsh:ref', null, true);
     if (TP.notValid(input)) {
         if (TP.isEmpty(input = aRequest.stdin())) {
-            //  TODO: return type list, sorted?
-            return aRequest.fail();
+            return aRequest.fail(TP.FAILURE,
+                'Unable to find type reference: ' + TP.str(input));
         }
     }
 
     if (TP.isValid(input = this.resolveObjectReference(input, aRequest))) {
-        aRequest.stdout(input.getInterface('unique_methods').sort());
+        supertypeNames = TP.stypes(input).collect(
+                                    function (item) {
+                                        return TP.name(item);
+                                    });
+
+        if (TP.canInvoke(input, 'getSubtypes')) {
+
+            //  Note that this is a shallow set of the subtypes
+            subtypeNames = input.getSubtypes().collect(
+                                        function (item) {
+                                            return TP.name(item);
+                                        });
+        }
+
+        inheritedProps = input.getInterface('known_inherited').sort();
+        inheritedProps.convert(
+                function(aPropName) {
+                    //  TODO: Leverage metadata here, which will also include
+                    //  owner information for attributes
+                    if (TP.isMethod(input[aPropName])) {
+                        return aPropName +
+                            ' (' + TP.name(input[aPropName][TP.OWNER]) + ')';
+                    }
+
+                    return aPropName;
+                });
+
+        if (TP.isType(input)) {
+            result = TP.hc(
+                'Supertypes', supertypeNames,
+                'Subtypes', subtypeNames,
+                'Local', input.getInterface('known_local').sort(),
+                'Introduced', input.getInterface('known_introduced').sort(),
+                'Inherited', inheritedProps,
+                'Overridden', input.getInterface('known_overridden').sort());
+        } else {
+            result = TP.hc(
+                'Supertypes', supertypeNames,
+                'Subtypes', subtypeNames);
+
+            instResults = TP.hc(
+                'Local', input.getInterface('known_local').sort(),
+                'Introduced', input.getInterface('known_introduced').sort(),
+                'Inherited', inheritedProps,
+                'Overridden', input.getInterface('known_overridden').sort());
+
+            result.atPut('Instance', instResults);
+
+            inputType = input.getType();
+
+            inheritedProps = inputType.getInterface('known_inherited').sort();
+            inheritedProps.convert(
+                function(aPropName) {
+                    //  TODO: Leverage metadata here, which will also include
+                    //  owner information for attributes
+                    if (TP.isMethod(input[aPropName])) {
+                        return aPropName +
+                            ' (' + TP.name(input[aPropName][TP.OWNER]) + ')';
+                    }
+
+                    return aPropName;
+                });
+
+            typeResults = TP.hc(
+                'Local', inputType.getInterface('known_local').sort(),
+                'Introduced', inputType.getInterface('known_introduced').sort(),
+                'Inherited', inheritedProps,
+                'Overridden', inputType.getInterface('known_overridden').sort());
+
+            result.atPut('Type', typeResults);
+        }
+
+        aRequest.stdout(result);
     } else {
-        //  TODO: return type list, sorted?
-        return aRequest.fail();
+        return aRequest.fail(
+                TP.FAILURE,
+                'Unable to resolve object reference ' + input);
     }
+
+    aRequest.complete();
 
     return;
 });
@@ -2736,11 +2823,40 @@ TP.core.TSH.Inst.defineMethod('executeTypes',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
+     * @name executeTypes
+     * @synopsis Returns an array of all of the types in the system. This will
+     *     include native types if the 'includeNative' flag is supplied.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input.
+     * @returns {TP.sig.ShellRequest} The request.
      */
 
+    var node,
+    
+        shell,
+        includeNatives,
+        typesKeys;
 
+    if (TP.notValid(node = aRequest.at('cmdNode'))) {
+        return aRequest.fail();
+    }
+
+    shell = aRequest.at('cmdShell');
+
+    typesKeys = TP.sys.getCustomTypes().getKeys();
+
+    includeNatives = this.getArgument(aRequest, 'tsh:includeNative');
+    if (TP.isValid(includeNatives) && TP.isTrue(TP.bc(includeNatives))) {
+        typesKeys.addAll(TP.sys.getNativeTypes().getKeys());
+    }
+
+    if (TP.notEmpty(typesKeys)) {
+        aRequest.stdout(typesKeys.sort());
+    }
+
+    aRequest.complete();
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
