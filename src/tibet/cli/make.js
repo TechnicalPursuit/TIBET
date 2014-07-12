@@ -75,12 +75,6 @@ Cmd.prototype.HELP =
 Cmd.prototype.USAGE = 'tibet make [<target>] [--list] [--timeout <ms>]';
 
 
-/**
- * Common synchronous prompt for make target processing.
- */
-Cmd.prototype.prompt = CLI.prompt;
-
-
 //  ---
 //  Instance Methods
 //  ---

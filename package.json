@@ -1,16 +1,8 @@
 {
     "name": "tibet",
-    "version": "5.0.0",
+    "version": "v5.0.0-dev.116+g52240583fc.1405184580500",
     "description": "The TIBET Environment.",
-    "keywords": [
-        "CLI",
-        "IDE",
-        "JavaScript",
-        "Environment",
-        "Platform",
-        "Framework",
-        "TIBET"
-    ],
+    "keywords": ["CLI", "IDE", "JavaScript", "Environment", "Platform", "Framework", "TIBET"],
     "homepage": "http://technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
@@ -66,9 +58,9 @@
         "phantomjs": "*",
         "pouchdb": "TechnicalPursuit/pouchdb",
         "q": "TechnicalPursuit/q#v1",
+        "readline-sync": "*",
         "shelljs": "*",
         "shelljs-nodecli": "*",
-        "sync-prompt": "*",
         "watch": "*",
         "xpath": "TechnicalPursuit/xpath",
         "xmldom": "*"

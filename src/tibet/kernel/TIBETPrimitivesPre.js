@@ -11146,13 +11146,16 @@ function() {
      *     to by '~lib_version_file' with the following content:
      *
      *      release({
-     *          "name": "{{name}}",
+     *          "describe": "{{describe}}",
      *          "major": "{{major}}",
      *          "minor": "{{minor}}",
      *          "patch": "{{patch}}",
-     *          "state": "{{state}}",
-     *          "root": "{{describe}}",
-     *          "date": "{{isodate}}"
+     *          "suffix": "{{suffix}}",
+     *          "commits": "{{commits}}",
+     *          "ptag": "{{ptag}}",
+     *          "phash": "{{phash}}",
+     *          "time": "{{time}}",
+     *          "semver": "{{semver}}"
      *      });
      *
      * @param {Boolean} logDetails If true, details about new versions will be
@@ -11223,7 +11226,7 @@ function() {
                                 TP.LOG, arguments) : 0;
 
         TP.ifTrace() ? TP.trace('Assuming version ' +
-                    TP.sys.getVersionHash() + ' is current.',
+                    TP.sys.getLibVersion() + ' is current.',
                     TP.LOG, arguments) : 0;
     }
 });
@@ -11231,45 +11234,76 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getLibVersion',
-function(release, long) {
+function(release, meta) {
 
     /**
      * @name getLibVersion
      * @synopsis Returns the value of the version identification data as a
      *     string. If release data is provided the string for that data is
      *     returned, otherwise the string for the current kernel is returned.
-     * @param {Object} data A release data structure. See
+     *     NOTE that the string returned is intended to conform to the semver
+     *     specification with optional pre-release and metadata content.
+     * @param {Object} release A release data structure. See
      *     TIBETVersionTemplate.js for content.
      * @returns {String} The version string identifier.
      */
 
     var str;
     var data;
+    var semver;
 
+    // Return cached value if possible.
     if (TP.isEmpty(release)) {
         if (TP.notEmpty(TP.sys.$versionString)) {
             return TP.sys.$versionString;
         }
     }
 
+    // Default data to the current kernel's stored version info.
     data = TP.hc(TP.ifInvalid(release, TP.sys.$version));
 
-    str = 'TIBET ';
-    str += TP.ifEmpty(data.at('name'), '');
-    str += str.length === 6 ? '' : ' ';
+    // Build a semver-compliant string optionally including pre-release and meta
+    // information when that data is available. Not all releases have it.
+    str = 'v';
     str += TP.ifEmpty(data.at('major'), '0');
     str += '.';
     str += TP.ifEmpty(data.at('minor'), '0');
     str += '.';
     str += TP.ifEmpty(data.at('patch'), '0');
-    str += TP.ifEmpty(data.at('state'), '');
 
-    if (TP.isTrue(long)) {
-        str += ' (';
-        str += TP.ifEmpty(data.at('root'), '');
-        str += ' @ ';
-        str += TP.ifEmpty(data.at('date'), '');
-        str += ')';
+    if (TP.notEmpty(data.at('suffix'))) {
+        str += '-';
+        str += data.at('suffix');
+
+        str += '.';
+        str += data.at('commits');
+    }
+
+    if (TP.isTrue(meta)) {
+        semver = data.at('semver');
+
+        if (TP.notEmpty(data.at('phash'))) {
+            str += '+g';
+            str += data.at('phash');
+        }
+
+        if (TP.notEmpty(data.at('time'))) {
+            if (TP.notEmpty(data.at('phash'))) {
+                str += '.';
+            } else {
+                str += '+';
+            }
+            str += data.at('time');
+        }
+    } else {
+        semver = data.at('semver').split('+')[0];
+    }
+
+    // A sanity check...
+    if (str !== semver) {
+        // Hmmm. Computation should be the same.
+        TP.error('Version string mismatch. source -> ' + data.at('semver') +
+            ' !== ' + str + ' <- computed.');
     }
 
     if (TP.isEmpty(release)) {

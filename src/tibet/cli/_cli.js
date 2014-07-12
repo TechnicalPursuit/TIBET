@@ -41,7 +41,7 @@ var path = require('path');
 var sh = require('shelljs');
 var chalk = require('chalk');
 var minimist = require('minimist');
-var prompt = require('sync-prompt').prompt;
+var prompt = require('readline-sync');
 
 
 /**
