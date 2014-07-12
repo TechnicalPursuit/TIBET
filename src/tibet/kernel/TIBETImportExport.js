@@ -363,7 +363,7 @@ function(aPath) {
         function(type) {
 
             return scripts.contains(TP.objectGetLoadPath(type));
-    });
+});
 });
 
 //  ------------------------------------------------------------------------
