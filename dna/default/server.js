@@ -50,6 +50,7 @@ var csurf = require('csurf');
 var morgan = require('morgan');
 var session = require('express-session');
 var serveStatic = require('serve-static');
+var serveIndex = require('serve-index')
 
 // TIBET Development Server addons.
 var TDS = require('tibet/etc/tds-middleware');
@@ -97,10 +98,20 @@ app.use(session({
 // reactivate this. for now it isn't being sent to the client appropriately.
 //app.use(csurf());
 
+app.use(bodyParser.json({ type: 'application/json' }));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 //  Express logger.
-app.use(morgan());
+//  TODO: Add options control in tibet.json.
+app.use(morgan({format: 'dev'}));
+
+//  Support index listings.
+//  TODO: Sort out if there's a way to avoid listing them separately, or put
+//  them into a parameter.
+//app.use(serveIndex('/src', {'icons': true}));
+//app.use(serveIndex('/html', {'icons': true}));
+//app.use(serveIndex('/css', {'icons': true}));
+//app.use(serveIndex('/img', {'icons': true}));
 
 //  ---
 //  ---
@@ -111,6 +122,15 @@ app.use(morgan());
 // constrained.
 if (argv.cli !== false) {
     app.get(TDS.getcfg('tds.cli_uri'), TDS.cli());
+    app.post(TDS.getcfg('tds.cli_uri'), TDS.cli());
+}
+
+// Configure the TIBET patch handler. This will process requests from the client
+// to apply a patch to a source file, or to replace the file entirely.
+if (argv.patcher !== false) {
+    app.put(TDS.getcfg('tds.patch_uri'), TDS.patcher());
+    app.post(TDS.getcfg('tds.patch_uri'), TDS.patcher());
+    app.patch(TDS.getcfg('tds.patch_uri'), TDS.patcher());
 }
 
 // Configure the file watcher so changes on the server can be propogated to the
@@ -122,7 +142,8 @@ if (argv.watcher !== false) {
 // Configure the webdav component so changes in the client can be propogated to
 // the server.
 if (argv.webdav !== false) {
-    app.use(TDS.getcfg('tds.dav_uri'), TDS.webdav());
+    app.put(TDS.getcfg('tds.dav_uri'), TDS.webdav());
+    app.post(TDS.getcfg('tds.dav_uri'), TDS.webdav());
 }
 
 //  ---
