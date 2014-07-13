@@ -1470,6 +1470,8 @@ Package.prototype.inLibrary = function() {
     dir = process.cwd();
     file = Package.NPM_FILE;
     while (dir.length > 0) {
+        this.debug('checking for library context in ' + path.join(dir, file),
+            true);
         if (sh.test('-f', path.join(dir, file))) {
             found = true;
             break;

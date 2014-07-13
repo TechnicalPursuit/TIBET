@@ -545,7 +545,7 @@ CLI.getMakeTargets = function() {
     fullpath = this.expandPath(this.MAKE_FILE);
 
     if (!sh.test('-f', fullpath)) {
-        this.debug('TIBET make file not found: ' + fullpath);
+        this.debug('project make file not found: ' + fullpath);
         return;
     }
 
@@ -919,13 +919,13 @@ CLI.runFallback = function(command) {
     }
 
     if (this.hasMakeTarget(command)) {
-        this.warn('Delegating `' + command + '` to tibet make ' + command);
+        this.warn('Delegating to \'tibet make ' + command + '\'');
         this.runViaMake(command);
     } else if (this.inGruntProject(command)) {
-        this.warn('Delegating `' + command + '` to grunt...');
+        this.warn('Attempting \'grunt ' + command + '\'');
         this.runViaGrunt(command);
     } else if (this.inGulpProject()) {
-        this.warn('Delegating `' + command + '` to grunt...');
+        this.warn('Attempting \'gulp ' + command + '\'');
         this.runViaGulp(command);
     } else {
         this.error('Command not found: ' + command + '.');

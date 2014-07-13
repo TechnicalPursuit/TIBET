@@ -271,7 +271,7 @@ Cmd.prototype.prepTargets = function(targets) {
 
                         // TODO: replace with Promise-based timeout() call.
                         timer = setTimeout(function() {
-                            cmd.error(name + ' timed out.');
+                            cmd.error('Task ' + name + ' timed out.');
                             rejector('timeout');
                         }, timeout);
 

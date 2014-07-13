@@ -121,7 +121,7 @@ Cmd.prototype.execute = function() {
     // Verify we can find the test runner script.
     testpath = CLI.expandPath(Cmd.DEFAULT_RUNNER);
     if (!sh.test('-e', testpath)) {
-        this.log('cannot find runner at: ' + testpath);
+        this.error('Cannot find runner at: ' + testpath);
         return;
     }
 
