@@ -97,6 +97,7 @@ Cmd.prototype.execute = function() {
     var sh;     // The shelljs module.
     var child;  // The child_process module.
     var cmd;    // Closure'd var providing access to the command object.
+    var dna;
 
     cmd = this;
 
@@ -120,27 +121,35 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
+    dna = this.getcfg('tibet.dna');
+    if (CLI.notEmpty(dna)) {
+        dna = dna.slice(dna.lastIndexOf('/') + 1);
+        cmd.info('Initializing new ' + dna + ' project...');
+    } else {
+        cmd.info('Initializing new project...');
+    }
+
     if (this.options.link === true) {
 
         // For reasons largely due to how the CLI needs to operate (and
         // until the code is part of the global npm package install) we
         // also need an internal link to the tibet 5.0 platform.
-        cmd.warn('Linking TIBET dynamically via `npm link tibet`.');
+        cmd.log('linking TIBET dynamically via `npm link tibet`.');
 
         child.exec('npm link tibet', function(err, stdout, stderr) {
             if (err) {
                 cmd.error('Failed to initialize: ' + stderr);
-                cmd.info(
-                    '`git clone` TIBET 5.x, `npm link` it, and retry.');
+                cmd.warn(
+                    '`git clone` TIBET 5.x, `npm link .` it, and retry.');
                 throw new Error();
             }
 
-            cmd.info('TIBET development dependency linked successfully.');
+            cmd.log('TIBET development dependency linked successfully.');
 
             // Ensure npm install is run once we're sure the things that
             // need to be 'npm link'd into place have been. If we don't
             // do this last it'll just fail.
-            cmd.info('Installing additional dependencies via `npm install`.');
+            cmd.log('installing additional dependencies via `npm install`.');
 
             child.exec('npm install', function(err, stdout, stderr) {
                 if (err) {
@@ -154,7 +163,7 @@ Cmd.prototype.execute = function() {
 
     } else {
 
-        cmd.info('Installing project dependencies via `npm install`.');
+        cmd.log('installing project dependencies via `npm install`.');
 
         child.exec('npm install', function(err, stdout, stderr) {
             if (err) {

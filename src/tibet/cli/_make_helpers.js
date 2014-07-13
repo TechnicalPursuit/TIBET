@@ -59,7 +59,7 @@ helpers.rollup = function(make, name, pkg, config, headers, minify, promise) {
     file = './lib/src/tibet_' + name + ext;
 
     try {
-        make.log('Writing ' + result.output.length + ' chars to: ' + file);
+        make.log('writing ' + result.output.length + ' chars to: ' + file);
         result.output.to(file);
         promise.resolve();
     } catch (e) {

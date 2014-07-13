@@ -275,9 +275,14 @@ TP.hc(
         //  with request mapping ensured we can now test for viable target
         //  URI
         url = targetUrl || request.at('uri');
-        if (TP.isEmpty(url) || TP.uriIsVirtual(url)) {
+        if (TP.isEmpty(url)) {
             return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
                                 request);
+        }
+
+        url = TP.str(url);
+        if (TP.uriIsVirtual(url)) {
+            url = TP.uriExpandPath(url);
         }
 
         //  expand the url as needed using any query data in the request.
@@ -535,9 +540,14 @@ TP.hc(
         //  with request mapping ensured we can now test for viable target
         //  URI
         url = targetUrl || request.at('uri');
-        if (TP.isEmpty(url) || TP.uriIsVirtual(url)) {
+        if (TP.isEmpty(url)) {
             return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
                                 request);
+        }
+
+        url = TP.str(url);
+        if (TP.uriIsVirtual(url)) {
+            url = TP.uriExpandPath(url);
         }
 
         //  expand the url as needed using any query data in the request.
@@ -753,9 +763,14 @@ TP.hc(
         //  with request mapping ensured we can now test for viable target
         //  URI
         url = targetUrl || request.at('uri');
-        if (TP.isEmpty(url) || TP.uriIsVirtual(url)) {
+        if (TP.isEmpty(url)) {
             return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
                                 request);
+        }
+
+        url = TP.str(url);
+        if (TP.uriIsVirtual(url)) {
+            url = TP.uriExpandPath(url);
         }
 
         //  On Webkit, if we launched over HTTP, we can *only* query against

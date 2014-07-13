@@ -4425,7 +4425,9 @@ function(aResource, aRequest) {
     hasID = (aResource[TP.ID] !== aResource.$$oid);
 
     if (!hasID) {
-        aResource.setID(this.getName());
+        if (TP.canInvoke(aResource, 'setID')) {
+            aResource.setID(this.getName());
+        }
     }
 
     //  If we already have a resource, make sure to 'ignore' it for changes.
