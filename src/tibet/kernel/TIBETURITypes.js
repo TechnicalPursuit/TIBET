@@ -5641,23 +5641,6 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURL.Inst.defineMethod('httpCreate',
-function(aRequest) {
-
-    /**
-     * @name httpCreate
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP CREATE
-     *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
-     */
-
-    return TP.httpCreate(this.asString(), aRequest);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.HTTPURL.Inst.defineMethod('httpDelete',
 function(aRequest) {
 
@@ -7512,27 +7495,6 @@ function(request, result, async, filter) {
         request.complete(resource);
 
         return resource;
-    }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TIBETURL.Inst.defineMethod('httpCreate',
-function(aRequest) {
-
-    /**
-     * @name httpCreate
-     * @synopsis Uses the receiver as a target URI and invokes an HTTP CREATE
-     *     with aRequest.
-     * @param {TP.sig.Request} request The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
-     */
-
-    if (this.isHTTPBased()) {
-        return TP.httpCreate(this.asString(), aRequest);
-    } else {
-        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
     }
 });
 
