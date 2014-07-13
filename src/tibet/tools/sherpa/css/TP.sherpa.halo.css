@@ -1,0 +1,120 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+sherpa|halo
+{
+	display: none;
+	position: absolute;
+
+	top: 200px;
+	left: 200px;
+
+	/* This should match TIBET's HALO_TIER constant */
+	z-index: 10000;
+
+    border: dashed 1px gray;
+    border-radius: 5px;
+}
+
+sherpa|halo:not([pclass|hidden])
+{
+	display: block;
+
+	width: 100px;
+	height: 100px;
+}
+
+sherpa|halo > div
+{
+	position: absolute;
+
+	width: 16px;
+	height: 16px;
+}
+
+.haloCorner
+{
+    border: dashed 1px black;
+    border-radius: 16px;
+
+    opacity: 0.2;
+    transition: opacity .25s ease-out;
+}
+
+.haloCorner:hover
+{
+    opacity: 1.0;
+}
+
+/* TP.NORTHWEST */
+#haloCorner-Northwest
+{
+    top: -12px;
+    left: -12px;
+
+    background-color: gray;
+}
+
+/* TP.NORTH */
+#haloCorner-North
+{
+    top: -12px;
+    left: calc(50% - 12px);
+
+    background-color: black;
+}
+
+/* TP.NORTHEAST */
+#haloCorner-Northeast
+{
+    top: -12px;
+    right: -12px;
+
+    background-color: green;
+}
+
+/* TP.WEST */
+#haloCorner-West
+{
+    left: -12px;
+    top: calc(50% - 12px);
+
+    background-color: orange;
+}
+
+/* TP.EAST */
+#haloCorner-East
+{
+    right: -12px;
+    top: calc(50% - 12px);
+
+    background-color: purple;
+}
+
+/* TP.SOUTHWEST */
+#haloCorner-Southwest
+{
+	bottom: -12px;
+	left: -12px;
+
+    background-color: blue;
+}
+
+/* TP.SOUTH */
+#haloCorner-South
+{
+    left: calc(50% - 12px);
+    bottom: -12px;
+
+    background-color: red;
+}
+
+/* TP.SOUTHEAST */
+#haloCorner-Southeast
+{
+	bottom: -12px;
+	right: -12px;
+
+    background-color: yellow;
+}
+

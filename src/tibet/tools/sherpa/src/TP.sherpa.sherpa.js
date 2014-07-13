@@ -111,8 +111,8 @@ function(info) {
     //  Initialize the HUD
     this.setupHUD();
 
-    //  Initialize the quick bar
-    //this.setupQuickBar();
+    //  Initialize the halo
+    this.setupHalo();
 
     //  Initialize the console
     this.setupConsole();
@@ -267,18 +267,18 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.sherpa.Inst.defineMethod('setupQuickBar',
+TP.core.sherpa.Inst.defineMethod('setupHalo',
 function() {
 
     var uiRootDoc,
-        quickBarTPElem;
+        haloTPElem;
 
     uiRootDoc = TP.doc(TP.win('UIROOT'));
 
-    quickBarTPElem = TP.sherpa.quickbar.addResourceContentTo(
+    haloTPElem = TP.sherpa.halo.addResourceContentTo(
                             TP.ietf.Mime.XHTML,
                             TP.documentGetBody(uiRootDoc));
-    quickBarTPElem.setup();
+    haloTPElem.setup();
 
     return this;
 });

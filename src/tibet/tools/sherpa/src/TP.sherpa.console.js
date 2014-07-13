@@ -1820,6 +1820,22 @@ function(range) {
     return marker;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('haloCanBlur',
+function(aHalo, aSignal) {
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('haloCanFocus',
+function(aHalo, aSignal) {
+
+    return false;
+});
+
 //  ========================================================================
 //  end
 //  ========================================================================
