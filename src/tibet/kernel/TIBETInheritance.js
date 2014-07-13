@@ -8115,6 +8115,10 @@ function() {
     keys = this.getInstInterface('known_attributes').concat(
                 this.getLocalInterface('known_local_attributes'));
 
+    //  Make sure that we unique this list. Otherwise, attributes that have
+    //  local values will show up twice.
+    keys.unique();
+
     return keys;
 });
 
