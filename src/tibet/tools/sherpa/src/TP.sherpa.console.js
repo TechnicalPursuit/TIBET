@@ -129,6 +129,90 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('getCurrentEvalMarker',
+function() {
+
+    /**
+     * @name getCurrentEvalMarker
+     * @synopsis
+     * @returns
+     * @todo
+     */
+
+    var marker;
+
+    if (TP.notValid(marker = this.$get('currentEvalMarker'))) {
+        return null;
+    }
+
+    if (TP.notValid(marker.find())) {
+        marker.clear();
+        this.set('currentEvalMarker', null);
+
+        return null;
+    }
+
+    return marker;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('getCurrentInputMarker',
+function() {
+
+    /**
+     * @name getCurrentInputMarker
+     * @synopsis
+     * @returns
+     * @todo
+     */
+
+    var marker;
+
+    if (TP.notValid(marker = this.$get('currentInputMarker'))) {
+        return null;
+    }
+
+    if (TP.notValid(marker.find())) {
+        marker.clear();
+        this.set('currentInputMarker', null);
+
+        return null;
+    }
+
+    return marker;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('getCurrentPromptMarker',
+function() {
+
+    /**
+     * @name getCurrentPromptMarker
+     * @synopsis
+     * @returns
+     * @todo
+     */
+
+    var marker;
+
+    if (TP.notValid(marker = this.$get('currentPromptMarker'))) {
+        return null;
+    }
+
+    if (TP.notValid(marker.find())) {
+        marker.clear();
+        this.set('currentPromptMarker', null);
+
+        return null;
+    }
+
+    return marker;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('setHidden',
 function(beHidden) {
 
@@ -353,10 +437,17 @@ function() {
      * @returns {TP.sherpa.console} The receiver.
      */
 
+    var marker;
+
     this.get('textInput').clearValue();
 
     this.teardownInputMark();
     this.teardownEvalMark();
+
+    if (TP.isValid(marker = this.get('currentPromptMarker'))) {
+        marker.clear();
+        this.set('currentPromptMarker', null);
+    }
 
     this.clearStatus();
 
@@ -746,15 +837,8 @@ function() {
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
 
-        //  In certain scenarios the input marker will not have been torn down,
-        //  even though it no longer exists. Make sure that if it's range isn't
-        //  real to tear it down and exit.
-        if (TP.notValid(range = marker.find())) {
-            this.teardownInputMark();
-            return this;
-        }
-
         editor = this.get('textInput').$getEditorInstance();
+        range = marker.find();
 
         editor.setSelection(range.from, range.to);
         editor.replaceSelection('');
@@ -844,21 +928,15 @@ function(anObject, shouldAppend) {
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
 
-        //  In certain scenarios the input marker will not have been torn down,
-        //  even though it no longer exists. Make sure that if it's range isn't
-        //  real to tear it down and exit.
-        if (TP.notValid(range = marker.find())) {
-            this.teardownInputMark();
-        } else {
-            start = range.from;
+        range = marker.find();
+        start = range.from;
 
-            editor.setSelection(range.from, range.to);
-            editor.replaceSelection(val);
+        editor.setSelection(range.from, range.to);
+        editor.replaceSelection(val);
 
-            end = textInput.getCursor();
-        
-            this.teardownInputMark();
-        }
+        end = textInput.getCursor();
+    
+        this.teardownInputMark();
     }
     
     if (TP.notValid(range)) {
@@ -1375,9 +1453,6 @@ function(direction, endPoint) {
     }
 
     cimRange = currentEvalMarker.find();
-    if (TP.notValid(cimRange)) {
-        return this;
-    }
 
     editor = this.get('textInput').$getEditorInstance();
 
@@ -1543,8 +1618,8 @@ function() {
     }
 
     //  Only compute the text if you get a valid range
-    if (TP.isValid(marker = this.get('currentEvalMarker')) &&
-            TP.isValid(range = marker.find())) {
+    if (TP.isValid(marker = this.get('currentEvalMarker'))) {
+        range = marker.find();
         editor = this.get('textInput').$getEditorInstance();
         inputText = editor.getRange(range.from, range.to);
     } else {
