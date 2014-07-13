@@ -280,9 +280,9 @@ TP.hc(
                                 request);
         }
 
-        url = TP.str(url);
-        if (TP.uriIsVirtual(url)) {
-            url = TP.uriExpandPath(url);
+        if (!TP.isKindOf(url, String)) {
+            return TP.httpError(url, 'TP.sig.InvalidParameter', arguments,
+                                request);
         }
 
         //  expand the url as needed using any query data in the request.
@@ -545,9 +545,9 @@ TP.hc(
                                 request);
         }
 
-        url = TP.str(url);
-        if (TP.uriIsVirtual(url)) {
-            url = TP.uriExpandPath(url);
+        if (!TP.isKindOf(url, String)) {
+            return TP.httpError(url, 'TP.sig.InvalidParameter', arguments,
+                                request);
         }
 
         //  expand the url as needed using any query data in the request.
@@ -768,9 +768,9 @@ TP.hc(
                                 request);
         }
 
-        url = TP.str(url);
-        if (TP.uriIsVirtual(url)) {
-            url = TP.uriExpandPath(url);
+        if (!TP.isKindOf(url, String)) {
+            return TP.httpError(url, 'TP.sig.InvalidParameter', arguments,
+                                request);
         }
 
         //  On Webkit, if we launched over HTTP, we can *only* query against
