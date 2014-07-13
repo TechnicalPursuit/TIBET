@@ -1271,7 +1271,7 @@ function(uniqueID, dataRecord) {
     //  TODO: Use this CSS class
     outputClass = dataRecord.at('outputclass');
 
-    outElem.innerHTML = outputText;
+    outElem.innerHTML = TP.stringAsHTMLString(outputText);
 
     textInput.refreshEditor();
     this.adjustTextInputSize();
