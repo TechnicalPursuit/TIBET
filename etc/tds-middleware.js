@@ -162,6 +162,50 @@ TDS.cli = function(options) {
 };
 
 //  ---
+//  TIBET Patch Middleware
+//  ---
+
+/**
+ * Processes requests to patch a source file with client-side changes. Changes
+ * can be in the form of an entire file or a patch/diff formatted patch file.
+ * The target path must reside under tds.patch_root for the patch to be valid.
+ * The default is ~app_src which restricts patches to application assets in the
+ * application's source directory.
+ */
+TDS.patcher = function(options) {
+
+    return function (req, res, next) {
+
+        var body;
+        var data;
+        var type;
+        var file;
+        var content;
+
+        body = req.body;
+        if (body == null) {
+            res.send(400, 'No patch data provided.');
+            res.end();
+            return;
+        }
+
+        console.log('Parsing data for patch: ' + body);
+        data = body;
+
+        file = data.file;
+        type = data.type;
+        content = data.content;
+
+        console.log('patch file: ' + file);
+        console.log('patch type: ' + type);
+        console.log('patch content: ' + content);
+
+        res.send('ack');
+        res.end();
+    };
+};
+
+//  ---
 //  File Watcher Middleware
 //  ---
 
@@ -231,7 +275,6 @@ TDS.watcher = function(options) {
             var eventName;
 
             if (changedFileName !== '') {
-
                 eventName = TDS.getcfg('tds.watch_event');
             } else {
                 eventName = '';
