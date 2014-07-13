@@ -28,174 +28,7 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     --------------------------------------------------------------------
 */
 
-@namespace tsh url(http://www.technicalpursuit.com/1999/tshell);
-
-/* =======================================================================
- * Global CSS baseline (reset, fonts, base) from yui3
- * ----------------------------------------------------------------------- */
-
-/*
-Copyright (c) 2010, Yahoo! Inc. All rights reserved.
-Code licensed under the BSD License:
-http://developer.yahoo.com/yui/license.html
-version: 3.3.0
-build: 3167
-*/
-html{color:#000;background:#FFF;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}li{list-style:none;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{*font-size:100%;}legend{color:#000;}
-body{font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}select,input,button,textarea{font:99% arial,helvetica,clean,sans-serif;}table{font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
-h1{font-size:138.5%;}h2{font-size:123.1%;}h3{font-size:108%;}h1,h2,h3{margin:1em 0;}h1,h2,h3,h4,h5,h6,strong{font-weight:bold;}abbr,acronym{border-bottom:1px dotted #000;cursor:help;}em{font-style:italic;}blockquote,ul,ol,dl{margin:1em;}ol,ul,dl{margin-left:2em;}ol li{list-style:decimal outside;}ul li{list-style:disc outside;}dl dd{margin-left:1em;}th,td{border:1px solid #000;padding:.5em;}th{font-weight:bold;text-align:center;}caption{margin-bottom:.5em;text-align:center;}p,fieldset,table,pre{margin-bottom:1em;}input[type=text],input[type=password],textarea{width:12.25em;*width:11.9em;}
-
-/* =======================================================================
- * Local CSS baseline (reset, fonts, base)
- * ----------------------------------------------------------------------- */
-
-* {
-  font-family: "Open Sans";
-  font-size: 93%;
-}
-
-h1,h2,h3,h4,h5,h6{display:block}
-a {cursor: pointer}
-
-/*
-For pixels (px) Declare this percent (%)
-10   77
-11   85
-12   93
-13   100
-14   108
-15   116
-16   123.1
-17   131
-18   138.5
-19   146.5
-20   153.9
-21   161.6
-22   167
-23   174
-24   182
-25   189
-26   197
-*/
-
-/* =======================================================================
- * Color scheme:
- *
- *  ffffff  fff      W (White)
- *  000000  000      K (Black)
- *
- * ----------------------------------------------------------------------- */
-
-.noselect {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
-  cursor: default;
-}
-
-/*
-    ========================================================================
-  GLOBAL ELEMENT SETTINGS
-    ========================================================================
-*/
-
-html, body
-{
-  width: 100%;
-  height: 100%;
-
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-
-  font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
-  font-weight: normal;
-  font-style: normal;
-  font-size: small;
-
-  color: black;
-
-  background-color: white;
-  overflow: hidden;
-}
-
-/*  we'll manage padding ourselves thanks */
-p
-{
-  margin: 0px;
-  padding: 0px;
-}
-
-/*  "TPI blue" for links */
-a
-{
-  color: #369;
-}
-
-/*
-    ========================================================================
-  Mozilla styles to match IE capabilities
-    ========================================================================
-*/
-
-/* emulate IE's 'hidefocus' attribute for Mozilla */
-
-/* if an element has 'hidefocus="true"' it should not get a focus rectangle.
-  Focus styling will be handled through the :focus pseudo-class */
-*[hidefocus="true"]::-moz-focus-inner
-{
-  /* Note the use of 'transparent' border here - if we use 'none', then
-     things shift around */
-  border: 1px solid transparent !important;
-}
-
-/* no, we really mean it. We don't want links with 'hidefocus="true"' to
-  have a focus rectangle either */
-*|*[hidefocus="true"]:-moz-any-link:focus
-{
-  outline: none !important;
-}
-
-/* new in Gecko 2.0 / Firefox 4.X+ */
-*[hidefocus="true"]:-moz-focusring
-{
-  outline: none !important;
-}
-
-*|*[hidefocus="true"]:moz-any-link:-moz-focusring
-{
-  outline: none !important;
-}
-
-/*
-    ========================================================================
-  Webkit styles to match IE capabilities
-    ========================================================================
-*/
-
-/* emulate IE's 'hidefocus' attribute for Webkit */
-
-*[hidefocus="true"]
-{
-  outline: none !important;
-}
-
-/*
-    ========================================================================
-  Mozilla and Webkit styles to turn off default behavior
-    ========================================================================
-*/
-
-/* do not show the built-in resizer */
-
-*
-{
-  resize: none;
-}
+@import "tibet_reset.css";
 
 /*
     ========================================================================
@@ -203,8 +36,7 @@ a
     ========================================================================
 */
 
-#UIROOT
-{
+#UIROOT {
   position: absolute;
 
   top: 0px;
@@ -231,8 +63,7 @@ a
 */
 
 /*  give everything a root positioning context */
-div#top_background
-{
+div#top_background {
   position: absolute;
 
   top: 0px;
@@ -253,8 +84,7 @@ div#top_background
 }
 
 /*  room for a banner image or other heading text */
-div#header
-{
+div#header {
   height: 72px;
   width: 100%;
 
@@ -264,8 +94,7 @@ div#header
 }
 
 /*  somewhere to put initial copyright notifications */
-div#footer
-{
+div#footer {
   position: absolute;
 
   left: 0px;
@@ -281,8 +110,7 @@ div#footer
   border-top: 1px solid #369;
 }
 
-div#content
-{
+div#content {
   position: absolute;
 
   left: 0px;
@@ -302,8 +130,7 @@ div#content
 */
 
 /*  the page's real content display area */
-div#checking, div#booting, div#pausing, div#bugs, div#ie_bugs, div#ff_bugs, div#wk_bugs, div#unsupported
-{
+div#checking, div#booting, div#pausing, div#bugs, div#ie_bugs, div#ff_bugs, div#wk_bugs, div#unsupported {
   position: absolute;
 
   left: 0px;
@@ -317,8 +144,7 @@ div#checking, div#booting, div#pausing, div#bugs, div#ie_bugs, div#ff_bugs, div#
 }
 
 /*  some form of startup error */
-.alert
-{
+.alert {
   padding-top: 72px;
 
   margin-left: 10%;
@@ -331,8 +157,7 @@ div#checking, div#booting, div#pausing, div#bugs, div#ie_bugs, div#ff_bugs, div#
 }
 
 /*  primary heading text */
-.announce
-{
+.announce {
   padding-top: 72px;
 
   margin-left: 10%;
@@ -345,8 +170,7 @@ div#checking, div#booting, div#pausing, div#bugs, div#ie_bugs, div#ff_bugs, div#
 }
 
 /*  simple button */
-button.button
-{
+button.button {
   font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
   font-weight: normal;
   font-style: normal;
@@ -373,29 +197,25 @@ button.button
   text-decoration: none;
 }
 
-button.button:focus
-{
+button.button:focus {
   color: white;
   background-color: #369;
 }
 
-button.button:hover
-{
+button.button:hover {
   color: white;
   background-color: #369;
 
   cursor: pointer;
 }
 
-button.button.label
-{
+button.button.label {
   margin-left: 0px;
   width: 40%;
 }
 
 /*  simple button simulation */
-span.button
-{
+span.button {
   font-size: 1em;
 
   width: 24%;
@@ -406,8 +226,7 @@ span.button
   text-align: center;
 }
 
-span.button a
-{
+span.button a {
   padding-top: 1px;
   padding-bottom: 1px;
 
@@ -420,41 +239,35 @@ span.button a
   text-decoration: none;
 }
 
-span.button a:focus
-{
+span.button a:focus {
   color: white;
   background-color: #369;
 }
 
-span.button a:hover
-{
+span.button a:hover {
   color: white;
   background-color: #369;
 }
 
 /*  convenient wrapper for text centering */
-.centering
-{
+.centering {
   display: block;
 
   text-align: center;
 }
 
 /*  float clearing */
-.clear
-{
+.clear {
   clear: both;
 }
 
 /*  standard copyright notice */
-.copyright
-{
+.copyright {
   font-size: 90%;
 }
 
 /*  headings for justified text blocks */
-.heading
-{
+.heading {
   width: 25%;
   float: left;
 
@@ -464,16 +277,14 @@ span.button a:hover
 }
 
 /*  justified text block content */
-.msg
-{
+.msg {
   width: 50%;
   float: left;
   margin: 0px;
 }
 
 /*  justified text block section */
-.section
-{
+.section {
   width: 100%;
   float: left;
 
@@ -481,8 +292,7 @@ span.button a:hover
 }
 
 /*  simple data input field */
-input.field
-{
+input.field {
   width: 50%;
 
   margin: 0px;
@@ -504,8 +314,7 @@ input.field
 
 
 /*  labels for justified input fields */
-.label
-{
+.label {
   width: 25%;
   float: left;
 
@@ -517,8 +326,7 @@ input.field
 }
 
 /*  topic page lead */
-div.lead
-{
+div.lead {
   margin-top: 72px;
   margin-left: 72px;
 
@@ -528,14 +336,12 @@ div.lead
   white-space: nowrap;
 }
 
-div.discussion
-{
+div.discussion {
   margin-top: 36px;
   margin-left: 108px;
 }
 
-div.discussion p
-{
+div.discussion p {
   padding-bottom: 1em;
 }
 
@@ -546,8 +352,7 @@ div.discussion p
 */
 
 /*  The boot messages, other than progress bar content */
-.bootmsg
-{
+.bootmsg {
   margin: 0px;
   padding: 0px;
 
@@ -568,8 +373,7 @@ div.discussion p
 
 
 /*  without the console attribute just another container */
-#PageContent
-{
+#PageContent {
   position: absolute;
 
   left: 0px;
@@ -579,8 +383,7 @@ div.discussion p
 }
 
 /*  The console output area */
-#PageContent.consoleMode
-{
+#PageContent.consoleMode {
   font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
 
   font-size: 11px;
@@ -598,8 +401,7 @@ div.discussion p
 */
 
 /*  The progress bar div itself */
-#ProgressBarOne, #ProgressBarTwo
-{
+#ProgressBarOne, #ProgressBarTwo {
   margin: 0px;
   padding: 0px;
 
@@ -611,29 +413,24 @@ div.discussion p
   z-index: 1;
 }
 
-#ProgressBarTwo
-{
+#ProgressBarTwo {
   background-color: #369;
 }
 
-#ProgressBarOne, #ProgressBarTwo
-{
+#ProgressBarOne, #ProgressBarTwo {
   float: left;
 }
 
-#ProgressBarOne.logwarn, #ProgressBarTwo.logwarn
-{
+#ProgressBarOne.logwarn, #ProgressBarTwo.logwarn {
   background-color: #F60;
 }
 
-#ProgressBarOne.logerr, #ProgressBarTwo.logerr
-{
+#ProgressBarOne.logerr, #ProgressBarTwo.logerr {
   background-color: #A00;
 }
 
 /*  Progress bar outline div */
-#ProgressBorder
-{
+#ProgressBorder {
   margin-top: 1em;
   margin-right: 10%;
   margin-bottom: 1em;
@@ -653,8 +450,7 @@ div.discussion p
 }
 
 /*  The background div for progress/message text */
-#ProgressText
-{
+#ProgressText {
   padding-top: 72px;
 
   margin-bottom: 1em;
@@ -669,8 +465,7 @@ div.discussion p
   z-index: 2;
 }
 
-#ProgressStatus
-{
+#ProgressStatus {
   margin: 0px;
   padding: 0px;
   padding-top: 72px;
@@ -688,8 +483,7 @@ div.discussion p
 }
 
 /*  importing vs. deferring display */
-#ProgressDefer
-{
+#ProgressDefer {
   margin: 0px;
   padding: 0px;
 
@@ -702,8 +496,7 @@ div.discussion p
 }
 
 /*  what is the current script being imported */
-#ProgressPath
-{
+#ProgressPath {
   margin: 0px;
   padding: 0px;
 
@@ -715,8 +508,7 @@ div.discussion p
 }
 
 /*  what is the percent imported */
-#ProgressComplete
-{
+#ProgressComplete {
   margin: 0px;
   padding: 0px;
   padding-right: 4%;
@@ -727,8 +519,7 @@ div.discussion p
   z-index: 2;
 }
 
-#ProgressComplete.busy
-{
+#ProgressComplete.busy {
   display:block;
   width: 28px;
   height: 28px;
@@ -741,80 +532,67 @@ div.discussion p
   ========================================================================
 */
 
-#log *
-{
+#log * {
   font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
 }
 
-ol
-{
+ol {
   font-weight: bold;
   color: #000000;
 }
 
-.loglist
-{
+.loglist {
   font-weight: bold;
   color: #000000;
 }
 
-.logdate
-{
+.logdate {
   /*margin: 5px;*/
   padding-right: .5em;
   color: #000000;
 }
 
-.logargs
-{
+.logargs {
   padding: 3px;
   color: #666666;
 }
 
-.logitem
-{
+.logitem {
   padding: 3px;
   color: #666666;
 }
 
-.logerr
-{
+.logerr {
   font-weight: bold;
   padding: 3px;
   color: #A00;
 }
 
-.logmsg
-{
+.logmsg {
   padding: 3px;
   color: black;
 }
 
-.logstack
-{
+.logstack {
   font-style: italic;
   padding: 3px;
   color: #666666;
 }
 
-.logwarn
-{
+.logwarn {
   padding: 3px;
   color: #F60;
 }
 
-.logmsg .iolog span
-{
+.logmsg .iolog span {
   margin: 5px;
 }
 
-.bootmsg .logwarn
-{
+.bootmsg .logwarn {
   color: #F60;
 }
 
-.bootmsg .logerr
-{
+.bootmsg .logerr {
   color: #A00;
 }
 
@@ -824,8 +602,7 @@ ol
   ========================================================================
 */
 
-#NOTIFY_MENU
-{
+#NOTIFY_MENU {
   width: 100%;
   height: 2em;
   background-color: #DDD;
@@ -835,8 +612,7 @@ ol
   padding: .25em;
 }
 
-#NOTIFY_MENU input
-{
+#NOTIFY_MENU input {
   color: #369;
   border: 1px solid #369;
   background-color: white;
@@ -849,8 +625,7 @@ ol
 */
 
 /* In its natural state, the busy is 'closed' */
-div[busyFor]
-{
+div[busyFor] {
   position: absolute;
 
 /*  border: solid 1px black; */
@@ -863,14 +638,12 @@ div[busyFor]
   z-index: 5000;
 }
 
-div[busyFor] > .background
-{
+div[busyFor] > .background {
   background-color: white;
   opacity: .7;
 }
 
-div[busyFor] > .controlImage
-{
+div[busyFor] > .controlImage {
   position: absolute;
 
   left: 50%;
@@ -885,34 +658,12 @@ div[busyFor] > .controlImage
   background-image: url(../img/tibet_busy.gif);
 }
 
-div[busyFor] > span
-{
+div[busyFor] > span {
   position: absolute;
 
   width: 100%;
 
   text-align: center;
-}
-
-/*
-  ========================================================================
-  Common TIBET constructs
-  ========================================================================
-*/
-
-/*
-  TP.core.ActionElementNode and TP.core.ActionElementNode elements are
-  transformed into XHTML, so we can't use '.' class notation here
-*/
-
-*|*[class="tibet-action"], *|*[class="tibet-info"]
-{
-  display: none;
-}
-
-tsh|template
-{
-  display: none;
 }
 
 /*
