@@ -1218,8 +1218,11 @@ TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
 
 TP.sys.setcfg('tds.cli_uri', '/tds/cli');
 
-TP.sys.setcfg('tds.dav_root', '~');
+TP.sys.setcfg('tds.dav_root', '~app_src');
 TP.sys.setcfg('tds.dav_uri', '/tds/webdav');
+
+TP.sys.setcfg('tds.patch_root', '~app_src');
+TP.sys.setcfg('tds.patch_uri', '/tds/patch');
 
 TP.sys.setcfg('tds.port', 1407);
 TP.sys.setcfg('tds.secret', 'change this in your tibet.json file');
@@ -1228,7 +1231,7 @@ TP.sys.setcfg('tds.404', 'NotFound');
 TP.sys.setcfg('tds.500', 'ServerError');
 
 TP.sys.setcfg('tds.watch_event', 'fileChanged');
-TP.sys.setcfg('tds.watch_root', '~');
+TP.sys.setcfg('tds.watch_root', '~app_src');
 TP.sys.setcfg('tds.watch_uri', '/tds/watcher');
 
 //  ---
