@@ -16,6 +16,7 @@
     "morgan": "*",
     "phantomjs": "*",
     "serve-static": "*",
+    "serve-index": "*",
     "shelljs": "*",
     "tibet": "*",
     "uglify-js": "*",
