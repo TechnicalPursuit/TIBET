@@ -311,19 +311,17 @@ TP.hc(
         request.addIfAbsent('verb', TP.HTTP_GET);
         verb = request.at('verb');
 
-        request.addIfAbsent('async', false);
+        request.addIfAbsent('async', true);
         async = request.at('async');
 
         //  we want to send the string representation whenever there's data
         content = request.at('body');
         if (TP.isValid(content)) {
-            if (TP.isNode(content)) {
-                contentString = TP.nodeAsString(content,
-                    request.atIfInvalid('bodyWantsXMLDeclaration', false));
-            } else {
-                contentString = TP.str(content);
-            }
+            contentString = TP.httpEncodeRequestBody(request);
             request.atPut('finalbody', contentString);
+            if (TP.isNode(content)) {
+                request.atIfInvalid('bodyWantsXMLDeclaration', false);
+            }
         }
 
         //  set up the actual request
@@ -576,21 +574,17 @@ TP.hc(
         request.addIfAbsent('verb', TP.HTTP_GET);
         verb = request.at('verb');
 
-        request.addIfAbsent('async', false);
+        request.addIfAbsent('async', true);
         async = request.at('async');
 
-        //  we want to send a string representation whenever there's data
+        //  we want to send the string representation whenever there's data
         content = request.at('body');
         if (TP.isValid(content)) {
-            if (TP.isNode(content)) {
-                contentString = TP.nodeAsString(
-                    content,
-                    request.atIfInvalid('bodyWantsXMLDeclaration', false));
-            } else {
-                contentString = TP.str(content);
-            }
-
+            contentString = TP.httpEncodeRequestBody(request);
             request.atPut('finalbody', contentString);
+            if (TP.isNode(content)) {
+                request.atIfInvalid('bodyWantsXMLDeclaration', false);
+            }
         }
 
         //  set up the actual request
@@ -810,20 +804,17 @@ TP.hc(
         request.addIfAbsent('verb', TP.HTTP_GET);
         verb = request.at('verb');
 
-        request.addIfAbsent('async', false);
+        request.addIfAbsent('async', true);
         async = request.at('async');
 
         //  we want to send the string representation whenever there's data
         content = request.at('body');
         if (TP.isValid(content)) {
-            if (TP.isNode(content)) {
-                contentString = TP.nodeAsString(
-                    content,
-                    request.atIfInvalid('bodyWantsXMLDeclaration', false));
-            } else {
-                contentString = TP.str(content);
-            }
+            contentString = TP.httpEncodeRequestBody(request);
             request.atPut('finalbody', contentString);
+            if (TP.isNode(content)) {
+                request.atIfInvalid('bodyWantsXMLDeclaration', false);
+            }
         }
 
         //  set up the actual request
