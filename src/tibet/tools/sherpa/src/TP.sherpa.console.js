@@ -746,7 +746,13 @@ function() {
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
 
-        range = marker.find();
+        //  In certain scenarios the input marker will not have been torn down,
+        //  even though it no longer exists. Make sure that if it's range isn't
+        //  real to tear it down and exit.
+        if (TP.notValid(range = marker.find())) {
+            this.teardownInputMark();
+            return this;
+        }
 
         editor = this.get('textInput').$getEditorInstance();
 
@@ -838,18 +844,25 @@ function(anObject, shouldAppend) {
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
 
-        range = marker.find();
+        //  In certain scenarios the input marker will not have been torn down,
+        //  even though it no longer exists. Make sure that if it's range isn't
+        //  real to tear it down and exit.
+        if (TP.notValid(range = marker.find())) {
+            this.teardownInputMark();
+        } else {
+            start = range.from;
 
-        start = range.from;
+            editor.setSelection(range.from, range.to);
+            editor.replaceSelection(val);
 
-        editor.setSelection(range.from, range.to);
-        editor.replaceSelection(val);
-
-        end = textInput.getCursor();
+            end = textInput.getCursor();
+        
+            this.teardownInputMark();
+        }
+    }
     
-        this.teardownInputMark();
+    if (TP.notValid(range)) {
 
-    } else {
         start = textInput.getCursor();
 
         textInput.insertAtCursor(val);
