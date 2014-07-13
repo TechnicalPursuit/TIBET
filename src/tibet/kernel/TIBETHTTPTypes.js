@@ -940,35 +940,7 @@ function(aRequest) {
      * @returns {String} The string value of the encoded body content.
      */
 
-    var body,
-        mimetype,
-        separator,
-        mediatype,
-        encoding;
-
-    body = aRequest.at('body');
-    if (TP.notValid(body)) {
-        return;
-    }
-
-    //  check for "please don't change my body content" flag
-    if (TP.isTrue(aRequest.at('noencode'))) {
-        return body;
-    }
-
-    //  REQUIRED value for the encoding process
-    mimetype = aRequest.at('mimetype');
-
-    //  only used for URL_ENCODING, but we need to pass it along
-    separator = aRequest.at('separator');
-
-    //  only used for the multi-part encodings, but just in case :)
-    mediatype = aRequest.at('mediatype');
-
-    //  should be left alone 99% of the time so it defaults to UTF-8
-    encoding = aRequest.at('encoding');
-
-    return TP.httpEncode(body, mimetype, separator, mediatype, encoding);
+    return TP.httpEncodeRequestBody(aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -991,9 +963,12 @@ function(aRequest) {
             aRequest.at('mimetype'),
             TP.ifEmpty(
                 this.$get('mimetype'),
-                TP.ietf.Mime.guessMIMEType(aRequest.at('body'),
-                                            TP.hc(aRequest.at('uri')),
-                                            this.getType().get('mimetype'))));
+                TP.ietf.Mime.guessMIMEType(
+                    aRequest.at('body'),
+                    aRequest.at('uri'),
+                    this.getType().get('mimetype'))
+                )
+            );
 });
 
 //  ------------------------------------------------------------------------

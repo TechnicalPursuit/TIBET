@@ -569,6 +569,53 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('httpEncodeRequestBody',
+function(aRequest) {
+
+    /**
+     * @name httpEncodeRequestBody
+     * @synopsis Encodes the request body for transmission. Processing in this
+     *     method makes use of keys in the request to drive a call to the
+     *     TP.httpEncode() primitive. If you don't want this processing to occur
+     *     you can put a key of 'noencode' with a value of true in the request.
+     * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
+     *     the HTTP request.
+     * @returns {String} The string value of the encoded body content.
+     */
+
+    var body,
+        mimetype,
+        separator,
+        mediatype,
+        encoding;
+
+    body = aRequest.at('body');
+    if (TP.notValid(body)) {
+        return;
+    }
+
+    //  check for "please don't change my body content" flag
+    if (TP.isTrue(aRequest.at('noencode'))) {
+        return body;
+    }
+
+    //  REQUIRED value for the encoding process
+    mimetype = aRequest.at('mimetype');
+
+    //  only used for URL_ENCODING, but we need to pass it along
+    separator = aRequest.at('separator');
+
+    //  only used for the multi-part encodings, but just in case :)
+    mediatype = aRequest.at('mediatype');
+
+    //  should be left alone 99% of the time so it defaults to UTF-8
+    encoding = aRequest.at('encoding');
+
+    return TP.httpEncode(body, mimetype, separator, mediatype, encoding);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('httpError',
 function(targetUrl, aSignal, aContext, aRequest) {
 
@@ -699,6 +746,7 @@ function(targetUrl, aRequest, httpObj) {
         val,
         j,
         body,
+        url,
 
         method;
 
@@ -709,6 +757,13 @@ function(targetUrl, aRequest, httpObj) {
 
     //  NOTE we use the string of the body content here for Content-Length
     body = request.at('finalbody');
+    url = request.at('uri');
+
+    //  Default the mimetype based on body type as best we can.
+    if (TP.notDefined(request.at('mimetype'))) {
+        request.atPut('mimetype',
+            TP.ietf.Mime.guessMIMEType(body, url, TP.URL_ENCODED));
+    }
 
     //  typically we turn off cache behavior for these requests so we're
     //  sure we're getting the most current data
@@ -735,7 +790,7 @@ function(targetUrl, aRequest, httpObj) {
     //  add a header for Content-Type if not already found. default is
     //  standard form encoding
     if (TP.notDefined(headers.at('Content-Type'))) {
-        headers.atPut('Content-Type', TP.URL_ENCODED);
+        headers.atPut('Content-Type', request.at('mimetype'));
     }
 
     //  identify the request as coming from an XMLHttpRequest (ala Rails), but
