@@ -5639,6 +5639,142 @@ function(schemeSpecificString) {
     return TP.lang.Hash.URI_STRING_PARSER('http:' + schemeSpecificString);
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpCreate',
+function(aRequest) {
+
+    /**
+     * @name httpCreate
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP CREATE
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    return TP.httpCreate(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpDelete',
+function(aRequest) {
+
+    /**
+     * @name httpDelete
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP DELETE
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    return TP.httpDelete(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpGet',
+function(aRequest) {
+
+    /**
+     * @name httpGet
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP GET
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    return TP.httpGet(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpHead',
+function(aRequest) {
+
+    /**
+     * @name httpHead
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP HEAD
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    return TP.httpHead(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpOptions',
+function(aRequest) {
+
+    /**
+     * @name httpOptions
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP OPTIONS
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    return TP.httpOptions(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpPost',
+function(aRequest) {
+
+    /**
+     * @name httpPost
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP POST
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    return TP.httpPost(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpPut',
+function(aRequest) {
+
+    /**
+     * @name httpPut
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP PUT
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    return TP.httpPut(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpTrace',
+function(aRequest) {
+
+    /**
+     * @name httpTrace
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP TRACE
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    return TP.httpTrace(this.asString(), aRequest);
+});
+
 //  ========================================================================
 //  TP.core.FileURL
 //  ========================================================================
@@ -7376,6 +7512,174 @@ function(request, result, async, filter) {
         request.complete(resource);
 
         return resource;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpCreate',
+function(aRequest) {
+
+    /**
+     * @name httpCreate
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP CREATE
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpCreate(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpDelete',
+function(aRequest) {
+
+    /**
+     * @name httpDelete
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP DELETE
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpDelete(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpGet',
+function(aRequest) {
+
+    /**
+     * @name httpGet
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP GET
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpGet(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpHead',
+function(aRequest) {
+
+    /**
+     * @name httpHead
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP HEAD
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpHead(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpOptions',
+function(aRequest) {
+
+    /**
+     * @name httpOptions
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP OPTIONS
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpOptions(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpPost',
+function(aRequest) {
+
+    /**
+     * @name httpPost
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP POST
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpPost(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpPut',
+function(aRequest) {
+
+    /**
+     * @name httpPut
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP PUT
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpPut(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpTrace',
+function(aRequest) {
+
+    /**
+     * @name httpTrace
+     * @synopsis Uses the receiver as a target URI and invokes an HTTP TRACE
+     *     with aRequest.
+     * @param {TP.sig.Request} request The original request being processed.
+     * @returns {Object|TP.sig.Response} A response when async, object
+     *     otherwise.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpTrace(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
     }
 });
 
