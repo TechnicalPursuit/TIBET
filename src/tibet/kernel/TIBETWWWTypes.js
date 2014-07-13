@@ -1062,18 +1062,18 @@ function(aContent, aURI, defaultMIME) {
     } else {
         //  not a node, so some form of text content
 
-        //  if a URI was supplied, see if we can extract the MIME type from
-        //  the URI's extension.
-        if (TP.isURI(aURI) &&
-            TP.isString(ext = TP.uriExtension(aURI.asString()))) {
-            mime = TP.ietf.Mime.getExtensionType(ext);
-        }
-
         //  If we didn't find a valid MIME type via the URI's extension but
         //  we determine from the content that it's a JSON string, then set
         //  it to TP.ietf.Mime.JSON
-        if (TP.isEmpty(mime) && TP.isJSONString(content)) {
+        if (TP.isJSONString(content)) {
             mime = TP.ietf.Mime.JSON;
+        }
+
+        //  if a URI was supplied, see if we can extract the MIME type from
+        //  the URI's extension.
+        if (TP.isEmpty(mime) && TP.isURI(aURI) &&
+            TP.isString(ext = TP.uriExtension(aURI.asString()))) {
+            mime = TP.ietf.Mime.getExtensionType(ext);
         }
 
         //  If we still haven't found a valid MIME type, then just set it to
