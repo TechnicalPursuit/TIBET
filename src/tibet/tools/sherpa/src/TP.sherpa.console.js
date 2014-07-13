@@ -432,6 +432,12 @@ function() {
 
     this.focusInput();
 
+    (function() {
+        this.focusInput();
+        this.scrollToEnd();
+
+    }.bind(this)).afterUnwind();
+
     return this;
 });
 
@@ -899,7 +905,7 @@ function(aRange) {
             'startStyle': 'bordered-input-left',
             'endStyle': 'bordered-input-right',
             'atomic': false,
-            'inclusiveLeft': false,
+            'inclusiveLeft': true,
             'inclusiveRight': true,
         }
     );
