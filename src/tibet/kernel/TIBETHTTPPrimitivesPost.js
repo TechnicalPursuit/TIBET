@@ -343,16 +343,9 @@ function(httpVerb, targetUrl, aRequest) {
                             request);
     }
 
-    headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
-    request.atPutIfAbsent('headers', headers);
-
-    if (httpVerb !== TP.HTTP_DELETE) {
-        //  here we ensure the proper Content-Type header is set for
-        //  POST/PUT if no header collection was supplied, or if a
-        //  collection was supplied, but it didn't have a 'Content-Type'
-        //  header specified.
-        headers.atPutIfAbsent('Content-Type', TP.URL_ENCODED);
-    }
+    // Ensure headers are converted to a hash
+    headers = TP.hc(request.at('headers'));
+    request.atPut('headers', headers);
 
     try {
         httpObj = TP.httpCall(targetUrl, request);
