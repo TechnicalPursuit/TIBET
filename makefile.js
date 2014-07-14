@@ -123,6 +123,7 @@ targets.build_deps = function(make) {
 
     targets.rollup_codemirror().then(
         targets.rollup_d3).then(
+        targets.rollup_diff).then(
         targets.rollup_forge).then(
         targets.rollup_jquery).then(
         targets.rollup_pouchdb).then(
@@ -173,6 +174,18 @@ targets.rollup_d3 = function(make) {
     sh.exec('cp -f d3.min.js ../../deps/d3-tpi.min.js');
 
     targets.rollup_d3.resolve();
+};
+
+/**
+ */
+targets.rollup_diff = function(make) {
+    var npmdir;
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'diff'));
+    sh.exec('cp -f diff.js  ../../deps/diff-tpi.js');
+
+    targets.rollup_diff.resolve();
 };
 
 /**
