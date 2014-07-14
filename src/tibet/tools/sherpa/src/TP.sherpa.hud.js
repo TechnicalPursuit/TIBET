@@ -172,6 +172,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.hud.Inst.defineMethod('haloCanBlur',
+function(aHalo, aSignal) {
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hud.Inst.defineMethod('haloCanFocus',
+function(aHalo, aSignal) {
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.defineSubtype('sherpa:huddrawer');
 
 //  ------------------------------------------------------------------------

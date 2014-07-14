@@ -36,10 +36,11 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
     <script src="./src/TP.sherpa.pp.js"/>
 
-    <script src="./src/TP.sherpa.quickbar.js"/>
-    <script src="./src/Searchers.js"/>
-    <property name="TP.sherpa.quickbar.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.quickbar.xhtml"/>
-    <property name="TP.sherpa.quickbar.css_uri" value="~ide_root/css/TP.sherpa.quickbar.css"/>
+    <script src="./src/UIElementNodeAdditions.js"/>
+
+    <script src="./src/TP.sherpa.halo.js"/>
+    <property name="TP.sherpa.halo.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.halo.xhtml"/>
+    <property name="TP.sherpa.halo.css_uri" value="~ide_root/css/TP.sherpa.halo.css"/>
 
     <script src="./src/TP.sherpa.console.js"/>
     <property name="TP.sherpa.console.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.console.xhtml"/>

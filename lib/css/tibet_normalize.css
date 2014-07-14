@@ -10,6 +10,8 @@
  *     Yahoo! portions Licensed under the BSD License.
  */
 
+@namespace tsh url(http://www.technicalpursuit.com/1999/tshell);
+
 /* =======================================================================
  * YUI CSS Baseline(s)
  * ----------------------------------------------------------------------- */
@@ -23,8 +25,8 @@ Licensed under the BSD License.
 http://yuilibrary.com/license/
 */
 html {
-color: #000;
-background: #FFF
+    color: #000;
+    background: #FFF
 }
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td {
 margin: 0;
@@ -164,28 +166,146 @@ input[type=text],input[type=password],textarea {
 width: 12.25em;*width:11.9em;
 }
 
+/*
+For pixels (px) Declare this percent (%)
+10   77
+11   85
+12   93
+13   100
+14   108
+15   116
+16   123.1
+17   131
+18   138.5
+19   146.5
+20   153.9
+21   161.6
+22   167
+23   174
+24   182
+25   189
+26   197
+*/
+
+/* =======================================================================
+ * Color scheme:
+ *
+ *  ffffff  fff      W (White)
+ *  000000  000      K (Black)
+ *
+ * ----------------------------------------------------------------------- */
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
 /* =======================================================================
  * TIBET CSS Baseline Additions
  * ----------------------------------------------------------------------- */
 
-* {
-font-family: Verdana, Geneva, sans-serif;
-}
-
-h1,h2,h3,h4,h5,h6 {
-display:block;
+h1, h2, h3, h4, h5, h6 {
+    display: block;
 }
 
 * ul li {
-list-style: none
+    list-style: none
 }
 
 a {
-cursor: pointer;
+    cursor: pointer;
 }
 
-h1,h2,h3 {margin:0}
-blockquote,ul,ol,dl,dt,dd{margin:0}
-dl dd,dt {margin:0}
-p,fieldset,table,pre{margin:0}
+table, pre {
+    margin: 0px;
+}
+
+html {
+    margin: 0px;
+    padding: 0px;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+
+    border: 0px;
+
+    color: black;
+
+    background-color: white;
+    overflow: hidden;
+}
+
+/* =======================================================================
+ * Mozilla styles to match IE capabilities
+ * ----------------------------------------------------------------------- */
+
+/* emulate IE's 'hidefocus' attribute for Mozilla */
+
+/* if an element has 'hidefocus="true"' it should not get a focus rectangle.
+  Focus styling will be handled through the :focus pseudo-class */
+*[hidefocus="true"]::-moz-focus-inner {
+    /* Note the use of 'transparent' border here - if we use 'none', then
+        things shift around */
+    border: 1px solid transparent !important;
+}
+
+/* no, we really mean it. We don't want links with 'hidefocus="true"' to
+  have a focus rectangle either */
+*|*[hidefocus="true"]:-moz-any-link:focus {
+    outline: none !important;
+}
+
+/* new in Gecko 2.0 / Firefox 4.X+ */
+*[hidefocus="true"]:-moz-focusring {
+    outline: none !important;
+}
+
+*|*[hidefocus="true"]:moz-any-link:-moz-focusring {
+    outline: none !important;
+}
+
+/* =======================================================================
+ * Webkit styles to match IE capabilities
+ * ----------------------------------------------------------------------- */
+
+/* emulate IE's 'hidefocus' attribute for Webkit */
+
+*[hidefocus="true"] {
+    outline: none !important;
+}
+
+/* =======================================================================
+ * Mozilla and Webkit styles to turn off default behavior
+ * ----------------------------------------------------------------------- */
+
+/* do not show the built-in resizer */
+
+* {
+    resize: none;
+}
+
+/* =======================================================================
+ * Common TIBET constructs
+ * ----------------------------------------------------------------------- */
+
+/*
+  TP.core.ActionElementNode and TP.core.ActionElementNode elements are
+  transformed into XHTML, so we can't use '.' class notation here
+*/
+
+*|*[class="tibet-action"], *|*[class="tibet-info"] {
+    display: none;
+}
+
+tsh|template {
+    display: none;
+}
 

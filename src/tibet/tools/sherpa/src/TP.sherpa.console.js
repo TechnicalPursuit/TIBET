@@ -1271,7 +1271,7 @@ function(uniqueID, dataRecord) {
     //  TODO: Use this CSS class
     outputClass = dataRecord.at('outputclass');
 
-    outElem.innerHTML = outputText;
+    outElem.innerHTML = TP.stringAsHTMLString(outputText);
 
     textInput.refreshEditor();
     this.adjustTextInputSize();
@@ -1818,6 +1818,22 @@ function(range) {
     );
 
     return marker;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('haloCanBlur',
+function(aHalo, aSignal) {
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('haloCanFocus',
+function(aHalo, aSignal) {
+
+    return false;
 });
 
 //  ========================================================================

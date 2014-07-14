@@ -7149,7 +7149,7 @@ function(aString) {
     //  number of the following steps are currently commented out, as they
     //  produce a much more strict HTML document, which will mangle any
     //  embedded XML.
-    //  There are 3 exception to this rule:
+    //  There are 3 exceptions to this rule:
     //      - Any 'XML declaration' at the top of the document will be
     //      stripped out. "Embedded XML" shouldn't need an XML declaration
     //      at the start of the document.
@@ -7228,17 +7228,10 @@ function(aString) {
                             return '';
                         });
 
-    //  Strip out any 'prefixed namespace' declarations (but not those for
-    //  SVG or VML - some browsers allow those languages to be 'embedded' in
-    //  HTML)
+    //  Strip out any 'prefixed namespace' declarations
     TP.regex.PREFIXED_NS_ATTR.lastIndex = 0;
     str = str.replace(TP.regex.PREFIXED_NS_ATTR,
                         function(wholeMatch, quoteChar, nsUriMatch) {
-
-                            if (nsUriMatch === TP.w3.Xmlns.SVG ||
-                                nsUriMatch === TP.w3.Xmlns.VML) {
-                                return wholeMatch;
-                            }
 
                             return '';
                         });
@@ -7246,9 +7239,9 @@ function(aString) {
     //  We generally leave 'namespace-prefixed' tags alone, since even
     //  though in HTML the colon (':') has no meaning (TIBET will look for
     //  tags named 'foo:bar' - which HTML treats as their 'whole name').
-    //  However, we definitely strip out any 'html:' namespace prefixes on
-    //  tags or IE will choke.
-    str = str.replace(/<(\/)?html:/g, '<$1');
+    //  However, we definitely strip out any 'html:', 'svg:' and 'm:' namespace
+    //  prefixes on tags as these are now supported natively by HTML5.
+    str = str.replace(/<(\/)?(html|svg|m):/g, '<$1');
 
     //  Strip out any CDATA section directives. These can cause problems,
     //  especially in 'script' elements.
