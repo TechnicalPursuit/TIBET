@@ -2249,7 +2249,7 @@ function(aRequest) {
         inheritedProps,
 
         result,
-   
+
         instResults,
 
         inputType,
@@ -2832,7 +2832,7 @@ function(aRequest) {
      */
 
     var node,
-    
+
         shell,
         includeNatives,
         typesKeys;

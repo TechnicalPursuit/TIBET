@@ -142,7 +142,7 @@ function() {
     /**
      * @name asSource
      * @synopsis Returns the receiver in proper source code form.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.quoted('"') + '.asType();';
@@ -157,7 +157,7 @@ function() {
      * @name canConstruct
      * @synopsis Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var type;
@@ -384,7 +384,7 @@ function() {
             if (TP.notValid(type = TP.sys.getTypeByName(id, false))) {
                 //  important to get a true String object, not a primitive
                 //  string, so we can instrument it
-        
+
                 /* jshint -W053 */
                 type = new String(id);
                 /* jshint +W053 */

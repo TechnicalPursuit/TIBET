@@ -3190,7 +3190,7 @@ function(anObject) {
      *     usage is in methods that might accept either a string or a
      *     TP.core.URI which need a common way to ask for the location. When the
      *     object is neither a TP.core.URI instance or a String the return value
-     *     is based on the object's load path.
+     *     is based on the object's source path.
      * @param {String|TP.core.URI} anObject The true location of the object in
      *     string form.
      * @returns {String} The location in string URI form.
@@ -3208,7 +3208,7 @@ function(anObject) {
     } else if (TP.canInvoke(anObject, 'getLocation')) {
         url = anObject.getLocation();
     } else {
-        url = TP.objectGetLoadPath(anObject);
+        url = TP.objectGetSourcePath(anObject);
     }
 
     return TP.uriExpandPath(url);

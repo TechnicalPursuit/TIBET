@@ -208,7 +208,9 @@ function(typeName, customType) {
             typeName,
             {'typeObj': customType,
                     'sname': customType.getSupertypeName(),
-                    'path': TP.objectGetLoadPath(customType)});
+                    'lpath': TP.objectGetLoadPath(customType),
+                    'spath': TP.objectGetSourcePath(customType)
+            });
 });
 
 //  ------------------------------------------------------------------------
