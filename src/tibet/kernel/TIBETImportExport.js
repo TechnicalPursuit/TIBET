@@ -361,7 +361,6 @@ function(aPath) {
 
     return types.select(
         function(type) {
-
             return scripts.contains(TP.objectGetLoadPath(type));
     });
 });
@@ -389,7 +388,6 @@ function(aPath) {
 
     return types.select(
         function(type) {
-
             return TP.objectGetLoadPath(type) === path;
         });
 });

@@ -37,7 +37,7 @@ TIBET platform.
 
 /* JSHint checking */
 
-/* global $STATUS:true
+/* global $STATUS:true, JsDiff:true
 */
 
 /* jshint evil:true
@@ -208,7 +208,9 @@ function(typeName, customType) {
             typeName,
             {'typeObj': customType,
                     'sname': customType.getSupertypeName(),
-                    'path': TP.objectGetLoadPath(customType)});
+                    'lpath': TP.objectGetLoadPath(customType),
+                    'spath': TP.objectGetSourcePath(customType)
+            });
 });
 
 //  ------------------------------------------------------------------------
@@ -865,6 +867,82 @@ function() {
      */
 
     return this.length;
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getMethodPatch',
+function(methodText) {
+
+    /**
+     * Returns patch file content suitable for applying to the receiver's
+     * source file. The JsDiff package must be loaded for this operation to
+     * work. The JsDiff package is typically loaded by the Sherpa config.
+     * @param {String} methodText The new method text.
+     * @return {String} A string representing patch file content.
+     */
+
+    var path;
+    var url;
+    var str;
+    var re;
+    var content;
+    var match;
+    var newtext;
+    var patch;
+
+    if (TP.notValid(self.JsDiff)) {
+        TP.ifWarn() ?
+            TP.warn('Unable to generate method patch. JsDiff not loaded.',
+                    TP.LOG, arguments) : 0;
+        return;
+    }
+
+    // Get the original source url...
+    path = TP.objectGetSourcePath(this);
+    if (TP.isEmpty(path)) {
+        TP.ifWarn() ?
+            TP.warn('Unable to generate method patch. Source path not found.',
+                    TP.LOG, arguments) : 0;
+        return;
+    }
+
+    url = TP.uc(path);
+    content = url.getContent(); // .then(function(resolve, reject) {
+        // Yay promises!!!....almost...TODO
+    // });
+
+    if (TP.isEmpty(content)) {
+        TP.ifWarn() ?
+            TP.warn('Unable to generate method patch. Source text not found.',
+                    TP.LOG, arguments) : 0;
+        return;
+    }
+
+    // Get the current method's body text...
+    str = this.toString();
+
+    // Convert the body text into a RegExp we can use as a way of indexing
+    // into the original source file text.
+    re = RegExp.escapeMetachars(
+        str.replace(/[\u0009\u000A\u0020\u000D]+/g,
+            'SECRET_SAUCE')).replace(/SECRET_SAUCE/g, '\\s*');
+
+    match = content.match(re);
+    if (TP.notValid(match)) {
+        TP.ifWarn() ?
+            TP.warn('Unable to generate method patch. Method index not found.',
+                    TP.LOG, arguments) : 0;
+        return;
+    }
+
+    newtext = content.slice(0, match.index) +
+        methodText +
+        content.slice(match.index + str.length + 1);
+
+    patch = JsDiff.createPatch(url.asString(), content, newtext);
+
+    return patch;
 });
 
 //  ------------------------------------------------------------------------

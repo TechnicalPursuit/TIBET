@@ -345,9 +345,6 @@ function(name) {
     TP.sys.addCustomType(wholeName, realType);
     realType.setID(wholeName);
 
-    //  track the script data for this type for later reference.
-    TP.objectSetLoadNode(realType, TP.boot[TP.LOAD_NODE]);
-
     //  by default all types are concrete, and this forces them to have the
     //  slot so we avoid ownership checks in the isAbstract call
     realType.$abstract = false;

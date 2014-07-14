@@ -33,6 +33,7 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 <config id="vm" depends="">
 
     <!--    KERNEL STAGE 1, BASE PRIMITIVES -->
+    <script src="copyright.js" no-minify="true"/>
     <script src="tibet_pack.js"/>
     <script src="TIBETGlobals.js"/>
     <script src="TIBETVersion.js"/>
@@ -53,9 +54,9 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     <script src="TIBETRegistration.js"/>
     <script src="TIBETFoundation.js"/>
 
-    <script src="~lib_deps/q-tpi.min.js" no-lint="true"/>
+    <script src="~lib_deps/q-tpi.min.js" no-minify="true" no-lint="true"/>
 
-    <script src="~lib_deps/forge-tpi.min.js" no-lint="true"/>
+    <script src="~lib_deps/forge-tpi.min.js" no-minify="true" no-lint="true"/>
     <script>
         <![CDATA[
         TP.extern.forge = forge;

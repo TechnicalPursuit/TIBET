@@ -1784,6 +1784,37 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
 
 //  ------------------------------------------------------------------------
 
+TP.objectGetMetadataName = function(anObject) {
+
+    /**
+     */
+
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    if (TP.isType(anObject)) {
+        return anObject.getName();
+    }
+
+    if (TP.isMethod(anObject)) {
+        return anObject[TP.OWNER].getName() + '_' +
+            anObject[TP.TRACK] + '_' +
+            anObject.getName();
+    }
+
+    return;
+};
+
+//  Manual method registration.
+TP.objectGetMetadataName[TP.NAME] = 'objectGetMetadataName';
+TP.objectGetMetadataName[TP.OWNER] = TP.sys;
+TP.objectGetMetadataName[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.objectGetMetadataName[TP.DISPLAY] = 'TP.objectGetMetadataName';
+TP.objectGetMetadataName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+
+//  ------------------------------------------------------------------------
+
 TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
     /**
@@ -1822,7 +1853,8 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
     var iname,
 
         node,
-        path,
+        lpath,
+        spath,
 
         tname,
         gname,
@@ -1842,14 +1874,22 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
     //  some things (most notably 'traited' methods) won't have a load node.
     if ((node = TP.boot[TP.LOAD_NODE])) {
-        path = node.src || node.source || '';
-        path = TP.boot.$uriInTIBETFormat(path);
+        lpath = node.src || node.source || '';
+        lpath = TP.boot.$uriInTIBETFormat(lpath);
     } else {
-        path = TP.NO_LOAD_PATH;
+        lpath = TP.NO_LOAD_PATH;
     }
+
+    // source path is any path specified by the rollup logic, or the load path
+    // if that value isn't found (meaning we're not loading a resource bundle.
+    spath = TP.boot[TP.SRC_PATH] || lpath;
 
     switch (itemClass) {
         case TP.SUBTYPE:
+
+            anItem[TP.LOAD_NODE] = node;
+            anItem[TP.LOAD_PATH] = lpath;
+            anItem[TP.SRC_PATH] = spath;
 
             //  don't overlay information we've already collected
             if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
@@ -1857,12 +1897,17 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
                 TP.sys.$$meta_types.atPut(
                         iname,
-                        {'typeObj': anItem, 'sname': sname, 'path': path});
+                        {'typeObj': anItem, 'sname': sname,
+                            'lpath': lpath, 'spath': spath});
             }
 
             break;
 
         case TP.METHOD:
+
+            anItem[TP.LOAD_NODE] = node;
+            anItem[TP.LOAD_PATH] = lpath;
+            anItem[TP.SRC_PATH] = spath;
 
             tname = targetType.getName();
             gname = tname + '_' + itemTrack + '_' + iname;
@@ -1870,7 +1915,8 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             if (TP.notValid(TP.sys.$$meta_methods.at(gname))) {
                 TP.sys.$$meta_methods.atPut(
                         gname,
-                        {'methodObj': anItem, 'path': path});
+                        {'methodObj': anItem,
+                            'lpath': lpath, 'spath': spath});
 
                 //  owners are keyed by name and point to a vertical-bar
                 //  separated list of one or more type names. these are
@@ -1896,7 +1942,9 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             if (TP.notValid(TP.sys.$$meta_attributes.at(gname))) {
                 TP.sys.$$meta_attributes.atPut(
                         gname,
-                        {'descriptorObj': anItem, 'path': path});
+                        {'descriptorObj': anItem,
+                            'lpath': lpath,
+                            'spath': spath});
             }
 
             break;
@@ -2109,7 +2157,8 @@ TP.defineMethod = function(target, name, value, track, desc, display,
     TP.defineSlot(target, name, method, TP.METHOD, trk,
             (desc && desc.$$isPDC ? desc : TP.DEFAULT_DESCRIPTOR));
 
-    //  we don't wrap 'self' level methods
+    //  we don't wrap 'self' level methods so we need to patch on the load node
+    //  manually. All others get it done via addMetadata.
     if (method[TP.OWNER] === self) {
         if (TP.notValid(TP.objectGetLoadNode(method))) {
             //  track the node we're loading from for reference
@@ -2117,11 +2166,6 @@ TP.defineMethod = function(target, name, value, track, desc, display,
         }
 
         return method;
-    }
-
-    if (TP.notValid(TP.objectGetLoadNode(method))) {
-        //  track the node we're loading from for reference
-        TP.objectSetLoadNode(method, TP.boot[TP.LOAD_NODE]);
     }
 
     /*
@@ -2153,6 +2197,7 @@ TP.sys.addMetadata(TP, TP.constructOrphanObject, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP, TP.defineNamespace, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP, TP.isNamespace, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP.sys, TP.sys.getGlobals, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP.sys, TP.sys.release, TP.METHOD, TP.PRIMITIVE_TRACK);
 
 //  Defined in this file
 
@@ -2174,6 +2219,7 @@ TP.sys.addMetadata(TP.sys, TP.sys.constructOID, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP, TP.getFunctionName, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(Function, TP.FunctionProto.$getName,
                     TP.METHOD, TP.INST_TRACK);
+TP.sys.addMetadata(TP, TP.objectGetMetadataName, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.PRIMITIVE_TRACK);
 
 //  ------------------------------------------------------------------------
@@ -6227,12 +6273,12 @@ with ways to acquire or reload original source for an object very quickly.
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('objectGetLoadModule',
+TP.definePrimitive('objectGetLoadPackage',
 function(anObject) {
 
     /**
-     * @name objectGetLoadModule
-     * @synopsis Returns the module name from which the script defining the
+     * @name objectGetLoadPackage
+     * @synopsis Returns the package name from which the script defining the
      *     object's node was loaded.
      * @param {Object} anObject The object to query.
      * @returns {String} The module name for the object's node.
@@ -6282,22 +6328,20 @@ function(anObject) {
      * @returns {String} The load path where the receiver can be found.
      */
 
-    var node;
-
-    if (!TP.isElement(node = this.objectGetLoadNode(anObject))) {
+    if (TP.notValid(anObject)) {
         return;
     }
 
-    return node.getAttribute('src') || node.getAttribute('source');
+    return anObject[TP.LOAD_PATH];
 });
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('objectGetLoadTarget',
+TP.definePrimitive('objectGetLoadConfig',
 function(anObject) {
 
     /**
-     * @name objectGetLoadTarget
+     * @name objectGetLoadConfig
      * @synopsis Returns the module target from which the object's node was
      *     loaded.
      * @param {Object} anObject The object to query.
@@ -6315,15 +6359,64 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('uriGetLoadModule',
+TP.definePrimitive('objectGetMetadata',
+function(anObject) {
+
+    /**
+     * @name objectGetMetadata
+     * @synopsis Returns any metadata the system may have for the object. At the
+     *     present time this only works for types and methods.
+     * @param {Object} anObject The object to query.
+     * @returns {Object} The metadata structure, if any.
+     */
+
+    var name;
+
+    name = TP.objectGetMetadataName(anObject);
+    if (TP.isEmpty(name)) {
+        return;
+    }
+
+    if (TP.isType(anObject)) {
+        return TP.sys.getMetadata('types').at(name);
+    } else if (TP.isMethod(anObject)) {
+        return TP.sys.getMetadata('methods').at(name);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectGetSourcePath',
+function(anObject) {
+
+    /**
+     * @name objectGetSourcePath
+     * @synopsis Returns the path to the original source file, before any
+     *     bundling or rollup processing, where the object resides.
+     * @param {Object} anObject The object to query.
+     * @returns {String} The load path where the receiver can be found.
+     */
+
+    if (TP.notValid(anObject)) {
+        return;
+    }
+
+    return anObject[TP.SRC_PATH];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('uriGetLoadPackage',
 function(aPath) {
 
     /**
-     * @name uriGetLoadModule
-     * @synopsis Returns the module path responsible for loading the file.
+     * @name uriGetLoadPackage
+     * @synopsis Returns the package path responsible for loading the file.
      * @param {String} aPath A filename, typically without any root information.
-     * @returns {String} The module file path responsible for including the path
-     *     in the load.
+     * @returns {String} The package file path responsible for including the
+     *     path in the load.
      */
 
     var node;
@@ -6379,14 +6472,14 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('uriGetLoadTarget',
+TP.definePrimitive('uriGetLoadConfig',
 function(aPath) {
 
     /**
-     * @name uriGetLoadTarget
-     * @synopsis Returns the module target responsible for loading the file.
+     * @name uriGetLoadConfig
+     * @synopsis Returns the package config responsible for loading the file.
      * @param {String} aPath A filename, typically without any root information.
-     * @returns {String} The module target name responsible for including the
+     * @returns {String} The package config name responsible for including the
      *     path in the load.
      */
 

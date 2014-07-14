@@ -902,7 +902,7 @@ function() {
 
     var methods,
         methodKeys,
-    
+
         result,
         len,
         i;

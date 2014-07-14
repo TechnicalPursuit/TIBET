@@ -450,11 +450,11 @@ TP.boot.$$importAsync = function() {
     };
 
 //  placeholder for the currently loading script node. this is used to track
-//  information related to types and method load origins
+//  load information such as package, config, and bundle/source path.
 TP.boot.$loadNode = null;
 
 //  placeholder for the currently loading script file, used to support
-//  object source code reflection
+//  object source code reflection.
 TP.boot.$loadPath = null;
 TP.boot.$$loadpaths = [];
 

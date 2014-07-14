@@ -637,8 +637,9 @@ TP.RNAME = '$$realname';
 TP.TYPEC = '$$Type';
 TP.INSTC = '$$Inst';
 
-TP.LOAD_PATH = '$loadPath';
 TP.LOAD_NODE = '$loadNode';
+TP.LOAD_PATH = '$loadPath';
+TP.SRC_PATH = '$srcPath';
 
 TP.NO_LOAD_PATH = '<no_load_node>';
 TP.BUILTIN_LOAD_NODE = {};
