@@ -9224,17 +9224,6 @@ TP.boot.$importComponents = function(loadSync) {
         //  first step is to configure for proper feedback, even when the
         //  node we're processing may be deferred.
         if ((srcpath = nd.getAttribute('src')) != null) {
-            //  if we're set to import condensed (and we're not overridden
-            //  by the need to load original source due to packaging) then
-            //  update the source file reference appropriately
-            if (TP.sys.cfg('import.condensed')) {
-                srcpath = srcpath.replace(
-                                /\.(.*?)$/,
-                                TP.sys.cfg('pack.extension') + '.$1');
-                srcpath = TP.boot.$uriExpandPath(
-                                TP.sys.cfg('path.app_cache')) +
-                                srcpath.slice(srcpath.lastIndexOf('/'));
-            }
 
             //  skip duplicate imports. this normally only happens if a script
             //  ends up in both phase one and phase two for some reason (usually
@@ -9316,7 +9305,7 @@ TP.boot.$importComponents = function(loadSync) {
             TP.boot.$loadPath = srcpath;
             TP.boot.$$loadpaths.push(srcpath);
         } else {
-            TP.boot.$loadPath = null;   //  should this be cfg file name?
+            TP.boot.$loadPath = null;
         }
 
         //  set the configuration values so the sourceImport call will have

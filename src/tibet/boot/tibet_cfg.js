@@ -411,9 +411,6 @@ TP.sys.setcfg('tibet.simple_cors_only', false);
 //  here allows later updates to happen in more small-grained fashion.
 TP.sys.setcfg('import.chunks', false);
 
-//  should we try to load packed (condensed) source code?
-TP.sys.setcfg('import.condensed', false);
-
 //  should we try to import package configuration manifest files?
 TP.sys.setcfg('import.manifests', false);
 
