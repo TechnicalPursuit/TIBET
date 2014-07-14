@@ -73,6 +73,21 @@ TDS.initPackage = function(options) {
     this._package = new Package(options);
 };
 
+/**
+ * Provides a useful 'skip' function for the Express logger. This will filter
+ * out a lot of logging overhead that might otherwise occur when the TDS is
+ * being accessed.
+ * @return {Boolean} true to skip logging the current request.
+ */
+TDS.logFilter = function(req, res) {
+    var url = TDS.getcfg('tds.watch_uri');
+
+    // Don't log repeated calls to the watcher URL.
+    if (req.path.indexOf(url) !== -1) {
+        return true;
+    }
+};
+
 
 //  ---
 //  TIBET CLI Middleware
