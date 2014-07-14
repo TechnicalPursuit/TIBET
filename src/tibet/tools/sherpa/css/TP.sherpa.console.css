@@ -36,6 +36,38 @@ sherpa|console[maximized]
     height: auto !important;
 }
 
+sherpa|console > #toggleMaximize
+{
+    position: absolute;
+
+    cursor: pointer;
+
+    top: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+
+    transform: rotate(90deg);
+
+    background-size: 10px 10px;
+    background-image: url(../img/console_fullscreen_enter.svg);
+}
+
+sherpa|console[maximized] > #toggleMaximize
+{
+    background-image: url(../img/console_fullscreen_exit.svg);
+}
+
+sherpa|console > #toggleMaximize:active
+{
+    transform: rotate(90deg) scale(1.2);
+}
+
+sherpa|console[maximized] > #toggleMaximize:active
+{
+    transform: rotate(90deg) scale(0.8);
+}
+
 sherpa|console > xctrls|codeeditor
 {
 	position: absolute;
