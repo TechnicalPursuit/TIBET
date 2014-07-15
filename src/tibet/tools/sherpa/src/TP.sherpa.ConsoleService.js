@@ -1727,7 +1727,9 @@ function(anObject, aRequest) {
 
     cssClass = TP.ifInvalid(cssClass, '');
 
-    outputData = TP.hc('output', data, 'outputclass', cssClass);
+    outputData = TP.hc('output', data,
+                        'outputclass', cssClass,
+                        'rawData', anObject);
 
     tileID = aRequest.at('cmdID');
 

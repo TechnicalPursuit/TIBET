@@ -572,10 +572,11 @@ function(range, cssClass, promptText) {
 
     doc = textInput.getNativeContentDocument();
 
-    elem = doc.createElement('span');
-    elem.className = cssClass;
-    elem.id = TP.sys.cfg('sherpa.console_prompt');
-    elem.innerHTML = promptText;
+    elem = TP.documentCreateElement(doc, 'span');
+    TP.elementSetClass(elem, cssClass);
+    TP.elementSetAttribute(elem, 'id', TP.sys.cfg('sherpa.console_prompt'));
+
+    TP.htmlElementSetContent(elem, promptText);
 
     marker = textInput.$getEditorInstance().markText(
         range.from,
@@ -708,7 +709,7 @@ function(aPrompt, aCSSClass) {
         editor.setCursor(range.to);
     } else {
         TP.elementSetClass(elem, cssClass);
-        elem.innerHTML = promptStr;
+        TP.htmlElementSetContent(elem, promptStr);
     }
 
     return this;
@@ -1217,7 +1218,7 @@ function(uniqueID, dataRecord) {
         outElem = marker.widgetNode.firstChild;
     }
 
-    outElem.innerHTML = '&hellip;';
+    TP.htmlElementSetContent(outElem, '&hellip;');
 
     if (outputRange.to.line === textInput.$getEditorInstance().lastLine()) {
         textInput.appendToLine('\n', TP.LAST);
@@ -1271,7 +1272,7 @@ function(uniqueID, dataRecord) {
     //  TODO: Use this CSS class
     outputClass = dataRecord.at('outputclass');
 
-    outElem.innerHTML = TP.stringAsHTMLString(outputText);
+    TP.htmlElementSetContent(outElem, TP.stringAsHTMLString(outputText));
 
     textInput.refreshEditor();
     this.adjustTextInputSize();
@@ -1294,15 +1295,15 @@ function(uniqueID) {
      */
 
     var doc,
-        outSpan;
+        elem;
 
     doc = this.get('textInput').getNativeContentDocument();
 
-    outSpan = doc.createElement('span');
-    outSpan.className = 'output';
-    outSpan.id = uniqueID;
+    elem = TP.documentCreateElement(doc, 'span');
+    TP.elementSetClass(elem, 'output');
+    TP.elementSetAttribute(elem, 'id', uniqueID);
 
-    return outSpan;
+    return elem;
 });
 
 //  ------------------------------------------------------------------------

@@ -12,14 +12,21 @@
 		<sherpa:huddrawer sherpa:edge="topright" pclass:hidden="true">
 		</sherpa:huddrawer>
         <sherpa:huddrawer sherpa:edge="right" pclass:hidden="true">
-            <button onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().setView(TP.rtc(512, 384, 1536, 1152))">X</button>
-            <button onclick="TP.byOID('SherpaConsole').toggleLog()">L</button>
-            <button onclick="TP.byOID('SherpaConsole').toggleMaximized()">M</button>
+            <div id="fitToSelf" class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToSelf()"></div>
+            <div class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToVisibleWindow()">&#160;W</div>
+            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(0, 0)">&#160;1</div>
+            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(0, 1)">&#160;2</div>
+            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(1, 0)">&#160;3</div>
+            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(1, 1)">&#160;4</div>
+            <!--
+            <div id="zoomIn" class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().zoomIn(.2)"></div>
+            <div id="zoomOut" class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().zoomOut(.2)"></div>
+            -->
+            <div id="toggleLog" class="drawerButton" onclick="TP.byOID('SherpaConsole').toggleLog()"></div>
 		</sherpa:huddrawer>
 		<sherpa:huddrawer sherpa:edge="bottomright" pclass:hidden="true">
 		</sherpa:huddrawer>
         <sherpa:huddrawer sherpa:edge="bottom" pclass:hidden="true">
-            <input type="range" min="0" max="1.0" step="0.01" oninput="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().zoom(this.value)"/>
 		</sherpa:huddrawer>
 		<sherpa:huddrawer sherpa:edge="bottomleft" pclass:hidden="true">
 		</sherpa:huddrawer>

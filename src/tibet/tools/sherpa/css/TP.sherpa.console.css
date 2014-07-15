@@ -9,20 +9,19 @@ sherpa|console
 	position: absolute;
 
     top: auto;
-    right: 30px;
-	left: 30px;
-    bottom: 30px;
+    right: 31px;
+	left: 31px;
+    bottom: 51px;
 
     height: 18px;
 
-    max-height: calc(100% - 60px);
+    max-height: calc(100% - 100px);
 
 	/* This should match TIBET's CONSOLE_TIER constant */
 	z-index: 15000;
 
     border: solid 1px rgba(0, 0, 0, 0.1);
     border-radius: 6px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
 }
 
 sherpa|console:not([pclass|hidden])
@@ -32,8 +31,40 @@ sherpa|console:not([pclass|hidden])
 
 sherpa|console[maximized]
 {
-    top: 30px;
+    top: 50px;
     height: auto !important;
+}
+
+sherpa|console > #toggleMaximize
+{
+    position: absolute;
+
+    cursor: pointer;
+
+    top: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+
+    transform: rotate(90deg);
+
+    background-size: 10px 10px;
+    background-image: url(../img/console_fullscreen_enter.svg);
+}
+
+sherpa|console[maximized] > #toggleMaximize
+{
+    background-image: url(../img/console_fullscreen_exit.svg);
+}
+
+sherpa|console > #toggleMaximize:active
+{
+    transform: rotate(90deg) scale(1.2);
+}
+
+sherpa|console[maximized] > #toggleMaximize:active
+{
+    transform: rotate(90deg) scale(0.8);
 }
 
 sherpa|console > xctrls|codeeditor
