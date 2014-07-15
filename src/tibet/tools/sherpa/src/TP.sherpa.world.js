@@ -75,6 +75,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineAttribute('viewRect');
+TP.sherpa.world.Inst.defineAttribute('currentFocus');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -166,8 +167,10 @@ function() {
     worldWidth = worldSize.first();
     worldHeight = worldSize.last();
 
-    TP.elementGetStyleObj(this.getNativeNode()).width = worldWidth + 'px';
-    TP.elementGetStyleObj(this.getNativeNode()).height = worldHeight + 'px';
+    var natElem = this.getNativeNode();
+
+    TP.elementGetStyleObj(natElem).width = worldWidth + 'px';
+    TP.elementGetStyleObj(natElem).height = worldHeight + 'px';
 
     /*
     this.getNativeDocument().defaultView.onresize =
@@ -176,7 +179,59 @@ function() {
         };
     */
 
+    this.observe(TP.byOID('SherpaHUD'), 'HiddenChange');
+
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('handleSherpaHUDHiddenChange',
+function(aSignal) {
+
+    /**
+     * @name handleHiddenChange
+     */
+
+    var isHidden;
+
+    isHidden = aSignal.getOrigin().get('hidden');
+
+    /*
+    if (isHidden) {
+        console.log('hud is now hidden');
+    } else {
+        console.log('hud is now showing');
+    }
+    */
+
+    this.refocus();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('refocus',
+function() {
+
+    /**
+     * @name refocus
+     */
+
+    var currentFocus;
+
+    currentFocus = this.get('currentFocus');
+
+    if (TP.isArray(currentFocus)) {
+        this.fitToScreen(currentFocus.first(), currentFocus.last());
+    } else if (TP.isElement(currentFocus)) {
+        this.fitToElement(currentFocus);
+    } else if (currentFocus === TP.SELF) {
+        this.fitToSelf();
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -249,11 +304,15 @@ function(anElement) {
      * @returns {TP.sherpa.world} The receiver.
      */
 
-    var elementRect;
+    var tpElem,
+        elementRect;
 
-    elementRect = TP.wrap(anElement).getPageRect(false);
+    tpElem = TP.wrap(anElement);
+    elementRect = tpElem.getPageRect(false);
 
     this.setView(elementRect);
+
+    this.set('currentFocus', tpElem);
 
     return this;
 });
@@ -276,7 +335,10 @@ function(screenRowNum, screenColNum) {
         gapHeight,
 
         translateX,
-        translateY;
+        translateY,
+    
+        width,
+        height;
 
     screenWidth = this.get('screenWidth');
     screenHeight = this.get('screenHeight');
@@ -287,11 +349,27 @@ function(screenRowNum, screenColNum) {
     translateX = (screenWidth * screenColNum) + (gapWidth * screenColNum);
     translateY = (screenHeight * screenRowNum) + (gapHeight * screenRowNum);
 
-    this.setView(
-            TP.rtc(translateX,
-                    translateY,
-                    screenWidth + (gapWidth * 2),
-                    screenHeight + (gapHeight * 2)));
+    width = screenWidth + (gapWidth * 2);
+    height = screenHeight + (gapHeight * 2);
+
+    var hud,
+        hudHorizOffset,
+        hudVertOffset;
+
+    hudHorizOffset = (30 + 5);
+    hudVertOffset = (50 + 5);
+
+    if (TP.isValid(hud = TP.byOID('SherpaHUD')) &&
+        TP.notTrue(hud.get('hidden'))) {
+        translateX -= hudHorizOffset;
+        translateY -= hudVertOffset;
+        width += hudHorizOffset * 2;
+        height += hudVertOffset * 2;
+    }
+
+    this.setView(TP.rtc(translateX, translateY, width, height));
+
+    this.set('currentFocus', TP.ac(screenRowNum, screenColNum));
 
     return this;
 });
@@ -314,7 +392,29 @@ function() {
     worldWidth = worldSize.first();
     worldHeight = worldSize.last();
 
-    this.setView(TP.rtc(0, 0, worldWidth, worldHeight));
+    var hud,
+        hudHorizOffset,
+        hudVertOffset,
+        translateX,
+        translateY;
+
+    hudHorizOffset = (30 + 5);
+    hudVertOffset = (50 + 5);
+
+    translateX = 0;
+    translateY = 0;
+
+    if (TP.isValid(hud = TP.byOID('SherpaHUD')) &&
+        TP.notTrue(hud.get('hidden'))) {
+        translateX -= hudHorizOffset;
+        translateY -= hudVertOffset;
+        worldWidth += hudHorizOffset * 2;
+        worldHeight += hudVertOffset * 2;
+    }
+
+    this.setView(TP.rtc(translateX, translateY, worldWidth, worldHeight));
+
+    this.set('currentFocus', TP.SELF);
 
     return this;
 });
@@ -328,6 +428,8 @@ function() {
      * @name fitToVisibleWindow
      * @returns {TP.sherpa.world} The receiver.
      */
+
+    return this;
 
     var nativeDoc,
         windowWidth,
