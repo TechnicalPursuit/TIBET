@@ -12,12 +12,17 @@
 		<sherpa:huddrawer sherpa:edge="topright" pclass:hidden="true">
 		</sherpa:huddrawer>
         <sherpa:huddrawer sherpa:edge="right" pclass:hidden="true">
-            <div id="fitToSelf" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToSelf()"></div>
-            <div class="fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(0, 0)">&#160;1</div>
-            <div class="fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(0, 1)">&#160;2</div>
-            <div class="fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(1, 0)">&#160;3</div>
-            <div class="fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(1, 1)">&#160;4</div>
-            <div id="toggleLog" onclick="TP.byOID('SherpaConsole').toggleLog()"></div>
+            <div id="fitToSelf" class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToSelf()"></div>
+            <div class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToVisibleWindow()">&#160;W</div>
+            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(0, 0)">&#160;1</div>
+            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(0, 1)">&#160;2</div>
+            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(1, 0)">&#160;3</div>
+            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(1, 1)">&#160;4</div>
+            <!--
+            <div id="zoomIn" class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().zoomIn(.2)"></div>
+            <div id="zoomOut" class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().zoomOut(.2)"></div>
+            -->
+            <div id="toggleLog" class="drawerButton" onclick="TP.byOID('SherpaConsole').toggleLog()"></div>
 		</sherpa:huddrawer>
 		<sherpa:huddrawer sherpa:edge="bottomright" pclass:hidden="true">
 		</sherpa:huddrawer>

@@ -45,49 +45,45 @@ sherpa|hud:not([pclass|hidden])
     display: block;
 }
 
-div#fitToSelf
+.drawerButton
 {
     position: relative;
+
+    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 13px;
+    color: white;
 
     cursor: default;
 
     left: 5px;
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
 
-    background-size: 20px 20px;
+    background-size: 15px 15px;
+}
+
+div#fitToSelf
+{
     background-image: url(../img/fit_to_self.svg);
 }
 
 div.fitToScreen
 {
-    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
-    font-size: 15px;
-    color: white;
-
-    position: relative;
-
-    cursor: default;
-
-    left: 5px;
-    width: 20px;
-    height: 20px;
-
-    background-size: 20px 20px;
     background-image: url(../img/fit_to_screen.svg);
+}
+
+div#zoomIn
+{
+    background-image: url(../img/zoom_in.svg);
+}
+
+div#zoomOut
+{
+    background-image: url(../img/zoom_out.svg);
 }
 
 div#toggleLog
 {
-    position: relative;
-
-    cursor: default;
-
-    left: 5px;
-    width: 20px;
-    height: 20px;
-
-    background-size: 20px 20px;
     background-image: url(../img/log.svg);
 }
 

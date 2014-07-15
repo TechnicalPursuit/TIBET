@@ -9,9 +9,9 @@ sherpa|console
 	position: absolute;
 
     top: auto;
-    right: 30px;
-	left: 30px;
-    bottom: 50px;
+    right: 31px;
+	left: 31px;
+    bottom: 51px;
 
     height: 18px;
 
@@ -22,7 +22,6 @@ sherpa|console
 
     border: solid 1px rgba(0, 0, 0, 0.1);
     border-radius: 6px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
 }
 
 sherpa|console:not([pclass|hidden])
