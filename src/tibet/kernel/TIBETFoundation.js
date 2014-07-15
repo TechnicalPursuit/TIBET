@@ -940,7 +940,8 @@ function(methodText) {
         methodText +
         content.slice(match.index + str.length + 1);
 
-    patch = JsDiff.createPatch(url.asString(), content, newtext);
+    // NOTE we use the original srcPath string here to retain relative address.
+    patch = JsDiff.createPatch(path, content, newtext);
 
     return patch;
 });

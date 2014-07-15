@@ -112,13 +112,12 @@ TDS.cli = function(options) {
 
         var out;    // Output buffer.
         var cli;    // Spawned child process for the server.
-        var msg;    // Shared message content.
         var cmd;    // The command being requested.
         var argv;   // Non-named argument collector.
         var params; // Named argument collector.
         var child;  // child process module.
 
-        cmd = req.param('cmd')
+        cmd = req.param('cmd');
         if (!cmd) {
             res.send('Invalid command.');
             return;
@@ -194,26 +193,108 @@ TDS.patcher = function(options) {
         var body;
         var data;
         var type;
-        var file;
+        var target;
+        var text;
         var content;
+        var root;
+        var url;
+        var diff;
+        var fs;
+
+        var err = function(code, message) {
+            console.error(message);
+            res.send(code, message);
+            res.end();
+            return;
+        };
+
+        console.log('Processing patch request.');
+
+        fs = require('fs');
 
         body = req.body;
         if (body == null) {
-            res.send(400, 'No patch data provided.');
-            res.end();
-            return;
+            return err(400, 'No patch data provided.');
         }
 
-        console.log('Parsing data for patch: ' + body);
+        // TODO: parsing?
         data = body;
 
-        file = data.file;
-        type = data.type;
-        content = data.content;
+        // ---
+        // verify type
+        // ---
 
-        console.log('patch file: ' + file);
-        console.log('patch type: ' + type);
-        console.log('patch content: ' + content);
+        type = data.type;
+        if (!type) {
+            return err(400, 'No patch type provided.');
+        }
+
+        if (type !== 'patch' && type !== 'file') {
+            return err(400, 'Invalid patch type ' + type + '.');
+        }
+
+        // ---
+        // verify target
+        // ---
+
+        target = data.target;
+        if (!target) {
+            return err(400, 'No patch target provided.');
+        }
+
+        url = TDS.expandPath(target);
+        if (!url) {
+            return err(400, 'Unable to resolve patch target url.');
+        }
+
+        root = path.resolve(TDS.expandPath(TDS.getcfg('tds.patch_root')));
+
+        if (!url.indexOf(root) === 0) {
+            return err(403, 'Patch target outside patch directory.');
+        }
+
+        // ---
+        // verify content
+        // ---
+
+        content = data.content;
+        if (!content) {
+            return err(400, 'No patch content provided.');
+        }
+
+        // ---
+        // process the patch
+        // ---
+
+        console.log('Processing patch for ' + url);
+
+        // TODO: remove sync versions
+
+        if (type === 'patch') {
+            // Read the target and applyPatch using JsDiff to get content.
+
+            try {
+                text = fs.readFileSync(url, {encoding: 'utf8'});
+                if (!text) {
+                    throw new Error('NoData');
+                }
+            } catch (e) {
+                return err('Error reading file data: ' + e.message);
+            }
+
+            diff = require('diff');
+
+            text = diff.applyPatch(text, content);
+        } else {
+            // Supplied content is the new file text.
+            text = content;
+        }
+
+        try {
+            fs.writeFileSync(url, text);
+        } catch (e) {
+            return err('Error writing file ' + url + ': ' + e.message);
+        }
 
         res.send('ack');
         res.end();
@@ -238,15 +319,19 @@ TDS.watcher = function(options) {
     root = path.resolve(TDS.expandPath(TDS.getcfg('tds.watch_root')));
 
     // TODO: control this via a flag (and perhaps a command-line API)
-    // Start watching...
+    // TODO: may need to change to the "monitor" approach here. see docs for the
+    // watch module.
     watch.watchTree(root,
         function (fileName, curr, prev) {
             if (typeof fileName === 'object' && prev === null && curr === null) {
                 // Finished walking the tree
+                void(0);
             } else if (prev === null) {
                 // fileName is a new file
+                void(0);
             } else if (curr.nlink === 0) {
                 // fileName was removed
+                void(0);
             } else {
                 // fileName was changed
                 changedFileName = fileName;
@@ -341,13 +426,13 @@ TDS.webdav = function(options) {
             mount: mount,
             server: req.app,
             standalone: false,
-            plugins: [jsDAV_CORS_Plugin]
+            plugins: [TDS.webdav.jsDAV_CORS_Plugin]
         }).exec(req, res);
     };
 };
 
 // Ensure we can leverage CORS headers in case the TDS isn't the boot server.
-TDS.webdav.jsDAV_CORS_Plugin = require("jsDAV/lib/DAV/plugins/cors");
+TDS.webdav.jsDAV_CORS_Plugin = require('jsDAV/lib/DAV/plugins/cors');
 
 //  ---
 //  Export
