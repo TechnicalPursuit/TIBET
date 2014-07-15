@@ -4,8 +4,11 @@
 #triggerHUD
 {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+
+    cursor: default;
+
+    bottom: 15px;
+    right: 15px;
     width: 25px;
     height: 25px;
 
@@ -42,24 +45,70 @@ sherpa|hud:not([pclass|hidden])
     display: block;
 }
 
+div#fitToSelf
+{
+    position: relative;
+
+    cursor: default;
+
+    left: 5px;
+    width: 20px;
+    height: 20px;
+
+    background-size: 20px 20px;
+    background-image: url(../img/fit_to_self.svg);
+}
+
+div.fitToScreen
+{
+    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 15px;
+    color: white;
+
+    position: relative;
+
+    cursor: default;
+
+    left: 5px;
+    width: 20px;
+    height: 20px;
+
+    background-size: 20px 20px;
+    background-image: url(../img/fit_to_screen.svg);
+}
+
+div#toggleLog
+{
+    position: relative;
+
+    cursor: default;
+
+    left: 5px;
+    width: 20px;
+    height: 20px;
+
+    background-size: 20px 20px;
+    background-image: url(../img/log.svg);
+}
+
 sherpa|huddrawer
 {
 	display: block;
 
 	position: absolute;
 
-	background-color: rgba(0, 0, 0, .6);
+    background-image: url(../../../../../lib/img/boot/white_fiber.png);
 
     pointer-events: auto;
 }
 
 sherpa|huddrawer[sherpa|edge="topleft"]
 {
-	left: -20px;
-	top: -20px;
+	left: -30px;
+	top: -50px;
 
-	width: 20px;
-	height: 20px;
+	width: 30px;
+	height: 50px;
 }
 
 /* doesn't work in any browser:
@@ -73,11 +122,13 @@ sherpa|huddrawer[sherpa|edge="topleft"]:not([pclass|hidden])
 
 sherpa|huddrawer[sherpa|edge="top"]
 {
-	left: 20px;
-	top: -20px;
+	left: 30px;
+	top: -50px;
 
-    right: 20px;
-	height: 20px;
+    right: 30px;
+	height: 50px;
+
+	border-bottom: solid 2px #AAAAAA;
 }
 
 /* doesn't work in any browser:
@@ -90,11 +141,11 @@ sherpa|huddrawer[sherpa|edge="top"]:not([pclass|hidden])
 
 sherpa|huddrawer[sherpa|edge="topright"]
 {
-	right: -20px;
-	top: -20px;
+	right: -30px;
+	top: -50px;
 
-	width: 20px;
-	height: 20px;
+	width: 30px;
+	height: 50px;
 }
 
 /* doesn't work in any browser:
@@ -108,11 +159,13 @@ sherpa|huddrawer[sherpa|edge="topright"]:not([pclass|hidden])
 
 sherpa|huddrawer[sherpa|edge="right"]
 {
-	top: 20px;
-	right: -20px;
+	top: 50px;
+	right: -30px;
 
-    bottom: 20px;
-	width: 20px;
+    bottom: 50px;
+	width: 30px;
+
+	border-left: solid 2px #AAAAAA;
 }
 
 /* doesn't work in any browser:
@@ -125,11 +178,11 @@ sherpa|huddrawer[sherpa|edge="right"]:not([pclass|hidden])
 
 sherpa|huddrawer[sherpa|edge="bottomright"]
 {
-	right: -20px;
-	bottom: -20px;
+	right: -30px;
+	bottom: -50px;
 
-	width: 20px;
-	height: 20px;
+	width: 30px;
+	height: 50px;
 }
 
 /* doesn't work in any browser:
@@ -143,11 +196,13 @@ sherpa|huddrawer[sherpa|edge="bottomright"]:not([pclass|hidden])
 
 sherpa|huddrawer[sherpa|edge="bottom"]
 {
-	left: 20px;
-	bottom: -20px;
+	left: 30px;
+	bottom: -50px;
 
-    right: 20px;
-	height: 20px;
+    right: 30px;
+	height: 50px;
+
+	border-top: solid 2px #AAAAAA;
 }
 
 /* doesn't work in any browser:
@@ -160,11 +215,11 @@ sherpa|huddrawer[sherpa|edge="bottom"]:not([pclass|hidden])
 
 sherpa|huddrawer[sherpa|edge="bottomleft"]
 {
-	left: -20px;
-	bottom: -20px;
+	left: -30px;
+	bottom: -50px;
 
-	width: 20px;
-	height: 20px;
+	width: 30px;
+	height: 50px;
 }
 
 /* doesn't work in any browser:
@@ -178,11 +233,13 @@ sherpa|huddrawer[sherpa|edge="bottomleft"]:not([pclass|hidden])
 
 sherpa|huddrawer[sherpa|edge="left"]
 {
-	left: -20px;
-	top: 20px;
+	left: -30px;
+	top: 50px;
 
-    bottom: 20px;
-	width: 20px;
+    bottom: 50px;
+	width: 30px;
+
+	border-right: solid 2px #AAAAAA;
 }
 
 /* doesn't work in any browser:

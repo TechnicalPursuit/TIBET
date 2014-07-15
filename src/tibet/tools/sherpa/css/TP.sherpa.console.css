@@ -11,11 +11,11 @@ sherpa|console
     top: auto;
     right: 30px;
 	left: 30px;
-    bottom: 30px;
+    bottom: 50px;
 
     height: 18px;
 
-    max-height: calc(100% - 60px);
+    max-height: calc(100% - 100px);
 
 	/* This should match TIBET's CONSOLE_TIER constant */
 	z-index: 15000;
@@ -32,7 +32,7 @@ sherpa|console:not([pclass|hidden])
 
 sherpa|console[maximized]
 {
-    top: 30px;
+    top: 50px;
     height: auto !important;
 }
 
