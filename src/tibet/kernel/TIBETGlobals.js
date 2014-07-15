@@ -2319,6 +2319,9 @@ TP.regex.MOUSE_EVENT = /^mouse|DOMMouse/;
 
 TP.regex.HANDLER_NAME = /^handle([-_a-zA-Z0-9]+)$/;
 
+TP.regex.ON_HANDLER_NAME =
+    /^on([A-Z0-9][a-zA-Z0-9_]*?)(Of([A-Z][a-zA-Z0-9_]*?))*?(When([A-Z][a-zA-Z0-9_]*?))*?$/;
+
 //  ---
 //  file paths
 //  ---

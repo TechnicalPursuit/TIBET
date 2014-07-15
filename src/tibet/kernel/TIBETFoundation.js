@@ -2143,6 +2143,85 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('defineHandler',
+function(aHandlerName, aHandler, aPolicy) {
+    var match;
+    var handler;
+    var policy;
+    var signal;
+    var origin;
+    var state;
+    var handlers;
+
+    // Most of this is about the name. It has to match our handler name pattern.
+    match = TP.regex.ON_HANDLER_NAME.exec(aHandlerName);
+
+    if (TP.notValid(match)) {
+        return this.raise('InvalidHandlerName', aHandlerName);
+    }
+
+    console.log('match: ' + JSON.stringify(match));
+
+    policy = aPolicy;
+    signal = match[1];
+    origin = TP.ifEmpty(match[3], TP.ANY);
+    state = TP.ifEmpty(match[5], TP.ANY);
+
+    // Standard notification doesn't include state checks, so wrap the intended
+    // handler here if state is being constrained and use that as the handler.
+    if (state !== TP.ANY) {
+        handler = function() {
+
+            // TODO: replace false here with a state check. current app state
+            // must match for the handler to be invoked.
+            if (false) {
+                return;
+            }
+            aHandler.apply(this, arguments);
+        }.bind(this);
+    } else {
+        handler = aHandler;
+    }
+
+    // We track handlers locally on each object.
+    if (TP.owns(this, '$$handlers')) {
+        handlers = this.get('$$handlers');
+    }
+
+    if (TP.notValid(handlers)) {
+        handlers = TP.hc();
+        this.$set('$$handlers', handlers, false);
+    } else {
+        // Remove any prior observation. We only want one.
+        existing = handlers.at(aHandlerName);
+        if (TP.isValid(existing)) {
+            TP.ignore(origin, signal, existing);
+        }
+    }
+
+    // Each object only gets one handler per unique name.
+    handlers.atPut(aHandlerName, handler);
+
+    TP.observe(origin, signal, handler, policy);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getHandlers',
+function() {
+
+    /**
+     * Returns a hash containing any handlers defined on the receiver. Note that
+     * handler definitions are local to the receiver and are not inherited.
+     * @return {TP.lang.Hash} The receiver's local handler dictionary.
+     */
+
+    // TODO: work on reflection aspect to let us find inherited handlers.
+    return this.get('$$handlers');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('fireNextSignal',
 function() {
 
