@@ -67,8 +67,6 @@ function(aRequest) {
         this.addStylesheetTo(TP.nodeGetDocument(elem));
     }
 
-//    TP.sherpa.Connector.setupOnDocument(TP.nodeGetDocument(elem));
-
     return TP.DESCEND;
 });
 
@@ -83,7 +81,7 @@ TP.sherpa.world.Inst.defineAttribute('viewRect');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineMethod('setup',
-function(initialRows, initialCols, initialScreenWidth, initialScreenHeight) {
+function() {
 
     /**
      * @name tshAwakenDOM
@@ -94,8 +92,14 @@ function(initialRows, initialCols, initialScreenWidth, initialScreenHeight) {
      *     the children of this element.
      */
 
-    var worldColumns,
-        worldRows,
+    var initialRows,
+        initialCols,
+
+        initialScreenWidth,
+        initialScreenHeight,
+
+        allScreens,
+        numScreens,
 
         screenWidth,
         screenHeight,
@@ -106,9 +110,18 @@ function(initialRows, initialCols, initialScreenWidth, initialScreenHeight) {
         worldSize,
 
         worldWidth,
-        worldHeight,
-        
-        allScreens;
+        worldHeight;
+
+    initialRows = TP.ifInvalid(2, TP.sys.cfg('sherpa.initial_rows'));
+    initialCols = TP.ifInvalid(2, TP.sys.cfg('sherpa.initial_cols'));
+
+    initialScreenWidth =
+        TP.ifInvalid(1024, TP.sys.cfg('sherpa.initial_screen_height'));
+    initialScreenHeight =
+        TP.ifInvalid(768, TP.sys.cfg('sherpa.initial_screen_width'));
+
+    allScreens = TP.byCSS('sherpa|screen', this.getNativeWindow());
+    numScreens = allScreens.getSize();
 
     this.set('numRows', initialRows);
     this.set('numCols', initialCols);
@@ -119,22 +132,17 @@ function(initialRows, initialCols, initialScreenWidth, initialScreenHeight) {
     this.set('gapWidth', 10);
     this.set('gapHeight', 10);
 
-    worldColumns = this.get('numCols');
-    worldRows = this.get('numRows');
-
     gapWidth = this.get('gapWidth');
     gapHeight = this.get('gapHeight');
 
     screenWidth = this.get('screenWidth');
     screenHeight = this.get('screenHeight');
 
-    allScreens = TP.byCSS('sherpa|screen', this.getNativeWindow());
-
     TP.extern.d3.selectAll(allScreens).
         style('left',
         function(d, i) {
             var colNum;
-            colNum = i % worldColumns;
+            colNum = i % initialCols;
             return (screenWidth * colNum) + ((colNum + 1) * gapWidth) + 'px';
         }).
         style('width',
@@ -145,9 +153,10 @@ function(initialRows, initialCols, initialScreenWidth, initialScreenHeight) {
         function(d, i) {
             return screenHeight + 'px';
         }).
-        style('top', function(d, i) {
+        style('top',
+        function(d, i) {
             var rowNum;
-            rowNum = (i / worldRows).floor();
+            rowNum = (i / initialRows).floor();
             return (screenHeight * rowNum) + ((rowNum + 1) * gapHeight) + 'px';
         });
 
@@ -157,12 +166,8 @@ function(initialRows, initialCols, initialScreenWidth, initialScreenHeight) {
     worldWidth = worldSize.first();
     worldHeight = worldSize.last();
 
-    TP.elementGetStyleObj(this.getNativeNode()).width = worldWidth +
-        'px';
-    TP.elementGetStyleObj(this.getNativeNode()).height = worldHeight +
-        'px';
-
-    this.fitToWorld();
+    TP.elementGetStyleObj(this.getNativeNode()).width = worldWidth + 'px';
+    TP.elementGetStyleObj(this.getNativeNode()).height = worldHeight + 'px';
 
     /*
     this.getNativeDocument().defaultView.onresize =
@@ -207,10 +212,8 @@ function() {
     gapWidth = this.get('gapWidth');
     gapHeight = this.get('gapHeight');
 
-    worldWidth = (worldColumns * screenWidth) +
-        ((worldColumns + 1) * gapWidth);
-    worldHeight = (worldRows * screenHeight) +
-        ((worldRows + 1) * gapHeight);
+    worldWidth = (worldColumns * screenWidth) + ((worldColumns + 1) * gapWidth);
+    worldHeight = (worldRows * screenHeight) + ((worldRows + 1) * gapHeight);
 
     return TP.ac(worldWidth, worldHeight);
 });
@@ -234,37 +237,6 @@ function() {
     worldHeight = worldSize.last();
 
     return TP.rtc(0, 0, worldWidth, worldHeight).getCenterPoint();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Inst.defineMethod('fitToCenterPoint',
-function(aPoint) {
-
-    /**
-     * @name fitToCenterPoint
-     * @returns {TP.sherpa.world} The receiver.
-     */
-
-    var nativeDoc,
-        windowWidth,
-        windowHeight,
-        newRect;
-
-    nativeDoc = this.getNativeDocument();
-
-    windowWidth = TP.documentGetViewableWidth(nativeDoc);
-    windowHeight = TP.documentGetViewableHeight(nativeDoc);
-
-    newRect = TP.rtc(
-        (aPoint.getX() - (windowWidth / 2)).max(0),
-        (aPoint.getY() - (windowHeight / 2)).max(0),
-        windowWidth,
-        windowHeight);
-
-    this.setView(newRect);
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -326,11 +298,11 @@ function(screenRowNum, screenColNum) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineMethod('fitToWorld',
+TP.sherpa.world.Inst.defineMethod('fitToSelf',
 function() {
 
     /**
-     * @name fitToWorld
+     * @name fitToSelf
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -343,6 +315,61 @@ function() {
     worldHeight = worldSize.last();
 
     this.setView(TP.rtc(0, 0, worldWidth, worldHeight));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('fitToVisibleWindow',
+function() {
+
+    /**
+     * @name fitToVisibleWindow
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
+    var nativeDoc,
+        windowWidth,
+        windowHeight;
+
+    nativeDoc = this.getNativeDocument();
+
+    windowWidth = TP.documentGetViewableWidth(nativeDoc);
+    windowHeight = TP.documentGetViewableHeight(nativeDoc);
+
+    this.setView(TP.rtc(0, 0, windowWidth, windowHeight));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('moveToCenterPointAndFitToDocument',
+function(aPoint) {
+
+    /**
+     * @name moveToCenterPointAndFitToDocument
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
+    var nativeDoc,
+        windowWidth,
+        windowHeight,
+        newRect;
+
+    nativeDoc = this.getNativeDocument();
+
+    windowWidth = TP.documentGetViewableWidth(nativeDoc);
+    windowHeight = TP.documentGetViewableHeight(nativeDoc);
+
+    newRect = TP.rtc(
+        (aPoint.getX() - (windowWidth / 2)).max(0),
+        (aPoint.getY() - (windowHeight / 2)).max(0),
+        windowWidth,
+        windowHeight);
+
+    this.setView(newRect);
 
     return this;
 });
@@ -438,126 +465,6 @@ function(aValue) {
     this.setView(newViewRect);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-//  Mouse Handling
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Inst.defineMethod('handleDOMMouseDown',
-function(aSignal) {
-
-    /**
-     * @name handleDOMMouseDown
-     * @synopsis Handles notifications of mousedown events.
-     * @param {DOMMouseDown} aSignal The TIBET signal which triggered this
-     *     method.
-     */
-
-// TODO
-return;
-
-    if (aSignal.getAltKey()) {
-        TP.byOID('SherpaConnectors').startConnecting(aSignal);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Inst.defineMethod('handleDOMClick',
-function(aSignal) {
-
-
-    var pagePoint,
-        viewRect;
-
-    if ((aSignal.getTarget().nodeName.toLowerCase() == 'button') ||
-        (aSignal.getTarget().nodeName.toLowerCase() == 'input')) {
-        return;
-    }
-
-    pagePoint = aSignal.getPagePoint();
-    viewRect = this.get('viewRect');
-
-    pagePoint.setX(pagePoint.getX() + viewRect.getX());
-    pagePoint.setY(pagePoint.getY() + viewRect.getY());
-
-    this.fitToCenterPoint(pagePoint);
-
-// TODO
-return;
-
-    if (!TP.isElement(aSignal.getResolvedTarget())) {
-        return this.raise('TP.sig.InvalidElement', arguments);
-    }
-
-    TP.byOID('sherpa_cmdline').hide();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Inst.defineMethod('handleDOMDblClick',
-function(aSignal) {
-
-// TODO
-return;
-
-    if (!TP.isElement(aSignal.getResolvedTarget())) {
-        return this.raise('TP.sig.InvalidElement', arguments);
-    }
-
-    TP.byOID('sherpa_cmdline').showAt(aSignal.getOffsetPoint());
-
-    aSignal.preventDefault();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Inst.defineMethod('resizeToFit',
-function(anElement) {
-
-    /**
-     * @name resizeToFit
-     * @param {Element} anElement 
-     * @returns {TP.sherpa.world} The receiver.
-     */
-
-    var screensTable,
-        screensTableWidth,
-        elementWidth;
-
-    screensTable = TP.byId('screensTable', this.getNativeDocument());
-    screensTableWidth = TP.elementGetWidth(screensTable);
-
-    elementWidth = TP.elementGetWidth(anElement);
-
-    TP.elementSetTransform(screensTable,
-        'scale(' + elementWidth / screensTableWidth + ')');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-//  Connectors
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Type.defineMethod('isValidConnectorSource',
-function(anElement) {
-
-    /**
-     * @name isValidConnectorSource
-     * @synopsis Returns whether or not the element is a valid connector source.
-     * @param {Element} anElement 
-     * @returns {Boolean} 
-     */
-
-    return true;
 });
 
 //  ------------------------------------------------------------------------

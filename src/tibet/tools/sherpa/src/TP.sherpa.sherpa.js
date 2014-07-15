@@ -221,7 +221,7 @@ function() {
             TP.documentGetBody(TP.doc(uiScreensWin)), worldElem, null, true);
 
     worldTPElem = TP.byOID('SherpaWorld', uiScreensWin);
-    worldTPElem.setup(2, 2, 1024, 768);
+    worldTPElem.setup();
 
     //  TODO: For now, we set the world to be focused on the screen at 0,0
     worldTPElem.fitToScreen(0, 0);
