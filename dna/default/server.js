@@ -50,7 +50,6 @@ var csurf = require('csurf');
 var morgan = require('morgan');
 var session = require('express-session');
 var serveStatic = require('serve-static');
-var serveIndex = require('serve-index')
 
 // TIBET Development Server addons.
 var TDS = require('tibet/etc/tds-middleware');
@@ -103,15 +102,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //  Express logger.
 //  TODO: Add options control in tibet.json.
-app.use(morgan({format: 'dev'}));
-
-//  Support index listings.
-//  TODO: Sort out if there's a way to avoid listing them separately, or put
-//  them into a parameter.
-//app.use(serveIndex('/src', {'icons': true}));
-//app.use(serveIndex('/html', {'icons': true}));
-//app.use(serveIndex('/css', {'icons': true}));
-//app.use(serveIndex('/img', {'icons': true}));
+app.use(morgan({format: 'dev', skip: TDS.logFilter}));
 
 //  ---
 //  ---
