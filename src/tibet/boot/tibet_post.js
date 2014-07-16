@@ -9690,8 +9690,7 @@ TP.boot.$expandConfig = function(anElement) {
             text,
             msg,
             str,
-            doc,
-            echo;
+            doc;
 
         if (child.nodeType === 1) {
 
@@ -9745,24 +9744,25 @@ TP.boot.$expandConfig = function(anElement) {
                             '\'' + level + ');' +
                             ']]></script>';
                         doc = TP.boot.$documentFromString(str);
-                        echo = doc.childNodes[0];
-                        child.parentNode.replaceChild(echo, child);
+                        elem = doc.childNodes[0];
+
+                        value = child.getAttribute('if');
+                        if (TP.boot.$notEmpty(value)) {
+                            elem.setAttribute('if', value);
+                        }
+
+                        value = child.getAttribute('unless');
+                        if (TP.boot.$notEmpty(value)) {
+                            elem.setAttribute('unless', value);
+                        }
+
+                        child.parentNode.replaceChild(elem, child);
 
                     } catch (e) {
                         msg = e.message;
                         throw new Error('Error expanding: ' +
                             TP.boot.$nodeAsString(child) +
                             msg);
-                    }
-
-                    value = child.getAttribute('if');
-                    if (TP.boot.$notEmpty(value)) {
-                        echo.setAttribute('if', value);
-                    }
-
-                    value = child.getAttribute('unless');
-                    if (TP.boot.$notEmpty(value)) {
-                        echo.setAttribute('unless', value);
                     }
 
                     break;
@@ -9815,6 +9815,17 @@ TP.boot.$expandConfig = function(anElement) {
                                 ']]></script>';
                             doc = TP.boot.$documentFromString(str);
                             elem = doc.childNodes[0];
+
+                            value = child.getAttribute('if');
+                            if (TP.boot.$notEmpty(value)) {
+                                elem.setAttribute('if', value);
+                            }
+
+                            value = child.getAttribute('unless');
+                            if (TP.boot.$notEmpty(value)) {
+                                elem.setAttribute('unless', value);
+                            }
+
                             child.parentNode.replaceChild(elem, child);
 
                         } catch (e) {
