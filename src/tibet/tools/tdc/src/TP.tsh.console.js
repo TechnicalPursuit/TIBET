@@ -2351,6 +2351,11 @@ function(aRequest) {
 
     request = TP.request(aRequest);
 
+    if (request.at('inputWritten')) {
+        return;
+    }
+    request.atPut('inputWritten', true);
+
     if (TP.isTrue(request.at('echoRequest'))) {
 
         //  update the command title bar based on the latest output from
