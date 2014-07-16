@@ -2160,8 +2160,6 @@ function(aHandlerName, aHandler, aPolicy) {
         return this.raise('InvalidHandlerName', aHandlerName);
     }
 
-    console.log('match: ' + JSON.stringify(match));
-
     policy = aPolicy;
     signal = match[1];
     origin = TP.ifEmpty(match[3], TP.ANY);
