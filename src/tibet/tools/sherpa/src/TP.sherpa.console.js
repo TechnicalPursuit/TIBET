@@ -1313,8 +1313,11 @@ function(uniqueID, dataRecord) {
 
     outputText = dataRecord.at('output');
 
-    //  TODO: Use this CSS class
     outputClass = dataRecord.at('outputclass');
+
+    if (!TP.elementHasClass(outElem, outputClass)) {
+        TP.elementAddClass(outElem, outputClass);
+    }
 
     TP.htmlElementSetContent(outElem, TP.stringAsHTMLString(outputText));
 
