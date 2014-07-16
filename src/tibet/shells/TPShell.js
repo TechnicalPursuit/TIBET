@@ -2446,7 +2446,12 @@ function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
         //  Usually the user wants the expanded value, but they might have
         //  specified otherwise.
         if (argumentName === 'ARGV') {
-            if (TP.notTrue(wantsOriginal)) {
+            if (wantsOriginal) {
+                value = value.collect(
+                        function (item) {
+                            return item.first();
+                        });
+            } else {
                 value = value.collect(
                         function (item) {
                             return item.last();
@@ -3133,84 +3138,6 @@ function(aRequest) {
     aRequest.stdout(this.getVariable(arg1));
 
     return aRequest.complete();
-});
-
-//  ------------------------------------------------------------------------
-//  FILE SYSTEM WATCH
-//  ------------------------------------------------------------------------
-
-TP.sig.SourceSignal.defineSubtype('FileChangedEvent');
-TP.sig.FileChangedEvent.Type.defineConstant('NATIVE_NAME',
-    TP.sys.cfg('tds.watch_event'));
-
-//  ------------------------------------------------------------------------
-
-TP.core.Shell.Inst.defineMethod('executeWatchFS',
-function(aRequest) {
-    var watcher,
-        url;
-
-    if (TP.notValid(watcher = this.get('watcherSSESource'))) {
-        url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
-            TP.sys.cfg('tds.watch_uri'));
-        watcher = TP.core.SSESignalSource.construct(url);
-        this.set('watcherSSESource', watcher);
-    }
-
-    this.observe(watcher, 'TP.sig.FileChangedEvent');
-
-    aRequest.stdout('Watching file system');
-
-    return aRequest.complete();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Shell.Inst.defineMethod('executeUnwatchFS',
-function(aRequest) {
-    var watcher,
-        url;
-
-    // TODO: why? if we are 'unwatching' what is the construct() process doing
-    // for us? Shouldn't there be a 'getInstance' or something instead?
-    if (TP.notValid(watcher = this.get('watcherSSESource'))) {
-        url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
-            TP.sys.cfg('tds.watch_uri'));
-        watcher = TP.core.SSESignalSource.construct(url);
-    }
-
-    this.ignore(watcher, 'TP.sig.FileChangedEvent');
-
-    aRequest.stdout('No longer watching file system');
-
-    return aRequest.complete();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Shell.Inst.defineMethod('handleTP_sig_FileChangedEvent',
-function(aSignal) {
-
-    var payload,
-
-        str,
-        req;
-
-    if (TP.isValid(payload = aSignal.getPayload())) {
-        str = 'A file changed: ' + payload.asString();
-
-        //  output any startup announcement for the shell
-        req = TP.sig.UserOutputRequest.construct(
-                    TP.hc('output', str,
-                            'cssClass', 'inbound_announce',
-                            'cmdAsIs', true,
-                            'cmdBox', false,
-                            'cmdRecycle', true));
-
-        req.fire(this);
-    }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
