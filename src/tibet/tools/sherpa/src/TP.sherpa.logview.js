@@ -36,6 +36,10 @@ TP.sherpa.logview.Inst.defineAttribute(
         'body',
         {'value': TP.cpc('.body', true)});
 
+TP.sherpa.logview.Inst.defineAttribute(
+        'entryList',
+        {'value': TP.cpc('#entryList', true)});
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -63,6 +67,37 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.logview.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @name setup
+     */
+
+    this.setProcessedContent('<ul id="entryList"></ul>');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.logview.Inst.defineMethod('addLogEntry',
+function(dataRecord) {
+
+    var cssClass,
+        content;
+
+    cssClass = TP.ifInvalid(dataRecord.at('cssClass'), ''); 
+
+    content = '<li><span class="' + cssClass + '">' +
+                dataRecord.at('output') +
+                '</span></li>';
+
+    return this.get('entryList').addProcessedContent(content);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.logview.Inst.defineMethod('addProcessedContent',

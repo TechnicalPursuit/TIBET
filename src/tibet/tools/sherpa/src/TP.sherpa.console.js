@@ -276,6 +276,7 @@ function() {
     logview = TP.sherpa.logview.addResourceContentTo(
                         TP.ietf.Mime.XHTML,
                         TP.documentGetBody(uiRootDoc));
+    logview.setup();
 
     return this;
 });
@@ -390,15 +391,14 @@ function(dataRecord) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var outputText,
-        outputClass;
+    var output,
+        cssClass;
 
-    outputText = dataRecord.at('output');
+    output = dataRecord.at('output');
+    cssClass = dataRecord.at('cssClass');
 
-    //  TODO: Use this CSS class
-    outputClass = dataRecord.at('outputclass');
-
-    TP.byOID('SherpaLogView').addProcessedContent(outputText + '\n');
+    TP.byOID('SherpaLogView').addLogEntry(
+            TP.hc('output', output, 'cssClass', cssClass));
 
     //console.log('Echo logged text: ' + outputText);
 

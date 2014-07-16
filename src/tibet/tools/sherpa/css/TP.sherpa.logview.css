@@ -6,12 +6,12 @@ sherpa|logview
     display: none;
 	position: absolute;
 
-	top: 30px;
+	top: 55px;
 	right: 30px;
-	bottom: 30px;
+	bottom: 80px;
 	width: 300px;
 
-    border: solid 1px red;
+    border: solid 1px black;
 }
 
 sherpa|logview:not([pclass|hidden])
@@ -22,8 +22,27 @@ sherpa|logview:not([pclass|hidden])
 sherpa|logview > .body
 {
     position: absolute;
-    top: 4px;
-    right: 4px;
-    bottom: 4px;
-    left: 4px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+
+    background-image: url(../../../../../lib/img/boot/dark_fiber.png);
+
+    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 10px;
+    color: white;
+}
+
+sherpa|logview > .body ul
+{
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+sherpa|logview > .body li
+{
+    display: block;
+    margin-bottom: 4px;
 }
