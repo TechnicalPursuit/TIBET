@@ -7,6 +7,7 @@
 'use strict';
 
 var sh = require('shelljs');
+var nodecli = require('shelljs-nodecli');
 
 // Uncomment to run node_modules-based utilities via shelljs.
 // var nodeCLI = require('shelljs-nodecli');
@@ -125,7 +126,8 @@ targets.pushdb = function(make) {
     // directory but remove 'attachments' from the app.inf reference and any
     // other paths which might include attachments.
 
-    result = sh.exec('couchapp push app.js ' + db_url + '/' + db_name, {
+    result = nodecli.exec('couchapp',
+        'push', 'app.js', db_url + '/' + db_name, {
       silent: (make.options.silent !== true)
     });
 
