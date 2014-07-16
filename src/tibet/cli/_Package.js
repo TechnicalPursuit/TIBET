@@ -848,6 +848,10 @@ Package.prototype.expandPath = function(aPath) {
         parts,
         virtual;
 
+    if (isEmpty(aPath)) {
+        throw new Error('Invalid or empty path.');
+    }
+
     // If we've done this one before just return it.
     path = this.paths[aPath];
     if (path) {
