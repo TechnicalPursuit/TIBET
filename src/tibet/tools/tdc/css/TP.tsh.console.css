@@ -8,7 +8,7 @@
 .cmdline_wrapper
 {
 	position: absolute;
-	
+
 	top: 0px;
 	bottom: 0px;
 	left: 0px;
@@ -97,9 +97,10 @@
 
 .inputcell .content
 {
-    position: absolute;
-    right: 250px;
-    left: 50px;
+    position: relative;
+    right: 50px;
+    left: 10px;
+    display: inline-block;
 
     white-space: pre-line;
 }
@@ -108,13 +109,11 @@
 {
     color: yellow;
 
-    position: absolute;
-    right: 0px;
-    width: 250px;
+    float: left;
+    display: inline-block;
+    margin: 8px 8px 8px 0;
 
     white-space: pre-line;
-
-    text-align: right;
 }
 
 .outputcell > span
