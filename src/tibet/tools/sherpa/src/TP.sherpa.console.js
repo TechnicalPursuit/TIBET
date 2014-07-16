@@ -1216,11 +1216,16 @@ function(uniqueID, dataRecord) {
                         uniqueID,
                         recordStr);
         outElem = marker.widgetNode.firstChild;
+    } else {
+        if (TP.isValid(marker = outElem.marker)) {
+            outputRange = marker.find();
+        }
     }
 
     TP.htmlElementSetContent(outElem, '&hellip;');
 
-    if (outputRange.to.line === textInput.$getEditorInstance().lastLine()) {
+    if (TP.isValid(outputRange) &&
+        outputRange.to.line === textInput.$getEditorInstance().lastLine()) {
         textInput.appendToLine('\n', TP.LAST);
     }
 
