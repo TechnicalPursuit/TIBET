@@ -98,6 +98,7 @@ Cmd.prototype.execute = function() {
     var child;  // The child_process module.
     var cmd;    // Closure'd var providing access to the command object.
     var dna;
+    var err;
 
     cmd = this;
 
@@ -115,10 +116,17 @@ Cmd.prototype.execute = function() {
     // package.json due to earlier check) it means 'npm install' was never run.
     // We have to do that before we can try to start the server.
     if (sh.test('-e', 'node_modules')) {
-        this.warn('Project already initialized. ' +
-            'Re-initialize by removing node_modules first.');
-        // TODO: add a force option
-        return 1;
+        if (!this.options.force) {
+            this.warn('Project already initialized. ' +
+                'Use --force to re-initialize.');
+            return 1;
+        }
+        this.warn('--force specified...removing and rebuilding node_modules.');
+        err = sh.rm('-rf', 'node_modules');
+        if (err) {
+            this.error('Error removing node_modules directory: ' + err);
+            return 1;
+        }
     }
 
     dna = this.getcfg('tibet.dna');

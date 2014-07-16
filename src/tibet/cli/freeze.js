@@ -96,8 +96,27 @@ Cmd.prototype.execute = function() {
     sh.mkdir(libroot);
     err = sh.error();
     if (err) {
-        this.error('Error creating target directory: ' + err);
-        return 1;
+        if (!this.options.force) {
+            if (/already exists/i.test(err)) {
+                this.warn('Project already frozen. Use --force to re-freeze.');
+            } else {
+                this.error('Error creating target directory. ' +
+                    'Use --force to attempt to rebuild.');
+            }
+            return 1;
+        }
+        this.warn('--force specified...cleansing/rebuilding target directory.');
+        err = sh.rm('-rf', libroot);
+        if (err) {
+            this.error('Error removing target directory: ' + err);
+            return 1;
+        }
+        sh.mkdir(libroot);
+        err = sh.error();
+        if (err) {
+            this.error('Error creating target directory: ' + err);
+            return 1;
+        }
     }
 
     sh.cp('-R', 'node_modules/tibet/bin', libroot);
@@ -127,6 +146,8 @@ Cmd.prototype.execute = function() {
         this.error('Error cloning tibet/src: ' + err);
         return 1;
     }
+
+    this.info('TIBET library frozen in ' + libroot + '.');
 };
 
 
