@@ -221,7 +221,7 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleHiddenChange',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleSherpaConsoleHiddenChange',
 function(aSignal) {
 
     /**
