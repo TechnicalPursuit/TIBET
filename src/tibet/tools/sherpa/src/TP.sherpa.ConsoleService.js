@@ -1438,29 +1438,48 @@ function(anError, aRequest) {
      * @todo
      */
 
-    var req,
+    var request,
         err,
 
         cssClass,
 
-        outputData;
+        outputData,
+        
+        tileID;
 
     TP.debug('break.tdc_stderr');
 
     if (TP.isValid(aRequest)) {
         aRequest.atPutIfAbsent('messageType', 'failure');
-        req = aRequest;
+        request = aRequest;
     } else {
-        req = TP.hc('messageType', 'failure');
+        request = TP.hc('messageType', 'failure');
     }
-    req.atPutIfAbsent('messageLevel', TP.ERROR);
+    request.atPutIfAbsent('messageLevel', TP.ERROR);
 
     err = TP.isError(anError) ? TP.str(anError) : anError;
 
-    cssClass = '';
-    outputData = TP.hc('output', err, 'outputclass', cssClass);
+    if (TP.isValid(request.at('messageLevel'))) {
+        cssClass = TP.boot.Log.getStringForLevel(request.at('messageLevel'));
+        cssClass = TP.ifInvalid(cssClass, 'trace');
+    }
+
+    cssClass = TP.ifInvalid(cssClass, '');
+
+    outputData = TP.hc('output', err,
+                        'cssClass', cssClass);
 
     this.get('$consoleGUI').addLoggedValue(outputData);
+
+    tileID = aRequest.at('cmdID');
+
+    if (TP.isEmpty(tileID)) {
+        this.get('$consoleGUI').addLoggedValue(TP.hc('output', err));
+    } else {
+        tileID = tileID.replace(/\$/g, '_');
+
+        this.get('$consoleGUI').createAndUpdateOutputMark(tileID, outputData);
+    }
 
     return;
 });
@@ -1637,7 +1656,7 @@ function(aRequest) {
 
     inputData = TP.hc('hid', hid,
                         'cmdtext', str,
-                        'inputclass', cssClass,
+                        'cssClass', cssClass,
                         'request', request);
 
     tileID = aRequest.at('cmdID');
@@ -1728,7 +1747,7 @@ function(anObject, aRequest) {
     cssClass = TP.ifInvalid(cssClass, '');
 
     outputData = TP.hc('output', data,
-                        'outputclass', cssClass,
+                        'cssClass', cssClass,
                         'rawData', anObject);
 
     tileID = aRequest.at('cmdID');

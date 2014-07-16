@@ -1135,6 +1135,37 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('createAndUpdateOutputMark',
+function(uniqueID, dataRecord) {
+
+    /**
+     * @name createAndUpdateOutputMark
+     * @synopsis
+     * @param
+     * @param
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var textInput,
+
+        doc,
+        outElem;
+
+    textInput = this.get('textInput');
+
+    doc = textInput.getNativeContentDocument();
+
+    if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
+        this.createOutputMark(uniqueID, dataRecord);
+    }
+
+    this.updateOutputMark(uniqueID, dataRecord);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('createOutputMark',
 function(uniqueID, dataRecord) {
 
@@ -1160,7 +1191,9 @@ function(uniqueID, dataRecord) {
 
         cmdText,
 
-        inputClass,
+        cssClass,
+
+        record,
 
         statsStr,
  
@@ -1200,11 +1233,15 @@ function(uniqueID, dataRecord) {
         cmdText = TP.ifInvalid(dataRecord.at('cmdtext'), '');
         cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
 
-        //  TODO: Use this CSS class
-        inputClass = dataRecord.at('inputclass');
+        cssClass = dataRecord.at('cssClass');
 
-        statsStr = this.getInputStats(dataRecord.at('request'));
-        resultTypeStr = this.getInputTypeInfo(dataRecord.at('request'));
+        if (TP.isValid(record = dataRecord.at('request'))) {
+            statsStr = this.getInputStats(record);
+            resultTypeStr = this.getInputTypeInfo(dataRecord.at('request'));
+        } else {
+            statsStr = '';
+            resultTypeStr = '';
+        }
 
         recordStr = hidStr + ' ' +
                     cmdText + ' ' +
@@ -1216,6 +1253,8 @@ function(uniqueID, dataRecord) {
                         uniqueID,
                         recordStr);
         outElem = marker.widgetNode.firstChild;
+
+        TP.elementAddClass(outElem, cssClass);
     } else {
         if (TP.isValid(marker = outElem.marker)) {
             outputRange = marker.find();
