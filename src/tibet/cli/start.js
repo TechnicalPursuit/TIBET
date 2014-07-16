@@ -99,6 +99,8 @@ Cmd.prototype.execute = function() {
     var inuse;  // Flag to trap EADDRINUSE exceptions.
     var msg;    // Shared message content.
     var url;    // Url for file-based launch messaging.
+    var indexpage   // Config parameter for index page.
+    var index;  // URL to the index page.
 
     cmd = this;
 
@@ -133,7 +135,16 @@ Cmd.prototype.execute = function() {
         server = child.spawn('open',
             [CLI.expandPath(CLI.getcfg('tibet.indexpage'))]);
     } else {
-        msg = 'Starting server at http://0.0.0.0:' + port;
+        // If possible try to output the actual page reference to the index
+        // page. This helps with things like CouchDB template start output.
+        indexpage = CLI.getcfg('tibet.indexpage');
+        if (CLI.notEmpty(indexpage)) {
+            index = CLI.expandPath(CLI.getcfg('tibet.indexpage'));
+            index = index.replace(CLI.expandPath(CLI.getAppHead()), '');
+        } else {
+            index = '';
+        }
+        msg = 'Starting server at http://0.0.0.0:' + port + index;
         cmd.system(msg);
 
         server = child.spawn('node',
