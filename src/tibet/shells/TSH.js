@@ -2944,7 +2944,7 @@ function(aRequest) {
     argv = this.getArgument(aRequest, 'ARGV');
     aRequest.stdout(argv.join(' '));
 
-    aRequest.stdout('A: ' + TP.str(aRequest.at('ARGUMENTS')));
+    aRequest.stdout('A: ' + TP.str(aRequest.get('ARGUMENTS')));
 
     args = this.getArguments(aRequest);
     aRequest.stdout(TP.str(args));
