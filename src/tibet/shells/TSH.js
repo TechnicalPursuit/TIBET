@@ -3035,10 +3035,12 @@ TP.core.TSH.Inst.defineMethod('executeSourceFS',
 function(aRequest) {
 
     var dict,
-        files;
+        files,
+        loaded;
 
     dict = TP.sig.FileChangedEvent.get('pending');
 
+    loaded = TP.ac();
     files = dict.getKeys();
 
     files.forEach(function(file) {
@@ -3071,6 +3073,7 @@ function(aRequest) {
             TP.sys.shouldUseDebugger(false);
             TP.boot.$sourceImport(src, null, file, null, true);
 
+            loaded.push(file);
         } catch (e) {
             aRequest.fail(TP.FAILURE,
                 TP.ec(e, 'Source failed to exec: ' + file));
@@ -3079,6 +3082,12 @@ function(aRequest) {
             TP.sys.shouldLogCodeChanges(flag);
             TP.sys.shouldUseDebugger(debug);
         }
+    });
+
+    // Prune any files we were able to load. Others remain, in theory so they
+    // can be repaired and loaded.
+    loaded.forEach(function(file) {
+        dict.removeKey(file);
     });
 
     aRequest.complete();
