@@ -2548,10 +2548,24 @@ function(aRequest, allForms) {
         //  Otherwise, only return the 'expanded' value in a TP.lang.Hash
         newDict = TP.hc();
         dict.perform(
-                    function (kvPair) {
-                        return newDict.atPut(kvPair.first(),
-                                                kvPair.last().last());
+            function (kvPair) {
+                var key,
+                    val,
+                    arr;
+
+                key = kvPair.first();
+                val = kvPair.last();
+                if (key !== 'ARGV') {
+                    // Remember value is an array of original, expanded.
+                    newDict.atPut(key, val.last());
+                } else {
+                    // ARGV is special. It's the only nested structure.
+                    arr = val.collect(function(item) {
+                        return item.last();
                     });
+                    newDict.atPut(key, arr);
+                }
+            });
         return newDict;
     }
 
