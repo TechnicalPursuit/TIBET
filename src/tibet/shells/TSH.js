@@ -3013,6 +3013,77 @@ TP.sig.SourceSignal.defineSubtype('FileChangedEvent');
 TP.sig.FileChangedEvent.Type.defineConstant('NATIVE_NAME',
     TP.sys.cfg('tds.watch_event'));
 
+TP.sig.FileChangedEvent.Type.defineAttribute('pending', TP.hc());
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeChangedFS',
+function(aRequest) {
+
+    var dict;
+
+    dict = TP.sig.FileChangedEvent.get('pending');
+
+    aRequest.stdout(TP.str(dict));
+
+    aRequest.complete();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeSourceFS',
+function(aRequest) {
+
+    var dict,
+        files;
+
+    dict = TP.sig.FileChangedEvent.get('pending');
+
+    files = dict.getKeys();
+
+    files.forEach(function(file) {
+        var flag,
+            url,
+            src,
+            debug;
+
+        try {
+            flag = TP.sys.shouldLogCodeChanges();
+            TP.sys.shouldLogCodeChanges(false);
+
+            aRequest.stdout('Reloading source from: ' + file);
+
+            url = TP.uc(file);
+            if (TP.notValid(url)) {
+                aRequest.fail(TP.FAILURE,
+                    'Source failed to load: ' + file);
+                return;
+            }
+
+            if (TP.notValid(
+                src = url.getContent(TP.hc('refresh', true, 'async', false)))) {
+                aRequest.fail(TP.FAILURE,
+                    'Source failed to load: ' + file);
+                return;
+            }
+
+            debug = TP.sys.shouldUseDebugger();
+            TP.sys.shouldUseDebugger(false);
+            TP.boot.$sourceImport(src, null, file, null, true);
+
+        } catch (e) {
+            aRequest.fail(TP.FAILURE,
+                TP.ec(e, 'Source failed to exec: ' + file));
+            return;
+        } finally {
+            TP.sys.shouldLogCodeChanges(flag);
+            TP.sys.shouldUseDebugger(debug);
+        }
+    });
+
+    aRequest.complete();
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeWatchFS',
@@ -3029,7 +3100,7 @@ function(aRequest) {
 
     this.observe(watcher, 'TP.sig.FileChangedEvent');
 
-    aRequest.stdout('Watching file system');
+    aRequest.stdout('File system change monitoring active.');
 
     return aRequest.complete();
 });
@@ -3051,7 +3122,7 @@ function(aRequest) {
 
     this.ignore(watcher, 'TP.sig.FileChangedEvent');
 
-    aRequest.stdout('No longer watching file system');
+    aRequest.stdout('File system change monitoring ended.');
 
     return aRequest.complete();
 });
@@ -3062,25 +3133,77 @@ TP.core.TSH.Inst.defineMethod('handleTP_sig_FileChangedEvent',
 function(aSignal) {
 
     var payload,
-
+        count,
+        name,
         str,
-        req;
+        req,
+        dict;
 
-    if (TP.isValid(payload = aSignal.getPayload())) {
-        str = 'A file changed: ' + payload.asString();
+    // If we can't determine the file name we can't take action in any case.
+    if (TP.notValid(payload = aSignal.getPayload())) {
+        return;
+    }
 
-        //  output any startup announcement for the shell
+    // TODO: all kinds of alternatives here. We may want to queue them. We may
+    // want to access a patch of the deltas. We may need to track ordering, or
+    // to prompt the user when a series from a specific file ends and a new file
+    // starts changing in case there are intra-file dependencies.
+
+    // Add tracking data on the file that changed.
+    dict = aSignal.getType().get('pending');
+
+    name = '.' + payload.at('data').asString().stripEnclosingQuotes();
+    name = TP.uriJoinPaths(TP.sys.getLaunchRoot(), name);
+
+    count = dict.at(name);
+    if (TP.notValid(count)) {
+        // Notify on the first change of each file.
+        str = 'File system change: ' + name;
         req = TP.sig.UserOutputRequest.construct(
                     TP.hc('output', str,
+                            // TODO: alter this class to get attention
                             'cssClass', 'inbound_announce',
                             'cmdAsIs', true,
                             'cmdBox', false,
                             'cmdRecycle', true));
-
         req.fire(this);
+
+        count = 1;
+    } else {
+        count += 1;
     }
+    dict.atPut(name, count);
 
     return this;
+
+/*
+    req = TP.sig.UserInputRequest.construct(
+        TP.hc('query', 'username:', 'default', name, 'async', true));
+
+    //  response comes as a TP.sig.UserInput signal, so add a local handler
+    req.defineMethod(
+        'handleUserInput',
+        function(aSignal) {
+
+            var req,
+                res,
+                responder;
+
+            //  do this so the triggering request clears the queue
+            if (TP.isValid(responder =
+                            aSignal.getRequest().get('responder'))) {
+                aSignal.getRequestID().signal('TP.sig.RequestCompleted');
+            }
+
+            res = aSignal.getResult();
+
+            // TODO...
+            ...
+    });
+
+    return this;
+*/
+
 });
 
 //  ------------------------------------------------------------------------
