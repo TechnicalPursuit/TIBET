@@ -188,13 +188,15 @@ function(aPath) {
         return TP.sys.getLaunchRoot();
     }
 
-    if (aPath.indexOf('/') === 0) {
+    path = TP.str(aPath);
+
+    if (path.indexOf('/') === 0) {
         // Launch root doesn't include a trailing slash, so avoid possible
         // recursion via uriJoinPaths and just concatenate.
-        return TP.sys.getLaunchRoot() + aPath;
+        return TP.sys.getLaunchRoot() + path;
     }
 
-    start = aPath.replace('tibet:///~', '~');
+    start = path.replace('tibet:///~', '~');
 
     //  if the path starts with '~' we adjust to the proper root
     if (start.indexOf('~') !== 0) {
