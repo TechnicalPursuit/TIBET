@@ -2933,23 +2933,76 @@ function(aRequest) {
     var cmd;
     var args;
     var argv;
+    var url;
+    var req;
+    var res;
+
+    // TODO: sanity check them for non-alphanumeric 'command line' chars.
 
     cmd = this.getArgument(aRequest, 'tsh:cmd', null, true);
     if (TP.isEmpty(cmd)) {
         cmd = 'help';
     }
 
-    aRequest.atPut('cmdAppend', true);
+    // The url root we want to send to is in tds.cli_url
+    url = TP.uriJoinPaths(TP.sys.getLaunchRoot(),
+        TP.sys.getcfg('tds.cli_uri'));
+    url += '?cmd=' + encodeURIComponent(cmd);
 
     argv = this.getArgument(aRequest, 'ARGV');
-    aRequest.stdout(argv.join(' '));
-
-    aRequest.stdout('A: ' + TP.str(aRequest.get('ARGUMENTS')));
+    if (TP.notEmpty(argv)) {
+        argv.shift();       // pop off the first one, it's the command.
+        if (argv.length > 0) {
+            url += '&argv=' + encodeURIComponent(argv.join(' '));
+        }
+    }
 
     args = this.getArguments(aRequest);
     aRequest.stdout(TP.str(args));
+    args.perform(function(arg) {
+        var key;
+        var value;
 
-    aRequest.complete();
+        key = arg.first();
+        value = arg.last();
+
+        if (/^ARG/.test(key)) {
+            return;
+        }
+
+        // Have to get a little fancier here. If we see tsh: prefixes we want to
+        // remove those. If we don't see a value that key is a boolean flag.
+        if (/tsh:/.test(key)) {
+            key = key.slice(4);
+        }
+
+        url += '&' + encodeURIComponent(key);
+        if (TP.notEmpty(value)) {
+            if (value !== true) {
+                // TODO: remove quotes?
+                url += '=' + encodeURIComponent(
+                    ('' + value).stripEnclosingQuotes());
+            }
+        }
+    });
+
+    url = TP.uc(url);
+    if (TP.notValid(url)) {
+        return aRequest.fail(TP.FAILURE, 'Invalid request input.');
+    }
+
+    req = TP.sig.HTTPRequest.construct(TP.hc('uri', url, 'verb', TP.HTTP_POST));
+
+    req.defineMethod('handleRequestSucceeded', function() {
+        aRequest.stdout(req.getResult());
+        aRequest.complete();
+    });
+    req.defineMethod('handleRequestFailed', function() {
+        aRequest.stderr(req.getResult());
+        aRequest.complete();
+    });
+
+    res = req.fire();
 });
 
 //  ------------------------------------------------------------------------
