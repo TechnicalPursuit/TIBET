@@ -156,6 +156,7 @@ app.use(function(req, res, next){
 // Provide simple error handler middleware here.
 app.use(function(err, req, res, next){
   console.error(err.stack);
+
 // TODO: dump stack/error back to the client...?
   res.send(500, TDS.getcfg('tds.500'));
 });
