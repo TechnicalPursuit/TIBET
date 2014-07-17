@@ -48,6 +48,16 @@ TDS.expandPath = function(aPath) {
 };
 
 /**
+ * Return the application head, the location serving as the top-level root.
+ * @return {String} The application head path.
+ */
+TDS.getAppHead = function() {
+    this.initPackage();
+
+    return TDS._package.getAppHead();
+};
+
+/**
  * Returns the value for a specific configuration property.
  * @param {String} property A configuration property name.
  * @return {Object} The property value, if found.
@@ -301,8 +311,12 @@ TDS.watcher = function(options) {
     root = path.resolve(TDS.expandPath(TDS.getcfg('tds.watch_root')));
 
     // TODO: control this via a flag (and perhaps a command-line API)
+
+    // TODO: toggle from the client. Until we issue watchFS don't.
+
     // TODO: may need to change to the "monitor" approach here. see docs for the
     // watch module.
+
     watch.watchTree(root,
         function (fileName, curr, prev) {
             if (typeof fileName === 'object' && prev === null && curr === null) {
@@ -318,6 +332,10 @@ TDS.watcher = function(options) {
                 // fileName was changed
                 changedFileName = fileName;
             }
+
+            // Normalize the file name. We need to send it to the client as if
+            // it were rooted from the launch root.
+            changedFileName = changedFileName.replace(TDS.getAppHead(), '');
         });
 
     var writeSSEHead = function (req, res, cb) {
