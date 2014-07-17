@@ -151,6 +151,8 @@ TDS.cli = function(options) {
         cli = child.spawn('tibet', params);
 
         cli.stdout.pipe(res);
+        cli.stderr.pipe(res);
+
         return;
     };
 };

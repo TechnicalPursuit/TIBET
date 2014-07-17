@@ -2958,7 +2958,6 @@ function(aRequest) {
     }
 
     args = this.getArguments(aRequest);
-    aRequest.stdout(TP.str(args));
     args.perform(function(arg) {
         var key;
         var value;
