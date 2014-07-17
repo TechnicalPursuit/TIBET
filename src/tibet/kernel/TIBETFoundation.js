@@ -938,7 +938,7 @@ function(methodText) {
 
     newtext = content.slice(0, match.index) +
         methodText +
-        content.slice(match.index + str.length + 1);
+        content.slice(match.index + str.length - 1);
 
     // NOTE we use the original srcPath string here to retain relative address.
     patch = JsDiff.createPatch(path, content, newtext);
