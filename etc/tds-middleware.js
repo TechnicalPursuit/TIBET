@@ -115,63 +115,43 @@ TDS.cli = function(options) {
         var cmd;    // The command being requested.
         var argv;   // Non-named argument collector.
         var params; // Named argument collector.
+        var result; // ShellJS result data.
         var child;  // child process module.
 
         cmd = req.param('cmd');
         if (!cmd) {
-            res.send('Invalid command.');
-            return;
+            cmd = 'help';
         }
 
+        argv = '';
         out = [];
-        argv = [];
-        params = [];
+        params = [cmd];
 
         Object.keys(req.query).forEach(function(key) {
+            var value;
+
             if (key === 'cmd') {
                 void(0);    // skip
-            } else if (/argv\d/.test(key)) {
-                argv[key.charAt(4)] = req.query[key];
+            } else if (key === 'argv') {
+                argv = req.query[key];
             } else {
-                params.push(key, req.query[key]);
-            }
-        });
+                value = req.query[key]
 
-        // Build up the list but filter any "gaps" in the form of missing args
-        // in argv or -- flags for booleans etc.
-        params = [cmd].concat(argv).concat(params);
-        params = params.filter(function(item) {
-            return item !== '' && item !== null &&
-                item !== undefined;
+                params.push('--' + key);
+                if (value !== null &&
+                    value !== undefined &&
+                    value !== true &&
+                    value !== "") {
+                    params.push(value);
+                }
+            }
         });
 
         child = require('child_process');
         cli = child.spawn('tibet', params);
 
-        cli.stdout.on('data', function(data) {
-            var msg = '' + data;
-            if (msg.trim().length === 0) {
-                return;
-            }
-            out.push('' + data);
-        });
-
-        cli.stderr.on('data', function(data) {
-            var msg = '' + data;
-            if (msg.trim().length === 0) {
-                return;
-            }
-            out.push(msg);
-        });
-
-        cli.on('close', function(code) {
-            if (code !== 0) {
-                out.push('not ok - ' + code);
-            }
-
-            // TODO: SSE the result ?
-            res.send(out.join('\n'));
-        });
+        cli.stdout.pipe(res);
+        return;
     };
 };
 
