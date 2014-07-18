@@ -6826,7 +6826,7 @@ function(aString) {
      *     TP.core.Path object.
      * @param {The} aString String definition to use to build a TP.core.Path
      *     object from.
-     * @returns {TP.core.Matrix} A TP.core.Path expressing the supplied
+     * @returns {TP.core.SVGPath} A TP.core.Path expressing the supplied
      *     transformation.
      */
 

@@ -8491,7 +8491,7 @@ function(aWindow, otherWindow, wantsTransformed) {
      *     whether to return 'transformed' values if the window's iframe element
      *     has been transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidWindow
-     * @returns {Array} The offsets expressed as [width, height].
+     * @returns {Array} The offsets expressed as [left, top].
      * @todo
      */
 
