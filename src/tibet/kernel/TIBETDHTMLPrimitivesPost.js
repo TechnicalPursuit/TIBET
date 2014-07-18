@@ -2420,7 +2420,8 @@ function(anElement, boxType, wantsTransformed) {
         //  will be 0,0 offset from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
                             top,
-                            TP.elementGetIFrameWindow(winFrameElem));
+                            TP.elementGetIFrameWindow(winFrameElem),
+                            wantsTransformed);
     } else {
         frameOffsetXAndY = TP.ac(0, 0);
     }
@@ -8470,7 +8471,7 @@ function(aWindow) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('windowComputeWindowOffsets',
-function(aWindow, otherWindow) {
+function(aWindow, otherWindow, wantsTransformed) {
 
     /**
      * @name windowComputeWindowOffsets
@@ -8486,6 +8487,9 @@ function(aWindow, otherWindow) {
      * @param {Window} aWindow The first window to compute offset values for.
      * @param {Window} otherWindow The second window to compute offset values
      *     for.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the window's iframe element
+     *     has been transformed with a CSS transformation. The default is false.
      * @raises TP.sig.InvalidWindow
      * @returns {Array} The offsets expressed as [width, height].
      * @todo
@@ -8517,9 +8521,7 @@ function(aWindow, otherWindow) {
     win = aWindow;
     while (TP.isElement(frameElement = win.frameElement)) {
 
-        //  NB: We're not interested in transformed coordinates here, so we pass
-        //  'false' as the second parameter
-        frameCoords = TP.elementGetBorderBox(frameElement, false);
+        frameCoords = TP.elementGetBorderBox(frameElement, wantsTransformed);
 
         frame1OffsetX += frameCoords.at('left');
         frame1OffsetY += frameCoords.at('top');
@@ -8537,9 +8539,7 @@ function(aWindow, otherWindow) {
     win = otherWindow;
     while (TP.isElement(frameElement = win.frameElement)) {
 
-        //  NB: We're not interested in transformed coordinates here, so we pass
-        //  'false' as the second parameter
-        frameCoords = TP.elementGetBorderBox(frameElement, false);
+        frameCoords = TP.elementGetBorderBox(frameElement, wantsTransformed);
 
         frame2OffsetX += frameCoords.at('left');
         frame2OffsetY += frameCoords.at('top');
