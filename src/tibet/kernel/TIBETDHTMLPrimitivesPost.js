@@ -2492,7 +2492,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
 
     if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
         if (TP.isNumber(ancestorPosition =
-                        TP.elementGetGlobalX(ancestor, boxType))) {
+                        TP.elementGetGlobalX(
+                            ancestor, boxType, wantsTransformed))) {
             return position - ancestorPosition;
         }
     }
@@ -2560,7 +2561,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
 
     if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
         if (TP.isNumber(ancestorPosition =
-                        TP.elementGetGlobalY(ancestor, boxType))) {
+                        TP.elementGetGlobalY(
+                            ancestor, boxType, wantsTransformed))) {
             return position - ancestorPosition;
         }
     }
