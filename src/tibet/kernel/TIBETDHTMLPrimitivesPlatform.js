@@ -1859,7 +1859,7 @@ TP.hc(
 
             matrix = TP.matrixFromCSSString(val);
 
-            if (TP.isTrue(wants2DMatrix)) {
+            if (TP.isValid(matrix) && TP.isTrue(wants2DMatrix)) {
                 matrix = [
                             matrix[0][0],
                             matrix[1][0],
@@ -1903,7 +1903,7 @@ TP.hc(
 
             matrix = TP.matrixFromCSSString(val);
 
-            if (TP.isTrue(wants2DMatrix)) {
+            if (TP.isValid(matrix) && TP.isTrue(wants2DMatrix)) {
                 matrix = [
                             matrix[0][0],
                             matrix[1][0],
@@ -1947,7 +1947,7 @@ TP.hc(
 
             matrix = TP.matrixFromCSSString(val);
 
-            if (TP.isTrue(wants2DMatrix)) {
+            if (TP.isValid(matrix) && TP.isTrue(wants2DMatrix)) {
                 matrix = [
                             matrix[0][0],
                             matrix[1][0],

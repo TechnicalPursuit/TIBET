@@ -1469,7 +1469,10 @@ function(anElement) {
         ];
     };
 
-    transformMatrix = TP.elementGetTransformMatrix(anElement, true);
+    if (TP.notValid(transformMatrix =
+                    TP.elementGetTransformMatrix(anElement, true))) {
+        return TP.hc();
+    }
 
     a = transformMatrix[0];
     b = transformMatrix[1];

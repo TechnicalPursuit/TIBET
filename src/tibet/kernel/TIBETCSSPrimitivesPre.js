@@ -375,6 +375,10 @@ function(cssStr) {
         i,
         j;
 
+    if (!/matrix3?d?\(([^\)]+)\)/i.test(cssStr)) {
+        return null;
+    }
+
     strParts = cssStr.match(/matrix3?d?\(([^\)]+)\)/i)[1].split(',');
 
     if (strParts.length === 6) {
