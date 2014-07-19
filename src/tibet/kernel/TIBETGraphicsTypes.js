@@ -3897,6 +3897,43 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Matrix.Inst.defineMethod('transformRect',
+function(aRect) {
+
+    /**
+     * @name transformRect
+     * @synopsis Uses the receiver to multiply the supplied TP.core.Rect,
+     *     thereby transforming it.
+     * @param {TP.core.Rect} aRect The rect to apply the receiver to.
+     * @raises TP.sig.InvalidParameter
+     * @returns {TP.core.Rect} The transformed rect.
+     */
+
+    var data,
+        rectData,
+
+        newRect;
+
+    if (TP.notValid(aRect)) {
+        return this.raise('TP.sig.InvalidParameter', arguments);
+    }
+
+    data = this.$get('data');
+    rectData = aRect.$get('data');
+
+    //  Note here how we do *not* add the dx,dy to the width and height
+    newRect = TP.core.Rect.construct(
+            data.xx * rectData.x + data.xy * rectData.y + data.dx,
+            data.yx * rectData.x + data.yy * rectData.y + data.dy,
+            data.xx * rectData.width + data.xy * rectData.height,
+            data.yx * rectData.width + data.yy * rectData.height
+            );
+
+    return newRect;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Matrix.Inst.defineMethod('translate',
 function(diffX, diffY) {
 
