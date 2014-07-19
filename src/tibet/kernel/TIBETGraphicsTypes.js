@@ -2110,14 +2110,17 @@ function(aRect) {
 //  ------------------------------------------------------------------------
 
 TP.core.Rect.Inst.defineMethod('scale',
-function(scaleFactor) {
+function(xScaleFactor, yScaleFactor) {
 
     /**
      * @name scale
      * @synopsis Scales the coordinates of the receiver around its center using
      *     the supplied scaling factor and returns a new TP.core.Rect with those
      *     new coordinates.
-     * @param {Number} scaleFactor The amount to scale the coordinates of the
+     * @param {Number} xScaleFactor The amount to scale the coordinates of the
+     *     receiver to. If this is the only argument supplied, the Y value will
+     *     also be scaled using this argument.
+     * @param {Number} yScaleFactor The amount to scale the coordinates of the
      *     receiver to.
      * @raises TP.sig.InvalidNumber
      * @returns {TP.core.Rect} A new rectangle with the coordinates of the
@@ -2129,14 +2132,20 @@ function(scaleFactor) {
         newWidth,
         newHeight;
 
-    if (!TP.isNumber(scaleFactor)) {
+    //  yScaleFactor is optional
+    if (!TP.isNumber(xScaleFactor)) {
         return this.raise('TP.sig.InvalidNumber', arguments);
     }
 
     data = this.$get('data');
 
-    newWidth = data.width * scaleFactor;
-    newHeight = data.height * scaleFactor;
+    if (TP.isNumber(yScaleFactor)) {
+        newWidth = data.width * xScaleFactor;
+        newHeight = data.height * yScaleFactor;
+    } else {
+        newWidth = data.width * xScaleFactor;
+        newHeight = data.height * xScaleFactor;
+    }
 
     return TP.core.Rect.construct(
                     data.x - (newWidth - data.width) / 2,
