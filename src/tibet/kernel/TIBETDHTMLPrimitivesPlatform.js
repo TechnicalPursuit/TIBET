@@ -1857,18 +1857,7 @@ TP.hc(
         if (TP.isValid(val =
                     TP.elementGetComputedStyleObj(anElement).MozTransform)) {
 
-            matrix = TP.matrixFromCSSString(val);
-
-            if (TP.isValid(matrix) && TP.isTrue(wants2DMatrix)) {
-                matrix = [
-                            matrix[0][0],
-                            matrix[1][0],
-                            matrix[0][1],
-                            matrix[1][1],
-                            matrix[0][3],
-                            matrix[1][3]
-                        ];
-            }
+            matrix = TP.matrixFromCSSString(val, wants2DMatrix);
         }
 
         return matrix;
@@ -1901,18 +1890,7 @@ TP.hc(
         if (TP.isValid(val =
                     TP.elementGetComputedStyleObj(anElement).msTransform)) {
 
-            matrix = TP.matrixFromCSSString(val);
-
-            if (TP.isValid(matrix) && TP.isTrue(wants2DMatrix)) {
-                matrix = [
-                            matrix[0][0],
-                            matrix[1][0],
-                            matrix[0][1],
-                            matrix[1][1],
-                            matrix[0][3],
-                            matrix[1][3]
-                        ];
-            }
+            matrix = TP.matrixFromCSSString(val, wants2DMatrix);
         }
 
         return matrix;
@@ -1945,18 +1923,7 @@ TP.hc(
         if (TP.isValid(val =
                     TP.elementGetComputedStyleObj(anElement).WebkitTransform)) {
 
-            matrix = TP.matrixFromCSSString(val);
-
-            if (TP.isValid(matrix) && TP.isTrue(wants2DMatrix)) {
-                matrix = [
-                            matrix[0][0],
-                            matrix[1][0],
-                            matrix[0][1],
-                            matrix[1][1],
-                            matrix[0][3],
-                            matrix[1][3]
-                        ];
-            }
+            matrix = TP.matrixFromCSSString(val, wants2DMatrix);
         }
 
         return matrix;

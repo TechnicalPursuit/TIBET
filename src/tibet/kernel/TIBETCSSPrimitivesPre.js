@@ -354,7 +354,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('matrixFromCSSString',
-function(cssStr) {
+function(cssStr, wants2DMatrix) {
 
     /**
      * @name matrixFromCSSString
@@ -364,6 +364,9 @@ function(cssStr) {
      *     CSS 3D transforms.
      * @param {String} cssStr A CSS string representing a matrix used in CSS
      *     transforms.
+     * @param {Boolean} wants2DMatrix An optional parameter that tells the
+     *     method whether or not to return a 3x2 matrix for use with CSS 2D
+     *     transforms. The default is false.
      * @returns {Array} An Array of Arrays representing the extracted matrix.
      * @todo
      */
@@ -397,6 +400,17 @@ function(cssStr) {
             m[i] = m[i] || [];
             m[i][j] = parseFloat(mVals[j * 4 + i]);
         }
+    }
+
+    if (TP.isValid(m) && TP.isTrue(wants2DMatrix)) {
+        m = [
+                m[0][0],
+                m[1][0],
+                m[0][1],
+                m[1][1],
+                m[0][3],
+                m[1][3]
+            ];
     }
 
     return m;

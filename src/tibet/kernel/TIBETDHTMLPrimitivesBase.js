@@ -1264,7 +1264,7 @@ function(anElement, styleProperties, wantsTransformed) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementGetComputedTransformMatrix',
-function(anElement) {
+function(anElement, wants2DMatrix) {
 
     /**
      * @name elementGetComputedTransformMatrix
@@ -1275,7 +1275,13 @@ function(anElement) {
      *     element itself and then walking the parent tree and integrating each
      *     transformation matrix of that element to the computed matrix. This
      *     code derived from: https://gist.github.com/1145197
+     *     Note that this method will, by default, return a 4x4 matrix suitable
+     *     for use with CSS 3D transforms. By passing true to wants2DMatrix, a
+     *     3x2 matrix suitable for use by CSS 2D transforms will be returned.
      * @param {Element} anElement The element to use the transformation from.
+     * @param {Boolean} wants2DMatrix An optional parameter that tells the
+     *     method whether or not to return a 3x2 matrix for use with CSS 2D
+     *     transforms. The default is false.
      * @raises TP.sig.InvalidElement
      * @returns {Array} An Array of Arrays representing the current
      *     transformation matrix.
@@ -1284,7 +1290,7 @@ function(anElement) {
 
     var identity,
 
-        transformationMatrix,
+        matrix,
         currentElement,
 
         doc,
@@ -1308,7 +1314,7 @@ function(anElement) {
 
     identity = TP.matrixFromCSSString('matrix(1,0,0,1,0,0)');
 
-    transformationMatrix = identity;
+    matrix = identity;
     currentElement = anElement;
 
     doc = TP.nodeGetDocument(anElement);
@@ -1363,7 +1369,7 @@ function(anElement) {
                                             -origin[1][3],
                                             -origin[2][3]);
 
-        transformationMatrix =
+        matrix =
                 TP.multiplyMatrix(
                     TP.multiplyMatrix(
                         TP.multiplyMatrix(
@@ -1371,30 +1377,38 @@ function(anElement) {
                                      origin),
                             c),
                         inverseOrigin),
-                    transformationMatrix);
+                    matrix);
 
         currentElement = currentElement.parentNode;
     }
 
-    transformationMatrix = TP.translateMatrix(transformationMatrix,
-                                                -win.pageXOffset,
-                                                -win.pageYOffset,
-                                                0);
+    matrix = TP.translateMatrix(matrix, -win.pageXOffset, -win.pageYOffset, 0);
 
     //  If its not Firefox 11 and lesser
     if (!TP.boot.isUA('GECKO', 11, 0, 0, TP.DOWN)) {
         transformedRect = TP.$elementTransformBoundingClientRect(
-                                    anElement, transformationMatrix);
+                                    anElement, matrix);
 
         rect = anElement.getBoundingClientRect(anElement);
-        transformationMatrix = TP.translateMatrix(
-                                transformationMatrix,
+        matrix = TP.translateMatrix(
+                                matrix,
                                 rect.left - transformedRect.left,
                                 rect.top - transformedRect.top,
                                 0);
     }
 
-    return transformationMatrix;
+    if (TP.isValid(matrix) && TP.isTrue(wants2DMatrix)) {
+        matrix = [
+                    matrix[0][0],
+                    matrix[1][0],
+                    matrix[0][1],
+                    matrix[1][1],
+                    matrix[0][3],
+                    matrix[1][3]
+                ];
+    }
+
+    return matrix;
 });
 
 //  ------------------------------------------------------------------------
