@@ -510,7 +510,7 @@ function(aSignal) {
     if (keyname === 'DOM_Shift_Down') {
         markingTimer = setTimeout(function() {
                                         inputCell.setupEvalMark();
-                                    }, TP.sys.cfg('sherp.edit_mark_time', 750));
+                                    }, TP.sys.cfg('sherp.edit_mark_time', 2000));
         this.set('markingTimer', markingTimer);
     }
 
