@@ -33,6 +33,18 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 TP.core.UIElementNode.defineSubtype('sherpa:tile');
 
 TP.sherpa.tile.Inst.defineAttribute(
+        'header',
+        {'value': TP.cpc('.header', true)});
+
+TP.sherpa.tile.Inst.defineAttribute(
+        'headerText',
+        {'value': TP.cpc('.header_text', true)});
+
+TP.sherpa.tile.Inst.defineAttribute(
+        'closeMark',
+        {'value': TP.cpc('.close_mark', true)});
+
+TP.sherpa.tile.Inst.defineAttribute(
         'body',
         {'value': TP.cpc('.body', true)});
 
@@ -63,6 +75,44 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tile.Inst.defineMethod('init',
+function() {
+
+    this.callNextMethod();
+
+    //this.observe(this.get('closeMark'), 'TP.sig.DOMClick');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tile.Inst.defineMethod('handleTP_sig_DOMClick',
+function(aSignal) {
+
+    var natNode,
+        ourParent;
+
+    this.ignore(aSignal.getSignalOrigin(), aSignal.getSignalName);
+
+    natNode = this.getNativeNode();
+    ourParent = natNode.parentNode;
+
+    TP.wrap(ourParent).removeChild(natNode);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tile.Inst.defineMethod('setHeader',
+function(newContent, aRequest) {
+
+    return this.get('headerText').setTextContent(newContent);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.tile.Inst.defineMethod('setProcessedContent',
