@@ -1353,7 +1353,7 @@ function(anElement, wants2DMatrix) {
                     computedStyle.transformOrigin ||
                     '0 0';
 
-        // Firefox gives "50% 50%" when there is no transform
+        //  Firefox gives "50% 50%" when there is no transform
         if (origin.indexOf('%') !== -1) {
             origin = '0 0';
         }
@@ -1370,14 +1370,10 @@ function(anElement, wants2DMatrix) {
                                             -origin[2][3]);
 
         matrix =
+        TP.multiplyMatrix(
+            TP.multiplyMatrix(
                 TP.multiplyMatrix(
-                    TP.multiplyMatrix(
-                        TP.multiplyMatrix(
-                            TP.multiplyMatrix(t,
-                                     origin),
-                            c),
-                        inverseOrigin),
-                    matrix);
+                    TP.multiplyMatrix(t, origin), c), inverseOrigin), matrix);
 
         currentElement = currentElement.parentNode;
     }
