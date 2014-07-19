@@ -353,6 +353,71 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('matrixAs2DMatrix',
+function(aMatrix) {
+
+    /**
+     * @name matrixAs2DMatrix
+     * @synopsis Returns a 3X2 matrix suitable for use with CSS 2D transforms.
+     *     If a 3X2 matrix is already supplied, then it is returned. Otherwise,
+     *     a 4X4 matrix will be converted into a 3X2 matrix.
+     * @description This code derived from:
+     *     https://gist.github.com/Yaffle/1145197
+     * @returns {Array} An Array of Arrays representing the converted matrix.
+     */
+
+    var matrix;
+
+    if (aMatrix.getSize() === 6) {
+        return aMatrix;
+    }
+
+    matrix = [
+            aMatrix[0][0],
+            aMatrix[1][0],
+            aMatrix[0][1],
+            aMatrix[1][1],
+            aMatrix[0][3],
+            aMatrix[1][3]
+        ];
+
+    return matrix;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('matrixAs3DMatrix',
+function(aMatrix) {
+
+    /**
+     * @name matrixAs3DMatrix
+     * @synopsis Returns a 4X4 matrix suitable for use with CSS 3D transforms.
+     *     If a 4X4 matrix is already supplied, then it is returned. Otherwise,
+     *     a 3X2 matrix will be converted into a 4X4 matrix (with identity
+     *     values for the missing spots).
+     * @description This code derived from:
+     *     https://gist.github.com/Yaffle/1145197
+     * @returns {Array} An Array of Arrays representing the converted matrix.
+     */
+
+    var matrix;
+
+    if (aMatrix.getSize() === 16) {
+        return aMatrix;
+    }
+
+    matrix = [
+                [aMatrix[0], aMatrix[1], 0, 0],
+                [aMatrix[2], aMatrix[3], 0, 0],
+                [0, 0, 1, 0],
+                [aMatrix[4], aMatrix[5], 0, 1]
+            ];
+
+    return matrix;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('matrixFromCSSString',
 function(cssStr, wants2DMatrix) {
 
