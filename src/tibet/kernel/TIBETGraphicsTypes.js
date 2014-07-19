@@ -822,7 +822,7 @@ function(points) {
                     (point2.get('y') - thisY).pow(2)).sqrt();
 
             return dist1 - dist2;
-});
+    });
 
     return points;
 });
@@ -1573,10 +1573,12 @@ function(aRect) {
         otherRight,
         otherBottom;
 
-    intersectingRect = this.intersect(aRect);
+    intersectingRect = this.intersection(aRect);
+
     if (TP.notValid(intersectingRect) ||
         (intersectingRect.$get('data').width <= 0) ||
         (intersectingRect.$get('data').height <= 0)) {
+
         return TP.ac(this.copy());
     }
 
