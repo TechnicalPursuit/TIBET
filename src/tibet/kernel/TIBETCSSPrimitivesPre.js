@@ -424,9 +424,9 @@ function(cssStr, wants2DMatrix) {
     /**
      * @name matrixFromCSSString
      * @synopsis Extracts a matrix from the supplied CSS string.
-     * @description This code derived from: https://gist.github.com/1145197.
-     *     Note that this method will return a 4X4 matrix suitable for use with
-     *     CSS 3D transforms.
+     * @description Note that this method will return a 4X4 matrix suitable for
+     *     use with CSS 3D transforms. This code derived from:
+     *     https://gist.github.com/Yaffle/1145197
      * @param {String} cssStr A CSS string representing a matrix used in CSS
      *     transforms.
      * @param {Boolean} wants2DMatrix An optional parameter that tells the
@@ -490,6 +490,9 @@ function(a, b) {
      * @name multiplyMatrix
      * @synopsis Multiplies the supplied matrices.
      * @description This code derived from: https://gist.github.com/1145197
+     *     Note that this method assumes it is operating on a 4X4 matrix suitable
+     *     for use with CSS 3D transforms. This code derived from:
+     *     https://gist.github.com/Yaffle/1145197
      * @param {Array} a An Array of Arrays representing the first matrix to be
      *     multiplied.
      * @param {Array} b An Array of Arrays representing the first matrix to be
@@ -525,7 +528,8 @@ function(m/*, tx, ty, tz*/) {
      * @synopsis Translates the supplied matrix.
      * @description This code derived from: https://gist.github.com/1145197
      *     Note that this method assumes it is operating on a 4X4 matrix suitable
-     *     for use with CSS 3D transforms.
+     *     for use with CSS 3D transforms. This code derived from:
+     *     https://gist.github.com/Yaffle/1145197
      * @param {Array} m An Array of Arrays representing the matrix to be
      *     translated.
      * @returns {Array} An Array of Arrays representing the translated matrix.
