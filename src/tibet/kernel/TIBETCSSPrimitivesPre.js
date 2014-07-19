@@ -371,9 +371,10 @@ function(cssStr, wants2DMatrix) {
      * @todo
      */
 
-    var mVals,
+    var matrixValues,
 
-        m,
+        matrix,
+
         i,
         j;
 
@@ -381,38 +382,38 @@ function(cssStr, wants2DMatrix) {
         return null;
     }
 
-    mVals = cssStr.match(/matrix3?d?\(([^\)]+)\)/i)[1].split(',');
+    matrixValues = cssStr.match(/matrix3?d?\(([^\)]+)\)/i)[1].split(',');
 
-    if (mVals.length === 6) {
-        mVals = [
-                    mVals[0], mVals[1], 0, 0,
-                    mVals[2], mVals[3], 0, 0,
+    if (matrixValues.length === 6) {
+        matrixValues = [
+                    matrixValues[0], matrixValues[1], 0, 0,
+                    matrixValues[2], matrixValues[3], 0, 0,
                     0, 0, 1, 0,
-                    mVals[4], mVals[5], 0, 1
+                    matrixValues[4], matrixValues[5], 0, 1
                 ];
     }
 
-    m = [];
+    matrix = [];
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            m[i] = m[i] || [];
-            m[i][j] = parseFloat(mVals[j * 4 + i]);
+            matrix[i] = matrix[i] || [];
+            matrix[i][j] = parseFloat(matrixValues[j * 4 + i]);
         }
     }
 
-    if (TP.isValid(m) && TP.isTrue(wants2DMatrix)) {
-        m = [
-                m[0][0],
-                m[1][0],
-                m[0][1],
-                m[1][1],
-                m[0][3],
-                m[1][3]
+    if (TP.isValid(matrix) && TP.isTrue(wants2DMatrix)) {
+        matrix = [
+                matrix[0][0],
+                matrix[1][0],
+                matrix[0][1],
+                matrix[1][1],
+                matrix[0][3],
+                matrix[1][3]
             ];
     }
 
-    return m;
+    return matrix;
 });
 
 //  ------------------------------------------------------------------------
