@@ -371,8 +371,7 @@ function(cssStr, wants2DMatrix) {
      * @todo
      */
 
-    var strParts,
-        mVals,
+    var mVals,
 
         m,
         i,
@@ -382,14 +381,14 @@ function(cssStr, wants2DMatrix) {
         return null;
     }
 
-    strParts = cssStr.match(/matrix3?d?\(([^\)]+)\)/i)[1].split(',');
+    mVals = cssStr.match(/matrix3?d?\(([^\)]+)\)/i)[1].split(',');
 
-    if (strParts.length === 6) {
+    if (mVals.length === 6) {
         mVals = [
-                    strParts[0], strParts[1], 0, 0,
-                    strParts[2], strParts[3], 0, 0,
+                    mVals[0], mVals[1], 0, 0,
+                    mVals[2], mVals[3], 0, 0,
                     0, 0, 1, 0,
-                    strParts[4], strParts[5], 0, 1
+                    mVals[4], mVals[5], 0, 1
                 ];
     }
 
