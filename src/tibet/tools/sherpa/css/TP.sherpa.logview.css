@@ -12,6 +12,9 @@ sherpa|logview
 	width: 300px;
 
     border: solid 1px black;
+
+	/* This should match TIBET's CONSOLE_TIER constant */
+	z-index: 15000;
 }
 
 sherpa|logview:not([pclass|hidden])
