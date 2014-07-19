@@ -2952,7 +2952,7 @@ function(aRequest) {
     argv = this.getArgument(aRequest, 'ARGV');
     if (TP.notEmpty(argv)) {
         argv.shift();       // pop off the first one, it's the command.
-        if (argv.length > 0) {
+        if (TP.notEmpty(argv)) {
             url += '&argv=' + encodeURIComponent(argv.join(' '));
         }
     }
