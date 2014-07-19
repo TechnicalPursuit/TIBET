@@ -3031,6 +3031,66 @@ function(diffX, diffY) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Matrix.Type.defineMethod('fromCSSString',
+function(aString) {
+
+    /**
+     * @name fromString
+     * @synopsis Converts a String containing a CSS matrix represenation to a
+     *     TP.core.Matrix object.
+     * @description The supplied String can be in either the 3X2 'matrix()'
+     *     format for CSS 2D transforms or the 4X4 'matrix3d()' format for CSS
+     *     3D transforms. Since this type only supports 3X2 matrices, however,
+     *     3D 4X4 matrices will be converted to 3X2 matrices.
+     * @param {String} aString The String that an instance of this type will be
+     *     extracted from.
+     * @returns {TP.core.Matrix} A TP.core.Matrix having a set of values as
+     *     expressed in the supplied String.
+     */
+
+    //  Make sure to pass 'true' as the second parameter to get a 3X2 matrix.
+    return this.fromArray(TP.matrixFromCSSString(aString, true));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Matrix.Type.defineMethod('fromArray',
+function(anObj) {
+
+    /**
+     * @name fromArray
+     * @synopsis Returns an instance of this type as extracted from anObj, which
+     *     should be an Array. This Array should be in the format of:
+     *     [xx, xy, yx, yy, dx, dy]
+     * @description This type only supports 3X2 matrices, so this method will
+     *     only take a 6 element Array representing that. 4X4 3D matrices have
+     *     to be converted to a 3X2 matrix first.
+     * @param {Array} anObj The Array that an instance of this type will be
+     *     extracted from.
+     * @returns {TP.core.Matrix} An instance of this type as extracted from
+     *     anObj.
+     * @todo
+     */
+
+    var data,
+        newObj;
+
+    data = {
+            'xx': anObj.at(0),
+            'xy': anObj.at(1),
+            'yx': anObj.at(2),
+            'yy': anObj.at(3),
+            'dx': anObj.at(4),
+            'dy': anObj.at(5)
+            };
+
+    newObj = this.construct(data);
+
+    return newObj;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Matrix.Type.defineMethod('rotateAt',
 function(angle, aPoint) {
 
