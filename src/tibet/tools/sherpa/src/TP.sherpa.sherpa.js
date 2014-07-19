@@ -166,6 +166,24 @@ function(anID) {
 
 //  ----------------------------------------------------------------------------
 
+TP.core.sherpa.Inst.defineMethod('makeEditorTile',
+function(anID) {
+
+    var uiRootDoc,
+        tileTPElem;
+
+    uiRootDoc = TP.doc(TP.win('UIROOT'));
+
+    tileTPElem = TP.sherpa.editortile.addResourceContentTo(
+                            TP.ietf.Mime.XHTML,
+                            TP.documentGetBody(uiRootDoc));
+    tileTPElem.setID(anID);
+
+    return tileTPElem;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.core.sherpa.Inst.defineMethod('setupWorld',
 function() {
 

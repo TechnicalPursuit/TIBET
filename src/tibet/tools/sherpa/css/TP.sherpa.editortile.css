@@ -1,0 +1,197 @@
+@namespace url(http://www.w3.org/1999/xhtml);
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+sherpa|editortile
+{
+    display: none;
+	position: absolute;
+
+	top: 0px;
+	left: 0px;
+	width: 200px;
+	height: 100px;
+
+    background-color: white;
+
+    border: solid 1px rgba(0, 0, 0, 0.2);
+
+    padding: 5px 10px;
+
+    border-radius: 3px;
+
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+
+	/* This should match TIBET's CONSOLE_TIER constant */
+	z-index: 15000;
+}
+
+sherpa|editortile:not([pclass|hidden])
+{
+    display: block;
+}
+
+sherpa|editortile > .header
+{
+    position: absolute;
+    display: block;
+
+    top: 0px;
+    left: 0px;
+    right: 0px;
+
+    height: 10px;
+
+    padding-bottom: 1px;
+
+    background-color: rgba(0, 0, 0, 0.2);
+
+    cursor: pointer;
+}
+
+sherpa|editortile > .body
+{
+    position: absolute;
+
+    background-color: #002B36;
+
+    top: 12px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+sherpa|editortile .header_text
+{
+    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+
+    font-weight: bold;
+    font-size: 9px;
+
+    pointer-events: none;
+
+    overflow: hidden;
+}
+
+sherpa|editortile .close_mark
+{
+    position: absolute;
+
+    cursor: pointer;
+
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+
+    background-size: 8px 8px;
+    background-image: url(../img/x.svg);
+}
+
+sherpa|editortile xctrls|codeeditor
+{
+	position: absolute;
+
+    top: 0px;
+    left: 155px;
+
+    right: 0px;
+    bottom: 20px;
+}
+
+sherpa|editortile #saveButton {
+    position: absolute;
+
+    left: 200px;
+    height: 18px;
+    bottom: 2px;
+
+    color: #859918;
+    background-color: #002B36;
+    border: solid 1px #859918;
+
+    cursor: pointer;
+}
+
+sherpa|editortile #pushButton {
+    position: absolute;
+
+    left: 240px;
+    height: 18px;
+    bottom: 2px;
+
+    color: #859918;
+    background-color: #002B36;
+    border: solid 1px #859918;
+
+    cursor: pointer;
+}
+
+.editortile_property_list
+{
+    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 11px;
+
+    color: #859918;
+    background-color: #002B36;
+
+    position: absolute;
+    display: block;
+
+    border-right: solid 1px #859918;
+
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+
+    width: 150px;
+
+    padding-left: 5px;
+    padding-top: 5px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.editortile_property_list h1
+{
+    display: block;
+
+    color: #002B36;
+    background-color: #859918;
+
+    margin: 0px;
+    margin-top: 3px;
+
+    line-height: 1.2em;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+.editortile_property_list ul
+{
+    display: none;
+
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+
+    cursor: pointer;
+}
+
+.editortile_property_list section:not([hidelist]) ul
+{
+    display: block;
+}
+
+.editortile_property_list li:selected
+{
+    background-color: #BBBBBB;
+}
+
