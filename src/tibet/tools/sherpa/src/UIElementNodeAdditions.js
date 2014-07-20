@@ -71,13 +71,8 @@ function(aHalo) {
     var haloWin,
         ourWin,
 
-        ourRect,
+        ourRect;
     
-        ourIFrame,
-    
-        untransformedRect,
-        transformedRect;
-
     haloWin = aHalo.getNativeWindow();
     ourWin = this.getNativeWindow();
 
@@ -93,20 +88,10 @@ function(aHalo) {
         return ourRect;
     }
 
-    ourIFrame = TP.wrap(ourWin.frameElement);
+    //  We're not in the same window as the halo and we're in an iframe, so we
+    //  need our transformed global rect.
+    ourRect = this.getGlobalRect(true);
 
-    untransformedRect = ourIFrame.getGlobalRect();
-    transformedRect = ourIFrame.getGlobalRect(true);
-
-    ourRect.setX(ourRect.getX() +
-                (transformedRect.getX() - untransformedRect.getX()));
-    ourRect.setY(ourRect.getY() +
-                (transformedRect.getY() - untransformedRect.getY()));
-    ourRect.setWidth(ourRect.getWidth() +
-                (transformedRect.getWidth() - untransformedRect.getWidth()));
-    ourRect.setHeight(ourRect.getHeight() +
-                (transformedRect.getHeight() - untransformedRect.getHeight()));
-    
     return ourRect;
 });
 
