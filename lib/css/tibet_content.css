@@ -78,6 +78,10 @@ code {
   margin: 0 48px;
 }
 
+html, body {
+  border-radius: 3px;
+}
+
 #content {
   position: absolute;
   top: 0;
@@ -89,6 +93,7 @@ code {
   margin-left: auto;
   margin-right: auto;
   overflow: auto;
+  border-radius: 3px;
 }
 
 #intro {
