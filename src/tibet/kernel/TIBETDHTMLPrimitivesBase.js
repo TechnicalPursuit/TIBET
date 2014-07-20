@@ -1274,7 +1274,7 @@ function(anElement, wants2DMatrix) {
      *     the supplied element by obtaining any transformation matrix of the
      *     element itself and then walking the parent tree and integrating each
      *     transformation matrix of that element to the computed matrix. This
-     *     code derived from: https://gist.github.com/1145197
+     *     code derived from: https://gist.github.com/Yaffle/1145197
      *     Note that this method will, by default, return a 4x4 matrix suitable
      *     for use with CSS 3D transforms. By passing true to wants2DMatrix, a
      *     3x2 matrix suitable for use by CSS 2D transforms will be returned.
@@ -1659,7 +1659,8 @@ function(anElement, transformationMatrix) {
      * @name $elementTransformBoundingClientRect
      * @synopsis Transforms the bounding client rect of the supplied element
      *     using the supplied transformation matrix
-     * @description This code derived from: https://gist.github.com/1145197
+     * @description This code derived from:
+     *     https://gist.github.com/Yaffle/1145197
      * @param {Element} anElement The element to compute the bounding client
      *     rect for.
      * @param {Array} transformationMatrix An Array of Arrays representing the
