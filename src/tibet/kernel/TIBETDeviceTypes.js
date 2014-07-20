@@ -851,7 +851,7 @@ function(singletonName, normalizedEvent, aSignal) {
         shortcutName,
         shortcutSig,
         shortcuts,
-        
+
         shouldClearTimer,
         timer;
 

@@ -11,8 +11,8 @@
 <meta name="description" content="The TIBET 5.0 Web Environment"/>
 <meta name="author" content="Technical Pursuit Inc."/>
 
-<link rel="shortcut icon" href="../img/favicon.png" type="image/x-icon"/>
-<link rel="icon" href="../img/favicon.png" type="image/x-icon"/>
+<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon"/>
+<link rel="icon" href="../images/favicon.ico" type="image/x-icon"/>
 
 <!--
 We inline the style to help ensure that everything works regardless of
@@ -53,7 +53,7 @@ div,iframe {
     font-weight: bold;
     font-size: 138.5%;
 
-    border: 2px solid #aaa;
+    border: 1px solid #aaa;
     box-shadow: 0 0 0 1px #eee;
 
     background-color: #eee;
@@ -81,7 +81,7 @@ div,iframe {
     font-size: 138.5%;
 
     box-shadow: 0 0 0 1px #eee;
-    border: 2px solid #aaa;
+    border: 1px solid #aaa;
 
     background-color: #aaa;
     background-image: url(../node_modules/tibet/lib/img/boot/white_fiber.png);
@@ -110,7 +110,7 @@ div,iframe {
     line-height: 28px;
 
     box-shadow: 0 0 0 1px #eee;
-    border: 2px solid #aaa;
+    border: 1px solid #aaa;
 
     background-color: #aaa;
     background-image: url(../node_modules/tibet/lib/img/boot/white_fiber.png);
@@ -142,8 +142,8 @@ div,iframe {
 }
 
 .middle {
-    top: 40px;
-    bottom: 41px;
+    top: 36px;
+    bottom: 36px;
     height: auto;
 
     border-top-left-radius: 5px;
@@ -162,19 +162,20 @@ div,iframe {
 
 .west {
     left: 0;
-    width: 126px;
+    width: 46px;
     border-left: 0;
 }
 
 .center {
-    left: 136px;
-    right: 136px;
+    left: 52px;
+    right: 52px;
     width: auto;
+    min-width: 600px;
 }
 
 .east {
     right: 0;
-    width: 126px;
+    width: 46px;
     border-right: 0;
 }
 
@@ -293,7 +294,7 @@ div,iframe {
 
 #center {
     box-shadow: 0 0 0 1px #eee;
-    border: 2px solid #aaa;
+    border: 1px solid #aaa;
     background: #fff;
     padding: 1px;
 }
