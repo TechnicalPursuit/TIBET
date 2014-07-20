@@ -1639,13 +1639,13 @@ function(anElement, transformationMatrix) {
     }
 
     points = TP.multiplyMatrix(
-        transformationMatrix,
-        [
-            [0, anElement.offsetWidth, 0, anElement.offsetWidth],
-            [0, 0, anElement.offsetHeight, 0, anElement.offsetHeight],
-            [0, 0, 0, 0],
-            [1, 1, 1, 1]
-        ]
+                transformationMatrix,
+                [
+                    [0, anElement.offsetWidth, 0, anElement.offsetWidth],
+                    [0, 0, anElement.offsetHeight, 0, anElement.offsetHeight],
+                    [0, 0, 0, 0],
+                    [1, 1, 1, 1]
+                ]
     );
 
     return {
