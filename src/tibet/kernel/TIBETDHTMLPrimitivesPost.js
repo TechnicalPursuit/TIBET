@@ -2402,6 +2402,12 @@ function(anElement, boxType, wantsTransformed) {
 
     var elemWin,
         winFrameElem,
+
+        windowTransformation,
+        ourTransformation,
+        finalTransformation,
+        result,
+
         frameOffsetXAndY,
 
         box;
@@ -2414,21 +2420,50 @@ function(anElement, boxType, wantsTransformed) {
         return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
     }
 
-    if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-        //  Note here that we pass 'top' as the first argument since we
-        //  really just want the offset of winFrameElem from the top (which
-        //  will be 0,0 offset from itself).
-        frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                            top,
-                            TP.elementGetIFrameWindow(winFrameElem),
-                            wantsTransformed);
-    } else {
-        frameOffsetXAndY = TP.ac(0, 0);
-    }
+    if (wantsTransformed) {
+        //  Note that we specifically force wantsTransformed here to be false
+        box = TP.elementGetPageBox(anElement, boxType, null, false);
 
-    box = TP.elementGetPageBox(anElement, boxType, null, wantsTransformed);
-    box.atPut('left', box.at('left') + frameOffsetXAndY.first());
-    box.atPut('top', box.at('top') + frameOffsetXAndY.last());
+        //  Compute any transformations of anElement's window(s) (up an iframe
+        //  chain to a top-level window)
+        windowTransformation = TP.windowComputeTransformationMatrix(elemWin);
+
+        //  Compute our transformation matrix
+        ourTransformation = TP.elementGetComputedTransformMatrix(anElement);
+
+        //  Accumulate the two together to form a 'final transformation'
+        finalTransformation = TP.multiplyMatrix(windowTransformation,
+                                                ourTransformation);
+
+        //  Transform the box values using the final transformation matrix
+        result = TP.matrixTransformRect(finalTransformation,
+                                        box.at('left'),
+                                        box.at('top'),
+                                        box.at('width'),
+                                        box.at('height'));
+        box = TP.hc(
+                'left', result.at(0),
+                'top', result.at(1),
+                'width', result.at(2),
+                'height', result.at(3));
+
+    } else {
+        if (TP.isElement(winFrameElem = elemWin.frameElement)) {
+            //  Note here that we pass 'top' as the first argument since we
+            //  really just want the offset of winFrameElem from the top (which
+            //  will be 0,0 offset from itself).
+            frameOffsetXAndY = TP.windowComputeWindowOffsets(
+                                top,
+                                TP.elementGetIFrameWindow(winFrameElem),
+                                wantsTransformed);
+        } else {
+            frameOffsetXAndY = TP.ac(0, 0);
+        }
+
+        box = TP.elementGetPageBox(anElement, boxType, null, wantsTransformed);
+        box.atPut('left', box.at('left') + frameOffsetXAndY.first());
+        box.atPut('top', box.at('top') + frameOffsetXAndY.last());
+    }
 
     return box;
 });
@@ -8548,6 +8583,63 @@ function(aWindow, otherWindow, wantsTransformed) {
     }
 
     return TP.ac(frame2OffsetX - frame1OffsetX, frame2OffsetY - frame1OffsetY);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('windowComputeTransformationMatrix',
+function(aWindow, wants2DMatrix) {
+
+    /**
+     * @name windowComputeTransformationMatrix
+     * @synopsis Returns the 'computed' transformation matrix for the window
+     *     (really its iframe element).
+     * @description This method assumes that the window is embedded in an iframe
+     *      (which may be embedded in more iframes up to a top-level window) and
+     *      is really returning the transformation of those iframe elements up
+     *      to the top-level window.
+     * @param {Boolean} wants2DMatrix An optional parameter that tells the
+     *     method whether or not to return a 3x2 matrix for use with CSS 2D
+     *     transforms. The default is false.
+     * @returns {Array} An Array of Arrays representing the current
+     *     transformation matrix.
+     */
+
+    var identity,
+        matrix,
+
+        elemMatrix,
+
+        win,
+        frameElement;
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+    }
+
+    //  We start with the identity matrix
+    identity = TP.matrixFromCSSString('matrix(1,0,0,1,0,0)');
+    matrix = identity;
+
+    //  Iterate up through the 'frameElement / window' hierarchy, computing
+    //  the transform matrix for the iframe element and then accumulating that
+    //  onto our result matrix as we go.
+    win = aWindow;
+    while (TP.isElement(frameElement = win.frameElement)) {
+
+        if (TP.isArray(elemMatrix = TP.elementGetComputedTransformMatrix(
+                                        frameElement))) {
+            matrix = TP.multiplyMatrix(matrix, elemMatrix);
+        }
+
+        win = TP.nodeGetWindow(frameElement);
+    }
+
+    if (TP.isValid(matrix) && TP.isTrue(wants2DMatrix)) {
+        return TP.matrixAs2DMatrix(matrix);
+    }
+
+    return matrix;
 });
 
 //  ------------------------------------------------------------------------
