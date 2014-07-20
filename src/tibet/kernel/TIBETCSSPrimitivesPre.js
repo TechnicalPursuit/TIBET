@@ -368,19 +368,15 @@ function(aMatrix) {
 
     var matrix;
 
-    if (aMatrix.length === 6) {
+    if (aMatrix.length === 2) {
         return aMatrix;
     }
 
     matrix = [
-            aMatrix[0][0],
-            aMatrix[1][0],
-            aMatrix[0][1],
-            aMatrix[1][1],
-            aMatrix[0][3],
-            aMatrix[1][3]
+            [aMatrix[0][0], aMatrix[1][0], aMatrix[0][3]],
+            [aMatrix[0][1], aMatrix[1][1], aMatrix[1][3]],
         ];
-
+    
     return matrix;
 });
 
@@ -550,6 +546,10 @@ function(aMatrix, x, y) {
     /**
      * @name matrixTransformPoint
      * @synopsis Transforms the supplied point values with the supplied matrix.
+     * @param {Array} aMatrix An Array of Arrays representing the matrix to be
+     *     used in transforming the point.
+     * @param {Number} x The X coordinate of the point to transform.
+     * @param {Number} y The Y coordinate of the point to transform.
      * @returns {Array} An Array of 2 Numbers representing the transformed
      *     point.
      */
@@ -563,8 +563,8 @@ function(aMatrix, x, y) {
     }
 
     return [
-        matrix[0] * x + matrix[1] * y + matrix[4],
-        matrix[2] * x + matrix[3] * y + matrix[5]
+        matrix[0][0] * x + matrix[0][1] * y + matrix[0][2],
+        matrix[1][0] * x + matrix[1][1] * y + matrix[1][2]
     ];
 });
 
@@ -577,6 +577,12 @@ function(aMatrix, x, y, width, height) {
      * @name matrixTransformRect
      * @synopsis Transforms the supplied rectangle values with the supplied
            matrix.
+     * @param {Array} aMatrix An Array of Arrays representing the matrix to be
+     *     used in transforming the rectangle.
+     * @param {Number} x The X coordinate of the rectangle to transform.
+     * @param {Number} y The Y coordinate of the rectangle to transform.
+     * @param {Number} width The width of the rectangle to transform.
+     * @param {Number} height The height of the rectangle to transform.
      * @returns {Array} An Array of 4 Numbers representing the transformed
      *     rectangle.
      */
@@ -590,10 +596,10 @@ function(aMatrix, x, y, width, height) {
     }
 
     return [
-        matrix[0] * x + matrix[1] * y + matrix[4],
-        matrix[2] * x + matrix[3] * y + matrix[5],
-        matrix[0] * width + matrix[1] * height,
-        matrix[2] * width + matrix[3] * height
+        matrix[0][0] * x + matrix[0][1] * y + matrix[0][2],
+        matrix[1][0] * x + matrix[1][1] * y + matrix[1][2],
+        matrix[0][0] * width + matrix[0][1] * height,
+        matrix[1][0] * width + matrix[1][1] * height
     ];
 });
 
