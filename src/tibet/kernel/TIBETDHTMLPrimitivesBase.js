@@ -1297,16 +1297,12 @@ function(anElement, wants2DMatrix) {
         win,
 
         computedStyle,
+        computedMatrixString,
 
-        rect,
-        parentRect,
+        computedMatrix,
 
-        t,
-        c,
-        origin,
-        inverseOrigin,
-
-        transformedRect;
+        transformedRect,
+        rect;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement', arguments);
@@ -1314,7 +1310,9 @@ function(anElement, wants2DMatrix) {
 
     identity = TP.matrixFromCSSString('matrix(1,0,0,1,0,0)');
 
+    //  Start with the identity matrix
     matrix = identity;
+
     currentElement = anElement;
 
     doc = TP.nodeGetDocument(anElement);
@@ -1323,67 +1321,30 @@ function(anElement, wants2DMatrix) {
     while (currentElement && currentElement !== doc.documentElement) {
         computedStyle = win.getComputedStyle(currentElement, null) || {};
 
-        //  origin and t matrices required only for Firefox (buggy
-        //  getBoundingClientRect() prior to Firefox 12)
-        //  https://bugzilla.mozilla.org/show_bug.cgi?id=591718
-        rect = currentElement.getBoundingClientRect();
-        parentRect = currentElement.parentNode &&
-                        currentElement.parentNode.getBoundingClientRect ?
-                    currentElement.parentNode.getBoundingClientRect() :
-                    rect;
-
-        t = TP.translateMatrix(identity,
-                                rect.left - parentRect.left,
-                                rect.top - parentRect.top,
-                                0);
-
-        c = (computedStyle.OTransform ||
+        computedMatrixString =
+            (computedStyle.OTransform ||
                 computedStyle.WebkitTransform ||
                 computedStyle.msTransform ||
                 computedStyle.MozTransform ||
                 computedStyle.transform ||
                 'none').replace(/^none$/, 'matrix(1,0,0,1,0,0)');
 
-        c = TP.matrixFromCSSString(c);
+        computedMatrix = TP.matrixFromCSSString(computedMatrixString);
 
-        origin = computedStyle.OTransformOrigin ||
-                    computedStyle.WebkitTransformOrigin ||
-                    computedStyle.msTransformOrigin ||
-                    computedStyle.MozTransformOrigin ||
-                    computedStyle.transformOrigin ||
-                    '0 0';
-
-        //  Firefox gives "50% 50%" when there is no transform
-        if (origin.indexOf('%') !== -1) {
-            origin = '0 0';
-        }
-
-        origin = origin.split(' ');
-        origin = TP.translateMatrix(identity,
-                                     parseFloat(origin[0]),
-                                     parseFloat(origin[1]),
-                                     parseFloat(origin[2] || 0));
-
-        inverseOrigin = TP.translateMatrix(identity,
-                                            -origin[0][3],
-                                            -origin[1][3],
-                                            -origin[2][3]);
-
-        matrix =
-        TP.multiplyMatrix(
-            TP.multiplyMatrix(
-                TP.multiplyMatrix(
-                    TP.multiplyMatrix(t, origin), c), inverseOrigin), matrix);
+        matrix = TP.multiplyMatrix(matrix, computedMatrix);
 
         currentElement = currentElement.parentNode;
     }
 
-    matrix = TP.translateMatrix(matrix, -win.pageXOffset, -win.pageYOffset, 0);
+    //  If the computation resulted in the identity matrix, then there was no
+    //  transformation either on the target element or up the chain - just
+    //  use the identity matrix here.
+    if (TP.str(matrix) === TP.str(identity)) {
+        matrix = identity;
+    } else {
+        matrix = TP.translateMatrix(matrix, -win.pageXOffset, -win.pageYOffset, 0);
 
-    //  If its not Firefox 11 and lesser
-    if (!TP.boot.isUA('GECKO', 11, 0, 0, TP.DOWN)) {
-        transformedRect = TP.$elementTransformBoundingClientRect(
-                                    anElement, matrix);
+        transformedRect = TP.$elementTransformBoundingClientRect(anElement, matrix);
 
         rect = anElement.getBoundingClientRect(anElement);
         matrix = TP.translateMatrix(
