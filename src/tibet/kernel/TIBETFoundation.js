@@ -924,9 +924,9 @@ function(methodText) {
 
     // Convert the body text into a RegExp we can use as a way of indexing
     // into the original source file text.
-    re = RegExp.escapeMetachars(
-        str.replace(/[\u0009\u000A\u0020\u000D]+/g,
-            'SECRET_SAUCE')).replace(/SECRET_SAUCE/g, '\\s*');
+    re = TP.rc(RegExp.escapeMetachars(
+                str.replace(/[\u0009\u000A\u0020\u000D]+/g,
+                    'SECRET_SAUCE')).replace(/SECRET_SAUCE/g, '\\s*'));
 
     match = content.match(re);
     if (TP.notValid(match)) {
@@ -938,7 +938,7 @@ function(methodText) {
 
     newtext = content.slice(0, match.index) +
         methodText +
-        content.slice(match.index + str.length - 1);
+        content.slice(match.index + match.at(0).length);
 
     // NOTE we use the original srcPath string here to retain relative address.
     patch = JsDiff.createPatch(path, content, newtext);
