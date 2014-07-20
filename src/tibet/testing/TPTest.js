@@ -38,7 +38,7 @@ AssertionFailed.prototype.name = 'AssertionFailed';
  */
 TP.lang.Object.defineSubtype('test:Root');
 
-// Add support for job control status tracking and querying.
+//  Add support for job control status tracking and querying.
 TP.test.Root.addTraitsFrom(TP.core.JobStatus);
 
 //  ------------------------------------------------------------------------
@@ -89,7 +89,8 @@ TP.test.Root.Inst.defineAttribute('skipped');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('getElapsedTime', function() {
+TP.test.Root.Inst.defineMethod('getElapsedTime',
+function() {
 
     /**
      * Returns the number of milliseconds of elapsed time for the operation.
@@ -99,14 +100,14 @@ TP.test.Root.Inst.defineMethod('getElapsedTime', function() {
     var end,
         start;
 
-    // If we haven't started elapsed time is 0.
+    //  If we haven't started elapsed time is 0.
     start = this.get('msstart');
     if (TP.notValid(start)) {
         return 0;
     }
 
-    // If we've finished report based on that time, but otherwise assume we're
-    // asking for a value 'to this point in time' and use 'now' instead of end.
+    //  If we've finished report based on that time, but otherwise assume we're
+    //  asking for a value 'to this point in time' and use 'now' instead of end.
     end = this.get('msend');
     if (TP.notValid(end)) {
         end = Date.now();
@@ -117,7 +118,8 @@ TP.test.Root.Inst.defineMethod('getElapsedTime', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('getTimeout', function() {
+TP.test.Root.Inst.defineMethod('getTimeout',
+function() {
 
     /**
      * Returns the millisecond timeout value for the test case.
@@ -129,7 +131,8 @@ TP.test.Root.Inst.defineMethod('getTimeout', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('getTimeRemaining', function() {
+TP.test.Root.Inst.defineMethod('getTimeRemaining',
+function() {
 
     /**
      * Returns the number of milliseconds remaining between elapsed time and the
@@ -142,7 +145,8 @@ TP.test.Root.Inst.defineMethod('getTimeRemaining', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('isExclusive', function() {
+TP.test.Root.Inst.defineMethod('isExclusive',
+function() {
 
     /**
      * Returns true if the receiver is configured to be run exclusively.
@@ -154,7 +158,8 @@ TP.test.Root.Inst.defineMethod('isExclusive', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('isSkipped', function() {
+TP.test.Root.Inst.defineMethod('isSkipped',
+function() {
 
     /**
      * Returns true if the receiver is configured to be skipped (not run).
@@ -166,7 +171,8 @@ TP.test.Root.Inst.defineMethod('isSkipped', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('isTodo', function() {
+TP.test.Root.Inst.defineMethod('isTodo',
+function() {
 
     /**
      * Returns true if the receiver is configured as a 'todo' test item.
@@ -178,7 +184,8 @@ TP.test.Root.Inst.defineMethod('isTodo', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('only', function() {
+TP.test.Root.Inst.defineMethod('only',
+function() {
 
     /**
      * Marks the receiver as exclusive, meaning it should be the only item
@@ -191,7 +198,8 @@ TP.test.Root.Inst.defineMethod('only', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('reset', function(options) {
+TP.test.Root.Inst.defineMethod('reset',
+function(options) {
 
     /**
      * Resets the receiver, putting instance variables back to their original
@@ -210,7 +218,8 @@ TP.test.Root.Inst.defineMethod('reset', function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('skip', function() {
+TP.test.Root.Inst.defineMethod('skip',
+function() {
 
     /**
      * Marks the receiver as skipped, meaning it will be listed but not run.
@@ -221,7 +230,8 @@ TP.test.Root.Inst.defineMethod('skip', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('timeout', function(ms) {
+TP.test.Root.Inst.defineMethod('timeout',
+function(ms) {
 
     /**
      * Defines a millisecond limit on how long the receiver can run before being
@@ -234,7 +244,8 @@ TP.test.Root.Inst.defineMethod('timeout', function(ms) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Root.Inst.defineMethod('todo', function() {
+TP.test.Root.Inst.defineMethod('todo',
+function() {
 
     /**
      * Marks the receiver as todo, meaning it will be run but its result will
@@ -267,8 +278,8 @@ TP.test.Suite.defineAttribute('suites', TP.hc());
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Type.defineMethod('addSuite', function(target, suiteName,
-    suiteFunc) {
+TP.test.Suite.Type.defineMethod('addSuite',
+function(target, suiteName, suiteFunc) {
 
     /**
      * Adds a new test suite function to the overall dictionary.
@@ -315,7 +326,8 @@ TP.test.Suite.Type.defineMethod('addSuite', function(target, suiteName,
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Type.defineMethod('getTargetSuites', function(target, options) {
+TP.test.Suite.Type.defineMethod('getTargetSuites',
+function(target, options) {
 
     /**
      * Returns a dictionary of test suites. If no target is provided the entire
@@ -341,16 +353,17 @@ TP.test.Suite.Type.defineMethod('getTargetSuites', function(target, options) {
         this.raise('InvalidID');
     }
 
-// TODO: if options includes things like inherited etc. we need to collect more
-// suites rather than assuming a single slice.
+    // TODO: if options includes things like inherited etc. we need to collect
+    // more suites rather than assuming a single slice.
 
-    // Return the result as a "slice" of the overall hash for consistency.
+    //  Return the result as a "slice" of the overall hash for consistency.
     return TP.hc(id, suites.at(id));
 });
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Type.defineMethod('runTargetSuites', function(target, options) {
+TP.test.Suite.Type.defineMethod('runTargetSuites',
+function(target, options) {
 
     /**
      * Runs the test suites for a target, or all targets if no specific target
@@ -370,8 +383,8 @@ TP.test.Suite.Type.defineMethod('runTargetSuites', function(target, options) {
         summarize,
         total;
 
-    // Note we pass options here to deal with potential for wanting inherited
-    // tests etc.
+    //  Note we pass options here to deal with potential for wanting inherited
+    //  tests etc.
     suites = this.getTargetSuites(target, options);
 
     params = TP.hc(options);
@@ -386,34 +399,37 @@ TP.test.Suite.Type.defineMethod('runTargetSuites', function(target, options) {
 
     keys = suites.getKeys();
 
-    // Collect all suite instances in an array we can leverage as our top-level
-    // iteration list.
+    //  Collect all suite instances in an array we can leverage as our top-level
+    //  iteration list.
     suitelist = TP.ac();
-    keys.forEach(function(targetID) {
-        var targetSuites,
-            targetKeys;
+    keys.perform(
+            function(targetID) {
+                var targetSuites,
+                    targetKeys;
 
-        targetSuites = suites.at(targetID);
-        targetKeys = targetSuites.getKeys();
+                targetSuites = suites.at(targetID);
+                targetKeys = targetSuites.getKeys();
 
-        targetKeys.forEach(function(suiteName) {
-            var suite;
+                targetKeys.perform(
+                    function(suiteName) {
+                        var suite;
 
-            suite = targetSuites.at(suiteName);
-            if (suite.isExclusive() && !params.at('ignore_only')) {
-                exclusives = true;
-            }
-            suitelist.push(suite);
-        });
-    });
+                        suite = targetSuites.at(suiteName);
+                        if (suite.isExclusive() && !params.at('ignore_only')) {
+                            exclusives = true;
+                        }
+                        suitelist.push(suite);
+                    });
+            });
 
-    // Filter for exclusivity. We might get more than one if authoring was off
-    // so check for that as well.
+    //  Filter for exclusivity. We might get more than one if authoring was off
+    //  so check for that as well.
     if (exclusives === true) {
         TP.sys.logTest('# filtering for exclusive suite(s).', TP.TRACE);
-        suitelist = suitelist.filter(function(suite) {
-            return suite.isExclusive();
-        });
+        suitelist = suitelist.filter(
+                        function(suite) {
+                            return suite.isExclusive();
+                        });
 
         if (suitelist.length > 1) {
             TP.sys.logTest('# ' + suitelist.length +
@@ -421,8 +437,8 @@ TP.test.Suite.Type.defineMethod('runTargetSuites', function(target, options) {
         }
     }
 
-    // Define a common summarize function we can invoke from either side of the
-    // promise callback handlers.
+    //  Define a common summarize function we can invoke from either side of the
+    //  promise callback handlers.
     summarize = function(obj) {
         var passed,
             failed,
@@ -437,27 +453,29 @@ TP.test.Suite.Type.defineMethod('runTargetSuites', function(target, options) {
         errored = 0;
         skipped = 0;
 
-        suitelist.forEach(function(suite) {
-            var caselist,
-                stats;
+        suitelist.perform(
+                function(suite) {
+                    var caselist,
+                        stats;
 
-            caselist = suite.getCaseList();
-            stats = suite.get('statistics');
+                    caselist = suite.getCaseList();
+                    stats = suite.get('statistics');
 
-            cases += caselist.getSize();
+                    cases += caselist.getSize();
 
-            if (TP.notValid(stats)) {
-                // Could be skipped, or there may have been 'only' cases which
-                // weren't ignored. Either way the caselist was skipped.
-                skipped += caselist.getSize();
-            } else {
-                passed += stats.at('passed');
-                failed += stats.at('failed');
-                errored += stats.at('errored');
-                ignored += stats.at('ignored');
-                skipped += stats.at('skipped');
-            }
-        }, 0);
+                    if (TP.notValid(stats)) {
+                        //  Could be skipped, or there may have been 'only'
+                        //  cases which weren't ignored. Either way the caselist
+                        //  was skipped.
+                        skipped += caselist.getSize();
+                    } else {
+                        passed += stats.at('passed');
+                        failed += stats.at('failed');
+                        errored += stats.at('errored');
+                        ignored += stats.at('ignored');
+                        skipped += stats.at('skipped');
+                    }
+                }, 0);
 
         if (failed !== 0 || errored !== 0) {
             prefix = '# FAIL: ';
@@ -481,29 +499,33 @@ TP.test.Suite.Type.defineMethod('runTargetSuites', function(target, options) {
     TP.sys.logTest('# ' + suitelist.length + ' suite(s) found.', TP.TRACE);
 
     cases = 0;
-    suitelist.forEach(function(suite) {
-        var caselist;
-        caselist = suite.getCaseList();
-        cases += caselist.getSize();
-    });
+    suitelist.perform(
+            function(suite) {
+                var caselist;
+
+                caselist = suite.getCaseList();
+                cases += caselist.getSize();
+            });
 
     TP.sys.logTest((cases > 0 ? '1' : '0') + '..' + cases);
 
-    // Use reduce to convert our suite array into a chain of promises. We
-    // prime the list with a resolved promise to ensure 'current' receives all
-    // the suites during iteration while 'chain' is the last promise in the
-    // chain of promises being constructed.
-    promise = suitelist.reduce(function(chain, current, index, array) {
-        return chain.then(
-            function(obj) {
-                return current.run(TP.hc(options));
-            },
-            function(err) {
-                // Suite.run should trap all errors and resolve() so the chain
-                // remains unbroken...unless we're doing an early exit etc.
-                // TODO: early exit?
-            });
-    }, Q.Promise.resolve());
+    //  Use reduce to convert our suite array into a chain of promises. We
+    //  prime the list with a resolved promise to ensure 'current' receives all
+    //  the suites during iteration while 'chain' is the last promise in the
+    //  chain of promises being constructed.
+    promise = suitelist.reduce(
+            function(chain, current, index, array) {
+                return chain.then(
+                    function(obj) {
+                        return current.run(TP.hc(options));
+                    },
+                    function(err) {
+                        //  Suite.run should trap all errors and resolve() so
+                        //  the chain remains unbroken...unless we're doing an
+                        //  early exit etc.
+                        //  TODO: early exit?
+                    });
+            }, Q.Promise.resolve());
 
     return promise.then(function(obj) {
         summarize();
@@ -583,7 +605,8 @@ TP.test.Suite.Inst.defineAttribute('suiteName');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('addSuite', function(suiteFunc) {
+TP.test.Suite.Inst.defineMethod('addSuite',
+function(suiteFunc) {
 
     /**
      * Adds an additional suite function to the current test suite.
@@ -593,7 +616,7 @@ TP.test.Suite.Inst.defineMethod('addSuite', function(suiteFunc) {
 
     var suites;
 
-    // Clear any cached list of cases, the new function changes our result.
+    //  Clear any cached list of cases, the new function changes our result.
     this.$set('caseList', null);
 
     suites = this.$get('suiteList');
@@ -604,7 +627,8 @@ TP.test.Suite.Inst.defineMethod('addSuite', function(suiteFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('after', function(teardown) {
+TP.test.Suite.Inst.defineMethod('after',
+function(teardown) {
 
     /**
      * Defines an optional function to run after all test cases have
@@ -617,7 +641,8 @@ TP.test.Suite.Inst.defineMethod('after', function(teardown) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('afterEach', function(teardown) {
+TP.test.Suite.Inst.defineMethod('afterEach',
+function(teardown) {
 
     /**
      * Defines an optional function to run after each test case has
@@ -630,7 +655,8 @@ TP.test.Suite.Inst.defineMethod('afterEach', function(teardown) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('before', function(setup) {
+TP.test.Suite.Inst.defineMethod('before',
+function(setup) {
 
     /**
      * Defines an optional function to run before all test cases have
@@ -643,7 +669,8 @@ TP.test.Suite.Inst.defineMethod('before', function(setup) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('beforeEach', function(setup) {
+TP.test.Suite.Inst.defineMethod('beforeEach',
+function(setup) {
 
     /**
      * Defines an optional function to run before all test cases have
@@ -656,12 +683,14 @@ TP.test.Suite.Inst.defineMethod('beforeEach', function(setup) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('executeAfter', function(result, options) {
+TP.test.Suite.Inst.defineMethod('executeAfter',
+function(result, options) {
+
     var func;
 
     this.set('msend', Date.now());
 
-    // Run any after() which was registered.
+    //  Run any after() which was registered.
     try {
         func = this.get('afterAll');
         if (TP.isCallable(func)) {
@@ -679,10 +708,12 @@ TP.test.Suite.Inst.defineMethod('executeAfter', function(result, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('executeAfterEach', function(result, options) {
+TP.test.Suite.Inst.defineMethod('executeAfterEach',
+function(result, options) {
+
     var func;
 
-    // Run any afterEach which was registered.
+    //  Run any afterEach which was registered.
     func = this.get('afterEvery');
     if (TP.isCallable(func)) {
         try {
@@ -695,12 +726,14 @@ TP.test.Suite.Inst.defineMethod('executeAfterEach', function(result, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('executeBefore', function(result, options) {
+TP.test.Suite.Inst.defineMethod('executeBefore',
+function(result, options) {
+
     var func;
 
     this.set('msstart', Date.now());
 
-    // Run any before() which was registered.
+    //  Run any before() which was registered.
     func = this.get('beforeAll');
     if (TP.isCallable(func)) {
         try {
@@ -713,10 +746,12 @@ TP.test.Suite.Inst.defineMethod('executeBefore', function(result, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('executeBeforeEach', function(result, options) {
+TP.test.Suite.Inst.defineMethod('executeBeforeEach',
+function(result, options) {
+
     var func;
 
-    // Run any beforeEach which was registered.
+    //  Run any beforeEach which was registered.
     func = this.get('beforeEvery');
     if (TP.isCallable(func)) {
         try {
@@ -729,7 +764,8 @@ TP.test.Suite.Inst.defineMethod('executeBeforeEach', function(result, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('getCaseList', function(options) {
+TP.test.Suite.Inst.defineMethod('getCaseList',
+function(options) {
 
     /**
      * Runs the internal suite functions and returns the list of specific test
@@ -753,26 +789,30 @@ TP.test.Suite.Inst.defineMethod('getCaseList', function(options) {
 
     suite = this;
 
-    // Execute the suiteList functions to generate the case list.
+    //  Execute the suiteList functions to generate the case list.
     suites = this.$get('suiteList');
-    suites.forEach(function(func) {
-        // Running this function ends up invoking 'this.it()' against the test
-        // suite instance. See 'it()' for more information.
-        try {
-            func.apply(suite);
-        } catch (e) {
-            TP.sys.logTest('# error in describe(' + suite.getSuiteName() +
-                '): ' + e.message);
-            suite.error(e);
-        }
-    });
+    suites.perform(
+            function(func) {
+                //  Running this function ends up invoking 'this.it()' against
+                //  the test suite instance. See 'it()' for more information.
+                try {
+                    func.apply(suite);
+                } catch (e) {
+                    TP.sys.logTest(
+                        '# error in describe(' + suite.getSuiteName() +
+                        '): ' + e.message);
+
+                    suite.error(e);
+                }
+            });
 
     return cases;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('getSuiteList', function() {
+TP.test.Suite.Inst.defineMethod('getSuiteList',
+function() {
 
     /**
      * Returns the list of define functions specific to this test suite.
@@ -784,7 +824,8 @@ TP.test.Suite.Inst.defineMethod('getSuiteList', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('getSuiteName', function() {
+TP.test.Suite.Inst.defineMethod('getSuiteName',
+function() {
 
     /**
      * Returns the name of the suite as provided to 'describe'.
@@ -796,7 +837,8 @@ TP.test.Suite.Inst.defineMethod('getSuiteName', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('init', function(target, suiteName, suiteFunc) {
+TP.test.Suite.Inst.defineMethod('init',
+function(target, suiteName, suiteFunc) {
 
     /**
      * Creates a new test suite instance.
@@ -818,7 +860,8 @@ TP.test.Suite.Inst.defineMethod('init', function(target, suiteName, suiteFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('it', function(caseName, caseFunc) {
+TP.test.Suite.Inst.defineMethod('it',
+function(caseName, caseFunc) {
 
     /**
      * Defines a new TP.test.Case instance for the receiving test suite. This
@@ -852,7 +895,9 @@ TP.test.Suite.Inst.defineMethod('it', function(caseName, caseFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('report', function(options) {
+TP.test.Suite.Inst.defineMethod('report',
+function(options) {
+
     var statistics,
 
         caseList,
@@ -874,34 +919,35 @@ TP.test.Suite.Inst.defineMethod('report', function(options) {
         ignored = 0;
 
         caseList = this.getCaseList();
-        caseList.forEach(function(item) {
-            var status = item.getStatusCode();
-            switch(status) {
-                case TP.ERRORED:
-                    errored += 1;
-                    break;
-                case TP.FAILED:
-                    if (item.isTodo()) {
-                        ignored += 1;
-                    } else {
-                        failed += 1;
+        caseList.perform(
+                function(item) {
+                    var status = item.getStatusCode();
+                    switch(status) {
+                        case TP.ERRORED:
+                            errored += 1;
+                            break;
+                        case TP.FAILED:
+                            if (item.isTodo()) {
+                                ignored += 1;
+                            } else {
+                                failed += 1;
+                            }
+                            break;
+                        case TP.SUCCEEDED:
+                            passed += 1;
+                            break;
+                        default:
+                            skipped += 1;
+                            break;
                     }
-                    break;
-                case TP.SUCCEEDED:
-                    passed += 1;
-                    break;
-                default:
-                    skipped += 1;
-                    break;
-            }
-        });
+                });
 
         statistics = TP.hc('passed', passed, 'failed', failed,
             'ignored', ignored, 'errored', errored, 'skipped', skipped);
         this.set('statistics', statistics);
     }
 
-    // NOTE the didError check here is for 'describe' errors.
+    //  NOTE the didError check here is for 'describe' errors.
     if (this.didError() +
             statistics.at('failed') !== 0 ||
             statistics.at('errored') !== 0) {
@@ -924,7 +970,8 @@ TP.test.Suite.Inst.defineMethod('report', function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('reset', function(options) {
+TP.test.Suite.Inst.defineMethod('reset',
+function(options) {
 
     this.callNextMethod(options);
 
@@ -940,7 +987,8 @@ TP.test.Suite.Inst.defineMethod('reset', function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('run', function(options) {
+TP.test.Suite.Inst.defineMethod('run',
+function(options) {
 
     /**
      * Runs the test cases for the suite.
@@ -948,13 +996,13 @@ TP.test.Suite.Inst.defineMethod('run', function(options) {
      * @return {Promise} A Promise to be used as necessary.
      */
 
-    // Protect against running twice while we already have a pending promise.
+    //  Protect against running twice while we already have a pending promise.
     if (this.isActive()) {
         this.error(new Error('InvalidOperation'));
         return Q.Promise.resolve();
     }
 
-    // Make sure to clear out any previous state.
+    //  Make sure to clear out any previous state.
     this.reset(options);
 
     return this.runTestCases(options);
@@ -962,7 +1010,8 @@ TP.test.Suite.Inst.defineMethod('run', function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Suite.Inst.defineMethod('runTestCases', function(options) {
+TP.test.Suite.Inst.defineMethod('runTestCases',
+function(options) {
 
     /**
      * Executes the receiver's test cases, providing each with the options
@@ -976,73 +1025,85 @@ TP.test.Suite.Inst.defineMethod('runTestCases', function(options) {
         suite,
         params;
 
-    // Output a small 'suite header'
+    //  Output a small 'suite header'
     TP.sys.logTest('#', TP.TRACE);
     TP.sys.logTest('# describe(' + this.getSuiteName() + ')', TP.TRACE);
 
     params = TP.hc(options);
 
-    // Make sure to clear out any previous state.
+    //  Make sure to clear out any previous state.
     this.reset(options);
 
     caselist = this.getCaseList(options);
 
     if (this.isSkipped() && !params.at('ignore_skip')) {
         this.get('statistics').atPut('skipped', caselist.getSize());
+
         TP.sys.logTest('# SKIP - test suite skipped.', TP.TRACE);
         TP.sys.logTest('# pass: 0 pass, 0 fail, ' +
             this.get('statistics').at('skipped') + ' skip, 0 todo, 0 error.');
+
         return Q.Promise.resolve();
     }
 
-    // Filter for exclusivity. We might get more than one if authoring was off
-    // so check for that as well.
+    //  Filter for exclusivity. We might get more than one if authoring was off
+    //  so check for that as well.
     if (!params.at('ignore_only')) {
-        if (caselist.some(function(test) { return test.isExclusive();})) {
-            TP.sys.logTest('# filtering for exclusive test cases.', TP.TRACE);
-            caselist = caselist.filter(function(test) {
-                return test.isExclusive();
-            });
+        if (caselist.some(
+                function(test) {
+                    return test.isExclusive();
+                })
+                ) {
+                    TP.sys.logTest('# filtering for exclusive test cases.',
+                                    TP.TRACE);
 
-            if (caselist.length > 1) {
-                TP.sys.logTest('# ' + caselist.length +
-                    ' exclusive test cases found.', TP.WARN);
-            }
-        }
+                    caselist = caselist.filter(
+                                function(test) {
+                                    return test.isExclusive();
+                                });
+
+                    if (caselist.length > 1) {
+                        TP.sys.logTest('# ' + caselist.length +
+                            ' exclusive test cases found.', TP.WARN);
+                    }
+                }
     }
 
-    // Binding attribute for our promise closures below.
+    //  Binding attribute for our promise closures below.
     suite = this;
 
-    // Run any 'before' hook for the suite.
+    //  Run any 'before' hook for the suite.
     suite.executeBefore(null, options);
 
-    // Use reduce to convert our caselist array into a chain of promises. We
-    // prime the list with a resolved promise to ensure 'current' receives all
-    // the cases during iteration while 'chain' is the last promise in the
-    // chain of promises being constructed.
-    result = caselist.reduce(function(chain, current, index, array) {
+    //  Use reduce to convert our caselist array into a chain of promises. We
+    //  prime the list with a resolved promise to ensure 'current' receives all
+    //  the cases during iteration while 'chain' is the last promise in the
+    //  chain of promises being constructed.
+    result = caselist.reduce(
+            function(chain, current, index, array) {
 
-        return chain.then(
-            function(obj) {
-                var promise;
+                return chain.then(
+                    function(obj) {
+                        var promise;
 
-                suite.executeBeforeEach(obj, options);
+                        suite.executeBeforeEach(obj, options);
 
-                promise = current.run(TP.hc(options));
+                        promise = current.run(TP.hc(options));
 
-                return promise.then(function(obj) {
-                    suite.executeAfterEach(obj, options);
-                }, function(err) {
-                    suite.executeAfterEach(err, options);
-                });
-            },
-            function(err) {
-                //  TODO: the suite run() operation errored out, now what?
-            });
-    }, Q.Promise.resolve());
+                        return promise.then(
+                            function(obj) {
+                                suite.executeAfterEach(obj, options);
+                            }, function(err) {
+                                suite.executeAfterEach(err, options);
+                            });
+                    },
+                    function(err) {
+                        //  TODO: the suite run() operation errored out, now
+                        //  what?
+                    });
+            }, Q.Promise.resolve());
 
-    // 'Finally' action for our caselist promise chain, run the 'after' hook.
+    //  'Finally' action for our caselist promise chain, run the 'after' hook.
     return result.then(
         function(obj) {
             suite.executeAfter(obj, options);
@@ -1105,7 +1166,8 @@ TP.test.Case.Inst.defineAttribute('suite');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('errorJob', function(aFaultCode, aFaultString) {
+TP.test.Case.Inst.defineMethod('errorJob',
+function(aFaultCode, aFaultString) {
 
     /**
      * Internal method for handling errors thrown by test functions.
@@ -1126,7 +1188,8 @@ TP.test.Case.Inst.defineMethod('errorJob', function(aFaultCode, aFaultString) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('failJob', function(aFaultCode, aFaultString) {
+TP.test.Case.Inst.defineMethod('failJob',
+function(aFaultCode, aFaultString) {
 
     /**
      * Internal method for handling notifications of test failures.
@@ -1137,9 +1200,9 @@ TP.test.Case.Inst.defineMethod('failJob', function(aFaultCode, aFaultString) {
 
     var msg;
 
-    // NOTE that even though we had a failure we still resolve, not reject.
-    // This allows other test cases to continue to be processed in the same
-    // chain with passing tasks.
+    //  NOTE that even though we had a failure we still resolve, not reject.
+    //  This allows other test cases to continue to be processed in the same
+    //  chain with passing tasks.
     this.$resolve();
 
     this.set('msend', Date.now());
@@ -1156,7 +1219,8 @@ TP.test.Case.Inst.defineMethod('failJob', function(aFaultCode, aFaultString) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('getCaseName', function() {
+TP.test.Case.Inst.defineMethod('getCaseName',
+function() {
 
     /**
      * Returns the individual case name.
@@ -1168,7 +1232,8 @@ TP.test.Case.Inst.defineMethod('getCaseName', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('getStatus', function() {
+TP.test.Case.Inst.defineMethod('getStatus',
+function() {
 
     /**
      * Returns the result status for the test case, if it has finished.
@@ -1180,7 +1245,8 @@ TP.test.Case.Inst.defineMethod('getStatus', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('getSuite', function() {
+TP.test.Case.Inst.defineMethod('getSuite',
+function() {
 
     /**
      * Returns the TP.test.Suite that owns this test case.
@@ -1192,7 +1258,8 @@ TP.test.Case.Inst.defineMethod('getSuite', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('init', function(suite, caseName, caseFunc) {
+TP.test.Case.Inst.defineMethod('init',
+function(suite, caseName, caseFunc) {
 
     /**
      * Defines a new TP.test.Case instance for the receiving test suite.
@@ -1212,7 +1279,8 @@ TP.test.Case.Inst.defineMethod('init', function(suite, caseName, caseFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('only', function() {
+TP.test.Case.Inst.defineMethod('only',
+function() {
 
     /**
      * Marks the receiver as exclusive, meaning it should be the only item
@@ -1225,7 +1293,8 @@ TP.test.Case.Inst.defineMethod('only', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('pass', function() {
+TP.test.Case.Inst.defineMethod('pass',
+function() {
 
     /**
      * Handles notification that the test case passed (or more accurately that
@@ -1246,13 +1315,17 @@ TP.test.Case.Inst.defineMethod('pass', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('$reject', function() {
+TP.test.Case.Inst.defineMethod('$reject',
+function() {
+
     this.$rejector();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('$resolve', function() {
+TP.test.Case.Inst.defineMethod('$resolve',
+function() {
+
     if (!this.$resolver) {
         /* jshint -W087 */
         debugger;
@@ -1264,7 +1337,8 @@ TP.test.Case.Inst.defineMethod('$resolve', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('reset', function(options) {
+TP.test.Case.Inst.defineMethod('reset',
+function(options) {
 
     this.callNextMethod(options);
 
@@ -1279,7 +1353,8 @@ TP.test.Case.Inst.defineMethod('reset', function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('run', function(options) {
+TP.test.Case.Inst.defineMethod('run',
+function(options) {
 
     /**
      * Creates and returns a promise which runs the test case. You can leverage
@@ -1296,19 +1371,19 @@ TP.test.Case.Inst.defineMethod('run', function(options) {
 
     params = TP.hc(options);
 
-    // Protect against running twice while we already have a pending promise.
+    //  Protect against running twice while we already have a pending promise.
     if (this.isActive()) {
         this.error(new Error('InvalidOperation'));
         return Q.Promise.resolve();
     }
 
-    // Make sure to clear out any previous state and update from our options
-    // data (if any).
+    //  Make sure to clear out any previous state and update from our options
+    //  data (if any).
     this.reset(options);
 
-    // Compute a timeout value. Normally we'd go with timeout values directly
-    // from the test case, but to time out the test suite we need to compute the
-    // time remaining for the suite and use the smaller of the two values.
+    //  Compute a timeout value. Normally we'd go with timeout values directly
+    //  from the test case, but to time out the test suite we need to compute
+    //  the time remaining for the suite and use the smaller of the two values.
     timeout = Math.min(this.getTimeout(), this.getSuite().getTimeRemaining());
 
     //  Binding variable for closures below.
@@ -1317,9 +1392,9 @@ TP.test.Case.Inst.defineMethod('run', function(options) {
     promise = Q.Promise(function(resolver, rejector) {
         var maybe;
 
-        // Capture references to the resolve/reject operations we can use from
-        // the test case itself. Do this first so any errors below will still be
-        // able to depend on these hooks being in place.
+        //  Capture references to the resolve/reject operations we can use from
+        //  the test case itself. Do this first so any errors below will still
+        //  be able to depend on these hooks being in place.
         testcase.$resolver = resolver;
         testcase.$rejector = rejector;
 
@@ -1329,12 +1404,12 @@ TP.test.Case.Inst.defineMethod('run', function(options) {
             return;
         }
 
-        // NOTE: do this after checking for deferred so we don't end up with
-        // timing values for something we never ran.
+        //  NOTE: do this after checking for deferred so we don't end up with
+        //  timing values for something we never ran.
         testcase.set('msstart', Date.now());
 
         try {
-            // Note that inside the test function we bind to the Case instance.
+            //  Note that inside the test function we bind to the Case instance.
             maybe = testcase.$get('caseFunc').call(testcase, options);
             if (TP.canInvoke(maybe, 'then')) {
                 maybe.then(
@@ -1342,8 +1417,8 @@ TP.test.Case.Inst.defineMethod('run', function(options) {
                         testcase.pass();
                     },
                     function(err) {
-                        // NOTE that if we fail at this level the try/catch
-                        // isn't involved, so we need to wrap up manually.
+                        //  NOTE that if we fail at this level the try/catch
+                        //  isn't involved, so we need to wrap up manually.
                         testcase.fail(err);
                     });
             } else {
@@ -1360,16 +1435,17 @@ TP.test.Case.Inst.defineMethod('run', function(options) {
 
     return promise.then(
         function(obj) {
-            // TODO: break?
+            //  TODO: break?
         },
         function(err) {
             if (err instanceof AssertionFailed) {
                 testcase.fail(err);
             } else if (/Timed out/.test(err)) {
-                // Determine from the message whether it was the case itself or
-                // the overall suite that failed. How will we know? If the
-                // timeout value isn't === the timeout for a test case it had to
-                // be the computed value for time remaining in the test suite.
+                //  Determine from the message whether it was the case itself or
+                //  the overall suite that failed. How will we know? If the
+                //  timeout value isn't === the timeout for a test case it had
+                //  to be the computed value for time remaining in the test
+                //  suite.
                 if (timeout !== testcase.getTimeout()) {
                     testcase.fail(TP.TIMED_OUT, 'Test suite timed out.');
                 } else {
@@ -1529,17 +1605,21 @@ function(options) {
         suitenames;
 
     methods = this.getMethods();
-    names = methods.map(function(method) { return TP.name(method);});
+    names = methods.map(
+                function(method) {
+                    return TP.name(method);
+                });
 
     suitenames = TP.ac();
 
     suites = this.getTestSuites(options);
-    suites.getKeys().forEach(function(key) {
-        var suitehash;
+    suites.getKeys().perform(
+            function(key) {
+                var suitehash;
 
-        suitehash = suites.at(key);
-        suitenames.addAll(suitehash.getKeys());
-    });
+                suitehash = suites.at(key);
+                suitenames.addAll(suitehash.getKeys());
+            });
 
     return names.difference(suitenames);
 });

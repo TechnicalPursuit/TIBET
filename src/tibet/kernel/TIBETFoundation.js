@@ -37,7 +37,7 @@ TIBET platform.
 
 /* JSHint checking */
 
-/* global $STATUS:true, JsDiff:true
+/* global $STATUS:true
 */
 
 /* jshint evil:true
@@ -875,21 +875,23 @@ Function.Inst.defineMethod('getMethodPatch',
 function(methodText) {
 
     /**
-     * Returns patch file content suitable for applying to the receiver's
-     * source file. The JsDiff package must be loaded for this operation to
-     * work. The JsDiff package is typically loaded by the Sherpa config.
+     * @name getMethodPatch
+     * @synopsis Returns patch file content suitable for applying to the
+     *     receiver's source file. The JsDiff package must be loaded for this
+     *     operation to work. The JsDiff package is typically loaded by the
+     *     Sherpa config.
      * @param {String} methodText The new method text.
      * @return {String} A string representing patch file content.
      */
 
-    var path;
-    var url;
-    var str;
-    var re;
-    var content;
-    var match;
-    var newtext;
-    var patch;
+    var path,
+        url,
+        str,
+        matcher,
+        content,
+        match,
+        newtext,
+        patch;
 
     if (TP.notValid(self.JsDiff)) {
         TP.ifWarn() ?
@@ -898,7 +900,7 @@ function(methodText) {
         return;
     }
 
-    // Get the original source url...
+    //  Get the original source url...
     path = TP.objectGetSourcePath(this);
     if (TP.isEmpty(path)) {
         TP.ifWarn() ?
@@ -919,29 +921,29 @@ function(methodText) {
         return;
     }
 
-    // Get the current method's body text...
+    //  Get the current method's body text...
     str = this.toString().trim();
 
-    // Convert the body text into a RegExp we can use as a way of indexing
-    // into the original source file text.
-    re = TP.rc(RegExp.escapeMetachars(
+    //  Convert the body text into a RegExp we can use as a way of indexing
+    //  into the original source file text.
+    matcher = TP.rc(RegExp.escapeMetachars(
                 str.replace(/[\u0009\u000A\u0020\u000D]+/g,
                     'SECRET_SAUCE')).replace(/SECRET_SAUCE/g, '\\s*'));
 
-    match = content.match(re);
+    match = content.match(matcher);
     if (TP.notValid(match)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Method index not found.',
                     TP.LOG, arguments) : 0;
-        return;
+        return null;
     }
 
     newtext = content.slice(0, match.index) +
-        methodText +
-        content.slice(match.index + match.at(0).length);
+                methodText +
+                content.slice(match.index + match.at(0).length);
 
-    // NOTE we use the original srcPath string here to retain relative address.
-    patch = JsDiff.createPatch(path, content, newtext);
+    //  NOTE we use the original srcPath string here to retain relative address.
+    patch = TP.extern.JsDiff.createPatch(path, content, newtext);
 
     return patch;
 });
@@ -973,15 +975,19 @@ function(methodText, onsuccess, onfailure) {
     }
 
     req = TP.sig.HTTPRequest.construct(
-        TP.hc('uri', url, 'verb', TP.HTTP_POST, 'async', false,
-            'body', TP.hc('type', 'patch', 'target', target, 'content', patch),
-            'mimetype', TP.JSON_ENCODED));
+        TP.hc('uri', url,
+                'verb', TP.HTTP_POST,
+                'async', false,
+                'body',
+                    TP.hc('type', 'patch', 'target', target, 'content', patch),
+                'mimetype', TP.JSON_ENCODED));
 
     req.defineMethod('handleRequestSucceeded', function() {
         if (onsuccess) {
             onsuccess(req);
         }
     });
+
     req.defineMethod('handleRequestFailed', function() {
         if (onfailure) {
             onfailure(req);
@@ -2190,13 +2196,14 @@ function(aSignal) {
 
 TP.defineMetaInstMethod('defineHandler',
 function(aHandlerName, aHandler, aPolicy) {
-    var match;
-    var handler;
-    var policy;
-    var signal;
-    var origin;
-    var state;
-    var handlers;
+    var match,
+        handler,
+        policy,
+        signal,
+        origin,
+        state,
+        handlers,
+        existing;
 
     // Most of this is about the name. It has to match our handler name pattern.
     match = TP.regex.ON_HANDLER_NAME.exec(aHandlerName);

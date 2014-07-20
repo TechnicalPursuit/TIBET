@@ -33,6 +33,11 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 <config id="standard">
 
     <script src="~lib_deps/diff-tpi.js" no-lint="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.JsDiff = JsDiff;
+        ]]>
+    </script>
 
     <script src="./src/TP.sherpa.sherpa.js"/>
     <script src="./src/TP.sherpa.ConsoleService.js"/>

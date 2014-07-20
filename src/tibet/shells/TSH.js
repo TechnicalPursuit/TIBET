@@ -2930,23 +2930,25 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeTibet',
 function(aRequest) {
-    var cmd;
-    var args;
-    var argv;
-    var url;
-    var req;
-    var res;
+    var cmd,
+        args,
+        argv,
+        url,
+        req,
+        res;
 
-    // TODO: sanity check them for non-alphanumeric 'command line' chars.
+    //  TODO: sanity check them for non-alphanumeric 'command line' chars.
 
     cmd = this.getArgument(aRequest, 'tsh:cmd', null, true);
     if (TP.isEmpty(cmd)) {
         cmd = 'help';
     }
 
-    // The url root we want to send to is in tds.cli_url
+    //  The url root we want to send to is in tds.cli_url
     url = TP.uriJoinPaths(TP.sys.getLaunchRoot(),
-        TP.sys.getcfg('tds.cli_uri'));
+                            TP.sys.getcfg('tds.cli_uri'));
+
+    //  TODO: Maybe use TP.httpEncode() here?
     url += '?cmd=' + encodeURIComponent(cmd);
 
     argv = this.getArgument(aRequest, 'ARGV');
@@ -3043,52 +3045,60 @@ function(aRequest) {
     loaded = TP.ac();
     files = dict.getKeys();
 
-    files.forEach(function(file) {
-        var flag,
-            url,
-            src,
-            debug;
+    files.perform(
+        function(file) {
 
-        try {
-            flag = TP.sys.shouldLogCodeChanges();
-            TP.sys.shouldLogCodeChanges(false);
+            var flag,
+                url,
+                src,
+                debug;
 
-            aRequest.stdout('Reloading source from: ' + file);
+            try {
+                flag = TP.sys.shouldLogCodeChanges();
+                TP.sys.shouldLogCodeChanges(false);
 
-            url = TP.uc(file);
-            if (TP.notValid(url)) {
+                aRequest.stdout('Reloading source from: ' + file);
+
+                url = TP.uc(file);
+                if (TP.notValid(url)) {
+
+                    aRequest.fail(TP.FAILURE,
+                        'Source failed to load: ' + file);
+
+                    return;
+                }
+
+                if (TP.notValid(
+                    src = url.getContent(
+                                TP.hc('refresh', true, 'async', false)))) {
+
+                    aRequest.fail(TP.FAILURE,
+                        'Source failed to load: ' + file);
+
+                    return;
+                }
+
+                debug = TP.sys.shouldUseDebugger();
+                TP.sys.shouldUseDebugger(false);
+                TP.boot.$sourceImport(src, null, file, null, true);
+
+                loaded.push(file);
+            } catch (e) {
                 aRequest.fail(TP.FAILURE,
-                    'Source failed to load: ' + file);
+                    TP.ec(e, 'Source failed to exec: ' + file));
                 return;
+            } finally {
+                TP.sys.shouldLogCodeChanges(flag);
+                TP.sys.shouldUseDebugger(debug);
             }
-
-            if (TP.notValid(
-                src = url.getContent(TP.hc('refresh', true, 'async', false)))) {
-                aRequest.fail(TP.FAILURE,
-                    'Source failed to load: ' + file);
-                return;
-            }
-
-            debug = TP.sys.shouldUseDebugger();
-            TP.sys.shouldUseDebugger(false);
-            TP.boot.$sourceImport(src, null, file, null, true);
-
-            loaded.push(file);
-        } catch (e) {
-            aRequest.fail(TP.FAILURE,
-                TP.ec(e, 'Source failed to exec: ' + file));
-            return;
-        } finally {
-            TP.sys.shouldLogCodeChanges(flag);
-            TP.sys.shouldUseDebugger(debug);
-        }
-    });
+        });
 
     // Prune any files we were able to load. Others remain, in theory so they
     // can be repaired and loaded.
-    loaded.forEach(function(file) {
-        dict.removeKey(file);
-    });
+    loaded.perform(
+            function(file) {
+                dict.removeKey(file);
+            });
 
     aRequest.complete();
 });
@@ -3102,7 +3112,8 @@ function(aRequest) {
 
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
-            TP.sys.cfg('tds.watch_uri'));
+                                TP.sys.cfg('tds.watch_uri'));
+
         watcher = TP.core.SSESignalSource.construct(url);
         this.set('watcherSSESource', watcher);
     }
@@ -3125,7 +3136,8 @@ function(aRequest) {
     // for us? Shouldn't there be a 'getInstance' or something instead?
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
-            TP.sys.cfg('tds.watch_uri'));
+                                TP.sys.cfg('tds.watch_uri'));
+
         watcher = TP.core.SSESignalSource.construct(url);
     }
 
@@ -3148,17 +3160,17 @@ function(aSignal) {
         req,
         dict;
 
-    // If we can't determine the file name we can't take action in any case.
+    //  If we can't determine the file name we can't take action in any case.
     if (TP.notValid(payload = aSignal.getPayload())) {
         return;
     }
 
-    // TODO: all kinds of alternatives here. We may want to queue them. We may
-    // want to access a patch of the deltas. We may need to track ordering, or
-    // to prompt the user when a series from a specific file ends and a new file
-    // starts changing in case there are intra-file dependencies.
+    //  TODO: all kinds of alternatives here. We may want to queue them. We may
+    //  want to access a patch of the deltas. We may need to track ordering, or
+    //  to prompt the user when a series from a specific file ends and a new file
+    //  starts changing in case there are intra-file dependencies.
 
-    // Add tracking data on the file that changed.
+    //  Add tracking data on the file that changed.
     dict = aSignal.getType().get('pending');
 
     name = '.' + payload.at('data').asString().stripEnclosingQuotes();
@@ -3166,7 +3178,7 @@ function(aSignal) {
 
     count = dict.at(name);
     if (TP.notValid(count)) {
-        // Notify on the first change of each file.
+        //  Notify on the first change of each file.
         str = 'File system change: ' + name;
         req = TP.sig.UserOutputRequest.construct(
                     TP.hc('output', str,
