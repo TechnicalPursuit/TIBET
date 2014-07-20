@@ -1342,9 +1342,11 @@ function(anElement, wants2DMatrix) {
     if (TP.str(matrix) === TP.str(identity)) {
         matrix = identity;
     } else {
-        matrix = TP.translateMatrix(matrix, -win.pageXOffset, -win.pageYOffset, 0);
+        matrix = TP.translateMatrix(
+                    matrix, -win.pageXOffset, -win.pageYOffset, 0);
 
-        transformedRect = TP.$elementTransformBoundingClientRect(anElement, matrix);
+        transformedRect =
+                    TP.$elementTransformBoundingClientRect(anElement, matrix);
 
         rect = anElement.getBoundingClientRect(anElement);
         matrix = TP.translateMatrix(
@@ -1639,7 +1641,7 @@ function(anElement, transformationMatrix) {
     }
 
     points = TP.multiplyMatrix(
-                transformationMatrix,
+                TP.matrixAs3DMatrix(transformationMatrix),
                 [
                     [0, anElement.offsetWidth, 0, anElement.offsetWidth],
                     [0, 0, anElement.offsetHeight, 0, anElement.offsetHeight],

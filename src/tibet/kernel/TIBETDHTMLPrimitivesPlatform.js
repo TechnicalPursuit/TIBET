@@ -1844,7 +1844,7 @@ TP.hc(
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
          * @raises TP.sig.InvalidElement
-         * @returns {Array} The matrix expressed as an Array
+         * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
         var val,
@@ -1877,7 +1877,7 @@ TP.hc(
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
          * @raises TP.sig.InvalidElement
-         * @returns {Array} The matrix expressed as an Array
+         * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
         var val,
@@ -1910,7 +1910,7 @@ TP.hc(
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
          * @raises TP.sig.InvalidElement
-         * @returns {Array} The matrix expressed as an Array
+         * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
         var val,
