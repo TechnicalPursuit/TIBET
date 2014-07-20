@@ -368,7 +368,7 @@ function(aMatrix) {
 
     var matrix;
 
-    if (aMatrix.getSize() === 6) {
+    if (aMatrix.length === 6) {
         return aMatrix;
     }
 
@@ -402,7 +402,7 @@ function(aMatrix) {
 
     var matrix;
 
-    if (aMatrix.getSize() === 16) {
+    if (aMatrix.length === 4) {
         return aMatrix;
     }
 
@@ -540,6 +540,61 @@ function(m/*, tx, ty, tz*/) {
     }
 
     return r;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('matrixTransformPoint',
+function(aMatrix, x, y) {
+
+    /**
+     * @name matrixTransformPoint
+     * @synopsis Transforms the supplied point values with the supplied matrix.
+     * @returns {Array} An Array of 2 Numbers representing the transformed
+     *     point.
+     */
+
+    var matrix;
+
+    if (aMatrix.length === 4) {
+        matrix = TP.matrixAs2DMatrix(aMatrix);
+    } else {
+        matrix = aMatrix;
+    }
+
+    return [
+        matrix[0] * x + matrix[1] * y + matrix[4],
+        matrix[2] * x + matrix[3] * y + matrix[5]
+    ];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('matrixTransformRect',
+function(aMatrix, x, y, width, height) {
+
+    /**
+     * @name matrixTransformRect
+     * @synopsis Transforms the supplied rectangle values with the supplied
+           matrix.
+     * @returns {Array} An Array of 4 Numbers representing the transformed
+     *     rectangle.
+     */
+
+    var matrix;
+
+    if (aMatrix.length === 4) {
+        matrix = TP.matrixAs2DMatrix(aMatrix);
+    } else {
+        matrix = aMatrix;
+    }
+
+    return [
+        matrix[0] * x + matrix[1] * y + matrix[4],
+        matrix[2] * x + matrix[3] * y + matrix[5],
+        matrix[0] * width + matrix[1] * height,
+        matrix[2] * width + matrix[3] * height
+    ];
 });
 
 //  ------------------------------------------------------------------------
