@@ -158,7 +158,7 @@ function() {
      * @todo
      */
 
-    this.moveAndSizeToNewTarget(null);
+    this.moveAndSizeToTarget(null);
 
     TP.byOID('SherpaConsoleService').get('model').setVariable('HALO', null);
     this.set('currentTargetTPElem', null);
@@ -182,7 +182,7 @@ function(target) {
      */
 
     if (TP.isKindOf(target, TP.core.ElementNode)) {
-        this.moveAndSizeToNewTarget(target);
+        this.moveAndSizeToTarget(target);
 
         TP.byOID('SherpaConsoleService').get('model').setVariable(
                                                         'HALO', target);
@@ -194,6 +194,21 @@ function(target) {
     }
 
     this.signal('TP.sig.HaloDidFocus');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('handleSherpaHUDHiddenChange',
+function(aSignal) {
+
+    /**
+     * @name handleHiddenChange
+     */
+
+    this.set('hidden', true);
+    this.set('haloRect', null);
 
     return this;
 });
@@ -275,8 +290,6 @@ function(aSignal) {
      * @todo
      */
 
-    return this;
-
     this.showHaloCorner(aSignal);
 
     return this;
@@ -294,8 +307,6 @@ function(aSignal) {
      * @abstract
      * @todo
      */
-
-    return this;
 
     this.showHaloCorner(aSignal);
 
@@ -387,11 +398,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('moveAndSizeToNewTarget',
+TP.sherpa.halo.Inst.defineMethod('moveAndSizeToTarget',
 function(aTarget) {
 
     /**
-     * @name moveAndSizeToNewTarget
+     * @name moveAndSizeToTarget
      * @param {undefined} aTarget
  
      * @returns {TP.sherpa.halo} The receiver.
@@ -424,7 +435,7 @@ function(aTarget) {
         theRect = aTarget.getHaloRect(this);
     }
 
-    if (TP.notValid(aTarget)) {
+    if (TP.notValid(aTarget) && TP.notValid(existingTPTarget)) {
         this.set('hidden', true);
 
         this.set('haloRect', null);
