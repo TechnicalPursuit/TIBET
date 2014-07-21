@@ -2625,7 +2625,7 @@ function(aURI) {
         return this.raise('TP.sig.InvalidParameter', arguments);
     }
 
-    this.$set('uri', aURI.asString());
+    this.$set('uri', aURI.asString(), false);
 
     return this;
 });
