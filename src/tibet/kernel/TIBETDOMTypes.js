@@ -2484,7 +2484,11 @@ function(aNode, shouldSignal) {
         this.$set('node', aNode, false);
     }
 
-    flag = TP.ifInvalid(shouldSignal, this.shouldSignalChange());
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     if (flag) {
         this.changed('content', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldNode, TP.NEWVAL, aNode));
@@ -2496,7 +2500,7 @@ function(aNode, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('setProperty',
-function(attributeName, attributeValue, signalFlag) {
+function(attributeName, attributeValue, shouldSignal) {
 
     /**
      * @name setProperty
@@ -2505,7 +2509,7 @@ function(attributeName, attributeValue, signalFlag) {
      *     resolved and the value has been validated.
      * @param {String} attributeName The attribute to set.
      * @param {Object} attributeValue The value to set.
-     * @param {Boolean} signalFlag Should changes be notified. If false changes
+     * @param {Boolean} shouldSignal Should changes be notified. If false changes
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
      * @signals Change
@@ -2521,7 +2525,7 @@ function(attributeName, attributeValue, signalFlag) {
     if (!TP.isNode(model = this.getNativeNode())) {
         return this.$set(attributeName,
                             attributeValue,
-                            signalFlag);
+                            shouldSignal);
     }
 
     //  issue for TP.core.Node is that we don't want to put things on the
@@ -2531,7 +2535,7 @@ function(attributeName, attributeValue, signalFlag) {
     if (TP.isDefined(this.$get(attributeName))) {
         return this.$set(attributeName,
                             attributeValue,
-                            signalFlag);
+                            shouldSignal);
     }
 
     //  do it the old-fashioned way...
@@ -2555,16 +2559,21 @@ function(attributeName, attributeValue, signalFlag) {
         model[attributeName] = TP.ifUndefined(attributeValue, null);
         if (model[attributeName] === attributeValue) {
             //this.modelChanged(attributeName);
-            flag = TP.ifInvalid(signalFlag, this.shouldSignalChange());
+
+            //  NB: Use this construct this way for better performance
+            if (TP.notValid(flag = shouldSignal)) {
+                flag = this.shouldSignalChange();
+            }
+
             if (flag) {
                 this.changed(attributeName, TP.UPDATE);
             }
         } else {
             //  value didn't take...non-mutable model/aspect?
-            this.$set(attributeName, attributeValue, signalFlag);
+            this.$set(attributeName, attributeValue, shouldSignal);
         }
     } catch (e) {
-        this.$set(attributeName, attributeValue, signalFlag);
+        this.$set(attributeName, attributeValue, shouldSignal);
     }
 
     return this;
@@ -2622,7 +2631,7 @@ function(aURI) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('setValue',
-function(aValue, signalFlag) {
+function(aValue, shouldSignal) {
 
     /**
      * @name setValue
@@ -2636,8 +2645,8 @@ function(aValue, signalFlag) {
      *     is changed. The type of node and input can alter how this actually is
      *     done. See the setContent call for more information.
      * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} signalFlag Should changes be notified. If false changes
-     *     are not signaled. Defaults to this.shouldSignalChange().
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
      * @todo
      */
@@ -2666,7 +2675,11 @@ function(aValue, signalFlag) {
     TP.nodeSetTextContent(node, aValue);
 
     //  signal as needed
-    flag = TP.ifInvalid(signalFlag, this.shouldSignalChange());
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
     if (flag) {
         this.changed('value', TP.UPDATE);
     }
@@ -4212,7 +4225,11 @@ function(aNode, shouldSignal) {
     //  skip any wrapper method so we don't reset on the native element
     this.$set('phase', phase, false);
 
-    flag = TP.ifInvalid(shouldSignal, this.shouldSignalChange());
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     if (flag) {
         this.changed('content', TP.UPDATE);
     }
@@ -10341,7 +10358,7 @@ function(aPhase) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('setValue',
-function(aValue, signalFlag) {
+function(aValue, shouldSignal) {
 
     /**
      * @name setValue
@@ -10355,7 +10372,7 @@ function(aValue, signalFlag) {
      *     is changed. The type of node and input can alter how this actually is
      *     done. See the setContent call for more information.
      * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} signalFlag Should changes be notified. If false changes
+     * @param {Boolean} shouldSignal Should changes be notified. If false changes
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
      * @todo
@@ -10366,7 +10383,12 @@ function(aValue, signalFlag) {
     this.setContent(aValue);
 
     //  signal as needed
-    flag = TP.ifInvalid(signalFlag, this.shouldSignalChange());
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     if (flag) {
         this.changed('value', TP.UPDATE);
     }
