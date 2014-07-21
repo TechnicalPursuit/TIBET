@@ -2308,8 +2308,8 @@ function(anObject, resultType, collapse) {
                         obj = TP.node(obj, null, false);
                     }
 
-                    if (TP.notValid(obj =
-                                    TP.node(TP.collapse(anObject), null, false))) {
+                    if (TP.notValid(
+                        obj = TP.node(TP.collapse(anObject), null, false))) {
                         obj = TP.str(TP.collapse(anObject));
                     }
                 } else {

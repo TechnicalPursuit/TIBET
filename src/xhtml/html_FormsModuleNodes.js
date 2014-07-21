@@ -548,7 +548,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.html.textUtilities.Inst.defineMethod('setValue',
-function(aValue, signalFlag) {
+function(aValue, shouldSignal) {
 
     /**
      * @name setValue
@@ -559,7 +559,7 @@ function(aValue, signalFlag) {
      *     bound value to update the display value, so this method should avoid
      *     changes to the bound value to avoid recursions.
      * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} signalFlag Should changes be notified. If false changes
+     * @param {Boolean} shouldSignal Should changes be notified. If false changes
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.UIElementNode} The receiver.
      * @todo
@@ -583,7 +583,12 @@ function(aValue, signalFlag) {
     this.setDisplayValue(value);
 
     //  signal as needed
-    flag = TP.ifInvalid(signalFlag, this.shouldSignalChange());
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     if (flag) {
         this.changed('value', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, value));

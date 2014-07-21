@@ -306,22 +306,6 @@ function(nodeSpec, varargs) {
     //  Instance Construction
     //  ---
 
-    args = TP.args(arguments);
-    args.atPut(0, node);
-    inst = this.callNextMethod.apply(this, args);
-
-    //  If varargs is a TP.lang.Hash and inst is an instance of some subtype
-    //  of TP.core.ElementNode, then try to execute '.setAttribute()'
-    //  against the new instance for each key in the hash.
-    if (TP.isKindOf(varargs, 'TP.lang.Hash') &&
-        TP.isKindOf(inst, 'TP.core.ElementNode')) {
-        varargs.perform(
-            function(kvPair) {
-
-                inst.setAttribute(kvPair.first(), kvPair.last());
-            });
-    }
-
     //  if we're using registered instances check for that next, and be sure
     //  to tell the GOBI call to stop after registration checks to avoid
     //  recursions here
@@ -351,7 +335,25 @@ function(nodeSpec, varargs) {
 
             return inst;
         }
+    }
 
+    args = TP.args(arguments);
+    args.atPut(0, node);
+    inst = this.callNextMethod.apply(this, args);
+
+    //  If varargs is a TP.lang.Hash and inst is an instance of some subtype
+    //  of TP.core.ElementNode, then try to execute '.setAttribute()'
+    //  against the new instance for each key in the hash.
+    if (TP.isKindOf(varargs, 'TP.lang.Hash') &&
+        TP.isKindOf(inst, 'TP.core.ElementNode')) {
+        varargs.perform(
+            function(kvPair) {
+
+                inst.setAttribute(kvPair.first(), kvPair.last());
+            });
+    }
+
+    if (this.shouldRegisterInstances()) {
         this.registerInstance(inst);
     }
 
@@ -842,7 +844,8 @@ function(anInstance) {
      * @returns {String} The ID used to register the instance.
      */
 
-    var nodeID;
+    var nodeID,
+        newID;
 
     //  presumption is that we have an instance
     nodeID = TP.gid(anInstance);
@@ -850,6 +853,16 @@ function(anInstance) {
     //  not all types register their instances for uniquing purposes
     if (this.shouldRegisterInstances()) {
         TP.sys.registerObject(anInstance, nodeID);
+    }
+
+    //  see if we ended up with a new ID after the registration process (we may
+    //  have if the 'getID()' call made in there computed a new ID.
+    newID = TP.gid(anInstance);
+    if (newID !== nodeID) {
+        //  If the new ID is not the same ID as the original ID used to
+        //  register, unregister the old one and re-register with the new one.
+        TP.sys.unregisterObject(anInstance, nodeID);
+        TP.sys.registerObject(anInstance, newID);
     }
 
     return nodeID;
@@ -2484,7 +2497,11 @@ function(aNode, shouldSignal) {
         this.$set('node', aNode, false);
     }
 
-    flag = TP.ifInvalid(shouldSignal, this.shouldSignalChange());
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     if (flag) {
         this.changed('content', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldNode, TP.NEWVAL, aNode));
@@ -2496,7 +2513,7 @@ function(aNode, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('setProperty',
-function(attributeName, attributeValue, signalFlag) {
+function(attributeName, attributeValue, shouldSignal) {
 
     /**
      * @name setProperty
@@ -2505,7 +2522,7 @@ function(attributeName, attributeValue, signalFlag) {
      *     resolved and the value has been validated.
      * @param {String} attributeName The attribute to set.
      * @param {Object} attributeValue The value to set.
-     * @param {Boolean} signalFlag Should changes be notified. If false changes
+     * @param {Boolean} shouldSignal Should changes be notified. If false changes
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
      * @signals Change
@@ -2521,7 +2538,7 @@ function(attributeName, attributeValue, signalFlag) {
     if (!TP.isNode(model = this.getNativeNode())) {
         return this.$set(attributeName,
                             attributeValue,
-                            signalFlag);
+                            shouldSignal);
     }
 
     //  issue for TP.core.Node is that we don't want to put things on the
@@ -2531,7 +2548,7 @@ function(attributeName, attributeValue, signalFlag) {
     if (TP.isDefined(this.$get(attributeName))) {
         return this.$set(attributeName,
                             attributeValue,
-                            signalFlag);
+                            shouldSignal);
     }
 
     //  do it the old-fashioned way...
@@ -2555,16 +2572,21 @@ function(attributeName, attributeValue, signalFlag) {
         model[attributeName] = TP.ifUndefined(attributeValue, null);
         if (model[attributeName] === attributeValue) {
             //this.modelChanged(attributeName);
-            flag = TP.ifInvalid(signalFlag, this.shouldSignalChange());
+
+            //  NB: Use this construct this way for better performance
+            if (TP.notValid(flag = shouldSignal)) {
+                flag = this.shouldSignalChange();
+            }
+
             if (flag) {
                 this.changed(attributeName, TP.UPDATE);
             }
         } else {
             //  value didn't take...non-mutable model/aspect?
-            this.$set(attributeName, attributeValue, signalFlag);
+            this.$set(attributeName, attributeValue, shouldSignal);
         }
     } catch (e) {
-        this.$set(attributeName, attributeValue, signalFlag);
+        this.$set(attributeName, attributeValue, shouldSignal);
     }
 
     return this;
@@ -2614,7 +2636,7 @@ function(aURI) {
         return this.raise('TP.sig.InvalidParameter', arguments);
     }
 
-    this.$set('uri', aURI.asString());
+    this.$set('uri', aURI.asString(), false);
 
     return this;
 });
@@ -2622,7 +2644,7 @@ function(aURI) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('setValue',
-function(aValue, signalFlag) {
+function(aValue, shouldSignal) {
 
     /**
      * @name setValue
@@ -2636,8 +2658,8 @@ function(aValue, signalFlag) {
      *     is changed. The type of node and input can alter how this actually is
      *     done. See the setContent call for more information.
      * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} signalFlag Should changes be notified. If false changes
-     *     are not signaled. Defaults to this.shouldSignalChange().
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
      * @todo
      */
@@ -2666,7 +2688,11 @@ function(aValue, signalFlag) {
     TP.nodeSetTextContent(node, aValue);
 
     //  signal as needed
-    flag = TP.ifInvalid(signalFlag, this.shouldSignalChange());
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
     if (flag) {
         this.changed('value', TP.UPDATE);
     }
@@ -4212,7 +4238,11 @@ function(aNode, shouldSignal) {
     //  skip any wrapper method so we don't reset on the native element
     this.$set('phase', phase, false);
 
-    flag = TP.ifInvalid(shouldSignal, this.shouldSignalChange());
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     if (flag) {
         this.changed('content', TP.UPDATE);
     }
@@ -10294,13 +10324,32 @@ function(anID) {
      * @returns {String} The ID that was set.
      */
 
-    var id;
+    var natNode,
+        wasRegistered,
 
-    if (TP.isEmpty(id = anID)) {
-        id = TP.elemGenID(this.getNativeNode());
+        id;
+
+    natNode = this.getNativeNode();
+
+    //  If the receiver was registered under an 'id', unregister it and
+    //  re-register with the new ID below.
+    if (TP.notEmpty(id = TP.gid(natNode, false))) {
+        wasRegistered = TP.sys.hasRegistered(this, id);
+        TP.sys.unregisterObject(this, id);
     }
 
-    TP.elementSetAttribute(this.getNativeNode(), 'id', id, true);
+    if (TP.isEmpty(id = anID)) {
+        id = TP.elemGenID(natNode);
+    }
+
+    TP.elementSetAttribute(natNode, 'id', id, true);
+
+    if (wasRegistered) {
+        //  Note here how we *refetch the global ID* since that's what we're
+        //  replacing... not just the local ID that we just set.
+        id = TP.gid(natNode, false);
+        TP.sys.registerObject(this, id);
+    }
 
     return id;
 });
@@ -10341,7 +10390,7 @@ function(aPhase) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('setValue',
-function(aValue, signalFlag) {
+function(aValue, shouldSignal) {
 
     /**
      * @name setValue
@@ -10355,7 +10404,7 @@ function(aValue, signalFlag) {
      *     is changed. The type of node and input can alter how this actually is
      *     done. See the setContent call for more information.
      * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} signalFlag Should changes be notified. If false changes
+     * @param {Boolean} shouldSignal Should changes be notified. If false changes
      *     are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
      * @todo
@@ -10366,7 +10415,12 @@ function(aValue, signalFlag) {
     this.setContent(aValue);
 
     //  signal as needed
-    flag = TP.ifInvalid(signalFlag, this.shouldSignalChange());
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
     if (flag) {
         this.changed('value', TP.UPDATE);
     }

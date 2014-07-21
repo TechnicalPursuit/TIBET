@@ -3061,9 +3061,9 @@ function(anObj) {
      * @name fromArray
      * @synopsis Returns an instance of this type as extracted from anObj, which
      *     should be an Array. This Array should be in the format of:
-     *     [xx, xy, yx, yy, dx, dy]
+     *     [[xx, xy, dx], [yx, yy, dy]]
      * @description This type only supports 3X2 matrices, so this method will
-     *     only take a 6 element Array representing that. 4X4 3D matrices have
+     *     only take a 3X2 set of Arrays representing that. 4X4 3D matrices have
      *     to be converted to a 3X2 matrix first.
      * @param {Array} anObj The Array that an instance of this type will be
      *     extracted from.
@@ -3076,12 +3076,12 @@ function(anObj) {
         newObj;
 
     data = {
-            'xx': anObj[0],
-            'xy': anObj[1],
-            'yx': anObj[2],
-            'yy': anObj[3],
-            'dx': anObj[4],
-            'dy': anObj[5]
+            'xx': anObj[0][0],
+            'xy': anObj[0][1],
+            'yx': anObj[1][0],
+            'yy': anObj[1][1],
+            'dx': anObj[0][2],
+            'dy': anObj[1][2]
             };
 
     newObj = this.construct(data);
