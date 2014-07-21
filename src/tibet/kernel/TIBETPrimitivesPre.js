@@ -604,15 +604,18 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
 
     var displayName;
 
-    // Build a display name that should work for most cases.
+    //  Build a display name that should work for most cases.
     if (!display) {
-        // If the track is local we don't show it, so Obj.method instead of
-        // Obj.Local.method, but Obj.Inst.method, or Obj.Type.method as needed.
+        //  If the track is local we don't show it, so Obj.method instead of
+        //  Obj.Local.method, but Obj.Inst.method, or Obj.Type.method as needed.
         if (track.indexOf(TP.LOCAL_TRACK) === TP.NOT_FOUND) {
             try {
-            displayName = owner.getID() + '.' + track + '.' + name;
+                displayName = owner.getID() + '.' + track + '.' + name;
             } catch (e) {
-                console.log('name: ' + name + ' track: ' + track + ' stack: ' + e.stack);
+                console.log('Can\'t compute owner ID for: ' + TP.str(owner) +
+                                ' for method named: ' + name +
+                                ' on track: ' + track +
+                                ' stack: ' + e.stack);
             }
         } else {
             displayName = owner.getID() + '.' + name;
