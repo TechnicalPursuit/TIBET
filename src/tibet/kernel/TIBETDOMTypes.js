@@ -306,22 +306,6 @@ function(nodeSpec, varargs) {
     //  Instance Construction
     //  ---
 
-    args = TP.args(arguments);
-    args.atPut(0, node);
-    inst = this.callNextMethod.apply(this, args);
-
-    //  If varargs is a TP.lang.Hash and inst is an instance of some subtype
-    //  of TP.core.ElementNode, then try to execute '.setAttribute()'
-    //  against the new instance for each key in the hash.
-    if (TP.isKindOf(varargs, 'TP.lang.Hash') &&
-        TP.isKindOf(inst, 'TP.core.ElementNode')) {
-        varargs.perform(
-            function(kvPair) {
-
-                inst.setAttribute(kvPair.first(), kvPair.last());
-            });
-    }
-
     //  if we're using registered instances check for that next, and be sure
     //  to tell the GOBI call to stop after registration checks to avoid
     //  recursions here
@@ -351,7 +335,25 @@ function(nodeSpec, varargs) {
 
             return inst;
         }
+    }
 
+    args = TP.args(arguments);
+    args.atPut(0, node);
+    inst = this.callNextMethod.apply(this, args);
+
+    //  If varargs is a TP.lang.Hash and inst is an instance of some subtype
+    //  of TP.core.ElementNode, then try to execute '.setAttribute()'
+    //  against the new instance for each key in the hash.
+    if (TP.isKindOf(varargs, 'TP.lang.Hash') &&
+        TP.isKindOf(inst, 'TP.core.ElementNode')) {
+        varargs.perform(
+            function(kvPair) {
+
+                inst.setAttribute(kvPair.first(), kvPair.last());
+            });
+    }
+
+    if (this.shouldRegisterInstances()) {
         this.registerInstance(inst);
     }
 
