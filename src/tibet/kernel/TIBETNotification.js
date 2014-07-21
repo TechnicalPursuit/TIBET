@@ -4051,6 +4051,7 @@ aSigEntry, checkTarget) {
                             TP.SIGNAL_LOG, arguments) : 0;
 
             aSignal.setOrigin(originalOrigin);
+
             return;
         }
     }
@@ -4336,7 +4337,7 @@ function(anOrigin, aSignal, aContext, aPayload, aType) {
         return sig;
     }
 
-    //  did that because orgid was TP.ANY ;))
+    // Don't signal a potentially defaulted 'TP.ANY' origin multiple times.
     if (orgid !== TP.ANY) {
         TP.sig.SignalMap.notifyHandlers(null, signame, sig, true);
     }
@@ -6446,6 +6447,7 @@ function(anOrigin, anException, aContext, aPayload) {
     exceptions = TP.ac();
     exceptions.push(aSignal);
 
+    //  TODO: compute the offset once and slice after that.
     //  trim the list down to just exception subtypes...don't go up through
     //  TP.sig.Signal and on toward Object.
     for (i = 0; i < supers.getSize(); i++) {
@@ -7370,7 +7372,8 @@ function(signalTypes) {
 //  ========================================================================
 
 TP.sig.Signal.defineSubtype('SourceSignal');
-TP.sig.SourceSignal.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
+TP.sig.SourceSignal.Type.defineAttribute('defaultPolicy',
+    TP.INHERITANCE_FIRING);
 
 TP.sig.SourceSignal.defineSubtype('SourceOpen');
 TP.sig.SourceSignal.defineSubtype('SourceDataReceived');

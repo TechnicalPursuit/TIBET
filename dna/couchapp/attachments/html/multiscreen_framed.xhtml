@@ -11,8 +11,8 @@
 <meta name="description" content="The TIBET 5.0 Web Environment"/>
 <meta name="author" content="Technical Pursuit Inc."/>
 
-<link rel="shortcut icon" href="../img/favicon.png" type="image/x-icon"/>
-<link rel="icon" href="../img/favicon.png" type="image/x-icon"/>
+<link rel="shortcut icon" href="../img/favicon.ico" type="image/x-icon"/>
+<link rel="icon" href="../img/favicon.ico" type="image/x-icon"/>
 
 <!--
 We inline the style to help ensure that everything works regardless of
@@ -29,6 +29,7 @@ html,body,#background {
     margin: 0;
     padding: 0;
     border: 0;
+    border-radius: 3px;
 }
 
 #background {
@@ -53,7 +54,7 @@ div,iframe {
     font-weight: bold;
     font-size: 138.5%;
 
-    border: 2px solid #aaa;
+    border: 1px solid #aaa;
     box-shadow: 0 0 0 1px #eee;
 
     background-color: #eee;
@@ -81,7 +82,7 @@ div,iframe {
     font-size: 138.5%;
 
     box-shadow: 0 0 0 1px #eee;
-    border: 2px solid #aaa;
+    border: 1px solid #aaa;
 
     background-color: #aaa;
     background-image: url(../TIBET-INF/tibet/lib/img/boot/white_fiber.png);
@@ -110,7 +111,7 @@ div,iframe {
     line-height: 28px;
 
     box-shadow: 0 0 0 1px #eee;
-    border: 2px solid #aaa;
+    border: 1px solid #aaa;
 
     background-color: #aaa;
     background-image: url(../TIBET-INF/tibet/lib/img/boot/white_fiber.png);
@@ -142,8 +143,8 @@ div,iframe {
 }
 
 .middle {
-    top: 40px;
-    bottom: 41px;
+    top: 36px;
+    bottom: 36px;
     height: auto;
 
     border-top-left-radius: 5px;
@@ -162,19 +163,19 @@ div,iframe {
 
 .west {
     left: 0;
-    width: 126px;
+    width: 46px;
     border-left: 0;
 }
 
 .center {
-    left: 136px;
-    right: 136px;
+    left: 52px;
+    right: 52px;
     width: auto;
 }
 
 .east {
     right: 0;
-    width: 126px;
+    width: 46px;
     border-right: 0;
 }
 
@@ -227,21 +228,21 @@ div,iframe {
 
 .north .drawer {
     border-top: 0;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 .south .drawer {
     border-bottom: 0;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
 }
 
 .middle .drawer {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 .west .drawer {
@@ -293,9 +294,14 @@ div,iframe {
 
 #center {
     box-shadow: 0 0 0 1px #eee;
-    border: 2px solid #aaa;
+    border: 1px solid #aaa;
     background: #fff;
     padding: 1px;
+    min-width: 600px;
+}
+
+#center #content {
+    border-radius: 4px;
 }
 
 #content {
@@ -305,7 +311,6 @@ div,iframe {
     right: 0;
     overflow: auto;
     border: 1px solid #666;
-    border-radius: 5px;
 }
 
 #UISCREENS {
@@ -314,6 +319,7 @@ div,iframe {
     width: 100%;
     height: 100%;
     background-color: white;
+    border-radius: 4px;
 }
 </style>
 
