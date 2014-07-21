@@ -4785,12 +4785,26 @@ function(anID) {
      * @returns {String} The ID that was set.
      */
 
-    var id;
+    var id,
+        wasRegistered;
+
+    //  If the receiver was registered under an 'id', unregister it and
+    //  re-register with the new ID below.
+    if (TP.isValid(id = this[TP.ID])) {
+        if (TP.isValid(TP.sys.hasRegistered)) {
+            wasRegistered = TP.sys.hasRegistered(this, id);
+            TP.sys.unregisterObject(this, id);
+        }
+    }
 
     //  default invalid entries to the OID
     id = TP.notValid(anID) ? this.$getOID() : anID;
 
     this[TP.ID] = id;
+
+    if (wasRegistered) {
+        TP.sys.registerObject(this, id);
+    }
 
     return this[TP.ID];
 });
@@ -5507,12 +5521,26 @@ function (anID) {
      * @returns {String} The ID that was set.
      */
 
-    var id;
+    var id,
+        wasRegistered;
+
+    //  If the receiver was registered under an 'id', unregister it and
+    //  re-register with the new ID below.
+    if (TP.isValid(id = this[TP.ID])) {
+        if (TP.isValid(TP.sys.hasRegistered)) {
+            wasRegistered = TP.sys.hasRegistered(this, id);
+            TP.sys.unregisterObject(this, id);
+        }
+    }
 
     //  default invalid entries to the OID
     id = TP.notValid(anID) ? this.$getOID() : anID;
 
     this[TP.ID] = id;
+
+    if (wasRegistered) {
+        TP.sys.registerObject(this, id);
+    }
 
     return this[TP.ID];
 });

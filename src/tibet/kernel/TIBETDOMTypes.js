@@ -844,7 +844,8 @@ function(anInstance) {
      * @returns {String} The ID used to register the instance.
      */
 
-    var nodeID;
+    var nodeID,
+        newID;
 
     //  presumption is that we have an instance
     nodeID = TP.gid(anInstance);
@@ -852,6 +853,16 @@ function(anInstance) {
     //  not all types register their instances for uniquing purposes
     if (this.shouldRegisterInstances()) {
         TP.sys.registerObject(anInstance, nodeID);
+    }
+
+    //  see if we ended up with a new ID after the registration process (we may
+    //  have if the 'getID()' call made in there computed a new ID.
+    newID = TP.gid(anInstance);
+    if (newID !== nodeID) {
+        //  If the new ID is not the same ID as the original ID used to
+        //  register, unregister the old one and re-register with the new one.
+        TP.sys.unregisterObject(anInstance, nodeID);
+        TP.sys.registerObject(anInstance, newID);
     }
 
     return nodeID;
@@ -10313,13 +10324,32 @@ function(anID) {
      * @returns {String} The ID that was set.
      */
 
-    var id;
+    var natNode,
+        wasRegistered,
 
-    if (TP.isEmpty(id = anID)) {
-        id = TP.elemGenID(this.getNativeNode());
+        id;
+
+    natNode = this.getNativeNode();
+
+    //  If the receiver was registered under an 'id', unregister it and
+    //  re-register with the new ID below.
+    if (TP.notEmpty(id = TP.gid(natNode, false))) {
+        wasRegistered = TP.sys.hasRegistered(this, id);
+        TP.sys.unregisterObject(this, id);
     }
 
-    TP.elementSetAttribute(this.getNativeNode(), 'id', id, true);
+    if (TP.isEmpty(id = anID)) {
+        id = TP.elemGenID(natNode);
+    }
+
+    TP.elementSetAttribute(natNode, 'id', id, true);
+
+    if (wasRegistered) {
+        //  Note here how we *refetch the global ID* since that's what we're
+        //  replacing... not just the local ID that we just set.
+        id = TP.gid(natNode, false);
+        TP.sys.registerObject(this, id);
+    }
 
     return id;
 });
