@@ -1580,8 +1580,14 @@ function(anObject, aRequest) {
 
     try {
 
-        //  Write input content
-        this.writeInputContent(request);
+        //  Write input content if we haven't already written it.
+        if (TP.notTrue(request.at('inputWritten'))) {
+            this.writeInputContent(request);
+        }
+
+        //  Make sure to mark the request as having had it's 'input content'
+        //  written once - we only do this once.
+        request.atPut('inputWritten', true);
 
         //  Write output content
         this.writeOutputContent(outObject, request);
