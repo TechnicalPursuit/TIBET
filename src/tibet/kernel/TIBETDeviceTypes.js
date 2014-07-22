@@ -2259,16 +2259,13 @@ TP.core.Mouse.Type.defineAttribute(
                         //  reschedule the repeat timer
                         TP.core.Mouse.$set(
                             'hoverRepeatTimer',
-                            setTimeout(
-                                func,
-                                hoverRepeat));
+                            setTimeout(func, hoverRepeat));
                     };
 
             //  set up the hover repeat timer
             TP.core.Mouse.$set(
                 'hoverRepeatTimer',
-                setTimeout(func,
-                    hoverRepeat));
+                setTimeout(func, hoverRepeat));
 });
 
 //  overall hash of observations made locally to a specific device
@@ -2988,7 +2985,7 @@ function(normalizedEvent) {
     }
 
     TP.core.Mouse.$set('hoverTimer',
-                    setTimeout(this.$get('hoverFunc'), hoverDelay));
+                        setTimeout(this.$get('hoverFunc'), hoverDelay));
 
     return;
 });
