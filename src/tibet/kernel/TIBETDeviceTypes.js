@@ -2235,13 +2235,41 @@ TP.core.Mouse.Type.defineAttribute(
 
             func = function() {
 
-                        var lastMove;
+                        var lastMove,
+                            doc,
+                            obs;
 
                         lastMove = TP.core.Mouse.$get('lastMove');
+
+                        //  If there was no 'last move' native event that we can
+                        //  leverage, then we can't do much so we exit here and
+                        //  don't reschedule the timer.
                         if (lastMove === null) {
                             return;
                         }
 
+                        //  If there are no mouse/drag hover subscriptions,
+                        //  then there is no point in continuing so we exit here
+                        //  and don't reschedule the timer.
+                        obs = TP.core.Mouse.get('observers');
+                        if (!obs.hasKey('TP.sig.DOMMouseHover') &&
+                            !obs.hasKey('TP.sig.DOMDragHover')) {
+                            return;
+                        }
+
+                        //  If the document doesn't itself have focus or doesn't
+                        //  have an active element, then that probably means
+                        //  this window isn't in focus to the user, which means
+                        //  hover events don't mean much. So we exit here and
+                        //  don't reschedule the timer.
+                        doc = TP.eventGetWindow(lastMove).document;
+                        if (!doc.hasFocus() || !doc.activeElement) {
+                            return;
+                        }
+
+                        //  If we're in a dragging state, then send invoke
+                        //  observers for 'draghover', otherwise invoke the ones
+                        //  for 'mousehover'.
                         if (TP.core.Mouse.$$isDragging(lastMove)) {
                             TP.eventSetType(lastMove, 'draghover');
 
