@@ -335,6 +335,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
                 //  the system wanders all over trying to compute equality
                 //  values for the handlers.
                 arr.remove(handler, TP.IDENTITY);
+                if (TP.isEmpty(arr)) {
+                    dict.removeKey(signal);
+                }
             }
         }
     }
