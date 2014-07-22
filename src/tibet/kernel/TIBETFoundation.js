@@ -871,6 +871,59 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+Function.Inst.defineMethod('generateMethodSourceHead',
+function() {
+
+    /**
+     * @name generateMethodSourceHead
+     * @synopsis Returns a String that is a representation of the 'source head'
+     *     of the canonical TIBET way of adding a method to the system.
+     * @description NOTE: this method produces a representation which *must* be
+     *     followed with a Function statement (i.e. 'function() {...}') and a
+     *     closing ')'.
+     * @returns {String} A representation of the 'source method head' of the
+     *     receiver in TIBET.
+     */
+
+    var owner,
+        track,
+
+        str,
+        
+        ownerName;
+
+    owner = this[TP.OWNER];
+    track = this[TP.TRACK];
+
+    str = TP.ac();
+
+    //  We need to have both a valid owner and track to generate the header.
+    if (TP.isValid(owner) && TP.isValid(track)) {
+        ownerName = owner.getName();
+
+        if (track === TP.GLOBAL_TRACK) {
+            str.push('TP.defineGlobalMethod(');
+        } else if (track === TP.PRIMITIVE_TRACK) {
+            str.push('TP.definePrimitive(');
+        } else if (track === TP.META_TYPE_TRACK) {
+            str.push('TP.defineMetaTypeMethod(');
+        } else if (track === TP.META_INST_TRACK) {
+            str.push('TP.defineMetaInstMethod(');
+        } else if (track === TP.TYPE_LOCAL_TRACK ||
+                    track === TP.LOCAL_TRACK) {
+            str.push(ownerName, '.defineMethod(');
+        } else {
+            str.push(ownerName, '.', track, '.defineMethod(');
+        }
+
+        str.push('\'', this.getName() + '\',\n');
+    }
+
+    return str.join('');
+});
+
+//  ------------------------------------------------------------------------
+
 Function.Inst.defineMethod('getMethodPatch',
 function(methodText) {
 
@@ -4799,66 +4852,52 @@ function(aFilterName, aLevel) {
 
     var lvl,
 
-        owner,
-        track,
-        name,
-
-        type,
-        srcFile,
-
         src,
 
+        head,
         str;
-
+        
     //  The only way to discern between Function objects that are one of the
     //  native constructors (types) and a regular Function object.
     if (TP.isNativeType(this)) {
         return TP.NO_SOURCE_REP;
     }
 
+    //  A custom TIBET type
     if (TP.isType(this)) {
         return TP.join(this.getSupertype().getName(),
-            '.defineSubtype(\'', this.getNamespacePrefix(), ':',
-         this.getLocalName(), '\');');
+                        '.defineSubtype(\'', this.getNamespacePrefix(), ':',
+                        this.getLocalName(), '\');');
     }
 
-    lvl = TP.notDefined(aLevel) ? TP.sys.cfg('stack.descent_max') :
-                                Math.max(0, aLevel);
+    lvl = TP.notDefined(aLevel) ?
+            TP.sys.cfg('stack.descent_max') :
+            Math.max(0, aLevel);
 
     if (lvl === 0) {
         return 'function () {}';
     }
 
-    owner = this[TP.OWNER];
-    track = this[TP.TRACK];
-    name = this.$getName();
-
-    if (TP.isType(type = TP.sys.getTypeByName('TPTIBETSourceFile'))) {
-        if (TP.isValid(srcFile = type.sourceFileForTarget(this))) {
-            src = srcFile.getMethodSource(owner.getID(), name, track);
-        }
-    }
-
-    if (TP.notValid(src)) {
-        src = this.asString();
-    }
+    src = this.asString();
 
     str = TP.ac();
-    if (TP.isValid(owner) && TP.isValid(track)) {
-        if (track === TP.TYPE_LOCAL_TRACK) {
-            str.push('\'', owner.getName(),
-                                    '\'.asType().defineMethod(\'');
-        } else if (track === TP.GLOBAL_TRACK) {
-            str.push('TP.sys.defineGlobal(\'');
-        } else {
-            str.push('\'', owner.getName(), '\'.asType().add',
-                                                track, 'Method(\'');
-        }
 
-        str.push(this.getName() + '\',\n', src, ')');
+    if (TP.isMethod(this)) {
+
+        //  Generate the 'method header' - this gives us a String that is a
+        //  representation of the canonical TIBET way to add methods to the
+        //  system. Note that this produces a representation which *must* be
+        //  followed with a Function statement (i.e. 'function() {...}') and a
+        //  closing ')'.
+        head = this.generateMethodSourceHead();
+
+        //  Add that head, our source and a trailing ')' to the representation.
+        str.push(head, src, ')');
     } else {
         str.push(src);
     }
+
+     str.push(';');
 
     return str.join('');
 });
