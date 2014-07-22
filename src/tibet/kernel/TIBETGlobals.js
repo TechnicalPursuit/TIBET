@@ -78,7 +78,7 @@ TP.StringProto = String.prototype;
 
 //  method metadata slots - need these for method definitions below.
 
-TP.DISPLAY = 'displayName';     // What debuggers want to see.
+TP.DISPLAY = 'displayName';     //  What debuggers want to see.
 TP.NAME = '$$name';
 TP.ID = '$$id';
 TP.OWNER = '$$owner';
@@ -705,6 +705,9 @@ TP.HIDDEN = 'hidden';
 TP.BEFORE = 'before';
 TP.AFTER = 'after';
 TP.REQUIRED = function() {return;};
+
+//  for native nodes
+TP.WRAPPER = 'wrapper';
 
 //  meta owners and their target objects
 

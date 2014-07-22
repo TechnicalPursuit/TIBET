@@ -337,6 +337,12 @@ function(nodeSpec, varargs) {
         }
     }
 
+    //  See if the native node already has a pointer to a wrapper that was
+    //  created for it.
+    if (TP.isValid(inst = node[TP.WRAPPER])) {
+        return inst;
+    }
+
     args = TP.args(arguments);
     args.atPut(0, node);
     inst = this.callNextMethod.apply(this, args);
@@ -356,6 +362,9 @@ function(nodeSpec, varargs) {
     if (this.shouldRegisterInstances()) {
         this.registerInstance(inst);
     }
+
+    //  Go ahead and put a reference to the wrapper onto the native node.
+    node[TP.WRAPPER] = inst;
 
     return inst;
 });
