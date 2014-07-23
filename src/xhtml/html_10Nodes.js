@@ -191,15 +191,42 @@ function() {
      * @returns {TP.html.iframe} The receiver.
      */
 
+    var srcPath;
+
+    if (TP.notEmpty(srcPath = this.getAttribute('src'))) {
+        this.setContentUsingRelativePath(srcPath);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.iframe.Inst.defineMethod('setContentUsingRelativePath',
+function(aPath) {
+
+    /**
+     * @name setContentUsingRelativePath
+     * @synopsis Sets the content of the receiver to the content pointed to by
+     *     the supplied attribute, running it through the content processor
+     *     first.
+     * @description Note that the supplied path can be a relative URI, as the
+     *     receiver will be asked to resolve it to an absolute URI. This is
+     *     usually done by resolving it against the receiver's XML Base value or
+     *     it's document baseURI if an XML Base value cannot be computed.
+     * @param {String} aPath The URI to use as the path.
+     * @returns {TP.html.iframe} The receiver.
+     */
+
     var srcPath,
         srcURI;
 
-    if (TP.notEmpty(this.getAttribute('src'))) {
+    if (TP.notEmpty(aPath)) {
 
         //  This will compute an 'absolute path' using the value of our 'src'
         //  attribute and either our computed XML Base or our document's
         //  'baseURI'.
-        srcPath = this.computeAbsoluteURIFromAttribute('src');
+        srcPath = this.computeAbsoluteURIFromValue(aPath);
 
         //  See if we can turn the path value into a URI
         srcURI = TP.uc(srcPath);
