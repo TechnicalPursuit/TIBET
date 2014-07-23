@@ -1364,7 +1364,7 @@ function(aProfile, useWildcards) {
     //  profound.
 
     if (TP.isEmpty(unit = profile.at('tibet:unit'))) {
-        if (TP.isEmpty(unit = TP.sys.getcfg('tibet.uriprofile.unit'))) {
+        if (TP.isEmpty(unit = TP.sys.cfg('tibet.uriprofile.unit'))) {
             if (TP.isValid(tpuser = TP.sys.getEffectiveUser())) {
                 unit = tpuser.getPrimaryUnit();
                 unit = TP.notValid(unit) ? '' : unit.getID();
@@ -1376,7 +1376,7 @@ function(aProfile, useWildcards) {
     }
 
     if (TP.isEmpty(role = profile.at('tibet:role'))) {
-        if (TP.isEmpty(role = TP.sys.getcfg('tibet.uriprofile.role'))) {
+        if (TP.isEmpty(role = TP.sys.cfg('tibet.uriprofile.role'))) {
             if (TP.isValid(tpuser = TP.sys.getEffectiveUser())) {
                 role = tpuser.getPrimaryRole();
                 role = TP.notValid(role) ? '' : role.getID();
@@ -1388,7 +1388,7 @@ function(aProfile, useWildcards) {
     }
 
     if (TP.isEmpty(user = profile.at('tibet:user'))) {
-        if (TP.isEmpty(user = TP.sys.getcfg('tibet.uriprofile.user'))) {
+        if (TP.isEmpty(user = TP.sys.cfg('tibet.uriprofile.user'))) {
             if (TP.isValid(tpuser = TP.sys.getEffectiveUser())) {
                 user = tpuser.getID();
                 TP.sys.setcfg('tibet.uriprofile.user', user);

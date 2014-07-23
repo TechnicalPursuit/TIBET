@@ -2946,7 +2946,7 @@ function(aRequest) {
 
     //  The url root we want to send to is in tds.cli_url
     url = TP.uriJoinPaths(TP.sys.getLaunchRoot(),
-                            TP.sys.getcfg('tds.cli_uri'));
+                            TP.sys.cfg('tds.cli_uri'));
 
     //  TODO: Maybe use TP.httpEncode() here?
     url += '?cmd=' + encodeURIComponent(cmd);
