@@ -422,9 +422,9 @@ function() {
     //  callbacks, error conditions, etc.
     request = TP.request();
 
-    // TODO: these should be methods, not functions in the payload. fixing this
-    // requires changing everywhere that expects 'loadFunc' as a key (many DOM
-    // and DHTML primitives (ack 'loadedFunc' for the list).
+    //  TODO: these should be methods, not functions in the payload. fixing this
+    //  requires changing everywhere that expects 'loadFunc' as a key (many DOM
+    //  and DHTML primitives (ack 'loadFunc' for the list).
     request.atPut('loadFunc', function(aDocument) {
         var appType,
             bodyElem,
