@@ -3773,6 +3773,54 @@ function(aURI, force, aParamHash) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('computeAbsoluteURIFromAttribute',
+function(attributeName, checkAttrNSURI) {
+
+    /**
+     * @name computeAbsoluteURIFromAttribute
+     * @synopsis Returns the value of an attribute on the receiver that is
+     *      expected to contain a URI joined with the value of the receiver's
+     *      'XML Base' value or it's document's 'baseURI'.
+     * @param {String} attributeName The attribute to fetch the URI value from.
+     * @param {Boolean} checkAttrNSURI True will cause this method to be more
+     *     rigorous in its checks for prefixed attributes, looking via URI
+     *     rather than just prefix. Default is false (to keep things faster).
+     * @returns {String} The attribute's URI value as joined to it's XML Base
+     *     value or its document's base URI.
+     */
+
+    var node,
+        baseURI,
+        pathURI,
+        val,
+
+        retVal;
+
+    node = this.getNativeNode();
+
+    if (TP.isDocument(node)) {
+        baseURI = node.baseURI;
+        node = node.documentElement;
+    } else {
+        baseURI = node.ownerDocument.baseURI;
+    }
+
+    if (!TP.isURI(pathURI = TP.elementComputeXMLBaseFrom(node))) {
+        pathURI = baseURI;
+    }
+
+    val = TP.elementGetAttribute(node, attributeName, checkAttrNSURI);
+
+    retVal = '';
+    if (TP.isURI(pathURI) && TP.isURI(val)) {
+        retVal = TP.uriJoinPaths(TP.uriCollectionPath(pathURI), val);
+    }
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('getAttribute',
 function(attributeName, checkAttrNSURI) {
 
