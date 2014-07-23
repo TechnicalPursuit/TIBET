@@ -178,12 +178,46 @@ TP.html.iframe.Inst.resolveTraits(
 TP.html.iframe.set('uriAttrs', TP.ac('src', 'longdesc'));
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
+
+TP.html.iframe.Inst.defineMethod('setContentFromSource',
+function() {
+
+    /**
+     * @name setContentFromSource
+     * @synopsis Sets the content of the receiver to the content pointed to by
+     *     it's 'src' attribute, running it through the content processor first.
+     * @returns {TP.html.iframe} The receiver.
+     */
+
+    var srcPath,
+        srcURI;
+
+    if (TP.notEmpty(this.getAttribute('src'))) {
+
+        //  This will compute an 'absolute path' using the value of our 'src'
+        //  attribute and either our computed XML Base or our document's
+        //  'baseURI'.
+        srcPath = this.computeAbsoluteURIFromAttribute('src');
+
+        //  See if we can turn the path value into a URI
+        srcURI = TP.uc(srcPath);
+
+        //  It may need a rewrite().
+        srcURI = srcURI.rewrite();
+
+        //  If we have a URI, set the content of our content window to it.
+        if (TP.isURI(srcURI)) {
+
+            //  Set our content to the fetched resource. This will cause content
+            //  processing to occur.
+            this.setContent(srcURI);
+        }
+    }
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 //  TP.core.UICanvas Interface
