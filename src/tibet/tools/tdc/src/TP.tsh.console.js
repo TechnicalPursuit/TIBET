@@ -79,22 +79,32 @@ function(aRequest) {
             null,
             'TP.sig.AppDidStart',
             function (aSignal) {
-                (function () {
+                var handler,
+                    count;
+
+                count = 0;
+                handler = function () {
                     var uiBoot,
                         tsh;
 
-                    uiBoot = TP.win('UIBOOT');
+                    if (TP.sys.hasStarted()) {
+                        uiBoot = TP.win('UIBOOT');
 
-                    tsh = TP.core.TSH.getDefaultInstance();
+                        tsh = TP.core.TSH.getDefaultInstance();
 
-                    TP.core.ConsoleService.construct(
-                        null,
-                        TP.hc('consoleWindow', uiBoot,
-                                'consoleModel', tsh,
-                                'triggerKey', triggerKey
-                        ));
+                        TP.core.ConsoleService.construct(
+                            null,
+                            TP.hc('consoleWindow', uiBoot,
+                                    'consoleModel', tsh,
+                                    'triggerKey', triggerKey
+                            ));
+                    } else if (count < 10) {
+                        count++;
+                        handler.fork(50);
+                    }
+                };
 
-                }.fork(100));
+                handler.fork(50);
             });
 
     return this.callNextMethod();
