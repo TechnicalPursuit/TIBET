@@ -10388,7 +10388,7 @@ function(anID) {
 
     //  If the receiver was registered under an 'id', unregister it and
     //  re-register with the new ID below.
-    if (TP.notEmpty(id = TP.gid(natNode, false))) {
+    if (TP.notEmpty(id = TP.gid(natNode, false)) && id !== anID) {
         wasRegistered = TP.sys.hasRegistered(this, id);
         TP.sys.unregisterObject(this, id);
     }

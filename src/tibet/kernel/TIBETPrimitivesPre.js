@@ -4797,7 +4797,7 @@ function(anID) {
 
     //  If the receiver was registered under an 'id', unregister it and
     //  re-register with the new ID below.
-    if (TP.isValid(id = this[TP.ID])) {
+    if (TP.isValid(id = this[TP.ID]) && id !== anID) {
         if (TP.isValid(TP.sys.hasRegistered)) {
             wasRegistered = TP.sys.hasRegistered(this, id);
             TP.sys.unregisterObject(this, id);
