@@ -98,6 +98,7 @@ TP[TP.ID] = 'TP';
 TP.sys[TP.ID] = 'TP.sys';
 TP.boot[TP.ID] = 'TP.boot';
 TP.global[TP.ID] = 'Self';
+APP[TP.ID] = 'APP';
 
 //  ------------------------------------------------------------------------
 
@@ -123,6 +124,7 @@ TP[TP.NAME] = 'TP';
 TP.sys[TP.NAME] = 'TP.sys';
 TP.boot[TP.NAME] = 'TP.boot';
 TP.global[TP.NAME] = 'Self';
+APP[TP.NAME] = 'APP';
 
 //  -----------------------------------------------------------------------
 //  Preliminary bootstrap methods required by TP.defineSlot() and
@@ -133,11 +135,13 @@ TP.global[TP.NAME] = 'Self';
 TP.getID = function () {return TP[TP.ID];};
 TP.sys.getID = function () {return TP.sys[TP.ID];};
 TP.boot.getID = function () {return TP.boot[TP.ID];};
+APP.getID = function () {return APP[TP.ID];};
 
 //  Needed during boot
 TP.getName = function () {return TP[TP.NAME];};
 TP.sys.getName = function () {return TP.sys[TP.NAME];};
 TP.boot.getName = function () {return TP.boot[TP.NAME];};
+APP.getName = function () {return APP[TP.NAME];};
 
 //  ------------------------------------------------------------------------
 
