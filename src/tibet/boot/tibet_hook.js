@@ -2496,21 +2496,6 @@ if (window.onerror.failedlaunch !== true &&
                                 'change',
                                 TP.$$handleChange);
 
-        //  Prevent all 'platform' (i.e. HTML5) drag-and-drop events - TIBET
-        //  handles drag-and-drop itself.
-        TP.boot.$$addUIHandler(aDocument,
-                                'dragstart',
-                                TP.boot.$$stopAndPreventEvent);
-        TP.boot.$$addUIHandler(aDocument,
-                                'dragenter',
-                                TP.boot.$$stopAndPreventEvent);
-        TP.boot.$$addUIHandler(aDocument,
-                                'dragover',
-                                TP.boot.$$stopAndPreventEvent);
-        TP.boot.$$addUIHandler(aDocument,
-                                'drop',
-                                TP.boot.$$stopAndPreventEvent);
-
         //  Add a mutation signal source for mutations to this document
         TP.boot.$$addMutationSource(aDocument);
 
@@ -2563,11 +2548,6 @@ if (window.onerror.failedlaunch !== true &&
         TP.boot.$$removeUIHandler(aDocument, 'keypress');
 
         TP.boot.$$removeUIHandler(aDocument, 'change');
-
-        TP.boot.$$removeUIHandler(aDocument, 'dragstart');
-        TP.boot.$$removeUIHandler(aDocument, 'dragenter');
-        TP.boot.$$removeUIHandler(aDocument, 'dragover');
-        TP.boot.$$removeUIHandler(aDocument, 'drop');
 
         //  Remove a mutation signal source for mutations to this document
         TP.boot.$$removeMutationSource(aDocument);
