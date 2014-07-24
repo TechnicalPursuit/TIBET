@@ -32,8 +32,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.core.UIElementNode.defineSubtype('sherpa:halo');
 
-TP.sherpa.halo.shouldRegisterInstances(true);
-
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------

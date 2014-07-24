@@ -333,21 +333,6 @@ TP.definePrimitive('SUBTYPE_SORT', TP.SUBTYPE_SORT);
 TP.definePrimitive('UNICODE_SORT', TP.UNICODE_SORT);
 TP.definePrimitive('ELEMENT_SORT', TP.ELEMENT_SORT);
 
-TP.sys.registerObject(Array);
-TP.sys.registerObject(Boolean);
-TP.sys.registerObject(Date);
-TP.sys.registerObject(Function);
-TP.sys.registerObject(Number);
-TP.sys.registerObject(Object);
-TP.sys.registerObject(RegExp);
-TP.sys.registerObject(String);
-
-TP.sys.registerObject(TP);
-TP.sys.registerObject(APP);
-
-TP.sys.registerObject(TP.sys);
-TP.sys.registerObject(TP.boot);
-
 //  ---
 //  TIBETVersion.js
 //  ---

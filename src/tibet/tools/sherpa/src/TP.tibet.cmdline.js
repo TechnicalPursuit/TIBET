@@ -35,8 +35,6 @@ TP.core.UIElementNode.defineSubtype('tibet:cmdline');
 //  Mix in templating functionality, overwriting any prior implementations.
 TP.tibet.cmdline.mixin(TP.core.TemplatedNode, true);
 
-TP.tibet.cmdline.shouldRegisterInstances(true);
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------

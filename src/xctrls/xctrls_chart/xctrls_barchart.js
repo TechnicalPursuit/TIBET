@@ -35,8 +35,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.xctrls.chart.defineSubtype('barchart');
 
-TP.xctrls.barchart.shouldRegisterInstances(true);
-
 //  ------------------------------------------------------------------------
 
 TP.xctrls.barchart.Inst.defineMethod('refresh',

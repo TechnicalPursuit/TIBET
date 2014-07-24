@@ -36,8 +36,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.xctrls.FramedElement.defineSubtype('codeeditor');
 
-TP.xctrls.codeeditor.shouldRegisterInstances(true);
-
 //  Events:
 //      xctrls-codeeditor-selected
 

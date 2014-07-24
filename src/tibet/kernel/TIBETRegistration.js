@@ -54,15 +54,6 @@ over time.
 
 //  ------------------------------------------------------------------------
 
-/**
- * @The 'public instance' hash, keyed by ID/OID.
- * @todo
- */
-
-TP.sys.$objects = TP.hc();
-
-//  ------------------------------------------------------------------------
-
 TP.sys.defineMethod('getObjectById',
 function(anID, regOnly, aContext) {
 
@@ -121,16 +112,28 @@ function(anID, regOnly, aContext) {
     //  doesn't like it when you try to alter a non-null parameter value
     id = TP.str(anID);
 
-    //  if we're not told differently don't stop with registered objects
-    reg = TP.notValid(regOnly) ? false : regOnly;
-
-    //  check our hash of registrations now, note this means registrations
-    //  always override other lookup mechanisms. NB: We explicitly reference
-    //  'TP.sys' here because this method (or its $byOID shortcut) may get
-    //  copied to other windows where 'this' will then point to that window
-    if (TP.isValid(inst = TP.sys.$objects.at(id))) {
+    if (TP.isType(inst = TP.sys.getTypeByName(id))) {
         return inst;
     }
+
+    //  If a TIBET URN can be made from the ID and it has a real resource
+    //  object, then return that.
+    if (TP.regex.TIBET_URN.test(id)) {
+        if (TP.isValid(inst = TP.uc(id).getResource())) {
+            return inst;
+        }
+    }
+
+    //  Try to make a TIBET URN from the ID and, if it has a real resource
+    //  object, then return that.
+    if (TP.regex.TIBET_URN.test(TP.TIBET_URN_PREFIX + id)) {
+        if (TP.isValid(inst = TP.uc(TP.TIBET_URN_PREFIX + id).getResource())) {
+            return inst;
+        }
+    }
+
+    //  if we're not told differently don't stop with registered objects
+    reg = TP.notValid(regOnly) ? false : regOnly;
 
     if (TP.regex.VALID_TYPENAME.test(id)) {
         //  check for type names as our second priority. note the flag here
@@ -357,21 +360,27 @@ function(anObj, anID) {
      * @todo
      */
 
-    var obj;
-
     if (TP.isEmpty(anID)) {
         return false;
     }
 
-    obj = TP.sys.$objects.at(anID);
-
-    //  when we get an object we check to be sure they're the same object
-    if (TP.isValid(anObj)) {
-        return anObj === obj;
-    } else {
-        //  otherwise we just care about finding something
-        return TP.isValid(obj);
+    //  If a TIBET URN can be made from the ID and it has a real resource
+    //  object, then return that.
+    if (TP.regex.TIBET_URN.test(anID)) {
+        if (TP.isValid(TP.uc(anID).getResource())) {
+            return true;
+        }
     }
+
+    //  Try to make a TIBET URN from the ID and, if it has a real resource
+    //  object, then return that.
+    if (TP.regex.TIBET_URN.test(TP.TIBET_URN_PREFIX + anID)) {
+        if (TP.isValid(TP.uc(TP.TIBET_URN_PREFIX + anID).getResource())) {
+            return true;
+        }
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -396,7 +405,19 @@ function(anObj, anID, forceRegistration) {
         anObjType;
 
     if (TP.notValid(anObj)) {
-        return;
+        return false;
+    }
+
+    //  If the object is a type, then it can be found by using it's global name,
+    //  either literally or via a URI or via the TP.sys.getTypeByName() call
+    //  (which is what the TP.sys.getObjectById() call above uses).
+    if (TP.isType(anObj)) {
+        return false;
+    }
+
+    //  A URI can be found directly by using the TP.uc() call and its registry.
+    if (TP.isKindOf(anObj, TP.core.URI)) {
+        return false;
     }
 
     //  some object registrations (particularly those with IDs that are set
@@ -418,14 +439,22 @@ function(anObj, anID, forceRegistration) {
         id = TP.ifInvalid(anID, anObj.getID());
     }
 
-    //  stop if object is already the registered value for that id
-    obj = TP.sys.$objects.at(id);
-    if (obj === anObj) {
-        return true;
+    if (TP.isURI(id)) {
+        return false;
     }
 
-    //  new value for that ID, so assign and signal for observers
-    TP.sys.$objects.atPut(id, anObj);
+    if (TP.regex.TIBET_URN.test(id)) {
+        TP.ifError() ?
+            TP.error('Trying to register object whose ID is already a URN: ' +
+                        id,
+                        TP.LOG, arguments) : 0;
+
+        return false;
+    }
+
+    //  Create a TIBET URN to store the object
+    TP.uc('urn:tibet:' + id).setResource(anObj);
+
     if (TP.isValid(obj)) {
         id.signal('TP.sig.IdentityChange');
     }
@@ -454,8 +483,7 @@ function(anObj, anID) {
      * @todo
      */
 
-    var id,
-        obj;
+    var id;
 
     if (TP.isString(anID)) {
         id = anID;
@@ -463,26 +491,9 @@ function(anObj, anID) {
         id = anObj.getID();
     }
 
-    obj = TP.sys.$objects.at(id);
-    if (TP.notDefined(obj)) {
-        return true;
-    }
-
-    if (TP.isCallable(TP.sys.$objects.removeKey)) {
-        TP.sys.$objects.removeKey(id);
-    } else {
-        try {
-            delete(TP.sys.$objects[id]);
-        } catch (e) {
-            //  ignore missing keys
-        }
-    }
-
-    //  retest, if gone now then we had a change of state
-    obj = TP.sys.$objects.at(id);
-    if (TP.notDefined(obj)) {
-        id.signal('TP.sig.IdentityChange');
-    }
+    //  TODO: For now, we don't 'unregister' objects (i.e. resources of TIBET
+    //  URNs).
+    //console.log('wanted to unregister an object with ID: ' + id);
 
     //  fail quietly
     return true;

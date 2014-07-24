@@ -32,8 +32,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.core.UIElementNode.defineSubtype('sherpa:console');
 
-TP.sherpa.console.shouldRegisterInstances(true);
-
 //  ----------------------------------------------------------------------------
 //  Type Constants
 //  ----------------------------------------------------------------------------

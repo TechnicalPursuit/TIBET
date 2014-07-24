@@ -35,8 +35,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.xctrls.FramedElement.defineSubtype('chart');
 
-TP.xctrls.chart.shouldRegisterInstances(true);
-
 //  A URI to the 'frame file' - the file that will be loaded into the
 //  iframe that this type builds to hold the custom control.
 TP.xctrls.chart.Type.defineAttribute('frameFileURI',

@@ -306,37 +306,6 @@ function(nodeSpec, varargs) {
     //  Instance Construction
     //  ---
 
-    //  if we're using registered instances check for that next, and be sure
-    //  to tell the GOBI call to stop after registration checks to avoid
-    //  recursions here
-    if (this.shouldRegisterInstances()) {
-        id = TP.gid(node);
-
-        //  check for anything under that ID, otherwise no registrations
-        if (TP.sys.hasRegistered(null, id)) {
-            //  get it, stopping lookups at registrations only
-            inst = TP.sys.getObjectById(id, true);
-
-            //  NOTE that certain elements can become stale if we're drawing
-            //  into the UI repeatedly, so we check for that here and update
-            //  the instance wrapper with the new node when the old node
-            //  doesn't match up
-            if (inst.getNativeNode() !== node) {
-                //  clear the node of any lingering data first
-                inst.recycle();
-
-                //  update the instance to hold the new native node and
-                //  return it
-
-                //  NOTE that by doing this after recycle we let the node
-                //  inform instance variables as needed
-                inst.setNativeNode(node, false);
-            }
-
-            return inst;
-        }
-    }
-
     //  See if the native node already has a pointer to a wrapper that was
     //  created for it.
     if (TP.isValid(inst = node[TP.WRAPPER])) {
@@ -357,10 +326,6 @@ function(nodeSpec, varargs) {
 
                 inst.setAttribute(kvPair.first(), kvPair.last());
             });
-    }
-
-    if (this.shouldRegisterInstances()) {
-        this.registerInstance(inst);
     }
 
     //  Go ahead and put a reference to the wrapper onto the native node.
@@ -839,62 +804,6 @@ function() {
 
     //  At this level, we return the empty String.
     return '';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Type.defineMethod('registerInstance',
-function(anInstance) {
-
-    /**
-     * @name registerInstance
-     * @synopsis Registers an instance if it has a valid ID or name.
-     * @param {Object} anInstance An instance to register.
-     * @returns {String} The ID used to register the instance.
-     */
-
-    var nodeID,
-        newID;
-
-    //  presumption is that we have an instance
-    nodeID = TP.gid(anInstance);
-
-    //  not all types register their instances for uniquing purposes
-    if (this.shouldRegisterInstances()) {
-        TP.sys.registerObject(anInstance, nodeID);
-    }
-
-    //  see if we ended up with a new ID after the registration process (we may
-    //  have if the 'getID()' call made in there computed a new ID.
-    newID = TP.gid(anInstance);
-    if (newID !== nodeID) {
-        //  If the new ID is not the same ID as the original ID used to
-        //  register, unregister the old one and re-register with the new one.
-        TP.sys.unregisterObject(anInstance, nodeID);
-        TP.sys.registerObject(anInstance, newID);
-    }
-
-    return nodeID;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Type.defineMethod('shouldRegisterInstances',
-function(aFlag) {
-
-    /**
-     * @name shouldRegisterInstances
-     * @synopsis Combined setter/getter for the instance registration flag.
-     * @param {Boolean} aFlag An optional new flag value to set.
-     * @returns {Boolean} The current state of the registration flag.
-     * @todo
-     */
-
-    if (TP.isBoolean(aFlag)) {
-        this.$set('registerInstances', aFlag);
-    }
-
-    return this.$get('registerInstances');
 });
 
 //  ------------------------------------------------------------------------
@@ -3609,9 +3518,6 @@ TP.core.CollectionNode.isAbstract(true);
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
-
-//  whether or not instances should register with TIBET
-TP.core.CollectionNode.Type.defineAttribute('registerInstances', false);
 
 TP.core.CollectionNode.Type.defineAttribute('namespace', null);
 

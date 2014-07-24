@@ -4372,15 +4372,12 @@ function(aName) {
     //  We want registered objects to take precedence over types.
     result = this.$get('resource');
     if (TP.notValid(result)) {
-        result = TP.sys.getObjectById(str);
+        result = TP.sys.getTypeByName(str);
         if (TP.notValid(result)) {
-            result = TP.sys.getTypeByName(str);
-            if (TP.notValid(result)) {
-                try {
-                    result = TP.global[str];
-                } catch (e) {
-                    //  ignore errors attempting lookup.
-                }
+            try {
+                result = TP.global[str];
+            } catch (e) {
+                //  ignore errors attempting lookup.
             }
         }
     }

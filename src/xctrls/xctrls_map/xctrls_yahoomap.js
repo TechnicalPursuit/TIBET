@@ -35,8 +35,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.xctrls.map.defineSubtype('yahoomap');
 
-TP.xctrls.yahoomap.shouldRegisterInstances(true);
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
