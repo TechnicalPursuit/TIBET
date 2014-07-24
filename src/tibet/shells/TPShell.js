@@ -454,7 +454,7 @@ function(aResourceID, aRequest) {
     this.observe(TP.sys, 'TP.sig.AppShutdown');
 
     //  register so we can be found by resourceID for shell etc
-    TP.sys.registerObject(aResourceID, this);
+    TP.sys.registerObject(this, aResourceID);
 
     return this;
 });
