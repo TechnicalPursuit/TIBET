@@ -560,9 +560,6 @@ TP.sys.defineGlobal('$STATUS', 0);             //  last status code (0 is
 TP.sys.defineGlobal('TP', TP);
 TP.sys.defineGlobal('APP', APP);
 
-
-
-
 //  ------------------------------------------------------------------------
 //  COUNTERS/TIMERS
 //  ------------------------------------------------------------------------
