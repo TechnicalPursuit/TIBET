@@ -83,10 +83,12 @@ TP.sherpa.editortile.Inst.defineAttribute('currentTPElement');
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineMethod('init',
+TP.sherpa.editortile.Inst.defineMethod('setup',
 function() {
 
-    this.callNextMethod();
+    /**
+     * @name setup
+     */
 
     this.observe(this, 'TP.sig.DOMClick');
 
