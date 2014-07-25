@@ -439,6 +439,8 @@ function(anObj, anID, forceRegistration) {
         id = TP.ifInvalid(anID, anObj.getID());
     }
 
+    //  If the ID is already a URI, then it can already be looked up without
+    //  having to register it under a TIBET URN.
     if (TP.isURI(id)) {
         return false;
     }
@@ -453,7 +455,7 @@ function(anObj, anID, forceRegistration) {
     }
 
     //  Create a TIBET URN to store the object
-    TP.uc('urn:tibet:' + id).setResource(anObj);
+    TP.uc(TP.TIBET_URN_PREFIX + id).setResource(anObj);
 
     if (TP.isValid(obj)) {
         id.signal('TP.sig.IdentityChange');
@@ -483,7 +485,8 @@ function(anObj, anID) {
      * @todo
      */
 
-    var id;
+    var id,
+        urn;
 
     if (TP.isString(anID)) {
         id = anID;
@@ -491,9 +494,12 @@ function(anObj, anID) {
         id = anObj.getID();
     }
 
-    //  TODO: For now, we don't 'unregister' objects (i.e. resources of TIBET
-    //  URNs).
-    //console.log('wanted to unregister an object with ID: ' + id);
+    if (!TP.isURI(urn = TP.uc(TP.uc(TP.TIBET_URN_PREFIX + id)))) {
+        return false;
+    }
+
+    urn.clearCaches();
+    TP.core.URI.removeInstance(urn);
 
     //  fail quietly
     return true;
