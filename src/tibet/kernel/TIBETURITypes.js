@@ -1990,12 +1990,20 @@ function() {
      * @returns {TP.core.URI} The receiver.
      */
 
+    var resource;
+
     TP.ifTrace() ?
         TP.sys.logTransform('Clearing content cache for: ' + this.getID(),
             TP.TRACE, arguments) : 0;
 
-    //  empty the resource cache(s)
-    this.set('resource', null);
+    if (TP.isValid(resource = this.get('resource'))) {
+        this.ignore(resource, 'Change');
+    }
+
+    //  empty the resource cache(s) - note that we *must* use $set() here to
+    //  avoid all of the ID comparison and change notification machinery in the
+    //  regular 'setResource' call.
+    this.$set('resource', null);
 
     //  update expiration status as well as any potentially obsolete headers
     this.set('headers', null);
