@@ -573,8 +573,8 @@ function(anInstance) {
      *     Subsequent calls to construct an instance for that URI string will
      *     return the cached instance.
      * @param {TP.core.URI} anInstance The instance to register.
-     * @raises TP.sig.InvalidParameter
-     * @returns {TP.core.URI} A new instance.
+     * @raises TP.sig.InvalidURI
+     * @returns {TP.core.URI} The receiver.
      */
 
     var dict;
@@ -587,6 +587,33 @@ function(anInstance) {
     //  fully-expanded URI ID.
     dict = this.$get('instances');
     dict.atPut(anInstance.getLocation(), anInstance);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Type.defineMethod('removeInstance',
+function(anInstance) {
+
+    /**
+     * @name removeInstance
+     * @synopsis Removes an instance under that instance's URI string.
+     * @param {TP.core.URI} anInstance The instance to remove.
+     * @raises TP.sig.InvalidURI
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    var dict;
+
+    if (!TP.canInvoke(anInstance, 'getID')) {
+        return this.raise('TP.sig.InvalidURI', arguments);
+    }
+
+    //  update our instance registry by removing the instance, finding it's key
+    //  under the fully-expanded URI ID.
+    dict = this.$get('instances');
+    dict.removeKey(anInstance.getLocation());
 
     return this;
 });
