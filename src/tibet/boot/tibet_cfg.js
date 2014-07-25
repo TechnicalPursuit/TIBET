@@ -344,8 +344,8 @@ if (typeof navigator === 'undefined') {
 //  ui page initialization files
 //  ---
 
-//  the default page used to initialize an html canvas or display "nothing"
-TP.sys.setcfg('tibet.blankpage', '~lib_html/_body.html');
+//  the default page used to initialize an xhtml canvas or display "nothing"
+TP.sys.setcfg('tibet.blankpage', '~lib_xhtml/tp_blank.xhtml');
 
 //  the file used to initialize a dynamically generated XML-based IFRAME.
 TP.sys.setcfg('tibet.iframepage', '~lib_xhtml/tp_launch_stub.xhtml');
