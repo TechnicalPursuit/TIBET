@@ -1392,7 +1392,7 @@ TP.sys.setcfg('tibet.uirootmulti', false);
 //  what tag should be used in place of the default {{appname}}.app tag.
 TP.sys.setcfg('tibet.apptag', null);
 
-//  should the sherpa currently be active? default is false.
+//  is the sherpa currently active? default is false.
 TP.sys.setcfg('tibet.sherpa', false);
 
 //  the application login page. when booting in two-phase mode with logins
