@@ -8705,6 +8705,11 @@ function(mimeType, anElement, shouldProcess) {
 
     var targetElem,
 
+        mime,
+        mimeTypes,
+        uri,
+        src,
+
         doc,
         elem,
 
@@ -8716,14 +8721,44 @@ function(mimeType, anElement, shouldProcess) {
         return this;
     }
 
+    if (TP.notValid(mime = mimeType)) {
+        //  Otherwise, try to poke at the resource URI with a set of MIME
+        //  types and see if there are any matches. Note that this Array is
+        //  constructed in order with the most common types first and least
+        //  common last.
+        mimeTypes = TP.ac(TP.ietf.Mime.XHTML,
+                            TP.ietf.Mime.XML,
+                            TP.ietf.Mime.XSLT);
+
+        mimeTypes.perform(
+                function(aMIMEType) {
+                    if (TP.isURI(uri = this.getResourceURI(aMIMEType))) {
+                        mime = aMIMEType;
+                        return TP.BREAK;
+                    }
+                }.bind(this));
+    } else {
+        uri = this.getResourceURI(mime);
+    }
+
+    src = uri.getLocation();
+
     //  Grab the receiver's content registered under the supplied MIME type.
     //  Note how this is done synchronously.
-    doc = this.getResourceURI(mimeType).getResourceNode(TP.hc('async', false));
+    doc = uri.getResourceNode(TP.hc('async', false));
 
     //  Make sure that the resource had real markup that could be built as such.
     if (!TP.isDocument(doc) || !TP.isElement(elem = doc.documentElement)) {
         //  TODO: Raise an exception
         return this;
+    }
+
+    if (TP.notEmpty(src)) {
+        TP.elementSetAttribute(elem, 'tibet:src', src, true);
+    }
+
+    if (TP.notEmpty(mime)) {
+        TP.elementSetAttribute(elem, 'tibet:type', mime, true);
     }
 
     //  Process the content if the caller wants to.
