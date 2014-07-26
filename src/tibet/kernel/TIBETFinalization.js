@@ -378,7 +378,7 @@ function() {
         rootWindow,
         request;
 
-    rootLoc = TP.uriJoinPaths('~app_html', TP.sys.cfg('project.homepage'));
+    rootLoc = TP.uriJoinPaths('~app_html', TP.sys.cfg('project.rootpage'));
 
     //  Construct a TP.core.URI wrapper around the location and perform a
     //  rewrite on it, in case its actually a URI that's been mapped using

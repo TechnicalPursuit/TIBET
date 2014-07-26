@@ -8395,8 +8395,8 @@ TP.boot.$configureProject = function() {
             package.getAttribute('version') || '0.0.1');
     }
 
-    if (TP.boot.$notValid(TP.sys.cfg('project.homepage'))) {
-        TP.sys.setcfg('project.homepage', '~app_html/UIROOT.xhtml');
+    if (TP.boot.$notValid(TP.sys.cfg('project.rootpage'))) {
+        TP.sys.setcfg('project.rootpage', '~app_html/UIROOT.xhtml');
     }
 
     return;

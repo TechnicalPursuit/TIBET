@@ -87,8 +87,8 @@ TP.sys.setcfg('project.name', null);
 //  the root package file will trigger cache refresh logic
 TP.sys.setcfg('project.version', null);
 
-//  the project's default home page. The default value is UIROOT.xhtml.
-TP.sys.setcfg('project.homepage', null);
+//  the project's default root page. The default value is UIROOT.xhtml.
+TP.sys.setcfg('project.rootpage', null);
 
 
 //  ---
@@ -154,7 +154,7 @@ TP.sys.setcfg('boot.pause_on_error', false);
 TP.sys.setcfg('boot.stop_onerror', false);
 
 //  should we boot to the TDC (TIBET developer console) UI or show the
-//  application's home page? Default is to show the project.homepage.
+//  application's home page? Default is to show the project.rootpage.
 TP.sys.setcfg('boot.tdc', false);
 
 //  should we boot in two phases, lib (the 'tibet' config) and then app
