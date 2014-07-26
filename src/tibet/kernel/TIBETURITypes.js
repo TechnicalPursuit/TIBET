@@ -48,7 +48,7 @@ that each subtype can process the namespace specific string (NSS) portion in a
 namespace-specific fashion. TP.core.TIBETURN is the most common TP.core.URN
 subtype.
 
-TP.core.TIBETURL (urn:tibet:*) is a TIBET-specific URL type which provides
+TP.core.TIBETURN (urn:tibet:*) is a TIBET-specific URL type which provides
 extensions to the general URI addressing model. In particular, TIBET URLs allow
 for dynamic resolution and targeting of objects in "browser space". TIBET URLs
 will be created when a virtual URI path is specified (i.e. one that uses a
@@ -2007,7 +2007,7 @@ function() {
 
     //  update expiration status as well as any potentially obsolete headers
     this.set('headers', null);
-    this.set('expired', false);
+    this.$set('expired', false);
 
     //  clear any internal state flags that might cause issues reloading
     this.set('$dirty', false);
