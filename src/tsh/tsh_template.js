@@ -649,10 +649,10 @@ function(aRequest) {
     //  Start by looking for 'src' rather than embedded content, unless the
     //  fallback attribute is present and set to true for testing/forced
     //  use.
-    if (TP.elementHasAttribute(node, 'tsh:src', true) &&
+    if (TP.elementHasAttribute(node, 'tibet:src', true) &&
         TP.notTrue(TP.bc(TP.elementGetAttribute(
                                     node, 'tsh:fallback', true)))) {
-        src = TP.elementGetAttribute(node, 'tsh:src', true);
+        src = TP.elementGetAttribute(node, 'tibet:src', true);
         if (TP.isEmpty(src) || TP.notValid(uri = TP.uc(src))) {
             this.raise('TP.sig.InvalidURI',
                         arguments,
@@ -675,7 +675,7 @@ function(aRequest) {
 
     //  Templates can be of three basic types: JS (aka "string"), XSLT, or XML
     //  (aka "content").
-    if (TP.isEmpty(type = TP.elementGetAttribute(node, 'tsh:type', true))) {
+    if (TP.isEmpty(type = TP.elementGetAttribute(node, 'tibet:type', true))) {
         type = TP.ietf.Mime.XML;
     }
 
