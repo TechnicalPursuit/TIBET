@@ -69,7 +69,7 @@ function(aRequest) {
 
         theID,
 
-        frameNode,
+        frameElem,
 
         stubHref,
         stubURI;
@@ -88,13 +88,13 @@ function(aRequest) {
     theID = TP.lid(elem, true);
 
     //  Build an iframe element to contain our custom element.
-    frameNode = TP.elem(
+    frameElem = TP.elem(
                     TP.join('<iframe xmlns="', TP.w3.Xmlns.XHTML, '"',
                             ' id="', theID, '_frame"',
                             ' style="position: relative; border: none;',
                             ' width: 100%; height: 100%"></iframe>'));
 
-    TP.nodeAppendChild(elem, frameNode, false);
+    TP.nodeAppendChild(elem, frameElem, false);
 
     //  Get a handle to a TP.core.Node representing an instance of this
     //  element type wrapped around elem. Note that this will both ensure a
