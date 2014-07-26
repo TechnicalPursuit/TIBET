@@ -150,13 +150,8 @@ function(aRequest) {
     newElem = TP.xhtmlnode(
         '<div tibet:sourcetag="tibet:app">' +
             '<h1 class="tag-defaulted">' +
-                'tibet:root defaulted to tibet:app' +
-            '</h1>' +
-            '<h1 class="next-step">' +
-                'Next step: ' +
-                '<a href="#" onclick="alert(\'Not yet implemented.\')">' +
-                    'define your ' + name + ':app tag.' +
-                '</a>' +
+                'Application type for: ' + name + ' not found. ' +
+                '&lt;tibet:root/&gt; defaulted to &lt;tibet:app/&gt;' +
             '</h1>' +
         '</div>');
 
@@ -171,7 +166,7 @@ function(aRequest) {
 
 /**
  * @type {TP.tibet.root}
- * @synopsis TP.tibet.root represents the tag placed in 'uiroot' pages (i.e. the
+ * @synopsis TP.tibet.root represents the tag placed in 'UIROOT' pages (i.e. the
  *     root page of the system). Depending on whether the Sherpa project is
  *     loaded/disabled, this tag will generate either a 'tibet:app' tag or a
  *     'tibet:sherpa' tag to handle the main UI.
@@ -198,12 +193,14 @@ function(aRequest) {
      * @returns {Element} The new element.
      */
 
-    var cfg,
+    var elem,
+    
+        cfg,
         opts,
+
         profile,
         type,
         name,
-        elem,
         newElem;
 
     //  Make sure that we have an element to work from.
@@ -213,20 +210,23 @@ function(aRequest) {
 
     //  Build up a list of tag names to check. We'll use the first one we have a
     //  matching type for.
-    opts = [];
+    opts = TP.ac();
+
     cfg = TP.sys.cfg('tibet.apptag');
     if (TP.notEmpty(cfg)) {
         opts.push(cfg);
     }
+
     cfg = TP.sys.cfg('project.name');
     if (TP.notEmpty(cfg)) {
         opts.push(cfg + ':app');
     }
 
-    //  NOTE the startsWith here. We allow for profiles to be a hash-separated
+    profile = TP.sys.cfg('boot.profile');
+
+    //  Note the startsWith() here. We allow for profiles to be a hash-separated
     //  package#config name so this implies any variant of development profile
     //  includes the sherpa.
-    profile = TP.sys.cfg('boot.profile');
 
     //  If we're not already running in the Sherpa and our profile starts with
     //  the word 'development', then put the 'tibet:sherpa' tag into the list
@@ -234,7 +234,7 @@ function(aRequest) {
     if (TP.sys.cfg('tibet.sherpa') !== true && TP.notEmpty(profile) &&
         profile.startsWith('development')) {
 
-        opts.push('tibet:sherpa');
+        opts.unshift('tibet:sherpa');
     }
 
     //  When in doubt at least render something :)

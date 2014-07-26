@@ -87,8 +87,7 @@ TP.sys.setcfg('project.name', null);
 //  the root package file will trigger cache refresh logic
 TP.sys.setcfg('project.version', null);
 
-//  the project's default home page. templating renames __appname__.xhtml by
-//  default to produce a default value.
+//  the project's default home page. The default value is UIROOT.xhtml.
 TP.sys.setcfg('project.homepage', null);
 
 

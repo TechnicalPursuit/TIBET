@@ -8380,15 +8380,10 @@ TP.boot.$configureProject = function() {
     package = doc.getElementsByTagName('package')[0];
 
     if (TP.boot.$isEmpty(package)) {
-        // Going to have problems. Without package data we have no home page
-        // name etc. so we'll have to default to something.
+        //  Going to have problems. Without package data we have no home page
+        //  name etc. so we'll have to default to something.
         TP.sys.setcfg('project.name', 'default');
         TP.sys.setcfg('project.version', '0.0.1');
-
-        if (TP.boot.$notValid(TP.sys.cfg('project.homepage'))) {
-            TP.sys.setcfg('project.homepage',
-                TP.sys.cfg('project.homepage', '~app_html/home.xhtml'));
-        }
     } else {
         //  project.* values track the name, controller type and version for the
         //  current project
@@ -8398,11 +8393,10 @@ TP.boot.$configureProject = function() {
             package.getAttribute('controller'));
         TP.sys.setcfg('project.version',
             package.getAttribute('version') || '0.0.1');
+    }
 
-        if (TP.boot.$notValid(TP.sys.cfg('project.homepage'))) {
-            TP.sys.setcfg('project.homepage',
-                '~app_html/' + package.getAttribute('name') + '.xhtml');
-        }
+    if (TP.boot.$notValid(TP.sys.cfg('project.homepage'))) {
+        TP.sys.setcfg('project.homepage', '~app_html/UIROOT.xhtml');
     }
 
     return;

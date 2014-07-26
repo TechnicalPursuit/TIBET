@@ -39,7 +39,11 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
         ]]>
     </script>
 
+    <script src="./src/TP.tibet.sherpa.js"/>
+
     <script src="./src/TP.sherpa.sherpa.js"/>
+    <script src="./src/TP.core.sherpa.js"/>
+
     <script src="./src/TP.sherpa.ConsoleService.js"/>
 
     <script src="./src/TP.sherpa.pp.js"/>
