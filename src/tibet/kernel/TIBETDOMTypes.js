@@ -8841,6 +8841,85 @@ function(mimeType, qualifier) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('guessContentTypeAndLocation',
+function(anElement) {
+
+    /**
+     * @name guessContentTypeAndLocation
+     * @synopsis Retrieves (and caches on the receiver) the MIME type and
+     *     location of the receiver's content.
+     * @description This method guesses the receiver's content type and
+     *     location, if the receiver has external content. It then populates
+     *     that information on the 'tibet:src' and 'tibet:type' attributes.
+     * @param {Element|TP.core.ElementNode} anElement The element to guess the
+     *     type and location for.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+        src,
+    
+        mime,
+        uri,
+        mimeTypes;
+    
+    //  Make sure that we were supplied a real Element (or TP.core.ElementNode)
+    if (!TP.isElement(elem = TP.unwrap(anElement))) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  The source attribute can be provided or computed from configuration
+    //  data. When it's not provided we need to know whether to look for an
+    //  XSLT or XHTML file when the markup type is XML of some form.
+    src = TP.elementGetAttribute(elem, 'tibet:src', true);
+    if (TP.isEmpty(src)) {
+        //  If a MIME type was explicitly defined by the targeted element, then
+        //  get its resource URI and use that as the source.
+        if (TP.notEmpty(
+                mime = TP.elementGetAttribute(elem, 'tibet:type', true))) {
+            uri = this.getResourceURI(mime);
+
+            if (TP.isURI(uri)) {
+                src = uri.getLocation();
+            }
+        } else {
+            //  Otherwise, try to poke at the resource URI with a set of MIME
+            //  types and see if there are any matches. Note that this Array is
+            //  constructed in order with the most common types first and least
+            //  common last.
+            mimeTypes = TP.ac(TP.ietf.Mime.XHTML,
+                                TP.ietf.Mime.XML,
+                                TP.ietf.Mime.XSLT);
+
+            mimeTypes.perform(
+                    function(aMIMEType) {
+
+                        uri = this.getResourceURI(aMIMEType);
+
+                        if (TP.isURI(uri)) {
+                            src = uri.getLocation();
+                            mime = aMIMEType;
+
+                            return TP.BREAK;
+                        }
+                    }.bind(this));
+        }
+    }
+
+    if (TP.notEmpty(src)) {
+        TP.elementSetAttribute(elem, 'tibet:src', src, true);
+    }
+
+    if (TP.notEmpty(mime)) {
+        TP.elementSetAttribute(elem, 'tibet:type', mime, true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 //  fromArray() is handled by fromObject() below
 
 //  ------------------------------------------------------------------------
@@ -14128,30 +14207,6 @@ TP.core.TemplatedNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedNode.Type.defineMethod('getTemplateType',
-function(anElement) {
-
-    /**
-     * @name getTemplateType
-     * @synopsis Returns the type of template (TP.ietf.Mime.XML by default). The
-     *     template type can be specified via the tsh:type attribute on the
-     *     element provided.
-     * @param {Element} anElement An optional element to specifically test.
-     * @returns {String} The TP.ietf.Mime template type.
-     * @todo
-     */
-
-    var type;
-
-    if (TP.isElement(anElement)) {
-        type = TP.elementGetAttribute(anElement, 'tsh:type', true);
-    }
-
-    return type;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.TemplatedNode.Type.defineMethod('tshCompile',
 function(aRequest) {
 
@@ -14171,13 +14226,7 @@ function(aRequest) {
         genName,
 
         template,
-        canonicalName,
-
-        mime,
-        uri,
-        src,
-
-        mimeTypes;
+        canonicalName;
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
@@ -14215,50 +14264,7 @@ function(aRequest) {
     TP.elementSetAttribute(template, 'tsh:name', canonicalName, true);
     TP.elementSetAttribute(template, 'tsh:generator', canonicalName, true);
 
-    //  The source attribute can be provided or computed from configuration
-    //  data. When it's not provided we need to know whether to look for an
-    //  XSLT or XHTML file when the template type is XML of some form.
-    src = TP.elementGetAttribute(elem, 'tsh:src', true);
-    if (TP.isEmpty(src)) {
-        //  If a MIME type was explicitly defined by the targeted element, then
-        //  get its resource URI and use that as the source.
-        if (TP.notEmpty(mime = this.getTemplateType(elem))) {
-            uri = this.getResourceURI(mime);
-
-            if (TP.isURI(uri)) {
-                src = uri.getLocation();
-            }
-        } else {
-            //  Otherwise, try to poke at the resource URI with a set of MIME
-            //  types and see if there are any matches. Note that this Array is
-            //  constructed in order with the most common types first and least
-            //  common last.
-            mimeTypes = TP.ac(TP.ietf.Mime.XHTML,
-                                TP.ietf.Mime.XML,
-                                TP.ietf.Mime.XSLT);
-
-            mimeTypes.perform(
-                    function(aMIMEType) {
-
-                        uri = this.getResourceURI(aMIMEType);
-
-                        if (TP.isURI(uri)) {
-                            src = uri.getLocation();
-                            mime = aMIMEType;
-
-                            return TP.BREAK;
-                        }
-                    }.bind(this));
-        }
-    }
-
-    if (TP.notEmpty(src)) {
-        TP.elementSetAttribute(template, 'tsh:src', src, true);
-    }
-
-    if (TP.notEmpty(mime)) {
-        TP.elementSetAttribute(template, 'tsh:type', mime, true);
-    }
+    this.guessContentTypeAndLocation(elem);
 
     //  Migrate any child content to the template. That content will serve as
     //  fallback data should the src not be found, or not exist.
