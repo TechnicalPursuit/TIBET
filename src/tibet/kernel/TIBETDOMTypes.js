@@ -14222,6 +14222,10 @@ TP.lang.Object.defineSubtype('core:TemplatedNode');
 //  instance creation.
 TP.core.TemplatedNode.isAbstract(true);
 
+//  Whether or not the node wants a 'tsh:template' wrapper (necessary for
+//  dynamic templating, etc.)
+TP.core.TemplatedNode.Type.defineAttribute('wantsTemplateWrapper');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TemplatedNode.Type.defineMethod('tshCompile',
@@ -14242,7 +14246,9 @@ function(aRequest) {
 
         genName,
 
-        template,
+        wantsTemplateWrapper,
+
+        replacement,
         canonicalName;
 
     //  Make sure that we have an element to work from.
@@ -14264,42 +14270,58 @@ function(aRequest) {
         }
     }
 
-    //  The process here is fairly direct. We create a surrogate tsh:template
-    //  which replaces the receiver. That template tag is _not yet processed_
-    //  but is instrumented to know that it should replace itself with the
-    //  result of running itself immediately. The tsh:generator attribute gives
-    //  the template a reference back to the original type which built it.
-    template = TP.documentCreateElement(
-                        TP.nodeGetDocument(elem),
-                        'tsh:template',
-                        TP.w3.Xmlns.TSH);
+    wantsTemplateWrapper = TP.ifInvalid(this.get('wantsTemplateWrapper'),
+                                        false);
 
-    canonicalName = TP.elementGetCanonicalName(elem);
+    if (wantsTemplateWrapper) {
+        //  The process here is fairly direct. We create a surrogate
+        //  tsh:template which replaces the receiver. That template tag is _not
+        //  yet processed_ but is instrumented to know that it should replace
+        //  itself with the result of running itself immediately. The
+        //  tsh:generator attribute gives the template a reference back to the
+        //  original type which built it.
+        replacement = TP.documentCreateElement(
+                            TP.nodeGetDocument(elem),
+                            'tsh:template',
+                            TP.w3.Xmlns.TSH);
 
-    //  Set the name of the template and the 'generator name' to be the
-    //  canonical name of the templated element.
-    TP.elementSetAttribute(template, 'tsh:name', canonicalName, true);
-    TP.elementSetAttribute(template, 'tsh:generator', canonicalName, true);
+        canonicalName = TP.elementGetCanonicalName(elem);
 
-    this.guessContentTypeAndLocation(elem);
+        //  Set the name of the replacement and the 'generator name' to be the
+        //  canonical name of the templated element.
+        TP.elementSetAttribute(
+                replacement, 'tsh:name', canonicalName, true);
+        TP.elementSetAttribute(
+                replacement, 'tsh:generator', canonicalName, true);
 
-    //  Migrate any child content to the template. That content will serve as
-    //  fallback data should the src not be found, or not exist.
-    TP.nodeMoveChildNodesTo(elem, template);
+        this.guessContentTypeAndLocation(elem);
 
-    //  Merge any remaining attributes. Note that we don't want to overwrite or
-    //  duplicate any src attribute we had to compute.
-    TP.elementMergeAttributes(elem, template);
+        //  Migrate any child content to the template. That content will serve
+        //  as fallback data should the src not be found, or not exist.
+        TP.nodeMoveChildNodesTo(elem, replacement);
 
-    //  Remove any processing phase attribute migrated from the receiver...
-    //  we'll let the processing engine worry about that.
-    TP.elementRemoveAttribute(elem, 'tibet:phase', true);
+        //  Merge any remaining attributes. Note that we don't want to overwrite
+        //  or duplicate any src attribute we had to compute.
+        TP.elementMergeAttributes(elem, replacement);
+
+        //  Remove any processing phase attribute migrated from the receiver...
+        //  we'll let the processing engine worry about that.
+        TP.elementRemoveAttribute(elem, 'tibet:phase', true);
+    } else {
+
+        //  We didn't need a template wrapper - just fetch the resource content
+        //  as indicated by the MIME type that should be in the element's
+        //  'tibet:type' attribute (if missing, the MIME type will be guessed).
+        replacement = TP.unwrap(
+                this.getResourceMarkup(
+                    TP.elementGetAttribute(elem, 'tibet:type', true)));
+    }
 
     //  Replace the original element in the DOM so processing will continue in
     //  the proper context.
-    template = TP.elementReplaceWith(elem, template);
+    replacement = TP.elementReplaceWith(elem, replacement);
 
-    return template;
+    return replacement;
 });
 
 //  ========================================================================
