@@ -11,6 +11,15 @@
 
 TP.core.ApplicationElement.defineSubtype('APP.{{appname}}:app');
 
+//  An example of TIBET's traits-based multiple inheritance.
+APP.{{appname}}.app.addTraitsFrom(TP.core.TemplatedNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  the application startup process (normally trait resolution happens when the
+//  first instance of a type is created, but we use type-side methods before
+//  instances of this type are created).
+APP.{{appname}}.app.executeTraitResolution();
+
 //  ----------------------------------------------------------------------------
 
 APP.{{appname}}.app.Type.defineMethod('tshAwakenDOM',
@@ -25,40 +34,14 @@ function(aRequest) {
      *     the children of this element.
      */
 
-    return this.callNextMethod(aRequest);
-});
+    var elem;
 
-//  ----------------------------------------------------------------------------
-
-APP.{{appname}}.app.Type.defineMethod('tshCompile',
-function(aRequest) {
-
-    /**
-     * @name tshCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
-     *     markup DOM.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
-     * @returns {Element} The new element.
-     */
-
-    var elem,
-        newElem;
-
-    //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
-        return;
+    if (TP.isElement(elem = aRequest.at('cmdNode'))) {
+        //  NOTE: Put logic that the tag should execute when the element is
+        //  awakened in its visible DOM here...
     }
 
-    newElem = TP.xhtmlnode(
-        '<h1 xmlns:tibet="' + TP.w3.Xmlns.TIBET + '" ' +
-            'tibet:sourcetag="{{appname}}:app">' +
-            'Hello World!' +
-        '</h1>');
-
-    newElem = TP.elementReplaceWith(elem, newElem);
-
-    return newElem;
+    return this.callNextMethod(aRequest);
 });
 
 //  ----------------------------------------------------------------------------

@@ -4,6 +4,8 @@
 
 <config id="base">
     <script src="~app_src/tags/APP.{{appname}}.app.js" />
+    <property name="APP.{{appname}}.app.xhtml_uri" value="~app_src/tags/APP.{{appname}}.app.xhtml"/>
+
     <script src="~app_src/main.js" />
 </config>
 
