@@ -816,23 +816,19 @@ function(aRequest) {
 
             //  The processedNode is now the fragmentParentNode
             processedNode = fragmentParentNode;
-
-            //  If processedNode is a fragment, the reassignment here will make
-            //  it the first child of that fragment *after* it has beeninserted
-            //  where 'node' used to be. This is then important in the following
-            //  call where we descend.
-            //  Note the reassignment here.
-            processedNode = TP.elementReplaceWith(node, processedNode);
-            processedNode = TP.elementReplaceWith(node, processedNode,
-                                                    null, false);
-        } else {
-            //  Otherwise, it wasn't a fragment, so we replace the first child
-            //  (of any type - Element, Text, CDATA Section, etc.) of the
-            //  original node with the processedNode.
-            //  Note the reassignment here.
-            processedNode = TP.nodeReplaceChild(
-                                node, processedNode, node.firstChild, false);
         }
+
+        //  If processedNode is a fragment, the reassignment here will make
+        //  it the first child of that fragment *after* it has been inserted
+        //  where 'node' used to be. This is then important in the following
+        //  call where we descend.
+
+        //  If it's not a fragment, we still replace it in this way since it's
+        //  just a simple swap.
+
+        //  Note the reassignment here and the 'false' as the 4th parameter,
+        //  indicating that we do *not* want the content to be awakened.
+        processedNode = TP.elementReplaceWith(node, processedNode, null, false);
 
         retNode = processedNode;
     } else {
