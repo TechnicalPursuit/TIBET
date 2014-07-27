@@ -231,9 +231,7 @@ function(aRequest) {
     //  If we're not already running in the Sherpa and our profile starts with
     //  the word 'development', then put the 'tibet:sherpa' tag into the list
     //  for consideration.
-    if (TP.sys.cfg('tibet.sherpa') !== true && TP.notEmpty(profile) &&
-        profile.startsWith('development')) {
-
+    if (TP.sys.cfg('tibet.sherpa') === true) {
         opts.unshift('tibet:sherpa');
     }
 

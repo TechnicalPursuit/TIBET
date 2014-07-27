@@ -60,10 +60,6 @@ function(aRequest) {
 
                     tsh = TP.core.TSH.getDefaultInstance();
 
-                    //  Flip the cfg flag that says "yes, we're running in the
-                    //  Sherpa".
-                    TP.sys.setcfg('tibet.sherpa', true);
-
                     TP.core.sherpa.construct(
                         TP.hc('window', uiRoot,
                                 'model', tsh,
