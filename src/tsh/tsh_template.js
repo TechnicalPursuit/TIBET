@@ -823,6 +823,8 @@ function(aRequest) {
             //  call where we descend.
             //  Note the reassignment here.
             processedNode = TP.elementReplaceWith(node, processedNode);
+            processedNode = TP.elementReplaceWith(node, processedNode,
+                                                    null, false);
         } else {
             //  Otherwise, it wasn't a fragment, so we replace the first child
             //  (of any type - Element, Text, CDATA Section, etc.) of the
