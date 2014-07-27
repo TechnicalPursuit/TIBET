@@ -143,9 +143,7 @@ function(nodeSpec, varargs) {
         retType,
 
         inst,
-        args,
-
-        id;
+        args;
 
     TP.debug('break.node_construct');
 
@@ -8687,25 +8685,44 @@ TP.core.ElementNode.set('uriAttrs', TP.ac());
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('addResourceContentTo',
-function(mimeType, anElement, shouldProcess) {
+TP.core.ElementNode.Type.defineMethod('constructContentObject',
+function(aURI, content) {
+
+    /**
+     * @name constructContentObject
+     * @synopsis Returns a content handler for the URI provided. This method is
+     *     invoked as part of MIME-type specific handling for URIs.
+     * @param {TP.core.URI} aURI The URI containing the content.
+     * @param {Object} content The content to set into the content object.
+     * @returns {Object} The object representation of the content.
+     * @todo
+     */
+
+    var contentObj;
+
+    if (TP.isDocument(contentObj = content)) {
+        contentObj = content.documentElement;
+    }
+
+    return this.construct(contentObj);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('getResourceMarkup',
+function(mimeType) {
 
     /**
      * @name addResourceContentTo
      * @synopsis Adds the content registered with the receiver under the MIME
      *     type as the last child of the element supplied.
-     * @param {String} mimeType The MIME type of the content to add.
-     * @param {Element|TP.core.ElementNode} anElement The element to add content
-     *     to.
-     * @param {Boolean} shouldProcess Whether or not to process the content
-     *     through the tag processing system. The default is false.
+     * @param {String} mimeType The MIME type of the content to add. This
+     *     parameter is optional.
      * @returns {TP.core.ElementNode} The wrapped element containing the
      *     content.
      */
 
-    var targetElem,
-
-        mime,
+    var mime,
         mimeTypes,
         uri,
         src,
@@ -8715,13 +8732,7 @@ function(mimeType, anElement, shouldProcess) {
 
         newTPElem;
 
-    //  Make sure that we were supplied a real Element (or TP.core.ElementNode)
-    if (!TP.isElement(targetElem = TP.unwrap(anElement))) {
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    if (TP.notValid(mime = mimeType)) {
+    if (TP.isEmpty(mime = mimeType)) {
         //  Otherwise, try to poke at the resource URI with a set of MIME
         //  types and see if there are any matches. Note that this Array is
         //  constructed in order with the most common types first and least
@@ -8761,38 +8772,9 @@ function(mimeType, anElement, shouldProcess) {
         TP.elementSetAttribute(elem, 'tibet:type', mime, true);
     }
 
-    //  Process the content if the caller wants to.
-    if (TP.isTrue(shouldProcess)) {
-        newTPElem = TP.wrap(anElement).addContent(elem);
-    } else {
-        newTPElem = TP.wrap(anElement).addProcessedContent(elem);
-    }
+    newTPElem = TP.wrap(elem);
 
     return newTPElem;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Type.defineMethod('constructContentObject',
-function(aURI, content) {
-
-    /**
-     * @name constructContentObject
-     * @synopsis Returns a content handler for the URI provided. This method is
-     *     invoked as part of MIME-type specific handling for URIs.
-     * @param {TP.core.URI} aURI The URI containing the content.
-     * @param {Object} content The content to set into the content object.
-     * @returns {Object} The object representation of the content.
-     * @todo
-     */
-
-    var contentObj;
-
-    if (TP.isDocument(contentObj = content)) {
-        contentObj = content.documentElement;
-    }
-
-    return this.construct(contentObj);
 });
 
 //  ------------------------------------------------------------------------
