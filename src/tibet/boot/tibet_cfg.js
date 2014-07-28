@@ -1195,6 +1195,9 @@ TP.sys.setcfg('tdc.bubble_fade_time', 2000);
 //  sherpa processing
 //  ---
 
+//  how many screens should the Sherpa display?
+TP.sys.setcfg('sherpa.num_screens', 1);
+
 //  which output formatter should be used for presentation output?
 TP.sys.setcfg('sherpa.default_format', 'sherpa:pp');
 
@@ -1403,14 +1406,6 @@ TP.sys.setcfg('tibet.sherpa', false);
 TP.sys.setcfg('tibet.indexpage', '~/index.html');
 
 TP.sys.setcfg('tibet.loginpage', '~app_html/login.html');
-
-TP.sys.setcfg('tibet.splashpage', '~app_html/splash.html');
-
-//  the page which should be placed into the uiboot iframe if generated.
-TP.sys.setcfg('tibet.uibootpage', '~lib_html/console.html');
-
-//  the page which should be placed into the uiroot iframe if generated.
-TP.sys.setcfg('tibet.uirootpage', '~app_html/splash.html');
 
 //  ---
 //  tuning
