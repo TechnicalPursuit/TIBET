@@ -99,7 +99,7 @@ function() {
 
     TP.nodeAppendChild(TP.documentGetBody(doc), triggerElement);
 
-    (function () {
+    (function(aSignal) {
 
             this.toggle('hidden');
 
