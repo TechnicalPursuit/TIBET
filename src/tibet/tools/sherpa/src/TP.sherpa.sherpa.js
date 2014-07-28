@@ -29,13 +29,10 @@ function(aRequest) {
 
     var elem,
 
-        triggerKey;
+        triggerKey,
 
-    console.log('Arise from your slumber Sherpa!');
+        tsh;
 
-    //  TODO: Completely update the Sherpa to take advantage of the new template
-
-    return this.callNextMethod();
 
     if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
         //  TODO: Raise an exception
@@ -44,30 +41,18 @@ function(aRequest) {
 
     //  Set up the trigger key
 
-    if (TP.isEmpty(triggerKey = TP.elementGetAttribute(elem, 'sherpa:toggle'))) {
-        triggerKey = 'DOM_Shift_Alt_Up_Up';
+    if (TP.isEmpty(triggerKey =
+                    TP.elementGetAttribute(elem, 'sherpa:toggle'))) {
+        triggerKey = 'DOM_Alt_Shift_Up_Up';
     }
 
-    this.observe(
-            null,
-            'TP.sig.AppDidStart',
-            function (aSignal) {
-                (function () {
-                    var uiRoot,
-                        tsh;
+    tsh = TP.core.TSH.getDefaultInstance();
 
-                    uiRoot = TP.win('UIROOT');
-
-                    tsh = TP.core.TSH.getDefaultInstance();
-
-                    TP.core.sherpa.construct(
-                        TP.hc('window', uiRoot,
-                                'model', tsh,
-                                'triggerKey', triggerKey
-                        ));
-
-                }.fork(100));
-            });
+    TP.core.sherpa.construct(
+        TP.hc('window', TP.nodeGetWindow(elem),
+                'model', tsh,
+                'triggerKey', triggerKey
+        ));
 
     return this.callNextMethod();
 });
