@@ -55,7 +55,7 @@ TP.html.CoreAttrs.Type.resolveTraits(
         TP.html.Element);
 
 TP.html.CoreAttrs.Inst.resolveTraits(
-        TP.ac('setHidden', 'getDisplayValue', 'setDisplayValue'),
+        TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
 
 TP.core.UIElementNode.defineSubtype('html:Attrs');
@@ -68,7 +68,7 @@ TP.html.Attrs.Type.resolveTraits(
         TP.html.Element);
 
 TP.html.Attrs.Inst.resolveTraits(
-        TP.ac('setHidden', 'getDisplayValue', 'setDisplayValue'),
+        TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
 
 TP.html.Attrs.defineSubtype('Aligned');

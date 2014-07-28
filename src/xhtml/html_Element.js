@@ -181,34 +181,6 @@ function(aClassName) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.Element.Inst.defineMethod('setHidden',
-function(beHidden) {
-
-    /**
-     * @name setHidden
-     * @synopsis The setter for the receiver's hidden state.
-     * @param {Boolean} beHidden Whether or not the receiver is in a hidden
-     *     state.
-     * @returns {Boolean} Whether the receiver's state is hidden.
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
-    }
-
-    if (TP.isTrue(beHidden)) {
-        TP.elementHide(node);
-    } else {
-        TP.elementShow(node);
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.html.Element.Inst.defineMethod('setStyle',
 function(aStyle) {
 

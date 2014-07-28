@@ -137,7 +137,7 @@ TP.html.textUtilities.Type.resolveTraits(
         TP.html.Element);
 
 TP.html.textUtilities.Inst.resolveTraits(
-        TP.ac('getDisplayValue', 'setDisplayValue', 'setHidden'),
+        TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
 
 //  can't construct concrete instances of this
@@ -1660,8 +1660,7 @@ TP.html.inputEmail.Type.resolveTraits(
 
 TP.html.inputEmail.Inst.resolveTraits(
         TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setHidden'),
+                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
@@ -1761,8 +1760,7 @@ TP.html.inputNumber.Type.resolveTraits(
 
 TP.html.inputNumber.Inst.resolveTraits(
         TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setHidden'),
+                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
@@ -1849,8 +1847,7 @@ TP.html.inputPassword.Type.resolveTraits(
 
 TP.html.inputPassword.Inst.resolveTraits(
         TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setHidden'),
+                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
@@ -1924,8 +1921,7 @@ TP.html.inputSearch.Type.resolveTraits(
 
 TP.html.inputSearch.Inst.resolveTraits(
         TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setHidden'),
+                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
@@ -2217,8 +2213,7 @@ TP.html.inputTel.Type.resolveTraits(
 
 TP.html.inputTel.Inst.resolveTraits(
         TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setHidden'),
+                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
@@ -2292,8 +2287,7 @@ TP.html.inputText.Type.resolveTraits(
 
 TP.html.inputText.Inst.resolveTraits(
         TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setHidden'),
+                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
@@ -2392,8 +2386,7 @@ TP.html.inputUrl.Type.resolveTraits(
 
 TP.html.inputUrl.Inst.resolveTraits(
         TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setHidden'),
+                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
@@ -3372,8 +3365,7 @@ TP.html.textarea.Type.resolveTraits(
 
 TP.html.textarea.Inst.resolveTraits(
         TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setHidden'),
+                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
