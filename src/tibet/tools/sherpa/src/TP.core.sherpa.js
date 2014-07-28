@@ -92,15 +92,16 @@ function(info) {
 TP.core.sherpa.Inst.defineMethod('makeTile',
 function(anID) {
 
-    var uiRootDoc,
+    var sherpaFrameBody,
         tileTPElem;
 
-    uiRootDoc = TP.doc(TP.win('UIROOT'));
+    sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
 
-    tileTPElem = TP.sherpa.tile.addResourceContentTo(
-                            TP.ietf.Mime.XHTML,
-                            TP.documentGetBody(uiRootDoc));
+    tileTPElem = TP.wrap(sherpaFrameBody).addContent(
+                    TP.sherpa.tile.getResourceMarkup(TP.ietf.Mime.XHTML));
+
     tileTPElem.setID(anID);
+    tileTPElem.setup();
 
     return tileTPElem;
 });
@@ -110,18 +111,74 @@ function(anID) {
 TP.core.sherpa.Inst.defineMethod('makeEditorTile',
 function(anID) {
 
-    var uiRootDoc,
+    var sherpaFrameBody,
         tileTPElem;
 
-    uiRootDoc = TP.doc(TP.win('UIROOT'));
+    sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
 
-    tileTPElem = TP.sherpa.editortile.addResourceContentTo(
-                            TP.ietf.Mime.XHTML,
-                            TP.documentGetBody(uiRootDoc));
+    tileTPElem = TP.wrap(sherpaFrameBody).addContent(
+                    TP.sherpa.editortile.getResourceMarkup(TP.ietf.Mime.XHTML));
+
     tileTPElem.setID(anID);
     tileTPElem.setup();
 
     return tileTPElem;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.sherpa.Inst.defineMethod('setupConsole',
+function() {
+
+    var sherpaSouthDrawer,
+        consoleTPElem;
+
+    sherpaSouthDrawer = TP.byCSS('#south > .drawer',
+                                    this.get('vWin').document,
+                                    true);
+
+    consoleTPElem = TP.wrap(sherpaSouthDrawer).addContent(
+                    TP.sherpa.console.getResourceMarkup(TP.ietf.Mime.XHTML));
+
+    consoleTPElem.setup();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.sherpa.Inst.defineMethod('setupHalo',
+function() {
+
+    var sherpaFrameBody,
+        haloTPElem;
+
+    sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
+
+    haloTPElem = TP.wrap(sherpaFrameBody).addContent(
+                    TP.sherpa.halo.getResourceMarkup(TP.ietf.Mime.XHTML));
+
+    haloTPElem.setup();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.sherpa.Inst.defineMethod('setupHUD',
+function() {
+
+    var sherpaFrameBody,
+        hudTPElem;
+
+    sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
+
+    hudTPElem = TP.wrap(sherpaFrameBody).addContent(
+                    TP.sherpa.hud.getResourceMarkup(TP.ietf.Mime.XHTML));
+
+    hudTPElem.setup();
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -135,21 +192,27 @@ function() {
 
         uiScreenIFrames,
         numIFrames,
+
+        configNumIFrames,
+        i,
     
         screenElem,
         iFrameElem,
     
         worldTPElem;
 
-    uiScreensWin = TP.byOID('UISCREENS', TP.win('UIROOT')).
-                        getNativeContentWindow();
-    
+    uiScreensWin = this.get('vWin');
+
+    //  Create the <sherpa:world> tag
     worldElem = TP.documentCreateElement(uiScreensWin.document,
                                             'world',
                                             TP.w3.Xmlns.SHERPA);
     TP.elementSetAttribute(worldElem, 'id', 'SherpaWorld');
 
-    uiScreenIFrames = TP.byCSS('iframe.screen', uiScreensWin);
+    //  Grab the 1...n 'prebuilt' iframes that are available in the Sherpa
+    //  template. Create a <sherpa:screen> tag and wrap them in it and place
+    //  that screen tag into the world.
+    uiScreenIFrames = TP.byCSS('.center iframe', uiScreensWin);
     uiScreenIFrames.perform(
             function(anIFrameElem) {
                 var screenElem;
@@ -163,82 +226,41 @@ function() {
                 TP.nodeAppendChild(worldElem, screenElem, false);
             });
 
+    //  Get the number of actual iframes vs. the number of screens configured by
+    //  the user as the desired number of iframes (defaulting to 1).
     numIFrames = uiScreenIFrames.getSize();
+    configNumIFrames = TP.ifInvalid(1, TP.sys.cfg('sherpa.num_screens'));
 
-    if (numIFrames > 1 && numIFrames.isOdd()) {
-        screenElem = TP.documentCreateElement(uiScreensWin.document,
-                                                'screen',
-                                                TP.w3.Xmlns.SHERPA);
-        iFrameElem = TP.documentCreateElement(uiScreensWin.document,
-                                                'iframe',
-                                                TP.w3.Xmlns.XHTML);
+    //  If there are not enough screens, according to the number configured by
+    //  the user, create more.
+    if (configNumIFrames > numIFrames) {
+        for (i = 0; i < (configNumIFrames - numIFrames); i++) {
+            screenElem = TP.documentCreateElement(uiScreensWin.document,
+                                                    'screen',
+                                                    TP.w3.Xmlns.SHERPA);
+            iFrameElem = TP.documentCreateElement(uiScreensWin.document,
+                                                    'iframe',
+                                                    TP.w3.Xmlns.XHTML);
 
-        TP.nodeAppendChild(screenElem, iFrameElem, false);
-        TP.nodeAppendChild(worldElem, screenElem, false);
+            TP.nodeAppendChild(screenElem, iFrameElem, false);
+            TP.nodeAppendChild(worldElem, screenElem, false);
+        }
     }
 
-    TP.xmlElementAddContent(
-            TP.documentGetBody(TP.doc(uiScreensWin)), worldElem, null, true);
+    //  Append the <sherpa:world> tag into the loaded Sherpa document.
+    TP.xmlElementInsertContent(
+            TP.byId('center', uiScreensWin),
+            worldElem,
+            TP.AFTER_BEGIN,
+            null,
+            true);
 
+    //  Grab the <sherpa:world> tag and set it up.
     worldTPElem = TP.byOID('SherpaWorld', uiScreensWin);
     worldTPElem.setup();
 
-    //  TODO: For now, we set the world to be focused on the screen at 0,0
-    worldTPElem.fitToScreen(0, 0);
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.core.sherpa.Inst.defineMethod('setupHUD',
-function() {
-
-    var uiRootDoc,
-        hudTPElem;
-
-    uiRootDoc = TP.doc(TP.win('UIROOT'));
-
-    hudTPElem = TP.sherpa.hud.addResourceContentTo(
-                            TP.ietf.Mime.XHTML,
-                            TP.documentGetBody(uiRootDoc));
-    hudTPElem.setup();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.core.sherpa.Inst.defineMethod('setupConsole',
-function() {
-
-    var uiRootDoc,
-        consoleTPElem;
-
-    uiRootDoc = TP.doc(TP.win('UIROOT'));
-
-    consoleTPElem = TP.sherpa.console.addResourceContentTo(
-                            TP.ietf.Mime.XHTML,
-                            TP.documentGetBody(uiRootDoc));
-    consoleTPElem.setup();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.core.sherpa.Inst.defineMethod('setupHalo',
-function() {
-
-    var uiRootDoc,
-        haloTPElem;
-
-    uiRootDoc = TP.doc(TP.win('UIROOT'));
-
-    haloTPElem = TP.sherpa.halo.addResourceContentTo(
-                            TP.ietf.Mime.XHTML,
-                            TP.documentGetBody(uiRootDoc));
-    haloTPElem.setup();
+    //  Hide the 'content' div
+    TP.elementHide(TP.byId('content', uiScreensWin));
 
     return this;
 });
