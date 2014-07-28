@@ -246,8 +246,17 @@ function(aSignal) {
         sigSuffix,
         lastCorner;
 
-    TP.info('got to TP.sherpa.halo::handleDOMClick', TP.LOG, arguments);
-    return;
+        editorType,
+        methodName;
+
+    if (aSignal.getShiftKey()) {
+        aSignal.preventDefault();
+        aSignal.stopPropagation();
+
+        this.changeHaloFocus(aSignal);
+
+        return;
+    }
 
     sigTarget = aSignal.getTarget();
 
