@@ -64,6 +64,25 @@ function(aRequest) {
     return TP.DESCEND;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.console.Type.defineMethod('tshCompile',
+function(aRequest) {
+
+    /**
+     * @name tshCompile
+     * @synopsis Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input for the shell.
+     * @returns {Element} The new element.
+     */
+
+    //  The <sherpa:console> tag doesn't transform into anything else, but it
+    //  may have content that does.
+    return TP.DESCEND;
+});
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
