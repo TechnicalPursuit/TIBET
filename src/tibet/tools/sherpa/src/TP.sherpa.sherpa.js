@@ -86,13 +86,7 @@ function(aRequest) {
      * @returns {Element} The new element.
      */
 
-    var elem;
-
-    //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
-        return;
-    }
-
+    //  The <sherpa:sherpa> tag doesn't transform into anything else.
     return TP.CONTINUE;
 });
 

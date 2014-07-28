@@ -65,6 +65,24 @@ function(aRequest) {
     return TP.DESCEND;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.logview.Type.defineMethod('tshCompile',
+function(aRequest) {
+
+    /**
+     * @name tshCompile
+     * @synopsis Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input for the shell.
+     * @returns {Element} The new element.
+     */
+
+    //  The <sherpa:logview> tag doesn't transform into anything else.
+    return TP.CONTINUE;
+});
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
