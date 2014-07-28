@@ -36,14 +36,8 @@ TP.core.UIElementNode.defineSubtype('sherpa.world');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineAttribute('numRows');
-TP.sherpa.world.Inst.defineAttribute('numCols');
-
 TP.sherpa.world.Inst.defineAttribute('screenWidth');
 TP.sherpa.world.Inst.defineAttribute('screenHeight');
-
-TP.sherpa.world.Inst.defineAttribute('gapWidth');
-TP.sherpa.world.Inst.defineAttribute('gapHeight');
 
 //  ------------------------------------------------------------------------
 
@@ -91,84 +85,64 @@ function() {
      *     the children of this element.
      */
 
-    var initialRows,
-        initialCols,
-
-        initialScreenWidth,
+    var initialScreenWidth,
         initialScreenHeight,
 
         allScreens,
-        numScreens,
+        allIFrames,
 
         screenWidth,
         screenHeight,
 
-        gapWidth,
-        gapHeight,
+        screen0URI,
+        blankURL,
+        appTagStubMarkup,
+        loadedFunc;
 
-        worldSize,
-
-        worldWidth,
-        worldHeight;
-
-    initialRows = TP.ifInvalid(2, TP.sys.cfg('sherpa.initial_rows'));
-    initialCols = TP.ifInvalid(2, TP.sys.cfg('sherpa.initial_cols'));
-
+    //  TODO: This should match the actual width & height of the entry in the
+    //  'sherpa|screen' rule.
     initialScreenWidth =
         TP.ifInvalid(1024, TP.sys.cfg('sherpa.initial_screen_height'));
     initialScreenHeight =
         TP.ifInvalid(768, TP.sys.cfg('sherpa.initial_screen_width'));
 
     allScreens = TP.byCSS('sherpa|screen', this.getNativeWindow());
-    numScreens = allScreens.getSize();
-
-    this.set('numRows', initialRows);
-    this.set('numCols', initialCols);
 
     this.set('screenWidth', initialScreenWidth);
     this.set('screenHeight', initialScreenHeight);
 
-    this.set('gapWidth', 10);
-    this.set('gapHeight', 10);
-
-    gapWidth = this.get('gapWidth');
-    gapHeight = this.get('gapHeight');
-
     screenWidth = this.get('screenWidth');
     screenHeight = this.get('screenHeight');
 
-    TP.extern.d3.selectAll(allScreens).
-        style('left',
-        function(d, i) {
-            var colNum;
-            colNum = i % initialCols;
-            return (screenWidth * colNum) + ((colNum + 1) * gapWidth) + 'px';
-        }).
-        style('width',
-        function(d, i) {
-            return screenWidth + 'px';
-        }).
-        style('height',
-        function(d, i) {
-            return screenHeight + 'px';
-        }).
-        style('top',
-        function(d, i) {
-            var rowNum;
-            rowNum = (i / initialRows).floor();
-            return (screenHeight * rowNum) + ((rowNum + 1) * gapHeight) + 'px';
-        });
+    allIFrames = TP.byCSS('sherpa|screen > iframe', this.getNativeWindow());
 
-    //TP.extern.d3.select(allScreens.first()).attr('selected', 'true');
+    //  If a specific URL isn't specified for 'sherpa.screen_0_uri', then load
+    //  a blank into screen_0 and put some markup in there that will render the
+    //  core app tag page.
+    if (TP.notValid(screen0URI = TP.sys.cfg('sherpa.screen_0_uri'))) {
 
-    worldSize = this.getComputedWidthAndHeight();
-    worldWidth = worldSize.first();
-    worldHeight = worldSize.last();
+        blankURL = TP.uc(TP.sys.cfg('tibet.blankpage')).getLocation();
 
-    var natElem = this.getNativeNode();
+        appTagStubMarkup =
+            TP.elem('<sherpatest:app xmlns:sherpatest="urn:sherpatest"/>');
 
-    TP.elementGetStyleObj(natElem).width = worldWidth + 'px';
-    TP.elementGetStyleObj(natElem).height = worldHeight + 'px';
+        loadedFunc = function(evt) {
+            var win;
+
+            this.removeEventListener('load', loadedFunc, false);
+
+            win = this.contentWindow;
+
+            TP.wrap(TP.documentGetBody(win.document)).addContent(
+                                                appTagStubMarkup);
+        };
+
+        allIFrames.first().addEventListener('load', loadedFunc, false);
+
+        //  We *MUST* use this technique to load up the iframes - just setting
+        //  the '.src' of the iframe won't do what we want (at least on Chrome).
+        allIFrames.first().contentWindow.location = blankURL;
+    }
 
     /*
     this.getNativeDocument().defaultView.onresize =
@@ -234,43 +208,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 //  ZUI methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Inst.defineMethod('getComputedWidthAndHeight',
-function() {
-
-    /**
-     * @name getComputedWidthAndHeight
-     * @returns {Array} 
-     */
-
-    var worldColumns,
-        worldRows,
-
-        screenWidth,
-        screenHeight,
-
-        gapWidth,
-        gapHeight,
-
-        worldWidth,
-        worldHeight;
-
-    worldColumns = this.get('numCols');
-    worldRows = this.get('numRows');
-
-    screenWidth = this.get('screenWidth');
-    screenHeight = this.get('screenHeight');
-
-    gapWidth = this.get('gapWidth');
-    gapHeight = this.get('gapHeight');
-
-    worldWidth = (worldColumns * screenWidth) + ((worldColumns + 1) * gapWidth);
-    worldHeight = (worldRows * screenHeight) + ((worldRows + 1) * gapHeight);
-
-    return TP.ac(worldWidth, worldHeight);
-});
-
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineMethod('getWorldCenterPoint',
@@ -341,8 +278,10 @@ function(screenRowNum, screenColNum) {
     screenWidth = this.get('screenWidth');
     screenHeight = this.get('screenHeight');
 
-    gapWidth = this.get('gapWidth');
-    gapHeight = this.get('gapHeight');
+    //gapWidth = this.get('gapWidth');
+    //gapHeight = this.get('gapHeight');
+    gapWidth = 0;
+    gapHeight = 0;
 
     translateX = (screenWidth * screenColNum) + (gapWidth * screenColNum);
     translateY = (screenHeight * screenRowNum) + (gapHeight * screenRowNum);
@@ -385,6 +324,8 @@ function() {
     var worldSize,
         worldWidth,
         worldHeight;
+
+    return this;
 
     worldSize = this.getComputedWidthAndHeight();
     worldWidth = worldSize.first();
