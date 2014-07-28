@@ -157,7 +157,7 @@ function(aResourceID, aRequest) {
     //  resize/reposition)
     this.get('$consoleGUI').scrollToEnd();
 
-    this.observe(TP.byOID('SherpaConsole'), 'HiddenChange');
+    this.observe(TP.byOID('SherpaConsole', TP.win('UIROOT.SHERPA_FRAME')), 'HiddenChange');
 
     return this;
 });

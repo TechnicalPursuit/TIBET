@@ -65,7 +65,6 @@ TP.sherpa.editortile.Inst.defineAttribute(
         'headerText',
         {'value': TP.cpc('.header_text', true)});
 
-//  TODO: Bug: We have to repeat this from the supertype in order to not get a
 //  'path' object back
 TP.sherpa.editortile.Inst.defineAttribute(
         'textInput',
@@ -92,8 +91,8 @@ function() {
 
     this.observe(this, 'TP.sig.DOMClick');
 
-    this.observe(TP.byOID('SherpaHalo'), 'TP.sig.HaloDidFocus');
-    this.observe(TP.byOID('SherpaHalo'), 'TP.sig.HaloDidBlur');
+    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT.SHERPA_FRAME')), 'TP.sig.HaloDidFocus');
+    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT.SHERPA_FRAME')), 'TP.sig.HaloDidBlur');
 
     return this;
 });
@@ -103,7 +102,7 @@ function() {
 TP.sherpa.editortile.Inst.defineMethod('handleTP_sig_HaloDidFocus',
 function(aSignal) {
 
-    this.show();
+    //this.show();
 
     return this;
 });
@@ -113,7 +112,7 @@ function(aSignal) {
 TP.sherpa.editortile.Inst.defineMethod('handleTP_sig_HaloDidBlur',
 function(aSignal) {
 
-    this.hide();
+    //this.hide();
 
     return this;
 });

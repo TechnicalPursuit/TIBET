@@ -151,7 +151,7 @@ function() {
         };
     */
 
-    this.observe(TP.byOID('SherpaHUD'), 'HiddenChange');
+    this.observe(TP.byOID('SherpaHUD', this.getNativeWindow()), 'HiddenChange');
 
     return;
 });
@@ -296,7 +296,7 @@ function(screenRowNum, screenColNum) {
     hudHorizOffset = (30 + 5);
     hudVertOffset = (50 + 5);
 
-    if (TP.isValid(hud = TP.byOID('SherpaHUD')) &&
+    if (TP.isValid(hud = TP.byOID('SherpaHUD', this.getNativeWindow())) &&
         TP.notTrue(hud.get('hidden'))) {
         translateX -= hudHorizOffset;
         translateY -= hudVertOffset;
@@ -343,7 +343,7 @@ function() {
     translateX = 0;
     translateY = 0;
 
-    if (TP.isValid(hud = TP.byOID('SherpaHUD')) &&
+    if (TP.isValid(hud = TP.byOID('SherpaHUD', this.getNativeWindow())) &&
         TP.notTrue(hud.get('hidden'))) {
         translateX -= hudHorizOffset;
         translateY -= hudVertOffset;

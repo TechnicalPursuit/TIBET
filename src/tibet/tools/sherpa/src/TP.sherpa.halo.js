@@ -176,7 +176,7 @@ function() {
 
     this.moveAndSizeToTarget(null);
 
-    TP.byOID('SherpaConsoleService').get('model').setVariable('HALO', null);
+    //TP.byOID('SherpaConsoleService', TP.win('UIROOT.SHERPA_FRAME')).get('model').setVariable('HALO', null);
     this.set('currentTargetTPElem', null);
 
     this.signal('TP.sig.HaloDidBlur');
@@ -200,8 +200,8 @@ function(target) {
     if (TP.isKindOf(target, TP.core.ElementNode)) {
         this.moveAndSizeToTarget(target);
 
-        TP.byOID('SherpaConsoleService').get('model').setVariable(
-                                                        'HALO', target);
+        //TP.byOID('SherpaConsoleService', TP.win('UIROOT.SHERPA_FRAME')).get('model').setVariable(
+        //                                                'HALO', target);
         this.set('currentTargetTPElem', target);
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();

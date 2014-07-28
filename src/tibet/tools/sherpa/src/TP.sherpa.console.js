@@ -399,7 +399,7 @@ function(dataRecord) {
     output = dataRecord.at('output');
     cssClass = dataRecord.at('cssClass');
 
-    TP.byOID('SherpaLogView').addLogEntry(
+    TP.byOID('SherpaLogView', TP.win('UIROOT.SHERPA_FRAME')).addLogEntry(
             TP.hc('output', output, 'cssClass', cssClass));
 
     //console.log('Echo logged text: ' + outputText);

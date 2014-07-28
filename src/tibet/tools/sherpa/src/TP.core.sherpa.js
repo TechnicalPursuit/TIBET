@@ -69,7 +69,7 @@ function(info) {
     /*
     (function () {
 
-        var testTile = TP.byOID('Sherpa').makeTile('detailTile');
+        var testTile = TP.byOID('Sherpa', this.get('vWin')).makeTile('detailTile');
         testTile.toggle('hidden');
 
         }).bind(this).observe(

@@ -286,8 +286,8 @@ function(targetTPElement, cornerTPElement) {
         position,
         input;
 
-    if (TP.notValid(theTile = TP.byOID('HaloEditorTile'))) {
-        theTile = TP.byOID('Sherpa').makeEditorTile('HaloEditorTile');
+    if (TP.notValid(theTile = TP.byOID('HaloEditorTile', TP.win('UIROOT.SHERPA_FRAME')))) {
+        theTile = TP.byOID('Sherpa', TP.win('UIROOT.SHERPA_FRAME')).makeEditorTile('HaloEditorTile');
 
         position = cornerTPElement.getPagePoint();
 
