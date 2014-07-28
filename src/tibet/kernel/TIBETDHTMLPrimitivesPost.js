@@ -2448,22 +2448,23 @@ function(anElement, boxType, wantsTransformed) {
                 'height', result.at(3));
 
     } else {
-        if (TP.isElement(winFrameElem = elemWin.frameElement)) {
-            //  Note here that we pass 'top' as the first argument since we
-            //  really just want the offset of winFrameElem from the top (which
-            //  will be 0,0 offset from itself).
-            frameOffsetXAndY = TP.windowComputeWindowOffsets(
-                                top,
-                                TP.elementGetIFrameWindow(winFrameElem),
-                                wantsTransformed);
-        } else {
-            frameOffsetXAndY = TP.ac(0, 0);
-        }
-
-        box = TP.elementGetPageBox(anElement, boxType, null, wantsTransformed);
-        box.atPut('left', box.at('left') + frameOffsetXAndY.first());
-        box.atPut('top', box.at('top') + frameOffsetXAndY.last());
+        box = TP.elementGetPageBox(anElement, boxType, null, false);
     }
+
+    if (TP.isElement(winFrameElem = elemWin.frameElement)) {
+        //  Note here that we pass 'top' as the first argument since we
+        //  really just want the offset of winFrameElem from the top (which
+        //  will be 0,0 offset from itself).
+        frameOffsetXAndY = TP.windowComputeWindowOffsets(
+                            top,
+                            TP.elementGetIFrameWindow(winFrameElem),
+                            wantsTransformed);
+    } else {
+        frameOffsetXAndY = TP.ac(0, 0);
+    }
+
+    box.atPut('left', box.at('left') + frameOffsetXAndY.first());
+    box.atPut('top', box.at('top') + frameOffsetXAndY.last());
 
     return box;
 });
