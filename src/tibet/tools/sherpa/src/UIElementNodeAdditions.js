@@ -78,12 +78,14 @@ function(aHalo) {
 
     ourRect = this.getGlobalRect();
 
-    //  If the halo is operating in the same window as us, just return our
-    //  'global rect'
+    //  If the halo is operating in the same window as us, so just return our
+    //  untransformed 'global rect'
     if (haloWin === ourWin) {
         return ourRect;
     }
 
+    //  If we're not in an iframe window, we must be in a top-level window, so
+    //  just return our untransformed global rect.
     if (!TP.isIFrameWindow(ourWin)) {
         return ourRect;
     }
@@ -135,6 +137,20 @@ function(aHalo, aSignal) {
     }
 
     return TP.wrap(lastElem);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getUIEditorType',
+function() {
+
+    /**
+     * @name getUIEditorType
+     * @synopsis Returns the UIEditor subtype used to edit any UI elements.
+     * @returns {Type} 
+     */
+
+    return TP.core.UIElementNodeEditor;
 });
 
 //  ------------------------------------------------------------------------
@@ -246,6 +262,55 @@ function(aHalo) {
      */
 
     return this;
+});
+
+//  ========================================================================
+//  UIElementNodeEditor
+//  ========================================================================
+
+TP.lang.Object.defineSubtype('core.UIElementNodeEditor');
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNodeEditor.Type.defineMethod('haloNorthwestClick',
+function(targetTPElement, cornerTPElement) {
+
+    /**
+     * @name getUIEditorType
+     * @synopsis Returns the UIEditor subtype used to edit 'html' elements.
+     * @param {} targetTPElement
+     * @returns {Type} 
+     */
+
+    var theTile,
+        position,
+        input;
+
+    if (TP.notValid(theTile = TP.byOID('HaloEditorTile'))) {
+        theTile = TP.byOID('Sherpa').makeEditorTile('HaloEditorTile');
+
+        position = cornerTPElement.getPagePoint();
+
+        theTile.setPagePositionAndSize(
+                    TP.rtc(position.getX() + 50, position.getY() + 50, 750, 500));
+
+        input = theTile.get('textInput');
+
+        (function () {
+            theTile.setHeader(targetTPElement.getID());
+            theTile.focusOn(targetTPElement);
+            theTile.set('hidden', false);
+        }).observe(input, 'TP.sig.DOMReady');
+
+    } else {
+        if (TP.isTrue(theTile.get('hidden'))) {
+            theTile.setHeader(targetTPElement.getID());
+            theTile.focusOn(targetTPElement);
+            theTile.set('hidden', false);
+        } else {
+            theTile.set('hidden', true);
+        }
+    }
 });
 
 //  ------------------------------------------------------------------------
