@@ -18,6 +18,7 @@ launch mode. If we tried to use LESS here for example it would break when
 booting from file:// URLs on Chrome and potentially others.
 -->
 <style type="text/css">
+<![CDATA[
 html,body,#background,iframe {
     position: absolute;
 
@@ -43,6 +44,9 @@ div {
     margin: 0;
     padding: 0;
     border: 0;
+}
+
+.framing {
 }
 
 /* -----------------------------*
@@ -321,16 +325,17 @@ div {
     background-color: white;
     border-radius: 4px;
 }
+]]>
 </style>
 
 <script src="/node_modules/tibet/lib/src/tibet_hook.min.js"
     type="text/javascript"></script>
 
 </head>
-<body>
+<body xmlns:pclass="urn:tibet:pseudoclass">
 <div id="background">
 
-  <div id="northwest" class="corner north west">
+  <div id="northwest" class="framing corner north west" pclass:hidden="true">
     <div class="drawer">
       <div class="home">
         <a href="#"
@@ -339,38 +344,38 @@ div {
     </div>
   </div>
 
-  <div id="north" class="h-edge north center">
+  <div id="north" class="framing h-edge north center" pclass:hidden="true">
     <div class="drawer"></div>
   </div>
 
-  <div id="northeast" class="corner north east">
+  <div id="northeast" class="framing corner north east" pclass:hidden="true">
     <div class="drawer"></div>
   </div>
 
-  <div id="west" class="v-edge middle west">
+  <div id="west" class="framing v-edge middle west" pclass:hidden="true">
     <div class="drawer"></div>
   </div>
 
-  <div id="center" class="middle center">
+  <div id="center" class="middle center" pclass:hidden="true">
     <div id="content">
         <!-- single-screen configuration. SCREEN_O remains default screen -->
         <iframe id="SCREEN_0" frameborder="0" src="/node_modules/tibet/lib/xhtml/tp_blank.xhtml"></iframe>
     </div>
   </div>
 
-  <div id="east" class="v-edge middle east">
+  <div id="east" class="framing v-edge middle east" pclass:hidden="true">
     <div class="drawer"></div>
   </div>
 
-  <div id="southwest" class="corner south west">
+  <div id="southwest" class="framing corner south west" pclass:hidden="true">
     <div class="drawer"></div>
   </div>
 
-  <div id="south" class="h-edge south center">
+  <div id="south" class="framing h-edge south center" pclass:hidden="true">
     <div class="drawer"></div>
   </div>
 
-  <div id="southeast" class="corner south east">
+  <div id="southeast" class="framing corner south east" pclass:hidden="true">
     <div class="drawer"></div>
   </div>
 
