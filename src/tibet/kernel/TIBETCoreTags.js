@@ -224,13 +224,8 @@ function(aRequest) {
 
     profile = TP.sys.cfg('boot.profile');
 
-    //  Note the startsWith() here. We allow for profiles to be a hash-separated
-    //  package#config name so this implies any variant of development profile
-    //  includes the sherpa.
-
-    //  If we're not already running in the Sherpa and our profile starts with
-    //  the word 'development', then put the 'tibet:sherpa' tag into the list
-    //  for consideration.
+    //  If the system is configured to run the sherpa, then push its tag into
+    //  the list for consideration.
     if (TP.sys.cfg('tibet.sherpa') === true) {
         opts.unshift('tibet:sherpa');
     }
