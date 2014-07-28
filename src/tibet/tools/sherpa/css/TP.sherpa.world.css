@@ -1,8 +1,8 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-sherpa|world
-{
+sherpa|world {
+
     display: block;
 	position: absolute;
 
