@@ -3,33 +3,5 @@
 <!-- The hud (heads-up-display) tag supports screen edge tool docking. -->
 <sherpa:hud xmlns="http://www.w3.org/1999/xhtml"
 		xmlns:sherpa="http://www.technicalpursuit.com/2014/sherpa"
-        xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
-        id="SherpaHUD" pclass:hidden="true">
-		<sherpa:huddrawer sherpa:edge="topleft" pclass:hidden="true">
-		</sherpa:huddrawer>
-		<sherpa:huddrawer sherpa:edge="top" pclass:hidden="true">
-		</sherpa:huddrawer>
-		<sherpa:huddrawer sherpa:edge="topright" pclass:hidden="true">
-		</sherpa:huddrawer>
-        <sherpa:huddrawer sherpa:edge="right" pclass:hidden="true">
-            <div id="fitToSelf" class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToSelf()"></div>
-            <div class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToVisibleWindow()">&#160;W</div>
-            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(0, 0)">&#160;1</div>
-            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(0, 1)">&#160;2</div>
-            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(1, 0)">&#160;3</div>
-            <div class="drawerButton fitToScreen" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().fitToScreen(1, 1)">&#160;4</div>
-            <!--
-            <div id="zoomIn" class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().zoomIn(.2)"></div>
-            <div id="zoomOut" class="drawerButton" onclick="TP.uc('tibet://top.UIROOT.UISCREENS/#SherpaWorld').getResource().zoomOut(.2)"></div>
-            -->
-            <div id="toggleLog" class="drawerButton" onclick="TP.byOID('SherpaConsole').toggleLog()"></div>
-		</sherpa:huddrawer>
-		<sherpa:huddrawer sherpa:edge="bottomright" pclass:hidden="true">
-		</sherpa:huddrawer>
-        <sherpa:huddrawer sherpa:edge="bottom" pclass:hidden="true">
-		</sherpa:huddrawer>
-		<sherpa:huddrawer sherpa:edge="bottomleft" pclass:hidden="true">
-		</sherpa:huddrawer>
-		<sherpa:huddrawer sherpa:edge="left" pclass:hidden="true">
-		</sherpa:huddrawer>
+        id="SherpaHUD">
 </sherpa:hud>
