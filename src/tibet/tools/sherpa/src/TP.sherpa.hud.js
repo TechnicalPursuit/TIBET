@@ -123,7 +123,7 @@ function(beHidden) {
         return this;
     }
 
-    TP.byOID('SherpaConsole').set('hidden', beHidden);
+    TP.byOID('SherpaConsole', this.getNativeWindow()).set('hidden', beHidden);
 
     if (TP.isTrue(beHidden)) {
         this.hideAllHUDDrawers();
@@ -132,7 +132,7 @@ function(beHidden) {
     } else {
         this.showAllHUDDrawers();
     
-        TP.byOID('SherpaConsole').focusInput();
+        TP.byOID('SherpaConsole', this.getNativeWindow()).focusInput();
     }
 
     return this.callNextMethod();
@@ -152,7 +152,7 @@ function() {
 
     var hudDrawers;
 
-    hudDrawers = TP.wrap(TP.byCSS('sherpa|huddrawer'));
+    hudDrawers = TP.wrap(TP.byCSS('.framing', this.getNativeWindow()));
 
     hudDrawers.perform(
         function(aHUDDrawer) {
@@ -176,7 +176,7 @@ function() {
 
     var hudDrawers;
 
-    hudDrawers = TP.wrap(TP.byCSS('sherpa|huddrawer'));
+    hudDrawers = TP.wrap(TP.byCSS('.framing', this.getNativeWindow()));
 
     hudDrawers.perform(
         function(aHUDDrawer) {

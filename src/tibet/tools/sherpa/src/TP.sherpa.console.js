@@ -266,15 +266,16 @@ function() {
 TP.sherpa.console.Inst.defineMethod('setupLogView',
 function() {
 
-    var uiRootDoc,
-        logview;
+    var sherpaFrameBody,
+        logviewTPElem;
 
-    uiRootDoc = TP.doc(TP.win('UIROOT'));
+    sherpaFrameBody = TP.documentGetBody(
+                            TP.win('UIROOT.SHERPA_FRAME').document);
 
-    logview = TP.sherpa.logview.addResourceContentTo(
-                        TP.ietf.Mime.XHTML,
-                        TP.documentGetBody(uiRootDoc));
-    logview.setup();
+    logviewTPElem = TP.wrap(sherpaFrameBody).addContent(
+                    TP.sherpa.logview.getResourceMarkup(TP.ietf.Mime.XHTML));
+
+    logviewTPElem.setup();
 
     return this;
 });
@@ -284,26 +285,10 @@ function() {
 TP.sherpa.console.Inst.defineMethod('toggleLog',
 function() {
 
-    var logview;
+    var logviewTPElem;
 
-    //var logviewTile = TP.byOID('Sherpa').makeTile('logviewTile');
-
-/*
-    if (TP.notValid(logview = TP.byOID('SherpaLogView'))) {
-        uiRootDoc = TP.doc(TP.win('UIROOT'));
-
-        logview = TP.sherpa.logview.addResourceContentTo(
-                            TP.ietf.Mime.XHTML,
-                            TP.documentGetBody(uiRootDoc));
-        logview.setID('SherpaLogView');
-    }
-*/
-
-    //logviewTile.toggle('hidden');
-    logview = TP.byOID('SherpaLogView');
-    logview.toggle('hidden');
-
-    //logviewTile.setPagePositionAndSize(TP.rtc(100, 100, 300, 300));
+    logviewTPElem = TP.byOID('SherpaLogView', TP.win('UIROOT.SHERPA_FRAME'));
+    logviewTPElem.toggle('hidden');
 
     return this;
 });
