@@ -47,7 +47,7 @@ function(aRequest) {
     //  Build an iframe element to contain our custom element.
     frameElem = TP.elem(
         TP.join('<iframe xmlns="', TP.w3.Xmlns.XHTML, '"',
-                ' id="UISCREENS"',
+                ' id="SHERPA_FRAME"',
                 ' style="position: absolute; border: none;',
                 ' top: 0px; left: 0px; width: 100%; height: 100%"',
                 ' src="' + blankURI.getLocation() + '"></iframe>'));
