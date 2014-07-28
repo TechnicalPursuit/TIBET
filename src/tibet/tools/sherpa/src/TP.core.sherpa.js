@@ -79,7 +79,7 @@ function(info) {
     //  Manually 'display: none' the boot iframe. It's already
     //  'visibility:hidden', but we need to get it out of the way.
     uiBootIFrameElem = TP.byId('UIBOOT', top);
-    uiBootIFrameElem.style.display = 'none';
+    TP.elementHide(uiBootIFrameElem);
 
     this.setID('Sherpa');
     TP.sys.registerObject(this);
