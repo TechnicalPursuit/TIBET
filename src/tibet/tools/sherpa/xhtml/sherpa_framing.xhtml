@@ -302,6 +302,8 @@ div {
     background: #fff;
     padding: 1px;
     min-width: 600px;
+
+    overflow: hidden;
 }
 
 #center #content {
@@ -317,6 +319,7 @@ div {
     border: 1px solid #666;
 }
 
+/*
 #SCREEN_0 {
     top: 0;
     left: 0;
@@ -324,6 +327,7 @@ div {
     height: 100%;
     background-color: white;
     border-radius: 4px;
+*/
 }
 ]]>
 </style>
@@ -358,8 +362,9 @@ div {
 
   <div id="center" class="middle center" pclass:hidden="true">
     <div id="content">
-        <!-- single-screen configuration. SCREEN_O remains default screen -->
-        <iframe id="SCREEN_0" frameborder="0" src="/node_modules/tibet/lib/xhtml/tp_blank.xhtml"></iframe>
+        <!-- This will be moved with the arrival of the <sherpa:world/> tag. SCREEN_O will remain the default screen -->
+        <iframe id="SCREEN_0" frameborder="0"></iframe>
+        <iframe id="SCREEN_1" frameborder="0"></iframe>
     </div>
   </div>
 

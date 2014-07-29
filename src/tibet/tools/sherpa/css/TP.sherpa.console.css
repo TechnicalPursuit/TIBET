@@ -15,7 +15,7 @@ sherpa|console
 
     height: 18px;
 
-    max-height: calc(100% - 100px);
+    /*max-height: calc(100% - 100px);*/
 
 	/* This should match TIBET's CONSOLE_TIER constant */
 	z-index: 15000;
