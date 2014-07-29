@@ -76,6 +76,10 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     <property name="TP.sherpa.tile.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.tile.xhtml"/>
     <property name="TP.sherpa.tile.css_uri" value="~ide_root/css/TP.sherpa.tile.css"/>
 
+    <script src="./src/TP.sherpa.editortile.js"/>
+    <property name="TP.sherpa.editortile.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.editortile.xhtml"/>
+    <property name="TP.sherpa.editortile.css_uri" value="~ide_root/css/TP.sherpa.editortile.css"/>
+
 </config>
 
 </package>
