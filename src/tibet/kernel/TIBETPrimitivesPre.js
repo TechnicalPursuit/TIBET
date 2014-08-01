@@ -7881,28 +7881,6 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('isFrame',
-function(anObj) {
-
-    /**
-     * @name isFrame
-     * @synopsis Returns true if the object is a frame rather than window.
-     * @param {Object} anObj The Object to test.
-     * @example Test what's an iframe and what's not:
-     *     <code>
-     *          TP.isFrame(top);
-     *          <samp>false</samp>
-     *     </code>
-     * @returns {Boolean} Whether or not the supplied object is a frame.
-     * @todo
-     */
-
-    //  A top-level window has a parent slot that is set to itself.
-    return (TP.isWindow(anObj) && anObj.parent !== anObj);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('isHTMLDocument',
 function(anObj) {
 
