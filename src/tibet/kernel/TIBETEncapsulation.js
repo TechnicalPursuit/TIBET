@@ -136,7 +136,7 @@ function(aFilter, undefNotNull) {
      * @param {Function} aFilter A function which accepts and object and returns
      *     the value to compare for uniqueness.
      * @param {Boolean} undefNotNull True to have undefined values compare
-     *     differently that nulls for uniquing purposes.
+     *     differently than nulls for uniquing purposes.
      * @returns {Array} The receiver.
      * @signals Change
      * @todo

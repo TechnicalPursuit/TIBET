@@ -1176,8 +1176,8 @@ function(aFaultCode, aFaultString) {
      * @param {String} aFaultString A string description of the fault.
      */
 
-    // NOTE that even though we had an error we still resolve, not reject. This
-    // allows other test cases to continue to be processed.
+    //  NOTE that even though we had an error we still resolve, not reject. This
+    //  allows other test cases to continue to be processed.
     this.$resolve();
 
     this.set('msend', Date.now());
