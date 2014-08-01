@@ -288,13 +288,13 @@ function() {
 //  Run those babies!
 //  ------------------------------------------------------------------------
 
-//TP.test.Suite.runTestSuites();
+//TP.test.Suite.runTargetSuites(<targetObj>);
 /*
-TP.test.Suite.runTestSuites(Array);
-TP.test.Suite.runTestSuites(Array.prototype);
-TP.test.Suite.runTestSuites(TP.core.Resource);
-TP.test.Suite.runTestSuites(TP.core.Resource.Type);
-TP.test.Suite.runTestSuites(TP.core.Resource.Inst);
+TP.test.Suite.runTargetSuites(Array);
+TP.test.Suite.runTargetSuites(Array.prototype);
+TP.test.Suite.runTargetSuites(TP.core.Resource);
+TP.test.Suite.runTargetSuites(TP.core.Resource.Type);
+TP.test.Suite.runTargetSuites(TP.core.Resource.Inst);
 */
 
 //  ------------------------------------------------------------------------
