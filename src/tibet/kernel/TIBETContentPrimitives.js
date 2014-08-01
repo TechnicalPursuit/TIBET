@@ -126,6 +126,10 @@ function(aString) {
 
     var text;
 
+    if (TP.isEmpty(aString)) {
+        return false;
+    }
+
     //  avoid changing parameter value
     text = aString;
 
