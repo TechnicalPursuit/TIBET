@@ -3118,10 +3118,10 @@ function(anObj) {
         return false;
     }
 
-    //  Strings, Numbers, Booleans are *not* mutable
+    //  Strings, Numbers, Booleans are *not* mutable (but their prototypes are)
 
-    if ((typeof anObj.charAt === 'function') ||
-        (typeof anObj.toPrecision === 'function') ||
+    if ((typeof anObj.charAt === 'function' && anObj !== TP.StringProto) ||
+        (typeof anObj.toPrecision === 'function' && anObj !== TP.NumberProto) ||
         (anObj === true) ||
         (anObj === false)) {
         return false;
