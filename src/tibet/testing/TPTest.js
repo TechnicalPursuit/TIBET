@@ -1491,7 +1491,7 @@ function(aCondition, aComment, aFaultString) {
 
     if (!aCondition) {
         comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
-        this.fail(comment + (aFaultString || ''));
+        this.fail(TP.FAILURE, comment + (aFaultString || ''));
     }
 
     return;
@@ -1529,7 +1529,7 @@ function(anArgArray, aCount, aComment) {
 
     comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
 
-    this.fail(TP.join(comment,
+    this.fail(TP.FAILURE, TP.join(comment,
         TP.sc('Expected ', aCount, ' argument(s).',
             ' Got ', anArgArray.length, '.')));
 });

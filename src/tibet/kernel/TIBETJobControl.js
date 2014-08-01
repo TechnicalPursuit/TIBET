@@ -71,8 +71,9 @@ TP.core.JobStatus.Inst.defineMethod('checkFaultArguments',
 function(aFaultCode, aFaultString) {
 
     /**
-     * Checks the arguments and returns a hash containing updated and properly
-     * defaulted fault code and fault string values.
+     * @name checkFaultArguments
+     * @synopsis Checks the arguments and returns a hash containing updated and
+     *     properly defaulted fault code and fault string values.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
      * @param {String} aFaultString A string description of the fault.
@@ -92,6 +93,7 @@ function(aFaultCode, aFaultString) {
         }
     } else if (TP.isNumber(aFaultCode)) {
         hash.atPut('code', aFaultCode);
+        hash.atPut('text', aFaultString);
     } else if (TP.isString(aFaultCode)) {
         if (TP.isEmpty(aFaultString)) {
             hash.atPut('code', TP.FAILED);
