@@ -973,7 +973,7 @@ function(options) {
 TP.test.Suite.Inst.defineMethod('reset',
 function(options) {
 
-    this.callNextMethod(options);
+    this.callNextMethod();
 
     this.$set('caseList', null);
 
@@ -1340,7 +1340,7 @@ function() {
 TP.test.Case.Inst.defineMethod('reset',
 function(options) {
 
-    this.callNextMethod(options);
+    this.callNextMethod();
 
     this.$set('msstart', null);
     this.$set('msend', null);
