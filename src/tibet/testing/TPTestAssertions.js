@@ -28,8 +28,7 @@ function(anObject, aType, aComment) {
     this.assert(
         TP.validate(anObject, aType),
         aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to be a ', aType, '.'));
+        TP.sc('Expected ', TP.id(anObject), ' to be a ', aType, '.'));
 
     return;
 });
@@ -59,8 +58,7 @@ function(anObject, aType, aComment) {
     this.assert(
         TP.isKindOf(anObject, aType),
         aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to be a kind of ', aType, '.'));
+        TP.sc('Expected ', TP.id(anObject), ' to be a kind of ', aType, '.'));
 
     return;
 });
@@ -75,8 +73,7 @@ function(anObject, aType, aComment) {
     this.assert(
         TP.isMemberOf(anObject, aType),
         aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to be a member of ', aType, '.'));
+        TP.sc('Expected ', TP.id(anObject), ' to be a member of ', aType, '.'));
 
     return;
 });
@@ -92,6 +89,21 @@ function(anObject, aComment) {
         TP.isMutable(anObject),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be mutable.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('assertIsNamespace',
+function(anObject, aComment) {
+
+    this.assertMinArguments(arguments, 1);
+
+    this.assert(
+        TP.isNamespace(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be a namespace.'));
 
     return;
 });
@@ -143,6 +155,22 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Case.Inst.defineMethod('assertIsSubtypeOf',
+function(anObject, aType, aComment) {
+
+    this.assertMinArguments(arguments, 2);
+
+    this.assert(
+        TP.isSubtypeOf(anObject, aType),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject),
+                ' to be a subtype of: ' + TP.name(aType)));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Case.Inst.defineMethod('assertIsType',
 function(anObject, aComment) {
 
@@ -181,8 +209,7 @@ function(anObject, aType, aComment) {
     this.assert(
         !TP.validate(anObject, aType),
         aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' not to be a ', aType, '.'));
+        TP.sc('Expected ', TP.id(anObject), ' not to be a ', aType, '.'));
 
     return;
 });
@@ -465,7 +492,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsIFrame',
+TP.test.Case.Inst.defineMethod('assertIsIFrameWindow',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -474,6 +501,21 @@ function(anObject, aComment) {
         TP.isIFrameWindow(anObject),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an iframe.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('assertIsMediaQueryList',
+function(anObject, aComment) {
+
+    this.assertMinArguments(arguments, 1);
+
+    this.assert(
+        TP.isMediaQueryList(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be a media query list.'));
 
     return;
 });
@@ -563,7 +605,37 @@ function(anObject, aComment) {
     this.assert(
         TP.isStyleDeclaration(anObject),
         aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a style.'));
+        TP.sc('Expected ', TP.id(anObject), ' to be a style declaration.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('assertIsStyleRule',
+function(anObject, aComment) {
+
+    this.assertMinArguments(arguments, 1);
+
+    this.assert(
+        TP.isStyleRule(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be a style rule.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('assertIsStyleSheet',
+function(anObject, aComment) {
+
+    this.assertMinArguments(arguments, 1);
+
+    this.assert(
+        TP.isStyleSheet(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be a style sheet.'));
 
     return;
 });
@@ -739,6 +811,21 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Case.Inst.defineMethod('assertIsEmpty',
+function(anObject, aComment) {
+
+    this.assertMinArguments(arguments, 1);
+
+    this.assert(
+        TP.isEmpty(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be empty.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Case.Inst.defineMethod('assertIsNull',
 function(anObject, aComment) {
 
@@ -748,21 +835,6 @@ function(anObject, aComment) {
         TP.isNull(anObject),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be null.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Case.Inst.defineMethod('assertIsUndefined',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        !TP.isDefined(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be undefined.'));
 
     return;
 });
@@ -793,6 +865,21 @@ function(anObject, aComment) {
         TP.notDefined(anObject),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be undefined.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('assertNotEmpty',
+function(anObject, aComment) {
+
+    this.assertMinArguments(arguments, 1);
+
+    this.assert(
+        TP.notEmpty(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be not empty.'));
 
     return;
 });
@@ -1211,6 +1298,22 @@ function(anObject, aValue, aComment) {
 //  ASSERTIONS - MARKUP / ENCODING
 //  ------------------------------------------------------------------------
 
+TP.test.Case.Inst.defineMethod('assertHasAttribute',
+function(anObject, anAttributeName, aComment) {
+
+    this.assertMinArguments(arguments, 2);
+
+    this.assert(
+        TP.elementHasAttribute(anObject, anAttributeName),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject),
+                ' to have an attribute of: ' + anAttributeName));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Case.Inst.defineMethod('assertIsAttributeNode',
 function(anObject, aComment) {
 
@@ -1356,23 +1459,15 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsJSON',
+TP.test.Case.Inst.defineMethod('assertIsJSONString',
 function(aString, aComment) {
 
     this.assertMinArguments(arguments, 1);
 
-    if (TP.isEmpty(aString)) {
-        this.assert(false, aComment,
-            TP.sc('Expected ', TP.str(aString), ' to be JSON.'));
-        return;
-    }
-
-    try {
-        JSON.parse(aString);
-    } catch (e) {
-        this.assert(false, aComment,
-            TP.sc('Expected ', TP.str(aString), ' to be JSON.'));
-    }
+    this.assert(
+        TP.isJSONString(aString),
+        aComment,
+        TP.sc('Expected ', TP.str(aString), ' to be a JSON string.'));
 
     return;
 });
@@ -1439,6 +1534,22 @@ function(anObject, aNodeType, aComment) {
         aComment,
         TP.sc('Expected ', TP.id(anObject),
                 ' to be a type #', aNodeType, ' Node.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('assertIsProcessingInstructionNode',
+function(anObject, aComment) {
+
+    this.assertMinArguments(arguments, 1);
+
+    this.assert(
+        TP.isPINode(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject),
+                ' to be a ProcessingInstruction node.'));
 
     return;
 });
