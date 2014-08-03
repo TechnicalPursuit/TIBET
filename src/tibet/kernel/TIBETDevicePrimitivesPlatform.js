@@ -50,9 +50,7 @@ TP.hc(
          *     compliant event object.
          * @param {HTMLElement} currentTarget The object to make the
          *     currentTarget on the Event object. If absent or null,
-         *     currentTarget on the Event object defaults to the srcElement. Not
-         *     used in this version of the code since Gecko properly captures
-         *     the current target.
+         *     currentTarget on the Event object defaults to the srcElement.
          * @raises TP.sig.InvalidEvent
          * @returns {Event} The supplied event object normalized into a 'W3C
          *     plus' Event object.
@@ -112,7 +110,7 @@ TP.hc(
         }
 
         //  Set a few of our convenience slots
-        anEvent.$$view = anEvent.view;
+        anEvent.$$view = TP.$eventGetNormalizedView(anEvent, currentTarget);
         anEvent.$$timestamp = anEvent.timeStamp;
 
         return anEvent;
@@ -131,9 +129,7 @@ TP.hc(
          *     compliant event object.
          * @param {HTMLElement} currentTarget The object to make the
          *     currentTarget on the Event object. If absent or null,
-         *     currentTarget on the Event object defaults to the srcElement. Not
-         *     used in this version of the code since Gecko properly captures
-         *     the current target.
+         *     currentTarget on the Event object defaults to the srcElement.
          * @raises TP.sig.InvalidEvent
          * @returns {Event} The supplied event object normalized into a 'W3C
          *     plus' Event object.
@@ -182,7 +178,7 @@ TP.hc(
         //  Set a few of our convenience slots (note that for IE, the
         //  regular 'timeStamp' slot is set in the hook file's handler
         //  wrapper Function).
-        anEvent.$$view = anEvent.view;
+        anEvent.$$view = TP.$eventGetNormalizedView(anEvent, currentTarget);
         anEvent.$$timestamp = anEvent.timeStamp;
 
         return anEvent;
@@ -201,9 +197,7 @@ TP.hc(
          *     compliant event object.
          * @param {HTMLElement} currentTarget The object to make the
          *     currentTarget on the Event object. If absent or null,
-         *     currentTarget on the Event object defaults to the srcElement. Not
-         *     used in this version of the code since Gecko properly captures
-         *     the current target.
+         *     currentTarget on the Event object defaults to the srcElement.
          * @raises TP.sig.InvalidEvent
          * @returns {Event} The supplied event object normalized into a 'W3C
          *     plus' Event object.
@@ -250,12 +244,52 @@ TP.hc(
         }
 
         //  Set a few of our convenience slots
-        anEvent.$$view = anEvent.view;
+        anEvent.$$view = TP.$eventGetNormalizedView(anEvent, currentTarget);
         anEvent.$$timestamp = anEvent.timeStamp;
 
         return anEvent;
     }
 ));
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$eventGetNormalizedView',
+function(anEvent, currentTarget) {
+
+    /**
+     * Returns the native window object associated with the event. This is a
+     * lower-level routine leveraged by the eventNormalize primitive.
+     * @param {Event} anEvent The event to convert into a 'W3C plus'
+     *     compliant event object.
+     * @param {HTMLElement} currentTarget The object to make the
+     *     currentTarget on the Event object. If absent or null,
+     *     currentTarget on the Event object defaults to the srcElement.
+     * @return Window The native window associated with the event.
+     */
+
+    if (TP.isValid(anEvent.$$view)) {
+        return anEvent.$$view;
+    }
+
+    if (TP.isValid(anEvent.view)) {
+        return anEvent.view;
+    }
+
+    if (TP.isValid(currentTarget) && TP.isValid(currentTarget.defaultView)) {
+        return currentTarget.defaultView;
+    }
+
+
+    if (TP.isValid(anEvent.currentTarget) &&
+        TP.isValid(anEvent.currentTarget.defaultView)) {
+        return anEvent.currentTarget.defaultView;
+    }
+
+    if (TP.isValid(anEvent.srcElement) &&
+        TP.isValid(anEvent.srcElement.defaultView)) {
+        return anEvent.srcElement.defaultView;
+    }
+});
 
 //  ------------------------------------------------------------------------
 //  end
