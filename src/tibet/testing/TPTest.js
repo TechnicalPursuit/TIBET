@@ -1149,6 +1149,12 @@ TP.test.Root.defineSubtype('Case');
 //  ------------------------------------------------------------------------
 
 /**
+ * The object that holds all of the test methods as an 'asserter'.
+ * @type {TP.test.TestMethodCollection}
+ */
+TP.test.Case.Inst.defineAttribute('assert');
+
+/**
  * The specific test function containing assertions/expectations.
  * @type {Function}
  */
@@ -1166,6 +1172,12 @@ TP.test.Case.Inst.defineAttribute('caseName');
  * @type {Number}
  */
 TP.test.Case.Inst.defineAttribute('mslimit', 5000);
+
+/**
+ * The object that holds all of the test methods as a 'refuter'.
+ * @type {TP.test.TestMethodCollection}
+ */
+TP.test.Case.Inst.defineAttribute('refute');
 
 /**
  * The test suite which owns this particular test case.
