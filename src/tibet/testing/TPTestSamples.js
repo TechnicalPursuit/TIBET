@@ -44,7 +44,7 @@ function() {
     });
 
     this.it('passes implicitly with assert(true)', function() {
-        this.assert(true);
+        this.assert.assert(true);
     });
 
     this.it('fails implicitly', function() {

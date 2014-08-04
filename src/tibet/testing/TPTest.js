@@ -552,6 +552,12 @@ TP.test.Suite.Inst.defineAttribute('afterAll');
 TP.test.Suite.Inst.defineAttribute('afterEvery');
 
 /**
+ * The object that holds all of the test methods as an 'asserter'.
+ * @type {TP.test.TestMethodCollection}
+ */
+TP.test.Suite.Inst.defineAttribute('asserter');
+
+/**
  * An optional setup function to run before any test cases have been run.
  * @type {Function}
  */
@@ -575,6 +581,12 @@ TP.test.Suite.Inst.defineAttribute('caseList');
  * @type {Number}
  */
 TP.test.Suite.Inst.defineAttribute('mslimit', 15000);
+
+/**
+ * The object that holds all of the test methods as a 'refuter'.
+ * @type {TP.test.TestMethodCollection}
+ */
+TP.test.Suite.Inst.defineAttribute('refuter');
 
 /**
  * A dictionary of statistics regarding pass, fail, error, and skip counts.
@@ -855,6 +867,11 @@ function(target, suiteName, suiteFunc) {
     this.$set('suiteList', TP.ac());
     this.$get('suiteList').push(suiteFunc);
 
+    this.$set('asserter',
+        TP.test.TestMethodCollection.construct());
+    this.$set('refuter',
+        TP.test.TestMethodCollection.construct().set('isRefuter', true));
+
     return this;
 });
 
@@ -942,15 +959,22 @@ function(options) {
                     }
                 });
 
-        statistics = TP.hc('passed', passed, 'failed', failed,
-            'ignored', ignored, 'errored', errored, 'skipped', skipped);
+        statistics = TP.hc('passed', passed,
+                            'failed', failed,
+                            'ignored', ignored,
+                            'errored', errored,
+                            'skipped', skipped);
         this.set('statistics', statistics);
+    } else {
+        passed = statistics.at('passed');
+        failed = statistics.at('failed');
+        skipped = statistics.at('skipped');
+        ignored = statistics.at('ignored');
+        errored = statistics.at('errored');
     }
 
     //  NOTE the didError check here is for 'describe' errors.
-    if (this.didError() +
-            statistics.at('failed') !== 0 ||
-            statistics.at('errored') !== 0) {
+    if (this.didError() || failed !== 0 || errored !== 0) {
         prefix = '# fail: ';
     } else {
         prefix = '# pass: ';
@@ -959,13 +983,14 @@ function(options) {
     total = 0;
     total += passed + failed + errored + ignored + skipped;
 
-    TP.sys.logTest(prefix +
+    TP.sys.logTest(
+        prefix +
         total + ' total, ' +
-        statistics.at('passed') + ' pass, ' +
-        statistics.at('failed') + ' fail, ' +
-        statistics.at('skipped') + ' skip, ' +
-        statistics.at('ignored') + ' todo, ' +
-        statistics.at('errored') + ' error.', TP.TRACE);
+        passed + ' pass, ' +
+        failed + ' fail, ' +
+        skipped + ' skip, ' +
+        ignored + ' todo, ' +
+        errored + ' error.', TP.TRACE);
 });
 
 //  ------------------------------------------------------------------------
@@ -1120,16 +1145,14 @@ function(options) {
 TP.test.Root.defineSubtype('Case');
 
 //  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
+
+/**
+ * The object that holds all of the test methods as an 'asserter'.
+ * @type {TP.test.TestMethodCollection}
+ */
+TP.test.Case.Inst.defineAttribute('assert');
 
 /**
  * The specific test function containing assertions/expectations.
@@ -1151,10 +1174,10 @@ TP.test.Case.Inst.defineAttribute('caseName');
 TP.test.Case.Inst.defineAttribute('mslimit', 5000);
 
 /**
- * The promise instance used for the last run() of this test case.
- * @type {Promise}
+ * The object that holds all of the test methods as a 'refuter'.
+ * @type {TP.test.TestMethodCollection}
  */
-TP.test.Case.Inst.defineAttribute('promise');
+TP.test.Case.Inst.defineAttribute('refute');
 
 /**
  * The test suite which owns this particular test case.
@@ -1271,6 +1294,7 @@ function(suite, caseName, caseFunc) {
      */
 
     this.$set('suite', suite);
+
     this.$set('caseName', caseName);
     this.$set('caseFunc', caseFunc);
 
@@ -1340,11 +1364,21 @@ function() {
 TP.test.Case.Inst.defineMethod('reset',
 function(options) {
 
+    var asserter,
+        refuter;
+
     this.callNextMethod();
 
     this.$set('msstart', null);
     this.$set('msend', null);
-    this.$set('promise', null);
+
+    asserter = this.getSuite().get('asserter');
+    asserter.$set('currentTestCase', this);
+    this.$set('assert', asserter);
+
+    refuter = this.getSuite().get('refuter');
+    refuter.$set('currentTestCase', this);
+    this.$set('refute', refuter);
 
     if (options && options.at('case_timeout')) {
         this.$set('mslimit', options.at('case_timeout'));
@@ -1410,7 +1444,8 @@ function(options) {
 
         try {
             //  Note that inside the test function we bind to the Case instance.
-            maybe = testcase.$get('caseFunc').call(testcase, options);
+            maybe = testcase.$get('caseFunc').call(testcase, testcase, options);
+
             if (TP.canInvoke(maybe, 'then')) {
                 maybe.then(
                     function(obj) {
@@ -1456,113 +1491,6 @@ function(options) {
             }
         });
 });
-
-//  ------------------------------------------------------------------------
-//  TEST CASE ASSERTIONS
-//  ------------------------------------------------------------------------
-
-/*
- * The assertion functions here are loosely modeled after those found in other
- * testing frameworks, however they follow a naming and argument list order that
- * makes them more consistent with the rest of TIBET. Some alterations have also
- * been made to help reduce the potential for creating passing tests which don't
- * actually test anything should you overlook a parameter.
- */
-
-//  ------------------------------------------------------------------------
-//  ASSERT BASELINE
-//  ------------------------------------------------------------------------
-
-TP.test.Case.Inst.defineMethod('$assert',
-function(aCondition, aComment, aFaultString) {
-
-    /**
-     * @name $assert
-     * @synopsis Checks the supplied Boolean value and fails the test case as
-     *     needed when the assertion fails.
-     * @param {Boolean} aCondition Whether or not the test succeeded.
-     * @param {String} aComment A human-readable comment String.
-     * @param {String} aFaultString A String detailing the fault. This will be
-     *     appended to the comment if it's supplied.
-     * @todo
-     */
-
-    var comment;
-
-    if (!aCondition) {
-        comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
-        this.fail(TP.FAILURE, comment + (aFaultString || ''));
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Case.Inst.defineMethod('assertMinArguments',
-function(anArgArray, aCount, aComment) {
-
-    /**
-     * @name assertMinArguments
-     * @synopsis Asserts that the supplied argument Array has a minimum number
-     *     of items in it.
-     * @param {Array} anArgArray The argument Array to check.
-     * @param {Number} aCount The minimum number of arguments that the supplied
-     *     argument Array should have.
-     * @param {String} aComment The comment to use when reporting that the
-     *     argument Array does not have the required minimum number of
-     *     arguments.
-     * @todo
-     */
-
-    var comment;
-
-    //  Like JSUnit a comment is optional, but unlike that framework ours
-    //  is always the last argument, when present. This approach means its
-    //  much harder for an assertion to mistake a comment for a valid input
-    //  and implies that the count provided to this method is effectively a
-    //  "minimum" count.
-
-    if (anArgArray.length >= aCount) {
-        return;
-    }
-
-    comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
-
-    this.fail(TP.FAILURE, TP.join(comment,
-        TP.sc('Expected ', aCount, ' argument(s).',
-            ' Got ', anArgArray.length, '.')));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Case.Inst.defineMethod('assert',
-function(aCondition, aComment, aFaultString) {
-
-    /**
-     * @name assert
-     * @synopsis Asserts that the supplied condition passes (i.e. returns true).
-     * @param {Boolean} aCondition Whether or not the test succeeded.
-     * @param {String} aComment A human-readable comment String.
-     * @param {String} aFaultString A String detailing the fault. This will be
-     *     appended to the comment if it's supplied.
-     * @todo
-     */
-
-    this.assertMinArguments(arguments, 1);
-
-    return this.$assert(aCondition, aComment, aFaultString);
-});
-
-//  ========================================================================
-//  Test Driver
-//  ------------------------------------------------------------------------
-
-TP.test.Root.defineSubtype('Driver');
-
-// TODO: expand this out to encompass the test driver API and any extensions.
-// Probably best to split out into a separate file at that point.
-
 
 //  ========================================================================
 //  Test Instrumentation Functions
