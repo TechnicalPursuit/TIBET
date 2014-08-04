@@ -1151,12 +1151,6 @@ TP.test.Case.Inst.defineAttribute('caseName');
 TP.test.Case.Inst.defineAttribute('mslimit', 5000);
 
 /**
- * The promise instance used for the last run() of this test case.
- * @type {Promise}
- */
-TP.test.Case.Inst.defineAttribute('promise');
-
-/**
  * The test suite which owns this particular test case.
  * @type {TP.test.Suite}
  */
@@ -1344,7 +1338,6 @@ function(options) {
 
     this.$set('msstart', null);
     this.$set('msend', null);
-    this.$set('promise', null);
 
     if (options && options.at('case_timeout')) {
         this.$set('mslimit', options.at('case_timeout'));
