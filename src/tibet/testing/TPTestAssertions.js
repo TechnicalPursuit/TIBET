@@ -13,14 +13,129 @@
  */
 //  ------------------------------------------------------------------------
 
-/**
+//  ------------------------------------------------------------------------
+//  TEST CASE ASSERTIONS
+//  ------------------------------------------------------------------------
+
+/*
+ * The assertion functions here are loosely modeled after those found in other
+ * testing frameworks, however they follow a naming and argument list order that
+ * makes them more consistent with the rest of TIBET. Some alterations have also
+ * been made to help reduce the potential for creating passing tests which don't
+ * actually test anything should you overlook a parameter.
  */
+
+//  ------------------------------------------------------------------------
+//  ASSERT BASELINE
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('test.TestMethodCollection');
+
+//  ------------------------------------------------------------------------
+
+//  Whether or not the collection of test methods is a 'refuter' - that is, does
+//  it invert the result of its test?
+TP.test.TestMethodCollection.Inst.defineAttribute('isRefuter');
+
+//  The test case that the test method collection is associated with.
+TP.test.TestMethodCollection.Inst.defineAttribute('currentTestCase');
+
+//  ------------------------------------------------------------------------
+
+TP.test.TestMethodCollection.Inst.defineMethod('$assert',
+function(aCondition, aComment, aFaultString) {
+
+    /**
+     * @name $assert
+     * @synopsis Checks the supplied Boolean value and fails the test case as
+     *     needed when the assertion fails.
+     * @param {Boolean} aCondition Whether or not the test succeeded.
+     * @param {String} aComment A human-readable comment String.
+     * @param {String} aFaultString A String detailing the fault. This will be
+     *     appended to the comment if it's supplied.
+     * @todo
+     */
+
+    var comment;
+
+    if (!aCondition) {
+        comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
+
+        this.get('currentTestCase').fail(
+            TP.FAILURE,
+            comment + (aFaultString || ''));
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.TestMethodCollection.Inst.defineMethod('assertMinArguments',
+function(anArgArray, aCount, aComment) {
+
+    /**
+     * @name assertMinArguments
+     * @synopsis Asserts that the supplied argument Array has a minimum number
+     *     of items in it.
+     * @param {Array} anArgArray The argument Array to check.
+     * @param {Number} aCount The minimum number of arguments that the supplied
+     *     argument Array should have.
+     * @param {String} aComment The comment to use when reporting that the
+     *     argument Array does not have the required minimum number of
+     *     arguments.
+     * @todo
+     */
+
+    var comment;
+
+    //  Like JSUnit a comment is optional, but unlike that framework ours
+    //  is always the last argument, when present. This approach means its
+    //  much harder for an assertion to mistake a comment for a valid input
+    //  and implies that the count provided to this method is effectively a
+    //  "minimum" count.
+
+    if (anArgArray.length >= aCount) {
+        return;
+    }
+
+    comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
+
+    this.get('currentTestCase').fail(
+        TP.FAILURE,
+        TP.join(comment,
+                TP.sc('Expected ', aCount, ' argument(s).',
+                        ' Got ', anArgArray.length, '.')));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.TestMethodCollection.Inst.defineMethod('assert',
+function(aCondition, aComment, aFaultString) {
+
+    /**
+     * @name assert
+     * @synopsis Asserts that the supplied condition passes (i.e. returns true).
+     * @param {Boolean} aCondition Whether or not the test succeeded.
+     * @param {String} aComment A human-readable comment String.
+     * @param {String} aFaultString A String detailing the fault. This will be
+     *     appended to the comment if it's supplied.
+     * @todo
+     */
+
+    var condition;
+
+    this.assertMinArguments(arguments, 1);
+
+    //  If we're configured to be a 'refuter', then flip the condition result.
+    condition = this.get('isRefuter') ? !aCondition : aCondition;
+
+    return this.$assert(condition, aComment, aFaultString);
+});
 
 //  ------------------------------------------------------------------------
 //  ASSERTIONS - GENERAL TYPE CHECKS
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsA',
+TP.test.TestMethodCollection.Inst.defineMethod('isA',
 function(anObject, aType, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -35,7 +150,7 @@ function(anObject, aType, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsEnhanced',
+TP.test.TestMethodCollection.Inst.defineMethod('isEnhanced',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -50,7 +165,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsKindOf',
+TP.test.TestMethodCollection.Inst.defineMethod('isKindOf',
 function(anObject, aType, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -65,7 +180,7 @@ function(anObject, aType, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsMemberOf',
+TP.test.TestMethodCollection.Inst.defineMethod('isMemberOf',
 function(anObject, aType, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -80,7 +195,7 @@ function(anObject, aType, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsMutable',
+TP.test.TestMethodCollection.Inst.defineMethod('isMutable',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -95,7 +210,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsNamespace',
+TP.test.TestMethodCollection.Inst.defineMethod('isNamespace',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -110,7 +225,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsNativeType',
+TP.test.TestMethodCollection.Inst.defineMethod('isNativeType',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -125,7 +240,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsPrototype',
+TP.test.TestMethodCollection.Inst.defineMethod('isPrototype',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -140,7 +255,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsReferenceType',
+TP.test.TestMethodCollection.Inst.defineMethod('isReferenceType',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -155,7 +270,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsSubtypeOf',
+TP.test.TestMethodCollection.Inst.defineMethod('isSubtypeOf',
 function(anObject, aType, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -171,7 +286,7 @@ function(anObject, aType, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsType',
+TP.test.TestMethodCollection.Inst.defineMethod('isType',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -186,7 +301,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsTypeName',
+TP.test.TestMethodCollection.Inst.defineMethod('isTypeName',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -201,7 +316,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotA',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotA',
 function(anObject, aType, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -218,7 +333,7 @@ function(anObject, aType, aComment) {
 //  ASSERTIONS - GENERAL API / PROPERTY CHECKING
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertCanInvoke',
+TP.test.TestMethodCollection.Inst.defineMethod('canInvoke',
 function(anObject, aMethodName, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -234,7 +349,7 @@ function(anObject, aMethodName, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsCallable',
+TP.test.TestMethodCollection.Inst.defineMethod('isCallable',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -249,7 +364,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsAttribute',
+TP.test.TestMethodCollection.Inst.defineMethod('isAttribute',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -264,7 +379,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsGlobal',
+TP.test.TestMethodCollection.Inst.defineMethod('isGlobal',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -279,7 +394,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsGlobalMethod',
+TP.test.TestMethodCollection.Inst.defineMethod('isGlobalMethod',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -294,7 +409,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsInstMethod',
+TP.test.TestMethodCollection.Inst.defineMethod('isInstMethod',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -309,7 +424,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsLocalMethod',
+TP.test.TestMethodCollection.Inst.defineMethod('isLocalMethod',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -324,7 +439,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsMethod',
+TP.test.TestMethodCollection.Inst.defineMethod('isMethod',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -339,7 +454,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsProperty',
+TP.test.TestMethodCollection.Inst.defineMethod('isProperty',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -354,7 +469,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsTypeMethod',
+TP.test.TestMethodCollection.Inst.defineMethod('isTypeMethod',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -371,7 +486,7 @@ function(anObject, aComment) {
 //  ASSERTIONS - SPECIFIC TYPE CHECKING
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsArgArray',
+TP.test.TestMethodCollection.Inst.defineMethod('isArgArray',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -387,7 +502,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsArray',
+TP.test.TestMethodCollection.Inst.defineMethod('isArray',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -402,7 +517,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsBoolean',
+TP.test.TestMethodCollection.Inst.defineMethod('isBoolean',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -417,7 +532,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsCollection',
+TP.test.TestMethodCollection.Inst.defineMethod('isCollection',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -432,7 +547,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsDate',
+TP.test.TestMethodCollection.Inst.defineMethod('isDate',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -447,7 +562,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsError',
+TP.test.TestMethodCollection.Inst.defineMethod('isError',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -462,7 +577,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsEvent',
+TP.test.TestMethodCollection.Inst.defineMethod('isEvent',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -477,7 +592,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsFunction',
+TP.test.TestMethodCollection.Inst.defineMethod('isFunction',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -492,7 +607,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsIFrameWindow',
+TP.test.TestMethodCollection.Inst.defineMethod('isIFrameWindow',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -507,7 +622,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsMediaQueryList',
+TP.test.TestMethodCollection.Inst.defineMethod('isMediaQueryList',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -522,7 +637,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsNaN',
+TP.test.TestMethodCollection.Inst.defineMethod('isNaN',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -537,7 +652,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsNumber',
+TP.test.TestMethodCollection.Inst.defineMethod('isNumber',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -552,7 +667,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsPair',
+TP.test.TestMethodCollection.Inst.defineMethod('isPair',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -567,7 +682,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsRegExp',
+TP.test.TestMethodCollection.Inst.defineMethod('isRegExp',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -582,7 +697,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsString',
+TP.test.TestMethodCollection.Inst.defineMethod('isString',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -597,7 +712,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsStyleDeclaration',
+TP.test.TestMethodCollection.Inst.defineMethod('isStyleDeclaration',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -612,7 +727,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsStyleRule',
+TP.test.TestMethodCollection.Inst.defineMethod('isStyleRule',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -627,7 +742,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsStyleSheet',
+TP.test.TestMethodCollection.Inst.defineMethod('isStyleSheet',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -642,7 +757,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsURI',
+TP.test.TestMethodCollection.Inst.defineMethod('isURI',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -657,7 +772,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsWindow',
+TP.test.TestMethodCollection.Inst.defineMethod('isWindow',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -672,7 +787,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsXHR',
+TP.test.TestMethodCollection.Inst.defineMethod('isXHR',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -687,7 +802,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotNaN',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotNaN',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -704,7 +819,7 @@ function(anObject, aComment) {
 //  ASSERTIONS - BOOLEAN
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertFalse',
+TP.test.TestMethodCollection.Inst.defineMethod('isFalse',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -719,7 +834,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertFalsey',
+TP.test.TestMethodCollection.Inst.defineMethod('isFalsey',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -734,7 +849,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotFalse',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotFalse',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -749,7 +864,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotTrue',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotTrue',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -764,7 +879,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertTrue',
+TP.test.TestMethodCollection.Inst.defineMethod('isTrue',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -779,7 +894,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertTruthy',
+TP.test.TestMethodCollection.Inst.defineMethod('isTruthy',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -796,7 +911,7 @@ function(anObject, aComment) {
 //  ASSERTIONS - NULL/UNDEFINED/VALID
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsDefined',
+TP.test.TestMethodCollection.Inst.defineMethod('isDefined',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -811,7 +926,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsEmpty',
+TP.test.TestMethodCollection.Inst.defineMethod('isEmpty',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -826,7 +941,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsNull',
+TP.test.TestMethodCollection.Inst.defineMethod('isNull',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -841,7 +956,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsValid',
+TP.test.TestMethodCollection.Inst.defineMethod('isValid',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -856,7 +971,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotDefined',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotDefined',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -871,7 +986,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotEmpty',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotEmpty',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -886,7 +1001,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotNull',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotNull',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -901,7 +1016,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotValid',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotValid',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -918,7 +1033,7 @@ function(anObject, aComment) {
 //  ASSERTIONS - CONTENT/VALUE
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertBlank',
+TP.test.TestMethodCollection.Inst.defineMethod('isBlank',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -933,7 +1048,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertContains',
+TP.test.TestMethodCollection.Inst.defineMethod('contains',
 function(anObject, someContent, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -949,7 +1064,7 @@ function(anObject, someContent, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertEmpty',
+TP.test.TestMethodCollection.Inst.defineMethod('isEmpty',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -964,7 +1079,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertMatches',
+TP.test.TestMethodCollection.Inst.defineMethod('matches',
 function(anObject, aValue, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -979,7 +1094,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotBlank',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotBlank',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -994,7 +1109,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotContains',
+TP.test.TestMethodCollection.Inst.defineMethod('notContains',
 function(anObject, someContent, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -1010,7 +1125,7 @@ function(anObject, someContent, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotEmpty',
+TP.test.TestMethodCollection.Inst.defineMethod('notEmpty',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1027,7 +1142,7 @@ function(anObject, aComment) {
 //  ASSERTIONS - EQUALITY/IDENTITY
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertEqualAs',
+TP.test.TestMethodCollection.Inst.defineMethod('equalAs',
 function(anObject, aValue, aType, aComment) {
 
     this.assertMinArguments(arguments, 3);
@@ -1043,7 +1158,7 @@ function(anObject, aValue, aType, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('equalTo',
 function(anObject, aValue, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -1059,7 +1174,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIdenticalTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isIdenticalTo',
 function(anObject, aValue, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -1075,7 +1190,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotEqualAs',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotEqualAs',
 function(anObject, aValue, aType, aComment) {
 
     this.assertMinArguments(arguments, 3);
@@ -1091,7 +1206,7 @@ function(anObject, aValue, aType, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotEqualTo',
 function(anObject, aValue, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -1107,7 +1222,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotIdenticalTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotIdenticalTo',
 function(anObject, aValue, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -1125,7 +1240,7 @@ function(anObject, aValue, aComment) {
 //  ASSERTIONS - CONVERTED VALUE EQUALITY
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertHashEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isHashEqualTo',
 function(anObject, aValue, aComment) {
 
     var val;
@@ -1144,7 +1259,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertHTMLEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isHTMLEqualTo',
 function(anObject, aValue, aComment) {
 
     var val;
@@ -1163,7 +1278,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertJSONEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isJSONEqualTo',
 function(anObject, aValue, aComment) {
 
     var val;
@@ -1182,7 +1297,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertSrcEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isSrcEqualTo',
 function(anObject, aValue, aComment) {
 
     var val;
@@ -1201,7 +1316,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertStrEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isStrEqualTo',
 function(anObject, aValue, aComment) {
 
     var val;
@@ -1220,7 +1335,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertURIEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isURIEqualTo',
 function(anObject, aValue, aComment) {
 
     var val;
@@ -1239,7 +1354,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertValEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isValEqualTo',
 function(anObject, aValue, aComment) {
 
     var val;
@@ -1258,7 +1373,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertXHTMLEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isXHTMLEqualTo',
 function(anObject, aValue, aComment) {
 
     var val;
@@ -1277,7 +1392,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertXMLEqualTo',
+TP.test.TestMethodCollection.Inst.defineMethod('isXMLEqualTo',
 function(anObject, aValue, aComment) {
 
     var val;
@@ -1298,7 +1413,7 @@ function(anObject, aValue, aComment) {
 //  ASSERTIONS - MARKUP / ENCODING
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertHasAttribute',
+TP.test.TestMethodCollection.Inst.defineMethod('hasAttribute',
 function(anObject, anAttributeName, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -1314,7 +1429,7 @@ function(anObject, anAttributeName, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsAttributeNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isAttributeNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1329,7 +1444,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsCommentNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isCommentNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1344,7 +1459,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsCDATASectionNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isCDATASectionNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1359,7 +1474,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsCollectionNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isCollectionNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1374,7 +1489,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsDocument',
+TP.test.TestMethodCollection.Inst.defineMethod('isDocument',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1389,7 +1504,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsElement',
+TP.test.TestMethodCollection.Inst.defineMethod('isElement',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1404,7 +1519,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsFragment',
+TP.test.TestMethodCollection.Inst.defineMethod('isFragment',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1419,7 +1534,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsHTML',
+TP.test.TestMethodCollection.Inst.defineMethod('isHTML',
 function() {
 
     TP.todo();
@@ -1429,7 +1544,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsHTMLDocument',
+TP.test.TestMethodCollection.Inst.defineMethod('isHTMLDocument',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1444,7 +1559,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsHTMLNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isHTMLNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1459,7 +1574,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsJSONString',
+TP.test.TestMethodCollection.Inst.defineMethod('isJSONString',
 function(aString, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1474,7 +1589,7 @@ function(aString, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1489,7 +1604,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsNamedNodeMap',
+TP.test.TestMethodCollection.Inst.defineMethod('isNamedNodeMap',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1504,7 +1619,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsNodeList',
+TP.test.TestMethodCollection.Inst.defineMethod('isNodeList',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1519,7 +1634,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsNodeType',
+TP.test.TestMethodCollection.Inst.defineMethod('isNodeType',
 function(anObject, aNodeType, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -1540,7 +1655,7 @@ function(anObject, aNodeType, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsProcessingInstructionNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isProcessingInstructionNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1556,7 +1671,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsSVGNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isSVGNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1571,7 +1686,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsTextNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isTextNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1586,7 +1701,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsXHTML',
+TP.test.TestMethodCollection.Inst.defineMethod('isXHTML',
 function() {
 
     TP.todo();
@@ -1596,7 +1711,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsXHTMLDocument',
+TP.test.TestMethodCollection.Inst.defineMethod('isXHTMLDocument',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1611,7 +1726,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsXHTMLNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isXHTMLNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1626,7 +1741,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsXML',
+TP.test.TestMethodCollection.Inst.defineMethod('isXML',
 function() {
 
     TP.todo();
@@ -1636,7 +1751,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsXMLDocument',
+TP.test.TestMethodCollection.Inst.defineMethod('isXMLDocument',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1651,7 +1766,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertIsXMLNode',
+TP.test.TestMethodCollection.Inst.defineMethod('isXMLNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1668,7 +1783,7 @@ function(anObject, aComment) {
 //  ASSERTIONS - SIGNALING
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNoRaise',
+TP.test.TestMethodCollection.Inst.defineMethod('doesNotRaise',
 function() {
 
     TP.todo();
@@ -1678,7 +1793,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNoSignal',
+TP.test.TestMethodCollection.Inst.defineMethod('doesNotSignal',
 function() {
 
     TP.todo();
@@ -1688,7 +1803,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNoThrow',
+TP.test.TestMethodCollection.Inst.defineMethod('doesNotThrow',
 function() {
 
     TP.todo();
@@ -1698,7 +1813,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertRaises',
+TP.test.TestMethodCollection.Inst.defineMethod('raises',
 function() {
 
     TP.todo();
@@ -1708,7 +1823,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertSignals',
+TP.test.TestMethodCollection.Inst.defineMethod('signals',
 function() {
 
     TP.todo();
@@ -1718,7 +1833,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertThrows',
+TP.test.TestMethodCollection.Inst.defineMethod('throws',
 function() {
 
     TP.todo();
@@ -1730,7 +1845,7 @@ function() {
 //  ASSERTIONS - STRUCTURE
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInAncestor',
+TP.test.TestMethodCollection.Inst.defineMethod('isInAncestor',
 function() {
 
     TP.todo();
@@ -1740,7 +1855,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInDocument',
+TP.test.TestMethodCollection.Inst.defineMethod('isInDocument',
 function() {
 
     TP.todo();
@@ -1750,7 +1865,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInParent',
+TP.test.TestMethodCollection.Inst.defineMethod('isInParent',
 function() {
 
     TP.todo();
@@ -1760,7 +1875,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInWindow',
+TP.test.TestMethodCollection.Inst.defineMethod('isInWindow',
 function() {
 
     TP.todo();
@@ -1772,7 +1887,7 @@ function() {
 //  ASSERTIONS - STATE
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertActive',
+TP.test.TestMethodCollection.Inst.defineMethod('isActive',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1784,7 +1899,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertBusy',
+TP.test.TestMethodCollection.Inst.defineMethod('isBusy',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1796,7 +1911,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertClosed',
+TP.test.TestMethodCollection.Inst.defineMethod('isClosed',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1808,7 +1923,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertDisabled',
+TP.test.TestMethodCollection.Inst.defineMethod('isDisabled',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1820,7 +1935,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertEnabled',
+TP.test.TestMethodCollection.Inst.defineMethod('isEnabled',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1832,7 +1947,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertFocused',
+TP.test.TestMethodCollection.Inst.defineMethod('isFocused',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1844,7 +1959,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInactive',
+TP.test.TestMethodCollection.Inst.defineMethod('isInactive',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1856,7 +1971,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInvisible',
+TP.test.TestMethodCollection.Inst.defineMethod('invisible',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1868,7 +1983,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotBusy',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotBusy',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1880,7 +1995,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotFocused',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotFocused',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1892,7 +2007,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotReadonly',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotReadonly',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1904,7 +2019,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotRelevant',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotRelevant',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1916,7 +2031,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotRequired',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotRequired',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1928,7 +2043,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertNotSelected',
+TP.test.TestMethodCollection.Inst.defineMethod('isNotSelected',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1940,7 +2055,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertOpen',
+TP.test.TestMethodCollection.Inst.defineMethod('isOpen',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1952,7 +2067,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertReadonly',
+TP.test.TestMethodCollection.Inst.defineMethod('isReadonly',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1964,7 +2079,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertRelevant',
+TP.test.TestMethodCollection.Inst.defineMethod('isRelevant',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1976,7 +2091,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertRequired',
+TP.test.TestMethodCollection.Inst.defineMethod('isRequired',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -1988,7 +2103,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertSelected',
+TP.test.TestMethodCollection.Inst.defineMethod('isSelected',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -2000,7 +2115,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertVisible',
+TP.test.TestMethodCollection.Inst.defineMethod('isVisible',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -2014,7 +2129,7 @@ function(anObject, aComment) {
 //  ASSERTIONS - INPUT TESTS
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInputInRange',
+TP.test.TestMethodCollection.Inst.defineMethod('isInputInRange',
 function() {
 
     TP.todo();
@@ -2024,7 +2139,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInputInvalid',
+TP.test.TestMethodCollection.Inst.defineMethod('isInputInvalid',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
@@ -2036,7 +2151,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInputOutOfRange',
+TP.test.TestMethodCollection.Inst.defineMethod('isInputOutOfRange',
 function() {
 
     TP.todo();
@@ -2046,7 +2161,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('assertInputValid',
+TP.test.TestMethodCollection.Inst.defineMethod('isInputValid',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);

@@ -552,6 +552,12 @@ TP.test.Suite.Inst.defineAttribute('afterAll');
 TP.test.Suite.Inst.defineAttribute('afterEvery');
 
 /**
+ * The object that holds all of the test methods as an 'asserter'.
+ * @type {TP.test.TestMethodCollection}
+ */
+TP.test.Suite.Inst.defineAttribute('asserter');
+
+/**
  * An optional setup function to run before any test cases have been run.
  * @type {Function}
  */
@@ -575,6 +581,12 @@ TP.test.Suite.Inst.defineAttribute('caseList');
  * @type {Number}
  */
 TP.test.Suite.Inst.defineAttribute('mslimit', 15000);
+
+/**
+ * The object that holds all of the test methods as a 'refuter'.
+ * @type {TP.test.TestMethodCollection}
+ */
+TP.test.Suite.Inst.defineAttribute('refuter');
 
 /**
  * A dictionary of statistics regarding pass, fail, error, and skip counts.
@@ -854,6 +866,11 @@ function(target, suiteName, suiteFunc) {
 
     this.$set('suiteList', TP.ac());
     this.$get('suiteList').push(suiteFunc);
+
+    this.$set('asserter',
+        TP.test.TestMethodCollection.construct());
+    this.$set('refuter',
+        TP.test.TestMethodCollection.construct().set('isRefuter', true));
 
     return this;
 });
@@ -1327,10 +1344,21 @@ function() {
 TP.test.Case.Inst.defineMethod('reset',
 function(options) {
 
+    var asserter,
+        refuter;
+
     this.callNextMethod();
 
     this.$set('msstart', null);
     this.$set('msend', null);
+
+    asserter = this.getSuite().get('asserter');
+    asserter.$set('currentTestCase', this);
+    this.$set('assert', asserter);
+
+    refuter = this.getSuite().get('refuter');
+    refuter.$set('currentTestCase', this);
+    this.$set('refute', refuter);
 
     if (options && options.at('case_timeout')) {
         this.$set('mslimit', options.at('case_timeout'));
@@ -1443,113 +1471,6 @@ function(options) {
             }
         });
 });
-
-//  ------------------------------------------------------------------------
-//  TEST CASE ASSERTIONS
-//  ------------------------------------------------------------------------
-
-/*
- * The assertion functions here are loosely modeled after those found in other
- * testing frameworks, however they follow a naming and argument list order that
- * makes them more consistent with the rest of TIBET. Some alterations have also
- * been made to help reduce the potential for creating passing tests which don't
- * actually test anything should you overlook a parameter.
- */
-
-//  ------------------------------------------------------------------------
-//  ASSERT BASELINE
-//  ------------------------------------------------------------------------
-
-TP.test.Case.Inst.defineMethod('$assert',
-function(aCondition, aComment, aFaultString) {
-
-    /**
-     * @name $assert
-     * @synopsis Checks the supplied Boolean value and fails the test case as
-     *     needed when the assertion fails.
-     * @param {Boolean} aCondition Whether or not the test succeeded.
-     * @param {String} aComment A human-readable comment String.
-     * @param {String} aFaultString A String detailing the fault. This will be
-     *     appended to the comment if it's supplied.
-     * @todo
-     */
-
-    var comment;
-
-    if (!aCondition) {
-        comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
-        this.fail(TP.FAILURE, comment + (aFaultString || ''));
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Case.Inst.defineMethod('assertMinArguments',
-function(anArgArray, aCount, aComment) {
-
-    /**
-     * @name assertMinArguments
-     * @synopsis Asserts that the supplied argument Array has a minimum number
-     *     of items in it.
-     * @param {Array} anArgArray The argument Array to check.
-     * @param {Number} aCount The minimum number of arguments that the supplied
-     *     argument Array should have.
-     * @param {String} aComment The comment to use when reporting that the
-     *     argument Array does not have the required minimum number of
-     *     arguments.
-     * @todo
-     */
-
-    var comment;
-
-    //  Like JSUnit a comment is optional, but unlike that framework ours
-    //  is always the last argument, when present. This approach means its
-    //  much harder for an assertion to mistake a comment for a valid input
-    //  and implies that the count provided to this method is effectively a
-    //  "minimum" count.
-
-    if (anArgArray.length >= aCount) {
-        return;
-    }
-
-    comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
-
-    this.fail(TP.FAILURE, TP.join(comment,
-        TP.sc('Expected ', aCount, ' argument(s).',
-            ' Got ', anArgArray.length, '.')));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Case.Inst.defineMethod('assert',
-function(aCondition, aComment, aFaultString) {
-
-    /**
-     * @name assert
-     * @synopsis Asserts that the supplied condition passes (i.e. returns true).
-     * @param {Boolean} aCondition Whether or not the test succeeded.
-     * @param {String} aComment A human-readable comment String.
-     * @param {String} aFaultString A String detailing the fault. This will be
-     *     appended to the comment if it's supplied.
-     * @todo
-     */
-
-    this.assertMinArguments(arguments, 1);
-
-    return this.$assert(aCondition, aComment, aFaultString);
-});
-
-//  ========================================================================
-//  Test Driver
-//  ------------------------------------------------------------------------
-
-TP.test.Root.defineSubtype('Driver');
-
-// TODO: expand this out to encompass the test driver API and any extensions.
-// Probably best to split out into a separate file at that point.
-
 
 //  ========================================================================
 //  Test Instrumentation Functions
