@@ -1396,7 +1396,8 @@ function(options) {
 
         try {
             //  Note that inside the test function we bind to the Case instance.
-            maybe = testcase.$get('caseFunc').call(testcase, options);
+            maybe = testcase.$get('caseFunc').call(testcase, testcase, options);
+
             if (TP.canInvoke(maybe, 'then')) {
                 maybe.then(
                     function(obj) {
