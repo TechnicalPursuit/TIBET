@@ -959,15 +959,22 @@ function(options) {
                     }
                 });
 
-        statistics = TP.hc('passed', passed, 'failed', failed,
-            'ignored', ignored, 'errored', errored, 'skipped', skipped);
+        statistics = TP.hc('passed', passed,
+                            'failed', failed,
+                            'ignored', ignored,
+                            'errored', errored,
+                            'skipped', skipped);
         this.set('statistics', statistics);
+    } else {
+        passed = statistics.at('passed');
+        failed = statistics.at('failed');
+        skipped = statistics.at('skipped');
+        ignored = statistics.at('ignored');
+        errored = statistics.at('errored');
     }
 
     //  NOTE the didError check here is for 'describe' errors.
-    if (this.didError() +
-            statistics.at('failed') !== 0 ||
-            statistics.at('errored') !== 0) {
+    if (this.didError() || failed !== 0 || errored !== 0) {
         prefix = '# fail: ';
     } else {
         prefix = '# pass: ';
@@ -976,13 +983,14 @@ function(options) {
     total = 0;
     total += passed + failed + errored + ignored + skipped;
 
-    TP.sys.logTest(prefix +
+    TP.sys.logTest(
+        prefix +
         total + ' total, ' +
-        statistics.at('passed') + ' pass, ' +
-        statistics.at('failed') + ' fail, ' +
-        statistics.at('skipped') + ' skip, ' +
-        statistics.at('ignored') + ' todo, ' +
-        statistics.at('errored') + ' error.', TP.TRACE);
+        passed + ' pass, ' +
+        failed + ' fail, ' +
+        skipped + ' skip, ' +
+        ignored + ' todo, ' +
+        errored + ' error.', TP.TRACE);
 });
 
 //  ------------------------------------------------------------------------
