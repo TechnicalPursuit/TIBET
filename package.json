@@ -52,7 +52,6 @@
         "js-beautify": "*",
         "jsDAV": "*",
         "mocha": "*",
-        "mockery": "*",
         "morgan": "*",
         "minimist": "*",
         "node-forge": "TechnicalPursuit/forge",
