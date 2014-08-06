@@ -1185,6 +1185,9 @@ TP.sys.setcfg('tdc.max_notice', 120);
 //  should the console suspend normal output?
 TP.sys.setcfg('tdc.silent', false);
 
+TP.sys.setcfg('tdc.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
+TP.sys.setcfg('tdc.toggle_off', 'TP.sig.DOM_Alt_Down_Up');
+
 //  should the TDC output collection value types during status updates?
 TP.sys.setcfg('tdc.type_collections', true);
 

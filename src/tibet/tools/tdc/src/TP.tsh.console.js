@@ -41,7 +41,7 @@ function(aRequest) {
     //  Set up the trigger key
 
     if (TP.isEmpty(triggerKey = TP.elementGetAttribute(elem, 'tdc:toggle'))) {
-        triggerKey = 'DOM_Alt_Up_Up';
+        triggerKey = TP.sys.cfg('tdc.toggle_on');
     }
 
     //  When the UIROOT is done loading, we grab the UIBOOT and prep it to load
@@ -85,19 +85,23 @@ function(aRequest) {
                 count = 0;
                 handler = function () {
                     var uiBoot,
-                        tsh;
+                        tsh,
+                        console;
 
                     if (TP.sys.hasStarted()) {
                         uiBoot = TP.win('UIBOOT');
 
                         tsh = TP.core.TSH.getDefaultInstance();
 
-                        TP.core.ConsoleService.construct(
-                            null,
+                        console = TP.core.ConsoleService.construct(
+                            'SystemConsole',
                             TP.hc('consoleWindow', uiBoot,
                                     'consoleModel', tsh,
                                     'triggerKey', triggerKey
                             ));
+
+                        console.focusInputCell();
+
                     } else if (count < 10) {
                         count++;
                         handler.fork(50);
@@ -286,7 +290,8 @@ function(aResourceID, aRequest) {
      */
 
     var request,
-        model;
+        model,
+        key;
 
     this.callNextMethod();
 
@@ -339,6 +344,11 @@ function(aResourceID, aRequest) {
     //  observes get set up.
     this.shouldSignalChange(true);
 
+    key = request.at('triggerKey');
+    if (!key.startsWith('TP.sig.')) {
+        key = 'TP.sig.' + key;
+    }
+
     //  set up keyboard toggle to show/hide us
     (function () {
             this.toggleConsole();
@@ -347,8 +357,7 @@ function(aResourceID, aRequest) {
                TP.boot.$flushLog(true);
             }).fork(2000);
 
-        }.bind(this)).observe(
-            TP.core.Keyboard, 'TP.sig.' + request.at('triggerKey'));
+        }.bind(this)).observe(TP.core.Keyboard, key);
 
     return this;
 });
@@ -460,8 +469,7 @@ function() {
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
 
-    this.observe(TP.core.Keyboard,
-                    'TP.sig.DOM_Alt_Down_Up',
+    this.observe(TP.core.Keyboard, TP.sys.cfg('tdc.toggle_off'),
                     function(evt) {
                         evt.preventDefault();
                         this.focusInputCell();
@@ -2503,7 +2511,27 @@ function(aRequest) {
 
     /**
      * @name toggleConsole
-     * @synopsis
+     * @synopsis Toggles visibility of the console.
+     * @returns {TP.core.ConsoleService} The receiver.
+     */
+
+    if (this.get('consoleDisplayed')) {
+        this.hideConsole(aRequest);
+    } else {
+        this.showConsole(aRequest);
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.ConsoleService.Inst.defineMethod('hideConsole',
+function() {
+
+    /**
+     * @name hideConsole
+     * @synopsis Hides the console regardless of its current visibility.
      * @returns {TP.core.ConsoleService} The receiver.
      */
 
@@ -2513,25 +2541,40 @@ function(aRequest) {
     uiRootElem = TP.byId('UIROOT', top);
     bootFrameElem = TP.byId('UIBOOT', top);
 
-    if (this.get('consoleDisplayed')) {
+    TP.elementHide(bootFrameElem);
+    TP.elementShow(uiRootElem);
 
-        TP.elementHide(bootFrameElem);
-        TP.elementShow(uiRootElem);
+    this.set('consoleDisplayed', false);
 
-        this.set('consoleDisplayed', false);
+    return this;
+});
 
-    } else {
+//  ----------------------------------------------------------------------------
 
-        TP.elementHide(uiRootElem);
-        TP.elementShow(bootFrameElem);
+TP.core.ConsoleService.Inst.defineMethod('showConsole',
+function() {
 
-        this.set('consoleDisplayed', true);
+    /**
+     * @name showConsole
+     * @synopsis Shows the console.
+     * @returns {TP.core.ConsoleService} The receiver.
+     */
 
-        (function() {
-            this.focusInputCell();
-            this.setCursorToEnd();
-        }).bind(this).afterUnwind();
-    }
+    var uiRootElem,
+        bootFrameElem;
+
+    uiRootElem = TP.byId('UIROOT', top);
+    bootFrameElem = TP.byId('UIBOOT', top);
+
+    TP.elementHide(uiRootElem);
+    TP.elementShow(bootFrameElem);
+
+    this.set('consoleDisplayed', true);
+
+    (function() {
+        this.focusInputCell();
+        this.setCursorToEnd();
+    }).bind(this).afterUnwind();
 
     return this;
 });
