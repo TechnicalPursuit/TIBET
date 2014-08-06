@@ -102,7 +102,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 //  Express logger.
 //  TODO: Add options control in tibet.json.
-app.use(morgan({format: 'dev', skip: TDS.logFilter}));
+app.use(morgan('dev', {skip: TDS.logFilter}));
 
 //  ---
 //  ---
