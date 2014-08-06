@@ -33,8 +33,8 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 Part of the vision for TIBET is that it can help seamlessly integrate the
 web browser into workflow-driven applications. This vision is most clearly
-seen in TIBET's "workflow types" and support for the XMPP messaging (aka
-signaling) protocol standardized by the IETF.
+seen in TIBET's "workflow types" and support for the XMPP messaging
+protocol standardized by the IETF for triggering and routing events.
 
 By leveraging XMPP servers as "event routers" we can allow business events
 to move between server-side workflow systems and the web browser as if the
@@ -42,16 +42,10 @@ client and server were "chatting" about those business events. When IM/chat
 data arrives at the client TIBET is able to deserialize TP.sig.Signal
 content and trigger it to drive client-side logic.
 
-More structured conversations require a slightly more structured approach.
-Rather than simply awaiting unsolicited events from the server the client
-often needs to make one or more requests whose responses must be coordinated
-and potentially "joined" to drive the application forward.
-
 The types in this file provide support for managing requests and responses
 in a unified fashion regardless of the targeted resource and regardless of
 whether the invocation is synchronous or asynchronous. Also included are
-types that help manage permission-based functionality. Additional support
-for workflow-related activity is found in the tibet/workflow module.
+types that help manage role-based functionality.
 
 //  ---
 //  workflow terms
@@ -99,13 +93,6 @@ by TIBET's signaling system and the request/response matching that happens
 automatically via the TP.core.Resource, TP.sig.Request, and TP.sig.Response
 base types.
 
-Signal "coalescers" allow you to wait for all signals/requests in a group
-to complete, or for one of several alternative signals to complete, before
-signaling themselves -- offering a signal-based way to join one or more
-asynchronous requests with very little effort. These types provide one way
-to manage the concept of "joins" within a workflow process with signals
-providing the triggering logic based on state change, timers, etc.
-
 //  ---
 //  keys and keyrings
 //  ---
@@ -114,14 +101,15 @@ A common requirement in resource allocation is that work items be assigned
 to resources which have not only the ability, but permission, to perform
 the work. In web interfaces this shows up in terms of how different pages,
 or portions of a page, are hidden from users without permission to view
-and/or modify certain data. This can happen due to "provisioning"
+and/or modify certain data. This can happen due to both "provisioning"
 differences (you didn't buy that module), or data security restrictions.
 
 From an authoring perspective it's problematic to define completely separate
 pages to deal with all but the largest-grained cases. What we wanted TIBET
 to support was something that would allow you to place permission
 requirements on various UI elements and have the UI adjust -- preferably by
-using nothing more than standard CSS.
+using nothing more than standard CSS. While that wouldn't support data
+protection directly it would ensure the related UI would remain hidden.
 
 To support easier construction of permission-sensitive UI TIBET uses the
 concept of "keys" and "key rings". A "key" in this context is any string you
@@ -194,7 +182,7 @@ observing changes to the current user.
 
 Obviously all this talk about permissions, keys, etc. is focused primarily
 on managing the user interface in a meaningful way for the current user. As
-always the server should validate user credentials with each SOA call to
+always the server should validate user credentials with each call to
 ensure that the user has permission to perform those server-side calls. The
 value in TIBET's permission system is simply that it pushes much of the
 common UI-specific permission-related work to the CSS and markup rather than
@@ -3026,9 +3014,8 @@ function(aSuffix, aState, aResultOrFailureCode, aFaultString) {
  *     signals are subtypes of this signal. When a TP.sig.Request is handled by
  *     a resource the resource's handle calls will construct and eventually
  *     signal a TP.sig.Response of the proper name/type to notify any observers.
- *     The response instance is also returned by the handler so that direct
- *     invocations of synchronous calls allow you direct access to the response
- *     without delay.
+ *     The response instance is also returned by the handler immediately as a
+ *     way of providing consistent access to the response, pending or otherwise.
  *
  *     Note that by allowing different response types TIBET allows you to
  *     construct smart wrappers around the data that's returned by the various
