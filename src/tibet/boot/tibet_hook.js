@@ -2631,8 +2631,11 @@ if (window.onerror.failedlaunch !== true &&
 
         //  by default we want any page with a hook file to autoboot TIBET if it
         //  ends up in the top window due to a double-click, bookmark, link,
-        //  etc.
-        if (window !== top || window.$$autoboot === false) {
+        //  etc. HOWEVER, if we see TP.boot.launch we're in a tibet_init file
+        //  meaning we're not just a hook page but a launch page. In that case
+        //  we'll wait for launch to be called instead of autobooting.
+        if (window !== top || window.$$autoboot === false ||
+            typeof TP.boot.launch === 'function') {
             return;
         }
 
