@@ -18,7 +18,6 @@
     "serve-static": "*",
     "shelljs": "*",
     "tibet": "*",
-    "uglify-js": "*",
     "watch": "*"
   },
   "devDependencies": {

@@ -21,7 +21,6 @@
     "shelljs": "*",
     "shelljs-nodecli": "*",
     "tibet": "*",
-    "uglify-js": "*",
     "watch": "*"
   },
   "devDependencies": {
