@@ -6515,14 +6515,8 @@ function() {
 
     /**
      * @name initialize
-     * @synopsis Initializes the type, defining the baseline keyrings.
+     * @synopsis Performs one-time setup for the type on startup/import.
      */
-
-    //  We initialize a key ring for the 'Guest' role. This matches the role
-    //  for the user 'demo' that the TP.core.User type will default to if no
-    //  user is supplied at startup. That username ('demo') *must* have a
-    //  role of 'Guest' in the vCards that are loaded into the system for
-    //  this role/keyring to make a difference.
 
     this.set('observers', TP.hc());
 
@@ -6563,10 +6557,13 @@ function(aDocument) {
                     }.bind(this));
 
     observer.observe(
-            aDocument, {childList: true,
-                        attributes: true,
-                        subtree: true,
-                        attributeOldValue: true});
+            aDocument,
+            {
+                childList: true,
+                subtree: true,
+                attributes: false,
+                attributeOldValue: false
+            });
 
     this.get('observers').atPut(TP.id(aDocument), observer);
 
@@ -6678,7 +6675,7 @@ function(aMutationRecord) {
             break;
         case 'childList':
             if (TP.notEmpty(addedNodes = TP.ac(aMutationRecord.addedNodes))) {
-                fname = 'handlePeerTP_sig_DOMSubtreeAdded';
+                fname = 'handlePeerTP_sig_DOMNodesAdded';
 
                 if (TP.canInvoke(targetType, fname)) {
                     targetType[fname](targetElem, addedNodes);
@@ -6687,7 +6684,7 @@ function(aMutationRecord) {
 
             if (TP.notEmpty(
                         removedNodes = TP.ac(aMutationRecord.removedNodes))) {
-                fname = 'handlePeerTP_sig_DOMSubtreeRemoved';
+                fname = 'handlePeerTP_sig_DOMNodesRemoved';
 
                 if (TP.canInvoke(targetType, fname)) {
                     targetType[fname](targetElem, removedNodes);
@@ -6698,7 +6695,7 @@ function(aMutationRecord) {
                 targetDoc = TP.nodeGetDocument(targetElem);
                 queryEntries.perform(
                         function(anEntry) {
-                            this.filterByQueryAndDispatch(
+                            this.executeSubtreeQueryAndDispatch(
                                     anEntry,
                                     addedNodes,
                                     removedNodes,
@@ -6762,7 +6759,7 @@ function(queryEntry, addedNodes, removedNodes, aDocument) {
     if (TP.notEmpty(removedNodes)) {
         matchingNodes = results.intersection(removedNodes);
         if (TP.canInvoke(queryTarget, queryRemoveMethod)) {
-            queryTarget[queryAddMethod](queryTarget, matchingNodes);
+            queryTarget[queryRemoveMethod](queryTarget, matchingNodes);
         }
     }
 
