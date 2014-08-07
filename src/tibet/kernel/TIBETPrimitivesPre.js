@@ -213,9 +213,9 @@ TP.canInvoke = function(anObj, anInterface) {
      * @todo
      */
 
-    var i,
-        len,
-        obj;
+    var obj,
+        i,
+        len;
 
     if (anObj === undefined || anObj === null ||
             anInterface === undefined || anInterface === null) {
@@ -225,9 +225,8 @@ TP.canInvoke = function(anObj, anInterface) {
     //  NB: Do not replace this logic - it has been optimized to primitives
     //  because this method (with a String parameter) gets called so much.
     if (anInterface.charAt !== undefined) {
-        return (anObj[anInterface] &&
-                anObj[anInterface].apply &&
-                anObj[anInterface].$$dnu !== true);
+        obj = anObj[anInterface];
+        return (obj !== undefined && obj.apply && obj.$$dnu !== true);
     } else if (TP.isArray(anInterface)) {
         len = anInterface.length;
         for (i = 0; i < len; i++) {
