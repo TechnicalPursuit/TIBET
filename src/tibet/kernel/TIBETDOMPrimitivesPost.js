@@ -5391,6 +5391,29 @@ function(aNode, aRootNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeNormalize',
+function(aNode) {
+
+    /**
+     * @name nodeNormalize
+     * @synopsis Normalizes adjacent Text nodes on the supplied Node and its
+     *     descendants.
+     * @param {Node} aNode The node to normalize.
+     * @returns {Node} The node.
+     * @raise TP.sig.InvalidNode Raised when the node is an invalid node.
+     */
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+    }
+
+    aNode.normalize();
+
+    return aNode;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeReplaceChild',
 function(aNode, newNode, oldNode, shouldAwake) {
 
