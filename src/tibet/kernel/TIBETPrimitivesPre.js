@@ -9210,7 +9210,7 @@ function() {
      * @returns {String}
      */
 
-    return this.charAt(0).toLowerCase() + this.slice(1);
+    return this[0].toLowerCase() + this.substring(1);
 });
 
 //  ------------------------------------------------------------------------
@@ -9225,7 +9225,7 @@ function() {
      * @returns {String}
      */
 
-    return this.charAt(0).toUpperCase() + this.slice(1);
+    return this[0].toUpperCase() + this.substring(1);
 });
 
 //  ------------------------------------------------------------------------
