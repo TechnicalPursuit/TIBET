@@ -717,6 +717,1446 @@ function(aKey) {
     return this.getAccessKeys().contains(aKey);
 });
 
+//  ========================================================================
+//  TP.core.TagProcessor
+//  ========================================================================
+
+/**
+ * @type {TP.core.TagProcessor}
+ * @synopsis The core engine responsible for processing tags (or any type of DOM
+ *     construct like PIs or Text nodes, really). This object holds a set of
+ *     processing phases and is responsible for executing them against a chunk
+ *     of supplied content.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.TagProcessor');
+
+//  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+//  A set of phase types used when 'attaching' content to a visual DOM
+TP.core.TagProcessor.Type.defineConstant(
+    'ATTACH_PHASES',
+    TP.ac(
+    'TP.core.AttachDOMPhase',       //  Late additions to the DOM needed for
+                                    //  visual structuring
+    'TP.core.AttachEventsPhase',    //  ev: namespace. NOTE others can generate
+    'TP.core.AttachDataPhase',      //  model construct et. al.
+    'TP.core.AttachInfoPhase',      //  other info tags (acl:, dnd:, etc)
+    'TP.core.AttachBindsPhase',     //  data bindings in the bind: namespace
+    'TP.core.AttachStylePhase'      //  CSS is last so display: none can flip
+                                    //  late
+    ));
+
+//  A set of phase types used when 'detaching' content from a visual DOM
+TP.core.TagProcessor.Type.defineConstant(
+    'DETACH_PHASES',
+    TP.ac(
+    'TP.core.DetachDOMPhase',
+    'TP.core.DetachEventsPhase',
+    'TP.core.DetachDataPhase',
+    'TP.core.DetachInfoPhase',
+    'TP.core.DetachBindsPhase',
+    'TP.core.DetachStylePhase'
+    ));
+
+//  A set of phase types used when 'compiling' or transforming content from one
+//  representation into another.
+TP.core.TagProcessor.Type.defineConstant(
+    'COMPILE_PHASES',
+    TP.ac(
+    'TP.core.IncludesPhase',        //  xi:includes, CSS @imports, etc.
+    'TP.core.InstructionsPhase',    //  ?tibet, ?xsl-stylesheet, etc.
+    'TP.core.PrecompilePhase',      //  conversion to compilable form
+    'TP.core.CompilePhase',         //  tag/macro expansion (ACT)
+    'TP.core.TidyPhase',            //  move non-DTD content out of html:head
+                                    //  etc.
+
+    'TP.core.UnmarshalPhase',       //  resolve xml:base TP.core.URI references,
+                                    //  decode etc.
+
+    'TP.core.LocalizePhase'         //  adjust for browser, lang, etc.
+    ));
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessor.Type.defineMethod('constructWithPhaseTypes',
+function(phaseTypesArray) {
+
+    /**
+     * @name constructWithPhaseTypes
+     * @synopsis Returns an instance of a tag processor with a set of instances
+     *     of phases constructed from the supplied Array of phase types.
+     * @param {Array} phaseTypesArray The Array of phase type objects to
+     *     construct the phases from.
+     * @returns {TP.core.TagProcessor} A new instance configured with instances
+     *     of the phase types as its phase list.
+     */
+
+    var phaseInstances,
+        newInst;
+
+    phaseInstances = phaseTypesArray.collect(
+                        function(phaseType) {
+                            return phaseType.construct();
+                        });
+
+    newInst = this.construct(phaseInstances);
+
+    return newInst;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * The list of phases to run over the content when this processor is used
+ * @type {Array}
+ */
+TP.core.TagProcessor.Inst.defineAttribute('phases');
+
+TP.core.TagProcessor.Inst.defineAttribute('$tagTypeDict');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessor.Inst.defineMethod('init',
+function(phases) {
+
+    /**
+     * @name init
+     * @synopsis Initialize the instance.
+     * @param {Array} phases The list of phases to use when this processor is
+     *     run over supplied content.
+     * @returns {TP.core.TagProcessor} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.set('phases', phases);
+
+    //  Allocate a TP.lang.Hash to stick our tag types in as we find them -
+    //  speeds up lookup in later stages of the processing considerably.
+    this.set('$tagTypeDict', TP.hc());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessor.Inst.defineMethod('processTree',
+function(aNode, aRequest) {
+
+    /**
+     * @name processTree
+     * @synopsis Processes the supplied tree of content through this processor's
+     *     configured set of phases.
+     * @param {Node} aNode The node tree to use as the root to start the
+     *     processing.
+     * @param {TP.sig.Request} aRequest The request containing control
+     *     parameters which may or may not be used, depending on the phase
+     *     involved.
+     * @raises TP.sig.InvalidNode
+     * @returns {TP.core.TagProcessor} The receiver.
+     */
+
+    var phases,
+
+        len,
+        i;
+
+    if (!TP.isNode(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
+    }
+
+    //  Normalize the node to try to reduce the number of Text nodes as much as
+    //  possible
+    TP.nodeNormalize(aNode);
+
+    phases = this.get('phases');
+
+    //  Iterate over the phases, processing the content through each one.
+    len = phases.getSize();
+    for (i = 0; i < len; i++) {
+        phases.at(i).processNode(aNode, this, aRequest);
+    }
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.core.TagProcessorPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.TagProcessorPhase}
+ * @synopsis The top-level tag processor 'phase' type, used in conjunction with
+ *     the tag processor type. The tag processor holds 1...n phases and
+ *     processes it's content through each one.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.TagProcessorPhase');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.Inst.defineMethod('getFilteredNodes',
+function(aNode, aProcessor) {
+
+    /**
+     * @name getFilteredNodes
+     * @synopsis Given the supplied node, this method queries it (using the
+     *     'queryForNodes()' method) and then filters that set down to the nodes
+     *     whose TIBET wrapper type can respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @param {TP.core.TagProcessor} aProcessor The processor that 'owns' this
+     *     phase.
+     * @raises TP.sig.InvalidNode, TP.sig.InvalidParameter
+     * @returns {Array} An array containing a set of filtered Nodes.
+     */
+
+    var methodName,
+
+        tagTypeDict,
+        canInvokeInfo,
+
+        queriedNodes,
+        filteredNodes;
+
+    if (!TP.isNode(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
+    }
+
+    if (!TP.isString(methodName = this.getTargetMethod())) {
+        return this.raise('TP.sig.InvalidParameter', arguments);
+    }
+
+    //  Grab the processor-wide tag type hash that is used to cache tag types.
+    tagTypeDict = aProcessor.get('$tagTypeDict');
+
+    //  Build a hash that will track whether certain tag types can invoke the
+    //  target method for this phase.
+    canInvokeInfo = TP.hc();
+
+    //  Query the tree for the set of nodes to consider when processing. This
+    //  can significantly reduce the number of nodes considered.
+    queriedNodes = this.queryForNodes(aNode);
+
+    //  Out of the batch of queried nodes, select only those whose TIBET wrapper
+    //  type implement this phases's target method.
+    filteredNodes = queriedNodes.select(
+        function(node) {
+            var type,
+                elemName,
+                  
+                canInvoke;
+
+            //  If the considered node is an element, see if there are entries
+            //  for it in the tag type hash and invocation tracking hash under
+            //  its full name. This means this type of element has already been
+            //  found once and queried as to whether it can respond to this
+            //  phase's target method.
+            if (TP.isElement(node)) {
+                elemName = TP.elementGetFullName(node);
+                if (tagTypeDict.hasKey(elemName) &&
+                    canInvokeInfo.hasKey(elemName)) {
+                    return canInvokeInfo.at(elemName);
+                }
+            }
+
+            if (!TP.isType(type = TP.core.Node.getConcreteType(node))) {
+                //  TODO: Log a warning - this is the 'teachable moment' :-)
+                return false;
+            }
+
+            canInvoke = TP.canInvoke(type, methodName);
+
+            //  If the considered node is an element, then we can make an entry
+            //  for it in our tag type hash and invocation tracking hash under
+            //  that name for later fast lookup for the same type of element in
+            //  the tree of nodes being considered.
+            if (TP.isElement(node)) {
+                tagTypeDict.atPut(elemName, type);
+                canInvokeInfo.atPut(elemName, canInvoke);
+            }
+
+            return canInvoke;
+        });
+
+    return filteredNodes;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.Inst.defineMethod('processNode',
+function(aNode, aProcessor, aRequest) {
+
+    /**
+     * @name processNode
+     * @synopsis Processes the content of the supplied Node through this
+     *     processor phase.
+     * @param {Node} aNode The root node to start the processing from.
+     * @param {TP.core.TagProcessor} aProcessor The processor that 'owns' this
+     *     phase.
+     * @param {TP.sig.Request} aRequest The request containing control
+     *     parameters which may or may not be used, depending on the phase
+     *     involved.
+     * @raises TP.sig.InvalidNode, TP.sig.InvalidParameter
+     * @returns {TP.core.TagProcessorPhase} The receiver.
+     */
+
+    var methodName,
+        nodes,
+        tagTypeDict,
+        producedNodes,
+
+        processingRequest,
+    
+        len,
+        i,
+    
+        node,
+        type,
+
+        result,
+
+        subPhases,
+        subProcessor;
+
+    if (!TP.isNode(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
+    }
+
+    if (!TP.isString(methodName = this.getTargetMethod())) {
+        return this.raise('TP.sig.InvalidParameter', arguments);
+    }
+
+    if (TP.isEmpty(nodes = this.getFilteredNodes(aNode, aProcessor))) {
+        return this;
+    }
+
+    //  Configure the processing request, starting with any parameters from the
+    //  supplied request.
+    processingRequest = TP.request(aRequest);
+
+    processingRequest.atPut('currentPhase', this);
+    processingRequest.atPut('phases', aProcessor.get('phases'));
+
+    processingRequest.atPutIfAbsent('doc', TP.nodeGetDocument(aNode));
+    processingRequest.atPut('root', aNode);
+
+    //  Grab the processor-wide tag type hash that is used to cache tag types.
+    tagTypeDict = aProcessor.get('$tagTypeDict');
+
+    //  Any nodes that are actually newly-produced (and returned) by running the
+    //  processor over the supplied content.
+    producedNodes = TP.ac();
+
+    len = nodes.getSize();
+    for (i = 0; i < len; i++) {
+        node = nodes.at(i);
+
+        processingRequest.atPut('node', node);
+
+        //  If the considered node is an element, see if there are entries for
+        //  it in the tag type hash under its full name. This means this type of
+        //  element has already been found once. Otherwise, just go ahead and
+        //  query it for it's TIBET wrapper type.
+        if (TP.isElement(node)) {
+            if (!TP.isType(type =
+                            tagTypeDict.at(TP.elementGetFullName(node)))) {
+                type = TP.core.Node.getConcreteType(node);
+            }
+        }
+
+        //  Do the deed, invoking the target method against the wrapper type and
+        //  supplying the request.
+        result = type[methodName](processingRequest);
+
+        //  If either a singular Node or Array of Nodes was returned, then push
+        //  them onto our list of 'produced nodes'.
+        if (TP.isNode(result)) {
+            producedNodes.push(result);
+        } else if (TP.isArray(result)) {
+            producedNodes.addAll(result);
+        }
+    }
+
+    //  If the list of nodes that executing this phase against the various
+    //  target content Nodes is not empty, then we need to process them *from
+    //  the processor's first phase up through ourself* (so as to have
+    //  consistent results).
+    if (TP.notEmpty(producedNodes)) {
+        //  Grab the processor's phase list and slice a copy of it from the
+        //  beginning to this phase (inclusive)
+        subPhases = aProcessor.get('phases');
+
+        subPhases = subPhases.slice(0, subPhases.indexOf(this) + 1);
+
+        //  Configure a new processor with that phase list
+        subProcessor = TP.core.TagProcessor.construct();
+        subProcessor.set('phases', subPhases);
+
+        //  Run the subprocessor on the produced nodes, thereby recursively
+        //  processing the tree.
+        len = producedNodes.getSize();
+        for (i = 0; i < len; i++) {
+            subProcessor.processTree(producedNodes.at(i));
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  The default phase grabs *all* nodes here - not just Elements. Note that
+    //  this expression will also grab the aNode itself.
+    query = './descendant-or-self::node()';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.IncludesPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.IncludesPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.defineSubtype('core.IncludesPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.IncludesPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagIncludes';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.IncludesPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    query = 'descendant-or-self::*[namespace-uri() = "' +
+                                        TP.w3.Xmlns.XINCLUDE +
+                                        '"]';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.InstructionsPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.InstructionsPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.defineSubtype('core.InstructionsPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.InstructionsPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagIncludes';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.InstructionsPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    query = './processing-instruction(\'xml-stylesheet\')';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.PrecompilePhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.PrecompilePhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.defineSubtype('core.PrecompilePhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.PrecompilePhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagPrecompile';
+});
+
+//  ========================================================================
+//  TP.core.CompilePhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.CompilePhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.defineSubtype('core.CompilePhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompilePhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagCompile';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompilePhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  We're only interested in Element-type Nodes.
+    queriedNodes = TP.nodeGetElementsByTagName(aNode, '*');
+    queriedNodes.unshift(aNode);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.TidyPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.TidyPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.defineSubtype('core.TidyPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TidyPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagTidy';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TidyPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  We're only interested in Element-type Nodes.
+    queriedNodes = TP.nodeGetElementsByTagName(aNode, '*');
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.UnmarshalPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.UnmarshalPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.defineSubtype('core.UnmarshalPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.UnmarshalPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagUnmarshal';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UnmarshalPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  We're only interested in Element-type Nodes.
+    queriedNodes = TP.nodeGetElementsByTagName(aNode, '*');
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.LocalizePhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.LocalizePhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.defineSubtype('core.LocalizePhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.LocalizePhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagLocalize';
+});
+
+//  ========================================================================
+//  TP.core.MutationPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.MutationPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessorPhase.defineSubtype('core.MutationPhase');
+
+TP.core.MutationPhase.isAbstract(true);
+
+//  ========================================================================
+//  TP.core.AttachDOMPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.AttachDOMPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.AttachDOMPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachDOMPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagAttachDOM';
+});
+
+//  ========================================================================
+//  TP.core.AttachEventsPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.AttachEventsPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.AttachEventsPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachEventsPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagAttachEvents';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachEventsPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  We're only interested in elements that either are in the 'ev:' namespace
+    //  or have attributes in the 'ev:' namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"' +
+            ' or ' +
+            '@*[namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"]' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.AttachDataPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.AttachDataPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.AttachDataPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachDataPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagAttachData';
+});
+
+//  ========================================================================
+//  TP.core.AttachInfoPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.AttachInfoPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.AttachInfoPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachInfoPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagAttachInfo';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachInfoPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  We're only interested in elements that have a local name of 'info'.
+    query = 'descendant-or-self::*[local-name() = "info"]';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.AttachBindsPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.AttachBindsPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.AttachBindsPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachBindsPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagAttachBinds';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachBindsPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  We're only interested in elements that either are in the 'bind:'
+    //  namespace or have attributes in the 'bind:' namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'namespace-uri() = "' + TP.w3.Xmlns.BIND + '"' +
+            ' or ' +
+            '@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '"]' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.AttachStylePhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.AttachStylePhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.AttachStylePhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachStylePhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagAttachStyle';
+});
+
+//  ========================================================================
+//  TP.core.DetachDOMPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.DetachDOMPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.DetachDOMPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachDOMPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagDetachDOM';
+});
+
+//  ========================================================================
+//  TP.core.DetachEventsPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.DetachEventsPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.DetachEventsPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachEventsPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagDetachEvents';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachEventsPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  We're only interested in elements that either are in the 'ev:' namespace
+    //  or have attributes in the 'ev:' namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"' +
+            ' or ' +
+            '@*[namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"]' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.DetachDataPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.DetachDataPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.DetachDataPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachDataPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagDetachData';
+});
+
+//  ========================================================================
+//  TP.core.DetachInfoPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.DetachInfoPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.DetachInfoPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachInfoPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagDetachInfo';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachInfoPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  We're only interested in elements that have a local name of 'info'.
+    query = 'descendant-or-self::*[local-name() = "info"]';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.DetachBindsPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.DetachBindsPhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.DetachBindsPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachBindsPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagDetachBinds';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachBindsPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @name queryForNodes
+     * @synopsis Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        //  TODO: Throw an exception here
+        return;
+    }
+
+    //  We're only interested in elements that either are in the 'bind:'
+    //  namespace or have attributes in the 'bind:' namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            'namespace-uri() = "' + TP.w3.Xmlns.BIND + '"' +
+            ' or ' +
+            '@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '"]' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.DetachStylePhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.DetachStylePhase}
+ * @synopsis
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.DetachStylePhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachStylePhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @name getTargetMethod
+     * @synopsis Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagDetachStyle';
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
