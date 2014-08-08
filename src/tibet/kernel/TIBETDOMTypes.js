@@ -9718,7 +9718,7 @@ content. Without an awakening step the page's events would not operate.
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeAwakenContent',
-function(aNode, aDocument, aWindow) {
+function(aNode) {
 
     /**
      * @name nodeAwakenContent
@@ -9727,9 +9727,7 @@ function(aNode, aDocument, aWindow) {
      * @description You don't normally call this, it's invoked by the various
      *     setContent() calls to ensure that new content is properly awakened.
      * @param {Node} aNode The node to awaken.
-     * @param {Document} aDocument The node's document.
-     * @param {Window} aWindow The node's window.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidNode
      * @todo
      */
 
@@ -9738,8 +9736,8 @@ function(aNode, aDocument, aWindow) {
 
     TP.debug('break.awaken_content');
 
-    if (!TP.isElement(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
     }
 
     request = TP.sig.ShellRequest.construct(

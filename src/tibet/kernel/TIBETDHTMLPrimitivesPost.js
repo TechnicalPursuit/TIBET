@@ -5903,9 +5903,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
                 //  Awaken any newly added content. Note here how we hand
                 //  the whole element to the awakening function to awaken
                 //  itself and all descendant content underneath it.
-                TP.nodeAwakenContent(returnNode,
-                                        doc,
-                                        TP.nodeGetWindow(doc));
+                TP.nodeAwakenContent(returnNode);
             }
         } else {
             //  We're in a W3C-compliant browser, so we can create a
@@ -7397,7 +7395,7 @@ function(aNode, startIndex, endIndex) {
         //  awaken it (since we only awaken elements). NOTE that we pass in
         //  the document and window to keep overhead down in the awaken
         if (TP.isElement(childNode)) {
-            TP.nodeAwakenContent(childNode, doc, win);
+            TP.nodeAwakenContent(childNode);
         }
     }
 
@@ -8158,9 +8156,7 @@ function(aWindow) {
                                                 'shouldAwake'))) {
         //  awaken any newly added content.
         try {
-            TP.nodeAwakenContent(aWindow.document.documentElement,
-                                    aWindow.document,
-                                    aWindow);
+            TP.nodeAwakenContent(aWindow.document.documentElement);
         } catch (e) {
             TP.ifError() ?
                 TP.error(TP.ec(e, 'Window content awaken generated error.'),
