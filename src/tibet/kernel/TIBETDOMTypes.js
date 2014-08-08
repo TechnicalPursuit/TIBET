@@ -9729,14 +9729,14 @@ function(aNode) {
 });
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tshAwakenBinds',
+TP.core.ElementNode.Type.defineMethod('tagAttachBinds',
 function(aRequest) {
 
     /**
-     * @name tshAwakenBinds
+     * @name tagAttachBinds
      * @synopsis Awakens any bind: namespace event handlers for the element in
      *     aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
@@ -9750,37 +9750,39 @@ function(aRequest) {
 
     //  NASTY, but faster to reference the "js-compliant" type name.
     //type = TP.bind.XMLNS || TP.sys.require('bind:');
-    //node = aRequest.at('cmdNode');
+    //node = aRequest.at('node');
 
     //return bind_.awaken(node);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tshAwakenEvents',
+TP.core.ElementNode.Type.defineMethod('tagAttachEvents',
 function(aRequest) {
 
     /**
-     * @name tshAwakenEvents
-     * @synopsis Awakens any ev: namespace event handlers for the element in
+     * @name tagAttachEvents
+     * @synopsis Attaches any ev: namespace event handlers for the element in
      *     aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
 
+    /*
     var node,
         type;
+    */
 
     //  NASTY, but faster to reference the "js-compliant" type name.
-    type = TP.ev.XMLNS || TP.sys.require('ev:');
-    node = aRequest.at('cmdNode');
+    //type = TP.ev.XMLNS || TP.sys.require('ev:');
+    //node = aRequest.at('node');
 
-    return type.awaken(node);
+    //return type.awaken(node);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('tshUnmarshal',
+TP.core.ElementNode.Type.defineMethod('tagUnmarshal',
 function(aRequest) {
 
     /**
@@ -9794,11 +9796,11 @@ function(aRequest) {
      *     the children of this element.
      */
 
-    var node,
+    var elem,
         uriAttrs;
 
     //  Make sure that we have a node to work from.
-    if (!TP.isNode(node = aRequest.at('cmdNode'))) {
+    if (!TP.isNode(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception.
         return;
     }
@@ -9818,7 +9820,7 @@ function(aRequest) {
                 var attrVal,
                     newVal;
 
-                attrVal = TP.elementGetAttribute(node, attrName, true);
+                attrVal = TP.elementGetAttribute(elem, attrName, true);
 
                 //  If its an absolute URI, check to see if it needs to be
                 //  rewritten.
@@ -9826,7 +9828,7 @@ function(aRequest) {
                     newVal = TP.core.URI.rewrite(attrVal).getLocation();
 
                     if (newVal !== attrVal) {
-                        TP.elementSetAttribute(node,
+                        TP.elementSetAttribute(elem,
                                                 attrName,
                                                 newVal,
                                                 true);
@@ -9835,7 +9837,7 @@ function(aRequest) {
             });
 
     //  update the XML Base references in the node
-    TP.elementResolveXMLBase(node, uriAttrs);
+    TP.elementResolveXMLBase(elem, uriAttrs);
 
     //  We want the system traverse our children
     return TP.DESCEND;
@@ -11235,11 +11237,11 @@ TP.core.XmlStylesheetPINode.Type.defineConstant(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XmlStylesheetPINode.Type.defineMethod('tshInstructions',
+TP.core.XmlStylesheetPINode.Type.defineMethod('tagInstructions',
 function(aRequest) {
 
     /**
-     * @name tshInstructions
+     * @name tagInstructions
      * @synopsis Processes any 'xml-stylesheet' processing instructions in the
      *     receiver's content. When you load content via XMLHTTP.sig.Request
      *     these PIs aren't executed so you have to run them through this
@@ -11247,9 +11249,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing control parameters.
      * @raises TP.sig.InvalidNode
-     * @returns {Number} The TP.CONTINUE flag, telling the system to just
-     *     continue on to the next sibling, which will either be another
-     *     processing instruction or be the document's documentElement.
      */
 
     var node,
@@ -11264,12 +11263,10 @@ function(aRequest) {
 
         styleTPDoc,
 
-        resultElem,
-
-        nextNode;
+        resultElem;
 
     //  Make sure that we have a node to work from.
-    if (!TP.isNode(node = aRequest.at('cmdNode'))) {
+    if (!TP.isNode(node = aRequest.at('node'))) {
         //  TODO: Raise an exception.
         return;
     }
@@ -11362,14 +11359,6 @@ function(aRequest) {
     //  the newly transformed content.
     doc.replaceChild(resultElem, docElem);
 
-    //  Now, because we want to remove the PI itself from the document, we
-    //  first need to grab its nextSibling (which will be either another PI
-    //  or the document element) before we remove it from document. We'll
-    //  return that node to the content processing engine as an 'explicit
-    //  target' to process next. This is all because once we unhook the PI
-    //  from the document, it's nextSibling will be null.
-    nextNode = node.nextSibling;
-
     //  Now, remove the PI from the document.
     node.parentNode.removeChild(node);
 
@@ -11379,7 +11368,7 @@ function(aRequest) {
                             'XSLT finalization transform complete.'),
             TP.INFO, arguments) : 0;
 
-    return nextNode;
+    return;
 });
 
 //  ========================================================================
@@ -13022,11 +13011,11 @@ function(aRequest, expandArguments, resolveArguments) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Type.defineMethod('tshCompile',
+TP.core.ActionElementNode.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
@@ -13036,15 +13025,15 @@ function(aRequest) {
      * @todo
      */
 
-    var node;
+    var elem;
 
     //  Default for action tags is to not be transformed, but to have a
     //  'tibet-action' CSS class added to their markup.
 
-    node = aRequest.at('cmdNode');
-    TP.elementAddClass(node, 'tibet-action');
+    elem = aRequest.at('node');
+    TP.elementAddClass(elem, 'tibet-action');
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -13520,7 +13509,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.InfoElementNode.Type.defineMethod('tshCompile',
+TP.core.InfoElementNode.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -13534,13 +13523,13 @@ function(aRequest) {
      * @todo
      */
 
-    var node;
+    var elem;
 
     //  Default for info tags is to not be transformed, but to have a
     //  'tibet-info' CSS class added to their markup.
 
-    node = aRequest.at('cmdNode');
-    TP.elementAddClass(node, 'tibet-info');
+    elem = aRequest.at('node');
+    TP.elementAddClass(elem, 'tibet-info');
 
     return TP.DESCEND;
 
@@ -13898,11 +13887,11 @@ TP.xi.include.set('uriAttrs', TP.ac('href'));
 
 //  ------------------------------------------------------------------------
 
-TP.xi.include.Type.defineMethod('tshIncludes',
+TP.xi.include.Type.defineMethod('tagIncludes',
 function(aRequest) {
 
     /**
-     * @name tshIncludes
+     * @name tagIncludes
      * @synopsis Processes any 'xinclude' elements in the receiver's content.
      *     This will expand any virtual URIs and resolve XML Base references on
      *     the xinclude element, retrieve the (possibly XPointered) content from
@@ -13910,13 +13899,12 @@ function(aRequest) {
      *     element.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing control parameters.
-     * @returns {Node|Number} The node representing the newly included content
-     *     and the TP.DESCEND flag, telling the system to descend into the
-     *     children of this element (which very well may be content that was
-     *     included by this element).
+     * @returns {Node} The node representing the newly included content, telling
+     *     the system to descend into the children of this element (which very
+     *     well may be content that was included by this element).
      */
 
-    var node,
+    var elem,
 
         fallback,
 
@@ -13938,19 +13926,19 @@ function(aRequest) {
         cnode;
 
     //  Make sure that we have a node to work from.
-    if (!TP.isNode(node = aRequest.at('cmdNode'))) {
+    if (!TP.isNode(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception.
         return;
     }
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(TP.str(node),
+                TP.boot.$annotate(TP.str(elem),
                             'XInclude content inclusion starting.'),
             TP.INFO, arguments) : 0;
 
     //  now update the XML Base references in the element
-    TP.elementResolveXMLBase(node, this.get('uriAttrs'));
+    TP.elementResolveXMLBase(elem, this.get('uriAttrs'));
 
     //  according to the latest spec the following rules apply:
     //
@@ -13966,7 +13954,7 @@ function(aRequest) {
 
     fallback = false;
 
-    if (TP.isEmpty(parse = TP.elementGetAttribute(node, 'parse'))) {
+    if (TP.isEmpty(parse = TP.elementGetAttribute(elem, 'parse'))) {
         parse = 'xml';
     } else {
         parse = parse.toLowerCase();
@@ -13974,20 +13962,20 @@ function(aRequest) {
             //  fatal error according to spec, must have text or xml
             this.raise('TP.sig.InvalidXInclude', arguments,
                 'XInclude requires parse="text" or parse="xml" : ' +
-                TP.nodeAsString(node));
+                TP.nodeAsString(elem));
 
             return;
         }
     }
 
-    href = TP.elementGetAttribute(node, 'href');
-    xpointer = TP.elementGetAttribute(node, 'xpointer');
+    href = TP.elementGetAttribute(elem, 'href');
+    xpointer = TP.elementGetAttribute(elem, 'xpointer');
 
     if (parse === 'text' && TP.notEmpty(xpointer)) {
         //  fatal error according to spec, must have xml with xpointer
         this.raise('TP.sig.InvalidXInclude', arguments,
             'XInclude requires parse="xml" for xpointer: ' +
-            TP.nodeAsString(node));
+            TP.nodeAsString(elem));
 
         return;
     }
@@ -13997,7 +13985,7 @@ function(aRequest) {
             //  fatal error according to specification...
             this.raise('TP.sig.InvalidXInclude', arguments,
                 'Invalid href for XInclude: ' +
-                TP.nodeAsString(node));
+                TP.nodeAsString(elem));
 
             return;
         }
@@ -14007,7 +13995,7 @@ function(aRequest) {
             //  value to include something
             this.raise('TP.sig.InvalidXInclude', arguments,
                 'XInclude requires href or xpointer value: ' +
-                TP.nodeAsString(node));
+                TP.nodeAsString(elem));
 
             return;
         }
@@ -14030,15 +14018,15 @@ function(aRequest) {
             //  lookup instead of a general form XPath
             if (TP.notEmpty(parts = xpointer.match(TP.regex.ID_POINTER))) {
                 path = parts.at(1).unquoted();
-                content = TP.nodeGetElementById(node, path, true);
+                content = TP.nodeGetElementById(elem, path, true);
             } else {
                 //  use the saved path from first match here
-                content = TP.nodeEvaluateXPath(node, path);
+                content = TP.nodeEvaluateXPath(elem, path);
             }
         } else {
             //  with no href the pointer is to the current document
             //  being transformed...
-            content = TP.nodeGetElementById(node, xpointer, true);
+            content = TP.nodeGetElementById(elem, xpointer, true);
         }
     } else {
         if (TP.notEmpty(xpointer)) {
@@ -14050,7 +14038,7 @@ function(aRequest) {
             //  bad URI specification
             this.raise('TP.sig.InvalidXInclude', arguments,
                 'Invalid href value, could not construct URI instance: ' +
-                TP.nodeAsString(node));
+                TP.nodeAsString(elem));
 
             return;
         }
@@ -14064,7 +14052,7 @@ function(aRequest) {
     //  no content to include?
     if (TP.notValid(content)) {
         //  look for a fallback element that defines what we should do next
-        fallback = TP.nodeGetFirstElementChildByTagName(node, 'fallback');
+        fallback = TP.nodeGetFirstElementChildByTagName(elem, 'fallback');
 
         //  If we found a 'fallback' element, we need to use that to obtain
         //  our error message.
@@ -14073,9 +14061,9 @@ function(aRequest) {
             //  the spot occupied by XInclude element, remove the XInclude
             //  element and return the fallback's first new child.
             newNode = TP.nodeMoveChildNodesTo(fallback,
-                                                node.parentNode,
-                                                node);
-            TP.nodeDetach(node);
+                                                elem.parentNode,
+                                                elem);
+            TP.nodeDetach(elem);
 
             return TP.ac(newNode, TP.DESCEND);
         } else {
@@ -14100,35 +14088,35 @@ function(aRequest) {
 
             //  TODO: This is a dependency on XHTML-only reps. Make it
             //  generic. Also, update this to the 'workflow model'.
-            errorMsgElem = TP.nodeGetDocument(node).createElement('span');
+            errorMsgElem = TP.nodeGetDocument(elem).createElement('span');
             TP.nodeAppendChild(
                 errorMsgElem,
-                TP.nodeGetDocument(node).createTextNode(
+                TP.nodeGetDocument(elem).createTextNode(
                 'Could not retrieve content for: ' +
-                    TP.xmlEntitiesToLiterals(TP.nodeAsString(node))));
+                    TP.xmlEntitiesToLiterals(TP.nodeAsString(elem))));
 
             //  Replace the XInclude element with the error message element
             //  and return.
-            newNode = TP.nodeReplaceChild(node.parentNode,
+            newNode = TP.nodeReplaceChild(elem.parentNode,
                                             errorMsgElem,
-                                            node);
+                                            elem);
 
             return TP.ac(newNode, TP.DESCEND);
         }
     } else if (TP.isDocument(content)) {
         if (TP.notEmpty(content)) {
             content = TP.nodeCloneNode(content.documentElement);
-            newNode = TP.nodeInsertBefore(node.parentNode,
+            newNode = TP.nodeInsertBefore(elem.parentNode,
                                             content,
-                                            node);
-            TP.nodeDetach(node);
+                                            elem);
+            TP.nodeDetach(elem);
         }
     } else if (TP.isNode(content)) {
         content = TP.nodeCloneNode(content);
-        newNode = TP.nodeInsertBefore(node.parentNode,
+        newNode = TP.nodeInsertBefore(elem.parentNode,
                                         content,
-                                        node);
-        TP.nodeDetach(node);
+                                        elem);
+        TP.nodeDetach(elem);
     } else if (TP.isArray(content)) {
         //  Loop over all of the content nodes handed back by getting the
         //  content from the URI, insert them before the XInclude element
@@ -14138,22 +14126,22 @@ function(aRequest) {
 
             //  We want the first new node inserted.
             if (!TP.isNode(newNode)) {
-                newNode = TP.nodeInsertBefore(node.parentNode,
+                newNode = TP.nodeInsertBefore(elem.parentNode,
                                                 cnode,
-                                                node);
+                                                elem);
             } else {
-                TP.nodeInsertBefore(node.parentNode,
+                TP.nodeInsertBefore(elem.parentNode,
                                     cnode,
-                                    node);
+                                    elem);
             }
         }
 
-        TP.nodeDetach(node);
+        TP.nodeDetach(elem);
     }
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(TP.str(node),
+                TP.boot.$annotate(TP.str(elem),
                             'XInclude content inclusion complete.'),
             TP.INFO, arguments) : 0;
 
@@ -14188,18 +14176,17 @@ TP.core.TemplatedNode.Type.defineAttribute('wantsTemplateWrapper');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedNode.Type.defineMethod('tshCompile',
+TP.core.TemplatedNode.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM. This type replaces the current node with the result of
      *     executing its template content.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @returns {Element|Array} The new element, or an array containing the new
-     *     element and a process control constant.
+     * @returns {Element} The new element.
      */
 
     var elem,
@@ -14212,7 +14199,7 @@ function(aRequest) {
         canonicalName;
 
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
@@ -14304,16 +14291,14 @@ TP.core.EmbeddedTemplateNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.core.EmbeddedTemplateNode.Type.defineMethod('tshAwakenDOM',
+TP.core.EmbeddedTemplateNode.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     var elem,
@@ -14321,7 +14306,7 @@ function(aRequest) {
         ourID;
 
     //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
         return;
     }
@@ -14363,7 +14348,7 @@ function(aRequest) {
                                 false);
         });
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ========================================================================
