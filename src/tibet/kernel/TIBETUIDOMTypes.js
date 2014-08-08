@@ -647,6 +647,94 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMNodesAdded',
+function(aTargetElem, nodesAdded) {
+
+    /**
+     * @name handlePeerTP_sig_DOMSubtreeAdded
+     * @synopsis Handles a 'nodes added' synthetic 'event' that was dispatched
+     *     against the supplied native element.
+     * @description This method is usually activated as the result of a 'DOM
+     *     Mutation' of this node whereby a descendant is being added. Note that
+     *     the 'nodesAdded' parameter here contains a list of *roots* that will
+     *     have been added to the receiver. Any descendants of these roots will
+     *     not be in this list.
+     * @param {HTMLElement} aTargetElem The target element computed for this
+     *     signal.
+     * @param {Array} nodesAdded The nodes added to the receiver.
+     * @raises TP.sig.InvalidElement
+     * @returns {TP.core.UIElementNode} The receiver.
+     * @todo
+     */
+
+    var processor,
+    
+        len,
+        i;
+
+    if (!TP.isElement(aTargetElem)) {
+        return this.raise('TP.sig.InvalidElement', arguments);
+    }
+
+    //  Allocate a tag processor and initialize it with the ATTACH_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.ATTACH_PHASES);
+
+    //  Now, process each *root* that we have gotten as an added node 
+    len = nodesAdded.getSize();
+    for (i = 0; i < len; i++) {
+        processor.processTree(nodesAdded.at(i));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMNodesRemoved',
+function(aTargetElem, nodesRemoved) {
+
+    /**
+     * @name handlePeerTP_sig_DOMSubtreeRemoved
+     * @synopsis Handles a 'nodes removed' synthetic 'event' that was dispatched
+     *     against the supplied native element.
+     * @description This method is usually activated as the result of a 'DOM
+     *     Mutation' of this node whereby a descendant is being removed. Note
+     *     that the 'nodesRemoved' parameter here contains a list of *roots*
+     *     that will have been removed from the receiver. Any descendants of
+     *     these roots will not be in this list.
+     * @param {HTMLElement} aTargetElem The target element computed for this
+     *     signal.
+     * @param {Array} nodesRemoved  The nodes removed from the receiver.
+     * @raises TP.sig.InvalidElement
+     * @returns {TP.core.UIElementNode} The receiver.
+     * @todo
+     */
+
+    var processor,
+    
+        len,
+        i;
+
+    if (!TP.isElement(aTargetElem)) {
+        return this.raise('TP.sig.InvalidElement', arguments);
+    }
+
+    //  Allocate a tag processor and initialize it with the DETACH_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.DETACH_PHASES);
+
+    //  Now, process each *root* that we have gotten as a removed node 
+    len = nodesRemoved.getSize();
+    for (i = 0; i < len; i++) {
+        processor.processTree(nodesRemoved.at(i));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Type.defineMethod('loadKeyBindings',
 function() {
 
