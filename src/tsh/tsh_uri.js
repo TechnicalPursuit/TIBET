@@ -310,6 +310,10 @@ function(aRequest) {
     var node,
         newNode;
 
+    //  NB: DO NOT CHANGE THIS METHOD TO BE 'tagCompile' UNTIL THE SHELL HAS
+    //  BEEN CHANGED TO USE THE TAG PROCESSOR RATHER THAN IT'S OWN TAG
+    //  PROCESSING MACHINERY (AT LEAST FOR COMPILATION).
+
     //  Don't copy attributes with defaulting of namespaces, just leave them
     //  as they were input.
     node = aRequest.at('cmdNode');
