@@ -40,6 +40,10 @@ TP.xctrls.log.addTraitsFrom(TP.xctrls.Element,
                             TP.core.TemplatedNode);
 TP.xctrls.log.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.xctrls.log.executeTraitResolution();
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------

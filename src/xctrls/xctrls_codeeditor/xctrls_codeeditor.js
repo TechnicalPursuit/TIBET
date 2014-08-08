@@ -65,6 +65,10 @@ TP.xctrls.codeeditor.Inst.resolveTraits(
                 'setHidden'),
         TP.html.textUtilities);
 
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.xctrls.codeeditor.executeTraitResolution();
+
 //  ------------------------------------------------------------------------
 //  TSH Execution Support
 //  ------------------------------------------------------------------------

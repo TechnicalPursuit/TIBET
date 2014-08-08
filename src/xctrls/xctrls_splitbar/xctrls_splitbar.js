@@ -39,6 +39,10 @@ TP.xctrls.splitbar.addTraitsFrom(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
 TP.xctrls.splitbar.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.xctrls.splitbar.executeTraitResolution();
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------

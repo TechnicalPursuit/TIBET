@@ -37,6 +37,10 @@ TP.core.UIElementNode.defineSubtype('xctrls:clipbox');
 
 TP.xctrls.clipbox.addTraitsFrom(TP.xctrls.Element);
 
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.xctrls.clipbox.executeTraitResolution();
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------

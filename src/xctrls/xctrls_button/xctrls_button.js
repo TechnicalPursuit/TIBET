@@ -35,8 +35,13 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.core.UIElementNode.defineSubtype('xctrls:button');
 
-TP.xctrls.button.addTraitsFrom(TP.xctrls.Element, TP.core.TemplatedNode);
-TP.xctrls.button.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+//TP.xctrls.button.addTraitsFrom(TP.xctrls.Element, TP.core.TemplatedNode);
+TP.xctrls.button.addTraitsFrom(TP.xctrls.Element);
+//TP.xctrls.button.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.xctrls.button.executeTraitResolution();
 
 //  ------------------------------------------------------------------------
 //  end
