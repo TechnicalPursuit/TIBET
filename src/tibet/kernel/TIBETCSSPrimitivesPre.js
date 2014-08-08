@@ -267,46 +267,6 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementInitializeCSS',
-function(anElement, allChildrenAreFresh) {
-
-    /**
-     * @name elementInitializeCSS
-     * @synopsis This method performs the 'initialization' part of setting up
-     *     the CSS for a particular element and its descendants.
-     * @param {HTMLElement} anElement The element that is a common parent for
-     *     all elements to be set up.
-     * @param {Boolean} allChildrenAreFresh Whether or not all of the children
-     *     are 'fresh', that is new content that doesn't need to be cleared of
-     *     old constructs.
-     * @raises TP.sig.InvalidElement
-     * @todo
-     */
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('elementActivateCSS',
-function(anElement) {
-
-    /**
-     * @name elementActivateCSS
-     * @synopsis This method performs the visible setup part of setting up the
-     *     CSS for a particular element and its descendants. 'Visible' means
-     *     that any actions here will be applied after the document is made
-     *     visible to the user for the first time.
-     * @param {HTMLElement} anElement The element that is a common parent for
-     *     all elements to be set up.
-     * @raises TP.sig.InvalidElement
-     */
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('$elementProcessCSSAttributeChange',
 function(anElement, attrName, newValue, changeFunction) {
 

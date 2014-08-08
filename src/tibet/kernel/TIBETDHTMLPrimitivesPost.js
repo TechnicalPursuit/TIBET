@@ -2127,11 +2127,6 @@ function(anElement) {
                         busyElement,
                         false);
 
-    //  Set up the busy element into the document. This applies all of the
-    //  necessary CSS selectors to style the busy element.
-    TP.elementInitializeCSS(busyElement);
-    TP.elementActivateCSS(busyElement);
-
     //  Cache the busy element, the busy control image element and the busy
     //  message element as slots on the element they were created for for
     //  much faster display next time.
@@ -7405,11 +7400,6 @@ function(aNode, startIndex, endIndex) {
             TP.nodeAwakenContent(childNode, doc, win);
         }
     }
-
-    //  final step is to wake up the CSS, but NOTE that we do this at the
-    //  element level, not the child node level
-    TP.elementInitializeCSS(aNode);
-    TP.elementActivateCSS(aNode);
 
     return;
 });
