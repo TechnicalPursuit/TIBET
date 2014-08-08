@@ -1205,16 +1205,7 @@ function() {
      * @returns {TP.core.Node} The receiver.
      */
 
-    var request;
-
-    request = TP.request(
-                TP.hc('cmdExecute', false,
-                        'cmdSilent', true,
-                        'cmdTargetDoc', this.getNativeDocument(),
-                        'cmdPhases', TP.core.TSH.AWAKEN_PHASES,
-                        'targetPhase', 'AwakenDOM'));
-
-    TP.process(this.getNativeNode(), request);
+    TP.nodeAwakenContent(this.getNativeNode());
 
     return this;
 });
