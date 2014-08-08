@@ -5254,6 +5254,48 @@ isBubbling) {
         }.bind(this)).afterUnwind();
 });
 
+//  ========================================================================
+//  TP.core.NonNativeUIElementNode
+//  ========================================================================
+
+/**
+ * @type {TP.core.NonNativeUIElementNode}
+ * @synopsis A type that represents 'non-native' (to a User Agent) element nodes
+ *     that need various things like stylesheets to be attached to a hosting DOM
+ *     so that they can be rendered properly. This type is normally 'traited in'
+ *     to other types.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.NonNativeUIElementNode');
+
+//  ------------------------------------------------------------------------
+
+TP.core.NonNativeUIElementNode.Type.defineMethod('tagAttachStyle',
+function(aRequest) {
+
+    /**
+     * @name tagAttachStyle
+     * @synopsis Sets up runtime style for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var doc;
+
+    //  We see if the request has a target document. If so, we use that as the
+    //  document.
+    if (!TP.isDocument(doc = aRequest.at('doc'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    this.addStylesheetTo(doc);
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

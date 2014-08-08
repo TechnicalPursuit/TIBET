@@ -35,6 +35,12 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.core.UIElementNode.defineSubtype('xctrls:Element');
 
+TP.xctrls.Element.addTraitsFrom(TP.core.NonNativeUIElementNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.xctrls.Element.executeTraitResolution();
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
@@ -45,32 +51,6 @@ TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.Element.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var doc;
-
-    //  We see if the request has a target document. If so, we use that as the
-    //  document.
-    if (!TP.isDocument(doc = aRequest.at('doc'))) {
-        //  TODO: Raise an exception
-        return;
-    }
-
-    this.addStylesheetTo(doc);
-
-    return;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.xctrls.Element.Type.defineMethod('tagCompile',
