@@ -179,6 +179,7 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     <!-- NB: These must come before TIBETDHTMLTypes -->
     <script src="TIBETDOMTypes.js"/>
     <script src="TIBETUIDOMTypes.js"/>
+    <property name="TP.core.UIElementNode_keybindings.xml_uri" value="~lib_dat/TP.core.UIElementNode_keybindings.xml"/>
 
     <script src="TIBETDHTMLTypes.js"/>
     <script src="TIBETGraphicsTypes.js"/>
