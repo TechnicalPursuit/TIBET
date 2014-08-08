@@ -178,8 +178,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentInsertContent',
-function(aDocument, theContent, aPositionOrPath, loadedFunction,
-shouldAwake        ) {
+function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
      * @name documentInsertContent
@@ -2930,8 +2929,7 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementInsertContent',
-function(anElement, theContent, aPositionOrPath, loadedFunction,
-shouldAwake        ) {
+function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
      * @name elementInsertContent
@@ -3752,8 +3750,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('xmlElementInsertContent',
-function(anElement, theContent, aPositionOrPath, loadedFunction,
-shouldAwake        ) {
+function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     /**
      * @name xmlElementInsertContent

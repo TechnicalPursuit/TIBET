@@ -4102,8 +4102,8 @@ function(propertyName, resolverObject, resolvingOption) {
      *     supplied and is a Function, then the resolvingOption will be executed
      *     with the value of the property on the main type as the first argument
      *     and the value of the property on the resolverObject as the second
-     *     argument. This Function should return one of these two values and the
-     *     property on the receiver will be resolved to be that value.
+     *     argument. The property on the receiver will be resolved to be the
+     *     returned value.
      *
      *     5. If the resolverObject is a TIBET type and a resolvingOption is
      *     supplied and is the value 'TP.BEFORE', then the property on the

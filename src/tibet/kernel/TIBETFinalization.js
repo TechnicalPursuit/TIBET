@@ -442,14 +442,13 @@ function() {
 
         //  Go to the body and see what element is the first
         //  child under it.
-        if (TP.isElement(bodyElem =
-                            TP.documentGetBody(aDocument))) {
+        if (TP.isElement(bodyElem = TP.documentGetBody(aDocument))) {
             //  If the first child element is real and we can
             //  get a matching TIBET type for it, try to message
             //  it to find out the application type.
-            if (TP.isElement(
-                elem = TP.nodeGetFirstChildElement(bodyElem))) {
+            if (TP.isElement(elem = TP.nodeGetFirstChildElement(bodyElem))) {
                 tpElem = TP.wrap(elem);
+
                 if (TP.canInvoke(tpElem, 'getApplicationType')) {
                     appType = tpElem.getApplicationType();
                 }
