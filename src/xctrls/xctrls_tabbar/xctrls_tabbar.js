@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:tabbar');
 
 TP.xctrls.tabbar.addTraitsFrom(TP.xctrls.Element,
                                 TP.core.TemplatedNode);
-TP.xctrls.tabbar.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.tabbar.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

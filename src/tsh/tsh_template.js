@@ -602,25 +602,23 @@ function(transformElement, templatePrefix) {
 });
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.tsh.template.Type.defineMethod('tshCompile',
+TP.tsh.template.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Compiles templates defined with this element into TIBET
      *     representations for use in templating.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {Element|Constant} If the receiver is a 'generator', then the
-     *     result of executing the receiver's template. Otherwise, the
-     *     TP.CONTINUE flag, telling the system to leave the current node in the
-     *     DOM but to skip any children of the current node.
+     *     result of executing the receiver's template. Otherwise, null.
      */
 
-    var node,
+    var elem,
         src,
         uri,
 
@@ -642,17 +640,17 @@ function(aRequest) {
         ownerElem;
 
     //  Make sure that we have a node to work from.
-    if (TP.notValid(node = aRequest.at('cmdNode'))) {
+    if (TP.notValid(elem = aRequest.at('node'))) {
         return;
     }
 
     //  Start by looking for 'src' rather than embedded content, unless the
     //  fallback attribute is present and set to true for testing/forced
     //  use.
-    if (TP.elementHasAttribute(node, 'tibet:src', true) &&
+    if (TP.elementHasAttribute(elem, 'tibet:src', true) &&
         TP.notTrue(TP.bc(TP.elementGetAttribute(
-                                    node, 'tsh:fallback', true)))) {
-        src = TP.elementGetAttribute(node, 'tibet:src', true);
+                                    elem, 'tsh:fallback', true)))) {
+        src = TP.elementGetAttribute(elem, 'tibet:src', true);
         if (TP.isEmpty(src) || TP.notValid(uri = TP.uc(src))) {
             this.raise('TP.sig.InvalidURI',
                         arguments,
@@ -665,35 +663,35 @@ function(aRequest) {
     //  Templates should have a name associated with them for easy processing.
     //  If the template doesn't have a 'template name', then we construct one
     //  out of our ID and the template name and set it.
-    if (TP.isEmpty(name = TP.elementGetAttribute(node, 'tsh:name', true))) {
+    if (TP.isEmpty(name = TP.elementGetAttribute(elem, 'tsh:name', true))) {
         //  TODO:   convert this call to TP.genID() into a "hash code" for
         //  uniquing.
         name = 'template_' + TP.genID();
 
-        TP.elementSetAttribute(node, 'tsh:name', name, true);
+        TP.elementSetAttribute(elem, 'tsh:name', name, true);
     }
 
     //  Templates can be of three basic types: JS (aka "string"), XSLT, or XML
     //  (aka "content").
-    if (TP.isEmpty(type = TP.elementGetAttribute(node, 'tibet:type', true))) {
+    if (TP.isEmpty(type = TP.elementGetAttribute(elem, 'tibet:type', true))) {
         type = TP.ietf.Mime.XML;
     }
 
     switch (type) {
         case TP.ietf.Mime.JS:
 
-            this.processJSTemplate(node, name, uri);
+            this.processJSTemplate(elem, name, uri);
             break;
 
         case TP.ietf.Mime.XSLT:
 
-            this.processXSLTTemplate(node, name, uri);
+            this.processXSLTTemplate(elem, name, uri);
             break;
 
         case TP.ietf.Mime.XML:
         case TP.ietf.Mime.XHTML:
 
-            this.processXMLTemplate(node, name, uri);
+            this.processXMLTemplate(elem, name, uri);
             break;
 
         default:
@@ -706,12 +704,12 @@ function(aRequest) {
     //  If we're "generated" (as when used by TP.core.TemplatedNode objects) we
     //  expand now, while we still have a location in the DOM.
     if (TP.notEmpty(generatorName = TP.elementGetAttribute(
-                                        node, 'tsh:generator', true))) {
+                                        elem, 'tsh:generator', true))) {
         //  Expand the template now. Generated template elements are helpers
         //  used at compile time, not just in response to events. NOTE that we
-        //  pass the template node in this case since it contains the
+        //  pass the template elem in this case since it contains the
         //  attributes and child content of the original generator.
-        result = this.getTemplateResult(name, node, aRequest);
+        result = this.getTemplateResult(name, elem, aRequest);
 
         if (!TP.isNode(result)) {
             //  Should always receive back a new node (even if it's a
@@ -730,7 +728,7 @@ function(aRequest) {
             //  that have values (and which might have been calculated as part
             //  of template execution process) are *not* overwritten on the
             //  result.
-            TP.elementMergeAttributes(node, result, false);
+            TP.elementMergeAttributes(elem, result, false);
 
             //  If the phase is 'Compile', remove the 'tsh:generator' attribute
             //  (admin cruft).
@@ -740,15 +738,15 @@ function(aRequest) {
             }
         }
 
-        //  Ensure the new node migrates to the target document as needed.
-        newNode = TP.nodeImportNode(node, result);
+        //  Ensure the new elem migrates to the target document as needed.
+        newNode = TP.nodeImportNode(elem, result);
 
-        //  Now it gets tricky. If the new node is a different tag type then we
-        //  can process the new node from the earliest phase up through compile
-        //  to match our current state. But if the new node is the same tag
+        //  Now it gets tricky. If the new elem is a different tag type then we
+        //  can process the new elem from the earliest phase up through compile
+        //  to match our current state. But if the new elem is the same tag
         //  type and we do that we'll end up running those phases twice (we
         //  already ran them to get this far...). So the trick in the latter
-        //  case is to presume the outer node is "compiled" already and that
+        //  case is to presume the outer elem is "compiled" already and that
         //  only the children need processing.
 
         processInnerFrag = false;
@@ -760,7 +758,7 @@ function(aRequest) {
             //  No more child *elements*?
             if (TP.notValid(child)) {
                 //  No child elements means replacement must be complete.
-                newNode = TP.elementReplaceWith(node, newNode);
+                newNode = TP.elementReplaceWith(elem, newNode);
 
                 return TP.ac(newNode, TP.CONTINUE);
             } else {
@@ -779,7 +777,7 @@ function(aRequest) {
 
             //  The shell can't process document fragments, so wrap it in
             //  something we can identify and remove after processing.
-            wrapper = TP.documentCreateElement(TP.nodeGetDocument(node),
+            wrapper = TP.documentCreateElement(TP.nodeGetDocument(elem),
                                                 'fragwrapper');
             wrapper.appendChild(newNode);
 
@@ -787,13 +785,13 @@ function(aRequest) {
         }
 
         //  Process the new content of the template, ensuring it is compiled
-        //  using the node it will replace as the "target" for any context data
+        //  using the elem it will replace as the "target" for any context data
         //  it might need. Do this outside the main DOM or the traversal can get
         //  complicated/confused.
         request = TP.request(
                     TP.hc('cmdExecute', false,
                             'cmdSilent', true,
-                            'cmdTargetDoc', TP.nodeGetDocument(node),
+                            'cmdTargetDoc', TP.nodeGetDocument(elem),
                             'cmdPhases', TP.core.TSH.COMPILE_PHASES,
                             'targetPhase', 'Compile'));
 
@@ -803,9 +801,9 @@ function(aRequest) {
             this.raise('TP.sig.InvalidNode', arguments);
         }
 
-        //  If the top-level node is the 'fragment wrapper' that we wrapped the
+        //  If the top-level elem is the 'fragment wrapper' that we wrapped the
         //  content with above, then we were processing a fragment. Unwrap it
-        //  and put the processed children back into their original node.
+        //  and put the processed children back into their original elem.
         if (TP.name(processedNode) === 'fragwrapper') {
             //  Get all of the *processed* child nodes as a fragment
             processedNode = TP.nodeListAsFragment(processedNode.childNodes);
@@ -820,7 +818,7 @@ function(aRequest) {
 
         //  If processedNode is a fragment, the reassignment here will make
         //  it the first child of that fragment *after* it has been inserted
-        //  where 'node' used to be. This is then important in the following
+        //  where 'elem' used to be. This is then important in the following
         //  call where we descend.
 
         //  If it's not a fragment, we still replace it in this way since it's
@@ -828,11 +826,11 @@ function(aRequest) {
 
         //  Note the reassignment here and the 'false' as the 4th parameter,
         //  indicating that we do *not* want the content to be awakened.
-        processedNode = TP.elementReplaceWith(node, processedNode, null, false);
+        processedNode = TP.elementReplaceWith(elem, processedNode, null, false);
 
         retNode = processedNode;
     } else {
-        retNode = node;
+        retNode = elem;
     }
 
     ownerElem = retNode.parentNode;
@@ -863,12 +861,12 @@ function(aRequest) {
         TP.uc(TP.TIBET_URN_PREFIX + name).setResource(
                                         TP.wrap(processedNode));
 
-        return TP.ac(retNode, TP.DESCEND);
+        return retNode;
     } else {
         //  Not a generated template, so no new content will be added at
         //  this time that might require processing and the template node
         //  can remain in the DOM.
-        return TP.CONTINUE;
+        return;
     }
 });
 

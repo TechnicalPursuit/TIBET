@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:accordionitem');
 
 TP.xctrls.accordionitem.addTraitsFrom(TP.xctrls.Element,
                                         TP.core.TemplatedNode);
-TP.xctrls.accordionitem.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.accordionitem.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  end

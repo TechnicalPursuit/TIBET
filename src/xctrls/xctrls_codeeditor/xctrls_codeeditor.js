@@ -55,7 +55,7 @@ TP.xctrls.codeeditor.set('frameFileURI',
 TP.xctrls.codeeditor.addTraitsFrom(TP.html.textUtilities);
 
 TP.xctrls.codeeditor.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.xctrls.FramedElement);
 

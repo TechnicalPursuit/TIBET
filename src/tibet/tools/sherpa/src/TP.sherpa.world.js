@@ -41,25 +41,23 @@ TP.sherpa.world.Inst.defineAttribute('screenHeight');
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Type.defineMethod('tshAwakenDOM',
+TP.sherpa.world.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     var elem;
 
-    if (TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (TP.isElement(elem = aRequest.at('node'))) {
         this.addStylesheetTo(TP.nodeGetDocument(elem));
     }
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------

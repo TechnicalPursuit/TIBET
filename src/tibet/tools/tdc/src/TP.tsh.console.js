@@ -15,16 +15,14 @@ TP.core.UIElementNode.defineSubtype('tsh:console');
 //  Type Methods
 //  ----------------------------------------------------------------------------
 
-TP.tsh.console.Type.defineMethod('tshAwakenDOM',
+TP.tsh.console.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     var elem,
@@ -33,7 +31,7 @@ function(aRequest) {
 
         triggerKey;
 
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
         return;
     }
@@ -116,11 +114,11 @@ function(aRequest) {
 
 //  ----------------------------------------------------------------------------
 
-TP.tsh.console.Type.defineMethod('tshCompile',
+TP.tsh.console.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
@@ -136,7 +134,7 @@ function(aRequest) {
         newElem;
 
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
@@ -163,7 +161,7 @@ function(aRequest) {
         TP.nodeReplaceChild(inputElem.parentNode, newElem, inputElem, false);
     }
 
-    return TP.CONTINUE;
+    return;
 });
 
 //  ============================================================================

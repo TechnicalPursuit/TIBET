@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:notifier');
 
 TP.xctrls.notifier.addTraitsFrom(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
-TP.xctrls.notifier.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.notifier.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  end

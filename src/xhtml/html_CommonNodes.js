@@ -50,7 +50,7 @@ TP.html.CoreAttrs.addTraitsFrom(TP.html.Element);
 TP.html.CoreAttrs.isAbstract(true);
 
 TP.html.CoreAttrs.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -63,7 +63,7 @@ TP.html.Attrs.addTraitsFrom(TP.html.Element);
 TP.html.Attrs.isAbstract(true);
 
 TP.html.Attrs.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 

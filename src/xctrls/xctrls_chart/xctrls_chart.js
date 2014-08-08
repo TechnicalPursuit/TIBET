@@ -100,7 +100,7 @@ function(aRequest) {
         chartType;
 
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return TP.hc();
     }
 

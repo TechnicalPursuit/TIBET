@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:textitem');
 
 TP.xctrls.textitem.addTraitsFrom(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
-TP.xctrls.textitem.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.textitem.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

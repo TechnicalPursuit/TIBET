@@ -203,7 +203,7 @@ function(aRequest) {
     var elem;
 
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return TP.hc();
     }
 
@@ -772,14 +772,14 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('tshCompile',
+TP.core.UIElementNode.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @description This method operates differently depending on a variety of
@@ -795,7 +795,7 @@ function(aRequest) {
      *              depending on the return value of the 'isBlockLevel' method.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @returns {Array} 
+     * @returns {Element} The element that this tag has become.
      */
 
     var elem,
@@ -806,7 +806,7 @@ function(aRequest) {
         newElem;
 
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
@@ -829,7 +829,7 @@ function(aRequest) {
     //  We may be operating in an *XHTML* document, in which case we do
     //  *not* 'auto transform' into a 'div' or 'span', but just leave things
     //  alone.
-    if (TP.isValid(targetDoc = aRequest.at('cmdTargetDoc'))) {
+    if (TP.isValid(targetDoc = aRequest.at('doc'))) {
         if (!TP.isHTMLDocument(targetDoc)) {
             return;
         }
@@ -842,7 +842,7 @@ function(aRequest) {
                                 this.isBlockLevel() ? 'div' : 'span',
                                 this.getCompilationAttrs(aRequest));
 
-    return TP.ac(newElem, TP.DESCEND);
+    return newElem;
 });
 
 //  ------------------------------------------------------------------------

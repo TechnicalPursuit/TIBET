@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:splitbox');
 
 TP.xctrls.splitbox.addTraitsFrom(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
-TP.xctrls.splitbox.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.splitbox.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

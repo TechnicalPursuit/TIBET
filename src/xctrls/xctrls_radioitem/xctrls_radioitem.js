@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:radioitem');
 
 TP.xctrls.radioitem.addTraitsFrom(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
-TP.xctrls.radioitem.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.radioitem.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

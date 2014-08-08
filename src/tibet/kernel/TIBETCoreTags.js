@@ -98,16 +98,14 @@ TP.core.ApplicationElement.defineSubtype('tibet:app');
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.app.Type.defineMethod('tshAwakenDOM',
+TP.tibet.app.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     // TODO: The UICANVAS should be set to be the UIROOT here.
@@ -117,11 +115,11 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.app.Type.defineMethod('tshCompile',
+TP.tibet.app.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @description In this type, this method generates either a 'tibet:app' or
@@ -137,7 +135,7 @@ function(aRequest) {
         newElem;
 
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
@@ -178,11 +176,11 @@ TP.core.ElementNode.defineSubtype('tibet:root');
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.root.Type.defineMethod('tshCompile',
+TP.tibet.root.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @description In this type, this method generates either a 'tibet:app' or
@@ -201,10 +199,11 @@ function(aRequest) {
         profile,
         type,
         name,
+
         newElem;
 
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 

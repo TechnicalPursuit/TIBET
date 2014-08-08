@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:curtain');
 
 TP.xctrls.curtain.addTraitsFrom(TP.xctrls.Element,
                                 TP.core.TemplatedNode);
-TP.xctrls.curtain.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.curtain.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  This is necessary to avoid a warning when we set() the traited-in attribute
 //  below - we need it to be defined.

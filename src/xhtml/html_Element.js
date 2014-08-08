@@ -41,28 +41,6 @@ TP.core.UIElementNode.defineSubtype('html:Element');
 TP.html.Element.isAbstract(true);
 
 //  ------------------------------------------------------------------------
-//  TSH Execution Support
-//  ------------------------------------------------------------------------
-
-TP.html.Element.Type.defineMethod('tshCompile',
-function(aRequest) {
-
-    /**
-     * @name tshCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
-     *     markup DOM.
-     * @description Since subtype element types are already (X)HTML nodes, this
-     *     implementation of this method merely hands null.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
-     */
-
-    //  Return nothing, which means to not transform the current element,
-    //  but to descend into its children.
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

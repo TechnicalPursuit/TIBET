@@ -71,52 +71,26 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.svg.Element.Type.defineMethod('tshCompile',
+TP.svg.Element.Type.defineMethod('tagUnmarshal',
 function(aRequest) {
 
     /**
-     * @name tshCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
-     *     markup DOM.
-     * @description This method overrides the implementation in its supertype to
-     *     prevent any conversion (otherwise, SVG elements will be converted
-     *     into HTML 'span' elements).
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
-     * @returns {Array} An array containing the new node and a TSH loop control
-     *     constant, TP.DESCEND by default.
-     * @todo
-     */
-
-    //  Don't even bother going down any further.
-
-    return TP.CONTINUE;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.svg.Element.Type.defineMethod('tshUnmarshal',
-function(aRequest) {
-
-    /**
-     * @name tshUnmarshal
+     * @name tagUnmarshal
      * @synopsis Unmarshals the receiver's content. This includes resolving XML
      *     Base URIs and virtual URIs that may occur on the receiver's
      *     attributes.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing control parameters.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
-    var node,
+    var elem,
         uriAttrs;
 
     //  Make sure that we have a node to work from.
-    if (TP.notValid(node = aRequest.at('cmdNode'))) {
+    if (TP.notValid(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception.
         return;
     }
@@ -124,7 +98,7 @@ function(aRequest) {
     //  Grab the element's 'URI attributes'. If that's empty, then just
     //  return.
     if (TP.isEmpty(uriAttrs = this.get('uriAttrs'))) {
-        return TP.DESCEND;
+        return;
     }
 
     //  update the XML Base references in the node
@@ -133,24 +107,21 @@ function(aRequest) {
     //  definition - note how we pass a prefix and a suffix to be stripped
     //  before URI computation and then to be prepended/appended back on
     //  when setting the result.
-    TP.elementResolveXMLBase(node, uriAttrs, 'url(', ')');
+    TP.elementResolveXMLBase(elem, uriAttrs, 'url(', ')');
 
-    //  We want the system traverse our children
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.svg.Element.Type.defineMethod('tshAwakenDOM',
+TP.svg.Element.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     var elem,
@@ -162,7 +133,7 @@ function(aRequest) {
     this.callNextMethod();
 
     //  Make sure that we have an Element to work from
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception.
         return;
     }
@@ -174,7 +145,7 @@ function(aRequest) {
     //  Grab the element's 'URI attributes'. If that's empty, then just
     //  return.
     if (TP.isEmpty(uriAttrs = this.get('uriAttrs'))) {
-        return TP.DESCEND;
+        return;
     }
 
     //  Note here how we go after the document's "URL" directly - we don't
@@ -208,9 +179,9 @@ function(aRequest) {
                                         TP.join('url(', loc, val, ')'),
                                         true);
             }
-});
+        });
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------

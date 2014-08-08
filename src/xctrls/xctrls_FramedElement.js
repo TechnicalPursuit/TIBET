@@ -49,14 +49,14 @@ TP.xctrls.FramedElement.Type.defineAttribute('frameFileURI');
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.xctrls.FramedElement.Type.defineMethod('tshAwakenDOM',
+TP.xctrls.FramedElement.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -79,7 +79,7 @@ function(aRequest) {
     this.callNextMethod();
 
     //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
         return;
     }

@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:slidebar');
 
 TP.xctrls.slidebar.addTraitsFrom(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
-TP.xctrls.slidebar.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.slidebar.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -71,29 +71,27 @@ TP.xctrls.slidebar.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.slidebar.Type.defineMethod('tshAwakenDOM',
+TP.xctrls.slidebar.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.CONTINUE flag, telling the system to not descend
-     *     into the children of this element.
      */
 
     var elem,
         elemTPNode;
 
-    //  Make sure to call the 'xctrls:Element' version of 'tshAwakenDOM',
+    //  Make sure to call the 'xctrls:Element' version of 'tagAttachDOM',
     //  since it does processing for this step (note that it's a mixin, so
     //  we can't 'callNextMethod' here and get its method). We make sure to
-    //  use 'apply' so that 'this' references get resolved properly.
-    TP.xctrls.Element.tshAwakenDOM.apply(this, TP.ac(aRequest));
+    //  use 'call' so that 'this' references get resolved properly.
+    TP.xctrls.Element.tagAttachDOM.call(this, aRequest);
 
     //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
         return;
     }
@@ -105,7 +103,7 @@ function(aRequest) {
 
     elemTPNode.setAttribute('value', '0');
 
-    return TP.CONTINUE;
+    return;
 });
 
 //  ------------------------------------------------------------------------

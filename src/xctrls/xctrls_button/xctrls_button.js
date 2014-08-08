@@ -35,9 +35,8 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.core.UIElementNode.defineSubtype('xctrls:button');
 
-TP.xctrls.button.addTraitsFrom(TP.xctrls.Element,
-                                TP.core.TemplatedNode);
-TP.xctrls.button.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.button.addTraitsFrom(TP.xctrls.Element, TP.core.TemplatedNode);
+TP.xctrls.button.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  end

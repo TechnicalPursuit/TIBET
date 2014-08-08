@@ -36,43 +36,23 @@ TP.core.UIElementNode.defineSubtype('sherpa:hud');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.hud.Type.defineMethod('tshAwakenDOM',
+TP.sherpa.hud.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     var elem;
 
-    if (TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (TP.isElement(elem = aRequest.at('node'))) {
         this.addStylesheetTo(TP.nodeGetDocument(elem));
     }
 
-    return TP.DESCEND;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.hud.Type.defineMethod('tshCompile',
-function(aRequest) {
-
-    /**
-     * @name tshCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
-     *     markup DOM.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
-     * @returns {Element} The new element.
-     */
-
-    //  The <sherpa:hud> tag doesn't transform into anything else.
-    return TP.CONTINUE;
+    return;
 });
 
 //  ------------------------------------------------------------------------

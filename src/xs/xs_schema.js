@@ -40,14 +40,14 @@ TP.core.ElementNode.defineSubtype('xs:schema');
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.xs.schema.Type.defineMethod('tshCompile',
+TP.xs.schema.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
@@ -62,7 +62,7 @@ function(aRequest) {
         redefine;
 
     //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
         return TP.CONTINUE;
     }

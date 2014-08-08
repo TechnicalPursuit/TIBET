@@ -204,28 +204,6 @@ function(anInput, cmdNode, aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
-//  ------------------------------------------------------------------------
-
-TP.tsh.transform.Type.defineMethod('tshCompile',
-function(aRequest) {
-
-    /**
-     * @name tshCompile
-     * @synopsis Compiles transform elements. This method causes underlying
-     *     'tsh:template' elements to be skipped, since they are compiled
-     *     on-the-fly using the mechanism in this type's 'compileTemplates'
-     *     method.
-     * @param {TP.sig.Request} aRequest The request containing command input for
-     *     the shell.
-     * @returns {Constant} The TP.CONTINUE flag, telling the system to leave the
-     *     current node in the DOM but to skip any children of the current node.
-     */
-
-    return TP.CONTINUE;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

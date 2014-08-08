@@ -132,7 +132,7 @@ TP.core.UIElementNode.defineSubtype('html:textUtilities');
 TP.html.textUtilities.addTraitsFrom(TP.html.Element);
 
 TP.html.textUtilities.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -1654,7 +1654,7 @@ TP.html.inputSelectable.defineSubtype('inputEmail');
 TP.html.inputEmail.addTraitsFrom(TP.html.textUtilities);
 
 TP.html.inputEmail.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -1754,7 +1754,7 @@ TP.html.inputSelectable.defineSubtype('inputNumber');
 TP.html.inputNumber.addTraitsFrom(TP.html.textUtilities);
 
 TP.html.inputNumber.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -1841,7 +1841,7 @@ TP.html.inputSelectable.defineSubtype('inputPassword');
 TP.html.inputPassword.addTraitsFrom(TP.html.textUtilities);
 
 TP.html.inputPassword.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -1915,7 +1915,7 @@ TP.html.inputSelectable.defineSubtype('inputSearch');
 TP.html.inputSearch.addTraitsFrom(TP.html.textUtilities);
 
 TP.html.inputSearch.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -2207,7 +2207,7 @@ TP.html.inputSelectable.defineSubtype('inputTel');
 TP.html.inputTel.addTraitsFrom(TP.html.textUtilities);
 
 TP.html.inputTel.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -2281,7 +2281,7 @@ TP.html.inputSelectable.defineSubtype('inputText');
 TP.html.inputText.addTraitsFrom(TP.html.textUtilities);
 
 TP.html.inputText.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -2380,7 +2380,7 @@ TP.html.inputSelectable.defineSubtype('inputUrl');
 TP.html.inputUrl.addTraitsFrom(TP.html.textUtilities);
 
 TP.html.inputUrl.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -3359,7 +3359,7 @@ TP.html.Focused.defineSubtype('textarea');
 TP.html.textarea.addTraitsFrom(TP.html.textUtilities);
 
 TP.html.textarea.Type.resolveTraits(
-        TP.ac('tshCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 

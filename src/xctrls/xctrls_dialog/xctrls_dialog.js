@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:dialog');
 
 TP.xctrls.dialog.addTraitsFrom(TP.xctrls.Element,
                                 TP.core.TemplatedNode);
-TP.xctrls.dialog.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.dialog.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -64,7 +64,7 @@ TP.xctrls.dialog.Inst.defineAttribute(
                         return TP.unwrap(docBody.insertContent(
                                             curtainElem,
                                             TP.BEFORE_END,
-                                            TP.hc('cmdTargetDoc', aContext)));
+                                            TP.hc('doc', aContext)));
                     }
                 })});
 

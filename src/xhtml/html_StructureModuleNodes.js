@@ -124,25 +124,23 @@ TP.html.Attrs.defineSubtype('head');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.html.head.Type.defineMethod('tshTidy',
+TP.html.head.Type.defineMethod('tagTidy',
 function(aRequest) {
 
     /**
-     * @name tshTidy
+     * @name tagTidy
      * @synopsis Coalesce and rewrite head content such as css:sheet nodes to
      *     ensure we have them ready for css:* processing later on.
      * @param {TP.sig.ShellRequest} aRequest The current shell request.
-     * @returns {Object} A TSH loop control variable, typically TP.DESCEND to
-     *     have child content processed.
      */
 
     TP.ifTrace(TP.sys.cfg('log.css_processing')) ?
         TP.trace('Merging css:sheet elements into css:sheetset',
                     TP.CSS_LOG, arguments) : 0;
 
-    //  TODO:   tidy up the css:sheet elements from tshCompile phase.
+    //  TODO:   tidy up the css:sheet elements from tagCompile phase.
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ========================================================================
@@ -185,15 +183,15 @@ TP.html.Attrs.defineSubtype('hgroup');
 TP.html.Attrs.defineSubtype('html');
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.html.html.Type.defineMethod('tshAwakenData',
+TP.html.html.Type.defineMethod('tagAttachData',
 function(aRequest) {
 
     var cmdDoc;
 
-    cmdDoc = TP.nodeGetDocument(aRequest.at('cmdNode'));
+    cmdDoc = TP.nodeGetDocument(aRequest.at('node'));
 
     TP.signal(cmdDoc, 'TP.sig.DOMModelConstruct');
     TP.signal(cmdDoc, 'TP.sig.DOMModelConstructDone');
@@ -203,11 +201,11 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.html.Type.defineMethod('tshTidy',
+TP.html.html.Type.defineMethod('tagTidy',
 function(aRequest) {
 
     /**
-     * @name tshTidy
+     * @name tagTidy
      * @synopsis Updates the document so that it remains valid and ready for
      *     storage. The primary responsibility here is moving any expanded
      *     content from the head to the body so the browser stays happy.
@@ -231,7 +229,7 @@ function(aRequest) {
 
         child;
 
-    node = aRequest.at('cmdNode');
+    node = aRequest.at('node');
 
     doc = TP.nodeGetDocument(node);
     if (TP.isDocument(doc)) {

@@ -47,59 +47,41 @@ TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Element.Type.defineMethod('tshAwakenDOM',
+TP.xctrls.Element.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
-    var elem,
-        targetDoc;
+    var doc;
 
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    //  We see if the request has a target document. If so, we use that as the
+    //  document.
+    if (!TP.isDocument(doc = aRequest.at('doc'))) {
         //  TODO: Raise an exception
         return;
     }
 
-    //  We'll need the document too
+    this.addStylesheetTo(doc);
 
-    //  First we see if the request has a command target document. If so, we use
-    //  that as the document.
-    if (!TP.isDocument(targetDoc = aRequest.at('cmdTargetDoc'))) {
-        //  Otherwise, we try to use the node's document.
-        if (!TP.isDocument(targetDoc = TP.nodeGetDocument(elem))) {
-            //  TODO: Raise an exception
-            return;
-        }
-    }
-
-    this.addStylesheetTo(targetDoc);
-
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Element.Type.defineMethod('tshCompile',
+TP.xctrls.Element.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Compiles templates defined with this element into TIBET
      *     representations for use in templating.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @returns {Array} The 'standin' element for this element and the
-     *     TP.CONTINUE flag, telling the system to skip any children of this
-     *     element.
-     * @todo
      */
 
     var elem,
@@ -107,7 +89,7 @@ function(aRequest) {
         reqAttrs,
         compAttrs;
 
-    elem = aRequest.at('cmdNode');
+    elem = aRequest.at('node');
 
     //  Make sure that the element gets stamped with a 'tibet:nodetype' of
     //  its tag's QName
@@ -126,7 +108,7 @@ function(aRequest) {
         TP.elementSetAttributes(elem, compAttrs, true);
     }
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------

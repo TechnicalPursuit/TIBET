@@ -38,7 +38,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:log');
 TP.xctrls.log.addTraitsFrom(TP.xctrls.Element,
                             TP.xctrls.MultiItemElement,
                             TP.core.TemplatedNode);
-TP.xctrls.log.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.log.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -60,24 +60,22 @@ TP.xctrls.log.Inst.defineAttribute(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.log.Type.defineMethod('tshAwakenDOM',
+TP.xctrls.log.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     //  When multiple inheritance is fixed, we should be able to do away
     //  with this (and mixin TP.core.EmbeddedTemplateNode properly).
-    TP.xctrls.Element.tshAwakenDOM.apply(this, TP.ac(aRequest));
-    TP.core.EmbeddedTemplateNode.tshAwakenDOM.apply(this, TP.ac(aRequest));
+    TP.xctrls.Element.tagAttachDOM.call(this, aRequest);
+    TP.core.EmbeddedTemplateNode.tagAttachDOM.call(this, aRequest);
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------

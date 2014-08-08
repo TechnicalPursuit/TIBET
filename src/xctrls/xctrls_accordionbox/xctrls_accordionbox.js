@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:accordionbox');
 
 TP.xctrls.accordionbox.addTraitsFrom(TP.xctrls.Element,
                                         TP.core.TemplatedNode);
-TP.xctrls.accordionbox.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.accordionbox.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

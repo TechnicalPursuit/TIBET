@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:checkitem');
 
 TP.xctrls.checkitem.addTraitsFrom(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
-TP.xctrls.checkitem.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.checkitem.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

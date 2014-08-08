@@ -45,11 +45,11 @@ TP.html.link.set('uriAttrs', TP.ac('href'));
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.html.link.Type.defineMethod('tshPrecompile',
+TP.html.link.Type.defineMethod('tagPrecompile',
 function(aRequest) {
 
     /**
-     * @name tshPrecompile
+     * @name tagPrecompile
      * @synopsis Replaces the link element with a css:style element suitable for
      *     compiling or otherwise processing the CSS.
      * @param {aRequest} TP.sig.Request The request containing parameters.
@@ -70,7 +70,7 @@ function(aRequest) {
         return TP.CONTINUE;
     }
 
-    if (TP.notValid(node = aRequest.at('cmdNode'))) {
+    if (TP.notValid(node = aRequest.at('node'))) {
         return aRequest.fail(TP.FAILURE, 'Unable to find command node');
     }
 
@@ -117,9 +117,9 @@ function(aRequest) {
     //  reset to Include so the style element can process @import
     //  rules etc. NOTE that we _must_ update the cmdNode to be sure
     //  that the old link element doesn't continue to be processed.
-    newNode = TP.nodeReplaceChild(node.parentNode, newNode, node);
+    TP.nodeReplaceChild(node.parentNode, newNode, node);
 
-    return newNode;
+    return;
 });
 
 //  ------------------------------------------------------------------------

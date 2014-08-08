@@ -41,19 +41,17 @@ TP.core.UIElementNode.defineSubtype('tibet:group');
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.tibet.group.Type.defineMethod('tshAwakenDOM',
+TP.tibet.group.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.CONTINUE flag, telling the system to not descend
-     *     into the children of this element.
      */
 
     var elem,
@@ -62,9 +60,9 @@ function(aRequest) {
         groupTPElems;
 
     //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
-        return TP.CONTINUE;
+        return;
     }
 
     //  Get a handle to a TP.core.Node representing an instance of this
@@ -85,7 +83,7 @@ function(aRequest) {
                 });
     }
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------

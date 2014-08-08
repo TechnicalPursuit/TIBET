@@ -68,7 +68,7 @@ TP.xctrls.map.Type.defineAttribute('frameFileURI',
             TP.uc('~lib_src/xctrls/xctrls_map/xctrls_map_stub.html'));
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
 TP.xctrls.map.Type.defineMethod('getCompilationAttrs',
@@ -92,7 +92,7 @@ function(aRequest) {
         mapType;
 
     //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return TP.hc();
     }
 

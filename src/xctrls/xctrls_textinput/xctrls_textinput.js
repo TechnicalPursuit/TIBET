@@ -37,7 +37,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:textinput');
 
 TP.xctrls.textinput.addTraitsFrom(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
-TP.xctrls.textinput.Type.resolveTrait('tshCompile', TP.core.TemplatedNode);
+TP.xctrls.textinput.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

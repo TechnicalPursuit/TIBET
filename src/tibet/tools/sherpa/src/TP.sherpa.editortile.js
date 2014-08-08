@@ -36,25 +36,23 @@ TP.sherpa.tile.defineSubtype('sherpa:editortile');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Type.defineMethod('tshAwakenDOM',
+TP.sherpa.editortile.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAttachDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     var elem;
 
-    if (TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (TP.isElement(elem = aRequest.at('node'))) {
         this.addStylesheetTo(TP.nodeGetDocument(elem));
     }
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------

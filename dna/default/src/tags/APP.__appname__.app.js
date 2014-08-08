@@ -22,26 +22,24 @@ APP.{{appname}}.app.executeTraitResolution();
 
 //  ----------------------------------------------------------------------------
 
-APP.{{appname}}.app.Type.defineMethod('tshAwakenDOM',
+APP.{{appname}}.app.Type.defineMethod('tagAwakenDOM',
 function(aRequest) {
 
     /**
-     * @name tshAwakenDOM
+     * @name tagAwakenDOM
      * @synopsis Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     var elem;
 
-    if (TP.isElement(elem = aRequest.at('cmdNode'))) {
+    if (TP.isElement(elem = aRequest.at('node'))) {
         //  NOTE: Put logic that the tag should execute when the element is
         //  awakened in its visible DOM here...
     }
 
-    return this.callNextMethod(aRequest);
+    return this.callNextMethod();
 });
 
 //  ----------------------------------------------------------------------------

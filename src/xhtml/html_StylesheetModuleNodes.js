@@ -44,11 +44,18 @@ TP.html.Attrs.defineSubtype('style');
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TSH Phase Support
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.html.style.Type.defineMethod('tshPrecompile',
+TP.html.style.Type.defineMethod('tagPrecompile',
 function(aRequest) {
+
+    /**
+     * @name tagPrecompile
+     * @synopsis Replaces the style element with a css:style element suitable for
+     *     compiling or otherwise processing the CSS.
+     * @param {aRequest} TP.sig.Request The request containing parameters.
+     */
 
     var node,
         base,
@@ -66,7 +73,7 @@ function(aRequest) {
         return TP.CONTINUE;
     }
 
-    if (TP.notValid(node = aRequest.at('cmdNode'))) {
+    if (TP.notValid(node = aRequest.at('node'))) {
         return aRequest.fail(TP.FAILURE, 'Unable to find command node.');
     }
 
@@ -91,7 +98,7 @@ function(aRequest) {
     TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
     newStyleText = styleText.replace(
         TP.regex.CSS_IMPORT_RULE,
-function(wholeMatch, arg1, href) {
+        function(wholeMatch, arg1, href) {
 
             var url,
                 path,
@@ -112,14 +119,14 @@ function(wholeMatch, arg1, href) {
             //  put the import's content into a new css:sheet node (we'll
             //  build the real node outside the loop) and replace @import
             //  with a placeholder notation
-                        //          arr.push('<css:sheet type="import" src="', href, '" ',
-                        //              'xmlns:css="', TP.w3.Xmlns.CSSML, '"/>');
+                //          arr.push('<css:sheet type="import" src="', href, '" ',
+                //              'xmlns:css="', TP.w3.Xmlns.CSSML, '"/>');
             arr.push('<html:link type="text/css" rel="stylesheet"',
                 ' href="', url.getLocation(), '" ',
                 'xmlns:html="', TP.w3.Xmlns.XHTML, '"/>');
 
             return '/* Externalized ' + href + ' import. */\n';
-});
+        });
 
     //  put the style node and its content on as the last portion of
     //  the array before we build the fragment. NOTE that this one has
@@ -139,9 +146,9 @@ function(wholeMatch, arg1, href) {
 
     //  NOTE that we have to capture the return value from the replace
     //  due to node importing requirements which may create a new node.
-    newNode = TP.nodeReplaceChild(node.parentNode, newNode, node);
+    TP.nodeReplaceChild(node.parentNode, newNode, node);
 
-    return newNode;
+    return;
 });
 
 //  ------------------------------------------------------------------------
