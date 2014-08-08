@@ -1213,29 +1213,71 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('compile',
-function() {
+function(aRequest) {
 
     /**
      * @name compile
      * @synopsis This method invokes the 'compile' functionality of the tag
      *     processing system, to provide conversion from authored markup into
      *     markup that can be understood by the platform.
-     * @returns {TP.core.Node} A new node object containing the compiled
-     *     markup.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.core.CollectionNode} The receiver or a new object if the
+     *     tag content compiles to a different kind of tag than the receiver.
      */
 
-    var request,
-        newTPNode;
+    var node,
 
-    request = TP.request(
-                TP.hc('cmdExecute', false,
-                        'cmdSilent', true,
-                        'cmdPhases', TP.core.TSH.COMPILE_PHASES,
-                        'targetPhase', 'Compile'));
+        request,
 
-    newTPNode = TP.process(this.getNativeNode(), request);
+        processor,
+        result,
 
-    return newTPNode;
+        type;
+
+    TP.debug('break.content_process');
+
+    node = this.getNativeNode();
+
+    //  before we worry about anything else let's make sure we've got the
+    //  proper frame of reference for any URI content
+    if (TP.isDocument(node)) {
+        this.addTIBETSrc(this.get('uri'));
+        this.addXMLBase(this.get('uri'), null, aRequest);
+    }
+
+    request = TP.request(aRequest);
+
+    //  Make sure to clone our native node before we process it.
+    result = TP.nodeCloneNode(node, true);
+
+    //  Allocate a tag processor and initialize it with the COMPILE_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.COMPILE_PHASES);
+
+    //  Process the tree of markup
+    processor.processTree(result, request);
+
+    //  If the shell request failed then our enclosing request has failed.
+    if (request.didFail()) {
+        aRequest.fail(request.getFaultCode(), request.getFaultText());
+        return;
+    }
+
+    //  if our processing produced a new native node of the same type as our
+    //  original content (so we're still the right kind of wrapper) we can
+    //  update our internal node content. If not we'll need to get a new
+    //  wrapper and return that as the result.
+
+    if (!TP.isNode(result)) {
+        return result;
+    } else if ((type = TP.core.Node.getConcreteType(result)) ===
+                                                        this.getType()) {
+        this.setNativeNode(result);
+    } else {
+        return type.construct(result);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -8303,61 +8345,7 @@ function(aRequest) {
      * @returns {TP.core.CollectionNode} The receiver.
      */
 
-    var node,
-        request,
-        shell,
-        result,
-        type;
-
-    TP.debug('break.content_process');
-
-    node = this.getNativeNode();
-
-    //  before we worry about anything else let's make sure we've got the
-    //  proper frame of reference for any URI content
-    if (TP.isDocument(node)) {
-        this.addTIBETSrc(this.get('uri'));
-        this.addXMLBase(this.get('uri'), null, aRequest);
-    }
-
-    request = TP.sig.ShellRequest.construct(
-        TP.hc('cmdLiteral', true,
-                'cmdNode', node,
-                'cmdPhases',
-                        TP.ifKeyInvalid(aRequest, 'cmdPhases', 'cache'),
-                'targetPhase', aRequest.at('targetPhase'),
-                'cmdTargetDoc', aRequest.at('cmdTargetDoc'),
-                'cmdExecute', aRequest.at('cmdExecute'),
-                TP.STDIN, aRequest.at(TP.STDIN),
-                'cmdSilent', true
-        ));
-
-    shell = TP.core.TSH.getDefaultInstance();
-    shell.handleShellRequest(request);
-
-    // If the shell request failed then our enclosing request has failed.
-    if (request.didFail()) {
-        aRequest.fail(request.getFaultCode(), request.getFaultText());
-        return;
-    }
-
-    //  if our processing produced a new native node of the same type as our
-    //  original content (so we're still the right kind of wrapper) we can
-    //  update our internal node content. If not we'll need to get a new
-    //  wrapper and return that as the result.
-    result = request.get('result');
-    if (result !== node) {
-        if (!TP.isNode(result)) {
-            return result;
-        } else if ((type = TP.core.Node.getConcreteType(result)) ===
-                                                            this.getType()) {
-            this.setNativeNode(result);
-        } else {
-            return type.construct(result);
-        }
-    }
-
-    return this;
+    return this.compile(aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -9722,8 +9710,7 @@ function(aNode) {
      * @todo
      */
 
-    var request,
-        shell;
+    var processor;
 
     TP.debug('break.awaken_content');
 
@@ -9731,28 +9718,12 @@ function(aNode) {
         return TP.raise(this, 'TP.sig.InvalidNode', arguments);
     }
 
-    request = TP.sig.ShellRequest.construct(
-                    TP.hc('cmdLiteral', true,
-                            'cmdNode', aNode,
-                            'cmdPhases', 'awaken',
-                            'cmdSilent', true
-                    ));
+    //  Allocate a tag processor and initialize it with the ATTACH_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.ATTACH_PHASES);
 
-    request.atPut('cmdNode', aNode);
-    shell = TP.core.TSH.getDefaultInstance();
-
-    //  Commented this out for now. It causes problems when an 'ev:' handler
-    //  in a page sets up an observation for 'TP.sig.DOMContentLoaded' from
-    //  the 'document', but since the document hasn't finished loading, if
-    //  this forks there'll be a race condition between awakening the 'ev'
-    //  (i.e. registering the listener) and signaling the signal.
-
-    //  (function()
-    //  {
-    //      shell.handleShellRequest(request);
-    //  }).afterUnwind();
-
-    shell.handleShellRequest(request);
+    //  Process the tree of markup
+    processor.processTree(aNode);
 
     return;
 });
