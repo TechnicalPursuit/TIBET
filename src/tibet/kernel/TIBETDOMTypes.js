@@ -10087,7 +10087,7 @@ function(attributeName) {
         //  because executeGet() takes varargs (in case the path is
         //  parameterized).
         args = TP.args(arguments);
-        args.unshift(this);
+        args.atPut(0, this);
 
         //  Make sure to TP.wrap() the return value for consistent results
         return TP.wrap(path.executeGet.apply(path, args));
@@ -10320,7 +10320,8 @@ function(attributeName, attributeValue, shouldSignal) {
         //  because executeSet() takes varargs (in case the path is
         //  parameterized).
         args = TP.args(arguments);
-        args.unshift(this);
+        args.atPut(0, this);
+
         return path.executeSet.apply(path, args);
     }
 
@@ -11612,7 +11613,7 @@ function(attributeName) {
         //  because executeGet() takes varargs (in case the path is
         //  parameterized).
         args = TP.args(arguments);
-        args.unshift(this);
+        args.atPut(0, this);
 
         //  Make sure to TP.wrap() the return value for consistent results
         return TP.wrap(path.executeGet.apply(path, args));
