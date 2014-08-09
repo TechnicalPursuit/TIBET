@@ -1493,7 +1493,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  Note here how we always do the set with a 'false' and then send a
     //  'changed' message later with additional information. We also pass a
     //  second 'false' to avoid warnings on undeclared attributes.
-    retVal = targetObj.set(srcPath, attributeValue, false, false);
+    retVal = targetObj.set(srcPath, attributeValue, false);
 
     thisType.endChangedAddress();
 
@@ -2348,7 +2348,6 @@ function(targetObj, attributeValue, shouldSignal) {
                         //  changed address.
                         val.set(TP.apc(attrName).set('shouldMake', shouldMake),
                                 attributeValue,
-                                false,
                                 false);
 
                         thisType.endChangedAddress();
@@ -2428,7 +2427,7 @@ function(targetObj, attributeValue, shouldSignal) {
                                                     TP.lang.Object.construct();
 
                             //  And we set it back onto the targetObj
-                            targetObj.set(index, val, false, false);
+                            targetObj.set(index, val, false);
 
                             //  Need to register this as a changed address since
                             //  we altered what was at this slot.
@@ -2451,7 +2450,6 @@ function(targetObj, attributeValue, shouldSignal) {
                         //  changed address.
                         val.set(TP.apc(attrName).set('shouldMake', shouldMake),
                                 attributeValue,
-                                false,
                                 false);
 
                         thisType.endChangedAddress();
@@ -2477,7 +2475,6 @@ function(targetObj, attributeValue, shouldSignal) {
 
         targetObj.set(TP.apc(query).set('shouldMake', shouldMake),
                          val,
-                         false,
                          false);
     }
 
@@ -2494,7 +2491,6 @@ function(targetObj, attributeValue, shouldSignal) {
         //  This 'set' call will take care of registering the changed address.
         val.set(TP.apc(attrName).set('shouldMake', shouldMake),
                 attributeValue,
-                false,
                 false);
 
         thisType.endChangedAddress();
@@ -2583,7 +2579,7 @@ function(targetObj, attributeValue, shouldSignal) {
                         thisType.registerChangedAddress(
                             thisType.getChangedAddress(), op);
 
-                        targetObj.set(index, attributeValue, false, false);
+                        targetObj.set(index, attributeValue, false);
 
                         thisType.endChangedAddress();
                     }, queryParts);
@@ -2622,7 +2618,7 @@ function(targetObj, attributeValue, shouldSignal) {
                                                 TP.lang.Object.construct();
 
                         //  And we set it back onto the targetObj
-                        targetObj.set(index, val, false, false);
+                        targetObj.set(index, val, false);
 
                         //  Need to register this as a changed address since we
                         //  altered what was at this slot.
@@ -2645,7 +2641,6 @@ function(targetObj, attributeValue, shouldSignal) {
                     //  changed address.
                     val.set(TP.apc(attrName).set('shouldMake', shouldMake),
                             attributeValue,
-                            false,
                             false);
 
                     thisType.endChangedAddress();
@@ -2670,7 +2665,6 @@ function(targetObj, attributeValue, shouldSignal) {
 
         targetObj.set(TP.apc(query).set('shouldMake', shouldMake),
                          val,
-                         false,
                          false);
     }
 
@@ -2687,7 +2681,6 @@ function(targetObj, attributeValue, shouldSignal) {
         //  This 'set' call will take care of registering the changed address.
         val.set(TP.apc(attrName).set('shouldMake', shouldMake),
                 attributeValue,
-                false,
                 false);
 
         thisType.endChangedAddress();
