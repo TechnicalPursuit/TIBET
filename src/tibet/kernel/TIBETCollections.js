@@ -8480,6 +8480,452 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
     return this.at(key);
 });
 
+//  ========================================================================
+
+/**
+ * @type {TP.core.Range}
+ * @synopsis TP.core.Range provides a simple interface to a range of numbers.
+ *     This allows for interesting iteration possibilities such as:
+ *     
+ *     (1).to(10).perform(function (ind) {alert('index is: ' + ind)});
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core:Range');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineAttribute('start');
+TP.core.Range.Inst.defineAttribute('end');
+
+TP.core.Range.Inst.defineAttribute('step');
+
+TP.core.Range.Inst.defineAttribute('keys');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineMethod('init',
+function(startIndex, endIndex, aStep) {
+
+    /**
+     * @name init
+     * @synopsis Initializes a new instance
+     * @param {Number} startIndex The beginning index of the range.
+     * @param {Number} endIndex The end index of the range.
+     * @param {Number} aStep The range increment for interation. When the start
+     *     is smaller than the end this defaults to 1, when the start is larger
+     *     than the end the step defaults to -1.
+     * @returns {TP.core.Range} A new instance.
+     * @todo
+     */
+
+    var startInd,
+        endInd;
+
+    this.callNextMethod();
+
+    //  convert to Numbers to be sure
+    if (TP.notValid(startIndex) || TP.isNaN(startInd = startIndex.asNumber())) {
+        startInd = 0;
+    }
+
+    if (TP.notValid(endIndex) || TP.isNaN(endInd = endIndex.asNumber())) {
+        endInd = TP.MAX_DOUBLE;
+    }
+
+    this.set('start', startInd);
+    this.set('end', endInd);
+
+    //  step defaults based on direction
+    if (startInd > endInd) {
+        this.set('step', TP.ifInvalid(aStep, -1));
+    } else {
+        this.set('step', TP.ifInvalid(aStep, 1));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineMethod('asArray',
+function() {
+
+    /**
+     * @name asArray
+     * @synopsis Returns the receiver in array form (as an Array of its keys).
+     * @returns {Array} The receiver as an Array.
+     * @todo
+     */
+
+    var vals;
+
+    vals = TP.ac();
+
+    this.perform(
+        function(aVal) {
+            vals.push(aVal);
+        });
+
+    return vals;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineMethod('at',
+function(anIndex) {
+
+    /**
+     * @name at
+     * @synopsis Returns the range key at the index provided.
+     * @param {Number} anIndex The index to access.
+     * @returns {Object} The object at the index provided.
+     */
+
+    var arr;
+
+    if (TP.notValid(arr = this.get('keys'))) {
+        return null;
+    }
+
+    return arr.at(anIndex);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineMethod('by',
+function(aStep) {
+
+    /**
+     * @name by
+     * @synopsis Sets the range iteration step size.
+     * @param {Number} aStep The numerical step size.
+     * @returns {TP.core.Range} The receiver.
+     */
+
+    //  new step? then use it
+    if (!TP.isNumber(aStep)) {
+        return this.raise('TP.sig.InvalidParameter', arguments);
+    }
+
+    //  truncate
+    this.empty();
+
+    this.set('step', aStep);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineMethod('empty',
+function(anIndex) {
+
+    /**
+     * @name empty
+     * @synopsis Clears the range's internal index cache, if it exists.
+     * @returns {TP.core.Range} The receiver.
+     */
+
+    this.$set('keys', null);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineMethod('getKeys',
+function() {
+
+    /**
+     * @name getKeys
+     * @synopsis Returns an array containing the keys of the receiver.
+     * @returns {Array} The receiver as an array of key values.
+     * @todo
+     */
+
+    var keys,
+
+        step,
+        start,
+        end,
+
+        i;
+
+    if (TP.notValid(keys = this.$get('keys'))) {
+        keys = TP.ac();
+
+        step = this.get('step');
+        start = this.get('start');
+        end = this.get('end');
+
+        if (step.isPositive()) {
+            for (i = start; i <= end; i = i + step) {
+                keys.push(i);
+            }
+        } else {
+            //  still adding step, it's negative...
+            for (i = start; i >= end; i = i + step) {
+                keys.push(i);
+            }
+        }
+
+        this.set('keys', keys);
+    }
+
+    return keys;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineMethod('perform',
+function(aFunction) {
+
+    /**
+     * @name perform
+     * @synopsis Iterates over the range and invokes aFunction on each
+     *     iteration.
+     * @param {Function} aFunction The function to invoke on each iteration.
+     *     This function should accept the loop count as its only parameter.
+     * @returns {TP.core.Range} The receiver.
+     */
+
+    var count,
+
+        step,
+        start,
+        end,
+
+        instrument,
+
+        i;
+
+    count = 0;
+
+    step = this.get('step');
+    start = this.get('start');
+    end = this.get('end');
+
+    //  instrumenting at[Start|End] is expensive, make sure we need it
+    instrument = true;
+    if ((end - start) > TP.sys.cfg('perform.instrument_max')) {
+        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
+    }
+
+    if (step.isPositive()) {
+        for (i = start; i <= end; i = i + step) {
+            if (instrument) {
+                //  update iteration edge flags so our function can tell
+                //  when its at the start/end of the overall collection
+                aFunction.atStart((i === 0) ? true : false);
+                aFunction.atEnd((i === end) ? true : false);
+            }
+
+            if (aFunction(i, count) === TP.BREAK) {
+                break;
+            }
+
+            count++;
+        }
+    } else {
+        //  still adding step, it's negative...
+        for (i = start; i >= end; i = i + step) {
+            if (instrument) {
+                //  update iteration edge flags so our function can tell
+                //  when its at the start/end of the overall collection
+                aFunction.atStart((i === 0) ? true : false);
+                aFunction.atEnd((i === end) ? true : false);
+            }
+
+            if (aFunction(i, count) === TP.BREAK) {
+                break;
+            }
+
+            count++;
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineMethod('performUntil',
+function(aFunction, aTest) {
+
+    /**
+     * @name performUntil
+     * @synopsis Performs the function on each iteration of the receiver until
+     *     aTest returns true.
+     * @description performUntil can be used as an alternative to constructing
+     *     repeat loops to iterate over a range.
+     * @param {Function} aFunction A function which performs some action with
+     *     each iteration.
+     * @param {String} aTest A test condition which ends the loop. The test
+     *     should be a second function that returns a Boolean. The test is
+     *     passed the same data as the performed function.
+     * @returns {TP.core.Range} The receiver.
+     * @todo
+     */
+
+    var f,
+        tst,
+
+        count,
+
+        step,
+        start,
+        end,
+
+        instrument,
+
+        i;
+
+    f = TP.RETURN_FALSE;
+    tst = aTest;
+
+    if (!TP.isCallable(tst)) {
+        tst = f;
+    }
+
+    count = 0;
+
+    step = this.get('step');
+    start = this.get('start');
+    end = this.get('end');
+
+    //  instrumenting at[Start|End] is expensive, make sure we need it
+    instrument = true;
+    if ((end - start) > TP.sys.cfg('perform.instrument_max')) {
+        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
+    }
+
+    if (step.isPositive()) {
+        for (i = start; i <= end; i = i + step) {
+            if (instrument) {
+                //  update iteration edge flags so our function can tell
+                //  when its at the start/end of the overall collection
+                aFunction.atStart((i === 0) ? true : false);
+                aFunction.atEnd((i === end) ? true : false);
+            }
+
+            aFunction(i, count);
+
+            if (tst(i, count)) {
+                break;
+            }
+
+            count++;
+        }
+    } else {
+        //  still adding step, it's negative...
+        for (i = start; i >= end; i = i + step) {
+            if (instrument) {
+                //  update iteration edge flags so our function can tell
+                //  when its at the start/end of the overall collection
+                aFunction.atStart((i === 0) ? true : false);
+                aFunction.atEnd((i === end) ? true : false);
+            }
+
+            aFunction(i, count);
+
+            if (tst(i, count)) {
+                break;
+            }
+
+            count++;
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Range.Inst.defineMethod('performWhile',
+function(aFunction, aTest) {
+
+    /**
+     * @name performWhile
+     * @synopsis Performs the function on each iteration of the receiver while
+     *     aTest returns true.
+     * @description performUntil can be used as an alternative to constructing
+     *     while loops to iterate over a range
+     * @param {Function} aFunction A function which performs some action with
+     *     each iteration index.
+     * @param {String} aTest A test condition which ends the loop. The test
+     *     should be a second function that returns a Boolean. The test is
+     *     passed the same data as the performed function.
+     * @returns {TP.core.Range} The receiver.
+     * @todo
+     */
+
+    var count,
+
+        step,
+        start,
+        end,
+
+        instrument,
+
+        i;
+
+    count = 0;
+
+    step = this.get('step');
+    start = this.get('start');
+    end = this.get('end');
+
+    //  instrumenting at[Start|End] is expensive, make sure we need it
+    instrument = true;
+    if ((end - start) > TP.sys.cfg('perform.instrument_max')) {
+        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
+    }
+
+    if (step.isPositive()) {
+        for (i = start; i <= end; i = i + step) {
+            if (instrument) {
+                //  update iteration edge flags so our function can tell
+                //  when its at the start/end of the overall collection
+                aFunction.atStart((i === 0) ? true : false);
+                aFunction.atEnd((i === end) ? true : false);
+            }
+
+            if (TP.notTrue(aTest(i, count))) {
+                break;
+            }
+
+            aFunction(i, count);
+
+            count++;
+        }
+    } else {
+        //  still adding step, it's negative...
+        for (i = start; i >= end; i = i + step) {
+            if (TP.notTrue(aTest(i, count))) {
+                break;
+            }
+
+            if (instrument) {
+                //  update iteration edge flags so our function can tell
+                //  when its at the start/end of the overall collection
+                aFunction.atStart((i === 0) ? true : false);
+                aFunction.atEnd((i === end) ? true : false);
+            }
+
+            aFunction(i, count);
+            count++;
+        }
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
