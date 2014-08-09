@@ -5826,7 +5826,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
         //  Note here how we grab all of the arguments passed into this method,
         //  shove ourself onto the front and invoke with an apply(). This is
-        //  because executeGet() takes varargs (in case the path is
+        //  because executeSet() takes varargs (in case the path is
         //  parameterized).
         args = TP.args(arguments);
         args.unshift(this);
