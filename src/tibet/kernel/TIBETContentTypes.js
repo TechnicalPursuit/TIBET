@@ -1392,6 +1392,7 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
+     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -1401,6 +1402,15 @@ function(targetObj, varargs) {
         path,
 
         retVal;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter', arguments);
+    }
+
+    //  This kind of path won't work against XML
+    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+        return this.raise('TP.sig.InvalidPath', arguments);
+    }
 
     this.preGetAccess(targetObj);
 
@@ -1443,6 +1453,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {arguments} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
+     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
      */
@@ -1461,12 +1472,17 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         mutatedStructure;
 
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter', arguments);
+    }
+
+    //  This kind of path won't work against XML
+    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+        return this.raise('TP.sig.InvalidPath', arguments);
+    }
+
     srcPath = this.get('srcPath');
     thisType = this.getType();
-
-    if (TP.notValid(targetObj)) {
-      return this.raise('TP.sig.InvalidParameter', arguments);
-    }
 
     if (TP.notValid(attributeValue)) {
         op = TP.DELETE;
@@ -1691,7 +1707,7 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @raises TP.sig.InvalidPath
+     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -1701,6 +1717,10 @@ function(targetObj, varargs) {
         path,
 
         retVal;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter', arguments);
+    }
 
     //  This kind of path won't work against XML
     if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
@@ -1751,7 +1771,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {arguments} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @raises TP.sig.InvalidPath
+     * @raises TP.sig.InvalidParameter, TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
      */
@@ -1768,12 +1788,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         executedPaths;
 
     if (TP.notValid(targetObj)) {
-      return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter', arguments);
     }
 
     //  This kind of path won't work against XML
     if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
-      return this.raise('TP.sig.InvalidPath', arguments);
+        return this.raise('TP.sig.InvalidPath', arguments);
     }
 
     this.set('$createdStructure', false);
@@ -2827,7 +2847,7 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @raises TP.sig.InvalidPath
+     * @raises TP.sig.InvalidParameter, TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -2848,6 +2868,10 @@ function(targetObj, varargs) {
 
         doc,
         sourceObjectID;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter', arguments);
+    }
 
     //  This kind of path only works against XML
     if (!TP.isNode(targetObj) && !TP.isKindOf(targetObj, TP.core.Node)) {
@@ -2929,6 +2953,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {arguments} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
+     * @raises TP.sig.InvalidParameter, TP.sig.InvalidPath
      * @returns {TP.core.XPathPath} The receiver.
      */
 
@@ -2964,6 +2989,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         contentnode,
 
         executedPaths;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter', arguments);
+    }
 
     //  This kind of path only works against XML
     if (!TP.isNode(targetObj) && !TP.isKindOf(targetObj, TP.core.Node)) {
