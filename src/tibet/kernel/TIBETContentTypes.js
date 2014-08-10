@@ -2258,7 +2258,8 @@ function(targetObj, attributeValue, shouldSignal) {
 
         queryParts,
 
-        attrIsNumber;
+        attrIsNumber,
+        firstSimplePath;
 
     attrName = this.get('$transformedPath');
 
@@ -2311,9 +2312,8 @@ function(targetObj, attributeValue, shouldSignal) {
                 //  Otherwise, we take each one of our items and send it a 'set'
                 //  message with the attribute value.
 
-                attrIsNumber = TP.isNumber(
-                                    TP.apc(attrName).getFirstSimplePath().
-                                        asNumber());
+                firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+                attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
                 //  If an Array was not supplied, then we use the supplied value
                 //  in a repeating fashion.
@@ -2339,10 +2339,15 @@ function(targetObj, attributeValue, shouldSignal) {
                                 op = TP.UPDATE;
                             } else {
                                 op = TP.CREATE;
+                                targetObj.defineAttribute(index);
                             }
 
-                            val = attrIsNumber ? TP.ac() :
-                                                    TP.lang.Object.construct();
+                            if (attrIsNumber) {
+                                val = TP.ac();
+                            } else {
+                                val = TP.lang.Object.construct();
+                                val.defineAttribute(firstSimplePath);
+                            }
 
                             //  And we set it back onto the targetObj
                             targetObj.atPut(index, val);
@@ -2415,9 +2420,8 @@ function(targetObj, attributeValue, shouldSignal) {
                 //  Otherwise, we take each one of our items and send it a 'set'
                 //  message with the attribute value.
 
-                attrIsNumber = TP.isNumber(
-                                    TP.apc(attrName).getFirstSimplePath().
-                                        asNumber());
+                firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+                attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
                 targetObj.performOver(
                     function(item, index, count) {
@@ -2441,10 +2445,15 @@ function(targetObj, attributeValue, shouldSignal) {
                                 op = TP.UPDATE;
                             } else {
                                 op = TP.CREATE;
+                                targetObj.defineAttribute(index);
                             }
 
-                            val = attrIsNumber ? TP.ac() :
-                                                    TP.lang.Object.construct();
+                            if (attrIsNumber) {
+                                val = TP.ac();
+                            } else {
+                                val = TP.lang.Object.construct();
+                                val.defineAttribute(firstSimplePath);
+                            }
 
                             //  And we set it back onto the targetObj
                             targetObj.set(index, val, false);
@@ -2489,9 +2498,13 @@ function(targetObj, attributeValue, shouldSignal) {
     //  'query', then we create a reference type (either an Object or an Array)
     //  and set it into place.
     if (shouldMake && (TP.notValid(val) || !TP.isReferenceType(val))) {
-        val = TP.isNumber(TP.apc(attrName).getFirstSimplePath().asNumber()) ?
-                                                    TP.ac() :
-                                                    TP.lang.Object.construct();
+        firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+        if (TP.isNumber(firstSimplePath.asNumber())) {
+            val = TP.ac();
+        } else {
+            val = TP.lang.Object.construct();
+            val.defineAttribute(firstSimplePath);
+        }
 
         targetObj.set(TP.apc(query).set('shouldMake', shouldMake),
                          val,
@@ -2553,7 +2566,8 @@ function(targetObj, attributeValue, shouldSignal) {
 
         queryParts,
 
-        attrIsNumber;
+        attrIsNumber,
+        firstSimplePath;
 
     attrName = this.get('$transformedPath');
 
@@ -2607,8 +2621,8 @@ function(targetObj, attributeValue, shouldSignal) {
             //  Otherwise, we take each one of our items and send it a 'set'
             //  message with the attribute value.
 
-            attrIsNumber = TP.isNumber(
-                            TP.apc(attrName).getFirstSimplePath().asNumber());
+            firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+            attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
             targetObj.performOver(
                 function(item, index, count) {
@@ -2632,10 +2646,15 @@ function(targetObj, attributeValue, shouldSignal) {
                             op = TP.UPDATE;
                         } else {
                             op = TP.CREATE;
+                            targetObj.defineAttribute(index);
                         }
 
-                        val = attrIsNumber ? TP.ac() :
-                                                TP.lang.Object.construct();
+                        if (attrIsNumber) {
+                            val = TP.ac();
+                        } else {
+                            val = TP.lang.Object.construct();
+                            val.defineAttribute(firstSimplePath);
+                        }
 
                         //  And we set it back onto the targetObj
                         targetObj.set(index, val, false);
@@ -2679,9 +2698,13 @@ function(targetObj, attributeValue, shouldSignal) {
     //  'query', then we create a reference type (either an Object or an Array)
     //  and set it into place.
     if (shouldMake && (TP.notValid(val) || !TP.isReferenceType(val))) {
-        val = TP.isNumber(TP.apc(attrName).getFirstSimplePath().asNumber()) ?
-                                                    TP.ac() :
-                                                    TP.lang.Object.construct();
+        firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+        if (TP.isNumber(firstSimplePath.asNumber())) {
+            val = TP.ac();
+        } else {
+            val = TP.lang.Object.construct();
+            val.defineAttribute(firstSimplePath);
+        }
 
         targetObj.set(TP.apc(query).set('shouldMake', shouldMake),
                          val,
