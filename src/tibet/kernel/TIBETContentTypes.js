@@ -352,11 +352,37 @@ function(aPath) {
 
     var path;
 
+    //  Need at least a path to test.
+    if (TP.isEmpty(path = aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidPath', arguments,
+                        'Unable to create an empty path.');
+    }
+
+    //  Note that we only allow numeric ACP expressions in paths
+    if (TP.regex.HAS_ACP.test(path)) {
+
+        //  Strip out any numeric expressions and recheck
+        TP.regex.ACP_NUMERIC.lastIndex = 0;
+        path = path.replace(TP.regex.ACP_NUMERIC, TP.DEFAULT);
+
+        //  If it still has ACP expressions, then it's an invalid path
+        if (TP.regex.HAS_ACP.test(path)) {
+            return this.raise('TP.sig.InvalidPath', arguments);
+        }
+
+        //  Now, so as to not change the overall meaning of the path, go back to
+        //  the original path and substitute '0's - remember that we're only
+        //  doing path type detection here, so we're not changing the meaning of
+        //  the path.
+        TP.regex.ACP_NUMERIC.lastIndex = 0;
+        path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
+    }
+
     //  If we're handed a '#tibet(...)' pointer, then we know what kind of
     //  path it is (or should be, anyway)
-    if (TP.regex.TIBET_POINTER.test(aPath)) {
+    if (TP.regex.TIBET_POINTER.test(path)) {
 
-        path = TP.regex.TIBET_POINTER.match(aPath);
+        path = TP.regex.TIBET_POINTER.match(path);
 
         //  If it has 'TIBETan' access path characters, create a 'complex' TIBET
         //  path to deal with it.
@@ -369,20 +395,20 @@ function(aPath) {
     }
 
     //  Barename (i.e. ID) paths
-    if (TP.regex.BARENAME.test(aPath)) {
+    if (TP.regex.BARENAME.test(path)) {
         return TP.core.BarenamePath;
     }
 
     //  It could be some kind of XPointer - either xpointer(), xpath1() or
     //  element() scheme
-    if (TP.regex.XPOINTER.test(aPath)) {
+    if (TP.regex.XPOINTER.test(path)) {
 
         //  If we're handed an '#element(...)' pointer, then we know what kind
         //  of path it is (or should be, anyway)
 
         //  NB: We do *not* check against TP.regex.ELEMENT_PATH here, since it
         //  matches all IDs ("#"), attributes ("@"), etc.
-        if (TP.regex.ELEMENT_POINTER.test(aPath)) {
+        if (TP.regex.ELEMENT_POINTER.test(path)) {
             return TP.core.ElementPath;
         } else {
             return TP.core.XPathPath;
@@ -391,29 +417,29 @@ function(aPath) {
 
     //  If we're handed an '#css(...)' or other kind of 'xtension' pointer, then
     //  we know what kind of path it is (or should be, anyway)
-    if (TP.regex.XTENSION_POINTER.test(aPath)) {
+    if (TP.regex.XTENSION_POINTER.test(path)) {
         return TP.core.XTensionPath;
     }
 
     //  attribute paths
-    if (TP.regex.ATTRIBUTE.test(aPath)) {
+    if (TP.regex.ATTRIBUTE.test(path)) {
         return TP.core.SimpleXMLPath;
     }
 
     //  If there is no 'path punctuation' (only word characters), that means
     //  it's all alphanumeric characters, which means it's a 'simple path'.
-    if (TP.regex.ONLY_WORD.test(aPath)) {
+    if (TP.regex.ONLY_WORD.test(path)) {
         return TP.core.SimpleTIBETPath;
     }
 
     //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
     //  path to deal with it.
-    if (TP.regex.TIBET_PATH.test(aPath)) {
+    if (TP.regex.TIBET_PATH.test(path)) {
         return TP.core.ComplexTIBETPath;
     }
 
-    if (TP.regex.XPATH_PATH.test(aPath) ||
-        TP.regex.HAS_SLASH.test(aPath)) {
+    if (TP.regex.XPATH_PATH.test(path) ||
+        TP.regex.HAS_SLASH.test(path)) {
         return TP.core.XPathPath;
     }
 
