@@ -5057,13 +5057,33 @@ function(aPath) {
     var path;
 
     //  Need at least a path to test.
-    if (TP.isEmpty(aPath)) {
+    if (TP.isEmpty(path = aPath)) {
         return TP.raise(this, 'TP.sig.InvalidPath', arguments,
-                        'Unable to process empty path.');
+                        'Unable to get type of empty path.');
+    }
+
+    //  Note that we only allow numeric ACP expressions in paths
+    if (TP.regex.HAS_ACP.test(path)) {
+
+        //  Strip out any numeric expressions and recheck
+        TP.regex.ACP_NUMERIC.lastIndex = 0;
+        path = path.replace(TP.regex.ACP_NUMERIC, TP.DEFAULT);
+
+        //  If it still has ACP expressions, then it's an invalid path
+        if (TP.regex.HAS_ACP.test(path)) {
+            return this.raise('TP.sig.InvalidPath', arguments);
+        }
+
+        //  Now, so as to not change the overall meaning of the path, go back to
+        //  the original path and substitute '0's - remember that we're only
+        //  doing path type detection here, so we're not changing the meaning of
+        //  the path.
+        TP.regex.ACP_NUMERIC.lastIndex = 0;
+        path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
     }
 
     //  First, test to see if we've just been given an 'access path'.
-    if (TP.regex.TIBET_PATH.test(aPath)) {
+    if (TP.regex.TIBET_PATH.test(path)) {
         return TP.TIBET_PATH_TYPE;
     }
 
@@ -5075,22 +5095,22 @@ function(aPath) {
     //  An xpointer barename would indicate an XPath (barenames cannot contain
     //  parentheses), but we cannot evaluate that directly (by itself, '#foo'
     //  isn't a real XPath), so we return TP.BARENAME_PATH_TYPE
-    if (TP.regex.BARENAME.test(aPath)) {
+    if (TP.regex.BARENAME.test(path)) {
         return TP.BARENAME_PATH_TYPE;
     }
 
     //  regular xpointer, either xpointer(), xpath1() or element() scheme
-    if (TP.regex.XPOINTER.test(aPath)) {
+    if (TP.regex.XPOINTER.test(path)) {
         return TP.XPOINTER_PATH_TYPE;
     }
 
     //  extended xpointer, perhaps explicit css() scheme (TIBET-only)
-    if (TP.regex.XTENSION_POINTER.test(aPath)) {
+    if (TP.regex.XTENSION_POINTER.test(path)) {
         return TP.XTENSION_POINTER_PATH_TYPE;
     }
 
     //  strip any id/fragment prefix
-    path = (aPath.charAt(0) === '#') ? aPath.slice(1) : aPath;
+    path = (path.charAt(0) === '#') ? path.slice(1) : path;
 
     //  XPath is typically ./elem, //elem, @attr, or ./elem[predicate], all
     //  of which are going to include a slash (other than 'standalone' attr
