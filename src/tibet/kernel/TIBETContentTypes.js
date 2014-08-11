@@ -3152,7 +3152,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     if (TP.isNode(content)) {
         //  leverage TP.core.Node wrappers to manage update intelligently
         tpcontent = TP.wrap(content);
-        tpcontent.set('content', value);
+        tpcontent.setProcessedContent(value);
 
         //  99% is single value targeting a single element or attribute node
         if (TP.isElement(content)) {
@@ -3203,7 +3203,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
             //  leverage TP.core.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(contentnode);
-            tpcontent.set('content', value);
+            tpcontent.setProcessedContent(value);
 
             if (TP.isNode(content)) {
                 if (TP.isElement(contentnode)) {
