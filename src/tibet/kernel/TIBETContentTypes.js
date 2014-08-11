@@ -295,9 +295,9 @@ TP.core.AccessPath.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('apc',
-function(aPath) {
+function(aPath, shouldCollapse) {
 
-    return TP.core.AccessPath.construct(aPath);
+    return TP.core.AccessPath.construct(aPath, shouldCollapse);
 });
 
 //  ------------------------------------------------------------------------
