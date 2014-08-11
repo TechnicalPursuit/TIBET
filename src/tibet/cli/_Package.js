@@ -649,7 +649,7 @@ Package.prototype.expandConfig = function(anElement, expandAll) {
                             str = '<script><![CDATA[' +
                                 'TP.sys.setcfg(' +
                                 '\'' + name + '\', ' +
-                                pkg.getArgumentPrimitive(value) +
+                                pkg.getArgumentSource(value) +
                                 ');' +
                                 ']]></script>';
                             doc = parser.parseFromString(str);
@@ -1311,6 +1311,37 @@ Package.prototype.getProjectConfig = function() {
 
 
 /**
+ * Return the primitive value from a string value in "source code" form meaning
+ * numbers, booleans, regular expressions etc. are returns as those values but
+ * string values are returned with quotes and appropriate escaping of any
+ * embedded quotes.
+ * @param {String} value The value to convert.
+ * @return {Object} The converted value.
+ */
+Package.prototype.getArgumentSource = function(value) {
+    if (notValid(value)) {
+        return value;
+    }
+
+    // Try to convert to number, boolean, regex,
+    if (Package.NUMBER_REGEX.test(value)) {
+        return 1 * value;
+    } else if (Package.BOOLEAN_REGEX.test(value)) {
+        return value === 'true';
+    } else if (Package.REGEX_REGEX.test(value)) {
+        return new RegExp(value.slice(1, -1));
+    } else if (Package.OBJECT_REGEX.test(value)) {
+        // We could JSON.parse here but that won't work because any values which
+        // are strings won't be quoted in source code form. It's a small use
+        // case in any case so we just return a quoted string.
+        return this.quote(value);
+    } else {
+        return this.quote(value);
+    }
+};
+
+
+/**
  * Returns a TIBET virtual path from its equivalent non-virtual path.
  * @param {String} aPath The path to be virtualized.
  * @return {String} The virtualized path value.
@@ -1938,6 +1969,25 @@ Package.prototype.pushPackage = function(aPath) {
     this.verbose('Pushing package: ' + aPath);
 
     this.packageStack.unshift(aPath);
+};
+
+
+/**
+ * Returns the value provided as a string with embedded single quotes escaped
+ * and with enclosing single quotes.
+ * @param {string} value The string to return in quoted source format.
+ */
+Package.prototype.quote = function(value) {
+
+    var val;
+
+    // Not a robust implementation for all cases, but it should work well enough
+    // for the types of values found in property tags which are the main source
+    // of data for this call.
+    val = value.toString();
+    val = val.replace(/\'/g, '\\\'');
+
+    return '\'' + val + '\'';
 };
 
 
