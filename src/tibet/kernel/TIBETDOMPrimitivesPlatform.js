@@ -371,14 +371,18 @@ TP.hc(
          * @todo
          */
 
+        var owner;
+
         if (!TP.isAttributeNode(anAttributeNode)) {
             return TP.raise(this, 'TP.sig.InvalidAttributeNode', arguments);
         }
 
         //  For some reason, DOM Level 4 removes 'ownerElement'
-        if (!TP.isElement(anAttributeNode.ownerElement)) {
-            return TP.nodeEvaluateXPath(anAttributeNode, '..');
+        if (!TP.isElement(owner = anAttributeNode.ownerElement)) {
+            owner = TP.nodeEvaluateXPath(anAttributeNode, '..');
         }
+
+        return owner;
     }
 ));
 
