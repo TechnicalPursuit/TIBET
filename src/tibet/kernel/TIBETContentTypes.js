@@ -3848,7 +3848,7 @@ function() {
         TP.extern.XPathNamespaceResolver.prototype.superclass =
                         TP.extern.XPathParser.NamespaceResolver.prototype;
 
-        TP.extern.XPathNamespaceResolver.prototype.getNamespacePrefix =
+        TP.extern.XPathNamespaceResolver.prototype.getNamespace =
             function(prefix,n) {
 
                 var namespace;
@@ -3859,7 +3859,7 @@ function() {
                     return namespace;
                 }
 
-                return this.superclass.getNamespacePrefix.bind(this)(prefix, n);
+                return this.superclass.getNamespace.bind(this)(prefix, n);
             };
 
         resolver = new TP.extern.XPathNamespaceResolver();
