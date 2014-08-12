@@ -109,9 +109,11 @@ TDS.logFilter = function(req, res) {
  * is constrained, however commands are extensible so it's possible this could
  * open a security hole. You shouldn't enable this without authentication.
  *
- * You can test whether it works by using URLs of the form in the client
- * console.
- * TP.uc('~/tds/cli?cmd=echo&argv0=fluff&--testing=123&--no-color').getContent();
+ * You can test whether it works by using URLs of the form:
+ * url = TP.uc('~/tds/cli?cmd=echo&argv0=fluff&--testing=123&--no-color');
+ *
+ * Run the command by forcing a call to the server for the URL:
+ * url.getContent();
  *
  * @param {Object} options Configuration options. Currently ignored.
  * @return {Function} A connect/express middleware function.
