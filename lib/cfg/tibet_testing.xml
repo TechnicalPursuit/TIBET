@@ -68,6 +68,7 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 <config id="databinding">
     <script src="~lib_tst/src/tibet/databinding/TP.core.DataPath_Tests.js" />
+    <script src="~lib_tst/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
 </config>
 
 </package>
