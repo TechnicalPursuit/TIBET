@@ -3024,6 +3024,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         mutatedStructure,
 
+        attrValue,
         value,
 
         affectedElems,
@@ -3135,10 +3136,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     //  normalize inbound nodes to elements so we don't try to put a document
     //  where it can't be appended
-    value = TP.isDocument(attributeValue) ?
+    attrValue = TP.isDocument(attributeValue) ?
             TP.elem(attributeValue) : attributeValue;
 
-    mutatedStructure = TP.isNode(value);
+    mutatedStructure = TP.isNode(attrValue);
 
     //  there are four primary variations we have to account for if we're
     //  going to get this correct: S-M, S-S, M-M, M-S. also, we have to keep
@@ -3150,6 +3151,15 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
 
     if (TP.isNode(content)) {
+
+        //  if the attrValue is a Node, clone it so that we don't remove it from
+        //  it's original DOM, etc.
+        if (TP.isNode(value = attrValue)) {
+            value = TP.nodeCloneNode(attrValue, true);
+        } else {
+            value = TP.str(attrValue);
+        }
+
         //  leverage TP.core.Node wrappers to manage update intelligently
         tpcontent = TP.wrap(content);
         tpcontent.setProcessedContent(value);
@@ -3200,6 +3210,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         len = content.getSize();
         for (i = 0; i < len; i++) {
             contentnode = content.at(i);
+
+            //  if the value is a Node, clone it so that we don't remove it from
+            //  it's original DOM, etc.
+            if (TP.isNode(value = attrValue)) {
+                value = TP.nodeCloneNode(attrValue, true);
+            } else {
+                value = TP.str(attrValue);
+            }
 
             //  leverage TP.core.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(contentnode);
