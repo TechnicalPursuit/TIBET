@@ -2366,7 +2366,7 @@ NodeTest.prototype.matches = function(n, xpc) {
 			return false;
 		case NodeTest.NAMETESTPREFIXANY:
 			if ((n.nodeType == 2 /*Node.ATTRIBUTE_NODE*/ || n.nodeType == 1 /*Node.ELEMENT_NODE*/)) {
-				var ns = xpc.namespaceResolver.getNamespacePrefix(this.value, xpc.expressionContextNode);
+				var ns = xpc.namespaceResolver.getNamespace(this.value, xpc.expressionContextNode);
 				if (ns == null) {
 					throw new Error("Cannot resolve QName " + this.value);
 				}
@@ -3512,7 +3512,7 @@ NamespaceResolver.superclass = Object.prototype;
 function NamespaceResolver() {
 }
 
-NamespaceResolver.prototype.getNamespacePrefix = function(prefix, n) {
+NamespaceResolver.prototype.getNamespace = function(prefix, n) {
 	if (prefix == "xml") {
 		return XPath.XML_NAMESPACE_URI;
 	} else if (prefix == "xmlns") {

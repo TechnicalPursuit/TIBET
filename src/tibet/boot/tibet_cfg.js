@@ -207,7 +207,7 @@ TP.sys.setcfg('boot.initoffset', '../../..');
 //  ---
 
 //  What is the name of the bootstrap project file? This file is loaded to
-//  provide bootstrap parameter values if 'boot.noboostrap' isn't set  You can
+//  provide bootstrap parameter values if 'boot.nobootstrap' isn't set  You can
 //  set bootstrap values in the call to TP.boot.launch as an alternative.
 TP.sys.setcfg('boot.bootstrap', 'tibet.json');
 
@@ -230,7 +230,7 @@ TP.sys.setcfg('boot.config', null);
 //  between the boot logic and the command-line packaging tools).
 TP.sys.setcfg('boot.assets', null);
 
-//  Do we want to boot th unminified source alternative(s) where found? The
+//  Do we want to boot the unminified source alternative(s) where found? The
 //  default tibet.xml file includes unminified options for kernel/library code
 //  to assist with debugging into the framework code.
 TP.sys.setcfg('boot.unminified', false);

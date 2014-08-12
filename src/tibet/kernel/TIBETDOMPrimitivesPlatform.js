@@ -371,14 +371,18 @@ TP.hc(
          * @todo
          */
 
+        var owner;
+
         if (!TP.isAttributeNode(anAttributeNode)) {
             return TP.raise(this, 'TP.sig.InvalidAttributeNode', arguments);
         }
 
         //  For some reason, DOM Level 4 removes 'ownerElement'
-        if (!TP.isElement(anAttributeNode.ownerElement)) {
-            return TP.nodeEvaluateXPath(anAttributeNode, '..');
+        if (!TP.isElement(owner = anAttributeNode.ownerElement)) {
+            owner = TP.nodeEvaluateXPath(anAttributeNode, '..');
         }
+
+        return owner;
     }
 ));
 
@@ -4094,7 +4098,13 @@ TP.hc(
 
             msg;
 
-        if (!TP.isNode(aNode)) {
+        //  According to the DOM Level 3 XPath specification, aNode can only be
+        //  one of:
+        //      Document, Element, Attribute, Text, CDATASection, Comment,
+        //      ProcessingInstruction, or XPathNamespace node
+        //  Therefore, no DocumentFragments
+
+        if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
             return TP.raise(this, 'TP.sig.InvalidNode', arguments);
         }
 
@@ -4366,7 +4376,13 @@ TP.hc(
 
         TP.debug('break.xpath');
 
-        if (!TP.isNode(aNode)) {
+        //  According to the DOM Level 3 XPath specification, aNode can only be
+        //  one of:
+        //      Document, Element, Attribute, Text, CDATASection, Comment,
+        //      ProcessingInstruction, or XPathNamespace node
+        //  Therefore, no DocumentFragments
+
+        if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
             return TP.raise(this, 'TP.sig.InvalidNode', arguments);
         }
 

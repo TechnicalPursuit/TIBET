@@ -8278,10 +8278,10 @@ function(aKeyArray) {
         len,
         i;
 
-    if (TP.isEmpty(aKeyArray)) {
+    if (!TP.isArray(aKeyArray)) {
         return this.raise('TP.sig.InvalidParameter',
                             arguments,
-                            'Empty key array provided.');
+                            'Invalid key array provided.');
     }
 
     changed = false;

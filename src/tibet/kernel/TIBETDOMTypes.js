@@ -1194,94 +1194,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('awaken',
-function() {
-
-    /**
-     * @name awaken
-     * @synopsis This method invokes the 'awaken' functionality of the tag
-     *     processing system, to provide 'post-render' awakening of various
-     *     features such as events and CSS styles.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    TP.nodeAwakenContent(this.getNativeNode());
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('compile',
-function(aRequest) {
-
-    /**
-     * @name compile
-     * @synopsis This method invokes the 'compile' functionality of the tag
-     *     processing system, to provide conversion from authored markup into
-     *     markup that can be understood by the platform.
-     * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.CollectionNode} The receiver or a new object if the
-     *     tag content compiles to a different kind of tag than the receiver.
-     */
-
-    var node,
-
-        request,
-
-        processor,
-        result,
-
-        type;
-
-    TP.debug('break.content_process');
-
-    node = this.getNativeNode();
-
-    //  before we worry about anything else let's make sure we've got the
-    //  proper frame of reference for any URI content
-    if (TP.isDocument(node)) {
-        this.addTIBETSrc(this.get('uri'));
-        this.addXMLBase(this.get('uri'), null, aRequest);
-    }
-
-    request = TP.request(aRequest);
-
-    //  Make sure to clone our native node before we process it.
-    result = TP.nodeCloneNode(node, true);
-
-    //  Allocate a tag processor and initialize it with the COMPILE_PHASES
-    processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                    TP.core.TagProcessor.COMPILE_PHASES);
-
-    //  Process the tree of markup
-    processor.processTree(result, request);
-
-    //  If the shell request failed then our enclosing request has failed.
-    if (request.didFail()) {
-        aRequest.fail(request.getFaultCode(), request.getFaultText());
-        return;
-    }
-
-    //  if our processing produced a new native node of the same type as our
-    //  original content (so we're still the right kind of wrapper) we can
-    //  update our internal node content. If not we'll need to get a new
-    //  wrapper and return that as the result.
-
-    if (!TP.isNode(result)) {
-        return result;
-    } else if ((type = TP.core.Node.getConcreteType(result)) ===
-                                                        this.getType()) {
-        this.setNativeNode(result);
-    } else {
-        return type.construct(result);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Node.Inst.defineMethod('equalTo',
 function(aNode) {
 
@@ -2457,6 +2369,28 @@ function(aNode, shouldSignal) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Inst.defineMethod('setProcessedContent',
+function(newContent, aRequest) {
+
+    /**
+     * @name setProcessedContent
+     * @synopsis Sets the content of the receiver to the content provided
+     *     without performing any content processing on it. At this level, this
+     *     method just performs a setContent() and returns.
+     * @param {Object} newContent The content to write into the receiver. This
+     *     can be a String, a Node, or an Object capable of being converted into
+     *     one of those forms.
+     * @param {TP.sig.Request} aRequest An optional request object which defines
+     *     further parameters.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
+     */
+
+    return this.setContent(newContent, aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -8328,8 +8262,91 @@ function() {
 //  Content Processing
 //  ------------------------------------------------------------------------
 
-/*
-*/
+TP.core.CollectionNode.Inst.defineMethod('awaken',
+function() {
+
+    /**
+     * @name awaken
+     * @synopsis This method invokes the 'awaken' functionality of the tag
+     *     processing system, to provide 'post-render' awakening of various
+     *     features such as events and CSS styles.
+     * @returns {TP.core.Node} The receiver.
+     */
+
+    TP.nodeAwakenContent(this.getNativeNode());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('compile',
+function(aRequest) {
+
+    /**
+     * @name compile
+     * @synopsis This method invokes the 'compile' functionality of the tag
+     *     processing system, to provide conversion from authored markup into
+     *     markup that can be understood by the platform.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.core.CollectionNode} The receiver or a new object if the
+     *     tag content compiles to a different kind of tag than the receiver.
+     */
+
+    var node,
+
+        request,
+
+        processor,
+        result,
+
+        type;
+
+    TP.debug('break.content_process');
+
+    node = this.getNativeNode();
+
+    //  before we worry about anything else let's make sure we've got the
+    //  proper frame of reference for any URI content
+    if (TP.isDocument(node)) {
+        this.addTIBETSrc(this.get('uri'));
+        this.addXMLBase(this.get('uri'), null, aRequest);
+    }
+
+    request = TP.request(aRequest);
+
+    //  Make sure to clone our native node before we process it.
+    result = TP.nodeCloneNode(node, true);
+
+    //  Allocate a tag processor and initialize it with the COMPILE_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.COMPILE_PHASES);
+
+    //  Process the tree of markup
+    processor.processTree(result, request);
+
+    //  If the shell request failed then our enclosing request has failed.
+    if (request.didFail()) {
+        aRequest.fail(request.getFaultCode(), request.getFaultText());
+        return;
+    }
+
+    //  if our processing produced a new native node of the same type as our
+    //  original content (so we're still the right kind of wrapper) we can
+    //  update our internal node content. If not we'll need to get a new
+    //  wrapper and return that as the result.
+
+    if (!TP.isNode(result)) {
+        return result;
+    } else if ((type = TP.core.Node.getConcreteType(result)) ===
+                                                        this.getType()) {
+        this.setNativeNode(result);
+    } else {
+        return type.construct(result);
+    }
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -8616,6 +8633,82 @@ function(attributeHash, checkAttrNSURI) {
      */
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+//  Content Processing
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentFragmentNode.Inst.defineMethod('awaken',
+function() {
+
+    /**
+     * @name awaken
+     * @synopsis This method invokes the 'awaken' functionality of the tag
+     *     processing system, to provide 'post-render' awakening of various
+     *     features such as events and CSS styles.
+     * @returns {TP.core.Node} The receiver.
+     */
+
+    //  DocumentFragments aren't responsible for awakening their content - for
+    //  the most part they've already been 'flattened out' by the time their
+    //  inserted into a visual DOM (unless they've been created there - but then
+    //  you're already dealing with awakened nodes).
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentFragmentNode.Inst.defineMethod('compile',
+function(aRequest) {
+
+    /**
+     * @name compile
+     * @synopsis This method invokes the 'compile' functionality of the tag
+     *     processing system, to provide conversion from authored markup into
+     *     markup that can be understood by the platform.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.core.CollectionNode} The receiver or a new object if the
+     *     tag content compiles to a different kind of tag than the receiver.
+     */
+
+    var node,
+
+        request,
+
+        processor,
+
+        childNodes,
+        len,
+        i;
+
+    TP.debug('break.content_process');
+
+    node = this.getNativeNode();
+
+    request = TP.request(aRequest);
+
+    //  Allocate a tag processor and initialize it with the COMPILE_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.COMPILE_PHASES);
+
+    childNodes = TP.nodeGetChildNodes(node);
+
+    len = childNodes.getSize();
+
+    //  Process each child that we have.
+    for (i = 0; i < len; i++) {
+        processor.processTree(childNodes.at(i), request);
+
+        //  If the shell request failed then our enclosing request has failed.
+        if (request.didFail()) {
+            aRequest.fail(request.getFaultCode(), request.getFaultText());
+            return;
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

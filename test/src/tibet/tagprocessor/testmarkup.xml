@@ -1,0 +1,19 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+        xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+        xmlns:pclass="urn:tibet:pseudoclass">
+
+    <div id="nochange" tibet:sourcetag="test:nochange">An unchanging tag</div>
+    <div id="attrchange" tibet:sourcetag="test:attrchange">A tag that gets a new attribute</div>
+    <div id="moreattrchange" tibet:sourcetag="test:moreattrchange">A tag that gets a new attribute (that needs further transformation)</div>
+    <div id="contentchange" tibet:sourcetag="test:contentchange">A tag that gets new child content (that doesn't need further transformation)</div>
+    <div id="morecontentchange" tibet:sourcetag="test:morecontentchange">A tag that gets new child content (that needs further transformation)</div>
+
+    <div id="xctrlsButtonContent">
+        <xctrls:button id="testButton" pclass:disabled="true">
+            <xctrls:label>Hi there</xctrls:label>
+        </xctrls:button>
+    </div>
+
+</div>
+

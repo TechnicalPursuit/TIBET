@@ -11483,7 +11483,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('setLogLevel',
-function(aLevel) {
+function(aLevel, override) {
 
     /**
      * @name setLogLevel
@@ -11492,16 +11492,18 @@ function(aLevel) {
      *     or a TIBET signal type of TRACE, INFO, WARN, ERROR, SEVERE, FATAL, or
      *     SYSTEM. Note that while these signals operate in a leveled scheme,
      *     only WARN thru FATAL are actually TP.sig.Exceptions.
+     * @param {Boolean} override Whether or not to force setting the log level
+     *     overriding any 'user override' setting. The default is false.
      * @example Set TIBET's current 'log level', using a log level number:
      *     <code>
      *          TP.sys.setLogLevel(1);
-     *          <samp>INFO</samp>
+     *          <samp>1</samp>
      *     </code>
      * @example Set TIBET's current 'log level', using a log level TIBET type
      *     object:
      *     <code>
-     *          TP.sys.setLogLevel(INFO);
-     *          <samp>INFO</samp>
+     *          TP.sys.setLogLevel(TP.INFO);
+     *          <samp>1</samp>
      *     </code>
      * @returns {Number} The numerical error level set.
      * @todo
@@ -11537,7 +11539,9 @@ function(aLevel) {
     oldVal = TP.sys.cfg('log.level');
 
     if (oldVal !== level) {
-        TP.sys.setcfg('log.level', level);
+        //  NB: We don't signal from this call since we do so just after it.
+        TP.sys.setcfg('log.level', level, false, override);
+
         TP.sys.changed('LogLevel',
                         TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, level));

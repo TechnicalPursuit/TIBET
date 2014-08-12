@@ -43,7 +43,11 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 <config id="full" depends="base">
     <config ref="harness"/>
     <config ref="assertions"/>
+
     <config ref="samples"/>
+
+    <config ref="tagprocessor"/>
+    <config ref="databinding"/>
 </config>
 
 <config id="harness">
@@ -56,6 +60,15 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 <config id="samples">
     <script src="testing/TPTestSamples.js" />
+</config>
+
+<config id="tagprocessor">
+    <script src="~lib_tst/src/tibet/tagprocessor/TP.core.TagProcessor_Tests.js" />
+</config>
+
+<config id="databinding">
+    <script src="~lib_tst/src/tibet/databinding/TP.core.DataPath_Tests.js" />
+    <script src="~lib_tst/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
 </config>
 
 </package>

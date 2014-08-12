@@ -1157,9 +1157,10 @@ function(aNode) {
     var query,
         queriedNodes;
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  The default phase grabs *all* nodes here - not just Elements. Note that
@@ -1223,9 +1224,10 @@ function(aNode) {
     var query,
         queriedNodes;
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     query = 'descendant-or-self::*[namespace-uri() = "' +
@@ -1289,9 +1291,10 @@ function(aNode) {
     var query,
         queriedNodes;
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     query = './processing-instruction(\'xml-stylesheet\')';
@@ -1383,8 +1386,7 @@ function(aNode) {
     var queriedNodes;
 
     if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  We're only interested in Element-type Nodes.
@@ -1446,8 +1448,7 @@ function(aNode) {
     var queriedNodes;
 
     if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  We're only interested in Element-type Nodes.
@@ -1508,8 +1509,7 @@ function(aNode) {
     var queriedNodes;
 
     if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  We're only interested in Element-type Nodes.
@@ -1645,9 +1645,10 @@ function(aNode) {
     var query,
         queriedNodes;
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  We're only interested in elements that either are in the 'ev:' namespace
@@ -1746,9 +1747,10 @@ function(aNode) {
     var query,
         queriedNodes;
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  We're only interested in elements that have a local name of 'info'.
@@ -1811,9 +1813,10 @@ function(aNode) {
     var query,
         queriedNodes;
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  We're only interested in elements that either are in the 'bind:'
@@ -1942,9 +1945,10 @@ function(aNode) {
     var query,
         queriedNodes;
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  We're only interested in elements that either are in the 'ev:' namespace
@@ -2043,9 +2047,10 @@ function(aNode) {
     var query,
         queriedNodes;
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  We're only interested in elements that have a local name of 'info'.
@@ -2108,9 +2113,10 @@ function(aNode) {
     var query,
         queriedNodes;
 
-    if (!TP.isNode(aNode)) {
-        //  TODO: Throw an exception here
-        return;
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
     //  We're only interested in elements that either are in the 'bind:'
