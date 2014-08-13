@@ -196,7 +196,7 @@ function(aRequest) {
     TP.signal(cmdDoc, 'TP.sig.DOMModelConstruct');
     TP.signal(cmdDoc, 'TP.sig.DOMModelConstructDone');
 
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------
