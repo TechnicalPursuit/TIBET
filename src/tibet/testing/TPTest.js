@@ -576,6 +576,12 @@ TP.test.Suite.Inst.defineAttribute('beforeEvery');
 TP.test.Suite.Inst.defineAttribute('caseList');
 
 /**
+ * The driver used for things like fetching resources, etc.
+ * @type {TP.test.Driver}
+ */
+TP.test.Suite.Inst.defineAttribute('driver');
+
+/**
  * The number of milliseconds the object is limited to for run time before
  * timing out. Defaults to 15 seconds for a test suite.
  * @type {Number}
@@ -871,6 +877,8 @@ function(target, suiteName, suiteFunc) {
         TP.test.TestMethodCollection.construct());
     this.$set('refuter',
         TP.test.TestMethodCollection.construct().set('isRefuter', true));
+
+    this.$set('driver', TP.test.Driver.construct());
 
     return this;
 });
@@ -1251,6 +1259,19 @@ function() {
      */
 
     return this.$get('caseName');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('getDriver',
+function() {
+
+    /**
+     * Returns the test driver associated with this case's overall test suite.
+     * @return {TP.test.Driver} The test driver.
+     */
+
+    return this.$get('suite').$get('driver');
 });
 
 //  ------------------------------------------------------------------------

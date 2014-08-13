@@ -52,6 +52,7 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 <config id="harness">
     <script src="testing/TPTest.js" />
+    <script src="testing/TPTestDriver.js" />
 </config>
 
 <config id="assertions">
