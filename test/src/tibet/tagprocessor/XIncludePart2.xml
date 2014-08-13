@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<span xmlns="http://www.w3.org/1999/xhtml">
+	This is content coming from an included file.<br/>
+	<div id="partialDiv">This is the content that will be included in the first include. It should be a 'div'.</div>
+	<div><p id="partialParagraph">This is the content that will be include in the second include. It should be a 'p'.</p></div>
+</span>

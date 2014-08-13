@@ -371,49 +371,87 @@ function() {
 });
 
 //  ========================================================================
+//  XInclude
+//  ========================================================================
 
-TP.xctrls.button.Type.describe('TP.xctrls.button Type rendering',
+TP.xi.Element.Type.describe('TP.xi.Element Type processing',
 function() {
 
-    var testDataLoc;
-
-    this.before(function() {
-
-        testDataLoc = '~lib_tst/main/tibet/customtags/testmarkup.xml';
-    });
-
-    this.it('\'set content', function(test, options) {
+    this.it('whole file inclusion', function(test, options) {
 
         var uri;
 
-        uri = TP.uc(testDataLoc + '#xctrlsButtonContent');
+        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
 
-        return this.fetchResource(uri, TP.DOM).then(
+        return this.getDriver().fetchResource(uri, TP.DOM).then(
             function(result) {
 
-                var tpDoc,
-                    tpBody;
+                var usingDebugger,
+                    oldLogLevel,
 
-                //node = TP.nodeCloneNode(result, true);
-                //console.profile('xctrls_button');
-                //var newResult = TP.wrap(node).process2();
-                //console.profileEnd();
+                    tpDoc;
 
-                //test.assert.hasAttribute(newResult, 'foo');
+                //  For now, we turn off triggering the debugger because we know
+                //  that this test case has a XInclude that points to a file
+                //  that won't be found - that part of this test is testing
+                //  'xi:fallback' element.
+                usingDebugger = TP.sys.shouldUseDebugger();
+                TP.sys.shouldUseDebugger(false);
+
+                //  Same for log level
+                oldLogLevel = TP.sys.getLogLevel();
+                TP.sys.setLogLevel(TP.SEVERE, true);
+
                 tpDoc = TP.sys.getUICanvas().getDocument();
-                tpBody = tpDoc.getBody();
 
-                tpBody.setContent(result);
+                tpDoc.setContent(result);
 
-                test.pass();
+                //  Put log level back to what it was
+                TP.sys.setLogLevel(oldLogLevel, true);
+
+                //  Put the debugger setting back to what it was
+                TP.sys.shouldUseDebugger(usingDebugger);
+
+                test.assert.isElement(TP.byId('part1Success'));
+
+                test.assert.isElement(TP.byId('part10Fallback'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + testDataLoc,
+                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
                                 TP.ERROR);
                 test.fail();
             });
     });
 
+    this.it('partial file inclusion', function(test, options) {
+
+        var uri;
+
+        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude2.xml');
+
+        return this.getDriver().fetchResource(uri, TP.DOM).then(
+            function(result) {
+
+                var tpDoc;
+
+                tpDoc = TP.sys.getUICanvas().getDocument();
+
+                tpDoc.setContent(result);
+
+                //  This comes from the first XInclude with a simple XPointer
+                //  expression
+                test.assert.isElement(TP.byId('partialDiv'));
+
+                //  This comes from the second XInclude with a more complex
+                //  XPointer expression.
+                test.assert.isElement(TP.byId('partialParagraph'));
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+    });
 });
 
 //  ========================================================================
@@ -422,6 +460,7 @@ function() {
 
 /*
 TP.core.TagProcessor.Inst.runTestSuites();
+TP.xi.Element.Type.runTestSuites();
 */
 
 //  ------------------------------------------------------------------------
