@@ -2614,8 +2614,8 @@ function(anObject, shallow) {
      * @param {Object} anObject The object to interrogate.
      * @param {Boolean} shallow True to force node clones to be shallow, or
      *     reference elements to be shallow copies.
-     * @param {A} Object Node or Object depending on the nature of the inbound
-     *     object.
+     * @returns {Node|Object} A Node or Object depending on the nature of the
+     *     inbound object.
      * @todo
      */
 
