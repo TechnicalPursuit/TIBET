@@ -9879,14 +9879,12 @@ TP.core.ElementNode.Type.defineMethod('tagUnmarshal',
 function(aRequest) {
 
     /**
-     * @name tshUnmarshal
+     * @name tagUnmarshal
      * @synopsis Unmarshals the receiver's content. This includes resolving XML
      *     Base URIs and virtual URIs that may occur on the receiver's
      *     attributes.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing control parameters.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
      */
 
     var elem,
@@ -9901,7 +9899,7 @@ function(aRequest) {
     //  Grab the element's 'URI attributes'. If that's empty, then just
     //  return.
     if (TP.isEmpty(uriAttrs = this.get('uriAttrs'))) {
-        return TP.DESCEND;
+        return;
     }
 
     //  Iterate over any URI attributes and call rewrite() on their values.
@@ -9932,8 +9930,7 @@ function(aRequest) {
     //  update the XML Base references in the node
     TP.elementResolveXMLBase(elem, uriAttrs);
 
-    //  We want the system traverse our children
-    return TP.DESCEND;
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -13607,14 +13604,11 @@ TP.core.InfoElementNode.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tshCompile
+     * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @returns {Array} An array containing the new node and a TSH loop control
-     *     constant, TP.DESCEND by default.
-     * @todo
      */
 
     var elem;
@@ -13625,7 +13619,7 @@ function(aRequest) {
     elem = aRequest.at('node');
     TP.elementAddClass(elem, 'tibet-info');
 
-    return TP.DESCEND;
+    return;
 
 });
 
@@ -14159,7 +14153,7 @@ function(aRequest) {
                                                 elem);
             TP.nodeDetach(elem);
 
-            return TP.ac(newNode, TP.DESCEND);
+            return newNode;
         } else {
             if (TP.notValid(href)) {
                 TP.ifWarn() ?
@@ -14195,7 +14189,7 @@ function(aRequest) {
                                             errorMsgElem,
                                             elem);
 
-            return TP.ac(newNode, TP.DESCEND);
+            return newNode;
         }
     } else if (TP.isDocument(content)) {
         if (TP.notEmpty(content)) {
@@ -14239,7 +14233,7 @@ function(aRequest) {
                             'XInclude content inclusion complete.'),
             TP.INFO, arguments) : 0;
 
-    return TP.ac(newNode, TP.DESCEND);
+    return newNode;
 });
 
 //  ========================================================================
