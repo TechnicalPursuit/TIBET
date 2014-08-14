@@ -56,17 +56,17 @@ function() {
     });
 
     this.it('errors implicitly via syntax or other error', function() {
-        var thiswontwork;
-        var foo;
+        /* eslint-disable */
         foo = thiswontwork;
+        /* eslint-enable */
     });
 });
 
 Array.prototype.describe('slice (syntax error in describe())',
 function() {
-        var thiswontwork;
-        var foo;
+        /* eslint-disable */
         foo = thiswontwork;
+        /* eslint-enable */
     this.it('slices and dices', function() {
     });
 });
@@ -74,9 +74,9 @@ function() {
 Array.prototype.describe('slice (syntax error in it())',
 function() {
     this.it('makes julienne fries (syntax error)', function() {
-        var thiswontwork;
-        var foo;
+        /* eslint-disable */
         foo = thiswontwork;
+        /* eslint-enable */
     });
 });
 
