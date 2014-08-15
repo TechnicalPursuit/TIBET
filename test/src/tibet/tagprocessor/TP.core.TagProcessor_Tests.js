@@ -133,7 +133,7 @@ function() {
         tagType.Type.defineMethod(
             'allNodesTransform',
             function(aRequest) {
-                var node, 
+                var node,
                     newElem;
 
                 if (TP.isElement(node = aRequest.at('node'))) {
