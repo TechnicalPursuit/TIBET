@@ -305,8 +305,8 @@ TP.hc(
 TP.definePrimitive('documentCreateEvent',
 TP.hc(
     'test',
+    TP.boot.getBrowserUI,
     'gecko',
-    'true',
     function(aDocument, anEventSpec) {
 
         /**
@@ -327,7 +327,9 @@ TP.hc(
         var spec,
             doc,
             type,
-            evt;
+            evt,
+
+            modifiers;
 
         if (TP.isEvent(anEventSpec)) {
             spec = anEventSpec;
@@ -384,21 +386,27 @@ TP.hc(
             case 'keydown':
             case 'keypress':
             case 'keyup':
-                //  NOTE MOZ HACK HERE...CUSTOM KeyEvents METHODS
-                evt = doc.createEvent('KeyEvents');
-                evt.initKeyEvent(
+                evt = doc.createEvent('KeyboardEvent');
+
+                modifiers = (
+                            (spec.at('ctrlKey') ? 'Control' : '') +
+                            (spec.at('shiftKey') ? ' Shift' : '') +
+                            (spec.at('altKey') ? ' Alt' : '') +
+                            (spec.at('metaKey') ? ' Meta' : '')).trim();
+
+                evt.initKeyboardEvent(
                             type,
                             TP.ifKeyInvalid(spec, 'bubbles', true),
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
                                             TP.sys.getUICanvas(true)),
-                            TP.ifKeyInvalid(spec, 'ctrlKey', false),
-                            TP.ifKeyInvalid(spec, 'altKey', false),
-                            TP.ifKeyInvalid(spec, 'shiftKey', false),
-                            TP.ifKeyInvalid(spec, 'metaKey', false),
-                            TP.ifKeyInvalid(spec, 'keyCode', 0),
-                            TP.ifKeyInvalid(spec, 'charCode', 0));
+                            TP.ifKeyInvalid(spec, 'char', null),
+                            TP.ifKeyInvalid(spec, 'key', null),
+                            TP.ifKeyInvalid(spec, 'location', null),
+                            modifiers,
+                            TP.ifKeyInvalid(spec, 'repeat', 0),
+                            TP.ifKeyInvalid(spec, 'locale', 0));
                 break;
 
             //  Mouse Events
@@ -526,7 +534,229 @@ TP.hc(
 
         return evt;
     },
-    TP.DEFAULT,
+    'trident',
+    function(aDocument, anEventSpec) {
+
+        /**
+         * @name documentCreateEvent
+         * @synopsis Creates a native Event object, populating it with the event
+         *     spec data provided. The spec must exist, and must contain a
+         *     'type' key to construct a valid Event. NOTE that the keys in the
+         *     event spec must match those expected for the particular event,
+         *     making this method somewhat touchy with respect to input.
+         * @param {Document} aDocument The native document the event will be
+         *     created within. Default is TIBET's current UI canvas document.
+         * @param {Event|TP.lang.Hash} anEventSpec A hash containing the event
+         *     specification as key/value pairs.
+         * @returns {Event} The newly constructed native Event.
+         * @todo
+         */
+
+        var spec,
+            doc,
+            type,
+            evt,
+
+            modifiers;
+
+        if (TP.isEvent(anEventSpec)) {
+            spec = anEventSpec;
+
+            //  Go ahead and instance program an 'at' function on the Event
+            //  object, so that calls below work without a lot of shuffle.
+            spec.at = function(aKey) {return this[aKey]; };
+        } else if (TP.isValid(anEventSpec)) {
+            spec = TP.hc(anEventSpec);
+        } else {
+			spec = TP.hc();
+		}
+
+        doc = TP.ifInvalid(aDocument,
+                            TP.sys.getUICanvas().getNativeDocument());
+
+        type = TP.ifKeyInvalid(spec, 'type');
+        switch (type) {
+            //  HTML Events
+            case 'abort':
+            case 'blur':
+            case 'change':
+            case 'error':
+            case 'focus':
+            case 'load':
+            case 'reset':
+            case 'resize':
+            case 'scroll':
+            case 'select':
+            case 'submit':
+            case 'unload':
+                evt = doc.createEvent('HTMLEvents');
+                evt.initEvent(
+                            type,
+                            TP.ifKeyInvalid(spec, 'bubbles', true),
+                            TP.ifKeyInvalid(spec, 'cancelable', true));
+                break;
+
+            //  UI Events
+            case 'focusin':
+            case 'focusout':
+                evt = doc.createEvent('UIEvents');
+                evt.initUIEvent(
+                            type,
+                            TP.ifKeyInvalid(spec, 'bubbles', true),
+                            TP.ifKeyInvalid(spec, 'cancelable', true),
+                            TP.ifKeyInvalid(spec,
+                                            'view',
+                                            TP.sys.getUICanvas(true)),
+                            TP.ifKeyInvalid(spec, 'detail', 0));
+                break;
+
+            //  Key Events
+            case 'keydown':
+            case 'keypress':
+            case 'keyup':
+
+                evt = doc.createEvent('KeyboardEvent');
+
+                modifiers = (
+                            (spec.at('ctrlKey') ? 'Control' : '') +
+                            (spec.at('shiftKey') ? ' Shift' : '') +
+                            (spec.at('altKey') ? ' Alt' : '') +
+                            (spec.at('metaKey') ? ' Meta' : '')).trim();
+
+                evt.initKeyboardEvent(
+                            type,
+                            TP.ifKeyInvalid(spec, 'bubbles', true),
+                            TP.ifKeyInvalid(spec, 'cancelable', true),
+                            TP.ifKeyInvalid(spec,
+                                            'view',
+                                            TP.sys.getUICanvas(true)),
+                            TP.ifKeyInvalid(spec, 'key', null),
+                            TP.ifKeyInvalid(spec, 'location', null),
+                            modifiers,
+                            TP.ifKeyInvalid(spec, 'repeat', 0),
+                            TP.ifKeyInvalid(spec, 'locale', 0));
+                break;
+
+            //  Mouse Events
+            case 'click':
+            case 'dblclick':
+            case 'mousedown':
+            case 'mouseenter':
+            case 'mousemove':
+            case 'mouseleave':
+            case 'mouseout':
+            case 'mouseover':
+            case 'mouseup':
+                evt = doc.createEvent('MouseEvents');
+                evt.initMouseEvent(
+                            type,
+                            TP.ifKeyInvalid(spec, 'bubbles', true),
+                            TP.ifKeyInvalid(spec, 'cancelable', true),
+                            TP.ifKeyInvalid(spec,
+                                            'view',
+                                            TP.sys.getUICanvas(true)),
+                            TP.ifKeyInvalid(spec, 'detail', 0),
+                            TP.ifKeyInvalid(spec, 'screenX', 0),
+                            TP.ifKeyInvalid(spec, 'screenY', 0),
+                            TP.ifKeyInvalid(spec, 'clientX', 0),
+                            TP.ifKeyInvalid(spec, 'clientY', 0),
+                            TP.ifKeyInvalid(spec, 'ctrlKey', false),
+                            TP.ifKeyInvalid(spec, 'altKey', false),
+                            TP.ifKeyInvalid(spec, 'shiftKey', false),
+                            TP.ifKeyInvalid(spec, 'metaKey', false),
+                            TP.ifKeyInvalid(spec, 'button', 0),
+                            TP.ifKeyInvalid(spec, 'relatedTarget', null));
+
+                evt.pageX = TP.ifKeyInvalid(spec, 'pageX', 0);
+                evt.pageY = TP.ifKeyInvalid(spec, 'pageY', 0);
+                evt.offsetX = TP.ifKeyInvalid(spec, 'offsetX', 0);
+                evt.offsetY = TP.ifKeyInvalid(spec, 'offsetY', 0);
+
+                break;
+
+            //  Wheel Events
+            case 'mousewheel':
+                evt = doc.createEvent('WheelEvent');
+                evt.initWheelEvent(
+                            TP.ifKeyInvalid(spec, 'wheelDeltaX', 0),
+                            TP.ifKeyInvalid(spec, 'wheelDeltaY', 0),
+                            TP.ifKeyInvalid(spec,
+                                            'view',
+                                            TP.sys.getUICanvas(true)),
+                            TP.ifKeyInvalid(spec, 'screenX', 0),
+                            TP.ifKeyInvalid(spec, 'screenY', 0),
+                            TP.ifKeyInvalid(spec, 'clientX', 0),
+                            TP.ifKeyInvalid(spec, 'clientY', 0),
+                            TP.ifKeyInvalid(spec, 'ctrlKey', false),
+                            TP.ifKeyInvalid(spec, 'altKey', false),
+                            TP.ifKeyInvalid(spec, 'shiftKey', false),
+                            TP.ifKeyInvalid(spec, 'metaKey', false));
+
+                evt.pageX = TP.ifKeyInvalid(spec, 'pageX', 0);
+                evt.pageY = TP.ifKeyInvalid(spec, 'pageY', 0);
+                evt.offsetX = TP.ifKeyInvalid(spec, 'offsetX', 0);
+                evt.offsetY = TP.ifKeyInvalid(spec, 'offsetY', 0);
+
+                break;
+
+            //  Mutation Events
+            case 'DOMAttrModified':
+            case 'DOMNodeInserted':
+            case 'DOMNodeRemoved':
+            case 'DOMCharacterDataModified':
+            case 'DOMNodeInsertedIntoDocument':
+            case 'DOMNodeRemovedFromDocument':
+            case 'DOMSubtreeModified':
+                evt = doc.createEvent('MutationEvents');
+                evt.initMutationEvent(type,
+                            TP.ifKeyInvalid(spec, 'bubbles', true),
+                            TP.ifKeyInvalid(spec, 'cancelable', true),
+                            TP.ifKeyInvalid(spec, 'relatedTarget', null),
+                            TP.ifKeyInvalid(spec, 'prevValue', null),
+                            TP.ifKeyInvalid(spec, 'newValue', null),
+                            TP.ifKeyInvalid(spec, 'attrName', null),
+                            TP.ifKeyInvalid(spec, 'attrChange', null));
+                break;
+
+            default:
+                evt = doc.createEvent('Events');
+                evt.initEvent(
+                            type,
+                            TP.ifKeyInvalid(spec, 'bubbles', true),
+                            TP.ifKeyInvalid(spec, 'cancelable', true));
+
+                //  Not an officially-defined event. Just put the slots from
+                //  the supplied hash onto the Event as instance properties.
+                TP.keys(spec).perform(
+                        function(aKey) {
+
+                            //  We filter out specified properties - Mozilla
+                            //  throws an exception. Trident/Webkit may not,
+                            //  but it probably won't like it.
+                            if (TP.W3C_EVENT_PROPERTIES.test(aKey) ||
+                                TP.EXTRA_EVENT_PROPERTIES.test(aKey)) {
+                                return;
+                            }
+
+                            evt[aKey] = spec.at(aKey);
+                        });
+
+                break;
+        }
+
+        //  additional properties not necessarily covered by spec
+        TP.TIBET_EVENT_PROPERTIES.perform(
+            function(item) {
+
+                try {
+                    evt[item] = spec.at(item.slice(2));
+                } catch (e) {
+                }
+            });
+
+        return evt;
+    },
+    'webkit',
     function(aDocument, anEventSpec) {
 
         /**
@@ -604,22 +834,21 @@ TP.hc(
             case 'keydown':
             case 'keypress':
             case 'keyup':
-                evt = doc.createEvent('UIEvents');
-                evt.initUIEvent(
+                evt = doc.createEvent('KeyboardEvent');
+                evt.initKeyboardEvent(
                             type,
                             TP.ifKeyInvalid(spec, 'bubbles', true),
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
                                             TP.sys.getUICanvas(true)),
-                            TP.ifKeyInvalid(spec, 'detail', 0));
+                            TP.ifKeyInvalid(spec, 'key', false),
+                            TP.ifKeyInvalid(spec, 'location', false),
 
-                //  augment with additional key-specific features
-                evt.ctrlKey = TP.ifKeyInvalid(spec, 'ctrlKey', false);
-                evt.altKey = TP.ifKeyInvalid(spec, 'altKey', false);
-                evt.shiftKey = TP.ifKeyInvalid(spec, 'shiftKey', false);
-                evt.metaKey = TP.ifKeyInvalid(spec, 'metaKey', false);
-                evt.keyCode = TP.ifKeyInvalid(spec, 'keyCode', 0);
+                            TP.ifKeyInvalid(spec, 'ctrlKey', false),
+                            TP.ifKeyInvalid(spec, 'altKey', false),
+                            TP.ifKeyInvalid(spec, 'shiftKey', false),
+                            TP.ifKeyInvalid(spec, 'metaKey', false));
 
                 break;
 
