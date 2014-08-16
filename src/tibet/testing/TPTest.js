@@ -864,8 +864,10 @@ function(target, suiteName, suiteFunc) {
      * @param {String} suiteName The name of the suite. Should be unique for the
      *     particular target.
      * @param {Function} suiteFunc The function representing the test suite.
-     * @return {TP.lang.Hash} The updated collection of test suites.
+     * @return {TP.lang.Hash} The new test suite instance.
      */
+
+    this.callNextMethod();
 
     this.$set('suiteOwner', target);
     this.$set('suiteName', suiteName);
@@ -1313,6 +1315,8 @@ function(suite, caseName, caseFunc) {
      * @param {Function} caseFunc The function implementing the test case.
      * @return {TP.test.Case} The newly created test case.
      */
+
+    this.callNextMethod();
 
     this.$set('suite', suite);
 
