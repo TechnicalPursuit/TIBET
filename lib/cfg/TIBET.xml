@@ -91,6 +91,10 @@ build file content, one of the benefits of TIBET's boot system.
 <config id="developer" if="boot.phaseone">
     <config ref="full"/>
 
+    <!-- The test harness depends on this package - it needs to be read in first
+         -->
+    <package src="tibet_automation.xml" config="full"/>
+
     <package src="tibet_testing.xml" config="full"/>
 
     <package src="sherpa.xml" config="standard"/>

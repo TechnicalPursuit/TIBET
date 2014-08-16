@@ -577,7 +577,7 @@ TP.test.Suite.Inst.defineAttribute('caseList');
 
 /**
  * The driver used for things like fetching resources, etc.
- * @type {TP.test.Driver}
+ * @type {TP.gui.Driver}
  */
 TP.test.Suite.Inst.defineAttribute('driver');
 
@@ -878,7 +878,7 @@ function(target, suiteName, suiteFunc) {
     this.$set('refuter',
         TP.test.TestMethodCollection.construct().set('isRefuter', true));
 
-    this.$set('driver', TP.test.Driver.construct());
+    this.$set('driver', TP.gui.Driver.construct(TP.sys.getUICanvas()));
 
     return this;
 });
@@ -1268,7 +1268,7 @@ function() {
 
     /**
      * Returns the test driver associated with this case's overall test suite.
-     * @return {TP.test.Driver} The test driver.
+     * @return {TP.gui.Driver} The test driver.
      */
 
     return this.$get('suite').$get('driver');

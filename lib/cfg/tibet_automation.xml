@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!--    =============================================================   -->
 <!--
-NAME:   tibet_testing.xml
+NAME:   tibet_automation.xml
 AUTH:   Scott Shattuck (ss)
 NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
         Reserved. Patent Pending, Technical Pursuit Inc.
@@ -28,52 +28,30 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 <!--    =============================================================   -->
 
 <!--    =============================================================   -->
-<!--    TIBET Debugging module file                                     -->
+<!--    TIBET Automation module file                                     -->
 <!--    =============================================================   -->
 
 <!--
 -->
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="tibet_testing" default="base" basedir="~tibet_src/">
+    name="tibet_automation" default="base" basedir="~tibet_src/">
 
 <config id="base" depends="">
-    <config ref="harness"/>
+    <config ref="driver"/>
 </config>
 
 <config id="full" depends="base">
-    <config ref="harness"/>
-    <config ref="assertions"/>
     <config ref="driver"/>
-
-    <config ref="samples"/>
-
-    <config ref="tagprocessor"/>
-    <config ref="databinding"/>
 </config>
 
-<config id="harness">
-    <script src="testing/TPTest.js" />
-</config>
-
-<config id="assertions">
-    <script src="testing/TPTestAssertions.js" />
-</config>
-
-<config id="driver">
-    <script src="~lib_tst/src/tibet/driver/TP.gui.Driver_Tests.js" />
-</config>
-
-<config id="samples">
-    <script src="testing/TPTestSamples.js" />
-</config>
-
-<config id="tagprocessor">
-    <script src="~lib_tst/src/tibet/tagprocessor/TP.core.TagProcessor_Tests.js" />
-</config>
-
-<config id="databinding">
-    <script src="~lib_tst/src/tibet/databinding/TP.core.DataPath_Tests.js" />
-    <script src="~lib_tst/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
+<config id="driver" depends="">
+    <script src="automation/TPGUIDriver.js" />
+    <script src="~lib_deps/syn-tpi.min.js" no-minify="true" no-lint="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.syn = Syn;
+        ]]>
+    </script>
 </config>
 
 </package>
