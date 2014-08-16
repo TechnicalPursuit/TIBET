@@ -128,6 +128,7 @@ targets.build_deps = function(make) {
         targets.rollup_jquery).then(
         targets.rollup_pouchdb).then(
         targets.rollup_q).then(
+        targets.rollup_syn).then(
         targets.rollup_xpath).then(
         function() {
             targets.build_deps.resolve();
@@ -241,6 +242,19 @@ targets.rollup_q = function(make) {
     sh.exec('cp -f q.min.js  ../../deps/q-tpi.min.js');
 
     targets.rollup_q.resolve();
+};
+
+/**
+ */
+targets.rollup_syn = function(make) {
+    var npmdir;
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'syn'));
+    sh.exec('npm install -d');
+    sh.exec('cp -f ./dist/syn.min.js ../../deps/syn-tpi.min.js');
+
+    targets.rollup_syn.resolve();
 };
 
 /**
