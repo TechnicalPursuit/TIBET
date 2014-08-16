@@ -922,7 +922,7 @@ function(aNodeOrId) {
 
     //  Default the inputType to 'text' if its not present, which is what
     //  most browsers do (i.e. if the author leaves of 'type="..."')
-    if (TP.isFalse(inputType = TP.elementGetAttribute(aNodeOrId, 'type'))) {
+    if (TP.isEmpty(inputType = TP.elementGetAttribute(aNodeOrId, 'type'))) {
         inputType = 'text';
     }
 
