@@ -2303,12 +2303,10 @@ TP.ALT_KEY = 18;
 TP.ESCAPE_KEY = 27;
 TP.DELETE_KEY = 46;
 
-TP.regex.CTRL_ALT = /Ctrl.*Alt/;
-TP.regex.ALT_CTRL = /Alt.*Ctrl/;
-TP.regex.CTRL_META = /Ctrl.*Meta/;
-TP.regex.META_CTRL = /Meta.*Ctrl/;
-TP.regex.ALT_META = /Alt.*Meta/;
-TP.regex.META_ALT = /Meta.*Alt/;
+TP.regex.CTRL = /Ctrl_.+/;
+TP.regex.ALT = /Alt_.+/;
+TP.regex.META = /Meta_.+/;
+TP.regex.SHIFT = /Shift_.+/;
 
 TP.regex.PRESS_END = /[Pp]ress$/;
 TP.regex.DOWN_END = /[Dd]own$/;
