@@ -307,14 +307,14 @@ function(anEvent) {
         case 'DOM_Shift_Left_Down':
         case 'DOM_Shift_Left_Up':
 
-        case 'DOM_Shift_Alt_Down_Down':
-        case 'DOM_Shift_Alt_Down_Up':
-        case 'DOM_Shift_Alt_Up_Down':
-        case 'DOM_Shift_Alt_Up_Up':
-        case 'DOM_Shift_Alt_Right_Down':
-        case 'DOM_Shift_Alt_Right_Up':
-        case 'DOM_Shift_Alt_Left_Down':
-        case 'DOM_Shift_Alt_Left_Up':
+        case 'DOM_Alt_Shift_Down_Down':
+        case 'DOM_Alt_Shift_Down_Up':
+        case 'DOM_Alt_Shift_Up_Down':
+        case 'DOM_Alt_Shift_Up_Up':
+        case 'DOM_Alt_Shift_Right_Down':
+        case 'DOM_Alt_Shift_Right_Up':
+        case 'DOM_Alt_Shift_Left_Down':
+        case 'DOM_Alt_Shift_Left_Up':
 
         case 'DOM_Shift_Backspace_Down':
         case 'DOM_Shift_Backspace_Press':
@@ -384,25 +384,25 @@ function(anEvent) {
             }
             break;
 
-        case 'DOM_Shift_Alt_Down_Up':
+        case 'DOM_Alt_Shift_Down_Up':
             if (inputCell.showingEvalMark()) {
                 inputCell.shiftEvalMark(TP.DOWN, TP.HEAD);
             }
             break;
 
-        case 'DOM_Shift_Alt_Up_Up':
+        case 'DOM_Alt_Shift_Up_Up':
             if (inputCell.showingEvalMark()) {
                 inputCell.shiftEvalMark(TP.UP, TP.HEAD);
             }
             break;
 
-        case 'DOM_Shift_Alt_Right_Up':
+        case 'DOM_Alt_Shift_Right_Up':
             if (inputCell.showingEvalMark()) {
                 inputCell.shiftEvalMark(TP.RIGHT, TP.HEAD);
             }
             break;
 
-        case 'DOM_Shift_Alt_Left_Up':
+        case 'DOM_Alt_Shift_Left_Up':
             if (inputCell.showingEvalMark()) {
                 inputCell.shiftEvalMark(TP.LEFT, TP.HEAD);
             }
