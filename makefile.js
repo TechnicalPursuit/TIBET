@@ -237,6 +237,7 @@ targets.rollup_q = function(make) {
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'q'));
     sh.exec('npm install -d');
+    sh.exec('cp -f q.js  ../../deps/q-tpi.js');
     sh.exec('cp -f q.min.js  ../../deps/q-tpi.min.js');
 
     targets.rollup_q.resolve();
