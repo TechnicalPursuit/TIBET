@@ -46,7 +46,11 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 <config id="driver" depends="">
     <script src="automation/TPGUIDriver.js" />
-    <script src="~lib_deps/syn-tpi.min.js" no-minify="true" no-lint="true"/>
+    <script src="~lib_deps/syn-tpi.min.js"
+        unless="boot.unminified" no-minify="true" no-lint="true"/>
+    <script src="~lib_deps/syn-tpi.js"
+        if="boot.unminified" no-minify="true" no-lint="true"/>
+
     <script>
         <![CDATA[
         TP.extern.syn = Syn;
