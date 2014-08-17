@@ -303,12 +303,15 @@ function(aLocation, mouseButton) {
         return this;
     }
 
-    if (!TP.isElement(currentElement)) {
-        currentElement = this.get('driver').getFocusedElement();
+    if (!TP.isValid(point)) {
 
         if (!TP.isElement(currentElement)) {
-            //  TODO: Raise an exception
-            return this;
+            currentElement = this.get('driver').getFocusedElement();
+
+            if (!TP.isElement(currentElement)) {
+                //  TODO: Raise an exception
+                return this;
+            }
         }
 
         point = TP.wrap(currentElement).getPagePoint().getCenterPoint();
@@ -361,12 +364,15 @@ function(aLocation, mouseButton) {
         return this;
     }
 
-    if (!TP.isElement(currentElement)) {
-        currentElement = this.get('driver').getFocusedElement();
+    if (!TP.isValid(point)) {
 
         if (!TP.isElement(currentElement)) {
-            //  TODO: Raise an exception
-            return this;
+            currentElement = this.get('driver').getFocusedElement();
+
+            if (!TP.isElement(currentElement)) {
+                //  TODO: Raise an exception
+                return this;
+            }
         }
 
         point = TP.wrap(currentElement).getPagePoint().getCenterPoint();
@@ -474,12 +480,15 @@ function(aLocation, mouseButton) {
         return this;
     }
 
-    if (!TP.isElement(currentElement)) {
-        currentElement = this.get('driver').getFocusedElement();
+    if (!TP.isValid(point)) {
 
         if (!TP.isElement(currentElement)) {
-            //  TODO: Raise an exception
-            return this;
+            currentElement = this.get('driver').getFocusedElement();
+
+            if (!TP.isElement(currentElement)) {
+                //  TODO: Raise an exception
+                return this;
+            }
         }
 
         point = TP.wrap(currentElement).getPagePoint().getCenterPoint();
@@ -537,12 +546,15 @@ function(aLocation, mouseButton) {
         return this;
     }
 
-    if (!TP.isElement(currentElement)) {
-        currentElement = this.get('driver').getFocusedElement();
+    if (!TP.isValid(point)) {
 
         if (!TP.isElement(currentElement)) {
-            //  TODO: Raise an exception
-            return this;
+            currentElement = this.get('driver').getFocusedElement();
+
+            if (!TP.isElement(currentElement)) {
+                //  TODO: Raise an exception
+                return this;
+            }
         }
 
         point = TP.wrap(currentElement).getPagePoint().getCenterPoint();
