@@ -204,33 +204,33 @@
   <key id="_49" char="U0031" glyph="1"/>
   <key id="_49_shifted" char="U0021" key="Exclamation" glyph="!"/>
 
-  <key id="_50" char="UU032" glyph="2"/>
+  <key id="_50" char="U0032" glyph="2"/>
   <key id="_50_shifted" char="U0040" key="At" glyph="@"/>
 
-  <key id="_51" char="UU033" glyph="3"/>
+  <key id="_51" char="U0033" glyph="3"/>
   <key id="_51_shifted" char="U0023" key="Hash" glyph="#"/>
 
-  <key id="_52" char="UU034" glyph="4"/>
+  <key id="_52" char="U0034" glyph="4"/>
   <key id="_52_shifted" char="U0024" key="Dollar" glyph="$"/>
 
-  <key id="_53" char="UU035" glyph="5"/>
+  <key id="_53" char="U0035" glyph="5"/>
   <key id="_53_shifted" char="U0025" key="Percent" glyph="%"/>
 
-  <key id="_54" char="UU036" glyph="6"/>
+  <key id="_54" char="U0036" glyph="6"/>
   <key id="_54_shifted" char="U005E" key="Circumflex" glyph="^"/>
 
-  <key id="_55" char="UU037" glyph="7"/>
+  <key id="_55" char="U0037" glyph="7"/>
   <key id="_55_shifted" char="U0026" key="Ampersand" glyph="&amp;"/>
 
-  <key id="_56" char="UU038" glyph="8"/>
+  <key id="_56" char="U0038" glyph="8"/>
   <key id="_56_shifted" char="U002A" key="Asterisk" glyph="*"/>
 
-  <key id="_57" char="UU039" glyph="9"/>
+  <key id="_57" char="U0039" glyph="9"/>
   <key id="_57_shifted" char="U0028" key="LeftParen" glyph="("/>
 
   <!-- The 'Equals' character -->
-  <key id="_187" char="UU03D" key="Equals" glyph="="/>
-  <key id="_61" browser="firefox" char="UU03D" key="Equals" glyph="="/>
+  <key id="_187" char="U003D" key="Equals" glyph="="/>
+  <key id="_61" browser="firefox" char="U003D" key="Equals" glyph="="/>
 
   <!-- The 'Plus' character -->
   <key id="_187_shifted" char="U002B" key="Plus" glyph="+"/>
@@ -251,14 +251,14 @@
 
   <key id="_96" char="U0030" glyph="0"/>
   <key id="_97" char="U0031" glyph="1"/>
-  <key id="_98" char="UU032" glyph="2"/>
-  <key id="_99" char="UU033" glyph="3"/>
-  <key id="_100" char="UU034" glyph="4"/>
-  <key id="_101" char="UU035" glyph="5"/>
-  <key id="_102" char="UU036" glyph="6"/>
-  <key id="_103" char="UU037" glyph="7"/>
-  <key id="_104" char="UU038" glyph="8"/>
-  <key id="_105" char="UU039" glyph="9"/>
+  <key id="_98" char="U0032" glyph="2"/>
+  <key id="_99" char="U0033" glyph="3"/>
+  <key id="_100" char="U0034" glyph="4"/>
+  <key id="_101" char="U0035" glyph="5"/>
+  <key id="_102" char="U0036" glyph="6"/>
+  <key id="_103" char="U0037" glyph="7"/>
+  <key id="_104" char="U0038" glyph="8"/>
+  <key id="_105" char="U0039" glyph="9"/>
 
   <!-- Numeric keypad -->
 
