@@ -14,7 +14,8 @@
 /**
  */
 
-/* global Q:true
+/* global Q:true,
+          Syn:true
 */
 
 //  ------------------------------------------------------------------------
@@ -26,6 +27,144 @@ TP.lang.Object.defineSubtype('gui.Driver');
 //  ------------------------------------------------------------------------
 
 TP.gui.Driver.Inst.defineAttribute('windowContext');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.gui.Driver.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @name initialize
+     * @synopsis Performs one-time setup for the type on startup/import.
+     */
+
+    var newKeymap,
+
+        xml,
+
+        entries,
+        i,
+
+        entry,
+
+        keyCode,
+        val,
+    
+        kinds,
+        defaults;
+
+    //  The 'Syn' library that we use has a hard-coded key configuration
+    //  suitable for US ASCII 101 keyboards. We want a more flexible approach,
+    //  driven by the W3C-defined keyboard values in our key map.
+    //  Therefore, we build a new keymap for Syn by iterating through our
+    //  keymap. Note that an added enhancement here is that we very well may
+    //  generate multiple Syn key entries for a single key map entry.
+    //  For instance, this entry:
+    //
+    //      <key id="_187" char="U003D" key="Equals" glyph="="/>
+    //
+    //  will generate the following entries:
+    //
+    //      newKeymap['Equals'] -> 187
+    //      newKeymap['='] -> 187
+    //      newKeymap['\u003D'] -> 187
+
+    newKeymap = {};
+
+    xml = TP.core.Keyboard.getCurrentKeyboard().get('mapxml');
+    entries = TP.nodeEvaluateXPath(xml, '//*[local-name() = "key"]');
+    for (i = 0; i< entries.getSize(); i++) {
+        entry = entries.at(i);
+
+        //  Make sure that the entry has a key
+        if (TP.isEmpty(keyCode = TP.elementGetAttribute(entry, 'id'))) {
+            continue;
+        }
+
+        //  If the entry has a 'platform' qualification, make sure that it
+        //  matches the platform (i.e. operating system) we're currently on.
+        if (TP.elementHasAttribute(entry, 'platform') &&
+                TP.elementGetAttribute(entry, 'platform') !== TP.$platform) {
+            continue;
+        }
+
+        //  If the entry has a 'browser' qualification, make sure that it
+        //  matches the browser we're currently on.
+        if (TP.elementHasAttribute(entry, 'browser') &&
+                TP.elementGetAttribute(entry, 'browser') !== TP.$browser) {
+            continue;
+        }
+
+        keyCode = keyCode.slice(1).asNumber();
+
+        if (TP.notEmpty(val = TP.elementGetAttribute(entry, 'key'))) {
+            newKeymap[val] = keyCode;
+        }
+
+        if (TP.notEmpty(val = TP.elementGetAttribute(entry, 'glyph'))) {
+            newKeymap[val] = keyCode;
+        }
+
+        if (TP.notEmpty(val = TP.elementGetAttribute(entry, 'char'))) {
+            val = val.replace('U', '\\u');
+            newKeymap[val] = keyCode;
+        }
+    }
+
+    TP.extern.syn.keycodes = newKeymap;
+
+    //  Reprogram the various 'kinds' Arrays to contain our constants
+    kinds = TP.extern.syn.key.kinds;
+
+    kinds.special = TP.ac('Shift', 'Control', 'Alt', 'CapsLock');
+    kinds.navigation = TP.ac('PageUp', 'PageDown', 'End', 'Home',
+                                'Left', 'Up', 'Right', 'Down',
+                                'Insert', 'Del');
+    kinds['function'] = TP.ac('F1', 'F2', 'F3', 'F4',
+                                'F5', 'F6', 'F7', 'F8',
+                                'F9', 'F10', 'F11', 'F12');
+
+    //  Reprogram the various 'defaults' Object to contain the equivalent
+    //  Syn-defined actions and delete the corresponding Syn key.
+    defaults = TP.extern.syn.key.defaults;
+
+    defaults.Shift = defaults.shift;
+    delete defaults.shift;
+    defaults.Control = defaults.ctrl;
+    delete defaults.ctrl;
+
+    defaults.PageDown = defaults['page-down'];
+    delete defaults['page-down'];
+    defaults.PageUp = defaults['page-up'];
+    delete defaults['page-up'];
+    defaults.Home = defaults.home;
+    delete defaults.home;
+    defaults.End = defaults.end;
+    delete defaults.end;
+
+    defaults.Backspace = defaults['\b'];
+    delete defaults['\b'];
+    defaults.Enter = defaults['\r'];
+    delete defaults['\r'];
+    defaults.Tab = defaults['\t'];
+    delete defaults['\t'];
+
+    defaults.Del = defaults['delete'];
+    delete defaults['delete'];
+
+    defaults.Left = defaults.left;
+    delete defaults.left;
+    defaults.Right = defaults.right;
+    delete defaults.right;
+    defaults.Up = defaults.up;
+    delete defaults.up;
+    defaults.Down = defaults.down;
+    delete defaults.down;
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
