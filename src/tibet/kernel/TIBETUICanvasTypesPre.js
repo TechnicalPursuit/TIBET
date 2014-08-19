@@ -2141,6 +2141,36 @@ function(aProvider) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Window.Inst.defineMethod('back',
+function() {
+
+    /**
+     * @name back
+     * @synopsis Causes the receiver to go back a page in session history
+     */
+
+    this.getNativeWindow().history.back();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Window.Inst.defineMethod('blur',
+function() {
+
+    /**
+     * @name blur
+     * @synopsis Blurs the receiver.
+     */
+
+    this.getNativeWindow().blur();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Window.Inst.defineMethod('constructObject',
 function(constructorName, varargs) {
 
@@ -2323,6 +2353,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Window.Inst.defineMethod('focus',
+function() {
+
+    /**
+     * @name focus
+     * @synopsis Focuses the receiver, possibly bringing it to the front.
+     */
+
+    this.getNativeWindow().focus();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Window.Inst.defineMethod('isInstrumented',
 function() {
 
@@ -2354,6 +2399,27 @@ function(aSignal) {
     TP.debug('break.bind_refresh');
 
     this.getContentDocument().refresh(aSignal);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Window.Inst.defineMethod('reload',
+function(forceReload) {
+
+    /**
+     * @name reload
+     * @synopsis Reloads the resource currently displayed in the receiver.
+     * @param {Boolean} forceReload An optional parameter that determines
+     *     whether the browser should reload the page from the server or from
+     *     its cache. The default value is false.
+     */
+
+    //  this will reload the window, and the unload/load hook should do the rest
+    this.getNativeWindow().location.reload(forceReload);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
