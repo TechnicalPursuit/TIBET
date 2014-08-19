@@ -1645,6 +1645,84 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Keyboard.Type.defineMethod('getKeyCodeForKeyNamed',
+function(keyNameOrGlyph) {
+
+    /**
+     * @name getKeyCodeForKeyNamed
+     * @synopsis Returns the current keyboard's virtual key code for the name
+     *     provided.
+     * @param {String} keyNameOrGlyph The name or glyph of the key to look up.
+     *     If a key name, this would be something like 'Backspace'. If a key
+     *     glyph, it would be something like 'D'.
+     * @raise TP.sig.InvalidParameter
+     * @returns {Number} The virtual key code, or -1 when not found.
+     */
+
+    var xml,
+
+        path,
+        elems,
+
+        keyCode,
+
+        elem;
+
+    if (!TP.isString(keyNameOrGlyph)) {
+        this.raise('TP.sig.InvalidParameter', arguments);
+        return;
+    }
+
+    if (TP.notValid(xml = TP.core.Keyboard.get('mapxml'))) {
+        return;
+    }
+
+    path = TP.join(
+            '//*[@key="', keyNameOrGlyph, '"]',
+            '[(@platform="', TP.$platform,
+                '" and @browser="', TP.$browser, '")',
+            ' or (@browser="', TP.$browser, '")',
+            ' or (@platform="', TP.$platform, '")',
+            ' or .]');
+
+    if (TP.isEmpty(elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET))) {
+        path = TP.join(
+                '//*[@glyph="', keyNameOrGlyph, '"]',
+                '[(@platform="', TP.$platform,
+                    '" and @browser="', TP.$browser, '")',
+                ' or (@browser="', TP.$browser, '")',
+                ' or (@platform="', TP.$platform, '")',
+                ' or .]');
+
+        //  Couldn't find an entry using either 'key' or 'glyph'
+        if (TP.isEmpty(elems = TP.nodeEvaluateXPath(xml, path, TP.NODESET))) {
+            return -1;
+        }
+    }
+
+    //  If more than one element was returned, that means that we must have
+    //  entries for specific browser, platform or both. Sort them so that
+    //  entries with platform, then browser, then browser and platform
+    //  (least to most specific) are towards the end of the list and use the
+    //  last one.
+    if (elems.getSize() > 1) {
+        elems.sort(TP.KEYMAP_ELEMENT_SORT);
+        elem = elems.last();
+    } else {
+        //  There was only one.
+        elem = elems.first();
+    }
+
+    if (TP.notEmpty(keyCode = TP.elementGetAttribute(elem, 'id'))) {
+        //  Slice off the '_' and make it a Number
+        return keyCode.slice(1).asNumber();
+    }
+
+    return -1;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Keyboard.Type.defineMethod('$getVirtualKeySignalName',
 function(normalizedEvent) {
 
