@@ -5855,6 +5855,8 @@ function() {
     } else {
         return this.raise('TP.sig.InvalidType', arguments, this);
     }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

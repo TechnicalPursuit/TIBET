@@ -2057,8 +2057,9 @@ function() {
     var node,
         name,
         doc,
-        i,
         items,
+        len,
+        i,
         item;
 
     if (TP.notValid(node = this.getNativeNode())) {
@@ -2075,8 +2076,9 @@ function() {
     items = TP.nodeGetDescendantElementsByName(doc, name);
 
     //  find the selected element and stop when found
-    for (i = 0; i < items.length; i++) {
-        item = items[i];
+    len = items.getSize();
+    for (i = 0; i < len; i++) {
+        item = items.at(i);
         if (item.checked ||
             (TP.elementGetAttribute(item, 'checked') === 'checked')) {
             //  the selected element's string value
@@ -2134,9 +2136,10 @@ function(aValue) {
     var node,
         name,
         doc,
+        items,
+        len,
         i,
-        item,
-        items;
+        item;
 
     if (TP.notValid(node = this.getNativeNode())) {
         return this.raise('TP.sig.InvalidNode', arguments);
@@ -2150,8 +2153,9 @@ function(aValue) {
     doc = this.getNativeDocument();
     items = TP.nodeGetDescendantElementsByName(doc, name);
 
-    for (i = 0; i < items.length; i++) {
-        item = items[i];
+    len = items.getSize();
+    for (i = 0; i < len; i++) {
+        item = items.at(i);
 
         if (item.value === aValue) {
             item.checked = true;
@@ -2757,13 +2761,15 @@ function(aValue) {
      * @param {Object} aValue The value to de-select. Note that this can be an
      *     array. Also note that if no value is provided this will deselect
      *     (clear) all selected items.
+     * @raise TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
-    var i,
+    var elementArray,
+        dict,
         dirty,
-        elementArray,
-        dict;
+        len,
+        i;
 
     if (TP.isEmpty(aValue)) {
         return this.deselectAll();
@@ -2780,12 +2786,15 @@ function(aValue) {
         dict = TP.hc(aValue, '');
     }
 
-    for (i = 0; i < elementArray.length; i++) {
-        if (dict.containsKey(elementArray[i].value)) {
-            if (elementArray[i].selected) {
+    dirty = false;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (dict.containsKey(elementArray.at(i).value)) {
+            if (elementArray.at(i).selected) {
                 dirty = true;
             }
-            elementArray[i].selected = false;
+            elementArray.at(i).selected = false;
         }
     }
 
@@ -2804,24 +2813,27 @@ function() {
     /**
      * @name deselectAll
      * @synopsis Clears any current selection(s).
+     * @raise TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
-    var i,
+    var elementArray,
         dirty,
-        arr;
+        len,
+        i;
 
-    if (TP.notValid(arr = this.getElementArray())) {
+    if (TP.notValid(elementArray = this.getElementArray())) {
         return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
     dirty = false;
 
-    for (i = 0; i < arr.length; i++) {
-        if (arr[i].selected) {
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (elementArray.at(i).selected) {
             dirty = true;
         }
-        arr[i].selected = false;
+        elementArray.at(i).selected = false;
     }
 
     if (dirty) {
@@ -2897,9 +2909,10 @@ function() {
      */
 
     var node,
-        theIndex,
         elementArray,
+        theIndex,
         selectionArray,
+        len,
         i;
 
     if (TP.notValid(node = this.getNativeNode())) {
@@ -2918,16 +2931,17 @@ function() {
             return null;
         }
 
-        return elementArray[theIndex].value;
+        return elementArray.at(theIndex).value;
     }
 
     selectionArray = TP.ac();
 
     //  Loop over all of the elements and if the element at the index is
     //  selected, add it to the Array of selected elements.
-    for (i = 0; i < elementArray.length; i++) {
-        if (elementArray[i].selected) {
-            selectionArray.push(elementArray[i].value);
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (elementArray.at(i).selected) {
+            selectionArray.push(elementArray.at(i).value);
         }
     }
 
@@ -3056,7 +3070,7 @@ function(aSignal, anItemset) {
     if (TP.isArray(content)) {
         len = content.length;
         for (i = 0; i < len; i++) {
-            arr.push(template.transform(content[i]));
+            arr.push(template.transform(content.at(i)));
         }
     } else {
         arr = content.injectInto(arr,
@@ -3098,10 +3112,10 @@ function(aSignal) {
      */
 
     var node,
+        option,
         content,
         template,
-        arr,
-        option;
+        arr;
 
     if (TP.notValid(node = this.getNativeNode())) {
         return this.raise('TP.sig.InvalidNode', arguments);
@@ -3168,14 +3182,16 @@ function(aValue) {
      *     provided this method will selectAll.
      * @param {Object} aValue The value to select. Note that this can be an
      *     array.
+     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
-    var i,
-        dirty,
+    var value,
         elementArray,
-        value,
-        dict;
+        dict,
+        dirty,
+        len,
+        i;
 
     //  no value? full selection
     if (TP.isEmpty(aValue)) {
@@ -3209,15 +3225,16 @@ function(aValue) {
 
     dirty = false;
 
-    for (i = 0; i < elementArray.length; i++) {
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
         //  NOTE that we don't clear ones that don't match, we just add the
         //  new items to the selection
-        if (dict.containsKey(elementArray[i].value)) {
-            if (!elementArray[i].selected) {
+        if (dict.containsKey(elementArray.at(i).value)) {
+            if (!elementArray.at(i).selected) {
                 dirty = true;
             }
 
-            elementArray[i].selected = true;
+            elementArray.at(i).selected = true;
         }
     }
 
@@ -3236,12 +3253,14 @@ function() {
     /**
      * @name selectAll
      * @synopsis Selects all options.
+     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.select} The receiver.
      */
 
-    var i,
+    var elementArray,
         dirty,
-        elementArray;
+        len,
+        i;
 
     if (!this.allowsMultiples()) {
         return this.raise(
@@ -3256,11 +3275,12 @@ function() {
 
     dirty = false;
 
-    for (i = 0; i < elementArray.length; i++) {
-        if (!elementArray[i].selected) {
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (!elementArray.at(i).selected) {
             dirty = true;
         }
-        elementArray[i].selected = true;
+        elementArray.at(i).selected = true;
     }
 
     if (dirty) {
@@ -3287,11 +3307,12 @@ function(aValue) {
      * @returns {TP.html.select} The receiver.
      */
 
-    var i,
-        dirty,
-        elementArray,
+    var elementArray,
         value,
-        dict;
+        dict,
+        dirty,
+        len,
+        i;
 
     //  empty value means clear any selection(s)
     if (TP.isEmpty(aValue)) {
@@ -3310,7 +3331,7 @@ function(aValue) {
 
     //  watch for multiple selection issues
     if (TP.isArray(value) && !this.allowsMultiples()) {
-        value = value[0];
+        value = value.at(0);
     }
 
     //  avoid MxN iterations by creating a hash of values
@@ -3322,17 +3343,18 @@ function(aValue) {
 
     dirty = false;
 
-    for (i = 0; i < elementArray.length; i++) {
-        if (dict.containsKey(elementArray[i].value)) {
-            if (!elementArray[i].selected) {
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (dict.containsKey(elementArray.at(i).value)) {
+            if (!elementArray.at(i).selected) {
                 dirty = true;
             }
-            elementArray[i].selected = true;
+            elementArray.at(i).selected = true;
         } else {
-            if (elementArray[i].selected) {
+            if (elementArray.at(i).selected) {
                 dirty = true;
             }
-            elementArray[i].selected = false;
+            elementArray.at(i).selected = false;
         }
     }
 

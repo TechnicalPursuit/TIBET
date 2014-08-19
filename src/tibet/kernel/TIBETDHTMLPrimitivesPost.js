@@ -3877,7 +3877,7 @@ function(anElement, preserveSpace) {
      *     Otherwise, it adjusts the 'display'.
      * @param {HTMLElement} anElement The element to hide.
      * @param {Boolean} preserveSpace Whether or not to 'preserve the space'
-     *     taken up by the element in its document.
+     *     taken up by the element in its document. The default is false.
      * @raises TP.sig.InvalidElement
      * @todo
      */

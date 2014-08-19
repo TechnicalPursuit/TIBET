@@ -1271,6 +1271,8 @@ function() {
 
     this.Type.set('$traversalLevel', 0);
     this.Type.set('$prefixParts', TP.ac());
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

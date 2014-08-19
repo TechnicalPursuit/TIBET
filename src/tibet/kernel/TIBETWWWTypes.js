@@ -513,6 +513,8 @@ function() {
                     item.last().toUpperCase().replace(' ', '_', 'g'),
                     item.first());
         }.bind(this));
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

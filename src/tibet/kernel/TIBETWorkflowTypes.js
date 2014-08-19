@@ -5553,6 +5553,7 @@ function() {
      */
 
     this.observe(TP.sys, 'TP.sig.AppStart');
+
     return;
 });
 
