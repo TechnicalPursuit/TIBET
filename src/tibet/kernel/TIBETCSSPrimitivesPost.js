@@ -1276,7 +1276,7 @@ function(anElement, aProperty) {
      *     for.
      * @param {String|Array} aProperty An optional property name or names to
      *     query for.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {String} The computed style of the supplied element/property, or
      *     the empty String if there was no style.
      * @todo
@@ -1293,7 +1293,7 @@ function(anElement, aProperty) {
 
     if (TP.notValid(compStyleObj =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidStyle', arguments);
     }
 
     if (TP.isString(aProperty)) {
@@ -1321,6 +1321,45 @@ function(anElement, aProperty) {
         });
 
     return styleStr.join('');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementGetComputedStyleProperty',
+function(anElement, aProperty) {
+
+    /**
+     * @name elementGetComputedStyleProperty
+     * @synopsis Gets the element's *computed* style property named by the
+     *     supplied property name.
+     * @param {HTMLElement} anElement The element to get the computed style
+     *     property from.
+     * @param {String} aProperty The name of the style property to get.
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,
+     *         TP.sig.InvalidStyle
+     * @returns {Object} The current computed value of the style property named
+     *     by aProperty on the supplied element.
+     * @todo
+     */
+
+    var compStyleObj,
+        value;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+    }
+
+    if (TP.isEmpty(aProperty)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+    }
+
+    if (TP.notValid(compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle', arguments);
+    }
+
+    value = compStyleObj[aProperty.asDOMName()];
+
+    return value;
 });
 
 //  ------------------------------------------------------------------------
