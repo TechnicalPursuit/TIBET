@@ -1084,6 +1084,116 @@ TP.html.inputCheckable.isAbstract(true);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('addSelection',
+function(aValue, elementProperty) {
+
+    /**
+     * @name addSelection
+     * @synopsis Adds a selection to the grouping of elements that the receiver
+     *     is a part of (as matched by their 'name' attribute) matching the
+     *     criteria if found. Note that this method does not clear existing
+     *     selections when processing the value(s) provided.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used with each grouped element to determine which of
+     *      them will be selected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      elements to add to the selection. Note that this can be an Array.
+     * @param {String} elementProperty The property of the elements to use to
+     *      determine which elements should be selected.
+     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @returns {TP.html.inputCheckable} The receiver.
+     */
+
+    var value,
+        elementArray,
+    
+        aspect,
+        dict,
+        dirty,
+
+        len,
+        i,
+        item,
+        val;
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(' ').collapse();
+    } else {
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                arguments,
+                'Target TP.html.select does not allow multiple selection');
+    }
+
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
+    }
+
+    //  avoid MxN iterations by creating a hash of values
+    if (TP.isArray(value)) {
+        dict = TP.hc().addAllKeys(value);
+    } else {
+        dict = TP.hc(value, '');
+    }
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(elementProperty, 'value');
+
+    dirty = false;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = elementArray.at(i);
+
+        switch(aspect) {
+            case 'value':
+                val = item.value;
+            break;
+
+            case 'label':
+                val = TP.nodeGetTextContent(elementArray.at(i));
+            break;
+
+            case 'id':
+                val = item.id;
+            break;
+
+            case 'index':
+                val = i;
+            break;
+        }
+
+        //  NOTE that we don't clear ones that don't match, we just add the
+        //  new items to the selection
+        if (dict.containsKey(val)) {
+            if (!item.checked) {
+                dirty = true;
+            }
+
+            item.checked = true;
+            TP.elementSetAttribute(item, 'checked', 'checked', true);
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('deselect',
 function() {
 
@@ -1274,6 +1384,117 @@ function() {
 
     node.checked = false;
     this.removeAttribute('checked');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('removeSelection',
+function(aValue, elementProperty) {
+
+    /**
+     * @name removeSelection
+     * @synopsis Removes a selection from the grouping of elements that the
+     *     receiver is a part of (as matched by their 'name' attribute) matching
+     *     the criteria if found. Note that this method does not clear existing
+     *     selections when processing the value(s) provided.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used with each grouped element to determine which of
+     *      them will be deselected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      elements to remove from the selection. Note that this can be an
+     *      Array.
+     * @param {String} elementProperty The property of the elements to use to
+     *      determine which elements should be deselected.
+     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @returns {TP.html.inputCheckable} The receiver.
+     */
+
+    var value,
+        elementArray,
+    
+        aspect,
+        dict,
+        dirty,
+
+        len,
+        i,
+        item,
+        val;
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(' ').collapse();
+    } else {
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                arguments,
+                'Target TP.html.select does not allow multiple selection');
+    }
+
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
+    }
+
+    //  avoid MxN iterations by creating a hash of values
+    if (TP.isArray(value)) {
+        dict = TP.hc().addAllKeys(value);
+    } else {
+        dict = TP.hc(value, '');
+    }
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(elementProperty, 'value');
+
+    dirty = false;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = elementArray.at(i);
+
+        switch(aspect) {
+            case 'value':
+                val = item.value;
+            break;
+
+            case 'label':
+                val = TP.nodeGetTextContent(elementArray.at(i));
+            break;
+
+            case 'id':
+                val = item.id;
+            break;
+
+            case 'index':
+                val = i;
+            break;
+        }
+
+        //  NOTE that we don't clear ones that don't match, we just add the
+        //  new items to the selection
+        if (dict.containsKey(val)) {
+            if (item.checked) {
+                dirty = true;
+            }
+
+            item.checked = false;
+            TP.elementRemoveAttribute(item, 'checked', true);
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
 
     return this;
 });
@@ -2892,6 +3113,115 @@ function(anObject, formatArgs) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.html.select.Inst.defineMethod('addSelection',
+function(aValue, optionProperty) {
+
+    /**
+     * @name addSelection
+     * @synopsis Adds the selection matching the criteria if found. Note that
+     *     this method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used with each 'option' element to determine which
+     *      of them will be selected.
+     *          'value'     ->  The value of the option (the default)
+     *          'label'     ->  The label of the option
+     *          'id'        ->  The id of the option
+     *          'index'     ->  The numerical index of the option
+     * @param {Object|Array} aValue The value to use when determining the
+     *      options to add to the selection. Note that this can be an Array.
+     * @param {String} optionProperty The property of the option elements to use
+     *      to determine which options should be selected.
+     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @returns {TP.html.select} The receiver.
+     */
+
+    var value,
+        elementArray,
+    
+        aspect,
+        dict,
+        dirty,
+
+        len,
+        i,
+        item,
+        val;
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(' ').collapse();
+    } else {
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                arguments,
+                'Target TP.html.select does not allow multiple selection');
+    }
+
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
+    }
+
+    //  avoid MxN iterations by creating a hash of values
+    if (TP.isArray(value)) {
+        dict = TP.hc().addAllKeys(value);
+    } else {
+        dict = TP.hc(value, '');
+    }
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(optionProperty, 'value');
+
+    dirty = false;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = elementArray.at(i);
+
+        switch(aspect) {
+            case 'value':
+                val = item.value;
+            break;
+
+            case 'label':
+                val = TP.nodeGetTextContent(elementArray.at(i));
+            break;
+
+            case 'id':
+                val = item.id;
+            break;
+
+            case 'index':
+                val = i;
+            break;
+        }
+
+        //  NOTE that we don't clear ones that don't match, we just add the
+        //  new items to the selection
+        if (dict.containsKey(val)) {
+            if (!item.selected) {
+                dirty = true;
+            }
+
+            item.selected = true;
+            TP.elementSetAttribute(item, 'selected', 'selected', true);
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.select.Inst.defineMethod('allowsMultiples',
 function() {
 
@@ -3332,6 +3662,116 @@ function(aSignal) {
     TP.nodeSetContent(node, arr.join());
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('removeSelection',
+function(aValue, optionProperty) {
+
+    /**
+     * @name removeSelection
+     * @synopsis Removes the selection matching the criteria if found. Note that
+     *     this method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used with each 'option' element to determine which
+     *      of them will be deselected.
+     *          'value'     ->  The value of the option (the default)
+     *          'label'     ->  The label of the option
+     *          'id'        ->  The id of the option
+     *          'index'     ->  The numerical index of the option
+     * @param {Object|Array} aValue The value to use when determining the
+     *      options to remove from the selection. Note that this can be an
+     *      Array.
+     * @param {String} optionProperty The property of the option elements to use
+     *      to determine which options should be deselected.
+     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @returns {TP.html.select} The receiver.
+     */
+
+    var value,
+        elementArray,
+    
+        aspect,
+        dict,
+        dirty,
+
+        len,
+        i,
+        item,
+        val;
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(' ').collapse();
+    } else {
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                arguments,
+                'Target TP.html.select does not allow multiple selection');
+    }
+
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
+    }
+
+    //  avoid MxN iterations by creating a hash of values
+    if (TP.isArray(value)) {
+        dict = TP.hc().addAllKeys(value);
+    } else {
+        dict = TP.hc(value, '');
+    }
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(optionProperty, 'value');
+
+    dirty = false;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = elementArray.at(i);
+
+        switch(aspect) {
+            case 'value':
+                val = item.value;
+            break;
+
+            case 'label':
+                val = TP.nodeGetTextContent(elementArray.at(i));
+            break;
+
+            case 'id':
+                val = item.id;
+            break;
+
+            case 'index':
+                val = i;
+            break;
+        }
+
+        //  NOTE that we don't clear ones that don't match, we just add the
+        //  new items to the selection
+        if (dict.containsKey(val)) {
+            if (item.selected) {
+                dirty = true;
+            }
+
+            item.selected = false;
+            TP.elementRemoveAttribute(item, 'selected', true);
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
