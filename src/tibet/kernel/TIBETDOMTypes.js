@@ -1596,6 +1596,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('getOuterContent',
+function(aRequest) {
+
+    /**
+     * @name getOuterContent
+     * @synopsis Returns the receiver's 'outer' content - that is, its entire
+     *     representation, including any childNode representations.
+     * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
+     *     parameters.
+     * @returns {String} The outer content of the native node.
+     */
+
+    //  For most nodes, this is the same as asString().
+    return this.asString();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('getMIMEType',
 function() {
 
