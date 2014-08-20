@@ -1493,11 +1493,12 @@ function(includesGroups) {
 
     results = TP.byCSS(selExpr, this.getNativeNode());
 
-    //  Iterate over them and see if they're 'truly visible'
+    //  Iterate over them and see if they're displayed (not hidden by CSS -
+    //  although they could currently not be visible to the user).
     results = results.select(
                     function(anElem) {
 
-                        return TP.elementIsVisible(anElem);
+                        return TP.elementIsDisplayed(anElem);
                     });
 
     //  Sort the Array of elements by their 'tabindex' according to the
@@ -2831,7 +2832,7 @@ function() {
 
     elem = this.getNativeNode();
 
-    if (TP.elementIsVisible(elem)) {
+    if (TP.elementGetComputedStyleObj(elem).visibility === 'visible') {
         elem.style.visibility = 'hidden';
     } else {
         elem.style.visibility = 'visible';

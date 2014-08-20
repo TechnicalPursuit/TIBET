@@ -125,11 +125,12 @@ function(includesGroups) {
                 '*[tabindex][tibet|group="' + this.getLocalID() + '"]');
     }
 
-    //  Iterate over them and see if they're 'truly visible'
+    //  Iterate over them and see if they're displayed (not hidden by CSS -
+    //  although they could currently not be visible to the user).
     results = results.select(
                     function(anElem) {
 
-                        return TP.elementIsVisible(anElem);
+                        return TP.elementIsDisplayed(anElem);
                     });
 
     //  Wrap the results to make TP.core.ElementNodes
