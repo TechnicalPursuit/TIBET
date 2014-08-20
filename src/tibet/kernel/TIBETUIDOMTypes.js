@@ -1510,6 +1510,23 @@ function(includesGroups) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('getComputedStyleProperty',
+function(aProperty) {
+
+    /**
+     * @name getComputedStyleProperty
+     * @synopsis Returns the receiver's *computed* style property named by the
+     *     supplied property name.
+     * @param {String} aProperty The name of the style property to retrieve.
+     * @returns {Object} The current computed value of the style property named
+     *     by aProperty on the supplied element.
+     */
+
+    return TP.elementGetComputedStyleProperty(this.getNativeNode(), aProperty);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('getDisplayValue',
 function(anAttribute) {
 
@@ -2200,6 +2217,21 @@ function() {
      */
 
     return TP.elementGetWidth(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getWidthAndHeight',
+function() {
+
+    /**
+     * @name getWidthAndHeight
+     * @synopsis Returns the receiver's width and height as an Array of pixels.
+     * @returns {Array} An Array of the receiver's width and height in pixels.
+     */
+
+    return TP.ac(TP.elementGetWidth(this.getNativeNode()),
+                    TP.elementGetHeight(this.getNativeNode()));
 });
 
 //  ------------------------------------------------------------------------
