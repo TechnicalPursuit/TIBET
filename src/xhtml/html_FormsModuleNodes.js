@@ -493,6 +493,36 @@ function(aStartIndex, anEndIndex) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.textUtilities.Inst.defineMethod('setCursorPosition',
+function(aPosition) {
+
+    /**
+     * @name setCursorPosition
+     * @synopsis Sets the cursor to the supplied position.
+     * @param {Number} aPosition The desired cursor position.
+     * @returns {TP.html.textUtilities} The receiver.
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode', arguments);
+    }
+
+    try {
+        node.focus();
+    } catch (e) {
+    }
+
+    //  According to the spec, the end index is one character *after* the
+    //  intended selection.
+    node.setSelectionRange(aPosition, aPosition + 1);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.textUtilities.Inst.defineMethod('setCursorToEnd',
 function() {
 

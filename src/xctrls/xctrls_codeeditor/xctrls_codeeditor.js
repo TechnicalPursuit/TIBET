@@ -893,6 +893,30 @@ function(aStartIndex, anEndIndex) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.codeeditor.Inst.defineMethod('setCursorPosition',
+function(aPosition) {
+
+    /**
+     * @name setCursorPosition
+     * @synopsis Sets the cursor to the supplied position.
+     * @param {Number} aPosition The desired cursor position.
+     * @returns {TP.xctrls.codeeditor} The receiver.
+     */
+
+    var editor,
+        coords;
+
+    editor = this.$getEditorInstance();
+
+    coords = editor.posFromIndex(aPosition);
+
+    editor.setCursor(coords);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.codeeditor.Inst.defineMethod('setCursorToEnd',
 function() {
 
