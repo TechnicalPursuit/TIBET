@@ -3874,7 +3874,7 @@ function(anElement, preserveSpace) {
      * @name elementHide
      * @synopsis Hides the element. If the preserveSpace parameter is true, this
      *     method adjusts the CSS 'visibility' property of the supplied element.
-     *     Otherwise, it adjusts the 'display'.
+     *     Otherwise, it adjusts both the 'display' and the visibility.
      * @param {HTMLElement} anElement The element to hide.
      * @param {Boolean} preserveSpace Whether or not to 'preserve the space'
      *     taken up by the element in its document. The default is false.
@@ -3886,9 +3886,8 @@ function(anElement, preserveSpace) {
         return TP.raise(this, 'TP.sig.InvalidElement', arguments);
     }
 
-    if (TP.isTrue(preserveSpace)) {
-        TP.elementGetStyleObj(anElement).visibility = 'hidden';
-    } else {
+    TP.elementGetStyleObj(anElement).visibility = 'hidden';
+    if (TP.notTrue(preserveSpace)) {
         TP.elementGetStyleObj(anElement).display = 'none';
     }
 
