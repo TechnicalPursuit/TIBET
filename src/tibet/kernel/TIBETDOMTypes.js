@@ -3756,6 +3756,36 @@ function(attributeName, stripPrefixes) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('getContent',
+function(aRequest) {
+
+    /**
+     * @name getContent
+     * @synopsis Returns the receiver's content.
+     * @description At this level, this method returns its 'inner content',
+     *     which is basically all of its child nodes serialized as a document
+     *     fragment.
+     * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
+     *     parameters.
+     * @returns {String} The text content of the native node.
+     */
+
+    var nativeNode,
+        frag;
+
+    nativeNode = this.getNativeNode();
+
+    //  Note here that we're only interested in the shallow '.childNodes'
+    //  collection.
+    if (!TP.isFragment(frag = TP.nodeListAsFragment(nativeNode.childNodes))) {
+        return '';
+    }
+
+    return TP.wrap(frag).asString();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('getIndexInParent',
 function() {
 
