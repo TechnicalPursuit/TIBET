@@ -1115,6 +1115,45 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('deselectAll',
+function() {
+
+    /**
+     * @name deselectAll
+     * @synopsis Clears any current selection(s).
+     * @raise TP.sig.InvalidElementArray
+     * @returns {TP.html.select} The receiver.
+     */
+
+    var elementArray,
+        dirty,
+        len,
+        i;
+
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
+    }
+
+    dirty = false;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (elementArray.at(i).checked) {
+            dirty = true;
+        }
+        elementArray.at(i).checked = false;
+        TP.elementRemoveAttribute(elementArray.at(i), 'checked', true);
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('getDisplayValue',
 function() {
 
@@ -1122,6 +1161,60 @@ function() {
      * @name getDisplayValue
      * @synopsis Returns the checked state of the receiver.
      * @returns {Boolean}
+     * @raise TP.sig.InvalidNode
+     * @todo
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode', arguments);
+    }
+
+    return TP.bc(node.checked);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('getElementArray',
+function() {
+
+    /**
+     * @name getElementArray
+     * @synopsis Returns the Array of native elements. In the case of a
+     *     checkable item, this is the list of elements that share the same name
+     *     as the receiver.
+     * @returns {Array} The array of native items.
+     * @raise TP.sig.InvalidNode
+     * @todo
+     */
+
+    var node,
+        name;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode', arguments);
+    }
+
+    if (TP.isEmpty(name = this.getAttribute('name'))) {
+        return TP.ac();
+    }
+
+    //  Run a CSS access path, which will return an Array of all of the elements
+    //  (including the receiver's native node) that share the same name as the
+    //  receiver.
+    return this.get(TP.cpc('*[name="' + name + '"]'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('isSelected',
+function() {
+
+    /**
+     * @name isSelected
+     * @synopsis Returns true if the receiver is selected.
+     * @returns {Boolean} Whether or not the receiver is selected.
      * @raise TP.sig.InvalidNode
      * @todo
      */
@@ -1212,6 +1305,56 @@ function() {
 
     node.checked = true;
     this.setAttribute('checked', 'checked');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('selectAll',
+function() {
+
+    /**
+     * @name selectAll
+     * @synopsis Selects all elements with the same 'name' attribute as the
+     *     receiver. Note that for groupings of controls that don't allow
+     *     multiple selections (such as radiobuttons), this will raise an
+     *     'InvalidOperation' exception.
+     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
+     * @returns {TP.html.inputCheckable} The receiver.
+     */
+
+    var elementArray,
+        dirty,
+        len,
+        i;
+
+    if (!this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                arguments,
+                'Target does not allow multiple selection');
+    }
+
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
+    }
+
+    dirty = false;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (!elementArray.at(i).checked) {
+            dirty = true;
+        }
+        elementArray.at(i).checked = true;
+        TP.elementSetAttribute(
+                    elementArray.at(i), 'checked', 'checked', true);
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
 
     return this;
 });
@@ -1991,6 +2134,23 @@ TP.html.inputCheckable.defineSubtype('inputRadio');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.html.inputRadio.Inst.defineMethod('allowsMultiples',
+function() {
+
+    /**
+     * @name allowsMultiples
+     * @synopsis Returns false since radio buttons, by their very nature, don't
+     *     allow multiple selection.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
+     * @raise TP.sig.InvalidNode
+     * @todo
+     */
+
+    return false;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.html.inputRadio.Inst.defineMethod('off',
