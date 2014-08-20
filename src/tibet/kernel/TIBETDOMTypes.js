@@ -11843,6 +11843,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DocumentNode.Inst.defineMethod('getTitle',
+function() {
+
+    /**
+     * @name getTitle
+     * @synopsis Returns the receiver's 'title' content. This is the
+     *     text content of the 'title' element in the receiver's 'head' element.
+     * @returns {String} The document's title content.
+     */
+
+    return TP.documentGetTitleContent(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.DocumentNode.Inst.defineMethod('getValue',
 function() {
 
@@ -11898,6 +11913,23 @@ function(aPhase) {
         //  attribute will 'lose' its namespace along the way of processing.
         TP.elementSetAttribute(elem, 'tibet:phase', aPhase, true);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineMethod('setTitle',
+function(titleText) {
+
+    /**
+     * @name setTitle
+     * @synopsis Sets the receiver's 'title' content.
+     * @param {String} titleText The value to use as the title content.
+     * @returns {TP.core.DocumentNode} The receiver.
+     */
+
+    TP.documentSetTitleContent(this.getNativeNode(), titleText);
 
     return this;
 });
