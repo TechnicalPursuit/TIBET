@@ -1107,7 +1107,8 @@ function() {
         return this;
     }
 
-    node.click();
+    node.checked = false;
+    this.removeAttribute('checked');
 
     return this;
 });
@@ -1154,7 +1155,7 @@ function() {
     }
 
     node.checked = true;
-    this.setAttribute('checked', true);
+    this.setAttribute('checked', 'checked');
 
     return this;
 });
@@ -1179,7 +1180,7 @@ function() {
     }
 
     node.checked = false;
-    this.setAttribute('checked', false);
+    this.removeAttribute('checked');
 
     return this;
 });
@@ -1209,7 +1210,8 @@ function() {
         return this;
     }
 
-    node.click();
+    node.checked = true;
+    this.setAttribute('checked', 'checked');
 
     return this;
 });
@@ -2638,6 +2640,7 @@ function() {
     }
 
     node.selected = true;
+    this.setAttribute('selected', 'selected');
 
     return this;
 });
@@ -2662,6 +2665,7 @@ function() {
     }
 
     node.selected = false;
+    this.removeAttribute('selected');
 
     return this;
 });
@@ -2795,6 +2799,7 @@ function(aValue) {
                 dirty = true;
             }
             elementArray.at(i).selected = false;
+            TP.elementRemoveAttribute(elementArray.at(i), 'selected', true);
         }
     }
 
@@ -2834,6 +2839,7 @@ function() {
             dirty = true;
         }
         elementArray.at(i).selected = false;
+        TP.elementRemoveAttribute(elementArray.at(i), 'selected', true);
     }
 
     if (dirty) {
@@ -3235,6 +3241,8 @@ function(aValue) {
             }
 
             elementArray.at(i).selected = true;
+            TP.elementSetAttribute(
+                        elementArray.at(i), 'selected', 'selected', true);
         }
     }
 
@@ -3281,6 +3289,8 @@ function() {
             dirty = true;
         }
         elementArray.at(i).selected = true;
+        TP.elementSetAttribute(
+                    elementArray.at(i), 'selected', 'selected', true);
     }
 
     if (dirty) {
@@ -3350,11 +3360,14 @@ function(aValue) {
                 dirty = true;
             }
             elementArray.at(i).selected = true;
+            TP.elementSetAttribute(
+                    elementArray.at(i), 'selected', 'selected', true);
         } else {
             if (elementArray.at(i).selected) {
                 dirty = true;
             }
             elementArray.at(i).selected = false;
+            TP.elementRemoveAttribute(elementArray.at(i), 'selected', true);
         }
     }
 
