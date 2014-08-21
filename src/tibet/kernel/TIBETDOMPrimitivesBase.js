@@ -149,7 +149,9 @@ function(anElement) {
         docElem,
 
         tibetSrc,
-        ctrlTypeName;
+        ctrlTypeName,
+        
+        controller;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement', arguments);
@@ -164,7 +166,12 @@ function(anElement) {
                 ctrlTypeName = TP.elementGetAttribute(
                                     docElem, 'tibet:uricontroller', true);
 
-                return TP.uc(tibetSrc).get('controller', ctrlTypeName);
+                controller = TP.uc(tibetSrc).get('controller', ctrlTypeName);
+
+                //  Set the window currently displaying this URL to the
+                //  document's window. This is needed when computing the
+                //  responder chain.
+                controller.set('currentWindow', TP.nodeGetWindow(doc));
             }
         }
     }

@@ -6146,6 +6146,11 @@ TP.core.Controller.defineSubtype('URIController');
 //  the URI associated with the controller
 TP.core.URIController.Inst.defineAttribute('uri');
 
+//  the window this URI's contents are currently displayed in. This may shift
+//  as the responder chain gets recomputed throughout the course of the
+//  application if the same URI is displayed in multiple windows.
+TP.core.URIController.Inst.defineAttribute('currentWindow');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -6202,24 +6207,17 @@ function(aSignal, isCapturing) {
      * @todo
      */
 
-    var uri,
-        uriDoc,
-
-        elementWin,
+    var elementWin,
         frameElem;
 
-    //  Go to our URI's content node (which should be a Document), get its
-    //  window and, if its an iframe window, grab the iframe holding it and
-    //  'walk' up the DOM.
-    if (TP.isValid(uri = this.get('uri')) &&
-        TP.isDocument(uriDoc = uri.getContentNode()) &&
-        TP.isIFrameWindow(elementWin = TP.nodeGetWindow(uriDoc))) {
+    //  Go to our window and, if its an iframe window, grab the iframe holding
+    //  it and 'walk' up the DOM.
+    if (TP.isIFrameWindow(elementWin = this.get('currentWindow'))) {
         frameElem = elementWin.frameElement;
         if (TP.isElement(frameElem)) {
             //  Recurse, calling the iframe's 'getNextResponder' method to
             //  work our way 'up' the tree.
-            return TP.wrap(frameElem).getNextResponder(aSignal,
-                                                        isCapturing);
+            return TP.wrap(frameElem).getNextResponder(aSignal, isCapturing);
         }
     }
 
