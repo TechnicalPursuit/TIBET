@@ -2253,6 +2253,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('isVisible',
+function() {
+
+    /**
+     * @name isVisible
+     * @synopsis Returns whether or not anElement is *really* visible to the
+           user, no matter what its CSS setting is.
+     * @description In addition to the standard CSS properties of 'display' and
+           'visibility', this call also takes into account scrolling and any
+           CSS transformation that has been applied to the element.
+     * @returns {Boolean} Whether or not anElement is visible.
+     */
+
+    return TP.elementIsVisible(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('isResponderFor',
 function(aSignal, isCapturing) {
 

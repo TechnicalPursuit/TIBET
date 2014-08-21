@@ -4006,39 +4006,49 @@ function(anElement) {
 
     /**
      * @name elementIsVisible
-     * @synopsis Returns whether or not anElement is visible to the user. This
-     *     is dependent not only on its 'visibility' setting, but on the
-     *     visibility settings of its parents.
+     * @synopsis Returns whether or not anElement is *really* visible to the
+           user, no matter what its CSS setting is.
+     * @description In addition to the standard CSS properties of 'display' and
+           'visibility', this call also takes into account scrolling and any
+           CSS transformation that has been applied to the element.
      * @param {HTMLElement} anElement The element to determine the visibility
      *     of.
      * @raises TP.sig.InvalidElement
      * @returns {Boolean} Whether or not anElement is visible.
      */
 
-    var elemComputedVisibility;
+    var doc,
+        win,
+
+        borderBox,
+
+        isVisible;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement', arguments);
     }
 
-    elemComputedVisibility =
-                TP.elementGetComputedStyleObj(anElement).visibility;
-
-    //  If the display is computed to be 'hidden', then we're definitely not
-    //  visible.
-    if (elemComputedVisibility === 'hidden') {
+    //  verify that we've got a window (content will be visible) and a
+    //  document or there's no work to do
+    if (TP.notValid(doc = TP.nodeGetDocument(anElement))) {
         return false;
     }
 
-    //  Otherwise, if we don't have a parentNode or our parentNode is the
-    //  document, then we must be visible, so we return true.
-    if (TP.notValid(anElement.parentNode) ||
-        TP.isDocument(anElement.parentNode)) {
-        return true;
+    if (TP.notValid(win = TP.nodeGetWindow(doc))) {
+        return false;
     }
 
-    //  We had a parent node, so we defer to it and walk the tree.
-    return TP.elementIsVisible(anElement.parentNode);
+    //  Note here that we pass true, since we're interested in transformed
+    //  coordinates.
+    borderBox = TP.elementGetBorderBox(anElement, true);
+
+    isVisible =
+        borderBox.bottom > 0 &&
+        borderBox.right > 0 &&
+        borderBox.left < (win.innerWidth || doc.documentElement.clientWidth) &&
+        borderBox.top < (win.innerHeight || doc.documentElement.clientHeight);
+
+    return isVisible;
 });
 
 //  ------------------------------------------------------------------------
