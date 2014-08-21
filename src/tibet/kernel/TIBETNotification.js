@@ -6590,7 +6590,7 @@ function(aDocument) {
 
     observerKey = TP.id(aDocument);
 
-    if (TP.isDocument(observer = this.get('observers').at(observerKey))) {
+    if (TP.isValid(observer = this.get('observers').at(observerKey))) {
         observer.disconnect();
     }
 
