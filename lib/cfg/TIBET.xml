@@ -28,7 +28,7 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 <!--    =============================================================   -->
 
 <!--    =============================================================   -->
-<!--    TIBET 3.0 module file                                           -->
+<!--    TIBET module file                                               -->
 <!--    =============================================================   -->
 
 <!--
@@ -91,13 +91,16 @@ build file content, one of the benefits of TIBET's boot system.
 <config id="developer" if="boot.phaseone">
     <config ref="full"/>
 
-    <!-- The test harness depends on this package - it needs to be read in first
-         -->
+    <!-- prerequisite for test harness code -->
     <package src="tibet_automation.xml" config="full"/>
-
-    <package src="tibet_testing.xml" config="full"/>
+    <package src="tibet_testing.xml" config="base"/>
 
     <package src="sherpa.xml" config="standard"/>
+</config>
+
+<config id="test" if="boot.phaseone">
+    <config ref="developer"/>
+    <package src="tibet_testing.xml" config="tests"/>
 </config>
 
 </package>
