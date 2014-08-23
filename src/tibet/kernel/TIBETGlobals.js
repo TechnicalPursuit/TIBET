@@ -2368,7 +2368,7 @@ TP.regex.TRANSFORMABLE = /[$#%@]\{|`.+`/;
 TP.regex.CALL_STACK_FORMAT = /(.*) \((.*)\)/;
 TP.regex.CALL_STACK_ID = /Function\$[0-9a-z]*($|([\s]))/g;  //  needs reset
 
-TP.regex.CALL_STACK_ENTRY_SPLITTER = /(.+)@(.+)\.js:(\d+)(:\d+)?/;
+TP.regex.CALL_STACK_ENTRY_SPLITTER = /(.+)@(.+):(\d+):(\d+)/;
 
 TP.regex.CAMEL_CASE = /([-\s_]([a-z]))/g;       //  needs reset
 TP.regex.TITLE_CASE = /([-\s_]([a-z]))/g;       //  needs reset
