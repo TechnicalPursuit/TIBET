@@ -3,5 +3,8 @@
 
     "tibet": {
         "dna": "{{dna}}"
+    },
+    "boot": {
+        "profile": "tibet.xml"
     }
 }

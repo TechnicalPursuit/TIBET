@@ -10,7 +10,7 @@
     "minimist": "*",
     "phantomjs": "*",
     "shelljs": "*",
-    "tibet": "*",
+    "tibet": "*"
   },
   "devDependencies": {
   },
