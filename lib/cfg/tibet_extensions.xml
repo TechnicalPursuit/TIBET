@@ -85,7 +85,12 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 </config>
 
 <config id="pouchdb_storage">
-    <script src="~lib_deps/pouchdb-tpi.min.js" no-lint="true" no-minify="true"/>
+    <script src="~lib_deps/pouchdb-tpi.min.js"
+        unless="boot.unminified" no-minify="true" no-lint="true"/>
+
+    <script src="~lib_deps/pouchdb-tpi.js"
+        if="boot.unminified" no-minify="true" no-lint="true"/>
+
     <script>
         <![CDATA[
         TP.extern.PouchDB = PouchDB;
