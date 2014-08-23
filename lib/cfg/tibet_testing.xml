@@ -42,12 +42,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     <config ref="driver"/>
 </config>
 
-<config id="full">
-    <config ref="base"/>
-    <config ref="tagprocessor"/>
-    <config ref="databinding"/>
-</config>
-
 <config id="harness">
     <script src="testing/TPTest.js" />
 </config>
@@ -64,10 +58,11 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     <script src="testing/TPTestSamples.js" />
 </config>
 
-<config id="selftest">
-    <config ref="base"/>
-    <config ref="samples"/>
+<config id="tests">
+    <config ref="tagprocessor"/>
+    <config ref="databinding"/>
 </config>
+
 
 <config id="tagprocessor">
     <script src="~lib_tst/src/tibet/tagprocessor/TP.core.TagProcessor_Tests.js" />

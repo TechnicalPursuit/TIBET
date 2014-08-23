@@ -238,16 +238,6 @@ function(name) {
             subtypeName = parts[1];
 
             break;
-        case 3:
-            if (parts[0] !== 'TP' && parts[0] !== 'APP') {
-                return this.raise('TP.sig.InvalidTypeName', arguments);
-            }
-
-            root = parts[0];
-            nsName = parts[1];
-            subtypeName = parts[2];
-
-            break;
         default:
             if (parts[0] === 'TP' || parts[0] === 'APP') {
                 root = parts[0];
