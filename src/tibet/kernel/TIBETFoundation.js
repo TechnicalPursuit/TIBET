@@ -555,8 +555,15 @@ function(aThis) {
     if (arguments.length > 1) {
         retFunc = this.$$bind(aThis, TP.args(arguments, 1));
     } else {
-        //  otherwise, just call $$bind() with aThis.
-        retFunc = this.$$bind(aThis);
+        //  On rare occasions, 'this' points to a Function that isn't
+        //  participating in the Function.prototype chain (sigh...). If so, the
+        //  '$$bind' won't be set and we should just use that objects 'bind'.
+        if (TP.notValid(this.$$bind)) {
+            retFunc = this.bind(aThis);
+        } else {
+            //  otherwise, just call $$bind() with aThis.
+            retFunc = this.$$bind(aThis);
+        }
     }
 
     //  TIBET uses the various name, owner, and track elements during
