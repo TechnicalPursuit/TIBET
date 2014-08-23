@@ -1025,6 +1025,13 @@ function(anElement) {
 
         computedStyle = win.getComputedStyle(currentElement, null);
 
+        //  NB: Firefox has a non-CSSOM-spec compliant way of returning null for
+        //  'getComputedStyle' when the element in question is 'display:none'
+        //  (or one its parents is). Make sure to account for that.
+        if (TP.notValid(computedStyle)) {
+            break;
+        }
+
         if (TP.notEmpty(computedStyle.OTransform ||
                             computedStyle.WebkitTransform ||
                             computedStyle.msTransform ||
@@ -1319,6 +1326,10 @@ function(anElement, wants2DMatrix) {
     win = TP.nodeGetWindow(anElement);
 
     while (currentElement && currentElement !== doc.documentElement) {
+
+        //  NB: Firefox has a non-CSSOM-spec compliant way of returning null for
+        //  'getComputedStyle' when the element in question is 'display:none'
+        //  (or one its parents is). Make sure to account for that.
         computedStyle = win.getComputedStyle(currentElement, null) || {};
 
         computedMatrixString =
