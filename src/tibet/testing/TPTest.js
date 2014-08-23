@@ -1195,6 +1195,15 @@ TP.test.Case.Inst.defineAttribute('refute');
  */
 TP.test.Case.Inst.defineAttribute('suite');
 
+/**
+ * The promise that is kept by the test case for use by test case logic as the
+ * test executes. Note that this promise reference can change the test case
+ * logic actually adds new Promises. It will be set to the 'last' Promise
+ * generated.
+ * @type {Promise}
+ */
+TP.test.Case.Inst.defineAttribute('$internalPromise');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1273,7 +1282,7 @@ function() {
      * @return {TP.gui.Driver} The test driver.
      */
 
-    return this.$get('suite').$get('driver');
+    return this.getSuite().$get('driver');
 });
 
 //  ------------------------------------------------------------------------
@@ -1408,6 +1417,13 @@ function(options) {
     if (options && options.at('case_timeout')) {
         this.$set('mslimit', options.at('case_timeout'));
     }
+
+    //  We provide a 'then()' and 'thenPromise()' API to our driver.
+    this.getDriver().set('promiseProvider', this);
+
+    //  'Prime the pump' of our internal promise reference with a resolved
+    //  Promise.
+    this.$set('$internalPromise', Q.Promise.resolve());
 });
 
 //  ------------------------------------------------------------------------
@@ -1449,7 +1465,8 @@ function(options) {
     testcase = this;
 
     promise = Q.Promise(function(resolver, rejector) {
-        var maybe;
+        var internalPromise,
+            maybe;
 
         //  Capture references to the resolve/reject operations we can use from
         //  the test case itself. Do this first so any errors below will still
@@ -1468,11 +1485,24 @@ function(options) {
         testcase.set('msstart', Date.now());
 
         try {
-            //  Note that inside the test function we bind to the Case instance.
+
+            //  Grab the internal promise that will either be the Promise that
+            //  we primed the pump with or a Promise that was generated along
+            //  the way.
+            internalPromise = testcase.$get('$internalPromise');
+
+            //  Note that inside the test method we bind to the Case instance.
             maybe = testcase.$get('caseFunc').call(testcase, testcase, options);
 
+            //  If the test method itself returned a Promise, then we should
+            //  return that in a 'then()' on our internal promise. Based on the
+            //  evaluation of that, the testcase will have been considered to
+            //  have passed or failed.
             if (TP.canInvoke(maybe, 'then')) {
-                maybe.then(
+                internalPromise.then(
+                    function(obj) {
+                        return maybe;
+                    }).then(
                     function(obj) {
                         testcase.pass();
                     },
@@ -1481,8 +1511,20 @@ function(options) {
                         //  isn't involved, so we need to wrap up manually.
                         testcase.fail(err);
                     });
+
             } else {
-                testcase.pass();
+
+                //  The test method didn't return a Promise - just 'then()' onto
+                //  our internal promise to either pass or fail the testcase.
+                internalPromise.then(
+                    function(obj) {
+                        testcase.pass();
+                    },
+                    function(err) {
+                        //  NOTE that if we fail at this level the try/catch
+                        //  isn't involved, so we need to wrap up manually.
+                        testcase.fail(err);
+                    });
             }
         } catch (e) {
             if (e instanceof AssertionFailed) {
@@ -1515,6 +1557,52 @@ function(options) {
                 testcase.error(err);
             }
         });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('then',
+function(onFulfilled, onRejected) {
+
+    /**
+     * 'Then's onto our internally-held promise thereby, effectively queuing the
+     * operation.
+     * @param {Function} onFulfilled The Function to run to if the Promise has
+     *     been fulfilled.
+     * @param {Function} onRejected The Function to run to if the Promise has
+     *     been rejected.
+     * @return {Promise} A Promise to be used as necessary.
+     */
+
+    return this.$get('$internalPromise').then(onFulfilled, onRejected);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('thenPromise',
+function(aFunction) {
+
+    /**
+     * A convenience mechanism to create a Promise with the supplied Function
+     * and 'append it' (if you will) onto the current internally-held Promise.
+     * Note that this operation will also reset the internally-held Promise to
+     * be the new Promise that it creates.
+     * @param {Function} aFunction The Function to run to fulfill the Promise.
+     * @return {Promise} A Promise to be used as necessary.
+     */
+
+    var newPromise;
+
+    newPromise = Q.Promise(aFunction);
+
+    this.$get('$internalPromise').then(
+        function() {
+            return newPromise;
+        });
+
+    this.$set('$internalPromise', newPromise);
+
+    return newPromise;
 });
 
 //  ========================================================================
