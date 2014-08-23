@@ -38,15 +38,12 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 <config id="base" depends="">
     <config ref="harness"/>
-</config>
-
-<config id="full" depends="base">
-    <config ref="harness"/>
     <config ref="assertions"/>
     <config ref="driver"/>
+</config>
 
-    <config ref="samples"/>
-
+<config id="full">
+    <config ref="base"/>
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
 </config>
@@ -65,6 +62,11 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 <config id="samples">
     <script src="testing/TPTestSamples.js" />
+</config>
+
+<config id="selftest">
+    <config ref="base"/>
+    <config ref="samples"/>
 </config>
 
 <config id="tagprocessor">
