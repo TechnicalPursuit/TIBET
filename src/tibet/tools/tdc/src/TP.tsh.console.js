@@ -2570,6 +2570,11 @@ function() {
     this.set('consoleDisplayed', true);
 
     (function() {
+        //  We set the prompt here to reset the left position of the div
+        //  wrapping the textarea, which won't get set when the console is first
+        //  displayed on some browsers (e.g. Firefox).
+        this.setPrompt();
+
         this.focusInputCell();
         this.setCursorToEnd();
     }).bind(this).afterUnwind();
