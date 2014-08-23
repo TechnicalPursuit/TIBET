@@ -6,5 +6,8 @@
     },
     "path": {
       "app.inf": "~app/TIBET-INF"
+    },
+    "boot": {
+        "profile": "tibet.xml"
     }
 }

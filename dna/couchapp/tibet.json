@@ -8,6 +8,9 @@
     "path": {
         "app_root": "~/attachments",
         "lib_root": "~/node_modules/tibet"
+    },
+    "boot": {
+        "profile": "tibet.xml"
     }
 }
 
