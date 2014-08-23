@@ -2,7 +2,7 @@
 /**
  * @file TPGUIDriver.js
  * @overview Support for an automated way of driving a GUI.
- * @author Scott Shattuck (ss)
+ * @author William J. Edney (wje)
  * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -14,8 +14,7 @@
 /**
  */
 
-/* global Q:true,
-          Syn:true
+/* global Q:true
 */
 
 //  ------------------------------------------------------------------------
@@ -26,7 +25,20 @@ TP.lang.Object.defineSubtype('gui.Driver');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+/**
+ * The Window context that this GUI driver is currently operating in. This is
+ * the default context used to find elements, etc.
+ * @type {TP.core.Window}
+ */
 TP.gui.Driver.Inst.defineAttribute('windowContext');
+
+/**
+ * An object that will provide an API to manage Promises for this driver. When
+ * executing in the test harness, this will typically be the currently executing
+ * test case.
+ * @type {Object}
+ */
+TP.gui.Driver.Inst.defineAttribute('promiseProvider');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -118,7 +130,7 @@ function() {
     //  Reprogram the various 'kinds' Arrays to contain our constants
     kinds = TP.extern.syn.key.kinds;
 
-    kinds.special = TP.ac('Shift', 'Control', 'Alt', 'CapsLock');
+    kinds.special = TP.ac('Shift', 'Control', 'Alt', 'Meta', 'CapsLock');
     kinds.navigation = TP.ac('PageUp', 'PageDown', 'End', 'Home',
                                 'Left', 'Up', 'Right', 'Down',
                                 'Insert', 'Del');
@@ -174,8 +186,10 @@ TP.gui.Driver.Inst.defineMethod('init',
 function(windowContext) {
 
     /**
-     * Creates a new instance.
-     * @param {windowContext} TP.core.Window
+     * @name init
+     * @synopsis Initialize the instance.
+     * @param {TP.core.Window} windowContext The initial window context to use
+     *     to resolve GUI element references, etc.
      * @return {TP.gui.Driver} A new instance.
      */
 
@@ -188,137 +202,21 @@ function(windowContext) {
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Driver.Inst.defineMethod('byClassName',
-function(className) {
-
-    /**
-     */
-
-    return this.byCSS('.' + className);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('byCSS',
-function(cssExpr) {
-
-    /**
-     */
-
-    var context,
-    
-        result;
-
-    context = this.get('windowContext');
-
-    result = TP.byCSS(cssExpr, context, true);
-
-    return TP.wrap(result);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('byId',
-function(anID) {
-
-    /**
-     */
-
-    var context,
-    
-        result;
-
-    context = this.get('windowContext');
-
-    result = TP.byId(anID, context);
-
-    return TP.wrap(result);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('byJS',
-function(aFunc) {
-
-    /**
-     */
-
-    var result;
-
-    if (!TP.isCallable(aFunc)) {
-        return null;
-    }
-
-    if (TP.isEmpty(result = aFunc())) {
-        return null;
-    }
-
-    return TP.wrap(result);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('byLinkText',
-function(text) {
-
-    /**
-     */
-
-    return TP.todo();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('byName',
-function(aName) {
-
-    /**
-     */
-
-    return TP.todo();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('byPartialLinkText',
-function(text) {
-
-    /**
-     */
-
-    return TP.todo();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('byTagName',
-function(aName) {
-
-    /**
-     */
-
-    return TP.todo();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('byXPath',
-function(aPath) {
-
-    /**
-     */
-
-    return TP.todo();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.gui.Driver.Inst.defineMethod('fetchResource',
 function(aURI, resultType) {
 
+    /**
+     * @name fetchResource
+     * @synopsis Fetches the resource at the end of the URI. The result will be
+     *     available as the value of the returned promise.
+     * @param {TP.core.URI} The URI to fetch the resource for.
+     * @return {Promise} The promise generated to fetch the resource. This can
+     *     be used to chain further asynchronous operations after the fetch.
+     */
+
     var newPromise;
 
-    newPromise = Q.Promise(
+    newPromise = this.get('promiseProvider').thenPromise(
             function(resolver, rejector) {
                 var subrequest;
 
@@ -345,10 +243,33 @@ function(aURI, resultType) {
 
 //  ------------------------------------------------------------------------
 
+TP.gui.Driver.Inst.defineMethod('getCurrentNativeDocument',
+function() {
+
+    /**
+     * @name getCurrentNativeDocument
+     * @synopsis Returns the native Document object associated with the current
+     *     window context.
+     * @return {Document} The Document of the current window context.
+     */
+
+    var context;
+    
+    context = this.get('windowContext');
+
+    return context.getNativeDocument();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.gui.Driver.Inst.defineMethod('getFocusedElement',
 function() {
 
     /**
+     * @name getFocusedElement
+     * @synopsis Returns the Element that currently has focus in the current
+     *     window context.
+     * @return {Element} The focused Element in the current window context.
      */
 
     var context;
@@ -364,6 +285,9 @@ TP.gui.Driver.Inst.defineMethod('startSequence',
 function() {
 
     /**
+     * @name startSequence
+     * @synopsis Returns a new GUI sequence used to script actions.
+     * @return {TP.gui.Sequence} A new GUI sequence.
      */
 
     return TP.gui.Sequence.construct(this);
@@ -375,12 +299,27 @@ TP.gui.Driver.Inst.defineMethod('takeScreenshotOf',
 function(aNode) {
 
     /**
+     * @name takeScreenshotOf
+     * @synopsis Take a screenshot of either the whole window of the currently
+     *     executing window context or some portion thereof as determined by the
+     *     supplied Node.
+     * @description If a Document node is supplied to this method, the whole
+     *     Document will be snapshotted. If an Element is supplied, only that
+     *     Element will be snapshotted. Note also that this method currently
+     *     only works when this code is being executed in the PhantomJS
+     *     environment.
+     * @param {Node} aNode The Node used to determine which portion of the
+     *     screen to take a snapshot of. Note that if this is not supplied, the
+     *     whole window of the currently executing window context will be used.
+     * @return {TP.gui.Driver} The receiver.
      */
 
     if (TP.sys.cfg('boot.context') !== 'phantomjs') {
         //  TODO: Log a warning
         return this;
     }
+
+    //  http://phantomjs.org/api/webpage/property/clip-rect.html
 
     return TP.todo();
 });
@@ -393,6 +332,7 @@ TP.lang.Object.defineSubtype('gui.Sequence');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.gui.Sequence.Inst.defineAttribute('sequenceEntries');
 TP.gui.Sequence.Inst.defineAttribute('driver');
 
 //  ------------------------------------------------------------------------
@@ -403,6 +343,11 @@ TP.gui.Sequence.Inst.defineMethod('init',
 function(driver) {
 
     /**
+     * @name init
+     * @synopsis Initialize the instance.
+     * @param {TP.gui.Driver} driver The GUI driver which created this sequence
+     *     and is being used in conjunction with it to drive the GUI.
+     * @return {TP.gui.Driver} The receiver.
      */
 
     this.callNextMethod();
@@ -415,45 +360,105 @@ function(driver) {
 
 //  ------------------------------------------------------------------------
 
+TP.gui.Sequence.Inst.defineMethod('altKeyDown',
+function(aPath) {
+
+    /**
+     * @name altKeyDown
+     * @synopsis Simulate the act of pressing the 'Alt' key down.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the 'Alt' key pressed down over. If this isn't
+     *     supplied, the currently focused element in the receiver's owning
+     *     driver's window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    this.keyDown('Alt', aPath);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Sequence.Inst.defineMethod('altKeyUp',
+function(aPath) {
+
+    /**
+     * @name altKeyUp
+     * @synopsis Simulate the act of releasing the 'Alt' key up.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the 'Alt' key released up over. If this isn't
+     *     supplied, the currently focused element in the receiver's owning
+     *     driver's window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    this.keyUp('Alt', aPath);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.gui.Sequence.Inst.defineMethod('click',
-function(aLocation, mouseButton) {
+function(mouseLocation, mouseButton) {
 
     /**
      * @name click
-     * @synopsis
-     * @returns
-     * @todo
+     * @synopsis Simulates the act of clicking the mouse button.
+     * @description Note that this method has a notion of a 'currently focused'
+     *     element, but it is important to note that this will be the element
+     *     that is currently focused *when the sequence that this method belongs
+     *     to is executed* (which won't happen until the 'perform()' method is
+     *     called).
+     * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
+     *     The mouse location, given as either a target Element, an AccessPath
+     *     that can be used to find the element, a Point that will be used with
+     *     the currently focused element or as a mouse button constant, in which
+     *     case the currently focused element will be used. If this parameter is
+     *     not supplied or null, the currently focused element will be used as
+     *     well.
+     * @param {Constant} mouseButton A mouse button constant. This parameter is
+     *     usually used if the mouseLocation parameter has a real value and
+     *     can't be used to specify the mouse button.
+     * @return {TP.gui.Driver} The receiver.
      */
 
     var point,
         button,
-        currentElement,
+        target,
     
         eventName;
 
-    if (TP.isElement(aLocation)) {
-        currentElement = aLocation;
-    } else if (TP.isKindOf(aLocation, TP.core.Point)) {
-        point = aLocation;
-    } else if (aLocation === TP.LEFT || aLocation === TP.RIGHT) {
-        button = aLocation;
+    //  If there was no valid location supplied, then we just set the target to
+    //  TP.CURRENT, which means to use the currently focused element whenever
+    //  the sequence is executed.
+    if (TP.notValid(mouseLocation)) {
+        target = TP.CURRENT;
+    } else if (TP.isElement(mouseLocation)) {
+        //  Otherwise, if an Element has been supplied, use that.
+        target = mouseLocation;
+    } else if (mouseLocation.isAccessPath()) {
+        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  used to determine the target element.
+        target = mouseLocation;
+    } else if (TP.isKindOf(mouseLocation, TP.core.Point)) {
+        //  Otherwise, if a TP.core.Point has been supplied then we set the
+        //  target to TP.CURRENT, which tells the sequence performing routine to
+        //  use whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        point = mouseLocation;
+        target = TP.CURRENT;
+    } else if (mouseLocation === TP.LEFT || mouseLocation === TP.RIGHT) {
+        //  Otherwise, if a button constant has been supplied then we set the
+        //  target to TP.CURRENT, which tells the sequence performing routine to
+        //  use whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        button = mouseLocation;
+        target = TP.CURRENT;
     } else {
         //  TODO: Raise an exception
         return this;
-    }
-
-    if (!TP.isValid(point)) {
-
-        if (!TP.isElement(currentElement)) {
-            currentElement = this.get('driver').getFocusedElement();
-
-            if (!TP.isElement(currentElement)) {
-                //  TODO: Raise an exception
-                return this;
-            }
-        }
-
-        point = TP.wrap(currentElement).getPagePoint().getCenterPoint();
     }
 
     if (TP.notValid(button)) {
@@ -466,10 +471,59 @@ function(aLocation, mouseButton) {
         eventName = 'click';
     }
 
-    this.get('sequenceEntries').add(
-            TP.ac(eventName,
-                    currentElement,
-                    {pageX: point.getX(), pageY: point.getY()}));
+    //  If we got a valid TP.core.Point supplied as the mouse location, then we
+    //  go ahead and supply it as the argument for this step in the sequence.
+    //  Otherwise, it will have to be computed from the target in the sequence
+    //  performing routine.
+    if (TP.isValid(point)) {
+        this.get('sequenceEntries').add(
+                TP.ac(eventName,
+                        target,
+                        {pageX: point.getX(), pageY: point.getY()}));
+    } else {
+        this.get('sequenceEntries').add(
+                TP.ac(eventName, target));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Sequence.Inst.defineMethod('ctrlKeyDown',
+function(aPath) {
+
+    /**
+     * @name ctrlKeyDown
+     * @synopsis Simulate the act of pressing the 'Control' key down.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the 'Control' key pressed down over. If this isn't
+     *     supplied, the currently focused element in the receiver's owning
+     *     driver's window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    this.keyDown('Control', aPath);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Sequence.Inst.defineMethod('ctrlKeyUp',
+function(aPath) {
+
+    /**
+     * @name ctrlKeyUp
+     * @synopsis Simulate the act of releasing the 'Control' key up.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the 'Control' key released up over. If this isn't
+     *     supplied, the currently focused element in the receiver's owning
+     *     driver's window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    this.keyUp('Control', aPath);
 
     return this;
 });
@@ -477,44 +531,64 @@ function(aLocation, mouseButton) {
 //  ------------------------------------------------------------------------
 
 TP.gui.Sequence.Inst.defineMethod('doubleClick',
-function(aLocation, mouseButton) {
+function(mouseLocation, mouseButton) {
 
     /**
      * @name doubleClick
-     * @synopsis
-     * @returns
-     * @todo
+     * @synopsis Simulates the act of double clicking the mouse button.
+     * @description Note that this method has a notion of a 'currently focused'
+     *     element, but it is important to note that this will be the element
+     *     that is currently focused *when the sequence that this method belongs
+     *     to is executed* (which won't happen until the 'perform()' method is
+     *     called).
+     * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
+     *     The mouse location, given as either a target Element, an AccessPath
+     *     that can be used to find the element, a Point that will be used with
+     *     the currently focused element or as a mouse button constant, in which
+     *     case the currently focused element will be used. If this parameter is
+     *     not supplied or null, the currently focused element will be used as
+     *     well.
+     * @param {Constant} mouseButton A mouse button constant. This parameter is
+     *     usually used if the mouseLocation parameter has a real value and
+     *     can't be used to specify the mouse button.
+     * @return {TP.gui.Driver} The receiver.
      */
 
     var point,
         button,
-        currentElement,
+        target,
     
         eventName;
 
-    if (TP.isElement(aLocation)) {
-        currentElement = aLocation;
-    } else if (TP.isKindOf(aLocation, TP.core.Point)) {
-        point = aLocation;
-    } else if (aLocation === TP.LEFT || aLocation === TP.RIGHT) {
-        button = aLocation;
+    //  If there was no valid location supplied, then we just set the target to
+    //  TP.CURRENT, which means to use the currently focused element whenever
+    //  the sequence is executed.
+    if (TP.notValid(mouseLocation)) {
+        target = TP.CURRENT;
+    } else if (TP.isElement(mouseLocation)) {
+        //  Otherwise, if an Element has been supplied, use that.
+        target = mouseLocation;
+    } else if (mouseLocation.isAccessPath()) {
+        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  used to determine the target element.
+        target = mouseLocation;
+    } else if (TP.isKindOf(mouseLocation, TP.core.Point)) {
+        //  Otherwise, if a TP.core.Point has been supplied then we set the
+        //  target to TP.CURRENT, which tells the sequence performing routine to
+        //  use whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        point = mouseLocation;
+        target = TP.CURRENT;
+    } else if (mouseLocation === TP.LEFT || mouseLocation === TP.RIGHT) {
+        //  Otherwise, if a button constant has been supplied then we set the
+        //  target to TP.CURRENT, which tells the sequence performing routine to
+        //  use whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        button = mouseLocation;
+        target = TP.CURRENT;
     } else {
         //  TODO: Raise an exception
         return this;
-    }
-
-    if (!TP.isValid(point)) {
-
-        if (!TP.isElement(currentElement)) {
-            currentElement = this.get('driver').getFocusedElement();
-
-            if (!TP.isElement(currentElement)) {
-                //  TODO: Raise an exception
-                return this;
-            }
-        }
-
-        point = TP.wrap(currentElement).getPagePoint().getCenterPoint();
     }
 
     if (TP.notValid(button)) {
@@ -532,10 +606,19 @@ function(aLocation, mouseButton) {
 
     eventName = 'dblclick';
 
-    this.get('sequenceEntries').add(
-            TP.ac(eventName,
-                    currentElement,
-                    {pageX: point.getX(), pageY: point.getY()}));
+    //  If we got a valid TP.core.Point supplied as the mouse location, then we
+    //  go ahead and supply it as the argument for this step in the sequence.
+    //  Otherwise, it will have to be computed from the target in the sequence
+    //  performing routine.
+    if (TP.isValid(point)) {
+        this.get('sequenceEntries').add(
+                TP.ac(eventName,
+                        target,
+                        {pageX: point.getX(), pageY: point.getY()}));
+    } else {
+        this.get('sequenceEntries').add(
+                TP.ac(eventName, target));
+    }
 
     return this;
 });
@@ -543,24 +626,24 @@ function(aLocation, mouseButton) {
 //  ------------------------------------------------------------------------
 
 TP.gui.Sequence.Inst.defineMethod('keyDown',
-function(aKey) {
+function(aKey, aPath) {
 
     /**
      * @name keyDown
-     * @synopsis
-     * @returns
-     * @todo
+     * @synopsis Simulate the act of pressing the supplied key down.
+     * @param {String} aKey The key to simulate pressing down.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the keys pressed down over. If this isn't supplied,
+     *     the currently focused element in the receiver's owning driver's
+     *     window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
      */
 
-    var currentElement;
+    var target;
 
-    if (!TP.isElement(
-            currentElement = this.get('driver').getFocusedElement())) {
-        //  TODO: Raise an exception
-        return this;
-    }
-    
-    this.get('sequenceEntries').add(TP.ac('keydown', currentElement, aKey));
+    target = TP.ifInvalid(aPath, TP.CURRENT);
+
+    this.get('sequenceEntries').add(TP.ac('keydown', target, aKey));
 
     return this;
 });
@@ -568,24 +651,64 @@ function(aKey) {
 //  ------------------------------------------------------------------------
 
 TP.gui.Sequence.Inst.defineMethod('keyUp',
-function(aKey) {
+function(aKey, aPath) {
 
     /**
      * @name keyUp
-     * @synopsis
-     * @returns
-     * @todo
+     * @synopsis Simulate the act of releasing the supplied key up.
+     * @param {String} aKey The key to simulate releasing up.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the keys released up over. If this isn't supplied,
+     *     the currently focused element in the receiver's owning driver's
+     *     window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
      */
 
-    var currentElement;
+    var target;
 
-    if (!TP.isElement(
-            currentElement = this.get('driver').getFocusedElement())) {
-        //  TODO: Raise an exception
-        return this;
-    }
-    
-    this.get('sequenceEntries').add(TP.ac('keyup', currentElement, aKey));
+    target = TP.ifInvalid(aPath, TP.CURRENT);
+
+    this.get('sequenceEntries').add(TP.ac('keyup', target, aKey));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Sequence.Inst.defineMethod('metaKeyDown',
+function(aPath) {
+
+    /**
+     * @name metaKeyDown
+     * @synopsis Simulate the act of pressing the 'Meta' key down.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the 'Meta' key pressed down over. If this isn't
+     *     supplied, the currently focused element in the receiver's owning
+     *     driver's window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    this.keyDown('Meta', aPath);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Sequence.Inst.defineMethod('metaKeyUp',
+function(aPath) {
+
+    /**
+     * @name metaKeyUp
+     * @synopsis Simulate the act of releasing the 'Meta' key up.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the 'Meta' key released up over. If this isn't
+     *     supplied, the currently focused element in the receiver's owning
+     *     driver's window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    this.keyUp('Meta', aPath);
 
     return this;
 });
@@ -593,44 +716,64 @@ function(aKey) {
 //  ------------------------------------------------------------------------
 
 TP.gui.Sequence.Inst.defineMethod('mouseDown',
-function(aLocation, mouseButton) {
+function(mouseLocation, mouseButton) {
 
     /**
      * @name mouseDown
-     * @synopsis
-     * @returns
-     * @todo
+     * @synopsis Simulates the act of pressing the mouse button down.
+     * @description Note that this method has a notion of a 'currently focused'
+     *     element, but it is important to note that this will be the element
+     *     that is currently focused *when the sequence that this method belongs
+     *     to is executed* (which won't happen until the 'perform()' method is
+     *     called).
+     * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
+     *     The mouse location, given as either a target Element, an AccessPath
+     *     that can be used to find the element, a Point that will be used with
+     *     the currently focused element or as a mouse button constant, in which
+     *     case the currently focused element will be used. If this parameter is
+     *     not supplied or null, the currently focused element will be used as
+     *     well.
+     * @param {Constant} mouseButton A mouse button constant. This parameter is
+     *     usually used if the mouseLocation parameter has a real value and
+     *     can't be used to specify the mouse button.
+     * @return {TP.gui.Driver} The receiver.
      */
 
     var point,
         button,
-        currentElement,
+        target,
     
         eventName;
 
-    if (TP.isElement(aLocation)) {
-        currentElement = aLocation;
-    } else if (TP.isKindOf(aLocation, TP.core.Point)) {
-        point = aLocation;
-    } else if (aLocation === TP.LEFT || aLocation === TP.RIGHT) {
-        button = aLocation;
+    //  If there was no valid location supplied, then we just set the target to
+    //  TP.CURRENT, which means to use the currently focused element whenever
+    //  the sequence is executed.
+    if (TP.notValid(mouseLocation)) {
+        target = TP.CURRENT;
+    } else if (TP.isElement(mouseLocation)) {
+        //  Otherwise, if an Element has been supplied, use that.
+        target = mouseLocation;
+    } else if (mouseLocation.isAccessPath()) {
+        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  used to determine the target element.
+        target = mouseLocation;
+    } else if (TP.isKindOf(mouseLocation, TP.core.Point)) {
+        //  Otherwise, if a TP.core.Point has been supplied then we set the
+        //  target to TP.CURRENT, which tells the sequence performing routine to
+        //  use whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        point = mouseLocation;
+        target = TP.CURRENT;
+    } else if (mouseLocation === TP.LEFT || mouseLocation === TP.RIGHT) {
+        //  Otherwise, if a button constant has been supplied then we set the
+        //  target to TP.CURRENT, which tells the sequence performing routine to
+        //  use whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        button = mouseLocation;
+        target = TP.CURRENT;
     } else {
         //  TODO: Raise an exception
         return this;
-    }
-
-    if (!TP.isValid(point)) {
-
-        if (!TP.isElement(currentElement)) {
-            currentElement = this.get('driver').getFocusedElement();
-
-            if (!TP.isElement(currentElement)) {
-                //  TODO: Raise an exception
-                return this;
-            }
-        }
-
-        point = TP.wrap(currentElement).getPagePoint().getCenterPoint();
     }
 
     if (TP.notValid(button)) {
@@ -648,10 +791,19 @@ function(aLocation, mouseButton) {
 
     eventName = 'mousedown';
 
-    this.get('sequenceEntries').add(
-            TP.ac(eventName,
-                    currentElement,
-                    {pageX: point.getX(), pageY: point.getY()}));
+    //  If we got a valid TP.core.Point supplied as the mouse location, then we
+    //  go ahead and supply it as the argument for this step in the sequence.
+    //  Otherwise, it will have to be computed from the target in the sequence
+    //  performing routine.
+    if (TP.isValid(point)) {
+        this.get('sequenceEntries').add(
+                TP.ac(eventName,
+                        target,
+                        {pageX: point.getX(), pageY: point.getY()}));
+    } else {
+        this.get('sequenceEntries').add(
+                TP.ac(eventName, target));
+    }
 
     return this;
 });
@@ -659,44 +811,64 @@ function(aLocation, mouseButton) {
 //  ------------------------------------------------------------------------
 
 TP.gui.Sequence.Inst.defineMethod('mouseUp',
-function(aLocation, mouseButton) {
+function(mouseLocation, mouseButton) {
 
     /**
      * @name mouseUp
-     * @synopsis
-     * @returns
-     * @todo
+     * @synopsis Simulates the act of releasing the mouse button up.
+     * @description Note that this method has a notion of a 'currently focused'
+     *     element, but it is important to note that this will be the element
+     *     that is currently focused *when the sequence that this method belongs
+     *     to is executed* (which won't happen until the 'perform()' method is
+     *     called).
+     * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
+     *     The mouse location, given as either a target Element, an AccessPath
+     *     that can be used to find the element, a Point that will be used with
+     *     the currently focused element or as a mouse button constant, in which
+     *     case the currently focused element will be used. If this parameter is
+     *     not supplied or null, the currently focused element will be used as
+     *     well.
+     * @param {Constant} mouseButton A mouse button constant. This parameter is
+     *     usually used if the mouseLocation parameter has a real value and
+     *     can't be used to specify the mouse button.
+     * @return {TP.gui.Driver} The receiver.
      */
 
     var point,
         button,
-        currentElement,
+        target,
     
         eventName;
 
-    if (TP.isElement(aLocation)) {
-        currentElement = aLocation;
-    } else if (TP.isKindOf(aLocation, TP.core.Point)) {
-        point = aLocation;
-    } else if (aLocation === TP.LEFT || aLocation === TP.RIGHT) {
-        button = aLocation;
+    //  If there was no valid location supplied, then we just set the target to
+    //  TP.CURRENT, which means to use the currently focused element whenever
+    //  the sequence is executed.
+    if (TP.notValid(mouseLocation)) {
+        target = TP.CURRENT;
+    } else if (TP.isElement(mouseLocation)) {
+        //  Otherwise, if an Element has been supplied, use that.
+        target = mouseLocation;
+    } else if (mouseLocation.isAccessPath()) {
+        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  used to determine the target element.
+        target = mouseLocation;
+    } else if (TP.isKindOf(mouseLocation, TP.core.Point)) {
+        //  Otherwise, if a TP.core.Point has been supplied then we set the
+        //  target to TP.CURRENT, which tells the sequence performing routine to
+        //  use whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        point = mouseLocation;
+        target = TP.CURRENT;
+    } else if (mouseLocation === TP.LEFT || mouseLocation === TP.RIGHT) {
+        //  Otherwise, if a button constant has been supplied then we set the
+        //  target to TP.CURRENT, which tells the sequence performing routine to
+        //  use whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        button = mouseLocation;
+        target = TP.CURRENT;
     } else {
         //  TODO: Raise an exception
         return this;
-    }
-
-    if (!TP.isValid(point)) {
-
-        if (!TP.isElement(currentElement)) {
-            currentElement = this.get('driver').getFocusedElement();
-
-            if (!TP.isElement(currentElement)) {
-                //  TODO: Raise an exception
-                return this;
-            }
-        }
-
-        point = TP.wrap(currentElement).getPagePoint().getCenterPoint();
     }
 
     if (TP.notValid(button)) {
@@ -714,10 +886,19 @@ function(aLocation, mouseButton) {
 
     eventName = 'mouseup';
 
-    this.get('sequenceEntries').add(
-            TP.ac(eventName,
-                    currentElement,
-                    {pageX: point.getX(), pageY: point.getY()}));
+    //  If we got a valid TP.core.Point supplied as the mouse location, then we
+    //  go ahead and supply it as the argument for this step in the sequence.
+    //  Otherwise, it will have to be computed from the target in the sequence
+    //  performing routine.
+    if (TP.isValid(point)) {
+        this.get('sequenceEntries').add(
+                TP.ac(eventName,
+                        target,
+                        {pageX: point.getX(), pageY: point.getY()}));
+    } else {
+        this.get('sequenceEntries').add(
+                TP.ac(eventName, target));
+    }
 
     return this;
 });
@@ -728,75 +909,198 @@ TP.gui.Sequence.Inst.defineMethod('perform',
 function() {
 
     /**
+     * @name perform
+     * @synopsis Executes the sequence.
+     * @description Note that the steps that comprise the sequence are all
+     *     executed in a 'chained' manner, so that if there are asynchronous
+     *     delays in certain actions, they will all be executed in the proper
+     *     order. Also note that this method is executed within a Promise, so
+     *     that if there are other asynchronous actions that are using Promises
+     *     from the receiver's driver's Promise supplier, this method will
+     *     respect that.
+     * @return {TP.gui.Driver} The receiver.
      */
 
-    var sequenceEntries;
+    var sequenceEntries,
+        driver;
 
     sequenceEntries = this.get('sequenceEntries');
+    driver = this.get('driver');
 
-    sequenceEntries.perform(
-        function(entry) {
-            var type,
+    driver.get('promiseProvider').then(
+        function(value) {
+
+            var eventCB,
+                errorCB,
+
+                newPromise,
+        
+                chain,
+
+                currentElement,
+
+                len,
+                i,
+
+                last,
+                entry,
+
+                type,
                 target,
-                args;
+                args,
+                point;
 
-            type = entry.at(0);
+            //  Generate a callback function to hand to the *last* invocation in
+            //  the sequence and wrap a Promise around it. Therefore, when it is
+            //  called (as the last thing for the Syn triggering functions to
+            //  do), it will fulfill the Promise.
+            newPromise = Q.Promise(
+                function(resolver, rejector) {
+                    eventCB = function() {
+                        resolver();
+                    };
+                    errorCB = function() {
+                        rejector();
+                    };
+                });
 
-            target = entry.at(1);
-            args = entry.at(2);
+            chain = TP.extern.syn;
 
-            switch(type) {
-                case 'click':
-                    TP.extern.syn.click(args, target);
-                break;
-
-                case 'dblclick':
-                    TP.extern.syn.dblclick(args, target);
-                break;
-
-                case 'rightclick':
-                    TP.extern.syn.rightClick(args, target);
-                break;
-
-                case 'key':
-                    TP.extern.syn.key(args, target);
-                break;
-
-                case 'keys':
-                    TP.extern.syn.type(args, target);
-                break;
-
-                case 'mousedown':
-                    TP.extern.syn.trigger(
-                            'mousedown',
-                            TP.extern.syn.key.options(args, 'mousedown'),
-                            target);
-                break;
-
-                case 'mouseup':
-                    TP.extern.syn.trigger(
-                            'mouseup',
-                            TP.extern.syn.key.options(args, 'mouseup'),
-                            target);
-                break;
-
-                case 'keydown':
-                    TP.extern.syn.trigger(
-                            'keydown',
-                            TP.extern.syn.key.options(args, 'keydown'),
-                            target);
-                break;
-
-                case 'keyup':
-                    TP.extern.syn.trigger(
-                            'keyup',
-                            TP.extern.syn.key.options(args, 'keyup'),
-                            target);
-                break;
-
-                default:
-                break;
+            //  If we can't determine a focused element, call the error callback
+            //  and exit.
+            if (!TP.isElement(currentElement = driver.getFocusedElement())) {
+                return errorCB();
             }
+
+            //  Loop over each entry in the sequence and execute the
+            //  corresponding Syn trigger for that type of event.
+            len = sequenceEntries.getSize();
+            for (i = 0; i < len; i++) {
+
+                //  Keep track if we're at the last entry in the sequence.
+                last = (i === len - 1);
+
+                entry = sequenceEntries.at(i);
+
+                //  The three parameters are:
+                //      1. The type of operation, used in the switch below.
+                //      2. The target of the operation. This could be an
+                //      Element, an Access Path which will determine the Element
+                //      to be used or the value 'TP.CURRENT', in which case it
+                //      will be whatever is the currently focused element.
+                //      3. Operation-specific arguments.
+                type = entry.at(0);
+                target = entry.at(1);
+                args = entry.at(2);
+
+                if (TP.isElement(target)) {
+                    //  The target is already an element
+                } else if (target === TP.CURRENT) {
+                    target = currentElement;
+                } else if (target.isAccessPath()) {
+                    if (TP.isArray(
+                        target = target.executeGet(
+                                        driver.getCurrentNativeDocument()))) {
+                        target = target.first();
+                    }
+                }
+
+                if (!TP.isElement(target)) {
+                    return errorCB();
+                }
+
+                //  Invoke the Syn handler. If we're the last in the sequence,
+                //  then hand in the event callback we generated above (and
+                //  wrapped in the Promise).
+                switch(type) {
+                    case 'click':
+
+                        if (!TP.isValid(args)) {
+                            point =
+                                TP.wrap(target).getPageRect().getCenterPoint();
+                            args = {pageX: point.getX(), pageY: point.getY()};
+                        }
+
+                        last ?
+                            chain = chain.click(args, target, eventCB) :
+                            chain = chain.click(args, target);
+                    break;
+
+                    case 'dblclick':
+                        last ?
+                            chain = chain.dblclick(args, target, eventCB) :
+                            chain = chain.dblclick(args, target);
+                    break;
+
+                    case 'rightclick':
+                        last ?
+                            chain = chain.rightClick(args, target, eventCB) :
+                            chain = chain.rightClick(args, target);
+                    break;
+
+                    case 'key':
+                        last ?
+                            chain = chain.key(args, target, eventCB) :
+                            chain = chain.key(args, target);
+                    break;
+
+                    case 'keys':
+                        last ?
+                            chain = chain.type(args, target, eventCB) :
+                            chain = chain.type(args, target);
+                    break;
+
+                    case 'mousedown':
+                        chain.trigger(
+                                'mousedown',
+                                TP.extern.syn.key.options(args, 'mousedown'),
+                                target);
+
+                        if (last) {
+                            eventCB();
+                        }
+
+                    break;
+
+                    case 'mouseup':
+                        chain.trigger(
+                                'mouseup',
+                                TP.extern.syn.key.options(args, 'mouseup'),
+                                target);
+
+                        if (last) {
+                            eventCB();
+                        }
+                    break;
+
+                    case 'keydown':
+                        chain.trigger(
+                                'keydown',
+                                TP.extern.syn.key.options(args, 'keydown'),
+                                target);
+
+                        if (last) {
+                            eventCB();
+                        }
+                    break;
+
+                    case 'keyup':
+                        chain.trigger(
+                                'keyup',
+                                TP.extern.syn.key.options(args, 'keyup'),
+                                target);
+
+                        if (last) {
+                            eventCB();
+                        }
+                    break;
+
+                    default:
+                    break;
+                }
+            }
+
+            return newPromise;
         });
 
     return this;
@@ -805,24 +1109,81 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.gui.Sequence.Inst.defineMethod('sendKeys',
-function(aString) {
+function(aString, aPath) {
 
     /**
      * @name sendKeys
-     * @synopsis
-     * @returns
-     * @todo
+     * @synopsis Simulate the act of pressing and releasing the sequence of keys
+     *     necessary to reproduce the effect of the user typing what is
+     *     specified in the String.
+     * @description Note that it is possible to supply W3C-defined control
+     *     keys surrounded with brackets ('[' and ']') in this String for ease
+     *     of sending these control characters to the GUI:
+     *          'ABC[Left][Backspace]D[Right]E'
+     *
+     *     This will produce 'ADCE' in the GUI.
+     *
+     *     Also note that appending '-up' to some of these keys, such as
+     *     'Shift', 'Control', 'Alt' and 'Meta', will simulate the act of
+     *     releasing the key:
+     *          '[Alt]a[Alt-up]'
+     *     Note that all of the possible keys that can be used here can be found
+     *     in a TIBET keyboard map as 'key="..."' entries.
+     * @param {String} String The String used to determine which keys will be
+     *     pressed and released.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the keys pressed down and released up over. If this
+     *     isn't supplied, the currently focused element in the receiver's
+     *     owning driver's window context will be used as the target for this
+     *     event.
+     * @return {TP.gui.Driver} The receiver.
      */
 
-    var currentElement;
+    var target;
 
-    if (!TP.isElement(
-            currentElement = this.get('driver').getFocusedElement())) {
-        //  TODO: Raise an exception
-        return this;
-    }
+    target = TP.ifInvalid(aPath, TP.CURRENT);
 
-    this.get('sequenceEntries').add(TP.ac('keys', currentElement, aString));
+    this.get('sequenceEntries').add(TP.ac('keys', target, aString));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Sequence.Inst.defineMethod('shiftKeyDown',
+function(aPath) {
+
+    /**
+     * @name shiftKeyDown
+     * @synopsis Simulate the act of pressing the 'Shift' key down.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the 'Shift' key pressed down over. If this isn't
+     *     supplied, the currently focused element in the receiver's owning
+     *     driver's window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    this.keyDown('Shift', aPath);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Sequence.Inst.defineMethod('shiftKeyUp',
+function(aPath) {
+
+    /**
+     * @name shiftKeyUp
+     * @synopsis Simulate the act of releasing the 'Shift' key up.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should have the 'Shift' key released up over. If this isn't
+     *     supplied, the currently focused element in the receiver's owning
+     *     driver's window context will be used as the target for this event.
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    this.keyUp('Shift', aPath);
 
     return this;
 });

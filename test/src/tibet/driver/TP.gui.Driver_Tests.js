@@ -36,16 +36,16 @@ function() {
 
     this.it('focus and sendKeys sequence', function(test, options) {
 
-        var uri;
+        var uri,
+            driver,
+            seq;
 
         uri = TP.uc('~lib_tst/src/tibet/driver/testmarkup.xml');
 
-        return this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM).then(
             function(result) {
                 var tpDoc,
                     tpBody,
-               
-                    driver,
                
                     testField;
 
@@ -54,21 +54,26 @@ function() {
 
                 tpBody.setContent(result);
 
-                driver = TP.gui.Driver.getTestFixture(
-                                        TP.hc('testCase', test));
+                //testField = TP.byOID('testField');
 
-                testField = TP.byOID('testField');
-
-                testField.focus();
-
-                driver.startSequence().sendKeys('ABC[Left][Backspace]D[Right]E').perform();
-                //driver.startSequence().sendKeys('[Shift]abcd[Shift-up]').perform();
+                //testField.focus();
             },
             function(error) {
                 TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
                                 TP.ERROR);
                 test.fail();
             });
+
+        driver = TP.gui.Driver.getTestFixture(
+                                TP.hc('testCase', test));
+
+        seq = driver.startSequence();
+        seq.sendKeys('ABC[Left][Backspace]D[Right]E', TP.cpc('#testField'));
+        seq.perform();
+
+        //driver.startSequence().click(TP.cpc('#testField')).perform();
+
+        //driver.startSequence().sendKeys('[Shift]abcd[Shift-up]').perform();
     });
 });
 

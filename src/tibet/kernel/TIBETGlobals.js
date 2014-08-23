@@ -792,10 +792,14 @@ TP.ALL = 'ALL';
 TP.JOIN = '__JOIN__';
 
 //  positional identifiers
+TP.CURRENT = 'CURRENT';
+
 TP.FIRST = 'FIRST';
 TP.LAST = 'LAST';
+
 TP.NEXT = 'NEXT';
 TP.PREVIOUS = 'PREVIOUS';
+
 TP.SEEK = 'SEEK';
 
 TP.PRECEDING = 'PRECEDING';
