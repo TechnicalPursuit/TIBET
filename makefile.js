@@ -288,6 +288,7 @@ targets.build_tibet = function(make) {
         targets.rollup_hook).then(
         targets.rollup_base).then(
         targets.rollup_full).then(
+        targets.rollup_developer).then(
         function() {
             targets.build_tibet.resolve();
         },
@@ -357,6 +358,26 @@ targets.rollup_base = function(make) {
         true,
         true,
         targets.rollup_base);
+};
+
+/**
+ */
+targets.rollup_developer = function(make) {
+    helpers.rollup(make,
+        'developer',
+        '~lib_cfg/TIBET.xml',
+        'developer',
+        true,
+        false,
+        targets.rollup_developer);
+
+    helpers.rollup(make,
+        'developer',
+        '~lib_cfg/TIBET.xml',
+        'developer',
+        true,
+        true,
+        targets.rollup_developer);
 };
 
 /**
