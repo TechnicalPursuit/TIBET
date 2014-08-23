@@ -383,7 +383,7 @@ function() {
 
         uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
 
-        return this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM).then(
             function(result) {
 
                 var usingDebugger,
@@ -429,7 +429,7 @@ function() {
 
         uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude2.xml');
 
-        return this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM).then(
             function(result) {
 
                 var tpDoc;
