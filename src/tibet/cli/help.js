@@ -208,6 +208,11 @@ Cmd.prototype.executeForCommand = function(command) {
     var cmd;
 
     file = path.join(__dirname, command + '.js');
+    if (file.charAt('_')) {
+        this.error('Help not available for private commands.');
+        return 1;
+    }
+
     if (sh.test('-f', file)) {
         CmdType = require(file);
         cmd = new CmdType();
