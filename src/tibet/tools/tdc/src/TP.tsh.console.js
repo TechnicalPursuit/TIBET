@@ -98,7 +98,7 @@ function(aRequest) {
                                     'triggerKey', triggerKey
                             ));
 
-                        console.focusInputCell();
+                        TP.byId('UIROOT', top).focus();
 
                     } else if (count < 10) {
                         count++;
@@ -2541,6 +2541,7 @@ function() {
 
     TP.elementHide(bootFrameElem);
     TP.elementShow(uiRootElem);
+    uiRootElem.focus();
 
     this.set('consoleDisplayed', false);
 
@@ -2566,6 +2567,7 @@ function() {
 
     TP.elementHide(uiRootElem);
     TP.elementShow(bootFrameElem);
+    bootFrameElem.focus();
 
     this.set('consoleDisplayed', true);
 
