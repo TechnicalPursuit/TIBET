@@ -1100,6 +1100,15 @@ function(aNode, aProcessor, aRequest) {
         //  supplying the request.
         result = type[methodName](processingRequest);
 
+        //  The node that we got handed back was either identical to the node we
+        //  handed in or it equals it, according to the W3C's definition of
+        //  'node equality'. Therefore, we just continue without further
+        //  processing of the result.
+        if (TP.isNode(result) &&
+            (result === node || TP.nodeEqualsNode(result, node))) {
+            continue;
+        }
+
         //  If either a singular Node or Array of Nodes was returned, then push
         //  them onto our list of 'produced nodes'.
         if (TP.isNode(result)) {
