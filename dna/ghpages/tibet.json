@@ -5,6 +5,6 @@
         "dna": "{{dna}}"
     },
     "boot": {
-        "profile": "tibet.xml"
+        "profile": "base.xml"
     }
 }
