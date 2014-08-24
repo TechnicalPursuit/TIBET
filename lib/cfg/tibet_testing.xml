@@ -39,7 +39,6 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 <config id="base" depends="">
     <config ref="harness"/>
     <config ref="assertions"/>
-    <config ref="driver"/>
 </config>
 
 <config id="harness">
@@ -50,19 +49,19 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     <script src="testing/TPTestAssertions.js" />
 </config>
 
-<config id="driver">
-    <script src="~lib_tst/src/tibet/driver/TP.gui.Driver_Tests.js" />
-</config>
-
 <config id="samples">
     <script src="testing/TPTestSamples.js" />
 </config>
 
 <config id="tests">
+    <config ref="driver"/>
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
 </config>
 
+<config id="driver">
+    <script src="~lib_tst/src/tibet/driver/TP.gui.Driver_Tests.js" />
+</config>
 
 <config id="tagprocessor">
     <script src="~lib_tst/src/tibet/tagprocessor/TP.core.TagProcessor_Tests.js" />
