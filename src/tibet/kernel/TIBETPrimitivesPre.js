@@ -7915,6 +7915,17 @@ function(anObj) {
         return !anObj.isXHTML;
     }
 
+    //  If the document has a contentType then we test for either HTML or XHTML.
+    //  Note here how we make the tests explicit - otherwise, we drop down into
+    //  more complex logic.
+    if (anObj.contentType === TP.HTML_TEXT_ENCODED) {
+        anObj.isXHTML = false;
+        return true;
+    } else if (anObj.contentType === TP.XHTML_ENCODED) {
+        anObj.isXHTML = true;
+        return false;
+    }
+
     //  If the document doesn't have a Window, then its not HTML
     if (TP.notValid(anObj.defaultView)) {
         return false;
@@ -8271,6 +8282,16 @@ function(anObj) {
     //  value, so return it if we have.
     if (TP.isDefined(anObj.isXHTML)) {
         return anObj.isXHTML;
+    }
+
+    //  If the document has a contentType and that contentType is
+    //  TP.XHTML_ENCODED, then we know it's HTML
+    if (anObj.contentType === TP.XHTML_ENCODED) {
+        anObj.isXHTML = true;
+        return true;
+    } else if (anObj.contentType === TP.HTML_TEXT_ENCODED) {
+        anObj.isXHTML = false;
+        return false;
     }
 
     //  If the document doesn't have a Window, then we check to see if the
