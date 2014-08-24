@@ -3,55 +3,22 @@
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="{{appname}}" default="base" basedir="~app_cfg">
 
-<config id="base">
-    <config ref="boot_prefix"/>
-    <config ref="tibet"/>
-    <config ref="app"/>
-    <config ref="boot_suffix"/>
+<config id="base" if="boot.phaseone">
+    <package src="~lib_cfg/TIBET.xml" config="base" if="boot.live" />
+    <script src="~lib_build/tibet_base.js" if="boot.unminified" unless="boot.live" />
+    <script src="~lib_build/tibet_base.min.js" unless="boot.unminified boot.live" />
 </config>
 
-<config id="full">
-    <!-- how does this work? if/unless checks in "tibet_img" -->
-    <config ref="base"/>
+<config id="full" if="boot.phaseone">
+    <package src="~lib_cfg/TIBET.xml" config="full" if="boot.live" />
+    <script src="~lib_build/tibet_full.js" if="boot.unminified" unless="boot.live" />
+    <script src="~lib_build/tibet_full.min.js" unless="boot.unminified boot.live" />
 </config>
 
-<config id="boot_prefix" if="boot.phaseone">
-</config>
-
-<config id="tibet" no-lint="true">
-    <config ref="tibet_img" if="boot.phaseone"/>
-    <config ref="tibet_chg" if="boot.phaseone"/>
-</config>
-
-<config id="tibet_img">
-    <script src="~lib_build/tibet_base.js"
-        if="boot.unminified=true boot.config=base" />
-    <script src="~lib_build/tibet_base.min.js"
-        unless="boot.unminified" if="boot.config=base" />
-
-    <script src="~lib_build/tibet_full.js"
-        if="boot.unminified=true boot.config=full" />
-    <script src="~lib_build/tibet_full.min.js"
-        unless="boot.unminified" if="boot.config=full" />
-</config>
-
-<config id="tibet_chg">
-</config>
-
-<config id="app">
-    <config ref="app_img" if="boot.phasetwo"/>
-    <config ref="app_chg" if="boot.phasetwo"/>
-</config>
-
-<config id="app_img">
-    <package src="app.xml" config="base"/>
-</config>
-
-<config id="app_chg">
-</config>
-
-<config id="boot_suffix" if="boot.phasetwo">
-    <package src="~lib_cfg/tdc.xml" config="standard" no-lint="true"/>
+<config id="developer" if="boot.phaseone">
+    <package src="~lib_cfg/TIBET.xml" config="developer" if="boot.live" />
+    <script src="~lib_build/tibet_developer.js" if="boot.unminified" unless="boot.live" />
+    <script src="~lib_build/tibet_developer.min.js" unless="boot.unminified boot.live" />
 </config>
 
 </package>

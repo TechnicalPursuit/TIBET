@@ -1,12 +1,34 @@
 <?xml version="1.0"?>
+
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="{{appname}}" default="base" basedir="~app_src">
 
-<config id="base">
-    <script src="~app_src/tags/APP.{{appname}}.app.js" />
+<config id="base" if="boot.phasetwo">
     <property name="APP.{{appname}}.app.xhtml_uri" value="~app_src/tags/APP.{{appname}}.app.xhtml"/>
+    <config ref="app_img"/>
+</config>
 
+<config id="full" if="boot.phasetwo">
+    <config ref="base"/>
+</config>
+
+<config id="developer" if="boot.phasetwo">
+    <config ref="base"/>
+    <package src="~lib_cfg/tdc.xml" config="standard" no-lint="true"/>
+</config>
+
+<config id="app_img">
+    <script src="~app_src/tags/APP.{{appname}}.app.js" />
     <script src="~app_src/main.js" />
+</config>
+
+<config id="test" if="boot.phasetwo">
+    <config ref="developer"/>
+    <config ref="tests"/>
+</config>
+
+<config id="tests">
+  <!-- put your test scripts here -->
 </config>
 
 </package>

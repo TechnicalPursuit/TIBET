@@ -10,7 +10,7 @@
 
 <config id="phantom">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="developer"/>
+    <package src="~app_cfg/base.xml" config="test"/>
 </config>
 
 </package>

@@ -21,30 +21,23 @@
 
 <config id="base">
     <config ref="properties"/>
-    <package src="tibet.xml" config="base"/>
+    <package src="base.xml" config="base"/>
 </config>
 
-<config id="app-base" if="boot.phasetwo">
-    <package src="~app_cfg/app.xml" config="base"/>
-    <package src="~lib_cfg/tdc.xml" config="standard" no-lint="true"/>
-</config>
-
-<config id="teamtibet-base">
+<config id="full">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="base"/>
-    <config ref="app-base"/>
+    <package src="base.xml" config="full"/>
 </config>
 
-<config id="teamtibet-full">
+<config id="developer">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="full"/>
-    <config ref="app-base"/>
+    <package src="base.xml" config="developer"/>
 </config>
 
-<config id="teamtibet-developer">
+<config id="test">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="developer"/>
-    <config ref="app-base"/>
+    <package src="base.xml" config="test"/>
 </config>
 
 </package>
+

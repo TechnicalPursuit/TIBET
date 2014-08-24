@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="{{appname}}" default="base" basedir="~app_cfg">
+
+<config id="base">
+    <package src="tibet.xml" config="base"/>
+    <package src="app.xml" config="base"/>
+</config>
+
+<config id="full">
+    <package src="tibet.xml" config="full"/>
+    <package src="app.xml" config="full"/>
+</config>
+
+<config id="developer">
+    <package src="tibet.xml" config="developer"/>
+    <package src="app.xml" config="developer"/>
+</config>
+
+<config id="test">
+    <config ref="developer"/>
+    <package src="app.xml" config="tests"/>
+</config>
+
+</package>
+
