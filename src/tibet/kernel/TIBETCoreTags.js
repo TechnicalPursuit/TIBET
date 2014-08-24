@@ -127,7 +127,7 @@ function(aRequest) {
      *     environment is set to 'development' or not.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @returns {Element} The new element.
+     * @returns {null}
      */
 
     var elem,
@@ -140,7 +140,7 @@ function(aRequest) {
     }
 
     if (TP.notEmpty(elem.getAttribute('tibet:appctrl'))) {
-      return this.callNextMethod();
+        return this.callNextMethod();
     }
 
     name = TP.sys.cfg('project.name');
@@ -153,9 +153,9 @@ function(aRequest) {
             '</h1>' +
         '</div>');
 
-    newElem = TP.elementReplaceWith(elem, newElem);
+    TP.elementReplaceWith(elem, newElem);
 
-    return newElem;
+    return;
 });
 
 //  ========================================================================
