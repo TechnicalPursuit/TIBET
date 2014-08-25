@@ -345,6 +345,14 @@ function(aData, aContext) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('byContent',
+function(textOrRegExp, aContext, autoCollapse) {
+
+    return TP.todo();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('byCSS',
 function(cssExpr, aContext, autoCollapse) {
 
@@ -449,6 +457,14 @@ function(anID, aContext) {
         //  NOTE we force XPath usage when not found and XML
         return TP.nodeGetElementById(node, id, true);
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('byJS',
+function(selectionFunc, aContext, autoCollapse) {
+
+    return TP.todo();
 });
 
 //  ------------------------------------------------------------------------
