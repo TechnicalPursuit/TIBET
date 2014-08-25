@@ -210,11 +210,16 @@ function(aURI, resultType) {
      * @synopsis Fetches the resource at the end of the URI. The result will be
      *     available as the value of the returned promise.
      * @param {TP.core.URI} The URI to fetch the resource for.
+     * @raises TP.sig.InvalidURI
      * @return {Promise} The promise generated to fetch the resource. This can
      *     be used to chain further asynchronous operations after the fetch.
      */
 
     var newPromise;
+
+    if (!TP.isKindOf(aURI, TP.core.URI)) {
+        return this.raise('TP.sig.InvalidURI', arguments);
+    }
 
     newPromise = this.get('promiseProvider').thenPromise(
             function(resolver, rejector) {
