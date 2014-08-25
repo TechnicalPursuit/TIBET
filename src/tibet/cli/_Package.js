@@ -1,16 +1,15 @@
+//  ========================================================================
 /**
- * @file _Package.js
  * @overview TIBET package/config processing. Routines here provide ways to get
  *     asset listings from TIBET package files and their configurations. This is
  *     a Node.js routine primarily focused on CLI support. The various commands
  *     which operate on files such as lint, package, and rollup leverage this
  *     functionality to provide them with project-specific asset lists.
- * @author Scott Shattuck (ss)
- * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
- *     open source waivers to keep your derivative work source code private.
+ *     privacy waivers if you must keep your TIBET-based source code private.
  */
 
 /*eslint camelcase:0, no-extra-semi:0*/

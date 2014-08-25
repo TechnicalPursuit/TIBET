@@ -1,16 +1,11 @@
 //  ========================================================================
-/*
-NAME:   tibet_hook.js
-AUTH:   Scott Shattuck (ss), William J. Edney (wje)
-NOTE:   Copyright (C) 1999-2013 Technical Pursuit Inc., All Rights
-        Reserved. Patent Pending, Technical Pursuit Inc. Licensed under
-        the OSI-approved Reciprocal Public License ("RPL") Version 1.5.
-
-        See the RPL for your rights and responsibilities. Contact TPI to
-        purchase optional open source waivers for your derivative works.
-
-        Portions Copyright (C), 1999 Netscape Communications Corp.
-*/
+/**
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     privacy waivers if you must keep your TIBET-based source code private.
+ */
 //  ========================================================================
 
 /**

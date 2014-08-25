@@ -1,16 +1,15 @@
+//  ========================================================================
 /**
- * @file _cli.js
  * @overview The TIBET command-line harness. Logic here is focused on command
  *     identification, initial argument processing, command file loading, and
  *     common utilities for commands. If a command isn't found the CLI will
  *     check for a TIBET-style makefile.js target followed by a grunt or gulp
  *     task to perform the work.
- * @author Scott Shattuck (ss)
- * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
- *     OSI-Approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
- *     open source waivers to keep your derivative work source code private.
+ *     privacy waivers if you must keep your TIBET-based source code private.
  */
 
 /*

@@ -1,15 +1,15 @@
+//  ========================================================================
 /**
  * @overview The 'tibet freeze' command. Copies and prunes the node_modules
  *     version of TIBET currently used by an application into the application's
  *     TIBET-INF directory. This allows the library to be added via Git or
  *     similar tools which might normally ignore node_modules and avoids
  *     bringing over dependencies which aren't needed for deployment.
- * @author Scott Shattuck (ss)
- * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
- *     open source waivers to keep your derivative work source code private.
+ *     privacy waivers if you must keep your TIBET-based source code private.
  */
 
 (function() {
