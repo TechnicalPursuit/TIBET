@@ -951,8 +951,11 @@ function() {
                 entry,
 
                 type,
-                target,
+                targets,
                 args,
+
+                j,
+                target,
                 point;
 
             //  Generate a callback function to hand to the *last* invocation in
@@ -989,119 +992,163 @@ function() {
 
                 //  The three parameters are:
                 //      1. The type of operation, used in the switch below.
-                //      2. The target of the operation. This could be an
-                //      Element, an Access Path which will determine the Element
-                //      to be used or the value 'TP.CURRENT', in which case it
-                //      will be whatever is the currently focused element.
+                //      2. The targets of the operation. This could be 1...n
+                //      Elements, an Access Path which will determine the
+                //      Elements to be used or the value 'TP.CURRENT', in which
+                //      case it will be whatever is the currently focused
+                //      element.
                 //      3. Operation-specific arguments.
                 type = entry.at(0);
-                target = entry.at(1);
+                targets = entry.at(1);
                 args = entry.at(2);
 
-                if (TP.isElement(target)) {
+                if (TP.isElement(targets)) {
                     //  The target is already an element
                 } else if (target === TP.CURRENT) {
-                    target = currentElement;
-                } else if (target.isAccessPath()) {
-                    if (TP.isArray(
-                        target = target.executeGet(
-                                        driver.getCurrentNativeDocument()))) {
-                        target = target.first();
+                    targets = currentElement;
+                } else if (targets.isAccessPath()) {
+                    targets = targets.executeGet(
+                                driver.getCurrentNativeDocument());
+                }
+
+                if (!TP.isArray(targets)) {
+                    targets = TP.ac(targets);
+                }
+
+                for (j = 0; j < targets.getSize(); j++) {
+                    target = targets.at(j);
+
+                    if (!TP.isElement(target)) {
+                        return errorCB();
                     }
-                }
 
-                if (!TP.isElement(target)) {
-                    return errorCB();
-                }
+                    //  Invoke the Syn handler. If we're the last in the
+                    //  sequence, then hand in the event callback we generated
+                    //  above (and wrapped in the Promise).
+                    switch(type) {
+                        case 'click':
 
-                //  Invoke the Syn handler. If we're the last in the sequence,
-                //  then hand in the event callback we generated above (and
-                //  wrapped in the Promise).
-                switch(type) {
-                    case 'click':
+                            if (!TP.isValid(args)) {
+                                point =
+                                    TP.wrap(
+                                        target).getPageRect().getCenterPoint();
+                                args = {pageX: point.getX(),
+                                        pageY: point.getY()};
+                            }
 
-                        if (!TP.isValid(args)) {
-                            point =
-                                TP.wrap(target).getPageRect().getCenterPoint();
-                            args = {pageX: point.getX(), pageY: point.getY()};
-                        }
+                            last ?
+                                chain = chain.click(args, target, eventCB) :
+                                chain = chain.click(args, target);
+                        break;
 
-                        last ?
-                            chain = chain.click(args, target, eventCB) :
-                            chain = chain.click(args, target);
-                    break;
+                        case 'dblclick':
 
-                    case 'dblclick':
-                        last ?
-                            chain = chain.dblclick(args, target, eventCB) :
-                            chain = chain.dblclick(args, target);
-                    break;
+                            if (!TP.isValid(args)) {
+                                point =
+                                    TP.wrap(
+                                        target).getPageRect().getCenterPoint();
+                                args = {pageX: point.getX(),
+                                        pageY: point.getY()};
+                            }
 
-                    case 'rightclick':
-                        last ?
-                            chain = chain.rightClick(args, target, eventCB) :
-                            chain = chain.rightClick(args, target);
-                    break;
+                            last ?
+                                chain = chain.dblclick(args, target, eventCB) :
+                                chain = chain.dblclick(args, target);
+                        break;
 
-                    case 'key':
-                        last ?
-                            chain = chain.key(args, target, eventCB) :
-                            chain = chain.key(args, target);
-                    break;
+                        case 'rightclick':
 
-                    case 'keys':
-                        last ?
-                            chain = chain.type(args, target, eventCB) :
-                            chain = chain.type(args, target);
-                    break;
+                            if (!TP.isValid(args)) {
+                                point =
+                                    TP.wrap(
+                                        target).getPageRect().getCenterPoint();
+                                args = {pageX: point.getX(),
+                                        pageY: point.getY()};
+                            }
 
-                    case 'mousedown':
-                        chain.trigger(
+                            last ?
+                                chain = chain.rightClick(args, target, eventCB) :
+                                chain = chain.rightClick(args, target);
+                        break;
+
+                        case 'key':
+                            last ?
+                                chain = chain.key(args, target, eventCB) :
+                                chain = chain.key(args, target);
+                        break;
+
+                        case 'keys':
+                            last ?
+                                chain = chain.type(args, target, eventCB) :
+                                chain = chain.type(args, target);
+                        break;
+
+                        case 'mousedown':
+
+                            if (!TP.isValid(args)) {
+                                point =
+                                    TP.wrap(
+                                        target).getPageRect().getCenterPoint();
+                                args = {pageX: point.getX(),
+                                        pageY: point.getY()};
+                            }
+
+                            chain.trigger(
                                 'mousedown',
                                 TP.extern.syn.key.options(args, 'mousedown'),
                                 target);
 
-                        if (last) {
-                            eventCB();
-                        }
+                            if (last) {
+                                eventCB();
+                            }
 
-                    break;
+                        break;
 
-                    case 'mouseup':
-                        chain.trigger(
+                        case 'mouseup':
+
+                            if (!TP.isValid(args)) {
+                                point =
+                                    TP.wrap(
+                                        target).getPageRect().getCenterPoint();
+                                args = {pageX: point.getX(),
+                                        pageY: point.getY()};
+                            }
+
+                            chain.trigger(
                                 'mouseup',
                                 TP.extern.syn.key.options(args, 'mouseup'),
                                 target);
 
-                        if (last) {
-                            eventCB();
-                        }
-                    break;
+                            if (last) {
+                                eventCB();
+                            }
+                        break;
 
-                    case 'keydown':
-                        chain.trigger(
+                        case 'keydown':
+                            chain.trigger(
                                 'keydown',
                                 TP.extern.syn.key.options(args, 'keydown'),
                                 target);
 
-                        if (last) {
-                            eventCB();
-                        }
-                    break;
+                            if (last) {
+                                eventCB();
+                            }
+                        break;
 
-                    case 'keyup':
-                        chain.trigger(
+                        case 'keyup':
+                            chain.trigger(
                                 'keyup',
                                 TP.extern.syn.key.options(args, 'keyup'),
                                 target);
 
-                        if (last) {
-                            eventCB();
-                        }
-                    break;
+                            if (last) {
+                                eventCB();
+                            }
+                        break;
 
-                    default:
-                    break;
+                        default:
+                        break;
+                    }
                 }
             }
 
