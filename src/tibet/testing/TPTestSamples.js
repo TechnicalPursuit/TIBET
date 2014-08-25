@@ -219,6 +219,22 @@ function() {
     });
 });
 
+String.prototype.describe('String inst suite',
+function() {
+    this.it('asserts something and then logs', function() {
+        this.then(
+            function() {
+                TP.sys.logTest('Comes before!');
+            });
+        this.assert.isString('hi there');
+        this.assert.isString(42);
+        this.then(
+            function() {
+                TP.sys.logTest('Comes after!');
+            });
+    });
+});
+
 
 // Test for suite timeout. There are 6 cases here with 2900ms timers which
 // should run as each previous case finishes. As a result we should see 5 pass
