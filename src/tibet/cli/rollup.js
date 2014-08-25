@@ -1,15 +1,16 @@
 //  ========================================================================
 /**
- * @overview The 'tibet rollup' command. This command inherits from 'tibet
- * package' and works with a list of package asset nodes to process them into
- * compressed and concatenated form for faster loading. See the tibet package
- * command for more information on options.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
+ * @overview The 'tibet rollup' command. This command inherits from 'tibet
+ *     package' and works with a list of package asset nodes to process them
+ *     into compressed and concatenated form for faster loading. See the tibet
+ *     package command for more information on options.
  */
+//  ========================================================================
 
 (function() {
 

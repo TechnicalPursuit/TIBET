@@ -1,13 +1,16 @@
-// =============================================================================
+//  ========================================================================
 /**
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     privacy waivers if you must keep your TIBET-based source code private.
  * @fileoverview Bootstrap unit tests for the 'tibet' command line.
- * The tibet command has its own 'test' option so the purpose of the mocha-based
- * tests is to ensure that command is operating correctly. The rest of the tests
- * run within the context of TIBET itself.
- * @author idearat@technicalpursuit.com (Scott Shattuck)
- * Copyright 1999-2013 Technical Pursuit Inc., All Rights Reserved.
+ *     The tibet command has its own 'test' option so the purpose of the
+ *     mocha-based * tests is to ensure that command is operating correctly.
+ *     The rest of the tests run within the context of TIBET itself.
  */
-// -----------------------------------------------------------------------------
+//  ========================================================================
 
 var expect = require('chai').expect;
 var CLI = require('tibet/src/tibet/cli/_cli');

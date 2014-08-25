@@ -6,8 +6,7 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
-
-//  ----------------------------------------------------------------------------
+//  ========================================================================
 
 /* jshint debug:true,
           eqnull:true,

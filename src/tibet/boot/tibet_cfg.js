@@ -1,4 +1,3 @@
-//  ----------------------------------------------------------------------------
 //  ========================================================================
 /**
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
@@ -7,7 +6,7 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
-
+//  ========================================================================
 
 /*global TP:false*/
 

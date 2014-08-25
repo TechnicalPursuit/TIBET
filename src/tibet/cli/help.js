@@ -1,15 +1,16 @@
 //  ========================================================================
 /**
- * @overview The 'tibet help' command. Displays the usage and/or help text for a
- *     command, or for the entire TIBET CLI if no command name is given. Note
- *     that if `tibet help` is invoked within a project any custom commands or
- *     makefile.js targets for that application are also listed.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
+ * @overview The 'tibet help' command. Displays the usage and/or help text for a
+ *     command, or for the entire TIBET CLI if no command name is given. Note
+ *     that if `tibet help` is invoked within a project any custom commands or
+ *     makefile.js targets for that application are also listed.
  */
+//  ========================================================================
 
 (function() {
 

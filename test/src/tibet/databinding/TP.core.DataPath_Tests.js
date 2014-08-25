@@ -1,15 +1,13 @@
 //  ========================================================================
 /**
- * @file TP.core.DataPath_Tests.js
- * @overview
- * @author William J. Edney (wje)
- * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
- *     open source waivers to keep your derivative work source code private.
+ *     privacy waivers if you must keep your TIBET-based source code private.
  */
-//  ------------------------------------------------------------------------
+//  ========================================================================
+
 
 TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType TIBET Paths',
 function() {
@@ -1579,7 +1577,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get
         //  independent validation of 'path' execution code.
-     
+
         //  This will return a null
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/fname', null, true);
@@ -1597,7 +1595,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-     
+
         //  This will return a single native Element
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/fname', null, true);
@@ -1632,7 +1630,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get
         //  independent validation of 'path' execution code.
-     
+
         //  This will return a single native Element
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/fname', null, true);
@@ -1658,7 +1656,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-     
+
         //  This will return an Array of native Elements
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/fname|/emp/nickname', null, true);
@@ -1711,7 +1709,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get
         //  independent validation of 'path' execution code.
-     
+
         //  This will return a null
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/vitals/bp', null, true);
@@ -1729,7 +1727,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-     
+
         //  This will return a single native Element
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/vitals/bp', null, true);
@@ -1768,7 +1766,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get
         //  independent validation of 'path' execution code.
-     
+
         //  This will return the value for billing address - a null
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/billingaddress', null, true);
@@ -1793,7 +1791,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-     
+
         //  This will return an Array of native Elements
         result = TP.nodeEvaluatePath(
             TP.unwrap(model1),
@@ -1939,7 +1937,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get
         //  independent validation of 'path' execution code.
-     
+
         //  This will return a null
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/fname/@foo', null, true);
@@ -1957,7 +1955,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-     
+
         //  This will return a single native Attribute node
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/fname/@foo', null, true);
@@ -1992,7 +1990,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get
         //  independent validation of 'path' execution code.
-     
+
         //  This will return a single native Element
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model2), '/emp/fname/@foo', null, true);
@@ -2020,7 +2018,7 @@ function() {
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
-     
+
         //  This will return an Array of native Elements
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model2),

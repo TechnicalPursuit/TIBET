@@ -1,14 +1,15 @@
 //  ========================================================================
 /**
- * @overview The 'tibet test' command. Runs phantomjs via TIBET's phantomtsh
- *     script runner. The script run is typically the TSH script ':test' which
- *     will run the tsh:test command tag to invoke all test suites.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
+ * @overview The 'tibet test' command. Runs phantomjs via TIBET's phantomtsh
+ *     script runner. The script run is typically the TSH script ':test' which
+ *     will run the tsh:test command tag to invoke all test suites.
  */
+//  ========================================================================
 
 (function() {
 

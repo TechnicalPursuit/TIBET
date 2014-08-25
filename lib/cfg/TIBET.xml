@@ -42,6 +42,7 @@ build file content, one of the benefits of TIBET's boot system.
     name="TIBET" default="base" basedir="~lib_cfg">
 
 <config id="init">
+    <script src="~lib_src/tibet/kernel/copyright.js" no-minify="true"/>
     <script src="~lib_src/tibet/boot/tibet_pre.js" />
     <script src="~lib_src/tibet/boot/tibet_cfg.js" />
     <script src="~lib_src/tibet/boot/tibet_post.js" />
@@ -49,6 +50,7 @@ build file content, one of the benefits of TIBET's boot system.
 </config>
 
 <config id="hook">
+    <script src="~lib_src/tibet/kernel/copyright.js" no-minify="true"/>
     <script src="~lib_src/tibet/boot/tibet_hook.js" />
 </config>
 

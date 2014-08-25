@@ -1,16 +1,17 @@
 //  ========================================================================
 /**
- * @overview The 'tibet package' command. Front-end to the Package object found
- *     in _Package.js which provides utilities for processing TIBET package
- *     files and their contents. This command also serves as a supertype for
- *     other commands whose operations focus on processing file lists produced
- *     from TIBET packages such as 'tibet rollup' and 'tibet lint'.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
+ * @overview The 'tibet package' command. Front-end to the Package object found
+ *     in _Package.js which provides utilities for processing TIBET package
+ *     files and their contents. This command also serves as a supertype for
+ *     other commands whose operations focus on processing file lists produced
+ *     from TIBET packages such as 'tibet rollup' and 'tibet lint'.
  */
+//  ========================================================================
 
 /*
  * STANDARD OPTIONS:
