@@ -38,28 +38,7 @@ function() {
             seq;
 
         uri = TP.uc('~lib_tst/src/tibet/driver/testmarkup.xml');
-
-        this.getDriver().fetchResource(uri, TP.DOM).then(
-            function(result) {
-                var tpDoc,
-                    tpBody,
-
-                    testField;
-
-                tpDoc = TP.sys.getUICanvas().getDocument();
-                tpBody = tpDoc.getBody();
-
-                tpBody.setContent(result);
-
-                //testField = TP.byOID('testField');
-
-                //testField.focus();
-            },
-            function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
-                                TP.ERROR);
-                test.fail();
-            });
+        this.getDriver().setLocation(uri);
 
         driver = TP.gui.Driver.getTestFixture(
                                 TP.hc('testCase', test));
@@ -68,6 +47,9 @@ function() {
         seq.sendKeys('ABC[Left][Backspace]D[Right]E', TP.cpc('#testField'));
         seq.perform();
 
+                //testField = TP.byOID('testField');
+
+                //testField.focus();
         //driver.startSequence().click(TP.cpc('#testField')).perform();
 
         //driver.startSequence().sendKeys('[Shift]abcd[Shift-up]').perform();
