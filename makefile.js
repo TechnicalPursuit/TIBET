@@ -30,7 +30,26 @@ var targets = {};
 /**
  */
 targets.build = function(make) {
-    make.log('building packages....');
+    make.log('building tibet....');
+
+    if (!sh.test('-d', './lib/src')) {
+        sh.mkdir('./lib/src');
+    }
+
+    targets.clean().then(
+        targets.build_tibet).then(
+        function() {
+            targets.build.resolve();
+        },
+        function() {
+            targets.build.reject();
+        });
+};
+
+/**
+ */
+targets.build_all = function(make) {
+    make.log('building all packages....');
 
     if (!sh.test('-d', './lib/src')) {
         sh.mkdir('./lib/src');
