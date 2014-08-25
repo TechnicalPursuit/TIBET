@@ -1,13 +1,11 @@
-//	========================================================================
-/*
-NAME:   TIBETCryptoPrimitives.js
-AUTH:	See below for credits.
-NOTE:	Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
-		Reserved. Patent Pending, Technical Pursuit Inc.
-
-        Public TIBET api to ~lib/deps/forge-tpi.js See that file
-        for more information.
-*/
+//  ========================================================================
+/**
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     privacy waivers if you must keep your TIBET-based source code private.
+ */
 //	========================================================================
 
 TP.definePrimitive('decryptStorageValue',

@@ -84,7 +84,7 @@ Cmd.prototype.HELP =
 
 'IFF all the prior checks pass:\n\n' +
 
-'Run `tibet build` to build distro. [--no-build]\n' +
+'Run `tibet build all` to build distro. [--no-build]\n' +
 'Run the version update template.\n' +
 'Update TIBET\'s package.json file.\n\n' +
 'Run `tibet check` to lint/test. [--no-check]\n' +
@@ -259,8 +259,8 @@ Cmd.prototype.getSuffix = function(suffix) {
  * branch is in the right state to build a release from. This phase also does a
  * confirmation prompt after building the version string to ensure the right
  * build version will be produced. If the build is confirmed the last step of
- * this method is to kick off the asynchronous 'tibet build' command and wait.
- * If the build succeeds phaseTwo is invoked.
+ * this method is to kick off the asynchronous 'tibet build_all' command and
+ * wait. If the build succeeds phaseTwo is invoked.
  */
 Cmd.prototype.phaseOne = function() {
     var cmd;
@@ -395,13 +395,13 @@ console.log('git fetch: "'+ result.output.slice(0, -1) + '"');
     }
 
     //  ---
-    //  Run 'tibet build' to create latest content for ~lib_src
+    //  Run 'tibet build_all' to create latest content for ~lib_src
     //  ---
 
     if (this.options.build && !this.options['dry-run']) {
         sh = require('shelljs');
 
-        cmd = 'tibet build';
+        cmd = 'tibet build_all';
         release = this;
 
         sh.exec(cmd, function(code, output) {
@@ -414,7 +414,7 @@ console.log('git fetch: "'+ result.output.slice(0, -1) + '"');
         });
     } else {
         if (this.options['dry-run']) {
-            this.warn('dry-run. bypassing \'tibet build\'');
+            this.warn('dry-run. bypassing \'tibet build_all\'');
         }
         this.phaseTwo(source);
     }

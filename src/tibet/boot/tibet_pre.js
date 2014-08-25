@@ -1,15 +1,4 @@
-/**
- * @file tibet_pre.js
- * @author Scott Shattuck (ss)
- * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
- *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
- *     OSI-Approved Reciprocal Public License (RPL) Version 1.5. See the RPL
- *     for your rights and responsibilities. Contact TPI to purchase optional
- *     open source waivers to keep your derivative work source code private.
- *     Portions Copyright (C), 1999 Netscape Communications Corp.
- */
-
-//  ----------------------------------------------------------------------------
+/* copyright added via build process */
 
 /* jshint debug:true,
           eqnull:true,

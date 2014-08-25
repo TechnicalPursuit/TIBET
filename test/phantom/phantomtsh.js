@@ -1,14 +1,12 @@
+//  ========================================================================
 /**
- * @name phantomtsh.js
- * @overview
- * @author Scott Shattuck (ss), William J. Edney (wje)
- * @copyright Copyright (C) 1999-2014 Technical Pursuit Inc. (TPI) All Rights
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
- *     OSI-Approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
- *     open source waivers to keep your derivative work source code private.
+ *     privacy waivers if you must keep your TIBET-based source code private.
  */
-
+//  ========================================================================
 
 /**
  * A script runner specific to loading and executing TIBET Shell commands within
