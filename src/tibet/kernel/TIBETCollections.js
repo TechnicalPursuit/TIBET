@@ -771,17 +771,12 @@ function(aCollection) {
     */
 
     var thisref,
-        len,
-        i,
-        len2;
+        len;
 
     len = this.length;
 
     if (TP.isArray(aCollection)) {
-        len2 = aCollection.length;
-        for (i = 0; i < len2; i++) {
-            this.push(aCollection[i]);
-        }
+        this.push.apply(this, aCollection);
     } else {
         if (!TP.canInvoke(aCollection, 'perform')) {
             return this.raise('TP.sig.InvalidCollection', arguments);
