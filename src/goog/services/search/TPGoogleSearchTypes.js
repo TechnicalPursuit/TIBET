@@ -51,7 +51,7 @@ TP.goog.GoogleSearchData.Inst.defineAttribute(
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'resultsFromTo',
         {'value':
-                TP.apc('data.responseData.results.[{{1}}:{{2}}]')});
+                TP.apc('data.responseData.results.[{{0}}:{{1}}]')});
 
 TP.goog.GoogleSearchData.Inst.defineAttribute(
         'estimatedResultCount',
