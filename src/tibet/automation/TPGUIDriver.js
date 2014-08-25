@@ -248,6 +248,52 @@ function(aURI, resultType) {
 
 //  ------------------------------------------------------------------------
 
+TP.gui.Driver.Inst.defineMethod('setLocation',
+function(aURI, aWindow) {
+
+    /**
+     * @name setLocation
+     * @synopsis Sets the location of the supplied Window to the content found
+     *     at the end of the URI.
+     * @param {TP.core.URI} The URI to fetch content from.
+     * @param {TP.core.Window} The Window to load the content into. This will
+     *     default to the current UI canvas.
+     * @raises TP.sig.InvalidURI
+     * @return {Promise} The promise generated to set the location. This can be
+     *     used to chain further asynchronous operations after the fetch.
+     */
+
+    var newPromise;
+
+    if (!TP.isKindOf(aURI, TP.core.URI)) {
+        return this.raise('TP.sig.InvalidURI', arguments);
+    }
+
+    //  Fetch the result and then set the Window's body to the result.
+    newPromise = this.fetchResource(aURI, TP.DOM).then(
+        function(result) {
+            var tpWin,
+                tpDoc,
+                tpBody;
+
+            tpWin = TP.ifInvalid(aWindow, TP.sys.getUICanvas());
+
+            tpDoc = tpWin.getDocument();
+            tpBody = tpDoc.getBody();
+
+            tpBody.setContent(result);
+        },
+        function(error) {
+            TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),
+                            TP.ERROR);
+        });
+
+
+    return newPromise;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.gui.Driver.Inst.defineMethod('getCurrentNativeDocument',
 function() {
 
