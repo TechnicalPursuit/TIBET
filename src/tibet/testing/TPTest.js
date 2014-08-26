@@ -1417,10 +1417,6 @@ function(options) {
 
     //  We provide a 'then()' and 'thenPromise()' API to our driver.
     this.getDriver().set('promiseProvider', this);
-
-    //  'Prime the pump' of our internal promise reference with a resolved
-    //  Promise.
-    this.$set('$internalPromise', Q.Promise.resolve());
 });
 
 //  ------------------------------------------------------------------------
@@ -1484,55 +1480,93 @@ function(options) {
         try {
 
             //  Note that inside the test method we bind to the Case instance.
+            //  Also note that 'maybe' might be a Promise that the test case
+            //  author returned to us.
             maybe = testcase.$get('caseFunc').call(testcase, testcase, options);
 
-            //  Grab the internal promise that will either be the Promise that
-            //  we primed the pump with or a Promise that was generated along
-            //  the way.
-            internalPromise = testcase.$get('$internalPromise');
+            //  Now, check to see if there is an internal promise.
 
-            //  If the test method itself returned a Promise, then we should
-            //  return that in a 'then()' on our internal promise. Based on the
-            //  evaluation of that, the testcase will have been considered to
-            //  have passed or failed.
-            if (TP.canInvoke(maybe, 'then')) {
-                internalPromise.then(
-                    function(obj) {
-                        return maybe;
-                    }).done(
-                    function(obj) {
-                        testcase.pass();
-                    },
-                    function(err) {
-                        //  NOTE that if we fail at this level the try/catch
-                        //  isn't involved, so we need to wrap up manually.
-                        if (err instanceof AssertionFailed) {
-                            testcase.fail(err);
-                        } else if (err instanceof Error) {
-                            testcase.error(err);
-                        } else {
-                            testcase.fail(err);
-                        }
-                    });
+            if (TP.notValid(internalPromise =
+                                testcase.$get('$internalPromise'))) {
 
+                //  If there is no internal Promise, then just see if 'maybe'
+                //  contains a Promise that was returned from the test case.
+
+                //  If 'maybe' contains a Promise, use it.
+                if (TP.canInvoke(maybe, 'then')) {
+
+                    //  NB: We use 'done()' here rather than 'then()' as per the
+                    //  recommendation of the Q documentation.
+                    maybe.done(
+                        function(obj) {
+                            testcase.pass();
+                        },
+                        function(err) {
+                            //  NOTE that if we fail at this level the try/catch
+                            //  isn't involved, so we need to wrap up manually.
+                            if (err instanceof AssertionFailed) {
+                                testcase.fail(err);
+                            } else if (err instanceof Error) {
+                                testcase.error(err);
+                            } else {
+                                testcase.fail(err);
+                            }
+                        });
+                } else {
+                    //  Otherwise, just pass the test.
+                    testcase.pass();
+                }
             } else {
-                //  The test method didn't return a Promise - just 'then()' onto
-                //  our internal promise to either pass or fail the testcase.
-                internalPromise.done(
-                    function(obj) {
-                        testcase.pass();
-                    },
-                    function(err) {
-                        //  NOTE that if we fail at this level the try/catch
-                        //  isn't involved, so we need to wrap up manually.
-                        if (err instanceof AssertionFailed) {
-                            testcase.fail(err);
-                        } else if (err instanceof Error) {
-                            testcase.error(err);
-                        } else {
-                            testcase.fail(err);
-                        }
-                    });
+                //  There was an internal Promise.
+
+                //  Now, if the test method itself returned a Promise, then we
+                //  should return that in a 'then()' on our internal promise.
+                //  Based on the evaluation of that, the testcase will have been
+                //  considered to have passed or failed.
+
+                //  NB: Note how we use 'done()' here as the *last* part of the
+                //  chain rather than 'then()' as per the recommendation of the
+                //  Q documentation.
+                if (TP.canInvoke(maybe, 'then')) {
+                    internalPromise.then(
+                        function(obj) {
+                            return maybe;
+                        }).done(
+                        function(obj) {
+                            testcase.pass();
+                        },
+                        function(err) {
+                            //  NOTE that if we fail at this level the try/catch
+                            //  isn't involved, so we need to wrap up manually.
+                            if (err instanceof AssertionFailed) {
+                                testcase.fail(err);
+                            } else if (err instanceof Error) {
+                                testcase.error(err);
+                            } else {
+                                testcase.fail(err);
+                            }
+                        });
+
+                } else {
+                    //  The test method didn't return a Promise - just 'then()'
+                    //  onto our internal promise to either pass or fail the
+                    //  testcase.
+                    internalPromise.done(
+                        function(obj) {
+                            testcase.pass();
+                        },
+                        function(err) {
+                            //  NOTE that if we fail at this level the try/catch
+                            //  isn't involved, so we need to wrap up manually.
+                            if (err instanceof AssertionFailed) {
+                                testcase.fail(err);
+                            } else if (err instanceof Error) {
+                                testcase.error(err);
+                            } else {
+                                testcase.fail(err);
+                            }
+                        });
+                }
             }
         } catch (e) {
             if (e instanceof AssertionFailed) {
@@ -1582,9 +1616,14 @@ function(onFulfilled, onRejected) {
      * @return {TP.test.Case} The receiver.
      */
 
-    var newPromise;
+    var startPromise,
+        newPromise;
 
-    newPromise = this.$get('$internalPromise').then(onFulfilled, onRejected);
+    if (TP.notValid(startPromise = this.$get('$internalPromise'))) {
+        startPromise = Q.Promise.resolve();
+    }
+
+    newPromise = startPromise.then(onFulfilled, onRejected);
     this.$set('$internalPromise', newPromise);
 
     return this;
@@ -1604,12 +1643,17 @@ function(aFunction) {
      * @return {TP.test.Case} The receiver.
      */
 
-    var newPromise,
+    var startPromise,
+        newPromise,
         chainedPromise;
+
+    if (TP.notValid(startPromise = this.$get('$internalPromise'))) {
+        startPromise = Q.Promise.resolve();
+    }
 
     newPromise = Q.Promise(aFunction);
 
-    chainedPromise = this.$get('$internalPromise').then(
+    chainedPromise = startPromise.then(
         function() {
     
             return newPromise;
