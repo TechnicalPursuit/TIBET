@@ -1601,21 +1601,23 @@ function(aFunction) {
      * Note that this operation will also reset the internally-held Promise to
      * be the new Promise that it creates.
      * @param {Function} aFunction The Function to run to fulfill the Promise.
-     * @return {Promise} A Promise to be used as necessary.
+     * @return {TP.test.Case} The receiver.
      */
 
-    var newPromise;
+    var newPromise,
+        chainedPromise;
 
     newPromise = Q.Promise(aFunction);
 
-    this.$get('$internalPromise').then(
+    chainedPromise = this.$get('$internalPromise').then(
         function() {
+    
             return newPromise;
-        });
+        }.bind(this));
 
-    this.$set('$internalPromise', newPromise);
+    this.$set('$internalPromise', chainedPromise);
 
-    return newPromise;
+    return this;
 });
 
 //  ========================================================================
