@@ -5779,14 +5779,7 @@ TP.boot.$phantomReporter = function(entry, context) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$TAPReporter = function(entry, context) {
-
-    //  To be used with the test log for Test Anything Protocol reporting.
-};
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.$silentReporter = function(entry, context) {
+TP.boot.$silentReporter = function() {
     return;
 };
 
@@ -6301,7 +6294,11 @@ TP.boot.Log.prototype.report = function(entry) {
         TP.boot.$consoleReporter(entry);
     }
 
-    reporterName = TP.sys.cfg('log.reporter');
+    if (TP.sys.hasStarted()) {
+        reporterName = TP.sys.cfg('log.reporter');
+    } else {
+        reporterName = TP.sys.cfg('boot.reporter');
+    }
 
     reporterName = '$' + reporterName + 'Reporter';
     reporter = TP.boot[reporterName];
@@ -6312,7 +6309,7 @@ TP.boot.Log.prototype.report = function(entry) {
         // original if we haven't already.
         TP.boot.$consoleReporter(
             [new Date(), TP.BOOT_LOG, TP.WARN,
-                'Boot log reporter \'' + reporter + '\' not found.',
+                'Logging reporter \'' + reporter + '\' not found.',
                 arguments]);
         TP.boot.$consoleReporter(entry);
     }
