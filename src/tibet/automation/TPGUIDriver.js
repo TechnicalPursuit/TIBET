@@ -281,8 +281,9 @@ function(aURI, aWindow) {
                             TP.ERROR);
         });
 
+    return this;
+});
 
-    return newPromise;
 });
 
 //  ------------------------------------------------------------------------
