@@ -240,7 +240,9 @@ function() {
 
         uri = TP.uc(testDataLoc + '#nochange');
 
-        return this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM);
+
+        this.then(
             function(result) {
                 var processor,
 
@@ -273,7 +275,9 @@ function() {
 
         uri = TP.uc(testDataLoc + '#attrchange');
 
-        return this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM);
+        
+        this.then(
             function(result) {
                 var processor;
 
@@ -296,7 +300,9 @@ function() {
 
         uri = TP.uc(testDataLoc + '#moreattrchange');
 
-        return this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM);
+        
+        this.then(
             function(result) {
                 var processor;
 
@@ -321,7 +327,9 @@ function() {
 
         uri = TP.uc(testDataLoc + '#contentchange');
 
-        return this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM);
+        
+        this.then(
             function(result) {
                 var processor;
 
@@ -345,7 +353,9 @@ function() {
 
         uri = TP.uc(testDataLoc + '#morecontentchange');
 
-        return this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM);
+        
+        this.then(
             function(result) {
                 var processor;
 
