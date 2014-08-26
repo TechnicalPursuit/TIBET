@@ -208,17 +208,14 @@ function(aURI, resultType) {
      *     available as the value of the returned promise.
      * @param {TP.core.URI} The URI to fetch the resource for.
      * @raises TP.sig.InvalidURI
-     * @return {Promise} The promise generated to fetch the resource. This can
-     *     be used to chain further asynchronous operations after the fetch.
+     * @return {TP.gui.Driver} The receiver.
      */
-
-    var newPromise;
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
         return this.raise('TP.sig.InvalidURI', arguments);
     }
 
-    newPromise = this.get('promiseProvider').thenPromise(
+    this.get('promiseProvider').thenPromise(
             function(resolver, rejector) {
                 var subrequest;
 
@@ -240,34 +237,33 @@ function(aURI, resultType) {
                 aURI.getResource(subrequest);
             });
 
-    return newPromise;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Driver.Inst.defineMethod('setLocation',
+TP.gui.Driver.Inst.defineMethod('setBodyContent',
 function(aURI, aWindow) {
 
     /**
-     * @name setLocation
-     * @synopsis Sets the location of the supplied Window to the content found
-     *     at the end of the URI.
+     * @name setBodyContent
+     * @synopsis Sets the 'body' content of the (X)HTML document in the supplied
+     *     Window to the content found at the end of the URI.
      * @param {TP.core.URI} The URI to fetch content from.
-     * @param {TP.core.Window} The Window to load the content into. This will
-     *     default to the current UI canvas.
+     * @param {TP.core.Window} The Window to use the body of to load the content
+     *     into. This will default to the current UI canvas.
      * @raises TP.sig.InvalidURI
-     * @return {Promise} The promise generated to set the location. This can be
-     *     used to chain further asynchronous operations after the fetch.
+     * @return {TP.gui.Driver} The receiver.
      */
-
-    var newPromise;
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
         return this.raise('TP.sig.InvalidURI', arguments);
     }
 
     //  Fetch the result and then set the Window's body to the result.
-    newPromise = this.fetchResource(aURI, TP.DOM).then(
+    this.fetchResource(aURI, TP.DOM);
+    
+    this.get('promiseProvider').then(
         function(result) {
             var tpWin,
                 tpDoc,
