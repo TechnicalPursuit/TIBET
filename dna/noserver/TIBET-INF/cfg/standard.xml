@@ -18,6 +18,11 @@
     <package src="app.xml" config="developer"/>
 </config>
 
+<config id="contributor">
+    <package src="tibet.xml" config="contributor"/>
+    <package src="app.xml" config="developer"/>
+</config>
+
 <config id="test">
     <config ref="developer"/>
     <package src="app.xml" config="tests"/>
