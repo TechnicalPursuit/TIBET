@@ -1655,9 +1655,8 @@ function(aFunction) {
 
     chainedPromise = startPromise.then(
         function() {
-    
             return newPromise;
-        }.bind(this));
+        });
 
     this.$set('$internalPromise', chainedPromise);
 
