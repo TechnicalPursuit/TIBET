@@ -276,7 +276,7 @@ function() {
         uri = TP.uc(testDataLoc + '#attrchange');
 
         this.getDriver().fetchResource(uri, TP.DOM);
-        
+
         this.then(
             function(result) {
                 var processor;
@@ -301,7 +301,7 @@ function() {
         uri = TP.uc(testDataLoc + '#moreattrchange');
 
         this.getDriver().fetchResource(uri, TP.DOM);
-        
+
         this.then(
             function(result) {
                 var processor;
@@ -328,7 +328,7 @@ function() {
         uri = TP.uc(testDataLoc + '#contentchange');
 
         this.getDriver().fetchResource(uri, TP.DOM);
-        
+
         this.then(
             function(result) {
                 var processor;
@@ -354,7 +354,7 @@ function() {
         uri = TP.uc(testDataLoc + '#morecontentchange');
 
         this.getDriver().fetchResource(uri, TP.DOM);
-        
+
         this.then(
             function(result) {
                 var processor;
@@ -390,7 +390,9 @@ function() {
 
         uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
 
-        this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM);
+
+        this.then(
             function(result) {
 
                 var usingDebugger,
@@ -436,14 +438,10 @@ function() {
 
         uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude2.xml');
 
-        this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().setLocation(uri);
+
+        this.then(
             function(result) {
-
-                var tpDoc;
-
-                tpDoc = TP.sys.getUICanvas().getDocument();
-
-                tpDoc.setContent(result);
 
                 //  This comes from the first XInclude with a simple XPointer
                 //  expression
