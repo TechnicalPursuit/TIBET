@@ -1579,10 +1579,15 @@ function(onFulfilled, onRejected) {
      *     been fulfilled.
      * @param {Function} onRejected The Function to run to if the Promise has
      *     been rejected.
-     * @return {Promise} A Promise to be used as necessary.
+     * @return {TP.test.Case} The receiver.
      */
 
-    return this.$get('$internalPromise').then(onFulfilled, onRejected);
+    var newPromise;
+
+    newPromise = this.$get('$internalPromise').then(onFulfilled, onRejected);
+    this.$set('$internalPromise', newPromise);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
