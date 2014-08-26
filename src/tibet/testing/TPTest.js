@@ -375,6 +375,7 @@ function(target, options) {
         params,
         keys,
         suitelist,
+        shouldThrowSetting,
         promise,
         exclusives,
         summarize,
@@ -506,6 +507,13 @@ function(target, options) {
 
     TP.sys.logTest((cases > 0 ? '1' : '0') + '..' + cases);
 
+    //  Capture the current setting of 'shouldThrowExceptions' and set it to
+    //  true. This is so that any raise()ing of TIBET exceptions in any test
+    //  case will cause TIBET to throw an Error and then the test case will be
+    //  considered to be in 'error'.
+    shouldThrowSetting = TP.sys.shouldThrowExceptions();
+    TP.sys.shouldThrowExceptions(true);
+
     //  Use reduce to convert our suite array into a chain of promises. We
     //  prime the list with a resolved promise to ensure 'current' receives all
     //  the suites during iteration while 'chain' is the last promise in the
@@ -525,9 +533,11 @@ function(target, options) {
             }, Q.Promise.resolve());
 
     return promise.then(function(obj) {
+        TP.sys.shouldThrowExceptions(shouldThrowSetting);
         summarize();
     },
     function(err) {
+        TP.sys.shouldThrowExceptions(shouldThrowSetting);
         summarize();
     });
 });
