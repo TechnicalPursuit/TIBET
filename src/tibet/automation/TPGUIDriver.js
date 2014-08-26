@@ -284,6 +284,45 @@ function(aURI, aWindow) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.gui.Driver.Inst.defineMethod('setLocation',
+function(aURI, aWindow) {
+
+    /**
+     * @name setLocation
+     * @synopsis Sets the location of the supplied Window to the content found
+     *     at the end of the URI.
+     * @param {TP.core.URI} The URI to fetch content from.
+     * @param {TP.core.Window} The Window to load the content into. This will
+     *     default to the current UI canvas.
+     * @raises TP.sig.InvalidURI
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    if (!TP.isKindOf(aURI, TP.core.URI)) {
+        return this.raise('TP.sig.InvalidURI', arguments);
+    }
+
+    //  Fetch the result and then set the Window's body to the result.
+    this.fetchResource(aURI, TP.DOM);
+    
+    this.get('promiseProvider').then(
+        function(result) {
+            var tpWin,
+                tpDoc;
+
+            tpWin = TP.ifInvalid(aWindow, TP.sys.getUICanvas());
+
+            tpDoc = tpWin.getDocument();
+            tpDoc.setContent(result);
+        },
+        function(error) {
+            TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),
+                            TP.ERROR);
+        });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
