@@ -1483,13 +1483,13 @@ function(options) {
 
         try {
 
+            //  Note that inside the test method we bind to the Case instance.
+            maybe = testcase.$get('caseFunc').call(testcase, testcase, options);
+
             //  Grab the internal promise that will either be the Promise that
             //  we primed the pump with or a Promise that was generated along
             //  the way.
             internalPromise = testcase.$get('$internalPromise');
-
-            //  Note that inside the test method we bind to the Case instance.
-            maybe = testcase.$get('caseFunc').call(testcase, testcase, options);
 
             //  If the test method itself returned a Promise, then we should
             //  return that in a 'then()' on our internal promise. Based on the
