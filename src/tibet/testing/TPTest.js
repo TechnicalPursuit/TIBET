@@ -1499,28 +1499,39 @@ function(options) {
                 internalPromise.then(
                     function(obj) {
                         return maybe;
-                    }).then(
+                    }).done(
                     function(obj) {
                         testcase.pass();
                     },
                     function(err) {
                         //  NOTE that if we fail at this level the try/catch
                         //  isn't involved, so we need to wrap up manually.
-                        testcase.fail(err);
+                        if (err instanceof AssertionFailed) {
+                            testcase.fail(err);
+                        } else if (err instanceof Error) {
+                            testcase.error(err);
+                        } else {
+                            testcase.fail(err);
+                        }
                     });
 
             } else {
-
                 //  The test method didn't return a Promise - just 'then()' onto
                 //  our internal promise to either pass or fail the testcase.
-                internalPromise.then(
+                internalPromise.done(
                     function(obj) {
                         testcase.pass();
                     },
                     function(err) {
                         //  NOTE that if we fail at this level the try/catch
                         //  isn't involved, so we need to wrap up manually.
-                        testcase.fail(err);
+                        if (err instanceof AssertionFailed) {
+                            testcase.fail(err);
+                        } else if (err instanceof Error) {
+                            testcase.error(err);
+                        } else {
+                            testcase.fail(err);
+                        }
                     });
             }
         } catch (e) {
