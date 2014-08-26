@@ -1235,6 +1235,26 @@ function(anObject, aValue, aComment) {
 //  ASSERTIONS - CONVERTED VALUE EQUALITY
 //  ------------------------------------------------------------------------
 
+TP.test.TestMethodCollection.Inst.defineMethod('isAttributeEqualTo',
+function(anObject, attrName, aValue, aComment) {
+
+    var val;
+
+    this.assertMinArguments(arguments, 3);
+
+    val = TP.elementGetAttribute(anObject, attrName, true);
+
+    this.assert(
+        TP.equal(val, aValue),
+        aComment,
+        TP.sc('Expected attribute value ', val,
+                ' and ', aValue, ' to be equal.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.TestMethodCollection.Inst.defineMethod('isHashEqualTo',
 function(anObject, aValue, aComment) {
 
