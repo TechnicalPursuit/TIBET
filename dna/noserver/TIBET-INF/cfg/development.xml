@@ -21,22 +21,22 @@
 
 <config id="base">
     <config ref="properties"/>
-    <package src="base.xml" config="base"/>
+    <package src="standard.xml" config="base"/>
 </config>
 
 <config id="full">
     <config ref="properties"/>
-    <package src="base.xml" config="full"/>
+    <package src="standard.xml" config="full"/>
 </config>
 
 <config id="developer">
     <config ref="properties"/>
-    <package src="base.xml" config="developer"/>
+    <package src="standard.xml" config="developer"/>
 </config>
 
 <config id="test">
     <config ref="properties"/>
-    <package src="base.xml" config="test"/>
+    <package src="standard.xml" config="test"/>
 </config>
 
 </package>

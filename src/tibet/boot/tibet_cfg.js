@@ -168,9 +168,11 @@ TP.sys.setcfg('log.buffersize', 5);
 //  variety of locations but we need one set in case startup has issues.
 TP.sys.setcfg('log.level', TP.WARN);
 
-//  which boot log reporter should we use? silent just boots without log
-//  overhead.
-TP.sys.setcfg('log.reporter', 'bootui');
+//  which boot reporter should we use? bootui, console, silent, phantom.
+TP.sys.setcfg('boot.reporter', 'bootui');
+
+//  which log reporter should we use?
+TP.sys.setcfg('log.reporter', 'console');
 
 
 //  ---
@@ -939,7 +941,7 @@ TP.sys.setcfg('log.code_changes', false);
 TP.sys.setcfg('log.console_signals', false);
 
 
-//  what log level should trigger automatic use of the console log reporter.
+//  what log level should trigger automatic use of the console reporter.
 //  during booting we want to ensure errors find their way to the UI even if the
 //  current reporter (boot console perhaps) isn't visible.
 TP.sys.setcfg('log.console_threshold', TP.ERROR);
@@ -1455,3 +1457,4 @@ TP.sys.setcfg('xslt.boilerplate_path',
     '~lib_src/tsh/xsl/tsh_template_template.xsl');
 
 //  ----------------------------------------------------------------------------
+

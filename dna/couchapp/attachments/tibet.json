@@ -8,6 +8,6 @@
       "app.inf": "~app/TIBET-INF"
     },
     "boot": {
-        "profile": "base.xml"
+        "profile": "standard.xml"
     }
 }

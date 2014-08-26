@@ -21,4 +21,9 @@
     <script src="~lib_build/tibet_developer.min.js" unless="boot.unminified boot.live" />
 </config>
 
+<config id="contributor" if="boot.phaseone">
+    <config ref="developer"/>
+    <package src="~lib_cfg/tibet_testing.xml" config="tests"/>
+</config>
+
 </package>
