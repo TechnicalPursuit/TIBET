@@ -10,7 +10,7 @@
 
 <config id="phantom">
     <config ref="properties"/>
-    <package src="~app_cfg/base.xml" config="test"/>
+    <package src="~app_cfg/standard.xml" config="test"/>
 </config>
 
 </package>

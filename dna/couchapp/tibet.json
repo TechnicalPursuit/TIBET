@@ -10,7 +10,7 @@
         "lib_root": "~/node_modules/tibet"
     },
     "boot": {
-        "profile": "base.xml"
+        "profile": "standard.xml"
     }
 }
 

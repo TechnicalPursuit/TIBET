@@ -7752,10 +7752,10 @@ TP.boot.$configurePackage = function() {
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
 
-            TP.boot.$stdout('Empty boot.package. Defaulting to base.xml.',
+            TP.boot.$stdout('Empty boot.package. Defaulting to standard.xml.',
                 TP.TRACE);
 
-            package = 'base.xml';
+            package = 'standard.xml';
         } else {
             TP.boot.$stdout('Found boot.package. Using: ' + package, TP.TRACE);
         }
