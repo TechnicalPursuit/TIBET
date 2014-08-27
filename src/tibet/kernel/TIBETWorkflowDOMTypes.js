@@ -1076,6 +1076,8 @@ function(aNode, aProcessor, aRequest) {
                             tagTypeDict.at(TP.elementGetFullName(node)))) {
                 type = TP.core.Node.getConcreteType(node);
             }
+        } else {
+            type = TP.core.Node.getConcreteType(node);
         }
 
         //  Do the deed, invoking the target method against the wrapper type and
