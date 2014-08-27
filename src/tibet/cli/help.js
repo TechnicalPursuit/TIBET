@@ -208,21 +208,27 @@ Cmd.prototype.executeForCommand = function(command) {
     var CmdType;
     var cmd;
 
-    file = path.join(__dirname, command + '.js');
-    if (file.charAt('_')) {
+    if (command.charAt(0) === '_') {
         this.error('Help not available for private commands.');
         return 1;
     }
 
-    if (sh.test('-f', file)) {
-        CmdType = require(file);
-        cmd = new CmdType();
-        cmd.help();
-    } else {
-        this.error('Command \'' + command + '\' not found.');
+    file = path.join(__dirname, command + '.js');
+    if (!sh.test('-f', file)) {
+        // check for custom commands which might offer help.
+        if (CLI.inProject(Cmd) || CLI.inLibrary()) {
+            file = path.join(CLI.expandPath('~app_cmd'), command + '.js');
+        }
+    }
+
+    if (!sh.test('-f', file)) {
+        this.error('Command \'' + command + '\' not found: ' + file);
         return 1;
     }
 
+    CmdType = require(file);
+    cmd = new CmdType();
+    cmd.help();
     return 0;
 };
 
