@@ -451,7 +451,7 @@ function() {
                         tpElem.getComputedStyleProperty('backgroundColor')),
                     TP.core.Color.fromString('blue'));
             });
-    });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
     this.it('TIBET stylesheet PI processing - multi level', function(test, options) {
 
@@ -485,7 +485,7 @@ function() {
                         tpElem.getComputedStyleProperty('color')),
                     TP.core.Color.fromString('red'));
             });
-    });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 });
 
 //  ========================================================================

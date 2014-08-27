@@ -211,7 +211,7 @@ function() {
                 test.fail();
             });
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
