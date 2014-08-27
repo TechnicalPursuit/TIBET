@@ -1259,7 +1259,7 @@ function() {
      *     the target content.
      */
 
-    return 'tagIncludes';
+    return 'tagInstructions';
 });
 
 //  ------------------------------------------------------------------------
