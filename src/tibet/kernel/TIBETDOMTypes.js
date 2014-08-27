@@ -11309,7 +11309,9 @@ function(aNode) {
     name = aNode.target;
     name = name.asTitleCase().strip(TP.regex.PUNCTUATION);
 
-    type = TP.sys.getTypeByName(name + 'PINode');
+    //  TODO: This is a hardcoded namespace -- probably need a version of
+    //  getTypeByName() that can do a 'deep' search across namespaces.
+    type = TP.sys.getTypeByName('TP.core.' + name + 'PINode');
 
     if (TP.isType(type)) {
         return type;
