@@ -511,6 +511,8 @@ function(target, options) {
     //  true. This is so that any raise()ing of TIBET exceptions in any test
     //  case will cause TIBET to throw an Error and then the test case will be
     //  considered to be in 'error'.
+
+    //  TODO: Should the test harness also observe TP.sig.Exceptions?
     shouldThrowSetting = TP.sys.shouldThrowExceptions();
     TP.sys.shouldThrowExceptions(true);
 
