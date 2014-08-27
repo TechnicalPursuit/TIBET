@@ -1231,6 +1231,8 @@ TP.hc(
             resultDoc,
             processor,
 
+            realStyleDoc,
+
             paramNodes,
             len,
             i,
@@ -1303,26 +1305,73 @@ TP.hc(
                 if (TP.notEmpty(paramHash)) {
                     paramNodes = TP.ac();
 
+                    //  We clone the style doc since we might need to alter it
+                    //  below.
+                    realStyleDoc = TP.nodeCloneNode(styleDoc, true);
+
                     paramHash.perform(
                         function(kvPair) {
 
                             var paramName,
-                                paramValue;
+                                paramValue,
+
+                                paramElem,
+
+                                newElem;
 
                             paramName = kvPair.first();
                             paramValue = TP.ifInvalid(kvPair.last(), '');
 
-                            processor.setParameter(
-                                        null,
-                                        paramName,
-                                        paramValue);
+                            //  Webkit-based browsers have a long-standing bug
+                            //  with using Nodes as parameters... sigh
+                            //  https://bugs.webkit.org/show_bug.cgi?id=14101
+                            if (TP.isNode(paramValue)) {
+                                //  Search the style doc to see if there's an
+                                //  'xsl:param' element with a name matching
+                                //  paramName
+                                if (TP.isElement(
+                                    paramElem = TP.nodeEvaluateXPath(
+                                        realStyleDoc,
+                                        '//xsl:param[@name="' + paramName + '"]',
+                                        TP.FIRST_NODE))) {
+
+                                    //  Create an 'xsl:variable' element and set
+                                    //  it's name to be the same as the
+                                    //  'xsl:param'
+                                    newElem = TP.documentCreateElement(
+                                                        realStyleDoc,
+                                                        'xsl:variable',
+                                                        TP.w3.Xmlns.XSLT);
+                                    TP.elementSetAttribute(
+                                                    newElem, 'name', paramName);
+
+                                    //  Swap in the 'xsl:variable' element for
+                                    //  the 'xsl:param' element.
+                                    newElem = TP.nodeReplaceChild(
+                                                    paramElem.parentNode,
+                                                    newElem,
+                                                    paramElem);
+
+                                    //  Append the content under the
+                                    //  'xsl:variable' element.
+                                    TP.nodeAppendChild(
+                                                    newElem, paramValue, false);
+                                }
+                            } else {
+                                processor.setParameter(
+                                            null,
+                                            paramName,
+                                            paramValue);
+                            }
                         });
+                } else {
+                    realStyleDoc = styleDoc;
                 }
 
                 //  NB: We *must* import the stylesheet *after* we set the
                 //  parameters, in case any of them were 'node set'
                 //  parameters.
-                processor.importStylesheet(styleDoc);
+                processor.importStylesheet(realStyleDoc);
             } catch (e) {
                 TP.raise(this, 'TP.sig.XSLTException', arguments, TP.ec(e));
 
