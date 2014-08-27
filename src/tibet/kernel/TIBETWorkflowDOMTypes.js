@@ -20,15 +20,15 @@
  *     affiliations. By virtue of vCard association types can autoload
  *     organization-specific role/unit types which serve as delegates for
  *     permission-specific behaviors and as keepers of associated keys/keyrings.
- *     
+ *
  *     Given the relatively limited goals for this type at the present time we
  *     focus only on the FN, ROLE, and ORG elements and their associated
  *     children. Additional aspect mappings, and an expanded node template,
  *     would allow this type to be a full-featured wrapper for the full XEP-0054
  *     vCard element.
- *     
+ *
  *     See http://www.xmpp.org/extensions/xep-0054.html for more info.
- *     
+ *
  *     See the vcards.xml sample file for specific markup examples.
  */
 
@@ -113,7 +113,7 @@ function(forceRefresh) {
      *     environment parameter 'vcards', or by altering the tibet.vcard_file
      *     parameter. This URI is then loaded to provide the application vCard
      *     XML data.
-     *     
+     *
      *     NOTE that this call is only used by the getInstanceById call for
      *     vCard instances, so you can avoid the file-level approach by
      *     overriding that method and invoking a web service or using other
@@ -417,7 +417,7 @@ function() {
 
     /**
      * @name getUnits
-     * @returns {Array} 
+     * @returns {Array}
      * @abstract
      * @todo
      */
@@ -450,12 +450,12 @@ function() {
  *     relative to permissions in your application. These keys can be grouped
  *     within keyrings, which can be nested to keep things easier to maintain in
  *     large systems.
- *     
+ *
  *     When a user logs in you assign that user a vCard which defines the
  *     user's organization-qualified role and unit affiliations. The role and
  *     unit definitions found in the vCard provide one or more keyrings to their
  *     associated user(s), granting members their permissions.
- *     
+ *
  *     See the keyrings.xml sample file for specific markup examples.
  */
 
@@ -515,7 +515,7 @@ function(forceRefresh) {
      *     environment parameter 'keyrings', or by altering the
      *     tibet.keyring_file setting. This URI is then loaded to provide the
      *     application keyring XML data.
-     *     
+     *
      *     NOTE that this call is only used by the getInstanceById call for
      *     keyring instances, so you can avoid the file-level approach by
      *     overriding that method and invoking a web service or using other
@@ -940,7 +940,7 @@ function(aNode, aProcessor) {
         function(node) {
             var type,
                 elemName,
-                  
+
                 canInvoke;
 
             //  If the considered node is an element, see if there are entries
@@ -1020,10 +1020,10 @@ function(aNode, aProcessor, aRequest) {
         producedNodes,
 
         processingRequest,
-    
+
         len,
         i,
-    
+
         node,
         type,
 

@@ -2057,7 +2057,7 @@ function() {
      *     Here are examples:
      *
      *     Description         isScalarValued        isSingleValued
-     *     -----------         --------------        -------------- 
+     *     -----------         --------------        --------------
      *     X(HT)ML node        true                  true
      *     X(HT)ML element     false                 false
      *     <html:input>        true                  true
@@ -2149,7 +2149,7 @@ function(aContentObject, aRequest) {
 
     var input,
         value,
-    
+
         arr,
         len,
         i;
@@ -8977,11 +8977,11 @@ function(anElement) {
 
     var elem,
         src,
-    
+
         mime,
         uri,
         mimeTypes;
-    
+
     //  Make sure that we were supplied a real Element (or TP.core.ElementNode)
     if (!TP.isElement(elem = TP.unwrap(anElement))) {
         //  TODO: Raise an exception
@@ -10383,7 +10383,7 @@ function(attributeName, attributeValue, shouldSignal) {
      */
 
     var path,
-    
+
         funcName,
 
         args;
