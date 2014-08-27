@@ -11384,7 +11384,7 @@ function(aRequest) {
 
         styleTPDoc,
 
-        resultElem;
+        resultNode;
 
     //  Make sure that we have a node to work from.
     if (!TP.isNode(node = aRequest.at('node'))) {
@@ -11463,7 +11463,8 @@ function(aRequest) {
 
     //  If we got an XSLT TP.core.Node, do the transform and get the result.
     if (TP.isKindOf(styleTPDoc, 'TP.core.XSLDocumentNode')) {
-        resultElem = TP.unwrap(styleTPDoc.transform(docElem, aRequest));
+        resultNode = TP.node(
+                        TP.unwrap(styleTPDoc.transform(docElem, aRequest)));
     } else {
         TP.ifError() ?
             TP.error('Invalid stylesheet at ' + url.getLocation(),
@@ -11471,21 +11472,21 @@ function(aRequest) {
     }
 
     //  Didn't get a valid result. Raise an exception and bail.
-    if (TP.notValid(resultElem) || TP.isEmpty(resultElem)) {
+    if (!TP.isNode(resultNode)) {
         return this.raise('TP.sig.InvalidNode', arguments,
                             'Transformation returned empty document.');
     }
 
     //  Go ahead and replace the document element with the native node of
     //  the newly transformed content.
-    doc.replaceChild(resultElem, docElem);
+    doc.replaceChild(resultNode, docElem);
 
     //  Now, remove the PI from the document.
     node.parentNode.removeChild(node);
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(TP.str(resultElem),
+                TP.boot.$annotate(TP.str(resultNode),
                             'XSLT finalization transform complete.'),
             TP.INFO, arguments) : 0;
 
