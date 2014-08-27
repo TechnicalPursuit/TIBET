@@ -423,6 +423,69 @@ function() {
                     TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
             });
     });
+
+    this.it('TIBET stylesheet PI processing - single level', function(test, options) {
+
+        var uri;
+
+        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL1.xml');
+
+        this.getDriver().setLocation(uri);
+
+        this.then(
+            function(result) {
+
+                var elem,
+                    tpElem;
+
+                elem = TP.byId('colorizedSpan');
+                test.assert.isElement(elem);
+
+                tpElem = TP.wrap(elem);
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.equalTo(
+                    TP.core.Color.fromString(
+                        tpElem.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('blue'));
+            });
+    });
+
+    this.it('TIBET stylesheet PI processing - multi level', function(test, options) {
+
+        var uri;
+
+        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL2.xml');
+
+        this.getDriver().setLocation(uri);
+
+        this.then(
+            function(result) {
+
+                var elem,
+                    tpElem;
+
+                elem = TP.byId('colorizedSpan');
+                test.assert.isElement(elem);
+
+                tpElem = TP.wrap(elem);
+
+                //  NB: We convert these into TP.core.Color objects to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.equalTo(
+                    TP.core.Color.fromString(
+                        tpElem.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('blue'));
+
+                test.assert.equalTo(
+                    TP.core.Color.fromString(
+                        tpElem.getComputedStyleProperty('color')),
+                    TP.core.Color.fromString('red'));
+            });
+    });
 });
 
 //  ========================================================================
