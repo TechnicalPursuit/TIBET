@@ -11296,8 +11296,8 @@ function(aNode) {
      *     calculates a type name by acquiring the PI's name, title casing that
      *     name, making its first character be uppercase, and stripping it of
      *     punctuation. It then uses that name with a suffix of 'PINode'. For
-     *     example, a PI of the form '<?xml-stylesheet?>' will search for
-     *     TP.core.XmlStylesheetPINode.
+     *     example, a PI of the form '<?tibet-stylesheet?>' will search for
+     *     TP.core.TibetStylesheetPINode.
      * @returns {TP.lang.RootObject.<TP.core.ProcessingInstructionNode>} A
      *     TP.core.ProcessingInstructionNode subtype type object.
      * @todo
@@ -11344,13 +11344,13 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.XmlStylesheetPINode
+//  TP.core.TibetStylesheetPINode
 //  ========================================================================
 
-TP.core.ProcessingInstructionNode.defineSubtype('XmlStylesheetPINode');
+TP.core.ProcessingInstructionNode.defineSubtype('TibetStylesheetPINode');
 
 //  A RegExp that matches 'href' entries with processing instructions
-TP.core.XmlStylesheetPINode.Type.defineConstant(
+TP.core.TibetStylesheetPINode.Type.defineConstant(
                         'HREF_REGEX',
                         TP.rc('.*href=[\'"](.*)[\'"]'));
 
@@ -11358,12 +11358,12 @@ TP.core.XmlStylesheetPINode.Type.defineConstant(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XmlStylesheetPINode.Type.defineMethod('tagInstructions',
+TP.core.TibetStylesheetPINode.Type.defineMethod('tagInstructions',
 function(aRequest) {
 
     /**
      * @name tagInstructions
-     * @synopsis Processes any 'xml-stylesheet' processing instructions in the
+     * @synopsis Processes any 'tibet-stylesheet' processing instructions in the
      *     receiver's content. When you load content via XMLHTTP.sig.Request
      *     these PIs aren't executed so you have to run them through this
      *     transform to see their effect on the document.

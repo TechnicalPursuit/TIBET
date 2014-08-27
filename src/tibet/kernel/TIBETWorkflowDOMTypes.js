@@ -1290,7 +1290,7 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    query = './processing-instruction(\'xml-stylesheet\')';
+    query = './/processing-instruction(\'tibet-stylesheet\')';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
