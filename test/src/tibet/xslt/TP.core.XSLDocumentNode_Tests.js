@@ -1,0 +1,226 @@
+//  ========================================================================
+/**
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     privacy waivers if you must keep your TIBET-based source code private.
+ */
+//  ========================================================================
+
+//  ========================================================================
+//  XSLDocumentNode
+//  ========================================================================
+
+TP.core.XSLDocumentNode.Type.describe('TP.core.XSLDocumentNode Type processing',
+function() {
+
+    this.it('simple XSL transformation', function(test, options) {
+
+        var uri;
+
+        uri = TP.uc('~lib_tst/src/tibet/xslt/XMLArray2XHTMLTable.xsl');
+
+        this.getDriver().fetchResource(uri, TP.WRAP);
+
+        this.then(
+            function(tpXSLTDoc) {
+
+                var data,
+                    elem,
+                    str,
+                    result;
+
+                data = TP.ac(1,2,3,4,5,6);
+                elem = TP.elem('<dataroot>' +
+                                data.asXMLString() +
+                                '</dataroot>');
+
+                str = tpXSLTDoc.transform(elem);
+                result = TP.elem(str);
+
+                test.assert.isElement(result);
+
+                //  There is one less 'html:td' than there is data
+                test.assert.equalTo(
+                    TP.nodeGetElementsByTagName(result, 'html:td').getSize(),
+                    data.getSize() - 1);
+
+                //  Because there is one 'html:th'
+                test.assert.equalTo(
+                    TP.nodeGetElementsByTagName(result, 'html:th').getSize(),
+                    1);
+
+                test.assert.equalTo(
+                    TP.nodeGetTextContent(
+                        TP.nodeGetElementsByTagName(result, 'html:td').at(2)),
+                    data.at(3).asString());
+
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+    });
+
+    this.it('XSL transformation with parameters - using default values', function(test, options) {
+
+        var uri;
+
+        uri = TP.uc('~lib_tst/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
+
+        this.getDriver().fetchResource(uri, TP.WRAP);
+
+        this.then(
+            function(tpXSLTDoc) {
+
+                var data,
+                    elem,
+                    str,
+                    result;
+
+                //  By default, this sheet handles Arrays represented as XML-RPC
+                //  nodes, so we get that here.
+
+                data = TP.ac(1,2,3,4,5,6);
+                elem = data.as('TP.core.XMLRPCNode');
+
+                str = tpXSLTDoc.transform(elem);
+                result = TP.elem(str);
+
+                test.assert.isElement(result);
+
+                //  There is the same number of 'html:td's as there are data
+                test.assert.equalTo(
+                    TP.nodeGetElementsByTagName(result, 'html:td').getSize(),
+                    data.getSize());
+
+                //  Since the XSLT defaults its column count to 2, there should
+                //  be 'count / 2' number of rows
+                test.assert.equalTo(
+                    TP.nodeGetElementsByTagName(result, 'html:tr').getSize(),
+                    data.getSize() / 2);
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+    });
+
+    this.it('XSL transformation with parameters - supply scalar values', function(test, options) {
+
+        var uri;
+
+        uri = TP.uc('~lib_tst/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
+
+        this.getDriver().fetchResource(uri, TP.WRAP);
+
+        this.then(
+            function(tpXSLTDoc) {
+
+                var data,
+                    elem,
+                    xslParams,
+                    str,
+                    result;
+
+                //  By default, this sheet handles Arrays represented as XML-RPC
+                //  nodes, but we're going to alter the selection statement that
+                //  it uses to get the data, so let's output this as our
+                //  'standard XML representation' and then use that.
+
+                data = TP.ac(1,2,3,4,5,6);
+                elem = data.as('TP.core.XMLRPCNode');
+
+                //  NB: These should match <xsl:param> elements in the XSLT
+                xslParams = TP.hc('numCols', 3);
+
+                str = tpXSLTDoc.transform(elem, xslParams);
+                result = TP.elem(str);
+
+                test.assert.isElement(result);
+
+                //  There is the same number of 'html:td's as there are data
+                test.assert.equalTo(
+                    TP.nodeGetElementsByTagName(result, 'html:td').getSize(),
+                    data.getSize());
+
+                //  Since we have set the XSLT column count to 3, there should
+                //  be 'count / 3' number of rows
+                test.assert.equalTo(
+                    TP.nodeGetElementsByTagName(result, 'html:tr').getSize(),
+                    data.getSize() / 3);
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+    });
+
+    this.it('XSL transformation with parameters - supply node values', function(test, options) {
+
+        var uri;
+
+        uri = TP.uc('~lib_tst/src/tibet/xslt/ReflectNodeParam.xsl');
+
+        this.getDriver().fetchResource(uri, TP.WRAP);
+
+        this.then(
+            function(tpXSLTDoc) {
+
+                var data,
+                    elem,
+                    xslParams,
+                    str,
+                    result;
+
+                data = TP.ac(1,2,3,4,5,6);
+
+                //  NB: These should match <xsl:param> elements in the XSLT
+                xslParams = TP.hc('sourceElem',
+                                    TP.elem('<dataroot>' +
+                                            data.asXMLString() +
+                                            '</dataroot>'));
+
+                elem = TP.elem('<test/>');
+
+                str = tpXSLTDoc.transform(elem, xslParams);
+                result = TP.elem(str);
+
+                test.assert.isElement(result);
+
+                test.assert.equalTo(
+                        TP.elementGetLocalName(result),
+                        'result');
+
+                test.assert.equalTo(
+                        TP.elementGetLocalName(result.firstElementChild),
+                        'dataroot');
+
+                //  There is the same number of 'item's as there are data
+                test.assert.equalTo(
+                    TP.nodeGetElementsByTagName(result, 'item').getSize(),
+                    data.getSize());
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+    });
+});
+
+//  ========================================================================
+//  Run those babies!
+//  ------------------------------------------------------------------------
+
+/*
+TP.core.XSLDocumentNode.Type.runTestSuites();
+*/
+
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================
