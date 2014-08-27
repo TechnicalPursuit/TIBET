@@ -638,6 +638,8 @@ TP.hc(
             resultDoc,
             processor,
 
+            realStyleDoc,
+
             paramNodes,
             len,
             i,
@@ -730,10 +732,15 @@ TP.hc(
                         });
                 }
 
+                //  Mozilla is very strict about having an XML declaration on
+                //  the XSLT document itself, so we 'recreate' the style
+                //  document to make sure it has one.
+                realStyleDoc = TP.doc(TP.nodeAsString(styleDoc, true, false));
+
                 //  NB: We *must* import the stylesheet *after* we set the
                 //  parameters, in case any of them were 'node set'
                 //  parameters.
-                processor.importStylesheet(styleDoc);
+                processor.importStylesheet(realStyleDoc);
             } catch (e) {
                 //  See if we can extract the failure code from the
                 //  exception message.

@@ -2773,10 +2773,6 @@ function(aRequest, aResult, aResource) {
     result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
     result = TP.isNode(result) ? TP.wrap(result) : result;
 
-    result = TP.canInvoke(result, 'get') ?
-                    result.get('content') :
-                    undefined;
-
     //  filter to any result type which was specified.
     resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
     result = this.$getFilteredResult(result, resultType);

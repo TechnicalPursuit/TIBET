@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:base="~tibet">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript"
+			src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+	<link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+</head>
+
+<body xml:base="base/lib/tibet/img/">
+
+	We're testing XML Base here.<br/>
+	<br/>
+
+	NOTE: These paths don't resolve to anything real. Don't expect this document to render with real content.<br/>
+	<br/>
+
+	Testing full absolute path:
+	<br/>
+	<br/>
+
+	<img id="image1" src="file:///usr/local/src/TIBET/base/lib/tibet/img/tibet_logo_369.gif"/>
+
+	<br/>
+	<br/>
+
+	Testing relative path derived from nested values on both &lt;body&gt; and &lt;html&gt; elements (note that the &lt;html&gt; element uses a virtual URI):
+	<br/>
+
+	A path with a local reference (won't show anything)
+	<img id="image2" src="tibet_logo_369.gif"/>
+
+	<br/>
+	<br/>
+
+	A path with reference "up" the tree (won't show anything)
+	<img id="image3" src="../tibet_logo_369.gif"/>
+
+	<br/>
+	<br/>
+
+	Testing relative path derived from parent element which redefines absolute base (and does that by using a virtual URI).
+
+	<span xml:base="~tibet/base/lib/tibet/img/">
+		<img id="image4" src="./tibet_logo_369.gif"/>
+	</span>
+
+</body>
+</html>

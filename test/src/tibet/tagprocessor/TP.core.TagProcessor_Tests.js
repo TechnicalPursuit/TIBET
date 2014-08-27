@@ -276,7 +276,7 @@ function() {
         uri = TP.uc(testDataLoc + '#attrchange');
 
         this.getDriver().fetchResource(uri, TP.DOM);
-        
+
         this.then(
             function(result) {
                 var processor;
@@ -301,7 +301,7 @@ function() {
         uri = TP.uc(testDataLoc + '#moreattrchange');
 
         this.getDriver().fetchResource(uri, TP.DOM);
-        
+
         this.then(
             function(result) {
                 var processor;
@@ -328,7 +328,7 @@ function() {
         uri = TP.uc(testDataLoc + '#contentchange');
 
         this.getDriver().fetchResource(uri, TP.DOM);
-        
+
         this.then(
             function(result) {
                 var processor;
@@ -354,7 +354,7 @@ function() {
         uri = TP.uc(testDataLoc + '#morecontentchange');
 
         this.getDriver().fetchResource(uri, TP.DOM);
-        
+
         this.then(
             function(result) {
                 var processor;
@@ -377,6 +377,54 @@ function() {
     });
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessor.Inst.describe('TP.core.TagProcessor Inst core functionality suite',
+function() {
+
+    this.it('XML Base processing', function(test, options) {
+
+        var uri;
+
+        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XMLBaseTest1.xml');
+
+        this.getDriver().setLocation(uri);
+
+        this.then(
+            function(result) {
+
+                //  Note that these paths on these elements aren't real - we're
+                //  not really interested in that. What we're interested in is
+                //  whether the path got computed properly. Note that the reason
+                //  we actually set the 'src' attribute on an '<img>' tag is
+                //  that we still need it to be an attribute that TIBET thinks
+                //  needs to be processed (see the 'TP.html.img' tag type and it
+                //  'uriAttrs' attribute).
+
+                test.assert.isElement(TP.byId('image1'));
+                test.assert.isAttributeEqualTo(
+                    TP.byId('image1'),
+                    'src',
+                    'file:///usr/local/src/TIBET/base/lib/tibet/img/tibet_logo_369.gif');
+
+                test.assert.isAttributeEqualTo(
+                    TP.byId('image2'),
+                    'src',
+                    TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
+
+                test.assert.isAttributeEqualTo(
+                    TP.byId('image3'),
+                    'src',
+                    TP.uc('~tibet/base/lib/tibet/img/../tibet_logo_369.gif').getLocation());
+
+                test.assert.isAttributeEqualTo(
+                    TP.byId('image4'),
+                    'src',
+                    TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
+            });
+    });
+});
+
 //  ========================================================================
 //  XInclude
 //  ========================================================================
@@ -390,7 +438,9 @@ function() {
 
         uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
 
-        this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().fetchResource(uri, TP.DOM);
+
+        this.then(
             function(result) {
 
                 var usingDebugger,
@@ -436,14 +486,10 @@ function() {
 
         uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude2.xml');
 
-        this.getDriver().fetchResource(uri, TP.DOM).then(
+        this.getDriver().setLocation(uri);
+
+        this.then(
             function(result) {
-
-                var tpDoc;
-
-                tpDoc = TP.sys.getUICanvas().getDocument();
-
-                tpDoc.setContent(result);
 
                 //  This comes from the first XInclude with a simple XPointer
                 //  expression
