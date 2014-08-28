@@ -4386,13 +4386,6 @@ function(aName) {
     result = this.$get('resource');
     if (TP.notValid(result)) {
         result = TP.sys.getTypeByName(str);
-        if (TP.notValid(result)) {
-            try {
-                result = TP.global[str];
-            } catch (e) {
-                //  ignore errors attempting lookup.
-            }
-        }
     }
 
     return result;
