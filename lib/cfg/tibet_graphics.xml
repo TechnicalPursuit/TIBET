@@ -4,7 +4,11 @@
     name="tibet_graphics" default="standard" basedir="~tibet_src">
 
 <config id="standard">
-    <script src="~lib_deps/d3-tpi.min.js" no-lint="true" no-minify="true"/>
+    <script src="~lib_deps/d3-tpi.min.js"
+        unless="boot.unminified" no-minify="true" no-lint="true"/>
+    <script src="~lib_deps/d3-tpi.js"
+        if="boot.unminified" no-lint="true"/>
+
     <script>
         <![CDATA[
         TP.extern.d3 = d3;

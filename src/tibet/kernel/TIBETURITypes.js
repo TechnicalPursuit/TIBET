@@ -4386,13 +4386,6 @@ function(aName) {
     result = this.$get('resource');
     if (TP.notValid(result)) {
         result = TP.sys.getTypeByName(str);
-        if (TP.notValid(result)) {
-            try {
-                result = TP.global[str];
-            } catch (e) {
-                //  ignore errors attempting lookup.
-            }
-        }
     }
 
     return result;
@@ -7272,9 +7265,7 @@ function(aRequest, filterResult) {
             case 'false_false':
             case 'false_true':
 
-                //  path with/without pointer? either way this routine
-                //  should return the entire document from window,
-                //  provided that the window's showing that file.
+                //  path with/without pointer?
                 if (TP.notEmpty(path) &&
                     ((url = this.getPrimaryURI()) !== this)) {
                     //  If our path matches the current document location or our
@@ -7340,10 +7331,9 @@ function(aRequest, filterResult) {
         //  no window, so this is a codeframe reference to either a resource
         //  URI's content or to an object we can get via
         //  TP.sys.getObjectById() (provided we don't trigger a recursion :)
-        //  or by access path traversal (or both). a common and
-        //  time-sensitive call here is
-        //  one that's trying to locate an xctrls:instance or a part of the
-        //  data within that instance for data binding purposes.
+        //  or by access path traversal (or both). A common and time-sensitive
+        //  call here is one that's trying to locate an xctrls:instance or a
+        //  part of the data within that instance for data binding purposes.
 
         //  key is whether pathIsEmpty_pointerIsEmpty
         switch (key) {

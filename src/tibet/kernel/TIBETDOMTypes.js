@@ -10150,6 +10150,11 @@ function(attributeName) {
         return this.raise('TP.sig.InvalidParameter', arguments);
     }
 
+    //  We can shortcut '#document' by just returning our document
+    if (attributeName === '#document') {
+        return this.getDocument();
+    }
+
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
@@ -10163,11 +10168,6 @@ function(attributeName) {
         if (TP.regex.ATTRIBUTE.test(attributeName) &&
             !TP.regex.ATTRIBUTE_ALL.test(attributeName)) {
             return this.getAttribute(attributeName.slice(1));
-        }
-
-        //  We can shortcut '#document' by just returning our document
-        if (attributeName === '#document') {
-            return this.getDocument();
         }
 
         //  We can shortcut barename IDs by evaluating just the barename syntax
@@ -11685,6 +11685,12 @@ function(attributeName) {
         return this.raise('TP.sig.InvalidParameter', arguments);
     }
 
+    //  We can shortcut '#document' by just returning this. The '#document'
+    //  of us is ourself ;-)
+    if (attributeName === '#document') {
+        return this;
+    }
+
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
@@ -11693,12 +11699,6 @@ function(attributeName) {
     }
 
     if (TP.notValid(path)) {
-
-        //  We can shortcut '#document' by just returning this. The '#document'
-        //  of us is ourself ;-)
-        if (attributeName === '#document') {
-            return this;
-        }
 
         //  We can shortcut barename IDs by evaluating just the barename syntax
         if (TP.regex.BARENAME.test(attributeName)) {

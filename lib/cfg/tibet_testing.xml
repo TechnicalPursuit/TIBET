@@ -12,6 +12,7 @@
 <config id="base" depends="">
     <config ref="harness"/>
     <config ref="assertions"/>
+    <config ref="sinon"/>
 </config>
 
 <config id="harness">
@@ -22,6 +23,16 @@
     <script src="testing/TPTestAssertions.js" />
 </config>
 
+<config id="sinon" depends="">
+    <script src="~lib_deps/sinon-tpi.js"/>
+
+    <script>
+        <![CDATA[
+        TP.extern.sinon = sinon;
+        ]]>
+    </script>
+</config>
+
 <config id="samples">
     <script src="testing/TPTestSamples.js" />
 </config>
@@ -30,6 +41,7 @@
     <config ref="driver"/>
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
+    <config ref="uri"/>
     <config ref="xslt"/>
 </config>
 
@@ -48,6 +60,10 @@
 
 <config id="xslt">
     <script src="~lib_tst/src/tibet/xslt/TP.core.XSLDocumentNode_Tests.js" />
+</config>
+
+<config id="uri">
+    <script src="~lib_tst/src/tibet/uri/TP.core.URI_Tests.js" />
 </config>
 
 </package>

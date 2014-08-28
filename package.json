@@ -61,6 +61,7 @@
         "readline-sync": "*",
         "shelljs": "*",
         "shelljs-nodecli": "*",
+        "sinon": "TechnicalPursuit/Sinon.JS",
         "syn": "TechnicalPursuit/syn",
         "watch": "*",
         "xpath": "TechnicalPursuit/xpath",

@@ -147,6 +147,7 @@ targets.build_deps = function(make) {
         targets.rollup_jquery).then(
         targets.rollup_pouchdb).then(
         targets.rollup_q).then(
+        targets.rollup_sinon).then(
         targets.rollup_syn).then(
         targets.rollup_xpath).then(
         function() {
@@ -191,6 +192,7 @@ targets.rollup_d3 = function(make) {
     sh.cd(path.join(npmdir, 'd3'));
     sh.exec('npm install -d');
     sh.exec('make');
+    sh.exec('cp -f d3.js ../../deps/d3-tpi.js');
     sh.exec('cp -f d3.min.js ../../deps/d3-tpi.min.js');
 
     targets.rollup_d3.resolve();
@@ -210,19 +212,6 @@ targets.rollup_diff = function(make) {
 
 /**
  */
-targets.rollup_jquery = function(make) {
-    var npmdir;
-
-    npmdir = path.join(__dirname, 'node_modules');
-    sh.cd(path.join(npmdir, 'jquery'));
-
-    // TODO: build and copy jquery build output to the proper location(s)
-
-    targets.rollup_jquery.resolve();
-};
-
-/**
- */
 targets.rollup_forge = function(make) {
     var npmdir;
 
@@ -233,6 +222,19 @@ targets.rollup_forge = function(make) {
     sh.exec('cp -f js/forge.min.js ../../deps/forge-tpi.min.js');
 
     targets.rollup_forge.resolve();
+};
+
+/**
+ */
+targets.rollup_jquery = function(make) {
+    var npmdir;
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'jquery'));
+
+    // TODO: build and copy jquery build output to the proper location(s)
+
+    targets.rollup_jquery.resolve();
 };
 
 /**
@@ -262,6 +264,20 @@ targets.rollup_q = function(make) {
     sh.exec('cp -f q.min.js  ../../deps/q-tpi.min.js');
 
     targets.rollup_q.resolve();
+};
+
+/**
+ */
+targets.rollup_sinon = function(make) {
+    var npmdir;
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'sinon'));
+    sh.exec('npm install -d');
+    sh.exec('./build');
+    sh.exec('cp -f ./pkg/sinon.js ../../deps/sinon-tpi.js');
+
+    targets.rollup_sinon.resolve();
 };
 
 /**

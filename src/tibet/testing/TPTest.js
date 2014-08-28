@@ -216,13 +216,19 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.test.Root.Inst.defineMethod('skip',
-function() {
+function(shouldSkip) {
 
     /**
      * Marks the receiver as skipped, meaning it will be listed but not run.
+     * @param {Boolean} shouldSkip Whether or not to skip this test or suite.
+     *     Defaults to true.
      */
 
-    this.$set('skipped', true);
+    var skip;
+
+    skip = TP.ifInvalid(shouldSkip, true);
+
+    this.$set('skipped', skip);
 });
 
 //  ------------------------------------------------------------------------
