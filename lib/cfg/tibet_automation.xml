@@ -21,7 +21,7 @@
     <script src="~lib_deps/syn-tpi.min.js"
         unless="boot.unminified" no-minify="true" no-lint="true"/>
     <script src="~lib_deps/syn-tpi.js"
-        if="boot.unminified" no-minify="true" no-lint="true"/>
+        if="boot.unminified" no-lint="true"/>
 
     <script>
         <![CDATA[
