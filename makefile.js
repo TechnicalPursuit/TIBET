@@ -30,7 +30,7 @@ var targets = {};
 /**
  */
 targets.build = function(make) {
-    make.log('building tibet....');
+    make.log('building tibet...');
 
     if (!sh.test('-d', './lib/src')) {
         sh.mkdir('./lib/src');
@@ -49,7 +49,7 @@ targets.build = function(make) {
 /**
  */
 targets.build_all = function(make) {
-    make.log('building all packages....');
+    make.log('building all packages...');
 
     if (!sh.test('-d', './lib/src')) {
         sh.mkdir('./lib/src');
@@ -134,7 +134,7 @@ targets.release = function(make) {
 /**
  */
 targets.build_deps = function(make) {
-    make.log('building dependency packages....');
+    make.log('building dependency packages...');
 
     if (!sh.test('-d', './lib/src')) {
         sh.mkdir('./lib/src');
@@ -297,7 +297,7 @@ targets.rollup_xpath = function(make) {
 /**
  */
 targets.build_tibet = function(make) {
-    make.log('building TIBET packages....');
+    make.log('building TIBET packages...');
 
     if (!sh.test('-d', './lib/src')) {
         sh.mkdir('./lib/src');
@@ -322,101 +322,121 @@ targets.build_tibet = function(make) {
  * the 'tibetinit' flag. Also adjust the offset if the file target moves.
  */
 targets.rollup_init = function(make) {
-    helpers.rollup(make,
-        'init',
-        '~lib_cfg/TIBET.xml',
-        'init',
-        false,
-        false,
-        targets.rollup_init);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'init',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: false,
+        minify: false,
+        promise: targets.rollup_init
+    });
 
-    helpers.rollup(make,
-        'init',
-        '~lib_cfg/TIBET.xml',
-        'init',
-        false,
-        true,
-        targets.rollup_init);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'init',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: false,
+        minify: true,
+        promise: targets.rollup_init
+    });
 };
 
 /**
  */
 targets.rollup_hook = function(make) {
-    helpers.rollup(make,
-        'hook',
-        '~lib_cfg/TIBET.xml',
-        'hook',
-        false,
-        false,
-        targets.rollup_hook);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'hook',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: false,
+        minify: false,
+        promise: targets.rollup_hook
+    });
 
-    helpers.rollup(make,
-        'hook',
-        '~lib_cfg/TIBET.xml',
-        'hook',
-        false,
-        true,
-        targets.rollup_hook);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'hook',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: false,
+        minify: true,
+        promise: targets.rollup_hook
+    });
 };
 
 /**
  */
 targets.rollup_base = function(make) {
-    helpers.rollup(make,
-        'base',
-        '~lib_cfg/TIBET.xml',
-        'base',
-        true,
-        false,
-        targets.rollup_base);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'base',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: true,
+        minify: false,
+        promise: targets.rollup_base
+    });
 
-    helpers.rollup(make,
-        'base',
-        '~lib_cfg/TIBET.xml',
-        'base',
-        true,
-        true,
-        targets.rollup_base);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'base',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: true,
+        minify: true,
+        promise: targets.rollup_base
+    });
 };
 
 /**
  */
 targets.rollup_developer = function(make) {
-    helpers.rollup(make,
-        'developer',
-        '~lib_cfg/TIBET.xml',
-        'developer',
-        true,
-        false,
-        targets.rollup_developer);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'developer',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: true,
+        minify: false,
+        promise: targets.rollup_developer
+    });
 
-    helpers.rollup(make,
-        'developer',
-        '~lib_cfg/TIBET.xml',
-        'developer',
-        true,
-        true,
-        targets.rollup_developer);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'developer',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: true,
+        minify: true,
+        promise: targets.rollup_developer
+    });
 };
 
 /**
  */
 targets.rollup_full = function(make) {
-    helpers.rollup(make,
-        'full',
-        '~lib_cfg/TIBET.xml',
-        'full',
-        true,
-        false,
-        targets.rollup_full);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'full',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: true,
+        minify: false,
+        promise: targets.rollup_full
+    });
 
-    helpers.rollup(make,
-        'full',
-        '~lib_cfg/TIBET.xml',
-        'full',
-        true,
-        true,
-        targets.rollup_full);
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'full',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: true,
+        minify: true,
+        promise: targets.rollup_full
+    });
 };
 
 /**

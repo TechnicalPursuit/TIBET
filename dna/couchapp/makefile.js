@@ -8,6 +8,7 @@
 
 var sh = require('shelljs');
 var nodecli = require('shelljs-nodecli');
+var helpers = require('tibet/src/tibet/cli/_make_helpers');
 
 // Uncomment to run node_modules-based utilities via shelljs.
 // var nodeCLI = require('shelljs-nodecli');
@@ -55,28 +56,60 @@ var getDatabaseParameters = function(make) {
 var targets = {};
 
 /**
- * Run lint and test commands to verify the code is in good shape.
  */
-targets.check = function(make) {
-    var result;
+targets.build = function(make) {
+    make.log('building app...');
 
-    make.log('checking for lint...');
+    targets.clean().then(
+        targets.rollup).then(
+        function() {
+            targets.build.resolve();
+        },
+        function() {
+            targets.build.reject();
+        });
+};
 
-    result = sh.exec('tibet lint');
-    if (result.code !== 0) {
-        targets.check.reject();
-        return;
+/**
+ */
+targets.clean = function(make) {
+    make.log('cleaning...');
+
+    if (sh.test('-d', './build')) {
+        sh.rm('-rf', './build/*');
     }
 
-    make.log('running unit tests...');
+    targets.clean.resolve();
+};
 
-    result = sh.exec('tibet test');
-    if (result.code !== 0) {
-        targets.check.reject();
-        return;
+/**
+ */
+targets.rollup = function(make) {
+    make.log('rolling up assets...');
+
+    if (!sh.test('-d', './build')) {
+        sh.mkdir('./build');
     }
 
-    targets.check.resolve();
+    helpers.rollup(make, {
+        pkg: '~app_cfg/app.xml',
+        config: 'base',
+        dir: './build',
+        prefix: 'app_',
+        headers: true,
+        minify: false,
+        promise: targets.rollup
+    });
+
+    helpers.rollup(make, {
+        pkg: '~app_cfg/app.xml',
+        config: 'base',
+        dir: './build',
+        prefix: 'app_',
+        headers: true,
+        minify: true,
+        promise: targets.rollup
+    });
 };
 
 /**
