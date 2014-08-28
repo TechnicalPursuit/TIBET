@@ -192,6 +192,7 @@ targets.rollup_d3 = function(make) {
     sh.cd(path.join(npmdir, 'd3'));
     sh.exec('npm install -d');
     sh.exec('make');
+    sh.exec('cp -f d3.js ../../deps/d3-tpi.js');
     sh.exec('cp -f d3.min.js ../../deps/d3-tpi.min.js');
 
     targets.rollup_d3.resolve();
