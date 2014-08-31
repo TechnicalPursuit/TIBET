@@ -291,7 +291,7 @@ function() {
             TP.uc('tibet://top.UIROOT/').getResource(params),
             TP.core.Window.construct('top.UIROOT'),
             TP.sc('tibet://top.UIROOT/ should find the Window named' +
-                    ' "screen_editor_0".'));
+                    ' "UIROOT".'));
 
         //  The last slash should be optional
 
@@ -299,7 +299,7 @@ function() {
             TP.uc('tibet://top.UIROOT').getResource(params),
             TP.core.Window.construct('top.UIROOT'),
             TP.sc('tibet://top.UIROOT should find the Window named' +
-                    ' "screen_editor_0".'));
+                    ' "UIROOT".'));
     });
 
     //  ---
@@ -310,7 +310,7 @@ function() {
             TP.uc('tibet://top.UIROOT/#document').getResource(params),
             TP.core.Window.construct('top.UIROOT').getDocument(),
             TP.sc('tibet://top.UIROOT/#document should find the' +
-                    ' document of the Window named "screen_editor_0".'));
+                    ' document of the Window named "UIROOT".'));
 
         //  The last slash should be optional
 
@@ -318,7 +318,7 @@ function() {
             TP.uc('tibet://top.UIROOT#document').getResource(params),
             TP.core.Window.construct('top.UIROOT').getDocument(),
             TP.sc('tibet://top.UIROOT#document should find the' +
-                    ' document of the Window named "screen_editor_0".'));
+                    ' document of the Window named "UIROOT".'));
     });
 
     //  ---
