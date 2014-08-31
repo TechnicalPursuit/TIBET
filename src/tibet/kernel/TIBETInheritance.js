@@ -7429,6 +7429,15 @@ provide support for that feature in TIBET.
 TP.definePrimitive('method',
 function(target, name, track) {
 
+    /**
+     * @name getMethod
+     * @synopsis Returns the named method on the target, if it exists.
+     * @param {Object} target The object to try to locate the method on.
+     * @param {String} name The method name to locate.
+     * @param {String} track The method track (Inst, Type, Local).
+     * @returns {Function} The Function object representing the method.
+     */
+
     var method;
 
     method = target[name];
@@ -7445,6 +7454,14 @@ function(target, name, track) {
 
 TP.definePrimitive('methods',
 function(target, track) {
+
+    /**
+     * @name getMethods
+     * @synopsis Returns the Array of methods on the target.
+     * @param {Object} target The object to try to locate the methods on.
+     * @param {String} track The method track (Inst, Type, Local).
+     * @returns {Array} An Array of Function objects representing the methods.
+     */
 
     var names,
         methods;
@@ -7478,7 +7495,7 @@ function(aName) {
      * @name getMethod
      * @synopsis Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
-     * @returns {Function}
+     * @returns {Function} The Function object representing the method.
      */
 
     return TP.method(this, aName);
@@ -7491,9 +7508,8 @@ function() {
 
     /**
      * @name getMethods
-     * @synopsis Returns an array of methods for the receiver.
-     * @returns {Array} An array of function objects.
-     * @todo
+     * @synopsis Returns an Array of methods for the receiver.
+     * @returns {Array} An Array of Function objects representing the methods.
      */
 
     return TP.methods(this);

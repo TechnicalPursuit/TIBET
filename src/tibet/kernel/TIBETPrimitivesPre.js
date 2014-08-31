@@ -609,13 +609,13 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
         displayName = display;
     }
 
-    // Attach reflection metadata.
+    //  Attach reflection metadata.
     this[TP.NAME] = name;
     this[TP.OWNER] = owner;
     this[TP.TRACK] = track;
     this[TP.DISPLAY] = displayName;
 
-    // Attach where we were loaded from (the script file node).
+    //  Attach where we were loaded from (the script file node).
     TP.objectSetLoadNode(this, TP.boot[TP.LOAD_NODE]);
 
     return this;
