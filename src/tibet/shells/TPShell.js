@@ -1992,7 +1992,7 @@ function(aRequest) {
 
     //  default when not set is to map it to the TIBET code frame via a
     //  findTIBET call (which should return the current window actually)
-    if (TP.isWindow(tWin = self.$$findTIBET())) {
+    if (TP.isWindow(tWin = TP.global.$$findTIBET())) {
         win = tWin;
     }
 

@@ -505,7 +505,7 @@ function() {
         model.attachSTDIO(this);
     }
 
-    if (TP.isWindow(tibetWin = self.$$findTIBET(window)) &&
+    if (TP.isWindow(tibetWin = TP.global.$$findTIBET(window)) &&
         this.get('vWin') !== tibetWin) {
 
         TP.tpwin(tibetWin).attachSTDIO(this);

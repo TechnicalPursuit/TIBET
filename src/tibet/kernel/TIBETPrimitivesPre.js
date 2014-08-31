@@ -3991,7 +3991,7 @@ function(methodName, methodBody) {
     var method;
 
     method = TP.defineMethod(
-            self, methodName, methodBody,
+            TP.global, methodName, methodBody,
             TP.GLOBAL_TRACK, null, 'TP.global.' + methodName);
 
     // TODO: verify this is correct.
