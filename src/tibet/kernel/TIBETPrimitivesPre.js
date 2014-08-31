@@ -3609,6 +3609,35 @@ NativeTypeStub.prototype.set =
 
 //  ---
 
+NativeTypeStub.prototype.getMethod =
+    function(aName) {
+
+    /**
+     * @name getMethod
+     * @synopsis Returns the named method, if it exists.
+     * @param {String} aName The method name to locate.
+     * @returns {Function} The Function object representing the method.
+     */
+
+    return TP.method(this.$$target, aName, TP.TYPE_TRACK);
+};
+
+//  ---
+
+NativeTypeStub.prototype.getMethods =
+    function() {
+
+    /**
+     * @name getMethods
+     * @synopsis Returns an Array of methods for the receiver.
+     * @returns {Array} An Array of Function objects representing the methods.
+     */
+
+    return TP.methods(this.$$target, TP.TYPE_TRACK);
+};
+
+//  ---
+
 Array.Type = new NativeTypeStub();
 Array.Type.$$target = Array;
 Array.Type[TP.OWNER] = Array;
@@ -3747,6 +3776,35 @@ NativeInstStub.prototype.set =
      */
 
     return this.$$target.set(attributeName, attributeValue, shouldSignal);
+};
+
+//  ---
+
+NativeInstStub.prototype.getMethod =
+    function(aName) {
+
+    /**
+     * @name getMethod
+     * @synopsis Returns the named method, if it exists.
+     * @param {String} aName The method name to locate.
+     * @returns {Function} The Function object representing the method.
+     */
+
+    return TP.method(this.$$target, aName, TP.INST_TRACK);
+};
+
+//  ---
+
+NativeInstStub.prototype.getMethods =
+    function() {
+
+    /**
+     * @name getMethods
+     * @synopsis Returns an Array of methods for the receiver.
+     * @returns {Array} An Array of Function objects representing the methods.
+     */
+
+    return TP.methods(this.$$target, TP.INST_TRACK);
 };
 
 //  ---
