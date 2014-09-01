@@ -33,14 +33,12 @@
     </script>
 </config>
 
-<config id="samples">
+<config id="selftests">
     <script src="testing/TPTestSamples.js" />
 </config>
 
 <config id="tests">
-    <config ref="samples"/>
-
-    <config ref="driver"/>
+    <!--config ref="driver"/-->
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
     <config ref="uri"/>
