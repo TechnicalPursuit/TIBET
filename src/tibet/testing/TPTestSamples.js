@@ -20,7 +20,7 @@
 
 //  ------------------------------------------------------------------------
 
-Array.describe('Array type/local suite',
+Array.describe('Array local suite',
 function() {
     this.it('passes explicitly', function() {
         this.pass();
@@ -35,7 +35,7 @@ function() {
     });
 });
 
-Array.prototype.describe('Array.Inst suite',
+Array.Inst.describe('Array.Inst suite',
 function() {
     this.it('passes implicitly', function() {
     });
@@ -59,7 +59,7 @@ function() {
     });
 });
 
-Array.prototype.describe('slice (syntax error in describe())',
+Array.Inst.describe('slice (syntax error in describe())',
 function() {
         /* eslint-disable */
         foo = thiswontwork;
@@ -68,7 +68,7 @@ function() {
     });
 });
 
-Array.prototype.describe('slice (syntax error in it())',
+Array.Inst.describe('slice (syntax error in it())',
 function() {
     this.it('makes julienne fries (syntax error)', function() {
         /* eslint-disable */
@@ -130,21 +130,21 @@ function() {
 
     this.it('passes sync via resolver', function() {
         return Q.Promise(function(resolver, rejector) {
-            // Don't really need a promise, but we can use them anyway :)
+            //  Don't really need a promise, but we can use them anyway :)
             resolver();
         });
     });
 
     this.it('fails sync via rejector', function() {
         return Q.Promise(function(resolver, rejector) {
-            // Don't really need a promise, but we can use them anyway :)
+            //  Don't really need a promise, but we can use them anyway :)
             rejector();
         });
     });
 });
 
-// Test for test.Suite only support. We'll see a fail() when running with
-// ignore_only set to true.
+//  Test for test.Suite only support. We'll see a fail() when running with
+//  ignore_only set to true.
 TP.sig.Signal.Type.describe('fire',
 function() {
     this.it('fails at signal type stuff', function() {
@@ -162,8 +162,8 @@ function() {
     });
 }).only();
 
-// Test for test.Case only support. We'll see a fail() when running with
-// ignore_only set to true due to the first test case below.
+//  Test for test.Case only support. We'll see a fail() when running with
+//  ignore_only set to true due to the first test case below.
 TP.sig.Signal.Inst.describe('sig.Signal Inst suite',
 function() {
     this.it('fails at signal inst stuff', function() {
@@ -174,8 +174,8 @@ function() {
     }).only();
 });
 
-// Test for test.Suite skip support. We'll see a fail() when running with
-// ignore_skip set to true.
+//  Test for test.Suite skip support. We'll see a fail() when running with
+//  ignore_skip set to true.
 TP.lang.Object.Type.describe('lang.Object Type suite',
 function() {
     this.it('fails at object type stuff', function() {
@@ -186,8 +186,8 @@ function() {
     });
 }).skip();
 
-// Test for test.Suite skip support. We'll see a fail() when running with
-// ignore_skip set to true.
+//  Test for test.Suite skip support. We'll see a fail() when running with
+//  ignore_skip set to true.
 TP.lang.Object.Inst.describe('lang.Object Inst suite',
 function() {
     this.it('fails at object inst stuff', function() {
@@ -198,7 +198,6 @@ function() {
     });
 });
 
-//
 TP.lang.Object.describe('lang.Object Local suite',
 function() {
     this.it('will eventually do object local stuff', function() {
@@ -206,7 +205,7 @@ function() {
     }).todo();
 });
 
-String.describe('String type/local suite',
+String.describe('String local suite',
 function() {
     this.it('passes simple test 1', function() {
         this.pass();
@@ -216,27 +215,10 @@ function() {
     });
 });
 
-String.prototype.describe('String inst suite',
-function() {
-    this.it('asserts something and then logs', function() {
-        this.then(
-            function() {
-                TP.sys.logTest('Comes before!');
-            });
-        this.assert.isString('hi there');
-        this.assert.isString(42);
-        this.then(
-            function() {
-                TP.sys.logTest('Comes after!');
-            });
-    });
-});
-
-
-// Test for suite timeout. There are 6 cases here with 2900ms timers which
-// should run as each previous case finishes. As a result we should see 5 pass
-// and #6 fail because there's not enough time yet with a 15second suite
-// timeout value.
+//  Test for suite timeout. There are 6 cases here with 2900ms timers which
+//  should run as each previous case finishes. As a result we should see 5 pass
+//  and #6 fail because there's not enough time yet with a 15second suite
+//  timeout value.
 TP.core.Resource.Inst.describe('getTriggerSignals',
 function() {
     this.it('wastes time', function() {
@@ -304,10 +286,24 @@ function() {
 //TP.test.Suite.runTargetSuites(<targetObj>);
 /*
 TP.test.Suite.runTargetSuites(Array);
+
+//  NB: For now, we need to provide the '.prototype' rather than the '.Inst'
+//  object for native type, instance-side tests.
 TP.test.Suite.runTargetSuites(Array.prototype);
+
 TP.test.Suite.runTargetSuites(TP.core.Resource);
-TP.test.Suite.runTargetSuites(TP.core.Resource.Type);
 TP.test.Suite.runTargetSuites(TP.core.Resource.Inst);
+
+TP.test.Suite.runTargetSuites(TP.sig.Signal.Type);
+TP.test.Suite.runTargetSuites(TP.sig.Signal.Inst);
+
+TP.test.Suite.runTargetSuites(TP.lang.Object.Type);
+TP.test.Suite.runTargetSuites(TP.lang.Object.Inst);
+TP.test.Suite.runTargetSuites(TP.lang.Object);
+
+TP.test.Suite.runTargetSuites(String);
+
+TP.test.Suite.runTargetSuites(TP.core.Resource);
 */
 
 //  ------------------------------------------------------------------------

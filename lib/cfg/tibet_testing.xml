@@ -38,6 +38,8 @@
 </config>
 
 <config id="tests">
+    <config ref="samples"/>
+
     <config ref="driver"/>
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
