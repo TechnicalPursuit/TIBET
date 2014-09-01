@@ -119,14 +119,6 @@ targets.docs = function(make) {
     targets.docs.resolve();
 };
 
-/**
- */
-targets.release = function(make) {
-    make.log('prepping release...');
-
-    targets.release.resolve();
-};
-
 // ---
 // Externals
 // ---
