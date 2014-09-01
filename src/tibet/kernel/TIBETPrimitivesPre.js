@@ -3638,6 +3638,27 @@ NativeTypeStub.prototype.getMethods =
 
 //  ---
 
+NativeTypeStub.prototype.describe =
+    function(suiteName, suiteFunc) {
+
+    /**
+     * @name describe
+     * @synopsis Adds a new test suite definition to an object. When the suite
+     *     name matches a method name that suite is automatically associated
+     *     with the specific method.
+     * @param {String} suiteName The name of the new test suite. Should be
+     *     unique to the particular receiver. If this matches a method name the
+     *     suite is associated with that method.
+     * @param {Function} suiteFunc The function representing the test suite.
+     *     Should contain at least one call to 'this.it', the test case
+     *     definition method on TP.test.Suite.
+     */
+
+    return TP.test.Suite.addSuite(this.$$target, suiteName, suiteFunc);
+};
+
+//  ---
+
 Array.Type = new NativeTypeStub();
 Array.Type.$$target = Array;
 Array.Type[TP.OWNER] = Array;
@@ -3805,6 +3826,27 @@ NativeInstStub.prototype.getMethods =
      */
 
     return TP.methods(this.$$target, TP.INST_TRACK);
+};
+
+//  ---
+
+NativeInstStub.prototype.describe =
+    function(suiteName, suiteFunc) {
+
+    /**
+     * @name describe
+     * @synopsis Adds a new test suite definition to an object. When the suite
+     *     name matches a method name that suite is automatically associated
+     *     with the specific method.
+     * @param {String} suiteName The name of the new test suite. Should be
+     *     unique to the particular receiver. If this matches a method name the
+     *     suite is associated with that method.
+     * @param {Function} suiteFunc The function representing the test suite.
+     *     Should contain at least one call to 'this.it', the test case
+     *     definition method on TP.test.Suite.
+     */
+
+    return TP.test.Suite.addSuite(this.$$target, suiteName, suiteFunc);
 };
 
 //  ---

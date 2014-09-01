@@ -15,6 +15,41 @@
 TP.core.TIBETURL.Inst.describe('getLocation',
 function() {
 
+    this.it('URL with virtual URI', function(test, options) {
+
+        this.assert.equalTo(
+            TP.uc('tibet:///~').getLocation(),
+            TP.uc('~').getLocation(),
+            TP.sc('tibet:///~ and ~ should be equivalent paths.'));
+
+        this.assert.equalTo(
+            TP.uc('tibet:///~').getLocation(),
+            TP.sys.getAppRoot(),
+            TP.sc('tibet:///~ and app root should be equivalent paths.'));
+
+        this.assert.equalTo(
+            TP.uc('tibet:///~tibet').getLocation(),
+            TP.uc('~tibet').getLocation(),
+            TP.sc('tibet:///~tibet and ~tibet should be equivalent paths.'));
+
+        this.assert.equalTo(
+            TP.uc('tibet:///~tibet').getLocation(),
+            TP.sys.getLibRoot(),
+            TP.sc('tibet:///~tibet and lib root should be equivalent paths.'));
+
+        this.assert.equalTo(
+            TP.uc('tibet:///~app_lib').getLocation(),
+            TP.uc('~app_lib').getLocation(),
+            TP.sc('tibet:///~app_lib and ~app_lib should be' +
+                    ' equivalent paths.'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.describe('getResource',
+function() {
+
     var params;
 
     this.beforeEach(
@@ -84,37 +119,6 @@ function() {
 
             storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
         });
-
-    //  ---
-
-    this.it('URL with virtual URI', function(test, options) {
-
-        this.assert.equalTo(
-            TP.uc('tibet:///~').getLocation(),
-            TP.uc('~').getLocation(),
-            TP.sc('tibet:///~ and ~ should be equivalent paths.'));
-
-        this.assert.equalTo(
-            TP.uc('tibet:///~').getLocation(),
-            TP.sys.getAppRoot(),
-            TP.sc('tibet:///~ and app root should be equivalent paths.'));
-
-        this.assert.equalTo(
-            TP.uc('tibet:///~tibet').getLocation(),
-            TP.uc('~tibet').getLocation(),
-            TP.sc('tibet:///~tibet and ~tibet should be equivalent paths.'));
-
-        this.assert.equalTo(
-            TP.uc('tibet:///~tibet').getLocation(),
-            TP.sys.getLibRoot(),
-            TP.sc('tibet:///~tibet and lib root should be equivalent paths.'));
-
-        this.assert.equalTo(
-            TP.uc('tibet:///~app_lib').getLocation(),
-            TP.uc('~app_lib').getLocation(),
-            TP.sc('tibet:///~app_lib and ~app_lib should be' +
-                    ' equivalent paths.'));
-    });
 
     //  ---
 
@@ -892,7 +896,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.describe('getLocation',
+TP.core.TIBETURN.Inst.describe('getResource',
 function() {
 
     var params;
@@ -943,7 +947,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.describe('getLocation',
+TP.core.JSURI.Inst.describe('getResource',
 function() {
 
     var params;

@@ -1383,7 +1383,7 @@ function() {
 
     this.set('msend', Date.now());
 
-    TP.sys.logTest('ok - ' + this.getCaseName());
+    TP.sys.logTest('ok - ' + this.getCaseName() + '.');
 });
 
 //  ------------------------------------------------------------------------
