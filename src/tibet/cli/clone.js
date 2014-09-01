@@ -68,6 +68,8 @@ Cmd.prototype.HELP =
 'The --force option is required if you use \'.\' as a simple reminder\n' +
 'to be careful. You can also use --force with existing directories.\n\n' +
 
+'The --list option will output a list of available dna options.\n\n' +
+
 'The optional --name parameter lets you rename from the directory name\n' +
 'to an alternative name. This lets the directory and appname vary. This\n' +
 'is common when cloning to existing directories or poorly named ones\n' +
@@ -77,12 +79,26 @@ Cmd.prototype.HELP =
 'TIBET\'s `dna` directory or a directory of your choosing. This latter\n' +
 'option lets you create your own reusable custom application templates.\n';
 
+
+/**
+ * Command argument parsing options.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
+    {
+        boolean: ['force', 'list'],
+        string: ['dna', 'name'],
+        default: {}
+    },
+    Parent.prototype.PARSE_OPTIONS);
+
+
 /**
  * The command usage string.
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet clone <dirname> [--force] [--name <appname>] [--dna <template>]';
+    'tibet clone <dirname> [--list] [--force] [--name <appname>] [--dna <template>]';
 
 
 //  ---
@@ -111,6 +127,7 @@ Cmd.prototype.execute = function() {
     var finder;     // The find event emitter we'll handle find events on.
     var target;     // The target directory name (based on appname).
     var params;     // Parameter data for template processing.
+    var list;       // List of files in a directory.
 
     var cmd = this; // Closure'd var for getting back to this command object.
 
@@ -120,13 +137,39 @@ Cmd.prototype.execute = function() {
     dirname = options._[1];    // Command is at 0, dirname should be [1].
 
     // Have to get at least one non-option argument (the target dirname).
-    if (!dirname) {
+    if (!dirname && !options.list) {
         this.info('Usage: ' + this.USAGE);
         return 1;
     }
 
     path = require('path');
     sh = require('shelljs');
+
+    //  ---
+    //  List if that's being requested
+    //  ---
+
+    if (options.list) {
+        target = CLI.expandPath('~lib_dna');
+        if (sh.test('-d', target)) {
+            list = sh.ls('-A', target);
+            err = sh.error();
+            if (sh.error()) {
+                this.error('Error checking dna directory: ' + err);
+                return 1;
+            }
+        } else {
+            cmd.info(target);
+        }
+
+        if (list) {
+            list.forEach(function(item) {
+                cmd.log(item);
+            });
+        }
+
+        return;
+    }
 
     //  ---
     //  Confirm the DNA
@@ -168,15 +211,36 @@ Cmd.prototype.execute = function() {
         target = process.cwd();
         appname = options.name || target.slice(target.lastIndexOf('/') + 1);
 
-        // TODO: add --force support
+        list = sh.ls('-A', target);
+        err = sh.error();
+        if (sh.error()) {
+            this.error('Error checking target directory: ' + err);
+            return 1;
+        }
+
+        if (list.length !== 0) {
+            if (options.force) {
+                this.warn('--force specified, ignoring existing content.');
+            } else {
+                this.error('Current directory is not empty. Use --force to ignore.');
+                return 1;
+            }
+        }
     } else {
         target = process.cwd() + '/' + dirname;
 
-        // TODO: add --force support
-        this.verbose('Checking for pre-existing target: ' + target);
         if (sh.test('-e', target)) {
-            this.error('Target already exists: ' + target);
-            return 1;
+            if (options.force) {
+                this.warn('--force specified, removing and rebuilding ' + target);
+                err = sh.rm('-rf', target);
+                if (err) {
+                    this.error('Error removing target directory: ' + err);
+                    return 1;
+                }
+            } else {
+                this.error('Target already exists. Use --force to replace.');
+                return 1;
+            }
         }
         appname = options.name || dirname;
     }
@@ -253,10 +317,10 @@ Cmd.prototype.execute = function() {
             try {
                 data = fs.readFileSync(file, {encoding: 'utf8'});
                 if (!data) {
-                    throw new Error('NoData');
+                    throw new Error('Empty');
                 }
             } catch (e) {
-                cmd.error('Error reading file data: ' + e.message);
+                cmd.error('Error reading ' + file + ': ' + e.message);
                 code = 1;
                 return;
             }
