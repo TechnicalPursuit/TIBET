@@ -753,7 +753,7 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
     var package;    // The package node from the XML doc.
     var msg;        // Error message construction variable.
 
-    expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') || Package.PACKAGE);
+    expanded = notEmpty(aPath) ? aPath : (this.getcfg('boot.package') || Package.PACKAGE);
     expanded = this.expandPath(expanded);
 
     this.pushPackage(expanded);

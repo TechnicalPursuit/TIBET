@@ -1,15 +1,15 @@
 {
     "//" : "TIBET project file. Set configuration parameters here.",
-
-    "minify": {
+    "boot": {
+        "package": "~lib_cfg/TIBET.xml"
+    },
+    "//": "tibet rollup uses escodegen to process/minify code.",
+    "escodegen": {
         "format": {
             "compact": true
         }
     },
-
-    "boot": {
-        "package": "~lib_cfg/TIBET.xml"
-    },
-
-    "package": "~lib_cfg/TIBET.xml"
+    "tds": {
+        "port": 1111
+    }
 }

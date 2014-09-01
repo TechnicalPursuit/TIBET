@@ -62,7 +62,7 @@ Cmd.prototype.HELP =
 'boot.profile (which controls what code is loaded) and a TSH shell\n' +
 'command of \':test\' which will run all test suites in the profile.\n\n' +
 
-'Output is to the console in colorized TAP format by default.\n' +
+'Output is to the terminal in colorized TAP format by default.\n' +
 'Future versions will support additional test output formatters.\n\n' +
 
 'Changing the boot profile is not normally required however you\n' +
