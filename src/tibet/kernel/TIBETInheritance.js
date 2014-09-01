@@ -7780,18 +7780,18 @@ function(aFunction) {
 
     /**
      * @name replaceWith
-     * @synopsis Replaces the receiver with an alternate function. This method
-     *     provides an easy way to reinstall a function in the proper context,
-     *     particularly when you don't know the original context. In other
-     *     words, you can ask a function to replaceWith(aReplacement) and the
-     *     proper add*Method call will be constructed for you and executed.
-     * @param {Function} aFunction The replacement function.
-     * @returns {Function} The new function.
+     * @synopsis Replaces the receiver with an alternate function.
+     * @description This method provides an easy way to reinstall a function
+     *     in the proper context, particularly when you don't know the original
+     *     context. In other words, you can ask a function to
+     *     'replaceWith(aReplacement)' and the proper 'defineMethod' call will
+     *     be constructed for you and executed.
+     * @param {Function} aFunction The replacement Function.
+     * @returns {Function} The new Function.
      */
 
     var owner,
-        track,
-        oper;
+        track;
 
     if (TP.notValid(aFunction)) {
         return this.raise('TP.sig.InvalidParameter', arguments);
@@ -7806,36 +7806,15 @@ function(aFunction) {
     track = this[TP.TRACK];
 
     if (TP.isValid(owner) && TP.isValid(track)) {
-        if (track === TP.GLOBAL_TRACK) {
-            owner = TP.global;
-        }
-
-        oper = 'defineMethod';
 
         try {
-            owner[oper](this.getName(), aFunction);
+            owner.defineMethod(this.getName(), aFunction);
         } catch (e) {
             return this.raise(
-                '',                 // TODO: what error/signal name?
+                'TP.sig.InvalidFunction',
                 arguments,
-                TP.ec(
-                e, TP.join(TP.id(owner), '[', oper, '](func); failed.')));
+                TP.ec(e, TP.id(owner) + '.defineMethod(func); failed.'));
         }
-    } else {
-        //  TODO: Should we also check 'TP' for 'primitives'?
-
-        //  anonymous function perhaps?
-        if (TP.global[this.getName()] === this) {
-            //  still visible so maybe we can wrap it...
-            TP.global[this.getName()] = aFunction;
-
-            return this;
-        }
-
-        //  no owner or track? can't really be done then
-        return this.raise('TP.sig.InvalidOperation',
-                            arguments,
-                            'Target is not a method.');
     }
 
     return this;
