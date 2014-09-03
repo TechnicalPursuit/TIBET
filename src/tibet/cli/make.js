@@ -293,7 +293,6 @@ Cmd.prototype.prepTargets = function(targets) {
                         targets[name].reject = function(err) {
                             clearTimeout(timer);
                             cmd.debug('rejecting ' + name + '...');
-                            cmd.error(err);
                             func.$$active = false;
                             rejector(err);
                         };
