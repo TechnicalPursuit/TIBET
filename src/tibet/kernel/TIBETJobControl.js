@@ -67,7 +67,7 @@ function(aFaultCode, aFaultString) {
     hash = TP.hc();
 
     if (TP.isError(aFaultCode)) {
-        hash.atPut('code', TP.ERROR);
+        hash.atPut('code', TP.ERRORED);
         if (TP.isEmpty(aFaultString)) {
             hash.atPut('text', aFaultCode.message);
         } else {
