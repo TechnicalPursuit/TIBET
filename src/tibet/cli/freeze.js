@@ -56,7 +56,27 @@ Cmd.prototype.HELP =
 'package data, custom commands, etc. TIBET also is configured to\n' +
 'allow a version of TIBET to be frozen into TIBET-INF/tibet rather\n' +
 'than in node_modules/tibet to support deployments where deploying\n' +
-'the rest of node_modules would be unnecessary.\n';
+'the rest of node_modules would be unnecessary.\n\n' +
+
+'\n';
+
+/**
+ * Command argument parsing options.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
+    {
+        boolean: ['minify', 'raw', 'all'],
+        string: ['tibet'],
+        default: {
+            all: false,
+            minify: true,
+            raw: false,
+            tibet: 'base'
+        }
+    },
+    Parent.prototype.PARSE_OPTIONS);
+
 
 /**
  * The command usage string.
@@ -77,24 +97,34 @@ Cmd.prototype.execute = function() {
 
     var path;
     var sh;
+
+    var cmd;
     var err;
     var app_inf;
-    var libroot;
+    var app_npm;
+    var infroot;
+    var libbase;
+    var srcroot;
+
+    var list;
+    var bundle;
 
     path = require('path');
     sh = require('shelljs');
+
+    cmd = this;
+
     app_inf = CLI.expandPath('~app_inf');
 
-    // TODO: verify app_inf exists...
+    // Verify our intended target directory exists.
+    if (!sh.test('-e', app_inf)) {
+        this.error('Cannot find app_inf: ' + app_inf);
+        return;
+    }
 
-    libroot = path.join(app_inf, 'tibet');
-
-    // TODO: verify node_modules/tibet exists...
-
-
-    // TODO: replace node_modules with ~npm or whatever it is.
-
-    sh.mkdir(libroot);
+    // Construct the target location for TIBET code.
+    infroot = path.join(app_inf, 'tibet');
+    sh.mkdir(infroot);
     err = sh.error();
     if (err) {
         if (!this.options.force) {
@@ -106,13 +136,13 @@ Cmd.prototype.execute = function() {
             }
             return 1;
         }
-        this.warn('--force specified...cleansing/rebuilding target directory.');
-        err = sh.rm('-rf', libroot);
+        this.warn('--force specified, cleansing/rebuilding target directory.');
+        err = sh.rm('-rf', infroot);
         if (err) {
             this.error('Error removing target directory: ' + err);
             return 1;
         }
-        sh.mkdir(libroot);
+        sh.mkdir(infroot);
         err = sh.error();
         if (err) {
             this.error('Error creating target directory: ' + err);
@@ -120,35 +150,81 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    sh.cp('-R', 'node_modules/tibet/bin', libroot);
+    // Make sure we can find npm root directory (node_modules).
+    app_npm = CLI.expandPath('~app_npm');
+    if (!sh.test('-e', app_npm)) {
+        this.error('Cannot find app_npm: ' + app_npm);
+        return;
+    }
+
+    // Make sure we can find the bundled TIBET source packages.
+    libbase = path.join(app_npm, 'tibet/lib');
+    if (!sh.test('-e', libbase)) {
+        this.error('Cannot find library source: ' + libbase);
+        return;
+    }
+
+    this.log('freezing packaged library resources...');
+    sh.cp('-R', libbase, infroot);
     err = sh.error();
     if (err) {
-        this.error('Error cloning tibet/bin' + err);
+        this.error('Error cloning ' + libbase + ': ' + err);
         return 1;
     }
 
-    sh.cp('-R', 'node_modules/tibet/etc', libroot);
+    srcroot = path.join(infroot, 'lib/src');
+
+    list = sh.ls('-A', srcroot);
     err = sh.error();
-    if (err) {
-        this.error('Error cloning tibet/etc: ' + err);
+    if (sh.error()) {
+        this.error('Error listing ' + srcroot + ': ' + err);
         return 1;
     }
 
-    sh.cp('-R', 'node_modules/tibet/lib', libroot);
-    err = sh.error();
-    if (err) {
-        this.error('Error cloning tibet/lib: ' + err);
-        return 1;
+    this.log('pruning unnecessary source rollups...');
+
+    bundle = this.options.tibet;
+
+    if (!this.options.all) {
+        list.forEach(function(file) {
+
+            // Remove any minified/unminified copies we don't want.
+            if (cmd.options.minify) {
+                if (/\.min\./.test(file) !== true) {
+                    sh.rm('-f', path.join(srcroot, file));
+                }
+            } else {
+                if (/\.min\./.test(file) === true) {
+                    sh.rm('-f', path.join(srcroot, file));
+                }
+            }
+
+            // Never prune any remaining hook or init file.
+            if (/_hook\./.test(file) || /_init\./.test(file)) {
+                return;
+            }
+
+            // Note that when raw is specified no copies of bundled code are kept,
+            // only the hook and init files which are always pulled from bundles.
+            if (cmd.options.raw) {
+                sh.rm('-f', path.join(srcroot, file));
+            } else if (file.indexOf('tibet_' + bundle + '.') === -1) {
+                sh.rm('-f', path.join(srcroot, file));
+            }
+        });
     }
 
-    sh.cp('-R', 'node_modules/tibet/src', libroot);
-    err = sh.error();
-    if (err) {
-        this.error('Error cloning tibet/src: ' + err);
-        return 1;
+    if (this.options.raw) {
+        this.log('freezing raw library source...');
+        sh.cp('-R', path.join(app_npm, 'tibet/src'), infroot);
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet/src: ' + err);
+            return 1;
+        }
     }
 
-    this.info('TIBET library frozen in ' + libroot + '.');
+    this.info('TIBET library frozen in ' + infroot + '.');
 };
 
 
