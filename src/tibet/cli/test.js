@@ -62,7 +62,7 @@ Cmd.prototype.HELP =
 'boot.profile (which controls what code is loaded) and a TSH shell\n' +
 'command of \':test\' which will run all test suites in the profile.\n\n' +
 
-'Output is to the console in colorized TAP format by default.\n' +
+'Output is to the terminal in colorized TAP format by default.\n' +
 'Future versions will support additional test output formatters.\n\n' +
 
 'Changing the boot profile is not normally required however you\n' +
@@ -78,7 +78,7 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['ignore_only', 'ignore_skip'],
+        boolean: ['selftest'],
         string: ['script', 'profile'],
         default: {}
     },
@@ -88,7 +88,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [--profile <url>] [--config <params>] [--script <tsh>]';
+Cmd.prototype.USAGE =
+    'tibet test [--profile <url>] [--params <params>] [--script <tsh>]';
 
 //  ---
 //  Instance Methods
@@ -130,7 +131,9 @@ Cmd.prototype.execute = function() {
         script = this.options.script;
     }
 
-    if (CLI.notEmpty(this.options.profile)) {
+    if (CLI.isValid(this.options.selftest)) {
+        profile = '~lib/test/phantom/phantom#selftest';
+    } else if (CLI.notEmpty(this.options.profile)) {
         profile = this.options.profile;
     }
 
@@ -143,8 +146,8 @@ Cmd.prototype.execute = function() {
     }
 
     arglist = [testpath, '--profile', profile, '--script', script];
-    if (CLI.notEmpty(this.options.config)) {
-        arglist.push('--config', this.options.config);
+    if (CLI.notEmpty(this.options.params)) {
+        arglist.push('--params', this.options.params);
     }
 
     // Run a manufactured tsh:test command just as we would in the TDC/Sherpa.

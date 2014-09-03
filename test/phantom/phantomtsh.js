@@ -112,7 +112,7 @@
      */
     PhantomTSH.PARSE_OPTIONS = {
         'boolean': ['color', 'image', 'help', 'usage', 'debug', 'tap'],
-        'string': ['script', 'url', 'profile', 'config'],
+        'string': ['script', 'url', 'profile', 'params'],
         'number': ['timeout'],
         'default': {
             color: true,
@@ -419,8 +419,8 @@
         PhantomTSH.url += '#boot.profile="' +
             (argv.profile || PhantomTSH.DEFAULT_PROFILE) + '"';
 
-        if (argv.config) {
-            PhantomTSH.url += '&' + argv.config;
+        if (argv.params) {
+            PhantomTSH.url += '&' + argv.params;
         }
 
         PhantomTSH.timeout = argv.timeout || PhantomTSH.DEFAULT_TIMEOUT;

@@ -424,7 +424,9 @@ Package.prototype.expandAll = function(aPath) {
     var pkg;        //
     var msg;
 
-    expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') || Package.PACKAGE);
+    expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
+        this.getcfg('boot.package') ||
+        Package.PACKAGE);
 
     expanded = this.expandPath(expanded);
 
@@ -753,7 +755,9 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
     var package;    // The package node from the XML doc.
     var msg;        // Error message construction variable.
 
-    expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') || Package.PACKAGE);
+    expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
+        this.getcfg('boot.package') ||
+        Package.PACKAGE);
     expanded = this.expandPath(expanded);
 
     this.pushPackage(expanded);
@@ -1651,7 +1655,9 @@ Package.prototype.listAllAssets = function(aPath, aList) {
         pkg,
         msg;
 
-    path = notEmpty(aPath) ? aPath : (this.getcfg('package') || Package.PACKAGE);
+    path = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
+        this.getcfg('boot.package') ||
+        Package.PACKAGE);
     path = this.expandPath(path);
 
     this.pushPackage(path);
@@ -1867,7 +1873,9 @@ Package.prototype.listPackageAssets = function(aPath, aConfig, aList) {
         result,
         msg;
 
-    path = notEmpty(aPath) ? aPath : (this.getcfg('package') || Package.PACKAGE);
+    path = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
+        this.getcfg('boot.package') ||
+        Package.PACKAGE);
     path = this.expandPath(path);
 
     this.pushPackage(path);

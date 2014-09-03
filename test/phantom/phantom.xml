@@ -13,4 +13,10 @@
     <package src="~lib_cfg/TIBET.xml" config="test"/>
 </config>
 
+<config id="selftest">
+    <config ref="properties"/>
+    <package src="~lib_cfg/TIBET.xml" config="developer"/>
+    <package src="~lib_cfg/tibet_testing.xml" config="selftests"/>
+</config>
+
 </package>
