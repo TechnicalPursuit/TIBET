@@ -3610,30 +3610,34 @@ NativeTypeStub.prototype.set =
 //  ---
 
 NativeTypeStub.prototype.getMethod =
-    function(aName) {
+    function(aName, aTrack) {
 
     /**
      * @name getMethod
      * @synopsis Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
+     * @param {String} aTrack The track to locate the method on. This is an
+     *     optional parameter.
      * @returns {Function} The Function object representing the method.
      */
 
-    return TP.method(this.$$target, aName, TP.TYPE_TRACK);
+    return TP.method(this.$$target, aName, TP.ifEmpty(aTrack, TP.TYPE_TRACK));
 };
 
 //  ---
 
 NativeTypeStub.prototype.getMethods =
-    function() {
+    function(aTrack) {
 
     /**
      * @name getMethods
      * @synopsis Returns an Array of methods for the receiver.
+     * @param {String} aTrack The track to locate the methods on. This is an
+     *     optional parameter.
      * @returns {Array} An Array of Function objects representing the methods.
      */
 
-    return TP.methods(this.$$target, TP.TYPE_TRACK);
+    return TP.methods(this.$$target, TP.ifEmpty(aTrack, TP.TYPE_TRACK));
 };
 
 //  ---
@@ -3802,30 +3806,34 @@ NativeInstStub.prototype.set =
 //  ---
 
 NativeInstStub.prototype.getMethod =
-    function(aName) {
+    function(aName, aTrack) {
 
     /**
      * @name getMethod
      * @synopsis Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
+     * @param {String} aTrack The track to locate the method on. This is an
+     *     optional parameter.
      * @returns {Function} The Function object representing the method.
      */
 
-    return TP.method(this.$$target, aName, TP.INST_TRACK);
+    return TP.method(this.$$target, aName, TP.ifEmpty(aTrack, TP.INST_TRACK));
 };
 
 //  ---
 
 NativeInstStub.prototype.getMethods =
-    function() {
+    function(aTrack) {
 
     /**
      * @name getMethods
      * @synopsis Returns an Array of methods for the receiver.
+     * @param {String} aTrack The track to locate the methods on. This is an
+     *     optional parameter.
      * @returns {Array} An Array of Function objects representing the methods.
      */
 
-    return TP.methods(this.$$target, TP.INST_TRACK);
+    return TP.methods(this.$$target, TP.ifEmpty(aTrack, TP.INST_TRACK));
 };
 
 //  ---

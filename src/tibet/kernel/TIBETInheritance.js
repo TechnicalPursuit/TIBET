@@ -7485,22 +7485,56 @@ function(target, track) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getMethod',
-function(aName) {
+function(aName, aTrack) {
 
     /**
      * @name getMethod
      * @synopsis Returns the named method, if it exists.
      * @param {String} aName The method name to locate.
+     * @param {String} aTrack The track to locate the method on. This is an
+     *     optional parameter.
      * @returns {Function} The Function object representing the method.
      */
 
-    return TP.method(this, aName);
+    var track;
+
+    if (TP.isEmpty(track = aTrack)) {
+        if (TP.isPrototype(this)) {
+            track = TP.INST_TRACK;
+        } else {
+            track = TP.LOCAL_TRACK;
+        }
+    }
+
+    return TP.method(this, aName, track);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getMethods',
-function() {
+function(aTrack) {
+
+    /**
+     * @name getMethods
+     * @synopsis Returns an Array of methods for the receiver.
+     * @param {String} aTrack The track to locate the methods on. This is an
+     *     optional parameter.
+     * @returns {Array} An Array of Function objects representing the methods.
+     */
+
+    var track;
+
+    if (TP.isEmpty(track = aTrack)) {
+        if (TP.isPrototype(this)) {
+            track = TP.INST_TRACK;
+        } else {
+            track = TP.LOCAL_TRACK;
+        }
+    }
+
+    return TP.methods(this, track);
+});
+
 
     /**
      * @name getMethods
