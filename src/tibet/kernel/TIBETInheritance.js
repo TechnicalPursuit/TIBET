@@ -7419,10 +7419,6 @@ provide support for that feature in TIBET.
 */
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
 //  METHOD ACQUISITION
 //  ------------------------------------------------------------------------
 
@@ -7430,11 +7426,11 @@ TP.definePrimitive('method',
 function(target, name, track) {
 
     /**
-     * @name getMethod
+     * @name method
      * @synopsis Returns the named method on the target, if it exists.
      * @param {Object} target The object to try to locate the method on.
      * @param {String} name The method name to locate.
-     * @param {String} track The method track (Inst, Type, Local).
+     * @param {String} track The track to locate the method on.
      * @returns {Function} The Function object representing the method.
      */
 
@@ -7456,10 +7452,10 @@ TP.definePrimitive('methods',
 function(target, track) {
 
     /**
-     * @name getMethods
+     * @name methods
      * @synopsis Returns the Array of methods on the target.
      * @param {Object} target The object to try to locate the methods on.
-     * @param {String} track The method track (Inst, Type, Local).
+     * @param {String} track The track to locate the method on.
      * @returns {Array} An Array of Function objects representing the methods.
      */
 
