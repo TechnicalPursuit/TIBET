@@ -3642,6 +3642,35 @@ NativeTypeStub.prototype.getMethods =
 
 //  ---
 
+NativeTypeStub.prototype.getMethodInfoFor =
+    function(methodName) {
+
+    /**
+     * @name getMethodInfoFor
+     * @synopsis Returns information for the method with the supplied name on
+     *     the receiver.
+     * @description This method returns a TP.lang.Hash containing the method
+     *     owner, name, track and display, under the keys 'owner', 'name',
+     *     'track' and 'display', respectively
+     * @param {String} aName The method name to return method information for.
+     * @returns {TP.lang.Hash} The hash containing the method information as
+     *     described in the method comment.
+     */
+
+    var existingMethod;
+
+    if (!TP.isMethod(existingMethod = this.getMethod(methodName))) {
+        return null;
+    }
+
+    return TP.hc('owner', existingMethod[TP.OWNER],
+                    'name', methodName,
+                    'track', existingMethod[TP.TRACK],
+                    'display', existingMethod[TP.DISPLAY]);
+};
+
+//  ---
+
 NativeTypeStub.prototype.describe =
     function(suiteName, suiteFunc) {
 
@@ -3834,6 +3863,35 @@ NativeInstStub.prototype.getMethods =
      */
 
     return TP.methods(this.$$target, TP.ifEmpty(aTrack, TP.INST_TRACK));
+};
+
+//  ---
+
+NativeInstStub.prototype.getMethodInfoFor =
+    function(methodName) {
+
+    /**
+     * @name getMethodInfoFor
+     * @synopsis Returns information for the method with the supplied name on
+     *     the receiver.
+     * @description This method returns a TP.lang.Hash containing the method
+     *     owner, name, track and display, under the keys 'owner', 'name',
+     *     'track' and 'display', respectively
+     * @param {String} aName The method name to return method information for.
+     * @returns {TP.lang.Hash} The hash containing the method information as
+     *     described in the method comment.
+     */
+
+    var existingMethod;
+
+    if (!TP.isMethod(existingMethod = this.getMethod(methodName))) {
+        return null;
+    }
+
+    return TP.hc('owner', existingMethod[TP.OWNER],
+                    'name', methodName,
+                    'track', existingMethod[TP.TRACK],
+                    'display', existingMethod[TP.DISPLAY]);
 };
 
 //  ---

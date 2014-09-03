@@ -7722,6 +7722,199 @@ function(aTrack) {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('getMethodInfoFor',
+function(methodName) {
+
+    /**
+     * @name getMethodInfoFor
+     * @synopsis Returns information for the method with the supplied name on
+     *     the receiver.
+     * @description This method returns a TP.lang.Hash containing the method
+     *     owner, name, track and display, under the keys 'owner', 'name',
+     *     'track' and 'display', respectively
+     * @param {String} aName The method name to return method information for.
+     * @returns {TP.lang.Hash} The hash containing the method information as
+     *     described in the method comment.
+     */
+
+    var owner,
+        track,
+
+        existingMethod,
+
+        name,
+        display;
+
+    owner = this;
+    track = TP.LOCAL_TRACK;
+
+    if (!TP.isMethod(existingMethod = owner.getMethod(methodName, track))) {
+        return null;
+    }
+
+    name = existingMethod[TP.NAME];
+    display = existingMethod[TP.DISPLAY];
+
+    return TP.hc('owner', owner,
+                    'name', name,
+                    'track', track,
+                    'display', display);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.FunctionProto.defineMethod('getMethodInfoFor',
+function(methodName) {
+
+    /**
+     * @name getMethodInfoFor
+     * @synopsis Returns information for the method with the supplied name on
+     *     the receiver.
+     * @description This method returns a TP.lang.Hash containing the method
+     *     owner, name, track and display, under the keys 'owner', 'name',
+     *     'track' and 'display', respectively
+     * @param {String} aName The method name to return method information for.
+     * @returns {TP.lang.Hash} The hash containing the method information as
+     *     described in the method comment.
+     */
+
+    var owner,
+        track,
+
+        existingMethod,
+        name,
+        display;
+
+    //  If it's the TP.FunctionProto *directly* then we consider an instance
+    //  method of all Function objects.
+    if (this === TP.FunctionProto) {
+        owner = Function;
+        track = TP.INST_TRACK;
+    } else if (TP.isType(this)) {
+        //  If it is one of the 'Big 8' constructor Functions, then it's a
+        //  'type local' method.
+        owner = this;
+        track = TP.TYPE_LOCAL_TRACK;
+    } else {
+        //  Otherwise, it can be considered to be a 'local' method of the
+        //  receiving Function object (which is usually a plain, anonymous
+        //  Function).
+        owner = this;
+        track = TP.LOCAL_TRACK;
+    }
+
+    if (!TP.isMethod(existingMethod = owner.getMethod(methodName, track))) {
+        return null;
+    }
+
+    name = existingMethod[TP.NAME];
+
+    display = existingMethod[TP.DISPLAY];
+
+    return TP.hc('owner', owner,
+                    'name', name,
+                    'track', track,
+                    'display', display);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getMethodInfoFor',
+function(methodName) {
+
+    /**
+     * @name getMethodInfoFor
+     * @synopsis Returns information for the method with the supplied name on
+     *     the receiver.
+     * @description This method returns a TP.lang.Hash containing the method
+     *     owner, name, track and display, under the keys 'owner', 'name',
+     *     'track' and 'display', respectively
+     * @param {String} aName The method name to return method information for.
+     * @returns {TP.lang.Hash} The hash containing the method information as
+     *     described in the method comment.
+     */
+
+    var owner,
+        track,
+
+        existingMethod,
+        name,
+        display;
+
+    //  Note that we need to install the spy method on to 'owner', which might
+    //  not necessarily be 'this'...
+    if (TP.isPrototype(this)) {
+        owner = this[TP.OWNER];
+        track = TP.TYPE_TRACK;
+    } else {
+        owner = this;
+        track = TP.TYPE_LOCAL_TRACK;
+    }
+
+    if (!TP.isMethod(existingMethod = owner.getMethod(methodName, track))) {
+        return null;
+    }
+
+    name = existingMethod[TP.NAME];
+
+    display = existingMethod[TP.DISPLAY];
+
+    return TP.hc('owner', owner,
+                    'name', name,
+                    'track', track,
+                    'display', display);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('getMethodInfoFor',
+function(methodName) {
+
+    /**
+     * @name getMethodInfoFor
+     * @synopsis Returns information for the method with the supplied name on
+     *     the receiver.
+     * @description This method returns a TP.lang.Hash containing the method
+     *     owner, name, track and display, under the keys 'owner', 'name',
+     *     'track' and 'display', respectively
+     * @param {String} aName The method name to return method information for.
+     * @returns {TP.lang.Hash} The hash containing the method information as
+     *     described in the method comment.
+     */
+
+    var owner,
+        track,
+
+        existingMethod,
+        name,
+        display;
+
+    //  Note that we need to install the spy method on to 'owner', which might
+    //  not necessarily be 'this'...
+    if (TP.isPrototype(this)) {
+        owner = this[TP.OWNER];
+        track = TP.INST_TRACK;
+    } else {
+        owner = this;
+        track = TP.LOCAL_TRACK;
+    }
+
+    if (!TP.isMethod(existingMethod = owner.getMethod(methodName, track))) {
+        return null;
+    }
+
+    name = existingMethod[TP.NAME];
+
+    display = existingMethod[TP.DISPLAY];
+
+    return TP.hc('owner', owner,
+                    'name', name,
+                    'track', track,
+                    'display', display);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isGlobalMethod',
 function(anObj) {
 
