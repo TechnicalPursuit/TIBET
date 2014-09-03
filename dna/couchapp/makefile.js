@@ -166,7 +166,11 @@ targets.pushdb = function(make) {
 
     if (result.code !== 0) {
       make.log('push failed.');
-      targets.pushdb.reject(result.output);
+      if (/no_db_file/.test('' + result.output)) {
+        targets.pushdb.reject('Database not found. Use \'tibet createdb\'.');
+      } else {
+        targets.pushdb.reject(result.output);
+      }
       return;
     }
 
