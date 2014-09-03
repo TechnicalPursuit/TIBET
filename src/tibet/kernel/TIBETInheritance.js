@@ -7438,7 +7438,7 @@ function(target, name, track) {
 
     method = target[name];
     if (TP.isMethod(method)) {
-        if (TP.isEmpty(track) || (method[TP.TRACK] === track)) {
+        if (TP.notEmpty(track) && (method[TP.TRACK] === track)) {
             return method;
         }
     }
@@ -7471,7 +7471,7 @@ function(target, track) {
 
             method = target[name];
             if (TP.isMethod(method)) {
-                if (TP.isEmpty(track) || (method[TP.TRACK] === track)) {
+                if (TP.notEmpty(track) && (method[TP.TRACK] === track)) {
                     return method;
                 }
             }
