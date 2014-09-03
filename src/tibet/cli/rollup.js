@@ -57,6 +57,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  */
 Cmd.prototype.HELP =
 'Creates a minified and concatenated version of a package#config.\n\n' +
+
 'Output from this command is written to stdout for use in redirection.\n' +
 'By default the output is not minified, but it does it contain filename\n' +
 'data (aka \'headers\') to assist TIBET by providing file load metadata.\n\n' +
@@ -80,7 +81,9 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         string: ['package', 'config', 'include', 'exclude', 'phase'],
         default: {
             color: false,
-            headers: true
+            headers: true,
+            package: 'standard',
+            config: 'base'
         }
     },
     Parent.prototype.PARSE_OPTIONS);

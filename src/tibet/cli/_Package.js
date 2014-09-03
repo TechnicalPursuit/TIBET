@@ -428,6 +428,15 @@ Package.prototype.expandAll = function(aPath) {
         this.getcfg('boot.package') ||
         Package.PACKAGE);
 
+    // Default to ~app_cfg/{package}[.xml] as needed.
+    if (!this.isAbsolutePath(expanded)) {
+        expanded = path.join('~app_cfg', expanded);
+    }
+
+    if (/\.xml$/.test(expanded) !== true) {
+        expanded += '.xml';
+    }
+
     expanded = this.expandPath(expanded);
 
     this.pushPackage(expanded);
@@ -758,6 +767,16 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
     expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
         this.getcfg('boot.package') ||
         Package.PACKAGE);
+
+    // Default to ~app_cfg/{package}[.xml] as needed.
+    if (!this.isAbsolutePath(expanded)) {
+        expanded = path.join('~app_cfg', expanded);
+    }
+
+    if (/\.xml$/.test(expanded) !== true) {
+        expanded += '.xml';
+    }
+
     expanded = this.expandPath(expanded);
 
     this.pushPackage(expanded);
@@ -1648,22 +1667,32 @@ Package.prototype.isVirtualPath = function(aPath) {
  */
 Package.prototype.listAllAssets = function(aPath, aList) {
 
-    var path,
+    var expanded,
         configs,
         doc,
         result,
         pkg,
         msg;
 
-    path = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
+    expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
         this.getcfg('boot.package') ||
         Package.PACKAGE);
-    path = this.expandPath(path);
 
-    this.pushPackage(path);
+    // Default to ~app_cfg/{package}[.xml] as needed.
+    if (!this.isAbsolutePath(expanded)) {
+        expanded = path.join('~app_cfg', expanded);
+    }
+
+    if (/\.xml$/.test(expanded) !== true) {
+        expanded += '.xml';
+    }
+
+    expanded = this.expandPath(expanded);
+
+    this.pushPackage(expanded);
 
     try {
-        doc = this.packages[path];
+        doc = this.packages[expanded];
         if (notValid(doc)) {
             msg = 'Unable to list unexpanded package: ' + aPath;
             throw new Error(msg);
@@ -1686,7 +1715,7 @@ Package.prototype.listAllAssets = function(aPath, aList) {
         });
 
     } finally {
-        this.popPackage(path);
+        this.popPackage(expanded);
     }
 
     return result;
@@ -1866,22 +1895,32 @@ Package.prototype.listConfigAssets = function(anElement, aList, listAll) {
  */
 Package.prototype.listPackageAssets = function(aPath, aConfig, aList) {
 
-    var path,
+    var expanded,
         config,
         doc,
         node,
         result,
         msg;
 
-    path = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
+    expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
         this.getcfg('boot.package') ||
         Package.PACKAGE);
-    path = this.expandPath(path);
 
-    this.pushPackage(path);
+    // Default to ~app_cfg/{package}[.xml] as needed.
+    if (!this.isAbsolutePath(expanded)) {
+        expanded = path.join('~app_cfg', expanded);
+    }
+
+    if (/\.xml$/.test(expanded) !== true) {
+        expanded += '.xml';
+    }
+
+    expanded = this.expandPath(expanded);
+
+    this.pushPackage(expanded);
 
     try {
-        doc = this.packages[path];
+        doc = this.packages[expanded];
         if (notValid(doc)) {
             msg = 'Unable to list unexpanded package: ' + aPath;
             throw new Error(msg);
@@ -1910,7 +1949,7 @@ Package.prototype.listPackageAssets = function(aPath, aConfig, aList) {
         result = aList || [];
         this.listConfigAssets(node, result);
     } finally {
-        this.popPackage(path);
+        this.popPackage(expanded);
     }
 
     return result;
