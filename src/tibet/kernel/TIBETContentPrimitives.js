@@ -61,9 +61,9 @@ function() {
      * @name getJSONPIFrame
      * @synopsis Retrieves the iframe used to fetch and/or parse JSON results.
      * @description The iframe returned by this routine is created (once) if it
-     *     doesn't exist. It is used by the jsonpCall() to load the actual results
-     *     and then scrub it through a serialize/parse cycle to try to avoid
-     *     malformed/malicious JSON data.
+     *     doesn't exist. It is used by the jsonpCall() to load the actual
+     *     results and then scrub it through a serialize/parse cycle to try to
+     *     avoid malformed/malicious JSON data.
      * @returns {Element} The iframe element used to manage JSON data.
      */
 
