@@ -1974,6 +1974,8 @@ function(anObject, aComment) {
     //this.assert(TP.isActive(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be active.');
 
+    TP.todo();
+
     return;
 });
 
@@ -1985,6 +1987,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(TP.isBusy(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be busy.');
+
+    TP.todo();
 
     return;
 });
@@ -1998,6 +2002,8 @@ function(anObject, aComment) {
     //this.assert(TP.isClosed(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be closed.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2009,6 +2015,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(TP.isDisabled(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be disabled.');
+
+    TP.todo();
 
     return;
 });
@@ -2022,6 +2030,8 @@ function(anObject, aComment) {
     //this.assert(!TP.isDisabled(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be enabled.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2033,6 +2043,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(TP.isFocused(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be focused.');
+
+    TP.todo();
 
     return;
 });
@@ -2046,6 +2058,8 @@ function(anObject, aComment) {
     //this.assert(!TP.isActive(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be inactive.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2057,6 +2071,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(TP.isInvisible(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be invisible.');
+
+    TP.todo();
 
     return;
 });
@@ -2070,6 +2086,8 @@ function(anObject, aComment) {
     //this.assert(TP.isInvisible(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' not to be busy.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2081,6 +2099,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(!TP.isFocused(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be unfocused.');
+
+    TP.todo();
 
     return;
 });
@@ -2094,6 +2114,8 @@ function(anObject, aComment) {
     //this.assert(!TP.isReadonly(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be writable.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2105,6 +2127,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(!TP.isRelevant(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be irrelevant.');
+
+    TP.todo();
 
     return;
 });
@@ -2118,6 +2142,8 @@ function(anObject, aComment) {
     //this.assert(!TP.isRequired(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be unrequired.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2129,6 +2155,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(!TP.isSelected(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be unselected.');
+
+    TP.todo();
 
     return;
 });
@@ -2142,6 +2170,8 @@ function(anObject, aComment) {
     //this.assert(!TP.isClosed(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be open.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2153,6 +2183,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(TP.isReadonly(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be readonly.');
+
+    TP.todo();
 
     return;
 });
@@ -2166,6 +2198,8 @@ function(anObject, aComment) {
     //this.assert(TP.isRelevant(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be relevant.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2177,6 +2211,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(TP.isRequired(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be required.');
+
+    TP.todo();
 
     return;
 });
@@ -2190,6 +2226,8 @@ function(anObject, aComment) {
     //this.assert(TP.isSelected(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be selected.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2201,6 +2239,8 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(!TP.isInvisible(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be visible.');
+
+    TP.todo();
 
     return;
 });
@@ -2226,6 +2266,8 @@ function(anObject, aComment) {
     //this.assert(TP.notValid(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to have invalid input.');
 
+    TP.todo();
+
     return;
 });
 
@@ -2248,6 +2290,10 @@ function(anObject, aComment) {
     //this.assert(!TP.notValid(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to have valid input.');
 
+    TP.todo();
+
+    return;
+});
     return;
 });
 
