@@ -149,6 +149,9 @@ function(methodName, methodBody) {
                 retVal = methodBody.apply(this, arguments);
             } catch (e) {
                 this.get('currentTestCase').error(e);
+
+                //  Make sure to rethrow the Error so that handlers 'higher up'
+                //  will also catch it.
                 throw e;
             }
 
