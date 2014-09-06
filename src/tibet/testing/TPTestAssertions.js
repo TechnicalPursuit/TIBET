@@ -398,7 +398,7 @@ function(anObject, anAttributeName, aComment) {
 
     this.assert(
         TP.isProperty(anObject, anAttributeName) &&
-            !TP.isMethod(anObject, anAttributeName),
+            !TP.isMethod(anObject[anAttributeName]),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an attribute.'));
 
