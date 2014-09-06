@@ -392,12 +392,13 @@ function(anObject, aComment) {
 //  ------------------------------------------------------------------------
 
 TP.test.TestMethodCollection.defineAssertion('isAttribute',
-function(anObject, aComment) {
+function(anObject, anAttributeName, aComment) {
 
     this.assertMinArguments(arguments, 1);
 
     this.assert(
-        TP.isProperty(anObject) && !TP.isMethod(anObject),
+        TP.isProperty(anObject, anAttributeName) &&
+            !TP.isMethod(anObject, anAttributeName),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an attribute.'));
 

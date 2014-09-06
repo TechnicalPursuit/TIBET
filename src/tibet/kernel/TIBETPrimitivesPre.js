@@ -7774,15 +7774,15 @@ function(anObj) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('isProperty',
-function(anObj) {
+function(anObj, propName) {
 
     /**
      * @name isProperty
      * @synopsis Returns true if the object provided is a valid property. A
      *     valid property is a property which is defined but not a DNU
      *     (DoesNotUnderstand) method. Note the syntax is typically
-     *     TP.isProperty(someObj[someProperty]) so what we typically get here is
-     *     undefined or a real value
+     *     TP.isProperty(someObj, 'someProperty') so what we typically get here
+     *     is undefined or a real value
      * @param {Object} anObj The Object to test.
      * @returns {Boolean} Whether or not the supplied object is a property (that
      *     is a defined 'slot', but not a DNU).
@@ -7790,17 +7790,17 @@ function(anObj) {
 
     //  note that we don't consider a null to be a false condition here, in
     //  fact, a null implies that a value was set at some point
-    if (anObj === undefined) {
+    if (anObj[propName] === undefined) {
         return false;
     }
 
     //  The slot might have been set to 'null'.
-    if (anObj === null) {
+    if (anObj[propName] === null) {
         return true;
     }
 
     //  make sure we don't try to get $$dnu from a null
-    return !TP.$$isDNU(anObj);
+    return !TP.$$isDNU(anObj[propName]);
 });
 
 //  ------------------------------------------------------------------------
