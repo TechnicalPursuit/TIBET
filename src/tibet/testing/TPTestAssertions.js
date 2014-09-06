@@ -394,7 +394,7 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isAttribute',
 function(anObject, anAttributeName, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    this.assertMinArguments(arguments, 2);
 
     this.assert(
         TP.isProperty(anObject, anAttributeName) &&
@@ -482,15 +482,32 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.TestMethodCollection.defineAssertion('isProperty',
-function(anObject, aComment) {
+TP.test.TestMethodCollection.defineAssertion('isOwnProperty',
+function(anObject, aPropertyName, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    this.assertMinArguments(arguments, 2);
 
     this.assert(
-        TP.isProperty(anObject),
+        TP.isOwnProperty(anObject, aPropertyName),
         aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a property.'));
+        TP.sc('Expected ', TP.id(anObject), ' to have an "own" property of:',
+                aPropertyName, '.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.TestMethodCollection.defineAssertion('isProperty',
+function(anObject, aPropertyName, aComment) {
+
+    this.assertMinArguments(arguments, 2);
+
+    this.assert(
+        TP.isProperty(anObject, aPropertyName),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to have a property of:',
+                aPropertyName, '.'));
 
     return;
 });
@@ -868,7 +885,7 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
 
     this.assert(
-        !anObject,
+        TP.isFalsey(anObject),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be false-like.'));
 
@@ -928,7 +945,7 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
 
     this.assert(
-        anObject,
+        TP.isTruthy(anObject),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be true-like.'));
 

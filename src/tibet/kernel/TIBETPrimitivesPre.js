@@ -7280,6 +7280,36 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isFalsey',
+function(aValue) {
+
+    /**
+     * @name isFalsey
+     * @synopsis Return true if the argument is considered to be 'falsey',
+     *     according to JavaScript rules.
+     * @param {Object} aValue The value to test.
+     * @example Test to see if anObj is falsey:
+     *     <code>
+     *          if (TP.isFalsey('')) { TP.alert('its false'); };
+     *     </code>
+     * @returns {Boolean} True if aValue is a 'falsey' value.
+     */
+
+    if (aValue === false ||
+        aValue === '' ||
+        aValue === 0 ||
+        aValue === undefined ||
+        aValue === null ||
+        TP.isNaN(aValue)) {
+
+            return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isTrue',
 function(aValue) {
 
@@ -7308,6 +7338,26 @@ function(aValue) {
     }
 
     return (TP.isBoolean(aValue) && (aValue.valueOf() === true));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('isTruthy',
+function(aValue) {
+
+    /**
+     * @name isTruthy
+     * @synopsis Return true if the argument is considered to be 'truthy',
+     *     according to JavaScript rules.
+     * @param {Object} aValue The value to test.
+     * @example Test to see if anObj is truthy:
+     *     <code>
+     *          if (TP.isTruthy('hi')) { TP.alert('its true'); };
+     *     </code>
+     * @returns {Boolean} True if aValue is a 'truthy' value.
+     */
+
+    return !TP.isFalsey(aValue);
 });
 
 //  ------------------------------------------------------------------------
@@ -7801,6 +7851,25 @@ function(anObj, propName) {
 
     //  make sure we don't try to get $$dnu from a null
     return !TP.$$isDNU(anObj[propName]);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('isOwnProperty',
+function(anObj, propName) {
+
+    /**
+     * @name isOwnProperty
+     * @synopsis Returns true if the object provided is a valid property *and
+     *     which the supplied object owns* (i.e. has a local value). See
+     *     TP.isProperty() for more on what constitutes a valid property.
+     * @param {Object} anObj The Object to test.
+     * @returns {Boolean} Whether or not the supplied object is a property (that
+     *     is a defined 'slot', but not a DNU) and which the supplied object has
+     *     it's own local value.
+     */
+
+    return TP.isProperty(anObj, propName) && TP.owns(anObj, propName);
 });
 
 //  ------------------------------------------------------------------------
