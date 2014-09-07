@@ -1820,5 +1820,225 @@ function(options) {
 });
 
 //  ------------------------------------------------------------------------
+//  TP.lang.RootObject - METHOD CHAINS
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineAttribute('$$methodChainNames');
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('$installMethodChain',
+function(stepNames, endName) {
+
+    /**
+     * @name $installMethodChain
+     * @synopsis Sets up a 'traversal chain', such that an instance of the
+     *     receiver will respond to '.foo.bar()' as if '.bar()' was invoked. The
+     *     'chain' of names used to invoke '.bar()' will be available under the
+     *     private '$$methodChainNames' instance attribute.
+     * @param {Array} stepNames The names of the individual 'steps' that can be
+     *     used in a traversal chain to get to the method named by 'endName'.
+     * @param {String} endName The name of the method that will invoked at the
+     *     'end' of the chain.
+     * @returns {Object} The receiver.
+     */
+
+    var proto,
+        endMethod,
+
+        i,
+        chainMethod;
+
+    proto = this[TP.INSTC].prototype;
+
+    //  The 'endMethod' is the one that will be called at the 'end' of our
+    //  traversal chain.
+    endMethod = proto[endName];
+
+    for (i = 0; i < stepNames.getSize(); i++) {
+
+        //  The first step is to install a getter on the instance prototype that
+        //  we captured above for each step name provided. This allows the chain
+        //  to start from the receiving object with any of the step names
+        //  provided.
+
+        //  First, capture the method - make sure it's a callable property.
+        if (!TP.isCallable(chainMethod = proto[stepNames.at(i)])) {
+            continue;
+        }
+
+        //  We wrap this entire chunk that installs an ECMAE5 getter on the
+        //  prototype in an anonymous function to leverage closure behavior
+        //  around the 'startGetter'.
+        (function () {
+            var startGetter;
+
+            //  Write a getter that resets the $$methodChainNames array, sets
+            //  the '$realThis' property to be used 'down the chain' and returns
+            //  the existing method.
+            startGetter =
+                function () {
+
+                    this.set('$$methodChainNames', TP.ac(startGetter.theName));
+                    startGetter.realMethod.$realThis = this;
+
+                    return startGetter.realMethod;
+                };
+
+            startGetter.theName = stepNames.at(i);
+            startGetter.realMethod = chainMethod;
+
+            Object.defineProperty(
+                    proto,
+                    stepNames.at(i),
+                    {
+                        get: startGetter
+                    });
+        })();
+
+        //  The second step is to install a getter on the Function object itself
+        //  (and which is the method on the initial receiving object) which will
+        //  return the receiving object's Function object corresponding to the
+        //  named method.
+        //      E.g. Assume, that 'myObj' comes with a 'bar' method and a step
+        //      name is 'foo' - this getter will instrument the *Function*
+        //      object which is myObj's 'foo' method with a getter under the
+        //      name 'bar', such that accessing: myObj.foo.bar will be the same
+        //      as accessing myObj.bar.
+
+        //  We wrap this entire chunk that installs an ECMAE5 getter on the
+        //  prototype in an anonymous function to leverage closure behavior
+        //  around the 'stepGetter'.
+        (function () {
+            var stepGetter;
+
+            //  Build a getter that will instrument the proper properties on the
+            //  'real method' that it's standing in for (i.e. the 'this'
+            //  property and it's name) and a bit of code to maintain the 'chain
+            //  names' on the 'real receiving object' as we traverse so that the
+            //  'end method' can access that upon invocation to see 'how it got
+            //  here' (i.e. the names used in the traversal chain).
+            stepGetter =
+                function () {
+                    var ourMethod,
+                        chainNames;
+
+                    ourMethod = stepGetter.realMethod;
+                    ourMethod.theName = stepGetter.theName;
+                    ourMethod.$realThis = this.$realThis;
+
+                    if (TP.isArray(chainNames =
+                            this.$realThis.get('$$methodChainNames'))) {
+                        chainNames.push(stepGetter.theName);
+                    }
+
+                    return ourMethod;
+                };
+
+            stepGetter.theName = endName;
+            stepGetter.realMethod = endMethod;
+
+            Object.defineProperty(
+                    chainMethod,
+                    endName,
+                    {
+                        get: stepGetter
+                    });
+        })();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('setupMethodChains',
+function(methodInfoDict) {
+
+    /**
+     * @name setupMethodChains
+     * @synopsis Sets up method chains per the supplied dictionary.
+     * @description The supplied dictionary should supply the 'end name' as a
+     *     key with an Array of the 'valid steps' that can be taken to get to
+     *     that 'end'.
+     *     E.g. An info dict of:
+     *         TP.hc('baz', TP.ac('foo','bar'), 'foo', TP.ac('not'))
+     *     installs a method chain of 'foo.baz' and 'bar.baz'. Note that
+     *     'multiple paths' to a end can be constructed. The info dict above
+     *     allows for both 'foo.baz' and 'not.foo.baz'.
+     * @param {TP.lang.Hash} methodInfoDict A dictionary of method information
+     *     used by this method to construct 'method chains'.
+     * @returns {Object} The receiver.
+     */
+
+    var proto,
+        thisArg,
+
+        endNames,
+        endName,
+
+        i;
+
+    proto = this[TP.INSTC].prototype;
+
+    thisArg = this;
+
+    endNames = methodInfoDict.getKeys();
+
+    //  Loop over the end names and install a getter method 'around' the method
+    //  that will clear the '$realThis' slot from the method Function object (to
+    //  avoid endless recursions) and invoke the 'original method' using the
+    //  '$realThis' that was passed down the chain.
+    for (i = 0; i < endNames.getSize(); i++) {
+
+        endName = endNames.at(i);
+
+        //  We wrap this entire chunk that installs an ECMAE5 getter on the
+        //  prototype in an anonymous function to leverage closure behavior
+        //  around 'originalEndMethod' and 'endMethod'.
+        (function () {
+            var originalEndMethod,
+                endMethod;
+
+            //  There very well may not be an 'original method' on the object,
+            //  since many times chains are made up of 'filler' property names
+            //  (i.e. in a test framework - this.expect(2).to.be.a(Number) -
+            //  'to' and 'be' are just property 'fillers' to make it 'read
+            //  easier'). If there is no real method, then just use
+            //  TP.RETURN_THIS.
+            if (!TP.isCallable(originalEndMethod = proto[endName])) {
+                originalEndMethod = TP.RETURN_THIS;
+            }
+
+            endMethod = function () {
+                var theThis;
+
+                if (TP.isValid(theThis = endMethod.$realThis)) {
+                    endMethod.$realThis = null;
+                    return originalEndMethod.apply(theThis, arguments);
+                }
+            };
+
+            //  Add the new, wrapper, end method.
+            thisArg.Inst.defineMethod(endName, endMethod);
+        }());
+    }
+
+    //  Now that the wrapper methods have been installed, go ahead and set up
+    //  the method chain for each end name. **NOTE** We *have* to do this in a
+    //  separate loop to avoid problems with chain getters getting installed on
+    //  the *original* end methods above and not the *wrapper* end methods that
+    //  we install. So *THESE TWO LOOPS CANNOT BE COMBINED*.
+    for (i = 0; i < endNames.getSize(); i++) {
+
+        endName = endNames.at(i);
+
+        this.$installMethodChain(methodInfoDict.at(endName), endName);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
