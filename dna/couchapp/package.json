@@ -18,7 +18,7 @@
     "morgan": "*",
     "phantomjs": "*",
     "serve-static": "*",
-    "shelljs": "*",
+    "shelljs": "TechnicalPursuit/shelljs",
     "shelljs-nodecli": "*",
     "tibet": "*",
     "watch": "*"

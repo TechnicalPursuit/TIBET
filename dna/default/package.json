@@ -16,7 +16,7 @@
     "morgan": "*",
     "phantomjs": "*",
     "serve-static": "*",
-    "shelljs": "*",
+    "shelljs": "TechnicalPursuit/shelljs",
     "tibet": "*",
     "watch": "*"
   },

@@ -59,7 +59,7 @@
         "pouchdb": "TechnicalPursuit/pouchdb",
         "q": "TechnicalPursuit/q#v1",
         "readline-sync": "*",
-        "shelljs": "*",
+        "shelljs": "TechnicalPursuit/shelljs",
         "shelljs-nodecli": "*",
         "sinon": "TechnicalPursuit/Sinon.JS",
         "syn": "TechnicalPursuit/syn",
