@@ -6606,8 +6606,8 @@ function(methodInfoDict) {
      * @name setupMethodChains
      * @synopsis Sets up method chains per the supplied dictionary.
      * @description The supplied dictionary should supply the 'end name' as a
-     * key with an Array of the 'valid steps' that can be taken to get to that
-     * 'end'.
+     *     key with an Array of the 'valid steps' that can be taken to get to
+     *     that 'end'.
      *     E.g. An info dict of:
      *         TP.hc('baz', TP.ac('foo','bar'), 'foo', TP.ac('not'))
      *     installs a method chain of 'foo.baz' and 'bar.baz'. Note that
@@ -6647,7 +6647,15 @@ function(methodInfoDict) {
             var originalEndMethod,
                 endMethod;
 
-            originalEndMethod = proto[endName];
+            //  There very well may not be an 'original method' on the object,
+            //  since many times chains are made up of 'filler' property names
+            //  (i.e. in a test framework - this.expect(2).to.be.a(Number) -
+            //  'to' and 'be' are just property 'fillers' to make it 'read
+            //  easier'). If there is no real method, then just use
+            //  TP.RETURN_THIS.
+            if (!TP.isCallable(originalEndMethod = proto[endName])) {
+                originalEndMethod = TP.RETURN_THIS;
+            }
 
             endMethod = function () {
                 var theThis;
