@@ -355,7 +355,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
     //  bypass warning for "internal" since we assume these are very
     //  explicit and can often be "demand driven" to avoid exposure
-    if (!TP.isProperty(oldVal) &&
+    if (!TP.isProperty(this, attributeName) &&
         !TP.regex.INTERNAL_SLOT.test(attributeName)) {
         TP.ifWarn() ?
             TP.warn(TP.join(TP.sc('Setting undeclared attribute: '),
@@ -1417,7 +1417,7 @@ function() {
     for (i = 0; i < arguments.length; i = i + 2) {
         //  NOTE:   by putting this inside a test we will not replace
         //          existing properties -- either attributes or methods.
-        if (!TP.isProperty(newinst[arguments[i]])) {
+        if (!TP.isProperty(newinst, arguments[i])) {
             newinst[arguments[i]] =
                     TP.notDefined(arguments[i + 1]) ? null : arguments[i + 1];
         } else {

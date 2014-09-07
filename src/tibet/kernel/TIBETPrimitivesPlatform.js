@@ -367,8 +367,8 @@ TP.hc(
 
         try {
             return (TP.isValid(anObj) &&
-                    TP.isProperty(anObj.responseText) &&
-                    TP.isProperty(anObj.responseXML));
+                    TP.isProperty(anObj, 'responseText') &&
+                    TP.isProperty(anObj, 'responseXML'));
         } catch (e) {
         }
 
@@ -389,7 +389,7 @@ TP.hc(
 
         try {
             return TP.isValid(anObj) &&
-                    TP.isProperty(anObj.responseText) &&
+                    TP.isProperty(anObj, 'responseText') &&
                     typeof anObj.send === 'function';
         } catch (e) {
         }
@@ -1214,7 +1214,7 @@ TP.hc(
 
             results,
             i,
-            
+
             entry;
 
         entries = null;

@@ -16,69 +16,69 @@ function() {
 
     this.it('Simple TIBET path', function(test, options) {
         path = TP.apc('foo');
-        test.assert.isKindOf(path, TP.core.SimpleTIBETPath);
+        this.assert.isKindOf(path, TP.core.SimpleTIBETPath);
 
         path = TP.apc('1');
-        test.assert.isKindOf(path, TP.core.SimpleTIBETPath);
+        this.assert.isKindOf(path, TP.core.SimpleTIBETPath);
     });
 
     this.it('Complex TIBET path', function(test, options) {
         path = TP.apc('foo.hi');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('foo.hi.boo');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('2.1');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('2.1.2');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('foo.hi.[boo,moo]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('foo.hi.[boo,moo].gar');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('2.[1,2]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[0:2]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[:2]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[2:]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[:-2]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[2:-1]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[1:6:2]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[6:1:-2]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('foo.1');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[0,2].fname');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('0.aliases.[1:2]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('0.aliases.[:-1]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('3.1.[1:4]');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
     });
 });
 
@@ -91,88 +91,88 @@ function() {
 
     this.it('XPath path', function(test, options) {
         path = TP.apc('/author');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./author');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/author/lname');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/author/lname|/author/fname');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/author/lname@foo');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/author/lname@foo|/author/fname@baz');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('//*');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('//author');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('.//author');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('book[/bookstore/@specialty=@style]');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('author/*');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('author/first-name');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('bookstore//title');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('bookstore/*/title');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('*/*');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/bookstore//book/excerpt//author');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./*[@foo]');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./@foo');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('bookstore/@foo');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('bookstore/@foo/bar');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./bookstore[name][2]');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('@*');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('@foo:*');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('*/bar[@foo]');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/goo/bar[@foo]');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('/goo/bar[@foo="baz"]');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('//foo[text()=../../following-sibling::*//foo/text()]');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('./foo:*');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
     });
 });
 
@@ -185,94 +185,94 @@ function() {
 
     this.it('CSSPath path', function(test, options) {
         path = TP.apc('*');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         /*
         Won't work because of 'barename path' check (although it produces the
         same result)
 
         path = TP.apc('#id');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
         */
 
         /*
         Won't work because of 'TIBET path' check
 
         path = TP.apc('mytag');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
         */
 
         path = TP.apc('.myclass');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         /*
         Won't work because of 'barename path' check (although it produces the
         same result)
 
         path = TP.apc('#id.myclass');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
         */
 
         /*
         Won't work because of 'TIBET path' check
 
         path = TP.apc('mytag.myclass');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
         */
 
         path = TP.apc('mytag mytag');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('myns|*');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('myns|mytag');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('.myclass .myclass');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('.myclass.myclass');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag:visited');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag + mysibling');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('myparent > mytag');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag ~ mysibling');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr]');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr="myval"]');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr*="myval"]');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr^="myval"]');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr$="myval"]');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr~="myval"]');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr|="myval"]');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag:not([myattr])');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
 
         path = TP.apc('mytag[myattr="myval"][myattr^="myval"]');
-        test.assert.isKindOf(path, TP.core.CSSPath);
+        this.assert.isKindOf(path, TP.core.CSSPath);
     });
 });
 
@@ -285,24 +285,24 @@ function() {
 
     this.it('Simple TIBET path', function(test, options) {
         path = TP.apc('#tibet(foo)');
-        test.assert.isKindOf(path, TP.core.SimpleTIBETPath);
+        this.assert.isKindOf(path, TP.core.SimpleTIBETPath);
 
         path = TP.apc('#tibet(1)');
-        test.assert.isKindOf(path, TP.core.SimpleTIBETPath);
+        this.assert.isKindOf(path, TP.core.SimpleTIBETPath);
     });
 
     this.it('Complex TIBET path', function(test, options) {
         path = TP.apc('#tibet(foo.hi)');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('#tibet(foo.hi.boo)');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('#tibet(2.1)');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('#tibet(2.1.2)');
-        test.assert.isKindOf(path, TP.core.ComplexTIBETPath);
+        this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
     });
 });
 
@@ -315,25 +315,25 @@ function() {
 
     this.it('XPath path', function(test, options) {
         path = TP.apc('#xpath1(/emp)');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(./emp)');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(/emp/lname)');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(/emp/lname|/emp/fname)');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(/emp/lname@foo)');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(/emp/lname@foo|/emp/fname@baz)');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(//*)');
-        test.assert.isKindOf(path, TP.core.XPathPath);
+        this.assert.isKindOf(path, TP.core.XPathPath);
     });
 });
 
@@ -346,61 +346,61 @@ function() {
 
     this.it('CSS path', function(test, options) {
         path = TP.apc('#css(*)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(.myclass)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag mytag)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(myns|*)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(myns|mytag)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(.myclass .myclass)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag:visited)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag + mysibling)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(myparent > mytag)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag ~ mysibling)');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr])');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr="myval"])');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr*="myval"])');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr^="myval"])');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr$="myval"])');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr~="myval"])');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr|="myval"])');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag:not([myattr]))');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr="myval"][myattr^="myval"])');
-        test.assert.isKindOf(path, TP.core.XTensionPath);
+        this.assert.isKindOf(path, TP.core.XTensionPath);
     });
 });
 
@@ -429,7 +429,7 @@ function() {
 
         val = singleLevelPath.executeGet(singleLevelModel);
 
-        test.assert.equalTo(val, 'there');
+        this.assert.equalTo(val, 'there');
     });
 
     this.it('single level set', function(test, options) {
@@ -441,7 +441,7 @@ function() {
         //  validation of 'path' execution code.
         val = singleLevelModel.at('foo').at('hi');
 
-        test.assert.equalTo(val, 'folks');
+        this.assert.equalTo(val, 'folks');
     });
 
     this.it('multiple level get', function(test, options) {
@@ -449,7 +449,7 @@ function() {
 
         val = multiLevelPath.executeGet(multiLevelModel);
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
     });
 
     this.it('multiple level set', function(test, options) {
@@ -461,7 +461,7 @@ function() {
         //  validation of 'path' execution code.
         val = multiLevelModel.at('foo').at('hi').at('boo');
 
-        test.assert.equalTo(val, 'foofy');
+        this.assert.equalTo(val, 'foofy');
     });
 });
 
@@ -490,7 +490,7 @@ function() {
 
         val = singleLevelPath.executeGet(singleLevelModel);
 
-        test.assert.equalTo(val, 'b');
+        this.assert.equalTo(val, 'b');
     });
 
     this.it('single level set', function(test, options) {
@@ -502,7 +502,7 @@ function() {
         //  validation of 'path' execution code.
         val = singleLevelModel.at(2).at(1);
 
-        test.assert.equalTo(val, 'z');
+        this.assert.equalTo(val, 'z');
     });
 
     this.it('multiple level get', function(test, options) {
@@ -510,7 +510,7 @@ function() {
 
         val = multiLevelPath.executeGet(multiLevelModel);
 
-        test.assert.equalTo(val, '8');
+        this.assert.equalTo(val, '8');
     });
 
     this.it('multiple level set', function(test, options) {
@@ -522,7 +522,7 @@ function() {
         //  validation of 'path' execution code.
         val = multiLevelModel.at(2).at(1).at(2);
 
-        test.assert.equalTo(val, '9');
+        this.assert.equalTo(val, '9');
     });
 });
 
@@ -552,7 +552,7 @@ function() {
 
         val = tailResultsPath.executeGet(tailResultsModel);
 
-        test.assert.equalTo(val, TP.ac('goo', 'too'));
+        this.assert.equalTo(val, TP.ac('goo', 'too'));
     });
 
     this.it('tail results set', function(test, options) {
@@ -564,11 +564,11 @@ function() {
         //  validation of 'path' execution code.
         val = tailResultsModel.at('foo').at('hi').at('boo');
 
-        test.assert.equalTo(val, 'zoo');
+        this.assert.equalTo(val, 'zoo');
 
         val = tailResultsModel.at('foo').at('hi').at('moo');
 
-        test.assert.equalTo(val, 'zoo');
+        this.assert.equalTo(val, 'zoo');
     });
 
     this.it('middle results get', function(test, options) {
@@ -576,7 +576,7 @@ function() {
 
         val = middleResultsPath.executeGet(middleResultsModel);
 
-        test.assert.equalTo(val, TP.ac('bar', 'tar'));
+        this.assert.equalTo(val, TP.ac('bar', 'tar'));
     });
 
     this.it('middle results set', function(test, options) {
@@ -588,11 +588,11 @@ function() {
         //  validation of 'path' execution code.
         val = middleResultsModel.at('foo').at('hi').at('boo').at('gar');
 
-        test.assert.equalTo(val, 'car');
+        this.assert.equalTo(val, 'car');
 
         val = middleResultsModel.at('foo').at('hi').at('moo').at('gar');
 
-        test.assert.equalTo(val, 'car');
+        this.assert.equalTo(val, 'car');
     });
 });
 
@@ -621,7 +621,7 @@ function() {
 
         val = tailResultsPath.executeGet(tailResultsModel);
 
-        test.assert.equalTo(val, TP.ac(TP.ac('6', '7', '8'), 'c'));
+        this.assert.equalTo(val, TP.ac(TP.ac('6', '7', '8'), 'c'));
     });
 
     this.it('tail results set', function(test, options) {
@@ -634,11 +634,11 @@ function() {
         //  validation of 'path' execution code.
         val = tailResultsModel.at(2).at(1);
 
-        test.assert.equalTo(val, TP.ac('4', '5', '6'));
+        this.assert.equalTo(val, TP.ac('4', '5', '6'));
 
         val = tailResultsModel.at(2).at(2);
 
-        test.assert.equalTo(val, TP.ac('4', '5', '6'));
+        this.assert.equalTo(val, TP.ac('4', '5', '6'));
     });
 
     this.it('middle results get', function(test, options) {
@@ -646,7 +646,7 @@ function() {
 
         val = middleResultsPath.executeGet(middleResultsModel);
 
-        test.assert.equalTo(val, TP.ac('6', '6'));
+        this.assert.equalTo(val, TP.ac('6', '6'));
     });
 
     this.it('middle results set', function(test, options) {
@@ -658,11 +658,11 @@ function() {
         //  validation of 'path' execution code.
         val = middleResultsModel.at(2).at(1).at(2);
 
-        test.assert.equalTo(val, 'hi');
+        this.assert.equalTo(val, 'hi');
 
         val = middleResultsModel.at(2).at(2).at(2);
 
-        test.assert.equalTo(val, 'hi');
+        this.assert.equalTo(val, 'hi');
     });
 });
 
@@ -685,7 +685,7 @@ function() {
         path = TP.apc('[0:2]');
         val = path.executeGet(slicingResultsModel);
 
-        test.assert.equalTo(val, TP.ac('one', 'two'));
+        this.assert.equalTo(val, TP.ac('one', 'two'));
     });
 
     this.it('slicing get #2', function(test, options) {
@@ -695,7 +695,7 @@ function() {
         path = TP.apc('[:2]');
         val = path.executeGet(slicingResultsModel);
 
-        test.assert.equalTo(val, TP.ac('one', 'two'));
+        this.assert.equalTo(val, TP.ac('one', 'two'));
     });
 
     this.it('slicing get #3', function(test, options) {
@@ -705,7 +705,7 @@ function() {
         path = TP.apc('[2:]');
         val = path.executeGet(slicingResultsModel);
 
-        test.assert.equalTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37, 'hi'));
+        this.assert.equalTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37, 'hi'));
     });
 
     this.it('slicing get #4', function(test, options) {
@@ -715,7 +715,7 @@ function() {
         path = TP.apc('[-2:]');
         val = path.executeGet(slicingResultsModel);
 
-        test.assert.equalTo(val, TP.ac(37, 'hi'));
+        this.assert.equalTo(val, TP.ac(37, 'hi'));
     });
 
     this.it('slicing get #5', function(test, options) {
@@ -725,7 +725,7 @@ function() {
         path = TP.apc('[:-2]');
         val = path.executeGet(slicingResultsModel);
 
-        test.assert.equalTo(val, TP.ac('one', 'two', TP.ac('a', TP.ac('6','7','8'), 'c')));
+        this.assert.equalTo(val, TP.ac('one', 'two', TP.ac('a', TP.ac('6','7','8'), 'c')));
     });
 
     this.it('slicing get #6', function(test, options) {
@@ -735,7 +735,7 @@ function() {
         path = TP.apc('[2:-1]');
         val = path.executeGet(slicingResultsModel);
 
-        test.assert.equalTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37));
+        this.assert.equalTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37));
     });
 
     this.it('slicing get #7', function(test, options) {
@@ -745,7 +745,7 @@ function() {
         path = TP.apc('[1:6:2]');
         val = path.executeGet(slicingResultsModel);
 
-        test.assert.equalTo(val, TP.ac('two', 37));
+        this.assert.equalTo(val, TP.ac('two', 37));
     });
 
     this.it('slicing get #8', function(test, options) {
@@ -755,7 +755,7 @@ function() {
         path = TP.apc('[6:1:-2]');
         val = path.executeGet(slicingResultsModel);
 
-        test.assert.equalTo(val, TP.ac(undefined, 37));
+        this.assert.equalTo(val, TP.ac(undefined, 37));
     });
 });
 
@@ -783,7 +783,7 @@ function() {
 
         val = singleLevelPath.executeGet(singleLevelModel);
 
-        test.assert.equalTo(val, '2nd');
+        this.assert.equalTo(val, '2nd');
     });
 
     this.it('single level set', function(test, options) {
@@ -795,7 +795,7 @@ function() {
         //  validation of 'path' execution code.
         val = singleLevelModel.at('foo').at(1);
 
-        test.assert.equalTo(val, '3rd');
+        this.assert.equalTo(val, '3rd');
     });
 
     this.it('multiple level get', function(test, options) {
@@ -803,7 +803,7 @@ function() {
 
         val = multiLevelPath.executeGet(multiLevelModel);
 
-        test.assert.equalTo(val, 'there');
+        this.assert.equalTo(val, 'there');
     });
 
     this.it('multiple level set', function(test, options) {
@@ -815,7 +815,7 @@ function() {
         //  validation of 'path' execution code.
         val = multiLevelModel.at('foo').at('2').at('hi');
 
-        test.assert.equalTo(val, 'boo boo');
+        this.assert.equalTo(val, 'boo boo');
     });
 });
 
@@ -851,7 +851,7 @@ function() {
 
         val = path1.executeGet(model1);
 
-        test.assert.equalTo(val, 'bill');
+        this.assert.equalTo(val, 'bill');
     });
 
     this.it('tail results set', function(test, options) {
@@ -863,7 +863,7 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at('0').at('fname');
 
-        test.assert.equalTo(val, 'William');
+        this.assert.equalTo(val, 'William');
     });
 
     this.it('middle results get', function(test, options) {
@@ -871,7 +871,7 @@ function() {
 
         val = path2.executeGet(model1);
 
-        test.assert.equalTo(val, TP.ac('William', 'jim'));
+        this.assert.equalTo(val, TP.ac('William', 'jim'));
     });
 
     this.it('middle results single value set', function(test, options) {
@@ -883,11 +883,11 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at(0).at('fname');
 
-        test.assert.equalTo(val, 'William');
+        this.assert.equalTo(val, 'William');
 
         val = model1.at(2).at('fname');
 
-        test.assert.equalTo(val, 'William');
+        this.assert.equalTo(val, 'William');
     });
 
     this.it('middle results multi value set', function(test, options) {
@@ -899,11 +899,11 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at(0).at('fname');
 
-        test.assert.equalTo(val, TP.ac('Willy', 'Jimmy'));
+        this.assert.equalTo(val, TP.ac('Willy', 'Jimmy'));
 
         val = model1.at(2).at('fname');
 
-        test.assert.equalTo(val, TP.ac('Willy', 'Jimmy'));
+        this.assert.equalTo(val, TP.ac('Willy', 'Jimmy'));
     });
 
     this.it('tail results slicing get', function(test, options) {
@@ -911,7 +911,7 @@ function() {
 
         val = path3.executeGet(model1, true);
 
-        test.assert.equalTo(val, TP.ac('willy'));
+        this.assert.equalTo(val, TP.ac('willy'));
     });
 
     this.it('tail results slicing set', function(test, options) {
@@ -923,7 +923,7 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at('0').at('aliases').at(1);
 
-        test.assert.equalTo(val, TP.ac('willy', 'jimmy'));
+        this.assert.equalTo(val, TP.ac('willy', 'jimmy'));
     });
 
     this.it('tail results multi-value slicing get', function(test, options) {
@@ -931,7 +931,7 @@ function() {
 
         val = path4.executeGet(model1, true);
 
-        test.assert.equalTo(val, TP.ac('billy', TP.ac('willy', 'jimmy')));
+        this.assert.equalTo(val, TP.ac('billy', TP.ac('willy', 'jimmy')));
     });
 
     this.it('tail results multi-value slicing set', function(test, options) {
@@ -943,11 +943,11 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at('0').at('aliases').at(0);
 
-        test.assert.equalTo(val, TP.ac('bobby', 'jimmy'));
+        this.assert.equalTo(val, TP.ac('bobby', 'jimmy'));
 
         val = model1.at('0').at('aliases').at(1);
 
-        test.assert.equalTo(val, TP.ac('bobby', 'jimmy'));
+        this.assert.equalTo(val, TP.ac('bobby', 'jimmy'));
     });
 });
 
@@ -977,7 +977,7 @@ function() {
 
         val = model1.at('bar');
 
-        test.refute.isDefined(val);
+        this.refute.isDefined(val);
     });
 
     this.it('single level set with creation', function(test, options) {
@@ -993,7 +993,7 @@ function() {
 
         val = model1.at('bar').at('moo');
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
     });
 
     this.it('multi level set without creation', function(test, options) {
@@ -1013,11 +1013,11 @@ function() {
 
         val = model1.at('bar').at('moo');
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
 
         val = model1.at('bar').at('too');
 
-        test.refute.isDefined(val);
+        this.refute.isDefined(val);
     });
 
     this.it('multi level set with creation', function(test, options) {
@@ -1033,7 +1033,7 @@ function() {
 
         val = model1.at('bar').at('moo').at('noo');
 
-        test.assert.equalTo(val, 'boo');
+        this.assert.equalTo(val, 'boo');
     });
 });
 
@@ -1065,7 +1065,7 @@ function() {
 
         val = model1.at(3);
 
-        test.refute.isDefined(val);
+        this.refute.isDefined(val);
     });
 
     this.it('single level set with creation', function(test, options) {
@@ -1081,7 +1081,7 @@ function() {
 
         val = model1.at(3).at(1);
 
-        test.assert.equalTo(val, 'four');
+        this.assert.equalTo(val, 'four');
     });
 
     this.it('multi level set without creation', function(test, options) {
@@ -1098,11 +1098,11 @@ function() {
 
         val = model1.at(3).at(1).at(0);
 
-        test.assert.equalTo(val, 'f');
+        this.assert.equalTo(val, 'f');
 
         val = model1.at(3).at(1).at(4);
 
-        test.assert.isEmpty(val);
+        this.assert.isEmpty(val);
     });
 
     this.it('multi level set with creation', function(test, options) {
@@ -1118,11 +1118,11 @@ function() {
 
         val = model1.at(3).at(1).at(0);
 
-        test.assert.equalTo(val, 'stuff');
+        this.assert.equalTo(val, 'stuff');
 
         val = model1.at(3).at(1).at(4);
 
-        test.assert.equalTo(val, 'stuff');
+        this.assert.equalTo(val, 'stuff');
     });
 
     this.it('slicing results set without creation', function(test, options) {
@@ -1141,21 +1141,21 @@ function() {
         //  require 'structure creating' - the values should have been set.
         val = model1.at(3).at(1).at(1);
 
-        test.assert.equalTo(val, 'foofy');
+        this.assert.equalTo(val, 'foofy');
 
         val = model1.at(3).at(1).at(2);
 
-        test.assert.equalTo(val, 'foofy');
+        this.assert.equalTo(val, 'foofy');
 
         val = model1.at(3).at(1).at(3);
 
-        test.assert.equalTo(val, 'foofy');
+        this.assert.equalTo(val, 'foofy');
 
         //  This value should still be 'stuff' - the '1:4' range means items
         //  1-3.
         val = model1.at(3).at(1).at(4);
 
-        test.assert.equalTo(val, 'stuff');
+        this.assert.equalTo(val, 'stuff');
     });
 
     this.it('slicing results set with creation', function(test, options) {
@@ -1189,7 +1189,7 @@ function() {
 
         val = model1.at('foo').at(3);
 
-        test.refute.isDefined(val);
+        this.refute.isDefined(val);
     });
 
     this.it('single level set with creation', function(test, options) {
@@ -1205,7 +1205,7 @@ function() {
 
         val = model1.at('foo').at(3).at('bar');
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
     });
 
     this.it('multi level set without creation', function(test, options) {
@@ -1221,15 +1221,15 @@ function() {
         //  shouldn't be one at 'moo' or 'too'.
         val = model1.at('foo').at(3).at('bar');
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
 
         val = model1.at('foo').at(3).at('moo');
 
-        test.refute.isDefined(val);
+        this.refute.isDefined(val);
 
         val = model1.at('foo').at(3).at('too');
 
-        test.refute.isDefined(val);
+        this.refute.isDefined(val);
     });
 
     this.it('multi level set with creation', function(test, options) {
@@ -1245,15 +1245,15 @@ function() {
 
         val = model1.at('foo').at(3).at('bar').at('roo');
 
-        test.assert.isArray(val);
+        this.assert.isArray(val);
 
         val = model1.at('foo').at(3).at('moo').at('roo');
 
-        test.assert.isArray(val);
+        this.assert.isArray(val);
 
         val = model1.at('foo').at(3).at('too').at('roo');
 
-        test.assert.isArray(val);
+        this.assert.isArray(val);
     });
 });
 
@@ -1282,7 +1282,7 @@ function() {
 
         val = path1.executeGet(model1, 1);
 
-        test.assert.equalTo(val, '2nd');
+        this.assert.equalTo(val, '2nd');
     });
 
     this.it('single level get slice', function(test, options) {
@@ -1290,7 +1290,7 @@ function() {
 
         val = path2.executeGet(model1, 1, 4);
 
-        test.assert.equalTo(val, TP.ac('2nd', '3rd', '4th'));
+        this.assert.equalTo(val, TP.ac('2nd', '3rd', '4th'));
     });
 
     this.it('multi level get', function(test, options) {
@@ -1298,7 +1298,7 @@ function() {
 
         val = path3.executeGet(model1, 4, 0);
 
-        test.assert.equalTo(val, 'A');
+        this.assert.equalTo(val, 'A');
     });
 
     this.it('multi level get slice', function(test, options) {
@@ -1306,7 +1306,7 @@ function() {
 
         val = path4.executeGet(model1, 4, 6, 0);
 
-        test.assert.equalTo(val, TP.ac('A', 'X'));
+        this.assert.equalTo(val, TP.ac('A', 'X'));
     });
 
     this.it('single level set', function(test, options) {
@@ -1320,7 +1320,7 @@ function() {
 
         val = model1.at('foo').at(1);
 
-        test.assert.equalTo(val, 'boo');
+        this.assert.equalTo(val, 'boo');
     });
 
     this.it('single level set slice', function(test, options) {
@@ -1335,11 +1335,11 @@ function() {
 
         val = model1.at('foo').at(1);
 
-        test.assert.equalTo(val, 'bar');
+        this.assert.equalTo(val, 'bar');
 
         val = model1.at('foo').at(2);
 
-        test.assert.equalTo(val, 'bar');
+        this.assert.equalTo(val, 'bar');
     });
 
     this.it('multi level set', function(test, options) {
@@ -1354,7 +1354,7 @@ function() {
 
         val = model1.at('foo').at(4).at(0);
 
-        test.assert.equalTo(val, 'baz');
+        this.assert.equalTo(val, 'baz');
     });
 
     this.it('multi level get slice', function(test, options) {
@@ -1369,11 +1369,11 @@ function() {
 
         val = model1.at('foo').at(4).at(0);
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
 
         val = model1.at('foo').at(5).at(0);
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
     });
 });
 
@@ -1405,7 +1405,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        test.assert.equalTo(val, 'Edney');
+        this.assert.equalTo(val, 'Edney');
     });
 
     this.it('single value set', function(test, options) {
@@ -1424,7 +1424,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        test.assert.equalTo(val, 'Smith');
+        this.assert.equalTo(val, 'Smith');
     });
 
     this.it('multiple value get', function(test, options) {
@@ -1436,11 +1436,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        test.assert.equalTo(val, 'Edney');
+        this.assert.equalTo(val, 'Edney');
 
         val = TP.val(result.at(1));
 
-        test.assert.equalTo(val, '47');
+        this.assert.equalTo(val, '47');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1459,11 +1459,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        test.assert.equalTo(val, 'fluffy');
+        this.assert.equalTo(val, 'fluffy');
 
         val = TP.val(result.at(1));
 
-        test.assert.equalTo(val, 'fluffy');
+        this.assert.equalTo(val, 'fluffy');
     });
 });
 
@@ -1495,7 +1495,7 @@ function() {
 
         val = path1.executeGet(model1);
 
-        test.assert.equalTo(val, TP.elem('<lname>Edney</lname>'));
+        this.assert.equalTo(val, TP.elem('<lname>Edney</lname>'));
     });
 
     this.it('single value set', function(test, options) {
@@ -1510,7 +1510,7 @@ function() {
         val = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/fooname', null, true);
 
-        test.assert.equalTo(val, TP.elem('<fooname>Foodney</fooname>'));
+        this.assert.equalTo(val, TP.elem('<fooname>Foodney</fooname>'));
     });
 
     this.it('multiple value get', function(test, options) {
@@ -1518,9 +1518,9 @@ function() {
 
         val = path2.executeGet(model2);
 
-        test.assert.equalTo(val.at(0), TP.elem('<lname>Edney</lname>'));
+        this.assert.equalTo(val.at(0), TP.elem('<lname>Edney</lname>'));
 
-        test.assert.equalTo(val.at(1), TP.elem('<age>47</age>'));
+        this.assert.equalTo(val.at(1), TP.elem('<age>47</age>'));
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1535,9 +1535,9 @@ function() {
         val = TP.nodeEvaluatePath(
                     TP.unwrap(model2), '/emp/barname|/emp/barage', null, true);
 
-        test.assert.equalTo(val.at(0), TP.elem('<barname>Bardney</barname>'));
+        this.assert.equalTo(val.at(0), TP.elem('<barname>Bardney</barname>'));
 
-        test.assert.equalTo(val.at(1), TP.elem('<barage>470</barage>'));
+        this.assert.equalTo(val.at(1), TP.elem('<barage>470</barage>'));
     });
 });
 
@@ -1585,7 +1585,7 @@ function() {
         //  This will return its text value - a null
         val = TP.val(result);
 
-        test.assert.isNull(val);
+        this.assert.isNull(val);
 
         //  Turn ON creation
         path1.set('shouldMake', true);
@@ -1603,7 +1603,7 @@ function() {
         //  This will return its text value
         val = TP.val(result);
 
-        test.assert.equalTo(val, 'William');
+        this.assert.equalTo(val, 'William');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1638,7 +1638,7 @@ function() {
         //  This will return the text value for '/emp/fname'
         val = TP.val(result);
 
-        test.assert.equalTo(val, 'Bill');
+        this.assert.equalTo(val, 'Bill');
 
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/nickname', null, true);
@@ -1646,7 +1646,7 @@ function() {
         //  This will return the text value for '/emp/nickname' - a null
         val = TP.val(result);
 
-        test.assert.isNull(val);
+        this.assert.isNull(val);
 
         //  Turn ON creation
         path2.set('shouldMake', true);
@@ -1664,12 +1664,12 @@ function() {
         //  This will return the text value for '/emp/fname'
         val = TP.val(result.at(0));
 
-        test.assert.equalTo(val, 'Bill');
+        this.assert.equalTo(val, 'Bill');
 
         //  This will return the text value for '/emp/nickname'
         val = TP.val(result.at(1));
 
-        test.assert.equalTo(val, 'Bill');
+        this.assert.equalTo(val, 'Bill');
     });
 });
 
@@ -1717,7 +1717,7 @@ function() {
         //  This will return its text value - a null
         val = TP.val(result);
 
-        test.assert.isNull(val);
+        this.assert.isNull(val);
 
         //  Turn ON creation
         path1.set('shouldMake', true);
@@ -1732,7 +1732,7 @@ function() {
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/vitals/bp', null, true);
 
-        test.assert.equalTo(result, TP.elem('<bp>110/70</bp>'));
+        this.assert.equalTo(result, TP.elem('<bp>110/70</bp>'));
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1773,7 +1773,7 @@ function() {
 
         val = result;
 
-        test.assert.isNull(val);
+        this.assert.isNull(val);
 
         //  This will return the value for shipping address - a null
         result = TP.nodeEvaluatePath(
@@ -1781,7 +1781,7 @@ function() {
 
         val = result;
 
-        test.assert.isNull(val);
+        this.assert.isNull(val);
 
         //  Turn ON creation
         path2.set('shouldMake', true);
@@ -1801,11 +1801,11 @@ function() {
 
         val = TP.nodeListAsFragment(result.at(0).childNodes);
 
-        test.assert.equalTo(val, testFrag);
+        this.assert.equalTo(val, testFrag);
 
         val = TP.nodeListAsFragment(result.at(1).childNodes);
 
-        test.assert.equalTo(val, testFrag);
+        this.assert.equalTo(val, testFrag);
     });
 });
 
@@ -1834,7 +1834,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        test.assert.equalTo(val, 'bar');
+        this.assert.equalTo(val, 'bar');
     });
 
     this.it('single value set', function(test, options) {
@@ -1853,7 +1853,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        test.assert.equalTo(val, 'fluffy');
+        this.assert.equalTo(val, 'fluffy');
     });
 
     this.it('multiple value get', function(test, options) {
@@ -1865,11 +1865,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        test.assert.equalTo(val, 'fluffy');
+        this.assert.equalTo(val, 'fluffy');
 
         val = TP.val(result.at(1));
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1891,11 +1891,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        test.assert.equalTo(val, 'barfy');
+        this.assert.equalTo(val, 'barfy');
 
         val = TP.val(result.at(1));
 
-        test.assert.equalTo(val, 'barfy');
+        this.assert.equalTo(val, 'barfy');
     });
 });
 
@@ -1945,7 +1945,7 @@ function() {
         //  This will return its text value - a null
         val = TP.val(result);
 
-        test.assert.isNull(val);
+        this.assert.isNull(val);
 
         //  Turn ON creation
         path1.set('shouldMake', true);
@@ -1963,7 +1963,7 @@ function() {
         //  This will return its text value
         val = TP.val(result);
 
-        test.assert.equalTo(val, 'moo');
+        this.assert.equalTo(val, 'moo');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1998,7 +1998,7 @@ function() {
         //  This will return the text value for '/emp/fname/@foo' - a null
         val = TP.val(result);
 
-        test.assert.isNull(val);
+        this.assert.isNull(val);
 
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model2), '/emp/age/@bar', null, true);
@@ -2006,7 +2006,7 @@ function() {
         //  This will return the text value for '/emp/age/@bar' - a null
         val = TP.val(result);
 
-        test.assert.isNull(val);
+        this.assert.isNull(val);
 
         //  path2 = TP.apc('/emp/fname/@foo|/emp/age/@bar');
 
@@ -2029,12 +2029,12 @@ function() {
         //  This will return the text value for '/emp/fname'
         val = TP.val(result.at(0));
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
 
         //  This will return the text value for '/emp/nickname'
         val = TP.val(result.at(1));
 
-        test.assert.equalTo(val, 'goo');
+        this.assert.equalTo(val, 'goo');
     });
 });
 

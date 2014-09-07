@@ -118,7 +118,7 @@ function() {
                     });
 
             storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
-        });
+        }.bind(this));
 
     //  ---
 
@@ -199,14 +199,14 @@ function() {
 
     this.it('Retrieve TP.core.Window of the top-level window', function(test, options) {
 
-        test.assert.identicalTo(
+        this.assert.identicalTo(
             TP.uc('tibet://top/').getResource(params),
             TP.byOID('top'),
             TP.sc('tibet://top/ should find the top-level Window.'));
 
         //  The last slash should be optional
 
-        test.assert.identicalTo(
+        this.assert.identicalTo(
             TP.uc('tibet://top').getResource(params),
             TP.byOID('top'),
             TP.sc('tibet://top should find the top-level Window.'));
@@ -972,7 +972,7 @@ function() {
 
                 return;
             }
-        });
+        }.bind(this));
 
     //  ---
 
