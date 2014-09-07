@@ -118,7 +118,7 @@ function() {
                     });
 
             storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
-        });
+        }.bind(this));
 
     //  ---
 
@@ -972,7 +972,7 @@ function() {
 
                 return;
             }
-        });
+        }.bind(this));
 
     //  ---
 
