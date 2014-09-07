@@ -47,10 +47,10 @@ function() {
         jsonPath2.executeSet(modelObj, 'goo', true);
 
         //  The path hash should have the path for jsonPath2
-        test.assert.contains(pathHash, jsonPath2.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath2.get('srcPath'));
 
         //  But *not* for jsonPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, jsonPath1.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath1.get('srcPath'));
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -61,15 +61,15 @@ function() {
         jsonPath3.executeSet(modelObj, TP.ac(), true);
 
         //  The path hash should have the path for jsonPath3
-        test.assert.contains(pathHash, jsonPath3.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath3.get('srcPath'));
 
         //  And for jsonPath2 (because we had 'shouldMake' turned on and we
         //  replaced the value at 'foo.3.bar' with an Object to hold the 'roo'
         //  value)
-        test.assert.contains(pathHash, jsonPath2.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath2.get('srcPath'));
 
         //  But *not* for jsonPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, jsonPath1.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath1.get('srcPath'));
     });
 
 
@@ -83,20 +83,20 @@ function() {
         jsonPath5.executeSet(modelObj);
 
         //  The path hash should have the path for jsonPath5
-        test.assert.contains(pathHash, jsonPath5.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath5.get('srcPath'));
 
         //  But *not* for jsonPath4 (it's at a similar level in the chain, but
         //  on a different branch)
-        test.refute.contains(pathHash, jsonPath4.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath4.get('srcPath'));
 
         //  The path hash should have the path for jsonPath3
-        test.assert.contains(pathHash, jsonPath3.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath3.get('srcPath'));
 
         //  But *not* for jsonPath2 (it's too high up in the chain)
-        test.refute.contains(pathHash, jsonPath2.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath2.get('srcPath'));
 
         //  And *not* for jsonPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, jsonPath1.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath1.get('srcPath'));
     });
 
     this.it('change of a parent aspect of a branching path', function(test, options) {
@@ -106,22 +106,22 @@ function() {
         jsonPath6.executeSet(modelObj, 'fluffy', true);
 
         //  The path hash should have the path for jsonPath6
-        test.assert.contains(pathHash, jsonPath6.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath6.get('srcPath'));
 
         //  And for jsonPath5 (because it's ancestor's structure changed)
-        test.assert.contains(pathHash, jsonPath5.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath5.get('srcPath'));
 
         //  And for jsonPath4 (because it's ancestor's structure changed)
-        test.assert.contains(pathHash, jsonPath4.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath4.get('srcPath'));
 
         //  And for jsonPath3 (because it's ancestor's structure changed)
-        test.assert.contains(pathHash, jsonPath3.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath3.get('srcPath'));
 
         //  And for jsonPath2 (because it's ancestor's structure changed)
-        test.assert.contains(pathHash, jsonPath2.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath2.get('srcPath'));
 
         //  But *not* for jsonPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, jsonPath1.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath1.get('srcPath'));
     });
 
     this.it('change of another parent aspect of a branching path', function(test, options) {
@@ -132,30 +132,30 @@ function() {
         jsonPath7.executeSet(modelObj, TP.ac(), true);
 
         //  The path hash should have the path for jsonPath7
-        test.assert.contains(pathHash, jsonPath7.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath7.get('srcPath'));
 
         //  But *not* for jsonPath6 (it's at a similar level in the chain, but
         //  on a different branch)
-        test.refute.contains(pathHash, jsonPath6.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath6.get('srcPath'));
 
         //  And *not* for jsonPath5 (it's at a similar level in the chain, but
         //  on a different branch)
-        test.refute.contains(pathHash, jsonPath5.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath5.get('srcPath'));
 
         //  And *not* for jsonPath4 (it's at a similar level in the chain, but
         //  on a different branch)
-        test.refute.contains(pathHash, jsonPath4.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath4.get('srcPath'));
 
         //  And *not* for jsonPath3 (it's at a similar level in the chain, but
         //  on a different branch)
-        test.refute.contains(pathHash, jsonPath3.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath3.get('srcPath'));
 
         //  And *not* for jsonPath2 (it's at a similar level in the chain, but
         //  on a different branch)
-        test.refute.contains(pathHash, jsonPath2.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath2.get('srcPath'));
 
         //  And *not* for jsonPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, jsonPath1.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath1.get('srcPath'));
     });
 
     this.it('change model to a whole new object', function(test, options) {
@@ -167,25 +167,25 @@ function() {
         //  All paths will have changed
 
         //  The path hash should have the path for jsonPath7
-        test.assert.contains(pathHash, jsonPath7.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath7.get('srcPath'));
 
         //  And for jsonPath6
-        test.assert.contains(pathHash, jsonPath6.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath6.get('srcPath'));
 
         //  And for jsonPath5
-        test.assert.contains(pathHash, jsonPath5.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath5.get('srcPath'));
 
         //  And for jsonPath4
-        test.assert.contains(pathHash, jsonPath4.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath4.get('srcPath'));
 
         //  And for jsonPath3
-        test.assert.contains(pathHash, jsonPath3.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath3.get('srcPath'));
 
         //  And for jsonPath2
-        test.assert.contains(pathHash, jsonPath2.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath2.get('srcPath'));
 
         //  And for jsonPath1
-        test.assert.contains(pathHash, jsonPath1.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath1.get('srcPath'));
     });
 
     this.it('change along a single path for the new object', function(test, options) {
@@ -193,25 +193,25 @@ function() {
 
         //  The path has should *not* have the path for jsonPath7 (it's at a
         //  similar level in the chain, but on a different branch)
-        test.refute.contains(pathHash, jsonPath7.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath7.get('srcPath'));
 
         //  The path hash should have the path for jsonPath6
-        test.assert.contains(pathHash, jsonPath6.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath6.get('srcPath'));
 
         //  And for jsonPath5
-        test.assert.contains(pathHash, jsonPath5.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath5.get('srcPath'));
 
         //  And for jsonPath4
-        test.assert.contains(pathHash, jsonPath4.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath4.get('srcPath'));
 
         //  And for jsonPath3
-        test.assert.contains(pathHash, jsonPath3.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath3.get('srcPath'));
 
         //  And for jsonPath2
-        test.assert.contains(pathHash, jsonPath2.get('srcPath'));
+        this.assert.contains(pathHash, jsonPath2.get('srcPath'));
 
         //  And *not* for jsonPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, jsonPath1.get('srcPath'));
+        this.refute.contains(pathHash, jsonPath1.get('srcPath'));
     });
 
     this.after(function() {
@@ -257,10 +257,10 @@ function() {
         xmlPath2.executeSet(modelObj, 'Shattuck', true);
 
         //  The path hash should have the path for xmlPath2
-        test.assert.contains(pathHash, xmlPath2.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath2.get('srcPath'));
 
         //  But *not* for xmlPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, xmlPath1.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath1.get('srcPath'));
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -271,14 +271,14 @@ function() {
         xmlPath3.executeSet(modelObj, 'Scott', true);
 
         //  The path hash should have the path for xmlPath3
-        test.assert.contains(pathHash, xmlPath3.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath3.get('srcPath'));
 
         //  But *not* for xmlPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, xmlPath1.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath1.get('srcPath'));
 
         //  And *not* for xmlPath2 (it's at a similar level in the chain, but on
         //  a different branch)
-        test.refute.contains(pathHash, xmlPath2.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath2.get('srcPath'));
     });
 
     this.it('change along another branching path', function(test, options) {
@@ -289,18 +289,18 @@ function() {
         xmlPath4.executeSet(modelObj, '555-55-5555', true);
 
         //  The path hash should have the path for xmlPath4
-        test.assert.contains(pathHash, xmlPath4.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath4.get('srcPath'));
 
         //  But *not* for xmlPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, xmlPath1.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath1.get('srcPath'));
 
         //  And *not* for xmlPath2 (it's at a similar level in the chain, but on
         //  a different branch)
-        test.refute.contains(pathHash, xmlPath2.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath2.get('srcPath'));
 
         //  And *not* for xmlPath3 (it's at a similar level in the chain, but on
         //  a different branch)
-        test.refute.contains(pathHash, xmlPath3.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath3.get('srcPath'));
     });
 
     this.it('change at the top level', function(test, options) {
@@ -311,19 +311,19 @@ function() {
         xmlPath5.executeSet(modelObj, TP.elem('<lname>Edney</lname>'), true);
 
         //  The path hash should have the path for xmlPath5
-        test.assert.contains(pathHash, xmlPath5.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath5.get('srcPath'));
 
         //  And for xmlPath4 (because it's ancestor's structure changed)
-        test.assert.contains(pathHash, xmlPath4.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath4.get('srcPath'));
 
         //  And for xmlPath3 (because it's ancestor's structure changed)
-        test.assert.contains(pathHash, xmlPath3.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath3.get('srcPath'));
 
         //  And for xmlPath2 (because it's ancestor's structure changed)
-        test.assert.contains(pathHash, xmlPath2.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath2.get('srcPath'));
 
         //  And for xmlPath1 (because it's the same path as xmlPath5)
-        test.assert.contains(pathHash, xmlPath1.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath1.get('srcPath'));
     });
 
     this.it('change all of the elements individually', function(test, options) {
@@ -335,25 +335,25 @@ function() {
         xmlPath3.executeSet(modelObj, 'Scott', true);
 
         //  The path hash should have the path for xmlPath3
-        test.assert.contains(pathHash, xmlPath3.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath3.get('srcPath'));
 
         //  The path hash should have the path for xmlPath6 (it's for all
         //  elements)
-        test.assert.contains(pathHash, xmlPath6.get('srcPath'));
+        this.assert.contains(pathHash, xmlPath6.get('srcPath'));
 
         //  But *not* for xmlPath1 (it's too high up in the chain)
-        test.refute.contains(pathHash, xmlPath1.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath1.get('srcPath'));
 
         //  And *not* for xmlPath2 (it's at a similar level in the chain, but on
         //  a different branch)
-        test.refute.contains(pathHash, xmlPath2.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath2.get('srcPath'));
 
         //  And *not* for xmlPath4 (it's at a similar level in the chain, but on
         //  a different branch)
-        test.refute.contains(pathHash, xmlPath4.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath4.get('srcPath'));
 
         //  And *not* for xmlPath5 (it's too high up in the chain)
-        test.refute.contains(pathHash, xmlPath5.get('srcPath'));
+        this.refute.contains(pathHash, xmlPath5.get('srcPath'));
     });
 
     this.after(function() {
