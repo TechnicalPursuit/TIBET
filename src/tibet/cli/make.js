@@ -159,7 +159,9 @@ Cmd.prototype.execute = function() {
                 var msg;
 
                 if (CLI.isValid(err)) {
-                    if (err instanceof Error) {
+                    if (typeof err === 'string') {
+                        cmd.error(err);
+                    } else if (err instanceof Error) {
                         cmd.error(err.message);
                     } else {
                         cmd.error(JSON.stringify(err));
