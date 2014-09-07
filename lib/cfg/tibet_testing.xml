@@ -31,6 +31,7 @@
         TP.extern.sinon = sinon;
         ]]>
     </script>
+    <script src="testing/TIBETSinonPost.js"/>
 </config>
 
 <config id="selftests">
