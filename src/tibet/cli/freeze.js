@@ -53,12 +53,34 @@ Cmd.prototype.HELP =
 'Freezes the current application\'s TIBET library in ~app_inf.\n\n' +
 
 'By default ~app_inf refers to TIBET-INF, the default location for\n' +
-'package data, custom commands, etc. TIBET also is configured to\n' +
-'allow a version of TIBET to be frozen into TIBET-INF/tibet rather\n' +
-'than in node_modules/tibet to support deployments where deploying\n' +
-'the rest of node_modules would be unnecessary.\n\n' +
+'package data, custom commands, etc. TIBET is configured to allow\n' +
+'a version of TIBET to be frozen into TIBET-INF/tibet rather than\n' +
+'in node_modules/tibet to support deployments where the use of the\n' +
+'node_modules directory would be unnecessary or excessive.\n\n' +
 
-'\n';
+'Flags allow you to control the scope of what is frozen. Since the\n' +
+'freeze command is only concerned with the TIBET library these flags\n' +
+'focus on whether you want minified TIBET bundles, all TIBET bundles,\n' +
+'raw source for dynamic development, or some combination of those.\n\n' +
+
+'The --tibet parameter takes a bundle name minus any tibet_ prefix\n' +
+'For example, \'--tibet full\' will freeze the tibet_full bundle.\n' +
+'This flag defaults to the value \'base\' so tibet_base is frozen.\n\n' +
+
+'The --minify flag controls whether you freeze minified source code\n' +
+'and is used in conjunction with the --tibet flag to filter bundles.\n' +
+'The default value is true, so only minified code is frozen by default.\n\n' +
+
+'The --all flag overrides any filtering of bundle content and preserves\n' +
+'all bundles of TIBET source found in the ~lib_build directory.\n\n' +
+
+'The --raw flag causes the current TIBET source tree to be copied into\n' +
+'the target directory. This option supports dynamic development with\n' +
+'TIBET source code but does have a performance impact.\n\n';
+
+'Using \ttibet freeze\' without parameters will freeze the current copy\n' +
+'of tibet_base.min.js along with the init and hook files needed to boot.\n\n';
+
 
 /**
  * Command argument parsing options.
@@ -82,7 +104,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet freeze';
+Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw]';
 
 
 //  ---
@@ -222,7 +244,17 @@ Cmd.prototype.execute = function() {
             this.error('Error cloning tibet/src: ' + err);
             return 1;
         }
+
+        this.log('freezing library dependencies...');
+        sh.cp('-R', path.join(app_npm, 'tibet/deps'), infroot);
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet/deps: ' + err);
+            return 1;
+        }
     }
+
+    // TODO: map lib_root to the new location (~app_inf/tibet)
 
     this.info('TIBET library frozen in ' + infroot + '.');
 };
