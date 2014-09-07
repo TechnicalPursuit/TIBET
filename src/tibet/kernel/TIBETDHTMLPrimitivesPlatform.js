@@ -1455,7 +1455,7 @@ TP.hc(
 
             valueInPixels,
             valuesInPixels;
-            
+
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement', arguments);
         }
@@ -1655,7 +1655,7 @@ TP.hc(
 
             valueInPixels,
             valuesInPixels;
-            
+
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement', arguments);
         }
@@ -1955,7 +1955,7 @@ TP.hc(
 
             valueInPixels,
             valuesInPixels;
-            
+
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement', arguments);
         }
@@ -2607,7 +2607,7 @@ TP.hc(
          * @param {String} objectName The 'type name' of the object to
          *     construct.
          * @raises TP.sig.InvalidWindow
-         * @returns {Object} 
+         * @returns {Object}
          * @todo
          */
 
@@ -2673,7 +2673,7 @@ TP.hc(
          * @param {String} objectName The 'type name' of the object to
          *     construct.
          * @raises TP.sig.InvalidWindow
-         * @returns {Object} 
+         * @returns {Object}
          * @todo
          */
 

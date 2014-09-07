@@ -60,7 +60,7 @@ function() {
 
         keyCode,
         val,
-    
+
         kinds,
         defaults;
 
@@ -262,7 +262,7 @@ function(aURI, aWindow) {
 
     //  Fetch the result and then set the Window's body to the result.
     this.fetchResource(aURI, TP.DOM);
-    
+
     this.get('promiseProvider').then(
         function(result) {
             var tpWin,
@@ -306,7 +306,7 @@ function(aURI, aWindow) {
 
     //  Fetch the result and then set the Window's body to the result.
     this.fetchResource(aURI, TP.DOM);
-    
+
     this.get('promiseProvider').then(
         function(result) {
             var tpWin,
@@ -338,7 +338,7 @@ function() {
      */
 
     var context;
-    
+
     context = this.get('windowContext');
 
     return context.getNativeDocument();
@@ -357,7 +357,7 @@ function() {
      */
 
     var context;
-    
+
     context = this.get('windowContext');
 
     return TP.documentGetFocusedElement(context.getNativeDocument());
@@ -399,8 +399,7 @@ function(aNode) {
      */
 
     if (TP.sys.cfg('boot.context') !== 'phantomjs') {
-        //  TODO: Log a warning
-        return this;
+        return this.raise('TP.sig.UnsupportedOperation', arguments);
     }
 
     //  http://phantomjs.org/api/webpage/property/clip-rect.html
@@ -511,7 +510,7 @@ function(mouseLocation, mouseButton) {
     var point,
         button,
         target,
-    
+
         eventName;
 
     //  If there was no valid location supplied, then we just set the target to
@@ -641,7 +640,7 @@ function(mouseLocation, mouseButton) {
     var point,
         button,
         target,
-    
+
         eventName;
 
     //  If there was no valid location supplied, then we just set the target to
@@ -826,7 +825,7 @@ function(mouseLocation, mouseButton) {
     var point,
         button,
         target,
-    
+
         eventName;
 
     //  If there was no valid location supplied, then we just set the target to
@@ -921,7 +920,7 @@ function(mouseLocation, mouseButton) {
     var point,
         button,
         target,
-    
+
         eventName;
 
     //  If there was no valid location supplied, then we just set the target to
@@ -1018,7 +1017,7 @@ function() {
                 errorCB,
 
                 newPromise,
-        
+
                 chain,
 
                 currentElement,

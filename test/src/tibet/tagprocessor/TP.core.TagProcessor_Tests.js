@@ -375,7 +375,7 @@ function() {
                 test.fail();
             });
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -486,7 +486,7 @@ function() {
                     TP.core.Color.fromString('red'));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  XInclude
@@ -568,7 +568,7 @@ function() {
                 test.fail();
             });
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
