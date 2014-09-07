@@ -2320,22 +2320,26 @@ function() {
         chainDict;
 
     chainMethodNames = TP.ac(
-                        'and',          //  chain-only
                         'a',            //  real implementation
                         'above',        //  real implementation
-                        'below',        //  real implementation
                         'an',           //  real implementation
                         'args',         //  real implementation
                         'at',           //  chain-only
                         'be',           //  chain-only
                         'been',         //  chain-only
+                        'below',        //  real implementation
                         'closeTo',      //  real implementation
                         'contain',      //  real implementation
                         'deep',         //  real implementation
                         'empty',        //  real implementation
                         'equal',        //  real implementation
+                        'equals',       //  real implementation
+                        'eq',           //  real implementation
                         'exist',        //  real implementation
                         'false',        //  real implementation
+                        'greaterThan',  //  real implementation
+                        'gt',           //  real implementation
+                        'identical',    //  real implementation
                         'include',      //  real implementation
                         'itself',       //  real implementation
                         'is',           //  chain-only
@@ -2344,7 +2348,9 @@ function() {
                         'key',          //  real implementation
                         'keys',         //  real implementation
                         'least',        //  real implementation
-                        'len',          //  real implementation
+                        'lengthOf',     //  real implementation
+                        'lessThan',     //  real implementation
+                        'lt',           //  real implementation
                         'match',        //  real implementation
                         'members',      //  real implementation
                         'most',         //  real implementation
