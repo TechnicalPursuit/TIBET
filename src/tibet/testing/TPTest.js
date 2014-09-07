@@ -1219,6 +1219,14 @@ TP.test.Case.Inst.defineAttribute('suite');
  */
 TP.test.Case.Inst.defineAttribute('$internalPromise');
 
+/**
+ * The expectation that is kept by the test case for use by test case logic as
+ * the test executes. Note that this expectation reference is recycled as the
+ * test case executes, using the 'reset()' method on this object.
+ * @type {TP.test.Expect}
+ */
+TP.test.Case.Inst.defineAttribute('$internalExpect');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1241,6 +1249,31 @@ function(aFaultCode, aFaultString) {
 
     TP.sys.logTest('not ok - ' + this.getCaseName() + ' error' +
         (aFaultString ? ': ' + aFaultString : '') + '.');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('expect',
+function(anObj) {
+
+    /**
+     * Creates (or recycles) and returns an expectation object which gives the
+     *     test case access to a BDD-style 'expect' assertion interface for
+     *     making assertions.
+     * @param {Object} anObj The object to make assertions against.
+     * @return {TP.test.Expect} The expectation to use to make assertions.
+     */
+
+    var currentExpect;
+
+    if (TP.notValid(currentExpect = this.get('$internalExpect'))) {
+        currentExpect = TP.test.Expect.construct(anObj, this);
+        this.set('$internalExpect', currentExpect);
+    } else {
+        currentExpect.reset(anObj);
+    }
+
+    return currentExpect;
 });
 
 //  ------------------------------------------------------------------------
