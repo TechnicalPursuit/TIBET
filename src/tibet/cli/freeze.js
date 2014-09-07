@@ -254,7 +254,9 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    // TODO: map lib_root to the new location (~app_inf/tibet)
+    // TODO: convert node_modules/tibet references to TIBET-INF/tibet references
+
+    // TODO: map lib_root to the freeze location (~app_inf/tibet)
 
     this.info('TIBET library frozen in ' + infroot + '.');
 };
