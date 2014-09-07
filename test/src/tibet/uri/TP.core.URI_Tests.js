@@ -65,10 +65,7 @@ function() {
                 doc,
 
                 backgroundElem,
-                childElem,
-
-                storage,
-                storageStr;
+                childElem;
 
             //  Set up a temporary reference to the top-level window name
             TP.$$topWindowName = TP.sys.cfg('tibet.uibuffer');
@@ -97,27 +94,6 @@ function() {
                             '<h1 id="uri_test_child">A test child</h1>');
             TP.nodeAppendChild(backgroundElem, childElem, false);
 
-            //  Make sure there's an entry for 'localdb://' URL testing
-            storage = TP.core.LocalStorage.construct();
-            storageStr = TP.js2json(
-                    {
-                        'local_test' :
-                            {
-                                'author_info' :
-                                    {
-                                        '_id' : 'author_info',
-                                        '_date_created' : TP.dc(),
-                                        '_date_modified' : TP.dc(),
-                                        '_body' :
-                                            {
-                                                'firstName' : 'Bill',
-                                                'lastName' : 'Edney'
-                                            }
-                                    }
-                            }
-                    });
-
-            storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
         }.bind(this));
 
     //  ---
@@ -1011,6 +987,283 @@ function() {
         });
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.describe('getResource',
+function() {
+
+    var params,
+        locStr,
+        resultElem,
+
+        server;
+
+    params = TP.request('refresh', true, 'async', true);
+    locStr = '/TIBET_endpoints/Google_home_page.html';
+    resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
+
+    server = TP.test.fakeServer.create();
+
+    this.before(
+        function() {
+            server.respondWith(
+                'GET',
+                locStr,
+                [
+                    200,
+                    {
+                        'Content-Type': TP.XML_ENCODED,
+                    },
+                    resultElem.asString(),
+                ]);
+        });
+
+    //  ---
+
+    this.it('Retrieve resource asynchronously', function(test, options) {
+        var url,
+            request;
+
+        url = TP.uc(locStr);
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        request = TP.request(params);
+        request.defineMethod('completeJob',
+            function(aResult)
+            {
+                test.assert.equalTo(aResult.get('html|body').at(0),
+                                    resultElem.get('html|body').at(0));
+            });
+
+        url.getResource(request);
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('Retrieve resource synchronously', function(test, options) {
+    }).skip();
+
+    //  ---
+
+    this.after(
+        function() {
+            server.restore();
+        });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPURL.Inst.describe('getResource',
+function() {
+
+    var params,
+        locStr,
+
+        stub;
+
+    params = TP.request('refresh', true, 'async', true);
+    locStr = 'jsonp://ajax.googleapis.com/ajax/services/search/web?' +
+                'v=1.0&q=football&start=10';
+
+    this.before(
+        function() {
+            stub = TP.jsonpCall.asStub();
+        });
+
+    //  ---
+
+    this.it('Retrieve resource asynchronously', function(test, options) {
+        var url,
+            request;
+
+        stub.callsArgWith(1, '{"foo":"bar"}');
+
+        url = TP.uc(locStr);
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        request = TP.request(params);
+        request.defineMethod('completeJob',
+            function(aResult)
+            {
+                test.assert.isValid(
+                    aResult,
+                    TP.sc('Expected valid result but got none.'));
+            });
+
+        url.getResource(request);
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            stub.restore();
+        });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.core.LocalDBURL.Inst.describe('getResource',
+function() {
+
+    var storage;
+
+    //  Make sure there's an entry for 'localdb://' URL testing
+    storage = TP.core.LocalStorage.construct();
+
+    this.before(
+        function() {
+            var storageStr;
+
+            storageStr = TP.js2json(
+                    {
+                        'local_test' :
+                            {
+                                'author_info' :
+                                    {
+                                        '_id' : 'author_info',
+                                        '_date_created' : TP.dc(),
+                                        '_date_modified' : TP.dc(),
+                                        '_body' :
+                                            {
+                                                'firstName' : 'Bill',
+                                                'lastName' : 'Edney'
+                                            }
+                                    }
+                            }
+                    });
+
+            storage.atPut('TIBET_LOCAL_DB_TEST', storageStr);
+        });
+
+    //  ---
+
+    this.it('Retrieve resource', function(test, options) {
+
+        var url,
+            obj;
+
+        //  A GET request here using the ID causes a RETRIEVE
+
+        url = TP.uc('localdb://local_test/author_info');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        //  Implied verb here is TP.HTTP_GET. Also, by default, localdb:// URLs
+        //  are synchronous and configure their request to 'refresh'
+        //  automatically.
+        obj = url.getResource().at('_body');
+
+        this.assert.isTrue(
+            obj.hasKey('firstName'),
+            TP.sc('Expected that result would have a key of \'firstName\' and',
+                    ' it doesn\'t'));
+
+        this.assert.equalTo(
+                obj.at('firstName'),
+                'Bill',
+                TP.sc('Expected: ', '"Bill"',
+                        ' and got instead: ', obj.at('firstName'), '.'));
+
+        this.assert.isTrue(
+            obj.hasKey('lastName'),
+            TP.sc('Expected that result would have a key of \'lastName\' and',
+                    ' it doesn\'t'));
+
+        this.assert.equalTo(
+                obj.at('lastName'),
+                'Edney',
+                TP.sc('Expected: ', '"Edney"',
+                        ' and got instead: ', obj.at('lastName'), '.'));
+    });
+
+    //  ---
+
+    this.it('Retrieve resource info', function(test, options) {
+
+        var url,
+            obj;
+
+        //  A HEAD request here causes a RETRIEVE of '_date_created' and
+        //  '_date_modified'.
+
+        url = TP.uc('localdb://local_test/author_info');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        //  By default, localdb:// URLs are synchronous and configure their
+        //  request to 'refresh' automatically.
+        obj = url.getResource(TP.hc('verb', TP.HTTP_HEAD));
+
+        this.assert.isTrue(
+            obj.hasKey('_date_created'),
+            TP.sc('Expected that result would have a key of \'_date_created\'',
+                    ' and it doesn\'t'));
+
+        this.assert.isTrue(
+            obj.hasKey('_date_modified'),
+            TP.sc('Expected that result would have a key of \'_date_modified\'',
+                    ' and it doesn\'t'));
+    });
+
+    //  ---
+
+    this.it('Retrieve listing of all documents in db', function(test, options) {
+
+        var url,
+            obj;
+
+        //  A GET request here using an ID of '_all_docs" causes a RETRIEVE of
+        //  all documents in the DB
+
+        url = TP.uc('localdb://local_test/_all_docs');
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        //  Implied verb here is TP.HTTP_GET. Also, by default, localdb:// URLs
+        //  are synchronous and configure their request to 'refresh'
+        //  automatically.
+        obj = url.getResource();
+
+        this.assert.isTrue(
+            obj.hasKey('total_rows'),
+            TP.sc('Expected that result would have a key of \'total_rows\' and',
+                    ' it doesn\'t'));
+
+        this.assert.isTrue(
+                obj.at('total_rows'),
+                1,
+                TP.sc('Expected: ', '1',
+                        ' and got instead: ', obj.at('total_rows'), '.'));
+
+        this.assert.isTrue(
+            obj.hasKey('rows'),
+            TP.sc('Expected that result would have a key of \'rows\' and',
+                    ' it doesn\'t'));
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            storage.removeKey('TIBET_LOCAL_DB_TEST');
+        });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
@@ -1019,6 +1272,9 @@ function() {
 TP.core.TIBETURL.Inst.runTestSuites();
 TP.core.TIBETURN.Inst.runTestSuites();
 TP.core.JSURI.Inst.runTestSuites();
+TP.core.HTTPURL.Inst.runTestSuites();
+TP.core.JSONPURL.Inst.runTestSuites();
+TP.core.LocalDBURL.Inst.runTestSuites();
 */
 
 //  ------------------------------------------------------------------------
