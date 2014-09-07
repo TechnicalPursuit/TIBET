@@ -39,7 +39,7 @@
 </config>
 
 <config id="tests">
-    <!--config ref="driver"/-->
+    <config ref="driver"/>
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
     <config ref="uri"/>

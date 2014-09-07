@@ -54,7 +54,7 @@ function() {
 
         //driver.startSequence().sendKeys('[Shift]abcd[Shift-up]').perform();
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
