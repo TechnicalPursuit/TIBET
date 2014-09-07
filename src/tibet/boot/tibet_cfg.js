@@ -191,7 +191,7 @@ TP.sys.setcfg('boot.libcomp', 'script');
 
 //  these three values provide search data for the getAppHead routine, which is
 //  leveraged by both app root and lib root computations.
-TP.sys.setcfg('boot.tibetdir', 'node_modules');
+TP.sys.setcfg('boot.tibetdir', '~npm_dir');
 TP.sys.setcfg('boot.tibetinf', 'TIBET-INF');
 TP.sys.setcfg('boot.tibetlib', 'tibet');
 
@@ -491,6 +491,10 @@ TP.sys.setcfg('boot.moz_xpcom', false);
 //  absolute or relative paths to further insulate your code from arbitrary
 //  directory structures which may change over time.
 
+//  Node.js project information.
+TP.sys.setcfg('path.npm_dir', 'node_modules');
+TP.sys.setcfg('path.npm_file', 'package.json');
+
 TP.sys.setcfg('path.app', '~app_root');
 TP.sys.setcfg('path.lib', '~lib_root');
 TP.sys.setcfg('path.tibet', '~lib_root');
@@ -574,10 +578,6 @@ TP.sys.setcfg('path.tdc_src', '~tdc_root/src');
 //  Sherpa (external IDE components).
 TP.sys.setcfg('path.ide_root', '~lib_src/tibet/tools/sherpa');
 TP.sys.setcfg('path.ide_src', '~ide_root/src');
-
-//  Node.js project information.
-TP.sys.setcfg('path.npm_dir', 'node_modules');
-TP.sys.setcfg('path.npm_file', 'package.json');
 
 
 //  ---
