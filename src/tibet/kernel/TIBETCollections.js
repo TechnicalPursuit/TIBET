@@ -513,7 +513,8 @@ function(startIndexOrSpec, endIndex, aStep) {
      *     [2:]     -> slice from item 2 to the end of the Array
      *     [2:-1]   -> slice from item 2 to the second to last element
      *     [1:6:2]  -> slice from item 1 to item 5 stepping by 2
-     *     [6:1:-2] -> slice from item 6 to item 2 stepping by -2 (i.e. reversing)
+     *     [6:1:-2] -> slice from item 6 to item 2 stepping by -2 (i.e.
+     *                 reversing)
      * @param {Number|String} startIndexOrSpec A Number specifying the starting
      *     index or a String containing the 'range spec' as discussed above. If
      *     this argument is null, the starting index will be set to 0.
@@ -1663,7 +1664,6 @@ function(oldValue, newValue, aTest) {
     var shouldSignal,
 
         replaced,
-        thisref,
 
         len;
 
@@ -1672,7 +1672,6 @@ function(oldValue, newValue, aTest) {
     this.shouldSignalChange(false);
 
     replaced = 0;
-    thisref = this;
 
     len = this.length;
 
@@ -3226,7 +3225,8 @@ function(aKeyArray) {
      * @todo
      */
 
-    var changed;
+    var changed,
+        thisref;
 
     if (TP.notValid(aKeyArray)) {
         return this.raise('TP.sig.InvalidParameter', arguments);
@@ -3234,25 +3234,27 @@ function(aKeyArray) {
 
     changed = false;
 
+    thisref = this;
+
     aKeyArray.perform(
         function(aKey) {
 
             var k;
 
-            k = this.at(aKey);
+            k = thisref.at(aKey);
             if (TP.notDefined(k)) {
                 return;
             }
 
             if (TP.isMethod(k)) {
-                this.raise('TP.sig.InvalidOperation',
+                thisref.raise('TP.sig.InvalidOperation',
                     arguments, 'Attempt to replace/remove method: ' + k);
 
                 return TP.BREAK;
             }
 
             changed = true;
-            delete(this[aKey]);
+            delete(thisref[aKey]);
         });
 
     if (changed) {
@@ -5359,9 +5361,9 @@ function(attributeName) {
 
     var path,
         args,
-    
+
         funcName,
-        
+
         val;
 
     //  If we got handed an 'access path', then we need to let it handle this.
@@ -5389,7 +5391,7 @@ function(attributeName) {
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
-    
+
         //  This part is specific to TP.lang.Hash - we check with our internal
         //  hash.
         if (TP.isDefined(val = this.at(attributeName))) {
@@ -5754,11 +5756,11 @@ function(attributeName, attributeValue, shouldSignal) {
      */
 
     var path,
-    
+
         funcName,
 
         args,
-    
+
         sigFlag,
         oldFlag;
 
@@ -6396,7 +6398,9 @@ function(aFilter) {
 
         shouldSignal,
 
-        len;
+        len,
+
+        thisref;
 
     filter = aFilter || function(item) {return TP.notValid(item.last());};
 
@@ -6412,10 +6416,12 @@ function(aFilter) {
 
     len = this.getSize();
 
+    thisref = this;
+
     items.perform(
         function(item) {
 
-            this.removeKey(item.first());
+            thisref.removeKey(item.first());
         });
 
     //  re-enable change notification
@@ -6449,6 +6455,8 @@ function(anInterface, inline) {
      * @todo
      */
 
+    var thisref;
+
     //  simple select when a new collection is desired
     if (TP.isFalse(inline)) {
         return TP.hc(
@@ -6459,6 +6467,8 @@ function(anInterface, inline) {
                     }));
     }
 
+    thisref = this;
+
     //  this loop will clear any values where the value isn't conforming,
     //  which sets the collection up for a compact to remove all nulls
     //  (since they don't conform to any interface)
@@ -6468,7 +6478,7 @@ function(anInterface, inline) {
             //  NOTE the use of last() here, which is where this differs
             //  from array processing
             if (!TP.canInvoke(item.last(), anInterface)) {
-                this.atPut(index, null, false);
+                thisref.atPut(index, null, false);
             }
         });
 
@@ -6665,11 +6675,11 @@ function(aFunction) {
 
         shouldSignal;
 
-    thisref = this;
-
     //  turn off change signaling
     shouldSignal = this.shouldSignalChange();
     this.shouldSignalChange(false);
+
+    thisref = this;
 
     this.perform(
         function(item, index) {
@@ -7359,7 +7369,9 @@ function(aCollection, aFunction) {
      */
 
     var dups,
-        hash;
+        hash,
+
+        thisref;
 
     if (!TP.canInvoke(aCollection, 'getKeys')) {
         return this.raise('TP.sig.InvalidCollection', arguments,
@@ -7374,12 +7386,15 @@ function(aCollection, aFunction) {
         dups = this.getKeys().intersection(aCollection.getKeys());
 
         if (TP.notEmpty(dups)) {
+
+            thisref = this;
+
             dups.convert(
                 function(key) {
 
                     return TP.ac(key,
                                 aFunction(key,
-                                            this.at(key),
+                                            thisref.at(key),
                                             aCollection.at(key)));
                 });
 
@@ -7583,7 +7598,7 @@ function(aCollection, aValue) {
     aCollection.perform(
         function(item, index) {
 
-            if (!TP.equal(this.at(item), aValue)) {
+            if (!TP.equal(thisref.at(item), aValue)) {
                 thisref.atPut(item, aValue, false);
                 count++;
             }
@@ -8463,7 +8478,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
  * @type {TP.core.Range}
  * @synopsis TP.core.Range provides a simple interface to a range of numbers.
  *     This allows for interesting iteration possibilities such as:
- *     
+ *
  *     (1).to(10).perform(function (ind) {alert('index is: ' + ind)});
  */
 
