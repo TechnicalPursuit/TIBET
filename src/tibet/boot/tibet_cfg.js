@@ -191,7 +191,7 @@ TP.sys.setcfg('boot.libcomp', 'script');
 
 //  these three values provide search data for the getAppHead routine, which is
 //  leveraged by both app root and lib root computations.
-TP.sys.setcfg('boot.tibetdir', '~npm_dir');
+TP.sys.setcfg('boot.tibetdir', 'node_modules');
 TP.sys.setcfg('boot.tibetinf', 'TIBET-INF');
 TP.sys.setcfg('boot.tibetlib', 'tibet');
 
