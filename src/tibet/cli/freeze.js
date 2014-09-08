@@ -18,6 +18,7 @@
 'use strict';
 
 var CLI = require('./_cli');
+var beautify = require('js-beautify').js_beautify;
 
 
 //  ---
@@ -128,6 +129,7 @@ Cmd.prototype.execute = function() {
     var libbase;
     var srcroot;
 
+    var json;
     var list;
     var bundle;
 
@@ -254,11 +256,33 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    // TODO: convert node_modules/tibet references to TIBET-INF/tibet references
+    this.log('updating embedded lib_root references...');
 
-    // TODO: map lib_root to the freeze location (~app_inf/tibet)
+    list = sh.find('.').filter(function(file) {
+        return !file.match('node_modules') && !file.match('TIBET-INF');
+    });
+    list = sh.grep('-l', 'node_modules/tibet', list);
 
-    this.info('TIBET library frozen in ' + infroot + '.');
+    list.split('\n').forEach(function(file) {
+        if (file) {
+            sh.sed('-i', /node_modules\/tibet/g, 'TIBET-INF/tibet', file);
+        }
+    });
+
+    this.log('updating tibet.json lib_root setting...');
+
+    json = require('tibet.json');
+    if (!json) {
+        this.error('Unable to update lib_root in tibet.json.');
+        return 1;
+    }
+    if (!json.path) {
+        json.path = {};
+    }
+    json.path.lib_root = '~/TIBET-INF/tibet';
+    beautify(JSON.stringify(json)).to('tibet.json');
+
+    this.info('Application frozen. TIBET now boots from ' + infroot + '.');
 };
 
 
