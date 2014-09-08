@@ -13,7 +13,7 @@ html,body,#background,iframe {
 }
 
 #background {
-    background-image: url(/node_modules/tibet/lib/img/boot/dark_fiber.png);
+    background-image: url(../img/boot/dark_fiber.png);
     background-color: #444;
     overflow: hidden;
 }
@@ -41,7 +41,7 @@ div {
     box-shadow: 0 0 0 1px #eee;
 
     background-color: #eee;
-    background-image: url(/node_modules/tibet/lib/img/boot/white_fiber.png);
+    background-image: url(../img/boot/white_fiber.png);
 }
 
 .corner:hover {
@@ -68,7 +68,7 @@ div {
     border: 1px solid #aaa;
 
     background-color: #aaa;
-    background-image: url(/node_modules/tibet/lib/img/boot/white_fiber.png);
+    background-image: url(../img/boot/white_fiber.png);
 }
 
 .h-edge:hover {
@@ -97,7 +97,7 @@ div {
     border: 1px solid #aaa;
 
     background-color: #aaa;
-    background-image: url(/node_modules/tibet/lib/img/boot/white_fiber.png);
+    background-image: url(../img/boot/white_fiber.png);
 }
 
 .v-edge:hover {
