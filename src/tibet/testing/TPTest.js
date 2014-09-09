@@ -633,6 +633,14 @@ TP.test.Suite.Inst.defineAttribute('suiteList');
  */
 TP.test.Suite.Inst.defineAttribute('suiteName');
 
+/**
+ * The promise that is kept by the test suite for use by test suite logic as the
+ * test executes. Note that this promise reference can change as the test suite
+ * logic actually adds new Promises. It will be set to the 'last' Promise
+ * generated.
+ * @type {Promise}
+ */
+TP.test.Suite.Inst.defineAttribute('$internalPromise');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -724,25 +732,22 @@ function(result, options) {
     this.set('msend', Date.now());
 
     //  Run any after() which was registered.
-    try {
-        func = this.get('afterAll');
-        if (TP.isCallable(func)) {
-            try {
-                func(options);
-            } catch (e) {
-                TP.sys.logTest('# error in after: ' + e.message);
-            }
+    func = this.get('afterAll');
+    if (TP.isCallable(func)) {
+        try {
+            //  Call the Function with ourself as 'this' and then ourself again
+            //  as the first parameter and the options as the second parameter
+            func.call(this, this, options);
+        } catch (e) {
+            TP.sys.logTest('# error in after: ' + e.message);
         }
-    } finally {
-        // Output summary
-        this.report(options);
     }
 });
 
 //  ------------------------------------------------------------------------
 
 TP.test.Suite.Inst.defineMethod('executeAfterEach',
-function(result, options) {
+function(currentcase, result, options) {
 
     var func;
 
@@ -750,7 +755,10 @@ function(result, options) {
     func = this.get('afterEvery');
     if (TP.isCallable(func)) {
         try {
-            func(options);
+            //  Call the Function with the current test case as 'this' and then
+            //  it again as the first parameter and the options as the second
+            //  parameter
+            func.call(currentcase, currentcase, options);
         } catch (e) {
             TP.sys.logTest('# error in afterEach: ' + e.message);
         }
@@ -770,7 +778,9 @@ function(result, options) {
     func = this.get('beforeAll');
     if (TP.isCallable(func)) {
         try {
-            func(options);
+            //  Call the Function with ourself as 'this' and then ourself again
+            //  as the first parameter and the options as the second parameter
+            func.call(this, this, options);
         } catch (e) {
             TP.sys.logTest('# error in before: ' + e.message);
         }
@@ -780,7 +790,7 @@ function(result, options) {
 //  ------------------------------------------------------------------------
 
 TP.test.Suite.Inst.defineMethod('executeBeforeEach',
-function(result, options) {
+function(currentcase, result, options) {
 
     var func;
 
@@ -788,7 +798,10 @@ function(result, options) {
     func = this.get('beforeEvery');
     if (TP.isCallable(func)) {
         try {
-            func(options);
+            //  Call the Function with the current test case as 'this' and then
+            //  it again as the first parameter and the options as the second
+            //  parameter
+            func.call(currentcase, currentcase, options);
         } catch (e) {
             TP.sys.logTest('# error in beforeEach: ' + e.message);
         }
@@ -1073,7 +1086,9 @@ function(options) {
     var caselist,
         result,
         suite,
-        params;
+        params,
+
+        firstPromise;
 
     //  Output a small 'suite header'
     TP.sys.logTest('#', TP.TRACE);
@@ -1125,6 +1140,13 @@ function(options) {
     //  Run any 'before' hook for the suite.
     suite.executeBefore(null, options);
 
+    //  If a Promise hasn't been generated on-the-fly by any of the 'before'
+    //  methods, then generate a resolved one here. This will be the Promise
+    //  that 'starts things off' below.
+    if (TP.notValid(firstPromise = suite.$get('$internalPromise'))) {
+        firstPromise = Q.Promise.resolve();
+    }
+
     //  Use reduce to convert our caselist array into a chain of promises. We
     //  prime the list with a resolved promise to ensure 'current' receives all
     //  the cases during iteration while 'chain' is the last promise in the
@@ -1136,31 +1158,133 @@ function(options) {
                     function(obj) {
                         var promise;
 
-                        suite.executeBeforeEach(obj, options);
+                        suite.executeBeforeEach(current, obj, options);
 
                         promise = current.run(TP.hc(options));
 
                         return promise.then(
                             function(obj) {
-                                suite.executeAfterEach(obj, options);
+                                var lastPromise;
+
+                                //  Clear out *the currently executing Case's*
+                                //  built-in Promise. Then, if the 'after each'
+                                //  method schedules one, we'll check for it and
+                                //  return it.
+                                current.$set('$internalPromise', null);
+
+                                suite.executeAfterEach(current, obj, options);
+
+                                //  The 'after each' method scheduled a Promise.
+                                //  Return it.
+                                if (TP.isValid(lastPromise = current.$get(
+                                                        '$internalPromise'))) {
+                                    return lastPromise;
+                                }
                             }, function(err) {
-                                suite.executeAfterEach(err, options);
+                                current.$set('$internalPromise', null);
+                                suite.executeAfterEach(current, err, options);
                             });
                     },
                     function(err) {
                         //  TODO: the suite run() operation errored out, now
                         //  what?
                     });
-            }, Q.Promise.resolve());
+            }, firstPromise);
 
     //  'Finally' action for our caselist promise chain, run the 'after' hook.
     return result.then(
         function(obj) {
-            suite.executeAfter(obj, options);
+            var lastPromise;
+
+            //  Clear out our built-in Promise. Then, if the 'after' method
+            //  schedules one, we'll check for it and return it.
+            suite.$set('$internalPromise', null);
+
+            try {
+                suite.executeAfter(obj, options);
+            } finally {
+                //  Output summary
+
+                //  The 'after' method scheduled a Promise. Put a 'then()' on it
+                //  that will generate the report *after* it runs and return
+                //  that.
+                if (TP.isValid(lastPromise = suite.$get('$internalPromise'))) {
+                    return lastPromise.then(
+                                    function() {
+                                        suite.report(options);
+                                    });
+                } else {
+                    //  Otherwise, just report.
+                    suite.report(options);
+                }
+            }
         },
         function(err) {
+            suite.$set('$internalPromise', null);
             suite.executeAfter(err, options);
         });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('then',
+function(onFulfilled, onRejected) {
+
+    /**
+     * 'Then's onto our internally-held promise thereby, effectively queuing the
+     * operation.
+     * @param {Function} onFulfilled The Function to run to if the Promise has
+     *     been fulfilled.
+     * @param {Function} onRejected The Function to run to if the Promise has
+     *     been rejected.
+     * @return {TP.test.Suite} The receiver.
+     */
+
+    var startPromise,
+        newPromise;
+
+    if (TP.notValid(startPromise = this.$get('$internalPromise'))) {
+        startPromise = Q.Promise.resolve();
+    }
+
+    newPromise = startPromise.then(onFulfilled, onRejected);
+    this.$set('$internalPromise', newPromise);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('thenPromise',
+function(aFunction) {
+
+    /**
+     * A convenience mechanism to create a Promise with the supplied Function
+     * and 'append it' (if you will) onto the current internally-held Promise.
+     * Note that this operation will also reset the internally-held Promise to
+     * be the new Promise that it creates.
+     * @param {Function} aFunction The Function to run to fulfill the Promise.
+     * @return {TP.test.Suite} The receiver.
+     */
+
+    var startPromise,
+        newPromise,
+        chainedPromise;
+
+    if (TP.notValid(startPromise = this.$get('$internalPromise'))) {
+        startPromise = Q.Promise.resolve();
+    }
+
+    newPromise = Q.Promise(aFunction);
+
+    chainedPromise = startPromise.then(
+        function() {
+            return newPromise;
+        });
+
+    this.$set('$internalPromise', chainedPromise);
+
+    return this;
 });
 
 //  ========================================================================
@@ -1212,7 +1336,7 @@ TP.test.Case.Inst.defineAttribute('suite');
 
 /**
  * The promise that is kept by the test case for use by test case logic as the
- * test executes. Note that this promise reference can change the test case
+ * test executes. Note that this promise reference can change as the test case
  * logic actually adds new Promises. It will be set to the 'last' Promise
  * generated.
  * @type {Promise}
