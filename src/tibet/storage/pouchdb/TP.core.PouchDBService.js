@@ -17,21 +17,21 @@
  *     As part of the TIBET infrastructure of using request/response pairs, a
  *     'default' instance of this service will be instantiated and registered to
  *     handle all TP.sig.PouchDBRequests.
- *     
+ *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'TP.core.PouchDBServiceDefault'.
- *     
+ *
  *     It is possible, however, to manually set up a server. To do so, execute
  *     the following:
- *     
+ *
  *     myPouchDBService = TP.core.PouchDBService.construct(
  *          'myPouchDBServer');
- *     
+ *
  *     You will then need to register your service instance so that it services
  *     TP.sig.PouchDBRequests (otherwise, the TIBET machinery will
  *     instantiate the 'default' instance of TP.core.PouchDBService as
  *     described above and register it to service these kinds of requests):
- *     
+ *
  *     myPouchDBService.register();
  *
  * * @todo
@@ -96,7 +96,6 @@ function(aRequest) {
 
         info,
         data,
-        resultData,
         theDate;
 
     request = TP.request(aRequest);
@@ -137,7 +136,7 @@ function(aRequest) {
                                         TP.str(error)));
                     }
 
-                    request.complete(response);
+                    request.complete(TP.json2js(TP.js2json(response)));
                 });
 
         break;
@@ -179,6 +178,9 @@ function(aRequest) {
                     }
 
                     deleteInfo = TP.hc('_id', id, '_rev', response._rev);
+
+                    //  Make sure to convert it to a POJO before handing it to
+                    //  PouchDB.
                     deleteInfo = deleteInfo.asObject();
 
                     //  Go ahead and try to 'remove' the data.
@@ -198,7 +200,7 @@ function(aRequest) {
 
                             //  We succeeded! Complete the request with the
                             //  response from PouchDB.
-                            request.complete(response);
+                            request.complete(TP.json2js(TP.js2json(response)));
                         });
                 });
 
@@ -213,7 +215,6 @@ function(aRequest) {
                     TP.sc('Trying to retrieve an item from the',
                             ' database:', dbName,
                             ' but had missing the unique id.'));
-
             }
 
             theDB.get(
@@ -229,7 +230,7 @@ function(aRequest) {
                                     TP.str(error)));
                     }
 
-                    request.complete(response);
+                    request.complete(TP.json2js(TP.js2json(response)));
                 });
 
         break;
@@ -250,6 +251,8 @@ function(aRequest) {
                 id,
                 function(error, response) {
 
+                    var resultData;
+
                     //  There was an error - fail the request.
                     if (TP.isValid(error)) {
                         return request.fail(
@@ -259,12 +262,14 @@ function(aRequest) {
                                     TP.str(error)));
                     }
 
-                    resultData = TP.hc(
-                        '_id', response.at('_id'),
-                        'date_created', response.at('date_created'),
-                        'date_modified', response.at('date_modified'));
+                    resultData = TP.json2js(TP.js2json(response));
 
-                    request.complete(response);
+                    resultData = TP.hc(
+                        '_id', resultData.at('_id'),
+                        'date_created', resultData.at('date_created'),
+                        'date_modified', resultData.at('date_modified'));
+
+                    request.complete(resultData);
                 });
 
         break;
@@ -283,7 +288,7 @@ function(aRequest) {
                                     TP.str(error)));
                     }
 
-                    request.complete(response);
+                    request.complete(TP.json2js(TP.js2json(response)));
                 });
 
         break;
@@ -292,7 +297,7 @@ function(aRequest) {
 
             //  Convert the object into a TP.lang.Hash and then into a plain
             //  Object.
-            data = body.asHash().asObject();
+            data = body.asHash();
             theDate = TP.dc();
 
             data.atPut('date_created', theDate);
@@ -300,6 +305,10 @@ function(aRequest) {
 
             //  If there is no id, then do a 'post' and let PouchDB create one.
             if (TP.isEmpty(id)) {
+
+                //  Make sure to convert it to a POJO before handing it to
+                //  PouchDB.
+                data = data.asObject();
 
                 //  Go ahead and try to 'post' the data.
                 theDB.post(
@@ -318,12 +327,16 @@ function(aRequest) {
 
                         //  We succeeded! Complete the request with the
                         //  response from PouchDB.
-                        request.complete(response);
+                        request.complete(TP.json2js(TP.js2json(response)));
                     });
 
             } else {
 
                 data.atPut('_id', id);
+
+                //  Make sure to convert it to a POJO before handing it to
+                //  PouchDB.
+                data = data.asObject();
 
                 theDB.get(
                     id,
@@ -366,7 +379,7 @@ function(aRequest) {
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(response);
+                                request.complete(TP.json2js(TP.js2json(response)));
                             });
                     });
             }
@@ -387,8 +400,12 @@ function(aRequest) {
 
                 //  Convert the object into a TP.lang.Hash and then into a plain
                 //  Object.
-                data = body.asHash().asObject();
+                data = body.asHash();
                 data.atPut('_id', id);
+
+                //  Make sure to convert it to a POJO before handing it to
+                //  PouchDB.
+                data = data.asObject();
 
                 theDB.get(
                     id,
@@ -438,7 +455,7 @@ function(aRequest) {
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(response);
+                                request.complete(TP.json2js(TP.js2json(response)));
                             });
                     });
             }
