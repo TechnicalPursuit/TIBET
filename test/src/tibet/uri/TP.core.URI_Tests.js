@@ -8,6 +8,9 @@
  */
 //  ========================================================================
 
+/* global Q:true
+*/
+
 //  ========================================================================
 //  URI
 //  ========================================================================
@@ -1264,6 +1267,208 @@ function() {
         });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
+//  ------------------------------------------------------------------------
+
+TP.core.PouchDBURL.Inst.describe('getResource',
+function() {
+
+    var testDb;
+
+    this.before(
+        function(suite, options) {
+            var now;
+
+            now = Date.now();
+
+            testDb = new TP.extern.PouchDB('pouch_test');
+
+            this.then(
+                function () {
+                    var pouchPromise;
+
+                    pouchPromise = testDb.put(
+                        {
+                            '_id' : 'author_info',
+                            'date_created' : now,
+                            'date_modified' : now,
+                            'body' :
+                                {
+                                    'firstName' : 'Bill',
+                                    'lastName' : 'Edney'
+                                }
+                        });
+
+                    return new Q(pouchPromise);
+                });
+        });
+
+    //  ---
+
+    this.it('Retrieve resource', function(test, options) {
+
+            var url,
+                subrequest;
+
+            //  A GET request here using the ID causes a RETRIEVE
+            url = TP.uc('pouchdb://pouch_test/author_info');
+
+            //  Mark the URL as 'not loaded' to ensure that it will try
+            //  to reload from the underlying source.
+            url.isLoaded(false);
+
+            this.thenPromise(
+                function(resolver, rejector) {
+                    //  Implied verb here is TP.HTTP_GET. Also, pouchdb://
+                    //  URLs are asynchronous and configure their request to
+                    //  'refresh' automatically.
+                    subrequest = TP.request(TP.hc('uri', url));
+
+                    subrequest.defineMethod('handleRequestSucceeded',
+                        function(aResponse) {
+
+                            var result;
+
+                            result = aResponse.getResult().at('body');
+
+                            test.assert.isTrue(
+                                result.hasKey('firstName'),
+                                TP.sc('Expected that result would have a key of',
+                                        ' \'firstName\' and it doesn\'t'));
+
+                            test.assert.equalTo(
+                                    result.at('firstName'),
+                                    'Bill',
+                                    TP.sc('Expected: ', '"Bill"',
+                                            ' and got instead: ',
+                                            result.at('firstName'), '.'));
+
+                            test.assert.isTrue(
+                                result.hasKey('lastName'),
+                                TP.sc('Expected that result would have a key of',
+                                        ' \'lastName\' and it doesn\'t'));
+
+                            test.assert.equalTo(
+                                    result.at('lastName'),
+                                    'Edney',
+                                    TP.sc('Expected: ', '"Edney"',
+                                            ' and got instead: ',
+                                            result.at('lastName'), '.'));
+
+                            resolver();
+                        });
+                });
+
+            url.getResource(subrequest);
+        });
+
+    //  ---
+
+    this.it('Retrieve resource info', function(test, options) {
+
+            var url,
+                subrequest;
+
+            //  A GET request here using the ID causes a RETRIEVE
+            url = TP.uc('pouchdb://pouch_test/author_info');
+
+            //  Mark the URL as 'not loaded' to ensure that it will try
+            //  to reload from the underlying source.
+            url.isLoaded(false);
+
+            this.thenPromise(
+                function(resolver, rejector) {
+                    //  Implied verb here is TP.HTTP_GET, which means we need to
+                    //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
+                    //  URLs are asynchronous and configure their request to
+                    //  'refresh' automatically.
+                    subrequest = TP.request(TP.hc('uri', url,
+                                                    'verb', TP.HTTP_HEAD));
+
+                    subrequest.defineMethod('handleRequestSucceeded',
+                        function(aResponse) {
+
+                            var result;
+
+                            result = aResponse.getResult();
+
+                            test.assert.isTrue(
+                                result.hasKey('date_created'),
+                                TP.sc('Expected that result would have a key of',
+                                        ' \'date_created\' and it doesn\'t'));
+
+                            test.assert.isTrue(
+                                result.hasKey('date_modified'),
+                                TP.sc('Expected that result would have a key of',
+                                        ' \'date_modified\' and it doesn\'t'));
+
+                            resolver();
+                        });
+                });
+
+            url.getResource(subrequest);
+        });
+
+    //  ---
+
+    this.it('Retrieve resource info', function(test, options) {
+
+            var url,
+                subrequest;
+
+            //  A GET request here using an ID of '_all_docs" causes a RETRIEVE
+            //  of all documents in the DB
+            url = TP.uc('pouchdb://pouch_test/_all_docs');
+
+            //  Mark the URL as 'not loaded' to ensure that it will try
+            //  to reload from the underlying source.
+            url.isLoaded(false);
+
+            this.thenPromise(
+                function(resolver, rejector) {
+                    //  Implied verb here is TP.HTTP_GET, which means we need to
+                    //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
+                    //  URLs are asynchronous and configure their request to
+                    //  'refresh' automatically.
+                    subrequest = TP.request(TP.hc('uri', url));
+
+                    subrequest.defineMethod('handleRequestSucceeded',
+                        function(aResponse) {
+
+                            var result;
+
+                            result = aResponse.getResult();
+
+                            test.assert.isTrue(
+                                result.hasKey('total_rows'),
+                                TP.sc('Expected that result would have a key of \'total_rows\' and',
+                                        ' it doesn\'t'));
+
+                            test.assert.equalTo(
+                                    result.at('total_rows'),
+                                    1,
+                                    TP.sc('Expected: ', '1',
+                                            ' and got instead: ', result.at('total_rows'), '.'));
+
+                            test.assert.isTrue(
+                                result.hasKey('rows'),
+                                TP.sc('Expected that result would have a key of \'rows\' and',
+                                        ' it doesn\'t'));
+
+                            resolver();
+                        });
+                });
+
+            url.getResource(subrequest);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+            TP.extern.PouchDB.destroy('pouch_test');
+        });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
@@ -1275,6 +1480,7 @@ TP.core.JSURI.Inst.runTestSuites();
 TP.core.HTTPURL.Inst.runTestSuites();
 TP.core.JSONPURL.Inst.runTestSuites();
 TP.core.LocalDBURL.Inst.runTestSuites();
+TP.core.PouchDBURL.Inst.runTestSuites();
 */
 
 //  ------------------------------------------------------------------------
