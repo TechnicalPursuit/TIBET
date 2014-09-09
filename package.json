@@ -56,7 +56,7 @@
         "minimist": "*",
         "node-forge": "TechnicalPursuit/forge",
         "phantomjs": "*",
-        "pouchdb": "TechnicalPursuit/pouchdb",
+        "pouchdb": "TechnicalPursuit/pouchdb#3.0.5",
         "q": "TechnicalPursuit/q#v1",
         "readline-sync": "*",
         "shelljs": "TechnicalPursuit/shelljs",
