@@ -3608,6 +3608,8 @@ NativeTypeStub.prototype.set =
 };
 
 //  ---
+//  Reflection methods
+//  ---
 
 NativeTypeStub.prototype.getMethod =
     function(aName, aTrack) {
@@ -3670,6 +3672,8 @@ NativeTypeStub.prototype.getMethodInfoFor =
 };
 
 //  ---
+//  Testing methods
+//  ---
 
 NativeTypeStub.prototype.describe =
     function(suiteName, suiteFunc) {
@@ -3688,6 +3692,51 @@ NativeTypeStub.prototype.describe =
      */
 
     return TP.test.Suite.addSuite(this.$$target, suiteName, suiteFunc);
+};
+
+//  ---
+
+NativeTypeStub.prototype.getTestFixture =
+    function(options) {
+
+    /**
+     * Creates and returns test fixture data suitable for the receiver. This
+     * method is used to produce "the object under test" for test cases that
+     * target the receiver. The default is the receiver itself.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {Object} A test fixture for the receiver.
+     */
+
+    return this.$$target;
+};
+
+//  ---
+
+NativeTypeStub.prototype.getTestSuites =
+    function(options) {
+
+    /**
+     * Returns the dictionary containing test suites for the receiver.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {TP.lang.Hash} A hash keyed by the receiver's ID.
+     */
+
+    return TP.test.Suite.getTargetSuites(this.$$target, options);
+};
+
+//  ---
+
+NativeTypeStub.prototype.runTestSuites =
+    function(options) {
+
+    /**
+     * Runs the test suites associated with the receiver. Options which help
+     * configure and control the testing process can be provided.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {Promise} A Promise to be used as necessary.
+     */
+
+    return TP.test.Suite.runTargetSuites(this.$$target, options);
 };
 
 //  ---
@@ -3833,6 +3882,8 @@ NativeInstStub.prototype.set =
 };
 
 //  ---
+//  Reflection methods
+//  ---
 
 NativeInstStub.prototype.getMethod =
     function(aName, aTrack) {
@@ -3895,6 +3946,8 @@ NativeInstStub.prototype.getMethodInfoFor =
 };
 
 //  ---
+//  Testing methods
+//  ---
 
 NativeInstStub.prototype.describe =
     function(suiteName, suiteFunc) {
@@ -3913,6 +3966,51 @@ NativeInstStub.prototype.describe =
      */
 
     return TP.test.Suite.addSuite(this.$$target, suiteName, suiteFunc);
+};
+
+//  ---
+
+NativeInstStub.prototype.getTestFixture =
+    function(options) {
+
+    /**
+     * Creates and returns test fixture data suitable for the receiver. This
+     * method is used to produce "the object under test" for test cases that
+     * target the receiver. The default is the receiver itself.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {Object} A test fixture for the receiver.
+     */
+
+    return this.$$target;
+};
+
+//  ---
+
+NativeInstStub.prototype.getTestSuites =
+    function(options) {
+
+    /**
+     * Returns the dictionary containing test suites for the receiver.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {TP.lang.Hash} A hash keyed by the receiver's ID.
+     */
+
+    return TP.test.Suite.getTargetSuites(this.$$target, options);
+};
+
+//  ---
+
+NativeInstStub.prototype.runTestSuites =
+    function(options) {
+
+    /**
+     * Runs the test suites associated with the receiver. Options which help
+     * configure and control the testing process can be provided.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {Promise} A Promise to be used as necessary.
+     */
+
+    return TP.test.Suite.runTargetSuites(this.$$target, options);
 };
 
 //  ---
