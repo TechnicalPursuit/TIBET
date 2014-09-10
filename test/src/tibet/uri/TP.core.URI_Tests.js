@@ -1247,7 +1247,7 @@ function() {
             TP.sc('Expected that result would have a key of \'total_rows\' and',
                     ' it doesn\'t'));
 
-        this.assert.isTrue(
+        this.assert.equalTo(
                 obj.at('total_rows'),
                 1,
                 TP.sc('Expected: ', '1',
