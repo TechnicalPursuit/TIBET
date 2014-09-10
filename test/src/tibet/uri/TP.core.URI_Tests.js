@@ -1144,7 +1144,7 @@ function() {
                             }
                     });
 
-            storage.atPut('TIBET_LOCAL_DB_TEST', storageStr);
+            storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
         });
 
     //  ---
@@ -1263,7 +1263,7 @@ function() {
 
     this.after(
         function() {
-            storage.removeKey('TIBET_LOCAL_DB_TEST');
+            storage.removeKey(TP.LOCALSTORAGE_DB_NAME);
         });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
