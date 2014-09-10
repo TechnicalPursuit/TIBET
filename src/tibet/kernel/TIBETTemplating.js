@@ -243,7 +243,7 @@ function(tokenList, templateName, sourceVarNames) {
 
                 //  It's a repeating format
                 retVal = 'TP.isFunction(arg) ? arg() : ' +
-                            '(TP.format(TP.ifUndefined(arg, ' +
+                            '(TP.format(TP.ifInvalid(arg, ' +
                                         '\'{{' + argName + '}}\'),' +
                                 ' "' + argFormat + '", ' +
                                 'params.atPut(\'repeat\', true)))';
@@ -251,7 +251,7 @@ function(tokenList, templateName, sourceVarNames) {
 
                 //  It's a non-repeating format
                 retVal = 'TP.isFunction(arg) ? arg() : ' +
-                            '(TP.format(TP.ifUndefined(arg, ' +
+                            '(TP.format(TP.ifInvalid(arg, ' +
                                         '\'{{' + argName + '}}\'),' +
                                 ' "' + argFormat + '", params))';
             }
@@ -259,7 +259,7 @@ function(tokenList, templateName, sourceVarNames) {
 
             //  No format - just the value 'formatted' as a String
             retVal = 'TP.isFunction(arg) ? arg() : ' +
-                        '(TP.format(TP.ifUndefined(arg, ' +
+                        '(TP.format(TP.ifInvalid(arg, ' +
                                         '\'{{' + argName + '}}\'),' +
                                 ' "' + 'String' + '", " "))';
         }
