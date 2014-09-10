@@ -2701,9 +2701,9 @@ function() {
 
     names = this.getSupertypeSignalNames();
 
-    //  If the receiver isn't already 'TP.sig.Change' itself, add
+    //  If the list of names doesn't already contain 'TP.sig.Change' itself, add
     //  'Change' as a signal name.
-    if (this.getSignalName() !== 'TP.sig.Change') {
+    if (!names.contains('TP.sig.Change')) {
         names.unshift('TP.sig.Change');
     }
 
