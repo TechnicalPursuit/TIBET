@@ -15,6 +15,8 @@
 'use strict';
 
 var CLI = require('./_cli');
+var sh = require('shelljs');
+var dom = require('xmldom');
 var beautify = require('js-beautify').js_beautify;
 
 
@@ -68,6 +70,12 @@ Cmd.prototype.USAGE = 'tibet context';
  */
 Cmd.prototype.execute = function() {
     var context;
+    var text;
+    var doc;
+    var parser;
+    var configs;
+
+    parser = new dom.DOMParser();
 
     context = {};
 
@@ -80,6 +88,25 @@ Cmd.prototype.execute = function() {
     context['~'] = CLI.getAppHead();
     context['~app'] = CLI.getAppRoot();
     context['~lib'] = CLI.getLibRoot();
+
+    context.boot = {};
+    context.boot.package = CLI.getcfg('boot.package') ||
+        '~app_cfg/standard.xml';    // NOTE the default here must be in sync
+                                    // with default value from the boot system.
+
+    text = sh.cat(CLI.expandPath(context.boot.package));
+    if (text) {
+        doc = parser.parseFromString(text);
+        configs = doc.getElementsByTagName('config');
+        configs = Array.prototype.slice.call(configs, 0);
+        configs = configs.filter(function(config) {
+            return CLI.notEmpty(config.getAttribute('id'));
+        });
+
+        context.boot.configs = configs.map(function(config) {
+            return config.getAttribute('id');
+        }).sort();
+    }
 
     this.info(beautify(JSON.stringify(context)));
 };

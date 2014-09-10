@@ -84,7 +84,8 @@ Cmd.prototype.HELP =
 
 '--package    the file path to the package to process.\n' +
 '--config     the name of an individual config to process.\n' +
-'--all        process all config tags in the package recursively.\n\n' +
+'--all        process all config tags in the package recursively.\n' +
+'--missing    output a list of missing assets of all types.\n\n' +
 
 '--include    a space-separated list of asset tags to include.\n' +
 '--exclude    a space-separated list of asset tags to include.\n\n' +
@@ -103,7 +104,7 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['all', 'scripts', 'styles', 'images', 'nodes'],
+        boolean: ['all', 'scripts', 'styles', 'images', 'nodes', 'missing'],
         string: ['package', 'config', 'include', 'exclude', 'phase']
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -115,7 +116,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  */
 Cmd.prototype.USAGE =
     'tibet package [--package <package>] [--config <cfg>] [--all]\n' +
-    '\t[--include <asset names>] [--exclude <asset names>]\n' +
+    '\t[--missing] [--include <asset names>] [--exclude <asset names>]\n' +
     '\t[--scripts] [--styles] --[images] [--phase <phase>] [--nodes]';
 
 
@@ -149,6 +150,20 @@ Cmd.prototype.execute = function() {
     var list;       // The result list of asset references.
 
     this.pkgOpts = this.options;
+
+    // If we're doing a missing file scan we need to override/assign values to
+    // the other parameters to ensure we get a full list of known assets from
+    // the package being scanned.
+    if (this.options.missing) {
+        this.warn('scanning for missing files...');
+        this.options.all = true;
+        this.options.images = true;
+        this.options.scripts = true;
+        this.options.style = true;
+        this.options.phase = 'all';
+        delete this.options.include;
+        delete this.options.exclude;
+    }
 
     // If silent isn't explicitly set but we're doing a full expansion turn
     // silent on so we skip duplicate resource warnings.
@@ -203,16 +218,68 @@ Cmd.prototype.execute = function() {
  */
 Cmd.prototype.executeForEach = function(list) {
     var cmd;
+    var sh;
+    var buildDir;
+    var dirs;
+    var files;
+    var cwd;
+    var count;
 
     cmd = this;
 
-    list.forEach(function(item) {
-        if (cmd.pkgOpts.nodes) {
-            cmd.info(serializer.serializeToString(item));
-        } else {
-            cmd.info(item);
+    if (!this.options.missing) {
+        list.forEach(function(item) {
+            if (cmd.pkgOpts.nodes) {
+                cmd.info(serializer.serializeToString(item));
+            } else {
+                cmd.info(item);
+            }
+        });
+        return;
+    }
+
+    // If we're doing a missing file check we need to compare the content of our
+    // list with the list of all known files in the application's various source
+    // directories.
+    sh = require('shelljs');
+    buildDir = CLI.expandPath('~app_build').replace(process.cwd() + '/', '');
+    dirs = sh.find('.').filter(function(file) {
+        return sh.test('-d', file) &&
+            file !== '.' &&                     // remove current dir
+            !file.match(/node_modules/) &&      // remove npm dir
+            !file.match(/TIBET-INF/) &&         // remove tibet dir
+            !file.match(/\//) &&                // remove subdirs
+            file !== buildDir;                  // remove build dir
+    });
+
+    files = sh.find(dirs).filter(function(file) {
+        return !sh.test('-d', file) &&
+            !file.match(/img\/boot/);
+    });
+
+    // Package files are provided in fully expanded form to avoid problems
+    // with potentially different virtual path prefixing etc. We need to
+    // adapt the local file references accordingly.
+    cwd = process.cwd();
+    files = files.map(function(file) {
+        return path.join(process.cwd(), file);
+    });
+
+    count = 0;
+    files.forEach(function(item) {
+        if (list.indexOf(item) === -1) {
+            cmd.log(item);
+            count++;
         }
     });
+
+    if (count > 0) {
+        this.info('' + count + ' files not referenced in package.');
+    } else {
+        this.info('All files referenced at least once in package.');
+    }
+
+    return;
 };
 
 

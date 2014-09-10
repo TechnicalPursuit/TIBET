@@ -54,11 +54,14 @@ Cmd.prototype.HELP =
 'based on Connect and/or Express for use during development. If\n' +
 'the current project contains either a server.js file or can invoke\n' +
 '\'npm start\' this command will try to start that server.\n\n' +
+
 'The optional --port parameter lets you specify a port other than\n' +
 'the default (which is port 1407).\n\n' +
+
 'When a local server.js file is used it can be augmented with code\n' +
 'for TIBET Development Server (TDS) functionality. Use require()\n' +
 'with a path of \'tibet/etc/tds-middleware\' to load that module.\n\n' +
+
 'If your server includes TDS features you can optionally add\n' +
 'command-line parameters to provide the various modules of the TDS\n' +
 'with config data. Use \'tds-{module}\' plus \'-{var}\' in these\n' +
