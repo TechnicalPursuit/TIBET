@@ -54,15 +54,16 @@ Cmd.prototype.HELP =
 'Provides control over HTML5 application manifests and their activation.\n\n' +
 
 'TIBET projects include a manifest file named {appname}.appcache which is\n' +
-'disabled by default, but which can easily be activated or expanded upon.\n' +
-'The content of this file includes comment sections which the tibet cache\n' +
-'command uses as delimiters so it can update the file based on directory\n' +
-'scans as needed. The TIBET-specific section includes references to files\n' +
-'commonly cached such as the various minified TIBET builds, the TIBET hook\n' +
-'file, and the TIBET init file (responsible for configuration/booting.\n\n' +
+'disabled by default, but which can easily be activated or expanded upon.\n\n' +
 
-'If you edit the appcache file manually you should make sure the delimiters\n' +
-'are retained so the tibet cache command can operate effectively.\n\n' +
+'For simplicity this command expects only one CACHE: section, or none. The\n' +
+'use of multiple CACHE: headers is not supported. The default template is\n' +
+'populated with a single section header for cache, network, and fallback.\n\n' +
+
+'Content checks are done against the files in ~app_build and ~lib_build.\n' +
+'If your application should cache files outside of those directories you\n' +
+'must add those entries manually. This command never removes entries so\n' +
+'you can feel confident both editing the cache and using this command.\n\n' +
 
 'The --file option provides a way to point to an application manifest other\n' +
 'than {appname}.appcache. You will need this if you renamed the default app\n' +
