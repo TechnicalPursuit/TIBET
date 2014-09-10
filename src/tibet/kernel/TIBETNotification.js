@@ -2701,9 +2701,9 @@ function() {
 
     names = this.getSupertypeSignalNames();
 
-    //  If the receiver isn't already 'TP.sig.Change' itself, add
+    //  If the list of names doesn't already contain 'TP.sig.Change' itself, add
     //  'Change' as a signal name.
-    if (this.getSignalName() !== 'TP.sig.Change') {
+    if (!names.contains('TP.sig.Change')) {
         names.unshift('TP.sig.Change');
     }
 
@@ -4122,6 +4122,17 @@ aSigEntry, checkTarget) {
             //  under observations without affecting the signal map
             //  itself.
             handler = TP.byOID(item.handler);
+
+            //  a side effect of having objects registered under 'tibet:urn's is
+            //  that the handler can't be the TIBETURN URI itself. Therefore, if
+            //  the item's handler starts with 'tibet:urn' and the handler
+            //  returned via 'TP.byOID' is the origin object *itself*, (and
+            //  there's no sense in the object informing itself), then go ahead
+            //  and use the URI object as the handler object.
+            if (TP.regex.TIBET_URN.test(item.handler) &&
+                handler === originalOrigin) {
+                handler = TP.uc(item.handler);
+            }
 
             if (TP.notValid(handler)) {
                 TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?

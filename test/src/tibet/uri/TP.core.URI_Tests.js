@@ -1144,7 +1144,7 @@ function() {
                             }
                     });
 
-            storage.atPut('TIBET_LOCAL_DB_TEST', storageStr);
+            storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
         });
 
     //  ---
@@ -1247,7 +1247,7 @@ function() {
             TP.sc('Expected that result would have a key of \'total_rows\' and',
                     ' it doesn\'t'));
 
-        this.assert.isTrue(
+        this.assert.equalTo(
                 obj.at('total_rows'),
                 1,
                 TP.sc('Expected: ', '1',
@@ -1263,7 +1263,7 @@ function() {
 
     this.after(
         function() {
-            storage.removeKey('TIBET_LOCAL_DB_TEST');
+            storage.removeKey(TP.LOCALSTORAGE_DB_NAME);
         });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -1468,6 +1468,591 @@ function() {
             TP.extern.PouchDB.destroy('pouch_test');
         });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURN.Inst.describe('setResource',
+function() {
+
+    this.it('Set resource to object with pre-existing ID', function(test, options) {
+        var url,
+            val,
+            obj;
+
+        obj = TP.ac(1, 2, 3);
+
+        //  For now, the ID and OID of the source object should be the same
+        this.assert.equalTo(
+                val = obj.getID(),
+                obj.$getOID(),
+                TP.sc('Expected: ', '"', val, '"',
+                        ' and got instead: ', obj.$getOID(), '.'));
+
+        val = 'testData';
+
+        //  Now, we set the ID of the source object
+        obj.setID(val);
+
+        this.assert.equalTo(
+                obj.getID(),
+                val,
+                TP.sc('Expected: ', '"', val, '"',
+                        ' and got instead: ', obj.getID(), '.'));
+
+        //  Create a TIBET URN and set it's resource to the source object
+        url = TP.uc(TP.TIBET_URN_PREFIX + 'theData');
+        url.setResource(obj);
+
+        obj = url.getResource();
+
+        //  At this point, the ID of the source object (since it was set
+        //  *before* it was handed to the URN) should be different than the URN
+        //  identifier.
+        this.assert.isNotEqualTo(
+                obj.getID(),
+                'theData',
+                TP.sc('Expected: ', '"', obj.getID(), '"',
+                        ' and got instead: ', 'theData', '.'));
+    });
+
+    this.it('Set resource to object with not pre-existing ID', function(test, options) {
+        var url,
+            val,
+            obj;
+
+        obj = TP.ac(1, 2, 3);
+
+        //  For now, the ID and OID of the source object should be the same
+        this.assert.equalTo(
+                val = obj.getID(),
+                obj.$getOID(),
+                TP.sc('Expected: ', '"', val, '"',
+                        ' and got instead: ', obj.$getOID(), '.'));
+
+        //  Create a TIBET URN and set it's resource to the source object
+        url = TP.uc(TP.TIBET_URN_PREFIX + 'theData');
+        url.setResource(obj);
+
+        obj = url.getResource();
+
+        //  The object's ID should still be the same as it's OID - the URN shouldn't
+        //  have altered it
+        this.assert.equalTo(
+                val = obj.getID(),
+                obj.$getOID(),
+                TP.sc('Expected: ', '"', obj.$getOID(), '"',
+                        ' and got instead: ', val, '.'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.describe('setResource',
+function() {
+
+    this.it('Set resource to object with virtual URI', function(test, options) {
+
+        var url,
+            obj;
+
+        url = TP.uc('~app_tsh/xml_test.tsh');
+        url.setResource('foo');
+
+        obj = url.getResource();
+
+        this.assert.equalTo(
+                obj,
+                'foo',
+                TP.sc('Expected: ', '"foo"',
+                        ' and got instead: ', obj, '.'));
+    });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.core.LocalDBURL.Inst.describe('setResource',
+function() {
+
+    this.it('Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+
+        var url,
+
+            saveResult,
+
+            obj;
+
+        //  A PUT request here using the ID causes an UPDATE
+
+        url = TP.uc('localdb://local_test/author_info');
+
+        //  By default, localdb:// URLs are synchronous and configure their
+        //  request to 'refresh' automatically.
+
+        url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
+        saveResult = url.save(TP.hc('verb', TP.HTTP_PUT)).get('result');
+
+        this.assert.isValid(
+            saveResult.at('ok'),
+            TP.sc('Expected a result with an \'ok\' property'));
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        obj = url.getResource().at('_body');
+
+        this.assert.isTrue(
+            obj.hasKey('firstName'),
+            TP.sc('Expected that result would have a key of \'firstName\' and',
+                    ' it doesn\'t'));
+
+        this.assert.equalTo(
+                obj.at('firstName'),
+                'Scott',
+                TP.sc('Expected: ', '"Scott"',
+                        ' and got instead: ', obj.at('firstName'), '.'));
+
+        this.assert.isTrue(
+            obj.hasKey('lastName'),
+            TP.sc('Expected that result would have a key of \'lastName\' and',
+                    ' it doesn\'t'));
+
+        this.assert.equalTo(
+                obj.at('lastName'),
+                'Shattuck',
+                TP.sc('Expected: ', '"Shattuck"',
+                        ' and got instead: ', obj.at('lastName'), '.'));
+    });
+
+    this.it('Set resource using POST (computed id means CREATE)', function(test, options) {
+
+        var url,
+            saveResult,
+            obj;
+
+        //  A POST request here without the ID causes a CREATE and an
+        //  auto-generated ID
+
+        url = TP.uc('localdb://local_test/');
+
+        //  Implied verb here is TP.HTTP_POST. Also, by default, localdb:// URLs
+        //  are synchronous and configure their request to 'refresh'
+        //  automatically.
+
+        url.setResource(TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker'));
+        saveResult = url.save().get('result');
+
+        this.assert.isValid(
+            saveResult.at('ok'),
+            TP.sc('Expected a result with an \'ok\' property'));
+
+        //  Compute a URL using the '_id' that was generated
+        url = TP.uc('localdb://local_test/' + saveResult.at('_id'));
+
+        obj = url.getResource().at('_body');
+
+        this.assert.isTrue(
+            obj.hasKey('firstName'),
+            TP.sc('Expected that result would have a key of \'firstName\' and',
+                    ' it doesn\'t'));
+
+        this.assert.equalTo(
+                obj.at('firstName'),
+                'Sylvia',
+                TP.sc('Expected: ', '"Sylvia"',
+                        ' and got instead: ', obj.at('firstName'), '.'));
+
+        this.assert.isTrue(
+            obj.hasKey('lastName'),
+            TP.sc('Expected that result would have a key of \'lastName\' and',
+                    ' it doesn\'t'));
+
+        this.assert.equalTo(
+                obj.at('lastName'),
+                'Hacker',
+                TP.sc('Expected: ', '"Hacker"',
+                        ' and got instead: ', obj.at('lastName'), '.'));
+    });
+
+    this.it('Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+
+        var url,
+
+            nukeResult,
+
+            obj;
+
+        //  A DELETE request here with the ID causes a DELETE
+
+        url = TP.uc('localdb://local_test/author_info');
+
+        //  By default, localdb:// URLs are synchronous and configure their
+        //  request to 'refresh'.
+
+        url.setResource(null);
+        nukeResult = url.nuke(TP.hc('verb', TP.HTTP_DELETE)).get('result');
+
+        this.assert.isValid(
+            nukeResult.at('ok'),
+            TP.sc('Expected a result with an \'ok\' property'));
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        obj = url.getResource();
+
+        this.assert.isNotValid(
+            obj,
+            TP.sc('Expected that result would not be valid'));
+    });
+
+    this.it('Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+        var url,
+
+            nukeResult,
+
+            obj;
+
+        //  A DELETE request here without the ID causes a DELETE (of the whole
+        //  DB)
+
+        url = TP.uc('localdb://local_test');
+
+        //  By default, localdb:// URLs are synchronous and configure their
+        //  request to 'refresh'.
+
+        url.setResource(null);
+        nukeResult = url.nuke(TP.hc('verb', TP.HTTP_DELETE)).get('result');
+
+        this.assert.isValid(
+            nukeResult.at('ok'),
+            TP.sc('Expected a result with an \'ok\' property'));
+
+        //  Mark the URL as 'not loaded' to ensure that it will try to reload
+        //  from the underlying source.
+        url.isLoaded(false);
+
+        obj = url.getResource();
+
+        this.assert.isNotValid(
+            obj,
+            TP.sc('Expected that result would not be valid'));
+    });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.core.PouchDBURL.Inst.describe('setResource',
+function() {
+
+    var testDb;
+
+    this.before(
+        function(suite, options) {
+            var now;
+
+            now = Date.now();
+
+            testDb = new TP.extern.PouchDB('pouch_test');
+
+            this.then(
+                function () {
+                    var pouchPromise;
+
+                    pouchPromise = testDb.put(
+                        {
+                            '_id' : 'author_info',
+                            'date_created' : now,
+                            'date_modified' : now,
+                            'body' :
+                                {
+                                    'firstName' : 'Bill',
+                                    'lastName' : 'Edney'
+                                }
+                        });
+
+                    return new Q(pouchPromise);
+                });
+        });
+
+    //  ---
+
+    this.it('Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+
+        var url,
+            subrequest;
+
+            //  A PUT request here using the ID causes an UPDATE
+
+            url = TP.uc('pouchdb://pouch_test/author_info');
+
+            //  pouchdb:// URLs are asynchronous
+            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_PUT));
+
+            url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
+
+            subrequest.defineMethod('handleRequestSucceeded',
+                function (aResponse) {
+
+                    var result;
+
+                    result = aResponse.getResult();
+
+                    test.assert.isValid(
+                        result.at('ok'),
+                        TP.sc('Expected a result with an \'ok\' property'));
+                });
+
+            url.save(subrequest);
+        });
+
+    //  ---
+
+    this.it('Set resource using POST (computed id means CREATE)', function(test, options) {
+
+        var url,
+            subrequest;
+
+            //  A POST request here without the ID causes a CREATE and an
+            //  auto-generated ID
+
+            url = TP.uc('pouchdb://pouch_test');
+
+            //  pouchdb:// URLs are asynchronous
+            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_POST));
+
+            url.setResource(TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker'));
+
+            subrequest.defineMethod('handleRequestSucceeded',
+                function (aResponse) {
+
+                    var result;
+
+                    result = aResponse.getResult();
+
+                    test.assert.isValid(
+                        result.at('ok'),
+                        TP.sc('Expected a result with an \'ok\' property'));
+                });
+
+            url.save(subrequest);
+        });
+
+    //  ---
+
+    this.it('Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+
+            var url,
+                subrequest;
+
+            //  A DELETE request here with the ID causes a DELETE
+
+            url = TP.uc('pouchdb://pouch_test/author_info');
+
+            //  pouchdb:// URLs are asynchronous
+            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
+
+            url.setResource(null);
+
+            subrequest.defineMethod('handleRequestSucceeded',
+                function (aResponse) {
+
+                    var result;
+
+                    result = aResponse.getResult();
+
+                    test.assert.isValid(
+                        result.at('ok'),
+                        TP.sc('Expected a result with an \'ok\' property'));
+
+                });
+
+            url.nuke(subrequest);
+        });
+
+    //  ---
+
+    this.it('Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+
+            var url,
+                subrequest;
+
+            //  A DELETE request here without the ID causes a DELETE (of the
+            //  whole DB)
+
+            url = TP.uc('pouchdb://pouch_test');
+
+            //  pouchdb:// URLs are asynchronous
+            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
+
+            url.setResource(null);
+
+            subrequest.defineMethod('handleRequestSucceeded',
+                function (aResponse) {
+
+                    var result;
+
+                    result = aResponse.getResult();
+
+                    test.assert.isValid(
+                        result.at('ok'),
+                        TP.sc('Expected a result with an \'ok\' property'));
+                });
+
+            url.nuke(subrequest);
+        });
+
+    //  ---
+
+    this.after(
+        function(suite, options) {
+            TP.extern.PouchDB.destroy('pouch_test');
+        });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURN.Inst.describe('observe',
+function() {
+
+    this.it('JSON data test', function(test, options) {
+        var handlers,
+
+            modelObj,
+
+            jsonURI1,
+            uriObsFunction1,
+            jsonURI2,
+            uriObsFunction2,
+            jsonURI3,
+            uriObsFunction3,
+
+            jsonPath,
+            val;
+
+        handlers = TP.hc();
+
+        modelObj = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
+        modelObj.setID('jsonData');
+
+        //  ---
+
+        jsonURI1 = TP.uc('urn:tibet:jsonData');
+        jsonURI1.setResource(modelObj);
+
+        uriObsFunction1 = function (aSig) {
+            handlers.atPut('handler1', true);
+        };
+        uriObsFunction1.observe(jsonURI1, 'TP.sig.ValueChange');
+
+        jsonURI2 = TP.uc('urn:tibet:jsonData#tibet(foo.1)');
+
+        uriObsFunction2 = function (aSig) {handlers.atPut('handler2', true);};
+        uriObsFunction2.observe(jsonURI2, 'TP.sig.ValueChange');
+
+        jsonURI3 = TP.uc('urn:tibet:jsonData#tibet(foo.2)');
+
+        uriObsFunction3 = function (aSig) {handlers.atPut('handler3', true);};
+        uriObsFunction3.observe(jsonURI3, 'TP.sig.ValueChange');
+
+        //  ---
+
+        jsonPath = TP.apc('foo.1');
+
+        //  Note that we do not need to pass 'true' as the 3rd parameter here,
+        //  since the model object will have configured itself to signal *Change
+        //  when it was observed for Change signals.
+        jsonPath.executeSet(modelObj, '3rd');
+
+        //  The handler hash should have a 'true' flag for handler1
+        test.assert.contains(handlers, 'handler1', 'It went bad');
+
+        //  The handler hash should have a 'true' flag for handler2
+        test.assert.contains(handlers, 'handler2', 'It went bad');
+
+        //  But *not* for handler3 (it's observing at a similar level in the
+        //  chain, but on a different branch)
+        test.assert.notContains(handlers, 'handler3', 'It went bad');
+
+        val = jsonPath.executeGet(modelObj);
+
+        this.assert.equalTo(
+                    val,
+                    '3rd',
+                    TP.join('It went bad'));
+    });
+
+    this.it('XML data test', function(test, options) {
+        var handlers,
+
+            modelObj,
+
+            xmlURI1,
+            uriObsFunction1,
+            xmlURI2,
+            uriObsFunction2,
+            xmlURI3,
+            uriObsFunction3,
+
+            xmlPath,
+            result,
+            val;
+
+        handlers = TP.hc();
+
+        modelObj = TP.tpdoc('<emp><lname>Edney</lname></emp>');
+        modelObj.setID('xmlData');
+
+        //  ---
+
+        xmlURI1 = TP.uc('urn:tibet:xmlData');
+        xmlURI1.setResource(modelObj);
+
+        uriObsFunction1 = function (aSig) {handlers.atPut('handler1', true);};
+        uriObsFunction1.observe(xmlURI1, 'TP.sig.ValueChange');
+
+        xmlURI2 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
+
+        uriObsFunction2 = function (aSig) {handlers.atPut('handler2', true);};
+        uriObsFunction2.observe(xmlURI2, 'TP.sig.ValueChange');
+
+        xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
+
+        uriObsFunction3 = function (aSig) {handlers.atPut('handler3', true);};
+        uriObsFunction3.observe(xmlURI3, 'TP.sig.ValueChange');
+
+        //  ---
+
+        xmlPath = TP.apc('/emp/lname').set('shouldCollapse', true);
+
+        //  Note that we do not need to pass 'true' as the 3rd parameter here,
+        //  since the model object will have configured itself to signal *Change
+        //  when it was observed for Change signals.
+        xmlPath.executeSet(modelObj, 'Smith');
+
+        //  The handler hash should have a 'true' flag for handler1
+        this.assert.contains(handlers, 'handler1', 'It went bad');
+
+        //  The handler hash should have a 'true' flag for handler2
+        this.assert.contains(handlers, 'handler2', 'It went bad');
+
+        //  But *not* for handler3 (it's observing at a similar level in the
+        //  chain, but on a different branch)
+        this.assert.notContains(handlers, 'handler3', 'It went bad');
+
+        //  This will return a single native Element
+        result = xmlPath.executeGet(modelObj);
+
+        //  This will return its text value
+        val = TP.val(result);
+
+        this.assert.equalTo(
+                    val,
+                    'Smith',
+                    TP.join('It went bad'));
+    });
+});
 
 //  ========================================================================
 //  Run those babies!
