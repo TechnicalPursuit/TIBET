@@ -513,8 +513,8 @@ function(tokenList, templateName, sourceVarNames) {
             //  If there were arguments supplied, then 'data' will be a hash of
             //  'data' (the aspectName) and 'args' (the arguments to the control
             //  block)
-            if (TP.isValid(argNames = data.at('args'))) {
-                aspectName = data.at('data');
+            if (TP.isValid(argNames = data.args)) {
+                aspectName = data.data;
                 argNames = argNames.split(',');
             } else {
                 //  Otherwise, the aspectName *is* the data and we default the
