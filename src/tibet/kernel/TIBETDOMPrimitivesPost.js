@@ -480,7 +480,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         i,
         oldScript,
         newScript,
-        
+
         allElems;
 
     if (!TP.isXMLDocument(aDocument)) {
@@ -1310,7 +1310,7 @@ function(anElement) {
         docXMLNSAttrs,
 
         elemXMLNSAttrs,
-        
+
         ancestors;
 
     if (!TP.isElement(anElement)) {
@@ -1624,7 +1624,7 @@ function(anElement, includeDefault) {
      */
 
     var xmlnsAttrs,
-    
+
         len,
         i,
 
@@ -2721,6 +2721,8 @@ function(anElement, attributeName, checkAttrNSURI) {
         nsuri,
         attrNode,
 
+        docElem,
+
         prefixes,
 
         attributes,
@@ -2779,11 +2781,13 @@ function(anElement, attributeName, checkAttrNSURI) {
 
             //  all we can do now is "scan" the attributes by nsuri, but we
             //  can shortcut that if the only registered prefix for that URI
-            //  matches the one we've already checked...
-            prefixes = TP.nodeGetNSPrefixes(
-                            TP.elem(TP.nodeGetDocument(anElement)),
-                            nsuri,
-                            false);
+            //  matches the one we've already checked... but first, we check to
+            //  make sure we have a document element.
+            if (TP.isElement(docElem =
+                                TP.elem(TP.nodeGetDocument(anElement)))) {
+
+                prefixes = TP.nodeGetNSPrefixes(docElem, nsuri, false);
+            }
 
             //  If the prefixes weren't empty, but there was only one and it
             //  was the one we already checked, then bail out here.
@@ -2820,7 +2824,8 @@ function(anElement, attributeName, checkAttrNSURI) {
     //  prefix (and the attribute was authored using a mindset that presumed
     //  that attributes would get the namespaces of their ownerElement --
     //  which they don't)
-    if (TP.isAttributeNode(attrNode = anElement.getAttributeNode(attributeName))) {
+    if (TP.isAttributeNode(attrNode =
+                            anElement.getAttributeNode(attributeName))) {
         return attrNode;
     } else {
         //  have to know the prefix so we can see if that's the prefix on
@@ -5760,7 +5765,7 @@ function(aNode, aPath, autoCollapse, createAttr) {
         attrName,
 
         elem,
-        
+
         result;
 
     //  NOTE that there's no testing of parameters here; we assume an entry
