@@ -223,6 +223,7 @@ Cmd.prototype.executeForEach = function(list) {
     var dirs;
     var files;
     var cwd;
+    var count;
 
     cmd = this;
 
@@ -264,11 +265,19 @@ Cmd.prototype.executeForEach = function(list) {
         return path.join(process.cwd(), file);
     });
 
+    count = 0;
     files.forEach(function(item) {
         if (list.indexOf(item) === -1) {
             cmd.log(item);
+            count++;
         }
     });
+
+    if (count > 0) {
+        this.info('' + count + ' files not referenced in package.');
+    } else {
+        this.info('All files referenced at least once in package.');
+    }
 
     return;
 };
