@@ -8148,7 +8148,14 @@ function(anObj) {
         return false;
     }
 
+    //  Sometimes we get a Document that doesn't have a document element
+    if (!TP.isElement(anObj.documentElement)) {
+        anObj.isXHTML = false;
+        return false;
+    }
+
     if (anObj.documentElement.tagName.toLowerCase() !== 'html') {
+        anObj.isXHTML = false;
         return false;
     }
 
@@ -8511,6 +8518,12 @@ function(anObj) {
         return false;
     }
 
+    //  Sometimes we get a Document that doesn't have a document element
+    if (!TP.isElement(anObj.documentElement)) {
+        anObj.isXHTML = false;
+        return false;
+    }
+
     //  If the document doesn't have a Window, then we check to see if the
     //  document element is 'html' - in which case, we can still think of it
     //  as XHTML.
@@ -8519,6 +8532,7 @@ function(anObj) {
     }
 
     if (anObj.documentElement.tagName !== 'html') {
+        anObj.isXHTML = false;
         return false;
     }
 
