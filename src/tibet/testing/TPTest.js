@@ -1151,6 +1151,7 @@ function(options) {
     //  that 'starts things off' below.
     if (TP.notValid(firstPromise = suite.$get('$internalPromise'))) {
         firstPromise = Q.Promise.resolve();
+        suite.$set('$internalPromise', firstPromise);
     }
 
     //  Use reduce to convert our caselist array into a chain of promises. We
@@ -1673,7 +1674,8 @@ function(options) {
                 //  If there is no internal Promise, then just see if 'maybe'
                 //  contains a Promise that was returned from the test case.
 
-                //  If 'maybe' contains a Promise, use it.
+                //  If 'maybe' contains a Promise (or at least a 'thenable'),
+                //  use it.
                 if (TP.canInvoke(maybe, 'then')) {
 
                     //  NB: We use 'done()' here rather than 'then()' as per the
