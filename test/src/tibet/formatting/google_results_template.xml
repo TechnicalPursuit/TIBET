@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<!-- Note: This template has no whitespace for ease of testing -->
+
+<span xmlns="http://www.w3.org/1999/xhtml"><span id="totalTemplate"><span class="estimatedResultCount">Result count: {{data.responseData.cursor.resultCount}}</span>Results:<br/>{{data.responseData.results}}</span><span id="rowTemplate"><tr class="googleResultRow"><td>{{unescapedUrl}}</td><td>{{title}}</td><td>{{content}}</td></tr></span></span>
