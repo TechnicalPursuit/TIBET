@@ -1133,7 +1133,7 @@ function(anObject, aCount, aComment) {
     this.assertMinArguments(arguments, 2);
 
     this.assert(
-        TP.isEqual(TP.size(anObject), aCount),
+        TP.equalTo(TP.size(anObject), aCount),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be size of: ', aCount));
 
@@ -1237,7 +1237,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.TestMethodCollection.defineAssertion('isIdenticalTo',
+TP.test.TestMethodCollection.defineAssertion('identicalTo',
 function(anObject, aValue, aComment) {
 
     this.assertMinArguments(arguments, 2);
