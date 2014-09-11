@@ -403,10 +403,6 @@ function(aRequest) {
                 data = body.asHash();
                 data.atPut('_id', id);
 
-                //  Make sure to convert it to a POJO before handing it to
-                //  PouchDB.
-                data = data.asObject();
-
                 theDB.get(
                     id,
                     function(error, response) {
@@ -437,6 +433,10 @@ function(aRequest) {
 
                         //  Update the date modified stamp
                         data.atPut('date_modified', TP.dc());
+
+                        //  Make sure to convert it to a POJO before handing it to
+                        //  PouchDB.
+                        data = data.asObject();
 
                         //  Go ahead and try to 'put' the data.
                         theDB.put(
