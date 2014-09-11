@@ -1205,7 +1205,7 @@ function(anObject, aComment) {
 //  ASSERTIONS - EQUALITY/IDENTITY
 //  ------------------------------------------------------------------------
 
-TP.test.TestMethodCollection.defineAssertion('equalAs',
+TP.test.TestMethodCollection.defineAssertion('isEqualAs',
 function(anObject, aValue, aType, aComment) {
 
     this.assertMinArguments(arguments, 3);
@@ -1221,7 +1221,7 @@ function(anObject, aValue, aType, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.TestMethodCollection.defineAssertion('equalTo',
+TP.test.TestMethodCollection.defineAssertion('isEqualTo',
 function(anObject, aValue, aComment) {
 
     this.assertMinArguments(arguments, 2);
@@ -1237,7 +1237,7 @@ function(anObject, aValue, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.TestMethodCollection.defineAssertion('identicalTo',
+TP.test.TestMethodCollection.defineAssertion('isIdenticalTo',
 function(anObject, aValue, aComment) {
 
     this.assertMinArguments(arguments, 2);

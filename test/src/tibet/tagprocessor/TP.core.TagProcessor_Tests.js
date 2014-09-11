@@ -259,7 +259,7 @@ function() {
                 //  Capture the String representation after we process it
                 afterStr = TP.str(result);
 
-                test.assert.equalTo(beforeStr, afterStr);
+                test.assert.isEqualTo(beforeStr, afterStr);
                 test.pass();
             },
             function(error) {
@@ -446,7 +446,7 @@ function() {
                 //  NB: We convert this into a TP.core.Color object to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.core.Color.fromString(
                         tpElem.getComputedStyleProperty('backgroundColor')),
                     TP.core.Color.fromString('blue'));
@@ -475,12 +475,12 @@ function() {
                 //  NB: We convert these into TP.core.Color objects to compare
                 //  - depending on platform, getComputedStyleProperty will
                 //  return RGB values, etc.
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.core.Color.fromString(
                         tpElem.getComputedStyleProperty('backgroundColor')),
                     TP.core.Color.fromString('blue'));
 
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.core.Color.fromString(
                         tpElem.getComputedStyleProperty('color')),
                     TP.core.Color.fromString('red'));

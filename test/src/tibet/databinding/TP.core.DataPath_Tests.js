@@ -429,7 +429,7 @@ function() {
 
         val = singleLevelPath.executeGet(singleLevelModel);
 
-        this.assert.equalTo(val, 'there');
+        this.assert.isEqualTo(val, 'there');
     });
 
     this.it('single level set', function(test, options) {
@@ -441,7 +441,7 @@ function() {
         //  validation of 'path' execution code.
         val = singleLevelModel.at('foo').at('hi');
 
-        this.assert.equalTo(val, 'folks');
+        this.assert.isEqualTo(val, 'folks');
     });
 
     this.it('multiple level get', function(test, options) {
@@ -449,7 +449,7 @@ function() {
 
         val = multiLevelPath.executeGet(multiLevelModel);
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
     });
 
     this.it('multiple level set', function(test, options) {
@@ -461,7 +461,7 @@ function() {
         //  validation of 'path' execution code.
         val = multiLevelModel.at('foo').at('hi').at('boo');
 
-        this.assert.equalTo(val, 'foofy');
+        this.assert.isEqualTo(val, 'foofy');
     });
 });
 
@@ -490,7 +490,7 @@ function() {
 
         val = singleLevelPath.executeGet(singleLevelModel);
 
-        this.assert.equalTo(val, 'b');
+        this.assert.isEqualTo(val, 'b');
     });
 
     this.it('single level set', function(test, options) {
@@ -502,7 +502,7 @@ function() {
         //  validation of 'path' execution code.
         val = singleLevelModel.at(2).at(1);
 
-        this.assert.equalTo(val, 'z');
+        this.assert.isEqualTo(val, 'z');
     });
 
     this.it('multiple level get', function(test, options) {
@@ -510,7 +510,7 @@ function() {
 
         val = multiLevelPath.executeGet(multiLevelModel);
 
-        this.assert.equalTo(val, '8');
+        this.assert.isEqualTo(val, '8');
     });
 
     this.it('multiple level set', function(test, options) {
@@ -522,7 +522,7 @@ function() {
         //  validation of 'path' execution code.
         val = multiLevelModel.at(2).at(1).at(2);
 
-        this.assert.equalTo(val, '9');
+        this.assert.isEqualTo(val, '9');
     });
 });
 
@@ -552,7 +552,7 @@ function() {
 
         val = tailResultsPath.executeGet(tailResultsModel);
 
-        this.assert.equalTo(val, TP.ac('goo', 'too'));
+        this.assert.isEqualTo(val, TP.ac('goo', 'too'));
     });
 
     this.it('tail results set', function(test, options) {
@@ -564,11 +564,11 @@ function() {
         //  validation of 'path' execution code.
         val = tailResultsModel.at('foo').at('hi').at('boo');
 
-        this.assert.equalTo(val, 'zoo');
+        this.assert.isEqualTo(val, 'zoo');
 
         val = tailResultsModel.at('foo').at('hi').at('moo');
 
-        this.assert.equalTo(val, 'zoo');
+        this.assert.isEqualTo(val, 'zoo');
     });
 
     this.it('middle results get', function(test, options) {
@@ -576,7 +576,7 @@ function() {
 
         val = middleResultsPath.executeGet(middleResultsModel);
 
-        this.assert.equalTo(val, TP.ac('bar', 'tar'));
+        this.assert.isEqualTo(val, TP.ac('bar', 'tar'));
     });
 
     this.it('middle results set', function(test, options) {
@@ -588,11 +588,11 @@ function() {
         //  validation of 'path' execution code.
         val = middleResultsModel.at('foo').at('hi').at('boo').at('gar');
 
-        this.assert.equalTo(val, 'car');
+        this.assert.isEqualTo(val, 'car');
 
         val = middleResultsModel.at('foo').at('hi').at('moo').at('gar');
 
-        this.assert.equalTo(val, 'car');
+        this.assert.isEqualTo(val, 'car');
     });
 });
 
@@ -621,7 +621,7 @@ function() {
 
         val = tailResultsPath.executeGet(tailResultsModel);
 
-        this.assert.equalTo(val, TP.ac(TP.ac('6', '7', '8'), 'c'));
+        this.assert.isEqualTo(val, TP.ac(TP.ac('6', '7', '8'), 'c'));
     });
 
     this.it('tail results set', function(test, options) {
@@ -634,11 +634,11 @@ function() {
         //  validation of 'path' execution code.
         val = tailResultsModel.at(2).at(1);
 
-        this.assert.equalTo(val, TP.ac('4', '5', '6'));
+        this.assert.isEqualTo(val, TP.ac('4', '5', '6'));
 
         val = tailResultsModel.at(2).at(2);
 
-        this.assert.equalTo(val, TP.ac('4', '5', '6'));
+        this.assert.isEqualTo(val, TP.ac('4', '5', '6'));
     });
 
     this.it('middle results get', function(test, options) {
@@ -646,7 +646,7 @@ function() {
 
         val = middleResultsPath.executeGet(middleResultsModel);
 
-        this.assert.equalTo(val, TP.ac('6', '6'));
+        this.assert.isEqualTo(val, TP.ac('6', '6'));
     });
 
     this.it('middle results set', function(test, options) {
@@ -658,11 +658,11 @@ function() {
         //  validation of 'path' execution code.
         val = middleResultsModel.at(2).at(1).at(2);
 
-        this.assert.equalTo(val, 'hi');
+        this.assert.isEqualTo(val, 'hi');
 
         val = middleResultsModel.at(2).at(2).at(2);
 
-        this.assert.equalTo(val, 'hi');
+        this.assert.isEqualTo(val, 'hi');
     });
 });
 
@@ -685,7 +685,7 @@ function() {
         path = TP.apc('[0:2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.equalTo(val, TP.ac('one', 'two'));
+        this.assert.isEqualTo(val, TP.ac('one', 'two'));
     });
 
     this.it('slicing get #2', function(test, options) {
@@ -695,7 +695,7 @@ function() {
         path = TP.apc('[:2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.equalTo(val, TP.ac('one', 'two'));
+        this.assert.isEqualTo(val, TP.ac('one', 'two'));
     });
 
     this.it('slicing get #3', function(test, options) {
@@ -705,7 +705,7 @@ function() {
         path = TP.apc('[2:]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.equalTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37, 'hi'));
+        this.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37, 'hi'));
     });
 
     this.it('slicing get #4', function(test, options) {
@@ -715,7 +715,7 @@ function() {
         path = TP.apc('[-2:]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.equalTo(val, TP.ac(37, 'hi'));
+        this.assert.isEqualTo(val, TP.ac(37, 'hi'));
     });
 
     this.it('slicing get #5', function(test, options) {
@@ -725,7 +725,7 @@ function() {
         path = TP.apc('[:-2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.equalTo(val, TP.ac('one', 'two', TP.ac('a', TP.ac('6','7','8'), 'c')));
+        this.assert.isEqualTo(val, TP.ac('one', 'two', TP.ac('a', TP.ac('6','7','8'), 'c')));
     });
 
     this.it('slicing get #6', function(test, options) {
@@ -735,7 +735,7 @@ function() {
         path = TP.apc('[2:-1]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.equalTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37));
+        this.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37));
     });
 
     this.it('slicing get #7', function(test, options) {
@@ -745,7 +745,7 @@ function() {
         path = TP.apc('[1:6:2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.equalTo(val, TP.ac('two', 37));
+        this.assert.isEqualTo(val, TP.ac('two', 37));
     });
 
     this.it('slicing get #8', function(test, options) {
@@ -755,7 +755,7 @@ function() {
         path = TP.apc('[6:1:-2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.equalTo(val, TP.ac(undefined, 37));
+        this.assert.isEqualTo(val, TP.ac(undefined, 37));
     });
 });
 
@@ -783,7 +783,7 @@ function() {
 
         val = singleLevelPath.executeGet(singleLevelModel);
 
-        this.assert.equalTo(val, '2nd');
+        this.assert.isEqualTo(val, '2nd');
     });
 
     this.it('single level set', function(test, options) {
@@ -795,7 +795,7 @@ function() {
         //  validation of 'path' execution code.
         val = singleLevelModel.at('foo').at(1);
 
-        this.assert.equalTo(val, '3rd');
+        this.assert.isEqualTo(val, '3rd');
     });
 
     this.it('multiple level get', function(test, options) {
@@ -803,7 +803,7 @@ function() {
 
         val = multiLevelPath.executeGet(multiLevelModel);
 
-        this.assert.equalTo(val, 'there');
+        this.assert.isEqualTo(val, 'there');
     });
 
     this.it('multiple level set', function(test, options) {
@@ -815,7 +815,7 @@ function() {
         //  validation of 'path' execution code.
         val = multiLevelModel.at('foo').at('2').at('hi');
 
-        this.assert.equalTo(val, 'boo boo');
+        this.assert.isEqualTo(val, 'boo boo');
     });
 });
 
@@ -851,7 +851,7 @@ function() {
 
         val = path1.executeGet(model1);
 
-        this.assert.equalTo(val, 'bill');
+        this.assert.isEqualTo(val, 'bill');
     });
 
     this.it('tail results set', function(test, options) {
@@ -863,7 +863,7 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at('0').at('fname');
 
-        this.assert.equalTo(val, 'William');
+        this.assert.isEqualTo(val, 'William');
     });
 
     this.it('middle results get', function(test, options) {
@@ -871,7 +871,7 @@ function() {
 
         val = path2.executeGet(model1);
 
-        this.assert.equalTo(val, TP.ac('William', 'jim'));
+        this.assert.isEqualTo(val, TP.ac('William', 'jim'));
     });
 
     this.it('middle results single value set', function(test, options) {
@@ -883,11 +883,11 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at(0).at('fname');
 
-        this.assert.equalTo(val, 'William');
+        this.assert.isEqualTo(val, 'William');
 
         val = model1.at(2).at('fname');
 
-        this.assert.equalTo(val, 'William');
+        this.assert.isEqualTo(val, 'William');
     });
 
     this.it('middle results multi value set', function(test, options) {
@@ -899,11 +899,11 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at(0).at('fname');
 
-        this.assert.equalTo(val, TP.ac('Willy', 'Jimmy'));
+        this.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
 
         val = model1.at(2).at('fname');
 
-        this.assert.equalTo(val, TP.ac('Willy', 'Jimmy'));
+        this.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
     });
 
     this.it('tail results slicing get', function(test, options) {
@@ -911,7 +911,7 @@ function() {
 
         val = path3.executeGet(model1, true);
 
-        this.assert.equalTo(val, TP.ac('willy'));
+        this.assert.isEqualTo(val, TP.ac('willy'));
     });
 
     this.it('tail results slicing set', function(test, options) {
@@ -923,7 +923,7 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at('0').at('aliases').at(1);
 
-        this.assert.equalTo(val, TP.ac('willy', 'jimmy'));
+        this.assert.isEqualTo(val, TP.ac('willy', 'jimmy'));
     });
 
     this.it('tail results multi-value slicing get', function(test, options) {
@@ -931,7 +931,7 @@ function() {
 
         val = path4.executeGet(model1, true);
 
-        this.assert.equalTo(val, TP.ac('billy', TP.ac('willy', 'jimmy')));
+        this.assert.isEqualTo(val, TP.ac('billy', TP.ac('willy', 'jimmy')));
     });
 
     this.it('tail results multi-value slicing set', function(test, options) {
@@ -943,11 +943,11 @@ function() {
         //  validation of 'path' execution code.
         val = model1.at('0').at('aliases').at(0);
 
-        this.assert.equalTo(val, TP.ac('bobby', 'jimmy'));
+        this.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
 
         val = model1.at('0').at('aliases').at(1);
 
-        this.assert.equalTo(val, TP.ac('bobby', 'jimmy'));
+        this.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
     });
 });
 
@@ -993,7 +993,7 @@ function() {
 
         val = model1.at('bar').at('moo');
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
     });
 
     this.it('multi level set without creation', function(test, options) {
@@ -1013,7 +1013,7 @@ function() {
 
         val = model1.at('bar').at('moo');
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
 
         val = model1.at('bar').at('too');
 
@@ -1033,7 +1033,7 @@ function() {
 
         val = model1.at('bar').at('moo').at('noo');
 
-        this.assert.equalTo(val, 'boo');
+        this.assert.isEqualTo(val, 'boo');
     });
 });
 
@@ -1081,7 +1081,7 @@ function() {
 
         val = model1.at(3).at(1);
 
-        this.assert.equalTo(val, 'four');
+        this.assert.isEqualTo(val, 'four');
     });
 
     this.it('multi level set without creation', function(test, options) {
@@ -1098,7 +1098,7 @@ function() {
 
         val = model1.at(3).at(1).at(0);
 
-        this.assert.equalTo(val, 'f');
+        this.assert.isEqualTo(val, 'f');
 
         val = model1.at(3).at(1).at(4);
 
@@ -1118,11 +1118,11 @@ function() {
 
         val = model1.at(3).at(1).at(0);
 
-        this.assert.equalTo(val, 'stuff');
+        this.assert.isEqualTo(val, 'stuff');
 
         val = model1.at(3).at(1).at(4);
 
-        this.assert.equalTo(val, 'stuff');
+        this.assert.isEqualTo(val, 'stuff');
     });
 
     this.it('slicing results set without creation', function(test, options) {
@@ -1141,21 +1141,21 @@ function() {
         //  require 'structure creating' - the values should have been set.
         val = model1.at(3).at(1).at(1);
 
-        this.assert.equalTo(val, 'foofy');
+        this.assert.isEqualTo(val, 'foofy');
 
         val = model1.at(3).at(1).at(2);
 
-        this.assert.equalTo(val, 'foofy');
+        this.assert.isEqualTo(val, 'foofy');
 
         val = model1.at(3).at(1).at(3);
 
-        this.assert.equalTo(val, 'foofy');
+        this.assert.isEqualTo(val, 'foofy');
 
         //  This value should still be 'stuff' - the '1:4' range means items
         //  1-3.
         val = model1.at(3).at(1).at(4);
 
-        this.assert.equalTo(val, 'stuff');
+        this.assert.isEqualTo(val, 'stuff');
     });
 
     this.it('slicing results set with creation', function(test, options) {
@@ -1205,7 +1205,7 @@ function() {
 
         val = model1.at('foo').at(3).at('bar');
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
     });
 
     this.it('multi level set without creation', function(test, options) {
@@ -1221,7 +1221,7 @@ function() {
         //  shouldn't be one at 'moo' or 'too'.
         val = model1.at('foo').at(3).at('bar');
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
 
         val = model1.at('foo').at(3).at('moo');
 
@@ -1282,7 +1282,7 @@ function() {
 
         val = path1.executeGet(model1, 1);
 
-        this.assert.equalTo(val, '2nd');
+        this.assert.isEqualTo(val, '2nd');
     });
 
     this.it('single level get slice', function(test, options) {
@@ -1290,7 +1290,7 @@ function() {
 
         val = path2.executeGet(model1, 1, 4);
 
-        this.assert.equalTo(val, TP.ac('2nd', '3rd', '4th'));
+        this.assert.isEqualTo(val, TP.ac('2nd', '3rd', '4th'));
     });
 
     this.it('multi level get', function(test, options) {
@@ -1298,7 +1298,7 @@ function() {
 
         val = path3.executeGet(model1, 4, 0);
 
-        this.assert.equalTo(val, 'A');
+        this.assert.isEqualTo(val, 'A');
     });
 
     this.it('multi level get slice', function(test, options) {
@@ -1306,7 +1306,7 @@ function() {
 
         val = path4.executeGet(model1, 4, 6, 0);
 
-        this.assert.equalTo(val, TP.ac('A', 'X'));
+        this.assert.isEqualTo(val, TP.ac('A', 'X'));
     });
 
     this.it('single level set', function(test, options) {
@@ -1320,7 +1320,7 @@ function() {
 
         val = model1.at('foo').at(1);
 
-        this.assert.equalTo(val, 'boo');
+        this.assert.isEqualTo(val, 'boo');
     });
 
     this.it('single level set slice', function(test, options) {
@@ -1335,11 +1335,11 @@ function() {
 
         val = model1.at('foo').at(1);
 
-        this.assert.equalTo(val, 'bar');
+        this.assert.isEqualTo(val, 'bar');
 
         val = model1.at('foo').at(2);
 
-        this.assert.equalTo(val, 'bar');
+        this.assert.isEqualTo(val, 'bar');
     });
 
     this.it('multi level set', function(test, options) {
@@ -1354,7 +1354,7 @@ function() {
 
         val = model1.at('foo').at(4).at(0);
 
-        this.assert.equalTo(val, 'baz');
+        this.assert.isEqualTo(val, 'baz');
     });
 
     this.it('multi level get slice', function(test, options) {
@@ -1369,11 +1369,11 @@ function() {
 
         val = model1.at('foo').at(4).at(0);
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
 
         val = model1.at('foo').at(5).at(0);
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
     });
 });
 
@@ -1405,7 +1405,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        this.assert.equalTo(val, 'Edney');
+        this.assert.isEqualTo(val, 'Edney');
     });
 
     this.it('single value set', function(test, options) {
@@ -1424,7 +1424,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        this.assert.equalTo(val, 'Smith');
+        this.assert.isEqualTo(val, 'Smith');
     });
 
     this.it('multiple value get', function(test, options) {
@@ -1436,11 +1436,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        this.assert.equalTo(val, 'Edney');
+        this.assert.isEqualTo(val, 'Edney');
 
         val = TP.val(result.at(1));
 
-        this.assert.equalTo(val, '47');
+        this.assert.isEqualTo(val, '47');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1459,11 +1459,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        this.assert.equalTo(val, 'fluffy');
+        this.assert.isEqualTo(val, 'fluffy');
 
         val = TP.val(result.at(1));
 
-        this.assert.equalTo(val, 'fluffy');
+        this.assert.isEqualTo(val, 'fluffy');
     });
 });
 
@@ -1495,7 +1495,7 @@ function() {
 
         val = path1.executeGet(model1);
 
-        this.assert.equalTo(val, TP.elem('<lname>Edney</lname>'));
+        this.assert.isEqualTo(val, TP.elem('<lname>Edney</lname>'));
     });
 
     this.it('single value set', function(test, options) {
@@ -1510,7 +1510,7 @@ function() {
         val = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/fooname', null, true);
 
-        this.assert.equalTo(val, TP.elem('<fooname>Foodney</fooname>'));
+        this.assert.isEqualTo(val, TP.elem('<fooname>Foodney</fooname>'));
     });
 
     this.it('multiple value get', function(test, options) {
@@ -1518,9 +1518,9 @@ function() {
 
         val = path2.executeGet(model2);
 
-        this.assert.equalTo(val.at(0), TP.elem('<lname>Edney</lname>'));
+        this.assert.isEqualTo(val.at(0), TP.elem('<lname>Edney</lname>'));
 
-        this.assert.equalTo(val.at(1), TP.elem('<age>47</age>'));
+        this.assert.isEqualTo(val.at(1), TP.elem('<age>47</age>'));
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1535,9 +1535,9 @@ function() {
         val = TP.nodeEvaluatePath(
                     TP.unwrap(model2), '/emp/barname|/emp/barage', null, true);
 
-        this.assert.equalTo(val.at(0), TP.elem('<barname>Bardney</barname>'));
+        this.assert.isEqualTo(val.at(0), TP.elem('<barname>Bardney</barname>'));
 
-        this.assert.equalTo(val.at(1), TP.elem('<barage>470</barage>'));
+        this.assert.isEqualTo(val.at(1), TP.elem('<barage>470</barage>'));
     });
 });
 
@@ -1603,7 +1603,7 @@ function() {
         //  This will return its text value
         val = TP.val(result);
 
-        this.assert.equalTo(val, 'William');
+        this.assert.isEqualTo(val, 'William');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1638,7 +1638,7 @@ function() {
         //  This will return the text value for '/emp/fname'
         val = TP.val(result);
 
-        this.assert.equalTo(val, 'Bill');
+        this.assert.isEqualTo(val, 'Bill');
 
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/nickname', null, true);
@@ -1664,12 +1664,12 @@ function() {
         //  This will return the text value for '/emp/fname'
         val = TP.val(result.at(0));
 
-        this.assert.equalTo(val, 'Bill');
+        this.assert.isEqualTo(val, 'Bill');
 
         //  This will return the text value for '/emp/nickname'
         val = TP.val(result.at(1));
 
-        this.assert.equalTo(val, 'Bill');
+        this.assert.isEqualTo(val, 'Bill');
     });
 });
 
@@ -1732,7 +1732,7 @@ function() {
         result = TP.nodeEvaluatePath(
                     TP.unwrap(model1), '/emp/vitals/bp', null, true);
 
-        this.assert.equalTo(result, TP.elem('<bp>110/70</bp>'));
+        this.assert.isEqualTo(result, TP.elem('<bp>110/70</bp>'));
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1801,11 +1801,11 @@ function() {
 
         val = TP.nodeListAsFragment(result.at(0).childNodes);
 
-        this.assert.equalTo(val, testFrag);
+        this.assert.isEqualTo(val, testFrag);
 
         val = TP.nodeListAsFragment(result.at(1).childNodes);
 
-        this.assert.equalTo(val, testFrag);
+        this.assert.isEqualTo(val, testFrag);
     });
 });
 
@@ -1834,7 +1834,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        this.assert.equalTo(val, 'bar');
+        this.assert.isEqualTo(val, 'bar');
     });
 
     this.it('single value set', function(test, options) {
@@ -1853,7 +1853,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        this.assert.equalTo(val, 'fluffy');
+        this.assert.isEqualTo(val, 'fluffy');
     });
 
     this.it('multiple value get', function(test, options) {
@@ -1865,11 +1865,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        this.assert.equalTo(val, 'fluffy');
+        this.assert.isEqualTo(val, 'fluffy');
 
         val = TP.val(result.at(1));
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -1891,11 +1891,11 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        this.assert.equalTo(val, 'barfy');
+        this.assert.isEqualTo(val, 'barfy');
 
         val = TP.val(result.at(1));
 
-        this.assert.equalTo(val, 'barfy');
+        this.assert.isEqualTo(val, 'barfy');
     });
 });
 
@@ -1963,7 +1963,7 @@ function() {
         //  This will return its text value
         val = TP.val(result);
 
-        this.assert.equalTo(val, 'moo');
+        this.assert.isEqualTo(val, 'moo');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -2029,12 +2029,12 @@ function() {
         //  This will return the text value for '/emp/fname'
         val = TP.val(result.at(0));
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
 
         //  This will return the text value for '/emp/nickname'
         val = TP.val(result.at(1));
 
-        this.assert.equalTo(val, 'goo');
+        this.assert.isEqualTo(val, 'goo');
     });
 });
 

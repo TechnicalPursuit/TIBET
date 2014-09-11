@@ -42,16 +42,16 @@ function() {
                 test.assert.isElement(result);
 
                 //  There is one less 'html:td' than there is data
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.nodeGetElementsByTagName(result, 'html:td').getSize(),
                     data.getSize() - 1);
 
                 //  Because there is one 'html:th'
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.nodeGetElementsByTagName(result, 'html:th').getSize(),
                     1);
 
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.nodeGetTextContent(
                         TP.nodeGetElementsByTagName(result, 'html:td').at(2)),
                     data.at(3).asString());
@@ -92,13 +92,13 @@ function() {
                 test.assert.isElement(result);
 
                 //  There is the same number of 'html:td's as there are data
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.nodeGetElementsByTagName(result, 'html:td').getSize(),
                     data.getSize());
 
                 //  Since the XSLT defaults its column count to 2, there should
                 //  be 'count / 2' number of rows
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.nodeGetElementsByTagName(result, 'html:tr').getSize(),
                     data.getSize() / 2);
             },
@@ -143,13 +143,13 @@ function() {
                 test.assert.isElement(result);
 
                 //  There is the same number of 'html:td's as there are data
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.nodeGetElementsByTagName(result, 'html:td').getSize(),
                     data.getSize());
 
                 //  Since we have set the XSLT column count to 3, there should
                 //  be 'count / 3' number of rows
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.nodeGetElementsByTagName(result, 'html:tr').getSize(),
                     data.getSize() / 3);
             },
@@ -192,16 +192,16 @@ function() {
 
                 test.assert.isElement(result);
 
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                         TP.elementGetLocalName(result),
                         'result');
 
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                         TP.elementGetLocalName(result.firstElementChild),
                         'dataroot');
 
                 //  There is the same number of 'item's as there are data
-                test.assert.equalTo(
+                test.assert.isEqualTo(
                     TP.nodeGetElementsByTagName(result, 'item').getSize(),
                     data.getSize());
             },
