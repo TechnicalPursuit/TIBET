@@ -1001,7 +1001,7 @@ function() {
 
         server;
 
-    params = TP.request('refresh', true, 'async', true);
+    params = TP.request('refresh', true, 'async', true, 'resultType', TP.WRAP);
     locStr = '/TIBET_endpoints/Google_home_page.html';
     resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
 
@@ -1058,7 +1058,7 @@ function() {
         function() {
             server.restore();
         });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
