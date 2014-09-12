@@ -11,6 +11,52 @@
 TP.lang.Object.Inst.describe('as',
 function() {
 
+    var server;
+
+    //  NB: All of the XHR calls in these tests are synchronous, so there won't
+    //  be calls to 'server.respond()' after the calls in the various tests
+    //  here.
+
+    this.before(
+        function() {
+            var locStr1,
+                result1,
+
+                locStr2,
+                result2;
+
+            server = TP.test.fakeServer.create();
+
+            locStr1 = 'google_results_template.xml';
+            result1 = '<span xmlns="http://www.w3.org/1999/xhtml"><span id="totalTemplate"><span class="estimatedResultCount">Result count: {{data.responseData.cursor.resultCount}}</span>Results:<br/>{{data.responseData.results}}</span><span id="rowTemplate"><tr class="googleResultRow"><td>{{unescapedUrl}}</td><td>{{title}}</td><td>{{content}}</td></tr></span></span>';
+
+            server.respondWith(
+                TP.HTTP_GET,
+                locStr1,
+                [
+                    200,
+                    {
+                        'Content-Type': TP.XML_ENCODED,
+                    },
+                    result1,
+                ]);
+
+            locStr2 = 'tp_xmlarrs2xhtmltable.xsl';
+
+            result2 = '<?xml version="1.0" encoding="UTF-8"?><xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:html="http://www.w3.org/1999/xhtml" version="1.0"><xsl:output method="xml" indent="yes" /><xsl:template match="/"><html:table style="border: solid 1px black; border-spacing: 0; border-collapse: collapse"><xsl:apply-templates select="*"/></html:table></xsl:template><!-- Rows --><xsl:template match="/dataroot/*[starts-with(local-name(), \'item\')]"><html:tr><xsl:if test="position() mod 2 != 1"><xsl:attribute name="style">background-color: #dddddd</xsl:attribute></xsl:if><xsl:apply-templates select="*"/></html:tr></xsl:template><!-- Header Columns --><xsl:template match="*[starts-with(local-name(), \'item\') and position() = 1]"><html:th style="background-color: gray; color: white; border: solid 1px black"><xsl:value-of select="text()"/></html:th></xsl:template><!-- Data Columns --><xsl:template match="*[starts-with(local-name(), \'item\') and position() > 1]"><html:td style="border: solid 1px black"><xsl:value-of select="text()"/></html:td></xsl:template></xsl:stylesheet>';
+
+            server.respondWith(
+                TP.HTTP_GET,
+                locStr2,
+                [
+                    200,
+                    {
+                        'Content-Type': TP.XSLT_ENCODED,
+                    },
+                    result2,
+                ]);
+        });
+
     this.it('Meta objects \'as\' method using simple substitutions', function(test, options) {
 
         var testRep,
@@ -246,11 +292,13 @@ function() {
 
         //  ---
 
-        //  Registered templates - register a template with the system and call it.
+        //  Registered templates - register a template with the system and call
+        //  it.
 
         templateStr = 'This is a value: {{value.2}} for row #: {{1}}';
 
-        //  The 'true' flag here flushes the template cache and forces redefinition
+        //  The 'true' flag here flushes the template cache and forces
+        //  redefinition
         templateStr.compile('myTemplate', true);
 
         testRep = TP.ac(1, 2, 3).as('myTemplate');
@@ -268,7 +316,8 @@ function() {
 
         templateStr = 'The element with a bar attribute is: {{./*[@bar]%%String}}';
 
-        //  The 'true' flag here flushes the template cache and forces redefinition
+        //  The 'true' flag here flushes the template cache and forces
+        //  redefinition
         templateStr.compile('myXMLTemplate', true);
 
         testRep = dataElem.as('myXMLTemplate');
@@ -283,7 +332,8 @@ function() {
 
         templateStr = 'The name of the element with a bar attribute is: {{./*[@bar]%%{{localName}}}}';
 
-        //  The 'true' flag here flushes the template cache and forces redefinition
+        //  The 'true' flag here flushes the template cache and forces
+        //  redefinition
         templateStr.compile('myXMLTemplate', true);
 
         testRep = dataElem.as('myXMLTemplate');
@@ -298,7 +348,8 @@ function() {
 
         //  Nested templates - one calls another
 
-        //  The 'true' flag here flushes the template cache and forces redefinition
+        //  The 'true' flag here flushes the template cache and forces
+        //  redefinition
         'This is a row value: {{value}}\n'.compile('rowTemp', true);
         'Here is some row data {{%%rowTemp}}\n'.compile('tableTemp', true);
 
@@ -315,7 +366,8 @@ function() {
 
         //  Registered templates that are iterating
 
-        //  The 'true' flag here flushes the template cache and forces redefinition
+        //  The 'true' flag here flushes the template cache and forces
+        //  redefinition
         'This is a row value: {{value}} for row #: {{$INDEX}}\n'.compile(
             'myTemplate', true);
 
@@ -329,7 +381,7 @@ function() {
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
     });
 
-    this.it('Meta objects \'as\' method using externally loaded templates', function(test, options) {
+    this.it('Meta objects \'as\' method using externally loaded XML templates', function(test, options) {
 
         var testRep,
             correctRep,
@@ -387,6 +439,15 @@ function() {
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+    });
+
+    this.it('Meta objects \'as\' method using externally loaded XSLT templates', function(test, options) {
+
+        var testRep,
+            correctRep,
+
+            data,
+            dataDoc;
 
         //  ---
 
@@ -405,7 +466,7 @@ function() {
             testRep,
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
-    });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
     this.it('Meta objects \'as\' method generating markup', function(test, options) {
 
@@ -604,6 +665,13 @@ function() {
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
     });
+
+    //  ---
+
+    this.after(
+        function() {
+            server.restore();
+        });
 });
 
 //  ========================================================================
