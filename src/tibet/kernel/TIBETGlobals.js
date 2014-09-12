@@ -1133,6 +1133,7 @@ TP.URL_ENCODED = 'application/x-www-form-urlencoded';
 TP.XML_ENCODED = 'application/xml';
 TP.JSON_ENCODED = 'application/json';
 TP.XHTML_ENCODED = 'application/xhtml+xml';
+TP.XSLT_ENCODED = 'application/xslt+xml';
 TP.ATOM_ENCODED = 'application/atom+xml';
 TP.XMLRPC_ENCODED = 'application/xml+rpc';
 TP.SOAP_ENCODED = 'application/soap+xml';
