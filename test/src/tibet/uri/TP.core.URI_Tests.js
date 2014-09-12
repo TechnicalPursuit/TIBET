@@ -18,7 +18,7 @@
 TP.core.TIBETURL.Inst.describe('getLocation',
 function() {
 
-    this.it('URL with virtual URI', function(test, options) {
+    this.it('TIBETURL: URL with virtual URI', function(test, options) {
 
         this.assert.isEqualTo(
             TP.uc('tibet:///~').getLocation(),
@@ -101,7 +101,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve global objects', function(test, options) {
+    this.it('TIBETURL: Retrieve global objects', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet:///urn:tibet:TP').getResource(params),
@@ -128,7 +128,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve type object', function(test, options) {
+    this.it('TIBETURL: Retrieve type object', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet:///urn:tibet:TP.sig.Signal').getResource(params),
@@ -139,7 +139,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve registered object', function(test, options) {
+    this.it('TIBETURL: Retrieve registered object', function(test, options) {
 
         var foo;
 
@@ -155,7 +155,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve object nested in iframe', function(test, options) {
+    this.it('TIBETURL: Retrieve object nested in iframe', function(test, options) {
 
         this.assert.isEqualTo(
             TP.uc('tibet:///javascript:top.UIROOT.$$globalID').getResource(
@@ -176,7 +176,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.Window of the top-level window', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.Window of the top-level window', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top/').getResource(params),
@@ -193,7 +193,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.HTMLDocumentNode of the top-level window', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the top-level window', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top/#document').getResource(params),
@@ -212,7 +212,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve nested TP.html.iframe in top-level window', function(test, options) {
+    this.it('TIBETURL: Retrieve nested TP.html.iframe in top-level window', function(test, options) {
 
         //  Get the <iframe> element that has an id of UIROOT
         this.assert.isIdenticalTo(
@@ -232,7 +232,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.Window of UIROOT', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.Window of UIROOT', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/').getResource(params),
@@ -249,7 +249,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.HTMLDocumentNode of UIROOT', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of UIROOT', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/#document').getResource(params),
@@ -268,7 +268,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.Window of named window', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.Window of named window', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT/').getResource(params),
@@ -287,7 +287,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.HTMLDocumentNode of named window #1', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #1', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT/#document').getResource(params),
@@ -306,7 +306,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.HTMLDocumentNode of named window #2', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #2', function(test, options) {
 
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
@@ -329,7 +329,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.HTMLDocumentNode of named window #3', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #3', function(test, options) {
 
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
@@ -352,7 +352,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.Window of the current UI canvas', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.Window of the current UI canvas', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/').getResource(params),
@@ -369,7 +369,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.HTMLDocumentNode of the current UI canvas', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the current UI canvas', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#document').getResource(params),
@@ -396,7 +396,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.ElementNode using XPointer barename', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer barename', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#top_background').getResource(params).getNativeNode(),
@@ -423,7 +423,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve Element using XPointer barename and TP.DOM result type', function(test, options) {
+    this.it('TIBETURL: Retrieve Element using XPointer barename and TP.DOM result type', function(test, options) {
 
         var newParams;
 
@@ -455,7 +455,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.ElementNode using XPointer element() scheme', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(/1/2)').getResource(params).getNativeNode(),
@@ -482,7 +482,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve Element using XPointer element() scheme and TP.DOM result type', function(test, options) {
+    this.it('TIBETURL: Retrieve Element using XPointer element() scheme and TP.DOM result type', function(test, options) {
 
         var newParams;
 
@@ -514,7 +514,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.ElementNode using XPointer element() scheme with ID', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme with ID', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(top_background/1)'
@@ -547,7 +547,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve Element using XPointer element() scheme with ID and TP.DOM result type', function(test, options) {
+    this.it('TIBETURL: Retrieve Element using XPointer element() scheme with ID and TP.DOM result type', function(test, options) {
 
         var newParams;
 
@@ -585,7 +585,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.ElementNode using XPointer xpath1() scheme', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpath1() scheme', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#xpath1(/$def:html/$def:body)'
@@ -615,7 +615,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve Element using XPointer xpath1() scheme with TP.DOM result type', function(test, options) {
+    this.it('TIBETURL: Retrieve Element using XPointer xpath1() scheme with TP.DOM result type', function(test, options) {
 
         var newParams;
 
@@ -650,7 +650,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.ElementNode using XPointer xpointer() scheme', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpointer() scheme', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#xpointer(/$def:html/$def:body)'
@@ -680,7 +680,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve Element using XPointer xpointer() scheme with TP.DOM result type', function(test, options) {
+    this.it('TIBETURL: Retrieve Element using XPointer xpointer() scheme with TP.DOM result type', function(test, options) {
 
         var newParams;
 
@@ -715,7 +715,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve TP.core.ElementNode using TIBET-extension XPointer css() scheme', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using TIBET-extension XPointer css() scheme', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#css(#top_background > *:first-child)'
@@ -748,7 +748,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve Element using TIBET-extension XPointer css() scheme with TP.DOM result type', function(test, options) {
+    this.it('TIBETURL: Retrieve Element using TIBET-extension XPointer css() scheme with TP.DOM result type', function(test, options) {
 
         var newParams;
 
@@ -786,7 +786,7 @@ function() {
 
     //  ---
 
-    this.it('Try to retrieve TP.core.Window of a bogus window', function(test, options) {
+    this.it('TIBETURL: Try to retrieve TP.core.Window of a bogus window', function(test, options) {
 
         this.refute.isDefined(
             TP.uc('tibet://fluffy/').getResource(params),
@@ -801,7 +801,7 @@ function() {
 
     //  ---
 
-    this.it('Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer barename', function(test, options) {
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer barename', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top/#fluffy').getResource(params),
@@ -816,7 +816,7 @@ function() {
 
     //  ---
 
-    this.it('Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer xpath1() query', function(test, options) {
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer xpath1() query', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top/#xpath1(fluffy)').getResource(params),
@@ -831,7 +831,7 @@ function() {
 
     //  ---
 
-    this.it('Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer element() query', function(test, options) {
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer element() query', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top/#element(fluffy)').getResource(params),
@@ -846,7 +846,7 @@ function() {
 
     //  ---
 
-    this.it('Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer css() query', function(test, options) {
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer css() query', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top/#css(fluffy)').getResource(params),
@@ -884,7 +884,7 @@ function() {
     //  synchronously, so we don't need to specify that here.
     params = TP.request('refresh', true, 'async', false);
 
-    this.it('Retrieve global objects', function(test, options) {
+    this.it('TIBETURN: Retrieve global objects', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('urn:tibet:TP').getResource(params),
@@ -899,7 +899,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve type object', function(test, options) {
+    this.it('TIBETURN: Retrieve type object', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('urn:tibet:TP.sig.Signal').getResource(params),
@@ -910,7 +910,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve registered object', function(test, options) {
+    this.it('TIBETURN: Retrieve registered object', function(test, options) {
 
         var foo;
 
@@ -955,7 +955,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve global objects', function(test, options) {
+    this.it('JSURI: Retrieve global objects', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('javascript:TP').getResource(params),
@@ -971,7 +971,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve object nested in iframe', function(test, options) {
+    this.it('JSURI: Retrieve object nested in iframe', function(test, options) {
 
         this.assert.isEqualTo(
             TP.uc('javascript:top.UIROOT.$$globalID').getResource(params),
@@ -1010,7 +1010,7 @@ function() {
     this.before(
         function() {
             server.respondWith(
-                'GET',
+                TP.HTTP_GET,
                 locStr,
                 [
                     200,
@@ -1023,7 +1023,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve resource asynchronously', function(test, options) {
+    this.it('HTTPURL: Retrieve resource asynchronously', function(test, options) {
         var url,
             request;
 
@@ -1037,8 +1037,9 @@ function() {
         request.defineMethod('completeJob',
             function(aResult)
             {
-                test.assert.isEqualTo(aResult.get('html|body').at(0),
-                                    resultElem.get('html|body').at(0));
+                test.assert.isEqualTo(
+                        aResult.get('html|body').at(0),
+                        resultElem.get('html|body').at(0));
             });
 
         url.getResource(request);
@@ -1048,8 +1049,8 @@ function() {
 
     //  ---
 
-    this.it('Retrieve resource synchronously', function(test, options) {
-    }).skip();
+    this.it('HTTPURL: Retrieve resource synchronously', function(test, options) {
+    });
 
     //  ---
 
@@ -1080,7 +1081,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve resource asynchronously', function(test, options) {
+    this.it('JSONPURL: Retrieve resource asynchronously', function(test, options) {
         var url,
             request;
 
@@ -1149,7 +1150,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve resource', function(test, options) {
+    this.it('LocalDBURL: Retrieve resource', function(test, options) {
 
         var url,
             obj;
@@ -1192,7 +1193,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve resource info', function(test, options) {
+    this.it('LocalDBURL: Retrieve resource info', function(test, options) {
 
         var url,
             obj;
@@ -1223,7 +1224,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve listing of all documents in db', function(test, options) {
+    this.it('LocalDBURL: Retrieve listing of all documents in db', function(test, options) {
 
         var url,
             obj;
@@ -1304,7 +1305,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve resource', function(test, options) {
+    this.it('PouchDBURL: Retrieve resource', function(test, options) {
 
             var url,
                 subrequest;
@@ -1363,7 +1364,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve resource info', function(test, options) {
+    this.it('PouchDBURL: Retrieve resource info', function(test, options) {
 
             var url,
                 subrequest;
@@ -1410,7 +1411,7 @@ function() {
 
     //  ---
 
-    this.it('Retrieve resource info', function(test, options) {
+    this.it('PouchDBURL: Retrieve resource info', function(test, options) {
 
             var url,
                 subrequest;
@@ -1474,7 +1475,7 @@ function() {
 TP.core.TIBETURN.Inst.describe('setResource',
 function() {
 
-    this.it('Set resource to object with pre-existing ID', function(test, options) {
+    this.it('TIBETURN: Set resource to object with pre-existing ID', function(test, options) {
         var url,
             val,
             obj;
@@ -1515,7 +1516,7 @@ function() {
                         ' and got instead: ', 'theData', '.'));
     });
 
-    this.it('Set resource to object with not pre-existing ID', function(test, options) {
+    this.it('TIBETURN: Set resource to object with not pre-existing ID', function(test, options) {
         var url,
             val,
             obj;
@@ -1550,7 +1551,7 @@ function() {
 TP.core.HTTPURL.Inst.describe('setResource',
 function() {
 
-    this.it('Set resource to object with virtual URI', function(test, options) {
+    this.it('HTTPURL: Set resource to object with virtual URI', function(test, options) {
 
         var url,
             obj;
@@ -1573,7 +1574,7 @@ function() {
 TP.core.LocalDBURL.Inst.describe('setResource',
 function() {
 
-    this.it('Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+    this.it('LocalDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
 
         var url,
 
@@ -1624,7 +1625,7 @@ function() {
                         ' and got instead: ', obj.at('lastName'), '.'));
     });
 
-    this.it('Set resource using POST (computed id means CREATE)', function(test, options) {
+    this.it('LocalDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
 
         var url,
             saveResult,
@@ -1674,7 +1675,7 @@ function() {
                         ' and got instead: ', obj.at('lastName'), '.'));
     });
 
-    this.it('Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+    this.it('LocalDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
 
         var url,
 
@@ -1707,7 +1708,7 @@ function() {
             TP.sc('Expected that result would not be valid'));
     });
 
-    this.it('Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+    this.it('LocalDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
         var url,
 
             nukeResult,
@@ -1778,7 +1779,7 @@ function() {
 
     //  ---
 
-    this.it('Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+    this.it('PouchDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
 
         var url,
             subrequest;
@@ -1809,7 +1810,7 @@ function() {
 
     //  ---
 
-    this.it('Set resource using POST (computed id means CREATE)', function(test, options) {
+    this.it('PouchDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
 
         var url,
             subrequest;
@@ -1841,7 +1842,7 @@ function() {
 
     //  ---
 
-    this.it('Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+    this.it('PouchDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
 
             var url,
                 subrequest;
@@ -1873,7 +1874,7 @@ function() {
 
     //  ---
 
-    this.it('Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+    this.it('PouchDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
 
             var url,
                 subrequest;
