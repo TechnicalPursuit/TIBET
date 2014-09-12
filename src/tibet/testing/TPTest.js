@@ -1195,6 +1195,9 @@ function(options) {
                     function(err) {
                         //  TODO: the suite run() operation errored out, now
                         //  what?
+                        //  At a minimum, error out the currently executing test
+                        //  case with the error object
+                        current.error(err);
                     });
             }, firstPromise);
 
