@@ -4385,7 +4385,19 @@ function(aName) {
     //  We want registered objects to take precedence over types.
     result = this.$get('resource');
     if (TP.notValid(result)) {
+
+        //  And we want types to take precedence over global objects.
         result = TP.sys.getTypeByName(str);
+
+        //  Note that we only return a global here *if the name is in the
+        //  globals dictionary*
+        if (!TP.isType(result) && TP.sys.$globals.hasKey(str)) {
+            try {
+                result = TP.global[str];
+            } catch (e) {
+                //  ignore errors attempting lookup.
+            }
+        }
     }
 
     return result;

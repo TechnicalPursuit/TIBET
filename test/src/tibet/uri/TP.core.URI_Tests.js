@@ -109,21 +109,9 @@ function() {
             TP.sc('tibet:///urn:tibet:TP should find the named instance "TP".'));
 
         this.assert.isIdenticalTo(
-            TP.uc('tibet:///urn:tibet:TP.sys').getResource(params),
-            TP.sys,
-            TP.sc('tibet:///urn:tibet:TP.sys should find the named instance' +
-                    ' "TP.sys".'));
-
-        this.assert.isIdenticalTo(
             TP.uc('tibet:///javascript:TP').getResource(params),
             TP,
             TP.sc('tibet:///javascript:TP should find the named instance "TP".'));
-
-        this.assert.isIdenticalTo(
-            TP.uc('tibet:///javascript:TP.sys').getResource(params),
-            TP.sys,
-            TP.sc('tibet:///javascript:TP.sys should find the named instance' +
-                    ' "TP.sys".'));
     });
 
     //  ---
@@ -890,11 +878,6 @@ function() {
             TP.uc('urn:tibet:TP').getResource(params),
             TP,
             TP.sc('urn:tibet:TP should find the named instance "TP".'));
-
-        this.assert.isIdenticalTo(
-            TP.uc('urn:tibet:TP.sys').getResource(params),
-            TP.sys,
-            TP.sc('urn:tibet:TP.sys should find the named instance "TP.sys".'));
     });
 
     //  ---
