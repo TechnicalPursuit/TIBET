@@ -30,6 +30,8 @@ function() {
         var testRep,
             correctRep;
 
+        //  ---
+
         testRep = '123.45'.format('#{###.##}');
         correctRep = '123.45';
 
@@ -277,6 +279,8 @@ function() {
         var testRep,
             correctRep;
 
+        //  ---
+
         //  Using a local hash - key has String value
         testRep = ''.format('%{aKey}', TP.hc('aKey', 32));
         correctRep = '32';
@@ -289,7 +293,8 @@ function() {
         //  ---
 
         //  Using a local hash - key has Function value
-        testRep = ''.format('Bill says: %{aKey}', TP.hc('aKey', function () {return 'hi there';}));
+        testRep = ''.format('Bill says: %{aKey}',
+                            TP.hc('aKey', function () {return 'hi there';}));
         correctRep = 'Bill says: hi there';
 
         this.assert.isEqualTo(
@@ -301,7 +306,8 @@ function() {
 
         //  Using a local hash - key has Function value that takes a param - the
         //  value being formatted
-        testRep = 'Bill'.format('What\'s your name? %{aKey}', TP.hc('aKey', function (item) {return 'My name is: ' + item;}));
+        testRep = 'Bill'.format('What\'s your name? %{aKey}',
+                TP.hc('aKey', function (item) {return 'My name is: ' + item;}));
 
         correctRep = 'What\'s your name? My name is: Bill';
 
@@ -310,7 +316,6 @@ function() {
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
     });
-
 });
 
 //  ------------------------------------------------------------------------
@@ -345,7 +350,8 @@ function() {
 
         //  ---
 
-        testRep = 'Hi there {{firstName}}'.transform(TP.hc('firstName', 'Bill'));
+        testRep = 'Hi there {{firstName}}'.transform(
+                                            TP.hc('firstName', 'Bill'));
         correctRep = 'Hi there Bill';
 
         this.assert.isEqualTo(
@@ -393,6 +399,7 @@ function() {
         //  ---
 
         testRep = 'Bill says: %{aKey}'.transform(null, TP.hc('aKey', function() {return 'hi there';}));
+
         correctRep = 'Bill says: hi there';
 
         this.assert.isEqualTo(
@@ -704,7 +711,6 @@ function() {
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
 
     });
-
 });
 
 //  ========================================================================
