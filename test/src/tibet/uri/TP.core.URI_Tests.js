@@ -1005,10 +1005,10 @@ function() {
     locStr = '/TIBET_endpoints/Google_home_page.html';
     resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
 
-    server = TP.test.fakeServer.create();
-
     this.before(
         function() {
+            server = TP.test.fakeServer.create();
+
             server.respondWith(
                 TP.HTTP_GET,
                 locStr,
@@ -1111,7 +1111,7 @@ function() {
         function() {
             stub.restore();
         });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1266,7 +1266,7 @@ function() {
         function() {
             storage.removeKey(TP.LOCALSTORAGE_DB_NAME);
         });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1581,7 +1581,7 @@ function() {
                 TP.sc('Expected: ', '"foo"',
                         ' and got instead: ', obj, '.'));
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1754,7 +1754,7 @@ function() {
             obj,
             TP.sc('Expected that result would not be valid'));
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
