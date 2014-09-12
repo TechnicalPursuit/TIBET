@@ -7788,6 +7788,46 @@ TP.lang.RootObject.defineSubtype('Object');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.lang.Object.Type.defineMethod('fromObject',
+function(anObj) {
+
+    /**
+     * @name fromObject
+     * @synopsis Constructs a new instance from the incoming object. The default
+     *     implementation forwards to construct.
+     * @param {Object} anObj The source object.
+     * @returns {Object} A new instance of the receiver.
+     */
+
+    var newObj,
+
+        keys,
+
+        len,
+        i,
+
+        name;
+
+    newObj = this.construct.apply(this, arguments);
+
+    //  If the object we're converting from is a POJO, then copy over all of its
+    //  values as attributes on the new object.
+    if (TP.isMemberOf(anObj, Object)) {
+        keys = TP.keys(anObj);
+
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            name = keys.at(i);
+            newObj.defineAttribute(name);
+            newObj.set(name, anObj[name]);
+        }
+    }
+
+    return newObj;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Object.Type.defineMethod('getConstructor',
 function() {
 
