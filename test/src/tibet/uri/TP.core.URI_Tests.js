@@ -1277,15 +1277,17 @@ function() {
 
     this.before(
         function(suite, options) {
-            var now;
-
-            now = Date.now();
-
-            testDb = new TP.extern.PouchDB('pouch_test');
 
             this.then(
-                function () {
-                    var pouchPromise;
+                function() {
+                    var now,
+
+                        pouchPromise,
+                        qPromise;
+
+                    now = Date.now();
+
+                    testDb = new TP.extern.PouchDB('pouch_test');
 
                     pouchPromise = testDb.put(
                         {
@@ -1299,7 +1301,9 @@ function() {
                                 }
                         });
 
-                    return new Q(pouchPromise);
+                    qPromise = new Q(pouchPromise);
+
+                    return qPromise;
                 });
         });
 
@@ -1466,7 +1470,17 @@ function() {
 
     this.after(
         function(suite, options) {
-            TP.extern.PouchDB.destroy('pouch_test');
+            this.then(
+                function() {
+                    var pouchPromise,
+                        qPromise;
+
+                    pouchPromise = TP.extern.PouchDB.destroy('pouch_test');
+
+                    qPromise = new Q(pouchPromise);
+
+                    return qPromise;
+                });
         });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -1751,15 +1765,17 @@ function() {
 
     this.before(
         function(suite, options) {
-            var now;
-
-            now = Date.now();
-
-            testDb = new TP.extern.PouchDB('pouch_test');
 
             this.then(
-                function () {
-                    var pouchPromise;
+                function() {
+                    var now,
+
+                        pouchPromise,
+                        qPromise;
+
+                    now = Date.now();
+
+                    testDb = new TP.extern.PouchDB('pouch_test');
 
                     pouchPromise = testDb.put(
                         {
@@ -1773,7 +1789,9 @@ function() {
                                 }
                         });
 
-                    return new Q(pouchPromise);
+                    qPromise = new Q(pouchPromise);
+
+                    return qPromise;
                 });
         });
 
@@ -1908,7 +1926,17 @@ function() {
 
     this.after(
         function(suite, options) {
-            TP.extern.PouchDB.destroy('pouch_test');
+            this.then(
+                function() {
+                    var pouchPromise,
+                        qPromise;
+
+                    pouchPromise = TP.extern.PouchDB.destroy('pouch_test');
+
+                    qPromise = new Q(pouchPromise);
+
+                    return qPromise;
+                });
         });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
