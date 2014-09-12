@@ -396,6 +396,68 @@ function() {
     });
 });
 
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.describe('TP.test.Suite case skip check',
+function() {
+
+    this.it('case skip check 1', function(test, options) {
+        TP.sys.logTest('You should see this - check 1', TP.TRACE);
+    });
+
+    this.it('case skip check 2', function(test, options) {
+        TP.sys.logTest('You should not see this - check 2', TP.TRACE);
+    }).skip();
+
+    this.it('case skip check 3', function(test, options) {
+        TP.sys.logTest('You should see this - check 3', TP.TRACE);
+    });
+
+    this.it('case skip check 4', function(test, options) {
+        TP.sys.logTest('You should see this - check 4', TP.TRACE);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #1',
+function() {
+
+    this.it('suite skip check 1', function(test, options) {
+        TP.sys.logTest('You should see this - check 1', TP.TRACE);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #2',
+function() {
+
+    this.it('suite skip check 2', function(test, options) {
+        TP.sys.logTest('You should not see this - check 2', TP.TRACE);
+    });
+}).skip();
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #3',
+function() {
+
+    this.it('suite skip check 3', function(test, options) {
+        TP.sys.logTest('You should see this - check 3', TP.TRACE);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #4',
+function() {
+
+    this.it('suite skip check 4', function(test, options) {
+        TP.sys.logTest('You should see this - check 4', TP.TRACE);
+    });
+});
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
