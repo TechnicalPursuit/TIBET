@@ -1294,8 +1294,7 @@ function() {
 
     this.it('PouchDBURL: Retrieve resource', function(test, options) {
 
-            var url,
-                subrequest;
+            var url;
 
             //  A GET request here using the ID causes a RETRIEVE
             url = TP.uc('pouchdb://pouch_test/author_info');
@@ -1306,6 +1305,8 @@ function() {
 
             this.thenPromise(
                 function(resolver, rejector) {
+                    var subrequest;
+
                     //  Implied verb here is TP.HTTP_GET. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
@@ -1344,17 +1345,16 @@ function() {
 
                             resolver();
                         });
-                });
 
-            url.getResource(subrequest);
+                    url.getResource(subrequest);
+                });
         });
 
     //  ---
 
     this.it('PouchDBURL: Retrieve resource info', function(test, options) {
 
-            var url,
-                subrequest;
+            var url;
 
             //  A GET request here using the ID causes a RETRIEVE
             url = TP.uc('pouchdb://pouch_test/author_info');
@@ -1365,6 +1365,8 @@ function() {
 
             this.thenPromise(
                 function(resolver, rejector) {
+                    var subrequest;
+
                     //  Implied verb here is TP.HTTP_GET, which means we need to
                     //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
@@ -1391,17 +1393,16 @@ function() {
 
                             resolver();
                         });
-                });
 
-            url.getResource(subrequest);
+                    url.getResource(subrequest);
+                });
         });
 
     //  ---
 
     this.it('PouchDBURL: Retrieve resource info', function(test, options) {
 
-            var url,
-                subrequest;
+            var url;
 
             //  A GET request here using an ID of '_all_docs" causes a RETRIEVE
             //  of all documents in the DB
@@ -1413,6 +1414,8 @@ function() {
 
             this.thenPromise(
                 function(resolver, rejector) {
+                    var subrequest;
+
                     //  Implied verb here is TP.HTTP_GET, which means we need to
                     //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
@@ -1444,9 +1447,9 @@ function() {
 
                             resolver();
                         });
-                });
 
-            url.getResource(subrequest);
+                    url.getResource(subrequest);
+                });
         });
 
     //  ---
