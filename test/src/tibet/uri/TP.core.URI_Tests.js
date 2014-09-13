@@ -1551,6 +1551,33 @@ function() {
 TP.core.HTTPURL.Inst.describe('setResource',
 function() {
 
+    var params,
+        getStatusCode,
+        getResponseText,
+
+        server;
+
+    params = TP.hc('refresh', true, 'async', true);
+
+    //  TODO: Replace this mechanism to get the status information when the
+    //  child joins code gets changed
+    getStatusCode = function(aRequest) {
+        return aRequest.getChildJoins(TP.AND).first().getResponse().getResponseStatusCode();
+    };
+
+    getResponseText = function(aRequest) {
+        return aRequest.getChildJoins(TP.AND).first().getResponse().getResponseText();
+    };
+
+    //  ---
+
+    this.before(
+        function() {
+            server = TP.test.fakeServer.create();
+        });
+
+    //  ---
+
     this.it('HTTPURL: Set resource to object with virtual URI', function(test, options) {
 
         var url,
@@ -1567,6 +1594,169 @@ function() {
                 TP.sc('Expected: ', '"foo"',
                         ' and got instead: ', obj, '.'));
     });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using PUT', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_PUT_TEST';
+        testBody = 'PUT test content';
+
+        server.respondWith(
+            TP.HTTP_PUT,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, testBody);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from PUT');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var putParams,
+                    putRequest;
+
+                putParams = params.copy().atPut('verb', TP.HTTP_PUT);
+                putRequest = url.constructRequest(putParams);
+
+                putRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from PUT');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(putRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using POST', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_POST_TEST';
+        testBody = 'POST test content';
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, testBody);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postRequest;
+
+                postRequest = url.constructRequest(params);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Delete resource using DELETE', function(test, options) {
+
+        var locStr,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_DELETE_TEST';
+
+        server.respondWith(
+            TP.HTTP_DELETE,
+            locStr,
+            function(req) {
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from DELETE');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var deleteRequest;
+
+                deleteRequest = url.constructRequest(params);
+
+                deleteRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from DELETE');
+
+                        resolver();
+                    });
+
+                url.nuke(deleteRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            server.restore();
+        });
 });
 
 //  ------------------------------------------------------------------------
