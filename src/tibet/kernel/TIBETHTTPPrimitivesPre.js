@@ -505,13 +505,22 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 len = list.getSize();
                 for (i = 0; i < len; i++) {
                     el = list.at(i);
-                    if (TP.notEmpty(el))    //  empty node means no children
-                    {
+
+                    //  According to the spec we want Elements that have no
+                    //  children *Elements* (but do have children *text nodes*)
+
+                    //  We don't want completely empty Elements.
+                    if (TP.notEmpty(el)) {
+                        //  But we do want ones that don't have child
+                        //  *Elements*
+                        if (TP.nodeGetChildElements(el).getSize() > 0) {
+                            continue;
+                        }
                         if (TP.notEmpty(val = TP.nodeGetTextContent(el))) {
                             arr.push(
                                 TP.join(
                                     'Content-disposition: form-data',
-                                    '; name="', el.tagName, '"',
+                                    '; name="', TP.elementGetLocalName(el), '"',
                                     '\r\n',
                                     'Content-Type: ', TP.PLAIN_TEXT_ENCODED,
                                     '; charset=', charset),
