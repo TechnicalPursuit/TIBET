@@ -939,7 +939,7 @@ function(aRequest) {
     //  Return the MIME type using the following hierarchy:
     //      1.  The request's mimetype. If empty:
     //      2.  The service instance's mimetype. If empty:
-    //      3.  The MIME type that can be guess from the content and the URI,
+    //      3.  The MIME type that can be guessed from the content and the URI,
     //          defaulting to the service type's mime type.
     return TP.ifEmpty(
             aRequest.at('mimetype'),
