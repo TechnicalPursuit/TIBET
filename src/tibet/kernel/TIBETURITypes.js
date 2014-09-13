@@ -9317,11 +9317,12 @@ function(targetURI, aRequest) {
     //  content is already in place, we just want to commit it.
     saveRequest.atPut('refreshContent', false);
 
-    //  Make sure we have content.
+    //  Make sure we have content. Note that this will get encoded via the
+    //  httpEncode() call in lower layers, so we don't touch it here.
     if (TP.notValid(saveRequest.at('body'))) {
         content = TP.ifInvalid(
                     targetURI.getResource(TP.hc('async', false)), '');
-        saveRequest.atPut('body', TP.str(content));
+        saveRequest.atPut('body', content);
     }
 
     //  ensure the required settings are available for this operation
