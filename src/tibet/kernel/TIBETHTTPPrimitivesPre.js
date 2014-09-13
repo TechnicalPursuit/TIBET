@@ -512,6 +512,7 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                                 TP.join(
                                     'Content-disposition: form-data',
                                     '; name="', el.tagName, '"',
+                                    '\r\n',
                                     'Content-Type: ', TP.PLAIN_TEXT_ENCODED,
                                     '; charset=', charset),
                                 val,
@@ -528,6 +529,7 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                         TP.join(
                             'Content-disposition: form-data',
                             '; name="', list.at(i), '"',
+                            '\r\n',
                             'Content-Type: ', TP.PLAIN_TEXT_ENCODED,
                             '; charset=', charset),
                         TP.str(data.at(list.at(i))),
@@ -535,10 +537,11 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 }
             }
 
-            //  terminate final boundary
-            arr.atPut(arr.getSize() - 1, arr.last() + '--');
+            //  terminate final boundary - we need to take the last item and
+            //  append '--\r\n' to be spec compliant.
+            arr.atPut(arr.getSize() - 1, arr.last() + '--\r\n');
 
-            return arr.join('\n');
+            return arr.join('\r\n');
 
         default:
 
