@@ -1305,14 +1305,14 @@ function() {
 
             this.thenPromise(
                 function(resolver, rejector) {
-                    var subrequest;
+                    var pouchRequest;
 
                     //  Implied verb here is TP.HTTP_GET. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
-                    subrequest = TP.request(TP.hc('uri', url));
+                    pouchRequest = TP.request(TP.hc('uri', url));
 
-                    subrequest.defineMethod('handleRequestSucceeded',
+                    pouchRequest.defineMethod('handleRequestSucceeded',
                         function(aResponse) {
 
                             var result;
@@ -1346,7 +1346,7 @@ function() {
                             resolver();
                         });
 
-                    url.getResource(subrequest);
+                    url.getResource(pouchRequest);
                 });
         });
 
@@ -1365,16 +1365,16 @@ function() {
 
             this.thenPromise(
                 function(resolver, rejector) {
-                    var subrequest;
+                    var pouchRequest;
 
                     //  Implied verb here is TP.HTTP_GET, which means we need to
                     //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
-                    subrequest = TP.request(TP.hc('uri', url,
+                    pouchRequest = TP.request(TP.hc('uri', url,
                                                     'verb', TP.HTTP_HEAD));
 
-                    subrequest.defineMethod('handleRequestSucceeded',
+                    pouchRequest.defineMethod('handleRequestSucceeded',
                         function(aResponse) {
 
                             var result;
@@ -1394,7 +1394,7 @@ function() {
                             resolver();
                         });
 
-                    url.getResource(subrequest);
+                    url.getResource(pouchRequest);
                 });
         });
 
@@ -1414,15 +1414,15 @@ function() {
 
             this.thenPromise(
                 function(resolver, rejector) {
-                    var subrequest;
+                    var pouchRequest;
 
                     //  Implied verb here is TP.HTTP_GET, which means we need to
                     //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
-                    subrequest = TP.request(TP.hc('uri', url));
+                    pouchRequest = TP.request(TP.hc('uri', url));
 
-                    subrequest.defineMethod('handleRequestSucceeded',
+                    pouchRequest.defineMethod('handleRequestSucceeded',
                         function(aResponse) {
 
                             var result;
@@ -1448,7 +1448,7 @@ function() {
                             resolver();
                         });
 
-                    url.getResource(subrequest);
+                    url.getResource(pouchRequest);
                 });
         });
 
@@ -1786,18 +1786,18 @@ function() {
     this.it('PouchDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
 
         var url,
-            subrequest;
+            pouchRequest;
 
             //  A PUT request here using the ID causes an UPDATE
 
             url = TP.uc('pouchdb://pouch_test/author_info');
 
             //  pouchdb:// URLs are asynchronous
-            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_PUT));
+            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_PUT));
 
             url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
 
-            subrequest.defineMethod('handleRequestSucceeded',
+            pouchRequest.defineMethod('handleRequestSucceeded',
                 function (aResponse) {
 
                     var result;
@@ -1809,7 +1809,7 @@ function() {
                         TP.sc('Expected a result with an \'ok\' property'));
                 });
 
-            url.save(subrequest);
+            url.save(pouchRequest);
         });
 
     //  ---
@@ -1817,7 +1817,7 @@ function() {
     this.it('PouchDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
 
         var url,
-            subrequest;
+            pouchRequest;
 
             //  A POST request here without the ID causes a CREATE and an
             //  auto-generated ID
@@ -1825,11 +1825,11 @@ function() {
             url = TP.uc('pouchdb://pouch_test');
 
             //  pouchdb:// URLs are asynchronous
-            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_POST));
+            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_POST));
 
             url.setResource(TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker'));
 
-            subrequest.defineMethod('handleRequestSucceeded',
+            pouchRequest.defineMethod('handleRequestSucceeded',
                 function (aResponse) {
 
                     var result;
@@ -1841,7 +1841,7 @@ function() {
                         TP.sc('Expected a result with an \'ok\' property'));
                 });
 
-            url.save(subrequest);
+            url.save(pouchRequest);
         });
 
     //  ---
@@ -1849,18 +1849,18 @@ function() {
     this.it('PouchDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
 
             var url,
-                subrequest;
+                pouchRequest;
 
             //  A DELETE request here with the ID causes a DELETE
 
             url = TP.uc('pouchdb://pouch_test/author_info');
 
             //  pouchdb:// URLs are asynchronous
-            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
+            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
 
             url.setResource(null);
 
-            subrequest.defineMethod('handleRequestSucceeded',
+            pouchRequest.defineMethod('handleRequestSucceeded',
                 function (aResponse) {
 
                     var result;
@@ -1873,7 +1873,7 @@ function() {
 
                 });
 
-            url.nuke(subrequest);
+            url.nuke(pouchRequest);
         });
 
     //  ---
@@ -1881,7 +1881,7 @@ function() {
     this.it('PouchDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
 
             var url,
-                subrequest;
+                pouchRequest;
 
             //  A DELETE request here without the ID causes a DELETE (of the
             //  whole DB)
@@ -1889,11 +1889,11 @@ function() {
             url = TP.uc('pouchdb://pouch_test');
 
             //  pouchdb:// URLs are asynchronous
-            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
+            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
 
             url.setResource(null);
 
-            subrequest.defineMethod('handleRequestSucceeded',
+            pouchRequest.defineMethod('handleRequestSucceeded',
                 function (aResponse) {
 
                     var result;
@@ -1905,7 +1905,7 @@ function() {
                         TP.sc('Expected a result with an \'ok\' property'));
                 });
 
-            url.nuke(subrequest);
+            url.nuke(pouchRequest);
         });
 
     //  ---
