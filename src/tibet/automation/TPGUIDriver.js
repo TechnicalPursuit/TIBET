@@ -11,9 +11,6 @@
 /**
  */
 
-/* global Q:true
-*/
-
 //  ------------------------------------------------------------------------
 
 TP.lang.Object.defineSubtype('gui.Driver');
@@ -1010,8 +1007,8 @@ function() {
     sequenceEntries = this.get('sequenceEntries');
     driver = this.get('driver');
 
-    driver.get('promiseProvider').then(
-        function(value) {
+    driver.get('promiseProvider').thenPromise(
+        function(resolver, rejector) {
 
             var eventCB,
                 errorCB,
@@ -1036,26 +1033,24 @@ function() {
                 target,
                 point;
 
-            //  Generate a callback function to hand to the *last* invocation in
-            //  the sequence and wrap a Promise around it. Therefore, when it is
-            //  called (as the last thing for the Syn triggering functions to
-            //  do), it will fulfill the Promise.
-            newPromise = Q.Promise(
-                function(resolver, rejector) {
-                    eventCB = function() {
-                        resolver();
-                    };
-                    errorCB = function() {
-                        rejector();
-                    };
-                });
+            //  Generate a set of callback functions (one for success, one for
+            //  failure) to hand to the *last* invocation in the sequence and
+            //  call the Promise's resolver or rejector from them. Therefore,
+            //  when they are called (as the last thing for the Syn triggering
+            //  functions to do), they will fulfill the Promise.
+            eventCB = function() {
+                resolver();
+            };
+            errorCB = function(reason) {
+                rejector(reason);
+            };
 
             chain = TP.extern.syn;
 
             //  If we can't determine a focused element, call the error callback
             //  and exit.
             if (!TP.isElement(currentElement = driver.getFocusedElement())) {
-                return errorCB();
+                return errorCB('No current Element for the GUI Driver.');
             }
 
             //  Loop over each entry in the sequence and execute the
@@ -1097,7 +1092,7 @@ function() {
                     target = targets.at(j);
 
                     if (!TP.isElement(target)) {
-                        return errorCB();
+                        return errorCB('No target Element for the GUI Driver.');
                     }
 
                     //  Invoke the Syn handler. If we're the last in the
