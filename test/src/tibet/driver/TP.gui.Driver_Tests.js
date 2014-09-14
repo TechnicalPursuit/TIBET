@@ -40,16 +40,30 @@ function() {
         uri = TP.uc('~lib_tst/src/tibet/driver/testmarkup.xml');
         this.getDriver().setBodyContent(uri);
 
-        driver = TP.gui.Driver.getTestFixture(
-                                TP.hc('testCase', test));
+        this.then(
+            function() {
+                driver = TP.gui.Driver.getTestFixture(
+                                        TP.hc('testCase', test));
 
-        seq = driver.startSequence();
-        seq.sendKeys('ABC[Left][Backspace]D[Right]E', TP.cpc('#testField'));
-        seq.perform();
+                seq = driver.startSequence();
+                seq.sendKeys('ABC[Left][Backspace]D[Right]E',
+                                        TP.cpc('#testField'));
+                seq.perform();
 
-                //testField = TP.byOID('testField');
+                test.then(
+                    function() {
+                        //test.assert.isTrue(false);
 
-                //testField.focus();
+                        test.assert.isAttributeEqualTo(
+                            TP.byId('testField'),
+                            'value',
+                            'ACDE');
+                    });
+            });
+
+        //testField = TP.byOID('testField');
+
+        //testField.focus();
         //driver.startSequence().click(TP.cpc('#testField')).perform();
 
         //driver.startSequence().sendKeys('[Shift]abcd[Shift-up]').perform();
