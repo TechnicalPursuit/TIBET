@@ -1705,6 +1705,236 @@ function() {
 
     //  ---
 
+    this.it('HTTPURL: Set resource using FORM POST', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_FORM_POST_TEST';
+        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, 'foo=bar&baz=goo');
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from FORM POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype', TP.URL_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from FORM POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using MULTIPART FORM POST - TEXT', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_TEXT_TEST';
+        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="foo"/);
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="baz"/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from MULTIPART FORM TEXT POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype',
+                                TP.MP_FORMDATA_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from MULTIPART FORM TEXT POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using MULTIPART FORM POST - XML', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_XML_TEST';
+        testBody = TP.elem(TP.xmlstr(TP.hc('foo','bar','baz','goo')));
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="foo"/);
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="baz"/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from MULTIPART FORM XML POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype',
+                                TP.MP_FORMDATA_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from MULTIPART FORM XML POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using MULTIPART RELATED POST - MIXED', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_RELATED_POST_MIXED_TEST';
+        testBody = TP.ac(
+                        TP.hc('body', 'Content chunk 1'),
+                        TP.hc('body', 'Content chunk 2'),
+                        TP.hc('body', TP.elem('<content>Content chunk 3</content>')));
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-ID: 0\s+Content chunk 1/);
+                test.assert.matches(req.requestBody, /Content-ID: 1\s+Content chunk 2/);
+                test.assert.matches(req.requestBody, /Content-ID: 2\s+<content>Content chunk 3<\/content>/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from MULTIPART RELATED MIXED POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype',
+                                TP.MP_RELATED_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from MULTIPART RELATED MIXED POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
     this.it('HTTPURL: Delete resource using DELETE', function(test, options) {
 
         var locStr,
