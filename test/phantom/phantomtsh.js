@@ -332,6 +332,12 @@
         console.log(PhantomTSH.color('gray',
             'Loading TIBET via ' + PhantomTSH.url + ' at ' +
             (new Date()).toLocaleString()));
+
+        //  Flip flags to allow liberal content loading (cross-origin XHR,
+        //  'file://' URLs and the like).
+        PhantomTSH.page.settings.localToRemoteUrlAccessEnabled = true;
+        PhantomTSH.page.settings.webSecurityEnabled = false;
+
         PhantomTSH.page.open(PhantomTSH.url, PhantomTSH.opened);
     };
 
