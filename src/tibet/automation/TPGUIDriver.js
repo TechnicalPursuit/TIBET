@@ -1013,8 +1013,6 @@ function() {
             var eventCB,
                 errorCB,
 
-                newPromise,
-
                 chain,
 
                 currentElement,
@@ -1224,8 +1222,6 @@ function() {
                     }
                 }
             }
-
-            return newPromise;
         });
 
     return this;
