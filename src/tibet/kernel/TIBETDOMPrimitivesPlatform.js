@@ -2673,13 +2673,13 @@ TP.hc(
          *     wants a specific behavior as to the presence of an XML
          *     declaration. The behavior of this function as to this flag's
          *     state is as follows:
-         *     
+         *
          *     Flag value Existing declaration? Output ----------
          *     --------------------- ------ Not defined Yes With declaration Not
          *     defined No Without declaration True Yes With declaration True No
          *     With declaration False Yes Without declaration False No Without
          *     declaration
-         *     
+         *
          *     NOTE: This flag is only used when the supplied Node is an XML
          *     document.
          * @param {Node} aNode The node to transform.
@@ -2945,13 +2945,13 @@ TP.hc(
          *     wants a specific behavior as to the presence of an XML
          *     declaration. The behavior of this function as to this flag's
          *     state is as follows:
-         *     
+         *
          *     Flag value Existing declaration? Output ----------
          *     --------------------- ------ Not defined Yes With declaration Not
          *     defined No Without declaration True Yes With declaration True No
          *     With declaration False Yes Without declaration False No Without
          *     declaration
-         *     
+         *
          *     NOTE: This flag is only used when the supplied Node is an XML
          *     document.
          * @param {Node} aNode The node to transform.
@@ -3204,13 +3204,13 @@ TP.hc(
          *     wants a specific behavior as to the presence of an XML
          *     declaration. The behavior of this function as to this flag's
          *     state is as follows:
-         *     
+         *
          *     Flag value Existing declaration? Output ----------
          *     --------------------- ------ Not defined Yes With declaration Not
          *     defined No Without declaration True Yes With declaration True No
          *     With declaration False Yes Without declaration False No Without
          *     declaration
-         *     
+         *
          *     NOTE: This flag is only used when the supplied Node is an XML
          *     document.
          * @param {Node} aNode The node to transform.
@@ -4019,7 +4019,7 @@ TP.hc(
          *     <code>
          *          xmlDoc = TP.documentFromString('<foo
          *         xmlns="http://www.foo.com"><baz:bar
-         *         
+         *
          *         xmlns:baz="http://www.baz.com"><baz:moo/><goo/></baz:bar></foo>');
          *          <samp>[object XMLDocument]</samp>
          *          TP.nodeEvaluateXPath(xmlDoc, '//*');
@@ -4031,7 +4031,7 @@ TP.hc(
          *          TP.nodeEvaluateXPath(xmlDoc, '//*[name() = "foo"]',
          *         TP.FIRST_NODE);
          *          <samp>[object Element]</samp>
-         *         
+         *
          * @example Use XPath to evaluate an expression that returns a scalar
          *     result (IE doesn't do this natively, but TIBET works around that
          *     limitation):
@@ -4300,7 +4300,7 @@ TP.hc(
          *     <code>
          *          xmlDoc = TP.documentFromString('<foo
          *         xmlns="http://www.foo.com"><baz:bar
-         *         
+         *
          *         xmlns:baz="http://www.baz.com"><baz:moo/><goo/></baz:bar></foo>');
          *          <samp>[object XMLDocument]</samp>
          *          TP.nodeEvaluateXPath(xmlDoc, '//*');
@@ -4312,7 +4312,7 @@ TP.hc(
          *          TP.nodeEvaluateXPath(xmlDoc, '//*[name() = "foo"]',
          *         TP.FIRST_NODE);
          *          <samp>[object Element]</samp>
-         *         
+         *
          * @example Use XPath to evaluate an expression that returns a scalar
          *     result (IE doesn't do this natively, but TIBET works around that
          *     limitation):
@@ -4843,7 +4843,7 @@ TP.hc(
          *     often sufficient, however XML documents will vary on
          *     W3C-compliant browsers based on the namespace and whether there's
          *     an internal DTD that defines IDREF attributes for that document.
-         *     Many of TIBET's metadata files are maintained in augmented XHTML
+         *     Many of TIBET's external files are maintained in augmented XHTML
          *     files with these internal DTDs so an XPath fallback is just extra
          *     overhead since if the ID existed it would have been found. The
          *     $retryWithXPath attribute is therefore used internally by
