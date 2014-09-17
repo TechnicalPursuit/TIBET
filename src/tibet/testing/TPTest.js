@@ -745,7 +745,7 @@ function(result, options) {
         try {
             //  Call the Function with ourself as 'this' and then ourself again
             //  as the first parameter and the options as the second parameter
-            func.call(this, this, options);
+            return func.call(this, this, options);
         } catch (e) {
             TP.sys.logTest('# error in after: ' + e.message);
         }
@@ -766,7 +766,7 @@ function(currentcase, result, options) {
             //  Call the Function with the current test case as 'this' and then
             //  it again as the first parameter and the options as the second
             //  parameter
-            func.call(currentcase, currentcase, options);
+            return func.call(currentcase, currentcase, options);
         } catch (e) {
             TP.sys.logTest('# error in afterEach: ' + e.message);
         }
@@ -788,7 +788,7 @@ function(result, options) {
         try {
             //  Call the Function with ourself as 'this' and then ourself again
             //  as the first parameter and the options as the second parameter
-            func.call(this, this, options);
+            return func.call(this, this, options);
         } catch (e) {
             TP.sys.logTest('# error in before: ' + e.message);
         }
@@ -809,7 +809,7 @@ function(currentcase, result, options) {
             //  Call the Function with the current test case as 'this' and then
             //  it again as the first parameter and the options as the second
             //  parameter
-            func.call(currentcase, currentcase, options);
+            return func.call(currentcase, currentcase, options);
         } catch (e) {
             TP.sys.logTest('# error in beforeEach: ' + e.message);
         }
@@ -1095,6 +1095,7 @@ function(options) {
         statistics,
         result,
         suite,
+        maybe,
         params,
 
         firstPromise;
@@ -1153,7 +1154,7 @@ function(options) {
 
     //  Run any 'before' hook for the suite. Note that this may generate a
     //  Promise that will be in '$internalPromise'.
-    suite.executeBefore(null, options);
+    maybe = suite.executeBefore(null, options);
 
     //  If a Promise hasn't been generated on-the-fly by any of the 'before'
     //  methods, then generate a resolved one here. This will be the Promise
@@ -1161,6 +1162,18 @@ function(options) {
     if (TP.notValid(firstPromise = suite.$get('$internalPromise'))) {
         firstPromise = Q.Promise.resolve();
         suite.$set('$internalPromise', firstPromise);
+    }
+
+    //  If a Promise was also *returned* from executing 'before', then chain it
+    //  on the first Promise and reset the '$internalPromise' reference.
+    if (TP.canInvoke(maybe, 'then')) {
+        var nextPromise;
+
+        nextPromise = firstPromise.then(
+                            function() {
+                                return maybe;
+                            });
+        suite.$set('$internalPromise', nextPromise);
     }
 
     //  Use reduce to convert our caselist array into a chain of promises. We
@@ -1172,11 +1185,32 @@ function(options) {
 
                 return chain.then(
                     function(obj) {
-                        var promise;
+                        var maybe,
+                            promise;
 
-                        suite.executeBeforeEach(current, obj, options);
+                        //  This may add to the '$internalPromise'
+                        maybe = suite.executeBeforeEach(current, obj, options);
 
-                        promise = current.run(TP.hc(options));
+                        //  If a Promise was *returned* from executing
+                        //  'beforeEach', then chain it onto the current
+                        //  internal promise followed by the execution of the
+                        //  test case itself.
+                        if (TP.canInvoke(maybe, 'then')) {
+                            promise = current.$get('$internalPromise').then(
+                                        function() {
+                                            return maybe;
+                                        }).then(
+                                        function() {
+                                            return current.run(TP.hc(options));
+                                        });
+                        } else {
+                            //  Otherwise, just chain execution of the test case
+                            //  itself onto the current internal promise.
+                            promise = current.$get('$internalPromise').then(
+                                        function() {
+                                            return current.run(TP.hc(options));
+                                        });
+                        }
 
                         return promise.then(
                             function(obj) {
@@ -1188,13 +1222,30 @@ function(options) {
                                 //  return it.
                                 current.$set('$internalPromise', null);
 
-                                suite.executeAfterEach(current, obj, options);
+                                maybe = suite.executeAfterEach(
+                                            current, obj, options);
 
-                                //  The 'after each' method scheduled a Promise.
-                                //  Return it.
+                                //  A last promise can be obtained since the
+                                //  'afterEach' must've generated on.
                                 if (TP.isValid(lastPromise = current.$get(
                                                         '$internalPromise'))) {
-                                    return lastPromise;
+
+                                    //  If a Promise was also *returned* from
+                                    //  executing 'afterEach', then chain it
+                                    //  onto the last promise.
+                                    if (TP.canInvoke(maybe, 'then')) {
+                                        return lastPromise.then(
+                                                function() {
+                                                    return maybe;
+                                                });
+                                    } else {
+                                        //  No returned Promise, just a last
+                                        //  promise.
+                                        return lastPromise;
+                                    }
+                                } else if (TP.canInvoke(maybe, 'then')) {
+                                    //  Returned Promise, no last promise
+                                    return maybe;
                                 }
                             }, function(err) {
                                 current.$set('$internalPromise', null);
@@ -1220,7 +1271,9 @@ function(options) {
             suite.$set('$internalPromise', null);
 
             try {
-                suite.executeAfter(obj, options);
+                //  Run any 'after' hook for the suite. Note that this may
+                //  generate a Promise that will be in '$internalPromise'.
+                maybe = suite.executeAfter(obj, options);
             } finally {
                 //  Output summary
 
@@ -1228,7 +1281,27 @@ function(options) {
                 //  that will generate the report *after* it runs and return
                 //  that.
                 if (TP.isValid(lastPromise = suite.$get('$internalPromise'))) {
-                    return lastPromise.then(
+
+                    //  If a Promise was also *returned* from executing 'after',
+                    //  then chain it on the last Promise.
+                    if (TP.canInvoke(maybe, 'then')) {
+                        return lastPromise.then(
+                                        function() {
+                                            return maybe;
+                                        }).then(
+                                        function() {
+                                            suite.report(options);
+                                        });
+                    } else {
+                        //  No returned Promise, just a last promise.
+                        return lastPromise.then(
+                                        function() {
+                                            suite.report(options);
+                                        });
+                    }
+                } else if (TP.canInvoke(maybe, 'then')) {
+                    //  Returned Promise, no last promise
+                    return maybe.then(
                                     function() {
                                         suite.report(options);
                                     });
