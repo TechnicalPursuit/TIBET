@@ -1186,30 +1186,46 @@ function(options) {
                 return chain.then(
                     function(obj) {
                         var maybe,
+                            lastPromise,
                             promise;
 
                         //  This may add to the '$internalPromise'
                         maybe = suite.executeBeforeEach(current, obj, options);
 
-                        //  If a Promise was *returned* from executing
-                        //  'beforeEach', then chain it onto the current
-                        //  internal promise followed by the execution of the
-                        //  test case itself.
-                        if (TP.canInvoke(maybe, 'then')) {
-                            promise = current.$get('$internalPromise').then(
+                        //  A last promise can be obtained which means that
+                        //  'beforeEach' must've generated one.
+                        if (TP.isValid(lastPromise = current.$get(
+                                                '$internalPromise'))) {
+
+                            //  If a Promise was also *returned* from executing
+                            //  'beforeEach', then chain it onto the last
+                            //  promise.
+                            if (TP.canInvoke(maybe, 'then')) {
+                                promise = lastPromise.then(
                                         function() {
                                             return maybe;
                                         }).then(
                                         function() {
                                             return current.run(TP.hc(options));
                                         });
-                        } else {
-                            //  Otherwise, just chain execution of the test case
-                            //  itself onto the current internal promise.
-                            promise = current.$get('$internalPromise').then(
+                            } else {
+                                //  No returned Promise, just a last promise.
+                                promise = lastPromise.then(
                                         function() {
                                             return current.run(TP.hc(options));
                                         });
+                            }
+                        } else {
+                            //  Returned Promise, no last promise
+                            if (TP.canInvoke(maybe, 'then')) {
+                                promise = maybe.then(
+                                        function() {
+                                            return current.run(TP.hc(options));
+                                        });
+                            } else {
+                                //  Neither
+                                promise = current.run(TP.hc(options));
+                            }
                         }
 
                         return promise.then(
@@ -1225,8 +1241,8 @@ function(options) {
                                 maybe = suite.executeAfterEach(
                                             current, obj, options);
 
-                                //  A last promise can be obtained since the
-                                //  'afterEach' must've generated on.
+                                //  A last promise can be obtained which means
+                                //  that 'afterEach' must've generated one.
                                 if (TP.isValid(lastPromise = current.$get(
                                                         '$internalPromise'))) {
 
