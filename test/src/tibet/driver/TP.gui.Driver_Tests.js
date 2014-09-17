@@ -52,12 +52,9 @@ function() {
 
                 test.then(
                     function() {
-                        //test.assert.isTrue(false);
-
-                        test.assert.isAttributeEqualTo(
-                            TP.byId('testField'),
-                            'value',
-                            'ACDE');
+                        test.assert.isEqualTo(
+                            TP.byId('testField').value,
+                            'ADCE');
                     });
             });
 
