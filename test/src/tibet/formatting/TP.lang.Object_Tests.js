@@ -11,52 +11,6 @@
 TP.lang.Object.Inst.describe('as',
 function() {
 
-    var server;
-
-    //  NB: All of the XHR calls in these tests are synchronous, so there won't
-    //  be calls to 'server.respond()' after the calls in the various tests
-    //  here.
-
-    this.before(
-        function() {
-            var locStr1,
-                result1,
-
-                locStr2,
-                result2;
-
-            server = TP.test.fakeServer.create();
-
-            locStr1 = 'google_results_template.xml';
-            result1 = '<span xmlns="http://www.w3.org/1999/xhtml"><span id="totalTemplate"><span class="estimatedResultCount">Result count: {{data.responseData.cursor.resultCount}}</span>Results:<br/>{{data.responseData.results}}</span><span id="rowTemplate"><tr class="googleResultRow"><td>{{unescapedUrl}}</td><td>{{title}}</td><td>{{content}}</td></tr></span></span>';
-
-            server.respondWith(
-                TP.HTTP_GET,
-                locStr1,
-                [
-                    200,
-                    {
-                        'Content-Type': TP.XML_ENCODED,
-                    },
-                    result1,
-                ]);
-
-            locStr2 = 'tp_xmlarrs2xhtmltable.xsl';
-
-            result2 = '<?xml version="1.0" encoding="UTF-8"?><xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:html="http://www.w3.org/1999/xhtml" version="1.0"><xsl:output method="xml" indent="yes" /><xsl:template match="/"><html:table style="border: solid 1px black; border-spacing: 0; border-collapse: collapse"><xsl:apply-templates select="*"/></html:table></xsl:template><!-- Rows --><xsl:template match="/dataroot/*[starts-with(local-name(), \'item\')]"><html:tr><xsl:if test="position() mod 2 != 1"><xsl:attribute name="style">background-color: #dddddd</xsl:attribute></xsl:if><xsl:apply-templates select="*"/></html:tr></xsl:template><!-- Header Columns --><xsl:template match="*[starts-with(local-name(), \'item\') and position() = 1]"><html:th style="background-color: gray; color: white; border: solid 1px black"><xsl:value-of select="text()"/></html:th></xsl:template><!-- Data Columns --><xsl:template match="*[starts-with(local-name(), \'item\') and position() > 1]"><html:td style="border: solid 1px black"><xsl:value-of select="text()"/></html:td></xsl:template></xsl:stylesheet>';
-
-            server.respondWith(
-                TP.HTTP_GET,
-                locStr2,
-                [
-                    200,
-                    {
-                        'Content-Type': TP.XSLT_ENCODED,
-                    },
-                    result2,
-                ]);
-        });
-
     this.it('Meta objects \'as\' method using simple substitutions', function(test, options) {
 
         var testRep,
@@ -386,9 +340,7 @@ function() {
         var testRep,
             correctRep,
 
-            googleDogData,
-            data,
-            dataDoc;
+            googleDogData;
 
         //  ---
 
@@ -665,13 +617,6 @@ function() {
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
     });
-
-    //  ---
-
-    this.after(
-        function() {
-            server.restore();
-        });
 });
 
 //  ========================================================================

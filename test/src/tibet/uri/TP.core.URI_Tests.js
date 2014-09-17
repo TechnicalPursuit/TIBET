@@ -1294,8 +1294,7 @@ function() {
 
     this.it('PouchDBURL: Retrieve resource', function(test, options) {
 
-            var url,
-                subrequest;
+            var url;
 
             //  A GET request here using the ID causes a RETRIEVE
             url = TP.uc('pouchdb://pouch_test/author_info');
@@ -1306,12 +1305,14 @@ function() {
 
             this.thenPromise(
                 function(resolver, rejector) {
+                    var pouchRequest;
+
                     //  Implied verb here is TP.HTTP_GET. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
-                    subrequest = TP.request(TP.hc('uri', url));
+                    pouchRequest = TP.request(TP.hc('uri', url));
 
-                    subrequest.defineMethod('handleRequestSucceeded',
+                    pouchRequest.defineMethod('handleRequestSucceeded',
                         function(aResponse) {
 
                             var result;
@@ -1344,17 +1345,16 @@ function() {
 
                             resolver();
                         });
-                });
 
-            url.getResource(subrequest);
+                    url.getResource(pouchRequest);
+                });
         });
 
     //  ---
 
     this.it('PouchDBURL: Retrieve resource info', function(test, options) {
 
-            var url,
-                subrequest;
+            var url;
 
             //  A GET request here using the ID causes a RETRIEVE
             url = TP.uc('pouchdb://pouch_test/author_info');
@@ -1365,14 +1365,16 @@ function() {
 
             this.thenPromise(
                 function(resolver, rejector) {
+                    var pouchRequest;
+
                     //  Implied verb here is TP.HTTP_GET, which means we need to
                     //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
-                    subrequest = TP.request(TP.hc('uri', url,
+                    pouchRequest = TP.request(TP.hc('uri', url,
                                                     'verb', TP.HTTP_HEAD));
 
-                    subrequest.defineMethod('handleRequestSucceeded',
+                    pouchRequest.defineMethod('handleRequestSucceeded',
                         function(aResponse) {
 
                             var result;
@@ -1391,17 +1393,16 @@ function() {
 
                             resolver();
                         });
-                });
 
-            url.getResource(subrequest);
+                    url.getResource(pouchRequest);
+                });
         });
 
     //  ---
 
     this.it('PouchDBURL: Retrieve resource info', function(test, options) {
 
-            var url,
-                subrequest;
+            var url;
 
             //  A GET request here using an ID of '_all_docs" causes a RETRIEVE
             //  of all documents in the DB
@@ -1413,13 +1414,15 @@ function() {
 
             this.thenPromise(
                 function(resolver, rejector) {
+                    var pouchRequest;
+
                     //  Implied verb here is TP.HTTP_GET, which means we need to
                     //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
                     //  URLs are asynchronous and configure their request to
                     //  'refresh' automatically.
-                    subrequest = TP.request(TP.hc('uri', url));
+                    pouchRequest = TP.request(TP.hc('uri', url));
 
-                    subrequest.defineMethod('handleRequestSucceeded',
+                    pouchRequest.defineMethod('handleRequestSucceeded',
                         function(aResponse) {
 
                             var result;
@@ -1444,9 +1447,9 @@ function() {
 
                             resolver();
                         });
-                });
 
-            url.getResource(subrequest);
+                    url.getResource(pouchRequest);
+                });
         });
 
     //  ---
@@ -1548,6 +1551,33 @@ function() {
 TP.core.HTTPURL.Inst.describe('setResource',
 function() {
 
+    var params,
+        getStatusCode,
+        getResponseText,
+
+        server;
+
+    params = TP.hc('refresh', true, 'async', true);
+
+    //  TODO: Replace this mechanism to get the status information when the
+    //  child joins code gets changed
+    getStatusCode = function(aRequest) {
+        return aRequest.getChildJoins(TP.AND).first().getResponse().getResponseStatusCode();
+    };
+
+    getResponseText = function(aRequest) {
+        return aRequest.getChildJoins(TP.AND).first().getResponse().getResponseText();
+    };
+
+    //  ---
+
+    this.before(
+        function() {
+            server = TP.test.fakeServer.create();
+        });
+
+    //  ---
+
     this.it('HTTPURL: Set resource to object with virtual URI', function(test, options) {
 
         var url,
@@ -1564,7 +1594,400 @@ function() {
                 TP.sc('Expected: ', '"foo"',
                         ' and got instead: ', obj, '.'));
     });
-});
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using PUT', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_PUT_TEST';
+        testBody = 'PUT test content';
+
+        server.respondWith(
+            TP.HTTP_PUT,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, testBody);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from PUT');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var putParams,
+                    putRequest;
+
+                putParams = params.copy().atPut('verb', TP.HTTP_PUT);
+                putRequest = url.constructRequest(putParams);
+
+                putRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from PUT');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(putRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using POST', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_POST_TEST';
+        testBody = 'POST test content';
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, testBody);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postRequest;
+
+                postRequest = url.constructRequest(params);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using FORM POST', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_FORM_POST_TEST';
+        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, 'foo=bar&baz=goo');
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from FORM POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype', TP.URL_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from FORM POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using MULTIPART FORM POST - TEXT', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_TEXT_TEST';
+        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="foo"/);
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="baz"/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from MULTIPART FORM TEXT POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype',
+                                TP.MP_FORMDATA_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from MULTIPART FORM TEXT POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using MULTIPART FORM POST - XML', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_XML_TEST';
+        testBody = TP.elem(TP.xmlstr(TP.hc('foo','bar','baz','goo')));
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="foo"/);
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="baz"/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from MULTIPART FORM XML POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype',
+                                TP.MP_FORMDATA_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from MULTIPART FORM XML POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Set resource using MULTIPART RELATED POST - MIXED', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_MULTIPART_RELATED_POST_MIXED_TEST';
+        testBody = TP.ac(
+                        TP.hc('body', 'Content chunk 1'),
+                        TP.hc('body', 'Content chunk 2'),
+                        TP.hc('body', TP.elem('<content>Content chunk 3</content>')));
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-ID: 0\s+Content chunk 1/);
+                test.assert.matches(req.requestBody, /Content-ID: 1\s+Content chunk 2/);
+                test.assert.matches(req.requestBody, /Content-ID: 2\s+<content>Content chunk 3<\/content>/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from MULTIPART RELATED MIXED POST');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var postParams,
+                    postRequest;
+
+                postParams = params.copy().atPut('mimetype',
+                                TP.MP_RELATED_ENCODED);
+                postRequest = url.constructRequest(postParams);
+
+                postRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from MULTIPART RELATED MIXED POST');
+
+                        resolver();
+                    });
+
+                url.setResource(testBody);
+                url.save(postRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.it('HTTPURL: Delete resource using DELETE', function(test, options) {
+
+        var locStr,
+
+            url;
+
+        locStr = '/TIBET_endpoints/HTTP_DELETE_TEST';
+
+        server.respondWith(
+            TP.HTTP_DELETE,
+            locStr,
+            function(req) {
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from DELETE');
+            });
+
+        url = TP.uc(locStr);
+
+        this.thenPromise(
+            function(resolver, rejector) {
+                var deleteRequest;
+
+                deleteRequest = url.constructRequest(params);
+
+                deleteRequest.defineMethod('handleRequestSucceeded',
+                    function(aResponse) {
+
+                        test.assert.isEqualTo(
+                                getStatusCode(this), 200);
+                        test.assert.isEqualTo(
+                                getResponseText(this), 'OK from DELETE');
+
+                        resolver();
+                    });
+
+                url.nuke(deleteRequest);
+            });
+
+        server.respond();
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            server.restore();
+        });
+}).skip(!TP.sys.isHTTPBased());
 
 //  ------------------------------------------------------------------------
 
@@ -1783,18 +2206,18 @@ function() {
     this.it('PouchDBURL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
 
         var url,
-            subrequest;
+            pouchRequest;
 
             //  A PUT request here using the ID causes an UPDATE
 
             url = TP.uc('pouchdb://pouch_test/author_info');
 
             //  pouchdb:// URLs are asynchronous
-            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_PUT));
+            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_PUT));
 
             url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
 
-            subrequest.defineMethod('handleRequestSucceeded',
+            pouchRequest.defineMethod('handleRequestSucceeded',
                 function (aResponse) {
 
                     var result;
@@ -1806,7 +2229,7 @@ function() {
                         TP.sc('Expected a result with an \'ok\' property'));
                 });
 
-            url.save(subrequest);
+            url.save(pouchRequest);
         });
 
     //  ---
@@ -1814,7 +2237,7 @@ function() {
     this.it('PouchDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
 
         var url,
-            subrequest;
+            pouchRequest;
 
             //  A POST request here without the ID causes a CREATE and an
             //  auto-generated ID
@@ -1822,11 +2245,11 @@ function() {
             url = TP.uc('pouchdb://pouch_test');
 
             //  pouchdb:// URLs are asynchronous
-            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_POST));
+            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_POST));
 
             url.setResource(TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker'));
 
-            subrequest.defineMethod('handleRequestSucceeded',
+            pouchRequest.defineMethod('handleRequestSucceeded',
                 function (aResponse) {
 
                     var result;
@@ -1838,7 +2261,7 @@ function() {
                         TP.sc('Expected a result with an \'ok\' property'));
                 });
 
-            url.save(subrequest);
+            url.save(pouchRequest);
         });
 
     //  ---
@@ -1846,18 +2269,18 @@ function() {
     this.it('PouchDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
 
             var url,
-                subrequest;
+                pouchRequest;
 
             //  A DELETE request here with the ID causes a DELETE
 
             url = TP.uc('pouchdb://pouch_test/author_info');
 
             //  pouchdb:// URLs are asynchronous
-            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
+            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
 
             url.setResource(null);
 
-            subrequest.defineMethod('handleRequestSucceeded',
+            pouchRequest.defineMethod('handleRequestSucceeded',
                 function (aResponse) {
 
                     var result;
@@ -1870,7 +2293,7 @@ function() {
 
                 });
 
-            url.nuke(subrequest);
+            url.nuke(pouchRequest);
         });
 
     //  ---
@@ -1878,7 +2301,7 @@ function() {
     this.it('PouchDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
 
             var url,
-                subrequest;
+                pouchRequest;
 
             //  A DELETE request here without the ID causes a DELETE (of the
             //  whole DB)
@@ -1886,11 +2309,11 @@ function() {
             url = TP.uc('pouchdb://pouch_test');
 
             //  pouchdb:// URLs are asynchronous
-            subrequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
+            pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_DELETE));
 
             url.setResource(null);
 
-            subrequest.defineMethod('handleRequestSucceeded',
+            pouchRequest.defineMethod('handleRequestSucceeded',
                 function (aResponse) {
 
                     var result;
@@ -1902,7 +2325,7 @@ function() {
                         TP.sc('Expected a result with an \'ok\' property'));
                 });
 
-            url.nuke(subrequest);
+            url.nuke(pouchRequest);
         });
 
     //  ---

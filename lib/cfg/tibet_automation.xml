@@ -18,6 +18,20 @@
 
 <config id="driver" depends="">
     <script src="automation/TPGUIDriver.js" />
+
+    <script>
+        <![CDATA[
+        if (TP.sys.cfg('boot.context') === 'phantomjs') {
+            //  Syn has a very strange way of configuring. If you assign a POJO
+            //  to it *before* you load it, it will take that object and use it
+            //  as configuration data. Here we stub out the 'schedule' call
+            //  (which normally uses a setTimeout()) on PhantomJS, because there
+            //  are a lot of problems with setTimeout() and PhantomJS.
+            Syn = {'schedule' : function (fn, ms) {return fn()}};
+        }
+        ]]>
+    </script>
+
     <script src="~lib_deps/syn-tpi.min.js"
         unless="boot.unminified" no-minify="true" no-lint="true"/>
     <script src="~lib_deps/syn-tpi.js"

@@ -341,6 +341,37 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
             //  here we follow the XForms definition, encoding XML as a
             //  single part, and any binary as other parts (unsupported)
 
+            //  start the show :)
+            arr.push(TP.join('Content-Type: ', TP.MP_RELATED_ENCODED,
+                            '; boundary=', boundary));
+
+            //  According to the spec, the type of the first chunk of data
+            //  should appear in a 'type=' parameter before the first boundary.
+            if (TP.isArray(data)) {
+                arr.push(
+                    TP.join('; type=',
+                            data.first().atIfInvalid(
+                                    'mimetype', TP.PLAIN_TEXT_ENCODED)));
+            } else if (TP.isNode(data)) {
+                //  if the data is a Node, we use the supplied media type or
+                //  TP.XML_ENCODED if that's not defined, and the same
+                //  charset as the overall multipart content
+
+                //  and charset from the content as a whole and encode the
+                //  data as XML, forming a single block.
+                arr.push(
+                    TP.join('; type=',
+                                TP.ifInvalid(aMediatype, TP.XML_ENCODED),
+                            '; charset=',
+                                charset));
+            } else {
+                arr.push(
+                    TP.join('; type=',
+                                TP.ifInvalid(aMediatype, TP.PLAIN_TEXT_ENCODED),
+                            '; charset=',
+                                charset));
+            }
+
             //  place first boundary
             arr.push('--' + boundary);
 
@@ -370,11 +401,18 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                             return;
                         }
 
+                        //  Get the data into it's rawest form
+                        itemContent = TP.unwrap(itemContent);
+
                         itemMIMEType =
                                 anItem.atIfInvalid('mimetype', aMediatype);
-
-                        itemSeparator =
-                                anItem.atIfInvalid('separator', separator);
+                        if (TP.isEmpty(itemMIMEType)) {
+                            if (TP.isNode(itemContent)) {
+                                itemMIMEType = TP.XML_ENCODED;
+                            } else {
+                                itemMIMEType = TP.PLAIN_TEXT_ENCODED;
+                            }
+                        }
 
                         itemEncoding =
                                 anItem.atIfInvalid('encoding', charset);
@@ -384,6 +422,9 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                                 TP.join('Content-Type: ', itemMIMEType,
                                         '; charset=', itemEncoding));
                         }
+
+                        itemSeparator =
+                                anItem.atIfInvalid('separator', separator);
 
                         arr.push('Content-ID: ' + anIndex);
 
@@ -467,10 +508,11 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 }
             }
 
-            //  terminate final boundary
-            arr.atPut(arr.getSize() - 1, arr.last() + '--');
+            //  terminate final boundary - we need to take the last item and
+            //  append '--\r\n' to be spec compliant.
+            arr.atPut(arr.getSize() - 1, arr.last() + '--\r\n');
 
-            return arr.join('\n');
+            return arr.join('\r\n');
 
         case TP.MP_FORMDATA_ENCODED:
 
@@ -505,13 +547,23 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 len = list.getSize();
                 for (i = 0; i < len; i++) {
                     el = list.at(i);
-                    if (TP.notEmpty(el))    //  empty node means no children
-                    {
+
+                    //  According to the spec we want Elements that have no
+                    //  children *Elements* (but do have children *text nodes*)
+
+                    //  We don't want completely empty Elements.
+                    if (TP.notEmpty(el)) {
+                        //  But we do want ones that don't have child
+                        //  *Elements*
+                        if (TP.nodeGetChildElements(el).getSize() > 0) {
+                            continue;
+                        }
                         if (TP.notEmpty(val = TP.nodeGetTextContent(el))) {
                             arr.push(
                                 TP.join(
                                     'Content-disposition: form-data',
-                                    '; name="', el.tagName, '"',
+                                    '; name="', TP.elementGetLocalName(el), '"',
+                                    '\r\n',
                                     'Content-Type: ', TP.PLAIN_TEXT_ENCODED,
                                     '; charset=', charset),
                                 val,
@@ -528,6 +580,7 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                         TP.join(
                             'Content-disposition: form-data',
                             '; name="', list.at(i), '"',
+                            '\r\n',
                             'Content-Type: ', TP.PLAIN_TEXT_ENCODED,
                             '; charset=', charset),
                         TP.str(data.at(list.at(i))),
@@ -535,10 +588,11 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 }
             }
 
-            //  terminate final boundary
-            arr.atPut(arr.getSize() - 1, arr.last() + '--');
+            //  terminate final boundary - we need to take the last item and
+            //  append '--\r\n' to be spec compliant.
+            arr.atPut(arr.getSize() - 1, arr.last() + '--\r\n');
 
-            return arr.join('\n');
+            return arr.join('\r\n');
 
         default:
 
