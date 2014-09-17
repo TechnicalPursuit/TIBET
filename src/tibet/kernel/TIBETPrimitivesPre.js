@@ -2083,7 +2083,12 @@ TP.defineMethod = function(target, name, value, track, desc, display,
     //  'callee', then we have to wrap it into a wrapping function so that we
     //  can capture callee (arguments.callee is not valid in ECMA E5 strict
     //  mode). What a pain!
-    if (TP.NEEDS_CALLEE.test(value.toString()) && !value.noCalleePatch) {
+    //  Note that we do allow the method definer to set either 'noCalleePatch'
+    //  to true which means that the system will definitely not install a patch,
+    //  even if the RegExp passes or 'wantsCalleePatch' to true which forces the
+    //  system to install a patch, even if the RegExp fails.
+    if ((TP.NEEDS_CALLEE.test(value.toString()) && !value.noCalleePatch) ||
+        value.wantsCalleePatch === true) {
         method = function () {
             var oldCallee,
                 oldArgs,
