@@ -8,6 +8,8 @@
  */
 //  ========================================================================
 
+/* global Q:true
+*/
 
 TP.test.Suite.Inst.describe('TP.test.Suite parameter check',
 function() {
@@ -394,6 +396,247 @@ function() {
                             TP.TRACE);
         });
     });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.describe('TP.test.Suite ordering general test',
+function() {
+
+    //  NOTE: In this test, execution order is as follows:
+    //
+    //  Returned promises
+    //  Promises created by 'thenPromise()'
+    //  Promises created by 'then()'
+
+    this.before(
+        function() {
+            var suite,
+                newPromise;
+
+            suite = this;
+
+            TP.sys.logTest('This should have an index of 1');
+
+            suite.then(
+                function() {
+                    TP.sys.logTest('This should have an index of 3');
+                });
+
+            suite.then(
+                function() {
+                    TP.sys.logTest('This should have an index of 4');
+
+                    suite.then(
+                        function() {
+                            TP.sys.logTest('This should have an index of 5');
+                        });
+
+                    suite.then(
+                        function() {
+                            TP.sys.logTest('This should have an index of 6');
+                        });
+                });
+
+            newPromise = Q.promise(
+                    function(resolver, rejector) {
+                        TP.sys.logTest('This should have an index of 2');
+                        resolver();
+                    });
+
+            return newPromise;
+        });
+
+    this.beforeEach(
+        function() {
+            var theCase,
+                newPromise;
+
+            theCase = this;
+
+            TP.sys.logTest('This should have an index of 7');
+
+            theCase.then(
+                function() {
+                    TP.sys.logTest('This should have an index of 9');
+                });
+
+            theCase.then(
+                function() {
+                    TP.sys.logTest('This should have an index of 10');
+
+                    theCase.then(
+                        function() {
+                            TP.sys.logTest('This should have an index of 11');
+                        });
+
+                    theCase.then(
+                        function() {
+                            TP.sys.logTest('This should have an index of 12');
+                        });
+                });
+
+            newPromise = Q.promise(
+                    function(resolver, rejector) {
+                        TP.sys.logTest('This should have an index of 8');
+                        resolver();
+                    });
+
+            return newPromise;
+        });
+
+    this.it('ordering general case', function(test, options) {
+
+        var newPromise;
+
+        TP.sys.logTest('This should have an index of 13');
+
+        this.then(
+            function() {
+                TP.sys.logTest('This should have an index of 15');
+            });
+
+        this.then(
+            function() {
+                TP.sys.logTest('This should have an index of 16');
+
+                test.then(
+                    function() {
+                        TP.sys.logTest('This should have an index of 18');
+                    });
+
+                test.then(
+                    function() {
+                        TP.sys.logTest('This should have an index of 19');
+
+                        test.then(
+                            function() {
+                                TP.sys.logTest('This should have an index of 20');
+                            });
+
+                        test.then(
+                            function() {
+                                TP.sys.logTest('This should have an index of 21');
+                            });
+                    });
+
+                test.then(
+                    function() {
+                        TP.sys.logTest('This should have an index of 22');
+                    });
+
+                test.thenPromise(
+                    function(resolver, rejector) {
+                        TP.sys.logTest('This should have an index of 17');
+                        resolver();
+                    });
+
+                test.then(
+                    function() {
+                        TP.sys.logTest('This should have an index of 23');
+                    });
+            });
+
+        this.then(
+            function() {
+
+                var newPromise;
+
+                TP.sys.logTest('This should have an index of 24');
+
+                newPromise = Q.promise(
+                        function(resolver, rejector) {
+                            TP.sys.logTest('This should have an index of 25');
+                            resolver();
+                        });
+
+                return newPromise;
+            });
+
+        newPromise = Q.promise(
+                function(resolver, rejector) {
+                    TP.sys.logTest('This should have an index of 14');
+                    resolver();
+                });
+
+        return newPromise;
+    });
+
+    this.afterEach(
+        function() {
+            var theCase,
+                newPromise;
+
+            theCase = this;
+
+            TP.sys.logTest('This should have an index of 26');
+
+            theCase.then(
+                function() {
+                    TP.sys.logTest('This should have an index of 28');
+                });
+
+            theCase.then(
+                function() {
+                    TP.sys.logTest('This should have an index of 29');
+
+                    theCase.then(
+                        function() {
+                            TP.sys.logTest('This should have an index of 30');
+                        });
+
+                    theCase.then(
+                        function() {
+                            TP.sys.logTest('This should have an index of 31');
+                        });
+                });
+
+            newPromise = Q.promise(
+                    function(resolver, rejector) {
+                        TP.sys.logTest('This should have an index of 27');
+                        resolver();
+                    });
+
+            return newPromise;
+        });
+
+    this.after(
+        function() {
+            var suite,
+                newPromise;
+
+            suite = this;
+
+            TP.sys.logTest('This should have an index of 32');
+
+            suite.then(
+                function() {
+                    TP.sys.logTest('This should have an index of 34');
+                });
+
+            suite.then(
+                function() {
+                    TP.sys.logTest('This should have an index of 35');
+
+                    suite.then(
+                        function() {
+                            TP.sys.logTest('This should have an index of 36');
+                        });
+
+                    suite.then(
+                        function() {
+                            TP.sys.logTest('This should have an index of 37');
+                        });
+                });
+
+            newPromise = Q.promise(
+                    function(resolver, rejector) {
+                        TP.sys.logTest('This should have an index of 33');
+                        resolver();
+                    });
+
+            return newPromise;
+        });
 });
 
 //  ------------------------------------------------------------------------
