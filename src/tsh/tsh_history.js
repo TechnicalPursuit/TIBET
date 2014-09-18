@@ -46,7 +46,7 @@ function(aRequest) {
      * @name cmdRunContent
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @returns {Object} 
+     * @returns {Object}
      * @abstract
      * @todo
      */

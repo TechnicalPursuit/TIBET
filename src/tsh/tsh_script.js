@@ -443,98 +443,98 @@ function(source, shell, sibling, request) {
      *     extraneous information to identify tag attribute values. That means
      *     things like :clear ultimately become <tsh:clear/>, while input such
      *     as :import href=~code.js become <tsh:import href="~code.js"/>.
-     *     
+     *
      *     Pipes define command line "partitions" which are relevant for history
      *     and aliasing since those can focus on "start of command" in their
      *     processing. NOTE that during command execution when history/alias
      *     expansion is being performed each expanded command is repartitioned
      *     as needed, but those partitions don't create individual history
      *     entries.
-     *     
+     *
      *     Specific pipe syntax processed by this command includes:
-     *     
+     *
      *     a .| b (pipe stdout)
      *     a .& b (pipe stderr)
      *     a .|& b (pipe stdout and stderr)
-     *     
+     *
      *     a .|| b (conditional pipe [if lvalue fails])
      *     a .&& b (conditional pipe [if lvalue succeeds])
-     *     
+     *
      *     For the non-conditional pipe operators you can add a trailing *
      *     (splat) operation to tell the pipe that you want to iterate across a
      *     collection rather than pass the collection as the input value. An
      *     example might be:
-     *     
+     *
      *     a.|* b (pipe stdout and iterate over it)
-     *     
+     *
      *     In addition to the splatting syntax which drives iteration by those
      *     commands/tags which support it there is a sugar for "query" which
      *     allows strings/selectors to be placed inline in the pipe for use as
      *     extended conditionals. When using this syntax place the ? directly
      *     after the standard pipe symbol and before any trailing * (splat)
      *     operator:
-     *     
+     *
      *     a .|? b (pipe stdout and query it via b)
      *     a .|?* b (pipe stdout and query each item via b)
-     *     
+     *
      *     Redirects define values for stdin, stdout, and/or stderr relative to
      *     a command. As such they define simple pipes where there is an implied
      *     command setting/getting content on a specified object (usually via a
      *     URI). The object side of the redirect does not have history or alias
      *     expansion, it is mapped to a parameter which can subsequently undergo
      *     variable, uri, and substitution processing at runtime.
-     *     
+     *
      *     a .< b (redirect stdin w/getContent)
      *     a .<! b (redirect stdin w/getContent and refresh true)
-     *     
+     *
      *     a .<< (here document...read block as input)
-     *     
+     *
      *     a .> b (redirect stdout w/setContent)
      *     a .&> b (redirect stderr w/setContent)
      *     a .>& b (redirect stdout and stderr w/setContent)
-     *     
+     *
      *     a .>> b (redirect stdout w/addContent)
      *     a .&>> b (redirect stderr w/addContent)
      *     a .>>& b (redirect stdout and stderr w/addContent)
-     *     
+     *
      *     For redirects you can also add a trailing ! (commit) symbol which
      *     tells TIBET that you want the data to be flushed from the local
      *     in-browser cache to the file system or remote server. In other cases
      *     the data simply updates the TP.core.URI content but doesn't send it
      *     to the server. For example:
-     *     
+     *
      *     a .>! b (redirect stdout and 'commit')
-     *     
+     *
      *     Tag (action) input lines (foo:bar, :bar, etc) are updated to their
      *     XML equivalents, removing simple sugaring for XML.
-     *     
+     *
      *     :clear <tsh:clear/>
-     *     
+     *
      *     //   attribute parameters (named parameters)
      *     :source ref=blah <tsh:source ref="blah"/>
-     *     
+     *
      *     //   'switch' parameters
      *     :lint -full <tsh:lint full="true"/>
-     *     
+     *
      *     //   'identity' parameters
      *     html:checkbox --checked <html:checkbox checked="checked"/>
-     *     
+     *
      *     //   positional parameters
      *     :lint a b c <tsh:lint argv="a b c"/>
-     *     
+     *
      *     All other lines (without pipe, redirect, or other split or tag
      *     sugaring) are wrapped as simple command tags with text contained in
      *     CDATA blocks.
-     *     
+     *
      *     1+2 (simple command) <tsh:cmd><![CDATA[1+2]]></tsh:cmd>
-     *     
+     *
      *     Multiple commands and input can be mixed using semicolons as
      *     statement terminators. Pipe and redirect symbols also act as
      *     statement terminators. When processing content in this fashion block
      *     constructs in JavaScript are treated as a single command tag to avoid
      *     potential syntax errors from splitting a block-level construct such
      *     as a function.
-     *     
+     *
      *     NOTE that these transforms are all "compile time" conversions. See
      *     the TP.tsh.cmd type for processing specific to "runtime" processing
      *     of shell input.
@@ -549,7 +549,7 @@ function(source, shell, sibling, request) {
      */
 
     var requote,
-    
+
         arr,
         len,
 
@@ -1399,7 +1399,7 @@ function(source, shell, sibling, request) {
                         //  case '$':
                         //      //  Valid JS identifier, we don't process
                         //      //  into a tag
-                        //      //  (not in TP.TSH_OPERATOR_CHARS). 
+                        //      //  (not in TP.TSH_OPERATOR_CHARS).
 
                             case '%':
                                 //  TSH "job" syntax.
@@ -1463,7 +1463,7 @@ function(source, shell, sibling, request) {
 
                         //  case '|':
                         //      //  potential confusion with pipes
-                        //      //  (not in TP.TSH_OPERATOR_CHARS). 
+                        //      //  (not in TP.TSH_OPERATOR_CHARS).
 
                         //  case ';':
                         //      //  leading ; is used by TP.tsh.command as the
@@ -1489,12 +1489,12 @@ function(source, shell, sibling, request) {
 
                         //  case '<':
                         //      //  potential confusion with pipes
-                        //      //  (not in TP.TSH_OPERATOR_CHARS). 
+                        //      //  (not in TP.TSH_OPERATOR_CHARS).
 
                             case '.':
                                 //  An alias for the 'source' or 'import'
                                 //  command.
-                                
+
                                 //  First, see if it's an identifier
                                 next = arr[i + 1];
                                 if (next && TP.$is_identifier(next.name)) {
@@ -1511,7 +1511,7 @@ function(source, shell, sibling, request) {
                                     }
 
                                     //  Create a 'tsh:source' command with the
-                                    //  identifier name 
+                                    //  identifier name
                                     if (args.length > 0) {
                                         command.push('<tsh:source',
                                             ' ref="',
@@ -1543,7 +1543,7 @@ function(source, shell, sibling, request) {
                                     //  external TSH script.
                                     if (TP.uriExtension(token.value) ===
                                                                     'tsh') {
-                                        
+
                                         command.push('<tsh:script',
                                             ' src="',
                                             TP.xmlLiteralsToEntities(
@@ -1572,7 +1572,7 @@ function(source, shell, sibling, request) {
                                 break;
                         //  case '>':
                         //      //  potential confusion with pipes
-                        //      //  (not in TP.TSH_OPERATOR_CHARS). 
+                        //      //  (not in TP.TSH_OPERATOR_CHARS).
 
                             case '/':
                                 //  flag syntax, provides access to TIBET's
@@ -2933,7 +2933,7 @@ function(aFaultCode, aFaultString) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
      * @param {String} aFaultString A string description of the fault.
-     * @returns {TP.BREAK} 
+     * @returns {TP.BREAK}
      * @todo
      */
 
@@ -3001,7 +3001,7 @@ function(aFaultCode, aFaultString, anException) {
      * @param {String} aFaultString A string description of the fault.
      * @param {TP.sig.Exception|String} anException An optional exception to
      *     raise.
-     * @returns {TP.BREAK} 
+     * @returns {TP.BREAK}
      * @todo
      */
 
@@ -3307,7 +3307,7 @@ function(output, request) {
         buffer,
         buffered,
         shell,
-    
+
         start,
         end;
 

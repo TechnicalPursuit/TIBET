@@ -52,9 +52,9 @@ function(aRequest) {
         url,
         type,
         req,
-        
+
         shell,
-        
+
         signal;
 
     node = aRequest.at('cmdNode');

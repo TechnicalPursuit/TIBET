@@ -95,7 +95,7 @@ function(aString, aShell, aRequest, asTokens) {
         req,
         rewrites,
         result2,
-        
+
         sourcevars;
 
     TP.debug('break.tsh_desugar');
@@ -909,7 +909,7 @@ function(aTokenArray) {
      *     supported by the tsh:cmd tag includes the proposed slicing syntax for
      *     future editions of JavaScript.
      * @param {Array} aTokenArray A list of tokens to check.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -1794,7 +1794,7 @@ function(aString, aShell, aRequest) {
      */
 
     var result,
-    
+
         RESULT$$,
 
     //  standard "special variables" we're willing to expose to scripts
@@ -1805,7 +1805,7 @@ function(aString, aShell, aRequest) {
         $CONTEXT,
         $SCOPE,
         $SCRIPT,
-    
+
         err,
 
         value,
@@ -1926,7 +1926,7 @@ function(aString, aShell, aRequest) {
             //  pull out the names of the variables in our String and supply
             //  them as a set of names that the transformation engine should
             //  treat as 'normal'.
-            
+
             //  First, we convert '${X}' into '$X'
             TP.regex.TSH_VARSUB_EXTENDED.lastIndex = 0;
             value = value.replace(TP.regex.TSH_VARSUB_EXTENDED, '$$$1');
@@ -1964,7 +1964,7 @@ function(aRequest) {
      *     TP.sig.InvalidOperation exception.
      * @param {TP.sig.Request} aRequest The request to be processed.
      * @raises TP.sig.InvalidOperation
-     * @returns {TP.BREAK} 
+     * @returns {TP.BREAK}
      */
 
     TP.debug('break.tsh_cmd');
