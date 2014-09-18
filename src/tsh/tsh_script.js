@@ -2036,6 +2036,7 @@ function(aRequest) {
         //  so we can manage async join requirements
         cmdRequest = TP.sig.TSHRunRequest.construct(
                         TP.hc(
+                            'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
                             //  No 'cmd' - it's already been desugared
                             'cmdAsIs', aRequest.at('cmdAsIs'),
                             //  'cmdExecute' is implied
@@ -2133,6 +2134,7 @@ function(aRequest) {
                     //  based on order.
                     pipeRequest = TP.sig.TSHRunRequest.construct(
                         TP.hc(
+                            'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
                             //  No 'cmd' - it's already been desugared
                             'cmdAsIs', aRequest.at('cmdAsIs'),
                             //  'cmdExecute' is implied
@@ -2239,6 +2241,7 @@ function(aRequest) {
             if (constructPR) {
                 pipeRequest = TP.sig.TSHRunRequest.construct(
                     TP.hc(
+                        'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
                         //  No 'cmd' - it's already been desugared
                         'cmdAsIs', aRequest.at('cmdAsIs'),
                         //  'cmdExecute' is implied

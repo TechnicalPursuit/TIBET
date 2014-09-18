@@ -172,6 +172,7 @@ function(aString, aShell, aRequest, asTokens) {
                 //  processed.
                 req = TP.sig.ShellRequest.construct(
                         TP.hc('cmd', str,
+                                'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
                                 'cmdAsIs', aRequest.at('cmdAsIs'),
                                 'cmdExecute', true,
                                 'cmdHistory', aRequest.at('cmdHistory'),
@@ -270,6 +271,7 @@ function(aString, aShell, aRequest, asTokens) {
 
                     req = TP.sig.ShellRequest.construct(
                         TP.hc('cmd', str,
+                                'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
                                 'cmdAsIs', aRequest.at('cmdAsIs'),
                                 'cmdExecute', true,
                                 'cmdHistory', aRequest.at('cmdHistory'),
@@ -422,8 +424,10 @@ function(aString, aShell, aRequest, asTokens) {
                 //  command substitution...effectively inlining result data
                 //  where the command text is positioned.
                 if (token.value.indexOf('`') === 0) {
-                    if (TP.notTrue(
-                        TP.ifKeyInvalid(aRequest, 'cmdInteractive', false))) {
+                    if (TP.notTrue(TP.ifKeyInvalid(
+                                aRequest, 'cmdInteractive', false)) &&
+                        TP.notTrue(TP.ifKeyInvalid(
+                                aRequest, 'cmdAllowSubs', false))) {
                         aRequest.fail(
                             TP.FAILURE,
                             TP.sc(TP.join(
@@ -1848,8 +1852,8 @@ function(aString, aShell, aRequest) {
         $CONTEXT.$SCRIPT = $SCRIPT;
         $CONTEXT.$_ = null;
 
-        if (TP.notTrue(
-            TP.ifKeyInvalid(aRequest, 'cmdInteractive', false))) {
+        if (TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdInteractive', false)) &&
+            TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdAllowSubs', false))) {
             aRequest.fail(
                 TP.FAILURE,
                 TP.sc(TP.join(

@@ -117,11 +117,13 @@ function(cmdSrc, echoRequest, createHistory, echoOutput, shellID, successHandler
 
                             //  This won't be an interactive environment, so
                             //  don't allow prompting for it.
-                            //'cmdInteractive', false,
-                            //  TODO: This will not allow dereference sugar
-                            //  syntax during testing, so we set it to 'true'
-                            //  here. Needs review.
-                            'cmdInteractive', true,
+                            'cmdInteractive', false,
+
+                            //  Because we turn off interactive environment, we
+                            //  have to turn this flag on to allow the
+                            //  environment to properly process command
+                            //  substitutions (which can use 'eval()')
+                            'cmdAllowSubs', true,
 
                             //  We definitely want expansion, desugaring, etc.
                             //  This will not be 'literal' content.
@@ -785,6 +787,8 @@ function() {
                             TP.hc(
                                 'cmd',
                                     anEntry.at('cmd'),
+                                'cmdAllowSubs',
+                                    anEntry.at('cmdAllowSubs'),
                                 'cmdAsIs',
                                     anEntry.at('cmdAsIs'),
                                 'cmdExecute',
@@ -847,12 +851,13 @@ function() {
 
                     return TP.hc(
                         'cmd', aShellReq.at('cmd'),
-                        'cmdRoot', TP.str(aShellReq.at('cmdRoot')),
+                        'cmdAllowSubs', aShellReq.at('cmdAllowSubs'),
                         'cmdExecute', aShellReq.at('cmdExecute'),
                         'cmdInteractive', aShellReq.at('cmdInteractive'),
                         'cmdLiteral', aShellReq.at('cmdLiteral'),
                         'cmdPhases', aShellReq.at('cmdPhases'),
                         'cmdRecycle', aShellReq.at('cmdRecycle'),
+                        'cmdRoot', TP.str(aShellReq.at('cmdRoot')),
                         'cmdSilent', aShellReq.at('cmdSilent'));
                 });
 
