@@ -1353,6 +1353,9 @@ function(onFulfilled, onRejected) {
 
         thisArg,
 
+        _callback,
+        _errback,
+
         newPromise;
 
     //  First, see if there's an existing internal promise. If not, create one
@@ -1372,6 +1375,22 @@ function(onFulfilled, onRejected) {
 
     thisArg = this;
 
+    //  Make sure that a callback function is defined. Either the supplied one
+    //  or a simple one that returns the value.
+    if (!TP.isCallable(_callback = onFulfilled)) {
+        _callback = function(value) {
+            return value;
+        };
+    }
+
+    //  Make sure that an errback function is defined. Either the supplied one
+    //  or a simple one that rejects with the reason
+    if (!TP.isCallable(_errback = onRejected)) {
+        _errback = function(reason) {
+            return Q.reject(reason);
+        };
+    }
+
     //  'then' onto our last promise with fulfillment/rejection handlers that
     //  manage a 'stacking' of nested Promises.
     newPromise = lastPromise.then(
@@ -1388,8 +1407,13 @@ function(onFulfilled, onRejected) {
             subPromise = Q.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
-            //  Execute the fulfillment handler
-            maybe = onFulfilled(result);
+            //  Protect the callback in a try...catch to make sure that any
+            //  errors result in the promise being rejected.
+            try {
+                maybe = _callback(result);
+            } catch (e) {
+                maybe = Q.reject(e);
+            }
 
             //  The fulfillment handler will have set the 'new promise' that it
             //  created as the 'current promise' (see below). We need that here.
@@ -1421,7 +1445,14 @@ function(onFulfilled, onRejected) {
             subPromise = Q.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
-            maybe = onRejected(reason);
+            //  Protect the errback in a try...catch to make sure that any
+            //  errors that could happen as part of the errback itself result in
+            //  the promise being rejected.
+            try {
+                maybe = _errback(reason);
+            } catch (e) {
+                maybe = Q.reject(e);
+            }
 
             subReturnPromise = thisArg.$get('$currentPromise');
             thisArg.$set('$currentPromise', null);
@@ -2022,6 +2053,9 @@ function(onFulfilled, onRejected) {
 
         thisArg,
 
+        _callback,
+        _errback,
+
         newPromise;
 
     //  First, see if there's an existing internal promise. If not, create one
@@ -2041,6 +2075,22 @@ function(onFulfilled, onRejected) {
 
     thisArg = this;
 
+    //  Make sure that a callback function is defined. Either the supplied one
+    //  or a simple one that returns the value.
+    if (!TP.isCallable(_callback = onFulfilled)) {
+        _callback = function(value) {
+            return value;
+        };
+    }
+
+    //  Make sure that an errback function is defined. Either the supplied one
+    //  or a simple one that rejects with the reason
+    if (!TP.isCallable(_errback = onRejected)) {
+        _errback = function(reason) {
+            return Q.reject(reason);
+        };
+    }
+
     //  'then' onto our last promise with fulfillment/rejection handlers that
     //  manage a 'stacking' of nested Promises.
     newPromise = lastPromise.then(
@@ -2057,8 +2107,13 @@ function(onFulfilled, onRejected) {
             subPromise = Q.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
-            //  Execute the fulfillment handler
-            maybe = onFulfilled(result);
+            //  Protect the callback in a try...catch to make sure that any
+            //  errors result in the promise being rejected.
+            try {
+                maybe = _callback(result);
+            } catch (e) {
+                maybe = Q.reject(e);
+            }
 
             //  The fulfillment handler will have set the 'new promise' that it
             //  created as the 'current promise' (see below). We need that here.
@@ -2090,7 +2145,14 @@ function(onFulfilled, onRejected) {
             subPromise = Q.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
-            maybe = onRejected(reason);
+            //  Protect the errback in a try...catch to make sure that any
+            //  errors that could happen as part of the errback itself result in
+            //  the promise being rejected.
+            try {
+                maybe = _errback(reason);
+            } catch (e) {
+                maybe = Q.reject(e);
+            }
 
             subReturnPromise = thisArg.$get('$currentPromise');
             thisArg.$set('$currentPromise', null);
