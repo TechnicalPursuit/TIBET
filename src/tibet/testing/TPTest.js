@@ -634,13 +634,21 @@ TP.test.Suite.Inst.defineAttribute('suiteList');
 TP.test.Suite.Inst.defineAttribute('suiteName');
 
 /**
- * The promise that is kept by the test suite for use by test suite logic as the
- * test executes. Note that this promise reference can change as the test suite
- * logic actually adds new Promises. It will be set to the 'last' Promise
- * generated.
+ * A promise reference that points to the 'last promise' that was
+ * allocated/initialized. Therefore, this promise reference can change as the
+ * suite logic adds new Promises.
  * @type {Promise}
  */
 TP.test.Suite.Inst.defineAttribute('$internalPromise');
+
+/**
+ * A promise reference that is kept by the test suite for use by test suite
+ * logic as the suite works it's way through any 'stacking' logic whereby
+ * fulfillment or rejection 'then()' handlers have 'then()' statements within
+ * themselves. See the 'then()' method for more information.
+ * @type {Promise}
+ */
+TP.test.Suite.Inst.defineAttribute('$currentPromise');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -737,7 +745,7 @@ function(result, options) {
         try {
             //  Call the Function with ourself as 'this' and then ourself again
             //  as the first parameter and the options as the second parameter
-            func.call(this, this, options);
+            return func.call(this, this, options);
         } catch (e) {
             TP.sys.logTest('# error in after: ' + e.message);
         }
@@ -758,7 +766,7 @@ function(currentcase, result, options) {
             //  Call the Function with the current test case as 'this' and then
             //  it again as the first parameter and the options as the second
             //  parameter
-            func.call(currentcase, currentcase, options);
+            return func.call(currentcase, currentcase, options);
         } catch (e) {
             TP.sys.logTest('# error in afterEach: ' + e.message);
         }
@@ -780,7 +788,7 @@ function(result, options) {
         try {
             //  Call the Function with ourself as 'this' and then ourself again
             //  as the first parameter and the options as the second parameter
-            func.call(this, this, options);
+            return func.call(this, this, options);
         } catch (e) {
             TP.sys.logTest('# error in before: ' + e.message);
         }
@@ -801,7 +809,7 @@ function(currentcase, result, options) {
             //  Call the Function with the current test case as 'this' and then
             //  it again as the first parameter and the options as the second
             //  parameter
-            func.call(currentcase, currentcase, options);
+            return func.call(currentcase, currentcase, options);
         } catch (e) {
             TP.sys.logTest('# error in beforeEach: ' + e.message);
         }
@@ -1087,6 +1095,7 @@ function(options) {
         statistics,
         result,
         suite,
+        maybe,
         params,
 
         firstPromise;
@@ -1143,8 +1152,9 @@ function(options) {
     //  Binding attribute for our promise closures below.
     suite = this;
 
-    //  Run any 'before' hook for the suite.
-    suite.executeBefore(null, options);
+    //  Run any 'before' hook for the suite. Note that this may generate a
+    //  Promise that will be in '$internalPromise'.
+    maybe = suite.executeBefore(null, options);
 
     //  If a Promise hasn't been generated on-the-fly by any of the 'before'
     //  methods, then generate a resolved one here. This will be the Promise
@@ -1152,6 +1162,18 @@ function(options) {
     if (TP.notValid(firstPromise = suite.$get('$internalPromise'))) {
         firstPromise = Q.Promise.resolve();
         suite.$set('$internalPromise', firstPromise);
+    }
+
+    //  If a Promise was also *returned* from executing 'before', then chain it
+    //  on the first Promise and reset the '$internalPromise' reference.
+    if (TP.canInvoke(maybe, 'then')) {
+        var nextPromise;
+
+        nextPromise = firstPromise.then(
+                            function() {
+                                return maybe;
+                            });
+        suite.$set('$internalPromise', nextPromise);
     }
 
     //  Use reduce to convert our caselist array into a chain of promises. We
@@ -1163,11 +1185,48 @@ function(options) {
 
                 return chain.then(
                     function(obj) {
-                        var promise;
+                        var maybe,
+                            lastPromise,
+                            promise;
 
-                        suite.executeBeforeEach(current, obj, options);
+                        //  This may add to the '$internalPromise'
+                        maybe = suite.executeBeforeEach(current, obj, options);
 
-                        promise = current.run(TP.hc(options));
+                        //  A last promise can be obtained which means that
+                        //  'beforeEach' must've generated one.
+                        if (TP.isValid(lastPromise = current.$get(
+                                                '$internalPromise'))) {
+
+                            //  If a Promise was also *returned* from executing
+                            //  'beforeEach', then chain it onto the last
+                            //  promise.
+                            if (TP.canInvoke(maybe, 'then')) {
+                                promise = lastPromise.then(
+                                        function() {
+                                            return maybe;
+                                        }).then(
+                                        function() {
+                                            return current.run(TP.hc(options));
+                                        });
+                            } else {
+                                //  No returned Promise, just a last promise.
+                                promise = lastPromise.then(
+                                        function() {
+                                            return current.run(TP.hc(options));
+                                        });
+                            }
+                        } else {
+                            //  Returned Promise, no last promise
+                            if (TP.canInvoke(maybe, 'then')) {
+                                promise = maybe.then(
+                                        function() {
+                                            return current.run(TP.hc(options));
+                                        });
+                            } else {
+                                //  Neither
+                                promise = current.run(TP.hc(options));
+                            }
+                        }
 
                         return promise.then(
                             function(obj) {
@@ -1179,13 +1238,30 @@ function(options) {
                                 //  return it.
                                 current.$set('$internalPromise', null);
 
-                                suite.executeAfterEach(current, obj, options);
+                                maybe = suite.executeAfterEach(
+                                            current, obj, options);
 
-                                //  The 'after each' method scheduled a Promise.
-                                //  Return it.
+                                //  A last promise can be obtained which means
+                                //  that 'afterEach' must've generated one.
                                 if (TP.isValid(lastPromise = current.$get(
                                                         '$internalPromise'))) {
-                                    return lastPromise;
+
+                                    //  If a Promise was also *returned* from
+                                    //  executing 'afterEach', then chain it
+                                    //  onto the last promise.
+                                    if (TP.canInvoke(maybe, 'then')) {
+                                        return lastPromise.then(
+                                                function() {
+                                                    return maybe;
+                                                });
+                                    } else {
+                                        //  No returned Promise, just a last
+                                        //  promise.
+                                        return lastPromise;
+                                    }
+                                } else if (TP.canInvoke(maybe, 'then')) {
+                                    //  Returned Promise, no last promise
+                                    return maybe;
                                 }
                             }, function(err) {
                                 current.$set('$internalPromise', null);
@@ -1211,7 +1287,9 @@ function(options) {
             suite.$set('$internalPromise', null);
 
             try {
-                suite.executeAfter(obj, options);
+                //  Run any 'after' hook for the suite. Note that this may
+                //  generate a Promise that will be in '$internalPromise'.
+                maybe = suite.executeAfter(obj, options);
             } finally {
                 //  Output summary
 
@@ -1219,7 +1297,27 @@ function(options) {
                 //  that will generate the report *after* it runs and return
                 //  that.
                 if (TP.isValid(lastPromise = suite.$get('$internalPromise'))) {
-                    return lastPromise.then(
+
+                    //  If a Promise was also *returned* from executing 'after',
+                    //  then chain it on the last Promise.
+                    if (TP.canInvoke(maybe, 'then')) {
+                        return lastPromise.then(
+                                        function() {
+                                            return maybe;
+                                        }).then(
+                                        function() {
+                                            suite.report(options);
+                                        });
+                    } else {
+                        //  No returned Promise, just a last promise.
+                        return lastPromise.then(
+                                        function() {
+                                            suite.report(options);
+                                        });
+                    }
+                } else if (TP.canInvoke(maybe, 'then')) {
+                    //  Returned Promise, no last promise
+                    return maybe.then(
                                     function() {
                                         suite.report(options);
                                     });
@@ -1250,14 +1348,100 @@ function(onFulfilled, onRejected) {
      * @return {TP.test.Suite} The receiver.
      */
 
-    var startPromise,
+    var internalPromise,
+        lastPromise,
+
+        thisArg,
+
         newPromise;
 
-    if (TP.notValid(startPromise = this.$get('$internalPromise'))) {
-        startPromise = Q.Promise.resolve();
+    //  First, see if there's an existing internal promise. If not, create one
+    //  and set the internal promise to be that.
+    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
+        internalPromise = Q.Promise.resolve();
+        this.$set('$internalPromise', internalPromise);
     }
 
-    newPromise = startPromise.then(onFulfilled, onRejected);
+    //  Next, see if there's a 'current promise'. This is a Promise reference
+    //  that would've been set 'higher up' (i.e. one frame back in a nested set
+    //  of promises). If so, use that as the 'last promise' that we're going to
+    //  append to. If not, use our internal promise.
+    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
+        lastPromise = internalPromise;
+    }
+
+    thisArg = this;
+
+    //  'then' onto our last promise with fulfillment/rejection handlers that
+    //  manage a 'stacking' of nested Promises.
+    newPromise = lastPromise.then(
+        function(result) {
+
+            var subPromise,
+                maybe,
+                subReturnPromise;
+
+            //  First, allocated a 'sub promise' and set it as the 'current
+            //  promise'. This will be used as the 'last promise' (see above)
+            //  for any nested 'then()' statements *inside* of the fulfillment
+            //  handler.
+            subPromise = Q.Promise.resolve();
+            thisArg.$set('$currentPromise', subPromise);
+
+            //  Execute the fulfillment handler
+            maybe = onFulfilled(result);
+
+            //  The fulfillment handler will have set the 'new promise' that it
+            //  created as the 'current promise' (see below). We need that here.
+            //  Note how we then null out the current promise - this is
+            //  important to keep things straight.
+            subReturnPromise = thisArg.$get('$currentPromise');
+            thisArg.$set('$currentPromise', null);
+
+            //  If we got a Promise back from the fulfillment handler, chain it
+            //  on to the 'sub return promise' here.
+            if (TP.canInvoke(maybe, 'then')) {
+                subReturnPromise = subReturnPromise.then(
+                                        function() {
+                                            return maybe;
+                                        });
+            }
+
+            return subReturnPromise;
+        },
+        function(reason) {
+
+            var subPromise,
+                maybe,
+                subReturnPromise;
+
+            //  All of the same stuff above, except we're dealing with the
+            //  rejection handler.
+
+            subPromise = Q.Promise.resolve();
+            thisArg.$set('$currentPromise', subPromise);
+
+            maybe = onRejected(reason);
+
+            subReturnPromise = thisArg.$get('$currentPromise');
+            thisArg.$set('$currentPromise', null);
+
+            if (TP.canInvoke(maybe, 'then')) {
+                subReturnPromise = subReturnPromise.then(
+                                        function() {
+                                            return maybe;
+                                        });
+            }
+
+            return subReturnPromise;
+        });
+
+    //  Set both our 'internal promise' (used to track the last promise
+    //  allocated) and the 'current promise' to the new promise we just obtained
+    //  by 'then()'ing onto the 'last promise' (which will either by the
+    //  internal promise as obtained when we entered this method or the current
+    //  promise set by our parent stack frame 'earlier' in our computation.
+    this.$set('$currentPromise', newPromise);
     this.$set('$internalPromise', newPromise);
 
     return this;
@@ -1277,22 +1461,44 @@ function(aFunction) {
      * @return {TP.test.Suite} The receiver.
      */
 
-    var startPromise,
-        newPromise,
-        chainedPromise;
+    var internalPromise,
+        subPromise,
 
-    if (TP.notValid(startPromise = this.$get('$internalPromise'))) {
-        startPromise = Q.Promise.resolve();
+        lastPromise,
+        newPromise;
+
+    //  First, see if there's an existing internal promise. If not, create one
+    //  and set the internal promise to be that.
+    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
+        internalPromise = Q.Promise.resolve();
+        this.$set('$internalPromise', internalPromise);
     }
 
-    newPromise = Q.Promise(aFunction);
+    //  Next, see if there's a 'current promise'. This is a Promise reference
+    //  that would've been set 'higher up' (i.e. one frame back in a nested set
+    //  of promises). If so, use that as the 'last promise' that we're going to
+    //  append to. If not, use our internal promise.
+    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
+        lastPromise = internalPromise;
+    }
 
-    chainedPromise = startPromise.then(
+    //  Execute the supplied Function and wrap a Promise around the result.
+    subPromise = Q.Promise(aFunction);
+
+    //  'then' onto our last promise, chaining on the promise we just
+    //  allocated.
+    newPromise = lastPromise.then(
         function() {
-            return newPromise;
+            return subPromise;
         });
 
-    this.$set('$internalPromise', chainedPromise);
+    //  Set both our 'internal promise' (used to track the last promise
+    //  allocated) and the 'current promise' to the new promise we just obtained
+    //  by 'then()'ing onto the 'last promise' (which will either by the
+    //  internal promise as obtained when we entered this method or the current
+    //  promise set by our parent stack frame 'earlier' in our computation.
+    this.$set('$currentPromise', newPromise);
+    this.$set('$internalPromise', newPromise);
 
     return this;
 });
@@ -1345,13 +1551,21 @@ TP.test.Case.Inst.defineAttribute('refute');
 TP.test.Case.Inst.defineAttribute('suite');
 
 /**
- * The promise that is kept by the test case for use by test case logic as the
- * test executes. Note that this promise reference can change as the test case
- * logic actually adds new Promises. It will be set to the 'last' Promise
- * generated.
+ * A promise reference that points to the 'last promise' that was
+ * allocated/initialized. Therefore, this promise reference can change as the
+ * test case logic adds new Promises.
  * @type {Promise}
  */
 TP.test.Case.Inst.defineAttribute('$internalPromise');
+
+/**
+ * A promise reference that is kept by the test case for use by test case
+ * logic as the case works it's way through any 'stacking' logic whereby
+ * fulfillment or rejection 'then()' handlers have 'then()' statements within
+ * themselves. See the 'then()' method for more information.
+ * @type {Promise}
+ */
+TP.test.Case.Inst.defineAttribute('$currentPromise');
 
 /**
  * The expectation that is kept by the test case for use by test case logic as
@@ -1655,6 +1869,7 @@ function(options) {
         if (testcase.isSkipped() && !params.at('ignore_skip')) {
             TP.sys.logTest('ok - ' + testcase.getCaseName() + ' # SKIP');
             resolver();
+
             return;
         }
 
@@ -1802,14 +2017,100 @@ function(onFulfilled, onRejected) {
      * @return {TP.test.Case} The receiver.
      */
 
-    var startPromise,
+    var internalPromise,
+        lastPromise,
+
+        thisArg,
+
         newPromise;
 
-    if (TP.notValid(startPromise = this.$get('$internalPromise'))) {
-        startPromise = Q.Promise.resolve();
+    //  First, see if there's an existing internal promise. If not, create one
+    //  and set the internal promise to be that.
+    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
+        internalPromise = Q.Promise.resolve();
+        this.$set('$internalPromise', internalPromise);
     }
 
-    newPromise = startPromise.then(onFulfilled, onRejected);
+    //  Next, see if there's a 'current promise'. This is a Promise reference
+    //  that would've been set 'higher up' (i.e. one frame back in a nested set
+    //  of promises). If so, use that as the 'last promise' that we're going to
+    //  append to. If not, use our internal promise.
+    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
+        lastPromise = internalPromise;
+    }
+
+    thisArg = this;
+
+    //  'then' onto our last promise with fulfillment/rejection handlers that
+    //  manage a 'stacking' of nested Promises.
+    newPromise = lastPromise.then(
+        function(result) {
+
+            var subPromise,
+                maybe,
+                subReturnPromise;
+
+            //  First, allocated a 'sub promise' and set it as the 'current
+            //  promise'. This will be used as the 'last promise' (see above)
+            //  for any nested 'then()' statements *inside* of the fulfillment
+            //  handler.
+            subPromise = Q.Promise.resolve();
+            thisArg.$set('$currentPromise', subPromise);
+
+            //  Execute the fulfillment handler
+            maybe = onFulfilled(result);
+
+            //  The fulfillment handler will have set the 'new promise' that it
+            //  created as the 'current promise' (see below). We need that here.
+            //  Note how we then null out the current promise - this is
+            //  important to keep things straight.
+            subReturnPromise = thisArg.$get('$currentPromise');
+            thisArg.$set('$currentPromise', null);
+
+            //  If we got a Promise back from the fulfillment handler, chain it
+            //  on to the 'sub return promise' here.
+            if (TP.canInvoke(maybe, 'then')) {
+                subReturnPromise = subReturnPromise.then(
+                                        function() {
+                                            return maybe;
+                                        });
+            }
+
+            return subReturnPromise;
+        },
+        function(reason) {
+
+            var subPromise,
+                maybe,
+                subReturnPromise;
+
+            //  All of the same stuff above, except we're dealing with the
+            //  rejection handler.
+
+            subPromise = Q.Promise.resolve();
+            thisArg.$set('$currentPromise', subPromise);
+
+            maybe = onRejected(reason);
+
+            subReturnPromise = thisArg.$get('$currentPromise');
+            thisArg.$set('$currentPromise', null);
+
+            if (TP.canInvoke(maybe, 'then')) {
+                subReturnPromise = subReturnPromise.then(
+                                        function() {
+                                            return maybe;
+                                        });
+            }
+
+            return subReturnPromise;
+        });
+
+    //  Set both our 'internal promise' (used to track the last promise
+    //  allocated) and the 'current promise' to the new promise we just obtained
+    //  by 'then()'ing onto the 'last promise' (which will either by the
+    //  internal promise as obtained when we entered this method or the current
+    //  promise set by our parent stack frame 'earlier' in our computation.
+    this.$set('$currentPromise', newPromise);
     this.$set('$internalPromise', newPromise);
 
     return this;
@@ -1829,22 +2130,44 @@ function(aFunction) {
      * @return {TP.test.Case} The receiver.
      */
 
-    var startPromise,
-        newPromise,
-        chainedPromise;
+    var internalPromise,
+        subPromise,
 
-    if (TP.notValid(startPromise = this.$get('$internalPromise'))) {
-        startPromise = Q.Promise.resolve();
+        lastPromise,
+        newPromise;
+
+    //  First, see if there's an existing internal promise. If not, create one
+    //  and set the internal promise to be that.
+    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
+        internalPromise = Q.Promise.resolve();
+        this.$set('$internalPromise', internalPromise);
     }
 
-    newPromise = Q.Promise(aFunction);
+    //  Next, see if there's a 'current promise'. This is a Promise reference
+    //  that would've been set 'higher up' (i.e. one frame back in a nested set
+    //  of promises). If so, use that as the 'last promise' that we're going to
+    //  append to. If not, use our internal promise.
+    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
+        lastPromise = internalPromise;
+    }
 
-    chainedPromise = startPromise.then(
+    //  Execute the supplied Function and wrap a Promise around the result.
+    subPromise = Q.Promise(aFunction);
+
+    //  'then' onto our last promise, chaining on the promise we just
+    //  allocated.
+    newPromise = lastPromise.then(
         function() {
-            return newPromise;
+            return subPromise;
         });
 
-    this.$set('$internalPromise', chainedPromise);
+    //  Set both our 'internal promise' (used to track the last promise
+    //  allocated) and the 'current promise' to the new promise we just obtained
+    //  by 'then()'ing onto the 'last promise' (which will either by the
+    //  internal promise as obtained when we entered this method or the current
+    //  promise set by our parent stack frame 'earlier' in our computation.
+    this.$set('$currentPromise', newPromise);
+    this.$set('$internalPromise', newPromise);
 
     return this;
 });
