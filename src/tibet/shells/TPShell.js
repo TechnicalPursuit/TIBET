@@ -188,6 +188,14 @@ function(cmdSrc, echoRequest, createHistory, echoOutput, shellID, successHandler
                 newSuccessHandler.ignore(
                         request, 'TP.sig.ShellRequestSucceeded');
 
+                //  For some reason, when 'cmdInteractive' is false (like
+                //  above), if there has been no stdout output, running tests
+                //  using this call under PhantomJS will hang. So we push an
+                //  empty String onto 'stdout' stdio results.
+                if (TP.isEmpty(stdioResults.at('stdout'))) {
+                    stdioResults.at('stdout').push('');
+                }
+
                 successHandler(aSignal, stdioResults);
             };
 
