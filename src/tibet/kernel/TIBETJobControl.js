@@ -79,7 +79,7 @@ function(aFaultCode, aFaultString) {
     } else if (TP.isString(aFaultCode)) {
         if (TP.isEmpty(aFaultString)) {
             hash.atPut('code', TP.FAILED);
-            hash.atPut('text', aFaultString);
+            hash.atPut('text', aFaultCode);
         } else {
             hash.atPut('code', aFaultCode);
             hash.atPut('text', aFaultString);
