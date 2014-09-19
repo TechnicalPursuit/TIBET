@@ -231,7 +231,8 @@ function(aURI, $$vetted) {
     //  several areas in TIBET will try to resolve strings to URIs. we want
     //  this to be effective, but accurate so there are some simple checks
     //  to help ensure we have something that might be a valid URI string
-    if (!TP.regex.URI_LIKELY.test(url)) {
+    if (!TP.regex.URI_LIKELY.test(url) ||
+        TP.regex.REGEX_LITERAL_STRING.test(url)) {
         return;
     }
 
@@ -332,7 +333,9 @@ function(anObject) {
         urn;
 
     //  legacy calls tend to provide strings... should be a TP.uc() call now.
-    if (TP.isString(anObject) && TP.regex.URI_LIKELY.test(anObject)) {
+    if (TP.isString(anObject) &&
+        TP.regex.URI_LIKELY.test(anObject) &&
+        !TP.regex.REGEX_LITERAL_STRING.test(anObject)) {
         uri = TP.core.URI.construct(anObject);
         if (TP.isURI(uri)) {
             return uri;

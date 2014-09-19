@@ -2150,7 +2150,8 @@ function(anObjectSpec, aRequest) {
     }
 
     try {
-        if (TP.regex.URI_LIKELY.test(spec)) {
+        if (TP.regex.URI_LIKELY.test(spec) &&
+            !TP.regex.REGEX_LITERAL_STRING.test(spec)) {
             url = this.expandPath(spec);
             if (TP.isURI(url = TP.uc(url))) {
                 $$inst = url.getResource(TP.hc('async', false));
