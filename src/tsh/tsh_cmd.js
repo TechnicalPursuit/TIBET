@@ -89,6 +89,7 @@ function(aString, aShell, aRequest, asTokens) {
         req,
         rewrites,
         result2,
+        identValue;
 
     TP.debug('break.tsh_desugar');
 
@@ -339,6 +340,14 @@ function(aString, aShell, aRequest, asTokens) {
 
                     return;
                 } else {
+
+                    identValue = token.value;
+
+                    //  Make sure to convert '${X}' into '$X'
+                    TP.regex.TSH_VARSUB_EXTENDED.lastIndex = 0;
+                    identValue = identValue.replace(
+                                    TP.regex.TSH_VARSUB_EXTENDED, '$$$1');
+
                     //  if the next non-whitespace token is an assignment
                     //  operator then we're looking at a possible local
                     //  variable assignment we need to rewrite. The big
@@ -356,15 +365,15 @@ function(aString, aShell, aRequest, asTokens) {
                         //  assignment? then see if we have a previously set
                         //  global value, otherwise we'll localize to $SCOPE
                         if (next && next.value === '=') {
-                            if (TP.notDefined(TP.global[token.value])) {
+                            if (TP.notDefined(TP.global[identValue])) {
                                 //  assignment, rewrite the identifier.
                                 //result.push('$SCOPE', '.');
-                                rewrites.push(token.value);
+                                rewrites.push(identValue);
                             }
                         }
                     }
 
-                    result.push(token.value);
+                    result.push(identValue);
                     i += 1;
                 }
             }
@@ -1012,21 +1021,27 @@ function(REQUEST$$) {
         TIME$$ = TP.ifInvalid($REQUEST.get('$evaltime'), 0);
         $REQUEST.set('$evaltime', TIME$$ + (END$$ - START$$));
 
-        //  NOTE we slice off the file reference at the tail
-        //  since that's not accurate...we're doing
-        //  interactive input here.
-        ERR$$ = TP.str(e);
-        if (ERR$$.contains(' &#171; ')) {
-            ERR$$ = TP.trim(ERR$$.slice(0, ERR$$.indexOf(' &#171; ')));
-        }
-
-        if (/[sS]yntax/.test(ERR$$)) {
-            RESULT$$ = ERR$$ + ': ' + $SCRIPT;
+        if (TP.sys.cfg('tsh.ignore_eval_errors') === true) {
+            //  If we're ignoring eval errors, then we just complete the request
+            //  with undefined here.
+            $REQUEST.complete(undefined);
         } else {
-            RESULT$$ = ERR$$.endsWith('.') ? ERR$$ : ERR$$ + '.';
-        }
+            //  NOTE we slice off the file reference at the tail
+            //  since that's not accurate...we're doing
+            //  interactive input here.
+            ERR$$ = TP.str(e);
+            if (ERR$$.contains(' &#171; ')) {
+                ERR$$ = TP.trim(ERR$$.slice(0, ERR$$.indexOf(' &#171; ')));
+            }
 
-        $REQUEST.fail(TP.FAILURE, RESULT$$);
+            if (/[sS]yntax/.test(ERR$$)) {
+                RESULT$$ = ERR$$ + ': ' + $SCRIPT;
+            } else {
+                RESULT$$ = ERR$$.endsWith('.') ? ERR$$ : ERR$$ + '.';
+            }
+
+            $REQUEST.fail(TP.FAILURE, RESULT$$);
+        }
     }
 
     return;
@@ -1414,26 +1429,32 @@ function(REQUEST$$, CMDTYPE$$) {
                 TIME$$ = TP.ifInvalid($REQUEST.get('$evaltime'), 0);
                 $REQUEST.set('$evaltime', TIME$$ + (END$$ - START$$));
 
-                //  NOTE we slice off the file reference at the tail
-                //  since that's not accurate...we're doing
-                //  interactive input here.
-                ERR$$ = TP.str(e);
-                ERR$$ = (ERR$$.indexOf(':: file:') === TP.NOT_FOUND) ?
-                    TP.trim(ERR$$) :
-                    TP.trim(ERR$$.slice(0, ERR$$.indexOf(':: file:')));
-                if (/[sS]yntax/.test(ERR$$)) {
-                    RESULT$$ = ERR$$ + ': ' + $SCRIPT;
-                } else if (/missing ; before statement/.test(ERR$$)) {
-                    //  Rewrites of commands/aliases etc. can sometimes
-                    //  cause eval to output a useless message about a
-                    //  missing ;. In those cases we want to be sure to dump
-                    //  the script.
-                    RESULT$$ = 'syntax error: ' + $SCRIPT;
+                if (TP.sys.cfg('tsh.ignore_eval_errors') === true) {
+                    //  If we're ignoring eval errors, then we just complete the
+                    //  request with undefined here.
+                    $REQUEST.complete(undefined);
                 } else {
-                    RESULT$$ = ERR$$.endsWith('.') ? ERR$$ : ERR$$ + '.';
-                }
+                    //  NOTE we slice off the file reference at the tail
+                    //  since that's not accurate...we're doing
+                    //  interactive input here.
+                    ERR$$ = TP.str(e);
+                    ERR$$ = (ERR$$.indexOf(':: file:') === TP.NOT_FOUND) ?
+                        TP.trim(ERR$$) :
+                        TP.trim(ERR$$.slice(0, ERR$$.indexOf(':: file:')));
+                    if (/[sS]yntax/.test(ERR$$)) {
+                        RESULT$$ = ERR$$ + ': ' + $SCRIPT;
+                    } else if (/missing ; before statement/.test(ERR$$)) {
+                        //  Rewrites of commands/aliases etc. can sometimes
+                        //  cause eval to output a useless message about a
+                        //  missing ;. In those cases we want to be sure to dump
+                        //  the script.
+                        RESULT$$ = 'syntax error: ' + $SCRIPT;
+                    } else {
+                        RESULT$$ = ERR$$.endsWith('.') ? ERR$$ : ERR$$ + '.';
+                    }
 
-                $REQUEST.fail(TP.FAILURE, RESULT$$);
+                    $REQUEST.fail(TP.FAILURE, RESULT$$);
+                }
 
                 return;
             }
