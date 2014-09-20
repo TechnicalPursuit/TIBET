@@ -1814,21 +1814,30 @@ function(aString, aShell, aRequest) {
             RESULT$$ = $CONTEXT.eval($SCRIPT);
         } catch (e) {
 
-            //  NOTE we slice off the file reference at the tail since that's
-            //  not accurate...we're doing interactive input here.
-            err = TP.str(e);
-            err = (err.indexOf(':: file:') === TP.NOT_FOUND) ?
-                TP.trim(err) :
-                TP.trim(err.slice(0, err.indexOf(':: file:')));
-            err = err.endsWith('.') ? err : err + '.';
+            if (TP.sys.cfg('tsh.ignore_eval_errors') === true) {
+                //  Note that if we're ignoring eval errors, then we just return
+                //  the 'undefined' *String* here (if we just return undefined,
+                //  then the engine waits for another request because it thinks
+                //  this one hasn't finished and is part of a pipe or
+                //  something).
+                RESULT$$ = 'undefined';
+            } else {
+                //  NOTE we slice off the file reference at the tail since that's
+                //  not accurate...we're doing interactive input here.
+                err = TP.str(e);
+                err = (err.indexOf(':: file:') === TP.NOT_FOUND) ?
+                    TP.trim(err) :
+                    TP.trim(err.slice(0, err.indexOf(':: file:')));
+                err = err.endsWith('.') ? err : err + '.';
 
-            aRequest.fail(
-                TP.FAILURE,
-                TP.join(
-                    TP.sc('Command substitution `'),
-                    aString.slice(1, -1),
-                    TP.sc('` failed: '),
-                    err));
+                $REQUEST.fail(
+                    TP.FAILURE,
+                    TP.join(
+                        TP.sc('Command substitution `'),
+                        aString.slice(1, -1),
+                        TP.sc('` failed: '),
+                        err));
+            }
         }
 
         //  if the catch block failed the request we're done.
