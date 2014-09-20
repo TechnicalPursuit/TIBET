@@ -32,7 +32,7 @@ TP.tsh.Driver.Inst.defineAttribute('promiseProvider');
 //	------------------------------------------------------------------------
 
 TP.tsh.Driver.Inst.defineMethod('execShellTest',
-function(shellInput, valueTestFunction)
+function(test, shellInput, valueTestFunction)
 {
 	/**
 	*/
@@ -93,6 +93,7 @@ function(test, inputVal, correctResults)
 	*/
 
     this.execShellTest(
+        test,
         inputVal,
         function (testResult) {
 
