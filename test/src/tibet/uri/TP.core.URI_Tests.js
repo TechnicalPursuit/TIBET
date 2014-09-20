@@ -55,13 +55,6 @@ function() {
 
     var params;
 
-    this.beforeEach(
-        function() {
-            //  NB: The default of TIBETURNs is that they fetch their resources
-            //  synchronously, so we don't need to specify that here.
-            params = TP.request('refresh', true, 'async', false);
-        });
-
     this.before(
         function() {
             var win,
@@ -75,8 +68,8 @@ function() {
 
             win = TP.win(TP.$$topWindowName + '.UIROOT');
 
-            //  Make sure there's a window named 'screen_0' under a window named
-            //  'UIROOT' under a window named by the name in TP.$$topWindowName
+            //  Make sure there's a window named 'UIROOT' under a window named
+            //  by the name in TP.$$topWindowName
             if (!TP.isWindow(win)) {
                 //  Couldn't find the window - fail the request and return
                 this.fail(
@@ -98,6 +91,13 @@ function() {
             TP.nodeAppendChild(backgroundElem, childElem, false);
 
         }.bind(this));
+
+    this.beforeEach(
+        function() {
+            //  NB: The default of TIBETURNs is that they fetch their resources
+            //  synchronously, so we don't need to specify that here.
+            params = TP.request('refresh', true, 'async', false);
+        });
 
     //  ---
 
@@ -159,7 +159,7 @@ function() {
             TP.$$topWindowName + '.UIROOT',
             TP.sc('tibet://top.UIROOT/javascript:$$globalID should find',
                     ' the object at "', TP.$$topWindowName,
-                    '.UIROOT.screen_0.$$globalID".'));
+                    '.UIROOT.$$globalID".'));
     });
 
     //  ---
@@ -922,19 +922,7 @@ function() {
         function() {
             //  Set up a temporary reference to the top-level window name
             TP.$$topWindowName = TP.sys.cfg('tibet.uibuffer');
-
-            //  Make sure there's a window named 'screen_0' under a window named
-            //  'UIROOT' under a window named by the name in TP.$$topWindowName
-            if (!TP.isWindow(TP.win(TP.$$topWindowName + '.UIROOT.screen_0'))) {
-                //  Couldn't find the window - fail the request and return
-                this.fail(
-                    TP.sc('Couldn\'t find window named "',
-                            TP.$$topWindowName,
-                            '.UIROOT.screen_0"'));
-
-                return;
-            }
-        }.bind(this));
+        });
 
     //  ---
 
