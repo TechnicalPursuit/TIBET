@@ -878,7 +878,7 @@ function() {
         track,
 
         str,
-        
+
         ownerName;
 
     owner = this[TP.OWNER];
@@ -4847,7 +4847,7 @@ function(aFilterName, aLevel) {
 
         head,
         str;
-        
+
     //  The only way to discern between Function objects that are one of the
     //  native constructors (types) and a regular Function object.
     if (TP.isNativeType(this)) {

@@ -2594,7 +2594,7 @@ TP.regex.TSH_SUBGROUP = /\.\{\{(.*)?\.\}\}/;
 TP.regex.TSH_HEREDOC = /\.<</;
 
 //  TSH_DEREF_SUGAR is a JS_IDENTIFIER preceded by @ (but could have optional
-//  leading '${' and trailing '}'
+//  leading '${' and trailing '}')
 TP.regex.TSH_DEREF_SUGAR = /^@\$?\{?[a-zA-Z_$]{1}[a-zA-Z0-9_$]*\}?$/;
 
 //  ---
