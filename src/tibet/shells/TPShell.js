@@ -2128,6 +2128,8 @@ function(anObjectSpec, aRequest) {
         return TP.ac();
     }
 
+    spec = anObjectSpec;
+
     //  The $SCOPE object (the local context object that shell variables have
     //  been set against)
     execInstance = this.getExecutionInstance();
@@ -2136,17 +2138,20 @@ function(anObjectSpec, aRequest) {
     //  in)
     execContext = this.getExecutionContext();
 
-    //  If 'last' matches shell 'dereference sugar' (i.e. '@foo'), then we have
-    //  to strip the leading '@'.
-    if (TP.regex.TSH_DEREF_SUGAR.test(anObjectSpec)) {
-        spec = anObjectSpec.slice(1);
-    } else {
-        spec = anObjectSpec;
-    }
-
-    //  Is this a shell variable that starts with '${' and ends with '}'?
+    //  Convert any shell variable that starts with '${' and ends with '}' to
+    //  it's plain form.
+    //  NB: We do *not* want to use the TP.regex.TSH_VARSUB_EXTENDED replacement
+    //  technique here, since we're only looking at the start and the end of the
+    //  entire expression for variable conversion - leaving anything in the
+    //  interior along.
     if (spec.startsWith('${') && spec.endsWith('}')) {
         spec = '$' + spec.slice(2, -1);
+    }
+
+    //  If 'spec' matches shell 'dereference sugar' (i.e. '@foo'), then we have
+    //  to strip the leading '@'.
+    if (TP.regex.TSH_DEREF_SUGAR.test(spec)) {
+        spec = anObjectSpec.slice(1);
     }
 
     try {
