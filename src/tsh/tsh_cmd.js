@@ -57,13 +57,8 @@ function(aString, aShell, aRequest, asTokens) {
      * @todo
      */
 
-    var START$$,
-        END$$,
-        TIME$$,
-        RESULT$$,
-
     //  standard "special variables" we're willing to expose to scripts
-        $LASTREQ,
+    var $LASTREQ,
         $REQUEST,
         $NODE,
         $SHELL,
@@ -74,7 +69,6 @@ function(aString, aShell, aRequest, asTokens) {
         str,
         arr,
         len,
-        err,
         i,
         token,
         value,
@@ -95,8 +89,6 @@ function(aString, aShell, aRequest, asTokens) {
         req,
         rewrites,
         result2,
-
-        sourcevars;
 
     TP.debug('break.tsh_desugar');
 
@@ -421,140 +413,8 @@ function(aString, aShell, aRequest, asTokens) {
         switch (token.name) {
             case 'substitution':
 
-                //  command substitution...effectively inlining result data
-                //  where the command text is positioned.
-                if (token.value.indexOf('`') === 0) {
-                    if (TP.notTrue(TP.ifKeyInvalid(
-                                aRequest, 'cmdInteractive', false)) &&
-                        TP.notTrue(TP.ifKeyInvalid(
-                                aRequest, 'cmdAllowSubs', false))) {
-                        aRequest.fail(
-                            TP.FAILURE,
-                            TP.sc(TP.join(
-                                    'Security violation. Attempt to use',
-                                    ' command substitution outside of',
-                                    ' interactive mode.')));
-
-                        return;
-                    }
-
-                    try {
-                        $SCRIPT = $SHELL.resolveVariableSubstitutions(
-                            token.value.slice(1, -1));
-
-                        //  Refresh the context's script reference after any
-                        //  substitutions and before any with() bracketing
-                        //  so any internal reference to it will reflect
-                        //  what's being eval'd minus the with() wrapper.
-                        $CONTEXT.$SCRIPT = $SCRIPT;
-
-                        //  We do some further massaging of the statement to
-                        //  be eval'ed by enclosing it with a 'with ($SCOPE)
-                        //  {...}' statement. This allows 'slots' that have
-                        //  been defined previously in the shell to be found
-                        //  on the $SCOPE object.
-
-                        //  Note that the 'with()' statement has to become
-                        //  part of the String that gets eval'ed to keep
-                        //  non-Mozilla/IE browsers happy.
-                        $SCRIPT = 'with ($SCOPE) {' + $SCRIPT + '};';
-
-                        START$$ = Date.now();
-                        RESULT$$ = $CONTEXT.eval($SCRIPT);
-                        END$$ = Date.now();
-                    } catch (e) {
-                        END$$ = Date.now();
-
-                        //  NOTE we slice off the file reference at the tail
-                        //  since that's not accurate...we're doing
-                        //  interactive input here.
-                        err = TP.str(e);
-                        err = (err.indexOf(':: file:') === TP.NOT_FOUND) ?
-                            TP.trim(err) :
-                            TP.trim(err.slice(0, err.indexOf(':: file:')));
-                        err = err.endsWith('.') ? err : err + '.';
-
-                        aRequest.fail(
-                            TP.FAILURE,
-                            TP.join(
-                                TP.sc('Command substitution `'),
-                                token.value.slice(1, -1),
-                                TP.sc('` failed: '),
-                                err));
-                    } finally {
-                        TIME$$ = TP.ifInvalid(aRequest.get('$evaltime'), 0);
-                        aRequest.set('$evaltime',
-                                        TIME$$ + (END$$ - START$$));
-                    }
-
-                    //  if the catch block failed the request we're done.
-                    if (aRequest.didComplete()) {
-                        return;
-                    }
-
-                    result.push(RESULT$$);
-                } else {
-
-                    value = token.value;
-
-                    //  If the value has template constructs, then execute the
-                    //  template, providing the shell's 'execution instance'
-                    //  (i.e. it's $SCOPE) as the 'data source'.
-                    if (TP.regex.HAS_ACP.test(value)) {
-
-                        //  Since templating treats '$' variables specially
-                        //  (i.e. $INDEX, etc.), and all shell variables have a
-                        //  leading '$', we need to pull out the names of the
-                        //  variables in our String and supply them as a set of
-                        //  names that the transformation engine should treat as
-                        //  'normal'.
-
-                        //  First, we convert '${X}' into '$X' inside the
-                        //  template. This is important so that the templating
-                        //  engine can find these variables in their standard
-                        //  '$' form.
-                        TP.regex.TSH_VARSUB_EXTENDED.lastIndex = 0;
-                        value = value.replace(TP.regex.TSH_VARSUB_EXTENDED,
-                                                '$$$1');
-
-                        //  Next, extract the source variables, either in '$X'
-                        //  or '${X}' form into an Array where they are all
-                        //  normalized to '$X'.
-                        sourcevars = TP.ac();
-                        TP.regex.TSH_VARSUB_EXTRACT.lastIndex = 0;
-                        TP.regex.TSH_VARSUB_EXTRACT.performWith(
-                                function(wholeMatch, varName) {
-                                    sourcevars.push('$' + varName);
-                                }, value);
-
-                        //  Do the transformation with $SCOPE as the data
-                        //  source.
-                        value = value.transform(
-                                        aShell.getExecutionInstance(),
-                                        TP.hc('sourcevars', sourcevars));
-                    } else {
-
-                        //  Otherwise, just try to resolve any variables in the
-                        //  content.
-                        value = aShell.resolveVariableSubstitutions(token.value);
-                    }
-
-                    if (value === token.value) {
-                        TP.regex.TSH_VARSUB_EXTRACT.lastIndex = 0;
-                        aRequest.fail(
-                            TP.FAILURE,
-                            TP.join(
-                                TP.sc('Variable substitution '),
-                                value,
-                                TP.sc(' failed: '),
-                                value.match(TP.regex.TSH_VARSUB_EXTRACT).at(0),
-                                TP.sc(' is not in scope.')));
-
-                        return;
-                    } else {
-                        result.push(value);
-                    }
-                }
+                value = this.expandContent(token.value, $SHELL, $REQUEST);
+                result.push(value);
 
                 i += 1;
                 break;
