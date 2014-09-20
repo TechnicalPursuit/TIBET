@@ -1166,7 +1166,7 @@ function(REQUEST$$, CMDTYPE$$) {
         TP.nodeSetTextContent($NODE, $SCRIPT);
     }
 
-    //  if the desgugaring process didn't return a viable script then we
+    //  if the desugaring process didn't return a viable script then we
     //  have to presume that we're being sidetracked to another request
     //  (typically due to a history rewrite of some kind). In those cases
     //  we have to simply wait for any nested request to come back around
@@ -1695,7 +1695,7 @@ function(aString, aShell, aRequest) {
      * @synopsis Expands content contained in the supplied source string using
      *     the provided shell.
      * @description Content expansion consists of expanding any command
-     *     substitutions (content inside of `...` constructs) and any executing
+     *     substitutions (content inside of `...` constructs) and executing
      *     any templates. Note that this does *not* include resolving of
      *     variable values, either by variable expansion or by object resolution
      *     However, variables in templates will be expanded to their fully
