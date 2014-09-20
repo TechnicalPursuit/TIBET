@@ -2698,7 +2698,7 @@ function(aRequest, allForms) {
                 if (val === 'true' || val === 'false') {
                     //  Handle Booleans
                     expandedVal = TP.bc(val);
-                } else if (/^\/(.+)\/[gimy]*$/.test(val)) {
+                } else if (TP.regex.REGEX_LITERAL_STRING.test(val)) {
                     //  Handle RegExps
                     reParts = val.split('/');
                     expandedVal = TP.rc(reParts.at(1), reParts.at(2));
