@@ -43,6 +43,10 @@ function(test, shellInput, valueTestFunction)
 
             threwMsg = '';
 
+            //  Flip the flag on to ignore eval() errors in the TSH. We'll test
+            //  for undefined values here.
+            TP.sys.setcfg('tsh.ignore_eval_errors', true);
+
             TP.shell(
                 shellInput,
                 false, false, true, null,
@@ -72,12 +76,20 @@ function(test, shellInput, valueTestFunction)
                         //  with the Error object.
                         rejector(e);
                     }
+
+                    //  Make sure to put the flag back that caused the TSH to
+                    //  ignore eval() errors.
+                    TP.sys.setcfg('tsh.ignore_eval_errors', false);
                 },
                 function (aSignal, stdioResults) {
                     //  The shell couldn't complete the request - call the
                     //  rejector with the content of whatever was placed into
                     //  stderr.
                     rejector(stdioResults.at('stderr').join('\n'));
+
+                    //  Make sure to put the flag back that caused the TSH to
+                    //  ignore eval() errors.
+                    TP.sys.setcfg('tsh.ignore_eval_errors', false);
                 });
         });
 
