@@ -54,9 +54,9 @@ function(test, shellInput, valueTestFunction)
 
                     try {
 
-                        //  The correct value should be in the result of the
-                        //  TPShellResponse that is supplied to this method.
-                        testResult = aSignal.getResult();
+                        //  The correct value should be in the stdout that is
+                        //  made available to this method.
+                        testResult = stdioResults.at('stdout').first();
 
                         //  Execute the supplied value test function.
                         if (TP.isCallable(valueTestFunction)) {
