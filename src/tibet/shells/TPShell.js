@@ -2672,6 +2672,12 @@ function(aRequest, allForms) {
                             if (TP.isValid(val) && TP.notValid(expandedVal)) {
                                 expandedVal = TP.tsh.cmd.expandContent(
                                                 val, shell, aRequest);
+
+                                if (expandedVal === 'null') {
+                                    expandedVal = null;
+                                } else if (expandedVal === 'undefined') {
+                                    expandedVal = undefined;
+                                }
                             }
 
                             if (allForms) {
@@ -2726,6 +2732,12 @@ function(aRequest, allForms) {
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
                         expandedVal = TP.tsh.cmd.expandContent(
                                                 val, shell, aRequest);
+
+                        if (expandedVal === 'null') {
+                            expandedVal = null;
+                        } else if (expandedVal === 'undefined') {
+                            expandedVal = undefined;
+                        }
                     }
                 }
 
