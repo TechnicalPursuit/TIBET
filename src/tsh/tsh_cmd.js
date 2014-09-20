@@ -1723,33 +1723,118 @@ function(aString, aShell, aRequest) {
         err,
 
         value,
-        sourcevars;
+        sourcevars,
+
+        wasCommandSubstitution;
+
+    //  There is an order of operation here when expanding content:
+
+    //  1. Process template substitutions
+    //  2. Process variable substitutions
+    //  3. Process command substitutions
+
+    //  set up some common variables
+    $REQUEST = aRequest;
+    $SHELL = aShell;
+
+    //  We try to keep 'slots' that have been defined during development in
+    //  the shell (i.e. 'x = 2'), off of the global context. This is done
+    //  with a combination of using the 'with () {...}' statement (for 'get'
+    //  capability) and slight expression rewriting (for 'set' capability).
+    //  See below...
+    $SCOPE = $SHELL.getExecutionInstance($REQUEST);
 
     //  set up our output buffer
     result = TP.ac();
 
+    //  Step 1: Process template substitutions
+
+    value = aString;
+
+    //  If the value is a template, then we use template transformation. We do
+    //  *not* resolve variable substitutions using the normal mechanism before
+    //  transforming the template or otherwise we'll have literal values in the
+    //  template, which won't work. Instead, we supply the shell's 'execution
+    //  instance' (i.e. $SCOPE) to the templating engine as a 'data source'.
+    if (TP.regex.HAS_ACP.test(value)) {
+
+        //  Since templating treats '$' variables specially (i.e. $INDEX,
+        //  etc.), and all shell variables have a leading '$', we need to
+        //  pull out the names of the variables in our String and supply
+        //  them as a set of names that the transformation engine should
+        //  treat as 'normal'.
+
+        //  First, we convert '${X}' into '$X'
+        TP.regex.TSH_VARSUB_EXTENDED.lastIndex = 0;
+        value = value.replace(TP.regex.TSH_VARSUB_EXTENDED, '$$$1');
+
+        //  Next, extract the source variables, either in '$X' or used-to-be
+        //  '${X}' form into an Array where they are all normalized to '$X'.
+        sourcevars = TP.ac();
+        TP.regex.TSH_VARSUB_EXTRACT.lastIndex = 0;
+        TP.regex.TSH_VARSUB_EXTRACT.performWith(
+                function(wholeMatch, varName) {
+                    sourcevars.push('$' + varName);
+                }, value);
+
+        //  Do the transformation with $SCOPE as the data source.
+        value = value.transform($SCOPE, TP.hc('sourcevars', sourcevars));
+    } else {
+        TP.regex.TSH_VARSUB_EXTENDED.lastIndex = 0;
+        value = value.replace(TP.regex.TSH_VARSUB_EXTENDED, '$$$1');
+    }
+
+    //  Make sure to detect command substitutions *before* trying to resolve
+    //  variables substitutions
+    wasCommandSubstitution = false;
+
+    //  If the value starts with a backtick ('`'), then it's a command
+    //  substitution, so flag it as such and trim off the leading and trailing
+    //  '`'.
+    if (value.indexOf('`') === 0) {
+        wasCommandSubstitution = true;
+        value = value.slice(1, -1);
+    }
+
+    //  Step 2: Process variable substitutions
+
+    $SCRIPT = $SHELL.resolveVariableSubstitutions(value);
+
+    //  Step 3: Process command substitutions
+
     //  command substitution...effectively inlining result data where the
     //  command text is positioned.
-    if (aString.indexOf('`') === 0) {
+    if (wasCommandSubstitution === true) {
+
+        if (TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdInteractive', false)) &&
+            TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdAllowSubs', false))) {
+            aRequest.fail(
+                TP.FAILURE,
+                TP.sc(TP.join(
+                        'Security violation. Attempt to use',
+                        ' command substitution outside of',
+                        ' interactive mode.')));
+
+            return;
+        }
+
+        //  If 'value' matches shell 'dereference sugar' (i.e. '@foo'), then we
+        //  have to strip the leading '@'.
+        if (TP.regex.TSH_DEREF_SUGAR.test(value)) {
+            value = value.slice(1);
+        }
+
+        $SCRIPT = value;
 
         //  Ensure consistent context variables are in place when/if we do any
         //  eval operations for resolving command substitutions.
-        $REQUEST = aRequest;
         $NODE = $REQUEST.at('cmdNode');
-        $SHELL = aShell;
         $LASTREQ = $SHELL.get('previous');
 
         //  The current context (i.e. 'window' / 'self') that the evaluated
         //  statements will be executed in. This provides those statements with
         //  their global scope.
         $CONTEXT = aShell.getExecutionContext($REQUEST);
-
-        //  We try to keep 'slots' that have been defined during development in
-        //  the shell (i.e. 'x = 2'), off of the global context. This is done
-        //  with a combination of using the 'with () {...}' statement (for 'get'
-        //  capability) and slight expression rewriting (for 'set' capability).
-        //  See below...
-        $SCOPE = aShell.getExecutionInstance($REQUEST);
 
         //  Only in Mozilla and IE does a 'contextual eval' (i.e. one where
         //  the global/window scope is specified) take into account the current
@@ -1766,21 +1851,7 @@ function(aString, aShell, aRequest) {
         $CONTEXT.$SCRIPT = $SCRIPT;
         $CONTEXT.$_ = null;
 
-        if (TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdInteractive', false)) &&
-            TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdAllowSubs', false))) {
-            aRequest.fail(
-                TP.FAILURE,
-                TP.sc(TP.join(
-                        'Security violation. Attempt to use',
-                        ' command substitution outside of',
-                        ' interactive mode.')));
-
-            return;
-        }
-
         try {
-            $SCRIPT = $SHELL.resolveVariableSubstitutions(aString.slice(1, -1));
-
             //  Refresh the context's script reference after any substitutions
             //  and before any with() bracketing so any internal reference to it
             //  will reflect what's being eval'd minus the with() wrapper.
@@ -1846,43 +1917,8 @@ function(aString, aShell, aRequest) {
         }
 
         result.push(RESULT$$);
+
     } else {
-
-        //  Templating
-
-        value = aString;
-
-        //  If the value is an ACP template, then we use template
-        //  transformation. We do *not* resolve variable substitutions using the
-        //  normal mechanism before transforming the template or otherwise we'll
-        //  have literal values in the template, which won't work. Instead, we
-        //  supply the shell's 'execution instance' (i.e. $SCOPE) to the
-        //  templating engine as a 'data source'.
-        if (TP.regex.HAS_ACP.test(value)) {
-
-            //  Since templating treats '$' variables specially (i.e. $INDEX,
-            //  etc.), and all shell variables have a leading '$', we need to
-            //  pull out the names of the variables in our String and supply
-            //  them as a set of names that the transformation engine should
-            //  treat as 'normal'.
-
-            //  First, we convert '${X}' into '$X'
-            TP.regex.TSH_VARSUB_EXTENDED.lastIndex = 0;
-            value = value.replace(TP.regex.TSH_VARSUB_EXTENDED, '$$$1');
-
-            //  Next, extract the source variables, either in '$X' or '${X}' form
-            //  into an Array where they are all normalized to '$X'.
-            sourcevars = TP.ac();
-            TP.regex.TSH_VARSUB_EXTRACT.lastIndex = 0;
-            TP.regex.TSH_VARSUB_EXTRACT.performWith(
-                    function(wholeMatch, varName) {
-                        sourcevars.push('$' + varName);
-                    }, value);
-
-            //  Do the transformation with $SCOPE as the data source.
-            value = value.transform(aShell.getExecutionInstance(),
-                                    TP.hc('sourcevars', sourcevars));
-        }
 
         result.push(value);
     }
