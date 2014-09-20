@@ -990,6 +990,22 @@ function(REQUEST$$) {
         //  allows 'slots' that have been defined previously in the shell to
         //  be found on the $SCOPE object.
 
+        //  eval() has problems with Object and Function literals, but
+        //  wrapping them in parentheses helps...
+
+        //  Object literals
+        if ($SCRIPT.charAt(0) === '{' &&
+            $SCRIPT.charAt($SCRIPT.length - 1) === '}') {
+            $SCRIPT = '(' + $SCRIPT + ')';
+        }
+
+        //  Function literals
+        //  Note that this RegExp is normally used for extracting the name,
+        //  but works well here to just detect Function literals...
+        if (Function.$$getNameRegex.test($SCRIPT)) {
+            $SCRIPT = '(' + $SCRIPT + ')';
+        }
+
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
         SCRIPT$$ = 'with ($SCOPE) {' + $SCRIPT + '};';
@@ -1387,8 +1403,25 @@ function(REQUEST$$, CMDTYPE$$) {
         //  allows 'slots' that have been defined previously in the shell to
         //  be found on the $SCOPE object.
 
+        //  eval() has problems with Object and Function literals, but
+        //  wrapping them in parentheses helps...
+
+        //  Object literals
+        if ($SCRIPT.charAt(0) === '{' &&
+            $SCRIPT.charAt($SCRIPT.length - 1) === '}') {
+            $SCRIPT = '(' + $SCRIPT + ')';
+        }
+
+        //  Function literals
+        //  Note that this RegExp is normally used for extracting the name,
+        //  but works well here to just detect Function literals...
+        if (Function.$$getNameRegex.test($SCRIPT)) {
+            $SCRIPT = '(' + $SCRIPT + ')';
+        }
+
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
+
         SCRIPT$$ = 'with ($SCOPE) {' + $SCRIPT + '};';
 
         for (I$$ = 0; I$$ < LEN$$; I$$++) {
@@ -1757,6 +1790,22 @@ function(aString, aShell, aRequest) {
             //  enclosing it with a 'with ($SCOPE) {...}' statement. This allows
             //  'slots' that have been defined previously in the shell to be
             //  found on the $SCOPE object.
+
+            //  eval() has problems with Object and Function literals, but
+            //  wrapping them in parentheses helps...
+
+            //  Object literals
+            if ($SCRIPT.charAt(0) === '{' &&
+                $SCRIPT.charAt($SCRIPT.length - 1) === '}') {
+                $SCRIPT = '(' + $SCRIPT + ')';
+            }
+
+            //  Function literals
+            //  Note that this RegExp is normally used for extracting the name,
+            //  but works well here to just detect Function literals...
+            if (Function.$$getNameRegex.test($SCRIPT)) {
+                $SCRIPT = '(' + $SCRIPT + ')';
+            }
 
             //  Note that the 'with()' statement has to become part of the
             //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
