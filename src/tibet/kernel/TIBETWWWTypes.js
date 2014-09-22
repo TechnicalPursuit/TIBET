@@ -1041,7 +1041,11 @@ function(aContent, aURI, defaultMIME) {
         }
 
         if (TP.isEmpty(mime) || (mime === TP.ietf.Mime.PLAIN)) {
-            mime = defaultMIME || TP.ietf.Mime.XML;
+            if (/xml/.test(defaultMIME)) {
+                mime = defaultMIME;
+            } else {
+                mime = TP.ietf.Mime.XML;
+            }
         }
     } else {
         //  not a node, so some form of text content
