@@ -8,8 +8,10 @@
  */
 //  ========================================================================
 
-/**
+/* global Q:true
 */
+
+//	------------------------------------------------------------------------
 
 TP.core.TSH.Type.describe('Shell options expansion',
 function() {
@@ -4708,23 +4710,435 @@ function() {
 TP.core.TSH.Type.describe('Shell HTTP URL',
 function() {
 
-    var shellDriver;
+    var shellDriver,
+
+        oldNeedsPrivileges,
+        server;
 
     this.before(function(suite, options) {
         shellDriver = TP.tsh.Driver.construct();
         this.get('drivers').atPut('shell', shellDriver);
+
+        //  NB: We have to redefine TP.uriNeedsPrivileges() here to just return
+        //  false or otherwise TIBET itself will reject the following requests
+        //  as being 'cross-domain'. We'll put it back in the 'after()' handler.
+        oldNeedsPrivileges = TP.uriNeedsPrivileges;
+        TP.uriNeedsPrivileges = function() {return false;};
+
+        server = TP.test.fakeServer.create();
     });
 
-    this.it('Shell exec', function(test, options) {
+    //  ---
 
-        //shellDriver.execShellTest(inputVal, correctResults);
+    this.it('Shell HTTP URL: Retrieve asynchronously', function(test, options) {
+
+        var locStr,
+            resultElem,
+
+            inputVal;
+
+        locStr = 'http://www.foo.com/TIBET_endpoints/HTTP_GET_TEST';
+        resultElem = TP.wrap(
+                        TP.xhtmlnode('<html><body>Hi there</body></html>'));
+
+        server.respondWith(
+            TP.HTTP_GET,
+            locStr,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED,
+                },
+                resultElem.asString(),
+            ]);
+
+        //  Note here how we use '-refresh' at the end of the URL to make sure
+        //  that TIBET gets data from the 'server' each time.
+        inputVal = locStr + ' -refresh';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isEqualTo(
+                        testResult.get('html|body').at(0),
+                        resultElem.get('html|body').at(0));
+            });
+
+        server.respond();
     });
 
-    this.it('Shell output', function(test, options) {
+    //  ---
 
-        //shellDriver.execOutputTest(test, inputVal, correctResults);
+    this.it('Shell HTTP URL: Set resource using PUT', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal;
+
+        locStr = 'http://www.foo.com/TIBET_endpoints/HTTP_PUT_TEST';
+        testBody = 'PUT test content';
+
+        server.respondWith(
+            TP.HTTP_PUT,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, testBody);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from PUT');
+            });
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  verb here and don't allow TIBET to choose the verb based on its
+        //  criteria, because we want to force the test above.
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="put"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                //  TODO: Fix when we fix tsh:uri subrequests
+
+            });
     });
 
+    //  ---
+
+    this.it('Shell HTTP URL: Set resource using POST', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal;
+
+        locStr = 'http://www.foo.com/TIBET_endpoints/HTTP_POST_TEST';
+        testBody = 'POST test content';
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, testBody);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from POST');
+            });
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  verb here and don't allow TIBET to choose the verb based on its
+        //  criteria, because we want to force the test above.
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="post"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                //  TODO: Fix when we fix tsh:uri subrequests
+
+            });
+    });
+
+    //  ---
+
+    this.it('Shell HTTP URL: Set resource using FORM POST', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal;
+
+        locStr = 'http://www.foo.com/TIBET_endpoints/HTTP_POST_FORM_TEST';
+        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, 'foo=bar&baz=goo');
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from POST');
+            });
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  verb here and don't allow TIBET to choose the verb based on its
+        //  criteria, because we want to force the test above.
+        inputVal = testBody.asSource() + ' .>! ' + locStr +
+                    ' --verb="post"' +
+                    ' --mimetype="application/x-www-form-urlencoded"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                //  TODO: Fix when we fix tsh:uri subrequests
+
+            });
+    });
+
+    //  ---
+
+    this.it('Shell HTTP URL: Set resource using MULTIPART FORM POST - TEXT', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal;
+
+        locStr = 'http://www.foo.com/TIBET_endpoints/HTTP_MULTIPART_POST_FORM_TEXT_TEST';
+        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="foo"/);
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="baz"/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from FORM POST');
+            });
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  verb here and don't allow TIBET to choose the verb based on its
+        //  criteria, because we want to force the test above.
+        inputVal = testBody.asSource() + ' .>! ' + locStr +
+                    ' --verb="post"' +
+                    ' --mimetype="multipart/form-data"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                //  TODO: Fix when we fix tsh:uri subrequests
+
+            });
+    });
+
+    //  ---
+
+    this.it('Shell HTTP URL: Set resource using MULTIPART FORM POST - XML', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal;
+
+        locStr = 'http://www.foo.com/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_XML_TEST';
+        testBody = TP.hc('foo', 'bar', 'baz', 'goo');
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="foo"/);
+                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="baz"/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from MULTIPART FORM XML POST');
+            });
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  verb here and don't allow TIBET to choose the verb based on its
+        //  criteria, because we want to force the test above.
+        inputVal = testBody.asXMLString().quoted() + ' .>! ' + locStr +
+                    ' --verb="post"' +
+                    ' --mimetype="multipart/form-data"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                //  TODO: Fix when we fix tsh:uri subrequests
+
+            });
+    });
+
+    //  ---
+
+    this.it('Shell HTTP URL: Set resource using MULTIPART RELATED POST - MIXED', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal;
+
+        locStr = 'http://www.foo.com/TIBET_endpoints/HTTP_MULTIPART_RELATED_POST_MIXED_TEST';
+        testBody = TP.ac(
+                        TP.hc('body', 'Content chunk 1'),
+                        TP.hc('body', 'Content chunk 2'),
+                        TP.hc('body', TP.elem('<content>Content chunk 3</content>')));
+
+        server.respondWith(
+            TP.HTTP_POST,
+            locStr,
+            function(req) {
+
+                test.assert.matches(req.requestBody, /Content-ID: 0\s+Content chunk 1/);
+                test.assert.matches(req.requestBody, /Content-ID: 1\s+Content chunk 2/);
+                test.assert.matches(req.requestBody, /Content-ID: 2\s+<content>Content chunk 3<\/content>/);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from MULTIPART RELATED MIXED POST');
+            });
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  verb here and don't allow TIBET to choose the verb based on its
+        //  criteria, because we want to force the test above.
+        inputVal = testBody.asSource() + ' .>! ' + locStr +
+                    ' --verb="post"' +
+                    ' --mimetype="multipart/related"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                //  TODO: Fix when we fix tsh:uri subrequests
+
+            });
+    });
+
+    //  ---
+
+    this.it('Shell HTTP URL: Delete resource using DELETE', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal;
+
+        locStr = 'http://www.foo.com/TIBET_endpoints/HTTP_DELETE_TEST';
+        testBody = 'DELETE test content';
+
+        server.respondWith(
+            TP.HTTP_DELETE,
+            locStr,
+            function(req) {
+
+                test.assert.isEqualTo(req.requestBody, testBody);
+
+                req.respond(
+                    200,
+                    {
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                    },
+                    'OK from DELETE');
+            });
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  verb here and don't allow TIBET to choose the verb based on its
+        //  criteria, because we want to force the test above.
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                //  TODO: Fix when we fix tsh:uri subrequests
+
+            });
+    });
+
+    //  ---
+
+    this.after(function(suite, options) {
+
+        server.restore();
+        TP.uriNeedsPrivileges = oldNeedsPrivileges;
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Type.describe('Shell JSONP URL',
+function() {
+
+    var shellDriver,
+        stub;
+
+    this.before(function(suite, options) {
+        shellDriver = TP.tsh.Driver.construct();
+        this.get('drivers').atPut('shell', shellDriver);
+
+        stub = TP.jsonpCall.asStub();
+    });
+
+    //  ---
+
+    this.it('Shell JSONP URL: Retrieve resource asynchronously', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        stub.callsArgWith(1, '{"foo":"bar"}');
+
+        locStr = 'jsonp://ajax.googleapis.com/ajax/services/search/web?' +
+                        'v=1.0&q=football&start=10';
+
+        inputVal = locStr;
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                //  TODO: Fix when we fix tsh:uri subrequests
+
+            });
+    });
+
+    //  ---
+
+    this.after(function(suite, options) {
+
+        stub.restore();
+    });
 });
 
 //  ------------------------------------------------------------------------
@@ -4732,24 +5146,680 @@ function() {
 TP.core.TSH.Type.describe('Shell LOCALDB URL',
 function() {
 
-    var shellDriver;
+    var shellDriver,
+        storage;
+
+    //  Make sure there's an entry for 'localdb://' URL testing
+    storage = TP.core.LocalStorage.construct();
 
     this.before(function(suite, options) {
+        var storageStr;
+
         shellDriver = TP.tsh.Driver.construct();
         this.get('drivers').atPut('shell', shellDriver);
+
+        storageStr = TP.js2json(
+                {
+                    'local_test' :
+                        {
+                            'author_info' :
+                                {
+                                    '_id' : 'author_info',
+                                    '_date_created' : TP.dc(),
+                                    '_date_modified' : TP.dc(),
+                                    '_body' :
+                                        {
+                                            'firstName' : 'Bill',
+                                            'lastName' : 'Edney'
+                                        }
+                                }
+                        }
+                });
+
+        storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
     });
 
-    this.it('Shell exec', function(test, options) {
+    //  ---
 
-        //shellDriver.execShellTest(inputVal, correctResults);
+    this.it('Shell LOCALDB URL: Retrieve resource', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        locStr = 'localdb://local_test/author_info';
+
+        inputVal = locStr + ' -refresh';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                var obj;
+
+                obj = testResult.at('_body');
+
+                test.assert.isTrue(
+                    obj.hasKey('firstName'),
+                    TP.sc('Expected that result would have a key of \'firstName\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('firstName'),
+                        'Bill',
+                        TP.sc('Expected: ', '"Bill"',
+                                ' and got instead: ', obj.at('firstName'), '.'));
+
+                test.assert.isTrue(
+                    obj.hasKey('lastName'),
+                    TP.sc('Expected that result would have a key of \'lastName\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('lastName'),
+                        'Edney',
+                        TP.sc('Expected: ', '"Edney"',
+                                ' and got instead: ', obj.at('lastName'), '.'));
+            });
     });
 
-    this.it('Shell output', function(test, options) {
+    //  ---
 
-        //shellDriver.execOutputTest(test, inputVal, correctResults);
+    this.it('Shell LOCALDB URL: Retrieve resource info', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        locStr = 'localdb://local_test/author_info';
+
+        inputVal = locStr + ' -refresh --verb="head"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+            test.assert.isTrue(
+                testResult.hasKey('_date_created'),
+                TP.sc('Expected that result would have a key of \'_date_created\'',
+                        ' and it doesn\'t'));
+
+            test.assert.isTrue(
+                testResult.hasKey('_date_modified'),
+                TP.sc('Expected that result would have a key of \'_date_modified\'',
+                        ' and it doesn\'t'));
+            });
     });
 
+    //  ---
+
+    this.it('Shell LOCALDB URL: Retrieve listing of all documents in db', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        locStr = 'localdb://local_test/_all_docs';
+
+        inputVal = locStr + ' -refresh';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                test.assert.isTrue(
+                    testResult.hasKey('total_rows'),
+                    TP.sc('Expected that result would have a key of \'total_rows\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                    testResult.at('total_rows'),
+                    1,
+                    TP.sc('Expected: ', '1',
+                            ' and got instead: ', testResult.at('total_rows'), '.'));
+
+                test.assert.isTrue(
+                    testResult.hasKey('rows'),
+                    TP.sc('Expected that result would have a key of \'rows\' and',
+                            ' it doesn\'t'));
+            });
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal;
+
+        //  A PUT request here using the ID causes an UPDATE
+        locStr = 'localdb://local_test/author_info';
+
+        testBody = TP.hc('firstName', 'Scott', 'lastName', 'Shattuck');
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the verb
+        //  here since the default for localdb: URLs is POST.
+        inputVal = testBody.asSource() + ' .>! ' + locStr + ' --verb="put"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isValid(
+                    testResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+            });
+
+        shellDriver.execShellTest(
+            test,
+            'localdb://local_test/author_info' + ' -refresh',
+            function(testResult) {
+
+                var obj;
+
+                obj = testResult.at('_body');
+
+                test.assert.isTrue(
+                    obj.hasKey('firstName'),
+                    TP.sc('Expected that result would have a key of \'firstName\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('firstName'),
+                        'Scott',
+                        TP.sc('Expected: ', '"Scott"',
+                                ' and got instead: ', obj.at('firstName'), '.'));
+
+                test.assert.isTrue(
+                    obj.hasKey('lastName'),
+                    TP.sc('Expected that result would have a key of \'lastName\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('lastName'),
+                        'Shattuck',
+                        TP.sc('Expected: ', '"Shattuck"',
+                                ' and got instead: ', obj.at('lastName'), '.'));
+            });
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Set resource using POST (computed id means CREATE)', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal,
+
+            saveID;
+
+        //  A POST request here without the ID causes a CREATE and an
+        //  auto-generated ID
+        locStr = 'localdb://local_test/';
+
+        testBody = TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker');
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'.
+        inputVal = testBody.asSource() + ' .>! ' + locStr;
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(saveResult) {
+                test.assert.isValid(
+                    saveResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+
+                saveID = saveResult.at('_id');
+            });
+
+        this.then(
+            function() {
+                shellDriver.execShellTest(
+                    test,
+                    'localdb://local_test/' + saveID + ' -refresh',
+                    function(testResult) {
+
+                        var obj;
+
+                        obj = testResult.at('_body');
+
+                        test.assert.isTrue(
+                            obj.hasKey('firstName'),
+                            TP.sc('Expected that result would have a key of \'firstName\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                obj.at('firstName'),
+                                'Sylvia',
+                                TP.sc('Expected: ', '"Sylvia"',
+                                        ' and got instead: ', obj.at('firstName'), '.'));
+
+                        test.assert.isTrue(
+                            obj.hasKey('lastName'),
+                            TP.sc('Expected that result would have a key of \'lastName\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                obj.at('lastName'),
+                                'Hacker',
+                                TP.sc('Expected: ', '"Hacker"',
+                                        ' and got instead: ', obj.at('lastName'), '.'));
+                    });
+            });
+        });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+
+        var locStr,
+
+            testBody,
+
+            inputVal;
+
+        //  A DELETE request here using the ID causes a DELETE
+        locStr = 'localdb://local_test/author_info';
+
+        testBody = 'DELETE test content';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isValid(
+                    testResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+            });
+    });
+
+    //  ---
+
+    this.it('Shell LOCALDB URL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+
+        var locStr,
+            testBody,
+            inputVal;
+
+        //  A DELETE request here without the ID causes a DELETE (of the whole
+        //  DB)
+        locStr = 'localdb://local_test';
+
+        testBody = 'DELETE test content';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isValid(
+                    testResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+            });
+    });
+
+    //  ---
+
+    this.after(function(suite, options) {
+
+        storage.removeKey(TP.LOCALSTORAGE_DB_NAME);
+    });
 });
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Type.describe('Shell POUCHDB URL',
+function() {
+
+    var shellDriver,
+        testDb;
+
+    this.before(function(suite, options) {
+
+        shellDriver = TP.tsh.Driver.construct();
+        this.get('drivers').atPut('shell', shellDriver);
+
+        this.then(
+            function() {
+                var now,
+
+                    pouchPromise,
+                    qPromise;
+
+                now = Date.now();
+
+                testDb = new TP.extern.PouchDB('pouch_test');
+
+                pouchPromise = testDb.put(
+                    {
+                        '_id' : 'author_info',
+                        'date_created' : now,
+                        'date_modified' : now,
+                        'body' :
+                            {
+                                'firstName' : 'Bill',
+                                'lastName' : 'Edney'
+                            }
+                    });
+
+                qPromise = new Q(pouchPromise);
+
+                return qPromise;
+            });
+    });
+
+    //  ---
+
+    this.it('Shell POUCHDB URL: Retrieve resource', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        locStr = 'pouchdb://pouch_test/author_info';
+
+        inputVal = locStr + ' -refresh';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                var obj;
+
+                obj = testResult.at('body');
+
+                test.assert.isTrue(
+                    obj.hasKey('firstName'),
+                    TP.sc('Expected that result would have a key of',
+                            ' \'firstName\' and it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('firstName'),
+                        'Bill',
+                        TP.sc('Expected: ', '"Bill"',
+                                ' and got instead: ',
+                                obj.at('firstName'), '.'));
+
+                test.assert.isTrue(
+                    obj.hasKey('lastName'),
+                    TP.sc('Expected that result would have a key of',
+                            ' \'lastName\' and it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        obj.at('lastName'),
+                        'Edney',
+                        TP.sc('Expected: ', '"Edney"',
+                                ' and got instead: ',
+                                obj.at('lastName'), '.'));
+            });
+    });
+
+    //  ---
+
+    this.it('Shell POUCHDB URL: Retrieve resource info', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        locStr = 'pouchdb://pouch_test/author_info';
+
+        inputVal = locStr + ' -refresh --verb="head"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                test.assert.isTrue(
+                    testResult.hasKey('date_created'),
+                    TP.sc('Expected that result would have a key of',
+                            ' \'date_created\' and it doesn\'t'));
+
+                test.assert.isTrue(
+                    testResult.hasKey('date_modified'),
+                    TP.sc('Expected that result would have a key of',
+                            ' \'date_modified\' and it doesn\'t'));
+            });
+    });
+
+    //  ---
+
+    this.it('Shell POUCHDB URL: Retrieve listing of all documents in db', function(test, options) {
+
+        var locStr,
+
+            inputVal;
+
+        locStr = 'pouchdb://pouch_test/_all_docs';
+
+        inputVal = locStr + ' -refresh';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                test.assert.isTrue(
+                    testResult.hasKey('total_rows'),
+                    TP.sc('Expected that result would have a key of \'total_rows\' and',
+                            ' it doesn\'t'));
+
+                test.assert.isEqualTo(
+                        testResult.at('total_rows'),
+                        1,
+                        TP.sc('Expected: ', '1',
+                                ' and got instead: ', testResult.at('total_rows'), '.'));
+
+                test.assert.isTrue(
+                    testResult.hasKey('rows'),
+                    TP.sc('Expected that result would have a key of \'rows\' and',
+                            ' it doesn\'t'));
+            });
+    });
+
+    //  ---
+
+    this.it('Shell POUCHDB URL: Set resource using PUT (supplied id means UPDATE if found)', function(test, options) {
+
+        var locStr,
+
+            testBody,
+            inputVal;
+
+        locStr = 'pouchdb://pouch_test/author_info';
+
+        testBody = TP.hc('firstName', 'Scott', 'lastName', 'Shattuck');
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'. Also, we specify the verb
+        //  here since the default for pouchdb: URLs is POST.
+        inputVal = testBody.asSource() + ' .>! ' + locStr + ' --verb="put"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isValid(
+                    testResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+            });
+
+        this.then(
+            function() {
+                shellDriver.execShellTest(
+                    test,
+                    'pouchdb://pouch_test/author_info' + ' -refresh',
+                    function(testResult) {
+
+                        test.assert.isTrue(
+                            testResult.hasKey('firstName'),
+                            TP.sc('Expected that result would have a key of \'firstName\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                            testResult.at('firstName'),
+                            'Scott',
+                            TP.sc('Expected: ', '"Scott"',
+                                    ' and got instead: ', testResult.at('firstName'), '.'));
+
+                        test.assert.isTrue(
+                            testResult.hasKey('lastName'),
+                            TP.sc('Expected that result would have a key of \'lastName\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                testResult.at('lastName'),
+                                'Shattuck',
+                                TP.sc('Expected: ', '"Shattuck"',
+                                        ' and got instead: ', testResult.at('lastName'), '.'));
+                    });
+            });
+    });
+
+    //  ---
+
+    this.it('Shell POUCHDB URL: Set resource using POST (computed id means CREATE)', function(test, options) {
+
+        var locStr,
+            testBody,
+
+            inputVal,
+
+            saveID;
+
+        //  A POST request here without the ID causes a CREATE and an
+        //  auto-generated ID
+        locStr = 'pouchdb://pouch_test/';
+
+        testBody = TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker');
+
+        //  Note here how we use '!' on the end of the redirect to make sure
+        //  that TIBET flushes changes to the 'server'.
+        inputVal = testBody.asSource() + ' .>! ' + locStr;
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(saveResult) {
+                test.assert.isValid(
+                    saveResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+
+                saveID = saveResult.at('id');
+            });
+
+        this.then(
+            function() {
+                shellDriver.execShellTest(
+                    test,
+                    'pouchdb://pouch_test/' + saveID + ' -refresh',
+                    function(testResult) {
+
+                        test.assert.isTrue(
+                            testResult.hasKey('firstName'),
+                            TP.sc('Expected that result would have a key of \'firstName\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                testResult.at('firstName'),
+                                'Sylvia',
+                                TP.sc('Expected: ', '"Sylvia"',
+                                        ' and got instead: ', testResult.at('firstName'), '.'));
+
+                        test.assert.isTrue(
+                            testResult.hasKey('lastName'),
+                            TP.sc('Expected that result would have a key of \'lastName\' and',
+                                    ' it doesn\'t'));
+
+                        test.assert.isEqualTo(
+                                testResult.at('lastName'),
+                                'Hacker',
+                                TP.sc('Expected: ', '"Hacker"',
+                                        ' and got instead: ', testResult.at('lastName'), '.'));
+                    });
+            });
+        });
+
+    //  ---
+
+    this.it('Shell POUCHDB URL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
+
+        var locStr,
+
+            testBody,
+
+            inputVal;
+
+        //  A DELETE request here using the ID causes a DELETE
+        locStr = 'pouchdb://pouch_test/author_info';
+
+        testBody = 'DELETE test content';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isValid(
+                    testResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+            });
+    });
+
+    //  ---
+
+    this.it('Shell POUCHDB URL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
+
+        var locStr,
+            testBody,
+            inputVal;
+
+        //  A DELETE request here without the ID causes a DELETE (of the whole
+        //  DB)
+        locStr = 'pouchdb://pouch_test';
+
+        testBody = 'DELETE test content';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+                test.assert.isValid(
+                    testResult.at('ok'),
+                    TP.sc('Expected a result with an \'ok\' property'));
+            });
+    });
+
+    //  ---
+
+    this.after(function(suite, options) {
+
+        this.then(
+            function() {
+                var pouchPromise,
+                    qPromise;
+
+                pouchPromise = TP.extern.PouchDB.destroy('pouch_test');
+
+                qPromise = new Q(pouchPromise);
+
+                return qPromise;
+            });
+    });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
