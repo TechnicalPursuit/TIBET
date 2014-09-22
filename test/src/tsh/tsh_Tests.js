@@ -5821,6 +5821,68 @@ function() {
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Type.describe('Shell Piping',
+function() {
+
+    var shellDriver;
+
+    this.before(function(suite, options) {
+
+        shellDriver = TP.tsh.Driver.construct();
+        this.get('drivers').atPut('shell', shellDriver);
+    });
+
+    //  ---
+
+    this.it('Shell Piping: number to simple format', function(test, options) {
+
+        var inputVal,
+            correctResult;
+
+        inputVal = 'z = 1; z .| \'The number is: {{value}}\'';
+        correctResult = 'The number is: 1';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
+            });
+    });
+
+    //  ---
+
+    this.it('Shell Piping: number to templated format', function(test, options) {
+
+        var inputVal,
+            correctResult;
+
+        inputVal = 'z = 1; z .| \'The number is: {{value %% #{##.00}}}\'';
+        correctResult = 'The number is: 1.00';
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function(testResult) {
+
+                test.assert.isEqualTo(
+                    testResult,
+                    correctResult,
+                    TP.join('"', inputVal, '"',
+                            ' produced: "', testResult, '"',
+                            ' should be: "', correctResult, '".'));
+            });
+    });
+});
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
