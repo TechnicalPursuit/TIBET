@@ -336,7 +336,7 @@ TP.tsh.uri.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
-     * @inheritDoc 
+     * @inheritDoc
      * @todo
      */
 
