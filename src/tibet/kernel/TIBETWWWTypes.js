@@ -941,7 +941,6 @@ function(aContent, aURI, defaultMIME) {
 
         node,
 
-        doc,
         elem,
         ns,
         info,
@@ -974,21 +973,11 @@ function(aContent, aURI, defaultMIME) {
     //  If we have valid node content (that's not just a Text node created
     //  above), then we contain some sort of real XML
     if (TP.isNode(node) && !TP.isTextNode(node)) {
-        doc = TP.nodeGetDocument(node);
-        if (TP.notValid(doc)) {
-            //  xml, but no document-level data to go by...
-            elem = node;
-        } else {
-            elem = doc.documentElement;
-        }
+
+        //  Try to get the 'most representative' node from the content.
+        elem = TP.nodeGetBestNode(node);
 
         if (TP.isElement(elem)) {
-
-            //  If the element is our special 'wrap' element, use it's first
-            //  child.
-            if (TP.elementGetLocalName(elem) === 'wrap') {
-                elem = elem.firstChild;
-            }
 
             //  If the element has a valid namespace, then use that
             //  to try to look up a 'mimetype' entry in the XMLNS 'info'
