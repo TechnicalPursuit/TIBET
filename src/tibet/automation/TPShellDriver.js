@@ -82,14 +82,22 @@ function(test, shellInput, valueTestFunction)
                     TP.sys.setcfg('tsh.ignore_eval_errors', false);
                 },
                 function (aSignal, stdioResults) {
-                    //  The shell couldn't complete the request - call the
-                    //  rejector with the content of whatever was placed into
-                    //  stderr.
-                    rejector(stdioResults.at('stderr').join('\n'));
+                    var errMsg;
 
                     //  Make sure to put the flag back that caused the TSH to
                     //  ignore eval() errors.
                     TP.sys.setcfg('tsh.ignore_eval_errors', false);
+
+                    //  The shell couldn't complete the request - call the
+                    //  rejector with the content of whatever was placed into
+                    //  stderr.
+
+                    errMsg = stdioResults.at('stderr').join('\n');
+
+                    rejector(errMsg);
+
+                    //  Make sure to fail the test.
+                    test.set('faultText', (errMsg || ''));
                 });
         });
 
