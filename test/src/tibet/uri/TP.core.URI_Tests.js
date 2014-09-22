@@ -973,23 +973,12 @@ function() {
         server;
 
     params = TP.request('refresh', true, 'async', true, 'resultType', TP.WRAP);
-    locStr = '/TIBET_endpoints/Google_home_page.html';
+    locStr = '/TIBET_endpoints/HTTP_GET_TEST';
     resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
 
     this.before(
         function() {
             server = TP.test.fakeServer.create();
-
-            server.respondWith(
-                TP.HTTP_GET,
-                locStr,
-                [
-                    200,
-                    {
-                        'Content-Type': TP.XML_ENCODED,
-                    },
-                    resultElem.asString(),
-                ]);
         });
 
     //  ---
@@ -997,6 +986,17 @@ function() {
     this.it('HTTPURL: Retrieve resource asynchronously', function(test, options) {
         var url,
             request;
+
+        server.respondWith(
+            TP.HTTP_GET,
+            locStr,
+            [
+                200,
+                {
+                    'Content-Type': TP.XML_ENCODED,
+                },
+                resultElem.asString(),
+            ]);
 
         url = TP.uc(locStr);
 
