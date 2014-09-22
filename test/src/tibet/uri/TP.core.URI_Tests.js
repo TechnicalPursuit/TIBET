@@ -1220,10 +1220,10 @@ function() {
                     ' it doesn\'t'));
 
         this.assert.isEqualTo(
-                obj.at('total_rows'),
-                1,
-                TP.sc('Expected: ', '1',
-                        ' and got instead: ', obj.at('total_rows'), '.'));
+            obj.at('total_rows'),
+            1,
+            TP.sc('Expected: ', '1',
+                    ' and got instead: ', obj.at('total_rows'), '.'));
 
         this.assert.isTrue(
             obj.hasKey('rows'),
@@ -1388,7 +1388,7 @@ function() {
 
     //  ---
 
-    this.it('PouchDBURL: Retrieve resource info', function(test, options) {
+    this.it('PouchDBURL: Retrieve listing of all documents in db', function(test, options) {
 
             var url;
 
