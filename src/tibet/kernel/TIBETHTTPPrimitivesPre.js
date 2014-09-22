@@ -134,9 +134,13 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
      *     typically used to communicate with web servers and web services.
      *     Supported MIME types include:
      *
-     *     application/json application/x-www-form-urlencoded application/xml
-     *     application/xml+rpc application/vnd.tpi.hidden-fields
-     *     multipart/form-data multipart/related
+     *     application/json
+     *     application/x-www-form-urlencoded
+     *     application/xml
+     *     application/xml+rpc
+     *     application/vnd.tpi.hidden-fields
+     *     multipart/form-data
+     *     multipart/related
      *
      *
      * @param {Object} aPayload The call data to encode along with the URL. Note
@@ -1080,4 +1084,3 @@ function(targetUrl, aRequest, httpObj) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-
