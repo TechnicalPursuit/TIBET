@@ -29,6 +29,8 @@
             //  (which normally uses a setTimeout()) on PhantomJS, because there
             //  are a lot of problems with setTimeout() and PhantomJS.
             Syn = {'schedule' : function (fn, ms) {return fn()}};
+        } else {
+            Syn = {'schedule' : function (fn, ms) {setTimeout(fn, 10)}};
         }
         ]]>
     </script>
