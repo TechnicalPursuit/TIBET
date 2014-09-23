@@ -3380,6 +3380,7 @@ function(aHandlerEntry, quiet) {
     //  onwer. If so we'll need to let that type manage observations as well.
     if (TP.canInvoke(type, 'getSignalOwner') &&
         TP.isValid(owner = type.getSignalOwner())) {
+
         if ((owner !== origin) && TP.canInvoke(owner, 'addObserver')) {
             owner.addObserver(orgid, signame);
         }
@@ -3399,13 +3400,13 @@ function(aHandlerEntry, quiet) {
             TP.trace('Interest root not found.',
                         TP.SIGNAL_LOG, arguments) : 0;
 
-                entry = TP.constructOrphanObject();
+        entry = TP.constructOrphanObject();
         entry.target = orgid;
         entry.event = signame;
-                entry.listeners = [];
+        entry.listeners = [];
         map[id] = entry;
 
-                root = entry;
+        root = entry;
     }
 
     entry = null;
@@ -3415,18 +3416,18 @@ function(aHandlerEntry, quiet) {
     //  some handler entries have id's and some are inline functions. we use
     //  the handler attribute to hold this data just as in XML Events
     if (TP.notEmpty(id)) {
-                phase = aHandlerEntry.phase;
+        phase = aHandlerEntry.phase;
+
         entry = root.listeners.detect(
                 function(item) {
-
                     return item.handler === id && item.phase === phase;
                 });
 
-                if (TP.notValid(entry)) {
-                    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
-                            TP.trace('Listener not found.',
-                            TP.SIGNAL_LOG, arguments) : 0;
-                }
+        if (TP.notValid(entry)) {
+            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+                    TP.trace('Listener not found.',
+                    TP.SIGNAL_LOG, arguments) : 0;
+        }
     }
 
     //  if we find an entry we have two options, first if the entry "isn't
@@ -3452,15 +3453,19 @@ function(aHandlerEntry, quiet) {
             TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
                 TP.trace('Listener currently flagged as suspended.',
                             TP.SIGNAL_LOG, arguments) : 0;
+
             delete entry.suspend;
+
             return;
         }
 
-                if (entry.remove === true) {
+        if (entry.remove === true) {
             TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
                 TP.trace('Listener currently flagged as removed.',
                             TP.SIGNAL_LOG, arguments) : 0;
+
             delete entry.remove;
+
             return;
         }
     }
@@ -3584,7 +3589,8 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         entry,
         id,
         handlerID;
-            /*
+
+    /*
     if (TP.isEmpty(anOrigin) || (anOrigin == '*')) {
         orgid = TP.ANY;
     } else {
@@ -3596,10 +3602,10 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     } else {
         signame = aSignal.getSignalName();
     };
-            */
+    */
+
     orgid = TP.sig.SignalMap.$computeOriginID(anOrigin);
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
-
 
     map = TP.sig.SignalMap.INTERESTS;
     id = orgid + '.' + signame;
@@ -3611,10 +3617,10 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             TP.trace('Interest root not found.',
                         TP.SIGNAL_LOG, arguments) : 0;
 
-                entry = TP.constructOrphanObject();
+        entry = TP.constructOrphanObject();
         entry.target = orgid;
         entry.event = signame;
-                entry.listeners = [];
+        entry.listeners = [];
         map[id] = entry;
 
         root = entry;
@@ -3626,7 +3632,6 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
     entry = root.listeners.detect(
             function(item) {
-
                 return item.handler === handlerID;
             });
 
@@ -3640,6 +3645,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     //  really there" because it's in a remove state we can reactivate it.
     if (TP.isValid(entry)) {
         if (!TP.sys.shouldAllowDuplicateInterests()) {
+
             TP.ifWarn(TP.$DEBUG && TP.$$VERBOSE) ?
                 TP.warn(
                     TP.join('Duplicate interest registration for origin: ',
@@ -3670,7 +3676,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
                 TP.trace('Listener entry currently flagged as removed.',
                             TP.SIGNAL_LOG, arguments) : 0;
 
-                    delete entry.remove;
+            delete entry.remove;
 
             //  ensure we're looking at the same handler instance, not
             //  just the same ID by updating the registration
@@ -3685,7 +3691,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
                     TP.SIGNAL_LOG, arguments) : 0;
 
     //  if we arrived here there must not have been an entry already
-            entry = TP.constructOrphanObject();
+    entry = TP.constructOrphanObject();
     entry.target = orgid;
     entry.event = signame;
 
@@ -3698,12 +3704,13 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     //  register the object so it can be found during notification
     TP.sys.registerObject(aHandler);
 
-            root.listeners.push(entry);
+    root.listeners.push(entry);
 
     TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
         TP.trace(TP.join('Listener entry created for ID: ',
                             handlerID, ' with handler: ', aHandler),
                     TP.SIGNAL_LOG, arguments) : 0;
+
     return;
 });
 
@@ -3741,7 +3748,8 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         list,
         item,
         i;
-            /*
+
+    /*
     if (TP.isEmpty(anOrigin) || (anOrigin == '*')) {
         orgid = TP.ANY;
     } else {
@@ -3753,7 +3761,8 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     } else {
         signame = aSignal.getSignalName();
     };
-            */
+    */
+
     orgid = TP.sig.SignalMap.$computeOriginID(anOrigin);
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
@@ -3771,17 +3780,15 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     if (TP.notValid(aHandler)) {
         if (TP.isTrue(isCapturing)) {
             list = root.listeners.select(
-                function(item) {
-
-                    return item.phase === 'capture';
-                });
+                    function(item) {
+                        return item.phase === 'capture';
+                    });
 
         } else if (TP.isFalse(isCapturing)) {
             list = root.listeners.select(
-                function(item) {
-
-                    return item.phase !== 'capture';
-                });
+                    function(item) {
+                        return item.phase !== 'capture';
+                    });
         } else {
             list = root.listeners;
         }
@@ -3798,29 +3805,28 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
             // If we're supposed to remove entirely next step is to compact.
             if (!TP.sys.shouldIgnoreViaFlag()) {
-                    root.listeners = list.select(
-                            function(entry) {
-                                return entry.remove !== true;
-                            });
+                root.listeners = list.select(
+                                    function(entry) {
+                                        return entry.remove !== true;
+                                    });
             }
         }
     } else {
         handlerID = aHandler.getID();
         entry = root.listeners.detect(
-            function(item) {
-
-                return item.handler === handlerID;
-            });
+                function(item) {
+                    return item.handler === handlerID;
+                });
 
         if (TP.isValid(entry)) {
             entry.remove = true;
 
             if (!TP.sys.shouldIgnoreViaFlag()) {
                 list = root.listeners;
-                        root.listeners = list.select(
-                                function(item) {
-                                    return item.remove !== true;
-                                });
+                root.listeners = list.select(
+                                    function(item) {
+                                        return item.remove !== true;
+                                    });
             }
         }
     }
