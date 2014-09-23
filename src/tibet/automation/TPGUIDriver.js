@@ -1002,10 +1002,31 @@ function() {
      */
 
     var sequenceEntries,
-        driver;
+        driver,
+
+        populateSynArgs;
 
     sequenceEntries = this.get('sequenceEntries');
     driver = this.get('driver');
+
+    populateSynArgs = function(initialArgs, target) {
+        var synArgs;
+
+        if (TP.notValid(synArgs = initialArgs)) {
+            synArgs = {};
+        }
+
+        synArgs.relatedTarget = null;
+        synArgs.view = TP.nodeGetWindow(target);
+
+        //  We must make sure that clientX & clientY are defined, otherwise Syn
+        //  will crash with the setting we make above... it assumes that the
+        //  document of the element is the top-level window... sigh.
+        synArgs.clientX = synArgs.clientX || 0;
+        synArgs.clientY = synArgs.clientY || 0;
+
+        return synArgs;
+    };
 
     driver.get('promiseProvider').thenPromise(
         function(resolver, rejector) {
@@ -1028,8 +1049,7 @@ function() {
                 args,
 
                 j,
-                target,
-                point;
+                target;
 
             //  Generate a set of callback functions (one for success, one for
             //  failure) to hand to the *last* invocation in the sequence and
@@ -1099,13 +1119,7 @@ function() {
                     switch(type) {
                         case 'click':
 
-                            if (!TP.isValid(args)) {
-                                point =
-                                    TP.wrap(
-                                        target).getPageRect().getCenterPoint();
-                                args = {pageX: point.getX(),
-                                        pageY: point.getY()};
-                            }
+                            args = populateSynArgs(args, target);
 
                             last ?
                                 chain = chain.click(args, target, eventCB) :
@@ -1114,13 +1128,7 @@ function() {
 
                         case 'dblclick':
 
-                            if (!TP.isValid(args)) {
-                                point =
-                                    TP.wrap(
-                                        target).getPageRect().getCenterPoint();
-                                args = {pageX: point.getX(),
-                                        pageY: point.getY()};
-                            }
+                            args = populateSynArgs(args, target);
 
                             last ?
                                 chain = chain.dblclick(args, target, eventCB) :
@@ -1129,13 +1137,7 @@ function() {
 
                         case 'rightclick':
 
-                            if (!TP.isValid(args)) {
-                                point =
-                                    TP.wrap(
-                                        target).getPageRect().getCenterPoint();
-                                args = {pageX: point.getX(),
-                                        pageY: point.getY()};
-                            }
+                            args = populateSynArgs(args, target);
 
                             last ?
                                 chain = chain.rightClick(args, target, eventCB) :
@@ -1156,13 +1158,7 @@ function() {
 
                         case 'mousedown':
 
-                            if (!TP.isValid(args)) {
-                                point =
-                                    TP.wrap(
-                                        target).getPageRect().getCenterPoint();
-                                args = {pageX: point.getX(),
-                                        pageY: point.getY()};
-                            }
+                            args = populateSynArgs(args, target);
 
                             chain.trigger(
                                 'mousedown',
@@ -1177,13 +1173,7 @@ function() {
 
                         case 'mouseup':
 
-                            if (!TP.isValid(args)) {
-                                point =
-                                    TP.wrap(
-                                        target).getPageRect().getCenterPoint();
-                                args = {pageX: point.getX(),
-                                        pageY: point.getY()};
-                            }
+                            args = populateSynArgs(args, target);
 
                             chain.trigger(
                                 'mouseup',
@@ -1196,6 +1186,7 @@ function() {
                         break;
 
                         case 'keydown':
+
                             chain.trigger(
                                 'keydown',
                                 TP.extern.syn.key.options(args, 'keydown'),
@@ -1207,6 +1198,7 @@ function() {
                         break;
 
                         case 'keyup':
+
                             chain.trigger(
                                 'keyup',
                                 TP.extern.syn.key.options(args, 'keyup'),
