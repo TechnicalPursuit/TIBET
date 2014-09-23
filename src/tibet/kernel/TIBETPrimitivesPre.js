@@ -6898,7 +6898,7 @@ function() {
      * @returns {String} The path containing the path to the active UI canvas.
      */
 
-    return 'tibet://' + TP.sys.getUICanvasName() + '/';
+    return 'tibet://' + TP.gid(TP.sys.getUICanvas(true)) + '/';
 });
 
 //  ------------------------------------------------------------------------
