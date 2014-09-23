@@ -96,7 +96,7 @@ function(test, shellInput, valueTestFunction)
 
                     rejector(errMsg);
 
-                    //  Make sure to fail the test.
+                    //  Set the faultText to that content as well.
                     test.set('faultText', (errMsg || ''));
                 });
         });
