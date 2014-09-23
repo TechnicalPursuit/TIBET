@@ -132,7 +132,7 @@ function(anElement) {
 
         tibetSrc,
         ctrlTypeName,
-        
+
         controller;
 
     if (!TP.isElement(anElement)) {
@@ -370,6 +370,62 @@ function(aNode, otherNode, aPosition) {
     /* jshint bitwise:false */
     return !!(position & aPosition);
     /* jshint bitwise:true */
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetBestNode',
+function(aNode) {
+
+    /**
+     * @name nodeGetBestNode
+     * @synopsis Returns the 'best' node for the node provided.
+     * @description The 'best node' for a node is the node that best represents
+     *     it for things like 'content type tasting' to determine MIME types,
+     *     etc. Often, when trying to determine content types by 'tasting',
+     *     you want to make sure to get the document element of the supplied
+     *     node's document or, if aNode is a document fragment, you want the
+     *     first child, etc.
+     * @param {Node} aNode The node to get the 'best', 'most representative'
+     *     node of.
+     * @returns {Node} The 'best' node for the node provided.
+     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     *     method.
+     */
+
+    var doc,
+        retNode;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+    }
+
+    if (!TP.nodeIsDetached(aNode)) {
+        doc = TP.nodeGetDocument(aNode);
+        if (TP.notValid(doc)) {
+            //  xml, but no document-level data to go by...
+            retNode = aNode;
+        } else {
+            retNode = doc.documentElement;
+        }
+    } else {
+        if (TP.isFragment(aNode)) {
+            retNode = aNode.firstChild;
+        } else {
+            retNode = aNode;
+        }
+    }
+
+    if (TP.isElement(retNode)) {
+
+        //  If the element is our special 'wrap' element, use it's first
+        //  child.
+        if (TP.elementGetLocalName(retNode) === 'wrap') {
+            retNode = retNode.firstChild;
+        }
+    }
+
+    return retNode;
 });
 
 //  ------------------------------------------------------------------------

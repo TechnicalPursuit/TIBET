@@ -46,7 +46,7 @@ function(aRequest) {
      * @name cmdRunContent
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
-     * @returns {Object} 
+     * @returns {Object}
      * @abstract
      * @todo
      */
@@ -135,6 +135,7 @@ function(aRequest) {
     //  notify the current request when complete.
     req = TP.sig.ShellRequest.construct(
             TP.hc('cmd', str,
+                    'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
                     'cmdAsIs', aRequest.at('cmdAsIs'),
                     'cmdExecute', true,
                     'cmdHistory', aRequest.at('cmdHistory'),

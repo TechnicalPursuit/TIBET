@@ -52,9 +52,9 @@ function(aRequest) {
         url,
         type,
         req,
-        
+
         shell,
-        
+
         signal;
 
     node = aRequest.at('cmdNode');
@@ -116,6 +116,7 @@ function(aRequest) {
 
         req = TP.sig.ShellRequest.construct(
             TP.hc('cmd', source,
+                    'cmdAllowSubs', false,
                     'cmdAsIs', aRequest.at('cmdAsIs'),
                     'cmdExecute', true,
                     'cmdHistory', false,

@@ -158,20 +158,41 @@ function(aRequest) {
         value = item.last();
 
         switch (name) {
+            case 'tsh:pipe':
+                params.atPut('pipe', value);
+                break;
+
+            //  Communication layer parameters
             case 'tsh:href':
                 //  Already processed.
+                break;
+            case 'tsh:verb':
+                params.atPut('verb', value.toUpperCase());
+                break;
+            case 'tsh:mimetype':
+                params.atPut('mimetype', value);
                 break;
             case 'tsh:async':
                 params.atPut('async', TP.bc(value));
                 break;
-            case 'tsh:pipe':
-                params.atPut('pipe', value);
-                break;
             case 'tsh:refresh':
                 params.atPut('refresh', TP.bc(value));
                 break;
-            case 'tsh:verb':
-                params.atPut('verb', value.toUpperCase());
+            case 'tsh:timeout':
+                if (TP.isNumber(resolvedValue = parseInt(value))) {
+                    resolvedValue = resolvedValue.asDuration();
+                }
+                params.atPut('timeout',
+                                Date.getMillisecondsInDuration(resolvedValue));
+                break;
+            case 'tsh:encoding':
+                params.atPut('encoding', value);
+                break;
+            case 'tsh:separator':
+                params.atPut('separator', value);
+                break;
+            case 'tsh:noencode':
+                params.atPut('noencode', TP.bc(value));
                 break;
             default:
 
@@ -315,7 +336,7 @@ TP.tsh.uri.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
-     * @inheritDoc 
+     * @inheritDoc
      * @todo
      */
 

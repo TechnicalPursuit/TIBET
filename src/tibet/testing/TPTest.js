@@ -591,10 +591,11 @@ TP.test.Suite.Inst.defineAttribute('beforeEvery');
 TP.test.Suite.Inst.defineAttribute('caseList');
 
 /**
- * The driver used for things like fetching resources, etc.
+ * A hash of 1..n 'drivers' used for things like fetching resources,
+ * manipulating the GUI and running shell commands.
  * @type {TP.gui.Driver}
  */
-TP.test.Suite.Inst.defineAttribute('driver');
+TP.test.Suite.Inst.defineAttribute('drivers');
 
 /**
  * The number of milliseconds the object is limited to for run time before
@@ -916,7 +917,8 @@ function(target, suiteName, suiteFunc) {
     this.$set('refuter',
         TP.test.TestMethodCollection.construct().set('isRefuter', true));
 
-    this.$set('driver', TP.gui.Driver.construct(TP.sys.getUICanvas()));
+    this.$set('drivers',
+                TP.hc('gui', TP.gui.Driver.construct(TP.sys.getUICanvas())));
 
     return this;
 });
@@ -1353,6 +1355,9 @@ function(onFulfilled, onRejected) {
 
         thisArg,
 
+        _callback,
+        _errback,
+
         newPromise;
 
     //  First, see if there's an existing internal promise. If not, create one
@@ -1372,6 +1377,22 @@ function(onFulfilled, onRejected) {
 
     thisArg = this;
 
+    //  Make sure that a callback function is defined. Either the supplied one
+    //  or a simple one that returns the value.
+    if (!TP.isCallable(_callback = onFulfilled)) {
+        _callback = function(value) {
+            return value;
+        };
+    }
+
+    //  Make sure that an errback function is defined. Either the supplied one
+    //  or a simple one that rejects with the reason
+    if (!TP.isCallable(_errback = onRejected)) {
+        _errback = function(reason) {
+            return Q.reject(reason);
+        };
+    }
+
     //  'then' onto our last promise with fulfillment/rejection handlers that
     //  manage a 'stacking' of nested Promises.
     newPromise = lastPromise.then(
@@ -1388,8 +1409,13 @@ function(onFulfilled, onRejected) {
             subPromise = Q.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
-            //  Execute the fulfillment handler
-            maybe = onFulfilled(result);
+            //  Protect the callback in a try...catch to make sure that any
+            //  errors result in the promise being rejected.
+            try {
+                maybe = _callback(result);
+            } catch (e) {
+                maybe = Q.reject(e);
+            }
 
             //  The fulfillment handler will have set the 'new promise' that it
             //  created as the 'current promise' (see below). We need that here.
@@ -1421,7 +1447,14 @@ function(onFulfilled, onRejected) {
             subPromise = Q.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
-            maybe = onRejected(reason);
+            //  Protect the errback in a try...catch to make sure that any
+            //  errors that could happen as part of the errback itself result in
+            //  the promise being rejected.
+            try {
+                maybe = _errback(reason);
+            } catch (e) {
+                maybe = Q.reject(e);
+            }
 
             subReturnPromise = thisArg.$get('$currentPromise');
             thisArg.$set('$currentPromise', null);
@@ -1671,14 +1704,21 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('getDriver',
-function() {
+function(aKey) {
 
     /**
      * Returns the test driver associated with this case's overall test suite.
-     * @return {TP.gui.Driver} The test driver.
+     * @param {String} aKey The key that the driver is registered under with the
+     *     suite. If this isn't supplied, the default key 'gui' is used, which
+     *     means this method will return the GUI driver.
+     * @return {Object} The test driver registered under aKey.
      */
 
-    return this.getSuite().$get('driver');
+    var driverKey;
+
+    driverKey = TP.ifInvalid(aKey, 'gui');
+
+    return this.getSuite().$get('drivers').at(driverKey);
 });
 
 //  ------------------------------------------------------------------------
@@ -1795,7 +1835,10 @@ TP.test.Case.Inst.defineMethod('reset',
 function(options) {
 
     var asserter,
-        refuter;
+        refuter,
+
+        thisArg,
+        drivers;
 
     this.callNextMethod();
 
@@ -1814,8 +1857,14 @@ function(options) {
         this.$set('mslimit', options.at('case_timeout'));
     }
 
-    //  We provide a 'then()' and 'thenPromise()' API to our driver.
-    this.getDriver().set('promiseProvider', this);
+    //  We provide a 'then()' and 'thenPromise()' API to our drivers.
+    thisArg = this;
+
+    drivers = this.getSuite().$get('drivers');
+    drivers.getKeys().perform(
+            function(driverKey) {
+                drivers.at(driverKey).set('promiseProvider', thisArg);
+            });
 });
 
 //  ------------------------------------------------------------------------
@@ -2022,6 +2071,9 @@ function(onFulfilled, onRejected) {
 
         thisArg,
 
+        _callback,
+        _errback,
+
         newPromise;
 
     //  First, see if there's an existing internal promise. If not, create one
@@ -2041,6 +2093,22 @@ function(onFulfilled, onRejected) {
 
     thisArg = this;
 
+    //  Make sure that a callback function is defined. Either the supplied one
+    //  or a simple one that returns the value.
+    if (!TP.isCallable(_callback = onFulfilled)) {
+        _callback = function(value) {
+            return value;
+        };
+    }
+
+    //  Make sure that an errback function is defined. Either the supplied one
+    //  or a simple one that rejects with the reason
+    if (!TP.isCallable(_errback = onRejected)) {
+        _errback = function(reason) {
+            return Q.reject(reason);
+        };
+    }
+
     //  'then' onto our last promise with fulfillment/rejection handlers that
     //  manage a 'stacking' of nested Promises.
     newPromise = lastPromise.then(
@@ -2057,8 +2125,13 @@ function(onFulfilled, onRejected) {
             subPromise = Q.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
-            //  Execute the fulfillment handler
-            maybe = onFulfilled(result);
+            //  Protect the callback in a try...catch to make sure that any
+            //  errors result in the promise being rejected.
+            try {
+                maybe = _callback(result);
+            } catch (e) {
+                maybe = Q.reject(e);
+            }
 
             //  The fulfillment handler will have set the 'new promise' that it
             //  created as the 'current promise' (see below). We need that here.
@@ -2090,7 +2163,14 @@ function(onFulfilled, onRejected) {
             subPromise = Q.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
-            maybe = onRejected(reason);
+            //  Protect the errback in a try...catch to make sure that any
+            //  errors that could happen as part of the errback itself result in
+            //  the promise being rejected.
+            try {
+                maybe = _errback(reason);
+            } catch (e) {
+                maybe = Q.reject(e);
+            }
 
             subReturnPromise = thisArg.$get('$currentPromise');
             thisArg.$set('$currentPromise', null);

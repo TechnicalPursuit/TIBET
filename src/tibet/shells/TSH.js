@@ -2150,7 +2150,8 @@ function(aRequest) {
 
     arg = this.getArgument(aRequest, 'ARG0');
 
-    if (TP.regex.URI_LIKELY.test(arg)) {
+    if (TP.regex.URI_LIKELY.test(arg) &&
+        !TP.regex.REGEX_LITERAL_STRING.test(arg)) {
         url = this.expandPath(arg);
         if (TP.isURI(url = TP.uc(url))) {
             obj = url;

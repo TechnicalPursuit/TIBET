@@ -878,7 +878,7 @@ function() {
         track,
 
         str,
-        
+
         ownerName;
 
     owner = this[TP.OWNER];
@@ -1693,8 +1693,10 @@ function(anObject) {
     }
 
     if (TP.isString(anObject)) {
-        //  simple check for proper URI form
-        return TP.regex.URI_LIKELY.test(anObject);
+        //  simple check for proper URI form - but make sure it's not a RegExp
+        //  literal.
+        return TP.regex.URI_LIKELY.test(anObject) &&
+                !TP.regex.REGEX_LITERAL_STRING.test(anObject);
     }
 
     return TP.isKindOf(anObject, 'TP.core.URI');
@@ -4845,7 +4847,7 @@ function(aFilterName, aLevel) {
 
         head,
         str;
-        
+
     //  The only way to discern between Function objects that are one of the
     //  native constructors (types) and a regular Function object.
     if (TP.isNativeType(this)) {

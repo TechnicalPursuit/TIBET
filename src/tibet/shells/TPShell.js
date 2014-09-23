@@ -117,11 +117,13 @@ function(cmdSrc, echoRequest, createHistory, echoOutput, shellID, successHandler
 
                             //  This won't be an interactive environment, so
                             //  don't allow prompting for it.
-                            //'cmdInteractive', false,
-                            //  TODO: This will not allow dereference sugar
-                            //  syntax during testing, so we set it to 'true'
-                            //  here. Needs review.
-                            'cmdInteractive', true,
+                            'cmdInteractive', false,
+
+                            //  Because we turn off interactive environment, we
+                            //  have to turn this flag on to allow the
+                            //  environment to properly process command
+                            //  substitutions (which can use 'eval()')
+                            'cmdAllowSubs', true,
 
                             //  We definitely want expansion, desugaring, etc.
                             //  This will not be 'literal' content.
@@ -187,6 +189,14 @@ function(cmdSrc, echoRequest, createHistory, echoOutput, shellID, successHandler
 
                 newSuccessHandler.ignore(
                         request, 'TP.sig.ShellRequestSucceeded');
+
+                //  For some reason, when 'cmdInteractive' is false (like
+                //  above), if there has been no stdout output, running tests
+                //  using this call under PhantomJS will hang. So we push an
+                //  empty String onto 'stdout' stdio results.
+                if (TP.isEmpty(stdioResults.at('stdout'))) {
+                    stdioResults.at('stdout').push('');
+                }
 
                 successHandler(aSignal, stdioResults);
             };
@@ -777,6 +787,8 @@ function() {
                             TP.hc(
                                 'cmd',
                                     anEntry.at('cmd'),
+                                'cmdAllowSubs',
+                                    anEntry.at('cmdAllowSubs'),
                                 'cmdAsIs',
                                     anEntry.at('cmdAsIs'),
                                 'cmdExecute',
@@ -839,12 +851,13 @@ function() {
 
                     return TP.hc(
                         'cmd', aShellReq.at('cmd'),
-                        'cmdRoot', TP.str(aShellReq.at('cmdRoot')),
+                        'cmdAllowSubs', aShellReq.at('cmdAllowSubs'),
                         'cmdExecute', aShellReq.at('cmdExecute'),
                         'cmdInteractive', aShellReq.at('cmdInteractive'),
                         'cmdLiteral', aShellReq.at('cmdLiteral'),
                         'cmdPhases', aShellReq.at('cmdPhases'),
                         'cmdRecycle', aShellReq.at('cmdRecycle'),
+                        'cmdRoot', TP.str(aShellReq.at('cmdRoot')),
                         'cmdSilent', aShellReq.at('cmdSilent'));
                 });
 
@@ -2115,6 +2128,8 @@ function(anObjectSpec, aRequest) {
         return TP.ac();
     }
 
+    spec = anObjectSpec;
+
     //  The $SCOPE object (the local context object that shell variables have
     //  been set against)
     execInstance = this.getExecutionInstance();
@@ -2123,21 +2138,25 @@ function(anObjectSpec, aRequest) {
     //  in)
     execContext = this.getExecutionContext();
 
-    //  If 'last' matches shell 'dereference sugar' (i.e. '@foo'), then we have
-    //  to strip the leading '@'.
-    if (TP.regex.TSH_DEREF_SUGAR.test(anObjectSpec)) {
-        spec = anObjectSpec.slice(1);
-    } else {
-        spec = anObjectSpec;
-    }
-
-    //  Is this a shell variable that starts with '${' and ends with '}'?
+    //  Convert any shell variable that starts with '${' and ends with '}' to
+    //  it's plain form.
+    //  NB: We do *not* want to use the TP.regex.TSH_VARSUB_EXTENDED replacement
+    //  technique here, since we're only looking at the start and the end of the
+    //  entire expression for variable conversion - leaving anything in the
+    //  interior along.
     if (spec.startsWith('${') && spec.endsWith('}')) {
         spec = '$' + spec.slice(2, -1);
     }
 
+    //  If 'spec' matches shell 'dereference sugar' (i.e. '@foo'), then we have
+    //  to strip the leading '@'.
+    if (TP.regex.TSH_DEREF_SUGAR.test(spec)) {
+        spec = anObjectSpec.slice(1);
+    }
+
     try {
-        if (TP.regex.URI_LIKELY.test(spec)) {
+        if (TP.regex.URI_LIKELY.test(spec) &&
+            !TP.regex.REGEX_LITERAL_STRING.test(spec)) {
             url = this.expandPath(spec);
             if (TP.isURI(url = TP.uc(url))) {
                 $$inst = url.getResource(TP.hc('async', false));
@@ -2658,6 +2677,12 @@ function(aRequest, allForms) {
                             if (TP.isValid(val) && TP.notValid(expandedVal)) {
                                 expandedVal = TP.tsh.cmd.expandContent(
                                                 val, shell, aRequest);
+
+                                if (expandedVal === 'null') {
+                                    expandedVal = null;
+                                } else if (expandedVal === 'undefined') {
+                                    expandedVal = undefined;
+                                }
                             }
 
                             if (allForms) {
@@ -2684,7 +2709,7 @@ function(aRequest, allForms) {
                 if (val === 'true' || val === 'false') {
                     //  Handle Booleans
                     expandedVal = TP.bc(val);
-                } else if (/^\/(.+)\/[gimy]*$/.test(val)) {
+                } else if (TP.regex.REGEX_LITERAL_STRING.test(val)) {
                     //  Handle RegExps
                     reParts = val.split('/');
                     expandedVal = TP.rc(reParts.at(1), reParts.at(2));
@@ -2712,6 +2737,12 @@ function(aRequest, allForms) {
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
                         expandedVal = TP.tsh.cmd.expandContent(
                                                 val, shell, aRequest);
+
+                        if (expandedVal === 'null') {
+                            expandedVal = null;
+                        } else if (expandedVal === 'undefined') {
+                            expandedVal = undefined;
+                        }
                     }
                 }
 

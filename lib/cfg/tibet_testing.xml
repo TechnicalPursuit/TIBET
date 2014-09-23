@@ -39,6 +39,7 @@
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
     <config ref="formatting"/>
+    <config ref="shell"/>
     <config ref="uri"/>
     <config ref="xslt"/>
 </config>
@@ -62,6 +63,10 @@
     <script src="~lib_tst/src/tibet/formatting/String_Tests.js" />
     <script src="~lib_tst/src/tibet/formatting/TP.lang.Object_Tests.js" />
     <script src="~lib_tst/src/tibet/formatting/TP.templateParser_Tests.js" />
+</config>
+
+<config id="shell">
+    <script src="~lib_tst/src/tsh/tsh_Tests.js" />
 </config>
 
 <config id="xslt">

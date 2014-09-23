@@ -13,10 +13,11 @@
 </config>
 
 <config id="full" depends="base">
-    <config ref="driver"/>
+    <config ref="gui"/>
+    <config ref="tsh"/>
 </config>
 
-<config id="driver" depends="">
+<config id="gui" depends="">
     <script src="automation/TPGUIDriver.js" />
 
     <script>
@@ -42,6 +43,11 @@
         TP.extern.syn = Syn;
         ]]>
     </script>
+</config>
+
+<config id="tsh" depends="">
+    <script src="automation/TPShellDriver.js" />
+    <script src="automation/tsh_testCmd.js" />
 </config>
 
 </package>

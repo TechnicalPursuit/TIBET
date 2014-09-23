@@ -2564,7 +2564,7 @@ TP.regex.MULTI_VALUED = / /;
 
 //  A RegExp that will escape Strings for use as RegExps :)
 TP.regex.REGEX_ESCAPE = /([-[\]{}()*+?.\\^$|,#\s]{1})/g;    //  needs reset
-TP.regex.REGEX_STRING = /[\\[{}*?+]/;
+TP.regex.REGEX_LITERAL_STRING = /^\/(.+)\/[gimy]*$/;
 
 //  ---
 //  tibet uris
@@ -2594,7 +2594,7 @@ TP.regex.TSH_SUBGROUP = /\.\{\{(.*)?\.\}\}/;
 TP.regex.TSH_HEREDOC = /\.<</;
 
 //  TSH_DEREF_SUGAR is a JS_IDENTIFIER preceded by @ (but could have optional
-//  leading '${' and trailing '}'
+//  leading '${' and trailing '}')
 TP.regex.TSH_DEREF_SUGAR = /^@\$?\{?[a-zA-Z_$]{1}[a-zA-Z0-9_$]*\}?$/;
 
 //  ---

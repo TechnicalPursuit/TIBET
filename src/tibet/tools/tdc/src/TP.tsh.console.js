@@ -1923,6 +1923,7 @@ function(rawInput) {
         req = TP.sig.ShellRequest.construct(
             TP.hc('async', true,
                     'cmd', input,
+                    'cmdAllowSubs', true,
                     'cmdExecute', true,
                     'cmdHistory', true,
                     'cmdInteractive', true,

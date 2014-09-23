@@ -134,9 +134,13 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
      *     typically used to communicate with web servers and web services.
      *     Supported MIME types include:
      *
-     *     application/json application/x-www-form-urlencoded application/xml
-     *     application/xml+rpc application/vnd.tpi.hidden-fields
-     *     multipart/form-data multipart/related
+     *     application/json
+     *     application/x-www-form-urlencoded
+     *     application/xml
+     *     application/xml+rpc
+     *     application/vnd.tpi.hidden-fields
+     *     multipart/form-data
+     *     multipart/related
      *
      *
      * @param {Object} aPayload The call data to encode along with the URL. Note
@@ -175,15 +179,32 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
     //  when the data is a string already we presume it's in the proper
     //  form, which may not be true but we're not gonna parse it now :) We
     //  also don't go any further for data that isn't actually there.
-    if (TP.notValid(aPayload) || TP.isString(aPayload)) {
+    if (TP.notValid(aPayload)) {
         return aPayload;
     }
 
-    //  commonly get nodes for encoding, but we want to unwrap TP.core.Nodes
-    if (TP.canInvoke(aPayload, 'getNativeNode')) {
-        data = aPayload.getNativeNode();
+    //  if we got handed a String, see if we can turn it into a Node. If we
+    //  can't, or all we get from that process is a Text node, then just return
+    //  what we got handed.
+    if (TP.isString(aPayload)) {
+
+        //  Note here how we don't supply a default namespace, nor do we want
+        //  this call to report XML parsing errors - if we have them, the
+        //  payload is unusable as XML so we'll just return it.
+        if (!TP.isNode(data = TP.nodeFromString(aPayload, null, false))) {
+            return aPayload;
+        }
+        //  If it's a Text node, then just return the original payload.
+        if (TP.isTextNode(data)) {
+            return aPayload;
+        }
     } else {
         data = aPayload;
+    }
+
+    //  commonly get nodes for encoding, but we want to unwrap TP.core.Nodes
+    if (TP.canInvoke(data, 'getNativeNode')) {
+        data = data.getNativeNode();
     }
 
     //  default mime type is the one used for most GET/POST/PUT calls
@@ -1063,4 +1084,3 @@ function(targetUrl, aRequest, httpObj) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-
