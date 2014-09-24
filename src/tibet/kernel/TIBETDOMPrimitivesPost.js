@@ -467,6 +467,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         awakenContent,
         nodeContent,
 
+        docElem,
+
         newEvent,
 
         allContentLoadedFunc,
@@ -532,6 +534,17 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     //  Clear out the document's existing content.
     TP.nodeEmptyContent(aDocument);
+
+    //  Manually invoke the mutation removal event machinery. This won't happen
+    //  automatically, since by emptying the content of the document above, we
+    //  blew away the Mutation Observer registration.
+    docElem = aDocument.documentElement;
+    TP.core.MutationSignalSource.handleMutationEvent(
+            {
+                type: 'childList',
+                target: docElem,
+                removedNodes: TP.ac(docElem)
+            });
 
     //  Append the new child in (pass in false to awaken the content - we
     //  don't awaken XML).
