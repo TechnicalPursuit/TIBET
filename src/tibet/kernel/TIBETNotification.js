@@ -6821,7 +6821,12 @@ function(aMutationRecord) {
 
             break;
         case 'childList':
-            if (TP.notEmpty(addedNodes = TP.ac(aMutationRecord.addedNodes))) {
+            if (!TP.isEmpty(aMutationRecord.addedNodes) &&
+                    !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
+                addedNodes = TP.ac(addedNodes);
+            }
+
+            if (TP.notEmpty(addedNodes)) {
                 fname = 'handlePeerTP_sig_DOMNodesAdded';
 
                 if (TP.canInvoke(targetType, fname)) {
@@ -6829,8 +6834,12 @@ function(aMutationRecord) {
                 }
             }
 
-            if (TP.notEmpty(
-                        removedNodes = TP.ac(aMutationRecord.removedNodes))) {
+            if (!TP.isEmpty(aMutationRecord.removedNodes) &&
+                    !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
+                removedNodes = TP.ac(removedNodes);
+            }
+
+            if (TP.notEmpty(removedNodes)) {
                 fname = 'handlePeerTP_sig_DOMNodesRemoved';
 
                 if (TP.canInvoke(targetType, fname)) {
