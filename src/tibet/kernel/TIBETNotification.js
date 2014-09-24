@@ -3377,7 +3377,7 @@ function(aHandlerEntry, quiet) {
     }
 
     //  If we have a type we need to ask it if events of that type have a signal
-    //  onwer. If so we'll need to let that type manage observations as well.
+    //  owner. If so we'll need to let that type manage observations as well.
     if (TP.canInvoke(type, 'getSignalOwner') &&
         TP.isValid(owner = type.getSignalOwner())) {
 
@@ -3394,7 +3394,7 @@ function(aHandlerEntry, quiet) {
     root = map[id];
 
     //  no root? no interests yet so we need to create a container object that
-            //  will manage all data for this origin/signal pair.
+    //  will manage all data for this origin/signal pair.
     if (TP.notValid(root)) {
         TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
             TP.trace('Interest root not found.',
@@ -3474,8 +3474,8 @@ function(aHandlerEntry, quiet) {
         TP.trace('Creating new listener entry.',
                     TP.SIGNAL_LOG, arguments) : 0;
 
-            // Simple. Just use the object provided.
-            entry = aHandlerEntry;
+    //  Simple. Just use the object provided.
+    entry = aHandlerEntry;
 
     //  if no ID at this point we must have an inline function to use, if
     //  the handler ID is a JS URI then we have an inline expression. either
