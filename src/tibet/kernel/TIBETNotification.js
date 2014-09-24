@@ -3157,19 +3157,12 @@ function(anOrigin, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalMap.defineMethod('$registerHandlerInfo',
+TP.sig.SignalMap.defineMethod('$constructHandlerEntries',
 function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserver, xmlEvent) {
 
     /**
-     * @name $registerHandlerInfo
-     * @synopsis Creates a signal map entry for the interest specified. Note
-     *     that no duplicate entries are made meaning each handler is notified
-     *     only once per signal occurrence unless the TIBET flag
-     *     shouldAllowDuplicateInterests() returns true. Also, if the enclosing
-     *     interest container has already been created for another handler, and
-     *     is suspended, it will remain suspended until a resume is invoked. If
-     *     the specific entry is suspended it will be reactivated as a result of
-     *     this call.
+     * @name $constructHandlerEntries
+     * @synopsis Creates 1..n signal map entries for the interest specified.
      * @param {Object} anOrigin What origin?
      * @param {String|TP.sig.Signal} aSignal What signal?
      * @param {Object} aHandler What object will get notification?
@@ -3313,12 +3306,7 @@ function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserv
         }
     }
 
-    for (i = 0; i < handlers.getSize(); i++) {
-        //  the true tells it to quietly discard duplicates
-        this.$registerHandlerEntry(handlers.at(i), true);
-    }
-
-    return;
+    return handlers;
 });
 
 //  ------------------------------------------------------------------------
@@ -3328,7 +3316,14 @@ function(aHandlerEntry, quiet) {
 
     /**
      * @name $registerHandlerEntry
-     * @synopsis Creates a signal map entry for the handler entry provided.
+     * @synopsis Registers the supplied signal map entry into the signal map.
+     * @description Note that no duplicate entries are made meaning each handler
+     *     is notified only once per signal occurrence unless the TIBET flag
+     *     shouldAllowDuplicateInterests() returns true. Also, if the enclosing
+     *     interest container has already been created for another handler, and
+     *     is suspended, it will remain suspended until a resume is invoked. If
+     *     the specific entry is suspended it will be reactivated as a result
+     *     of this call.
      * @param {Object} aHandlerEntry A listener entry.
      * @param {Boolean} quiet True to quietly ignore duplicate entries.
      * @todo
@@ -3345,6 +3340,7 @@ function(aHandlerEntry, quiet) {
         id,
         hash,
         source,
+        handlerID,
         phase,
         win;
 
@@ -3411,16 +3407,16 @@ function(aHandlerEntry, quiet) {
 
     entry = null;
 
-    id = aHandlerEntry.handler;
+    handlerID = aHandlerEntry.handler;
 
     //  some handler entries have id's and some are inline functions. we use
     //  the handler attribute to hold this data just as in XML Events
-    if (TP.notEmpty(id)) {
+    if (TP.notEmpty(handlerID)) {
         phase = aHandlerEntry.phase;
 
         entry = root.listeners.detect(
                 function(item) {
-                    return item.handler === id && item.phase === phase;
+                    return item.handler === handlerID && item.phase === phase;
                 });
 
         if (TP.notValid(entry)) {
@@ -3443,7 +3439,7 @@ function(aHandlerEntry, quiet) {
                     TP.join('Duplicate interest registration for origin: ',
                             orgid, ' signal: ',
                             signame, ' handler: ',
-                            id, ' ignored.'),
+                            handlerID, ' ignored.'),
                     TP.SIGNAL_LOG, arguments) : 0;
 
             return;
@@ -3477,11 +3473,11 @@ function(aHandlerEntry, quiet) {
     //  Simple. Just use the object provided.
     entry = aHandlerEntry;
 
-    //  if no ID at this point we must have an inline function to use, if
-    //  the handler ID is a JS URI then we have an inline expression. either
+    //  if no handler ID at this point we must have an inline function to use,
+    //  if the handler ID is a JS URI then we have an inline expression. either
     //  way we have to convert the JS into a function we can use
-    if (TP.isEmpty(id) || id.startsWith('javascript:')) {
-        if (TP.isEmpty(id)) {
+    if (TP.isEmpty(handlerID) || handlerID.startsWith('javascript:')) {
+        if (TP.isEmpty(handlerID)) {
             TP.ifWarn() ?
                 TP.warn(TP.boot.$annotate(
                             entry,
@@ -3490,7 +3486,7 @@ function(aHandlerEntry, quiet) {
         } else {
             //  NOTE we have to run the TP.xmlEntitiesToLiterals() call here
             //  since XML will require quotes etc. to be in entity form
-            source = TP.xmlEntitiesToLiterals(id.strip(/javascript:/));
+            source = TP.xmlEntitiesToLiterals(handlerID.strip(/javascript:/));
 
             //  build a function wrapper, using double quoting to match
             //  how attribute would likely be quoted in the source.
@@ -3503,7 +3499,7 @@ function(aHandlerEntry, quiet) {
 
         //  if we have source, try to get a function handle to it
         if (TP.isString(source)) {
-            //  generate a unique hash to use as an id so we don't
+            //  generate a unique hash to use as a handler ID so we don't
             //  keep generating new functions for anonymous handlers
             hash = TP.hash(source, TP.HASH_MD5);
 
@@ -3511,10 +3507,10 @@ function(aHandlerEntry, quiet) {
             //  searches since we know we're dealing with registered objects
             //  when using hash keys
             if (TP.isValid(TP.sys.getObjectById(hash, true))) {
-                id = hash;
+                handlerID = hash;
 
                 //  have to check for duplicate again...
-                entry.handler = id;
+                entry.handler = handlerID;
 
                 return TP.sig.SignalMap.$registerHandlerEntry(entry);
             } else {
@@ -3522,7 +3518,7 @@ function(aHandlerEntry, quiet) {
                     win = window;
                     eval('win.$$handler = ' + source);
                     win.$$handler.setID(hash);
-                    id = win.$$handler.getID();
+                    handlerID = win.$$handler.getID();
 
                     //  register the object so it can be found during
                     //  notification but do it only when we had to build the
@@ -3541,18 +3537,166 @@ function(aHandlerEntry, quiet) {
                 }
             }
         }
-    } else if (id.startsWith('#')) {
+    } else if (handlerID.startsWith('#')) {
         //  local document ID reference, should have been converted to a
         //  global ID but $byOID will default to TP.sys.getUICanvas()
     }
 
-    if (TP.isValid(id)) {
-        entry.handler = id;
+    if (TP.isValid(handlerID)) {
+        entry.handler = handlerID;
 
         root.listeners.push(entry);
 
         TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
-            TP.trace('Listener entry created for ID: ' + id,
+            TP.trace('Listener entry created for ID: ' + handlerID,
+                        TP.SIGNAL_LOG, arguments) : 0;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('$removeHandlerEntry',
+function(aHandlerEntry) {
+
+    /**
+     * @name $removeHandlerEntry
+     * @synopsis Removes the supplied signal map entry from the signal map.
+     * @param {Object} aHandlerEntry A listener entry.
+     * @todo
+     */
+
+    var map,
+        orgid,
+        signame,
+        origin,
+        type,
+        owner,
+        root,
+        entry,
+        id,
+        phase,
+        handlerID,
+        removals;
+
+    map = TP.sig.SignalMap.INTERESTS;
+
+    orgid = TP.sig.SignalMap.$computeOriginID(aHandlerEntry.target);
+    signame = TP.sig.SignalMap.$computeSignalName(aHandlerEntry.event);
+
+    //  ---
+    //  origin/signal owner notification
+    //  ---
+
+    //  ensure owners such as mouse and keyboard know about this event.
+    origin = TP.isTypeName(orgid) ? TP.sys.require(orgid) : orgid;
+    if (TP.canInvoke(origin, 'removeObserver')) {
+        origin.removeObserver(orgid, signame);
+    }
+
+    //  some events require interaction with an "owner", typically a
+    //  TP.core.Device, responsible for events of that type which may also
+    //  decide to manage observations directly
+    type = TP.isTypeName(signame) ? TP.sys.require(signame) : signame;
+
+    //  special case here for keyboard events since their names are often
+    //  synthetic and we have to map to the true native event type
+    if (TP.notValid(type)) {
+        if (TP.regex.KEY_EVENT.test(signame)) {
+            type = TP.sys.require('TP.sig.DOMKeySignal');
+        }
+    }
+
+    //  If we have a type we need to ask it if events of that type have a signal
+    //  owner. If so we'll need to let that type manage observations as well.
+    if (TP.canInvoke(type, 'getSignalOwner') &&
+        TP.isValid(owner = type.getSignalOwner())) {
+
+        if ((owner !== origin) && TP.canInvoke(owner, 'removeObserver')) {
+            owner.removeObserver(orgid, signame);
+        }
+    }
+
+    //  ---
+    //  interest entry configuration
+    //  ---
+
+    id = orgid + '.' + signame;
+    root = map[id];
+
+    //  no root? no interests yet so we need to create a container object that
+    //  will manage all data for this origin/signal pair.
+    if (TP.notValid(root)) {
+        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.trace('Interest root not found.',
+                        TP.SIGNAL_LOG, arguments) : 0;
+
+        return;
+    }
+
+    entry = null;
+
+    handlerID = aHandlerEntry.handler;
+
+    //  some handler entries have id's and some are inline functions. we use
+    //  the handler attribute to hold this data just as in XML Events
+    if (TP.notEmpty(handlerID)) {
+        phase = aHandlerEntry.phase;
+
+        entry = root.listeners.detect(
+                function(item) {
+                    return item.handler === handlerID && item.phase === phase;
+                });
+
+        if (TP.notValid(entry)) {
+            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+                    TP.trace('Listener not found.',
+                    TP.SIGNAL_LOG, arguments) : 0;
+            return;
+        }
+    }
+
+    if (TP.isValid(entry)) {
+
+        if (entry.suspend === true) {
+            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+                TP.trace('Listener currently flagged as suspended.',
+                            TP.SIGNAL_LOG, arguments) : 0;
+
+            delete entry.suspend;
+
+            return;
+        }
+    }
+
+    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.trace('Removing listener entry.',
+                    TP.SIGNAL_LOG, arguments) : 0;
+
+    //  Simple. Just use the object provided.
+    entry = aHandlerEntry;
+
+    if (TP.isValid(handlerID)) {
+        entry.handler = handlerID;
+
+        //  Select the set of 'removals' by matching on all 4 criteria.
+        removals = root.listeners.select(
+                        function(anEntry) {
+                            return anEntry.event === entry.event &&
+                                    anEntry.handler === entry.handler &&
+                                    anEntry.observer === entry.observer &&
+                                    anEntry.target === entry.target;
+                        });
+
+        root.listeners.removeAll(removals, TP.IDENTITY);
+
+        if (TP.isEmpty(root.listeners)) {
+            delete map[id];
+        }
+
+        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.trace('Listener entry removed for ID: ' + handlerID,
                         TP.SIGNAL_LOG, arguments) : 0;
     }
 
