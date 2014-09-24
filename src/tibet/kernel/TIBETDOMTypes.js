@@ -9902,7 +9902,7 @@ function(aRequest) {
 
     node = aRequest.at('node');
 
-    return type.attach(node);
+    return type.setup(node);
 });
 
 //  ------------------------------------------------------------------------
@@ -9929,7 +9929,7 @@ function(aRequest) {
 
     node = aRequest.at('node');
 
-    return type.detach(node);
+    return type.teardown(node);
 });
 
 //  ------------------------------------------------------------------------
