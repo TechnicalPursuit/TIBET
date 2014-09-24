@@ -6756,7 +6756,7 @@ function(aMutationRecord) {
      *     MutationSignalSource type.
      */
 
-    var targetElem,
+    var targetNode,
         targetType,
 
         mutationType,
@@ -6778,11 +6778,11 @@ function(aMutationRecord) {
 
         targetDoc;
 
-    if (!TP.isElement(targetElem = aMutationRecord.target)) {
-        //  TODO: Raise an exception
+    if (!TP.isNode(targetNode = aMutationRecord.target)) {
+        return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    if (!TP.isType(targetType = TP.wrap(targetElem).getType())) {
+    if (!TP.isType(targetType = TP.wrap(targetNode).getType())) {
         return this;
     }
 
@@ -6792,16 +6792,20 @@ function(aMutationRecord) {
         case 'attributes':
             fname = 'handlePeerTP_sig_DOMAttrChanged';
 
+            if (!TP.isElement(targetNode = aMutationRecord.target)) {
+                return this.raise('TP.sig.InvalidElement', arguments);
+            }
+
             if (TP.canInvoke(targetType, fname)) {
                 attrName = aMutationRecord.attributeName;
 
                 prevValue = aMutationRecord.oldValue;
-                newValue = TP.elementGetAttribute(targetElem, attrName, true);
+                newValue = TP.elementGetAttribute(targetNode, attrName, true);
 
                 if (TP.notValid(prevValue) &&
-                    TP.elementHasAttribute(targetElem, attrName, true)) {
+                    TP.elementHasAttribute(targetNode, attrName, true)) {
                     operation = TP.CREATE;
-                } else if (!TP.elementHasAttribute(targetElem, attrName, true)) {
+                } else if (!TP.elementHasAttribute(targetNode, attrName, true)) {
                     operation = TP.DELETE;
                 } else {
                     operation = TP.UPDATE;
@@ -6812,7 +6816,7 @@ function(aMutationRecord) {
                                 'prevValue', prevValue,
                                 'operation', operation);
 
-                targetType[fname](targetElem, args);
+                targetType[fname](targetNode, args);
             }
 
             break;
@@ -6821,7 +6825,7 @@ function(aMutationRecord) {
                 fname = 'handlePeerTP_sig_DOMNodesAdded';
 
                 if (TP.canInvoke(targetType, fname)) {
-                    targetType[fname](targetElem, addedNodes);
+                    targetType[fname](targetNode, addedNodes);
                 }
             }
 
@@ -6830,12 +6834,12 @@ function(aMutationRecord) {
                 fname = 'handlePeerTP_sig_DOMNodesRemoved';
 
                 if (TP.canInvoke(targetType, fname)) {
-                    targetType[fname](targetElem, removedNodes);
+                    targetType[fname](targetNode, removedNodes);
                 }
             }
 
             if (TP.notEmpty(queryEntries = this.get('queries'))) {
-                targetDoc = TP.nodeGetDocument(targetElem);
+                targetDoc = TP.nodeGetDocument(targetNode);
                 queryEntries.perform(
                         function(anEntry) {
                             this.executeSubtreeQueryAndDispatch(
