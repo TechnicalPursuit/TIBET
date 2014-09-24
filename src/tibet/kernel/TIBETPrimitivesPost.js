@@ -1899,7 +1899,11 @@ function(anObject, assignIfAbsent) {
         if (TP.isDocument(doc)) {
             prefix = TP.objectGlobalID(doc, assign);
             if (TP.notEmpty(prefix)) {
-                return prefix.replace(/#.+/, '#' + localID);
+                globalID = prefix.replace(/#.+/, '#' + localID);
+                if (assign) {
+                    TP.elementSetAttribute(obj, TP.GLOBAL_ID_ATTR, globalID, true);
+                }
+                return globalID;
             }
         }
 
@@ -1960,7 +1964,7 @@ function(anObject, assignIfAbsent) {
                 if (TP.notEmpty(id = TP.elementGetAttribute(
                                     root, TP.GLOBAL_DOCID_ATTR, true))) {
                     loc = '#' + id;
-                } else if (TP.isTrue(assignIfAbsent)) {
+                } else if (TP.isTrue(assign)) {
                     TP.regex.INVALID_ID_CHARS.lastIndex = 0;
                     id = TP.genID().replace('$', 'document_').replace(
                                             TP.regex.INVALID_ID_CHARS, '_');
