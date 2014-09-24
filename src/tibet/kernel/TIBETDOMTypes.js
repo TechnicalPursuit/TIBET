@@ -9891,16 +9891,45 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    /*
     var node,
         type;
-    */
 
-    //  NASTY, but faster to reference the "js-compliant" type name.
-    //type = TP.ev.XMLNS || TP.sys.require('ev:');
-    //node = aRequest.at('node');
+    if (TP.notValid(type = TP.ev.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            arguments,
+                            'Couldn\'t find the \'ev:\' namespace type');
+    }
 
-    //return type.awaken(node);
+    node = aRequest.at('node');
+
+    return type.attach(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagDetachEvents',
+function(aRequest) {
+
+    /**
+     * @name tagDetachEvents
+     * @synopsis Detaches any ev: namespace event handlers for the element in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        type;
+
+    if (TP.notValid(type = TP.ev.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            arguments,
+                            'Couldn\'t find the \'ev:\' namespace type');
+    }
+
+    node = aRequest.at('node');
+
+    return type.detach(node);
 });
 
 //  ------------------------------------------------------------------------
