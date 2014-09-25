@@ -633,7 +633,7 @@ TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMNodesAdded',
 function(aTargetElem, nodesAdded) {
 
     /**
-     * @name handlePeerTP_sig_DOMSubtreeAdded
+     * @name handlePeerTP_sig_DOMNodesAdded
      * @synopsis Handles a 'nodes added' synthetic 'event' that was dispatched
      *     against the supplied native element.
      * @description This method is usually activated as the result of a 'DOM
@@ -650,7 +650,7 @@ function(aTargetElem, nodesAdded) {
      */
 
     var processor,
-    
+
         len,
         i;
 
@@ -662,7 +662,7 @@ function(aTargetElem, nodesAdded) {
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.ATTACH_PHASES);
 
-    //  Now, process each *root* that we have gotten as an added node 
+    //  Now, process each *root* that we have gotten as an added node
     len = nodesAdded.getSize();
     for (i = 0; i < len; i++) {
         processor.processTree(nodesAdded.at(i));
@@ -677,7 +677,7 @@ TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMNodesRemoved',
 function(aTargetElem, nodesRemoved) {
 
     /**
-     * @name handlePeerTP_sig_DOMSubtreeRemoved
+     * @name handlePeerTP_sig_DOMNodesRemoved
      * @synopsis Handles a 'nodes removed' synthetic 'event' that was dispatched
      *     against the supplied native element.
      * @description This method is usually activated as the result of a 'DOM
@@ -694,7 +694,7 @@ function(aTargetElem, nodesRemoved) {
      */
 
     var processor,
-    
+
         len,
         i;
 
@@ -706,7 +706,7 @@ function(aTargetElem, nodesRemoved) {
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.DETACH_PHASES);
 
-    //  Now, process each *root* that we have gotten as a removed node 
+    //  Now, process each *root* that we have gotten as a removed node
     len = nodesRemoved.getSize();
     for (i = 0; i < len; i++) {
         processor.processTree(nodesRemoved.at(i));
@@ -974,7 +974,7 @@ function(anEvent) {
     keyname = TP.domkeysigname(anEvent);
 
     switch (keyname) {
-    
+
         //  These are the standard keys used for activating.
 
         case 'DOM_Enter_Down':
@@ -2341,7 +2341,7 @@ function(moveAction) {
     //  the standard focusing behavior to take over which should cause
     //  UIFocus/UIDidFocus to be signaled, etc. etc.
     if (TP.isKindOf(successorTPElem, TP.core.UIElementNode)) {
-    
+
         this.getType().set('$focusingTPElement', successorTPElem);
 
         //  We do this to match the native focusing behavior that haven't
@@ -4324,7 +4324,7 @@ function(aSignal) {
     //  machinery stashes a reference to the element we're going to next. If
     //  we're blurring but not coming through the TIBET focus manager, this will
     //  be null.
- 
+
     focusingTPElem = this.getType().get('$focusingTPElement');
 
     if (!this.shouldPerformUIHandler(aSignal) ||
@@ -5229,7 +5229,7 @@ isBubbling) {
      *     if they can be cancelled.
      * @param {Boolean} isBubbling Optional flag for dynamic signals defining
      *     whether they bubble (when using TP.DOM_FIRING).
-     * @returns {TP.sig.Signal} 
+     * @returns {TP.sig.Signal}
      * @todo
      */
 
@@ -5269,7 +5269,7 @@ isBubbling) {
      *     if they can be cancelled.
      * @param {Boolean} isBubbling Optional flag for dynamic signals defining
      *     whether they bubble (when using TP.DOM_FIRING).
-     * @returns {TP.sig.Signal} 
+     * @returns {TP.sig.Signal}
      * @todo
      */
 

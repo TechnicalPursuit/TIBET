@@ -1092,7 +1092,7 @@ function(aCollection, aTest) {
     found = comp.detect(
         function(item, index) {
 
-            return !copy.contains(item);
+            return !copy.contains(item, aTest);
         });
 
     return TP.notValid(found);
@@ -1156,7 +1156,7 @@ function(aCollection, aTest) {
     found = comp.detect(
         function(item, index) {
 
-            return copy.contains(item);
+            return copy.contains(item, aTest);
         });
 
     return TP.isValid(found);
@@ -1237,7 +1237,7 @@ function(aCollection, aTest) {
     return this.select(
         function(item, index) {
 
-            return !arr.contains(item);
+            return !arr.contains(item, aTest);
         });
 });
 
@@ -1276,7 +1276,7 @@ function(aCollection, aTest) {
                 diffs,
                 function(item, accum, index) {
 
-                    if (!thisref.contains(item)) {
+                    if (!thisref.contains(item, aTest)) {
                         accum.push(item);
                     }
 
@@ -1627,7 +1627,7 @@ function(aCollection, aTest) {
         arr.perform(
             function(item, index) {
 
-                deleted += thisref.remove(item);
+                deleted += thisref.remove(item, aTest);
             });
     } catch (e) {
     } finally {
@@ -1770,7 +1770,7 @@ function(aCollection, newValue, aTest) {
         arr.perform(
             function(item, index) {
 
-                replaced += thisref.replace(item, newValue);
+                replaced += thisref.replace(item, newValue, aTest);
             });
     } catch (e) {
     } finally {
@@ -3836,7 +3836,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('intersection',
-function(aCollection, aTest) {
+function(aCollection) {
 
     /**
      * @name intersection
@@ -3845,8 +3845,6 @@ function(aCollection, aTest) {
      *     occur in BOTH the receiver and in aCollection.
      * @param {TPCollection} aCollection The collection to intersect the
      *     receiver with.
-     * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
-     *     default is TP.EQUALITY.
      * @raises TP.sig.InvalidCollection
      * @returns {Array} An array of elements occurring in both.
      * @todo
@@ -3859,7 +3857,7 @@ function(aCollection, aTest) {
     return this.select(
         function(item) {
 
-            return aCollection.contains(item, aTest);
+            return aCollection.contains(item);
         });
 });
 
@@ -5565,7 +5563,7 @@ function(aKey) {
         return;
     }
 
-    delete(hash[aKey]);
+    delete hash[aKey];
 
     return this;
 });
@@ -5618,15 +5616,13 @@ function(aValue, aTest) {
 //  ------------------------------------------------------------------------
 
 TP.lang.Hash.Inst.defineMethod('replaceKey',
-function(oldKey, newKey, aTest) {
+function(oldKey, newKey) {
 
     /**
      * @name replaceKey
      * @synopsis Replaces the key/value pair oldKey/value with newKey/value.
      * @param {String} oldKey The old key to find the value with.
      * @param {String} newKey The new key to register the value under.
-     * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
-     *     default is TP.EQUALITY.
      * @raises TP.sig.InvalidKey
      * @returns {Object} The receiver.
      * @signals Change
@@ -6788,7 +6784,7 @@ function(aCollection, aTest) {
         arr = aCollection.asArray();
     }
 
-    return arr.difference(this.getItems());
+    return arr.difference(this.getItems(), aTest);
 });
 
 //  ------------------------------------------------------------------------
@@ -6831,7 +6827,7 @@ function(aCollection, aTest) {
         arr = aCollection.asArray();
     }
 
-    return arr.disjunction(this.getItems());
+    return arr.disjunction(this.getItems(), aTest);
 });
 
 //  ------------------------------------------------------------------------
@@ -6998,7 +6994,7 @@ function(aCollection, aTest) {
         arr = aCollection.asArray();
     }
 
-    return arr.intersection(this.getItems()).asHash();
+    return arr.intersection(this.getItems(), aTest).asHash();
 });
 
 //  ------------------------------------------------------------------------
@@ -7183,7 +7179,7 @@ function(aCollection, aTest) {
                 //  setting, so redo each time through loop.
                 thisref.shouldSignalChange(false);
 
-                count += thisref.remove(item);
+                count += thisref.remove(item, aTest);
             });
     } catch (e) {
     } finally {
@@ -7236,7 +7232,7 @@ function(oldItem, newItem, aTest) {
     this.shouldSignalChange(false);
 
     try {
-        this.remove(oldItem);
+        this.remove(oldItem, aTest);
         this.add(newItem);
 
         this.changed('value', TP.UPDATE);
@@ -7298,7 +7294,7 @@ function(aCollection, newItem, aTest) {
                 //  setting, so redo each time through loop.
                 thisref.shouldSignalChange(false);
 
-                count += thisref.replace(item, newItem);
+                count += thisref.replace(item, newItem, aTest);
             });
     } catch (e) {
     } finally {
@@ -8748,19 +8744,19 @@ function(aFunction) {
 //  ------------------------------------------------------------------------
 
 TP.core.Range.Inst.defineMethod('performUntil',
-function(aFunction, aTest) {
+function(aFunction, terminateFunction) {
 
     /**
      * @name performUntil
      * @synopsis Performs the function on each iteration of the receiver until
-     *     aTest returns true.
+     *     terminateFunction returns true.
      * @description performUntil can be used as an alternative to constructing
      *     repeat loops to iterate over a range.
      * @param {Function} aFunction A function which performs some action with
      *     each iteration.
-     * @param {String} aTest A test condition which ends the loop. The test
-     *     should be a second function that returns a Boolean. The test is
-     *     passed the same data as the performed function.
+     * @param {Function} terminateFunction A test Function which ends the loop.
+     *     This should be a Function that returns a Boolean. It is passed the
+     *     same data as the performed function.
      * @returns {TP.core.Range} The receiver.
      * @todo
      */
@@ -8779,7 +8775,7 @@ function(aFunction, aTest) {
         i;
 
     f = TP.RETURN_FALSE;
-    tst = aTest;
+    tst = terminateFunction;
 
     if (!TP.isCallable(tst)) {
         tst = f;
@@ -8840,19 +8836,19 @@ function(aFunction, aTest) {
 //  ------------------------------------------------------------------------
 
 TP.core.Range.Inst.defineMethod('performWhile',
-function(aFunction, aTest) {
+function(aFunction, terminateFunction) {
 
     /**
      * @name performWhile
      * @synopsis Performs the function on each iteration of the receiver while
-     *     aTest returns true.
+     *     terminateFunction returns true.
      * @description performUntil can be used as an alternative to constructing
      *     while loops to iterate over a range
      * @param {Function} aFunction A function which performs some action with
      *     each iteration index.
-     * @param {String} aTest A test condition which ends the loop. The test
-     *     should be a second function that returns a Boolean. The test is
-     *     passed the same data as the performed function.
+     * @param {Function} terminateFunction A test Function which ends the loop.
+     *     This should be a Function that returns a Boolean. It is passed the
+     *     same data as the performed function.
      * @returns {TP.core.Range} The receiver.
      * @todo
      */
@@ -8888,7 +8884,7 @@ function(aFunction, aTest) {
                 aFunction.atEnd((i === end) ? true : false);
             }
 
-            if (TP.notTrue(aTest(i, count))) {
+            if (TP.notTrue(terminateFunction(i, count))) {
                 break;
             }
 
@@ -8899,7 +8895,7 @@ function(aFunction, aTest) {
     } else {
         //  still adding step, it's negative...
         for (i = start; i >= end; i = i + step) {
-            if (TP.notTrue(aTest(i, count))) {
+            if (TP.notTrue(terminateFunction(i, count))) {
                 break;
             }
 

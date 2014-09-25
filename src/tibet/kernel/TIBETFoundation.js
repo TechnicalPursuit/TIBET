@@ -7728,19 +7728,19 @@ function(attributeName, attributeValue) {
 //  ------------------------------------------------------------------------
 
 TP.defineCommonMethod('performUntil',
-function(aFunction, aTest) {
+function(aFunction, terminateFunction) {
 
     /**
      * @name performUntil
      * @synopsis Performs the function with each element of the receiver until
-     *     aTest returns true.
+     *     terminateFunction returns true.
      * @description performUntil can be used as an alternative to constructing
      *     repeat loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Function} aTest A test condition which ends the loop. The test
-     *     should be a second function that returns a Boolean. When the test
-     *     function returns true the loop terminates.
+     * @param {Function} terminateFunction A test Function which ends the loop.
+     *     This should be a Function that returns a Boolean. It is passed the
+     *     same data as the performed function.
      * @returns {Object} The receiver.
      * @todo
      */
@@ -7750,7 +7750,7 @@ function(aFunction, aTest) {
 
             aFunction(item, index);
 
-            if (aTest(item, index)) {
+            if (terminateFunction(item, index)) {
                 return TP.BREAK;
             }
         });
@@ -7761,19 +7761,19 @@ function(aFunction, aTest) {
 //  ------------------------------------------------------------------------
 
 TP.defineCommonMethod('performWhile',
-function(aFunction, aTest) {
+function(aFunction, terminateFunction) {
 
     /**
      * @name performWhile
      * @synopsis Performs the function with each element of the receiver while
-     *     aTest returns true.
+     *     terminateFunction returns true.
      * @description performWhile can be used as an alternative to constructing
      *     while loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Function} aTest A test condition which ends the loop. The test
-     *     should be a second function that returns a Boolean. When the test
-     *     function returns false the loop terminates.
+     * @param {Function} terminateFunction A test Function which ends the loop.
+     *     This should be a Function that returns a Boolean. It is passed the
+     *     same data as the performed function.
      * @returns {Object} The receiver.
      * @todo
      */
@@ -7781,7 +7781,7 @@ function(aFunction, aTest) {
     this.perform(
         function(item, index) {
 
-            if (TP.notTrue(aTest(item, index))) {
+            if (TP.notTrue(terminateFunction(item, index))) {
                 return TP.BREAK;
             }
 
