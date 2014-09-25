@@ -8,8 +8,8 @@
  */
 //  ------------------------------------------------------------------------
 
-/**
- */
+/* global Q:true
+*/
 
 //  ------------------------------------------------------------------------
 
@@ -705,6 +705,76 @@ function(mouseLocation, mouseButton) {
 
 //  ------------------------------------------------------------------------
 
+TP.gui.Sequence.Inst.defineMethod('$expandSequenceEntries',
+function(entries) {
+
+    /**
+     * @name $expandSequenceEntries
+     * @synopsis Expands the supplied Array of sequence entries into a set
+     *     where, if an entry's 'target' reference expands into more than one
+     *     target element, an individual entry is made for each one of those
+     *     targets.
+     * @param {Array} entries The initial set of sequence entries.
+     * @return {Array} The fully expanded Array of sequence entries.
+     */
+
+    var driver,
+
+        currentElement,
+
+        newEntries,
+
+        len,
+        i,
+
+        entry,
+
+        targets;
+
+    driver = this.get('driver');
+
+    //  If we can't determine a focused element,
+    //  call the error callback and exit.
+    if (!TP.isElement(currentElement = driver.getFocusedElement())) {
+                //'No current Element for the GUI Driver.');
+        return;
+    }
+
+    newEntries = TP.ac();
+
+    //  Loop over each entry and expand it to more than one entry if it's target
+    //  resolves to more than one target.
+
+    len = entries.getSize();
+    for (i = 0; i < len; i++) {
+        entry = entries.at(i);
+
+        targets = entry.at(1);
+
+        if (TP.isElement(targets)) {
+            //  The target is already an element
+        } else if (targets === TP.CURRENT) {
+            targets = currentElement;
+        } else if (targets.isAccessPath()) {
+            targets = targets.executeGet(
+                        driver.getCurrentNativeDocument());
+        }
+
+        if (TP.isArray(targets)) {
+            targets.perform(
+                function(aTarget) {
+                    newEntries.push(TP.ac(entry.at(0), aTarget, entry.at(2)));
+                });
+        } else {
+            newEntries.push(entry);
+        }
+    }
+
+    return newEntries;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.gui.Sequence.Inst.defineMethod('keyDown',
 function(aKey, aPath) {
 
@@ -994,17 +1064,23 @@ function() {
      * @description Note that the steps that comprise the sequence are all
      *     executed in a 'chained' manner, so that if there are asynchronous
      *     delays in certain actions, they will all be executed in the proper
-     *     order. Also note that this method is executed within a Promise, so
-     *     that if there are other asynchronous actions that are using Promises
-     *     from the receiver's driver's Promise supplier, this method will
-     *     respect that.
+     *     order. Also note that this method generates a Promise, which is then
+     *     chained to the driver's Promise supplier's internal Promise, so that
+     *     if there are other asynchronous actions that are using Promises from
+     *     the receiver's driver's Promise supplier, this method will respect
+     *     that.
      * @return {TP.gui.Driver} The receiver.
      */
 
     var sequenceEntries,
         driver,
 
-        populateSynArgs;
+        populateSynArgs,
+
+        thisArg,
+
+        len,
+        i;
 
     sequenceEntries = this.get('sequenceEntries');
     driver = this.get('driver');
@@ -1028,193 +1104,221 @@ function() {
         return synArgs;
     };
 
-    driver.get('promiseProvider').thenPromise(
-        function(resolver, rejector) {
+    thisArg = this;
 
-            var eventCB,
-                errorCB,
+    //  'Expand' any targets in the sequence entries
+    sequenceEntries = this.$expandSequenceEntries(sequenceEntries);
 
-                chain,
+    //  Loop over each entry in the sequence, build a Promise (within a
+    //  closured Function to store some iteration state) to execute the sequence
+    //  step and chain that Promise onto the promise that the driver is using.
+    len = sequenceEntries.getSize();
+    for (i = 0; i < len; i++) {
 
-                currentElement,
+        (function() {
+            var func;
 
-                len,
-                i,
+            func = function() {
+                var seqEntry,
+                    promise;
 
-                last,
-                entry,
+                seqEntry = sequenceEntries.at(func.index);
 
-                type,
-                targets,
-                args,
+                promise = Q.Promise(
+                    function(resolver, rejector) {
+                        var currentElement;
 
-                j,
-                target;
+                        //  If we can't determine a focused element, call the
+                        //  error callback and exit.
+                        if (!TP.isElement(
+                                currentElement = driver.getFocusedElement())) {
+                            return rejector(
+                                    'No current Element for the GUI Driver.');
+                        }
 
-            //  Generate a set of callback functions (one for success, one for
-            //  failure) to hand to the *last* invocation in the sequence and
-            //  call the Promise's resolver or rejector from them. Therefore,
-            //  when they are called (as the last thing for the Syn triggering
-            //  functions to do), they will fulfill the Promise.
-            eventCB = function() {
-                resolver();
+                        thisArg.$performSequenceStep(
+                                    seqEntry.at(1),
+                                    seqEntry.at(0),
+                                    seqEntry.at(2),
+                                    function() {
+                                        resolver();
+                                    },
+                                    currentElement);
+                    });
+
+                return promise;
             };
-            errorCB = function(reason) {
-                rejector(reason);
-            };
 
-            chain = TP.extern.syn;
+            func.index = i;
 
-            //  If we can't determine a focused element, call the error callback
-            //  and exit.
-            if (!TP.isElement(currentElement = driver.getFocusedElement())) {
-                return errorCB('No current Element for the GUI Driver.');
-            }
+            driver.get('promiseProvider').then(func);
+        })();
+    }
 
-            //  Loop over each entry in the sequence and execute the
-            //  corresponding Syn trigger for that type of event.
-            len = sequenceEntries.getSize();
-            for (i = 0; i < len; i++) {
+    return this;
+});
 
-                //  Keep track if we're at the last entry in the sequence.
-                last = (i === len - 1);
+//  ------------------------------------------------------------------------
 
-                entry = sequenceEntries.at(i);
+TP.gui.Sequence.Inst.defineMethod('$performSequenceStep',
+function(target, type, args, callback, currentElement) {
 
-                //  The three parameters are:
-                //      1. The type of operation, used in the switch below.
-                //      2. The targets of the operation. This could be 1...n
-                //      Elements, an Access Path which will determine the
-                //      Elements to be used or the value 'TP.CURRENT', in which
-                //      case it will be whatever is the currently focused
-                //      element.
-                //      3. Operation-specific arguments.
-                type = entry.at(0);
-                targets = entry.at(1);
-                args = entry.at(2);
+    /**
+     * @name $performSequenceStep
+     * @synopsis Actually performs the sequence step, firing an event at the
+     *     supplied target element.
+     * @param {Element} target The element to target the event at.
+     * @param {String} type The type of event to generate.
+     * @param {Object} args The configuration argument used by Syn to build the
+     *     event.
+     * @param {Function} callback The callback function to execute when the
+     *     event dispatch is complete.
+     * @param {Element} currentElement The currently focused Element.
+     * @return {TP.gui.Driver} The receiver.
+     */
 
-                if (TP.isElement(targets)) {
-                    //  The target is already an element
-                } else if (target === TP.CURRENT) {
-                    targets = currentElement;
-                } else if (targets.isAccessPath()) {
-                    targets = targets.executeGet(
-                                driver.getCurrentNativeDocument());
-                }
+    var sequenceEntries,
+        driver,
 
-                if (!TP.isArray(targets)) {
-                    targets = TP.ac(targets);
-                }
+        populateSynArgs,
 
-                for (j = 0; j < targets.getSize(); j++) {
-                    target = targets.at(j);
+        syn;
 
-                    if (!TP.isElement(target)) {
-                        return errorCB('No target Element for the GUI Driver.');
-                    }
+    sequenceEntries = this.get('sequenceEntries');
+    driver = this.get('driver');
 
-                    //  Invoke the Syn handler. If we're the last in the
-                    //  sequence, then hand in the event callback we generated
-                    //  above (and wrapped in the Promise).
-                    switch(type) {
-                        case 'click':
+    //  An 'args' normalization routine that makes sure that some of Syn's
+    //  arguments are set properly to deal with the fact that Syn's defaults
+    //  assume that the element is in the top-level window's document.
+    populateSynArgs = function(initialArgs, target) {
+        var synArgs;
 
-                            args = populateSynArgs(args, target);
+        if (TP.notValid(synArgs = initialArgs)) {
+            synArgs = {};
+        }
 
-                            last ?
-                                chain = chain.click(args, target, eventCB) :
-                                chain = chain.click(args, target);
-                        break;
+        synArgs.relatedTarget = null;
+        synArgs.view = TP.nodeGetWindow(target);
 
-                        case 'dblclick':
+        //  We must make sure that clientX & clientY are defined, otherwise Syn
+        //  will crash with the setting we make above... it assumes that the
+        //  document of the element is the top-level window... sigh.
+        synArgs.clientX = synArgs.clientX || 0;
+        synArgs.clientY = synArgs.clientY || 0;
 
-                            args = populateSynArgs(args, target);
+        return synArgs;
+    };
 
-                            last ?
-                                chain = chain.dblclick(args, target, eventCB) :
-                                chain = chain.dblclick(args, target);
-                        break;
+    syn = TP.extern.syn;
 
-                        case 'rightclick':
+    //  The three parameters are:
+    //      1. The type of operation, used in the switch below.
+    //      2. The targets of the operation. This could be 1...n
+    //      Elements, an Access Path which will determine the
+    //      Elements to be used or the value 'TP.CURRENT', in which
+    //      case it will be whatever is the currently focused
+    //      element.
+    //      3. Operation-specific arguments.
 
-                            args = populateSynArgs(args, target);
+    //  Invoke the Syn handler. If we're the last in the
+    //  sequence, then hand in the event callback we generated
+    //  above (and wrapped in the Promise).
+    switch(type) {
+        case 'click':
 
-                            last ?
-                                chain = chain.rightClick(args, target, eventCB) :
-                                chain = chain.rightClick(args, target);
-                        break;
+            args = populateSynArgs(args, target);
 
-                        case 'key':
-                            last ?
-                                chain = chain.key(args, target, eventCB) :
-                                chain = chain.key(args, target);
-                        break;
+            syn.click(args, target, callback);
 
-                        case 'keys':
-                            last ?
-                                chain = chain.type(args, target, eventCB) :
-                                chain = chain.type(args, target);
-                        break;
+        break;
 
-                        case 'mousedown':
+        case 'dblclick':
 
-                            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, target);
 
-                            chain.trigger(
-                                'mousedown',
-                                TP.extern.syn.key.options(args, 'mousedown'),
-                                target);
+            syn.dblclick(args, target, callback);
 
-                            if (last) {
-                                eventCB();
-                            }
+        break;
 
-                        break;
+        case 'rightclick':
 
-                        case 'mouseup':
+            args = populateSynArgs(args, target);
 
-                            args = populateSynArgs(args, target);
+            syn.rightClick(args, target, callback);
 
-                            chain.trigger(
-                                'mouseup',
-                                TP.extern.syn.key.options(args, 'mouseup'),
-                                target);
+        break;
 
-                            if (last) {
-                                eventCB();
-                            }
-                        break;
+        case 'key':
 
-                        case 'keydown':
+            args = populateSynArgs(args, target);
 
-                            chain.trigger(
-                                'keydown',
-                                TP.extern.syn.key.options(args, 'keydown'),
-                                target);
+            syn.key(args, target, callback);
 
-                            if (last) {
-                                eventCB();
-                            }
-                        break;
+        break;
 
-                        case 'keyup':
+        case 'keys':
 
-                            chain.trigger(
-                                'keyup',
-                                TP.extern.syn.key.options(args, 'keyup'),
-                                target);
+            args = populateSynArgs(args, target);
 
-                            if (last) {
-                                eventCB();
-                            }
-                        break;
+            syn.type(args, target, callback);
 
-                        default:
-                        break;
-                    }
-                }
-            }
-        });
+        break;
+
+        case 'mousedown':
+
+            args = populateSynArgs(args, target);
+
+            syn.trigger(
+                'mousedown',
+                TP.extern.syn.key.options(args, 'mousedown'),
+                target);
+
+            callback();
+
+        break;
+
+        case 'mouseup':
+
+            args = populateSynArgs(args, target);
+
+            syn.trigger(
+                'mouseup',
+                TP.extern.syn.key.options(args, 'mouseup'),
+                target);
+
+            callback();
+
+        break;
+
+        case 'keydown':
+
+            args = populateSynArgs(args, target);
+
+            syn.trigger(
+                'keydown',
+                TP.extern.syn.key.options(args, 'keydown'),
+                target);
+
+            callback();
+
+        break;
+
+        case 'keyup':
+
+            args = populateSynArgs(args, target);
+
+            syn.trigger(
+                'keyup',
+                TP.extern.syn.key.options(args, 'keyup'),
+                target);
+
+            callback();
+
+        break;
+
+        default:
+        break;
+    }
 
     return this;
 });
