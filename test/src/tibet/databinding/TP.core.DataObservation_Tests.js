@@ -219,6 +219,8 @@ function() {
     });
 });
 
+//  ------------------------------------------------------------------------
+
 TP.core.XPathPath.Inst.describe('TP.core.XPathPath Inst path change signaling',
 function() {
 
@@ -361,6 +363,168 @@ function() {
     });
 });
 
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.Type.describe('object-level binding',
+function() {
+
+    this.it('change notification - concrete reference', function(test, options) {
+
+        var modelObj,
+            observerObj,
+
+            handlerFunc;
+
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        TP.observe(
+            modelObj,
+            'SalaryChange',
+            handlerFunc = function (aSignal) {
+
+                var newValue;
+
+                test.assert.isIdenticalTo(aSignal.getTarget(), modelObj);
+                test.assert.isEqualTo(aSignal.getAspect(), 'salary');
+                test.assert.isEqualTo(aSignal.getAction(), TP.UPDATE);
+
+                newValue = aSignal.getValue();
+                test.assert.isEqualTo(newValue, 42);
+
+                observerObj.set('salary', newValue);
+            });
+
+        modelObj.set('salary', 42);
+
+        this.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    observerObj.get('salary'));
+
+        TP.ignore(modelObj, 'SalaryChange', handlerFunc);
+    });
+
+    this.it('change notification - virtual reference', function(test, options) {
+
+        var modelObj,
+            observerObj,
+
+            handlerFunc;
+
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
+
+        //  This sets the ID of the object and registers it with an accompanying
+        //  'urn:tibet' URN (which will allow the 'observe()' call to turn change
+        //  handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj);
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        TP.observe(
+            'CurrentEmployee',
+            'SalaryChange',
+            handlerFunc = function (aSignal) {
+
+                var newValue;
+
+                test.assert.isIdenticalTo(aSignal.getTarget(), modelObj);
+                test.assert.isEqualTo(aSignal.getAspect(), 'salary');
+                test.assert.isEqualTo(aSignal.getAction(), TP.UPDATE);
+
+                newValue = aSignal.getValue();
+                test.assert.isEqualTo(newValue, 42);
+
+                observerObj.set('salary', newValue);
+            });
+
+        modelObj.set('salary', 42);
+
+        this.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    observerObj.get('salary'));
+
+        TP.ignore('CurrentEmployee', 'SalaryChange', handlerFunc);
+    });
+
+    this.it('using defineBinding() - concrete reference', function(test, options) {
+
+        var modelObj,
+            observerObj;
+
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        observerObj.defineBinding('salary', modelObj);
+
+        //  Set the value of 'salary' on the model object. The binding should cause
+        //  the value of 'salary' on the observer to update
+        modelObj.set('salary', 42);
+
+        this.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    observerObj.get('salary'));
+
+        //  Destroy the binding
+        observerObj.destroyBinding('salary', modelObj);
+
+        modelObj.set('salary', 45);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 42 set above.
+        this.assert.isEqualTo(
+                    42,
+                    observerObj.get('salary'));
+    });
+
+    this.it('using defineBinding() - virtual reference', function(test, options) {
+
+        var modelObj,
+            observerObj;
+
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        //  This sets the ID of the object and registers it with an accompanying
+        //  'urn:tibet' URN (which will allow the 'defineBinding()' call to turn
+        //  change handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj);
+
+        observerObj.defineBinding('salary', 'CurrentEmployee');
+
+        //  Set the value of 'salary' on the model object. The binding should cause
+        //  the value of 'salary' on the observer to update
+        modelObj.set('salary', 42);
+
+        this.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    observerObj.get('salary'));
+
+        //  Destroy the binding
+        observerObj.destroyBinding('salary', 'CurrentEmployee');
+
+        modelObj.set('salary', 45);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 42 set above.
+        this.assert.isEqualTo(
+                    42,
+                    observerObj.get('salary'));
+    });
+});
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
@@ -368,6 +532,7 @@ function() {
 /*
 TP.core.ComplexTIBETPath.Inst.runTestSuites();
 TP.core.XPathPath.Inst.runTestSuites();
+TP.lang.Object.Type.runTestSuites();
 */
 
 //  ------------------------------------------------------------------------

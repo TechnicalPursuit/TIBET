@@ -66,8 +66,8 @@ and some targetObject you want to keep updated, you might say:
             targetObject.set(aspect, sourceObject.get(aspect));
         });
 
-Since this example observes Change, a fairly large-grained signal, the handler
-will be invoked any time the sourceObject changes any property.
+Since this example observes TP.sig.Change, a fairly large-grained signal, the
+handler will be invoked any time the sourceObject changes any property.
 
 If you were concerned with a particular aspect of the sourceObject you might
 adjust the name of the signal you observe to trigger your bind handler only when
@@ -89,8 +89,8 @@ to test the aspect with each Change signal.
 TIBET's Change signal hierarchy provides getTarget(), getAspect(), and
 getAction() convenience methods. These help you access the originating object,
 the property name that changed, and the type of action. Action in this case is
-often 'add', 'update', 'delete', or a similar "crud" term. A getValue() method
-provides you with the newly changed value.
+often TP.CREATE, TP.UPDATE, TP.DELETE, TP.INSERT, or a similar "crud" term. A
+getValue() method provides you with the newly changed value.
 
 Even with convenience methods however, setting up observations of this form for
 every binding can become tedious. To avoid a lot of boilerplate code TIBET
@@ -118,13 +118,14 @@ and Inst bindings is as binding the default value only.
 
 While powerful, type and instance binds aren't particularly common. The most
 common case is binding a single instance to a source value. In TIBET this is
-done via the addLocalBinding() method.
+done by using the defineBinding() method on the local object.
 
     //  Bind a specific object property to a data source.
-    someObject.addLocalBinding(attributeName, resource_spec);
+    someObject.defineBinding(attributeName, resource_spec);
 
-The addLocalBinding method is simple syntactic sugar for constructing one of the
-TP.observe() calls shown earlier. In this case the generated method is:
+The defineBinding method on a local object is simple syntactic sugar for
+constructing one of the TP.observe() calls shown earlier. In this case the
+generated method is:
 
     TP.observe(
         resource_spec,
@@ -383,7 +384,7 @@ xpointer() and element(), or extended resource query schemes.
 
 The following are all valid TIBET fragment references:
 
-    //  within the current ${UICANVAS} (the active window)
+    //  within the current $UICANVAS (the active window)
     #an_element_id              //  also known as an 'XPointer barename'
     #element(/1/1/3)            //  the 3rd child of the 1st child of the root
     #element(an_element_id/3)   //  the 3rd child of the element with that ID
@@ -595,711 +596,206 @@ output TIBET lets you adjust your page in almost any form necessary.
 //  OBJECT BINDING
 //  ========================================================================
 
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('Inst.defineBinding',
-function(attributeName, resourceURI) {
+TP.definePrimitive('defineBinding',
+function(target, attributeName, resourceOrURI) {
 
     /**
-     * @name Inst.defineBinding
-     * @synopsis Adds a binding to the instance prototype of the receiver.
-     * @param {String} attributeName The attribute name to bind.
+     * @name defineBinding
+     * @synopsis Adds a binding to the supplied target object.
+     * @param {Object} target The target object to define the binding on.
+     * @param {String} attributeName The attribute name.
      * @param {Object} resourceOrURI The resource specification.
-     * @returns {Object} The receiver.
-     * @todo
+     * @returns {Object} The target object.
      */
 
-    var proto;
-
-    proto = this.getInstPrototype();
-    if (!TP.canInvoke(proto, 'addLocalBinding')) {
-        return this.raise('TP.sig.InvalidBinding', arguments);
-    }
-
-    return proto.addLocalBinding(attributeName, resourceURI);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('Type.defineBinding',
-function(attributeName, resourceURI) {
-
-    /**
-     * @name Type.defineBinding
-     * @synopsis Adds a binding to the type prototype of the receiver.
-     * @param {String} attributeName The attribute name to bind.
-     * @param {Object} resourceOrURI The resource specification.
-     * @returns {Object} The receiver.
-     * @todo
-     */
-
-    var proto;
-
-    proto = this.getPrototype();
-    if (!TP.canInvoke(proto, 'addLocalBinding')) {
-        return this.raise('TP.sig.InvalidBinding', arguments);
-    }
-
-    return proto.addLocalBinding(attributeName, resourceURI);
-});
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.defineMetaInstMethod('addLocalBinding',
-function(attributeName, resourceOrURI) {
-
-    /**
-     * @name addLocalBinding
-     * @synopsis Adds a binding to the receiver itself.
-     * @param {String} attributeName The attribute name to bind.
-     * @param {Object} resourceOrURI The resource specification.
-     * @returns {Object} The receiver.
-     * @todo
-     */
-
-    var thisref,
-        resource;
+    var resource,
+        signalName,
+        methodName;
 
     if (TP.isEmpty(attributeName)) {
         return this.raise('TP.sig.InvalidParameter', arguments,
             'No attribute name provided for bind.');
     }
 
+    if (TP.isURI(resourceOrURI)) {
+        resource = TP.uc(resourceOrURI).getResource();
+    } else if (TP.isString(resourceOrURI)) {
+        resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI).getResource();
+    } else {
+        resource = resourceOrURI;
+    }
+
     //  Prefer URIs but can bind to any object in theory.
-    resource = TP.ifInvalid(TP.uc(resourceOrURI), resourceOrURI);
     if (TP.notValid(resource)) {
         return this.raise('TP.sig.InvalidResource', arguments,
             'No resource spec provided for bind.');
     }
 
-    //  TODO:   register the objects involved in binds under a common root
-    //  urn:tibet:BINDINGS object and look them up there rather than holding
-    //  hard object references in the closure below.
-    thisref = this;
+    signalName = attributeName.asTitleCase() + 'Change';
+    methodName = 'handle' + signalName;
 
-    //  Do the observation, focusing on the specific aspect being changed as
-    //  part of the signal we'll observe.
-    TP.observe(
-        resource,
-        attributeName.asTitleCase() + 'Change',
-        function(aSignal) {
+    //  Make sure that target object has a local method to handle the change
+    if (TP.notValid(target.getMethod(methodName))) {
+        target.defineMethod(
+                    methodName,
+                    function(aSignal) {
 
-            TP.debug('break.bind_change');
-            try {
-                //  TODO: lookup the bind target by URN, not thisref.
+                        TP.debug('break.bind_change');
+                        try {
+                            target.set(attributeName, aSignal.getValue());
+                        } catch (e) {
+                            target.raise('TP.sig.InvalidBinding', arguments);
+                        }
+                    });
+    }
 
-                //  The getValue call for Change subtypes will do its best
-                //  to get us a viable value from the signal origin.
-                thisref.set(attributeName, aSignal.getValue());
-            } catch (e) {
-                thisref.raise('TP.sig.InvalidBinding', arguments);
-            }
-        });
+    target.observe(resource, signalName);
+
+    return target;
 });
 
-//  ========================================================================
-//  MARKUP BINDING
-//  ========================================================================
-
-//  ------------------------------------------------------------------------
-//  TP.core.DocumentNode
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('refresh',
-function(aSignal) {
+TP.defineMetaInstMethod('defineBinding',
+function(attributeName, resourceOrURI) {
 
     /**
-     * @name refresh
-     * @synopsis Updates the receiver's content by refreshing all bound elements
-     *     in the document. For an HTML document this will refresh content under
-     *     the body, while in an XML document all elements including the
-     *     documentElement are refreshed.
-     * @param {DOMRefresh} aSignal An optional signal which triggered this
-     *     action. This signal should include a key of 'deep' and a value of
-     *     true to cause a deep refresh that updates all nodes.
+     * @name defineBinding
+     * @synopsis Adds a binding to the receiver.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @returns {Object} The receiver.
      * @todo
      */
 
-    var node,
-        body;
+    return TP.defineBinding(this, attributeName, resourceOrURI);
+});
 
-    TP.debug('break.bind_refresh');
+//  ------------------------------------------------------------------------
 
-    node = this.getNativeNode();
+TP.lang.RootObject.Type.defineMethod('defineBinding',
+function(attributeName, resourceOrURI) {
 
-    if (TP.isHTMLDocument(node) || TP.isXHTMLDocument(node)) {
-        if (TP.isElement(body = TP.documentGetBody(node))) {
-            return TP.tpnode(body).refresh(aSignal);
-        }
+    /**
+     * @name defineBinding
+     * @synopsis Adds a binding to the type receiver.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @returns {Object} The receiver.
+     * @todo
+     */
+
+    return TP.defineBinding(this, attributeName, resourceOrURI);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('defineBinding',
+function(attributeName, resourceOrURI) {
+
+    /**
+     * @name defineBinding
+     * @synopsis Adds a binding to the instance receiver.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @returns {Object} The receiver.
+     * @todo
+     */
+
+    return TP.defineBinding(this, attributeName, resourceOrURI);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('destroyBinding',
+function(target, attributeName, resourceOrURI) {
+
+    /**
+     * @name destroyBinding
+     * @synopsis Removes a binding from the supplied target object.
+     * @param {Object} target The target object to define the binding on.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @returns {Object} The target object.
+     */
+
+    var resource,
+        signalName;
+
+    if (TP.isEmpty(attributeName)) {
+        return this.raise('TP.sig.InvalidParameter', arguments,
+            'No attribute name provided for bind.');
+    }
+
+    if (TP.isURI(resourceOrURI)) {
+        resource = TP.uc(resourceOrURI).getResource();
+    } else if (TP.isString(resourceOrURI)) {
+        resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI).getResource();
     } else {
-        return TP.tpnode(node.documentElement).refresh(aSignal);
+        resource = resourceOrURI;
     }
+
+    //  Prefer URIs but can bind to any object in theory.
+    if (TP.notValid(resource)) {
+        return this.raise('TP.sig.InvalidResource', arguments,
+            'No resource spec provided for bind.');
+    }
+
+    signalName = attributeName.asTitleCase() + 'Change';
+    target.ignore(resource, signalName);
+
+    return target;
 });
 
 //  ------------------------------------------------------------------------
-//  TP.core.ElementNode
-//  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('isBoundElement',
-function(anElement, aDirection) {
+TP.defineMetaInstMethod('destroyBinding',
+function(attributeName, resourceOrURI) {
 
     /**
-     * @name isBoundElement
-     * @synopsis Returns true if the element has a binding for the specified
-     *     STDIO reference.
-     * @param {Element} anElement A native element to test.
-     * @param {Constant} aDirection TP.STDIN, TP.STDOUT, or TP.STDERR.
-     * @returns {Boolean} True if the receiver has a binding relative to the
-     *     particular STDIO reference given.
+     * @name destroyBinding
+     * @synopsis Removes a binding from the receiver.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @returns {Object} The receiver.
      * @todo
      */
 
-    if (TP.notValid(anElement)) {
-        this.raise('TP.sig.InvalidElement', arguments);
-        return false;
-    }
-
-    //  TODO:   once expansion is ensured we can optimize these checks,
-    //  probably just checking for single known attribute like tsh:bound.
-    switch (aDirection) {
-        case TP.STDIN:
-            return TP.notEmpty(TP.elementGetAttribute(anElement, 'tsh:io')) ||
-                TP.notEmpty(TP.elementGetAttribute(anElement, 'tsh:in'));
-        case TP.STDOUT:
-            return TP.notEmpty(TP.elementGetAttribute(anElement, 'tsh:io')) ||
-                TP.notEmpty(TP.elementGetAttribute(anElement, 'tsh:out'));
-        case TP.STDERR:
-            return TP.notEmpty(TP.elementGetAttribute(anElement, 'tsh:err'));
-        default:
-            return false;
-    }
-
-    return false;
+    return TP.destroyBinding(this, attributeName, resourceOrURI);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('isBoundBidi',
-function() {
+TP.lang.RootObject.Type.defineMethod('destroyBinding',
+function(attributeName, resourceOrURI) {
 
     /**
-     * @name isBoundBidi
-     * @synopsis Returns true if the receiver's bindings for input and output
-     *     were expressed as a single bidirectional binding. This has
-     *     implications for setBoundOutput which tests current value when the
-     *     bind is bidirection to avoid setting a value that's already been set.
-     * @returns {Boolean} True if tsh:io was non-empty.
-     */
-
-    return TP.notEmpty(this.getAttribute('tsh:io'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('isBoundElement',
-function(aDirection) {
-
-    /**
-     * @name isBoundElement
-     * @synopsis Returns true if the element has a binding for the specified
-     *     STDIO reference.
-     * @param {Constant} aDirection TP.STDIN, TP.STDOUT, or TP.STDERR.
-     * @returns {Boolean} True if the receiver has a binding relative to the
-     *     particular STDIO reference given.
-     */
-
-    return TP.core.ElementNode.isBoundElement(this.getNativeNode(), aDirection);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('isScalarValued',
-function() {
-
-    /**
-     * @name isScalarValued
-     * @synopsis Returns true if the receiver binds to scalar values.
-     * @description Most 'field-level' UI controls bind to scalar values, but
-     *     action tags and certain more complex UI elements can bind to nodes or
-     *     nodelists. When you combine isScalarValued() with isSingleValued()
-     *     you get a fairly broad range of options for what a control wants to
-     *     consume.
-     * @returns {Boolean} True when scalar valued.
-     */
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('isSingleValued',
-function() {
-
-    /**
-     * @name isSingleValued
-     * @synopsis Returns true if the receiver binds to single values.
-     * @returns {Boolean} True when single valued.
-     */
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('refresh',
-function(aSignal) {
-
-    /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
-     *     binding it may have. If the signal argument's payload specifies a
-     *     'deep' refresh then descendant elements are also updated.
-     * @description For bound elements there are really two "values", the
-     *     element's internal value such as its text value (what we call its
-     *     "display" value) and the element's bound value which is the value
-     *     found by evaluating its binding aspect against its source. This
-     *     method is used to update the former from the latter, typically in
-     *     response to a Change notification from the underlying bound content.
-     *
-     *     Also note that TIBET binding rules allow a bind to define a
-     *     bind:target, the actual aspect which should be updated. For example,
-     *     while XForms binds only allow updating a control's value from a
-     *     binding, in TIBET you can update any attribute of the control that's
-     *     available via set(). For this reason it's not strictly a question of
-     *     setValue, it may be setStyle or some other aspect which is altered.
-     * @param {DOMRefresh} aSignal An optional signal which triggered this
-     *     action. This signal should include a key of 'deep' and a value of
-     *     true to cause a deep refresh that updates all nodes.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @name destroyBinding
+     * @synopsis Removes a binding from the type receiver.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @returns {Object} The receiver.
      * @todo
      */
 
-    var request;
-
-    TP.debug('break.bind_refresh');
-
-    //  signals coming into the refresh method should be requests already,
-    //  but in case we didn't get one...
-    request = TP.request(aSignal);
-    request.atPutIfAbsent('refreshRoot', this);
-
-    //  everything else that's bound refreshes itself unless its ID is
-    //  listed on its binding as a bind:target. that logic, along with logic
-    //  to default to the 'value' aspect is found in $refreshBoundAspect.
-    if (this.isBoundElement(TP.STDIN)) {
-        //  debugging mode, just log what we find/would do
-        TP.ifTrace(TP.sys.cfg('log.bind_refresh')) ?
-            TP.trace(TP.boot.$annotate(this, 'Refreshing bound element.'),
-                TP.LOG, arguments) : 0;
-
-        this.$refreshBoundAspect(request);
-    }
-
-    //  bound or not, some of our children may be, so we need to pass the
-    //  message along to them
-    if (TP.isTrue(request.at('deep'))) {
-        this.$refreshBoundRoots(request);
-    }
-
-    return this;
+    return TP.destroyBinding(this, attributeName, resourceOrURI);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$refreshBoundAspect',
-function(aSignal) {
+TP.lang.RootObject.Inst.defineMethod('destroyBinding',
+function(attributeName, resourceOrURI) {
 
     /**
-     * @name $refreshBoundAspect
-     * @synopsis Elements with bindings can have an optional bind:set aspect on
-     *     them which allows them to bind something other than their value
-     *     aspect to a query result. This method handles refresh operations for
-     *     standard elements, defaulting the aspect to value when no bind:set is
-     *     found locally or as part of a binding's bind:target/bind:set pair.
-     * @param {DOMRefresh} aSignal An optional signal which triggered this
-     *     action.
+     * @name destroyBinding
+     * @synopsis Removes a binding from the instance receiver.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @returns {Object} The receiver.
      * @todo
      */
 
-    var aspect,
-        value;
-
-    //  TODO: not very useful...need to look elsewhere for an aspect?
-    aspect = 'value';
-    value = this.getBoundInput(aSignal);
-
-    //  value is so common (and canonical) that we dispatch directly to it
-    //  rather than risk confusion with a path
-    if (aspect === 'value') {
-        this.setValue(value);
-    } else {
-        this.set(aspect, value);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('$refreshBoundRoots',
-function(aSignal) {
-
-    /**
-     * @name $refreshBoundRoots
-     * @synopsis Updates the receiver's bound descendant roots, but not the
-     *     receiver itself. This method is normally called indirectly via
-     *     refresh() when the refresh signal requested 'deep'.
-     * @description This method uses an iteration model that tries to locate
-     *     only the "topmost" descendant along each branch so that the traversal
-     *     works top-down to help populate content caches during the refresh,
-     *     never tries to refresh the same node more than once, and doesn't miss
-     *     nodes that might be added as a result of processing related to the
-     *     refresh itself.
-     * @param {DOMRefresh} aSignal An optional signal which triggered this
-     *     action.
-     * @todo
-     */
-
-    var node;
-
-    //  don't bother if we're empty
-    node = this.getNativeNode();
-    if (node.childNodes.length === 0) {
-        return this;
-    }
-
-    //  play a trick, attach the signal to the function so we can access it
-    //  during iteration
-    TP.core.ElementNode.$refreshElementEntered.$$signal = aSignal;
-
-    //  traverse the tree breadth-first, which allows each node to
-    //  awaken and potentially either skip its children or modify them
-    //  before they are added to the iteration list
-    TP.nodeBreadthTraversal(
-                    node,
-                    TP.core.ElementNode.$refreshElementEntered,
-                    null,       //  no pop function
-                    null,       //  no content (text nodes etc) function
-                    false);     //  false to skip the element itself
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-// Direct assignment to support internal reference.
-TP.core.ElementNode.$refreshElementEntered = function(anElement) {
-
-    /**
-     * @name $refreshElementEntered
-     * @synopsis An "enter function" for TP.nodeBreadthTraversal used by the
-     *     awakenElement() routine to awaken an individual element. The return
-     *     value of this function is the return value from calling awaken()
-     * @param {Element} anElement The element to awaken.
-     */
-
-    //  enter function. returning TP.CONTINUE will skip children
-
-    if (TP.core.ElementNode.isBoundElement(anElement, 'tsh:in')) {
-        try {
-            TP.wrap(anElement).refresh(
-                    TP.core.ElementNode.$refreshElementEntered.$$signal);
-        } catch (e) {
-        }
-
-        return TP.CONTINUE;
-    }
-
-    return;
-};
-
-// Register it.
-TP.core.ElementNode.Type.defineMethod(TP.core.ElementNode.$refreshElementEntered);
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('$refreshBoundTargets',
-function(aSignal) {
-
-    /**
-     * @name $refreshBoundTargets
-     * @synopsis Bindings which contain bind:target definitions can update those
-     *     targets directly in response to this method. Standard elements simply
-     *     return.
-     * @param {DOMRefresh} aSignal An optional signal which triggered this
-     *     action.
-     * @todo
-     */
-
-    //  no-op for most element types. bindings override
-    return;
-});
-
-//  ------------------------------------------------------------------------
-//  TP.core.ActionElementNode
-//  ------------------------------------------------------------------------
-
-TP.core.ActionElementNode.Inst.defineMethod('refresh',
-function(aSignal) {
-
-    /**
-     * @name refresh
-     * @synopsis Updates the receiver to reflect the current value of any data
-     *     binding it may have. NOTE that even though this is an action tag it
-     *     only activates in response to a refresh call when it's a bound
-     *     element.
-     * @description If an action tag is bound the presumption is that the
-     *     binding provides input data the action should use as "standard input"
-     *     and then send any result data to whatever bind target/set location
-     *     may be designated (or whatever serves as the output vector).
-     * @param {DOMRefresh} aSignal An optional signal which triggered this
-     *     action. This signal should include a key of 'deep' and a value of
-     *     true to cause a deep refresh that updates all nodes.
-     * @todo
-     */
-
-    //  Note that this presumes that the action's result will only change
-    //  when it's a bound element.
-    if (this.isBoundElement()) {
-        return this.act(aSignal);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ActionElementNode.Type.defineMethod('getActionInput',
-function(aRequest) {
-
-    /**
-     * @name getActionInput
-     * @synopsis Returns either the element's bound content or the request's
-     *     standard input (binds override stdin).
-     * @synopsis Returns either the request's standard input or the receiver's
-     *     'primary argument'.
-     * @param {TP.sig.Request} aRequest The request to check for stdin.
-     * @returns {Object} The input data.
-     */
-
-    var node,
-
-        tpnode,
-        input;
-
-    if (!TP.isNode(node = aRequest.at('cmdNode'))) {
-        return;
-    }
-
-    if (this.isBoundElement(node)) {
-        tpnode = TP.wrap(node);
-        input = tpnode.getBoundInput();
-    } else if (TP.notEmpty(input = aRequest.stdin())) {
-        //  stdin is always an array, so we can just return it
-        return input;
-    } else {
-        input = this.getPrimaryArgument(aRequest);
-    }
-
-    if (TP.isValid(input)) {
-        input = TP.ac(input);
-    }
-
-    return input;
-});
-
-//  ------------------------------------------------------------------------
-//  TP.core.UIElementNode
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Inst.defineMethod('$getBoundInputDefault',
-function(aRequest) {
-
-    /**
-     * @name $getBoundInputDefault
-     * @synopsis Returns the value this element considers to be a viable default
-     *     when a binding doesn't resolve to a non-null value. This is typically
-     *     the empty string so that text controls don't display undefined or
-     *     some other inappropriate value.
-     * @param {TP.sig.Request} aRequest The request containing command
-     *     parameters.
-     * @returns {Object} An appropriate default value. The type of this object
-     *     may vary by control.
-     * @todo
-     */
-
-    if (this.isScalarValued()) {
-        return '';
-    } else {
-        return this.getNativeDocument().createTextNode('');
-    }
-});
-
-//  ------------------------------------------------------------------------
-//  "tsh-service" Signal Handlers
-//  ------------------------------------------------------------------------
-
-/*
-The methods in this section provide support for the XControls service
-"processing model" as it were. There are a number of discrete signals used
-to notify potential event handlers that service activity is taking place.
-
-Service signals fall into 3 basic categories: requesting, transmitting, and
-responding. The requesting phase is where serialization of the data occurs
-along with other pre-transmission processing. Transmission is the actual
-process of sending the request. Note that since this can be synchronous or
-asynchronous the signals in this phase can be very close together in time.
-The responding phase is where "deserialization" and other post-result
-processing occurs.  Note that each phase can encounter an error, and that
-each error handler will ultimately ensure that the XForms compatibility
-signals are fired.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.core.URIHandler.Inst.defineMethod(
-    'handletsh-service-request-construct',
-function(aSignal) {
-
-    /**
-     * @name handletsh-service-request-construct
-     * @synopsis Responds to notifications that the request data needs to be
-     *     constructed (serialized) for transmission. Any handlers that needed
-     *     to alter the data before this step have to be placed higher in the
-     *     DOM or registered as capturing handlers.
-     * @param {tsh-service-request-construct} aSignal The signal instance which
-     *     triggered this handler.
-     */
-
-    var signal;
-
-    //  do the work to get the body content ready for transmission
-    this.serialize(aSignal);
-
-    //  now we can signal the done event, providing the signal args as the
-    //  payload so we keep the data moving through the pipeline
-    signal = this.dispatch(
-                'tsh-service-request-construct-done',
-                this.getNativeNode(),
-                aSignal.getPayload());
-
-    //  direct invocation so we avoid the observe/ignore overhead for the
-    //  service type itself and allow ourselves to be last in line
-    this['handletsh-service-request-construct-done'](signal);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URIHandler.Inst.defineMethod(
-    'handletsh-service-request-construct-done',
-function(aSignal) {
-
-    /**
-     * @name handletsh-service-request-construct-done
-     * @synopsis Responds to notifications that the request is ready for
-     *     transmission to the receiver's service.
-     * @param {tsh-service-request-construct-done} aSignal The signal instance
-     *     which triggered this handler.
-     */
-
-    //  NOTE that since this is potentially asynchronous we return
-    //  immediately and rely on notification events to pick things back up
-    return this.transmit(aSignal);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URIHandler.Inst.defineMethod(
-    'handletsh-service-response-construct',
-function(aSignal) {
-
-    /**
-     * @name handletsh-service-response-construct
-     * @synopsis Responds to notifications that the request is ready for
-     *     transmission to the receiver's service.
-     * @param {tsh-service-request-done} aSignal The signal instance which
-     *     triggered this handler.
-     */
-
-    var signal;
-
-    //  do the internal deserialization work, processing the data from the
-    //  signal so it can be manipulated by the requestor
-    this.deserialize(aSignal);
-
-    //  now we can signal the done event, providing the signal args as the
-    //  payload so we keep the data moving through the pipeline
-    signal = this.dispatch(
-                'tsh-service-response-construct-done',
-                this.getNativeNode(),
-                aSignal.getPayload());
-
-    //  direct invocation so we avoid the observe/ignore overhead for the
-    //  service type itself and allow ourselves to be last in line
-    this['handletsh-service-response-construct-done'](signal);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URIHandler.Inst.defineMethod(
-    'handletsh-service-response-construct-done',
-function(aSignal) {
-
-    /**
-     * @name handletsh-service-response-construct-done
-     * @synopsis Responds to notifications that the request is ready for
-     *     transmission to the receiver's service.
-     * @param {tsh-service-request-done} aSignal The signal instance which
-     *     triggered this handler.
-     */
-
-    var signal;
-
-    //  notify the standard 'all done' message for observers
-    signal = this.dispatch(
-                'tsh-service-done',
-                this.getNativeNode(),
-                aSignal.getPayload());
-
-    //  do any local processing of service-done last
-    return this['handletsh-service-done'](signal);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URIHandler.Inst.defineMethod(
-    'handletsh-service-transmit-done',
-function(aSignal) {
-
-    /**
-     * @name handletsh-service-transmit-done
-     * @synopsis Responds to notifications that a call has completed.
-     * @param {tsh-service-transmit-done} aSignal The signal instance which
-     *     triggered this handler.
-     */
-
-    var signal;
-
-    //  NOTE we dispatch the event used by XForms 1.1 to get things started
-    //  so observers (listener registrations essentially) can be notified
-    signal = this.dispatch(
-                'tsh-service-deserialize',
-                this.getNativeNode(),
-                aSignal.getPayload());
-
-    //  we don't observe that signal, it's for others only, we use the
-    //  request/response construction signals to run the pipeline
-    this['handletsh-service-deserialize'](signal);
-
-    return;
+    return TP.destroyBinding(this, attributeName, resourceOrURI);
 });
 
 //  ------------------------------------------------------------------------
