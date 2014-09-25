@@ -642,9 +642,9 @@ function(target, attributeName, resourceOrURI) {
 
                         TP.debug('break.bind_change');
                         try {
-                            target.set(attributeName, aSignal.getValue());
+                            this.set(attributeName, aSignal.getValue());
                         } catch (e) {
-                            target.raise('TP.sig.InvalidBinding', arguments);
+                            this.raise('TP.sig.InvalidBinding', arguments);
                         }
                     });
     }
