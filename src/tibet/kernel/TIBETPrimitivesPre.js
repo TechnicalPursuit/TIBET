@@ -5111,7 +5111,7 @@ function(methodName, methodBody, desc, display) {
      *     to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @returns {Function} The installed method.
+     * @returns {Function} The newly defined method.
      * @todo
      */
 
@@ -5160,7 +5160,7 @@ function(methodName, methodBody, desc, display) {
      *     to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @returns {Function} The installed method.
+     * @returns {Function} The newly defined method.
      * @todo
      */
 
@@ -5217,7 +5217,7 @@ function(attributeName, attributeValue) {
      * @param {String} attributeName The attribute name.
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
-     * @returns {Object} The receiver.
+     * @returns {Object} The newly defined attribute value.
      * @todo
      */
 
@@ -5260,7 +5260,7 @@ function(methodName, methodBody, desc) {
      * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
-     * @returns {Object} The receiver.
+     * @returns {Function} The newly defined method.
      * @todo
      */
 
@@ -5282,7 +5282,7 @@ function(attributeName, attributeValue) {
      * @param {String} attributeName The attribute name.
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
-     * @returns {Object} The receiver.
+     * @returns {Object} The newly defined attribute value.
      * @todo
      */
 
@@ -5378,7 +5378,7 @@ function(methodName, methodBody, desc) {
      * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
-     * @returns {Object} The receiver.
+     * @returns {Function} The newly defined method.
      * @todo
      */
 
@@ -5425,7 +5425,7 @@ function(attributeName, attributeValue) {
      * @param {String} attributeName The attribute name.
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
-     * @returns {Object} The receiver.
+     * @returns {Object} The newly defined attribute value.
      * @todo
      */
 
@@ -5489,7 +5489,7 @@ function(methodName, methodBody, desc) {
      * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
-     * @returns {Object} The receiver.
+     * @returns {Function} The newly defined method.
      * @todo
      */
 
@@ -5524,7 +5524,7 @@ function(attributeName, attributeValue) {
      * @param {String} attributeName The attribute name.
      * @param {Object} attributeValue The attribute value or a property
      *     descriptor object.
-     * @returns {Object} The receiver.
+     * @returns {Object} The newly defined attribute value.
      * @todo
      */
 
@@ -5587,7 +5587,7 @@ function(methodName, methodBody, desc) {
      * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
-     * @returns {Object} The receiver.
+     * @returns {Function} The newly defined method.
      * @todo
      */
 
