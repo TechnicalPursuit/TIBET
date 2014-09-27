@@ -86,7 +86,7 @@ function() {
                     TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barButton.TP.sig.DOMClick');
             });
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
