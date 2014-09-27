@@ -1143,7 +1143,13 @@ Package.prototype.getLibRoot = function() {
         // NOTE we're using -d here since we're doing a directory check.
         if (sh.test('-d', path.join(dir, file))) {
             if (dir === moduleDir) {
-                // Have to adjust dir by offset
+                // Have to adjust dir by offset but we need to watch for
+                // upper/lower case issues depending on whether we're dealing
+                // with a Git clone vs. an npm install (which is always
+                // lowercase).
+                if (file.indexOf(tibetlib) === -1) {
+                    tibetlib = tibetlib.toUpperCase();
+                }
                 dir = path.join(dir, offset, tibetlib);
             } else {
                 // Have to adjust dir without offset
