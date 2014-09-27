@@ -172,6 +172,14 @@
     PhantomTSH.status = null;
 
     /**
+     * Number of milliseconds allowed before the initial startup sequence times
+     * out. The default is 3 times the DEFAULT_TIMEOUT or 15 seconds, which
+     * should be adequate even for a script-by-script developer load sequence.
+     * @type {Number}
+     */
+    PhantomTSH.startup = PhantomTSH.DEFAULT_TIMEOUT * 3;
+
+    /**
      * General timer for ensuring we eventually time out if there are issues
      * with the command (or it simply runs too long).
      * @type {Timer}
@@ -395,7 +403,7 @@
                     //  call PhantomTSH.exit()!
                     PhantomTSH.tsh();
                 },
-                PhantomTSH.timeout);
+                PhantomTSH.startup);
         }
     };
 
