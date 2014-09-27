@@ -1471,6 +1471,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     var srcPath,
         thisType,
 
+        oldVal,
+
         op,
 
         args,
@@ -1496,7 +1498,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     if (TP.notValid(attributeValue)) {
         op = TP.DELETE;
-    } else if (TP.isDefined(targetObj.get(srcPath))) {
+    } else if (TP.isDefined(oldVal = targetObj.get(srcPath))) {
         op = TP.UPDATE;
     } else {
         op = TP.CREATE;
@@ -1507,6 +1509,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     thisType.startChangedAddress(srcPath);
 
     thisType.registerChangedAddress(thisType.getChangedAddress(), op);
+
+    //  If we're not already doing a TP.DELETE, but we're replacing something
+    //  that has structure (i.e. it's not just a scalar value), then we need to
+    //  also register a TP.DELETE for that.
+    if (op !== TP.DELETE && TP.isReferenceType(oldVal)) {
+        thisType.registerChangedAddress(thisType.getChangedAddress(),
+                                        TP.DELETE);
+    }
 
     if (TP.regex.HAS_ACP.test(srcPath)) {
         //  Grab the arguments and slice the first three off (since they're
@@ -2860,6 +2870,16 @@ function(aNode) {
     }
 
     TP.core.AccessPath.registerChangedAddress(address, action);
+
+    //  If our action wasn't already TP.DELETE, but we're replacing a Node that
+    //  had child Element content, then we need to also register a TP.DELETE for
+    //  that.
+    if (action !== TP.DELETE &&
+           TP.isCollectionNode(aNode) &&
+           TP.notEmpty(TP.nodeGetChildElements(aNode))) {
+
+        TP.core.AccessPath.registerChangedAddress(address, TP.DELETE);
+    }
 
     return this;
 });
