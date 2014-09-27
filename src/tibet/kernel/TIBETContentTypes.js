@@ -1508,14 +1508,16 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     thisType.startChangedAddress(srcPath);
 
-    thisType.registerChangedAddress(thisType.getChangedAddress(), op);
-
-    //  If we're not already doing a TP.DELETE, but we're replacing something
-    //  that has structure (i.e. it's not just a scalar value), then we need to
-    //  also register a TP.DELETE for that.
-    if (op !== TP.DELETE && TP.isReferenceType(oldVal)) {
+    //  If we're doing a TP.UPDATE, but we're replacing something that has
+    //  structure (i.e. it's not just a scalar value), then we change to
+    //  registering a TP.DELETE, followed by a TP.CREATE for that.
+    if (op === TP.UPDATE && TP.isReferenceType(oldVal)) {
         thisType.registerChangedAddress(thisType.getChangedAddress(),
                                         TP.DELETE);
+        thisType.registerChangedAddress(thisType.getChangedAddress(),
+                                        TP.CREATE);
+    } else {
+        thisType.registerChangedAddress(thisType.getChangedAddress(), op);
     }
 
     if (TP.regex.HAS_ACP.test(srcPath)) {
@@ -2869,16 +2871,17 @@ function(aNode) {
         }
     }
 
-    TP.core.AccessPath.registerChangedAddress(address, action);
-
-    //  If our action wasn't already TP.DELETE, but we're replacing a Node that
-    //  had child Element content, then we need to also register a TP.DELETE for
-    //  that.
-    if (action !== TP.DELETE &&
+    //  If we're doing a TP.UPDATE, but we're replacing a Node that had child
+    //  Element content, then we change to registering a TP.DELETE, followed by
+    //  a TP.CREATE for that.
+    if (action === TP.UPDATE &&
            TP.isCollectionNode(aNode) &&
            TP.notEmpty(TP.nodeGetChildElements(aNode))) {
 
         TP.core.AccessPath.registerChangedAddress(address, TP.DELETE);
+        TP.core.AccessPath.registerChangedAddress(address, TP.CREATE);
+    } else {
+        TP.core.AccessPath.registerChangedAddress(address, action);
     }
 
     return this;
