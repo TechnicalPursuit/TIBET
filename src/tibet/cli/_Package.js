@@ -1117,7 +1117,7 @@ Package.prototype.getLibRoot = function() {
     } else if (this.tibet.boot && this.tibet.boot.tibetlib) {
         tibetlib = this.tibet.boot.tibetlib;
     } else {
-        tibetlib = 'tibet';
+        tibetlib = 'tibet';     // lowercase due to npm being default install
     }
 
     // How far is this file from the library root?
