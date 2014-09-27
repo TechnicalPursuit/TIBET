@@ -2980,11 +2980,12 @@ function(aSignal) {
         paths,
 
         subURIs,
-        changedURIs,
 
-        changedAspects,
+        path,
 
-        mainURI;
+        i,
+
+        fragNoPointer;
 
     resource = this.getResource();
 
@@ -3000,92 +3001,34 @@ function(aSignal) {
 
         if (TP.notEmpty(subURIs)) {
 
-            changedURIs = TP.ac();
-
-            changedAspects = TP.ac();
-
-            mainURI = this;
-
             //  Iterate over the paths and compare them against any 'fragments
             //  without the pointer indicator' (i.e. just the path) of sub URIs
             //  to see if any of the subURIs have that path as their fragment.
-            paths.perform(
-                function (kvPair) {
-                    var path,
-                        records,
+            path = aSignal.at('aspect');
 
-                        i,
+            for (i = 0; i < subURIs.getSize(); i++) {
 
-                        fragNoPointer,
+                //  Strip off any 'pointer indicator' (i.e. '#element',
+                //  '#xpointer' or '#xpath1')
+                fragNoPointer = TP.regex.ANY_POINTER.match(
+                                    subURIs.at(i).getFragment()).at(1);
 
-                        j,
-                        description;
+                //  If the fragment without the 'pointer indicator' matches the
+                //  path, then signal from both the subURI and ourself. Note
+                //  here that we just reuse the signal name and payload.
+                if (fragNoPointer === path) {
 
-                    path = kvPair.first().asString();
-                    records = kvPair.last();
+                    subURIs.at(i).signal(
+                            aSignal.getSignalName(),
+                            arguments,
+                            aSignal.getPayload());
 
-                    for (i = 0; i < subURIs.getSize(); i++) {
-
-                        //  Strip off any 'pointer indicator' (i.e. '#element'
-                        //  '#xpointer' or '#xpath1')
-                        fragNoPointer = TP.regex.ANY_POINTER.match(
-                                            subURIs.at(i).getFragment()).at(1);
-
-                        //  If the fragment without the 'pointer indicator'
-                        //  matches the path, then loop over the records,
-                        //  creating a 'description' record for each change
-                        if (fragNoPointer === path) {
-
-                            for (j = 0; j < records.getSize(); j++) {
-                                changedAspects.push(path);
-
-                                description = TP.hc(
-                                    'aspect', path,
-                                    'address', records.at(j).at('address'),
-                                    'action', records.at(j).at('action'),
-                                    'target', resource);
-
-                                switch (records.at(j).at('action')) {
-                                    case TP.CREATE:
-                                    case TP.DELETE:
-
-                                        //  CREATE or DELETE means a 'structural
-                                        //  change' in the data.
-
-                                        //  Note here that we signal from both
-                                        //  the subURI and the mainURI (ourself)
-                                        subURIs.at(i).signal(
-                                                'TP.sig.StructureChange',
-                                                arguments,
-                                                description);
-
-                                        mainURI.signal(
-                                                'TP.sig.StructureChange',
-                                                arguments,
-                                                description);
-                                        break;
-
-                                    case TP.UPDATE:
-
-                                        //  UPDATE means just a value changed.
-
-                                        //  Note here that we signal from both
-                                        //  the subURI and the mainURI (ourself)
-                                        subURIs.at(i).signal(
-                                                'TP.sig.ValueChange',
-                                                arguments,
-                                                description);
-
-                                        mainURI.signal(
-                                                'TP.sig.ValueChange',
-                                                arguments,
-                                                description);
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                });
+                    this.signal(
+                            aSignal.getSignalName(),
+                            arguments,
+                            aSignal.getPayload());
+                }
+            }
         } else {
             //  If we don't have any subURIs, invoke the standard 'changed'
             //  mechanism (which signals 'TP.sig.ValueChange') from ourself.
