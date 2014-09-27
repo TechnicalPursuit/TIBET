@@ -193,7 +193,7 @@ TP.sys.setcfg('boot.libcomp', 'script');
 //  leveraged by both app root and lib root computations.
 TP.sys.setcfg('boot.tibetdir', 'node_modules');
 TP.sys.setcfg('boot.tibetinf', 'TIBET-INF');
-TP.sys.setcfg('boot.tibetlib', 'tibet');
+TP.sys.setcfg('boot.tibetlib', 'TIBET');
 
 //  text pattern matching the init file used to check script tags during lib
 //  root computation if no other method is specified.
