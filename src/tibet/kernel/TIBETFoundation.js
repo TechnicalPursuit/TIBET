@@ -4114,7 +4114,7 @@ func = function(anAspect, anAction, aDescription) {
     desc.atPutIfAbsent('action', anAction || TP.UPDATE);
     desc.atPutIfAbsent('target', this);
 
-    //  note that we force the firing policy here. this allows observers of a
+    //  Note that we force the firing policy here. this allows observers of a
     //  generic Change to see 'aspect'Change notifications, even if those
     //  'aspect'Change signals haven't been defined as being subtypes of Change
     TP.signal(this, sig, arguments, desc, TP.INHERITANCE_FIRING);
