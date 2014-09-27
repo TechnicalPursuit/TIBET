@@ -2727,7 +2727,7 @@ function() {
         origin,
         aspect;
 
-    value = this.at('value');
+    value = this.at(TP.NEWVAL);
     if (TP.isValid(value)) {
         return value;
     }
