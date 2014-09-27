@@ -1107,7 +1107,21 @@ function(targetObj) {
         executedPaths,
 
         changedAddresses,
-        changedPaths;
+        changedPaths,
+
+        pathKeys,
+        keysLen,
+        i,
+
+        pathEntries,
+        entriesLen,
+        j,
+
+        pathEntry,
+        pathAction,
+
+        sigName,
+        description;
 
     //  '$observedAddresses' is a map that looks like this:
     //  {
@@ -1205,13 +1219,62 @@ function(targetObj) {
             }
         });
 
-    //  Note how we send a 'true' here for forcing change signaling. Callers of
-    //  this method should've already checked to make sure we should be
-    //  signaling - otherwise, we just did an expensive computation for nothing.
-    targetObj.changed('value',
-                        TP.UPDATE,
-                        TP.hc(TP.CHANGE_PATHS, changedPaths),
-                        true);
+    //  Now, process all of the changed paths and send changed signals. The
+    //  signal type sent will be based on their action.
+
+    pathKeys = changedPaths.getKeys();
+
+    //  Loop over all of the changed paths.
+    keysLen = pathKeys.getSize();
+    for (i = 0; i < keysLen; i++) {
+
+        pathEntries = changedPaths.at(pathKeys.at(i));
+
+        //  Loop over all of the entries for this particular path. Each one will
+        //  contain the address that changed and the action that changed it
+        //  (TP.CREATE, TP.DELETE or TP.UPDATE)
+        entriesLen = pathEntries.getSize();
+        for (j = 0; j < entriesLen; j++) {
+
+            pathEntry = pathEntries.at(j);
+            pathAction = pathEntry.at('action');
+
+            switch (pathAction) {
+                case TP.CREATE:
+                case TP.DELETE:
+
+                    //  TODO: Need to add aliased aspect logic. This aspect
+                    //  name will be used *to build a subtype of
+                    //  StructureChange*
+
+                    //  CREATE or DELETE means a 'structural change' in the
+                    //  data.
+                    sigName = 'TP.sig.StructureChange';
+                    break;
+
+                case TP.UPDATE:
+
+                    //  TODO: Need to add aliased aspect logic. This aspect
+                    //  name will be used *instead* of 'value'.
+
+                    //  UPDATE means just a value changed.
+                    sigName = 'TP.sig.ValueChange';
+            }
+
+            description = TP.hc(
+                            'aspect', pathKeys.at(i),
+                            'address', pathEntry.at('address'),
+                            'action', pathAction,
+                            'target', targetObj,
+                            TP.CHANGE_PATHS, changedPaths);
+
+            //  Send the signal.
+            targetObj.signal(
+                    sigName,
+                    arguments,
+                    description);
+        }
+    }
 
     return this;
 });
