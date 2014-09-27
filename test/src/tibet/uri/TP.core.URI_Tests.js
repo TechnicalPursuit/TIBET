@@ -2371,12 +2371,16 @@ function() {
 
         jsonURI2 = TP.uc('urn:tibet:jsonData#tibet(foo.1)');
 
-        uriObsFunction2 = function (aSig) {handlers.atPut('handler2', true);};
+        uriObsFunction2 = function (aSig) {
+            handlers.atPut('handler2', true);
+        };
         uriObsFunction2.observe(jsonURI2, 'TP.sig.ValueChange');
 
         jsonURI3 = TP.uc('urn:tibet:jsonData#tibet(foo.2)');
 
-        uriObsFunction3 = function (aSig) {handlers.atPut('handler3', true);};
+        uriObsFunction3 = function (aSig) {
+            handlers.atPut('handler3', true);
+        };
         uriObsFunction3.observe(jsonURI3, 'TP.sig.ValueChange');
 
         //  ---
@@ -2389,14 +2393,14 @@ function() {
         jsonPath.executeSet(modelObj, '3rd');
 
         //  The handler hash should have a 'true' flag for handler1
-        test.assert.contains(handlers, 'handler1', 'It went bad');
+        test.assert.contains(handlers, 'handler1');
 
         //  The handler hash should have a 'true' flag for handler2
-        test.assert.contains(handlers, 'handler2', 'It went bad');
+        test.assert.contains(handlers, 'handler2');
 
         //  But *not* for handler3 (it's observing at a similar level in the
         //  chain, but on a different branch)
-        test.assert.notContains(handlers, 'handler3', 'It went bad');
+        test.assert.notContains(handlers, 'handler3');
 
         val = jsonPath.executeGet(modelObj);
 
