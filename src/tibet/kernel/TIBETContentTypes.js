@@ -1113,6 +1113,7 @@ function(targetObj) {
         keysLen,
         i,
 
+        pathAspectAliases,
         pathEntries,
         entriesLen,
         j,
@@ -1121,7 +1122,12 @@ function(targetObj) {
         pathAction,
 
         sigName,
-        description;
+        description,
+
+        aliasesLen,
+        k,
+        aspectName,
+        aspectSigName;
 
     //  '$observedAddresses' is a map that looks like this:
     //  {
@@ -1228,6 +1234,9 @@ function(targetObj) {
     keysLen = pathKeys.getSize();
     for (i = 0; i < keysLen; i++) {
 
+        //  Get any aliases that are associated with the particular path.
+        pathAspectAliases = targetObj.getAccessPathAliases(pathKeys.at(i));
+
         pathEntries = changedPaths.at(pathKeys.at(i));
 
         //  Loop over all of the entries for this particular path. Each one will
@@ -1237,15 +1246,12 @@ function(targetObj) {
         for (j = 0; j < entriesLen; j++) {
 
             pathEntry = pathEntries.at(j);
+
             pathAction = pathEntry.at('action');
 
             switch (pathAction) {
                 case TP.CREATE:
                 case TP.DELETE:
-
-                    //  TODO: Need to add aliased aspect logic. This aspect
-                    //  name will be used *to build a subtype of
-                    //  StructureChange*
 
                     //  CREATE or DELETE means a 'structural change' in the
                     //  data.
@@ -1254,13 +1260,49 @@ function(targetObj) {
 
                 case TP.UPDATE:
 
-                    //  TODO: Need to add aliased aspect logic. This aspect
-                    //  name will be used *instead* of 'value'.
-
                     //  UPDATE means just a value changed.
                     sigName = 'TP.sig.ValueChange';
             }
 
+            //  If we found any path aliases, then loop over them and dispatch
+            //  using their aspect name.
+            if (TP.isValid(pathAspectAliases)) {
+                aliasesLen = pathAspectAliases.getSize();
+
+                description = TP.hc(
+                                'address', pathEntry.at('address'),
+                                'action', pathAction,
+                                'target', targetObj,
+                                TP.CHANGE_PATHS, changedPaths);
+
+                for (k = 0; k < aliasesLen; k++) {
+                    aspectName = pathAspectAliases.at(k);
+
+                    description.atPut('aspect', aspectName);
+
+                    aspectSigName = aspectName.asStartUpper() + 'Change';
+
+                    //  Note that we force the firing policy here. This allows
+                    //  observers of a generic Change to see 'aspect'Change
+                    //  notifications, even if those 'aspect'Change signals
+                    //  haven't been defined as being subtypes of Change.
+
+                    //  Also note how we supply either 'TP.sig.Change' (the top
+                    //  level for simple attribute changes) or
+                    //  'TP.sig.StructureChange' (the top level for structural
+                    //  changes, mostly used in 'path'ed attributes) as the
+                    //  default signal type here so that undefined aspect
+                    //  signals will use that type.
+                    TP.signal(targetObj, aspectSigName, arguments,
+                                description,
+                                TP.INHERITANCE_FIRING,
+                                pathAction === TP.UPDATE ?
+                                                'TP.sig.Change':
+                                                'TP.sig.StructureChange');
+                }
+            }
+
+            //  Now, send the generic signal.
             description = TP.hc(
                             'aspect', pathKeys.at(i),
                             'address', pathEntry.at('address'),
@@ -1268,11 +1310,7 @@ function(targetObj) {
                             'target', targetObj,
                             TP.CHANGE_PATHS, changedPaths);
 
-            //  Send the signal.
-            targetObj.signal(
-                    sigName,
-                    arguments,
-                    description);
+            TP.signal(targetObj, sigName, arguments, description);
         }
     }
 
