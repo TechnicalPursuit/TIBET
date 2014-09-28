@@ -3858,6 +3858,7 @@ TP.core.XPathPath.Type.defineAttribute('$varResolver');
 
 TP.core.XPathPath.Inst.defineAttribute('isNative');
 
+TP.core.XPathPath.Inst.defineAttribute('$origPath');
 TP.core.XPathPath.Inst.defineAttribute('$tpPath');
 TP.core.XPathPath.Inst.defineAttribute('$tpContext');
 
@@ -4130,6 +4131,8 @@ function(aPath, shouldCollapse, forceNative) {
         thePath = aPath;
     }
 
+    this.set('$origPath', thePath);
+
     //  Allow the shortcut convenience that TIBET provides of specifying the
     //  '$def:' prefix (intentionally illegal because it leads with a '$')
     //  for elements that are in the default namespace.
@@ -4187,7 +4190,7 @@ function() {
     var str,
         val;
 
-    str = 'TP.core.XPathPath.construct(\'' + this.get('srcPath') +
+    str = 'TP.core.XPathPath.construct(\'' + this.get('$origPath') +
             '\', ' +
             this.get('isNative') + ')';
 
@@ -4228,7 +4231,7 @@ function(verbose) {
     if (wantsVerbose && TP.notEmpty(path = this.$get('$tpPath'))) {
         repStr = path.expression.toString();
     } else {
-        repStr = this.$get('srcPath');
+        repStr = this.$get('$origPath');
     }
 
     return repStr;
