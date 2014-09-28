@@ -5966,6 +5966,62 @@ function(propertyName, methodBody) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('getAccessPathAliases',
+function(aPath) {
+
+    /**
+     * @name getAccessPathAliases
+     * @synopsis Returns an Array of 'access path aliases' - that is, the
+     *     aliased names that the receiver uses for a particular path (i.e.
+     *     '/person/lastName' might map to 'lastName').
+     * @param {String} aPath The path to check for aliases.
+     * @returns {Array|null} An Array of access path aliases for the receiver or
+     *     null.
+     */
+
+    var entry;
+
+    entry = TP.sys.$$meta_pathinfo.at(this.getName() + '_Type');
+
+    if (TP.isValid(entry)) {
+        //  NB: We use primitive property access here since 'entry' is a
+        //  primitive object
+        return entry[aPath];
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('getAccessPathAliases',
+function(aPath) {
+
+    /**
+     * @name getAccessPathAliases
+     * @synopsis Returns an Array of 'access path aliases' - that is, the
+     *     aliased names that the receiver uses for a particular path (i.e.
+     *     '/person/lastName' might map to 'lastName').
+     * @param {String} aPath The path to check for aliases.
+     * @returns {Array|null} An Array of access path aliases for the receiver or
+     *     null.
+     */
+
+    var entry;
+
+    entry = TP.sys.$$meta_pathinfo.at(this.getTypeName() + '_Inst');
+
+    if (TP.isValid(entry)) {
+        //  NB: We use primitive property access here since 'entry' is a
+        //  primitive object
+        return entry[aPath];
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('getDescriptorFor',
 function(attributeName) {
 

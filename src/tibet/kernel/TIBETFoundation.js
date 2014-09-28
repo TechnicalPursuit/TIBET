@@ -5794,6 +5794,26 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('getAccessPathAliases',
+function(aPath) {
+
+    /**
+     * @name getAccessPathAliases
+     * @synopsis Returns an Array of 'access path aliases' - that is, the
+     *     aliased names that the receiver uses for a particular path (i.e.
+     *     '/person/lastName' might map to 'lastName').
+     * @param {String} aPath The path to check for aliases.
+     * @returns {Array|null} An Array of access path aliases for the receiver or
+     *     null.
+     */
+
+    //  At this level, we just return null. See the implementation on
+    //  TP.lang.RootObject for a real implementation of this method.
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaInstMethod('getAccessPathFor',
 function(attributeName, facetName) {
 
