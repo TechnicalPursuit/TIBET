@@ -2345,11 +2345,15 @@ function() {
             modelObj,
 
             jsonURI1,
-            uriObsFunction1,
+            uriObsValueFunction1,
+            uriObsStructureFunction1,
+
             jsonURI2,
             uriObsFunction2,
+
             jsonURI3,
-            uriObsFunction3,
+            uriObsValueFunction3,
+            uriObsStructureFunction3,
 
             jsonPath,
             val;
@@ -2364,10 +2368,15 @@ function() {
         jsonURI1 = TP.uc('urn:tibet:jsonData');
         jsonURI1.setResource(modelObj);
 
-        uriObsFunction1 = function (aSig) {
-            handlers.atPut('handler1', true);
+        uriObsValueFunction1 = function (aSig) {
+            handlers.atPut('handler1_value', true);
         };
-        uriObsFunction1.observe(jsonURI1, 'TP.sig.ValueChange');
+        uriObsValueFunction1.observe(jsonURI1, 'TP.sig.ValueChange');
+
+        uriObsStructureFunction1 = function (aSig) {
+            handlers.atPut('handler1_structure', true);
+        };
+        uriObsStructureFunction1.observe(jsonURI1, 'TP.sig.StructureChange');
 
         jsonURI2 = TP.uc('urn:tibet:jsonData#tibet(foo.1)');
 
@@ -2378,10 +2387,15 @@ function() {
 
         jsonURI3 = TP.uc('urn:tibet:jsonData#tibet(foo.2)');
 
-        uriObsFunction3 = function (aSig) {
-            handlers.atPut('handler3', true);
+        uriObsValueFunction3 = function (aSig) {
+            handlers.atPut('handler3_value', true);
         };
-        uriObsFunction3.observe(jsonURI3, 'TP.sig.ValueChange');
+        uriObsValueFunction3.observe(jsonURI3, 'TP.sig.ValueChange');
+
+        uriObsStructureFunction3 = function (aSig) {
+            handlers.atPut('handler3_structure', true);
+        };
+        uriObsStructureFunction3.observe(jsonURI3, 'TP.sig.StructureChange');
 
         //  ---
 
@@ -2392,22 +2406,55 @@ function() {
         //  when it was observed for Change signals.
         jsonPath.executeSet(modelObj, '3rd');
 
-        //  The handler hash should have a 'true' flag for handler1
-        test.assert.contains(handlers, 'handler1');
+        //  The handler hash should have a 'true' flag for handler1_value
+        test.assert.contains(handlers, 'handler1_value');
+
+        //  But not for handler1_structure (no structure was changed);
+        test.refute.contains(handlers, 'handler1_structure');
 
         //  The handler hash should have a 'true' flag for handler2
         test.assert.contains(handlers, 'handler2');
 
-        //  But *not* for handler3 (it's observing at a similar level in the
-        //  chain, but on a different branch)
-        test.assert.notContains(handlers, 'handler3');
+        //  But *not* for handler3_value or handler3_structure (it's observing
+        //  at a similar level in the chain, but on a different branch)
+        test.refute.contains(handlers, 'handler3_value');
+        test.refute.contains(handlers, 'handler3_structure');
 
         val = jsonPath.executeGet(modelObj);
 
-        this.assert.isEqualTo(
-                    val,
-                    '3rd',
-                    TP.join('It went bad'));
+        this.assert.isEqualTo(val, '3rd');
+
+        //  ---
+
+        handlers.empty();
+
+        //  ---
+
+        jsonPath = TP.apc('foo.2');
+
+        //  Note that we do not need to pass 'true' as the 3rd parameter here,
+        //  since the model object will have configured itself to signal *Change
+        //  when it was observed for Change signals.
+        jsonPath.executeSet(modelObj, 'something else');
+
+        //  The handler hash should have a 'true' flag for handler1_value
+        test.assert.contains(handlers, 'handler1_value');
+
+        //  The handler hash should have a 'true' flag for handler1_structure
+        test.assert.contains(handlers, 'handler1_structure');
+
+        //  But it should *not* for handler2 (it's observing at a similar level
+        //  in observing at a similar level in the chain, but on a different
+        //  branch)
+        test.refute.contains(handlers, 'handler2');
+
+        //  But it *should* for handler3_value and handler3_structure
+        test.assert.contains(handlers, 'handler3_value');
+        test.assert.contains(handlers, 'handler3_structure');
+
+        val = jsonPath.executeGet(modelObj);
+
+        this.assert.isEqualTo(val, 'something else');
     });
 
     this.it('XML data test', function(test, options) {
@@ -2416,11 +2463,15 @@ function() {
             modelObj,
 
             xmlURI1,
-            uriObsFunction1,
+            uriObsValueFunction1,
+            uriObsStructureFunction1,
+
             xmlURI2,
             uriObsFunction2,
+
             xmlURI3,
-            uriObsFunction3,
+            uriObsValueFunction3,
+            uriObsStructureFunction3,
 
             xmlPath,
             result,
@@ -2436,18 +2487,34 @@ function() {
         xmlURI1 = TP.uc('urn:tibet:xmlData');
         xmlURI1.setResource(modelObj);
 
-        uriObsFunction1 = function (aSig) {handlers.atPut('handler1', true);};
-        uriObsFunction1.observe(xmlURI1, 'TP.sig.ValueChange');
+        uriObsValueFunction1 = function (aSig) {
+            handlers.atPut('handler1_value', true);
+        };
+        uriObsValueFunction1.observe(xmlURI1, 'TP.sig.ValueChange');
+
+        uriObsStructureFunction1 = function (aSig) {
+            handlers.atPut('handler1_structure', true);
+        };
+        uriObsStructureFunction1.observe(xmlURI1, 'TP.sig.StructureChange');
 
         xmlURI2 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
 
-        uriObsFunction2 = function (aSig) {handlers.atPut('handler2', true);};
+        uriObsFunction2 = function (aSig) {
+            handlers.atPut('handler2', true);
+        };
         uriObsFunction2.observe(xmlURI2, 'TP.sig.ValueChange');
 
         xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
 
-        uriObsFunction3 = function (aSig) {handlers.atPut('handler3', true);};
-        uriObsFunction3.observe(xmlURI3, 'TP.sig.ValueChange');
+        uriObsValueFunction3 = function (aSig) {
+            handlers.atPut('handler3_value', true);
+        };
+        uriObsValueFunction3.observe(xmlURI3, 'TP.sig.ValueChange');
+
+        uriObsStructureFunction3 = function (aSig) {
+            handlers.atPut('handler3_structure', true);
+        };
+        uriObsStructureFunction3.observe(xmlURI3, 'TP.sig.StructureChange');
 
         //  ---
 
@@ -2458,15 +2525,19 @@ function() {
         //  when it was observed for Change signals.
         xmlPath.executeSet(modelObj, 'Smith');
 
-        //  The handler hash should have a 'true' flag for handler1
-        this.assert.contains(handlers, 'handler1', 'It went bad');
+        //  The handler hash should have a 'true' flag for handler1_value
+        this.assert.contains(handlers, 'handler1_value');
+
+        //  But not for handler1_structure (no structure was changed);
+        test.refute.contains(handlers, 'handler1_structure');
 
         //  The handler hash should have a 'true' flag for handler2
-        this.assert.contains(handlers, 'handler2', 'It went bad');
+        this.assert.contains(handlers, 'handler2');
 
-        //  But *not* for handler3 (it's observing at a similar level in the
-        //  chain, but on a different branch)
-        this.assert.notContains(handlers, 'handler3', 'It went bad');
+        //  But *not* for handler3_value or handler3_structure (it's observing
+        //  at a similar level in the chain, but on a different branch)
+        test.refute.contains(handlers, 'handler3_value');
+        test.refute.contains(handlers, 'handler3_structure');
 
         //  This will return a single native Element
         result = xmlPath.executeGet(modelObj);
@@ -2474,10 +2545,46 @@ function() {
         //  This will return its text value
         val = TP.val(result);
 
-        this.assert.isEqualTo(
-                    val,
-                    'Smith',
-                    TP.join('It went bad'));
+        this.assert.isEqualTo(val, 'Smith');
+
+        //  ---
+
+        handlers.empty();
+
+        //  ---
+
+        xmlPath = TP.apc('/emp/fname').set('shouldCollapse', true);
+
+        //  Make sure to turn structure creation on
+        xmlPath.set('shouldMake', true);
+
+        //  Note that we do not need to pass 'true' as the 3rd parameter here,
+        //  since the model object will have configured itself to signal *Change
+        //  when it was observed for Change signals.
+        xmlPath.executeSet(modelObj, 'Mike');
+
+        //  The handler hash should have a 'true' flag for handler1_value
+        this.assert.contains(handlers, 'handler1_value');
+
+        //  The handler hash should have a 'true' flag for handler1_structure
+        test.assert.contains(handlers, 'handler1_structure');
+
+        //  But it should *not* for handler2 (it's observing at a similar level
+        //  in observing at a similar level in the chain, but on a different
+        //  branch)
+        test.refute.contains(handlers, 'handler2');
+
+        //  But it *should* for handler3_value and handler3_structure
+        test.assert.contains(handlers, 'handler3_value');
+        test.assert.contains(handlers, 'handler3_structure');
+
+        //  This will return a single native Element
+        result = xmlPath.executeGet(modelObj);
+
+        //  This will return its text value
+        val = TP.val(result);
+
+        this.assert.isEqualTo(val, 'Mike');
     });
 });
 
