@@ -6039,7 +6039,7 @@ function(attributeName) {
     var entry;
 
     entry = TP.sys.$$meta_attributes.at(
-                            this.getName() + '_Type' + attributeName);
+                            this.getName() + '_Type_' + attributeName);
 
     if (TP.isValid(entry)) {
         //  NB: We use primitive property access here since 'descriptorObj' is
