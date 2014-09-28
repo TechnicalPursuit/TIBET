@@ -936,6 +936,29 @@ TP.PHash = function() {
     }
 
     //  ---
+    //  isAccessPath
+    //  ---
+
+    this.isAccessPath = function(aType) {
+
+        /**
+         * @name isAccessPath
+         * @synopsis Returns whether or not the receiver is an access path
+         *     object.
+         * @returns {Boolean} False - most receivers are not a path.
+         */
+
+        return false;
+    };
+
+    //  register with TIBET by hand
+    this.isAccessPath[TP.NAME] = 'isAccessPath';
+    this.isAccessPath[TP.OWNER] = TP.PHash;
+    this.isAccessPath[TP.TRACK] = TP.INST_TRACK;
+    this.isAccessPath[TP.DISPLAY] = 'TP.PHash.' +
+            TP.INST_TRACK + '.isAccessPath';
+
+    //  ---
     //  isCollection
     //  ---
 
@@ -1762,11 +1785,13 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
     TP.sys.$$meta_attributes = TP.hc();
     TP.sys.$$meta_methods = TP.hc();
     TP.sys.$$meta_owners = TP.hc();
+    TP.sys.$$meta_pathinfo = TP.hc();
 
     TP.sys.$$metadata = TP.hc('types', TP.sys.$$meta_types,
                                 'attributes', TP.sys.$$meta_attributes,
                                 'methods', TP.sys.$$meta_methods,
-                                'owners', TP.sys.$$meta_owners);
+                                'owners', TP.sys.$$meta_owners,
+                                'pathinfo', TP.sys.$$meta_pathinfo);
 
  }());
 
@@ -1848,7 +1873,10 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         gname,
         sname,
 
-        owners;
+        owners,
+
+        pathinfo,
+        itemkey;
 
     //  all operations will key off item name, so if that's not available we
     //  can't proceed
@@ -1933,6 +1961,33 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
                         {'descriptorObj': anItem,
                             'lpath': lpath,
                             'spath': spath});
+
+                //  If the item has a 'value' slot and the value there responds
+                //  to 'isAccessPath' and is, in fact, an access path, then we
+                //  register it in TP.sys.$$meta_pathinfo. This acts as a
+                //  'reverse index' of access paths to aspect names.
+                if (anItem.value &&
+                    anItem.value.isAccessPath &&
+                    anItem.value.isAccessPath()) {
+
+                    itemkey = anItem.value.asString();
+
+                    pathinfo = TP.sys.$$meta_pathinfo.at(
+                                            tname + '_' + itemTrack);
+                    if (!pathinfo) {
+                        pathinfo = {};
+
+                        TP.sys.$$meta_pathinfo.atPut(
+                                            tname + '_' + itemTrack,
+                                            pathinfo);
+                    }
+
+                    if (!pathinfo[itemkey]) {
+                        pathinfo[itemkey] = [];
+                    }
+
+                    pathinfo[itemkey].push(iname);
+                }
             }
 
             break;
