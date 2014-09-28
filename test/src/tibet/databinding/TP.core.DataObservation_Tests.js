@@ -329,6 +329,7 @@ function() {
 
     this.after(function() {
         jsonValueObsFunction.ignore(modelObj, 'ValueChange');
+        jsonStructureObsFunction.ignore(modelObj, 'StructureChange');
     });
 });
 
@@ -348,7 +349,6 @@ function() {
         xmlPath2,
         xmlPath3,
         xmlPath4,
-        xmlPath1,
         xmlPath5;
 
     this.before(function() {
@@ -528,6 +528,181 @@ function() {
 
     this.after(function() {
         xmlValueObsFunction.ignore(modelObj, 'ValueChange');
+        xmlStructureObsFunction.ignore(modelObj, 'StructureChange');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.Type.describe('Type-level aspect change notification',
+function() {
+
+    this.before(function() {
+
+        TP.lang.Object.defineSubtype('test.SimpleEmployee');
+
+        TP.test.SimpleEmployee.defineAttribute('firstName');
+        TP.test.SimpleEmployee.defineAttribute('lastName');
+
+        //  ---
+
+        TP.lang.Object.defineSubtype('test.ComplexPathEmployee');
+
+        TP.test.ComplexPathEmployee.defineAttribute('data');
+
+        //  These paths assume a root instance property of 'data'
+        TP.test.ComplexPathEmployee.Inst.defineAttribute(
+                'lastName', {'value': TP.apc('data.public_info.lastName')});
+        TP.test.ComplexPathEmployee.Inst.defineAttribute(
+                'firstName', {'value': TP.apc('data.public_info.firstName')});
+
+        //  ---
+
+        TP.core.XMLDocumentNode.defineSubtype('test.XPathPathEmployee');
+
+        //  These paths assume a chunk of XML has been set on the native node.
+        TP.test.XPathPathEmployee.Inst.defineAttribute(
+                'lastName', {'value': TP.apc('//emp/lname')});
+        TP.test.XPathPathEmployee.Inst.defineAttribute(
+                'firstName', {'value': TP.apc('//emp/fname')});
+    });
+
+    this.it('Type defined aspect change notification', function(test, options) {
+
+        var aspectChangedResults,
+            valueChangedResults,
+            aspectObsFunction,
+
+            newEmployee;
+
+        aspectChangedResults = TP.ac();
+        valueChangedResults = TP.ac();
+
+        aspectObsFunction =
+                function (aSignal) {
+                    aspectChangedResults.push(aSignal.at('aspect'));
+                    valueChangedResults.push(aSignal.getValue());
+            };
+
+        newEmployee = TP.test.SimpleEmployee.construct();
+        aspectObsFunction.observe(newEmployee, 'FirstNameChange');
+        aspectObsFunction.observe(newEmployee, 'LastNameChange');
+
+        newEmployee.set('firstName', 'Bill');
+
+        //  This should contain firstName, because we just changed it.
+        this.assert.contains(aspectChangedResults, 'firstName');
+
+        //  And the value should be 'Bill'
+        this.assert.contains(valueChangedResults, 'Bill');
+
+        //  But not lastName, because we didn't change it.
+        this.refute.contains(aspectChangedResults, 'lastName');
+
+        newEmployee.set('lastName', 'Edney');
+
+        //  And now it should contain lastName, because we just changed it.
+        this.assert.contains(aspectChangedResults, 'lastName');
+
+        //  And the value should be 'Edney'
+        this.assert.contains(valueChangedResults, 'Edney');
+
+        aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
+        aspectObsFunction.ignore(newEmployee, 'LastNameChange');
+    });
+
+    this.it('TP.core.ComplexPath path-enhanced aspect change notification', function(test, options) {
+
+        var aspectChangedResults,
+            valueChangedResults,
+            aspectObsFunction,
+
+            newEmployee;
+
+        aspectChangedResults = TP.ac();
+        valueChangedResults = TP.ac();
+
+        aspectObsFunction =
+                function (aSignal) {
+                    aspectChangedResults.push(aSignal.at('aspect'));
+                    valueChangedResults.push(aSignal.getValue());
+            };
+
+        newEmployee = TP.test.ComplexPathEmployee.construct();
+        newEmployee.set('data',
+                TP.json2js('{"public_info":{"lastName":"", "firstName":""}}'));
+
+        aspectObsFunction.observe(newEmployee, 'FirstNameChange');
+        aspectObsFunction.observe(newEmployee, 'LastNameChange');
+
+        newEmployee.set('firstName', 'Bill');
+
+        //  This should contain firstName, because we just changed it.
+        this.assert.contains(aspectChangedResults, 'firstName');
+
+        //  And the value should be 'Bill'
+        this.assert.contains(valueChangedResults, 'Bill');
+
+        //  But not lastName, because we didn't change it.
+        this.refute.contains(aspectChangedResults, 'lastName');
+
+        newEmployee.set('lastName', 'Edney');
+
+        //  And now it should contain lastName, because we just changed it.
+        this.assert.contains(aspectChangedResults, 'lastName');
+
+        //  And the value should be 'Edney'
+        this.assert.contains(valueChangedResults, 'Edney');
+
+        aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
+        aspectObsFunction.ignore(newEmployee, 'LastNameChange');
+    });
+
+    this.it('TP.core.XPathPath path-enhanced aspect change notification', function(test, options) {
+
+        var aspectChangedResults,
+            valueChangedResults,
+            aspectObsFunction,
+
+            newEmployee;
+
+        aspectChangedResults = TP.ac();
+        valueChangedResults = TP.ac();
+
+        aspectObsFunction =
+                function (aSignal) {
+                    aspectChangedResults.push(aSignal.at('aspect'));
+                    valueChangedResults.push(
+                        aSignal.getValue().first().getTextContent());
+            };
+
+        newEmployee = TP.test.XPathPathEmployee.construct(
+                        TP.doc('<emp><lname></lname><fname></fname></emp>'));
+
+        aspectObsFunction.observe(newEmployee, 'FirstNameChange');
+        aspectObsFunction.observe(newEmployee, 'LastNameChange');
+
+        newEmployee.set('firstName', 'Bill');
+
+        //  This should contain firstName, because we just changed it.
+        this.assert.contains(aspectChangedResults, 'firstName');
+
+        //  And the value should be 'Bill'
+        this.assert.contains(valueChangedResults, 'Bill');
+
+        //  But not lastName, because we didn't change it.
+        this.refute.contains(aspectChangedResults, 'lastName');
+
+        newEmployee.set('lastName', 'Edney');
+
+        //  And now it should contain lastName, because we just changed it.
+        this.assert.contains(aspectChangedResults, 'lastName');
+
+        //  And the value should be 'Edney'
+        this.assert.contains(valueChangedResults, 'Edney');
+
+        aspectObsFunction.ignore(newEmployee, 'FirstNameChange');
+        aspectObsFunction.ignore(newEmployee, 'LastNameChange');
     });
 });
 
