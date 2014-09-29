@@ -1536,6 +1536,26 @@ function(aFunction) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('thenWait',
+function(timeoutMS) {
+
+    /**
+     * A convenience mechanism to wait a certain number of milliseconds using
+     * the receiver's Promise machinery.
+     * @param {Number} timeoutMS The number of milliseconds to wait.
+     * @return {TP.test.Suite} The receiver.
+     */
+
+    this.thenPromise(
+        function(resolver, rejector) {
+            setTimeout(resolver, timeoutMS);
+        });
+
+    return this;
+});
+
 //  ========================================================================
 //  TP.test.Case
 //  ------------------------------------------------------------------------
@@ -2248,6 +2268,26 @@ function(aFunction) {
     //  promise set by our parent stack frame 'earlier' in our computation.
     this.$set('$currentPromise', newPromise);
     this.$set('$internalPromise', newPromise);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('thenWait',
+function(timeoutMS) {
+
+    /**
+     * A convenience mechanism to wait a certain number of milliseconds using
+     * the receiver's Promise machinery.
+     * @param {Number} timeoutMS The number of milliseconds to wait.
+     * @return {TP.test.Case} The receiver.
+     */
+
+    this.thenPromise(
+        function(resolver, rejector) {
+            setTimeout(resolver, timeoutMS);
+        });
 
     return this;
 });
