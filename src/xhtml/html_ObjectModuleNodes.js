@@ -242,7 +242,7 @@ function(attributeName) {
      *     globals on their 2D context if a value for the attribute cannot be
      *     found on the receiver itself.
      * @param {String} attributeName The name/key of the attribute to return.
-     * @returns {Object} 
+     * @returns {Object}
      * @raise TP.sig.InvalidContext
      * @todo
      */
@@ -281,7 +281,7 @@ function(attributeName, attributeValue) {
      *     receiver itself.
      * @param {String} attributeName The attribute to set.
      * @param {Object} attributeValue The value to set it to.
-     * @returns {Object} 
+     * @returns {Object}
      * @raise TP.sig.InvalidContext
      * @todo
      */
@@ -378,6 +378,15 @@ function(aNodeOrId) {
 //  ------------------------------------------------------------------------
 
 TP.html.Attrs.defineSubtype('param');
+
+TP.html.param.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.param.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.html.param.executeTraitResolution();
 
 //  ========================================================================
 //  TP.html.source (HTML 5)

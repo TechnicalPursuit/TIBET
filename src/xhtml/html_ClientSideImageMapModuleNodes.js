@@ -23,6 +23,15 @@ TP.html.Focused.defineSubtype('area');
 
 TP.html.area.set('uriAttrs', TP.ac('href'));
 
+TP.html.area.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.area.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.html.area.executeTraitResolution();
+
 //  ========================================================================
 //  TP.html.map
 //  ========================================================================

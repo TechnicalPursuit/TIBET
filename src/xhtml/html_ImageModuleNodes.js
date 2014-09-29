@@ -23,6 +23,15 @@ TP.html.Attrs.defineSubtype('img');
 
 TP.html.img.set('uriAttrs', TP.ac('src', 'longdesc', 'usemap'));
 
+TP.html.img.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.img.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.html.img.executeTraitResolution();
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------

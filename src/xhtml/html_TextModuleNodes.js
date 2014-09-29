@@ -75,6 +75,15 @@ TP.html.blockquote.set('uriAttrs', TP.ac('cite'));
 
 TP.html.CoreAttrs.defineSubtype('br');
 
+TP.html.br.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.br.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.html.br.executeTraitResolution();
+
 //  ========================================================================
 //  TP.html.cite
 //  ========================================================================

@@ -75,6 +75,15 @@ TP.html.Attrs.defineSubtype('details');
 
 TP.html.Aligned.defineSubtype('hr');
 
+TP.html.hr.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.hr.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.html.hr.executeTraitResolution();
+
 //  ========================================================================
 //  html:i
 //  ========================================================================

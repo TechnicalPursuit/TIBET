@@ -578,7 +578,7 @@ function(aValue, shouldSignal) {
      */
 
     var oldVal,
-    
+
         value,
         flag;
 
@@ -671,6 +671,15 @@ TP.html.Focused.defineSubtype('input');
 TP.html.input.isAbstract(true);
 
 TP.html.input.set('uriAttrs', TP.ac('src', 'usemap'));
+
+TP.html.input.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.input.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.html.input.executeTraitResolution();
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -980,8 +989,8 @@ function() {
     /**
      * @name isSingleValued
      * @synopsis Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValue()' instance method for
-     *     more information.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
      * @returns {Boolean} True when single valued.
      */
 
@@ -996,8 +1005,8 @@ function() {
     /**
      * @name isScalarValued
      * @synopsis Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValue()' instance method for
-     *     more information.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
 
@@ -1122,7 +1131,7 @@ function(aValue, elementProperty) {
 
     var value,
         elementArray,
-    
+
         aspect,
         dict,
         dirty,
@@ -1429,7 +1438,7 @@ function(aValue, elementProperty) {
 
     var value,
         elementArray,
-    
+
         aspect,
         dict,
         dirty,
@@ -3150,7 +3159,7 @@ function(aValue, optionProperty) {
 
     var value,
         elementArray,
-    
+
         aspect,
         dict,
         dirty,
@@ -3704,7 +3713,7 @@ function(aValue, optionProperty) {
 
     var value,
         elementArray,
-    
+
         aspect,
         dict,
         dirty,
@@ -4075,8 +4084,8 @@ function() {
     /**
      * @name isSingleValued
      * @synopsis Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValue()' instance method for
-     *     more information.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
      * @returns {Boolean} True when single valued.
      */
 
@@ -4091,8 +4100,8 @@ function() {
     /**
      * @name isScalarValued
      * @synopsis Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValue()' instance method for
-     *     more information.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
      * @returns {Boolean} For input types, this returns true.
      */
 

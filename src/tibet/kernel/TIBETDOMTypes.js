@@ -14563,6 +14563,63 @@ function(aRequest) {
 });
 
 //  ========================================================================
+//  TP.core.EmptyElementNode
+//  ========================================================================
+
+/**
+ * @type {TP.core.EmptyElementNode}
+ * @synopsis A trait type which allows the target type to be defined as 'empty'
+ *     for purposes of setting content, etc.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core:EmptyElementNode');
+
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation.
+TP.core.EmptyElementNode.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+
+TP.core.EmptyElementNode.Inst.defineMethod('getContent',
+function(aRequest) {
+
+    /**
+     * @name getContent
+     * @synopsis Returns the receiver's content.
+     * @description Tags that trait-in this type are supposed to be "EMPTY",
+     *     according to some definition (maybe a DTD or something). Therefore,
+     *     for this type, this method does nothing and returns null.
+     * @param {TP.sig.Request|TP.lang.Hash} aRequest Optional control
+     *     parameters.
+     * @returns {null}
+     */
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.EmptyElementNode.Inst.defineMethod('setContent',
+function(aContentObject, aRequest) {
+
+    /**
+     * @name setContent
+     * @synopsis Sets the content of the receiver's native DOM counterpart to
+     *     the value supplied.
+     * @description Tags that trait-in this type are supposed to be "EMPTY",
+     *     according to some definition (maybe a DTD or something). Therefore,
+     *     for this type, this method does nothing and returns null.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {null}
+     */
+
+    return null;
+});
+
+//  ========================================================================
 //  XML-RPC NODE FORMAT
 //  ========================================================================
 
