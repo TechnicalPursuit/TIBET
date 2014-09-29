@@ -2028,8 +2028,8 @@ function() {
     /**
      * @name isSingleValued
      * @synopsis Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValue()' instance method for
-     *     more information.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
      * @returns {Boolean} True when single valued.
      */
 
@@ -2156,22 +2156,22 @@ function(aContentObject, aRequest) {
 
     input = aContentObject;
 
-    //  reduce the content so we're not dealing with an array when we're
-    //  single-valued...no point in either observing too much or in running it
+    //  Reduce the content so we're not dealing with an Array when we're
+    //  single-valued... no point in either observing too much or in running it
     //  all through a formatting pipeline when we only want one value.
     if (this.isSingleValued()) {
         input = this.$reduceContentValue(input, aRequest);
     }
 
-    //  if we're scalar-valued we can't process nodes as values, we need to
-    //  convert them into a proper scalar value. the same is true for any
+    //  If we're scalar-valued we can't process nodes as values. We need to
+    //  convert them into a proper scalar value. The same is true for any
     //  collection of input, we've got to convert it into a collection of scalar
     //  values rather than a collection of more complex objects
     if (this.isScalarValued()) {
         if (TP.isNode(input)) {
             value = TP.val(input);
         } else if (TP.isNodeList(input)) {
-            //  since we're scalar-valued we want nodelists to be converted to
+            //  Since we're scalar-valued we want nodelists to be converted to
             //  arrays of the node "values" in text form
             arr = TP.ac();
             len = input.length;
@@ -2180,7 +2180,7 @@ function(aContentObject, aRequest) {
             }
             value = arr;
         } else if (TP.isArray(input)) {
-            //  for arrays that aren't nodelists we'll ask for the value via a
+            //  For arrays that aren't nodelists we'll ask for the value via a
             //  more general-purpose routine
             arr = TP.ac();
             len = input.getSize();
@@ -2189,7 +2189,7 @@ function(aContentObject, aRequest) {
             }
             value = arr;
         } else {
-            //  anything else we'll try to convert using our general purpose
+            //  Anything else we'll try to convert using our general purpose
             //  value routine, which quite often returns the string value
             value = TP.val(input);
         }
@@ -4682,8 +4682,8 @@ function() {
     /**
      * @name isSingleValued
      * @synopsis Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValue()' instance method for
-     *     more information.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
      * @returns {Boolean} True when single valued.
      */
 
@@ -4698,8 +4698,8 @@ function() {
     /**
      * @name isScalarValued
      * @synopsis Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValue()' instance method for
-     *     more information.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
      * @returns {Boolean} True when scalar valued.
      */
 
