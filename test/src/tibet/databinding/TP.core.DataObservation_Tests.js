@@ -795,7 +795,7 @@ function() {
         TP.ignore('CurrentEmployee', 'SalaryChange', handlerFunc);
     });
 
-    this.it('using defineBinding() - concrete reference', function(test, options) {
+    this.it('using defineBinding() - concrete reference, same aspect', function(test, options) {
 
         var modelObj,
             observerObj;
@@ -828,7 +828,7 @@ function() {
                     observerObj.get('salary'));
     });
 
-    this.it('using defineBinding() - virtual reference', function(test, options) {
+    this.it('using defineBinding() - virtual reference, same aspect', function(test, options) {
 
         var modelObj,
             observerObj;
@@ -859,6 +859,78 @@ function() {
         observerObj.destroyBinding('salary', 'CurrentEmployee');
 
         modelObj.set('salary', 45);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 42 set above.
+        this.assert.isEqualTo(
+                    42,
+                    observerObj.get('salary'));
+    });
+
+    this.it('using defineBinding() - concrete reference, different aspect', function(test, options) {
+
+        var modelObj,
+            observerObj;
+
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('averageSalary');
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        observerObj.defineBinding('salary', modelObj, 'averageSalary');
+
+        //  Set the value of 'salary' on the model object. The binding should
+        //  cause the value of 'salary' on the observer to update
+        modelObj.set('averageSalary', 42);
+
+        this.assert.isEqualTo(
+                    modelObj.get('averageSalary'),
+                    observerObj.get('salary'));
+
+        //  Destroy the binding
+        observerObj.destroyBinding('salary', modelObj, 'averageSalary');
+
+        modelObj.set('averageSalary', 45);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 42 set above.
+        this.assert.isEqualTo(
+                    42,
+                    observerObj.get('salary'));
+    });
+
+    this.it('using defineBinding() - virtual reference, different aspect', function(test, options) {
+
+        var modelObj,
+            observerObj;
+
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('averageSalary');
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        //  This sets the ID of the object and registers it with an accompanying
+        //  'urn:tibet' URN (which will allow the 'defineBinding()' call to turn
+        //  change handling on for it).
+        modelObj.setID('CurrentEmployee');
+        TP.sys.registerObject(modelObj);
+
+        observerObj.defineBinding('salary', 'CurrentEmployee', 'averageSalary');
+
+        //  Set the value of 'salary' on the model object. The binding should
+        //  cause the value of 'salary' on the observer to update
+        modelObj.set('averageSalary', 42);
+
+        this.assert.isEqualTo(
+                    modelObj.get('averageSalary'),
+                    observerObj.get('salary'));
+
+        //  Destroy the binding
+        observerObj.destroyBinding('salary', 'CurrentEmployee', 'averageSalary');
+
+        modelObj.set('averageSalary', 45);
 
         //  Because there is now no binding between these two, observerObj
         //  should still have the value of 42 set above.

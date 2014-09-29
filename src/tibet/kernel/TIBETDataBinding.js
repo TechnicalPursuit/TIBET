@@ -597,14 +597,16 @@ output TIBET lets you adjust your page in almost any form necessary.
 //  ========================================================================
 
 TP.definePrimitive('defineBinding',
-function(target, attributeName, resourceOrURI) {
+function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     /**
      * @name defineBinding
      * @synopsis Adds a binding to the supplied target object.
      * @param {Object} target The target object to define the binding on.
-     * @param {String} attributeName The attribute name.
+     * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
      * @returns {Object} The target object.
      */
 
@@ -612,7 +614,7 @@ function(target, attributeName, resourceOrURI) {
         signalName,
         methodName;
 
-    if (TP.isEmpty(attributeName)) {
+    if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter', arguments,
             'No attribute name provided for bind.');
     }
@@ -631,7 +633,14 @@ function(target, attributeName, resourceOrURI) {
             'No resource spec provided for bind.');
     }
 
-    signalName = attributeName.asTitleCase() + 'Change';
+    //  We try to use the source attribute name if it is supplied, but default
+    //  to the target attribute name if it's not supplied.
+    if (TP.isString(sourceAttributeName)) {
+        signalName = sourceAttributeName.asTitleCase() + 'Change';
+    } else {
+        signalName = targetAttributeName.asTitleCase() + 'Change';
+    }
+
     methodName = 'handle' + signalName;
 
     //  Make sure that target object has a local method to handle the change
@@ -642,7 +651,7 @@ function(target, attributeName, resourceOrURI) {
 
                         TP.debug('break.bind_change');
                         try {
-                            this.set(attributeName, aSignal.getValue());
+                            this.set(targetAttributeName, aSignal.getValue());
                         } catch (e) {
                             this.raise('TP.sig.InvalidBinding', arguments);
                         }
@@ -657,72 +666,81 @@ function(target, attributeName, resourceOrURI) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineBinding',
-function(attributeName, resourceOrURI) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     /**
      * @name defineBinding
      * @synopsis Adds a binding to the receiver.
-     * @param {String} attributeName The attribute name.
+     * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
      * @returns {Object} The receiver.
-     * @todo
      */
 
-    return TP.defineBinding(this, attributeName, resourceOrURI);
+    return TP.defineBinding(
+            this, targetAttributeName, resourceOrURI, sourceAttributeName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('defineBinding',
-function(attributeName, resourceOrURI) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     /**
      * @name defineBinding
      * @synopsis Adds a binding to the type receiver.
-     * @param {String} attributeName The attribute name.
+     * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
      * @returns {Object} The receiver.
-     * @todo
      */
 
-    return TP.defineBinding(this, attributeName, resourceOrURI);
+    return TP.defineBinding(
+            this, targetAttributeName, resourceOrURI, sourceAttributeName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('defineBinding',
-function(attributeName, resourceOrURI) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     /**
      * @name defineBinding
      * @synopsis Adds a binding to the instance receiver.
-     * @param {String} attributeName The attribute name.
+     * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
      * @returns {Object} The receiver.
      * @todo
      */
 
-    return TP.defineBinding(this, attributeName, resourceOrURI);
+    return TP.defineBinding(
+            this, targetAttributeName, resourceOrURI, sourceAttributeName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('destroyBinding',
-function(target, attributeName, resourceOrURI) {
+function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     /**
      * @name destroyBinding
      * @synopsis Removes a binding from the supplied target object.
      * @param {Object} target The target object to define the binding on.
-     * @param {String} attributeName The attribute name.
+     * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
      * @returns {Object} The target object.
      */
 
     var resource,
         signalName;
 
-    if (TP.isEmpty(attributeName)) {
+    if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter', arguments,
             'No attribute name provided for bind.');
     }
@@ -741,7 +759,14 @@ function(target, attributeName, resourceOrURI) {
             'No resource spec provided for bind.');
     }
 
-    signalName = attributeName.asTitleCase() + 'Change';
+    //  We try to use the source attribute name if it is supplied, but default
+    //  to the target attribute name if it's not supplied.
+    if (TP.isString(sourceAttributeName)) {
+        signalName = sourceAttributeName.asTitleCase() + 'Change';
+    } else {
+        signalName = targetAttributeName.asTitleCase() + 'Change';
+    }
+
     target.ignore(resource, signalName);
 
     return target;
@@ -750,52 +775,61 @@ function(target, attributeName, resourceOrURI) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('destroyBinding',
-function(attributeName, resourceOrURI) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     /**
      * @name destroyBinding
      * @synopsis Removes a binding from the receiver.
-     * @param {String} attributeName The attribute name.
+     * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
      * @returns {Object} The receiver.
      * @todo
      */
 
-    return TP.destroyBinding(this, attributeName, resourceOrURI);
+    return TP.destroyBinding(
+            this, targetAttributeName, resourceOrURI, sourceAttributeName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('destroyBinding',
-function(attributeName, resourceOrURI) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     /**
      * @name destroyBinding
      * @synopsis Removes a binding from the type receiver.
-     * @param {String} attributeName The attribute name.
+     * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
      * @returns {Object} The receiver.
      * @todo
      */
 
-    return TP.destroyBinding(this, attributeName, resourceOrURI);
+    return TP.destroyBinding(
+            this, targetAttributeName, resourceOrURI, sourceAttributeName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('destroyBinding',
-function(attributeName, resourceOrURI) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     /**
      * @name destroyBinding
      * @synopsis Removes a binding from the instance receiver.
-     * @param {String} attributeName The attribute name.
+     * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
      * @returns {Object} The receiver.
      * @todo
      */
 
-    return TP.destroyBinding(this, attributeName, resourceOrURI);
+    return TP.destroyBinding(
+            this, targetAttributeName, resourceOrURI, sourceAttributeName);
 });
 
 //  ------------------------------------------------------------------------
