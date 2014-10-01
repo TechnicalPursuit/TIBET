@@ -2274,6 +2274,87 @@ function(anElement, attributeName, stripPrefixes) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetAttributeNode',
+function(anElement, attributeName) {
+
+    /**
+     * @name elementGetAttributeNode
+     * @synopsis Returns the first attribute node that matches the attribute
+     *     name provided.
+     * @description Note that this method will always retrieve the first
+     *     matching attribute node, whether it is in a particular namespace or
+     *     not.
+     * @description The attributeName in this case is expected to be of the form
+     *     'wholename', '*:localname' or 'prefix:*', wildcarding either the
+     *     prefix or the localname.
+     * @param {Element} anElement The element to retrieve the attribute value
+     *     from.
+     * @param {String|RegExp} attributeName An attributeName "search" criteria
+     *     of the form 'wholename' '*:localname' or 'prefix:*' or any RegExp.
+     *     This is optional.
+     * @example Return the attribute node of an HTML element:
+     *     <code>
+     *          TP.elementGetAttributeNode(TP.documentGetBody(document),
+     *          'style');
+     *          <samp>[object Attr]</samp>
+     *     </code>
+     * @example Grab the first attribute node of the element that starts with
+     *     'bar:' of an XML element into a hash:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com" xmlns:bar="http://www.bar.com"
+     *         bar:baz="bazify" goo="moo" bar:boo="zoo"><bar/></foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.elementGetAttributeNode(xmlDoc.documentElement, 'bar:*');
+     *          <samp>(first 'bar:*' attribute node from the document
+     *         element)</samp>
+     *     </code>
+     * @returns {Attribute|null} The first attribute node matching the attribute
+     *     name criteria.
+     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     *     to the method.
+     * @todo
+     */
+
+    var nameMatch,
+
+        attrs,
+        len,
+        i,
+
+        attr;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+    }
+
+    if (TP.isEmpty(attributeName)) {
+        return null;
+    }
+
+    if (TP.isRegExp(attributeName)) {
+        nameMatch = attributeName;
+    } else {
+        nameMatch = TP.getQNameRegex(attributeName);
+    }
+
+    //  Loop over all of the attribute nodes and if their name produces a
+    //  match using the RegExp that we generated, then return it.
+
+    attrs = anElement.attributes;
+    len = attrs.length;
+    for (i = 0; i < len; i++) {
+        attr = attrs[i];
+        if (nameMatch.test(attr.name) && attr.specified) {
+            return attr;
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementGetAttributeNodes',
 function(anElement, attributeName) {
 
