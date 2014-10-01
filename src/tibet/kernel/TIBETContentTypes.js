@@ -3020,6 +3020,7 @@ function(targetObj, varargs) {
         path,
 
         nodes,
+        finalValue,
 
         addresses,
 
@@ -3061,8 +3062,35 @@ function(targetObj, varargs) {
     //  Call 'getPathType()' (which may return null) to determine path type and
     //  'false' on autoCollapse (we collapse later if we're set for it, but for
     //  now we want an Array).
-    nodes = TP.nodeEvaluatePath(natTargetObj, pathSrc,
-                                this.getPathType(), false);
+    nodes = TP.nodeEvaluatePath(
+                natTargetObj, pathSrc, this.getPathType(), false);
+
+    //  If the return value is not an Array, that means a scalar value was
+    //  returned (because we forced false on autoCollapse).
+    if (!TP.isArray(nodes)) {
+
+        //  Capture the final value - we want to return this.
+        finalValue = nodes;
+
+        //  If the path ends with some sort of attribute path, then we
+        //  reevaluate, using a construct at the end that will return an
+        //  Attribute *node*.
+        if (TP.regex.ATTRIBUTE_ENDS.test(pathSrc)) {
+            nodes = TP.nodeEvaluatePath(
+                        natTargetObj,
+                        pathSrc + '/../' + pathSrc.slice(pathSrc.indexOf('@')),
+                        this.getPathType(),
+                        false);
+        } else {
+            //  Otherwise, reevaluate and just try to capture the Node above the
+            //  result
+            nodes = TP.nodeEvaluatePath(
+                        natTargetObj,
+                        pathSrc + '/..',
+                        this.getPathType(),
+                        false);
+        }
+    }
 
     addresses = TP.ac();
 
@@ -3089,6 +3117,10 @@ function(targetObj, varargs) {
                 TP.core.AccessPath.registerObservedAddress(
                     anAddress, sourceObjectID, pathSrc);
             });
+
+    if (TP.isValid(finalValue)) {
+        return finalValue;
+    }
 
     return this.processFinalValue(nodes, targetObj);
 });
@@ -3127,6 +3159,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         args,
 
         createdStructure,
+        changeAction,
 
         content,
 
@@ -3222,9 +3255,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     if (!TP.isArray(content)) {
         if (TP.isElement(content)) {
-            createdStructure =
-                TP.elementGetChangeAction(content, TP.SELF) === TP.CREATE;
+            changeAction = TP.elementGetChangeAction(content, TP.SELF);
+        } else if (TP.isAttributeNode(content)) {
+            changeAction = TP.elementGetChangeAction(
+                                TP.attributeGetOwnerElement(content),
+                                TP.ATTR + content.name);
         }
+
+        createdStructure = (changeAction === TP.CREATE);
     } else {
         createdStructure =
             TP.isValid(
