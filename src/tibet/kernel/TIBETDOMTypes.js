@@ -3775,9 +3775,20 @@ function(aRequest) {
 
     nativeNode = this.getNativeNode();
 
+    if (nativeNode.childNodes.length === 1) {
+        if (TP.isTextNode(nativeNode.firstChild)) {
+            return this.getTextContent();
+        }
+
+        return TP.wrap(nativeNode.firstChild).asString();
+    }
+
     //  Note here that we're only interested in the shallow '.childNodes'
-    //  collection.
-    if (!TP.isFragment(frag = TP.nodeListAsFragment(nativeNode.childNodes))) {
+    //  collection. Note also that we allow this routine to default the
+    //  document, but force it to make a copy of the fragment - otherwise, we'll
+    //  lose the content.
+    if (!TP.isFragment(frag = TP.nodeListAsFragment(
+                                        nativeNode.childNodes, null, true))) {
         return '';
     }
 
