@@ -3519,7 +3519,29 @@ function(aNode, flagChanges) {
      * @returns {Array} The array of Nodes that got built.
      */
 
-    //  TODO: Need Attribute path support
+    var pathStr,
+        attrName,
+
+        retVal;
+
+    //  We can create an Attribute, if this is an attribute-only path
+    if (TP.isElement(aNode) &&
+        TP.regex.ATTRIBUTE.test(pathStr = this.asString())) {
+
+        attrName = pathStr.slice(1);
+
+        if (TP.elementHasAttribute(aNode, attrName, true)) {
+            return TP.elementGetAttributeNode(aNode, attrName);
+        }
+
+        TP.elementSetAttribute(aNode, attrName, '', true);
+        retVal = TP.elementGetAttributeNode(aNode, attrName);
+        TP.elementFlagChange(aNode, TP.ATTR + attrName, TP.CREATE);
+
+        return retVal;
+    }
+
+    return null;
 });
 
 //  ========================================================================
