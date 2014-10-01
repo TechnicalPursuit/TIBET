@@ -611,6 +611,9 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
      */
 
     var resource,
+        targetAttr,
+        sourceAttr,
+
         signalName,
         methodName;
 
@@ -633,15 +636,27 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
             'No resource spec provided for bind.');
     }
 
-    //  We try to use the source attribute name if it is supplied, but default
-    //  to the target attribute name if it's not supplied.
-    if (TP.isString(sourceAttributeName)) {
-        signalName = sourceAttributeName.asTitleCase() + 'Change';
-    } else {
-        signalName = targetAttributeName.asTitleCase() + 'Change';
+    //  Get the target attribute. If there is no source attribute, then use the
+    //  target attribute as the source attribute.
+    targetAttr = targetAttributeName;
+    if (TP.notValid(sourceAttr = sourceAttributeName)) {
+        sourceAttr = targetAttr;
     }
 
-    methodName = 'handle' + signalName;
+    //  If the source attribute is an access path, then we compute the signal we
+    //  observe differently.
+    if (sourceAttr.isAccessPath()) {
+        //  Do a 'get' to establish the interest in the path - we're not really
+        //  interested in the value though.
+        resource.get(sourceAttr);
+
+        //  The signal name is always TP.sig.ValueChange for paths
+        signalName = 'TP.sig.ValueChange';
+    } else {
+        signalName = sourceAttr.asTitleCase() + 'Change';
+    }
+
+    methodName = 'handle' + TP.escapeTypeName(signalName);
 
     //  Make sure that target object has a local method to handle the change
     if (TP.notValid(target.getMethod(methodName))) {
@@ -649,9 +664,13 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
                     methodName,
                     function(aSignal) {
 
+                        var newVal;
+
                         TP.debug('break.bind_change');
+
                         try {
-                            this.set(targetAttributeName, aSignal.getValue());
+                            newVal = aSignal.getValue();
+                            this.set(targetAttr, newVal);
                         } catch (e) {
                             this.raise('TP.sig.InvalidBinding', arguments);
                         }
@@ -738,7 +757,11 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
      */
 
     var resource,
-        signalName;
+        targetAttr,
+        sourceAttr,
+
+        signalName,
+        methodName;
 
     if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter', arguments,
@@ -759,12 +782,20 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
             'No resource spec provided for bind.');
     }
 
-    //  We try to use the source attribute name if it is supplied, but default
-    //  to the target attribute name if it's not supplied.
-    if (TP.isString(sourceAttributeName)) {
-        signalName = sourceAttributeName.asTitleCase() + 'Change';
+    //  Get the target attribute. If there is no source attribute, then use the
+    //  target attribute as the source attribute.
+    targetAttr = targetAttributeName;
+    if (TP.notValid(sourceAttr = sourceAttributeName)) {
+        sourceAttr = targetAttr;
+    }
+
+    //  If the source attribute is an access path, then we compute the signal we
+    //  observe differently.
+    if (sourceAttr.isAccessPath()) {
+        //  The signal name is always TP.sig.ValueChange for paths
+        signalName = 'TP.sig.ValueChange';
     } else {
-        signalName = targetAttributeName.asTitleCase() + 'Change';
+        signalName = sourceAttr.asTitleCase() + 'Change';
     }
 
     target.ignore(resource, signalName);
