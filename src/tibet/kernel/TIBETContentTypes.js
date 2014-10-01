@@ -3466,13 +3466,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                                     targetTPDoc.getID()))) {
                 executedPaths.perform(
                         function (pathEntry) {
-                            TP.apc(pathEntry.first()).executeGet(targetTPDoc);
+                            TP.apc(pathEntry.first()).executeGet(targetObj);
                         });
             }
         }
 
         //  Send the changed signal
-        this.sendChangedSignal(targetTPDoc);
+        this.sendChangedSignal(targetObj);
 
         if (mutatedStructure) {
             this.updateRegistrationsAfterSignaling(targetTPDoc);
