@@ -2715,9 +2715,13 @@ TP.regex.XTENSION_POINTER = /css\((.+)\)/;
 
 TP.regex.CSS_POINTER = /css\((.+)\)/;
 
-//  Detect @[anything]
+//  Detect @[anything] as whole
 TP.regex.ATTRIBUTE = /^@\w+$/;
-//  Detect @*
+
+//  Detect @[anything] at end
+TP.regex.ATTRIBUTE_ENDS = /@\w+$/;
+
+//  Detect starts with @*
 TP.regex.ATTRIBUTE_ALL = /^@\*/;
 
 TP.regex.BARENAME = /^#[^(]+$/;
