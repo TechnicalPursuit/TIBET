@@ -2368,7 +2368,7 @@ function(anElement, attributeName) {
      *     'wholename', '*:localname' or 'prefix:*', wildcarding either the
      *     prefix or the localname. If it is omitted, all attributes will be
      *     represented in the array.
-     * @param {Element} anElement The element to retrieve the attribute value
+     * @param {Element} anElement The element to retrieve the attribute nodes
      *     from.
      * @param {String|RegExp} attributeName An attributeName "search" criteria
      *     of the form 'wholename' '*:localname' or 'prefix:*' or any RegExp.
