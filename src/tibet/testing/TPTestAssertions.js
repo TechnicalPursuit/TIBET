@@ -353,21 +353,6 @@ function(anObject, aComment) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotA',
-function(anObject, aType, aComment) {
-
-    this.assertMinArguments(arguments, 2);
-
-    this.assert(
-        !TP.validate(anObject, aType),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' not to be a ', aType, '.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  ASSERTIONS - GENERAL API / PROPERTY CHECKING
 //  ------------------------------------------------------------------------
 
@@ -857,21 +842,6 @@ function(anObject, aComment) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotNaN',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        !TP.isNaN(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' not to be NaN.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  ASSERTIONS - BOOLEAN
 //  ------------------------------------------------------------------------
 
@@ -899,36 +869,6 @@ function(anObject, aComment) {
         TP.isFalsey(anObject),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be false-like.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotFalse',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        TP.notFalse(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' not to be False.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotTrue',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        TP.notTrue(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' not to be True.'));
 
     return;
 });
@@ -1026,66 +966,6 @@ function(anObject, aComment) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotDefined',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        TP.notDefined(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be undefined.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotEmpty',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        TP.notEmpty(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be not empty.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotNull',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        TP.notNull(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be non-null.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotValid',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        TP.notValid(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be null or undefined.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  ASSERTIONS - CONTENT/VALUE
 //  ------------------------------------------------------------------------
 
@@ -1164,52 +1044,6 @@ function(anObject, aValue, aComment) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotBlank',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        TP.notBlank(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' not to be blank.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('notContains',
-function(anObject, someContent, aComment) {
-
-    this.assertMinArguments(arguments, 2);
-
-    this.assert(
-        !TP.contains(anObject, someContent),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' not to contain ', TP.id(someContent)));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('notEmpty',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-
-    this.assert(
-        TP.notEmpty(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' not to be empty.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  ASSERTIONS - EQUALITY/IDENTITY
 //  ------------------------------------------------------------------------
 
@@ -1255,54 +1089,6 @@ function(anObject, aValue, aComment) {
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' and ', TP.id(aValue),
                 ' to be identical.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotEqualAs',
-function(anObject, aValue, aType, aComment) {
-
-    this.assertMinArguments(arguments, 3);
-
-    this.assert(
-        !TP.ac(anObject, aValue).equalAs(aType),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' and ', TP.id(aValue),
-                ' to be unequal as ', TP.name(aType), 's.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotEqualTo',
-function(anObject, aValue, aComment) {
-
-    this.assertMinArguments(arguments, 2);
-
-    this.assert(
-        !TP.equal(anObject, aValue),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' and ', TP.id(aValue),
-                ' not to be equal.'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotIdenticalTo',
-function(anObject, aValue, aComment) {
-
-    this.assertMinArguments(arguments, 2);
-
-    this.assert(
-        !TP.identical(anObject, aValue),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' and ', TP.id(aValue),
-                ' not to be identical.'));
 
     return;
 });
@@ -1874,36 +1660,6 @@ function(anObject, aComment) {
 //  ASSERTIONS - SIGNALING
 //  ------------------------------------------------------------------------
 
-TP.test.TestMethodCollection.defineAssertion('doesNotRaise',
-function() {
-
-    TP.todo();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('doesNotSignal',
-function() {
-
-    TP.todo();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('doesNotThrow',
-function() {
-
-    TP.todo();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.test.TestMethodCollection.defineAssertion('raises',
 function() {
 
@@ -2082,90 +1838,6 @@ function(anObject, aComment) {
     this.assertMinArguments(arguments, 1);
     //this.assert(TP.isInvisible(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be invisible.');
-
-    TP.todo();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotBusy',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-    //this.assert(TP.isInvisible(anObject), aComment,
-    //  'Expected ' + TP.id(anObject) + ' not to be busy.');
-
-    TP.todo();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotFocused',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-    //this.assert(!TP.isFocused(anObject), aComment,
-    //  'Expected ' + TP.id(anObject) + ' to be unfocused.');
-
-    TP.todo();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotReadonly',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-    //this.assert(!TP.isReadonly(anObject), aComment,
-    //  'Expected ' + TP.id(anObject) + ' to be writable.');
-
-    TP.todo();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotRelevant',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-    //this.assert(!TP.isRelevant(anObject), aComment,
-    //  'Expected ' + TP.id(anObject) + ' to be irrelevant.');
-
-    TP.todo();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotRequired',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-    //this.assert(!TP.isRequired(anObject), aComment,
-    //  'Expected ' + TP.id(anObject) + ' to be unrequired.');
-
-    TP.todo();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.TestMethodCollection.defineAssertion('isNotSelected',
-function(anObject, aComment) {
-
-    this.assertMinArguments(arguments, 1);
-    //this.assert(!TP.isSelected(anObject), aComment,
-    //  'Expected ' + TP.id(anObject) + ' to be unselected.');
 
     TP.todo();
 

@@ -1497,7 +1497,7 @@ function() {
         //  At this point, the ID of the source object (since it was set
         //  *before* it was handed to the URN) should be different than the URN
         //  identifier.
-        this.assert.isNotEqualTo(
+        this.refute.isEqualTo(
                 obj.getID(),
                 'theData',
                 TP.sc('Expected: ', '"', obj.getID(), '"',
@@ -2111,7 +2111,7 @@ function() {
 
         obj = url.getResource();
 
-        this.assert.isNotValid(
+        this.refute.isValid(
             obj,
             TP.sc('Expected that result would not be valid'));
     });
@@ -2144,7 +2144,7 @@ function() {
 
         obj = url.getResource();
 
-        this.assert.isNotValid(
+        this.refute.isValid(
             obj,
             TP.sc('Expected that result would not be valid'));
     });
