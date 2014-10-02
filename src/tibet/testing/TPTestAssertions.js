@@ -116,14 +116,22 @@ function(aCondition, aComment, aFaultString) {
      * @todo
      */
 
-    var condition;
+    var condition,
+        faultStr;
 
     this.assertMinArguments(arguments, 1);
 
-    //  If we're configured to be a 'refuter', then flip the condition result.
-    condition = this.get('isRefuter') ? !aCondition : aCondition;
+    //  If we're configured to be a 'refuter', then flip the condition result
+    //  and alter the fault string message.
+    if (this.get('isRefuter')) {
+        condition = !aCondition;
+        faultStr = aFaultString.replace(/to be/, 'to not be');
+    } else {
+        condition = aCondition;
+        faultStr = aFaultString;
+    }
 
-    return this.$assert(condition, aComment, aFaultString);
+    return this.$assert(condition, aComment, faultStr);
 });
 
 //  ------------------------------------------------------------------------
