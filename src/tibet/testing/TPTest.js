@@ -736,13 +736,27 @@ function(setup) {
 TP.test.Suite.Inst.defineMethod('executeAfter',
 function(result, options) {
 
-    var func;
+    var func,
+
+        drivers,
+        thisArg;
 
     this.set('msend', Date.now());
 
     //  Run any after() which was registered.
     func = this.get('afterAll');
     if (TP.isCallable(func)) {
+
+        //  We provide a 'then()', 'thenPromise()' and 'thenWait()' API to our
+        //  drivers.
+        thisArg = this;
+
+        drivers = this.$get('drivers');
+        drivers.getKeys().perform(
+                function(driverKey) {
+                    drivers.at(driverKey).set('promiseProvider', thisArg);
+                });
+
         try {
             //  Call the Function with ourself as 'this' and then ourself again
             //  as the first parameter and the options as the second parameter
@@ -779,13 +793,27 @@ function(currentcase, result, options) {
 TP.test.Suite.Inst.defineMethod('executeBefore',
 function(result, options) {
 
-    var func;
+    var func,
+
+        drivers,
+        thisArg;
 
     this.set('msstart', Date.now());
 
     //  Run any before() which was registered.
     func = this.get('beforeAll');
     if (TP.isCallable(func)) {
+
+        //  We provide a 'then()', 'thenPromise()' and 'thenWait()' API to our
+        //  drivers.
+        thisArg = this;
+
+        drivers = this.$get('drivers');
+        drivers.getKeys().perform(
+                function(driverKey) {
+                    drivers.at(driverKey).set('promiseProvider', thisArg);
+                });
+
         try {
             //  Call the Function with ourself as 'this' and then ourself again
             //  as the first parameter and the options as the second parameter
@@ -815,6 +843,26 @@ function(currentcase, result, options) {
             TP.sys.logTest('# error in beforeEach: ' + e.message);
         }
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('getDriver',
+function(aKey) {
+
+    /**
+     * Returns the test driver associated with this case's overall test suite.
+     * @param {String} aKey The key that the driver is registered under with the
+     *     suite. If this isn't supplied, the default key 'gui' is used, which
+     *     means this method will return the GUI driver.
+     * @return {Object} The test driver registered under aKey.
+     */
+
+    var driverKey;
+
+    driverKey = TP.ifInvalid(aKey, 'gui');
+
+    return this.$get('drivers').at(driverKey);
 });
 
 //  ------------------------------------------------------------------------
@@ -1877,7 +1925,8 @@ function(options) {
         this.$set('mslimit', options.at('case_timeout'));
     }
 
-    //  We provide a 'then()' and 'thenPromise()' API to our drivers.
+    //  We provide a 'then()', 'thenPromise()' and 'thenWait()' API to our
+    //  drivers.
     thisArg = this;
 
     drivers = this.getSuite().$get('drivers');
