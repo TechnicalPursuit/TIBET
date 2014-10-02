@@ -1832,7 +1832,7 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.TestMethodCollection.defineAssertion('invisible',
+TP.test.TestMethodCollection.defineAssertion('isInvisible',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
