@@ -1339,7 +1339,6 @@ function() {
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
         value = tpElem.get('value');
-        console.log(tpElem.get('nativeNode').selectedIndex);
         test.assert.isNull(value);
 
         //  null
