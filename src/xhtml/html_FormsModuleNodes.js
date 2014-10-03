@@ -3381,31 +3381,6 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.select.Inst.defineMethod('getElementArray',
-function() {
-
-    /**
-     * @name getElementArray
-     * @synopsis Returns the Array of native elements. In the case of a select
-     *     list this is the options[] "array". Beware, however. The so-called
-     *     options array isn't a fully functional array in all browsers so TIBET
-     *     array methods may not apply.
-     * @returns {Array} The array of native items.
-     * @raise TP.sig.InvalidNode
-     * @todo
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
-    }
-
-    return node.options;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.html.select.Inst.defineMethod('getDisplayValue',
 function() {
 
@@ -3458,6 +3433,64 @@ function() {
     }
 
     return selectionArray;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('getElementArray',
+function() {
+
+    /**
+     * @name getElementArray
+     * @synopsis Returns the Array of native elements. In the case of a select
+     *     list this is the options[] "array". Beware, however. The so-called
+     *     options array isn't a fully functional array in all browsers so TIBET
+     *     array methods may not apply.
+     * @returns {Array} The array of native items.
+     * @raise TP.sig.InvalidNode
+     * @todo
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode', arguments);
+    }
+
+    return TP.ac(node.options);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @name getValue
+     * @synopsis Returns the value of the receiver. This is a synonym for
+     *     returning the current display value. If the receiver is a bound
+     *     element that value should be in sync (other than differences due to
+     *     formatters) with the bound value.
+     * @returns {String} The value in string form.
+     */
+
+    return this.getDisplayValue();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('isScalarValued',
+function() {
+
+    /**
+     * @name isScalarValued
+     * @synopsis Returns true if the receiver deals with scalar values.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @returns {Boolean} For input types, this returns true.
+     */
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -3989,6 +4022,52 @@ function(aValue) {
 
     if (dirty) {
         this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @name setValue
+     * @synopsis Sets the value of the receiver's node. For a UI element this
+     *     method will ensure any display formatters are invoked. NOTE that this
+     *     method does not update the receiver's bound value if it's a bound
+     *     control. In fact, this method is used in response to a change in the
+     *     bound value to update the display value, so this method should avoid
+     *     changes to the bound value to avoid recursions.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {TP.core.UIElementNode} The receiver.
+     * @todo
+     */
+
+    var oldValue,
+        newValue,
+
+        flag;
+
+    oldValue = this.getValue();
+
+    newValue = this.produceValue(aValue);
+
+    this.setDisplayValue(newValue);
+
+    //  signal as needed
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.changed('value', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 
     return this;
