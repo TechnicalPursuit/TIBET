@@ -1181,6 +1181,288 @@ function() {
         test.assert.isEqualTo(value, 'baz');
     });
 
+    //  ---
+
+    this.it('textarea element - setting value to scalar values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byOID('textarea');
+
+        //  undefined
+        tpElem.set('value', testData.at(TP.UNDEF));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at(TP.UNDEF)));
+
+        //  null
+        tpElem.set('value', testData.at(TP.NULL));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at(TP.NULL)));
+
+        //  String
+        tpElem.set('value', testData.at('String'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at('String')));
+
+        //  Number
+        tpElem.set('value', testData.at('Number'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at('Number')));
+
+        //  Boolean
+        tpElem.set('value', testData.at('Boolean'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at('Boolean')));
+    });
+
+    //  ---
+
+    this.it('textarea element - setting value to complex object values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byOID('textarea');
+
+        //  RegExp
+        tpElem.set('value', testData.at('RegExp'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at('RegExp')));
+
+        //  Date
+        tpElem.set('value', testData.at('Date'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at('Date')));
+
+        //  Array
+        tpElem.set('value', testData.at('Array'));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, '1');
+
+        //  Object
+        tpElem.set('value', testData.at('Object'));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'bar');
+
+        //  TP.lang.Hash
+        tpElem.set('value', testData.at('TP.lang.Hash'));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'bar');
+    });
+
+    //  ---
+
+    this.it('textarea element - setting value to markup', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byOID('textarea');
+
+        //  XMLDocument
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'Hi there<boo><goo/></boo><moo/>');
+
+        //  XMLElement
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'bar');
+
+        //  AttributeNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'bar');
+
+        //  TextNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'foo');
+
+        //  CDATASectionNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'foo');
+
+        //  PINode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'bar');
+
+        //  CommentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'foo');
+
+        //  DocumentFragmentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, '<foo/><bar/>');
+
+        //  NodeList
+        tpElem.set('value', testData.at('NodeList'));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'Hi there');
+
+        //  NamedNodeMap
+        tpElem.set('value', testData.at('NamedNodeMap'));
+        value = tpElem.get('value');
+        //  <input type="text"/> is both single-valued and scalar-valued
+        test.assert.isEqualTo(value, 'baz');
+    });
+
+    //  ---
+
+    this.it('select element - setting value to scalar values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('select_single');
+
+        //  undefined
+        tpElem.set('value', testData.at(TP.UNDEF));
+        value = tpElem.get('value');
+        console.log(tpElem.get('nativeNode').selectedIndex);
+        test.assert.isNull(value);
+
+        //  null
+        tpElem.set('value', testData.at(TP.NULL));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  String
+        tpElem.set('value', testData.at('String'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at('String')));
+
+        //  Number
+        tpElem.set('value', testData.at('Number'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  Boolean
+        tpElem.set('value', testData.at('Boolean'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+    });
+
+    //  ---
+
+    this.it('select element - setting value to complex object values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('select_single');
+
+        //  RegExp
+        tpElem.set('value', testData.at('RegExp'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  Date
+        tpElem.set('value', testData.at('Date'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  Array
+        tpElem.set('value', TP.ac('foo','bar','baz'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  Object
+        tpElem.set('value', {'foo':'baz'});
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'baz');
+
+        //  TP.lang.Hash
+        tpElem.set('value', TP.hc('foo', 'bar'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+    });
+
+    //  ---
+
+    this.it('select element - setting value to markup', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byOID('select_single');
+
+        debugger;
+
+        //  XMLDocument
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  XMLElement
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+
+        //  AttributeNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+
+        //  TextNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  CDATASectionNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  PINode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+
+        //  CommentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  DocumentFragmentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  NodeList
+        tpElem.set('value', testData.at('NodeList'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  NamedNodeMap
+        tpElem.set('value', testData.at('NamedNodeMap'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'baz');
+    });
+
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
