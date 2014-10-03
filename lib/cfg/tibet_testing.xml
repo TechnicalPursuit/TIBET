@@ -36,10 +36,14 @@
 
 <config id="tests">
     <config ref="selftests"/>
+    <config ref="commonvalues"/>
+
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
     <config ref="formatting"/>
-    <config ref="events"/>
+    <config ref="ev"/>
+    <config ref="html"/>
+
     <config ref="shell"/>
     <config ref="uri"/>
     <config ref="xslt"/>
@@ -49,6 +53,10 @@
     <!--<script src="testing/TPTestSamples.js" />-->
     <script src="~lib_tst/src/tibet/testharness/TP.test.Suite_Tests.js" />
     <script src="~lib_tst/src/tibet/driver/TP.gui.Driver_Tests.js" />
+</config>
+
+<config id="commonvalues">
+    <script src="~lib_tst/src/TIBETObjectValues.js" />
 </config>
 
 <config id="tagprocessor">
@@ -66,8 +74,12 @@
     <script src="~lib_tst/src/tibet/formatting/TP.templateParser_Tests.js" />
 </config>
 
-<config id="events">
+<config id="ev">
     <script src="~lib_tst/src/ev/ev_Tests.js" />
+</config>
+
+<config id="html">
+    <script src="~lib_tst/src/html/html_Tests.js" />
 </config>
 
 <config id="shell">
