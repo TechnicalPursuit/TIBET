@@ -1410,8 +1410,6 @@ function() {
 
         tpElem = TP.byOID('select_single');
 
-        debugger;
-
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
         value = tpElem.get('value');
