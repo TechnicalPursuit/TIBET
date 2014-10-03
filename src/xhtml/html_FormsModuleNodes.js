@@ -1772,7 +1772,7 @@ function() {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    return node.elements;
+    return TP.ac(node.elements);
 });
 
 //  ------------------------------------------------------------------------
