@@ -1105,6 +1105,23 @@ TP.html.inputCheckable.isAbstract(true);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('allowsMultiples',
+function() {
+
+    /**
+     * @name allowsMultiples
+     * @synopsis Returns false since radio buttons, by their very nature, don't
+     *     allow multiple selection.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
+     * @raise TP.sig.InvalidNode
+     * @todo
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('addSelection',
 function(aValue, elementProperty) {
 
