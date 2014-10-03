@@ -4223,7 +4223,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @returns {TP.html.select} The receiver.
      * @todo
      */
 
