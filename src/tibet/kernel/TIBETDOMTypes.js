@@ -862,8 +862,12 @@ function(aContentObject, aRequest) {
 
     /**
      * @name addContent
-     * @synopsis Adds (appends) new content to the receiver, processing it first
-     *     for any tag transformations, interpolations, etc.
+     * @synopsis Adds the value supplied to the content of the receiver's native
+     *     DOM counterpart.
+     * @description At this level, this method merely sets adds to the text
+     *     content of the node what is produced by executing the
+     *     'produceContent' on the supplied content object. Subtypes should
+     *     override this method to provide a more specific version of this.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
      */
@@ -872,7 +876,7 @@ function(aContentObject, aRequest) {
 
     content = TP.str(this.getContent());
 
-    content += TP.str(this.produceContentValue(aContentObject, aRequest));
+    content += TP.str(this.produceContent(aContentObject, aRequest));
 
     this.setTextContent(content);
 
@@ -2045,7 +2049,7 @@ function() {
      * @name isScalarValued
      * @synopsis Returns true if the receiver deals with scalar values.
      * @description Most 'field-level' UI controls bind to scalar values (i.e.
-     *     Booleans, Numbers and Strings), but action tags and certain more
+     *     Booleans, Numbers and Strings), but action tags and certain other
      *     complex UI elements can bind to nodes or nodelists. In the first
      *     case, this method should return true and in the second it should
      *     return false.
@@ -2132,13 +2136,29 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('produceContentValue',
+TP.core.Node.Inst.defineMethod('produceContent',
 function(aContentObject, aRequest) {
 
     /**
-     * @name produceContentValue
-     * @synopsis Produces the content value that will be used by the
-     *     setContent() method to set the content of the receiver.
+     * @name produceContent
+     * @synopsis Produces the content that will be used by the addContent() and
+     *     setContent() methods to set the content of the receiver.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     */
+
+    return TP.str(aContentObject);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Inst.defineMethod('produceValue',
+function(aContentObject, aRequest) {
+
+    /**
+     * @name produceValue
+     * @synopsis Produces the value that will be used by the setValue() method
+     *     to set the content of the receiver.
      * @description This method works together with the 'isSingleValued()' and
      *     'isScalarValued()' methods to produce the proper value for the
      *     receiver. See the method description for isScalarValued() for more
@@ -2160,7 +2180,7 @@ function(aContentObject, aRequest) {
     //  single-valued... no point in either observing too much or in running it
     //  all through a formatting pipeline when we only want one value.
     if (this.isSingleValued()) {
-        input = this.$reduceContentValue(input, aRequest);
+        input = this.$reduceValue(input, aRequest);
     }
 
     //  If we're scalar-valued we can't process nodes as values. We need to
@@ -2202,17 +2222,33 @@ function(aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('$reduceContentValue',
-function(theContent, aRequest) {
+TP.core.Node.Inst.defineMethod('$reduceValue',
+function(theContent, anIndex) {
 
     /**
-     * @name reduceContentData
-     * @synopsis When the receiver isSingleValued() this method will return a
-     *     single object from a content result set (a nodelist or Array). The
-     *     result set must be an ordered collection for this method to operate
+     * @name $reduceValue
+     * @synopsis Reduces the content value to a 'single value'.
+     * @description When the receiver isSingleValued() this method will return a
+     *     single object from a content result set (a collection of some sort -
+     *     usually an Array, Object, TP.lang.Hash, NodeList or NamedNodeMap).
+     *     The result set must be a collection for this method to operate
      *     correctly. In all other cases the original content object is
-     *     returned.
+     *     returned. What this method returns depends on the type of content
+     *     handed to it:
+     *
+     *     Array            The content at the index supplied or at 0 if no
+     *                      index was supplied.
+     *     Object           The *value* of the content at the index supplied or
+     *                      at the first key if no index was supplied.
+     *     TP.lang.Hash     The *value* of the content at the index supplied or
+     *                      at the first key if no index was supplied.
+     *     NodeList         The content at the index supplied or at 0 if no
+     *                      index was supplied.
+     *     NamedNodeMap     The *value* of the content at the index supplied or
+     *                      at the first key if no index was supplied.
      * @param {Object} theContent The original content object.
+     * @param {Number|String} anIndex The index into the collection to use to
+     *     supply the value.
      * @returns {Object} The original data, or the proper "single object" from
      *     that collection.
      */
@@ -2225,16 +2261,23 @@ function(theContent, aRequest) {
         return theContent;
     }
 
-    result = theContent;
-    index = TP.ifKeyInvalid(aRequest, '$INDEX', 0);
+    if (!TP.isCollection(theContent) && !TP.isMemberOf(theContent, Object)) {
+        return theContent;
+    }
 
-    //  we would have run any XPath with 1-based indexing during the initial
-    //  content acquisition phase. If we still got back a nodelist or other
-    //  collection we're after the first entry in that list, and it'll be
-    //  using 0-based indexing
-    if (TP.canInvoke(result, TP.ac('at', 'getSize'))) {
+    result = theContent;
+
+    if (TP.isNodeList(result)) {
+        result = TP.ac(result);
+    }
+
+    //  Because of the conversion above, this handles both Arrays and NodeLists
+    if (TP.isArray(result)) {
+        index = TP.ifInvalid(anIndex, 0);
+
         len = result.getSize();
 
+        try {
         //  NB: We use 'native' syntax here as 'result' might be a NodeList
         if (index > len) {
             result = result.at(len - 1);
@@ -2243,20 +2286,19 @@ function(theContent, aRequest) {
         } else {
             result = result.at(index);
         }
-    } else if (TP.isNodeList(result)) {
-
-        len = result.length;
-
-        try {
-            if (index > len) {
-                result = result[len - 1];
-            } else if (index < 0) {
-                result = result[0];
-            } else {
-                result = result[index];
-            }
         } catch (e) {
             result = undefined;
+        }
+    } else {
+        //  This handles TP.lang.Hash, Objects and NamedNodeMaps
+
+        index = TP.ifInvalid(anIndex, TP.keys(result).first());
+
+        if (TP.isKindOf(result, TP.lang.Hash)) {
+
+            result = result.at(index);
+        } else {
+            result = result[index];
         }
     }
 
@@ -2292,16 +2334,16 @@ function(aContentObject, aRequest) {
      * @synopsis Sets the content of the receiver's native DOM counterpart to
      *     the value supplied.
      * @description At this level, this method merely sets the text content of
-     *     the node to what is produced by executing the 'produceContentValue'
-     *     on the content object. Subtypes should override this method to
-     *     provide a more specific version of this.
+     *     the node to what is produced by executing the 'produceContent'
+     *     on the supplied content object. Subtypes should override this method
+     *     to provide a more specific version of this.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
      */
 
     var content;
 
-    content = TP.str(this.produceContentValue(aContentObject, aRequest));
+    content = TP.str(this.produceContent(aContentObject, aRequest));
 
     this.setTextContent(content);
 
@@ -2548,7 +2590,8 @@ function(aValue, shouldSignal) {
      */
 
     var node,
-        text,
+        oldValue,
+        newValue,
         flag;
 
     //  fetch the value without preserving changes so we can test against
@@ -2556,19 +2599,21 @@ function(aValue, shouldSignal) {
     node = this.getNativeNode();
 
     //  capture a value so we can test for change
-    text = TP.nodeGetTextContent(node);
+    oldValue = TP.nodeGetTextContent(node);
 
     //  this test should be adequate for text comparison
-    if (aValue === text) {
+    if (aValue === oldValue) {
         return this;
     }
+
+    newValue = this.produceValue(aValue);
 
     //  refetch the true native node, preserving crud/deletes so the new
     //  value really sticks
     node = this.getNativeNode();
 
     //  set the text value if it appears it will change
-    TP.nodeSetTextContent(node, aValue);
+    TP.nodeSetTextContent(node, newValue);
 
     //  signal as needed
 
@@ -4796,12 +4841,13 @@ function(newContent, aRequest, stdinContent) {
         return this.empty();
     }
 
-    //  If the unwrapped content isn't a Node and the stringified content isn't
-    //  a URI and if the stringified content doesn't contain markup, then it
-    //  doesn't need to be processed but can just be set as the regular content
-    //  of the receiver, so we call up to the supertype to do that. At the Node
-    //  level, it is determined whether this is a scalar or single-value node
-    //  and might do some further processing on 'newContent' at that point.
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup, then
+    //  it doesn't need to be processed but can just be set as the regular
+    //  content of the receiver, so we call up to the supertype to do that. At
+    //  the Node level, it is determined whether this is a scalar or
+    //  single-value node and might do some further processing on 'newContent'
+    //  at that point.
     if (!TP.isElement(content = TP.unwrap(newContent)) &&
         !TP.isURI(content = TP.str(content)) &&
         !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
@@ -10661,9 +10707,12 @@ function(aValue, shouldSignal) {
      * @todo
      */
 
-    var flag;
+    var newValue,
+        flag;
 
-    this.setContent(aValue);
+    newValue = this.produceValue(aValue);
+
+    this.setContent(newValue);
 
     //  signal as needed
 
