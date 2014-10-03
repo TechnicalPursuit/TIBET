@@ -1152,7 +1152,7 @@ function(aValue, elementProperty) {
         return this.raise(
                 'TP.sig.InvalidOperation',
                 arguments,
-                'Target TP.html.select does not allow multiple selection');
+                'Target TP.html.inputCheckable does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
@@ -1253,7 +1253,7 @@ function() {
      * @name deselectAll
      * @synopsis Clears any current selection(s).
      * @raise TP.sig.InvalidElementArray
-     * @returns {TP.html.select} The receiver.
+     * @returns {TP.html.inputCheckable} The receiver.
      */
 
     var elementArray,
@@ -1459,7 +1459,7 @@ function(aValue, elementProperty) {
         return this.raise(
                 'TP.sig.InvalidOperation',
                 arguments,
-                'Target TP.html.select does not allow multiple selection');
+                'Target TP.html.inputCheckable does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
