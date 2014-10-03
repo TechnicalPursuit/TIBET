@@ -3348,6 +3348,11 @@ function() {
         TP.elementRemoveAttribute(elementArray.at(i), 'selected', true);
     }
 
+    //  Make sure to set selectedIndex to -1 here - some browsers don't seem to
+    //  set this to -1 when all options are deselected and it definitely helps
+    //  when reading the value back out.
+    this.getNativeNode().selectedIndex = -1;
+
     if (dirty) {
         this.changed('selection', TP.UPDATE);
     }
@@ -3967,11 +3972,16 @@ function(aValue) {
      */
 
     var elementArray,
+
         value,
+
         dict,
-        dirty,
+        keys,
         len,
-        i;
+        i,
+
+        dirty,
+        deselectCount;
 
     //  empty value means clear any selection(s)
     if (TP.isEmpty(aValue)) {
@@ -3996,11 +4006,33 @@ function(aValue) {
     //  avoid MxN iterations by creating a hash of values
     if (TP.isArray(value)) {
         dict = TP.hc().addAllKeys(value, '');
+    } else if (TP.isKindOf(value, TP.lang.Hash)) {
+        dict = TP.hc().addAllKeys(value.getValues());
+    } else if (TP.isMemberOf(value, Object)) {
+        dict = TP.hc();
+        keys = TP.keys(value);
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            dict.atPut(value[keys.at(i)], i);
+        }
+    } else if (TP.isNodeList(value)) {
+        dict = TP.hc();
+        len = value.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(value[keys.at(i)]), i);
+        }
+    } else if (TP.isNamedNodeMap(value)) {
+        dict = TP.hc();
+        len = value.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(value.item(i)), i);
+        }
     } else {
         dict = TP.hc(value, '');
     }
 
     dirty = false;
+    deselectCount = 0;
 
     len = elementArray.getSize();
     for (i = 0; i < len; i++) {
@@ -4017,7 +4049,15 @@ function(aValue) {
             }
             elementArray.at(i).selected = false;
             TP.elementRemoveAttribute(elementArray.at(i), 'selected', true);
+            deselectCount++;
         }
+    }
+
+    //  If there are no selections now, make sure to set selectedIndex to -1
+    //  here - some browsers don't seem to set this to -1 when all options are
+    //  deselected and it definitely helps when reading the value back out.
+    if (deselectCount === i) {
+        this.getNativeNode().selectedIndex = -1;
     }
 
     if (dirty) {
