@@ -4396,6 +4396,8 @@ function(newContent, aRequest) {
         content,
         request,
 
+        arrContent,
+
         func,
         thisref,
 
@@ -4414,7 +4416,19 @@ function(newContent, aRequest) {
     content = TP.unwrap(newContent);
 
     if (!TP.isKindOf(content, Node) && !TP.isString(content)) {
-        content = TP.str(content);
+
+        //  If the content is an Array, then we want the individual
+        //  '.asString()' representations of each item - not what Array gives
+        //  us.
+        if (TP.isArray(arrContent = content)) {
+            content = '';
+            arrContent.perform(
+                    function(item) {
+                        content += TP.str(item);
+                    });
+        } else {
+            content = TP.str(content);
+        }
     }
 
     func = this.getContentPrimitive(TP.APPEND);
@@ -4627,6 +4641,8 @@ function(newContent, aPositionOrPath, aRequest) {
         content,
         request,
 
+        arrContent,
+
         func,
         thisref,
 
@@ -4645,7 +4661,19 @@ function(newContent, aPositionOrPath, aRequest) {
     content = TP.unwrap(newContent);
 
     if (!TP.isKindOf(content, Node) && !TP.isString(content)) {
-        content = TP.str(content);
+
+        //  If the content is an Array, then we want the individual
+        //  '.asString()' representations of each item - not what Array gives
+        //  us.
+        if (TP.isArray(arrContent = content)) {
+            content = '';
+            arrContent.perform(
+                    function(item) {
+                        content += TP.str(item);
+                    });
+        } else {
+            content = TP.str(content);
+        }
     }
 
     func = this.getContentPrimitive(TP.INSERT);
@@ -4838,6 +4866,8 @@ function(newContent, aRequest) {
         content,
         request,
 
+        arrContent,
+
         func,
         thisref,
 
@@ -4862,7 +4892,19 @@ function(newContent, aRequest) {
     content = TP.unwrap(newContent);
 
     if (!TP.isKindOf(content, Node) && !TP.isString(content)) {
-        content = TP.str(content);
+
+        //  If the content is an Array, then we want the individual
+        //  '.asString()' representations of each item - not what Array gives
+        //  us.
+        if (TP.isArray(arrContent = content)) {
+            content = '';
+            arrContent.perform(
+                    function(item) {
+                        content += TP.str(item);
+                    });
+        } else {
+            content = TP.str(content);
+        }
     }
 
     func = this.getContentPrimitive(TP.UPDATE);
