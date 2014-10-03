@@ -2093,8 +2093,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2193,8 +2192,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2280,8 +2278,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    //  You can't set the value of a <input type="password"/> field
 
     return this;
 });
@@ -2354,8 +2351,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2667,8 +2663,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2741,7 +2736,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2840,7 +2835,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -4127,7 +4122,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
