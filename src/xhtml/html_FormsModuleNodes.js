@@ -571,28 +571,28 @@ function(aValue, shouldSignal) {
      *     bound value to update the display value, so this method should avoid
      *     changes to the bound value to avoid recursions.
      * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} shouldSignal Should changes be notified. If false changes
-     *     are not signaled. Defaults to this.shouldSignalChange().
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.UIElementNode} The receiver.
      * @todo
      */
 
-    var oldVal,
+    var oldValue,
+        newValue,
 
-        value,
         flag;
 
-    oldVal = this.getValue();
+    oldValue = this.getValue();
+
+    newValue = this.produceValue(aValue);
 
     //  showas is the attribute we use to define formatting pipelines for
     //  the UI controls, so if we have that attribute we have formatting
     if (this.hasAttribute('xctrls:showas')) {
-        value = this.$formatValue(aValue, 'xctrls:showas');
-    } else {
-        value = aValue;
+        newValue = this.$formatValue(newValue, 'xctrls:showas');
     }
 
-    this.setDisplayValue(value);
+    this.setDisplayValue(newValue);
 
     //  signal as needed
 
@@ -603,7 +603,7 @@ function(aValue, shouldSignal) {
 
     if (flag) {
         this.changed('value', TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, value));
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 
     return this;
@@ -1152,7 +1152,7 @@ function(aValue, elementProperty) {
         return this.raise(
                 'TP.sig.InvalidOperation',
                 arguments,
-                'Target TP.html.select does not allow multiple selection');
+                'Target TP.html.inputCheckable does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
@@ -1253,7 +1253,7 @@ function() {
      * @name deselectAll
      * @synopsis Clears any current selection(s).
      * @raise TP.sig.InvalidElementArray
-     * @returns {TP.html.select} The receiver.
+     * @returns {TP.html.inputCheckable} The receiver.
      */
 
     var elementArray,
@@ -1459,7 +1459,7 @@ function(aValue, elementProperty) {
         return this.raise(
                 'TP.sig.InvalidOperation',
                 arguments,
-                'Target TP.html.select does not allow multiple selection');
+                'Target TP.html.inputCheckable does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
@@ -1772,7 +1772,7 @@ function() {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    return node.elements;
+    return TP.ac(node.elements);
 });
 
 //  ------------------------------------------------------------------------
@@ -2093,8 +2093,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2193,8 +2192,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2280,8 +2278,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    //  You can't set the value of a <input type="password"/> field
 
     return this;
 });
@@ -2354,8 +2351,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2667,8 +2663,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    //  not gonna work, but hey, we can try :)
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2741,7 +2736,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -2840,7 +2835,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
@@ -3353,6 +3348,11 @@ function() {
         TP.elementRemoveAttribute(elementArray.at(i), 'selected', true);
     }
 
+    //  Make sure to set selectedIndex to -1 here - some browsers don't seem to
+    //  set this to -1 when all options are deselected and it definitely helps
+    //  when reading the value back out.
+    this.getNativeNode().selectedIndex = -1;
+
     if (dirty) {
         this.changed('selection', TP.UPDATE);
     }
@@ -3382,31 +3382,6 @@ function(aTargetElem, anEvent) {
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
     }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.select.Inst.defineMethod('getElementArray',
-function() {
-
-    /**
-     * @name getElementArray
-     * @synopsis Returns the Array of native elements. In the case of a select
-     *     list this is the options[] "array". Beware, however. The so-called
-     *     options array isn't a fully functional array in all browsers so TIBET
-     *     array methods may not apply.
-     * @returns {Array} The array of native items.
-     * @raise TP.sig.InvalidNode
-     * @todo
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
-    }
-
-    return node.options;
 });
 
 //  ------------------------------------------------------------------------
@@ -3463,6 +3438,64 @@ function() {
     }
 
     return selectionArray;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('getElementArray',
+function() {
+
+    /**
+     * @name getElementArray
+     * @synopsis Returns the Array of native elements. In the case of a select
+     *     list this is the options[] "array". Beware, however. The so-called
+     *     options array isn't a fully functional array in all browsers so TIBET
+     *     array methods may not apply.
+     * @returns {Array} The array of native items.
+     * @raise TP.sig.InvalidNode
+     * @todo
+     */
+
+    var node;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode', arguments);
+    }
+
+    return TP.ac(node.options);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @name getValue
+     * @synopsis Returns the value of the receiver. This is a synonym for
+     *     returning the current display value. If the receiver is a bound
+     *     element that value should be in sync (other than differences due to
+     *     formatters) with the bound value.
+     * @returns {String} The value in string form.
+     */
+
+    return this.getDisplayValue();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('isScalarValued',
+function() {
+
+    /**
+     * @name isScalarValued
+     * @synopsis Returns true if the receiver deals with scalar values.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @returns {Boolean} For input types, this returns true.
+     */
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -3939,11 +3972,16 @@ function(aValue) {
      */
 
     var elementArray,
+
         value,
+
         dict,
-        dirty,
+        keys,
         len,
-        i;
+        i,
+
+        dirty,
+        deselectCount;
 
     //  empty value means clear any selection(s)
     if (TP.isEmpty(aValue)) {
@@ -3968,11 +4006,33 @@ function(aValue) {
     //  avoid MxN iterations by creating a hash of values
     if (TP.isArray(value)) {
         dict = TP.hc().addAllKeys(value, '');
+    } else if (TP.isKindOf(value, TP.lang.Hash)) {
+        dict = TP.hc().addAllKeys(value.getValues());
+    } else if (TP.isMemberOf(value, Object)) {
+        dict = TP.hc();
+        keys = TP.keys(value);
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            dict.atPut(value[keys.at(i)], i);
+        }
+    } else if (TP.isNodeList(value)) {
+        dict = TP.hc();
+        len = value.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(value[keys.at(i)]), i);
+        }
+    } else if (TP.isNamedNodeMap(value)) {
+        dict = TP.hc();
+        len = value.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(value.item(i)), i);
+        }
     } else {
         dict = TP.hc(value, '');
     }
 
     dirty = false;
+    deselectCount = 0;
 
     len = elementArray.getSize();
     for (i = 0; i < len; i++) {
@@ -3989,11 +4049,65 @@ function(aValue) {
             }
             elementArray.at(i).selected = false;
             TP.elementRemoveAttribute(elementArray.at(i), 'selected', true);
+            deselectCount++;
         }
+    }
+
+    //  If there are no selections now, make sure to set selectedIndex to -1
+    //  here - some browsers don't seem to set this to -1 when all options are
+    //  deselected and it definitely helps when reading the value back out.
+    if (deselectCount === i) {
+        this.getNativeNode().selectedIndex = -1;
     }
 
     if (dirty) {
         this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @name setValue
+     * @synopsis Sets the value of the receiver's node. For a UI element this
+     *     method will ensure any display formatters are invoked. NOTE that this
+     *     method does not update the receiver's bound value if it's a bound
+     *     control. In fact, this method is used in response to a change in the
+     *     bound value to update the display value, so this method should avoid
+     *     changes to the bound value to avoid recursions.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {TP.core.UIElementNode} The receiver.
+     * @todo
+     */
+
+    var oldValue,
+        newValue,
+
+        flag;
+
+    oldValue = this.getValue();
+
+    newValue = this.produceValue(aValue);
+
+    this.setDisplayValue(newValue);
+
+    //  signal as needed
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.changed('value', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 
     return this;
@@ -4127,7 +4241,7 @@ function(aValue) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    node.value = aValue;
+    node.value = TP.str(aValue);
 
     return this;
 });
