@@ -571,28 +571,28 @@ function(aValue, shouldSignal) {
      *     bound value to update the display value, so this method should avoid
      *     changes to the bound value to avoid recursions.
      * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} shouldSignal Should changes be notified. If false changes
-     *     are not signaled. Defaults to this.shouldSignalChange().
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.UIElementNode} The receiver.
      * @todo
      */
 
-    var oldVal,
+    var oldValue,
+        newValue,
 
-        value,
         flag;
 
-    oldVal = this.getValue();
+    oldValue = this.getValue();
+
+    newValue = this.produceValue(aValue);
 
     //  showas is the attribute we use to define formatting pipelines for
     //  the UI controls, so if we have that attribute we have formatting
     if (this.hasAttribute('xctrls:showas')) {
-        value = this.$formatValue(aValue, 'xctrls:showas');
-    } else {
-        value = aValue;
+        newValue = this.$formatValue(newValue, 'xctrls:showas');
     }
 
-    this.setDisplayValue(value);
+    this.setDisplayValue(newValue);
 
     //  signal as needed
 
@@ -603,7 +603,7 @@ function(aValue, shouldSignal) {
 
     if (flag) {
         this.changed('value', TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, value));
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 
     return this;
