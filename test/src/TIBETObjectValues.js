@@ -162,7 +162,7 @@ function(aRequest) {
     nullVal = null;
 
     booleanVal = true;
-    stringVal = 'value';
+    stringVal = 'bar';
     numberVal = 42;
 
     regexpVal = /foo/g;
