@@ -551,11 +551,6 @@ TP.boot.$stdout = TP.STDOUT_LOG;
 //  ERROR-HANDLING
 //  ----------------------------------------------------------------------------
 
-//  capture current state so we can reset it. setting it to null doesn't
-//  work in all environments so we can put it back in place only by using
-//  window.onerror = TP.sys.offerror;
-TP.sys.offerror = window.onerror;
-
 //  define a new one we can count on to call TP.boot.$stderr for us, the
 //  TIBET kernel will define a similar one itself for TIBET applications
 window.onerror = function(msg, url, line, column, errorObj) {

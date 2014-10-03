@@ -45,9 +45,6 @@ $$checked = null;
 //  the shared codebase for the application.
 $$tibet = null;
 
-//  save old error handler.
-window.offerror = window.onerror;
-
 window.onerror = function(msg, url, line, column, errorObj) {
     var str;
 

@@ -1785,8 +1785,8 @@ function(shouldNotify, shouldThrow, stackDepth) {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('onerror',
-function(msg, url, line, column, errorObj) {
+// NOTE: DO NOT REGISTER THIS...
+TP.sys.onerror = function(msg, url, line, column, errorObj) {
 
     /**
      * @name onerror
@@ -1843,18 +1843,7 @@ function(msg, url, line, column, errorObj) {
     $STATUS = TP.FAILURE;
 
     return TP.sys.shouldCaptureErrors();
-});
-
-//  ------------------------------------------------------------------------
-
-//  hold the original. this allows you to flip back to the original hook
-//  via window.onerror = TP.sys.offerror;
-
-//  NOTE the boot system does this too, so we have to be sure we don't get
-//  rid of the true original
-if (TP.notValid(TP.sys.offerror)) {
-    TP.sys.offerror = window.onerror;
-}
+};
 
 //  install our version...
 window.onerror = TP.sys.onerror;
