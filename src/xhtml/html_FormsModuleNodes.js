@@ -1216,30 +1216,55 @@ function(aValue, elementProperty) {
 //  ------------------------------------------------------------------------
 
 TP.html.inputCheckable.Inst.defineMethod('deselect',
-function() {
+function(aValue) {
 
     /**
      * @name deselect
-     * @synopsis Causes the receiver to deselect (i.e. on this type it emulates
-     *     a 'click' that turns it off.
+     * @synopsis De-selects (clears) the option with the value provided.
+     * @param {Object} aValue The value to de-select. Note that this can be an
+     *     array. Also note that if no value is provided this will deselect
+     *     (clear) all selected items.
+     * @raise TP.sig.InvalidElementArray
      * @returns {TP.html.inputCheckable} The receiver.
-     * @raise TP.sig.InvalidNode
-     * @todo
      */
 
-    var node;
+    var elementArray,
+        dict,
+        dirty,
+        len,
+        i;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+    if (TP.isEmpty(aValue)) {
+        return this.deselectAll();
     }
 
-    //  if we're off then this is a noop
-    if (TP.isFalse(node.checked)) {
-        return this;
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
-    node.checked = false;
-    this.removeAttribute('checked');
+    //  avoid MxN iterations by creating a hash of values
+    if (TP.isArray(aValue)) {
+        dict = TP.hc().addAllKeys(aValue, '');
+    } else {
+        dict = TP.hc(aValue, '');
+    }
+
+    dirty = false;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (dict.containsKey(elementArray.at(i).value)) {
+            if (elementArray.at(i).checked) {
+                dirty = true;
+            }
+            elementArray.at(i).checked = false;
+            TP.elementRemoveAttribute(elementArray.at(i), 'checked', true);
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
 
     return this;
 });
@@ -1290,19 +1315,45 @@ function() {
 
     /**
      * @name getDisplayValue
-     * @synopsis Returns the checked state of the receiver.
-     * @returns {Boolean}
+     * @synopsis Returns the selected value of the select list. This corresponds
+     *     to the value of the currently selected item or items.
+     * @returns {String|Array} A String containing the selected value or an
+     *     Array of zero or more selected values if the receiver is set up to
+     *     allow multiple selections.
      * @raise TP.sig.InvalidNode
      * @todo
      */
 
-    var node;
+    var node,
+        elementArray,
+        selectionArray,
+        len,
+        i;
 
     if (TP.notValid(node = this.getNativeNode())) {
         return this.raise('TP.sig.InvalidNode', arguments);
     }
 
-    return TP.bc(node.checked);
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
+    }
+
+    selectionArray = TP.ac();
+
+    //  Loop over all of the elements and if the element at the index is
+    //  selected, add it to the Array of selected elements.
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (elementArray.at(i).checked) {
+            selectionArray.push(elementArray.at(i).value);
+        }
+    }
+
+    if (!this.allowsMultiples()) {
+        return selectionArray.first();
+    }
+
+    return selectionArray;
 });
 
 //  ------------------------------------------------------------------------
@@ -1331,10 +1382,72 @@ function() {
         return TP.ac();
     }
 
-    //  Run a CSS access path, which will return an Array of all of the elements
+    //  Run a CSS selector, which will return an Array of all of the elements
     //  (including the receiver's native node) that share the same name as the
     //  receiver.
-    return this.get(TP.cpc('*[name="' + name + '"]'));
+    return TP.byCSS('input[name="' + name + '"]', this.getNativeDocument());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('getSubmitName',
+function() {
+
+    /**
+     * @name getSubmitName
+     * @synopsis Returns the name under which the receiver would be submitted
+     *     when used in a forms context.
+     * @returns {TP.html.inputRadio} The receiver.
+     * @raise TP.sig.InvalidNode
+     * @todo
+     */
+
+    var node,
+        key;
+
+    if (TP.notValid(node = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidNode', arguments);
+    }
+
+    key = TP.elementGetAttribute(node, 'id');
+    if (TP.isEmpty(key)) {
+        key = TP.elementGetAttribute(node, 'name');
+    }
+
+    return key;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @name getValue
+     * @synopsis Returns the value of the receiver. This is a synonym for
+     *     returning the current display value. If the receiver is a bound
+     *     element that value should be in sync (other than differences due to
+     *     formatters) with the bound value.
+     * @returns {String} The value in string form.
+     */
+
+    return this.getDisplayValue();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('isScalarValued',
+function() {
+
+    /**
+     * @name isScalarValued
+     * @synopsis Returns true if the receiver deals with scalar values.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @returns {Boolean} For input types, this returns true.
+     */
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -1523,30 +1636,78 @@ function(aValue, elementProperty) {
 //  ------------------------------------------------------------------------
 
 TP.html.inputCheckable.Inst.defineMethod('select',
-function() {
+function(aValue) {
 
     /**
      * @name select
-     * @synopsis Causes the receiver to select (i.e. on this type it emulates a
-     *     'click').
+     * @synopsis Selects the option with the value provided if found. Note that
+     *     this method is roughly identical to setDisplayValue with the
+     *     exception that this method does not clear existing selections when
+     *     processing the value(s) provided. When no specific values are
+     *     provided this method will selectAll.
+     * @param {Object} aValue The value to select. Note that this can be an
+     *     array.
+     * @raise TP.sig.InvalidOperation,TP.sig.InvalidElementArray
      * @returns {TP.html.inputCheckable} The receiver.
-     * @raise TP.sig.InvalidNode
-     * @todo
      */
 
-    var node;
+    var value,
+        elementArray,
+        dict,
+        dirty,
+        len,
+        i;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+    //  no value? full selection
+    if (TP.isEmpty(aValue)) {
+        return this.selectAll();
     }
 
-    //  if we're on then this is a noop
-    if (node.checked) {
-        return this;
+    if (TP.isString(aValue)) {
+        value = aValue.split(' ').collapse();
+    } else {
+        value = aValue;
     }
 
-    node.checked = true;
-    this.setAttribute('checked', 'checked');
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                arguments,
+                'Target TP.html.select does not allow multiple selection');
+    }
+
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
+    }
+
+    //  avoid MxN iterations by creating a hash of values
+    if (TP.isArray(value)) {
+        dict = TP.hc().addAllKeys(value);
+    } else {
+        dict = TP.hc(value, '');
+    }
+
+    dirty = false;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        //  NOTE that we don't clear ones that don't match, we just add the
+        //  new items to the selection
+        if (dict.containsKey(elementArray.at(i).value)) {
+            if (!elementArray.at(i).checked) {
+                dirty = true;
+            }
+
+            elementArray.at(i).checked = true;
+            TP.elementSetAttribute(
+                        elementArray.at(i), 'checked', 'checked', true);
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
 
     return this;
 });
@@ -1608,21 +1769,146 @@ function(aValue) {
 
     /**
      * @name setDisplayValue
-     * @synopsis Sets the checked state of the receiver. NOTE that when using
-     *     this method the current locale's list of FALSE_STRINGS as will
-     *     determine whether a value's boolean equivalent is true or false. So
-     *     you can send "false" as a string and turn off the checkbox unlike
-     *     standard HTML.
+     * @synopsis Sets the receivers' value to the value provided (if it matches
+     *     the value of an item in the group). Note that any selected items not
+     *     provided in aValue are cleared, which is different than the behavior
+     *     of selectValue() which simply adds the new selected items to the
+     *     existing selection.
+     * @param {Object} aValue The value to set (select) in the receiver. For a
+     *     select list this might be an array.
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
-    var val;
+    var elementArray,
 
-    val = TP.bc(aValue);
-    if (val) {
-        this.on();
+        value,
+
+        dict,
+        keys,
+        len,
+        i,
+
+        dirty,
+        deselectCount;
+
+    //  empty value means clear any selection(s)
+    if (TP.isEmpty(aValue)) {
+        return this.deselectAll();
+    }
+
+    if (TP.notValid(elementArray = this.getElementArray())) {
+        return this.raise('TP.sig.InvalidElementArray', arguments);
+    }
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(' ').collapse();
     } else {
-        this.off();
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        value = value.at(0);
+    }
+
+    //  avoid MxN iterations by creating a hash of values
+    if (TP.isArray(value)) {
+        dict = TP.hc().addAllKeys(value, '');
+    } else if (TP.isKindOf(value, TP.lang.Hash)) {
+        dict = TP.hc().addAllKeys(value.getValues());
+    } else if (TP.isMemberOf(value, Object)) {
+        dict = TP.hc();
+        keys = TP.keys(value);
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            dict.atPut(value[keys.at(i)], i);
+        }
+    } else if (TP.isNodeList(value)) {
+        dict = TP.hc();
+        len = value.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(value[keys.at(i)]), i);
+        }
+    } else if (TP.isNamedNodeMap(value)) {
+        dict = TP.hc();
+        len = value.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(value.item(i)), i);
+        }
+    } else {
+        dict = TP.hc(value, '');
+    }
+
+    dirty = false;
+    deselectCount = 0;
+
+    len = elementArray.getSize();
+    for (i = 0; i < len; i++) {
+        if (dict.containsKey(elementArray.at(i).value)) {
+            if (!elementArray.at(i).checked) {
+                dirty = true;
+            }
+            elementArray.at(i).checked = true;
+            TP.elementSetAttribute(
+                    elementArray.at(i), 'checked', 'checked', true);
+        } else {
+            if (elementArray.at(i).checked) {
+                dirty = true;
+            }
+            elementArray.at(i).checked = false;
+            TP.elementRemoveAttribute(elementArray.at(i), 'checked', true);
+            deselectCount++;
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @name setValue
+     * @synopsis Sets the value of the receiver's node. For a UI element this
+     *     method will ensure any display formatters are invoked. NOTE that this
+     *     method does not update the receiver's bound value if it's a bound
+     *     control. In fact, this method is used in response to a change in the
+     *     bound value to update the display value, so this method should avoid
+     *     changes to the bound value to avoid recursions.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {TP.html.inputCheckable} The receiver.
+     * @todo
+     */
+
+    var oldValue,
+        newValue,
+
+        flag;
+
+    oldValue = this.getValue();
+
+    newValue = this.produceValue(aValue);
+
+    this.setDisplayValue(newValue);
+
+    //  signal as needed
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.changed('value', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 
     return this;
@@ -2387,186 +2673,6 @@ function() {
      */
 
     return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputRadio.Inst.defineMethod('off',
-function() {
-
-    /**
-     * @name off
-     * @synopsis Sets the receiver to the 'off' state, a noop for radios.
-     * @returns {TP.html.inputRadio} The receiver.
-     * @raise TP.sig.InvalidNode
-     * @todo
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
-    }
-
-    node.checked = false;
-    this.removeAttribute('checked');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputRadio.Inst.defineMethod('on',
-function() {
-
-    /**
-     * @name on
-     * @synopsis Sets the receiver to the 'on' state, which sets its checked
-     *     value to true.
-     * @returns {TP.html.inputRadio} The receiver.
-     * @raise TP.sig.InvalidNode
-     * @todo
-     */
-
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
-    }
-
-    node.checked = true;
-    this.setAttribute('checked', 'checked');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputRadio.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @name getDisplayValue
-     * @synopsis Returns the value of the radio group selection. This
-     *     corresponds to the value of the currently selected item.
-     * @returns {Object} The value of the currently selected radio button.
-     * @raise TP.sig.InvalidNode
-     * @todo
-     */
-
-    var node,
-        name,
-        doc,
-        items,
-        len,
-        i,
-        item;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
-    }
-
-    name = TP.elementGetAttribute(node, 'name');
-    if (TP.isEmpty(name)) {
-        return this.raise('TP.sig.InvalidName', arguments,
-                                'Radio item missing name attribute');
-    }
-
-    doc = this.getNativeDocument();
-    items = TP.nodeGetDescendantElementsByName(doc, name);
-
-    //  find the selected element and stop when found
-    len = items.getSize();
-    for (i = 0; i < len; i++) {
-        item = items.at(i);
-        if (item.checked ||
-            (TP.elementGetAttribute(item, 'checked') === 'checked')) {
-            //  the selected element's string value
-            return item.value;
-        }
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputRadio.Inst.defineMethod('getSubmitName',
-function() {
-
-    /**
-     * @name getSubmitName
-     * @synopsis Returns the name under which the receiver would be submitted
-     *     when used in a forms context.
-     * @returns {TP.html.inputRadio} The receiver.
-     * @raise TP.sig.InvalidNode
-     * @todo
-     */
-
-    var node,
-        key;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
-    }
-
-    key = TP.elementGetAttribute(node, 'id');
-    if (TP.isEmpty(key)) {
-        key = TP.elementGetAttribute(node, 'name');
-    }
-
-    return key;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.inputRadio.Inst.defineMethod('setDisplayValue',
-function(aValue) {
-
-    /**
-     * @name setDisplayValue
-     * @synopsis Sets the receivers' value to the value provided (if it matches
-     *     the value of an item in the group).
-     * @param {Object} aValue The value to set (select) in the receiver.
-     * @returns {TP.html.inputRadio} The receiver.
-     * @raise TP.sig.InvalidNode
-     * @todo
-     */
-
-    var node,
-        name,
-        doc,
-        items,
-        len,
-        i,
-        item;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
-    }
-
-    if (TP.isEmpty(name = TP.elementGetAttribute(node, 'name'))) {
-        return this.raise('TP.sig.InvalidName', arguments,
-                                'Radio item missing name attribute');
-    }
-
-    doc = this.getNativeDocument();
-    items = TP.nodeGetDescendantElementsByName(doc, name);
-
-    len = items.getSize();
-    for (i = 0; i < len; i++) {
-        item = items.at(i);
-
-        if (item.value === aValue) {
-            item.checked = true;
-            TP.elementSetAttribute(item, 'checked', 'checked');
-        } else {
-            item.checked = false;
-            TP.elementRemoveAttribute(item, 'checked');
-        }
-    }
-
-    return this;
 });
 
 //  ========================================================================
