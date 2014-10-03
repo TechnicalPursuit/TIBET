@@ -2328,6 +2328,23 @@ TP.html.inputClickable.defineSubtype('inputRange');
 
 TP.html.inputCheckable.defineSubtype('inputCheckbox');
 
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckbox.Inst.defineMethod('isSingleValued',
+function() {
+
+    /**
+     * @name isSingleValued
+     * @synopsis Returns true if the receiver deals with single values.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @returns {Boolean} True when single valued.
+     */
+
+    //  Checkbox (arrays) are not single valued.
+    return false;
+});
+
 //  ========================================================================
 //  TP.html.inputEmail
 //  ========================================================================
