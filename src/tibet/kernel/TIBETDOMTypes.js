@@ -2065,6 +2065,7 @@ function() {
      *     X(HT)ML node        true                  true
      *     X(HT)ML element     false                 false
      *     <html:input>        true                  true
+     *     <html:textarea>     true                  true
      *     <html:select>       true                  false
      *
      * @returns {Boolean} True when scalar valued.
@@ -2170,9 +2171,11 @@ function(aContentObject, aRequest) {
     var input,
         value,
 
-        arr,
+        result,
         len,
-        i;
+        i,
+
+        keys;
 
     input = aContentObject;
 
@@ -2191,23 +2194,48 @@ function(aContentObject, aRequest) {
         if (TP.isNode(input)) {
             value = TP.val(input);
         } else if (TP.isNodeList(input)) {
-            //  Since we're scalar-valued we want nodelists to be converted to
-            //  arrays of the node "values" in text form
-            arr = TP.ac();
+            //  Since we're scalar-valued we want NodeLists to be converted to
+            //  Arrays of the node "values" in text form
+            result = TP.ac();
             len = input.length;
             for (i = 0; i < len; i++) {
-                arr.atPut(i, TP.val(input[i]));
+                result.atPut(i, TP.val(input[i]));
             }
-            value = arr;
+            value = result;
+        } else if (TP.isNamedNodeMap(input)) {
+            //  Since we're scalar-valued we want NamedNodeMaps to be converted
+            //  to Arrays of the map "values" in text form
+            result = TP.ac();
+            len = input.length;
+            for (i = 0; i < len; i++) {
+                result.atPut(i, TP.val(input.item(i)));
+            }
+            value = result;
         } else if (TP.isArray(input)) {
             //  For arrays that aren't nodelists we'll ask for the value via a
             //  more general-purpose routine
-            arr = TP.ac();
+            result = TP.ac();
             len = input.getSize();
             for (i = 0; i < len; i++) {
-                arr.atPut(i, TP.val(input.at(i)));
+                result.atPut(i, TP.val(input.at(i)));
             }
-            value = arr;
+            value = result;
+        } else if (TP.isKindOf(input, TP.lang.Hash)) {
+            result = TP.hc();
+            keys = input.getKeys();
+            len = keys.getSize();
+            for (i = 0; i < len; i++) {
+                result.atPut(keys.at(i), TP.val(input.at(keys.at(i))));
+            }
+            value = result;
+        } else if (TP.isMemberOf(input, Object)) {
+            result = {};
+            keys = TP.keys(input);
+            len = keys.getSize();
+            for (i = 0; i < len; i++) {
+                result[keys.at(i)] = TP.val(input[keys.at(i)]);
+            }
+            value = result;
         } else {
             //  Anything else we'll try to convert using our general purpose
             //  value routine, which quite often returns the string value
@@ -2295,7 +2323,6 @@ function(theContent, anIndex) {
         index = TP.ifInvalid(anIndex, TP.keys(result).first());
 
         if (TP.isKindOf(result, TP.lang.Hash)) {
-
             result = result.at(index);
         } else {
             result = result[index];
@@ -12151,7 +12178,7 @@ function(aValue, signalFlag) {
 
     if (TP.isValid(tpElem = this.getDocumentElement())) {
 
-        //  NB: This should signal change
+        //  NB: This will signal change
         tpElem.setValue(aValue, signalFlag);
 
         return this;
