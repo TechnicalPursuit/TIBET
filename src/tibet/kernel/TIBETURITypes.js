@@ -2985,7 +2985,9 @@ function(aSignal) {
 
         i,
 
-        fragNoPointer;
+        fragNoPointer,
+
+        aspect;
 
     resource = this.getResource();
 
@@ -3035,9 +3037,12 @@ function(aSignal) {
             this.changed('value', TP.UPDATE, TP.hc('target', resource));
         }
     } else {
+
+        aspect = aSignal.atIfInvalid('aspect', 'value');
+
         //  If we didn't have any paths, invoke the standard 'changed' mechanism
         //  (which signals 'TP.sig.ValueChange') from ourself.
-        this.changed('value', TP.UPDATE, TP.hc('target', resource));
+        this.changed(aspect, TP.UPDATE, TP.hc('target', resource));
     }
 
     return this;
