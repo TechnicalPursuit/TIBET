@@ -28,9 +28,12 @@
 ;(function(root) {
 
 TP = root.TP || {};
-TP.sys = TP.sys || {};
 TP.boot = TP.boot || {};
+TP.log = TP.log || {};
+TP.sys = TP.sys || {};
+
 APP = root.APP || {};
+APP.log = APP.log || {};
 
 
 //  ----------------------------------------------------------------------------

@@ -858,29 +858,6 @@ if (window.onerror.failedlaunch !== true &&
 
     //  ------------------------------------------------------------------------
 
-    TP.boot.showBootLog = function() {
-
-        /**
-         * @name showBootLog
-         * @synopsis Display the boot log in a separate window, available for
-         *     scrolling, selection/copy, etc.
-         * @return {null}
-         */
-
-        var tWin,
-            tibet;
-
-        tWin = $$findTIBET();
-        if (tWin) {
-            tibet = tWin.TP.sys;
-            if (tibet && typeof(tibet.showBootLog) === 'function') {
-                tibet.showBootLog();
-            }
-        }
-    };
-
-    //  ------------------------------------------------------------------------
-
     TP.boot.showContent = function(anID) {
 
         /**

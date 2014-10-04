@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.richtext}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -342,7 +342,7 @@ function(publishName) {
         'handleRequestSucceeded',
 function(aResponse) {
 
-            TP.log(aResponse.getResponseText(), TP.LOG, arguments);
+            TP.info(aResponse.getResponseText(), TP.LOG, arguments);
 });
 
     msgReq.defineMethod(
@@ -403,7 +403,7 @@ function(shareFlag, shareName) {
         'handleRequestSucceeded',
 function(aResponse) {
 
-            TP.log(aResponse.getResponseText(), TP.LOG, arguments);
+            TP.info(aResponse.getResponseText(), TP.LOG, arguments);
 });
 
     msgReq.defineMethod(
