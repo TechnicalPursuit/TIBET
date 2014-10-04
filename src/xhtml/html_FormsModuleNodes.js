@@ -4046,6 +4046,16 @@ function(aValue, optionProperty) {
     }
 
     if (dirty) {
+
+        if (!this.allowsMultiples()) {
+            //  If the receiver doesn't allow multiples and dirty was true, that
+            //  means there are no selections now so make sure to set
+            //  selectedIndex to -1 here - some browsers don't seem to set this
+            //  to -1 when all options are deselected and it definitely helps
+            //  when reading the value back out.
+            this.getNativeNode().selectedIndex = -1;
+        }
+
         this.changed('selection', TP.UPDATE);
     }
 
