@@ -45,6 +45,13 @@ function() {
                 test.fail();
             });
 
+        //  PhantomJS has issues... sigh...
+        if (TP.sys.cfg('boot.context') === 'phantomjs') {
+
+            //  250ms is the minimum we've found that makes PhantomJS behave.
+            this.thenWait(250);
+        }
+
         this.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'), 'test1');
@@ -86,7 +93,7 @@ function() {
                     TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barButton.TP.sig.DOMClick');
             });
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ========================================================================
 //  Run those babies!

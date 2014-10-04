@@ -752,7 +752,7 @@ function() {
         content = tpElem.get('content');
         test.assert.isNull(content);
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -762,16 +762,16 @@ function() {
     var testData;
 
     this.before(function() {
-        //var testDataLoc,
-        //    loadURI;
+        var testDataLoc,
+            loadURI;
 
         TP.$$setupCommonObjectValues();
         testData = TP.$$commonObjectValues;
 
-        //testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
-        //loadURI = TP.uc(testDataLoc);
+        testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
+        loadURI = TP.uc(testDataLoc);
 
-        //this.getDriver().setLocation(loadURI);
+        this.getDriver().setLocation(loadURI);
     });
 
     //  ---
@@ -1475,7 +1475,6 @@ function() {
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
         value = tpElem.get('value');
-        console.log(tpElem.get('nativeNode').selectedIndex);
         test.assert.isEmpty(value);
 
         //  null
@@ -1879,7 +1878,7 @@ function() {
         test.assert.isEqualTo(value, TP.ac('baz'));
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1889,16 +1888,16 @@ function() {
     var testData;
 
     this.before(function() {
-        //var testDataLoc,
-        //    loadURI;
+        var testDataLoc,
+            loadURI;
 
         TP.$$setupCommonObjectValues();
         testData = TP.$$commonObjectValues;
 
-        //testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
-        //loadURI = TP.uc(testDataLoc);
+        testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
+        loadURI = TP.uc(testDataLoc);
 
-        //this.getDriver().setLocation(loadURI);
+        this.getDriver().setLocation(loadURI);
     });
 
     //  ---
@@ -1999,13 +1998,30 @@ function() {
         tpElem = TP.byOID('select_multiple');
 
         getSelectedIndices = function(aTPElem) {
-            var selectedOptions,
+            var natElem,
+
+                selectedOptions,
                 i,
                 indices;
 
-            selectedOptions = TP.unwrap(aTPElem).selectedOptions;
-            indices = TP.ac();
+            natElem = TP.unwrap(aTPElem);
 
+            //  Newer browsers have this property, but PhantomJS doesn't...
+            if (natElem.selectedOptions) {
+                selectedOptions = natElem.selectedOptions;
+            } else {
+                selectedOptions = aTPElem.getElementArray().collect(
+                                        function(anElem) {
+                                            if (anElem.selected) {
+                                                return anElem;
+                                            }
+                                        });
+
+                //  Removes nulls and undefineds
+                selectedOptions.compact();
+            }
+
+            indices = TP.ac();
             for (i = 0; i < selectedOptions.length; i++) {
                 indices.push(selectedOptions[i].index);
             }
@@ -2302,7 +2318,7 @@ function() {
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -2388,7 +2404,7 @@ function() {
     this.it('data binding "value" to path complex values', function(test, options) {
 
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ========================================================================
 //  Run those babies!
