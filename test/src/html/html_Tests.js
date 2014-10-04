@@ -404,31 +404,31 @@ function() {
         tpElem.set('content', testData.at(TP.UNDEF));
         content = tpElem.get('content');
         content = content.trim().strip(TP.regex.XMLNS_STRIP);
-        test.assert.isEqualTo(content, '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>');
+        test.assert.isEqualTo(content, '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>');
 
         //  null (won't alter content)
         tpElem.set('content', testData.at(TP.NULL));
         content = tpElem.get('content');
         content = content.trim().strip(TP.regex.XMLNS_STRIP);
-        test.assert.isEqualTo(content, '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>');
+        test.assert.isEqualTo(content, '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>');
 
         //  String
         tpElem.set('content', 'Hi');
         content = tpElem.get('content');
         test.assert.isEqualTo(content, 'Hi');
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Number
         tpElem.set('content', 42);
         content = tpElem.get('content');
         test.assert.isEqualTo(content.asNumber(), 42);
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Boolean
         tpElem.set('content', true);
         content = tpElem.get('content');
         test.assert.isEqualTo(content.asBoolean(), true);
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
     });
 
     //  ---
@@ -444,31 +444,31 @@ function() {
         tpElem.set('content', testData.at('RegExp'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('RegExp')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Date
         tpElem.set('content', testData.at('Date'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Date')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Array
         tpElem.set('content', testData.at('Array'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Array')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Object
         tpElem.set('content', testData.at('Object'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Object')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  TP.lang.Hash
         tpElem.set('content', testData.at('TP.lang.Hash'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('TP.lang.Hash')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
     });
 
     //  ---
@@ -484,7 +484,7 @@ function() {
         content = tpElem.get('content');
         test.assert.isEqualTo(content, '<h6>Hi</h6>');
 
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
     });
 
     //  ---
@@ -500,31 +500,31 @@ function() {
         tpElem.set('content', testData.at(TP.UNDEF));
         content = tpElem.get('content');
         content = content.trim().strip(TP.regex.XMLNS_STRIP);
-        test.assert.isEqualTo(content, '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>');
+        test.assert.isEqualTo(content, '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>');
 
         //  null (won't alter content)
         tpElem.set('content', testData.at(TP.NULL));
         content = tpElem.get('content');
         content = content.trim().strip(TP.regex.XMLNS_STRIP);
-        test.assert.isEqualTo(content, '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>');
+        test.assert.isEqualTo(content, '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>');
 
         //  String
         tpElem.set('content', 'Hi');
         content = tpElem.get('content');
         test.assert.isEqualTo(content, 'Hi');
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Number
         tpElem.set('content', 42);
         content = tpElem.get('content');
         test.assert.isEqualTo(content.asNumber(), 42);
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Boolean
         tpElem.set('content', true);
         content = tpElem.get('content');
         test.assert.isEqualTo(content.asBoolean(), true);
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
     });
 
     //  ---
@@ -540,31 +540,31 @@ function() {
         tpElem.set('content', testData.at('RegExp'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('RegExp')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Date
         tpElem.set('content', testData.at('Date'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Date')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Array
         tpElem.set('content', testData.at('Array'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Array')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Object
         tpElem.set('content', testData.at('Object'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Object')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  TP.lang.Hash
         tpElem.set('content', testData.at('TP.lang.Hash'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('TP.lang.Hash')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
     });
 
     //  ---
@@ -580,7 +580,7 @@ function() {
         content = tpElem.get('content');
         test.assert.isEqualTo(content, '<h6>Hi</h6>');
 
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
     });
 
     //  ---
