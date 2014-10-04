@@ -525,17 +525,27 @@ function() {
 
                 tpDoc = TP.sys.getUICanvas().getDocument();
 
-                tpDoc.setContent(result);
+                test.thenPromise(
+                        function(resolver, rejector) {
 
-                //  Put log level back to what it was
-                TP.sys.setLogLevel(oldLogLevel, true);
+                            var request;
 
-                //  Put the debugger setting back to what it was
-                TP.sys.shouldUseDebugger(usingDebugger);
+                            request = TP.request();
+                            request.atPut('loadFunc', resolver);
+                            request.atPut('failFunc', rejector);
 
-                test.assert.isElement(TP.byId('part1Success'));
+                            tpDoc.setContent(result, request);
 
-                test.assert.isElement(TP.byId('part10Fallback'));
+                            //  Put log level back to what it was
+                            TP.sys.setLogLevel(oldLogLevel, true);
+
+                            //  Put the debugger setting back to what it was
+                            TP.sys.shouldUseDebugger(usingDebugger);
+
+                            test.assert.isElement(TP.byId('part1Success'));
+
+                            test.assert.isElement(TP.byId('part10Fallback'));
+                        });
             },
             function(error) {
                 TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
