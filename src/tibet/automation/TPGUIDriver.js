@@ -297,12 +297,16 @@ function(aURI, aWindow) {
      * @return {TP.gui.Driver} The receiver.
      */
 
+    var thisArg;
+
     if (!TP.isKindOf(aURI, TP.core.URI)) {
         return this.raise('TP.sig.InvalidURI', arguments);
     }
 
     //  Fetch the result and then set the Window's body to the result.
     this.fetchResource(aURI, TP.DOM);
+
+    thisArg = this;
 
     this.get('promiseProvider').then(
         function(result) {
@@ -312,7 +316,17 @@ function(aURI, aWindow) {
             tpWin = TP.ifInvalid(aWindow, TP.sys.getUICanvas());
 
             tpDoc = tpWin.getDocument();
-            tpDoc.setContent(result);
+
+            thisArg.get('promiseProvider').thenPromise(
+                function(resolver, rejector) {
+                    var request;
+
+                    request = TP.request();
+                    request.atPut('loadFunc', resolver);
+                    request.atPut('failFunc', rejector);
+
+                    tpDoc.setContent(result, request);
+                });
         },
         function(error) {
             TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),

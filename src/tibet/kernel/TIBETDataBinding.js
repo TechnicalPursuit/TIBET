@@ -625,7 +625,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
     if (TP.isURI(resourceOrURI)) {
         resource = TP.uc(resourceOrURI).getResource();
     } else if (TP.isString(resourceOrURI)) {
-        resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI).getResource();
+        resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
     } else {
         resource = resourceOrURI;
     }
@@ -647,8 +647,11 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
     //  observe differently.
     if (sourceAttr.isAccessPath()) {
         //  Do a 'get' to establish the interest in the path - we're not really
-        //  interested in the value though.
-        resource.get(sourceAttr);
+        //  interested in the value though. We don't do this if it's a URI,
+        //  though, since the URI will do that automatically.
+        if (!TP.isURI(resource)) {
+            resource.get(sourceAttr);
+        }
 
         //  The signal name is always TP.sig.ValueChange for paths
         signalName = 'TP.sig.ValueChange';
@@ -760,8 +763,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
         targetAttr,
         sourceAttr,
 
-        signalName,
-        methodName;
+        signalName;
 
     if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter', arguments,
@@ -771,7 +773,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
     if (TP.isURI(resourceOrURI)) {
         resource = TP.uc(resourceOrURI).getResource();
     } else if (TP.isString(resourceOrURI)) {
-        resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI).getResource();
+        resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
     } else {
         resource = resourceOrURI;
     }

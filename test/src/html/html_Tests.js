@@ -404,31 +404,31 @@ function() {
         tpElem.set('content', testData.at(TP.UNDEF));
         content = tpElem.get('content');
         content = content.trim().strip(TP.regex.XMLNS_STRIP);
-        test.assert.isEqualTo(content, '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>');
+        test.assert.isEqualTo(content, '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>');
 
         //  null (won't alter content)
         tpElem.set('content', testData.at(TP.NULL));
         content = tpElem.get('content');
         content = content.trim().strip(TP.regex.XMLNS_STRIP);
-        test.assert.isEqualTo(content, '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>');
+        test.assert.isEqualTo(content, '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>');
 
         //  String
         tpElem.set('content', 'Hi');
         content = tpElem.get('content');
         test.assert.isEqualTo(content, 'Hi');
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Number
         tpElem.set('content', 42);
         content = tpElem.get('content');
         test.assert.isEqualTo(content.asNumber(), 42);
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Boolean
         tpElem.set('content', true);
         content = tpElem.get('content');
         test.assert.isEqualTo(content.asBoolean(), true);
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
     });
 
     //  ---
@@ -444,31 +444,31 @@ function() {
         tpElem.set('content', testData.at('RegExp'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('RegExp')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Date
         tpElem.set('content', testData.at('Date'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Date')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Array
         tpElem.set('content', testData.at('Array'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Array')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  Object
         tpElem.set('content', testData.at('Object'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Object')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
 
         //  TP.lang.Hash
         tpElem.set('content', testData.at('TP.lang.Hash'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('TP.lang.Hash')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
     });
 
     //  ---
@@ -484,7 +484,7 @@ function() {
         content = tpElem.get('content');
         test.assert.isEqualTo(content, '<h6>Hi</h6>');
 
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Dog</option><option value="bar">Cat</option><option value="baz">Fish</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
     });
 
     //  ---
@@ -500,31 +500,31 @@ function() {
         tpElem.set('content', testData.at(TP.UNDEF));
         content = tpElem.get('content');
         content = content.trim().strip(TP.regex.XMLNS_STRIP);
-        test.assert.isEqualTo(content, '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>');
+        test.assert.isEqualTo(content, '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>');
 
         //  null (won't alter content)
         tpElem.set('content', testData.at(TP.NULL));
         content = tpElem.get('content');
         content = content.trim().strip(TP.regex.XMLNS_STRIP);
-        test.assert.isEqualTo(content, '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>');
+        test.assert.isEqualTo(content, '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>');
 
         //  String
         tpElem.set('content', 'Hi');
         content = tpElem.get('content');
         test.assert.isEqualTo(content, 'Hi');
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Number
         tpElem.set('content', 42);
         content = tpElem.get('content');
         test.assert.isEqualTo(content.asNumber(), 42);
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Boolean
         tpElem.set('content', true);
         content = tpElem.get('content');
         test.assert.isEqualTo(content.asBoolean(), true);
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
     });
 
     //  ---
@@ -540,31 +540,31 @@ function() {
         tpElem.set('content', testData.at('RegExp'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('RegExp')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Date
         tpElem.set('content', testData.at('Date'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Date')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Array
         tpElem.set('content', testData.at('Array'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Array')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  Object
         tpElem.set('content', testData.at('Object'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('Object')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
 
         //  TP.lang.Hash
         tpElem.set('content', testData.at('TP.lang.Hash'));
         content = tpElem.get('content');
         test.assert.isEqualTo(content, TP.str(testData.at('TP.lang.Hash')));
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
     });
 
     //  ---
@@ -580,7 +580,7 @@ function() {
         content = tpElem.get('content');
         test.assert.isEqualTo(content, '<h6>Hi</h6>');
 
-        tpElem.get('nativeNode').innerHTML = '<option value="foo">Red</option><option value="bar">Blue</option><option value="baz">Yellow</option>';
+        tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
     });
 
     //  ---
@@ -752,7 +752,7 @@ function() {
         content = tpElem.get('content');
         test.assert.isNull(content);
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -762,16 +762,16 @@ function() {
     var testData;
 
     this.before(function() {
-        //var testDataLoc,
-        //    loadURI;
+        var testDataLoc,
+            loadURI;
 
         TP.$$setupCommonObjectValues();
         testData = TP.$$commonObjectValues;
 
-        //testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
-        //loadURI = TP.uc(testDataLoc);
+        testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
+        loadURI = TP.uc(testDataLoc);
 
-        //this.getDriver().setLocation(loadURI);
+        this.getDriver().setLocation(loadURI);
     });
 
     //  ---
@@ -1339,7 +1339,6 @@ function() {
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
         value = tpElem.get('value');
-        console.log(tpElem.get('nativeNode').selectedIndex);
         test.assert.isNull(value);
 
         //  null
@@ -1461,7 +1460,865 @@ function() {
         test.assert.isEqualTo(value, 'baz');
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    //  ---
+
+    this.it('select (multiple) element - setting value to scalar values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('select_multiple');
+
+        //  undefined
+        tpElem.set('value', testData.at(TP.UNDEF));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  null
+        tpElem.set('value', testData.at(TP.NULL));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  String
+        tpElem.set('value', testData.at('String'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  String (multiple)
+        tpElem.set('value', 'foo baz');
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo', 'baz'));
+
+        //  Number
+        tpElem.set('value', testData.at('Number'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  Boolean
+        tpElem.set('value', testData.at('Boolean'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+    });
+
+    //  ---
+
+    this.it('select (multiple) element - setting value to complex object values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('select_multiple');
+
+        //  RegExp
+        tpElem.set('value', testData.at('RegExp'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  Date
+        tpElem.set('value', testData.at('Date'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  Array
+        tpElem.set('value', TP.ac('foo','bar','baz'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
+
+        //  Object
+        tpElem.set('value', {'foo':'baz'});
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('baz'));
+
+        //  TP.lang.Hash
+        tpElem.set('value', TP.hc('foo', 'bar'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+    });
+
+    //  ---
+
+    this.it('select (multiple) element - setting value to markup', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byOID('select_multiple');
+
+        //  XMLDocument
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  XMLElement
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  AttributeNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  TextNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  CDATASectionNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  PINode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  CommentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  DocumentFragmentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  NodeList
+        tpElem.set('value', testData.at('NodeList'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  NamedNodeMap
+        tpElem.set('value', testData.at('NamedNodeMap'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('baz'));
+    });
+
+    //  ---
+
+    this.it('input type="radio" element - setting value to scalar values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('input_radio_3');
+
+        //  undefined
+        tpElem.set('value', testData.at(TP.UNDEF));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  null
+        tpElem.set('value', testData.at(TP.NULL));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  String
+        tpElem.set('value', testData.at('String'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at('String')));
+
+        //  Number
+        tpElem.set('value', testData.at('Number'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  Boolean
+        tpElem.set('value', testData.at('Boolean'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+    });
+
+    //  ---
+
+    this.it('input type="radio" element - setting value to complex object values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('input_radio_3');
+
+        //  RegExp
+        tpElem.set('value', testData.at('RegExp'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  Date
+        tpElem.set('value', testData.at('Date'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  Array
+        tpElem.set('value', TP.ac('foo','bar','baz'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  Object
+        tpElem.set('value', {'foo':'baz'});
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'baz');
+
+        //  TP.lang.Hash
+        tpElem.set('value', TP.hc('foo', 'bar'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+    });
+
+    //  ---
+
+    this.it('input type="radio" element - setting value to markup', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byOID('input_radio_3');
+
+        //  XMLDocument
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  XMLElement
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+
+        //  AttributeNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+
+        //  TextNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  CDATASectionNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  PINode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+
+        //  CommentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  DocumentFragmentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  NodeList
+        tpElem.set('value', testData.at('NodeList'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  NamedNodeMap
+        tpElem.set('value', testData.at('NamedNodeMap'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'baz');
+    });
+
+    //  ---
+
+    this.it('input type="checkbox" element - setting value to scalar values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('input_checkbox_3');
+
+        //  undefined
+        tpElem.set('value', testData.at(TP.UNDEF));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  null
+        tpElem.set('value', testData.at(TP.NULL));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  String
+        tpElem.set('value', testData.at('String'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  String (multiple)
+        tpElem.set('value', 'foo baz');
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo', 'baz'));
+
+        //  Number
+        tpElem.set('value', testData.at('Number'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  Boolean
+        tpElem.set('value', testData.at('Boolean'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+    });
+
+    //  ---
+
+    this.it('input type="checkbox" element - setting value to complex object values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('input_checkbox_3');
+
+        //  RegExp
+        tpElem.set('value', testData.at('RegExp'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  Date
+        tpElem.set('value', testData.at('Date'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  Array
+        tpElem.set('value', TP.ac('foo','bar','baz'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
+
+        //  Object
+        tpElem.set('value', {'foo':'baz'});
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('baz'));
+
+        //  TP.lang.Hash
+        tpElem.set('value', TP.hc('foo', 'bar'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+    });
+
+    //  ---
+
+    this.it('input type="checkbox" element - setting value to markup', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byOID('input_checkbox_3');
+
+        //  XMLDocument
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  XMLElement
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  AttributeNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  TextNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  CDATASectionNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  PINode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  CommentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  DocumentFragmentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  NodeList
+        tpElem.set('value', testData.at('NodeList'));
+        value = tpElem.get('value');
+        test.assert.isEmpty(value);
+
+        //  NamedNodeMap
+        tpElem.set('value', testData.at('NamedNodeMap'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.ac('baz'));
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.XMLNS.Type.describe('html: selection management of standard elements',
+function() {
+
+    var testData;
+
+    this.before(function() {
+        var testDataLoc,
+            loadURI;
+
+        TP.$$setupCommonObjectValues();
+        testData = TP.$$commonObjectValues;
+
+        testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
+        loadURI = TP.uc(testDataLoc);
+
+        this.getDriver().setLocation(loadURI);
+    });
+
+    //  ---
+
+    this.it('select element - selection management', function(test, options) {
+
+        var tpElem;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('select_single');
+
+        //  ---
+
+        //  addSelection
+
+        //  (property defaults to 'value')
+        tpElem.addSelection('baz');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 2);
+
+        //  'value' property
+        tpElem.addSelection('bar', 'value');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        //  'label' property
+        tpElem.addSelection('Dog', 'label');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 0);
+
+        //  'id' property
+        tpElem.addSelection('select_single_3', 'id');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 2);
+
+        //  'index' property
+        tpElem.addSelection(1, 'index');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        //  ---
+
+        //  removeSelection
+
+        //  (property defaults to 'value')
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        tpElem.getNativeNode().selectedIndex = 2;
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+
+        //  'value' property
+        tpElem.getNativeNode().selectedIndex = 2;
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 2);
+
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+
+        //  'label' property
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection('Dog', 'label');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        tpElem.getNativeNode().selectedIndex = 0;
+        tpElem.removeSelection('Dog', 'label');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+
+        //  'id' property
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection('select_single_3', 'id');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        tpElem.getNativeNode().selectedIndex = 2;
+        tpElem.removeSelection('select_single_3', 'id');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+
+        //  'index' property
+        tpElem.getNativeNode().selectedIndex = 2;
+        tpElem.removeSelection(1, 'index');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 2);
+
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection(1, 'index');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+    });
+
+    //  ---
+
+    this.it('select (multiple) element - selection management', function(test, options) {
+
+        var tpElem,
+            getSelectedIndices;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('select_multiple');
+
+        getSelectedIndices = function(aTPElem) {
+            var natElem,
+
+                selectedOptions,
+                i,
+                indices;
+
+            natElem = TP.unwrap(aTPElem);
+
+            //  Newer browsers have this property, but PhantomJS doesn't...
+            if (natElem.selectedOptions) {
+                selectedOptions = natElem.selectedOptions;
+            } else {
+                selectedOptions = aTPElem.getElementArray().collect(
+                                        function(anElem) {
+                                            if (anElem.selected) {
+                                                return anElem;
+                                            }
+                                        });
+
+                //  Removes nulls and undefineds
+                selectedOptions.compact();
+            }
+
+            indices = TP.ac();
+            for (i = 0; i < selectedOptions.length; i++) {
+                indices.push(selectedOptions[i].index);
+            }
+
+            return indices;
+        };
+
+        //  ---
+
+        //  addSelection
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'), 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        //  'label' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Yellow'), 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        //  'id' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('select_multiple_1', 'select_multiple_2'), 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        //  'index' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(1, 2), 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  ---
+
+        //  removeSelection
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(2));
+
+        //  'label' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Yellow'), 'label');
+        tpElem.removeSelection('Blue', 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Blue'), 'label');
+        tpElem.removeSelection('Blue', 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        //  'id' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('select_multiple_1', 'select_multiple_2'), 'id');
+        tpElem.removeSelection('select_multiple_3', 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('select_multiple_1', 'select_multiple_3'), 'id');
+        tpElem.removeSelection('select_multiple_3', 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        //  'index' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(1, 2), 'index');
+        tpElem.removeSelection(0, 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(0, 1), 'index');
+        tpElem.removeSelection(0, 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+    });
+
+    //  ---
+
+    this.it('input type="radio" element - selection management', function(test, options) {
+
+        var tpElem;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('input_radio_3');
+
+        //  ---
+
+        //  addSelection
+
+        //  (property defaults to 'value')
+        tpElem.addSelection('baz');
+        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+
+        //  'value' property
+        tpElem.addSelection('bar', 'value');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        //  'label' property
+        tpElem.addSelection('Dog', 'label');
+        test.assert.isTrue(TP.byOID('input_radio_1').isSelected());
+
+        //  'id' property
+        tpElem.addSelection('input_radio_3', 'id');
+        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+
+        //  'index' property
+        tpElem.addSelection(1, 'index');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        //  ---
+
+        //  removeSelection
+
+        //  (property defaults to 'value')
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection('baz');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        TP.byId('input_radio_3').checked = true;
+        tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byOID('input_radio_3').isSelected());
+
+        //  'value' property
+        TP.byId('input_radio_3').checked = true;
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byOID('input_radio_2').isSelected());
+
+        //  'label' property
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection('Dog', 'label');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        TP.byId('input_radio_1').checked = true;
+        tpElem.removeSelection('Dog', 'label');
+        test.assert.isFalse(TP.byOID('input_radio_1').isSelected());
+
+        //  'id' property
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection('input_radio_3', 'id');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        TP.byId('input_radio_3').checked = true;
+        tpElem.removeSelection('input_radio_3', 'id');
+        test.assert.isFalse(TP.byOID('input_radio_3').isSelected());
+
+        //  'index' property
+        TP.byId('input_radio_3').checked = true;
+        tpElem.removeSelection(1, 'index');
+        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection(1, 'index');
+        test.assert.isFalse(TP.byOID('input_radio_2').isSelected());
+    });
+
+    //  ---
+
+    this.it('input type="checkbox" element - selection management', function(test, options) {
+
+        var tpElem,
+            getSelectedIndices;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('input_checkbox_3');
+
+        getSelectedIndices = function(aTPElem) {
+            var checkboxIndices;
+
+            checkboxIndices = aTPElem.getElementArray().collect(
+                                    function(anElem, anIndex) {
+                                        if (anElem.checked) {
+                                            return anIndex;
+                                        }
+                                    });
+
+            //  Removes nulls and undefineds
+            return checkboxIndices.compact();
+        };
+
+        //  ---
+
+        //  addSelection
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'), 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        //  'label' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Yellow'), 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        //  'id' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('input_checkbox_1', 'input_checkbox_2'), 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        //  'index' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(1, 2), 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  ---
+
+        //  removeSelection
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(2));
+
+        //  'label' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Yellow'), 'label');
+        tpElem.removeSelection('Blue', 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Blue'), 'label');
+        tpElem.removeSelection('Blue', 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        //  'id' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('input_checkbox_1', 'input_checkbox_2'), 'id');
+        tpElem.removeSelection('input_checkbox_3', 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('input_checkbox_1', 'input_checkbox_3'), 'id');
+        tpElem.removeSelection('input_checkbox_3', 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        //  'index' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(1, 2), 'index');
+        tpElem.removeSelection(0, 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(0, 1), 'index');
+        tpElem.removeSelection(0, 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+    });
+
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1547,7 +2404,7 @@ function() {
     this.it('data binding "value" to path complex values', function(test, options) {
 
     });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ========================================================================
 //  Run those babies!
