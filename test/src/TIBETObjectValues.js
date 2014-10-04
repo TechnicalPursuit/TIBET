@@ -207,7 +207,7 @@ function(aRequest) {
     nodeListVal = xmlDocumentVal.documentElement.childNodes;
     namedNodeMapVal = xmlDocumentVal.documentElement.attributes;
 
-    stylesheetVal = top.UIROOT.document.styleSheets[0];
+    stylesheetVal = top.document.styleSheets[0];
     styleRuleVal = TP.styleSheetGetStyleRules(stylesheetVal, false)[1];
     styleDeclVal = styleRuleVal.style;
 
