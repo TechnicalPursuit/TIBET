@@ -1156,7 +1156,9 @@ function(aValue, elementProperty) {
         len,
         i,
         item,
-        val;
+        val,
+
+        labelElem;
 
     if (TP.isString(aValue)) {
         value = aValue.split(' ').collapse();
@@ -1196,7 +1198,14 @@ function(aValue, elementProperty) {
             break;
 
             case 'label':
-                val = TP.nodeGetTextContent(elementArray.at(i));
+                if (TP.isElement(
+                    labelElem = TP.byCSS(
+                                    'label[for="' + item.id + '"]',
+                                    this.getNativeDocument(),
+                                    true))) {
+
+                    val = TP.nodeGetTextContent(labelElem);
+                }
             break;
 
             case 'id':
@@ -1635,7 +1644,9 @@ function(aValue, elementProperty) {
         len,
         i,
         item,
-        val;
+        val,
+
+        labelElem;
 
     if (TP.isString(aValue)) {
         value = aValue.split(' ').collapse();
@@ -1675,7 +1686,14 @@ function(aValue, elementProperty) {
             break;
 
             case 'label':
-                val = TP.nodeGetTextContent(elementArray.at(i));
+                if (TP.isElement(
+                    labelElem = TP.byCSS(
+                                    'label[for="' + item.id + '"]',
+                                    this.getNativeDocument(),
+                                    true))) {
+
+                    val = TP.nodeGetTextContent(labelElem);
+                }
             break;
 
             case 'id':
