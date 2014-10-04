@@ -2094,8 +2094,7 @@ TP.defineSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod = function(target, name, value, track, desc, display,
-                           owner) {
+TP.defineMethod = function(target, name, value, track, desc, display, owner) {
 
     /**
      * @name defineMethod
@@ -2223,7 +2222,10 @@ TP.defineMethod = function(target, name, value, track, desc, display,
         TP.sys.logCodeChange(method.asSource(), TP.TRACE, arguments): 0;
     */
 
-    TP.sys.addMetadata(own, value, TP.METHOD, trk);
+    // Don't track metadata for local properties.
+    if (trk !== TP.LOCAL_TRACK) {
+        TP.sys.addMetadata(own, value, TP.METHOD, trk);
+    }
 
     return method;
 };
@@ -4569,7 +4571,10 @@ function(target, name, value, track, owner) {
 
     desc[TP.NAME] = name;
 
-    TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
+    // Don't track metadata for local properties.
+    if (trk !== TP.LOCAL_TRACK) {
+        TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
+    }
 
     return attribute;
 }, false, 'TP.defineAttribute');
@@ -4638,8 +4643,11 @@ function(target, name, value, track, owner) {
 
     desc[TP.NAME] = name;
 
-    //  NB: We register constants as 'TP.ATTRIBUTE's
-    TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
+    // Don't track metadata for local properties.
+    if (trk !== TP.LOCAL_TRACK) {
+        //  NB: We register constants as 'TP.ATTRIBUTE's
+        TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
+    }
 
     return constant;
 
@@ -5663,6 +5671,7 @@ function(methodName, methodBody, desc) {
 
     return TP.defineMethod(
                 this, methodName, methodBody, track, desc, null, owner);
+
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineMethod');
 
 //  ------------------------------------------------------------------------
