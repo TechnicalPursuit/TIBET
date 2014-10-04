@@ -1883,6 +1883,429 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.XMLNS.Type.describe('html: selection management of standard elements',
+function() {
+
+    var testData;
+
+    this.before(function() {
+        //var testDataLoc,
+        //    loadURI;
+
+        TP.$$setupCommonObjectValues();
+        testData = TP.$$commonObjectValues;
+
+        //testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
+        //loadURI = TP.uc(testDataLoc);
+
+        //this.getDriver().setLocation(loadURI);
+    });
+
+    //  ---
+
+    this.it('select element - selection management', function(test, options) {
+
+        var tpElem;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('select_single');
+
+        //  ---
+
+        //  addSelection
+
+        //  (property defaults to 'value')
+        tpElem.addSelection('baz');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 2);
+
+        //  'value' property
+        tpElem.addSelection('bar', 'value');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        //  'label' property
+        tpElem.addSelection('Dog', 'label');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 0);
+
+        //  'id' property
+        tpElem.addSelection('select_single_3', 'id');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 2);
+
+        //  'index' property
+        tpElem.addSelection(1, 'index');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        //  ---
+
+        //  removeSelection
+
+        //  (property defaults to 'value')
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        tpElem.getNativeNode().selectedIndex = 2;
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+
+        //  'value' property
+        tpElem.getNativeNode().selectedIndex = 2;
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 2);
+
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+
+        //  'label' property
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection('Dog', 'label');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        tpElem.getNativeNode().selectedIndex = 0;
+        tpElem.removeSelection('Dog', 'label');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+
+        //  'id' property
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection('select_single_3', 'id');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 1);
+
+        tpElem.getNativeNode().selectedIndex = 2;
+        tpElem.removeSelection('select_single_3', 'id');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+
+        //  'index' property
+        tpElem.getNativeNode().selectedIndex = 2;
+        tpElem.removeSelection(1, 'index');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, 2);
+
+        tpElem.getNativeNode().selectedIndex = 1;
+        tpElem.removeSelection(1, 'index');
+        test.assert.isEqualTo(tpElem.getNativeNode().selectedIndex, -1);
+    });
+
+    //  ---
+
+    this.it('select (multiple) element - selection management', function(test, options) {
+
+        var tpElem,
+            getSelectedIndices;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('select_multiple');
+
+        getSelectedIndices = function(aTPElem) {
+            var selectedOptions,
+                i,
+                indices;
+
+            selectedOptions = TP.unwrap(aTPElem).selectedOptions;
+            indices = TP.ac();
+
+            for (i = 0; i < selectedOptions.length; i++) {
+                indices.push(selectedOptions[i].index);
+            }
+
+            return indices;
+        };
+
+        //  ---
+
+        //  addSelection
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'), 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        //  'label' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Yellow'), 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        //  'id' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('select_multiple_1', 'select_multiple_2'), 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        //  'index' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(1, 2), 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  ---
+
+        //  removeSelection
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(2));
+
+        //  'label' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Yellow'), 'label');
+        tpElem.removeSelection('Blue', 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Blue'), 'label');
+        tpElem.removeSelection('Blue', 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        //  'id' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('select_multiple_1', 'select_multiple_2'), 'id');
+        tpElem.removeSelection('select_multiple_3', 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('select_multiple_1', 'select_multiple_3'), 'id');
+        tpElem.removeSelection('select_multiple_3', 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        //  'index' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(1, 2), 'index');
+        tpElem.removeSelection(0, 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(0, 1), 'index');
+        tpElem.removeSelection(0, 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+    });
+
+    //  ---
+
+    this.it('input type="radio" element - selection management', function(test, options) {
+
+        var tpElem;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('input_radio_3');
+
+        //  ---
+
+        //  addSelection
+
+        //  (property defaults to 'value')
+        tpElem.addSelection('baz');
+        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+
+        //  'value' property
+        tpElem.addSelection('bar', 'value');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        //  'label' property
+        tpElem.addSelection('Dog', 'label');
+        test.assert.isTrue(TP.byOID('input_radio_1').isSelected());
+
+        //  'id' property
+        tpElem.addSelection('input_radio_3', 'id');
+        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+
+        //  'index' property
+        tpElem.addSelection(1, 'index');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        //  ---
+
+        //  removeSelection
+
+        //  (property defaults to 'value')
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection('baz');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        TP.byId('input_radio_3').checked = true;
+        tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byOID('input_radio_3').isSelected());
+
+        //  'value' property
+        TP.byId('input_radio_3').checked = true;
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byOID('input_radio_2').isSelected());
+
+        //  'label' property
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection('Dog', 'label');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        TP.byId('input_radio_1').checked = true;
+        tpElem.removeSelection('Dog', 'label');
+        test.assert.isFalse(TP.byOID('input_radio_1').isSelected());
+
+        //  'id' property
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection('input_radio_3', 'id');
+        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+
+        TP.byId('input_radio_3').checked = true;
+        tpElem.removeSelection('input_radio_3', 'id');
+        test.assert.isFalse(TP.byOID('input_radio_3').isSelected());
+
+        //  'index' property
+        TP.byId('input_radio_3').checked = true;
+        tpElem.removeSelection(1, 'index');
+        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+
+        TP.byId('input_radio_2').checked = true;
+        tpElem.removeSelection(1, 'index');
+        test.assert.isFalse(TP.byOID('input_radio_2').isSelected());
+    });
+
+    //  ---
+
+    this.it('input type="checkbox" element - selection management', function(test, options) {
+
+        var tpElem,
+            getSelectedIndices;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tpElem = TP.byOID('input_checkbox_3');
+
+        getSelectedIndices = function(aTPElem) {
+            var checkboxIndices;
+
+            checkboxIndices = aTPElem.getElementArray().collect(
+                                    function(anElem, anIndex) {
+                                        if (anElem.checked) {
+                                            return anIndex;
+                                        }
+                                    });
+
+            //  Removes nulls and undefineds
+            return checkboxIndices.compact();
+        };
+
+        //  ---
+
+        //  addSelection
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'), 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        //  'label' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Yellow'), 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        //  'id' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('input_checkbox_1', 'input_checkbox_2'), 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        //  'index' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(1, 2), 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  ---
+
+        //  removeSelection
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(2));
+
+        //  'label' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Yellow'), 'label');
+        tpElem.removeSelection('Blue', 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('Red', 'Blue'), 'label');
+        tpElem.removeSelection('Blue', 'label');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        //  'id' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('input_checkbox_1', 'input_checkbox_2'), 'id');
+        tpElem.removeSelection('input_checkbox_3', 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('input_checkbox_1', 'input_checkbox_3'), 'id');
+        tpElem.removeSelection('input_checkbox_3', 'id');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        //  'index' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(1, 2), 'index');
+        tpElem.removeSelection(0, 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac(0, 1), 'index');
+        tpElem.removeSelection(0, 'index');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
 TP.html.XMLNS.Type.describe('html: data binding of standard elements',
 function() {
 
