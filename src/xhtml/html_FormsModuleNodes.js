@@ -1176,12 +1176,9 @@ function(aValue, elementProperty) {
         return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(value)) {
-        dict = TP.hc().addAllKeys(value);
-    } else {
-        dict = TP.hc(value, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     //  We default the aspect to 'value'
     aspect = TP.ifInvalid(elementProperty, 'value');
@@ -1245,7 +1242,8 @@ function(aValue) {
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
-    var elementArray,
+    var value,
+        elementArray,
         dict,
         dirty,
         len,
@@ -1255,16 +1253,27 @@ function(aValue) {
         return this.deselectAll();
     }
 
+    if (TP.isString(aValue)) {
+        value = aValue.split(' ').collapse();
+    } else {
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                arguments,
+                'Target TP.html.select does not allow multiple selection');
+    }
+
     if (TP.notValid(elementArray = this.getElementArray())) {
         return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(aValue)) {
-        dict = TP.hc().addAllKeys(aValue, '');
-    } else {
-        dict = TP.hc(aValue, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     dirty = false;
 
@@ -1323,6 +1332,56 @@ function() {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('$generateSelectionHashFrom',
+function(aValue) {
+
+    /**
+     * @name $generateSelectionHashFrom
+     * @synopsis Returns a Hash that is driven off of the supplied value which
+     *     can then be used to set the receiver's selection.
+     * @returns {TP.lang.Hash} A Hash that is populated with data from the
+     *     supplied value that can be used for manipulating the receiver's
+     *     selection.
+     */
+
+    var dict,
+        keys,
+        len,
+        i;
+
+    //  avoid MxN iterations by creating a hash of aValues
+    if (TP.isArray(aValue)) {
+        dict = TP.hc().addAllKeys(aValue, '');
+    } else if (TP.isKindOf(aValue, TP.lang.Hash)) {
+        dict = TP.hc().addAllKeys(aValue.getValues());
+    } else if (TP.isMemberOf(aValue, Object)) {
+        dict = TP.hc();
+        keys = TP.keys(aValue);
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            dict.atPut(aValue[keys.at(i)], i);
+        }
+    } else if (TP.isNodeList(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue[keys.at(i)]), i);
+        }
+    } else if (TP.isNamedNodeMap(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue.item(i)), i);
+        }
+    } else {
+        dict = TP.hc(aValue, '');
+    }
+
+    return dict;
 });
 
 //  ------------------------------------------------------------------------
@@ -1596,12 +1655,9 @@ function(aValue, elementProperty) {
         return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(value)) {
-        dict = TP.hc().addAllKeys(value);
-    } else {
-        dict = TP.hc(value, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     //  We default the aspect to 'value'
     aspect = TP.ifInvalid(elementProperty, 'value');
@@ -1698,12 +1754,9 @@ function(aValue) {
         return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(value)) {
-        dict = TP.hc().addAllKeys(value);
-    } else {
-        dict = TP.hc(value, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     dirty = false;
 
@@ -1801,7 +1854,6 @@ function(aValue) {
         value,
 
         dict,
-        keys,
         len,
         i,
 
@@ -1828,33 +1880,9 @@ function(aValue) {
         value = value.at(0);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(value)) {
-        dict = TP.hc().addAllKeys(value, '');
-    } else if (TP.isKindOf(value, TP.lang.Hash)) {
-        dict = TP.hc().addAllKeys(value.getValues());
-    } else if (TP.isMemberOf(value, Object)) {
-        dict = TP.hc();
-        keys = TP.keys(value);
-        len = keys.getSize();
-        for (i = 0; i < len; i++) {
-            dict.atPut(value[keys.at(i)], i);
-        }
-    } else if (TP.isNodeList(value)) {
-        dict = TP.hc();
-        len = value.length;
-        for (i = 0; i < len; i++) {
-            dict.atPut(TP.val(value[keys.at(i)]), i);
-        }
-    } else if (TP.isNamedNodeMap(value)) {
-        dict = TP.hc();
-        len = value.length;
-        for (i = 0; i < len; i++) {
-            dict.atPut(TP.val(value.item(i)), i);
-        }
-    } else {
-        dict = TP.hc(value, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     dirty = false;
     deselectCount = 0;
@@ -3322,12 +3350,9 @@ function(aValue, optionProperty) {
         return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(value)) {
-        dict = TP.hc().addAllKeys(value);
-    } else {
-        dict = TP.hc(value, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     //  We default the aspect to 'value'
     aspect = TP.ifInvalid(optionProperty, 'value');
@@ -3415,7 +3440,8 @@ function(aValue) {
      * @returns {TP.html.select} The receiver.
      */
 
-    var elementArray,
+    var value,
+        elementArray,
         dict,
         dirty,
         len,
@@ -3425,16 +3451,27 @@ function(aValue) {
         return this.deselectAll();
     }
 
+    if (TP.isString(aValue)) {
+        value = aValue.split(' ').collapse();
+    } else {
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                arguments,
+                'Target TP.html.select does not allow multiple selection');
+    }
+
     if (TP.notValid(elementArray = this.getElementArray())) {
         return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(aValue)) {
-        dict = TP.hc().addAllKeys(aValue, '');
-    } else {
-        dict = TP.hc(aValue, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     dirty = false;
 
@@ -3522,6 +3559,56 @@ function(aTargetElem, anEvent) {
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.select.Inst.defineMethod('$generateSelectionHashFrom',
+function(aValue) {
+
+    /**
+     * @name $generateSelectionHashFrom
+     * @synopsis Returns a Hash that is driven off of the supplied value which
+     *     can then be used to set the receiver's selection.
+     * @returns {TP.lang.Hash} A Hash that is populated with data from the
+     *     supplied value that can be used for manipulating the receiver's
+     *     selection.
+     */
+
+    var dict,
+        keys,
+        len,
+        i;
+
+    //  avoid MxN iterations by creating a hash of aValues
+    if (TP.isArray(aValue)) {
+        dict = TP.hc().addAllKeys(aValue, '');
+    } else if (TP.isKindOf(aValue, TP.lang.Hash)) {
+        dict = TP.hc().addAllKeys(aValue.getValues());
+    } else if (TP.isMemberOf(aValue, Object)) {
+        dict = TP.hc();
+        keys = TP.keys(aValue);
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            dict.atPut(aValue[keys.at(i)], i);
+        }
+    } else if (TP.isNodeList(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue[keys.at(i)]), i);
+        }
+    } else if (TP.isNamedNodeMap(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue.item(i)), i);
+        }
+    } else {
+        dict = TP.hc(aValue, '');
+    }
+
+    return dict;
 });
 
 //  ------------------------------------------------------------------------
@@ -3914,12 +4001,9 @@ function(aValue, optionProperty) {
         return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(value)) {
-        dict = TP.hc().addAllKeys(value);
-    } else {
-        dict = TP.hc(value, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     //  We default the aspect to 'value'
     aspect = TP.ifInvalid(optionProperty, 'value');
@@ -4016,12 +4100,9 @@ function(aValue) {
         return this.raise('TP.sig.InvalidElementArray', arguments);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(value)) {
-        dict = TP.hc().addAllKeys(value);
-    } else {
-        dict = TP.hc(value, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     dirty = false;
 
@@ -4116,7 +4197,6 @@ function(aValue) {
         value,
 
         dict,
-        keys,
         len,
         i,
 
@@ -4143,33 +4223,9 @@ function(aValue) {
         value = value.at(0);
     }
 
-    //  avoid MxN iterations by creating a hash of values
-    if (TP.isArray(value)) {
-        dict = TP.hc().addAllKeys(value, '');
-    } else if (TP.isKindOf(value, TP.lang.Hash)) {
-        dict = TP.hc().addAllKeys(value.getValues());
-    } else if (TP.isMemberOf(value, Object)) {
-        dict = TP.hc();
-        keys = TP.keys(value);
-        len = keys.getSize();
-        for (i = 0; i < len; i++) {
-            dict.atPut(value[keys.at(i)], i);
-        }
-    } else if (TP.isNodeList(value)) {
-        dict = TP.hc();
-        len = value.length;
-        for (i = 0; i < len; i++) {
-            dict.atPut(TP.val(value[keys.at(i)]), i);
-        }
-    } else if (TP.isNamedNodeMap(value)) {
-        dict = TP.hc();
-        len = value.length;
-        for (i = 0; i < len; i++) {
-            dict.atPut(TP.val(value.item(i)), i);
-        }
-    } else {
-        dict = TP.hc(value, '');
-    }
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
 
     dirty = false;
     deselectCount = 0;
