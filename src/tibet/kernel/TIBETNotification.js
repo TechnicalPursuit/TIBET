@@ -2724,7 +2724,7 @@ function() {
      */
 
     var value,
-        origin,
+        source,
         aspect;
 
     value = this.at(TP.NEWVAL);
@@ -2732,12 +2732,15 @@ function() {
         return value;
     }
 
-    //  Attempt to get the value using origin and aspect.
-    origin = this.getOrigin();
-    if (TP.isString(origin)) {
-        origin = TP.sys.getObjectById(origin);
-        if (TP.notValid(origin)) {
-            return;
+    //  Attempt to get the value using either the target or the origin and the
+    //  aspect.
+    if (!TP.isValid(source = this.at('target'))) {
+        source = this.getOrigin();
+        if (TP.isString(source)) {
+            source = TP.sys.getObjectById(source);
+            if (TP.notValid(source)) {
+                return;
+            }
         }
     }
 
@@ -2746,8 +2749,8 @@ function() {
         return;
     }
 
-    if (TP.canInvoke(origin, 'get')) {
-        return origin.get(aspect);
+    if (TP.canInvoke(source, 'get')) {
+        return source.get(aspect);
     }
 
     return;
