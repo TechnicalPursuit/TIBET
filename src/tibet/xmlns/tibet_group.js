@@ -65,6 +65,43 @@ function(aRequest) {
                 });
     }
 
+    //  We register a query that, if any subtree mutations occur under our
+    //  document element we want to be notified. Note that we don't actually
+    //  register a query or a query context here - we want to know about all
+    //  added or removed nodes.
+
+    //  Note that this calls our 'handlePeerTP_sig_AddFilteredNodes' and
+    //  'handlePeerTP_sig_RemoveFilteredNodes' methods below with just the nodes
+    //  that got added or removed.
+    TP.core.MutationSignalSource.addSubtreeQuery(elem);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @name tagDetachDOM
+     * @synopsis Tears down runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    //  We're going away - remove the subtree query that we registered when we
+    //  got attached into this DOM.
+    TP.core.MutationSignalSource.removeSubtreeQuery(elem);
+
     return;
 });
 
@@ -126,10 +163,8 @@ function() {
 
     /**
      * @name focus
-     * @raises TP.sig.InvalidNode
-     * @returns {TP.core.UIElementNode} The receiver.
-     * @abtract Focuses the receiver for keyboard input.
-     * @todo
+     * @synopsis Focuses the receiver for keyboard input.
+     * @returns {TP.tibet.group} The receiver.
      */
 
     var focusableElements;
@@ -224,6 +259,63 @@ function() {
                     });
 
     return results;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineMethod('handlePeerTP_sig_AddFilteredNodes',
+function(addedNodes) {
+
+    /**
+     * @name handlePeerTP_sig_AddFilteredNodes
+     * @synopsis Handles when nodes got added to the DOM we're in, filtered by
+     *     the query that we registered with the MutationSignalSource.
+     * @param {Array} addedNodes The Array of nodes that got added to the DOM,
+     *     then filtered by our query.
+     * @returns {TP.tibet.group} The receiver.
+     */
+
+    var groupTPElems,
+        groupElems,
+        occursInBoth;
+
+    //  Grab all elements that could be our members - if the added nodes are
+    //  part of our group, they will now be in this list.
+    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+
+        //  Unwrap them
+        groupElems = TP.unwrap(groupTPElems);
+
+        //  Compare that list to what the mutation machinery handed us as added
+        //  nodes.
+        occursInBoth = groupElems.intersection(addedNodes, TP.IDENTITY);
+
+        //  Set the group of any that are in both lists.
+        occursInBoth.perform(
+                function(anElem) {
+                    TP.wrap(anElem).setGroupElement(this);
+                }.bind(this));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineMethod('handlePeerTP_sig_RemoveFilteredNodes',
+function(removedNodes) {
+
+    /**
+     * @name handlePeerTP_sig_AddFilteredNodes
+     * @synopsis Handles when nodes got added to the DOM we're in, filtered by
+     *     the query that we registered with the MutationSignalSource.
+     * @param {Array} removedNodes The Array of nodes that got removed from the
+     *     DOM, then filtered by our query.
+     * @returns {TP.tibet.group} The receiver.
+     */
+
+    //  For now, this is a no-op for this type
+    return this;
 });
 
 //  ------------------------------------------------------------------------
