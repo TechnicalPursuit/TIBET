@@ -6652,6 +6652,8 @@ TP.core.SignalSource.defineSubtype('core:MutationSignalSource');
 //  A hash mapping a document ID to a MutationObserver
 TP.core.MutationSignalSource.Type.defineAttribute('observers');
 
+TP.core.MutationSignalSource.Type.defineAttribute('queries');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -6665,6 +6667,7 @@ function() {
      */
 
     this.set('observers', TP.hc());
+    this.set('queries', TP.hc());
 
     return;
 });
@@ -6779,7 +6782,12 @@ function(aMutationRecord) {
 
         queryEntries,
 
-        targetDoc;
+        targetDoc,
+
+        queryKeys,
+        len,
+        i,
+        entry;
 
     if (!TP.isNode(targetNode = aMutationRecord.target)) {
         return this.raise('TP.sig.InvalidNode', arguments);
@@ -6852,14 +6860,22 @@ function(aMutationRecord) {
 
             if (TP.notEmpty(queryEntries = this.get('queries'))) {
                 targetDoc = TP.nodeGetDocument(targetNode);
-                queryEntries.perform(
-                        function(anEntry) {
-                            this.executeSubtreeQueryAndDispatch(
-                                    anEntry,
-                                    addedNodes,
-                                    removedNodes,
-                                    targetDoc);
-                        }.bind(this));
+
+                queryKeys = queryEntries.getKeys();
+                len = queryKeys.getSize();
+
+                for (i = 0; i < len; i++) {
+                    entry = queryEntries.at(queryKeys.at(i));
+
+                    if (entry.at('document') === targetDoc) {
+                        this.executeSubtreeQueryAndDispatch(
+                                queryKeys.at(i),
+                                entry,
+                                addedNodes,
+                                removedNodes,
+                                targetDoc);
+                    }
+                }
             }
 
             break;
@@ -6870,55 +6886,98 @@ function(aMutationRecord) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.MutationSignalSource.Type.defineMethod('addSubtreeQuery',
+function(observer, queryPath, queryContext) {
+
+    var observerGID,
+        observerDoc;
+
+    if (!TP.isElement(observer)) {
+        //  TODO: Raise an InvalidString here
+        return this;
+    }
+
+    observerGID = TP.gid(observer, true);
+    observerDoc = TP.nodeGetDocument(observer);
+
+    this.get('queries').atPut(observerGID,
+                                TP.hc('document', observerDoc,
+                                        'path', queryPath,
+                                        'context', queryContext));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationSignalSource.Type.defineMethod('removeSubtreeQuery',
+function(observer) {
+
+    this.get('queries').removeKey(TP.gid(observer));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.MutationSignalSource.Type.defineMethod('executeSubtreeQueryAndDispatch',
-function(queryEntry, addedNodes, removedNodes, aDocument) {
+function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
 
-    var queryRoot,
+    var queryObserver,
         queryPath,
-        queryTarget,
-
-        queryAddMethod,
-        queryRemoveMethod,
+        queryContext,
 
         results,
 
         matchingNodes;
 
-    if (TP.isEmpty(queryPath = queryEntry.at('query')) ||
-        !queryPath.isAccessPath()) {
-        //  TODO: Raise an InvalidPath here
+    //  Make sure that we can get the Element that is registered under observer
+    //  GID.
+    if (!TP.isValid(queryObserver = TP.byOID(queryObserverGID))) {
+        //  TODO: Raise an InvalidObject here
         return this;
     }
 
-    if (TP.isEmpty(queryTarget = queryEntry.at('target'))) {
-        //  TODO: Raise an InvalidType here
-        return this;
+    //  This might be null if the receiver is interested in all added/removed
+    //  nodes.
+    queryPath = queryEntry.at('path');
+
+    //  NB: 'queryContext' won't be used if there is no query path object.
+    if (!TP.isElement(queryContext = queryEntry.at('context'))) {
+        queryContext = aDocument.documentElement;
     }
 
-    if (!TP.isElement(queryRoot = queryEntry.at('root'))) {
-        queryRoot = aDocument;
+    //  If there is a valid path, then execute it.
+    if (TP.isValid(queryPath)) {
+        results = queryPath.executeGet(queryContext);
     }
 
-    queryAddMethod = queryEntry.atIfInvalid(
-                        'addMethod',
-                        'handlePeerTP_sig_AddFilteredNodes');
-    queryRemoveMethod = queryEntry.atIfInvalid(
-                        'removeMethod',
-                        'handlePeerTP_sig_RemoveFilteredNodes');
-
-    results = queryPath.executeGet(queryTarget);
-
+    //  If there are added nodes, invoke that machinery.
     if (TP.notEmpty(addedNodes)) {
-        matchingNodes = results.intersection(addedNodes);
-        if (TP.canInvoke(queryTarget, queryAddMethod)) {
-            queryTarget[queryAddMethod](queryTarget, matchingNodes);
+        if (TP.notEmpty(results)) {
+            matchingNodes = results.intersection(addedNodes, TP.IDENTITY);
+        } else {
+            matchingNodes = addedNodes;
+        }
+
+        if (TP.notEmpty(matchingNodes) &&
+            TP.canInvoke(queryObserver, 'handlePeerTP_sig_AddFilteredNodes')) {
+            queryObserver.handlePeerTP_sig_AddFilteredNodes(matchingNodes);
         }
     }
 
+    //  If there are removed nodes, invoke that machinery.
     if (TP.notEmpty(removedNodes)) {
-        matchingNodes = results.intersection(removedNodes);
-        if (TP.canInvoke(queryTarget, queryRemoveMethod)) {
-            queryTarget[queryRemoveMethod](queryTarget, matchingNodes);
+        if (TP.notEmpty(results)) {
+            matchingNodes = results.intersection(removedNodes, TP.IDENTITY);
+        } else {
+            matchingNodes = removedNodes;
+        }
+
+        if (TP.notEmpty(matchingNodes) &&
+            TP.canInvoke(
+                    queryObserver, 'handlePeerTP_sig_RemoveFilteredNodes')) {
+            queryObserver.handlePeerTP_sig_RemoveFilteredNodes(matchingNodes);
         }
     }
 
