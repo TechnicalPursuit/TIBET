@@ -188,9 +188,9 @@ function() {
 
     //  Make sure that it contains only Elements.
     results = results.select(
-                function(aNode) {
+                function(aTPNode) {
 
-                    return TP.isElement(aNode);
+                    return TP.isKindOf(aTPNode, TP.core.ElementNode);
                 });
 
     //  This will wrap all of the elements found in the results
@@ -220,7 +220,6 @@ function() {
 
     results = allMembers.select(
                     function(aTPElem) {
-
                         return TP.isKindOf(aTPElem, TP.tibet.group);
                     });
 
