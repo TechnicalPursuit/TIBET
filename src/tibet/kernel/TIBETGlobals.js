@@ -2724,7 +2724,9 @@ TP.regex.ATTRIBUTE_ENDS = /@\w+$/;
 //  Detect starts with @*
 TP.regex.ATTRIBUTE_ALL = /^@\*/;
 
-TP.regex.BARENAME = /^#[^(]+$/;
+//  Detect starts with #, followed by word characters
+TP.regex.BARENAME = /^#\w+$/;
+
 TP.regex.DOCUMENT_ID = /#document$/;
 TP.regex.ELEMENT_ID = /(.*)#(.*)/;
 TP.regex.BOOLEAN_ID = /^true$|^false$/;
