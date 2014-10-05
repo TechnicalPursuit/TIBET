@@ -273,6 +273,9 @@ function() {
 
         path = TP.apc('mytag[myattr="myval"][myattr^="myval"]');
         this.assert.isKindOf(path, TP.core.CSSPath);
+
+        path = TP.apc('myparent > *, #myid');
+        this.assert.isKindOf(path, TP.core.CSSPath);
     });
 });
 
@@ -400,6 +403,9 @@ function() {
         this.assert.isKindOf(path, TP.core.XTensionPath);
 
         path = TP.apc('#css(mytag[myattr="myval"][myattr^="myval"])');
+        this.assert.isKindOf(path, TP.core.XTensionPath);
+
+        path = TP.apc('#css(myparent > *, #myid)');
         this.assert.isKindOf(path, TP.core.XTensionPath);
     });
 });
