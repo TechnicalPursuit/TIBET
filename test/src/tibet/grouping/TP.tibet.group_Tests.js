@@ -540,6 +540,47 @@ function() {
             });
     });
 
+    //  ---
+
+    this.it('Explicit complex query with body context - dynamically modified', function(test, options) {
+
+        var loadURI;
+
+        TP.isFluffy = true;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping11.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function(result) {
+                var parentTPElem,
+                    tpElem;
+
+                parentTPElem = TP.byOID('fooStuff');
+
+                parentTPElem.addProcessedContent('<div id="moo">This is the moo div. It is in the \'fooGroup\' group.</div>');
+
+                //  Give it a 50ms wait - otherwise, Promises starve the event
+                //  loop and the MO machinery will never be triggered.
+                test.thenWait(50);
+
+                test.then(
+                    function() {
+                        tpElem = TP.byOID('moo');
+                        test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
+                        test.assert.isEqualTo(
+                                tpElem.getGroupChainNames(),
+                                TP.ac('fooGroup'));
+                    });
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+    });
+
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
