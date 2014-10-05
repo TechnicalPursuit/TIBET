@@ -50,11 +50,11 @@
 		<div id="bar">This is the bar div. It is in the 'fooGroup' group.</div>
 	</tibet:group>
 
-	<!-- Since this element is empty, its 'context' is the 'body' element -->
-	<tibet:group id="gooGroup" query="#gooStuff &gt; *" />
+	<!-- Since this element is empty, its 'context' is the document element -->
+	<tibet:group id="gooGroup" query="#gooStuff &gt; *"/>
 
-	<!-- Since this element is empty, its 'context' is the 'body' element -->
-	<tibet:group id="nestedGooGroup" query="#gooStuff &gt; .nestedGoo &gt; *" />
+	<!-- Since this element is empty, its 'context' is the document element -->
+	<tibet:group id="nestedGooGroup" query="#gooStuff &gt; .nestedGoo &gt; *"/>
 
 	<span id="gooStuff">
 		<div id="gar">This is the gar div. It is in the 'gooGroup' group.</div>
