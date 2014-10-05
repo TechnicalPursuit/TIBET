@@ -6143,11 +6143,11 @@ function(aFlagOrParam) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('log',
+TP.definePrimitive('$$log',
 function(anObject, aLogName, aContext, aLogLevel) {
 
     /**
-     * @name log
+     * @name $$log
      * @synopsis Logs anObject to the named log at the level provided. This
      *     method is a preliminary wrapper for invoking TP.sys.log once enough
      *     of the kernel has been loaded. Typically you'll use a shortcut for
@@ -6196,7 +6196,7 @@ function(anObject, aLogName, aContext) {
      * @todo
      */
 
-    return TP.log(anObject,
+    return TP.$$log(anObject,
                     aLogName || TP.LOG,
                     aContext || arguments,
                     TP.ERROR);
@@ -6218,7 +6218,7 @@ function(anObject, aLogName, aContext) {
      * @todo
      */
 
-    return TP.log(anObject,
+    return TP.$$log(anObject,
                     aLogName || TP.LOG,
                     aContext || arguments,
                     TP.FATAL);
@@ -6240,7 +6240,7 @@ function(anObject, aLogName, aContext) {
      * @todo
      */
 
-    return TP.log(anObject,
+    return TP.$$log(anObject,
                     aLogName || TP.LOG,
                     aContext || arguments,
                     TP.INFO);
@@ -6262,7 +6262,7 @@ function(anObject, aLogName, aContext) {
      * @todo
      */
 
-    return TP.log(anObject,
+    return TP.$$log(anObject,
                     aLogName || TP.LOG,
                     aContext || arguments,
                     TP.SEVERE);
@@ -6284,7 +6284,7 @@ function(anObject, aLogName, aContext) {
      * @todo
      */
 
-    return TP.log(anObject,
+    return TP.$$log(anObject,
                     aLogName || TP.LOG,
                     aContext || arguments,
                     TP.SYSTEM);
@@ -6306,7 +6306,7 @@ function(anObject, aLogName, aContext) {
      * @todo
      */
 
-    return TP.log(anObject,
+    return TP.$$log(anObject,
                     aLogName || TP.LOG,
                     aContext || arguments,
                     TP.TRACE);
@@ -6328,7 +6328,7 @@ function(anObject, aLogName, aContext) {
      * @todo
      */
 
-    return TP.log(anObject,
+    return TP.$$log(anObject,
                     aLogName || TP.LOG,
                     aContext || arguments,
                     TP.WARN);

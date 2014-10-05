@@ -258,7 +258,6 @@ TP.boot.defineMethod('hideUIRoot', TP.boot.hideUIRoot);
 
 TP.boot.defineMethod('launchApp', TP.boot.launchApp);
 
-TP.boot.defineMethod('showBootLog', TP.boot.showBootLog);
 TP.boot.defineMethod('showContent', TP.boot.showContent);
 TP.boot.defineMethod('showUICanvas', TP.boot.showUICanvas);
 TP.boot.defineMethod('showUIRoot', TP.boot.showUIRoot);

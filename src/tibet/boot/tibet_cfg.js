@@ -51,24 +51,6 @@ TP.sys.setcfg('debug.path', true);
 
 
 //  ---
-//  logging
-//  ---
-
-//  controls process reporting during the launch. setting this to true
-//  here (and in the tibet.xml file) will cause a few more lines of
-//  output covering the initial parameter-setting phase of the boot process.
-//  If you're not trying to debug that you should be able to just set
-//  tibet.debug in your application build file and leave this set to false.
-TP.sys.setcfg('tibet.debug', true);
-
-//  lots 'o output? as with the debug flag configured here, unless you're
-//  trying to get verbose output from the property-setting phase you can
-//  leave this false here and just set tibet.verbose in your application
-//  build file.
-TP.sys.setcfg('tibet.verbose', true);
-
-
-//  ---
 //  project data
 //  ---
 
@@ -158,6 +140,23 @@ TP.sys.setcfg('boot.tdc', false);
 //  should we boot in two phases, lib (the 'tibet' config) and then app
 //  (the 'app' config). this should be true in virtually all cases.
 TP.sys.setcfg('boot.twophase', true);
+
+//  ---
+//  logging
+//  ---
+
+//  controls process reporting during the launch. setting this to true
+//  here (and in the tibet.xml file) will cause a few more lines of
+//  output covering the initial parameter-setting phase of the boot process.
+//  If you're not trying to debug that you should be able to just set
+//  tibet.debug in your application build file and leave this set to false.
+TP.sys.setcfg('tibet.debug', true);
+
+//  lots 'o output? as with the debug flag configured here, unless you're
+//  trying to get verbose output from the property-setting phase you can
+//  leave this false here and just set tibet.verbose in your application
+//  build file.
+TP.sys.setcfg('tibet.verbose', true);
 
 //  number of log message entries to buffer for INFO level output. This value is
 //  used as a baseline computation point. The actual level will vary based on

@@ -13,69 +13,69 @@
  * @synopsis A subtype of TP.sig.Request that is used in conjunction with the
  *     TP.core.JSONService type to communicate to JSON / JSONP services
  * @example Communicating with a JSON data source from TIBET consists of:
- *     
+ *
  *     1. Define the operation you want to perform via a set of 'request
  *     parameters'. The 'uri' and 'uriparams' parameters will determine the
  *     endpoint and the query of the service call. 2. Instantiating an
  *     TP.sig.JSONRequest object, supplying those parameters. 3. Firing the
  *     request.
- *     
+ *
  *     Defining request parameters:
- *     
+ *
  *     jsonReq = TP.sig.JSONRequest.construct( TP.hc( 'uri',
  *     'jsonp://ajax.googleapis.com/ajax/services/search/web', 'uriparams',
  *     TP.hc('q', 'football', 'v', '1.0') ));
- *     
+ *
  *     Request parameters examples:
- *     
+ *
  *     // JSON data retrieved via the JSONP transport mechanism.
- *     
+ *
  *     requestParams = TP.hc( 'uri',
  *     'jsonp://ajax.googleapis.com/ajax/services/search/web', 'uriparams',
  *     TP.hc('q', 'football', 'v', '1.0') );
- *     
+ *
  *     // JSON data retrieved via the JSONP transport mechanism - with //
  *     custom callback function.
- *     
+ *
  *     requestParams = TP.hc( 'uri',
  *     'jsonp://ajax.googleapis.com/ajax/services/search/web', 'uriparams',
  *     TP.hc('q', 'football', 'v', '1.0'), 'callbackFunc', function(result) {
- *     
- *     TP.log('Result: ' + TP.json(result), TP.LOG, arguments); } );
- *     
+ *
+ *     TP.info('Result: ' + TP.json(result), TP.LOG, arguments); } );
+ *
  *     // JSON data retrieved via the JSONP transport mechanism - with //
  *     different callback parameter name than 'callback' (some // services don't
  *     call the parameter that you put the name of // the callback function into
  *     'callback').
- *     
+ *
  *     requestParams = TP.hc( 'uri',
  *     'jsonp://www.nonstandard.com/ajax/someservice', 'uriparams', TP.hc('q',
  *     'football', 'v', '1.0'), 'callbackParamName', 'jsoncallback', );
- *     
+ *
  *     // JSON data retrieved via the HTTP transport mechanism.
- *     
+ *
  *     requestParams = TP.hc( 'uri', 'http://search.twitter.com/search.json',
  *     'uriparams', TP.hc('q', 'devo', 'rpp', '15') );
- *     
+ *
  *     // JSON data retrieved via the HTTP transport mechanism - with // custom
  *     callback function.
- *     
+ *
  *     requestParams = TP.hc( 'uri', 'http://search.twitter.com/search.json',
  *     'uriparams', TP.hc('q', 'devo', 'rpp', '15'), 'callbackFunc',
  *     function(result) {
- *     
- *     TP.log('Result: ' + TP.json(result), TP.LOG, arguments); } );
- *     
+ *
+ *     TP.info('Result: ' + TP.json(result), TP.LOG, arguments); } );
+ *
  *     Package and fire the request:
- *     
+ *
  *     jsonReq = TP.sig.JSONRequest.construct(requestParams);
  *     jsonReq.defineMethod('handleRequestSucceeded', function(aResponse) {
- *     
- *     TP.log('Success! Result: ' + TP.json(aResponse.getResult()), TP.LOG,
+ *
+ *     TP.info('Success! Result: ' + TP.json(aResponse.getResult()), TP.LOG,
  *     arguments); }); jsonReq.defineMethod('handleRequestFailed',
  *     function(aResponse) {
- *     
- *     TP.log('Failure... Result: ' + aResponse.getFaultText(), TP.LOG,
+ *
+ *     TP.info('Failure... Result: ' + aResponse.getFaultText(), TP.LOG,
  *     arguments); }); jsonReq.fire();
  * @todo
  */

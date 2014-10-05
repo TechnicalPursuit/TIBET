@@ -14,83 +14,83 @@
  *     TP.core.LocalDBStorageService type to communicate to in-browser 'local
  *     storage' data stores.
  * @example Communicating with a local data store from TIBET consists of:
- *     
+ *
  *     1. Define the operation you want to perform via a set of 'request
  *          parameters'.
  *     2. Instantiating an TP.sig.LocalDBStorageRequest object, supplying those
  *          parameters.
  *     3. Firing the request.
- *     
+ *
  *     Defining request parameters:
  *
  *     - Request parameters need to include an 'action', which should be either
  *          'getItem' or 'putItem'. The data should be a TP.lang.Hash that is
  *          placed in the 'body' parameter.
- *     
+ *
  *     req = TP.sig.LocalDBStorageRequest.construct(
  *                  TP.hc('action', 'updateItem',
  *                          'dbName', 'local_test',
  *                          'id', 'author_info',
  *                          'body', TP.hc('foo', 'bar')));
- *     
+ *
  *     Request parameters examples:
- *     
+ *
  *     - 'Create' an item in local DB
- *     
+ *
  *     requestParams = TP.hc('action', 'createItem',
  *                              'dbName', 'local_test',
  *                              'id', 'author_info',
  *                              'body', TP.hc('foo', 'bar'));
- *     
+ *
  *     - 'Retrieve' an item from local DB
- *     
+ *
  *     requestParams = TP.hc('action', 'retrieveItem',
  *                              'dbName', 'local_test',
  *                              'id', 'author_info');
- * 
+ *
  *     - 'Retrieve' an item info from local DB
- *     
+ *
  *     requestParams = TP.hc('action', 'retrieveItemInfo',
  *                              'dbName', 'local_test',
  *                              'id', 'author_info');
- * 
+ *
  *     - 'Retrieve' a info about a DB in local DB
- *     
+ *
  *     requestParams = TP.hc('action', 'retrieveDBInfo',
  *                              'dbName', 'local_test');
- * 
+ *
  *     - 'Update' an item in local DB
- *     
+ *
  *     requestParams = TP.hc('action', 'updateItem',
  *                              'dbName', 'local_test',
  *                              'id', 'author_info',
  *                              'body', TP.hc('foo', 'baz'));
- * 
+ *
  *     - 'Delete' an item from local DB
- *     
+ *
  *     requestParams = TP.hc('action', 'deleteItem',
  *                              'dbName', 'local_test',
  *                              'id', 'author_info');
- *     
+ *
  *     - 'Delete' a DB in local DB
- *     
+ *
  *     requestParams = TP.hc('action', 'deleteDB',
  *                              'dbName', 'local_test');
- * 
+ *
  *     Package and fire the request:
- *     
+ *
  *     req = TP.sig.LocalDBStorageRequest.construct(requestParams);
  *
  *     req.defineMethod('handleRequestSucceeded',
  *          function(aResponse) {
- *              TP.log('Success! Result: ' + TP.json(aResponse.getResult()),
+ *              TP.info('Success! Result: ' + TP.json(aResponse.getResult()),
  *                      TP.LOG,
  *                      arguments);
  *          });
  *
  *     req.defineMethod('handleRequestFailed',
  *          function(aResponse) {
- *              TP.log('Failure... Result: ' + TP.json(aResponse.getResult()),
+ *              TP.info('Failure... Result: ' + TP.json(aResponse.getResult()),
  *                      TP.LOG,
  *                      arguments);
  *          });
@@ -105,7 +105,7 @@
  *                              'securePW', 'fluffy',
  *                              'id', 'author_info',
  *                              'body', TP.hc('foo', 'bar'));
- *     
+ *
  * @todo
  */
 

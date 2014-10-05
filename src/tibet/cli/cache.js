@@ -71,11 +71,11 @@ Cmd.prototype.HELP =
 
 'Use --enable to update index.html to use the proper manifest value. When\n' +
 'active the html element will have a manifest attribute, otherwise it will\n' +
-'have a no-manifest attribute (which effectively turns off caching.\n\n' +
+'have a no-manifest attribute (which effectively turns off caching).\n\n' +
 
 'Use --disable to update index.html to have a no-manifest attribute. This\n' +
 'attribute name effectively will disable the cache (although if the cache\n' +
-'was ever activated you must clear your browser\'s cache content as well.\n\n' +
+'was ever activated you must clear your browser\'s cache content as well).\n\n' +
 
 'Use --missing to list files in the application not in the manifest. This\n' +
 'is a relatively simple scan looking for css, image, and other non-source\n' +

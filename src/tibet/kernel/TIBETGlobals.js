@@ -1609,7 +1609,7 @@ TP.TEST_HANDLER = function(aSignal) {
                         //  into the handler to check signal stack traces
                         TP.debug('break.signal_handler');
 
-                        TP.log('TP.TEST_HANDLER fired for: ' +
+                        TP.info('TP.TEST_HANDLER fired for: ' +
                                     aSignal.getSignalName() + ' @ ' +
                                     aSignal.getSignalOrigin(),
                                 TP.SIGNAL_LOG,

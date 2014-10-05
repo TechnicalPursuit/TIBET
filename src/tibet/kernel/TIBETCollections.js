@@ -530,13 +530,13 @@ function(startIndexOrSpec, endIndex, aStep) {
      *          myArr.vslice(6, 1, -2).perform(
      *          function(item) {
      *
-     *          TP.log(item, TP.LOG, arguments);
+     *          TP.info(item, TP.LOG, arguments);
      *          });
      *          <samp>6 4 2</samp>
      *          myArr.vslice('[2:6:2]').perform(
      *          function(item) {
      *
-     *          TP.log(item, TP.LOG, arguments);
+     *          TP.info(item, TP.LOG, arguments);
      *          });
      *          <samp>2 4</samp>
      *     </code>

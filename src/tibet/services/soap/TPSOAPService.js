@@ -15,33 +15,33 @@
  *     such as IE or Mozilla.
  * @examples
  // construct a simple request, this one's for Flickr:
- *     
+ *
  *     request = TP.sig.SOAPRequest.construct(); request.atPut('uri',
  *     'http://api.flickr.com/services/soap/');
- *     
+ *
  *     // in this case we'll construct a temporary payload object // that knows
  *     what flickr wants to see in SOAP calls
- *     
+ *
  *     payload = TP.hc('api_key', '67769adc70ee70b5f666167c9d3b11db',
  *     'test','echo', 'method','flickr.test.echo');
- *     
+ *
  *     payload.defineMethod('asSOAPBody', function(aRequest) {
- *     
+ *
  *     var body;
- *     
+ *
  *     body = TP.join( '<x:FlickrRequest xmlns:x="urn:flickr">',
  *     TP.str(TP.js2xml(this)), '</x:FlickrRequest>');
- *     
+ *
  *     return body; });
- *     
+ *
  *     request.atPut('body', payload);
- *     
+ *
  *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
- *     
- *     TP.log(aResponse.getResult(), TP.LOG, arguments); });
- *     
+ *
+ *     TP.info(aResponse.getResult(), TP.LOG, arguments); });
+ *
  *     // activate the request:
- *     
+ *
  *     request.fire();
  * @todo
  */

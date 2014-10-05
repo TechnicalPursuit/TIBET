@@ -45,6 +45,9 @@ if (Object.defineProperty) {
     //  for booting and for loading code dynamically.
     Object.defineProperty(TP, 'boot', {value: {}, writable: false});
 
+    //  The TP.log object, which is responsible for TIBET logging.
+    Object.defineProperty(TP, 'log', {value: {}, writable: false});
+
     //  The TP.sys object, which is responsible for system data,
     //  metadata, control parameters, etc.
     Object.defineProperty(TP, 'sys', {value: {}, writable: false});
@@ -53,14 +56,19 @@ if (Object.defineProperty) {
     //  types, and supporting variable data.
     Object.defineProperty(root, 'APP', {value: {}, writable: false});
 
+    //  The APP.log object, which is responsible for application logging.
+    Object.defineProperty(APP, 'log', {value: {}, writable: false});
+
     //  Node.js requires seeing the actual assignment.
     APP = root.APP;
 
 } else {
     TP = root.TP || {};
-    TP.sys = TP.sys || {};
     TP.boot = TP.boot || {};
+    TP.log = TP.log || {};
+    TP.sys = TP.sys || {};
     APP = root.APP || {};
+    APP.log = APP.log || {};
 }
 
 //  ----------------------------------------------------------------------------
@@ -126,17 +134,25 @@ TP.$$isNamespace = true;
 TP.$$name = 'TP';
 TP.getTypeNames = function() {return [];};
 
-TP.sys.$$isNamespace = true;
-TP.sys.$$name = 'TP.sys';
-TP.sys.getTypeNames = function() {return [];};
-
 TP.boot.$$isNamespace = true;
 TP.boot.$$name = 'TP.boot';
 TP.boot.getTypeNames = function() {return [];};
 
+TP.log.$$isNamespace = true;
+TP.log.$$name = 'TP.log';
+TP.log.getTypeNames = function() {return [];};
+
+TP.sys.$$isNamespace = true;
+TP.sys.$$name = 'TP.sys';
+TP.sys.getTypeNames = function() {return [];};
+
 APP.$$isNamespace = true;
 APP.$$name = 'APP';
 APP.getTypeNames = function() {return [];};
+
+APP.log.$$isNamespace = true;
+APP.log.$$name = 'APP.log';
+APP.log.getTypeNames = function() {return [];};
 
 //  ---
 //  Configure baseline log/debug levels.

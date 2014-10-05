@@ -13,90 +13,90 @@
  * @synopsis A subtype of TP.sig.RESTRequest that is used in conjunction with
  *     the TP.amz.AmazonS3Service type to communicate to the Amazon S3 service.
  * @example Accessing Amazon S3 from TIBET consists of:
- *     
+ *
  *     1. Define the operation you want to perform via a set of 'request
  *         parameters'
  *     2. Instantiating an TP.sig.AmazonS3Request object, supplying those
  *         request parameters
  *     3. Firing the request.
- *     
+ *
  *     Defining request parameters:
- *     
+ *
  *     Note that the service will also need a 'key' and a 'secret key'. These
  *     can be included in the request as 'key' and 'secretkey', but if they are
  *     not defined in the request, they will be obtained either by looking for a
  *     vCard entry matching the service's 'resourceID' in the current
  *     application's 'cfg' hash or by prompting the user. See the type comment
  *     in TP.amz.AmazonS3Service for more information.
- *     
+ *
  *     Here is an example of them defined in the request:
- *     
+ *
  *     requestParams = TP.hc(
  *                      'action', 'getItemFromBucket',
  *                      'uri', 'http://s3.amazonaws.com/myBucket/myItem',
  *                      'key', '<developer key from Amazon>',
  *                      'secretkey', '<developer secret key from Amazon>');
- *     
+ *
  *     Request parameters examples:
- *     
+ *
  *     Create a bucket:
- *     
+ *
  *     requestParams = TP.hc('action', 'createBucket',
  *                              'uri', 'http://s3.amazonaws.com/tibetBucket');
- *     
+ *
  *     OR
- *     
+ *
  *     List all buckets:
- *     
+ *
  *     requestParams = TP.hc('action', 'listBuckets');
- *     
+ *
  *     OR
- *     
+ *
  *     Delete bucket:
- *     
+ *
  *     requestParams = TP.hc('action', 'deleteBucket',
  *                              'uri', 'http://s3.amazonaws.com/tibetBucket');
- *     
+ *
  *     OR
- *     
+ *
  *     Put item into a bucket:
- *     
+ *
  *     requestParams = TP.hc(
  *              'action', 'putItemInBucket',
  *              'uri', 'http://s3.amazonaws.com/tibetBucket/myItem/mySubItem',
  *              'body', 'This is content going to an item in a bucket');
- *     
+ *
  *     OR
- *     
+ *
  *     Get item from a bucket:
- *     
+ *
  *     requestParams = TP.hc(
  *              'action', 'getItemFromBucket',
  *              'uri', 'http://s3.amazonaws.com/tibetBucket/myItem/mySubItem');
- *     
+ *
  *     OR
- *     
+ *
  *     Delete item from a bucket:
- *     
+ *
  *     requestParams = TP.hc(
  *              'action', 'deleteItemFromBucket',
  *              'uri', 'http://s3.amazonaws.com/tibetBucket/myItem/mySubItem');
- *     
+ *
  *     OR
- *     
+ *
  *     List all keys in a bucket:
- *     
+ *
  *     requestParams = TP.hc(
  *              'action', 'listKeysInBucket',
  *              'uri', 'http://s3.amazonaws.com/tibetBucket');
- *     
+ *
  *     Package and fire the request:
- *     
+ *
  *     s3Req = TP.sig.AmazonS3Request.construct(requestParams);
  *     s3Req.defineMethod(
  *              'handleRequestSucceeded',
  *              function(aResponse) {
- *                  TP.log(aResponse.getResult(), TP.LOG, arguments);
+ *                  TP.info(aResponse.getResult(), TP.LOG, arguments);
  *              });
  *     s3Req.fire();
  * @todo
