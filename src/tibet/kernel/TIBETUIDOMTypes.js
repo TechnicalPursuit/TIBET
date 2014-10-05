@@ -2153,7 +2153,7 @@ function(startGroupName, alwaysWrap) {
             //  should always wrap, ignoring 'wrapWhen'
             if (parentGroupTPElem.hasAttribute('wrapWhen') || shouldWrap) {
                 //  TODO: There are other values for 'wrapWhen'
-                prevGroupTPElem = memberGroupTPElems.first();
+                prevGroupTPElem = memberGroupTPElems.last();
             } else {
                 //  Can't find the previous group and we're not wrapping -
                 //  return null
