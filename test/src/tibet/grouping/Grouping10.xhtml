@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+	*[tibet|group~="gooGroup"]
+	{
+		border: solid 1px black;
+	}
+	*[tibet|group~="mooGroup"]
+	{
+		border: solid 1px red;
+	}
+	*[tibet|group~="booGroup"]
+	{
+		border: solid 1px green;
+	}
+	]]>
+	</style>
+
+</head>
+
+<body xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+	<h2>Group Test #10</h2><br/>
+	<br/>
+	<br/>
+	This test sets up multiple nested 'tibet:group' elements, all of which enclose a set of descendant elements. Note that the overall 'fooGroup' group has a 'wrapWhen="true"' attribute on it that causes the group calculation machinery to 'wrap' when calculating 'next' and 'previous' groups.
+	<br/>
+	<br/>
+	Elements that are members of the 'gooGroup' group will have their borders turned black, elements that are members of the 'mooGroup' group will have their borders turned red and elements that are members of the 'booGroup' group will have their borders turned green.
+	<br/>
+
+	<tibet:group id="fooGroup" wrapWhen="true">
+		<tibet:group id="gooGroup">
+			<div id="div1">This is the div1 div. It is in the 'gooGroup' group.</div>
+			<div id="div2">This is the div2 div. It is in the 'gooGroup' group.</div>
+		</tibet:group>
+		<tibet:group id="mooGroup">
+			<div id="div3">This is the div3 div. It is in the 'mooGroup' group.</div>
+			<div id="div4">This is the div4 div. It is in the 'mooGroup' group.</div>
+		</tibet:group>
+		<tibet:group id="booGroup">
+			<div id="div5">This is the div5 div. It is in the 'booGroup' group.</div>
+			<div id="div6">This is the div6 div. It is in the 'booGroup' group.</div>
+		</tibet:group>
+	</tibet:group>
+
+</body>
+</html>
