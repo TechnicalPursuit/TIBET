@@ -279,6 +279,7 @@ targets.rollup_syn = function(make) {
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'syn'));
     sh.exec('npm install -d');
+    sh.exec('grunt build');
     sh.exec('cp -f ./dist/syn.js ../../deps/syn-tpi.js');
     sh.exec('cp -f ./dist/syn.min.js ../../deps/syn-tpi.min.js');
 
