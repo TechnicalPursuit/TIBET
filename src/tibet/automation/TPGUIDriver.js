@@ -438,7 +438,7 @@ function(driver) {
      * @synopsis Initialize the instance.
      * @param {TP.gui.Driver} driver The GUI driver which created this sequence
      *     and is being used in conjunction with it to drive the GUI.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.callNextMethod();
@@ -461,7 +461,7 @@ function(aPath) {
      *     that should have the 'Alt' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Alt', aPath);
@@ -481,7 +481,7 @@ function(aPath) {
      *     that should have the 'Alt' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Alt', aPath);
@@ -512,7 +512,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -591,7 +591,7 @@ function(aPath) {
      *     that should have the 'Control' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Control', aPath);
@@ -611,7 +611,7 @@ function(aPath) {
      *     that should have the 'Control' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Control', aPath);
@@ -642,7 +642,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -785,7 +785,7 @@ function(aKey, aPath) {
      *     that should have the keys pressed down over. If this isn't supplied,
      *     the currently focused element in the receiver's owning driver's
      *     window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -810,7 +810,7 @@ function(aKey, aPath) {
      *     that should have the keys released up over. If this isn't supplied,
      *     the currently focused element in the receiver's owning driver's
      *     window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -834,7 +834,7 @@ function(aPath) {
      *     that should have the 'Meta' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Meta', aPath);
@@ -854,7 +854,7 @@ function(aPath) {
      *     that should have the 'Meta' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Meta', aPath);
@@ -885,7 +885,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -980,7 +980,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -1068,7 +1068,7 @@ function() {
      *     if there are other asynchronous actions that are using Promises from
      *     the receiver's driver's Promise supplier, this method will respect
      *     that.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var sequenceEntries,
@@ -1352,7 +1352,7 @@ function(aString, aPath) {
      *     isn't supplied, the currently focused element in the receiver's
      *     owning driver's window context will be used as the target for this
      *     event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -1376,7 +1376,7 @@ function(aPath) {
      *     that should have the 'Shift' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Shift', aPath);
@@ -1396,7 +1396,7 @@ function(aPath) {
      *     that should have the 'Shift' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Shift', aPath);
