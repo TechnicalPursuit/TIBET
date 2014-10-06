@@ -121,53 +121,50 @@ function() {
 
     TP.extern.syn.keycodes = newKeymap;
 
-    //  Reprogram the various 'kinds' Arrays to contain our constants
-    kinds = TP.extern.syn.key.kinds;
+    TP.extern.syn.tibetKeyMap = {
+            '[Shift]':'[shift]',
+            '[Shift-Up]':'[shift-up]',
+            '[Control]':'[ctrl]',
+            '[Control-Up]':'[ctrl-up]',
+            '[Alt]':'[alt]',
+            '[Alt-Up]':'[alt-up]',
+            '[Meta]':'[meta]',
+            '[Meta-Up]':'[meta-up]',
+            '[CapsLock]':'[caps]',
+            '[CapsLock-Up]':'[caps-up]',
 
-    kinds.special = TP.ac('Shift', 'Control', 'Alt', 'Meta', 'CapsLock');
-    kinds.navigation = TP.ac('PageUp', 'PageDown', 'End', 'Home',
-                                'Left', 'Up', 'Right', 'Down',
-                                'Insert', 'Del');
-    kinds['function'] = TP.ac('F1', 'F2', 'F3', 'F4',
-                                'F5', 'F6', 'F7', 'F8',
-                                'F9', 'F10', 'F11', 'F12');
+            '[Home]':'[home]',
+            '[End]':'[end]',
+            '[PageUp]':'[page-up]',
+            '[PageDown]':'[page-down]',
 
-    //  Reprogram the various 'defaults' Object to contain the equivalent
-    //  Syn-defined actions and delete the corresponding Syn key.
-    defaults = TP.extern.syn.key.defaults;
+            '[Left]':'[left]',
+            '[Right]':'[right]',
+            '[Up]':'[up]',
+            '[Down]':'[down]',
 
-    defaults.Shift = defaults.shift;
-    delete defaults.shift;
-    defaults.Control = defaults.ctrl;
-    delete defaults.ctrl;
+            '[Backspace]':'\b',
+            '[Insert]':'[insert]',
+            '[Del]':'[delete]',
+            '[Enter]':'\r',
+            '[Tab]':'\t',
 
-    defaults.PageDown = defaults['page-down'];
-    delete defaults['page-down'];
-    defaults.PageUp = defaults['page-up'];
-    delete defaults['page-up'];
-    defaults.Home = defaults.home;
-    delete defaults.home;
-    defaults.End = defaults.end;
-    delete defaults.end;
+            '[F1]':'[f1]',
+            '[F2]':'[f2]',
+            '[F3]':'[f3]',
+            '[F4]':'[f4]',
+            '[F5]':'[f5]',
+            '[F6]':'[f6]',
+            '[F7]':'[f6]',
+            '[F8]':'[f8]',
+            '[F9]':'[f9]',
+            '[F10]':'[f10]',
+            '[F11]':'[f11]',
+            '[F12]':'[f12]',
+        };
 
-    defaults.Backspace = defaults['\b'];
-    delete defaults['\b'];
-    defaults.Enter = defaults['\r'];
-    delete defaults['\r'];
-    defaults.Tab = defaults['\t'];
-    delete defaults['\t'];
-
-    defaults.Del = defaults['delete'];
-    delete defaults['delete'];
-
-    defaults.Left = defaults.left;
-    delete defaults.left;
-    defaults.Right = defaults.right;
-    delete defaults.right;
-    defaults.Up = defaults.up;
-    delete defaults.up;
-    defaults.Down = defaults.down;
-    delete defaults.down;
+    //  OMG... don't ask...
+    TP.extern.syn.support.ready = 2;
 
     return;
 });
@@ -1176,6 +1173,24 @@ function(target, type, args, callback, currentElement) {
 
         if (TP.notValid(synArgs = initialArgs)) {
             synArgs = {};
+        }
+
+        if (TP.isString(synArgs)) {
+            synArgs = synArgs.replace(
+                /\[[a-zA-Z0-9-]+?\]/g,
+                function(tibetKey) {
+                    var synKey;
+
+                    if (TP.isValid(
+                            synKey =
+                            TP.extern.syn.tibetKeyMap[tibetKey])) {
+                        return synKey;
+                    }
+
+                    return tibetKey;
+                });
+
+            return synArgs;
         }
 
         synArgs.relatedTarget = null;
