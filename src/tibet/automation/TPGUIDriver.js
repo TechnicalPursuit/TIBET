@@ -1160,9 +1160,7 @@ function() {
                                     seqEntry.at(1),
                                     seqEntry.at(0),
                                     seqEntry.at(2),
-                                    function() {
-                                        resolver();
-                                    },
+                                    resolver,
                                     currentElement);
                     });
 
