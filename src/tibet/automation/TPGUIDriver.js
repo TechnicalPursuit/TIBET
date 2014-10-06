@@ -56,10 +56,7 @@ function() {
         entry,
 
         keyCode,
-        val,
-
-        kinds,
-        defaults;
+        val;
 
     //  The 'Syn' library that we use has a hard-coded key configuration
     //  suitable for US ASCII 101 keyboards. We want a more flexible approach,
@@ -119,9 +116,53 @@ function() {
         }
     }
 
+    //  Map special keys from the W3C constants (which TIBET uses) to the Syn
+    //  constants.
+    newKeymap.alt = newKeymap.Alt;
+    newKeymap.caps = newKeymap.CapsLock;
+    newKeymap.ctrl = newKeymap.Control;
+    newKeymap.decimal = newKeymap.Decimal;
+    newKeymap.delete = newKeymap.Del;
+    newKeymap.divide = newKeymap.Divide;
+    newKeymap.down = newKeymap.Down;
+    newKeymap.end = newKeymap.End;
+    newKeymap.escape = newKeymap.Esc;
+    newKeymap.f1 = newKeymap.F1;
+    newKeymap.f2 = newKeymap.F2;
+    newKeymap.f3 = newKeymap.F3;
+    newKeymap.f4 = newKeymap.F4;
+    newKeymap.f5 = newKeymap.F5;
+    newKeymap.f6 = newKeymap.F6;
+    newKeymap.f7 = newKeymap.F7;
+    newKeymap.f8 = newKeymap.F8;
+    newKeymap.f9 = newKeymap.F9;
+    newKeymap.f10 = newKeymap.F10;
+    newKeymap.f11 = newKeymap.F11;
+    newKeymap.f12 = newKeymap.F12;
+    newKeymap['forward-slash'] = newKeymap.Solidus;
+    newKeymap.home = newKeymap.Home;
+    newKeymap.insert = newKeymap.Insert;
+    newKeymap.left = newKeymap.Left;
+    newKeymap['left window key'] = newKeymap.Meta;
+    newKeymap['num-lock'] = newKeymap.NumLock;
+    newKeymap['page-down'] = newKeymap.PageDown;
+    newKeymap['page-up'] = newKeymap.PageUp;
+    newKeymap['pause-break'] = newKeymap.Pause;
+    newKeymap.period = newKeymap.Period;
+    newKeymap.print = newKeymap.PrintScreen;
+    newKeymap.right = newKeymap.Right;
+    newKeymap['right window key'] = newKeymap.Meta;
+    newKeymap['scroll-lock'] = newKeymap.Scroll;
+    newKeymap.shift = newKeymap.Shift;
+    newKeymap.subtract = newKeymap.Subtract;
+
+    //  Reassign the Syn key map to what we just built
     TP.extern.syn.keycodes = newKeymap;
 
-    TP.extern.syn.tibetKeyMap = {
+    //  Because there are hardcoded lookups in Syn (sigh...), we also have to
+    //  provide a translation table for some special keys when using them in key
+    //  sequence strings.
+    TP.extern.syn.tibetSpecialKeyMap = {
             '[Shift]':'[shift]',
             '[Shift-Up]':'[shift-up]',
             '[Control]':'[ctrl]',
@@ -163,7 +204,8 @@ function() {
             '[F12]':'[f12]',
         };
 
-    //  OMG... don't ask...
+    //  OMG... don't ask... let's just say this is needed for Syn to properly
+    //  handle shift/ctrl/alt/meta key flags.
     TP.extern.syn.support.ready = 2;
 
     return;
@@ -1183,7 +1225,7 @@ function(target, type, args, callback, currentElement) {
 
                     if (TP.isValid(
                             synKey =
-                            TP.extern.syn.tibetKeyMap[tibetKey])) {
+                            TP.extern.syn.tibetSpecialKeyMap[tibetKey])) {
                         return synKey;
                     }
 
