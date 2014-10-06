@@ -1155,23 +1155,23 @@ function(target, type, args, callback, currentElement) {
      * @param {Function} callback The callback function to execute when the
      *     event dispatch is complete.
      * @param {Element} currentElement The currently focused Element.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var sequenceEntries,
-        driver,
 
         populateSynArgs,
 
-        syn;
+        syn,
+
+        finalTarget;
 
     sequenceEntries = this.get('sequenceEntries');
-    driver = this.get('driver');
 
     //  An 'args' normalization routine that makes sure that some of Syn's
     //  arguments are set properly to deal with the fact that Syn's defaults
     //  assume that the element is in the top-level window's document.
-    populateSynArgs = function(initialArgs, target) {
+    populateSynArgs = function(initialArgs, elemTarget) {
         var synArgs;
 
         if (TP.notValid(synArgs = initialArgs)) {
@@ -1179,7 +1179,7 @@ function(target, type, args, callback, currentElement) {
         }
 
         synArgs.relatedTarget = null;
-        synArgs.view = TP.nodeGetWindow(target);
+        synArgs.view = TP.nodeGetWindow(elemTarget);
 
         //  We must make sure that clientX & clientY are defined, otherwise Syn
         //  will crash with the setting we make above... it assumes that the
@@ -1192,13 +1192,16 @@ function(target, type, args, callback, currentElement) {
 
     syn = TP.extern.syn;
 
+    if (!TP.isElement(finalTarget = target)) {
+        finalTarget = currentElement;
+    }
+
     //  The three parameters are:
     //      1. The type of operation, used in the switch below.
-    //      2. The targets of the operation. This could be 1...n
-    //      Elements, an Access Path which will determine the
-    //      Elements to be used or the value 'TP.CURRENT', in which
-    //      case it will be whatever is the currently focused
-    //      element.
+    //      2. The target of the operation. This could be an Element specified
+    //      by the user, an Element derived from an access path given by the
+    //      user (multiple Elements will have been expanded into multiple
+    //      entries or the currently focused Element as supplied to this method.
     //      3. Operation-specific arguments.
 
     //  Invoke the Syn handler. If we're the last in the
@@ -1207,52 +1210,52 @@ function(target, type, args, callback, currentElement) {
     switch(type) {
         case 'click':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.click(args, target, callback);
+            syn.click(args, finalTarget, callback);
 
         break;
 
         case 'dblclick':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.dblclick(args, target, callback);
+            syn.dblclick(args, finalTarget, callback);
 
         break;
 
         case 'rightclick':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.rightClick(args, target, callback);
+            syn.rightClick(args, finalTarget, callback);
 
         break;
 
         case 'key':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.key(args, target, callback);
+            syn.key(args, finalTarget, callback);
 
         break;
 
         case 'keys':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.type(args, target, callback);
+            syn.type(args, finalTarget, callback);
 
         break;
 
         case 'mousedown':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'mousedown',
                 TP.extern.syn.key.options(args, 'mousedown'),
-                target);
+                finalTarget);
 
             callback();
 
@@ -1260,12 +1263,12 @@ function(target, type, args, callback, currentElement) {
 
         case 'mouseup':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'mouseup',
                 TP.extern.syn.key.options(args, 'mouseup'),
-                target);
+                finalTarget);
 
             callback();
 
@@ -1273,12 +1276,12 @@ function(target, type, args, callback, currentElement) {
 
         case 'keydown':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'keydown',
                 TP.extern.syn.key.options(args, 'keydown'),
-                target);
+                finalTarget);
 
             callback();
 
@@ -1286,12 +1289,12 @@ function(target, type, args, callback, currentElement) {
 
         case 'keyup':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'keyup',
                 TP.extern.syn.key.options(args, 'keyup'),
-                target);
+                finalTarget);
 
             callback();
 
