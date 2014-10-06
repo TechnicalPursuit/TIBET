@@ -734,8 +734,6 @@ function(entries) {
 
     var driver,
 
-        currentElement,
-
         newEntries,
 
         len,
@@ -746,13 +744,6 @@ function(entries) {
         targets;
 
     driver = this.get('driver');
-
-    //  If we can't determine a focused element,
-    //  call the error callback and exit.
-    if (!TP.isElement(currentElement = driver.getFocusedElement())) {
-                //'No current Element for the GUI Driver.');
-        return;
-    }
 
     newEntries = TP.ac();
 
@@ -767,11 +758,8 @@ function(entries) {
 
         if (TP.isElement(targets)) {
             //  The target is already an element
-        } else if (targets === TP.CURRENT) {
-            targets = currentElement;
         } else if (targets.isAccessPath()) {
-            targets = targets.executeGet(
-                        driver.getCurrentNativeDocument());
+            targets = targets.executeGet(driver.getCurrentNativeDocument());
         }
 
         if (TP.isArray(targets)) {
@@ -1089,8 +1077,6 @@ function() {
     var sequenceEntries,
         driver,
 
-        populateSynArgs,
-
         thisArg,
 
         len,
@@ -1098,25 +1084,6 @@ function() {
 
     sequenceEntries = this.get('sequenceEntries');
     driver = this.get('driver');
-
-    populateSynArgs = function(initialArgs, target) {
-        var synArgs;
-
-        if (TP.notValid(synArgs = initialArgs)) {
-            synArgs = {};
-        }
-
-        synArgs.relatedTarget = null;
-        synArgs.view = TP.nodeGetWindow(target);
-
-        //  We must make sure that clientX & clientY are defined, otherwise Syn
-        //  will crash with the setting we make above... it assumes that the
-        //  document of the element is the top-level window... sigh.
-        synArgs.clientX = synArgs.clientX || 0;
-        synArgs.clientY = synArgs.clientY || 0;
-
-        return synArgs;
-    };
 
     thisArg = this;
 
