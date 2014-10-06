@@ -118,9 +118,37 @@ function() {
 
     //  Map special keys from the W3C constants (which TIBET uses) to the Syn
     //  constants.
+    newKeymap['\b'] = newKeymap.Backspace;
+    newKeymap['\t'] = newKeymap.Tab;
+    newKeymap['\r'] = newKeymap.Enter;
+
+    newKeymap.num0 = newKeymap['0'];
+    newKeymap.num1 = newKeymap['1'];
+    newKeymap.num2 = newKeymap['2'];
+    newKeymap.num3 = newKeymap['3'];
+    newKeymap.num4 = newKeymap['4'];
+    newKeymap.num5 = newKeymap['5'];
+    newKeymap.num6 = newKeymap['6'];
+    newKeymap.num7 = newKeymap['7'];
+    newKeymap.num8 = newKeymap['8'];
+    newKeymap.num9 = newKeymap['9'];
+
+    newKeymap['*'] = newKeymap.Multiply;
+    newKeymap['+'] = newKeymap.Add;
+    newKeymap[';'] = newKeymap.Semicolon;
+    newKeymap['='] = newKeymap.Equals;
+    newKeymap[','] = newKeymap.Comma;
+    newKeymap['`'] = newKeymap.Grave;
+    newKeymap['['] = newKeymap.LeftSquareBracket;
+    newKeymap[']'] = newKeymap.RightSquareBracket;
+    newKeymap['\\'] = newKeymap.Backslash;
+    newKeymap['\''] = newKeymap.Apostrophe;
+
     newKeymap.alt = newKeymap.Alt;
     newKeymap.caps = newKeymap.CapsLock;
     newKeymap.ctrl = newKeymap.Control;
+    newKeymap.dash = newKeymap.HyphenMinus;
+    newKeymap['-'] = newKeymap.HyphenMinus;
     newKeymap.decimal = newKeymap.Decimal;
     newKeymap.delete = newKeymap.Del;
     newKeymap.divide = newKeymap.Divide;
@@ -140,6 +168,7 @@ function() {
     newKeymap.f11 = newKeymap.F11;
     newKeymap.f12 = newKeymap.F12;
     newKeymap['forward-slash'] = newKeymap.Solidus;
+    newKeymap['/'] = newKeymap.Solidus;
     newKeymap.home = newKeymap.Home;
     newKeymap.insert = newKeymap.Insert;
     newKeymap.left = newKeymap.Left;
@@ -149,6 +178,7 @@ function() {
     newKeymap['page-up'] = newKeymap.PageUp;
     newKeymap['pause-break'] = newKeymap.Pause;
     newKeymap.period = newKeymap.Period;
+    newKeymap['.'] = newKeymap.Period;
     newKeymap.print = newKeymap.PrintScreen;
     newKeymap.right = newKeymap.Right;
     newKeymap['right window key'] = newKeymap.Meta;
@@ -202,6 +232,17 @@ function() {
             '[F10]':'[f10]',
             '[F11]':'[f11]',
             '[F12]':'[f12]',
+
+            '[Num0]':'[num0]',
+            '[Num1]':'[num1]',
+            '[Num2]':'[num2]',
+            '[Num3]':'[num3]',
+            '[Num4]':'[num4]',
+            '[Num5]':'[num5]',
+            '[Num6]':'[num6]',
+            '[Num7]':'[num6]',
+            '[Num8]':'[num8]',
+            '[Num9]':'[num9]',
         };
 
     //  OMG... don't ask... let's just say this is needed for Syn to properly
