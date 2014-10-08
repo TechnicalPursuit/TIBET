@@ -44,6 +44,7 @@
     <!--    KERNEL STAGE 3, OO/EVENT CORE -->
 
     <script src="TIBETInheritance.js"/>
+    <script src="TIBETLogging.js"/>
     <script src="TIBETNotification.js"/>
     <script src="TIBETJobControl.js"/>
     <script src="TIBETSyncControl.js"/>

@@ -40,6 +40,7 @@
 
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
+    <config ref="logging"/>
     <config ref="formatting"/>
     <config ref="grouping"/>
     <config ref="ev"/>
@@ -67,6 +68,10 @@
 <config id="databinding">
     <script src="~lib_tst/src/tibet/databinding/TP.core.DataPath_Tests.js" />
     <script src="~lib_tst/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
+</config>
+
+<config id="logging">
+    <script src="~lib_tst/src/tibet/logging/TP.log_Tests.js" />
 </config>
 
 <config id="formatting">
