@@ -56,10 +56,7 @@ function() {
         entry,
 
         keyCode,
-        val,
-
-        kinds,
-        defaults;
+        val;
 
     //  The 'Syn' library that we use has a hard-coded key configuration
     //  suitable for US ASCII 101 keyboards. We want a more flexible approach,
@@ -119,55 +116,97 @@ function() {
         }
     }
 
+    //  Map special keys from the W3C constants (which TIBET uses) to the Syn
+    //  constants.
+    newKeymap.alt = newKeymap.Alt;
+    newKeymap.caps = newKeymap.CapsLock;
+    newKeymap.ctrl = newKeymap.Control;
+    newKeymap.decimal = newKeymap.Decimal;
+    newKeymap.delete = newKeymap.Del;
+    newKeymap.divide = newKeymap.Divide;
+    newKeymap.down = newKeymap.Down;
+    newKeymap.end = newKeymap.End;
+    newKeymap.escape = newKeymap.Esc;
+    newKeymap.f1 = newKeymap.F1;
+    newKeymap.f2 = newKeymap.F2;
+    newKeymap.f3 = newKeymap.F3;
+    newKeymap.f4 = newKeymap.F4;
+    newKeymap.f5 = newKeymap.F5;
+    newKeymap.f6 = newKeymap.F6;
+    newKeymap.f7 = newKeymap.F7;
+    newKeymap.f8 = newKeymap.F8;
+    newKeymap.f9 = newKeymap.F9;
+    newKeymap.f10 = newKeymap.F10;
+    newKeymap.f11 = newKeymap.F11;
+    newKeymap.f12 = newKeymap.F12;
+    newKeymap['forward-slash'] = newKeymap.Solidus;
+    newKeymap.home = newKeymap.Home;
+    newKeymap.insert = newKeymap.Insert;
+    newKeymap.left = newKeymap.Left;
+    newKeymap['left window key'] = newKeymap.Meta;
+    newKeymap['num-lock'] = newKeymap.NumLock;
+    newKeymap['page-down'] = newKeymap.PageDown;
+    newKeymap['page-up'] = newKeymap.PageUp;
+    newKeymap['pause-break'] = newKeymap.Pause;
+    newKeymap.period = newKeymap.Period;
+    newKeymap.print = newKeymap.PrintScreen;
+    newKeymap.right = newKeymap.Right;
+    newKeymap['right window key'] = newKeymap.Meta;
+    newKeymap['scroll-lock'] = newKeymap.Scroll;
+    newKeymap.shift = newKeymap.Shift;
+    newKeymap.subtract = newKeymap.Subtract;
+
+    //  Reassign the Syn key map to what we just built
     TP.extern.syn.keycodes = newKeymap;
 
-    //  Reprogram the various 'kinds' Arrays to contain our constants
-    kinds = TP.extern.syn.key.kinds;
+    //  Because there are hardcoded lookups in Syn (sigh...), we also have to
+    //  provide a translation table for some special keys when using them in key
+    //  sequence strings.
+    TP.extern.syn.tibetSpecialKeyMap = {
+            '[Shift]':'[shift]',
+            '[Shift-Up]':'[shift-up]',
+            '[Control]':'[ctrl]',
+            '[Control-Up]':'[ctrl-up]',
+            '[Alt]':'[alt]',
+            '[Alt-Up]':'[alt-up]',
+            '[Meta]':'[meta]',
+            '[Meta-Up]':'[meta-up]',
+            '[CapsLock]':'[caps]',
+            '[CapsLock-Up]':'[caps-up]',
 
-    kinds.special = TP.ac('Shift', 'Control', 'Alt', 'Meta', 'CapsLock');
-    kinds.navigation = TP.ac('PageUp', 'PageDown', 'End', 'Home',
-                                'Left', 'Up', 'Right', 'Down',
-                                'Insert', 'Del');
-    kinds['function'] = TP.ac('F1', 'F2', 'F3', 'F4',
-                                'F5', 'F6', 'F7', 'F8',
-                                'F9', 'F10', 'F11', 'F12');
+            '[Home]':'[home]',
+            '[End]':'[end]',
+            '[PageUp]':'[page-up]',
+            '[PageDown]':'[page-down]',
 
-    //  Reprogram the various 'defaults' Object to contain the equivalent
-    //  Syn-defined actions and delete the corresponding Syn key.
-    defaults = TP.extern.syn.key.defaults;
+            '[Left]':'[left]',
+            '[Right]':'[right]',
+            '[Up]':'[up]',
+            '[Down]':'[down]',
 
-    defaults.Shift = defaults.shift;
-    delete defaults.shift;
-    defaults.Control = defaults.ctrl;
-    delete defaults.ctrl;
+            '[Backspace]':'\b',
+            '[Insert]':'[insert]',
+            '[Del]':'[delete]',
+            '[Enter]':'\r',
+            '[Tab]':'\t',
 
-    defaults.PageDown = defaults['page-down'];
-    delete defaults['page-down'];
-    defaults.PageUp = defaults['page-up'];
-    delete defaults['page-up'];
-    defaults.Home = defaults.home;
-    delete defaults.home;
-    defaults.End = defaults.end;
-    delete defaults.end;
+            '[F1]':'[f1]',
+            '[F2]':'[f2]',
+            '[F3]':'[f3]',
+            '[F4]':'[f4]',
+            '[F5]':'[f5]',
+            '[F6]':'[f6]',
+            '[F7]':'[f6]',
+            '[F8]':'[f8]',
+            '[F9]':'[f9]',
+            '[F10]':'[f10]',
+            '[F11]':'[f11]',
+            '[F12]':'[f12]',
+        };
 
-    defaults.Backspace = defaults['\b'];
-    delete defaults['\b'];
-    defaults.Enter = defaults['\r'];
-    delete defaults['\r'];
-    defaults.Tab = defaults['\t'];
-    delete defaults['\t'];
-
-    defaults.Del = defaults['delete'];
-    delete defaults['delete'];
-
-    defaults.Left = defaults.left;
-    delete defaults.left;
-    defaults.Right = defaults.right;
-    delete defaults.right;
-    defaults.Up = defaults.up;
-    delete defaults.up;
-    defaults.Down = defaults.down;
-    delete defaults.down;
+    //  OMG... don't ask... let's just say this is needed for Syn to properly
+    //  handle shift/ctrl/alt/meta key flags.
+    TP.extern.syn.support.ready = 2;
 
     return;
 });
@@ -441,7 +480,7 @@ function(driver) {
      * @synopsis Initialize the instance.
      * @param {TP.gui.Driver} driver The GUI driver which created this sequence
      *     and is being used in conjunction with it to drive the GUI.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.callNextMethod();
@@ -464,7 +503,7 @@ function(aPath) {
      *     that should have the 'Alt' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Alt', aPath);
@@ -484,7 +523,7 @@ function(aPath) {
      *     that should have the 'Alt' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Alt', aPath);
@@ -515,7 +554,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -594,7 +633,7 @@ function(aPath) {
      *     that should have the 'Control' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Control', aPath);
@@ -614,7 +653,7 @@ function(aPath) {
      *     that should have the 'Control' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Control', aPath);
@@ -645,7 +684,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -734,8 +773,6 @@ function(entries) {
 
     var driver,
 
-        currentElement,
-
         newEntries,
 
         len,
@@ -746,13 +783,6 @@ function(entries) {
         targets;
 
     driver = this.get('driver');
-
-    //  If we can't determine a focused element,
-    //  call the error callback and exit.
-    if (!TP.isElement(currentElement = driver.getFocusedElement())) {
-                //'No current Element for the GUI Driver.');
-        return;
-    }
 
     newEntries = TP.ac();
 
@@ -767,11 +797,8 @@ function(entries) {
 
         if (TP.isElement(targets)) {
             //  The target is already an element
-        } else if (targets === TP.CURRENT) {
-            targets = currentElement;
         } else if (targets.isAccessPath()) {
-            targets = targets.executeGet(
-                        driver.getCurrentNativeDocument());
+            targets = targets.executeGet(driver.getCurrentNativeDocument());
         }
 
         if (TP.isArray(targets)) {
@@ -800,7 +827,7 @@ function(aKey, aPath) {
      *     that should have the keys pressed down over. If this isn't supplied,
      *     the currently focused element in the receiver's owning driver's
      *     window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -825,7 +852,7 @@ function(aKey, aPath) {
      *     that should have the keys released up over. If this isn't supplied,
      *     the currently focused element in the receiver's owning driver's
      *     window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -849,7 +876,7 @@ function(aPath) {
      *     that should have the 'Meta' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Meta', aPath);
@@ -869,7 +896,7 @@ function(aPath) {
      *     that should have the 'Meta' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Meta', aPath);
@@ -900,7 +927,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -995,7 +1022,7 @@ function(mouseLocation, mouseButton) {
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var point,
@@ -1083,13 +1110,11 @@ function() {
      *     if there are other asynchronous actions that are using Promises from
      *     the receiver's driver's Promise supplier, this method will respect
      *     that.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var sequenceEntries,
         driver,
-
-        populateSynArgs,
 
         thisArg,
 
@@ -1098,25 +1123,6 @@ function() {
 
     sequenceEntries = this.get('sequenceEntries');
     driver = this.get('driver');
-
-    populateSynArgs = function(initialArgs, target) {
-        var synArgs;
-
-        if (TP.notValid(synArgs = initialArgs)) {
-            synArgs = {};
-        }
-
-        synArgs.relatedTarget = null;
-        synArgs.view = TP.nodeGetWindow(target);
-
-        //  We must make sure that clientX & clientY are defined, otherwise Syn
-        //  will crash with the setting we make above... it assumes that the
-        //  document of the element is the top-level window... sigh.
-        synArgs.clientX = synArgs.clientX || 0;
-        synArgs.clientY = synArgs.clientY || 0;
-
-        return synArgs;
-    };
 
     thisArg = this;
 
@@ -1154,9 +1160,7 @@ function() {
                                     seqEntry.at(1),
                                     seqEntry.at(0),
                                     seqEntry.at(2),
-                                    function() {
-                                        resolver();
-                                    },
+                                    resolver,
                                     currentElement);
                     });
 
@@ -1188,31 +1192,49 @@ function(target, type, args, callback, currentElement) {
      * @param {Function} callback The callback function to execute when the
      *     event dispatch is complete.
      * @param {Element} currentElement The currently focused Element.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var sequenceEntries,
-        driver,
 
         populateSynArgs,
 
-        syn;
+        syn,
+
+        finalTarget;
 
     sequenceEntries = this.get('sequenceEntries');
-    driver = this.get('driver');
 
     //  An 'args' normalization routine that makes sure that some of Syn's
     //  arguments are set properly to deal with the fact that Syn's defaults
     //  assume that the element is in the top-level window's document.
-    populateSynArgs = function(initialArgs, target) {
+    populateSynArgs = function(initialArgs, elemTarget) {
         var synArgs;
 
         if (TP.notValid(synArgs = initialArgs)) {
             synArgs = {};
         }
 
+        if (TP.isString(synArgs)) {
+            synArgs = synArgs.replace(
+                /\[[a-zA-Z0-9-]+?\]/g,
+                function(tibetKey) {
+                    var synKey;
+
+                    if (TP.isValid(
+                            synKey =
+                            TP.extern.syn.tibetSpecialKeyMap[tibetKey])) {
+                        return synKey;
+                    }
+
+                    return tibetKey;
+                });
+
+            return synArgs;
+        }
+
         synArgs.relatedTarget = null;
-        synArgs.view = TP.nodeGetWindow(target);
+        synArgs.view = TP.nodeGetWindow(elemTarget);
 
         //  We must make sure that clientX & clientY are defined, otherwise Syn
         //  will crash with the setting we make above... it assumes that the
@@ -1225,13 +1247,16 @@ function(target, type, args, callback, currentElement) {
 
     syn = TP.extern.syn;
 
+    if (!TP.isElement(finalTarget = target)) {
+        finalTarget = currentElement;
+    }
+
     //  The three parameters are:
     //      1. The type of operation, used in the switch below.
-    //      2. The targets of the operation. This could be 1...n
-    //      Elements, an Access Path which will determine the
-    //      Elements to be used or the value 'TP.CURRENT', in which
-    //      case it will be whatever is the currently focused
-    //      element.
+    //      2. The target of the operation. This could be an Element specified
+    //      by the user, an Element derived from an access path given by the
+    //      user (multiple Elements will have been expanded into multiple
+    //      entries or the currently focused Element as supplied to this method.
     //      3. Operation-specific arguments.
 
     //  Invoke the Syn handler. If we're the last in the
@@ -1240,52 +1265,52 @@ function(target, type, args, callback, currentElement) {
     switch(type) {
         case 'click':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.click(args, target, callback);
+            syn.click(args, finalTarget, callback);
 
         break;
 
         case 'dblclick':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.dblclick(args, target, callback);
+            syn.dblclick(args, finalTarget, callback);
 
         break;
 
         case 'rightclick':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.rightClick(args, target, callback);
+            syn.rightClick(args, finalTarget, callback);
 
         break;
 
         case 'key':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.key(args, target, callback);
+            syn.key(args, finalTarget, callback);
 
         break;
 
         case 'keys':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
-            syn.type(args, target, callback);
+            syn.type(args, finalTarget, callback);
 
         break;
 
         case 'mousedown':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'mousedown',
                 TP.extern.syn.key.options(args, 'mousedown'),
-                target);
+                finalTarget);
 
             callback();
 
@@ -1293,12 +1318,12 @@ function(target, type, args, callback, currentElement) {
 
         case 'mouseup':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'mouseup',
                 TP.extern.syn.key.options(args, 'mouseup'),
-                target);
+                finalTarget);
 
             callback();
 
@@ -1306,12 +1331,12 @@ function(target, type, args, callback, currentElement) {
 
         case 'keydown':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'keydown',
                 TP.extern.syn.key.options(args, 'keydown'),
-                target);
+                finalTarget);
 
             callback();
 
@@ -1319,12 +1344,12 @@ function(target, type, args, callback, currentElement) {
 
         case 'keyup':
 
-            args = populateSynArgs(args, target);
+            args = populateSynArgs(args, finalTarget);
 
             syn.trigger(
                 'keyup',
                 TP.extern.syn.key.options(args, 'keyup'),
-                target);
+                finalTarget);
 
             callback();
 
@@ -1367,7 +1392,7 @@ function(aString, aPath) {
      *     isn't supplied, the currently focused element in the receiver's
      *     owning driver's window context will be used as the target for this
      *     event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     var target;
@@ -1391,7 +1416,7 @@ function(aPath) {
      *     that should have the 'Shift' key pressed down over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyDown('Shift', aPath);
@@ -1411,7 +1436,7 @@ function(aPath) {
      *     that should have the 'Shift' key released up over. If this isn't
      *     supplied, the currently focused element in the receiver's owning
      *     driver's window context will be used as the target for this event.
-     * @return {TP.gui.Driver} The receiver.
+     * @return {TP.gui.Sequence} The receiver.
      */
 
     this.keyUp('Shift', aPath);

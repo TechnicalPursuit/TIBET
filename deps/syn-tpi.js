@@ -2,7 +2,7 @@
  * Syn - 0.0.2
  * 
  * @copyright 2014 Bitovi
- * Mon, 30 Jun 2014 22:44:59 GMT
+ * Mon, 06 Oct 2014 15:55:21 GMT
  * @license MIT
  */
 
@@ -2213,13 +2213,11 @@ var __m5 = (function (Syn) {
 					el = orders[i][0];
 					if (this === el) {
 						if (!Syn.key.shiftKey) {
-							current = orders[i + 1][0];
-							if (!current) {
+							if (i === orders.length - 1 || !(current = orders[i + 1][0])) {
 								current = orders[0][0];
 							}
 						} else {
-							current = orders[i - 1][0];
-							if (!current) {
+							if (i === 0 || !(current = orders[i - 1][0])) {
 								current = orders[focusEls.length - 1][0];
 							}
 						}
