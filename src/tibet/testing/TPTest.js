@@ -952,6 +952,13 @@ function(target, suiteName, suiteFunc) {
      * @return {TP.lang.Hash} The new test suite instance.
      */
 
+    if (TP.notValid(target) ||
+            TP.notValid(suiteName) ||
+            TP.notValid(suiteFunc)) {
+        this.raise('InvalidArgument');
+        return;
+    }
+
     this.callNextMethod();
 
     this.$set('suiteOwner', target);
@@ -1828,6 +1835,13 @@ function(suite, caseName, caseFunc) {
      * @param {Function} caseFunc The function implementing the test case.
      * @return {TP.test.Case} The newly created test case.
      */
+
+    if (TP.notValid(suite) ||
+            TP.notValid(caseName) ||
+            TP.notValid(caseFunc)) {
+        this.raise('InvalidArgument');
+        return;
+    }
 
     this.callNextMethod();
 
