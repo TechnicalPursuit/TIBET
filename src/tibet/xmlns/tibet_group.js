@@ -144,6 +144,8 @@ function(includesGroups) {
                 '*[tabindex][tibet|group="' + this.getLocalID() + '"]');
     }
 
+    results = TP.unwrap(results);
+
     //  Iterate over them and see if they're displayed (not hidden by CSS -
     //  although they could currently not be visible to the user).
     results = results.select(
