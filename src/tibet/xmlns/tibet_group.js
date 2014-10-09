@@ -154,6 +154,10 @@ function(includesGroups) {
                         return TP.elementIsDisplayed(anElem);
                     });
 
+    //  Sort the Array of elements by their 'tabindex' according to the
+    //  HTML5 tabindex rules.
+    results.sort(TP.TABINDEX_ORDER_SORT);
+
     //  Wrap the results to make TP.core.ElementNodes
     return TP.wrap(results);
 });
