@@ -61,18 +61,22 @@ targets.rollup = function(make) {
         dir: './build',
         prefix: 'app_',
         headers: true,
-        minify: false,
-        promise: targets.rollup
-    });
-
-    helpers.rollup(make, {
-        pkg: '~app_cfg/app.xml',
-        config: 'base',
-        dir: './build',
-        prefix: 'app_',
-        headers: true,
-        minify: true,
-        promise: targets.rollup
+        minify: false
+    }).then(function() {
+        return helpers.rollup(make, {
+            pkg: '~app_cfg/app.xml',
+            config: 'base',
+            dir: './build',
+            prefix: 'app_',
+            headers: true,
+            minify: true
+        });
+    }).then(
+    function() {
+        targets.rollup.resolve();
+    },
+    function() {
+        targets.rollup.reject();
     });
 };
 

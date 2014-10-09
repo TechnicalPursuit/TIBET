@@ -17,6 +17,7 @@
 var CLI = require('./_cli');
 var sh = require('shelljs');
 var path = require('path');
+var Q = require('q');
 
 /**
  * Canonical `helper` object for internal utility functions.
@@ -27,12 +28,11 @@ var helpers = {};
 /**
  * A common utility used by rollup operations to avoid duplication of the
  * logic behind building specific rollup products.
- * @param {Promise} make A promise wrapping a make target to resolve/reject on
- *     success/failure of the rollup.
+ * @param {Cmd} make The make command handle which provides access to logging
+ *     and other CLI functionality specific to make operation.
  * @param {Hash} options An object whose keys must include:
  *     pkg - the package file path
  *     config - the package config id to be rolled up
- *     promise - the make target promise to resolve/reject.
  *
  *     Additional keys are:
  *     dir - the target directory for the rollup output [.]
@@ -53,7 +53,7 @@ helpers.rollup = function(make, options) {
     var root;
     var headers;
     var minify;
-    var promise;
+    var deferred;
 
     if (CLI.notValid(options)) {
         throw new Error('InvalidOptions');
@@ -65,10 +65,6 @@ helpers.rollup = function(make, options) {
 
     if (CLI.notValid(options.config)) {
         throw new Error('InvalidConfig');
-    }
-
-    if (CLI.notValid(options.promise)) {
-        throw new Error('InvalidPromise');
     }
 
     pkg = options.pkg;
@@ -89,7 +85,7 @@ helpers.rollup = function(make, options) {
         minify = false;
     }
 
-    promise = options.promise;
+    deferred = Q.defer();
 
     root = options.root || options.config;
 
@@ -102,12 +98,13 @@ helpers.rollup = function(make, options) {
 
     make.log('executing ' + cmd);
     result = sh.exec(cmd, {
-        silent: (CLI.options.silent !== true)
+        silent: (CLI.options.silent !== false)
     });
 
     if (result.code !== 0) {
-        promise.reject(result.output);
-        return;
+        make.error('Error processing rollup.');
+        deferred.reject(result.output);
+        return deferred.promise;
     }
 
     if (minify) {
@@ -121,10 +118,12 @@ helpers.rollup = function(make, options) {
     try {
         make.log('writing ' + result.output.length + ' chars to: ' + file);
         result.output.to(file);
-        promise.resolve();
+        deferred.resolve();
+        return deferred.promise;
     } catch (e) {
         make.error('Unable to write to: ' + file);
-        promise.reject(e);
+        deferred.reject(e);
+        return deferred.promise;
     }
 };
 
