@@ -228,11 +228,23 @@ function(aText, aMode, tokenizeCallback) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.codeeditor.Inst.defineMethod('focus',
-function() {
+function(moveAction) {
 
     /**
      * @name focus
      * @synopsis Focuses the receiver for keyboard input.
+     * @param {Constant} moveAction The type of 'move' that the user requested.
+     *     This can be one of the following:
+     *          TP.FIRST
+     *          TP.LAST
+     *          TP.NEXT
+     *          TP.PREVIOUS
+     *          TP.FIRST_IN_GROUP
+     *          TP.LAST_IN_GROUP
+     *          TP.FIRST_IN_NEXT_GROUP
+     *          TP.FIRST_IN_PREVIOUS_GROUP
+     *          TP.FOLLOWING
+     *          TP.PRECEDING.
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 

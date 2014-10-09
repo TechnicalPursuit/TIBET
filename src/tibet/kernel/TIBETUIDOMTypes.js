@@ -2306,9 +2306,17 @@ function(moveAction) {
      * @synopsis Moves the focus to a 'successor' element based on the
      *     information contained in the supplied event and on the move action.
      * @param {Constant} moveAction The type of 'move' that the user requested.
-     *     This can be one of the following: TP.FIRST TP.LAST TP.NEXT
-     *     TP.PREVIOUS TP.FIRST_IN_GROUP TP.LAST_IN_GROUP TP.FIRST_IN_NEXT_GROUP
-     *     TP.FIRST_IN_PREVIOUS_GROUP TP.FOLLOWING TP.PRECEDING.
+     *     This can be one of the following:
+     *          TP.FIRST
+     *          TP.LAST
+     *          TP.NEXT
+     *          TP.PREVIOUS
+     *          TP.FIRST_IN_GROUP
+     *          TP.LAST_IN_GROUP
+     *          TP.FIRST_IN_NEXT_GROUP
+     *          TP.FIRST_IN_PREVIOUS_GROUP
+     *          TP.FOLLOWING
+     *          TP.PRECEDING.
      * @returns {TP.core.UIElementNode} The receiver.
      * @todo
      */
@@ -2346,7 +2354,10 @@ function(moveAction) {
 
         //  We do this to match the native focusing behavior that haven't
         //  been routed through this computation routine (i.e. clicks, etc.)
-        successorTPElem.focus();
+
+        //  Note that we pass the moveAction here - if this is a group, it will
+        //  act as a hint as to where to put the focus within the group.
+        successorTPElem.focus(moveAction);
     }
 
     return this;

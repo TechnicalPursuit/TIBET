@@ -165,18 +165,40 @@ function(includesGroups) {
 //  ------------------------------------------------------------------------
 
 TP.tibet.group.Inst.defineMethod('focus',
-function() {
+function(moveAction) {
 
     /**
      * @name focus
      * @synopsis Focuses the receiver for keyboard input.
+     * @param {Constant} moveAction The type of 'move' that the user requested.
+     *     This can be one of the following:
+     *          TP.FIRST
+     *          TP.LAST
+     *          TP.NEXT
+     *          TP.PREVIOUS
+     *          TP.FIRST_IN_GROUP
+     *          TP.LAST_IN_GROUP
+     *          TP.FIRST_IN_NEXT_GROUP
+     *          TP.FIRST_IN_PREVIOUS_GROUP
+     *          TP.FOLLOWING
+     *          TP.PRECEDING.
      * @returns {TP.tibet.group} The receiver.
      */
 
-    var focusableElements;
+    var focusableElements,
+        elementToFocus;
 
     if (TP.notEmpty(focusableElements = this.findFocusableElements())) {
-        focusableElements.first().focus();
+        if (moveAction === TP.LAST ||
+            moveAction === TP.PREVIOUS ||
+            moveAction === TP.LAST_IN_GROUP ||
+            moveAction === TP.PRECEDING) {
+                elementToFocus = focusableElements.last();
+            } else {
+                elementToFocus = focusableElements.first();
+            }
+
+        elementToFocus.focus();
     }
 
     return this;
