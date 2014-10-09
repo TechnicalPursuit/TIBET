@@ -179,7 +179,16 @@ TP.log.Logger.Type.defineMethod('construct', function(aName) {
  * all loggers inherit appender lists.
  * @type {Boolean}
  */
-TP.log.Logger.Inst.defineAttribute('additive', true);
+TP.log.Logger.Inst.defineAttribute('additiveAppenders', true);
+
+//  ----------------------------------------------------------------------------
+
+/**
+ * Whether the receiver inherits filters from its ancestor chain. By default
+ * all loggers inherit filter lists.
+ * @type {Boolean}
+ */
+TP.log.Logger.Inst.defineAttribute('additiveFilters', true);
 
 //  ----------------------------------------------------------------------------
 
@@ -242,7 +251,8 @@ TP.log.Logger.Inst.defineMethod('init', function(aName) {
     // proper backstop for level and parent searching.
     if (this.name === TP.log.Manager.ROOT_LOGGER_NAME) {
         this.level = TP.log.Level.DEFAULT;
-        this.additive = false;
+        this.additiveAppenders = false;
+        this.additiveFilters = false;
     }
 
     return this;
@@ -286,6 +296,53 @@ TP.log.Logger.Inst.defineMethod('addFilter', function(aFilter) {
     }
 
     this.filters.push(aFilter);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Logger.Inst.defineMethod('filter', function(anEntry) {
+
+    /**
+     * @name filter
+     * @summary Verifies that the entry should be logged by the receiver. The
+     *     first check is the entry level but the entry is also checked by any
+     *     filters for the receiver or its parent chain (if filters inherit).
+     * @return {TP.log.Entry} The entry, if it isn't filtered.
+     */
+
+    var filters;
+    var results;
+    var parent;
+
+    if (TP.notValid(anEntry)) {
+        return;
+    }
+
+    if (!this.isEnabled(anEntry.getLevel())) {
+        return;
+    }
+
+    filters = this.filters;
+    if (TP.notEmpty(filters)) {
+        results = filters.map(function(filter) {
+            return filter.filter(anEntry);
+        });
+
+        if (results.contains(false)) {
+            return;
+        }
+    }
+
+    if (!this.inheritsFilters()) {
+        return anEntry;
+    }
+
+    parent = this.getParent();
+    if (TP.notValid(parent)) {
+        return;
+    }
+
+    return parent.filter(anEntry);
 });
 
 //  ----------------------------------------------------------------------------
@@ -355,22 +412,40 @@ TP.log.Logger.Inst.defineMethod('getParent', function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.log.Logger.Inst.defineMethod('isAdditive', function(aFlag) {
+TP.log.Logger.Inst.defineMethod('inheritsAppenders', function(aFlag) {
 
     /**
-     * @name isAdditive
-     * @summary Returns the current cascade state after optionally updating it
-     *     based on the value of aFlag. If a logger is additive it uses
-     *     appenders and/or filters from ancestors in the logger hierarchy.
-     * @param {Boolean} aFlag A new value for the additive state.
-     * @return {Boolean} The current additive state.
+     * @name inheritsAppenders
+     * @summary Optionally updates and then returns the value for whether the
+     *     receiver inherits appenders from ancestral loggers.
+     * @param {Boolean} aFlag A new value for the inherited appender state.
+     * @return {Boolean} The current inherited appender state.
      */
 
     if (aFlag !== undefined) {
-        this.additive = aFlag;
+        this.additiveAppenders = aFlag;
     }
 
-    return this.additive;
+    return this.additiveAppenders;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Logger.Inst.defineMethod('inheritsFilters', function(aFlag) {
+
+    /**
+     * @name inheritsFilters
+     * @summary Optionally updates and then returns the value for whether the
+     *     receiver inherits filters from ancestral loggers.
+     * @param {Boolean} aFlag A new value for the inherited filter state.
+     * @return {Boolean} The current inherited filter state.
+     */
+
+    if (aFlag !== undefined) {
+        this.additiveFilters = aFlag;
+    }
+
+    return this.additiveFilters;
 });
 
 //  ----------------------------------------------------------------------------
@@ -403,27 +478,52 @@ TP.log.Logger.Inst.defineMethod('setLevel', function(aLevel) {
 
 //  ----------------------------------------------------------------------------
 
-TP.log.Logger.Inst.defineMethod('logAll', function(aLevel, arglist) {
+TP.log.Logger.Inst.defineMethod('logArglist', function(aLevel, arglist) {
 
     /**
-     * @name logAll
-     * @summary Logs one or more objects at the specified level. This method
-     *     will use local appenders if the receiver is enabled for the level and
-     *     will then optionally traverse and leverage ancestral appenders if the
-     *     receiver isAdditive().
-     * @param {TP.log.Level} aLevel The logging level to use.
+     * @name logArglist
+     * @summary Logs one or more objects based on the argument list. This method
+     *     is typically invoked via one of the common logging methods such as
+     *     warn() or error() and therefore the arglist has a specific format.
+     * @param {TP.log.Level} aLevel The level to log at.
      * @param {Array} arglist An array of arguments from the invoking function.
+     *     Content should follow [aLevel, aMarkerOrObject, ..., anError]
+     *     where the marker and error elements are optional but checked by this
+     *     routine and processed if found. All other items are treated as
+     *     content to be logged regardless of it particular type.
      */
 
-    if (this.isEnabled(aLevel)) {
-        if (TP.notEmpty(this.appenders)) {
-            this.appenders.forEach(function(appender) {
-                appender.log(aLevel, arglist);
-            });
-        }
+     this.logEntry(TP.log.Entry.construct(aLevel, arglist));
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Logger.Inst.defineMethod('logEntry', function(anEntry) {
+
+    /**
+     * @name logEntry
+     * @summary Logs an entry based on the level, marker, and message content
+     *     data found in the entry. This is the routine that handles the lower
+     *     level work involved in filtering and forwarding to appenders.
+     * @param {TP.log.Entry} anEntry The log entry to output.
+     */
+
+    var entry;
+    var appenders;
+
+    entry = this.filter(anEntry);
+    if (TP.notValid(entry)) {
+        return;
     }
 
-    if (!this.isAdditive()) {
+    appenders = this.appenders;
+    if (TP.notEmpty(appenders)) {
+        appenders.forEach(function(appender) {
+            appender.log(entry);
+        });
+    }
+
+    if (!this.inheritsAppenders()) {
         return;
     }
 
@@ -432,21 +532,7 @@ TP.log.Logger.Inst.defineMethod('logAll', function(aLevel, arglist) {
         return;
     }
 
-    parent.logAll(aLevel, arglist);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.log.Logger.Inst.defineMethod('log', function(aLevel, varargs) {
-
-    /**
-     * @name log
-     * @summary Log all arguments provided at the level given.
-     * @param {TP.log.Level} aLevel The logging level to use.
-     * @param {Object} varargs One or more arguments as desired.
-     */
-
-    return this.logAll(aLevel, TP.ac(arguments));
+    parent.logEntry(entry);
 });
 
 //  ----------------------------------------------------------------------------
@@ -459,7 +545,7 @@ TP.log.Logger.Inst.defineMethod('trace', function(varargs) {
      * @param {Object} varargs One or more arguments as desired.
      */
 
-    return this.logAll(TP.log.TRACE, TP.ac(arguments));
+    return this.logArglist(TP.log.TRACE, TP.ac(arguments));
 });
 
 //  ----------------------------------------------------------------------------
@@ -472,7 +558,7 @@ TP.log.Logger.Inst.defineMethod('debug', function(varargs) {
      * @param {Object} varargs One or more arguments as desired.
      */
 
-    return this.logAll(TP.log.DEBUG, TP.ac(arguments));
+    return this.logArglist(TP.log.DEBUG, TP.ac(arguments));
 });
 
 //  ----------------------------------------------------------------------------
@@ -485,7 +571,7 @@ TP.log.Logger.Inst.defineMethod('info', function(varargs) {
      * @param {Object} varargs One or more arguments as desired.
      */
 
-    return this.logAll(TP.log.INFO, TP.ac(arguments));
+    return this.logArglist(TP.log.INFO, TP.ac(arguments));
 });
 
 //  ----------------------------------------------------------------------------
@@ -498,7 +584,7 @@ TP.log.Logger.Inst.defineMethod('warn', function(varargs) {
      * @param {Object} varargs One or more arguments as desired.
      */
 
-    return this.logAll(TP.log.WARN, TP.ac(arguments));
+    return this.logArglist(TP.log.WARN, TP.ac(arguments));
 });
 
 //  ----------------------------------------------------------------------------
@@ -511,7 +597,7 @@ TP.log.Logger.Inst.defineMethod('error', function(varargs) {
      * @param {Object} varargs One or more arguments as desired.
      */
 
-    return this.logAll(TP.log.ERROR, TP.ac(arguments));
+    return this.logArglist(TP.log.ERROR, TP.ac(arguments));
 });
 
 //  ----------------------------------------------------------------------------
@@ -524,7 +610,7 @@ TP.log.Logger.Inst.defineMethod('severe', function(varargs) {
      * @param {Object} varargs One or more arguments as desired.
      */
 
-    return this.logAll(TP.log.SEVERE, TP.ac(arguments));
+    return this.logArglist(TP.log.SEVERE, TP.ac(arguments));
 });
 
 //  ----------------------------------------------------------------------------
@@ -537,7 +623,7 @@ TP.log.Logger.Inst.defineMethod('fatal', function(varargs) {
      * @param {Object} varargs One or more arguments as desired.
      */
 
-    return this.logAll(TP.log.FATAL, TP.ac(arguments));
+    return this.logArglist(TP.log.FATAL, TP.ac(arguments));
 });
 
 //  ----------------------------------------------------------------------------
@@ -550,7 +636,7 @@ TP.log.Logger.Inst.defineMethod('system', function(varargs) {
      * @param {Object} varargs One or more arguments as desired.
      */
 
-    return this.logAll(TP.log.SYSTEM, TP.ac(arguments));
+    return this.logArglist(TP.log.SYSTEM, TP.ac(arguments));
 });
 
 //  ============================================================================
@@ -559,10 +645,129 @@ TP.log.Logger.Inst.defineMethod('system', function(varargs) {
 
 TP.lang.Object.defineSubtype('log.Appender');
 
+/**
+ * The type name to use by default if no appender layout has been defined.
+ * @type {String}
+ */
+TP.log.Appender.Type.defineConstant('DEFAULT_LAYOUT_TYPE',
+    'TP.log.DefaultLayout');
+
 //  ----------------------------------------------------------------------------
 //  Appender - Instance Definition
 //  ----------------------------------------------------------------------------
 
+/**
+ * The layout used by the appender to format any entries it may process.
+ * @type {TP.log.Layout}
+ */
+TP.log.Appender.Inst.defineAttribute('layout');
+
+//  ----------------------------------------------------------------------------
+
+/**
+ * The appender's list of filters. Can be empty.
+ @type {Array.<TP.log.Filter>}
+ */
+TP.log.Appender.Inst.defineAttribute('filters');
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Appender.Inst.defineMethod('addFilter', function(aFilter) {
+
+    /**
+     * @name addLayout
+     * @summary Adds a new filter to the appender. Appenders can have 0 to N
+     *     filters. Note that the logger making use of an appender may choose to
+     *     filter log entries across all appenders as well.
+     * @param {TP.log.Filter} aFilter The new filter to add.
+     */
+
+    if (TP.notValid(this.filters)) {
+        this.$set('filters', TP.ac());
+    }
+
+    this.filters.push(aFilter);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Appender.Inst.defineMethod('append', function(content) {
+
+    /**
+     * @name append
+     * @summary Performs the actual work of appending content. This method is
+     *     intended to be overridden by subtypes.
+     * @param {String} content The string content to append.
+     * @return {TP.log.Appender} The receiver.
+     */
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Appender.Inst.defineMethod('getLayout', function() {
+
+    /**
+     * @name getLayout
+     * @summary Returns the layout used by the receiver. If no specific layout
+     *     has been assigned TP.log.Appender.DEFAULT_LAYOUT_TYPE is used.
+     * @param {TP.log.Layout} aLayout The layout to use.
+     */
+
+    return this.layout || TP.sys.getTypeByName(
+        TP.log.Appender.DEFAULT_LAYOUT_TYPE);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Appender.Inst.defineMethod('log', function(anEntry) {
+
+    /**
+     * @name log
+     * @summary Filters and formats anEntry and then invokes append() with the
+     *     resulting data.
+     * @param {TP.log.Entry} anEntry The log entry to output.
+     * @return {TP.log.Appender} The receiver.
+     */
+
+    var filters;
+    var results;
+    var layout;
+    var content;
+
+    // First task is to filter the entry to see if we should output it.
+    filters = this.filters;
+    if (TP.notEmpty(filters)) {
+        results = filters.map(function(filter) {
+            return filter.filter(anEntry);
+        });
+
+        if (results.contains(false)) {
+            return;
+        }
+    }
+
+    // Format the content in the entry so we can do the append.
+    layout = this.getLayout();
+    content = layout.layout(anEntry);
+
+    return this.append(content);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Appender.Inst.defineMethod('setLayout', function(aLayout) {
+
+    /**
+     * @name setLayout
+     * @summary Defines the layout formatter the receiver will use to format log
+     *     entries prior to being appended.
+     * @param {TP.log.Layout} aLayout The layout to use.
+     */
+
+    this.layout = aLayout;
+});
 
 
 //  ============================================================================
@@ -576,10 +781,10 @@ TP.lang.Object.defineSubtype('log.Entry');
 //  ----------------------------------------------------------------------------
 
 /**
- * A reference to the context in which the log entry was constructed.
+ * An array of the original arguments (not including level) being logged.
  * @type {Arguments}
  */
-TP.log.Entry.Inst.defineAttribute('context');
+TP.log.Entry.Inst.defineAttribute('arglist');
 
 //  ----------------------------------------------------------------------------
 
@@ -592,15 +797,6 @@ TP.log.Entry.Inst.defineAttribute('date');
 //  ----------------------------------------------------------------------------
 
 /**
- * The entry data. Captured in the form of an array of message strings, objects,
- * exceptions, or any other data to be logged.
- * @type {Array.<Object>}
- */
-TP.log.Entry.Inst.defineAttribute('entries');
-
-//  ----------------------------------------------------------------------------
-
-/**
  * The entry's level. All entries have a level assigned when they are created.
  * @type {TP.log.Level}
  */
@@ -609,22 +805,21 @@ TP.log.Entry.Inst.defineAttribute('level');
 //  ----------------------------------------------------------------------------
 
 /**
- * The marker instance for this entry. Defaults to a generic root marker. See
- * TP.log.Marker for more information on markers.
+ * Set to the first item of the arglist if that item is a Marker instance.
  * @type {TP.log.Marker}
  */
 TP.log.Entry.Inst.defineAttribute('marker');
 
 //  ----------------------------------------------------------------------------
 
-TP.log.Entry.Inst.defineMethod('getContext', function() {
+TP.log.Entry.Inst.defineMethod('getArglist', function() {
 
     /**
-     * Returns the context data (arguments) from the invoking location.
-     * @return {Date}
+     * Returns the original arguments passed to the logging function.
+     * @return {Array.<Object>} The argument list in array form.
      */
 
-    return this.$get('context');
+    return this.$get('arglist');
 });
 
 //  ----------------------------------------------------------------------------
@@ -637,19 +832,7 @@ TP.log.Entry.Inst.defineMethod('getDate', function() {
      * @return {Date}
      */
 
-    return this.$get('marker');
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.log.Entry.Inst.defineMethod('getEntries', function() {
-
-    /**
-     * Returns the list of objects to be logged.
-     * @return {Array.<Object>}
-     */
-
-    return this.$get('entries');
+    return this.$get('date');
 });
 
 //  ----------------------------------------------------------------------------
@@ -677,6 +860,33 @@ TP.log.Entry.Inst.defineMethod('getMarker', function() {
     return this.$get('marker');
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.log.Entry.Inst.defineMethod('init', function(aLevel, arglist) {
+
+    /**
+     * @name init
+     * @summary Initializes a new log entry instance, assigning it the proper
+     *     values for level, date/time, arguments, and marker.
+     * @return {TP.log.Entry}
+     */
+
+    this.callNextMethod();
+
+    this.date = Date.now();
+
+    this.level = aLevel;
+    this.arglist = arglist;
+
+    if (arglist && arglist.length > 0) {
+        if (TP.isKindOf(arglist.at(0), TP.log.Marker)) {
+            this.marker = arglist.at(0);
+        }
+    }
+
+    return this;
+});
+
 
 //  ============================================================================
 //  Filter
@@ -684,10 +894,24 @@ TP.log.Entry.Inst.defineMethod('getMarker', function() {
 
 TP.lang.Object.defineSubtype('log.Filter');
 
-
 //  ----------------------------------------------------------------------------
 //  Filter - Instance Definition
 //  ----------------------------------------------------------------------------
+
+TP.log.Filter.Inst.defineMethod('filter', function(anEntry) {
+
+    /**
+     * @name filter
+     * @summary Runs one or more checks on anEntry to decide whether it can be
+     *     passed forward to an appender. The default implementation is intended
+     *     to be overridden by subtype versions.
+     * @param {TP.log.Entry} anEntry The entry to filter.
+     * @return {Boolean} True if the entry is valid.
+     */
+
+    return true;
+});
+
 
 //  ============================================================================
 //  Layout
@@ -700,6 +924,19 @@ TP.lang.Object.defineSubtype('log.Layout');
 //  Layout - Instance Definition
 //  ----------------------------------------------------------------------------
 
+TP.log.Layout.Inst.defineMethod('layout', function(anEntry) {
+
+    /**
+     * @name layout
+     * @summary Formats an entry. The various data fields in the entry may be
+     *     processed in virtually any fashion as a result. The default format is
+     *     whatever is produced by TP.str() which relies on the Entry type.
+     * @param {TP.log.Entry} anEntry The entry to format.
+     * @return {Object} The formatted output. Can be String, Node, etc.
+     */
+
+    return TP.str(anEntry);
+});
 
 
 //  ============================================================================
@@ -1260,6 +1497,7 @@ TP.log.Timer.Inst.defineMethod('stop', function() {
 //  TP and APP Extensions
 //  ----------------------------------------------------------------------------
 
+// TODO: replace with defineMethod once API update for TP.defineMethod is done.
 TP.definePrimitive('getLogger', function(aName) {
 
     /**

@@ -8,6 +8,11 @@
  */
 //  ========================================================================
 
+/*
+ */
+
+//  ------------------------------------------------------------------------
+
 TP.log.Manager.describe('root logger',
 function() {
 
@@ -40,10 +45,12 @@ function() {
     });
 
     this.it('root logger is not additive', function(test, options) {
-        this.assert.isFalse(root.isAdditive());
+        this.assert.isFalse(root.inheritsAppenders());
+        this.assert.isFalse(root.inheritsFilters());
     });
 });
 
+//  ------------------------------------------------------------------------
 
 TP.log.Manager.describe('logger parents',
 function() {
@@ -83,18 +90,42 @@ function() {
 
     this.it('singly-nested loggers get proper parent', function(test, options) {
         var logger = TP.log.Manager.getLogger('test.nested');
-        var test = TP.log.Manager.getLogger('test');
+        var primary = TP.log.Manager.getLogger('test');
         var parent = logger.getParent();
 
-        this.assert.isIdenticalTo(parent, test);
+        this.assert.isIdenticalTo(parent, primary);
     });
 
     this.it('multiply-nested loggers get proper parent', function(test, options) {
         var logger = TP.log.Manager.getLogger('test.nested.some.more');
-        var test = TP.log.Manager.getLogger('test.nested.some');
+        var primary = TP.log.Manager.getLogger('test.nested.some');
         var parent = logger.getParent();
 
-        this.assert.isIdenticalTo(parent, test);
+        this.assert.isIdenticalTo(parent, primary);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.log.Manager.describe('logger levels',
+function() {
+
+    this.it('primary loggers inherit parent/root level', function(test, options) {
+        var root = TP.log.Manager.getRootLogger();
+        var logger = TP.log.Manager.getLogger('test');
+
+        this.assert.isIdenticalTo(root.getLevel(), logger.getLevel());
+    });
+
+    this.it('multiply-nested loggers inherit ancestor level', function(test, options) {
+        var root = TP.log.Manager.getRootLogger();
+        var logger = TP.log.Manager.getLogger('test');
+        var nested = TP.log.Manager.getLogger('test.nested.some');
+
+        logger.setLevel(TP.log.TRACE);
+
+        this.assert.isIdenticalTo(logger.getLevel(), nested.getLevel());
+        this.refute.isIdenticalTo(root.getLevel(), nested.getLevel());
     });
 });
 
