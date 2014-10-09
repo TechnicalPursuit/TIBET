@@ -31,8 +31,12 @@
 //  Core Globals / Roots
 //  ============================================================================
 
-TP = root.TP || throw new Error('TPRootNotFound');
-APP = root.APP || throw new Error('AppRootNotFound');
+if (!root || !root.TP || !root.APP) {
+    throw new Error('GlobalInitError');
+}
+
+TP = root.TP;
+APP = root.APP;
 
 //  ============================================================================
 //  tibet_cfg Overrides / Updates
