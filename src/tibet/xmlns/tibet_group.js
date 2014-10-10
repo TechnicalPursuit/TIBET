@@ -123,26 +123,40 @@ function(includesGroups) {
      * @todo
      */
 
-    var results;
+    var lid,
+        selExpr,
+    
+        results;
 
     //  Query for any elements under the context element that have an
     //  attribute of 'tabindex'. This indicates elements that can be
     //  focused.
 
-    //  Note that, unlike our supertype's version of this method, we also
-    //  add an attribute selector to the query to filter for only elements
-    //  that are within our group, not any nested groups.
+    //  Note here that the query only includes:
+    //  -   elements that have a tabindex that are *direct* children of the
+    //      receiver
+    //  -   elements that have a tabindex that are descendants of any element
+    //      under the receiver that is *not* a tibet:group element.
+    //  This allows us to filter out elements with a tabindex but nested
+    //  under another tibet:group that is in the receiver (we don't want
+    //  these elements).
+
+    //  Also note that, unlike our supertype's version of this method, we add an
+    //  attribute selector to the query to filter for only elements that are
+    //  within our group, not in any other groups.
+
+    lid = this.getLocalID();
+
+    selExpr = '> *[tabindex][tibet|group="' + lid + '"],' +
+                ' *[tibet|group="' + lid + '"] *:not(tibet|group) *[tabindex]';
 
     //  If we should include 'tibet:group' elements, then include them in
     //  the CSS selector.
     if (includesGroups) {
-        results = this.get(
-                '*[tabindex][tibet|group="' + this.getLocalID() + '"]' +
-                ', tibet|group');
-    } else {
-        results = this.get(
-                '*[tabindex][tibet|group="' + this.getLocalID() + '"]');
+        selExpr += ',tibet|group';
     }
+
+    results = this.get(selExpr);
 
     results = TP.unwrap(results);
 

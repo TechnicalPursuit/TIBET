@@ -1460,8 +1460,8 @@ function(includesGroups) {
     //  Note here that the query only includes:
     //  -   elements that have a tabindex that are *direct* children of the
     //      receiver
-    //  -   elements that have a tabindex that are descendants of any
-    //      element under the receiver that is *not* a tibet:group element.
+    //  -   elements that have a tabindex that are descendants of any element
+    //      under the receiver that is *not* a tibet:group element.
     //  This allows us to filter out elements with a tabindex but nested
     //  under another tibet:group that is in the receiver (we don't want
     //  these elements).
