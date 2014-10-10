@@ -1031,7 +1031,7 @@ function(focusedTPElem, moveAction) {
      * @todo
      */
 
-    var hasRealGroup,
+    var currentIsInGroup,
 
         win,
 
@@ -1055,7 +1055,7 @@ function(focusedTPElem, moveAction) {
 
         resultElem;
 
-    hasRealGroup = false;
+    currentIsInGroup = false;
 
     win = this.getNativeWindow();
 
@@ -1067,7 +1067,7 @@ function(focusedTPElem, moveAction) {
         //  If the current element has a group, then we use it.
         if (TP.notEmpty(currentGroupName = focusedTPElem.getGroupName())) {
             currentGroup = TP.byOID(currentGroupName, win);
-            hasRealGroup = true;
+            currentIsInGroup = true;
         } else {
             //  Otherwise, the 'context' is the body element.
             currentGroup = wrappedBody;
@@ -1117,9 +1117,9 @@ function(focusedTPElem, moveAction) {
 
         case TP.FIRST_IN_NEXT_GROUP:
 
-            //  There is no 'real group', so the 'next group' is going to be
-            //  the first group (or the wrapped body).
-            if (!hasRealGroup) {
+            //  If the currently focused element isn't in a group, the 'next
+            //  group' is going to be the first group (or the wrapped body).
+            if (!currentIsInGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
                     //  There was no group found, so the 'next group' is
@@ -1131,7 +1131,7 @@ function(focusedTPElem, moveAction) {
                 }
             } else {
                 //  Grab the next group name from the current group (which
-                //  may be nested)
+                //  may be nested, and we are interested in wrapping)
                 nextGroupName =
                         this.getNextGroupName(currentGroupName, true, true);
                 computedGroup = TP.byOID(nextGroupName, win);
@@ -1141,9 +1141,9 @@ function(focusedTPElem, moveAction) {
 
         case TP.FIRST_IN_PREVIOUS_GROUP:
 
-            //  There is no 'real group', so the 'previous group' is going
-            //  to be to be the last group (or the wrapped body).
-            if (!hasRealGroup) {
+            //  If the currently focused element isn't in a group, the 'previous
+            //  group' is going to be the last group (or the wrapped body).
+            if (!currentIsInGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
                     //  There was no group found, so the 'next group' is
@@ -1155,7 +1155,7 @@ function(focusedTPElem, moveAction) {
                 }
             } else {
                 //  Grab the previous group name from the current group
-                //  (which may be nested)
+                //  (which may be nested, and we are interested in wrapping)
                 prevGroupName =
                         this.getPreviousGroupName(currentGroupName, true, true);
                 computedGroup = TP.byOID(prevGroupName, win);
@@ -1165,9 +1165,9 @@ function(focusedTPElem, moveAction) {
 
         case TP.FOLLOWING:
 
-            //  There is no 'real group', so the 'next group' is going to be
-            //  the first group (or the wrapped body).
-            if (!hasRealGroup) {
+            //  If the currently focused element isn't in a group, the 'next
+            //  group' is going to be the first group (or the wrapped body).
+            if (!currentIsInGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
                     //  There was no group found, so the 'next group' is
@@ -1201,12 +1201,12 @@ function(focusedTPElem, moveAction) {
 
         case TP.PRECEDING:
 
-            //  There is no 'real group', so the 'previous group' is going
-            //  to be to be the last group (or the wrapped body).
-            if (!hasRealGroup) {
+            //  If the currently focused element isn't in a group, the 'previous
+            //  group' is going to be the last group (or the wrapped body).
+            if (!currentIsInGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
-                    //  There was no group found, so the 'next group' is
                                 'tibet:group'.asType().getQueryPath(false)))) {
+                    //  There was no group found, so the 'previous group' is
                     //  going to be the last group.
                     computedGroup = TP.wrap(results.last());
                 } else {
