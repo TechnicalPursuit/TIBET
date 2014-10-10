@@ -914,6 +914,12 @@ function() {
         return TP.sys.$nativeTypes;
     }
 
+    //  If we havent' finalized yet we may not have the proper dictionaries in
+    //  place to continue.
+    if (TP.notValid(TP.sys.$extraglobals)) {
+        return TP.hc();
+    }
+
     //  Otherwise, we iterate over all of the keys from 'TP.sys.$extraglobals',
     //  do our best job filtering them, and make a new Hash.
 

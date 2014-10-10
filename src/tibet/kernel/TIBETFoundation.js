@@ -261,7 +261,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getTypeByName',
-function(aName, shouldFault, checkNatives) {
+function(aName, shouldFault) {
 
     /**
      * @name getTypeByName
@@ -272,7 +272,6 @@ function(aName, shouldFault, checkNatives) {
      * @param {Boolean} shouldFault False to turn off testing and conversion of
      *     TP.lang.Proxy instances. This is considered a private parameter used
      *     by the kernel only.
-     * @param {Boolean} checkNatives
      * @returns {TP.lang.RootObject} The type object registered under the name
      *     given.
      * @todo
@@ -345,8 +344,11 @@ function(aName, shouldFault, checkNatives) {
             }
         }
 
-        if (TP.notValid(type) && TP.isTrue(checkNatives)) {
+        if (TP.notValid(type)) {
             type = TP.sys.getNativeTypes().at(tName);
+            if (TP.isValid(type)) {
+                return type;
+            }
         }
     } else {
         type = aName;
