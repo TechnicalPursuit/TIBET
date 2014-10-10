@@ -1444,7 +1444,8 @@ function(includesGroups) {
      * @synopsis Finds focusable elements under the receiver and returns an
      *     Array of TP.core.ElementNodes of them.
      * @param {Boolean} includesGroups Whether or not to include 'tibet:group'
-     *     elements as 'focusable' elements under the receiver.
+     *     elements as 'focusable' elements under the receiver. The default is
+     *     false.
      * @returns {Array} An Array of TP.core.ElementNodes under the receiver that
      *     can be focused.
      * @todo
@@ -1468,9 +1469,9 @@ function(includesGroups) {
     selExpr = '> *[tabindex], *:not(tibet|group) *[tabindex]';
 
     //  If we should include 'tibet:group' elements, then include them in
-    //  the CSS selector.
+    //  the CSS selector (but only shallowly - not under any other group).
     if (includesGroups) {
-        selExpr += ',tibet|group';
+        selExpr += ', > tibet|group, *:not(tibet|group) tibet|group';
     }
 
     results = TP.byCSS(selExpr, this.getNativeNode());
