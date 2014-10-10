@@ -246,7 +246,10 @@ function() {
 
     //  No query? Use the standard 'all child elements'
     if (TP.isEmpty(query = this.getAttribute('tibet:query'))) {
-        query = './*';
+        //  This query allows direct children who are any kind of element,
+        //  including groups, and other descendants who aren't *under* a group,
+        //  thereby populating only shallowly.
+        query = '> *, *:not(tibet|group) *';
     }
 
     //  If we don't have any child *elements*, then the context is the
