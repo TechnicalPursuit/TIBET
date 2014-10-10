@@ -2476,9 +2476,9 @@ function(moveAction) {
 
         successorTPElem;
 
-    //  NB: We pass 'false' here because we don't want the 'body' element
-    //  returned if no other element is focused
-    currentTPElem = this.getFocusedElement(false);
+    //  NB: We pass 'true' here because we want the 'body' element returned if
+    //  no other element is focused
+    currentTPElem = this.getFocusedElement(true);
 
     //  If there was a real currently focused element, then we move away
     //  from it to the desired element.
