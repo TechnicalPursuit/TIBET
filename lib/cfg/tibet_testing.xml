@@ -43,6 +43,7 @@
     <config ref="focusing"/>
     <config ref="formatting"/>
     <config ref="grouping"/>
+    <config ref="logging"/>
     <config ref="ev"/>
     <config ref="html"/>
 
@@ -82,6 +83,10 @@
 
 <config id="grouping">
     <script src="~lib_tst/src/tibet/grouping/TP.tibet.group_Tests.js" />
+</config>
+
+<config id="logging">
+        <script src="~lib_tst/src/tibet/logging/TP.log_Tests.js" />
 </config>
 
 <config id="ev">
