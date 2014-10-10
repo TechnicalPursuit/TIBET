@@ -1961,10 +1961,16 @@ function(startGroupName, alwaysWrap, wantsNested) {
         parentGroupTPElem = TP.byOID(parentGroupName, win);
         memberGroupTPElems = parentGroupTPElem.getMemberGroups();
 
-        //  Look for the group out of all of the groups *of only the parent
-        //  group* that comes after the 'from' group.
-        if (TP.notValid(nextGroupTPElem = memberGroupTPElems.after(
+        //  If there is only one member group, then it is the 'from' group
+        //  itself - choose the parent group
+        if (memberGroupTPElems.getSize() === 1) {
+            nextGroupTPElem = parentGroupTPElem;
+        } else if (TP.notValid(nextGroupTPElem = memberGroupTPElems.after(
                                     fromGroupTPElem, TP.EQUALITY, true))) {
+
+            //  Otherwise, loop for the group out of all of the groups *of only
+            //  the parent group* that comes after the 'from' group.
+
             //  If the parent tibet:group has a 'wrapWhen' attribute on it
             //  use that to determine whether we should wrap... unless we
             //  should always wrap, ignoring 'wrapWhen'
@@ -2295,10 +2301,16 @@ function(startGroupName, alwaysWrap, wantsNested) {
         parentGroupTPElem = TP.byOID(parentGroupName, win);
         memberGroupTPElems = parentGroupTPElem.getMemberGroups();
 
-        //  Look for the group out of all of the groups *of only the parent
-        //  group* that comes before the 'from' group.
-        if (TP.notValid(prevGroupTPElem = memberGroupTPElems.before(
+        //  If there is only one member group, then it is the 'from' group
+        //  itself - choose the parent group
+        if (memberGroupTPElems.getSize() === 1) {
+            prevGroupTPElem = parentGroupTPElem;
+        } else if (TP.notValid(prevGroupTPElem = memberGroupTPElems.before(
                                     fromGroupTPElem, TP.EQUALITY, true))) {
+
+            //  Otherwise, look for the group out of all of the groups *of only
+            //  the parent group* that comes before the 'from' group.
+
             //  If the parent tibet:group has a 'wrapWhen' attribute on it
             //  use that to determine whether we should wrap... unless we
             //  should always wrap, ignoring 'wrapWhen'
