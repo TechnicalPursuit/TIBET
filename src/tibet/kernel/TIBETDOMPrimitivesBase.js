@@ -304,12 +304,13 @@ function(aNode, otherNode, aPosition) {
      *     position of otherNode relative to aNode. Note that this comparison is
      *     *always* made from otherNode to aNode.
      * @description The aPosition parameter of this method has the following
-     *     behavior, according to the defined 'TP' constants: TP.SAME_NODE ->
-     *     aNode and otherNode are the same Node TP.PRECEDING_NODE -> otherNode
-     *     precedes aNode in the document TP.FOLLOWING_NODE -> otherNode follows
-     *     aNode in the document TP.CONTAINS_NODE -> otherNode contains aNode in
-     *     the document TP.CONTAINED_BY_NODE -> otherNode is contained by aNode
-     *     in the document
+     *     behavior, according to the defined 'TP' constants:
+     *          TP.SAME_NODE            aNode and otherNode are the same Node
+     *          TP.PRECEDING_NODE       otherNode precedes aNode in the document
+     *          TP.FOLLOWING_NODE       otherNode follows aNode in the document
+     *          TP.CONTAINS_NODE        otherNode contains aNode in the document
+     *          TP.CONTAINED_BY_NODE    otherNode is contained by aNode in the
+     *                                  document
      * @param {Node} aNode The node to check to see if aChild is contained
      *     within it.
      * @param {Node} aChild The node to check to see if it is contained within
