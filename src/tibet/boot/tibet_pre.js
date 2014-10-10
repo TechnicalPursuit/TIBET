@@ -1,5 +1,7 @@
 /* copyright added via build process */
 
+//  ============================================================================
+
 /* jshint debug:true,
           eqnull:true,
           evil:true,
@@ -7,6 +9,8 @@
           nonstandard:true,
           node:true
 */
+
+//  ----------------------------------------------------------------------------
 
 ;(function(root) {
 
@@ -45,9 +49,6 @@ if (Object.defineProperty) {
     //  for booting and for loading code dynamically.
     Object.defineProperty(TP, 'boot', {value: {}, writable: false});
 
-    //  The TP.log object, which is responsible for TIBET logging.
-    Object.defineProperty(TP, 'log', {value: {}, writable: false});
-
     //  The TP.sys object, which is responsible for system data,
     //  metadata, control parameters, etc.
     Object.defineProperty(TP, 'sys', {value: {}, writable: false});
@@ -56,19 +57,14 @@ if (Object.defineProperty) {
     //  types, and supporting variable data.
     Object.defineProperty(root, 'APP', {value: {}, writable: false});
 
-    //  The APP.log object, which is responsible for application logging.
-    Object.defineProperty(APP, 'log', {value: {}, writable: false});
-
     //  Node.js requires seeing the actual assignment.
     APP = root.APP;
 
 } else {
     TP = root.TP || {};
     TP.boot = TP.boot || {};
-    TP.log = TP.log || {};
     TP.sys = TP.sys || {};
     APP = root.APP || {};
-    APP.log = APP.log || {};
 }
 
 //  ----------------------------------------------------------------------------
@@ -138,10 +134,6 @@ TP.boot.$$isNamespace = true;
 TP.boot.$$name = 'TP.boot';
 TP.boot.getTypeNames = function() {return [];};
 
-TP.log.$$isNamespace = true;
-TP.log.$$name = 'TP.log';
-TP.log.getTypeNames = function() {return [];};
-
 TP.sys.$$isNamespace = true;
 TP.sys.$$name = 'TP.sys';
 TP.sys.getTypeNames = function() {return [];};
@@ -149,10 +141,6 @@ TP.sys.getTypeNames = function() {return [];};
 APP.$$isNamespace = true;
 APP.$$name = 'APP';
 APP.getTypeNames = function() {return [];};
-
-APP.log.$$isNamespace = true;
-APP.log.$$name = 'APP.log';
-APP.log.getTypeNames = function() {return [];};
 
 //  ---
 //  Configure baseline log/debug levels.
@@ -217,7 +205,7 @@ TP.BAD_INDEX = -1;                          //  bad array index
 TP.NO_SIZE = -1;                            //  bad object size
 TP.NO_RESULT = Number.NEGATIVE_INFINITY;    //  invalid response
 
-//  log level constants
+//  log level constants (OBSOLETE)
 TP.TRACE = 0;
 TP.INFO = 1;
 TP.WARN = 2;
@@ -236,8 +224,6 @@ TP.LOG_ENTRY_LEVEL = 2;
 TP.LOG_ENTRY_PAYLOAD = 3;
 TP.LOG_ENTRY_CONTEXT = 4;
 TP.LOG_ENTRY_DELTA = 5;
-TP.LOG_ENTRY_STACK_NAMES = 4;   //  TODO: valid?
-TP.LOG_ENTRY_STACK_ARGS = 5;
 
 //  file load return types
 TP.DOM = 1;
@@ -1083,9 +1069,9 @@ TP.boot.shouldStop = function(aReason) {
     return TP.boot.$isValid(TP.boot.$$stop);
 };
 
-//  ----------------------------------------------------------------------------
+//  ============================================================================
 //  Environment and Configuration Primitives
-//  ----------------------------------------------------------------------------
+//  ============================================================================
 
 /*
  * General purpose routines used by environment and configuration property
@@ -1269,9 +1255,9 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
     return aHash.at(key);
 };
 
-//  ----------------------------------------------------------------------------
+//  ============================================================================
 //  Configuration Access
-//  ----------------------------------------------------------------------------
+//  ============================================================================
 
 /*
  *  Configuration properties are read/write properties which define how
@@ -1371,9 +1357,9 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
                                 shouldSignal, override);
 };
 
-//  ----------------------------------------------------------------------------
+//  ============================================================================
 //  Environment Access
-//  ----------------------------------------------------------------------------
+//  ============================================================================
 
 /*
  *  Environment properties are defined during application startup based
@@ -1454,9 +1440,9 @@ TP.boot.$$setenv = function(aKey, aValue) {
     return TP.boot.$$setprop(TP.sys.environment, aKey, aValue, 'env');
 };
 
-//  ----------------------------------------------------------------------------
+//  ============================================================================
 //  Export
-//  ----------------------------------------------------------------------------
+//  ============================================================================
 
 if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {
@@ -1471,4 +1457,6 @@ if (typeof exports !== 'undefined') {
 
 }(this));
 
-
+//  ----------------------------------------------------------------------------
+//  end
+//  ============================================================================

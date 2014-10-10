@@ -41,6 +41,7 @@
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
     <config ref="focusing"/>
+    <config ref="logging"/>
     <config ref="formatting"/>
     <config ref="grouping"/>
     <config ref="logging"/>
@@ -73,6 +74,10 @@
 
 <config id="focusing">
     <script src="~lib_tst/src/tibet/focusing/TP.core.UIElementNode_Tests.js" />
+</config>
+
+<config id="logging">
+    <script src="~lib_tst/src/tibet/logging/TP.log_Tests.js" />
 </config>
 
 <config id="formatting">

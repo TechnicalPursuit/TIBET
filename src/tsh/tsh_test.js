@@ -78,6 +78,11 @@ function(aRequest) {
             return;
         }
 
+        if (!TP.canInvoke(obj, 'runTestSuites')) {
+            aRequest.fail(TP.FAILURE, 'Object cannot run tests: ' + TP.id(obj));
+            return;
+        }
+
         obj.runTestSuites(options).then(
             function(result) {
                 aRequest.complete();
