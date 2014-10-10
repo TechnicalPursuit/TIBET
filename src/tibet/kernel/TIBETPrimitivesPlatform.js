@@ -1073,7 +1073,7 @@ TP.hc(
 
         var entries,
             str,
-
+            match,
             results,
             i;
 
@@ -1093,9 +1093,10 @@ TP.hc(
                 //      function name
                 //      file name where the function is found
                 //      line number in the file where the function is found
-                results.push(
-                    TP.regex.CALL_STACK_ENTRY_SPLITTER.exec(
-                                                entries.at(i)).slice(1));
+                match = TP.regex.CALL_STACK_ENTRY_SPLITTER.exec(entries.at(i));
+                if (TP.canInvoke(match, 'slice')) {
+                    results.push(match.slice(1));
+                }
             }
         }
 
@@ -1118,7 +1119,7 @@ TP.hc(
 
         var entries,
             str,
-
+            match,
             results,
             i;
 
@@ -1140,9 +1141,10 @@ TP.hc(
                 //      function name
                 //      file name where the function is found
                 //      line number in the file where the function is found
-                results.push(
-                    TP.regex.CALL_STACK_ENTRY_SPLITTER.exec(
-                                                entries.at(i)).slice(1));
+                match = TP.regex.CALL_STACK_ENTRY_SPLITTER.exec(entries.at(i));
+                if (TP.canInvoke(match, 'slice')) {
+                    results.push(match.slice(1));
+                }
             }
         }
 
@@ -1165,8 +1167,8 @@ TP.hc(
 
         var entries,
             str,
-
             results,
+            match,
             i;
 
         entries = null;
@@ -1186,9 +1188,10 @@ TP.hc(
                 //      function name
                 //      file name where the function is found
                 //      line number in the file where the function is found
-                results.push(
-                    TP.regex.CALL_STACK_ENTRY_SPLITTER.exec(
-                                                entries.at(i)).slice(1));
+                match = TP.regex.CALL_STACK_ENTRY_SPLITTER.exec(entries.at(i));
+                if (TP.canInvoke(match, 'slice')) {
+                    results.push(match.slice(1));
+                }
             }
         }
 
