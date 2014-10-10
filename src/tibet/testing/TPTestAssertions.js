@@ -1661,9 +1661,43 @@ function(anObject, aComment) {
 //  ------------------------------------------------------------------------
 
 TP.test.TestMethodCollection.defineAssertion('raises',
-function() {
+function(aFunction, anException) {
 
-    TP.todo();
+    var name;
+    var exception;
+
+    if (TP.isValid(anException)) {
+        name = TP.isString(anException) ? anException : TP.name(anException);
+    }
+
+    // Stub out raise so it doesn't actually invoke/throw etc.
+    TP.raise = TP.test.stub(TP, 'raise', function() {
+        exception = arguments[1];
+    });
+
+    try {
+        aFunction();
+        if (TP.isValid(exception)) {
+            if (TP.isEmpty(name)) {
+                this.get('currentTestCase').pass();
+            } else if (TP.str(exception) === name) {
+                this.get('currentTestCase').pass();
+            } else {
+                this.get('currentTestCase').fail(
+                    TP.FAILURE,
+                    'Expected function to raise' +
+                        (TP.notEmpty(name) ? ' ' + name : '.') +
+                    ' but raised ' + TP.str(exception));
+            }
+        } else {
+            this.get('currentTestCase').fail(
+                TP.FAILURE,
+                'Expected function to raise' +
+                    (TP.notEmpty(name) ? ' ' + name : '.'));
+        }
+    } finally {
+        TP.raise.restore();
+    }
 
     return;
 });
@@ -1671,9 +1705,49 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.test.TestMethodCollection.defineAssertion('signals',
-function() {
+function(aFunction, aSignal) {
 
-    TP.todo();
+    var name;
+    var signal;
+
+    if (TP.isValid(aSignal)) {
+        name = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
+    }
+
+    // Stub out signal so it doesn't actually invoke/throw etc.
+    TP.signal = TP.test.stub(TP, 'signal', function() {
+        signal = arguments[1];
+    });
+
+    // Stub out raise to avoid seeing any exception output so we stay focused on
+    // the signaling test aspect.
+    TP.raise = TP.test.stub(TP, 'raise');
+
+    try {
+        aFunction();
+    } finally {
+        TP.signal.restore();
+        TP.raise.restore();
+    }
+
+    if (TP.isValid(signal)) {
+        if (TP.isEmpty(name)) {
+            this.get('currentTestCase').pass();
+        } else if (TP.str(signal).indexOf(name) !== -1) {
+            this.get('currentTestCase').pass();
+        } else {
+            this.get('currentTestCase').fail(
+                TP.FAILURE,
+                'Expected function to signal' +
+                    (TP.notEmpty(name) ? ' ' + name : '.') +
+                ' but signaled ' + TP.str(signal));
+        }
+    } else {
+        this.get('currentTestCase').fail(
+            TP.FAILURE,
+            'Expected function to signal' +
+                (TP.notEmpty(name) ? ' ' + name : '.'));
+    }
 
     return;
 });
@@ -1686,25 +1760,29 @@ function(aFunction, anError) {
     var name;
     var type;
 
-    name = TP.isString(anError) ? anError : TP.name(anError);
-    type = TP.isString(anError) ? TP.sys.getTypeByName(anError) :
-        anError;
+    if (TP.isValid(anError)) {
+        name = TP.isString(anError) ? anError : TP.name(anError);
+        type = TP.isString(anError) ? TP.sys.getTypeByName(anError) :
+            anError;
+    }
 
     try {
         aFunction();
         // Didn't throw. That's a fail for this particular assertion.
         this.get('currentTestCase').fail(
             TP.FAILURE,
-            'Expected function to throw ' + name);
+            'Expected function to throw' +
+                (TP.notEmpty(name) ? ' ' + name : '.'));
     } catch (e) {
         // success if e matches what's expected
-        if (e instanceof TP.sys.getTypeByName(name)) {
+        if (e instanceof type) {
             this.get('currentTestCase').pass();
         } else {
             // Didn't throw what we expected.
             this.get('currentTestCase').fail(
                 TP.FAILURE,
-                'Expected function to throw ' + name +
+                'Expected function to throw' +
+                    (TP.notEmpty(name) ? ' ' + name : ' Error') +
                 ' but threw ' + TP.tname(e));
         }
     }
