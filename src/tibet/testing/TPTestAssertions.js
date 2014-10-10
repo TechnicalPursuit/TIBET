@@ -1681,9 +1681,33 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.test.TestMethodCollection.defineAssertion('throws',
-function() {
+function(aFunction, anError) {
 
-    TP.todo();
+    var name;
+    var type;
+
+    name = TP.isString(anError) ? anError : TP.name(anError);
+    type = TP.isString(anError) ? TP.sys.getTypeByName(anError) :
+        anError;
+
+    try {
+        aFunction();
+        // Didn't throw. That's a fail for this particular assertion.
+        this.get('currentTestCase').fail(
+            TP.FAILURE,
+            'Expected function to throw ' + name);
+    } catch (e) {
+        // success if e matches what's expected
+        if (e instanceof TP.sys.getTypeByName(name)) {
+            this.get('currentTestCase').pass();
+        } else {
+            // Didn't throw what we expected.
+            this.get('currentTestCase').fail(
+                TP.FAILURE,
+                'Expected function to throw ' + name +
+                ' but threw ' + TP.tname(e));
+        }
+    }
 
     return;
 });
