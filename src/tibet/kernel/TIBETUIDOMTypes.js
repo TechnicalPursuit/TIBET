@@ -1121,7 +1121,7 @@ function(focusedTPElem, moveAction) {
             //  the first group (or the wrapped body).
             if (!hasRealGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
-                                'tibet:group'.asType().getQueryPath(true)))) {
+                                'tibet:group'.asType().getQueryPath(false)))) {
                     //  There was no group found, so the 'next group' is
                     //  going to be the first group.
                     computedGroup = TP.wrap(results.first());
@@ -1145,7 +1145,7 @@ function(focusedTPElem, moveAction) {
             //  to be to be the last group (or the wrapped body).
             if (!hasRealGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
-                                'tibet:group'.asType().getQueryPath(true)))) {
+                                'tibet:group'.asType().getQueryPath(false)))) {
                     //  There was no group found, so the 'next group' is
                     //  going to be the last group.
                     computedGroup = TP.wrap(results.last());
@@ -1169,7 +1169,7 @@ function(focusedTPElem, moveAction) {
             //  the first group (or the wrapped body).
             if (!hasRealGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
-                                'tibet:group'.asType().getQueryPath(true)))) {
+                                'tibet:group'.asType().getQueryPath(false)))) {
                     //  There was no group found, so the 'next group' is
                     //  going to be the first group.
                     computedGroup = TP.wrap(results.first());
@@ -1205,8 +1205,8 @@ function(focusedTPElem, moveAction) {
             //  to be to be the last group (or the wrapped body).
             if (!hasRealGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
-                                'tibet:group'.asType().getQueryPath(true)))) {
                     //  There was no group found, so the 'next group' is
+                                'tibet:group'.asType().getQueryPath(false)))) {
                     //  going to be the last group.
                     computedGroup = TP.wrap(results.last());
                 } else {
