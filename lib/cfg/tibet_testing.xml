@@ -40,6 +40,7 @@
 
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
+    <config ref="focusing"/>
     <config ref="formatting"/>
     <config ref="grouping"/>
     <config ref="ev"/>
@@ -67,6 +68,10 @@
 <config id="databinding">
     <script src="~lib_tst/src/tibet/databinding/TP.core.DataPath_Tests.js" />
     <script src="~lib_tst/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
+</config>
+
+<config id="focusing">
+    <script src="~lib_tst/src/tibet/focusing/TP.core.UIElementNode_Tests.js" />
 </config>
 
 <config id="formatting">
