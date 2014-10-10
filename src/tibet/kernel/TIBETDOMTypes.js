@@ -9809,19 +9809,35 @@ function(aNode) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('getQueryPath',
-function() {
+function(wantsDeep) {
 
     /**
      * @name getQueryPath
      * @synopsis Returns the 'query path' that can be used in calls such as
      *     'nodeEvaluatePath' to obtain all of the occurrences of the receiver
      *     in a document.
+     * @param {Boolean} wantsDeep Whether or not the query should represent a
+     *     'deep query' - that is, all of the occurrences of this element even
+     *     under elements of the same type. This defaults to false.
      * @returns {String} The path that can be used to query for Nodes of this
      *     type.
      */
 
+    var fullName;
+
     //  Note here how we generate a CSS3 namespace query
-    return this.get('nsPrefix') + '|' + this.get('localName');
+    fullName = this.get('nsPrefix') + '|' + this.get('localName');
+
+    //  If the caller wants a deep query, we can simply return the full name
+    //  here.
+    if (TP.isTrue(wantsDeep)) {
+        return fullName;
+    }
+
+    //  Otherwise, we return a query that looks for a) immediate children with
+    //  this name and b) descendants with this name, but only those that don't
+    //  have a parent with this name - hence giving the 'shallow' quality.
+    return '> ' + fullName + ', *:not(' + fullName + ') ' + fullName;
 });
 
 //  ------------------------------------------------------------------------

@@ -1121,7 +1121,7 @@ function(focusedTPElem, moveAction) {
             //  the first group (or the wrapped body).
             if (!hasRealGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
-                                    'tibet:group'.asType().getQueryPath()))) {
+                                'tibet:group'.asType().getQueryPath(true)))) {
                     //  There was no group found, so the 'next group' is
                     //  going to be the first group.
                     computedGroup = TP.wrap(results.first());
@@ -1133,7 +1133,7 @@ function(focusedTPElem, moveAction) {
                 //  Grab the next group name from the current group (which
                 //  may be nested)
                 nextGroupName =
-                        this.getNextGroupName(currentGroupName, true);
+                        this.getNextGroupName(currentGroupName, true, true);
                 computedGroup = TP.byOID(nextGroupName, win);
             }
 
@@ -1145,7 +1145,7 @@ function(focusedTPElem, moveAction) {
             //  to be to be the last group (or the wrapped body).
             if (!hasRealGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
-                                    'tibet:group'.asType().getQueryPath()))) {
+                                'tibet:group'.asType().getQueryPath(true)))) {
                     //  There was no group found, so the 'next group' is
                     //  going to be the last group.
                     computedGroup = TP.wrap(results.last());
@@ -1157,7 +1157,7 @@ function(focusedTPElem, moveAction) {
                 //  Grab the previous group name from the current group
                 //  (which may be nested)
                 prevGroupName =
-                        this.getPreviousGroupName(currentGroupName, true);
+                        this.getPreviousGroupName(currentGroupName, true, true);
                 computedGroup = TP.byOID(prevGroupName, win);
             }
 
@@ -1169,7 +1169,7 @@ function(focusedTPElem, moveAction) {
             //  the first group (or the wrapped body).
             if (!hasRealGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
-                                    'tibet:group'.asType().getQueryPath()))) {
+                                'tibet:group'.asType().getQueryPath(true)))) {
                     //  There was no group found, so the 'next group' is
                     //  going to be the first group.
                     computedGroup = TP.wrap(results.first());
@@ -1205,7 +1205,7 @@ function(focusedTPElem, moveAction) {
             //  to be to be the last group (or the wrapped body).
             if (!hasRealGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
-                                    'tibet:group'.asType().getQueryPath()))) {
+                                'tibet:group'.asType().getQueryPath(true)))) {
                     //  There was no group found, so the 'next group' is
                     //  going to be the last group.
                     computedGroup = TP.wrap(results.last());
@@ -1730,7 +1730,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('getNextGroupName',
-function(startGroupName, alwaysWrap) {
+function(startGroupName, alwaysWrap, wantsNested) {
 
     /**
      * @name getNextGroupName
@@ -1741,6 +1741,8 @@ function(startGroupName, alwaysWrap) {
      *     next group at.
      * @param {Boolean} alwaysWrap Whether or not to ignore wrapping behavior
      *     and 'always wrap' around. Defaults to false.
+     * @param {Boolean} wantsNested Whether or not to consider nested groups as
+     *     part of this query. Defaults to false.
      * @returns {String} The name of the 'next' group.
      * @todo
      */
@@ -1786,7 +1788,8 @@ function(startGroupName, alwaysWrap) {
         //  Can't find the parent group - check the body by obtaining all of
         //  the tibet:groups under the body.
         if (TP.notEmpty(allGroups = this.getDocument().getBody().get(
-                                    'tibet:group'.asType().getQueryPath()))) {
+                        'tibet:group'.asType().getQueryPath(wantsNested)))) {
+
             //  Wrap all of them.
             memberGroupTPElems = TP.wrap(allGroups);
 
@@ -2060,7 +2063,7 @@ function(startGroupName) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('getPreviousGroupName',
-function(startGroupName, alwaysWrap) {
+function(startGroupName, alwaysWrap, wantsNested) {
 
     /**
      * @name getPreviousGroupName
@@ -2071,6 +2074,8 @@ function(startGroupName, alwaysWrap) {
      *     next group at.
      * @param {Boolean} alwaysWrap Whether or not to ignore wrapping behavior
      *     and 'always wrap' around. Defaults to false.
+     * @param {Boolean} wantsNested Whether or not to consider nested groups as
+     *     part of this query. Defaults to false.
      * @returns {String} The name of the 'previous' group.
      * @todo
      */
@@ -2117,7 +2122,8 @@ function(startGroupName, alwaysWrap) {
         //  Can't find the parent group - check the body by obtaining all of
         //  the tibet:groups under the body.
         if (TP.notEmpty(allGroups = this.getDocument().getBody().get(
-                                    'tibet:group'.asType().getQueryPath()))) {
+                        'tibet:group'.asType().getQueryPath(wantsNested)))) {
+
             //  Wrap all of them.
             memberGroupTPElems = TP.wrap(allGroups);
 
