@@ -5792,8 +5792,7 @@ TP.boot.$style = function(aString, aStyle) {
         codes,
         result;
 
-    mode = TP.boot.$$colormode = (TP.boot.$$colormode ||
-        TP.sys.cfg('log.colormode'));
+    mode = TP.sys.cfg('log.colormode');
     styles = TP.boot.$$styles[mode];
 
     try {
@@ -6292,7 +6291,9 @@ TP.boot.Log.prototype.report = function(entry) {
         TP.boot.$consoleReporter(entry);
     }
 
-    if (TP.sys.hasStarted()) {
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        reporterName = 'phantom';
+    } else if (TP.sys.hasStarted()) {
         reporterName = TP.sys.cfg('log.reporter');
     } else {
         reporterName = TP.sys.cfg('boot.reporter');
@@ -9123,6 +9124,7 @@ TP.boot.$$importComplete = function() {
         TP.boot.$stderr = TP.STDERR_NULL;
     } else {
         //debugger;
+        void(0);
     }
 
     return;
