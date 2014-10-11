@@ -44,7 +44,6 @@
     <!--    KERNEL STAGE 3, OO/EVENT CORE -->
 
     <script src="TIBETInheritance.js"/>
-    <script src="TIBETLogging.js"/>
     <script src="TIBETNotification.js"/>
     <script src="TIBETJobControl.js"/>
     <script src="TIBETSyncControl.js"/>
@@ -169,6 +168,9 @@
 
     <script src="TIBETDataBinding.js"/>
     <script src="TIBETCoreTags.js"/>
+
+    <!-- We don't activate this during boot in any case -->
+    <script src="TIBETLogging.js"/>
 
     <!--    KERNEL STAGE 6, FINALIZATION -->
     <script src="TIBETFinalization.js"/>
