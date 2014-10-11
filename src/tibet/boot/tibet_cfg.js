@@ -163,10 +163,6 @@ TP.sys.setcfg('tibet.verbose', true);
 //  the current logging level and this value. See $computeLogBufferSize();
 TP.sys.setcfg('log.buffersize', 5);
 
-//  what logging level should be set by default. this can be overridden from a
-//  variety of locations but we need one set in case startup has issues.
-TP.sys.setcfg('log.level', TP.WARN);
-
 //  which boot reporter should we use? bootui, console, silent, phantom.
 TP.sys.setcfg('boot.reporter', 'bootui');
 
