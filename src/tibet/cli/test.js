@@ -101,8 +101,8 @@ Cmd.prototype.USAGE =
 Cmd.prototype.execute = function() {
 
     var sh;         // The shelljs module.
-    var child;      // The child_process module.
-    var process;    // The spawned child process.
+    var proc;       // The child_process module.
+    var child;      // The spawned child process.
     var testpath;   // Path to the TIBET test runner script.
     var profile;    // The test profile to use.
     var script;     // The test script to run.
@@ -116,7 +116,7 @@ Cmd.prototype.execute = function() {
     }
 
     sh = require('shelljs');
-    child = require('child_process');
+    proc = require('child_process');
 
     cmd = this;
 
@@ -151,15 +151,15 @@ Cmd.prototype.execute = function() {
     }
 
     // Run a manufactured tsh:test command just as we would in the TDC/Sherpa.
-    process = child.spawn('phantomjs', arglist);
+    child = proc.spawn('phantomjs', arglist);
 
-    process.stdout.on('data', function(data) {
+    child.stdout.on('data', function(data) {
         // Copy and remove newline.
         var msg = data.slice(0, -1);
         cmd.log(msg);
     });
 
-    process.stderr.on('data', function(data) {
+    child.stderr.on('data', function(data) {
         // Copy and remove newline.
         var msg = data.slice(0, -1);
 
@@ -178,10 +178,11 @@ Cmd.prototype.execute = function() {
         cmd.error(msg);
     });
 
-    process.on('close', function(code) {
+    child.on('close', function(code) {
         if (code !== 0) {
             cmd.error('Testing stopped with status: ' + code);
         }
+        process.exit(code);
     });
 };
 
