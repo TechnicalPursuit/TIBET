@@ -2080,6 +2080,28 @@ function(anObject, aComment) {
     return;
 });
 
+//  ------------------------------------------------------------------------
+//  ASSERTIONS - STYLE VALUE TESTS
+//  ------------------------------------------------------------------------
+
+TP.test.TestMethodCollection.defineAssertion('hasComputedStyleProperty',
+function(anObject, aProperty, aValue, aComment) {
+
+    var val;
+
+    this.assertMinArguments(arguments, 3);
+
+    val = TP.elementGetComputedStyleProperty(anObject, aProperty);
+
+    this.assert(
+        TP.equal(val, aValue),
+        aComment,
+        TP.sc('Expected style property ', aProperty, ' with value ', val,
+                ' and ', aValue, ' to be equal.'));
+
+    return;
+});
+
 //  ========================================================================
 //  TP.test.Expect
 //  ========================================================================

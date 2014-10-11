@@ -40,6 +40,7 @@
 
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
+    <config ref="focusing"/>
     <config ref="logging"/>
     <config ref="formatting"/>
     <config ref="grouping"/>
@@ -70,6 +71,10 @@
     <script src="~lib_tst/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
 </config>
 
+<config id="focusing">
+    <script src="~lib_tst/src/tibet/focusing/TP.core.UIElementNode_Tests.js" />
+</config>
+
 <config id="logging">
     <script src="~lib_tst/src/tibet/logging/TP.log_Tests.js" />
 </config>
@@ -82,6 +87,8 @@
 
 <config id="grouping">
     <script src="~lib_tst/src/tibet/grouping/TP.tibet.group_Tests.js" />
+</config>
+
 </config>
 
 <config id="ev">

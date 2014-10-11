@@ -117,32 +117,49 @@ function(includesGroups) {
      * @synopsis Finds focusable elements under the receiver and returns an
      *     Array of TP.core.ElementNodes of them.
      * @param {Boolean} includesGroups Whether or not to include 'tibet:group'
-     *     elements as 'focusable' elements under the receiver.
+     *     elements as 'focusable' elements under the receiver. The default is
+     *     false.
      * @returns {Array} An Array of TP.core.ElementNodes under the receiver that
      *     can be focused.
      * @todo
      */
 
-    var results;
+    var lid,
+        selExpr,
+    
+        results;
 
     //  Query for any elements under the context element that have an
     //  attribute of 'tabindex'. This indicates elements that can be
     //  focused.
 
-    //  Note that, unlike our supertype's version of this method, we also
-    //  add an attribute selector to the query to filter for only elements
-    //  that are within our group, not any nested groups.
+    //  Note here that the query only includes:
+    //  -   elements that have a tabindex that are *direct* children of the
+    //      receiver
+    //  -   elements that have a tabindex that are descendants of any element
+    //      under the receiver that is *not* a tibet:group element.
+    //  This allows us to filter out elements with a tabindex but nested
+    //  under another tibet:group that is in the receiver (we don't want
+    //  these elements).
+
+    //  Also note that, unlike our supertype's version of this method, we add an
+    //  attribute selector to the query to filter for only elements that are
+    //  within our group, not in any other groups.
+
+    lid = this.getLocalID();
+
+    selExpr = '> *[tabindex][tibet|group="' + lid + '"],' +
+                ' *[tibet|group="' + lid + '"] *:not(tibet|group) *[tabindex]';
 
     //  If we should include 'tibet:group' elements, then include them in
-    //  the CSS selector.
+    //  the CSS selector (but only shallowly - not under any other group).
     if (includesGroups) {
-        results = this.get(
-                '*[tabindex][tibet|group="' + this.getLocalID() + '"]' +
-                ', tibet|group');
-    } else {
-        results = this.get(
-                '*[tabindex][tibet|group="' + this.getLocalID() + '"]');
+        selExpr += ', > tibet|group, *:not(tibet|group) tibet|group';
     }
+
+    results = this.get(selExpr);
+
+    results = TP.unwrap(results);
 
     //  Iterate over them and see if they're displayed (not hidden by CSS -
     //  although they could currently not be visible to the user).
@@ -152,6 +169,10 @@ function(includesGroups) {
                         return TP.elementIsDisplayed(anElem);
                     });
 
+    //  Sort the Array of elements by their 'tabindex' according to the
+    //  HTML5 tabindex rules.
+    results.sort(TP.TABINDEX_ORDER_SORT);
+
     //  Wrap the results to make TP.core.ElementNodes
     return TP.wrap(results);
 });
@@ -159,18 +180,40 @@ function(includesGroups) {
 //  ------------------------------------------------------------------------
 
 TP.tibet.group.Inst.defineMethod('focus',
-function() {
+function(moveAction) {
 
     /**
      * @name focus
      * @synopsis Focuses the receiver for keyboard input.
+     * @param {Constant} moveAction The type of 'move' that the user requested.
+     *     This can be one of the following:
+     *          TP.FIRST
+     *          TP.LAST
+     *          TP.NEXT
+     *          TP.PREVIOUS
+     *          TP.FIRST_IN_GROUP
+     *          TP.LAST_IN_GROUP
+     *          TP.FIRST_IN_NEXT_GROUP
+     *          TP.FIRST_IN_PREVIOUS_GROUP
+     *          TP.FOLLOWING
+     *          TP.PRECEDING.
      * @returns {TP.tibet.group} The receiver.
      */
 
-    var focusableElements;
+    var focusableElements,
+        elementToFocus;
 
     if (TP.notEmpty(focusableElements = this.findFocusableElements())) {
-        focusableElements.first().focus();
+        if (moveAction === TP.LAST ||
+            moveAction === TP.PREVIOUS ||
+            moveAction === TP.LAST_IN_GROUP ||
+            moveAction === TP.PRECEDING) {
+                elementToFocus = focusableElements.last();
+            } else {
+                elementToFocus = focusableElements.first();
+            }
+
+        elementToFocus.focus();
     }
 
     return this;
@@ -203,7 +246,10 @@ function() {
 
     //  No query? Use the standard 'all child elements'
     if (TP.isEmpty(query = this.getAttribute('tibet:query'))) {
-        query = './*';
+        //  This query allows direct children who are any kind of element,
+        //  including groups, and other descendants who aren't *under* a group,
+        //  thereby populating only shallowly.
+        query = '> *, *:not(tibet|group) *';
     }
 
     //  If we don't have any child *elements*, then the context is the

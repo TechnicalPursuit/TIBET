@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+	@namespace pclass url(urn:tibet:pseudoclass);
+
+	tibet|group[id="fooGroup"]
+	{
+		display: block;
+		border: solid 1px black;
+	}
+	tibet|group[id="gooGroup"]
+	{
+		display: block;
+		border: solid 1px blue;
+	}
+	tibet|group[id="booGroup"]
+	{
+		display: block;
+		border: solid 1px red;
+	}
+	input[pclass|active]
+	{
+		border-color: red;
+	}
+	input[pclass|focus]
+	{
+		background-color: yellow;
+	}
+	]]>
+	</style>
+
+</head>
+
+<body xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+	<h2>Focus Test #7</h2><br/>
+	<br/>
+	<br/>
+	This test sets up 4 'html:input' elements in multiple nested groups.
+	<br/>
+	The 'goo' group has a 'wrapWhen' attribute.
+	<br/>
+	None of the fields has a 'tabindex' attribute greater than -1, meaning that they're all programmatically controlled.
+	<br/>
+	By pressing various keys, the focus can be navigated to them:
+	<br/>
+	<br/>
+	Home key navigates to the first field *in the first group*.<br/>
+	End key navigates to the last field *in the last group*.<br/>
+	Tab key navigates 'forward' to the next field and will *not* wrap around *at the group level* on the 'foo' group (since it has no 'wrapWhen' attribute), but will wrap around on the 'goo' group (since it has a 'wrapWhen' attribute).<br/>
+	Shift-Tab key navigates 'backward' to the previous field and will *not* wrap around *at the group level* on the 'foo' group (since it has no 'wrapWhen' attribute), but will wrap around on the 'goo' group (since it has a 'wrapWhen' attribute)<br/>
+	Ctrl-Tab key navigates 'forward' to the next field *in the same or next group* and will *ignore* any 'wrapWhen' attributes.<br/>
+	Shift-Ctrl-Tab key navigates 'backward' to the previous field *in the same or last group* and will *ignore* any 'wrapWhen' attributes.<br/>
+	PageUp key navigates to the first field *in the same group*.<br/>
+	PageDown key navigates to the last field *in the same group*.<br/>
+	Ctrl-PageUp key navigates to the first field *in the previous group* (ignoring any 'wrapWhen' attributes).<br/>
+	Ctrl-PageDown key navigates to the first field *in the next group* (ignoring any 'wrapWhen' attributes).<br/>
+	<br/>
+	<br/>
+	These fields are in the 'foo' group:
+	<br/>
+	<tibet:group id="fooGroup">
+		Focus test field #1: <input type="text" id="focusTestField1" tabindex="-1"/>
+		<br/>
+		Focus test field #2: <input type="text" id="focusTestField2" tabindex="-1"/>
+		<br/>
+	</tibet:group>
+	<br/>
+	This field is not in any group:
+	<br/>
+	Focus test field #3: <input type="text" id="focusTestField3" tabindex="-1"/>
+	<br/>
+	<br/>
+	These fields are in the 'goo' group:
+	<br/>
+	<tibet:group id="gooGroup" wrapWhen="true">
+		Focus test field #4: <input type="text" id="focusTestField4" tabindex="-1"/>
+		<br/>
+		Focus test field #5: <input type="text" id="focusTestField5" tabindex="-1"/>
+		<br/>
+		<br/>
+		These fields are in the 'boo' group:
+		<br/>
+		<tibet:group id="booGroup">
+			Focus test field #6: <input type="text" id="focusTestField6" tabindex="-1"/>
+			<br/>
+			Focus test field #7: <input type="text" id="focusTestField7" tabindex="-1"/>
+		</tibet:group>
+		<br/>
+		Focus test field #8: <input type="text" id="focusTestField8" tabindex="-1"/>
+	</tibet:group>
+
+</body>
+</html>
