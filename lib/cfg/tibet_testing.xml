@@ -89,8 +89,6 @@
     <script src="~lib_tst/src/tibet/grouping/TP.tibet.group_Tests.js" />
 </config>
 
-</config>
-
 <config id="ev">
     <script src="~lib_tst/src/ev/ev_Tests.js" />
 </config>
