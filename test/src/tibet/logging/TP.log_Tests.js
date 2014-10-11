@@ -9,7 +9,40 @@
 //  ========================================================================
 
 /*
+ * Tests for TIBET's log4j 2.0-ish logging implementation. Covers the TP.log
+ * namespace and all types rooted there which are part of the core framework.
  */
+
+//  ------------------------------------------------------------------------
+
+TP.log.Manager.describe('logger registration',
+function() {
+
+    this.it('can check for logger existence', function(test, options) {
+        this.assert.isFalse(TP.log.Manager.exists('test'));
+    });
+
+    this.it('registers new loggers on construct', function(test, options) {
+        TP.log.Logger.construct('test');
+        this.assert.isTrue(TP.log.Manager.exists('test'));
+    });
+
+    this.it('rejects duplicate loggers', function(test, options) {
+
+        this.assert.raises(function() {
+            var logger = TP.log.Logger.construct('test');
+            TP.log.Manager.registerLogger(logger);
+        }, 'DuplicateRegistration');
+    });
+
+    this.it('removes loggers', function(test, options) {
+        var logger = TP.log.Logger.construct('test');
+        TP.log.Manager.removeLogger(logger);
+        var logger2 = TP.log.Logger.construct('test');
+
+        this.refute.isIdenticalTo(logger, logger2);
+    });
+});
 
 //  ------------------------------------------------------------------------
 
@@ -129,6 +162,137 @@ function() {
     });
 });
 
+//  ------------------------------------------------------------------------
+
+TP.log.Manager.describe('logger appenders',
+function() {
+
+    var logger;
+
+    this.beforeEach(function() {
+        logger = TP.log.Manager.getLogger('test');
+    });
+
+    this.afterEach(function() {
+        TP.log.Manager.removeLogger(logger);
+        logger = null;
+    });
+
+    this.it('new loggers have no appenders', function() {
+        logger.inheritsAppenders(false);
+        this.assert.isEmpty(logger.getAppenders());
+    });
+
+    this.it('new loggers can inherit root appenders', function() {
+        this.refute.isEmpty(logger.getAppenders());
+    });
+
+    this.it('loggers can define appenders', function() {
+        logger.addAppender(TP.log.Appender.construct());
+        this.assert.isEqualTo(logger.getAppenders().length, 2);
+    });
+
+    this.it('loggers can restrict appenders', function() {
+        logger.inheritsAppenders(false);
+        logger.addAppender(TP.log.Appender.construct());
+        this.assert.isEqualTo(logger.getAppenders().length, 1);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.log.Manager.describe('logger filters',
+function() {
+
+    var logger;
+
+    this.beforeEach(function() {
+        logger = TP.log.Manager.getLogger('test');
+    });
+
+    this.afterEach(function() {
+        TP.log.Manager.removeLogger(logger);
+        logger = null;
+    });
+
+    this.it('new loggers have no filters', function() {
+        logger.inheritsFilters(false);
+        this.assert.isEmpty(logger.getFilters());
+    });
+
+    this.it('new loggers can inherit root filters', function() {
+        // Root logger doesn't have filters by default...add one for this test.
+        var root = TP.log.Manager.getRootLogger();
+        root.addFilter(TP.log.Filter.construct());
+
+        try {
+            this.refute.isEmpty(logger.getFilters());
+        } finally {
+            root.filters = null;
+        }
+    });
+
+    this.it('loggers can define filters', function() {
+        logger.addFilter(TP.log.Filter.construct());
+        this.assert.isEqualTo(logger.getFilters().length, 1);
+    });
+
+    this.it('loggers can restrict filters', function() {
+        var root = TP.log.Manager.getRootLogger();
+        root.addFilter(TP.log.Filter.construct());
+
+        logger.inheritsFilters(false);
+        logger.addFilter(TP.log.Filter.construct());
+        try {
+            this.assert.isEqualTo(logger.getFilters().length, 1);
+        } finally {
+            root.filters = null;
+        }
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.log.Manager.describe('levels',
+function() {
+
+    this.it('compares ALL properly', function() {
+        this.assert.isTrue(TP.log.ALL.isEnabled(TP.log.INFO));
+        this.assert.isTrue(TP.log.INFO.isEnabled(TP.log.ALL));
+    });
+
+    this.it('compares OFF properly', function() {
+        this.assert.isFalse(TP.log.OFF.isEnabled(TP.log.INFO));
+        this.assert.isFalse(TP.log.INFO.isEnabled(TP.log.OFF));
+    });
+
+    this.it('compares normal levels property', function() {
+        this.assert.isTrue(TP.log.TRACE.isEnabled(TP.log.TRACE));
+        this.assert.isTrue(TP.log.TRACE.isEnabled(TP.log.DEBUG));
+
+        this.assert.isFalse(TP.log.DEBUG.isEnabled(TP.log.TRACE));
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.log.Manager.describe('filters',
+function() {
+});
+
+//  ------------------------------------------------------------------------
+
+TP.log.Manager.describe('appenders',
+function() {
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.log.Manager.describe('layouts',
+function() {
+});
 
 //  ========================================================================
 //  Run those babies!
