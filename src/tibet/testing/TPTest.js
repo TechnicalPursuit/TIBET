@@ -498,6 +498,8 @@ function(target, options) {
             skipped + ' skip, ' +
             ignored + ' todo, ' +
             errored + ' error.');
+
+        TP.sys.setcfg('test.running', false);
     };
 
     TP.sys.logTest('# ' + suitelist.length + ' suite(s) found.', TP.TRACE);
@@ -539,6 +541,8 @@ function(target, options) {
                         //  TODO: early exit?
                     });
             }, Q.Promise.resolve());
+
+    TP.sys.setcfg('test.running', true);
 
     return promise.then(function(obj) {
         TP.sys.shouldThrowExceptions(shouldThrowSetting);
