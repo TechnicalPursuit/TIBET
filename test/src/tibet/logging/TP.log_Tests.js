@@ -18,8 +18,13 @@
 TP.log.Manager.describe('logger registration',
 function() {
 
-    this.it('can check for logger existence', function(test, options) {
+    this.it('verify a logger does not exist', function(test, options) {
         this.assert.isFalse(TP.log.Manager.exists('test'));
+    });
+
+    this.it('verify a logger does exist', function(test, options) {
+        TP.log.Manager.getLogger('test');
+        this.assert.isTrue(TP.log.Manager.exists('test'));
     });
 
     this.it('registers new loggers on construct', function(test, options) {
@@ -27,15 +32,14 @@ function() {
         this.assert.isTrue(TP.log.Manager.exists('test'));
     });
 
-    this.it('rejects duplicate loggers', function(test, options) {
-
+    this.it('rejects duplicate logger registrations', function(test, options) {
         this.assert.raises(function() {
             var logger = TP.log.Logger.construct('test');
             TP.log.Manager.registerLogger(logger);
         }, 'DuplicateRegistration');
     });
 
-    this.it('removes loggers', function(test, options) {
+    this.it('can remove (unregister) loggers', function(test, options) {
         var logger = TP.log.Logger.construct('test');
         TP.log.Manager.removeLogger(logger);
         var logger2 = TP.log.Logger.construct('test');
@@ -56,6 +60,7 @@ function() {
     });
 
     this.afterEach(function() {
+        TP.log.Manager.loggers.empty();
         root = null;
     });
 
@@ -69,17 +74,28 @@ function() {
         this.assert.isIdenticalTo(root, root2);
     });
 
-    this.it('root logger has a level', function(test, options) {
+    this.it('ensures root logger has a level', function(test, options) {
         this.assert.isValid(root.getLevel());
     });
 
-    this.it('root logger has no parent', function(test, options) {
+    this.it('ensures root logger has no parent', function(test, options) {
         this.refute.isValid(root.getParent());
     });
 
-    this.it('root logger is not additive', function(test, options) {
+    this.it('ensures root does not inherit appenders',function(test, options) {
         this.assert.isFalse(root.inheritsAppenders());
+    });
+
+    this.it('ensures root does not inherit filters',function(test, options) {
         this.assert.isFalse(root.inheritsFilters());
+    });
+
+    this.it('ensures root has a default appender',function(test, options) {
+        this.refute.isEmpty(root.getAppenders());
+    });
+
+    this.it('ensures root has no default filters',function(test, options) {
+        this.assert.isEmpty(root.getFilters());
     });
 });
 
@@ -95,21 +111,30 @@ function() {
     });
 
     this.afterEach(function() {
+        TP.log.Manager.loggers.empty();
         root = null;
+    });
+
+    this.it('requires a logger name', function(test, options) {
+        this.assert.raises(function() {
+            TP.log.Logger.construct();
+        }, 'InvalidName');
     });
 
     this.it('can create top-level loggers', function(test, options) {
         this.assert.isValid(TP.log.Manager.getLogger('test'));
     });
 
-    this.it('uniques loggers by name', function(test, options) {
+    this.it('uniques loggers by lower-case name', function(test, options) {
         var logger1 = TP.log.Manager.getLogger('test');
-        var logger2 = TP.log.Manager.getLogger('test');
+        var logger2 = TP.log.Manager.getLogger('Test');
+        var logger3 = TP.log.Manager.getLogger('TEST');
 
         this.assert.isIdenticalTo(logger1, logger2);
+        this.assert.isIdenticalTo(logger1, logger3);
     });
 
-    this.it('top-level logger parent is root', function(test, options) {
+    this.it('top-level logger parent is root logger', function(test, options) {
         var logger = TP.log.Manager.getLogger('test');
 
         this.assert.isIdenticalTo(logger.getParent(), root);
@@ -129,7 +154,8 @@ function() {
         this.assert.isIdenticalTo(parent, primary);
     });
 
-    this.it('multiply-nested loggers get proper parent', function(test, options) {
+    this.it('multiply-nested loggers get proper parent',
+            function(test, options) {
         var logger = TP.log.Manager.getLogger('test.nested.some.more');
         var primary = TP.log.Manager.getLogger('test.nested.some');
         var parent = logger.getParent();
@@ -140,17 +166,55 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.log.Manager.describe('log levels',
+function() {
+
+    this.it('compares ALL properly', function() {
+        this.assert.isTrue(TP.log.ALL.isVisibleAt(TP.log.ALL));
+        this.assert.isTrue(TP.log.ALL.isVisibleAt(TP.log.TRACE));
+        this.assert.isTrue(TP.log.ALL.isVisibleAt(TP.log.SYSTEM));
+
+        this.assert.isFalse(TP.log.ALL.isVisibleAt(TP.log.OFF));
+    });
+
+    this.it('compares OFF properly', function() {
+        this.assert.isFalse(TP.log.OFF.isVisibleAt(TP.log.OFF));
+        this.assert.isFalse(TP.log.OFF.isVisibleAt(TP.log.TRACE));
+        this.assert.isFalse(TP.log.OFF.isVisibleAt(TP.log.SYSTEM));
+
+        this.assert.isFalse(TP.log.ALL.isVisibleAt(TP.log.OFF));
+        this.assert.isFalse(TP.log.TRACE.isVisibleAt(TP.log.OFF));
+        this.assert.isFalse(TP.log.SYSTEM.isVisibleAt(TP.log.OFF));
+    });
+
+    this.it('compares normal levels property', function() {
+        this.assert.isTrue(TP.log.TRACE.isVisibleAt(TP.log.TRACE));
+        this.assert.isTrue(TP.log.DEBUG.isVisibleAt(TP.log.TRACE));
+        this.assert.isFalse(TP.log.TRACE.isVisibleAt(TP.log.DEBUG));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.log.Manager.describe('logger levels',
 function() {
 
-    this.it('primary loggers inherit parent/root level', function(test, options) {
+    // NOTE: Root logger level defaulting is tested elsewhere.
+
+    this.afterEach(function() {
+        TP.log.Manager.loggers.empty();
+    });
+
+    this.it('primary loggers inherit parent/root level',
+            function(test, options) {
         var root = TP.log.Manager.getRootLogger();
         var logger = TP.log.Manager.getLogger('test');
 
         this.assert.isIdenticalTo(root.getLevel(), logger.getLevel());
     });
 
-    this.it('multiply-nested loggers inherit ancestor level', function(test, options) {
+    this.it('multiply-nested loggers inherit ancestor level',
+            function(test, options) {
         var root = TP.log.Manager.getRootLogger();
         var logger = TP.log.Manager.getLogger('test');
         var nested = TP.log.Manager.getLogger('test.nested.some');
@@ -159,6 +223,16 @@ function() {
 
         this.assert.isIdenticalTo(logger.getLevel(), nested.getLevel());
         this.refute.isIdenticalTo(root.getLevel(), nested.getLevel());
+    });
+
+    this.it('computes whether logging is enabled properly',
+            function(test, options) {
+        var logger = TP.log.Manager.getLogger('test');
+
+        this.assert.isTrue(logger.isEnabled(TP.log.ALL), 'All');
+        this.assert.isTrue(logger.isEnabled(TP.log.INFO), 'Info');
+        this.refute.isTrue(logger.isEnabled(TP.log.TRACE), 'Trace');
+        this.refute.isTrue(logger.isEnabled(TP.log.OFF), 'Off');
     });
 });
 
@@ -174,7 +248,7 @@ function() {
     });
 
     this.afterEach(function() {
-        TP.log.Manager.removeLogger(logger);
+        TP.log.Manager.loggers.empty();
         logger = null;
     });
 
@@ -183,19 +257,35 @@ function() {
         this.assert.isEmpty(logger.getAppenders());
     });
 
-    this.it('new loggers can inherit root appenders', function() {
-        this.refute.isEmpty(logger.getAppenders());
+    this.it('new loggers inherit root appenders', function() {
+        // Root logger doesn't have default appenders...add one for this test.
+        var root = TP.log.Manager.getRootLogger();
+        root.addAppender(TP.log.Appender.construct());
+
+        try {
+            this.refute.isEmpty(logger.getAppenders());
+        } finally {
+            root.appenders = null;
+        }
     });
 
     this.it('loggers can define appenders', function() {
         logger.addAppender(TP.log.Appender.construct());
+        // Note the 2 here...one from root, one we defined...
         this.assert.isEqualTo(logger.getAppenders().length, 2);
     });
 
     this.it('loggers can restrict appenders', function() {
+        var root = TP.log.Manager.getRootLogger();
+        root.addAppender(TP.log.Appender.construct());
+
         logger.inheritsAppenders(false);
         logger.addAppender(TP.log.Appender.construct());
-        this.assert.isEqualTo(logger.getAppenders().length, 1);
+        try {
+            this.assert.isEqualTo(logger.getAppenders().length, 1);
+        } finally {
+            root.appenders = null;
+        }
     });
 });
 
@@ -211,7 +301,7 @@ function() {
     });
 
     this.afterEach(function() {
-        TP.log.Manager.removeLogger(logger);
+        TP.log.Manager.loggers.empty();
         logger = null;
     });
 
@@ -220,7 +310,7 @@ function() {
         this.assert.isEmpty(logger.getFilters());
     });
 
-    this.it('new loggers can inherit root filters', function() {
+    this.it('new loggers inherit root filters', function() {
         // Root logger doesn't have filters by default...add one for this test.
         var root = TP.log.Manager.getRootLogger();
         root.addFilter(TP.log.Filter.construct());
@@ -253,30 +343,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.log.Manager.describe('levels',
-function() {
-
-    this.it('compares ALL properly', function() {
-        this.assert.isTrue(TP.log.ALL.isEnabled(TP.log.INFO));
-        this.assert.isTrue(TP.log.INFO.isEnabled(TP.log.ALL));
-    });
-
-    this.it('compares OFF properly', function() {
-        this.assert.isFalse(TP.log.OFF.isEnabled(TP.log.INFO));
-        this.assert.isFalse(TP.log.INFO.isEnabled(TP.log.OFF));
-    });
-
-    this.it('compares normal levels property', function() {
-        this.assert.isTrue(TP.log.TRACE.isEnabled(TP.log.TRACE));
-        this.assert.isTrue(TP.log.TRACE.isEnabled(TP.log.DEBUG));
-
-        this.assert.isFalse(TP.log.DEBUG.isEnabled(TP.log.TRACE));
-    });
-
-});
-
-//  ------------------------------------------------------------------------
-
 TP.log.Manager.describe('filters',
 function() {
 });
@@ -294,13 +360,11 @@ TP.log.Manager.describe('layouts',
 function() {
 });
 
-//  ========================================================================
-//  Run those babies!
 //  ------------------------------------------------------------------------
 
-/*
-TP.log.Manager.runTestSuites();
-*/
+TP.log.Manager.describe('entries',
+function() {
+});
 
 //  ------------------------------------------------------------------------
 //  end
