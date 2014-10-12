@@ -9214,7 +9214,9 @@ function(anObject, aLogLevel, aContext) {
     TP.sys.$testlog.log(anObject, TP.TEST_LOG, TP.SYSTEM,
                         aContext || arguments);
 
-    console.log(TP.str(anObject));
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        console.log(TP.str(anObject));
+    }
 
     TP.sys.log(anObject, TP.TEST_LOG, aLogLevel, aContext || arguments);
 
