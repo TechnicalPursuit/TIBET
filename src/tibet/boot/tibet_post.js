@@ -18,6 +18,7 @@
 /* global ActiveXObject:false,
           netscape:false,
           Components:false,
+          $ERROR:true,
           $STATUS:true
 */
 
@@ -4161,6 +4162,7 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
         //  doing a source import, won't throw (so catch blocks won't
         //  work),  but the onerror hook will set a non-zero $STATUS.
         $STATUS = 0;
+        $ERROR = null;
 
         if (TP.boot.isUA('IE')) {
             aNode.appendChild(newNode);
@@ -4181,9 +4183,13 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
             aNode.appendChild(theNode);
         }
     } catch (e) {
-        //  Required for IE
+        $ERROR = e;
     } finally {
-        if ($STATUS !== 0) {
+        if ($ERROR) {
+            if (shouldThrow) {
+                throw $ERROR;
+            }
+        } else if ($STATUS !== 0) {
             //  an error of some kind occurred
             if (shouldThrow) {
                 throw new Error('DOMAppendException');
@@ -8908,12 +8914,16 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
         result = TP.boot.$nodeAppendChild(scriptHead, elem);
     } catch (e) {
-        //  Required for IE
+        $ERROR = e;
     } finally {
         //  appends with source code that has syntax errors or other issues
         //  won't trigger Error conditions we can catch, but they will hit
         //  the onerror hook so we can check $STATUS and proceed from there.
-        if (!result || $STATUS !== 0) {
+        if ($ERROR) {
+            if (shouldThrow) {
+                throw $ERROR;
+            }
+        } else if (!result || $STATUS !== 0) {
             TP.boot.$loadNode = null;
 
             if (shouldThrow === true) {
@@ -9367,7 +9377,8 @@ TP.boot.$importComponents = function(loadSync) {
                 //  append it into the 'head' element so that it starts the
                 //  loading process. If there is an error, it will be
                 //  reported via the 'onerror' hook.
-                TP.boot.$$head.appendChild(elem);
+                TP.boot.$nodeAppendChild(TP.boot.$$head, elem);
+                //TP.boot.$$head.appendChild(elem);
 
                 return;
             }

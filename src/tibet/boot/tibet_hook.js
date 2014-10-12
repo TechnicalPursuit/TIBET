@@ -45,36 +45,6 @@ $$checked = null;
 //  the shared codebase for the application.
 $$tibet = null;
 
-window.onerror = function(msg, url, line, column, errorObj) {
-    var str;
-
-    try {
-        str = msg || 'Error';
-        str += ' in file: ' + url + ' line: ' + line + ' column: ' + column;
-
-        if (errorObj) {
-            str += '\nSTACK:\n' + errorObj.stack;
-        }
-
-        // specifically watch for file launch issues.
-        if (window.location.protocol.indexOf('file') === 0) {
-            if (window.onerror.failedlaunch) {
-                return;
-            }
-            window.onerror.failedlaunch = true;
-            //alert('File launch error. Check browser security settings.');
-        } else {
-            top.console.error(str);
-        }
-    } catch (e) {
-        // don't let log errors trigger recursion, but don't bury them either.
-        top.console.error('Error logging onerror: ' + e.message);
-        top.console.error(str || msg);
-    }
-
-    return false;
-};
-
 //  ------------------------------------------------------------------------
 //  TIBET DETECTION
 //  ------------------------------------------------------------------------
@@ -231,6 +201,65 @@ $$findTIBET = function(aWindow) {
 //  Define the only publicly available global in TIBET - 'TP'
 
 if (self.TP == null) {
+
+    //  ---
+    //  Define a slightly more useful error reporter.
+    //  ---
+
+    //  NOTE: If TP exists it means we're in the init file, not the hook file. In
+    //  which case we want to retain the version of this put on by the boot scripts.
+    window.onerror = function(msg, url, line, column, errorObj) {
+
+        /**
+         * @name onerror
+         * @synopsis Captures global errors and outputs them appropriately. This
+         *     hook allows TIBET to capture native JavaScript errors and avoid
+         *     reporting them via the normal browser mechanism. This keeps users
+         *     from being bombarded by messages about JS errors while allowing
+         *     developers to see what's what.
+         * @param {String} message The error message.
+         * @param {String} url The url of the JavaScript script.
+         * @param {Number} line The line number in that script.
+         * @param {Number} column The column number in that script.
+         * @param {Error} errorObj The error object of the error that caused this
+         *     hook to trigger.
+         * @returns {Boolean} TP.sys.shouldCaptureErrors() value.
+         * @todo
+         */
+
+        var str;
+
+        try {
+            str = msg || 'Error';
+            str += ' in file: ' + url + ' line: ' + line + ' column: ' + column;
+
+            if (errorObj) {
+                str += '\nSTACK:\n' + errorObj.stack;
+            }
+
+            // specifically watch for file launch issues.
+            if (window.location.protocol.indexOf('file') === 0) {
+                if (window.onerror.failedlaunch) {
+                    return;
+                }
+                window.onerror.failedlaunch = true;
+                //alert('File launch error. Check browser security settings.');
+            } else {
+                top.console.error(str);
+            }
+        } catch (e) {
+            // don't let log errors trigger recursion, but don't bury them either.
+            top.console.error('Error logging onerror: ' + e.message);
+            top.console.error(str || msg);
+        }
+
+        return false;
+    };
+
+
+    //  ---
+    //  Attempt to find the TIBET code frame.
+    //  ---
 
     try {
         $$findTIBET();
