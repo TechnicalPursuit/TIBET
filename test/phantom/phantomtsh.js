@@ -139,6 +139,20 @@
     PhantomTSH.argv = null;
 
     /**
+     * A date stamp for the last activity (logging typically) which was observed
+     * from the loaded content. Used to drive activity-based timeout processing.
+     * @type {Date}
+     */
+    PhantomTSH.lastActivity = null;
+
+    /**
+     * Reference to the last message logged. Used to determine if an error has
+     * already been logged so we can skip logging in onError handler.
+     * @type {String}
+     */
+    PhantomTSH.lastMessage = null;
+
+    /**
      * The PhantomJS page object used to manage the PhantomJS interface.
      * @type {Page}
      */
@@ -607,6 +621,8 @@
      */
     PhantomTSH.page.onConsoleMessage = function(msg) {
 
+        PhantomTSH.lastMessage = msg;
+
         PhantomTSH.lastActivity = new Date().getTime();
 
         // If we're doing TAP-complaint processing then redirect.
@@ -631,10 +647,14 @@
         //TODO: do we want to activate this via command-line flag?
         //PhantomTSH.page.render('Loaded.png');
 
-        str = 'Error in page: ' + msg + ' @\n';
-        trace.forEach(function(item) {
-            str += '\t' + item.file + ':' + item.line + '\n';
-        });
+        // Only log errors if the application didn't just do it for us. Usually
+        // TIBET will log an error if it can and we don't want duplicate output.
+        if (!/in file:/.test(PhantomTSH.lastMessage)) {
+            str = 'Error in page: ' + msg + ' @\n';
+            trace.forEach(function(item) {
+                str += '\t' + item.file + ':' + item.line + '\n';
+            });
+        }
 
         PhantomTSH.exit(str, PhantomTSH.ERROR);
     };
