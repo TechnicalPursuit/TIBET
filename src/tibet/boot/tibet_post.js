@@ -609,7 +609,7 @@ window.onerror = function(msg, url, line, column, errorObj) {
     //  which won't see a native Error in a catch block
     $STATUS = TP.FAILURE;
 
-    return false;
+    return true;
 };
 
 //  ============================================================================
@@ -5501,8 +5501,9 @@ TP.boot.$clearLog = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$$logReporter = function(entry, context, separator, escape) {
+TP.boot.$$logReporter = function(entry, context, options) {
     var level,
+        console,
         sep,
         esc,
         time,
@@ -5520,6 +5521,8 @@ TP.boot.$$logReporter = function(entry, context, separator, escape) {
         return;
     }
 
+    options = options || {};
+
     level = entry[TP.LOG_ENTRY_LEVEL];
 
     // Track the highest non-system logging level we've seen.
@@ -5535,8 +5538,9 @@ TP.boot.$$logReporter = function(entry, context, separator, escape) {
     obj = entry[TP.LOG_ENTRY_PAYLOAD];
     ctx = entry[TP.LOG_ENTRY_CONTEXT];
 
-    esc = TP.boot.$isValid(escape) ? escape : true;
-    sep = TP.boot.$isValid(separator) ? separator : '\n';
+    esc = TP.boot.$isValid(options.escape) ? options.escape : true;
+    sep = TP.boot.$isValid(options.separator) ? options.separator : '\n';
+    console = TP.boot.$isValid(options.console) ? options.console : false;
 
     // If the object is an annotation we've got to process it. Note that we
     // double the separator around object dumps to help offset key/value dump
@@ -5594,15 +5598,19 @@ TP.boot.$$logReporter = function(entry, context, separator, escape) {
         }
     }
 
-    msg = TP.boot.$style(time, 'time') + ' ' + delta + '- ' +
-        TP.boot.$style(name + ' ' + str, name);
+    if (console) {
+        msg = str;
+    } else {
+        msg = TP.boot.$style(time, 'time') + ' ' + delta + '- ' +
+            TP.boot.$style(name + ' ' + str, name);
+    }
 
     return msg;
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$consoleReporter = function(entry, context) {
+TP.boot.$consoleReporter = function(entry, context, options) {
 
     var msg,
         level;
@@ -5613,7 +5621,8 @@ TP.boot.$consoleReporter = function(entry, context) {
     }
 
     TP.sys.setcfg('log.colormode', 'console');
-    msg = TP.boot.$$logReporter(entry, context, '\n', false);
+    msg = TP.boot.$$logReporter(entry, context,
+        { separator: '\n', escape: false, console: true });
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5652,7 +5661,7 @@ TP.boot.$consoleReporter = function(entry, context) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$bootuiReporter = function(entry, context) {
+TP.boot.$bootuiReporter = function(entry, context, options) {
 
     var elem,
         msg,
@@ -5674,7 +5683,8 @@ TP.boot.$bootuiReporter = function(entry, context) {
     }
 
     TP.sys.setcfg('log.colormode', 'browser');
-    msg = TP.boot.$$logReporter(entry, context, '<br/>', true);
+    msg = TP.boot.$$logReporter(entry, context,
+        { separator: '<br/>', escape: true, console: false });
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5732,7 +5742,7 @@ TP.boot.$bootuiReporter = function(entry, context) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$phantomReporter = function(entry, context) {
+TP.boot.$phantomReporter = function(entry, context, options) {
 
     var msg,
         level;
@@ -5743,7 +5753,8 @@ TP.boot.$phantomReporter = function(entry, context) {
     }
 
     TP.sys.setcfg('log.colormode', 'console');
-    msg = TP.boot.$$logReporter(entry, context, '\n', false);
+    msg = TP.boot.$$logReporter(entry, context,
+        { separator: '\n', escape: false, console: true });
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -6294,7 +6305,7 @@ TP.boot.Log.prototype.report = function(entry) {
     level = entry[TP.LOG_ENTRY_LEVEL];
 
     if (TP.boot.Log.isErrorLevel(level) && level >= limit) {
-        TP.boot.$consoleReporter(entry);
+        TP.boot.$consoleReporter(entry, arguments, {console: true});
     }
 
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
