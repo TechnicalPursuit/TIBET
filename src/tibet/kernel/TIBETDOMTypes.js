@@ -8899,15 +8899,18 @@ TP.core.ElementNode.isAbstract(true);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+//  The attributes for this element type that are considered to 'boolean
+//  attributes' that either exist or don't exist - this matters especially to
+//  HTML (but not XHTML ;-) ).
+TP.core.ElementNode.Type.defineAttribute('booleanAttrs', TP.ac());
+
 //  The attributes for this element type that are considered to 'URI
 //  attributes' that need XML Base/virtual URI resolution.
-TP.core.ElementNode.Type.defineAttribute('uriAttrs');
+TP.core.ElementNode.Type.defineAttribute('uriAttrs', TP.ac());
 
 //  the node's template. this will be used when instances are constructed
 //  with a TP.lang.Hash incoming value
 TP.core.ElementNode.Type.defineAttribute('template');
-
-TP.core.ElementNode.set('uriAttrs', TP.ac());
 
 //  ------------------------------------------------------------------------
 //  Type Methods
