@@ -10641,8 +10641,8 @@ function(attributeName, attributeValue, shouldSignal) {
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
         //  Note here how we grab all of the arguments passed into this method,
-        //  shove ourself onto the front and invoke with an apply(). This is
-        //  because executeSet() takes varargs (in case the path is
+        //  replace the first argument with ourself and invoke with an apply().
+        //  This is because executeSet() takes varargs (in case the path is
         //  parameterized).
         args = TP.args(arguments);
         args.atPut(0, this);
@@ -11940,8 +11940,8 @@ function(attributeName) {
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
         //  Note here how we grab all of the arguments passed into this method,
-        //  shove ourself onto the front and invoke with an apply(). This is
-        //  because executeGet() takes varargs (in case the path is
+        //  replace the first argument with ourself and invoke with an apply().
+        //  This is because executeGet() takes varargs (in case the path is
         //  parameterized).
         args = TP.args(arguments);
         args.atPut(0, this);
