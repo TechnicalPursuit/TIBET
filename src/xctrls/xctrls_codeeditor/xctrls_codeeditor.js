@@ -44,7 +44,7 @@ TP.xctrls.codeeditor.Type.resolveTraits(
 TP.xctrls.codeeditor.Inst.resolveTraits(
         TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
                 'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setHidden'),
+                'setAttrHidden'),
         TP.html.textUtilities);
 
 //  Resolve the traits right away as type methods of this type are called during

@@ -74,11 +74,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.dialog.Inst.defineMethod('setClosed',
+TP.xctrls.dialog.Inst.defineMethod('setAttrClosed',
 function(beClosed) {
 
     /**
-     * @name setClosed
+     * @name setAttrClosed
      * @synopsis The setter for the receiver's closed state.
      * @param {Boolean} beClosed Whether or not the receiver is in a closed
      *     state.

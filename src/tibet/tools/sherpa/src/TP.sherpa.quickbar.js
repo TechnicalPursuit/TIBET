@@ -282,11 +282,11 @@ function(aCell) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.quickbar.Inst.defineMethod('setHidden',
+TP.sherpa.quickbar.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setHidden
+     * @name setAttrHidden
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */

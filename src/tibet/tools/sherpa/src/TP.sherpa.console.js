@@ -194,11 +194,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('setHidden',
+TP.sherpa.console.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setHidden
+     * @name setAttrHidden
      * @abstract
      * @param
      * @returns {TP.sherpa.hud} The receiver.

@@ -3551,11 +3551,14 @@ function(stateAttribute, stateFlag) {
      * @todo
      */
 
+    //  NB: we use the '$' versions of setAttribute/getAttribute here or
+    //  otherwise we'll endlessly recurse.
+
     if (TP.isBoolean(stateFlag)) {
         if (stateFlag) {
-            this.setAttribute(stateAttribute, 'true');
+            this.$setAttribute(stateAttribute, 'true');
         } else {
-            this.removeAttribute(stateAttribute);
+            this.$removeAttribute(stateAttribute);
         }
 
         this.changed(stateAttribute.slice(7), TP.UPDATE);
@@ -3566,11 +3569,11 @@ function(stateAttribute, stateFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getActive',
+TP.core.UIElementNode.Inst.defineMethod('getAttrActive',
 function() {
 
     /**
-     * @name getActive
+     * @name getAttrActive
      * @synopsis The getter for the receiver's active state.
      * @returns {Boolean} Whether the receiver's state is active.
      */
@@ -3580,11 +3583,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getBusy',
+TP.core.UIElementNode.Inst.defineMethod('getAttrBusy',
 function() {
 
     /**
-     * @name getBusy
+     * @name getAttrBusy
      * @synopsis The getter for the receiver's busy state.
      * @returns {Boolean} Whether the receiver's state is busy.
      */
@@ -3594,11 +3597,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDisabled',
+TP.core.UIElementNode.Inst.defineMethod('getAttrDisabled',
 function() {
 
     /**
-     * @name getDisabled
+     * @name getAttrDisabled
      * @synopsis The getter for the receiver's disabled state.
      * @returns {Boolean} Whether the receiver's state is disabled.
      */
@@ -3608,11 +3611,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getFocused',
+TP.core.UIElementNode.Inst.defineMethod('getAttrFocused',
 function() {
 
     /**
-     * @name getFocused
+     * @name getAttrFocused
      * @synopsis The getter for the receiver's focus state.
      * @returns {Boolean} Whether the receiver's state is focus.
      */
@@ -3622,11 +3625,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getHidden',
+TP.core.UIElementNode.Inst.defineMethod('getAttrHidden',
 function() {
 
     /**
-     * @name getHidden
+     * @name getAttrHidden
      * @synopsis The getter for the receiver's hidden state.
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
@@ -3636,11 +3639,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getInvalid',
+TP.core.UIElementNode.Inst.defineMethod('getAttrInvalid',
 function() {
 
     /**
-     * @name getInvalid
+     * @name getAttrInvalid
      * @synopsis The getter for the receiver's invalid state.
      * @returns {Boolean} Whether the receiver's state is invalid.
      */
@@ -3650,11 +3653,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getOpen',
+TP.core.UIElementNode.Inst.defineMethod('getAttrOpen',
 function() {
 
     /**
-     * @name getOpen
+     * @name getAttrOpen
      * @synopsis The getter for the receiver's open state.
      * @returns {Boolean} Whether the receiver's state is open.
      */
@@ -3664,11 +3667,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getOutOfRange',
+TP.core.UIElementNode.Inst.defineMethod('getAttrOutOfRange',
 function() {
 
     /**
-     * @name getOutOfRange
+     * @name getAttrOutOfRange
      * @synopsis The getter for the receiver's out-of-range state.
      * @returns {Boolean} Whether the receiver's state is out-of-range.
      */
@@ -3678,11 +3681,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getReadonly',
+TP.core.UIElementNode.Inst.defineMethod('getAttrReadonly',
 function() {
 
     /**
-     * @name getReadonly
+     * @name getAttrReadonly
      * @synopsis The getter for the receiver's readonly state.
      * @returns {Boolean} Whether the receiver's state is readonly.
      */
@@ -3692,11 +3695,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getRequired',
+TP.core.UIElementNode.Inst.defineMethod('getAttrRequired',
 function() {
 
     /**
-     * @name getRequired
+     * @name getAttrRequired
      * @synopsis The getter for the receiver's required state.
      * @returns {Boolean} Whether the receiver's state is required.
      */
@@ -3706,11 +3709,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getSelected',
+TP.core.UIElementNode.Inst.defineMethod('getAttrSelected',
 function() {
 
     /**
-     * @name getSelected
+     * @name getAttrSelected
      * @synopsis The getter for the receiver's selected state.
      * @returns {Boolean} Whether the receiver's state is selected.
      */
@@ -3720,11 +3723,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setActive',
+TP.core.UIElementNode.Inst.defineMethod('setAttrActive',
 function(beActive) {
 
     /**
-     * @name setActive
+     * @name setAttrActive
      * @synopsis The setter for the receiver's active state.
      * @param {Boolean} beActive Whether or not the receiver is in an active
      *     state.
@@ -3743,11 +3746,11 @@ function(beActive) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setBusy',
+TP.core.UIElementNode.Inst.defineMethod('setAttrBusy',
 function(beBusy, busyMsg) {
 
     /**
-     * @name setBusy
+     * @name setAttrBusy
      * @synopsis The setter for the receiver's busy state.
      * @param {Boolean} beBusy Whether or not the receiver is in a busy state.
      * @param {String} busyMsg The message to display while busy.
@@ -3771,11 +3774,11 @@ function(beBusy, busyMsg) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setClosed',
+TP.core.UIElementNode.Inst.defineMethod('setAttrClosed',
 function(beClosed) {
 
     /**
-     * @name setClosed
+     * @name setAttrClosed
      * @synopsis The setter for the receiver's closed state.
      * @param {Boolean} beClosed Whether or not the receiver is in a closed
      *     state.
@@ -3794,11 +3797,11 @@ function(beClosed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setCollapsed',
+TP.core.UIElementNode.Inst.defineMethod('setAttrCollapsed',
 function(beCollapsed) {
 
     /**
-     * @name setCollapsed
+     * @name setAttrCollapsed
      * @synopsis The setter for the receiver's collapsed state.
      * @param {Boolean} beCollapsed Whether or not the receiver is in a
      *     collapsed state.
@@ -3817,11 +3820,11 @@ function(beCollapsed) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setDisabled',
+TP.core.UIElementNode.Inst.defineMethod('setAttrDisabled',
 function(beDisabled) {
 
     /**
-     * @name setDisabled
+     * @name setAttrDisabled
      * @synopsis The setter for the receiver's disabled state.
      * @param {Boolean} beDisabled Whether or not the receiver is in a disabled
      *     state.
@@ -3856,11 +3859,11 @@ function(beDisabled) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setFocused',
+TP.core.UIElementNode.Inst.defineMethod('setAttrFocused',
 function(beFocused) {
 
     /**
-     * @name setFocused
+     * @name setAttrFocused
      * @synopsis The setter for the receiver's focus state.
      * @param {Boolean} beFocused Whether or not the receiver is in a focus
      *     state.
@@ -3872,11 +3875,11 @@ function(beFocused) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setHidden',
+TP.core.UIElementNode.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setHidden
+     * @name setAttrHidden
      * @synopsis The setter for the receiver's hidden state.
      * @param {Boolean} beHidden Whether or not the receiver is in a hidden
      *     state.
@@ -3895,11 +3898,11 @@ function(beHidden) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setInvalid',
+TP.core.UIElementNode.Inst.defineMethod('setAttrInvalid',
 function(beInvalid) {
 
     /**
-     * @name setInvalid
+     * @name setAttrInvalid
      * @synopsis The setter for the receiver's invalid state.
      * @param {Boolean} beInvalid Whether or not the receiver is in a invalid
      *     state.
@@ -3911,11 +3914,11 @@ function(beInvalid) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setOutOfRange',
+TP.core.UIElementNode.Inst.defineMethod('setAttrOfOutRange',
 function(beOutOfRange) {
 
     /**
-     * @name setOutOfRange
+     * @name setAttrOfOutRange
      * @synopsis The setter for the receiver's out-of-range state.
      * @param {Boolean} beOutOfRange Whether or not the receiver is in a
      *     out-of-range state.
@@ -3927,11 +3930,11 @@ function(beOutOfRange) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setReadonly',
+TP.core.UIElementNode.Inst.defineMethod('setAttrReadonly',
 function(beReadonly) {
 
     /**
-     * @name setReadonly
+     * @name setAttrReadonly
      * @synopsis The setter for the receiver's readonly state.
      * @param {Boolean} beReadonly Whether or not the receiver is in a readonly
      *     state.
@@ -3943,11 +3946,11 @@ function(beReadonly) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setRequired',
+TP.core.UIElementNode.Inst.defineMethod('setAttrRequired',
 function(beRequired) {
 
     /**
-     * @name setRequired
+     * @name setAttrRequired
      * @synopsis The setter for the receiver's required state.
      * @param {Boolean} beRequired Whether or not the receiver is in a required
      *     state.
@@ -3959,11 +3962,11 @@ function(beRequired) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setSelected',
+TP.core.UIElementNode.Inst.defineMethod('setAttrSelected',
 function(beSelected) {
 
     /**
-     * @name setSelected
+     * @name setAttrSelected
      * @synopsis The setter for the receiver's selected state.
      * @param {Boolean} beSelected Whether or not the receiver is in a selected
      *     state.
@@ -4451,7 +4454,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setActive(true);
+        this.setAttrActive(true);
     }
 
     return;
@@ -4536,7 +4539,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setBusy(true, aSignal.getPayload().at('msg'));
+        this.setAttrBusy(true, aSignal.getPayload().at('msg'));
     }
 
     return;
@@ -4555,7 +4558,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setClosed(true);
+        this.setAttrClosed(true);
     }
 
     return;
@@ -4574,7 +4577,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setCollapsed(true);
+        this.setAttrCollapsed(true);
     }
 
     return;
@@ -4593,7 +4596,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setActive(false);
+        this.setAttrActive(false);
     }
 
     return;
@@ -4631,9 +4634,9 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         node = this.getNativeNode();
 
-        //  focus and blur are handled by setFocused when implemented
-        if (TP.canInvoke(this, 'setSelected')) {
-            this.setSelected(false);
+        //  focus and blur are handled by setAttrSelected when implemented
+        if (TP.canInvoke(this, 'setAttrSelected')) {
+            this.setAttrSelected(false);
         } else if (TP.canInvoke(node, 'blur')) {
             this.getNativeNode().blur();
         }
@@ -4751,7 +4754,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setDisabled(true);
+        this.setAttrDisabled(true);
     }
 
     return;
@@ -4785,7 +4788,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setDisabled(false);
+        this.setAttrDisabled(false);
     }
 
     return;
@@ -4804,7 +4807,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setCollapsed(false);
+        this.setAttrCollapsed(false);
     }
 
     return;
@@ -4901,7 +4904,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setHidden(true);
+        this.setAttrHidden(true);
     }
 
     return;
@@ -4942,7 +4945,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setBusy(false);
+        this.setAttrBusy(false);
     }
 
     return;
@@ -4961,7 +4964,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setOutOfRange(false);
+        this.setAttrOfOutRange(false);
     }
 
     return;
@@ -4995,7 +4998,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setInvalid(true);
+        this.setAttrInvalid(true);
     }
 
     return;
@@ -5014,7 +5017,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setClosed(false);
+        this.setAttrClosed(false);
     }
 
     return;
@@ -5034,7 +5037,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setRequired(false);
+        this.setAttrRequired(false);
     }
 
     return;
@@ -5053,7 +5056,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setOutOfRange(true);
+        this.setAttrOfOutRange(true);
     }
 
     return;
@@ -5072,7 +5075,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setReadonly(true);
+        this.setAttrReadonly(true);
     }
 
     return;
@@ -5091,7 +5094,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setReadonly(false);
+        this.setAttrReadonly(false);
     }
 
     return;
@@ -5110,7 +5113,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setRequired(true);
+        this.setAttrRequired(true);
     }
 
     return;
@@ -5148,9 +5151,9 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         node = this.getNativeNode();
 
-        //  focus and blur are handled by setFocused when implemented
-        if (TP.canInvoke(this, 'setSelected')) {
-            this.setSelected(true);
+        //  focus and blur are handled by setAttrSelected when implemented
+        if (TP.canInvoke(this, 'setAttrSelected')) {
+            this.setAttrSelected(true);
         } else if (TP.canInvoke(node, 'focus')) {
             node.focus();
         }
@@ -5176,7 +5179,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setHidden(false);
+        this.setAttrHidden(false);
     }
 
     return;
@@ -5195,7 +5198,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.setInvalid(false);
+        this.setAttrInvalid(false);
     }
 
     return;
