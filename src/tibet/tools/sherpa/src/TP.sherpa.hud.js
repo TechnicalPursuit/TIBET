@@ -75,11 +75,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.hud.Inst.defineMethod('setHidden',
+TP.sherpa.hud.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setHidden
+     * @name setAttrHidden
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
@@ -121,7 +121,7 @@ function() {
 
     hudDrawers.perform(
         function(aHUDDrawer) {
-            aHUDDrawer.setHidden(true);
+            aHUDDrawer.setAttrHidden(true);
         });
 
     return this;
@@ -145,7 +145,7 @@ function() {
 
     hudDrawers.perform(
         function(aHUDDrawer) {
-            aHUDDrawer.setHidden(false);
+            aHUDDrawer.setAttrHidden(false);
         });
 
     return this;

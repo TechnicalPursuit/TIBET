@@ -3036,7 +3036,7 @@ function(aSignal) {
         aspect = aSignal.atIfInvalid('aspect', 'value');
 
         //  If we didn't have any paths, invoke the standard 'changed' mechanism
-        //  (which signals 'TP.sig.ValueChange') from ourself.
+        //  from ourself.
         this.changed(aspect, TP.UPDATE, TP.hc('target', resource));
     }
 

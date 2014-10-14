@@ -152,7 +152,7 @@ function() {
                                 TP.ERROR);
                 test.fail();
             });
-    });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
     //  ---
 
@@ -297,7 +297,7 @@ function() {
                                 TP.ERROR);
                 test.fail();
             });
-    });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
     //  ---
 

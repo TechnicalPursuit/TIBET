@@ -191,6 +191,8 @@ function() {
      */
 
     this.$set('exclusive', true);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -229,6 +231,8 @@ function(shouldSkip) {
     skip = TP.ifInvalid(shouldSkip, true);
 
     this.$set('skipped', skip);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -243,6 +247,8 @@ function(ms) {
      */
 
     this.$set('mslimit', ms);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -256,6 +262,8 @@ function() {
      */
 
     this.$set('ignored', true);
+
+    return this;
 });
 
 
@@ -691,6 +699,8 @@ function(teardown) {
      */
 
     this.set('afterAll', teardown);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -705,6 +715,8 @@ function(teardown) {
      */
 
     this.set('afterEvery', teardown);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -719,6 +731,8 @@ function(setup) {
      */
 
     this.set('beforeAll', setup);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -733,6 +747,8 @@ function(setup) {
      */
 
     this.set('beforeEvery', setup);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1098,6 +1114,8 @@ function(options) {
         skipped + ' skip, ' +
         ignored + ' todo, ' +
         errored + ' error.', TP.TRACE);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1115,6 +1133,8 @@ function(options) {
     if (options && options.at('suite_timeout')) {
         this.$set('mslimit', options.at('suite_timeout'));
     }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1709,6 +1729,8 @@ function(aFaultCode, aFaultString) {
 
     TP.sys.logTest('not ok - ' + this.getCaseName() + ' error' +
         (aFaultString ? ': ' + aFaultString : '') + '.');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1765,6 +1787,8 @@ function(aFaultCode, aFaultString) {
     }
 
     TP.sys.logTest(msg);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1869,6 +1893,8 @@ function() {
      */
 
     this.$set('exclusive', true);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1891,6 +1917,8 @@ function() {
     this.set('msend', Date.now());
 
     TP.sys.logTest('ok - ' + this.getCaseName() + '.');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1899,6 +1927,8 @@ TP.test.Case.Inst.defineMethod('$reject',
 function() {
 
     this.$rejector();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1913,6 +1943,8 @@ function() {
     }
 
     this.$resolver();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1952,6 +1984,8 @@ function(options) {
             function(driverKey) {
                 drivers.at(driverKey).set('promiseProvider', thisArg);
             });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

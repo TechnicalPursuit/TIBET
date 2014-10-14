@@ -23,6 +23,15 @@ TP.core.UIElementNode.defineSubtype('html:Element');
 TP.html.Element.isAbstract(true);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.html.Element.set('booleanAttrs',
+        TP.ac('translate', 'itemScope', 'hidden', 'draggable',
+                'isContentEditable','spellcheck',
+                'commandHidden', 'commandDisabled', 'commandChecked'));
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

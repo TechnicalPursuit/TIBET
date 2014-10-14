@@ -113,11 +113,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.textinput.Inst.defineMethod('setDisabled',
+TP.xctrls.textinput.Inst.defineMethod('setAttrDisabled',
 function(beDisabled) {
 
     /**
-     * @name setDisabled
+     * @name setAttrDisabled
      * @synopsis The setter for the receiver's disabled state.
      * @param {Boolean} beDisabled Whether or not the receiver is in a disabled
      *     state.

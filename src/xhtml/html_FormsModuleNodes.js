@@ -69,6 +69,8 @@
 
 TP.html.Attrs.defineSubtype('fieldset');
 
+TP.html.fieldset.set('booleanAttrs', TP.ac('disabled', 'willValidate'));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -669,6 +671,11 @@ TP.html.Focused.defineSubtype('input');
 
 //  can't construct concrete instances of this
 TP.html.input.isAbstract(true);
+
+TP.html.input.set('booleanAttrs',
+        TP.ac('autofocus', 'defaultChecked', 'checked', 'disabled',
+                'formNoValidate', 'indeterminate', 'multiple',
+                'readOnly', 'required', 'willValidate'));
 
 TP.html.input.set('uriAttrs', TP.ac('src', 'usemap'));
 
@@ -2049,6 +2056,8 @@ TP.html.form.Type.defineConstant('NODE_TYPE_NAMES',
             'url', 'TP.html.inputUrl',
             'week', 'TP.html.inputWeek'));
 
+TP.html.form.set('booleanAttrs', TP.ac('noValidate'));
+
 TP.html.form.set('uriAttrs', TP.ac('action'));
 
 //  ------------------------------------------------------------------------
@@ -3060,6 +3069,8 @@ TP.html.Aligned.defineSubtype('legend');
 
 TP.html.Attrs.defineSubtype('optgroup');
 
+TP.html.optgroup.set('booleanAttrs', TP.ac('disabled'));
+
 //  ========================================================================
 //  TP.html.option
 //  ========================================================================
@@ -3074,6 +3085,9 @@ TP.html.Attrs.defineSubtype('optgroup');
 //  ------------------------------------------------------------------------
 
 TP.html.Attrs.defineSubtype('option');
+
+TP.html.option.set('booleanAttrs',
+            TP.ac('disabled', 'defaultSelected', 'selected'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -3262,6 +3276,9 @@ function() {
 TP.html.Focused.defineSubtype('select');
 
 //  ------------------------------------------------------------------------
+
+TP.html.select.set('booleanAttrs',
+        TP.ac('autofocus', 'disabled', 'multiple', 'required', 'willValidate'));
 
 TP.backstop(TP.ac('add', 'remove'), TP.html.select.getInstPrototype());
 
@@ -4339,6 +4356,9 @@ function(aValue, shouldSignal) {
 
 TP.html.Focused.defineSubtype('textarea');
 
+TP.html.textarea.set('booleanAttrs',
+        TP.ac('autofocus', 'disabled', 'readOnly', 'required', 'willValidate'));
+
 TP.html.textarea.addTraitsFrom(TP.html.textUtilities);
 
 TP.html.textarea.Type.resolveTraits(
@@ -4476,6 +4496,9 @@ function(aValue) {
 //  ------------------------------------------------------------------------
 
 TP.html.inputClickable.defineSubtype('button');
+
+TP.html.button.set('booleanAttrs',
+            TP.ac('autofocus', 'disabled', 'formNoValidate', 'willValidate'));
 
 //  ------------------------------------------------------------------------
 //  end

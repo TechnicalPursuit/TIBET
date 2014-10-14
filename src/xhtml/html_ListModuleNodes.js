@@ -21,13 +21,14 @@
 
 TP.html.List.defineSubtype('dl');
 
+TP.html.dl.set('booleanAttrs', TP.ac('compact'));
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.html.dl.Type.defineMethod('generateMarkup',
-function(anObject, attrStr, itemFormat, shouldAutoWrap,
-formatArgs, theRequest        ) {
+function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) {
 
     /**
      * @name generateMarkup
@@ -178,6 +179,8 @@ TP.html.Attrs.defineSubtype('dd');
 
 TP.html.List.defineSubtype('ol');
 
+TP.html.ol.set('booleanAttrs', TP.ac('compact', 'reversed'));
+
 //  ========================================================================
 //  TP.html.ul
 //  ========================================================================
@@ -190,6 +193,8 @@ TP.html.List.defineSubtype('ol');
 //  ------------------------------------------------------------------------
 
 TP.html.List.defineSubtype('ul');
+
+TP.html.ul.set('booleanAttrs', TP.ac('compact'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

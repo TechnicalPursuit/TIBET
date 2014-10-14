@@ -99,11 +99,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('setHidden',
+TP.sherpa.halo.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 
     /**
-     * @name setHidden
+     * @name setAttrHidden
      * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
