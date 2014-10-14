@@ -16,31 +16,31 @@
  *     prompt the user for information in a sequence.
  * @example
  uis = TP.sig.UserInputSeries.construct();
- *     
+ *
  *     uis.addQuery(TP.hc('query', 'Knock Knock Neo...', 'validator',
  *     function(input) {
- *     
+ *
  *     return /who.*s there/i.test(input); }));
- *     
+ *
  *     uis.addQuery(TP.hc('query', 'Hello', 'validator', function(input) {
- *     
+ *
  *     return /hello who/i.test(input); }));
- *     
+ *
  *     uis.addCancelHook( function(series) {
- *     
+ *
  *     TP.sig.UserOutputRequest.construct(TP.hc( 'output','Quitter!',
  *     'messageType','failure' )).fire(series.get('origin')); });
- *     
+ *
  *     uis.addFailureHook( function(series) {
- *     
+ *
  *     TP.sig.UserOutputRequest.construct(TP.hc( 'output','Oops!',
  *     'messageType','failure' )).fire(series.get('origin')); });
- *     
+ *
  *     uis.addSuccessHook( function(series) {
- *     
+ *
  *     TP.sig.UserOutputRequest.construct(TP.hc( 'output','Hello World!'
  *     )).fire(series.get('origin')); });
- *     
+ *
  *     // note that we need to associate the request with a shell if // we want
  *     a console to respond since consoles only work on // behalf of their
  *     models uis.fire(this);
@@ -175,7 +175,7 @@ function(aFaultCode, aFaultString) {
             } catch (e) {
                 TP.ifError() ?
                     TP.error(TP.ec(e, 'Error running failure hook.'),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
             }
         }
     }
@@ -195,13 +195,13 @@ function(aFunction) {
      *     order they were added.
      * @param {Function} aFunction A function to run if the request is
      *     cancelled.
-     * @returns {TP.sig.UserInputSeries} 
+     * @returns {TP.sig.UserInputSeries}
      */
 
     var arr;
 
     if (!TP.isCallable(aFunction)) {
-        return this.raise('TP.sig.InvalidFunction', arguments);
+        return this.raise('TP.sig.InvalidFunction');
     }
 
     if (TP.notValid(arr = this.get('cancelHooks'))) {
@@ -226,13 +226,13 @@ function(aFunction) {
      *     order they were added.
      * @param {Function} aFunction A function to run if the request ends in
      *     failure.
-     * @returns {TP.sig.UserInputSeries} 
+     * @returns {TP.sig.UserInputSeries}
      */
 
     var arr;
 
     if (!TP.isCallable(aFunction)) {
-        return this.raise('TP.sig.InvalidFunction', arguments);
+        return this.raise('TP.sig.InvalidFunction');
     }
 
     if (TP.notValid(arr = this.get('failureHooks'))) {
@@ -263,7 +263,7 @@ function(aParamHash) {
      *     this a password field etc? Defaults to false. 'retryPrompt': A string
      *     to show when the input isn't valid. Default is 'Retry?' 'validator':
      *     A function which should return true if the user's response is valid.
-     * @returns {TP.sig.UserInputSeries} 
+     * @returns {TP.sig.UserInputSeries}
      * @todo
      */
 
@@ -304,13 +304,13 @@ function(aFunction) {
      *     order they were added.
      * @param {Function} aFunction A function to run if the request completes
      *     successfully.
-     * @returns {TP.sig.UserInputSeries} 
+     * @returns {TP.sig.UserInputSeries}
      */
 
     var arr;
 
     if (!TP.isCallable(aFunction)) {
-        return this.raise('TP.sig.InvalidFunction', arguments);
+        return this.raise('TP.sig.InvalidFunction');
     }
 
     if (TP.notValid(arr = this.get('successHooks'))) {
@@ -363,7 +363,7 @@ function(aFaultCode) {
             } catch (e) {
                 TP.ifError() ?
                     TP.error(TP.ec(e, 'Error running cancellation hook.'),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
             }
         }
     }
@@ -414,7 +414,7 @@ function() {
             } catch (e) {
                 TP.ifError() ?
                     TP.error(TP.ec(e, 'Error running success hook.'),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
             }
         }
     }
@@ -463,7 +463,7 @@ function(anOrigin, aPayload, aPolicy) {
     if (TP.notValid(arr)) {
         TP.ifWarn() ?
             TP.warn('No queries for TP.sig.UserInputSeries.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return;
     }
@@ -486,7 +486,7 @@ function(anOrigin, aPayload, aPolicy) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Error executing query generator.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         this.atPut('query', qry);
     }
@@ -498,7 +498,7 @@ function(anOrigin, aPayload, aPolicy) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(TP.ec(e, 'Error executing default generator.'),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
             this.atPut('default', def);
         }
@@ -623,7 +623,7 @@ function(aSignal) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(TP.ec(e, 'Error executing validator.'),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
             valid = false;
         }
@@ -704,7 +704,7 @@ function(aSignal) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Error executing query generator.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         this.atPut('query', qry);
     }
@@ -716,7 +716,7 @@ function(aSignal) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(TP.ec(e, 'Error executing default generator.'),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
             this.atPut('default', def);
         }

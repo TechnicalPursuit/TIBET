@@ -72,7 +72,7 @@ function(aNode) {
         newDoc;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     //  If the supplied node is already an XML document, just return it.
@@ -86,7 +86,6 @@ function(aNode) {
         if (!TP.isXMLNode(node)) {
             return TP.raise(this,
                             'TP.sig.InvalidXMLDocument',
-                            arguments,
                             aNode);
         }
     } else {
@@ -131,7 +130,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     var content;
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments,
+        return TP.raise(this, 'TP.sig.InvalidDocument',
                                 'Must provide a target Document.');
     }
 
@@ -189,7 +188,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         content;
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments,
+        return TP.raise(this, 'TP.sig.InvalidDocument',
                                 'Must provide a target Document.');
     }
 
@@ -256,20 +255,20 @@ function(aDocument, aNode, aPath, aPathType) {
         i;
 
     if (TP.notValid(aDocument)) {
-        TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        TP.raise(this, 'TP.sig.InvalidDocument');
 
         return;
     }
 
     if (TP.notValid(aNode)) {
-        TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        TP.raise(this, 'TP.sig.InvalidNode');
 
         return;
     }
 
     //  no query, no result
     if (TP.isEmpty(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidPath', arguments);
+        return TP.raise(this, 'TP.sig.InvalidPath');
     }
 
     //  Note here how we force autoCollapse to false, since we're gonna loop
@@ -312,7 +311,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         localName;
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments,
+        return TP.raise(this, 'TP.sig.InvalidDocument',
                                 'Must provide a target Document.');
     }
 
@@ -388,7 +387,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      */
 
     if (!TP.isXMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.xmlElementAddContent(aDocument.documentElement,
@@ -426,7 +425,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      */
 
     if (!TP.isXMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.xmlElementInsertContent(aDocument.documentElement,
@@ -486,7 +485,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         allElems;
 
     if (!TP.isXMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Note whether or not the document has a window. This is used later to
@@ -514,7 +513,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                                                                 theContent);
         }
     } else {
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
     }
@@ -584,7 +583,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                         //  onload triggering of this handler
                         TP.signal(TP.gid(aDocument),
                                     'TP.sig.DOMContentLoaded',
-                                    arguments,
                                     aDocument.documentElement);
                     } catch (e) {
                         TP.ifError() ?
@@ -592,7 +590,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                                 TP.ec(
                                     e, 'TP.sig.DOMContentLoaded handler' +
                                         ' generated error.'),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
                     }
                 }
 
@@ -827,7 +825,7 @@ function(anAttributeNode) {
         doc;
 
     if (!TP.isAttributeNode(anAttributeNode)) {
-        return TP.raise(this, 'TP.sig.InvalidAttributeNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidAttributeNode');
     }
 
     //  common case is HTML document attributes, so watch for that since the
@@ -944,7 +942,7 @@ function(anAttributeNode) {
     var name;
 
     if (!TP.isAttributeNode(anAttributeNode)) {
-        return TP.raise(this, 'TP.sig.InvalidAttributeNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidAttributeNode');
     }
 
     //  In XML documents, if an attribute is not prefixed, then it is *not*
@@ -1009,11 +1007,11 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
     var value;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attributeName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     if (!TP.elementHasAttribute(anElement, attributeName, checkAttrNSURI)) {
@@ -1050,7 +1048,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     var content;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments,
+        return TP.raise(this, 'TP.sig.InvalidElement',
                                 'Must provide a target Element node.');
     }
 
@@ -1129,11 +1127,11 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
         hashVal;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(tagName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     attrStr = TP.isValid(attrHash) ? attrHash.asAttributeString() : '';
@@ -1330,7 +1328,7 @@ function(anElement) {
         ancestors;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     docElem = TP.nodeGetDocument(anElement).documentElement;
@@ -1457,7 +1455,7 @@ function(fromElement, toElement) {
         fromAttr;
 
     if (!TP.isElement(fromElement) || !TP.isElement(toElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     len = fromElement.attributes.length;
@@ -1728,7 +1726,7 @@ function(aString, defaultNS, shouldReport) {
     if (TP.isFragment(node)) {
         TP.ifWarn() ?
             TP.warn('Multiple nodes created. Creating first element.',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         //  The fragment may have a text node as its first child - we want
         //  the first one that's an Element.
@@ -1775,11 +1773,11 @@ function(anElement, attributeName, checkAttrNSURI) {
         prefixToUse;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attributeName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     //  we can speed things up quite a bit if we avoid work related to
@@ -1995,7 +1993,7 @@ function(anElement, attributeName, stripPrefixes) {
         nsIndex;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elementPrefix = anElement.prefix;
@@ -2103,7 +2101,7 @@ function(anElement, stripPrefixes) {
         nsIndex;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elementPrefix = anElement.prefix;
@@ -2224,7 +2222,7 @@ function(anElement, attributeName, stripPrefixes) {
         nsIndex;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elementPrefix = anElement.prefix;
@@ -2325,7 +2323,7 @@ function(anElement, attributeName) {
         attr;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attributeName)) {
@@ -2408,7 +2406,7 @@ function(anElement, attributeName) {
         attr;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attributeName)) {
@@ -2489,11 +2487,11 @@ function(anElement, attributeName, attrNS) {
         i;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attrNS)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     arr = TP.ac();
@@ -2573,7 +2571,7 @@ function(anElement, ignoreSourcetag) {
         prefix;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  sourcetag is fastest if it exists and we're allowed to use it
@@ -2665,7 +2663,7 @@ function(anElement, joinChar) {
         path;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isDocument(anElement)) {
@@ -2746,7 +2744,7 @@ function(anElement, ignoreSourcetag) {
         prefix;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  sourcetag is fastest if it exists
@@ -2830,11 +2828,11 @@ function(anElement, attributeName, checkAttrNSURI) {
         prefixToUse;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attributeName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     if (TP.isTrue(checkAttrNSURI)) {
@@ -2984,11 +2982,11 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
         valueMatch;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attributeName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     if (!TP.elementHasAttribute(anElement, attributeName, checkAttrNSURI)) {
@@ -3042,7 +3040,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         content;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments,
+        return TP.raise(this, 'TP.sig.InvalidElement',
                                 'Must provide a target Element node.');
     }
 
@@ -3170,7 +3168,7 @@ function(fromElement, toElement, shouldOverlay, nameRegExp, useElementNS) {
         prefix;
 
     if (!TP.isElement(fromElement) || !TP.isElement(toElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     forceCopy = TP.ifInvalid(shouldOverlay, false);
@@ -3286,7 +3284,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     var content;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments,
+        return TP.raise(this, 'TP.sig.InvalidElement',
                                 'Must provide a target Element node.');
     }
 
@@ -3338,11 +3336,11 @@ function(anElement, attributeName, oldValue, newValue, checkAttrNSURI) {
         re;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attributeName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     if (!TP.elementHasAttribute(anElement, attributeName, checkAttrNSURI)) {
@@ -3402,15 +3400,15 @@ function(anElement, aPrefix) {
     var xmlnsAttrName;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidXMLDocument');
     }
 
     if (TP.isEmpty(aPrefix)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments,
+        return TP.raise(this, 'TP.sig.InvalidString',
                         'Invalid or empty prefix or URI');
     }
 
@@ -3468,11 +3466,11 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
         methodName;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attributeName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     //  if it's a prefixed attribute then the question is can we find out
@@ -3697,11 +3695,11 @@ function(anElement, attributeHash, checkAttrNSURI) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.notValid(attributeHash)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  Loop over the supplied hash and set the attribute on the target
@@ -3744,7 +3742,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     var content;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments,
+        return TP.raise(this, 'TP.sig.InvalidElement',
                                 'Must provide a target Element node.');
     }
 
@@ -3868,7 +3866,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         insertionNode;
 
     if (!TP.isXMLNode(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
@@ -3894,7 +3892,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
                                                                 theContent);
         }
     } else {
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
     }
@@ -3985,7 +3983,6 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         if (TP.sys.shouldSignalDOMLoaded()) {
             TP.signal(TP.gid(anElement.parentNode),
                         'TP.sig.DOMContentLoaded',
-                        arguments,
                         nodeContent);
         }
     } catch (e) {
@@ -3993,7 +3990,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
             TP.error(
                 TP.ec(e,
                         'TP.sig.DOMContentLoaded handler generated error.'),
-                TP.LOG, arguments) : 0;
+                TP.LOG) : 0;
     }
 
     //  Return the new element.
@@ -4033,7 +4030,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         returnNode;
 
     if (!TP.isXMLNode(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
@@ -4057,7 +4054,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
                                                                 theContent);
         }
     } else {
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
     }
@@ -4094,7 +4091,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         if (TP.sys.shouldSignalDOMLoaded()) {
             TP.signal(elemGID,
                         'TP.sig.DOMContentLoaded',
-                        arguments,
                         returnNode);
         }
     } catch (e) {
@@ -4102,7 +4098,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
             TP.error(
                 TP.ec(
                     e, 'TP.sig.DOMContentLoaded handler generated error.'),
-                TP.LOG, arguments) : 0;
+                TP.LOG) : 0;
     }
 
     //  Return the new element.
@@ -4140,7 +4136,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         returnNode;
 
     if (!TP.isXMLNode(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
@@ -4164,7 +4160,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
                                                                 theContent);
         }
     } else {
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return null;
     }
@@ -4197,7 +4193,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         if (TP.sys.shouldSignalDOMLoaded()) {
             TP.signal(TP.gid(anElement),
                         'TP.sig.DOMContentLoaded',
-                        arguments,
                         theContent);
         }
     } catch (e) {
@@ -4205,7 +4200,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
             TP.error(
                 TP.ec(e,
                         'TP.sig.DOMContentLoaded handler generated error.'),
-                TP.LOG, arguments) : 0;
+                TP.LOG) : 0;
     }
 
     //  Return the new element.
@@ -4239,7 +4234,7 @@ function(anElement) {
         ancestor;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     cname = TP.canonical(anElement);
@@ -4384,7 +4379,7 @@ function(aNodeList, aTagname, aNamespace) {
         i;
 
     if (!TP.isNodeList(aNodeList)) {
-        return TP.raise(this, 'TP.sig.InvalidNodeList', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNodeList');
     }
 
     tagName = TP.ifEmpty(aTagname, 'instanceData');
@@ -4396,14 +4391,14 @@ function(aNodeList, aTagname, aNamespace) {
 
     //  they must have specified an invalid element name, which isn't good
     if (TP.notValid(doc.documentElement)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments,
+        return TP.raise(this, 'TP.sig.InvalidDocument',
                                         'No documentElement found.');
     }
 
     for (i = 0; i < aNodeList.length; i++) {
         //  Make sure that the current node is an XML node
         if (!TP.isXMLNode(aNodeList[i])) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+            return TP.raise(this, 'TP.sig.InvalidNode',
                                         'All nodes must be XML nodes.');
         }
 
@@ -4486,7 +4481,7 @@ function(aNodeList, aDocument, shouldClone) {
         firstNode;
 
     if (!TP.isNodeList(aNodeList)) {
-        return TP.raise(this, 'TP.sig.InvalidNodeList', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNodeList');
     }
 
     //  if there's nothing in the node list, the caller better have provided
@@ -4586,7 +4581,7 @@ function(aNode, newNode, shouldAwake) {
         childNodeCount;
 
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments, aNode);
+        return TP.raise(this, 'TP.sig.InvalidNode', aNode);
     }
 
     if (TP.isString(newNode)) {
@@ -4596,7 +4591,7 @@ function(aNode, newNode, shouldAwake) {
             return;
         }
     } else if (!TP.isNode(newNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments, newNode);
+        return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
     }
@@ -4606,7 +4601,7 @@ function(aNode, newNode, shouldAwake) {
     //  element.
     if (TP.isDocument(aNode)) {
         if (TP.isElement(aNode.documentElement)) {
-            TP.raise(this, 'TP.sig.InvalidOperation', arguments,
+            TP.raise(this, 'TP.sig.InvalidOperation',
                         'Cannot append to #document node with an' +
                         ' existing root.');
 
@@ -4616,17 +4611,17 @@ function(aNode, newNode, shouldAwake) {
             //  we have to check and potentially discard extras
             firstElement = TP.nodeGetFirstChildElement(childContent);
             if (TP.notValid(firstElement)) {
-                TP.raise(this, 'TP.sig.InvalidOperation', arguments,
+                TP.raise(this, 'TP.sig.InvalidOperation',
                             'Must supply element for #document root.');
 
                 return;
             } else if (childContent.childNodes.length > 1) {
-                TP.debug('break.node_discarded');
+                TP.stop('break.node_discarded');
 
                 TP.ifWarn(TP.sys.cfg('log.node_discarded')) ?
                     TP.warn('Discarding nodes from fragment: ' +
                                 TP.str(childContent),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
             }
 
             childContent = firstElement;
@@ -4665,7 +4660,7 @@ function(aNode, newNode, shouldAwake) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'appendChild generated error.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         return;
     }
@@ -4713,7 +4708,7 @@ function(aNode) {
      */
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     //  Need to do whatever TP.nodeRemoveChild() does.
@@ -4752,7 +4747,7 @@ function(aNode, includeNode, aPrefix, joinChar) {
         prefix;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     prefix = TP.ifInvalid(aPrefix, '');
@@ -4892,7 +4887,7 @@ function(aNode, joinChar) {
         path;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     path = TP.ac();
@@ -4964,7 +4959,7 @@ function(aNode, onlyElements) {
         i;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.notValid(nodeParent = aNode.parentNode)) {
@@ -5029,7 +5024,7 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
         end;
 
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments, aNode);
+        return TP.raise(this, 'TP.sig.InvalidNode', aNode);
     }
 
     if (TP.isString(newNode)) {
@@ -5039,7 +5034,7 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
             return;
         }
     } else if (!TP.isNode(newNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments, newNode);
+        return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
     }
@@ -5052,7 +5047,6 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
             TP.raise(
             this,
             'TP.sig.InvalidOperation',
-            arguments,
             'Cannot insertBefore #document node with an existing root.');
 
             return;
@@ -5060,7 +5054,6 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
             TP.raise(
             this,
             'TP.sig.InvalidOperation',
-            arguments,
             'Cannot insertBefore empty #document using insertion point.');
 
             return;
@@ -5071,17 +5064,16 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
             if (TP.notValid(firstElement)) {
                 TP.raise(this,
                         'TP.sig.InvalidOperation',
-                        arguments,
                         'Must supply element for #document root.');
 
                 return;
             } else if (childContent.childNodes.length > 1) {
-                TP.debug('break.node_discarded');
+                TP.stop('break.node_discarded');
 
                 TP.ifWarn(TP.sys.cfg('log.node_discarded')) ?
                     TP.warn('Discarding nodes from fragment: ' +
                                 TP.str(childContent),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
             }
 
             return TP.nodeAppendChild(aNode, firstElement, shouldAwake);
@@ -5129,7 +5121,7 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
         targetNode.insertBefore(importedContent, insertionPointNode);
     } catch (e) {
         TP.ifError() ? TP.error(TP.ec(e, 'insertBefore generated error.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         return;
     }
@@ -5211,7 +5203,7 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
         newNode;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                                 'Must provide a valid target Node.');
     }
 
@@ -5253,7 +5245,7 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
                 case TP.BEFORE_BEGIN:
 
                     if (TP.notValid(newNode = TP.node(content))) {
-                        this.raise('TP.sig.InvalidContent', arguments);
+                        this.raise('TP.sig.InvalidContent');
                         return;
                     }
 
@@ -5281,7 +5273,7 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
                 case TP.AFTER_END:
 
                     if (TP.notValid(newNode = TP.node(content))) {
-                        this.raise('TP.sig.InvalidContent', arguments);
+                        this.raise('TP.sig.InvalidContent');
 
                         return;
                     }
@@ -5303,7 +5295,7 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
                     break;
 
                 default:
-                    TP.raise(this, 'TP.sig.InvalidPosition', arguments);
+                    TP.raise(this, 'TP.sig.InvalidPosition');
                     break;
             }
 
@@ -5331,7 +5323,7 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
             switch (positionOrPath) {
                 case TP.BEFORE_BEGIN:
 
-                    TP.raise(this, 'TP.sig.InvalidPosition', arguments);
+                    TP.raise(this, 'TP.sig.InvalidPosition');
                     break;
 
                 case TP.AFTER_BEGIN:
@@ -5348,11 +5340,11 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
 
                 case TP.AFTER_END:
 
-                    TP.raise(this, 'TP.sig.InvalidPosition', arguments);
+                    TP.raise(this, 'TP.sig.InvalidPosition');
                     break;
 
                 default:
-                    TP.raise(this, 'TP.sig.InvalidPosition', arguments);
+                    TP.raise(this, 'TP.sig.InvalidPosition');
                     break;
             }
 
@@ -5384,7 +5376,7 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
         case Node.DOCUMENT_TYPE_NODE:
         case Node.NOTATION_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         default:
@@ -5430,7 +5422,7 @@ function(aNode, aRootNode) {
     var ancestor;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     //  the node could be the root itself, in which case we're not
@@ -5485,7 +5477,7 @@ function(aNode) {
      */
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     aNode.normalize();
@@ -5529,7 +5521,7 @@ function(aNode, newNode, oldNode, shouldAwake) {
         end;
 
     if (!TP.isNode(aNode) || !TP.isNode(oldNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.isString(newNode)) {
@@ -5539,7 +5531,7 @@ function(aNode, newNode, oldNode, shouldAwake) {
             return;
         }
     } else if (!TP.isNode(newNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments, newNode);
+        return TP.raise(this, 'TP.sig.InvalidNode', newNode);
     } else {
         childContent = newNode;
     }
@@ -5550,14 +5542,12 @@ function(aNode, newNode, oldNode, shouldAwake) {
         if (TP.notValid(aNode.documentElement)) {
             TP.raise(this,
                         'TP.sig.InvalidOperation',
-                        arguments,
                         'Cannot replaceChild with empty #document node.');
 
             return;
         } else if (oldNode !== aNode.documentElement) {
             TP.raise(this,
                         'TP.sig.InvalidOperation',
-                        arguments,
                         'Cannot replaceChild other than #document node' +
                             ' root.');
 
@@ -5569,17 +5559,16 @@ function(aNode, newNode, oldNode, shouldAwake) {
             if (TP.notValid(firstElement)) {
                 TP.raise(this,
                             'TP.sig.InvalidOperation',
-                            arguments,
                             'Must supply element for #document root.');
 
                 return;
             } else if (childContent.childNodes.length > 1) {
-                TP.debug('break.node_discarded');
+                TP.stop('break.node_discarded');
 
                 TP.ifWarn(TP.sys.cfg('log.node_discarded')) ?
                     TP.warn('Discarding nodes from fragment: ' +
                                 TP.str(childContent),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
             }
 
             childContent = firstElement;
@@ -5619,7 +5608,7 @@ function(aNode, newNode, oldNode, shouldAwake) {
         targetNode.replaceChild(importedContent, oldNode);
     } catch (e) {
         TP.ifError() ? TP.error(TP.ec(e, 'replaceChild generated error.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
         return;
     }
 
@@ -5675,7 +5664,7 @@ function(aNode, oldNode) {
      */
 
     if (!TP.isNode(aNode) || !TP.isNode(oldNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     //  For now, this is simple. But, as we've learned, we wrap
@@ -5869,13 +5858,13 @@ function(aNode, aPath, autoCollapse, createAttr) {
     //  point of nodeEvaluatePath() and rely on it to have tested them.
 
     if (!TP.regex.BARENAME.test(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidPath', arguments);
+        return TP.raise(this, 'TP.sig.InvalidPath');
     }
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -5991,13 +5980,13 @@ function(aNode, aPath) {
     } else if (/^\/1/.test(aPath)) {
         path = aPath;
     } else {
-        return TP.raise(this, 'TP.sig.InvalidPath', arguments);
+        return TP.raise(this, 'TP.sig.InvalidPath');
     }
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -6021,7 +6010,7 @@ function(aNode, aPath) {
     if (TP.isNumber(parseInt(rootID, 10))) {
         //  must be a 1 to be valid
         if (parseInt(rootID, 10) !== 1) {
-            return TP.raise(this, 'TP.sig.InvalidPath', arguments,
+            return TP.raise(this, 'TP.sig.InvalidPath',
                         'element() scheme root must have index of 1');
         }
 
@@ -6037,8 +6026,7 @@ function(aNode, aPath) {
         doc = TP.nodeGetDocument(aNode);
         if (!TP.isDocument(doc)) {
             return TP.raise(this,
-                            'TP.sig.DetachedNodeException',
-                            arguments);
+                            'TP.sig.DetachedNodeException');
         }
 
         node = TP.nodeGetElementById(doc, rootID);
@@ -6058,7 +6046,6 @@ function(aNode, aPath) {
         if (!TP.isNumber(index)) {
             return TP.raise(this,
                             'TP.sig.InvalidPath',
-                            arguments,
                             'element() scheme segments must be integers.');
         }
 
@@ -6115,7 +6102,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
 
     //  normalize for document nodes etc.
     if (TP.notValid(aNode) || !TP.isElement(node = TP.elem(aNode))) {
-        TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        TP.raise(this, 'TP.sig.InvalidNode',
                     'Node does not have path interface.');
 
         return;
@@ -6123,7 +6110,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
 
     //  no query, no result
     if (TP.isEmpty(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidPath', arguments);
+        return TP.raise(this, 'TP.sig.InvalidPath');
     }
 
     //  common path in repeats etc. where performance is important is an
@@ -6324,7 +6311,7 @@ function(aNode, aPath, autoCollapse) {
     } else {
         TP.ifWarn() ?
             TP.warn('Unsupported query path syntax: ' + aPath,
-                    TP.QUERY_LOG, arguments) : 0;
+                    TP.QUERY_LOG) : 0;
 
         return;
     }
@@ -6380,7 +6367,7 @@ function(aNode) {
         arr;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     arr = TP.ac();
@@ -6428,7 +6415,7 @@ function(aNode) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -6495,12 +6482,12 @@ function(aNode, anIndex) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.notValid(anIndex)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  trim out extra overhead on IE (and browsers that implement the
@@ -6586,7 +6573,7 @@ function(aNode) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -6671,7 +6658,7 @@ function(aNode, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -6757,12 +6744,12 @@ function(aNode, aType, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.notValid(aType)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     arr = TP.ac();
@@ -6844,12 +6831,12 @@ function(aNode, attrName, attrValue, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.isEmpty(attrName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     return TP.nodeSelectDescendantElements(
@@ -6961,12 +6948,12 @@ function(aNode, attrPrefix, attrValue, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.isEmpty(attrPrefix)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     prefix = attrPrefix.endsWith(':') ? attrPrefix : attrPrefix + ':';
@@ -7070,7 +7057,7 @@ function(aNode, anIdOrName) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -7139,11 +7126,11 @@ function(aNode, aName) {
     //  call
     if (TP.isHTMLDocument(aNode)) {
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         if (TP.isEmpty(aName)) {
-            return TP.raise(this, 'TP.sig.InvalidName', arguments);
+            return TP.raise(this, 'TP.sig.InvalidName');
         }
 
         return aNode.getElementsByName(aName);
@@ -7294,12 +7281,12 @@ function(aNode, aTagName, aNamespaceURI) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.isEmpty(aTagName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments,
+        return TP.raise(this, 'TP.sig.InvalidName',
                                         'Invalid or empty tag name');
     }
 
@@ -7413,7 +7400,7 @@ function(aNode, attrName, attrValue) {
      */
 
     if (TP.isEmpty(attrName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     return TP.nodeDetectAncestor(
@@ -7494,7 +7481,7 @@ function(aNode, aTagName, aNamespaceURI) {
         matcher;
 
     if (TP.isEmpty(aTagName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     //  qname returns lowercase tags for HTML (xhtml style)
@@ -7571,12 +7558,12 @@ function(aNode, attrName, attrValue) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.isEmpty(attrName)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     return TP.nodeDetectChildElement(
@@ -7688,12 +7675,12 @@ function(aNode, aTagName, aNamespaceURI) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.isEmpty(aTagName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     //  qname returns lowercase tags for HTML (xhtml style)
@@ -7760,12 +7747,12 @@ function(aNode, aType) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.notValid(aType)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     return TP.nodeDetectChildNode(
@@ -7809,7 +7796,7 @@ function(aNode) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -7869,7 +7856,7 @@ function(aNode) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -7943,12 +7930,12 @@ function(aNode, aType) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.notValid(aType)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     return TP.nodeDetectDescendant(
@@ -8010,12 +7997,12 @@ function(aNode, attrName, attrValue) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.isEmpty(attrName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     return TP.nodeDetectDescendantElement(
@@ -8127,12 +8114,12 @@ function(aNode, aTagName, aNamespaceURI) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (TP.isEmpty(aTagName)) {
-        return TP.raise(this, 'TP.sig.InvalidName', arguments);
+        return TP.raise(this, 'TP.sig.InvalidName');
     }
 
     //  qname returns lowercase tags for HTML (xhtml style)
@@ -8181,7 +8168,7 @@ function(aNode, direction) {
         theNode;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     dir = TP.ifInvalid(direction, TP.NEXT);
@@ -8228,7 +8215,7 @@ function(aNode, nodeType) {
         ancestor;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     next = aNode.nextSibling;
@@ -8350,7 +8337,7 @@ function(aNode, aSubset) {
         i;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     arr = TP.ac();
@@ -8419,7 +8406,7 @@ function(aNode) {
     var ancestor;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     ancestor = aNode.parentNode;
@@ -8502,12 +8489,12 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
         repcount,
         repmax;
 
-    TP.debug('break.breadth_traversal');
+    TP.stop('break.breadth_traversal');
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -8552,7 +8539,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                     TP.ifWarn() ?
                         TP.warn('Traversal terminated at' +
                                     ' content.traversal_max elements.',
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                     break;
                 }
@@ -8599,12 +8586,12 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                         (ret !== TP.CONTINUE) &&
                         (ret !== TP.DESCEND) &&
                         TP.nodeIsDetached(currentNode, rootNode)) {
-                        TP.debug('break.node_detachment');
+                        TP.stop('break.node_detachment');
 
                         TP.ifWarn(TP.sys.cfg('log.node_detachment')) ?
                             TP.warn('Traversal node detached: ' +
                                         TP.str(currentNode, false),
-                                    TP.LOG, arguments) : 0;
+                                    TP.LOG) : 0;
 
                         return;
                     }
@@ -8713,12 +8700,12 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
         repcount,
         repmax;
 
-    TP.debug('break.depth_traversal');
+    TP.stop('break.depth_traversal');
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -8761,7 +8748,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                 TP.ifWarn() ?
                     TP.warn('Traversal terminated at' +
                                 ' content.traversal_max elements.',
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 break;
             }
@@ -8808,12 +8795,12 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                     (ret !== TP.REPEAT) &&
                     (ret !== TP.DESCEND) &&
                     TP.nodeIsDetached(currentNode, rootNode)) {
-                    TP.debug('break.node_detachment');
+                    TP.stop('break.node_detachment');
 
                     TP.ifWarn(TP.sys.cfg('log.node_detachment')) ?
                         TP.warn('Traversal node detached: ' +
                                     TP.str(currentNode, false),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                     return;
                 }
@@ -8876,7 +8863,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                     TP.ifWarn() ?
                         TP.warn('Unrecognized traversal return value: ' +
                                     ret,
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
                 }
             }
 
@@ -9070,12 +9057,12 @@ function(aNode, aChild) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isNode(aChild)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     children = aNode.childNodes;
@@ -9162,11 +9149,11 @@ function(aNode, aFunction, shouldReverse) {
         ancestor;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     reverse = TP.ifInvalid(shouldReverse, false);
@@ -9288,12 +9275,12 @@ function(aNode, aFunction, shouldReverse) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     reverse = TP.ifInvalid(shouldReverse, false);
@@ -9421,12 +9408,12 @@ function(aNode, aFunction, shouldReverse) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     reverse = TP.ifInvalid(shouldReverse, false);
@@ -9528,12 +9515,12 @@ function(aNode, aFunction, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     if (TP.isTrue(breadthFirst)) {
@@ -9607,12 +9594,12 @@ function(aNode, aFunction, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     if (TP.isTrue(breadthFirst)) {
@@ -9741,11 +9728,11 @@ function(aNode, aFunction, aSubset, shouldReverse) {
         reverse;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     reverse = TP.ifInvalid(shouldReverse, false);
@@ -9919,11 +9906,11 @@ function(aNode, aFunction, shouldReverse) {
         reverse;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     reverse = TP.ifInvalid(shouldReverse, false);
@@ -10006,11 +9993,11 @@ function(aNode, aFunction, shouldReverse) {
         reverse;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     reverse = TP.ifInvalid(shouldReverse, false);
@@ -10097,12 +10084,12 @@ function(aNode, aFunction, shouldReverse) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     //  children array can be iterated in reverse without additional
@@ -10202,12 +10189,12 @@ function(aNode, aFunction, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     TP.nodeDescendantsPerform(
@@ -10307,12 +10294,12 @@ function(aNode, aFunction, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     TP.nodeDescendantElementsPerform(
@@ -10447,11 +10434,11 @@ function(aNode, aFunction, aSubset, shouldReverse) {
     var found;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     TP.nodeSiblingsPerform(
@@ -10538,11 +10525,11 @@ function(aNode, aFunction, shouldReverse) {
         reverse;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     reverse = TP.ifInvalid(shouldReverse, false);
@@ -10613,11 +10600,11 @@ function(aNode, aProperty) {
         arr;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.isEmpty(aProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     arr = TP.ac();
@@ -10696,12 +10683,12 @@ function(aNode, aFunction, shouldReverse) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     reverse = TP.ifInvalid(shouldReverse, false);
@@ -10788,12 +10775,12 @@ function(aNode, aFunction, shouldReverse) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     arr = TP.ac();
@@ -10884,12 +10871,12 @@ function(aNode, aFunction, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     arr = TP.ac();
@@ -10983,12 +10970,12 @@ function(aNode, aFunction, breadthFirst) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     arr = TP.ac();
@@ -11123,11 +11110,11 @@ function(aNode, aFunction, aSubset, shouldReverse) {
     var arr;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (!TP.isCallable(aFunction)) {
-        return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+        return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
     arr = TP.ac();
@@ -11226,7 +11213,7 @@ function(aNode, aNamespaceURI, includeDescendants) {
 
     //  we only do this for document and element node types
     if (!TP.isDocument(aNode) && !TP.isElement(aNode)) {
-        TP.raise(this, 'TP.sig.InvalidParameter', arguments,
+        TP.raise(this, 'TP.sig.InvalidParameter',
                                     'Node not an element or document.');
         return;
     }
@@ -11278,7 +11265,7 @@ function(aNode, aNamespaceURI, includeDescendants) {
         } else if (TP.isElement(aNode)) {
             node = aNode;
         } else {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         attrs = node.attributes;
@@ -11333,7 +11320,7 @@ function(aNode) {
         i;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.notEmpty(ns = aNode.namespaceURI)) {
@@ -11409,7 +11396,7 @@ function(aNode, includeDescendants) {
         i;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     //  We may reassign this below, so we assign it here.
@@ -11547,7 +11534,7 @@ function(aNode) {
      */
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                                 'Must provide a valid target Node.');
     }
 
@@ -11643,7 +11630,7 @@ function(aNode, aTagName, aNamespaceURI) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -11692,7 +11679,7 @@ function(aNode, phaseList, outerElem) {
         phase;
 
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -11768,7 +11755,7 @@ function(aNode, phaseList, outerElem) {
         phase;
 
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -11847,7 +11834,7 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
         phaseList;
 
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -11920,7 +11907,6 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
                 phaseList.indexOf(targetPhase);
     } else {
         return this.raise('TP.sig.InvalidPhase',
-                            arguments,
                             'Target phase not in phase list');
     }
 });
@@ -12019,7 +12005,7 @@ function(fromNode, toNode, beforeNode, shouldAwake) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(fromNode) || !TP.isCollectionNode(toNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -12126,7 +12112,7 @@ function(fromNode, toNode, beforeNode, shouldAwake) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(fromNode) || !TP.isCollectionNode(toNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -12185,7 +12171,7 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
     var content;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.notValid(anObject)) {
@@ -12269,7 +12255,7 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
         case Node.DOCUMENT_TYPE_NODE:
         case Node.NOTATION_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         default:
@@ -12354,7 +12340,7 @@ function(aNode, anObject) {
     var content;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.canInvoke(anObject, 'getResourceText')) {
@@ -12517,7 +12503,7 @@ function(anObject) {
      */
 
     if (TP.notValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (TP.isElement(anObject)) {
@@ -12667,7 +12653,7 @@ function(anObject, defaultNS, shouldReport) {
         node;
 
     if (TP.notValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  for permission reasons it's important to check for xhr's early
@@ -12919,7 +12905,7 @@ function(anObject, defaultNS, shouldReport) {
     var node;
 
     if (TP.notValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  for permission reasons it's important to check for xhr's early
@@ -12980,7 +12966,7 @@ function(anObject) {
         res;
 
     if (TP.notValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     name = TP.qname(anObject);
@@ -13016,7 +13002,7 @@ function(anObject) {
      */
 
     if (TP.notValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (TP.isElement(anObject)) {
@@ -13150,7 +13136,7 @@ function(anObject, defaultNS, shouldReport) {
     var elem;
 
     if (TP.notValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  already one? don't want to unwrap/rewrap...
@@ -13275,7 +13261,7 @@ function(anObject, defaultNS, shouldReport) {
         content;
 
     if (TP.notValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  already one? don't want to unwrap/rewrap...

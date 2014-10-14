@@ -26,7 +26,7 @@ function(anEvent) {
      */
 
     if (!TP.isEvent(anEvent)) {
-        return TP.raise(this, 'TP.sig.InvalidEvent', arguments);
+        return TP.raise(this, 'TP.sig.InvalidEvent');
     }
 
     anEvent.preventDefault();
@@ -47,7 +47,7 @@ function(anEvent) {
      */
 
     if (!TP.isEvent(anEvent)) {
-        return TP.raise(this, 'TP.sig.InvalidEvent', arguments);
+        return TP.raise(this, 'TP.sig.InvalidEvent');
     }
 
     anEvent.stopPropagation();

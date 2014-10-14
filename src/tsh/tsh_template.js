@@ -75,7 +75,7 @@ function(anElement, aName, aURI) {
 
             TP.ifWarn() ?
                 TP.warn('Template not found in CDATA block for: ' +
-                        this.asString(), TP.LOG, arguments) : 0;
+                        this.asString(), TP.LOG) : 0;
         }
     }
 
@@ -83,7 +83,6 @@ function(anElement, aName, aURI) {
     //  exit.
     if (!TP.isString(str) || TP.isEmpty(str)) {
         return this.raise('TP.sig.InvalidTemplate',
-                            arguments,
                             'Empty or invalid template for: ' +
                             this.asString());
     }
@@ -102,7 +101,6 @@ function(anElement, aName, aURI) {
     func = str.compile(aName, true, true);
     if (!TP.isFunction(func)) {
         return this.raise('TP.sig.InvalidTemplate',
-                            arguments,
                             'JS template failed to compile for: ' +
                             this.asString());
     }
@@ -163,7 +161,6 @@ function(anElement, aName, aURI) {
             case 0:
 
                 return this.raise('TP.sig.InvalidTemplate',
-                                    arguments,
                                     'Empty or invalid template for: ' +
                                     this.asString());
 
@@ -206,7 +203,6 @@ function(anElement, aName, aURI) {
 
     if (!TP.isNode(result)) {
         return this.raise('TP.sig.InvalidTemplate',
-                            arguments,
                             'Unable to acquire XML document for: ' +
                             this.asString());
     }
@@ -251,7 +247,6 @@ function(anElement, aName, aURI) {
     template = this.getXSLTBoilerplate(anElement);
     if (!TP.isKindOf(template, 'TP.core.XSLDocumentNode')) {
         return this.raise('TP.sig.InvalidDocument',
-                            arguments,
                             'Unable to load XSLT template document.');
     }
 
@@ -281,7 +276,6 @@ function(anElement, aName, aURI) {
             case 0:
 
                 return this.raise('TP.sig.InvalidTemplate',
-                                    arguments,
                                     'Empty or invalid template for: ' +
                                     this.asString());
 
@@ -297,7 +291,6 @@ function(anElement, aName, aURI) {
                                                     result,
                                                     'INLINE_CONTENT_HERE'))) {
                     return this.raise('TP.sig.InvalidTemplate',
-                                        arguments,
                                         'Can\'t find insertion marker ' +
                                         'for XSLT template.');
                 }
@@ -316,7 +309,6 @@ function(anElement, aName, aURI) {
 
     if (!TP.isNode(result)) {
         return this.raise('TP.sig.InvalidTemplate',
-                            arguments,
                             'Unable to acquire XSLT document for: ' +
                             this.asString());
     }
@@ -347,7 +339,7 @@ function(anElement) {
     var generator;
 
     if (!TP.isElement(anElement)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     generator = anElement.getAttribute('tsh:generator');
@@ -499,14 +491,12 @@ function(anElement) {
     uri = TP.uc(src);
     if (TP.notValid(uri)) {
         return this.raise('TP.sig.InvalidURI',
-                            arguments,
                             'Unable to load XSLT boilerplate: ' + src);
     }
 
     doc = TP.wrap(uri.getResourceNode(TP.hc('async', false)));
     if (!TP.isKindOf(doc, 'TP.core.XSLDocumentNode')) {
         return this.raise('TP.sig.InvalidDocument',
-                            arguments,
                             'Unable to acquire XSLT template for: ' +
                             this.asString());
     }
@@ -635,7 +625,6 @@ function(aRequest) {
         src = TP.elementGetAttribute(elem, 'tibet:src', true);
         if (TP.isEmpty(src) || TP.notValid(uri = TP.uc(src))) {
             this.raise('TP.sig.InvalidURI',
-                        arguments,
                         'Invalid URI in src attribute: ' + src);
 
             return;
@@ -678,7 +667,7 @@ function(aRequest) {
 
         default:
 
-            this.raise('TP.sig.InvalidTemplate', arguments,
+            this.raise('TP.sig.InvalidTemplate',
                         'Unknown template type: ' + type);
             return;
     }
@@ -696,7 +685,7 @@ function(aRequest) {
         if (!TP.isNode(result)) {
             //  Should always receive back a new node (even if it's a
             //  DocumentFragment).
-            this.raise('TP.sig.InvalidNode', arguments,
+            this.raise('TP.sig.InvalidNode',
                         'Template ' + name + ' produced invalid output: ' +
                         result);
 
@@ -780,7 +769,7 @@ function(aRequest) {
         processedNode = TP.process(newNode, request);
 
         if (!TP.isNode(processedNode = TP.unwrap(processedNode))) {
-            this.raise('TP.sig.InvalidNode', arguments);
+            this.raise('TP.sig.InvalidNode');
         }
 
         //  If the top-level elem is the 'fragment wrapper' that we wrapped the

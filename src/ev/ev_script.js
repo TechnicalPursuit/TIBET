@@ -152,6 +152,7 @@ function(aRequest) {
                 shell.unsetVariable('SIGNAL');
                 shell.unsetVariable('TARGET');
 
+                //  Don't pass a null. Make sure there's a real result.
                 if (arguments.length > 0) {
                     return aRequest.complete(aResult);
                 } else {

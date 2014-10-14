@@ -104,7 +104,7 @@ function(nodeSpec, varargs) {
      *
      * @param {Node|URI|String|TP.core.Node} nodeSpec Some suitable object to
      *     construct a source node. See type discussion above. Can also be null.
-     * @param {arguments} varargs Optional additional arguments for the
+     * @param {Array} varargs Optional additional arguments for the
      *     constructor.
      * @returns {TP.core.Node} A new instance.
      * @todo
@@ -127,7 +127,7 @@ function(nodeSpec, varargs) {
         inst,
         args;
 
-    TP.debug('break.node_construct');
+    TP.stop('break.node_construct');
 
     //  ---
     //  Node Construction
@@ -268,7 +268,7 @@ function(nodeSpec, varargs) {
         return nodeSpec;
     } else {
         //  not valid alternatives for node content (yet)
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
 
         return;
     }
@@ -331,7 +331,7 @@ function() {
         retVal;
 
     if (this.isAbstract()) {
-        this.raise('TP.sig.UnsupportedOperation', arguments,
+        this.raise('TP.sig.UnsupportedOperation',
                         'Cannot construct instance of abstract type.');
 
         return;
@@ -482,7 +482,7 @@ function(aURI, shouldReport) {
     var content;
 
     if (TP.notValid(aURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     //  this will return a TP.core.Node if at all possible
@@ -547,7 +547,6 @@ function(aNode) {
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode',
-                            arguments,
                             'No node provided.');
     }
 
@@ -602,7 +601,6 @@ function(aNode) {
 
         default:
             return this.raise('TP.sig.InvalidNode',
-                                arguments,
                                 'Unable to determine node type.');
     }
 
@@ -724,7 +722,6 @@ function(aNode) {
     doc = TP.nodeGetDocument(node);
     if (!TP.isDocument(doc)) {
         return this.raise('TP.sig.InvalidDocument',
-                            arguments,
                             'Unable to determine node\'s document.');
     }
 
@@ -849,7 +846,7 @@ function(aNode, aURI) {
     if (TP.isNode(aNode)) {
         this.$set('node', aNode, false);
     } else {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return this;
@@ -1201,7 +1198,7 @@ function(aNode) {
     otherNode = TP.unwrap(aNode);
 
     if (!TP.isNode(otherNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments, otherNode);
+        return this.raise('TP.sig.InvalidNode', otherNode);
     }
 
     return TP.nodeEqualsNode(this.getNativeNode(), otherNode);
@@ -1441,7 +1438,6 @@ function() {
     doc = TP.nodeGetDocument(node);
     if (!TP.isDocument(doc)) {
         return this.raise('TP.sig.InvalidDocument',
-                            arguments,
                             'Unable to determine node\'s document.');
     }
 
@@ -1555,7 +1551,7 @@ function() {
      * @todo
      */
 
-    return this.raise('TP.sig.InvalidOperation', arguments);
+    return this.raise('TP.sig.InvalidOperation');
 });
 
 //  ------------------------------------------------------------------------
@@ -1721,7 +1717,7 @@ function(preserveDeletes, preserveCrud) {
                     TP.error(
                         'Unable to load node filtering transform: \'' +
                         url.getLocation(),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
             }
         }
     }
@@ -2128,7 +2124,7 @@ function(aFlag) {
             TP.ifWarn() ?
                 TP.warn('Node transactions have been activated but ' +
                             'content is not being checkpointed.',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
         }
     }
 
@@ -2402,7 +2398,7 @@ function(aNode, shouldSignal) {
         flag;
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments, aNode);
+        return this.raise('TP.sig.InvalidNode', aNode);
     }
 
     //  Notice here how we use the 'fast' native node get method to avoid any
@@ -2585,7 +2581,7 @@ function(aURI) {
      */
 
     if (!TP.isURI(aURI)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     this.$set('uri', aURI.asString(), false);
@@ -2660,7 +2656,7 @@ function(aValue, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('canResolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name canResolveDNU
@@ -2671,8 +2667,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      * @param {Object} anOrigin The object asking for help. The receiver in this
      *     case.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @raises TP.sig.InvalidNode
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
@@ -2686,7 +2682,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
         invocable;
 
     if (!TP.isNode(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.isEmpty(aMethodName)) {
@@ -2813,7 +2809,7 @@ function(aTarget, aMethodName, supportsInvoke) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('resolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name resolveDNU
@@ -2825,8 +2821,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     method calls.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @raises TP.sig.InvalidNode
      * @returns {Object} The result of invoking the method using the receiver's
      *     native node.
@@ -2836,7 +2832,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
     var node;
 
     if (!TP.isNode(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.isEmpty(aMethodName)) {
@@ -2896,7 +2892,7 @@ function(XPathExpr, resultType, logErrors, aNode, flagChanges) {
      */
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return TP.xpc(XPathExpr).execOnNative(aNode,
@@ -2970,13 +2966,13 @@ function(aName) {
         if (TP.notValid(points = this.get('points'))) {
             //  if user thought there was a checkpoint but we don't have
             //  any then we consider that an error
-            return this.raise('TP.sig.InvalidCheckpoint', arguments,
+            return this.raise('TP.sig.InvalidCheckpoint',
                                 'No active checkpoints have been named.');
         }
 
         ndx = points.at(aName);
         if (TP.notValid(ndx)) {
-            return this.raise('TP.sig.InvalidCheckpoint', arguments,
+            return this.raise('TP.sig.InvalidCheckpoint',
                                 'Checkpoint ' + aName + ' not found.');
         }
 
@@ -3330,13 +3326,13 @@ function(aName) {
         if (TP.notValid(points = this.get('points'))) {
             //  if user thought there was a checkpoint but we don't have
             //  any then we consider that an error
-            return this.raise('TP.sig.InvalidCheckpoint', arguments,
+            return this.raise('TP.sig.InvalidCheckpoint',
                                 'No active checkpoints have been named.');
         }
 
         ndx = points.at(aName);
         if (TP.notValid(ndx)) {
-            return this.raise('TP.sig.InvalidCheckpoint', arguments,
+            return this.raise('TP.sig.InvalidCheckpoint',
                                 'Checkpoint ' + aName + ' not found.');
         }
 
@@ -3417,7 +3413,7 @@ function(aName) {
         if (TP.isString(aName)) {
             //  if user thought there was a checkpoint but we don't have
             //  any then we consider that an error
-            return this.raise('TP.sig.InvalidRollback', arguments,
+            return this.raise('TP.sig.InvalidRollback',
                                 'No active checkpoints have been made.');
         } else {
             //  if no name provided we can consider this a no-op
@@ -3431,12 +3427,12 @@ function(aName) {
         if (TP.notValid(points = this.get('points'))) {
             //  if user thought there was a checkpoint but we don't have
             //  any then we consider that an error
-            return this.raise('TP.sig.InvalidRollback', arguments,
+            return this.raise('TP.sig.InvalidRollback',
                                 'No active checkpoints have been named.');
         }
 
         if (TP.notValid(point = points.at(aName))) {
-            return this.raise('TP.sig.InvalidRollback', arguments,
+            return this.raise('TP.sig.InvalidRollback',
                             'Checkpoint ' + aName + ' not found.');
         }
 
@@ -3938,7 +3934,7 @@ function(attributeName, checkAttrNSURI) {
     }
 
     if (!TP.isElement(node)) {
-        return this.raise('TP.sig.InvalidOperation', arguments, this);
+        return this.raise('TP.sig.InvalidOperation', this);
     }
 
     return TP.elementHasAttribute(node, attributeName, checkAttrNSURI);
@@ -4225,7 +4221,7 @@ function(aNode, shouldSignal) {
         flag;
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments, aNode);
+        return this.raise('TP.sig.InvalidNode', aNode);
     }
 
     //  what we do here varies by whether we're checkpointing or not...
@@ -4320,7 +4316,7 @@ function(anObject, aParamHash) {
         str,
         urn;
 
-    TP.debug('break.content_transform');
+    TP.stop('break.content_transform');
 
     if (TP.notEmpty(templateName = this.getTemplateName())) {
         templateFunc = TP.uc(templateName).getResource();
@@ -4531,7 +4527,7 @@ function(newContent, aRequest) {
 
         TP.ifTrace(TP.$DEBUG) ?
             TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     }
 
     //  The primitive will have returned a native Node, but we need to
@@ -4615,7 +4611,7 @@ function(operation) {
         case TP.UPDATE:
             return TP.nodeSetContent;
         default:
-            return this.raise('TP.sig.InvalidOperation', arguments);
+            return this.raise('TP.sig.InvalidOperation');
     }
 });
 
@@ -4777,7 +4773,7 @@ function(newContent, aPositionOrPath, aRequest) {
 
         TP.ifTrace(TP.$DEBUG) ?
             TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     }
 
     //  The primitive will have returned a native Node, but we need to
@@ -5042,7 +5038,7 @@ function(newContent, aRequest) {
 
         TP.ifTrace(TP.$DEBUG) ?
             TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     }
 
     //  The primitive will have returned a native Node, but we need to
@@ -5479,7 +5475,6 @@ function(aNode) {
 
     if (!TP.isNode(targetNode)) {
         return this.raise('TP.sig.InvalidNode',
-                            arguments,
                             'No node provided.');
     }
 
@@ -5487,7 +5482,6 @@ function(aNode) {
     //  native node.
     if (TP.notTrue(TP.nodeContainsNode(node, targetNode))) {
         return this.raise('TP.sig.InvalidNode',
-                            arguments,
                             'Node provided not descendant of receiver.');
     }
 
@@ -6432,7 +6426,7 @@ function(aNode) {
 
         TP.ifTrace(TP.$DEBUG) ?
             TP.trace('Node flagged: ' + TP.nodeAsString(child),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     } else {
         //  if we're not flagging then just rip it out of the DOM
         TP.nodeRemoveChild(node, child);
@@ -6997,7 +6991,7 @@ function() {
 
         TP.ifTrace(TP.$DEBUG) ?
             TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     } else {
         //  if we're not flagging then just rip it out of the DOM
         TP.nodeEmptyContent(node);
@@ -7391,7 +7385,7 @@ function(attributeName) {
     var path;
 
     if (TP.isEmpty(attributeName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  If the attributeName matches any char that would indicate a valid
@@ -7563,7 +7557,7 @@ function(anObject, anIndex, aPosition) {
     if (!TP.isNode(anObject) &&
         !TP.isKindOf(anObject, 'TP.core.Node') &&
         !TP.isNodeList(anObject)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Must provide a Node or list of Nodes.');
     }
 
@@ -7607,14 +7601,13 @@ function(anObject, anIndex, aPosition) {
     } else {
         if (!TP.isNumber(parseInt(anIndex, 10))) {
             this.raise('TP.sig.InvalidParameter',
-                        arguments,
                         'Index must be an XPath or a Number: ' + anIndex);
 
             return this;
         }
 
         if ((node.childNodes.length < anIndex) || (anIndex < 0)) {
-            return this.raise('TP.sig.IndexOutOfRange', arguments);
+            return this.raise('TP.sig.IndexOutOfRange');
         }
 
         //  empty? then we insert, or iterate and insert as needed
@@ -8011,14 +8004,13 @@ function(anIndex) {
 
     if (!TP.isNumber(parseInt(anIndex, 10))) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Index must be an XPath or a Number: ' + anIndex);
 
         return this;
     }
 
     if (node.childNodes.length < anIndex || anIndex < 0) {
-        return this.raise('TP.sig.IndexOutOfRange', arguments);
+        return this.raise('TP.sig.IndexOutOfRange');
     }
 
     child = node.childNodes[anIndex];
@@ -8030,7 +8022,7 @@ function(anIndex) {
 
         TP.ifTrace(TP.$DEBUG) ?
             TP.trace('Node flagged: ' + TP.nodeAsString(child),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     } else {
         //  if we're not flagging then just rip it out of the DOM
         TP.nodeDetach(child);
@@ -8458,7 +8450,7 @@ function(aRequest) {
 
         type;
 
-    TP.debug('break.content_process');
+    TP.stop('break.content_process');
 
     node = this.getNativeNode();
 
@@ -8839,7 +8831,7 @@ function(aRequest) {
         len,
         i;
 
-    TP.debug('break.content_process');
+    TP.stop('break.content_process');
 
     node = this.getNativeNode();
 
@@ -9049,7 +9041,6 @@ function(mimeType, qualifier) {
 
     if (TP.notValid(mimeType)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Must supply a valid TP.ietf.Mime reference.');
     }
 
@@ -9308,7 +9299,7 @@ function(anObject, aRequest) {
         retVal;
 
     if (TP.notValid(anObject)) {
-        return this.raise('TP.sig.InvalidObject', arguments);
+        return this.raise('TP.sig.InvalidObject');
     }
 
     //  Get the 'top-level' request
@@ -9606,7 +9597,6 @@ function(aSignal) {
     inst = TP.byOID(id);
     if (TP.notValid(inst)) {
         return this.raise('TP.sig.InvalidHandler',
-                            arguments,
                             'Unable to construct handler instance');
     }
 
@@ -9881,7 +9871,6 @@ function(aSignal) {
 
     if (TP.notValid(observer)) {
         return this.raise('TP.sig.InvalidHandler',
-                            arguments,
                             'Unable to obtain observer.');
     }
 
@@ -9977,10 +9966,10 @@ function(aNode) {
 
     var processor;
 
-    TP.debug('break.awaken_content');
+    TP.stop('break.awaken_content');
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     //  Allocate a tag processor and initialize it with the ATTACH_PHASES
@@ -10013,7 +10002,6 @@ function(aRequest) {
 
     if (TP.notValid(type = TP.bind.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
-                            arguments,
                             'Couldn\'t find the \'bind:\' namespace type');
     }
 
@@ -10040,7 +10028,6 @@ function(aRequest) {
 
     if (TP.notValid(type = TP.ev.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
-                            arguments,
                             'Couldn\'t find the \'ev:\' namespace type');
     }
 
@@ -10067,7 +10054,6 @@ function(aRequest) {
 
     if (TP.notValid(type = TP.bind.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
-                            arguments,
                             'Couldn\'t find the \'bind:\' namespace type');
     }
 
@@ -10094,7 +10080,6 @@ function(aRequest) {
 
     if (TP.notValid(type = TP.ev.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
-                            arguments,
                             'Couldn\'t find the \'ev:\' namespace type');
     }
 
@@ -10347,7 +10332,7 @@ function(attributeName) {
         funcName;
 
     if (TP.isEmpty(attributeName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  We can shortcut '#document' by just returning our document
@@ -10589,7 +10574,7 @@ function(attributeName, attributeValue, shouldSignal) {
         args;
 
     if (TP.isEmpty(attributeName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  If we got handed an 'access path', then we need to let it handle this.
@@ -10959,7 +10944,6 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
                 targetElem = targetElem.getNativeDocument();
             } else {
                 return this.raise('TP.sig.InvalidTarget',
-                                    arguments,
                                     'Specified target not found: ' +
                                         aTarget);
             }
@@ -10972,7 +10956,6 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
         targetElem = aTarget.getNativeDocument();
     } else {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Specified target not a valid dispatch target');
     }
 
@@ -11105,7 +11088,7 @@ function(aValue, attributeName) {
         i,
         len;
 
-    TP.debug('break.bind_format');
+    TP.stop('break.bind_format');
 
     //  nothing to do?
     if (TP.isEmpty(formats = this.getAttribute(attributeName, true))) {
@@ -11172,7 +11155,7 @@ function(aValue, attributeName) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Formatting error.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         value = aValue;
     }
@@ -11214,7 +11197,7 @@ function(aValue) {
         value,
         valid;
 
-    TP.debug('break.validate');
+    TP.stop('break.validate');
 
     value = aValue;
 
@@ -11258,7 +11241,7 @@ function(aValue) {
             } catch (e) {
                 TP.ifError() ?
                     TP.error(TP.ec(e, 'Validation error.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
                 //  don't let a coding error in a validator keep the UI from
                 //  allowing data submission
@@ -11280,7 +11263,7 @@ function(aValue) {
             } catch (e) {
                 TP.ifError() ?
                     TP.error(TP.ec(e, 'Validation error.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
                 //  don't let a coding error in a validator keep the UI from
                 //  allowing data submission
@@ -11332,7 +11315,7 @@ function(operation) {
         case TP.UPDATE:
             return TP.htmlElementSetContent;
         default:
-            return this.raise('TP.sig.InvalidOperation', arguments);
+            return this.raise('TP.sig.InvalidOperation');
     }
 });
 
@@ -11372,7 +11355,7 @@ function(operation) {
         case TP.UPDATE:
             return TP.xmlElementSetContent;
         default:
-            return this.raise('TP.sig.InvalidOperation', arguments);
+            return this.raise('TP.sig.InvalidOperation');
     }
 });
 
@@ -11601,7 +11584,7 @@ function(aRequest) {
         TP.sys.logTransform(
                 TP.boot.$annotate(
                         node, 'XSLT finalization transform starting.'),
-            TP.INFO, arguments) : 0;
+            TP.INFO) : 0;
 
     doc = TP.nodeGetDocument(node);
 
@@ -11645,7 +11628,7 @@ function(aRequest) {
         //  No valid href - log an error and return.
         TP.ifError() ?
             TP.error('Invalid stylesheet href',
-                        TP.TRANSFORM_LOG, arguments) : 0;
+                        TP.TRANSFORM_LOG) : 0;
 
         return;
     }
@@ -11661,7 +11644,7 @@ function(aRequest) {
         //  Couldn't find the sheet - log an error and return.
         TP.ifError() ?
             TP.error('Invalid stylesheet at: ' + url.getLocation(),
-                        TP.TRANSFORM_LOG, arguments) : 0;
+                        TP.TRANSFORM_LOG) : 0;
 
         return;
     }
@@ -11673,12 +11656,12 @@ function(aRequest) {
     } else {
         TP.ifError() ?
             TP.error('Invalid stylesheet at ' + url.getLocation(),
-                        TP.TRANSFORM_LOG, arguments) : 0;
+                        TP.TRANSFORM_LOG) : 0;
     }
 
     //  Didn't get a valid result. Raise an exception and bail.
     if (!TP.isNode(resultNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments,
+        return this.raise('TP.sig.InvalidNode',
                             'Transformation returned empty document.');
     }
 
@@ -11693,7 +11676,7 @@ function(aRequest) {
         TP.sys.logTransform(
                 TP.boot.$annotate(TP.str(resultNode),
                             'XSLT finalization transform complete.'),
-            TP.INFO, arguments) : 0;
+            TP.INFO) : 0;
 
     return;
 });
@@ -11885,7 +11868,7 @@ function(attributeName) {
         funcName;
 
     if (TP.isEmpty(attributeName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  We can shortcut '#document' by just returning this. The '#document'
@@ -12117,7 +12100,6 @@ function() {
     }
 
     return this.raise('TP.sig.InvalidDocument',
-                        arguments,
                         'No document element.');
 });
 
@@ -12201,7 +12183,6 @@ function(aValue, signalFlag) {
     }
 
     return this.raise('TP.sig.InvalidDocument',
-                        arguments,
                         'No document element.');
 });
 
@@ -12306,7 +12287,7 @@ function() {
         win;
 
     if (!TP.isHTMLDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     //  Assign ids to common elements, such as the root element, the head
@@ -12345,7 +12326,7 @@ function() {
     var doc;
 
     if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     return TP.wrap(TP.documentGetBody(doc));
@@ -12376,7 +12357,7 @@ function(operation) {
         case TP.UPDATE:
             return TP.htmlDocumentSetContent;
         default:
-            return this.raise('TP.sig.InvalidOperation', arguments);
+            return this.raise('TP.sig.InvalidOperation');
     }
 });
 
@@ -12396,7 +12377,7 @@ function() {
     var doc;
 
     if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     return TP.wrap(TP.documentGetHead(doc));
@@ -12417,7 +12398,7 @@ function() {
     var doc;
 
     if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     return TP.nodeGetWindow(doc);
@@ -12462,7 +12443,7 @@ function(mimeType) {
         win;
 
     if (!TP.isHTMLDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     doc.open(mimeType);
@@ -12501,7 +12482,7 @@ function(theContent, setupFunction) {
         content;
 
     if (!TP.isHTMLDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     //  If a valid setup function was supplied, register it as an 'onload'
@@ -12541,7 +12522,6 @@ function(theContent, setupFunction) {
             //  xml from the transformer's perspective)
             return this.raise(
                         'TP.sig.InvalidDocument',
-                        arguments,
                         TP.ec(e, TP.join('XML-to-XHTML conversion failed. ',
                                             'Was it truly XHTML?')));
         }
@@ -12573,7 +12553,7 @@ function(content, setupFunction) {
         win;
 
     if (!TP.isHTMLDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     //  If a valid setup function was supplied, register it as an 'onload'
@@ -12636,7 +12616,7 @@ function(operation) {
         case TP.UPDATE:
             return TP.xmlDocumentSetContent;
         default:
-            return this.raise('TP.sig.InvalidOperation', arguments);
+            return this.raise('TP.sig.InvalidOperation');
     }
 });
 
@@ -12669,7 +12649,7 @@ function() {
     var doc;
 
     if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     return TP.wrap(TP.documentGetBody(doc));
@@ -12691,7 +12671,7 @@ function() {
     var doc;
 
     if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     return TP.wrap(TP.documentGetHead(doc));
@@ -12712,7 +12692,7 @@ function() {
     var doc;
 
     if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument', arguments);
+        return this.raise('TP.sig.InvalidDocument');
     }
 
     return TP.nodeGetWindow(doc);
@@ -12782,7 +12762,7 @@ function(anObject, aParamHash) {
 
         result;
 
-    TP.debug('break.content_transform');
+    TP.stop('break.content_transform');
 
     node = this.getNativeNode();
 
@@ -12797,7 +12777,7 @@ function(anObject, aParamHash) {
     }
 
     if (!TP.isNode(dataNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     result = TP.documentTransformNode(node, dataNode, aParamHash);
@@ -12953,7 +12933,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidSink', arguments);
+    this.raise('TP.sig.InvalidSink');
 
     return;
 });
@@ -12968,7 +12948,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidFilter', arguments);
+    this.raise('TP.sig.InvalidFilter');
 
     return;
 });
@@ -12983,7 +12963,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidSource', arguments);
+    this.raise('TP.sig.InvalidSource');
 
     return;
 });
@@ -13048,7 +13028,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidSink', arguments);
+    this.raise('TP.sig.InvalidSink');
 
     return;
 });
@@ -13063,7 +13043,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidTransform', arguments);
+    this.raise('TP.sig.InvalidTransform');
 
     return;
 });
@@ -13122,7 +13102,6 @@ function(aRequest, parameterName) {
     shell = aRequest.at('cmdShell');
     if (TP.notValid(shell)) {
         this.raise('TP.sig.InvalidRequest',
-                    arguments,
                     'No cmdShell in request.');
 
         return;
@@ -13229,7 +13208,7 @@ function(aRequest, expandArguments, resolveArguments) {
         resolvedValue,
         resolvedTN;
 
-    TP.debug('break.tsh_uri');
+    TP.stop('break.tsh_uri');
 
     shell = aRequest.at('cmdShell');
 
@@ -13438,7 +13417,7 @@ function(aSignal) {
         shell;
 
     //  not all action invocations go through handle* so we'll break here
-    TP.debug('break.tsh_action');
+    TP.stop('break.tsh_action');
 
     //  check with the type to see if we can run
     if (TP.notTrue(this.getType().canAct(this.getNativeNode()))) {
@@ -13532,7 +13511,6 @@ function() {
     type = TP.sys.require(name);
     if (TP.notValid(type)) {
         this.raise('TP.sig.InvalidType',
-                    arguments,
                     'Request type not found for: ' + this.asString());
 
         type = TP.sig.Request;
@@ -13751,7 +13729,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidSink', arguments);
+    this.raise('TP.sig.InvalidSink');
 
     return;
 });
@@ -13766,7 +13744,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidFilter', arguments);
+    this.raise('TP.sig.InvalidFilter');
 
     return;
 });
@@ -13781,7 +13759,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidSource', arguments);
+    this.raise('TP.sig.InvalidSource');
 
     return;
 });
@@ -13846,7 +13824,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidSink', arguments);
+    this.raise('TP.sig.InvalidSink');
 
     return;
 });
@@ -13861,7 +13839,7 @@ function(aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidTransform', arguments);
+    this.raise('TP.sig.InvalidTransform');
 
     return;
 });
@@ -13959,7 +13937,7 @@ function(anInput, cmdNode, aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidFilter', arguments);
+    this.raise('TP.sig.InvalidFilter');
 
     return false;
 });
@@ -14095,7 +14073,7 @@ function(aRequest, functionName) {
             } else {
                 TP.ifWarn() ?
                     TP.warn('Splatting with non-collection content.',
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 result = TP.ac(this[functionName](content, node, aRequest));
             }
@@ -14155,7 +14133,7 @@ function(anInput, cmdNode, aRequest) {
      * @todo
      */
 
-    this.raise('TP.sig.InvalidTransform', arguments);
+    this.raise('TP.sig.InvalidTransform');
 
     return;
 });
@@ -14291,7 +14269,7 @@ function(aRequest) {
         TP.sys.logTransform(
                 TP.boot.$annotate(TP.str(elem),
                             'XInclude content inclusion starting.'),
-            TP.INFO, arguments) : 0;
+            TP.INFO) : 0;
 
     //  now update the XML Base references in the element
     TP.elementResolveXMLBase(elem, this.get('uriAttrs'));
@@ -14316,7 +14294,7 @@ function(aRequest) {
         parse = parse.toLowerCase();
         if (parse !== 'xml' && parse !== 'text') {
             //  fatal error according to spec, must have text or xml
-            this.raise('TP.sig.InvalidXInclude', arguments,
+            this.raise('TP.sig.InvalidXInclude',
                 'XInclude requires parse="text" or parse="xml" : ' +
                 TP.nodeAsString(elem));
 
@@ -14329,7 +14307,7 @@ function(aRequest) {
 
     if (parse === 'text' && TP.notEmpty(xpointer)) {
         //  fatal error according to spec, must have xml with xpointer
-        this.raise('TP.sig.InvalidXInclude', arguments,
+        this.raise('TP.sig.InvalidXInclude',
             'XInclude requires parse="xml" for xpointer: ' +
             TP.nodeAsString(elem));
 
@@ -14339,7 +14317,7 @@ function(aRequest) {
     if (TP.notEmpty(href)) {
         if (/#/.test(href)) {
             //  fatal error according to specification...
-            this.raise('TP.sig.InvalidXInclude', arguments,
+            this.raise('TP.sig.InvalidXInclude',
                 'Invalid href for XInclude: ' +
                 TP.nodeAsString(elem));
 
@@ -14349,7 +14327,7 @@ function(aRequest) {
         if (TP.isEmpty(xpointer)) {
             //  fatal error according to spec, must have href or xpointer
             //  value to include something
-            this.raise('TP.sig.InvalidXInclude', arguments,
+            this.raise('TP.sig.InvalidXInclude',
                 'XInclude requires href or xpointer value: ' +
                 TP.nodeAsString(elem));
 
@@ -14392,7 +14370,7 @@ function(aRequest) {
         url = TP.uc(href);
         if (!TP.isURI(url)) {
             //  bad URI specification
-            this.raise('TP.sig.InvalidXInclude', arguments,
+            this.raise('TP.sig.InvalidXInclude',
                 'Invalid href value, could not construct URI instance: ' +
                 TP.nodeAsString(elem));
 
@@ -14426,17 +14404,17 @@ function(aRequest) {
             if (TP.notValid(href)) {
                 TP.ifWarn() ?
                     TP.warn('Invalid HREF attribute for XInclude.',
-                            TP.TRANSFORM_LOG, arguments) : 0;
+                            TP.TRANSFORM_LOG) : 0;
             } else if (TP.notValid(url)) {
                 TP.ifWarn() ?
                     TP.warn('Unable to construct URI for XInclude HREF: ' +
                                 href,
-                            TP.TRANSFORM_LOG, arguments) : 0;
+                            TP.TRANSFORM_LOG) : 0;
             } else {
                 TP.ifWarn() ?
                     TP.warn('Content not found for XInclude HREF: ' +
                                 href,
-                            TP.TRANSFORM_LOG, arguments) : 0;
+                            TP.TRANSFORM_LOG) : 0;
             }
 
             //  Otherwise, we insert our own error element into the
@@ -14499,7 +14477,7 @@ function(aRequest) {
         TP.sys.logTransform(
                 TP.boot.$annotate(TP.str(elem),
                             'XInclude content inclusion complete.'),
-            TP.INFO, arguments) : 0;
+            TP.INFO) : 0;
 
     return newNode;
 });
@@ -15162,12 +15140,10 @@ function(aNode) {
         styleDoc = url.getNativeNode();
         if (!TP.isXMLDocument(styleDoc)) {
             this.raise('TP.sig.InvalidStylesheet',
-                        arguments,
                         url.getLocation());
         }
     } else {
         this.raise('TP.sig.InvalidStylesheet',
-                    arguments,
                     url.getLocation());
     }
 
@@ -15186,12 +15162,12 @@ function(aNode) {
 
     newNode = TP.documentTransformNode(styleDoc, node);
     if (!TP.isNode(newNode)) {
-        return this.raise('TP.sig.XSLTException', arguments);
+        return this.raise('TP.sig.XSLTException');
     }
 
     jsString = TP.nodeGetTextContent(newNode.documentElement);
     if (TP.isEmpty(jsString)) {
-        return this.raise('InvalidTP.core.XMLRPCNode', arguments);
+        return this.raise('InvalidTP.core.XMLRPCNode');
     }
 
     try {
@@ -15207,7 +15183,6 @@ function(aNode) {
         $$inst = eval(jsString);
     } catch (e) {
         return this.raise('InvalidTP.core.XMLRPCNode',
-                            arguments,
                             TP.ec(e, TP.join('Error in: ', jsString)));
     }
 
@@ -15283,7 +15258,6 @@ function(aNode) {
             } else {
                 //  no nested data tag
                 return this.raise('InvalidTP.core.XMLRPCNode',
-                                    arguments,
                                     node);
             }
 
@@ -15379,7 +15353,7 @@ function(aNode) {
 
         default:
 
-            return this.raise('InvalidTP.core.XMLRPCNode', arguments, node);
+            return this.raise('InvalidTP.core.XMLRPCNode', node);
     }
 });
 

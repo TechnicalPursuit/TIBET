@@ -94,7 +94,7 @@ function(varargs) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('idcall',
-function(aMethodName, elemOrId, aContext, varargs) {
+function(aMethodName, elemOrId, nodeContext, varargs) {
 
     /**
      * @name idcall
@@ -106,7 +106,7 @@ function(aMethodName, elemOrId, aContext, varargs) {
      *     'nodeGetElementsByTagName');.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @param {Object} varargs Optional additional arguments to pass to the
      *     method.
@@ -130,7 +130,7 @@ function(aMethodName, elemOrId, aContext, varargs) {
     //  use a combination of element and context to find the focal
     //  element(s) for the call
     elem = TP.isString(elemOrId) ?
-                TP.byId(elemOrId, TP.context(aContext)) :
+                TP.byId(elemOrId, TP.context(nodeContext)) :
                 TP.elem(elemOrId);
 
     arglist = TP.args(arguments, 3);
@@ -170,7 +170,7 @@ function(aMethodName, elemOrId, aContext, varargs) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('tpcall',
-function(aMethodName, elemOrId, aContext, varargs) {
+function(aMethodName, elemOrId, nodeContext, varargs) {
 
     /**
      * @name tpcall
@@ -181,7 +181,7 @@ function(aMethodName, elemOrId, aContext, varargs) {
      *     'nodeGetElementsByTagName');.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @param {Object} varargs Optional additional arguments to pass to the
      *     method.
@@ -204,7 +204,7 @@ function(aMethodName, elemOrId, aContext, varargs) {
     //  use a combination of element and context to find the focal
     //  element(s) for the call
     elem = TP.isString(elemOrId) ?
-                TP.byId(elemOrId, TP.context(aContext)) :
+                TP.byId(elemOrId, TP.context(nodeContext)) :
                 TP.elem(elemOrId);
 
     arglist = TP.args(arguments, 3);
@@ -243,7 +243,7 @@ function(aMethodName, elemOrId, aContext, varargs) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$',
-function(aData, aContext) {
+function(anObject, nodeContext) {
 
     /**
      * @name $
@@ -252,23 +252,23 @@ function(aData, aContext) {
      *     elements from markup, selecting objects based on aspect, CSS and
      *     XPath queries and obtaining the content of URI objects.
      * @description The parameters to this method vary greatly depending on what
-     *     the caller is trying to do with it: - If aData is any Object other
+     *     the caller is trying to do with it: - If anObject is any Object other
      *     than a String, then it is returned. No operation is performed. - If
-     *     aData is a URI, then a TP.core.URI is constructed from it and that
-     *     URI's resource is returned. - If aData can be determined to be
+     *     anObject is a URI, then a TP.core.URI is constructed from it and that
+     *     URI's resource is returned. - If anObject can be determined to be
      *     markup, then an instance of TP.core.ElementNode (or a subtype) is
-     *     generated from it and returned. - If aData is a 'query path' (i.e. an
-     *     aspect, CSS or XPath query), then the query is executed against the
-     *     supplied context and the resulting object is returned. - If the
+     *     generated from it and returned. - If anObject is a 'query path' (i.e.
+     *     an aspect, CSS or XPath query), then the query is executed against
+     *     the supplied context and the resulting object is returned. - If the
      *     context is not supplied and the query path is an aspect path, then
      *     this function will return null. - If the context is not supplied and
      *     the query path is a CSS path or XPath path, this function will obtain
      *     a context via the TP.context() function and execute the query against
      *     that. See that function for more information. Note that this method
      *     will *always* TP.wrap() the results it gets.
-     * @param {String} aData The data to use in the performing of this function.
+     * @param {Object} anObject The object to process via the supplied context
      *     See the discussion for more information.
-     * @param {Object} aContext The context in which to resolve the the data.
+     * @param {Object} nodeContext The context in which to resolve the query.
      *     See the discussion for more information.
      * @raises TP.sig.InvalidParameter
      * @returns {Object} The result as detailed in this function's discussion.
@@ -278,44 +278,44 @@ function(aData, aContext) {
     var context,
         result;
 
-    if (TP.notValid(aData)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+    if (TP.notValid(anObject)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    //  If aData is not a String, then just return the TP.wrap()ped content.
-    if (!TP.isString(aData)) {
-        return TP.wrap(aData);
+    //  If anObject is not a String, then just return the TP.wrap()ped content.
+    if (!TP.isString(anObject)) {
+        return TP.wrap(anObject);
     }
 
-    //  If aData is the empty String, we can't query on that, so return
+    //  If anObject is the empty String, we can't query on that, so return
     //  null.
-    if (TP.isEmpty(aData)) {
+    if (TP.isEmpty(anObject)) {
         return null;
     }
 
-    //  If aData is a URI, then construct a TP.core.URI with it and return
+    //  If anObject is a URI, then construct a TP.core.URI with it and return
     //  the content that that URI points to.
-    if (TP.isURI(aData)) {
-        return TP.uc(aData).getResource(TP.hc('async', false));
+    if (TP.isURI(anObject)) {
+        return TP.uc(anObject).getResource(TP.hc('async', false));
     }
 
-    //  If aData is markup, then create an Element from it and TP.wrap() it.
-    if (TP.regex.IS_ELEM_MARKUP.test(aData)) {
-        return TP.wrap(TP.elem(aData));
+    //  If anObject is markup, then create an Element from it and TP.wrap() it.
+    if (TP.regex.IS_ELEM_MARKUP.test(anObject)) {
+        return TP.wrap(TP.elem(anObject));
     }
 
     //  Compute a context from either the supplied context (which could be
     //  any Object) or the return value from a TP.context() (which will
     //  always compute Nodes as the context).
-    context = TP.context(aContext);
+    context = TP.context(nodeContext);
 
     //  Note here how we pass 'true' to auto-collapse single-item Arrays
     //  into just the item.
     if (TP.isEmpty(result =
-                    TP.nodeEvaluatePath(context, aData, null, true))) {
-        if (TP.XML_IDREF.test(aData)) {
+                    TP.nodeEvaluatePath(context, anObject, null, true))) {
+        if (TP.XML_IDREF.test(anObject)) {
             result = TP.nodeGetElementById(TP.nodeGetDocument(context),
-                                            aData);
+                anObject);
         }
     }
 
@@ -328,7 +328,7 @@ function(aData, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('byContent',
-function(textOrRegExp, aContext, autoCollapse) {
+function(textOrRegExp, nodeContext, autoCollapse) {
 
     return TP.todo();
 });
@@ -336,14 +336,15 @@ function(textOrRegExp, aContext, autoCollapse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('byCSS',
-function(cssExpr, aContext, autoCollapse) {
+function(cssExpr, nodeContext, autoCollapse) {
 
     /**
      * @name byCSS
      * @synopsis Returns the result of running a TP.nodeEvaluateCSS() call using
      *     the context provided, or the current window's document.
      * @param {String} cssExpr The CSS expression to use for the query.
-     * @param {Object} aContext A context in which to resolve the CSS query.
+     * @param {Object} nodeContext A context in which to resolve the CSS
+     *     query.
      *     Default is the current canvas.
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
@@ -357,10 +358,10 @@ function(cssExpr, aContext, autoCollapse) {
 
     if (TP.notValid(cssExpr)) {
         return TP.raise(TP.byCSS, 'TP.sig.InvalidString',
-                        arguments, 'Empty CSS expression not allowed.');
+                        'Empty CSS expression not allowed.');
     }
 
-    node = TP.context(aContext);
+    node = TP.context(nodeContext);
 
     return TP.nodeEvaluateCSS(node, cssExpr, autoCollapse);
 });
@@ -368,14 +369,14 @@ function(cssExpr, aContext, autoCollapse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('byId',
-function(anID, aContext) {
+function(anID, nodeContext) {
 
     /**
      * @name byId
      * @synopsis Returns the result of running a TP.nodeGetElementById() call
      *     using the context provided, or the current window's document.
      * @param {String} anID The ID to search for.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @raises TP.sig.InvalidID
      * @returns {Element|Array} The element, if found, or an array when more
@@ -393,7 +394,7 @@ function(anID, aContext) {
         i;
 
     if (TP.notValid(anID)) {
-        return TP.raise(TP.byId, 'TP.sig.InvalidID', arguments,
+        return TP.raise(TP.byId, 'TP.sig.InvalidID',
                                                 'Empty ID not allowed.');
     }
 
@@ -414,13 +415,13 @@ function(anID, aContext) {
     }
 
     if (TP.regex.HAS_PERIOD.test(anID)) {
-        TP.raise(TP.byId, 'TP.sig.InvalidID', arguments,
+        TP.raise(TP.byId, 'TP.sig.InvalidID',
                                         'Path-style IDs not allowed.');
         return;
     }
 
     id = TP.str(anID);
-    node = TP.context(aContext, TP.byId.$$context);
+    node = TP.context(nodeContext, TP.byId.$$context);
 
     //  allow either string or array as ID definition, but turn into an
     //  array of 1 or more IDs to locate
@@ -444,7 +445,7 @@ function(anID, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('byJS',
-function(selectionFunc, aContext, autoCollapse) {
+function(selectionFunc, nodeContext, autoCollapse) {
 
     return TP.todo();
 });
@@ -452,7 +453,7 @@ function(selectionFunc, aContext, autoCollapse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('byOID',
-function(anID, aContext) {
+function(anID, nodeContext) {
 
     /**
      * @name byOID
@@ -464,7 +465,7 @@ function(anID, aContext) {
      * @param {String|Array} anID The ID to search for. NOTE: one advantage of
      *     this call is that the ID can be either a String or an Array. In
      *     String form a space-separated list becomes an array.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Array} An array of TP.lang.Objects sharing the name provided.
      * @todo
@@ -480,7 +481,7 @@ function(anID, aContext) {
         i;
 
     id = TP.str(anID);
-    context = TP.context(aContext, TP.byOID.$$context);
+    context = TP.context(nodeContext, TP.byOID.$$context);
 
     list = TP.isString(id) ? id.split(' ') : id;
     len = list.getSize();
@@ -501,14 +502,15 @@ function(anID, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('byPath',
-function(pathExpr, aContext, autoCollapse) {
+function(pathExpr, nodeContext, autoCollapse) {
 
     /**
      * @name byPath
      * @synopsis Returns the result of running a TP.nodeEvaluatePath() call
      *     using the context provided, or the current window's document.
      * @param {String} pathExpr The path expression to use for the query.
-     * @param {Object} aContext A context in which to resolve the path query.
+     * @param {Object} nodeContext A context in which to resolve the path
+     *     query.
      *     Default is the current canvas.
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
@@ -522,10 +524,10 @@ function(pathExpr, aContext, autoCollapse) {
 
     if (TP.notValid(pathExpr)) {
         return TP.raise(TP.byPath, 'TP.sig.InvalidString',
-                        arguments, 'Empty path expression not allowed.');
+                        'Empty path expression not allowed.');
     }
 
-    node = TP.context(aContext);
+    node = TP.context(nodeContext);
 
     return TP.nodeEvaluatePath(node, pathExpr, null, autoCollapse);
 });
@@ -535,7 +537,7 @@ function(pathExpr, aContext, autoCollapse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('addAttr',
-function(elemOrId, attrName, attrValue, checkAttrNSURI, aContext) {
+function(elemOrId, attrName, attrValue, checkAttrNSURI, nodeContext) {
 
     /**
      * @name addAttr
@@ -551,20 +553,20 @@ function(elemOrId, attrName, attrValue, checkAttrNSURI, aContext) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @todo
      */
 
     return TP.tpcall(
                 'elementAddAttributeValue',
-                elemOrId, aContext, attrName, attrValue, checkAttrNSURI);
+                elemOrId, nodeContext, attrName, attrValue, checkAttrNSURI);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('getAttr',
-function(elemOrId, attrName, checkAttrNSURI, aContext) {
+function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
 
     /**
      * @name getAttr
@@ -579,7 +581,7 @@ function(elemOrId, attrName, checkAttrNSURI, aContext) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {String} The attribute value, if found or null if the element
      *     couldn't be obtained.
@@ -587,13 +589,13 @@ function(elemOrId, attrName, checkAttrNSURI, aContext) {
      */
 
     return TP.tpcall('elementGetAttribute',
-                        elemOrId, aContext, attrName, checkAttrNSURI);
+                        elemOrId, nodeContext, attrName, checkAttrNSURI);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('hasAttr',
-function(elemOrId, attrName, checkAttrNSURI, aContext) {
+function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
 
     /**
      * @name hasAttr
@@ -608,20 +610,20 @@ function(elemOrId, attrName, checkAttrNSURI, aContext) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Boolean} True if the attribute exists.
      * @todo
      */
 
     return TP.tpcall('elementHasAttribute',
-                        elemOrId, aContext, attrName, checkAttrNSURI);
+                        elemOrId, nodeContext, attrName, checkAttrNSURI);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('removeAttr',
-function(elemOrId, attrName, checkAttrNSURI, aContext) {
+function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
 
     /**
      * @name removeAttr
@@ -636,19 +638,19 @@ function(elemOrId, attrName, checkAttrNSURI, aContext) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @todo
      */
 
     return TP.tpcall('elementRemoveAttribute',
-                        elemOrId, aContext, attrName, checkAttrNSURI);
+                        elemOrId, nodeContext, attrName, checkAttrNSURI);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('replaceAttr',
-function(elemOrId, attrName, oldValue, newValue, checkAttrNSURI, aContext) {
+function(elemOrId, attrName, oldValue, newValue, checkAttrNSURI, nodeContext) {
 
     /**
      * @name replaceAttr
@@ -665,20 +667,20 @@ function(elemOrId, attrName, oldValue, newValue, checkAttrNSURI, aContext) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @todo
      */
 
     return TP.tpcall(
         'elementReplaceAttributeValue',
-        elemOrId, aContext, attrName, oldValue, newValue, checkAttrNSURI);
+        elemOrId, nodeContext, attrName, oldValue, newValue, checkAttrNSURI);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('setAttr',
-function(elemOrId, attrName, attrValue, checkAttrNSURI,  aContext) {
+function(elemOrId, attrName, attrValue, checkAttrNSURI,  nodeContext) {
 
     /**
      * @name setAttr
@@ -694,20 +696,20 @@ function(elemOrId, attrName, attrValue, checkAttrNSURI,  aContext) {
      *     rigorous in its checks for prefixed attributes, and will use calls to
      *     actually set the attribute into that namespace. Default is false (to
      *     keep things faster).
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @todo
      */
 
     return TP.tpcall(
                 'elementSetAttribute',
-                elemOrId, aContext, attrName, attrValue, checkAttrNSURI);
+                elemOrId, nodeContext, attrName, attrValue, checkAttrNSURI);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('toggleAttr',
-function(elemOrId, attrName, aContext) {
+function(elemOrId, attrName, nodeContext) {
 
     /**
      * @name toggleAttr
@@ -722,21 +724,21 @@ function(elemOrId, attrName, aContext) {
      *     suitable for TP.byId().
      * @param {String} attrName The attribute name value to set, with optional
      *     NS: prefix.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @todo
      */
 
     var value;
 
-    value = TP.bc(TP.getAttr(elemOrId, aContext, attrName));
+    value = TP.bc(TP.getAttr(elemOrId, nodeContext, attrName));
 
     if (value) {
         return TP.tpcall('elementSetAttribute',
-                            elemOrId, aContext, attrName, 'false');
+                            elemOrId, nodeContext, attrName, 'false');
     } else {
         return TP.tpcall('elementSetAttribute',
-                            elemOrId, aContext, attrName, 'true');
+                            elemOrId, nodeContext, attrName, 'true');
     }
 });
 
@@ -745,7 +747,7 @@ function(elemOrId, attrName, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('addClass',
-function(elemOrId, className, aContext) {
+function(elemOrId, className, nodeContext) {
 
     /**
      * @name addClass
@@ -755,20 +757,20 @@ function(elemOrId, className, aContext) {
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
      * @param {String} className The class value to add.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.tpcall('elementAddClass',
-                        elemOrId, aContext, className);
+                        elemOrId, nodeContext, className);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('getClass',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name getClass
@@ -777,20 +779,20 @@ function(elemOrId, aContext) {
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {String} An potentially space-separated string of class names.
      * @todo
      */
 
     return TP.tpcall('elementGetClass',
-                        elemOrId, aContext);
+                        elemOrId, nodeContext);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('hasClass',
-function(elemOrId, className, aContext) {
+function(elemOrId, className, nodeContext) {
 
     /**
      * @name hasClass
@@ -800,20 +802,20 @@ function(elemOrId, className, aContext) {
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
      * @param {String} className The class value to check.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Boolean} True if the element has the named class.
      * @todo
      */
 
     return TP.tpcall('elementHasClass',
-                        elemOrId, aContext, className);
+                        elemOrId, nodeContext, className);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('removeClass',
-function(elemOrId, className, aContext) {
+function(elemOrId, className, nodeContext) {
 
     /**
      * @name removeClass
@@ -823,20 +825,20 @@ function(elemOrId, className, aContext) {
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
      * @param {String} className The class value to remove.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.tpcall('elementRemoveClass',
-                        elemOrId, aContext, className);
+                        elemOrId, nodeContext, className);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('replaceClass',
-function(elemOrId, oldClass, newClass, aContext) {
+function(elemOrId, oldClass, newClass, nodeContext) {
 
     /**
      * @name replaceClass
@@ -847,20 +849,20 @@ function(elemOrId, oldClass, newClass, aContext) {
      *     suitable for TP.byId().
      * @param {String} oldClass The class value to find.
      * @param {String} newClass The class value to set.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.tpcall('elementReplaceClass',
-                        elemOrId, aContext, oldClass, newClass);
+                        elemOrId, nodeContext, oldClass, newClass);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('setClass',
-function(elemOrId, className, aContext) {
+function(elemOrId, className, nodeContext) {
 
     /**
      * @name setClass
@@ -870,20 +872,20 @@ function(elemOrId, className, aContext) {
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
      * @param {String} className The class value to set.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.tpcall('elementSetClass',
-                        elemOrId, aContext, className);
+                        elemOrId, nodeContext, className);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('toggleClass',
-function(elemOrId, className, aContext) {
+function(elemOrId, className, nodeContext) {
 
     /**
      * @name toggleClass
@@ -894,18 +896,18 @@ function(elemOrId, className, aContext) {
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
      * @param {String} className The class value to toggle.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    if (TP.hasClass(elemOrId, aContext, className)) {
+    if (TP.hasClass(elemOrId, nodeContext, className)) {
         return TP.tpcall('elementRemoveClass',
-                            elemOrId, aContext, className);
+                            elemOrId, nodeContext, className);
     } else {
         return TP.tpcall('elementAddClass',
-                            elemOrId, aContext, className);
+                            elemOrId, nodeContext, className);
     }
 });
 
@@ -914,7 +916,7 @@ function(elemOrId, className, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('addContent',
-function(elemOrId, newContent, aRequest, aContext) {
+function(elemOrId, newContent, aRequest, nodeContext) {
 
     /**
      * @name addContent
@@ -926,20 +928,20 @@ function(elemOrId, newContent, aRequest, aContext) {
      * @param {Object} newContent A new content string, node, or other suitable
      *     content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.idcall('addContent',
-                        elemOrId, aContext, newContent, aRequest);
+                        elemOrId, nodeContext, newContent, aRequest);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('getContent',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name getContent
@@ -948,19 +950,19 @@ function(elemOrId, aContext) {
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    return TP.idcall('getContent', elemOrId, aContext);
+    return TP.idcall('getContent', elemOrId, nodeContext);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('insertContent',
-function(elemOrId, newContent, aLocation, aRequest, aContext) {
+function(elemOrId, newContent, aLocation, aRequest, nodeContext) {
 
     /**
      * @name insertContent
@@ -975,20 +977,20 @@ function(elemOrId, newContent, aLocation, aRequest, aContext) {
      *     TP.BEFORE_BEGIN, TP.AFTER_BEGIN, TP.AFTER_END, or TP.BEFORE_END (the
      *     default).
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.idcall('insertContent',
-                    elemOrId, aContext, newContent, aLocation, aRequest);
+                    elemOrId, nodeContext, newContent, aLocation, aRequest);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('removeContent',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name removeContent
@@ -997,19 +999,19 @@ function(elemOrId, aContext) {
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    return TP.idcall('empty', elemOrId, aContext);
+    return TP.idcall('empty', elemOrId, nodeContext);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('setContent',
-function(elemOrId, newContent, aRequest, aContext) {
+function(elemOrId, newContent, aRequest, nodeContext) {
 
     /**
      * @name setContent
@@ -1021,14 +1023,14 @@ function(elemOrId, newContent, aRequest, aContext) {
      * @param {Object} newContent A new content string, node, or other suitable
      *     content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.idcall('setContent',
-                        elemOrId, aContext, newContent, aRequest);
+                        elemOrId, nodeContext, newContent, aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -1036,7 +1038,7 @@ function(elemOrId, newContent, aRequest, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('removeElem',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name removeElem
@@ -1046,7 +1048,7 @@ function(elemOrId, aContext) {
      *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
@@ -1057,7 +1059,7 @@ function(elemOrId, aContext) {
         i,
         ancestor;
 
-    elem = TP.byId(elemOrId, TP.context(aContext));
+    elem = TP.byId(elemOrId, TP.context(nodeContext));
 
     if (TP.isArray(elem)) {
         len = elem.length;
@@ -1078,7 +1080,7 @@ function(elemOrId, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('replaceElem',
-function(oldElemOrId, newElemOrId, aContext) {
+function(oldElemOrId, newElemOrId, nodeContext) {
 
     /**
      * @name replaceElem
@@ -1090,7 +1092,7 @@ function(oldElemOrId, newElemOrId, aContext) {
      *     suitable for TP.byId().
      * @param {String|Element} newElemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
@@ -1102,11 +1104,11 @@ function(oldElemOrId, newElemOrId, aContext) {
         len,
         i;
 
-    elem = TP.byId(oldElemOrId, TP.context(aContext));
-    newelem = TP.byId(newElemOrId, TP.context(aContext));
+    elem = TP.byId(oldElemOrId, TP.context(nodeContext));
+    newelem = TP.byId(newElemOrId, TP.context(nodeContext));
 
     if (TP.isArray(newelem)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments,
+        return TP.raise(this, 'TP.sig.InvalidParameter',
                             'New element must be single ID or element');
     }
 
@@ -1127,13 +1129,13 @@ function(oldElemOrId, newElemOrId, aContext) {
 
 /**
  * @NOTE NOTE NOTE:
- *     
+ *
  *     Manipulating the style property directly using these methods is STRONGLY
  *     DISCOURAGED except during animation or effect processing. For "permanent"
  *     alterations to an element's style you should be leveraging a CSS id,
  *     classor attribute selector and manipulating the element's class/attribute
  *     values.
- *     
+ *
  *     ALSO, if you are going to animate or alter an element's style you may
  *     wantto wrap your calls in a $preserveStyle/$restoreStyle pair so any
  *     valueswhich might have existed are reset on completion.
@@ -1143,7 +1145,7 @@ function(oldElemOrId, newElemOrId, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('addStyle',
-function(elemOrId, aProperty, aValue, aContext) {
+function(elemOrId, aProperty, aValue, nodeContext) {
 
     /**
      * @name addStyle
@@ -1154,20 +1156,20 @@ function(elemOrId, aProperty, aValue, aContext) {
      *     suitable for TP.byId().
      * @param {String} aProperty The style property to modify.
      * @param {String} aValue The property value to add.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.tpcall('elementAddStyle',
-                        elemOrId, aContext, aProperty, aValue);
+                        elemOrId, nodeContext, aProperty, aValue);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('getStyle',
-function(elemOrId, aProperty, aContext) {
+function(elemOrId, aProperty, nodeContext) {
 
     /**
      * @name getStyle
@@ -1178,19 +1180,19 @@ function(elemOrId, aProperty, aContext) {
      *     suitable for TP.byId().
      * @param {String} aProperty The style property to get. Default is empty,
      *     which returns the entire style string.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {String} A CSS style string.
      * @todo
      */
 
-    return TP.tpcall('elementGetStyle', elemOrId, aContext, aProperty);
+    return TP.tpcall('elementGetStyle', elemOrId, nodeContext, aProperty);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('hasStyle',
-function(elemOrId, aProperty, aContext) {
+function(elemOrId, aProperty, nodeContext) {
 
     /**
      * @name hasStyle
@@ -1201,20 +1203,20 @@ function(elemOrId, aProperty, aContext) {
      *     suitable for TP.byId().
      * @param {String} aProperty The style property to get. Default is empty,
      *     which returns the entire style string.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Boolean} True if the element has inline style with the property
      *     name, or inline style.
      * @todo
      */
 
-    return TP.tpcall('elementHasStyle', elemOrId, aContext, aProperty);
+    return TP.tpcall('elementHasStyle', elemOrId, nodeContext, aProperty);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('preserveStyle',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name preserveStyle
@@ -1223,19 +1225,19 @@ function(elemOrId, aContext) {
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    return TP.tpcall('elementPreserveStyle', elemOrId, aContext);
+    return TP.tpcall('elementPreserveStyle', elemOrId, nodeContext);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('removeStyle',
-function(elemOrId, aProperty, aContext) {
+function(elemOrId, aProperty, nodeContext) {
 
     /**
      * @name removeStyle
@@ -1245,19 +1247,19 @@ function(elemOrId, aProperty, aContext) {
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
      * @param {String} aProperty The style property to remove.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    return TP.tpcall('elementRemoveStyle', elemOrId, aContext, aProperty);
+    return TP.tpcall('elementRemoveStyle', elemOrId, nodeContext, aProperty);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('replaceStyle',
-function(elemOrId, aProperty, oldStyle, newStyle, aContext) {
+function(elemOrId, aProperty, oldStyle, newStyle, nodeContext) {
 
     /**
      * @name replaceStyle
@@ -1269,20 +1271,20 @@ function(elemOrId, aProperty, oldStyle, newStyle, aContext) {
      * @param {String} aProperty The style property to update.
      * @param {String} oldStyle The style value to find.
      * @param {String} newStyle The style value to set.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.tpcall('elementReplaceStyle',
-                        elemOrId, aContext, aProperty, oldStyle, newStyle);
+                        elemOrId, nodeContext, aProperty, oldStyle, newStyle);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('restoreStyle',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name restoreStyle
@@ -1291,19 +1293,19 @@ function(elemOrId, aContext) {
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    return TP.tpcall('elementRestoreStyle', elemOrId, aContext);
+    return TP.tpcall('elementRestoreStyle', elemOrId, nodeContext);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('setStyle',
-function(elemOrId, aProperty, aValue, aContext) {
+function(elemOrId, aProperty, aValue, nodeContext) {
 
     /**
      * @name setStyle
@@ -1314,14 +1316,14 @@ function(elemOrId, aProperty, aValue, aContext) {
      *     suitable for TP.byId().
      * @param {String} aProperty The style property to update.
      * @param {String} aValue The style value to set.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
     return TP.tpcall('elementSetStyle',
-                        elemOrId, aContext, aProperty, aValue);
+                        elemOrId, nodeContext, aProperty, aValue);
 });
 
 //  ------------------------------------------------------------------------
@@ -1329,7 +1331,7 @@ function(elemOrId, aProperty, aValue, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('animate',
-function(anElement, propertyName, animationParams, aContext) {
+function(anElement, propertyName, animationParams, nodeContext) {
 
     /**
      * @name animate
@@ -1342,7 +1344,7 @@ function(anElement, propertyName, animationParams, aContext) {
      * @param {String} propertyName The name of the property to transition.
      * @param {TP.lang.Hash} animationParams A hash of parameters to use for the
      *     transition.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {TP.core.Job} The TP.core.Job object that is managing the
      *     transition.
@@ -1357,7 +1359,7 @@ function(anElement, propertyName, animationParams, aContext) {
     //  or more ids given in the String.
     if (TP.isString(anElement)) {
         //  If its a String, then it might be one or more element ids.
-        elems = TP.byId(anElement, TP.context(aContext));
+        elems = TP.byId(anElement, TP.context(nodeContext));
     } else {
         elems = anElement;
     }
@@ -1373,7 +1375,7 @@ function(anElement, propertyName, animationParams, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('effect',
-function(anElement, effectName, effectParams, aContext) {
+function(anElement, effectName, effectParams, nodeContext) {
 
     /**
      * @name effect
@@ -1390,7 +1392,7 @@ function(anElement, effectName, effectParams, aContext) {
      * @param {String} effectName The name of the effect to use.
      * @param {TP.lang.Hash} effectParams A hash of parameters to use for the
      *     effect.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {TP.core.Job} The TP.core.Job object that is managing the
      *     effect.
@@ -1423,7 +1425,7 @@ function(anElement, effectName, effectParams, aContext) {
 
         //  Still didn't find it? Bail out and raise an exception.
         if (TP.notValid(effectType = effectTypeName.asType())) {
-            TP.raise(TP.effect, 'TP.sig.InvalidType', arguments,
+            TP.raise(TP.effect, 'TP.sig.InvalidType',
                         effectTypeName);
 
             return;
@@ -1455,7 +1457,7 @@ function(anElement, effectName, effectParams, aContext) {
 
         //  Still didn't find it? Bail out and raise an exception.
         if (!TP.isCallable(computeFunction)) {
-            TP.raise(TP.effect, 'TP.sig.InvalidFunction', arguments,
+            TP.raise(TP.effect, 'TP.sig.InvalidFunction',
                     ctrlParams.at('compute'));
 
             return;
@@ -1467,7 +1469,7 @@ function(anElement, effectName, effectParams, aContext) {
     //  If its a String, then return an Element or an Array matching the one
     //  or more ids given in the String.
     if (TP.isString(anElement)) {
-        elems = TP.byId(anElement, TP.context(aContext));
+        elems = TP.byId(anElement, TP.context(nodeContext));
     } else {
         elems = anElement;
     }
@@ -1605,7 +1607,7 @@ function(anElement, effectName, effectParams, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('arm',
-function(aNodeOrList, eventNames, aHandler, aPolicy, aContext) {
+function(aNodeOrList, eventNames, aHandler, aPolicy, nodeContext) {
 
     /**
      * @name Arms a node or list of them with the event or events given.
@@ -1619,8 +1621,9 @@ function(aNodeOrList, eventNames, aHandler, aPolicy, aContext) {
      *     signaling system.
      * @param {Function} aPolicy An (optional) parameter that defines the
      *     "firing" policy.
-     * @param {Window} aContext An optional window to search for the element(s).
-     *     If not provided then the TP.context() method is used to fine one.
+     * @param {Window} nodeContext An optional window to search for the
+     *     element(s). If not provided then the TP.context() method is used to
+     *     find one.
      * @todo
      */
 
@@ -1634,13 +1637,13 @@ function(aNodeOrList, eventNames, aHandler, aPolicy, aContext) {
 
     if (TP.isEmpty(eventNames)) {
         TP.raise(this, 'TP.sig.InvalidParameter',
-                arguments, 'Must supply a Signal.');
+                'Must supply a Signal.');
 
         return;
     }
 
     target = TP.ifInvalid(aNodeOrList, TP.ANY);
-    context = TP.context(aContext);
+    context = TP.context(nodeContext);
 
     signals = / /.test(eventNames) ?
                 eventNames.split(' ') :
@@ -1685,7 +1688,7 @@ function(anEvent) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('coord',
-function(anObject, aContext) {
+function(anObject, nodeContext) {
 
     /**
      * @name coord
@@ -1696,7 +1699,7 @@ function(anObject, aContext) {
      *     element, suitable for TP.byId() or a hash or point with 'x' and 'y'
      *     values or an array with an X 'value' in the first position and a Y
      *     value in the second.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Array} The X and Y as a point pair.
      * @todo
@@ -1720,7 +1723,7 @@ function(anObject, aContext) {
     //  use a combination of element and context to find the focal
     //  element(s) for the call
     elem = TP.isString(anObject) ?
-                TP.byId(anObject, TP.context(aContext)) :
+                TP.byId(anObject, TP.context(nodeContext)) :
                 TP.elem(anObject);
 
     if (TP.isElement(elem)) {
@@ -1733,7 +1736,7 @@ function(anObject, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('disarm',
-function(aNodeOrList, eventNames, aHandler, aContext) {
+function(aNodeOrList, eventNames, aHandler, nodeContext) {
 
     /**
      * @name Disarms a node or list of them for the event or events.
@@ -1744,7 +1747,8 @@ function(aNodeOrList, eventNames, aHandler, aContext) {
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of sending the event into the TIBET
      *     signaling system.
-     * @param {Window} aContext An optional window to search for the element(s).
+     * @param {Window} nodeContext An optional window to search for the
+     *     element(s).
      *     If not provided then the TP.context() method is used to fine one.
      * @todo
      */
@@ -1759,13 +1763,13 @@ function(aNodeOrList, eventNames, aHandler, aContext) {
 
     if (TP.isEmpty(eventNames)) {
         TP.raise(this, 'TP.sig.InvalidParameter',
-                arguments, 'Must supply a Signal.');
+                'Must supply a Signal.');
 
         return;
     }
 
     target = TP.ifInvalid(aNodeOrList, TP.ANY);
-    context = TP.context(aContext);
+    context = TP.context(nodeContext);
 
     signals = / /.test(eventNames) ?
                 eventNames.split(' ') :
@@ -1893,7 +1897,7 @@ function(anObject, aFilter) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elemget',
-function(elemOrId, anAspect, aContext) {
+function(elemOrId, anAspect, nodeContext) {
 
     /**
      * @name elemget
@@ -1908,7 +1912,7 @@ function(elemOrId, anAspect, aContext) {
      * @param {String} anAspect The property to access. Default is 'value' so
      *     TP.elemGet(id) will return the 'value' of the element or elements
      *     TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Object} The object value(s).
      * @todo
@@ -1922,7 +1926,7 @@ function(elemOrId, anAspect, aContext) {
 
     aspect = anAspect || 'value';
 
-    list = TP.byId(elemOrId, aContext);
+    list = TP.byId(elemOrId, nodeContext);
 
     if (TP.isArray(list)) {
         arr = TP.ac();
@@ -1942,7 +1946,7 @@ function(elemOrId, anAspect, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elemset',
-function(elemOrId, anAspect, aValue, aContext) {
+function(elemOrId, anAspect, aValue, nodeContext) {
 
     /**
      * @name elemset
@@ -1955,7 +1959,7 @@ function(elemOrId, anAspect, aValue, aContext) {
      *     'value'.
      * @param {Object} aValue A value suitable for the target. This is typically
      *     a string.
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Object} The element, or elements that were changed.
      * @todo
@@ -1969,7 +1973,7 @@ function(elemOrId, anAspect, aValue, aContext) {
 
     aspect = anAspect || 'value';
 
-    list = TP.byId(elemOrId, aContext);
+    list = TP.byId(elemOrId, nodeContext);
     if (TP.isArray(list)) {
         len = list.getSize();
         for (i = 0; i < len; i++) {
@@ -2020,7 +2024,7 @@ and select. Convenience wrappers for dealing with these are provided here.
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('focus',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name focus
@@ -2030,19 +2034,19 @@ function(elemOrId, aContext) {
      *     unwrapped element directly.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    return TP.idcall('focus', elemOrId, aContext);
+    return TP.idcall('focus', elemOrId, nodeContext);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('reset',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name reset
@@ -2052,19 +2056,19 @@ function(elemOrId, aContext) {
      *     unwrapped element directly.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    return TP.idcall('reset', elemOrId, aContext);
+    return TP.idcall('reset', elemOrId, nodeContext);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('select',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name select
@@ -2074,19 +2078,19 @@ function(elemOrId, aContext) {
      *     unwrapped element directly.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    return TP.idcall('select', elemOrId, aContext);
+    return TP.idcall('select', elemOrId, nodeContext);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('submit',
-function(elemOrId, aContext) {
+function(elemOrId, nodeContext) {
 
     /**
      * @name submit
@@ -2096,13 +2100,13 @@ function(elemOrId, aContext) {
      *     unwrapped element directly.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
-     * @param {Object} aContext A context in which to resolve element IDs.
+     * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Element} The element.
      * @todo
      */
 
-    return TP.idcall('submit', elemOrId, aContext);
+    return TP.idcall('submit', elemOrId, nodeContext);
 });
 
 //  ------------------------------------------------------------------------
@@ -2126,7 +2130,7 @@ function(anObject) {
         arr,
         len,
         i,
-        
+
         rules;
 
     if (anObject === null) {
@@ -2347,7 +2351,7 @@ function(anObject) {
         arr,
         len,
         i,
-        
+
         rules;
 
     if (anObject === null) {
@@ -2733,7 +2737,7 @@ function(anObject, aProperty) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('go2',
-function(aURI, aRequest, aContext) {
+function(aURI, aRequest, nodeContext) {
 
     /**
      * @name go2
@@ -2742,8 +2746,8 @@ function(aURI, aRequest, aContext) {
      *     done by a typical href or location= invocation.
      * @param {TP.core.URI|String} aURI The URI to focus on.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @param {Object} aContext The window to adjust. Defaults to the $$context
-     *     placed on this function.
+     * @param {Object} nodeContext The window to adjust. Defaults to the
+     *     $$context placed on this function.
      * @raises TP.sig.InvalidURI
      * @returns {Boolean} Always returns 'false' to avoid anchor link traversal.
      * @todo
@@ -2754,12 +2758,12 @@ function(aURI, aRequest, aContext) {
         win;
 
     if (TP.notValid(aURI)) {
-        TP.raise(TP.go2, 'TP.sig.InvalidURI', arguments);
+        TP.raise(TP.go2, 'TP.sig.InvalidURI');
 
         return false;
     }
 
-    if (TP.notValid(context = aContext)) {
+    if (TP.notValid(context = nodeContext)) {
         context = TP.ifInvalid(
                         TP.sys.getWindowById(TP.sys.getUICanvasName()),
                         window);
@@ -2767,12 +2771,12 @@ function(aURI, aRequest, aContext) {
 
     type = TP.sys.getTypeByName('TP.core.Window');
     if (TP.notValid(win = type.construct(TP.gid(context)))) {
-        TP.raise(TP.go2, 'TP.sig.InvalidWindow', arguments);
+        TP.raise(TP.go2, 'TP.sig.InvalidWindow');
 
         return false;
     }
 
-    TP.sys.logLink(aURI, TP.INFO, arguments);
+    TP.sys.logLink(aURI, TP.INFO);
 
     win.setContent(TP.uc(aURI), aRequest);
 
@@ -2810,7 +2814,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
         TP.ifWarn(!ignore && TP.sys.shouldLogSignals()) ?
             TP.warn(TP.boot.$annotate(anObject,
                 'Direct ' + handlerName + ' invocation failed.'),
-                TP.SIGNAL_LOG, arguments) : 0;
+                TP.SIGNAL_LOG) : 0;
 
         return;
     }
@@ -2819,7 +2823,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
         TP.ifWarn(!ignore && TP.sys.shouldLogSignals()) ?
             TP.warn(TP.join('Direct ', handlerName, ' invocation failed. ',
                 'No signal name or instance provided.'),
-                TP.SIGNAL_LOG, arguments) : 0;
+                TP.SIGNAL_LOG) : 0;
 
         return;
     }
@@ -2841,7 +2845,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Handler invocation error.'),
-                TP.LOG, arguments) : 0;
+                TP.LOG) : 0;
     } finally {
         $signal = $signal_stack.pop();
     }
@@ -2859,7 +2863,7 @@ function(varargs) {
      * @synopsis Constructs a viable TP.sig.RESTRequest for making
      *     XMLHttpRequest calls to a server. The returned instance can be
      *     locally programmed via defineMethod to add callbacks as needed.
-     * @param {arguments} varargs A variable argument list much like
+     * @param {Array} varargs A variable argument list much like
      *     TP.request() and TP.hc() would accept: TP.xhr(key, value, ...);.
      * @returns {TP.sig.RESTRequest} The constructed request.
      */

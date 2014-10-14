@@ -915,8 +915,12 @@ TP.sys.setcfg('log.bootenv', false);
 //  stdout routine?
 TP.sys.setcfg('log.default_format', 'tsh:pp');
 
-//  what output/logging level will filter the error and activity logging?
-TP.sys.setcfg('log.level', 1);  //  0 (TRACE) thru 6 (SYSTEM)
+//  the logging level for the boot log, which is numerically driven.
+TP.sys.setcfg('boot.level', 1);  //  0 (TRACE) thru 6 (SYSTEM)
+
+//  the logging level for the TP.log logging system. Set once that code has
+//  loaded during kernel startup since the levels are actual instances.
+TP.sys.setcfg('log.level', null); // TP.log.TRACE thru TP.log.SYSTEM
 
 //  when logging is on the value here will control how large the activity
 //  log can grow before it starts eliminating the oldest entries. NOTE that
@@ -1041,10 +1045,6 @@ TP.sys.setcfg('log.signal_stack', false);
 //  default primarily due to permission requirements in Mozilla :(. Used to
 //  be useful before they went and made stack access a security issue again.
 TP.sys.setcfg('log.stack', false);
-
-//  if $error is called should the call stack arguments be included? NOTE
-//  that this flag is only used when log.stack is true
-TP.sys.setcfg('log.stack_arguments', false);
 
 //  when logging the call stack should we try to get file information such
 //  as filenames and line numbers for the functions?

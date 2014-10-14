@@ -214,12 +214,11 @@ function(aCanvas) {
         stops;
 
     if (TP.notValid(aCanvas)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     if (TP.notValid(the2DContext = aCanvas.getContext('2d'))) {
         return this.raise('TP.sig.InvalidContext',
-                            arguments,
                             'Canvas has invalid 2D context');
     }
 
@@ -351,12 +350,11 @@ function(aCanvas) {
         stops;
 
     if (TP.notValid(aCanvas)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     if (TP.notValid(the2DContext = aCanvas.getContext('2d'))) {
         return this.raise('TP.sig.InvalidContext',
-                            arguments,
                             'Canvas has invalid 2D context');
     }
 

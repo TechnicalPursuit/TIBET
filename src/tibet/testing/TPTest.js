@@ -1003,7 +1003,7 @@ function(caseName, caseFunc) {
 
     testCase = TP.test.Case.construct(this, caseName, caseFunc);
     if (TP.notValid(testCase)) {
-        this.raise('InvalidTestCase', arguments);
+        this.raise('InvalidTestCase');
         return;
     }
 

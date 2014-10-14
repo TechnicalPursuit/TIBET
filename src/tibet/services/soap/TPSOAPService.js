@@ -38,7 +38,7 @@
  *
  *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
  *
- *     TP.info(aResponse.getResult(), TP.LOG, arguments); });
+ *     TP.info(aResponse.getResult(), TP.LOG); });
  *
  *     // activate the request:
  *

@@ -163,7 +163,7 @@ function(docTypeInfo) {
     var foundItem;
 
     if (TP.notValid(docTypeInfo)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     foundItem = this.get('docTypeRegistry').detect(
@@ -953,7 +953,7 @@ function(aContent, aURI, defaultMIME) {
         TP.sys.logTransform(
                 TP.boot.$annotate(this,
                             'Guessing MIME type for content ID: ' + aURI),
-            TP.TRACE, arguments) : 0;
+            TP.TRACE) : 0;
 
     if (TP.isValid(content = aContent)) {
         //  often get a TP.core.Node here
@@ -989,7 +989,7 @@ function(aContent, aURI, defaultMIME) {
                 TP.ifTrace(TP.$DEBUG) ?
                     TP.sys.logTransform('Returning computed MIME type ' +
                                         mime + ' for content ID: ' + aURI,
-                        TP.TRACE, arguments) : 0;
+                        TP.TRACE) : 0;
 
                 return mime;
             }
@@ -1013,7 +1013,7 @@ function(aContent, aURI, defaultMIME) {
                 TP.ifTrace(TP.$DEBUG) ?
                     TP.sys.logTransform('Returning computed MIME type ' +
                                         mime + ' for content ID: ' + aURI,
-                        TP.TRACE, arguments) : 0;
+                        TP.TRACE) : 0;
 
                 return mime;
             }
@@ -1064,7 +1064,7 @@ function(aContent, aURI, defaultMIME) {
     TP.ifTrace(TP.$DEBUG) ?
         TP.sys.logTransform('Returning computed MIME type ' +
                             mime + ' for content ID: ' + aURI,
-            TP.TRACE, arguments) : 0;
+            TP.TRACE) : 0;
 
     return mime;
 });
@@ -1093,7 +1093,7 @@ function(aMIMEType, aHash) {
         i;
 
     if (TP.notValid(aHash)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                                     'Must provide registration data.');
     }
 
@@ -1614,11 +1614,11 @@ function(anNSURI, anElement) {
     var prefix;
 
     if (TP.notValid(anElement)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     if (TP.notValid(prefix = this.getCanonicalPrefix(anNSURI))) {
@@ -1651,7 +1651,7 @@ function(anNSURI, aTransformURI) {
         info;
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     info = TP.w3.Xmlns.get('info').at(anNSURI.asString());
@@ -1799,7 +1799,7 @@ function(anNSURI) {
     var info;
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     info = TP.w3.Xmlns.get('info').at(anNSURI.asString());
@@ -1828,7 +1828,7 @@ function(anNSURI) {
     var info;
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     info = TP.w3.Xmlns.get('info').at(anNSURI.asString());
@@ -1857,7 +1857,7 @@ function(anNSURI) {
     var info;
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     info = TP.w3.Xmlns.get('info').at(anNSURI.asString());
@@ -2060,7 +2060,7 @@ function(anNSURI) {
         prefix;
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     info = TP.w3.Xmlns.get('info').at(anNSURI.asString());
@@ -2101,7 +2101,6 @@ function(aPrefix) {
 
     if (TP.isEmpty(aPrefix)) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Must supply a prefix.');
 
         return;
@@ -2130,7 +2129,7 @@ function(anNSURI) {
     var info;
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     info = TP.w3.Xmlns.get('info').at(anNSURI.asString());
@@ -2244,7 +2243,7 @@ function(anNSURI) {
     var info;
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     info = TP.w3.Xmlns.get('info').at(anNSURI.asString());
@@ -2279,11 +2278,11 @@ function(anNSURI, aHash) {
                 constName;
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     if (TP.notValid(aHash)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                                     'Must provide registration data.');
     }
 
@@ -2357,7 +2356,7 @@ function(anNSURI) {
     var info;
 
     if (TP.notValid(anNSURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     info = TP.w3.Xmlns.get('info').at(anNSURI.asString());
@@ -2713,11 +2712,11 @@ function(aURI, aRequest, logError) {
         cookie;
 
     if (TP.notValid(aURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     if (TP.notValid(aRequest)) {
-        return this.raise('TP.sig.InvalidRequest', arguments);
+        return this.raise('TP.sig.InvalidRequest');
     }
 
     request = TP.request(aRequest);
@@ -2752,11 +2751,11 @@ function(aURI, aRequest) {
         response;
 
     if (TP.notValid(aURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     if (TP.notValid(aRequest)) {
-        return this.raise('TP.sig.InvalidRequest', arguments);
+        return this.raise('TP.sig.InvalidRequest');
     }
 
     request = TP.request(aRequest);
@@ -2799,11 +2798,11 @@ function(aURI, aRequest) {
         query;
 
     if (TP.notValid(aURI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     if (TP.notValid(aRequest)) {
-        return this.raise('TP.sig.InvalidRequest', arguments);
+        return this.raise('TP.sig.InvalidRequest');
     }
 
     request = TP.request(aRequest);

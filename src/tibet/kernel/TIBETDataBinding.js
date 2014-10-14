@@ -618,7 +618,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
         methodName;
 
     if (TP.isEmpty(targetAttributeName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
             'No attribute name provided for bind.');
     }
 
@@ -632,7 +632,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     //  Prefer URIs but can bind to any object in theory.
     if (TP.notValid(resource)) {
-        return this.raise('TP.sig.InvalidResource', arguments,
+        return this.raise('TP.sig.InvalidResource',
             'No resource spec provided for bind.');
     }
 
@@ -669,13 +669,13 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
                         var newVal;
 
-                        TP.debug('break.bind_change');
+                        TP.stop('break.bind_change');
 
                         try {
                             newVal = aSignal.getValue();
                             this.set(targetAttr, newVal);
                         } catch (e) {
-                            this.raise('TP.sig.InvalidBinding', arguments);
+                            this.raise('TP.sig.InvalidBinding');
                         }
                     });
     }
@@ -766,7 +766,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
         signalName;
 
     if (TP.isEmpty(targetAttributeName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
             'No attribute name provided for bind.');
     }
 
@@ -780,7 +780,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     //  Prefer URIs but can bind to any object in theory.
     if (TP.notValid(resource)) {
-        return this.raise('TP.sig.InvalidResource', arguments,
+        return this.raise('TP.sig.InvalidResource',
             'No resource spec provided for bind.');
     }
 

@@ -163,7 +163,7 @@ TP.$$DEBUG = false;
 //  $DEBUG or $$DEBUG.
 TP.$$VERBOSE = false;
 
-//  Boot system versions (TODO: refine to one pair coupled with TP.TRACE)
+//  Boot system versions (TODO: refine to one pair coupled with TP.boot.TRACE)
 TP.boot.$debug = true;
 TP.boot.$verbose = true;
 TP.boot.$$debug = true;
@@ -172,6 +172,22 @@ TP.boot.$$verbose = true;
 //  ---
 //  Configure bootstrap logging control variables.
 //  ---
+
+//  log level constants (only used by primitive boot log)
+TP.boot.TRACE = 0;
+TP.boot.INFO = 1;
+TP.boot.WARN = 2;
+TP.boot.ERROR = 3;
+TP.boot.SEVERE = 4;
+TP.boot.FATAL = 5;
+TP.boot.SYSTEM = 6;
+
+//  log entry slot indices (only used by primitive boot log)
+TP.boot.LOG_ENTRY_DATE = 0;
+TP.boot.LOG_ENTRY_NAME = 1;
+TP.boot.LOG_ENTRY_LEVEL = 2;
+TP.boot.LOG_ENTRY_PAYLOAD = 3;
+TP.boot.LOG_ENTRY_DELTA = 4;
 
 //  the actual buffer size used. the log.level setting is used as a starting
 //  point but adjusted based on log level to balance speed with user-feedback.
@@ -204,26 +220,6 @@ TP.NOT_FOUND = -1;                          //  missing data
 TP.BAD_INDEX = -1;                          //  bad array index
 TP.NO_SIZE = -1;                            //  bad object size
 TP.NO_RESULT = Number.NEGATIVE_INFINITY;    //  invalid response
-
-//  log level constants (OBSOLETE)
-TP.TRACE = 0;
-TP.INFO = 1;
-TP.WARN = 2;
-TP.ERROR = 3;
-TP.SEVERE = 4;
-TP.FATAL = 5;
-TP.SYSTEM = 6;
-
-//  log names
-TP.BOOT_LOG = 'Boot';
-
-//  log entry slot indices
-TP.LOG_ENTRY_DATE = 0;
-TP.LOG_ENTRY_NAME = 1;
-TP.LOG_ENTRY_LEVEL = 2;
-TP.LOG_ENTRY_PAYLOAD = 3;
-TP.LOG_ENTRY_CONTEXT = 4;
-TP.LOG_ENTRY_DELTA = 5;
 
 //  file load return types
 TP.DOM = 1;
@@ -1228,7 +1224,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
         return;
       } else if (TP.boot.$argsDone === true) {
         TP.boot.$stdout('Forcing reset of \'' + key +
-                        '\' override to ' + aValue, TP.TRACE);
+                        '\' override to ' + aValue, TP.boot.TRACE);
       }
     }
 
@@ -1248,7 +1244,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
         if (shouldSignal !== false &&
             TP.sys.hasStarted() &&
             typeof(window.$signal) === 'function') {
-            window.$signal(TP.sys, aKey + 'Change', arguments, aKey);
+            window.$signal(TP.sys, aKey + 'Change', aKey);
         }
     }
 

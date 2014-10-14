@@ -540,12 +540,12 @@ function(firstDuration, secondDuration) {
         sum;
 
     if (TP.notValid(s1 = Date.getSecondsInDuration(firstDuration))) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                 'First duration not a valid duration string.');
     }
 
     if (TP.notValid(s2 = Date.getSecondsInDuration(secondDuration))) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                 'Second duration not a valid duration string.');
     }
 
@@ -579,7 +579,7 @@ function(aDuration) {
         seconds;
 
     if (TP.notValid(sum = Date.getMonthsInDuration(aDuration))) {
-        return this.raise('TP.sig.InvalidDuration', arguments);
+        return this.raise('TP.sig.InvalidDuration');
     }
 
     years = parseInt(sum / 12, 10);
@@ -796,7 +796,7 @@ function(aYear) {
         endDate;
 
     if (!TP.isNumber(aYear)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  Here, we compute the day in October when DST will end. Note that
@@ -839,7 +839,7 @@ function(aYear) {
         startDate;
 
     if (!TP.isNumber(aYear)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  Here, we compute the day in April when DST will start. Note that
@@ -883,13 +883,13 @@ function(anObject) {
         units;
 
     if (!TP.isString(anObject)) {
-        return this.raise('TP.sig.InvalidDuration', arguments);
+        return this.raise('TP.sig.InvalidDuration');
     }
 
     str = anObject;
 
     if (!Date.DURATION_REGEX.test(str)) {
-        return this.raise('TP.sig.InvalidDuration', arguments);
+        return this.raise('TP.sig.InvalidDuration');
     }
 
     //  split into chunks we can manage
@@ -951,13 +951,13 @@ function(anObject) {
         units;
 
     if (!TP.isString(anObject)) {
-        return this.raise('TP.sig.InvalidDuration', arguments);
+        return this.raise('TP.sig.InvalidDuration');
     }
 
     str = anObject;
 
     if (!Date.DURATION_REGEX.test(str)) {
-        return this.raise('TP.sig.InvalidDuration', arguments);
+        return this.raise('TP.sig.InvalidDuration');
     }
 
     //  split into chunks we can manage
@@ -1005,13 +1005,13 @@ function(anObject) {
         units;
 
     if (!TP.isString(anObject)) {
-        return this.raise('TP.sig.InvalidDuration', arguments);
+        return this.raise('TP.sig.InvalidDuration');
     }
 
     str = anObject;
 
     if (!Date.DURATION_REGEX.test(str)) {
-        return this.raise('TP.sig.InvalidDuration', arguments);
+        return this.raise('TP.sig.InvalidDuration');
     }
 
     //  split into chunks we can manage
@@ -1063,7 +1063,7 @@ function(aYear) {
      */
 
     if (!TP.isNumber(aYear)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  multiples of 400 are always a leap year
@@ -1156,7 +1156,7 @@ function(anObject) {
         return this.addDuration(anObject);
     }
 
-    return this.raise('TP.sig.InvalidParameter', arguments);
+    return this.raise('TP.sig.InvalidParameter');
 });
 
 //  ------------------------------------------------------------------------
@@ -1267,7 +1267,7 @@ function() {
      * @name getDayOfYear
      * @synopsis Returns the numeric day of the year represented by the
      *     receiver.
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     return this.getDaysBetween(
@@ -1288,7 +1288,7 @@ function(aDate) {
      */
 
     if (!TP.isDate(aDate)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return ((aDate.getTime() - this.getTime()) /
@@ -1494,7 +1494,6 @@ function(aFormat) {
             format = TP.iso.ISO8601.FORMATS.at(aFormat);
             if (TP.notValid(format)) {
                 return this.raise('TP.sig.InvalidFormat',
-                                    arguments,
                                     aFormat);
             }
         }
@@ -1571,7 +1570,7 @@ function() {
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
      *     this metric.
-     *     
+     *
      *     NB: This algorithm was discovered on the web page of Claus Tondering
      *     (claus@tondering.dk). He credits Stephan Potthast for it. Thanks to
      *     both Claus and Stephan!
@@ -1607,7 +1606,7 @@ function() {
      * @name getISOYear
      * @synopsis Returns the year number as defined in ISO 8601, also known in
      *     JavaScript as the "full year".
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     return this.getFullYear();
@@ -1816,7 +1815,7 @@ function() {
      * @name getUTCDayOfYear
      * @synopsis Returns the numeric day of the year represented by the
      *     receiver.
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     return this.getDaysBetween(
@@ -2027,7 +2026,7 @@ function(aFormat) {
 
         //  has to be valid and end in either + or Z to force UTC lookups
         if (TP.notValid(format) || !/[Z\+]$/.test(format)) {
-            return this.raise('TP.sig.InvalidFormat', arguments, aFormat);
+            return this.raise('TP.sig.InvalidFormat', aFormat);
         }
     } else {
         //  NOTE the trailing Z here to force Zulu time
@@ -2047,7 +2046,7 @@ function() {
      * @synopsis Returns the timezone the browser is currently executing in in
      *     ISO standard notation (e.g. '-8:00'). For UTC time this is always the
      *     constant value 'Z'.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return 'Z';
@@ -2066,7 +2065,7 @@ function() {
      *     January). Almost all years have 52 weeks, but years that start on a
      *     Thursday and leap years that start on a Wednesday have 53 weeks using
      *     this metric.
-     *     
+     *
      *     NB: This algorithm was discovered on the web page of Claus Tondering
      *     (claus@tondering.dk). He credits Stephan Potthast for it. Thanks to
      *     both Claus and Stephan!
@@ -2102,7 +2101,7 @@ function() {
      * @name getUTCISOYear
      * @synopsis Returns the year number as defined in ISO 8601, also known in
      *     JavaScript as the "full year".
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     return this.getUTCFullYear();
@@ -2341,13 +2340,13 @@ function(aDate) {
      * @synopsis Returns true if the receiver is a date/time which occurs before
      *     the date/time provided.
      * @param {Date|String} aDate A date or date string.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var d;
 
     if (!TP.isDate(d = TP.dc(aDate))) {
-        return this.raise('TP.sig.InvalidDate', arguments);
+        return this.raise('TP.sig.InvalidDate');
     }
 
     return this.getTime() < d.getTime();
@@ -2508,11 +2507,11 @@ function(aDate) {
      *     provided.
      * @param {Date} aDate The Date to use for comparison.
      * @raises TP.sig.InvalidParameter
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isDate(aDate)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return ((this.getUTCFullYear() === aDate.getUTCFullYear()) &&
@@ -2531,11 +2530,11 @@ function(aDate) {
      *     provided.
      * @param {Date} aDate The Date to use for comparison.
      * @raises TP.sig.InvalidParameter
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isDate(aDate)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return ((this.getUTCFullYear() === aDate.getUTCFullYear()) &&
@@ -2553,11 +2552,11 @@ function(aDate) {
      *     provided.
      * @param {Date} aDate The Date to use for comparison.
      * @raises TP.sig.InvalidParameter
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isDate(aDate)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return ((aDate.getTime() >= this.getUTCStartOfWeek()) &&
@@ -2576,11 +2575,11 @@ function(aDate) {
      *     provided.
      * @param {Date} aDate The Date to use for comparison.
      * @raises TP.sig.InvalidParameter
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isDate(aDate)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return (this.getUTCFullYear() === aDate.getUTCFullYear());
@@ -2626,7 +2625,7 @@ function(aWeekNumber) {
     var week,
         sec,
         ms,
-    
+
         oldVal,
         newVal;
 
@@ -2681,7 +2680,7 @@ function(aWeekNumber) {
     var week,
         sec,
         ms,
-    
+
         oldVal,
         newVal;
 
@@ -2731,7 +2730,7 @@ function(aWeekNumber) {
     var week,
         sec,
         ms,
-    
+
         oldVal,
         newVal;
 
@@ -2781,7 +2780,7 @@ function(aWeekNumber) {
     var week,
         sec,
         ms,
-    
+
         oldVal,
         newVal;
 
@@ -2837,7 +2836,7 @@ function(anObject) {
         return this.subtractDuration(anObject);
     }
 
-    return this.raise('TP.sig.InvalidParameter', arguments);
+    return this.raise('TP.sig.InvalidParameter');
 });
 
 //  ------------------------------------------------------------------------
@@ -3024,7 +3023,7 @@ function(min, max) {
         i;
 
     if (!TP.isNumber(min) || !TP.isNumber(max)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     div = (max - min) + 1;
@@ -3207,7 +3206,7 @@ function() {
 
     //  TODO:   remove this restriction
     if (this > 255) {
-        return this.raise('TP.sig.InvalidRange', arguments);
+        return this.raise('TP.sig.InvalidRange');
     }
 
     if (this < 16) {
@@ -3264,7 +3263,7 @@ function() {
 
     //  TODO:   remove this restriction
     if (this > 255) {
-        return this.raise('TP.sig.InvalidRange', arguments);
+        return this.raise('TP.sig.InvalidRange');
     }
 
     res = '0x';
@@ -3351,7 +3350,7 @@ function(xSize) {
      */
 
     if (!TP.isNumber(xSize)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return Math.atan2(this, xSize);
@@ -3374,7 +3373,7 @@ function(xSize) {
      */
 
     if (!TP.isNumber(xSize)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return Math.atan2(this, xSize) * (180 / Math.PI);
@@ -3508,7 +3507,7 @@ function(aCount) {
      * @synopsis Returns the fractional part of the receiver without doing any
      *     rounding i.e. (123.456).fraction(2) returns 0.45.
      * @param {Number} aCount The number of decimal places.
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     var str,
@@ -3537,7 +3536,7 @@ function() {
     /**
      * @name integer
      * @synopsis Returns the integer portion of the receiver.
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     if (this < 0) {
@@ -3566,7 +3565,7 @@ function(minValue, maxValue) {
      */
 
     if (!TP.isNumber(minValue) || !TP.isNumber(maxValue)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return ((this > minValue) && (this < maxValue));
@@ -3592,7 +3591,7 @@ function(minValue, maxValue) {
      */
 
     if (!TP.isNumber(minValue) || !TP.isNumber(maxValue)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return ((this >= minValue) && (this <= maxValue));
@@ -3708,7 +3707,7 @@ function() {
      * @name max
      * @synopsis Returns the largest value from the receiver and arguments. Note
      *     that you can pass multiple values to this call.
-     * @param {arguments} varargs A variable list of 0 to N elements to place in
+     * @param {Array} varargs A variable list of 0 to N elements to place in
      *     the array.
      * @raises TP.sig.InvalidParameter
      * @returns {Number} The largest value found.
@@ -3741,7 +3740,7 @@ function() {
     /**
      * @name min
      * @synopsis Returns the smallest value from the receiver and arguments.
-     * @param {arguments} varargs A variable list of 0 to N elements to place in
+     * @param {Array} varargs A variable list of 0 to N elements to place in
      *     the array.
      * @raises TP.sig.InvalidParameter
      * @returns {Number} The smallest value found.
@@ -3785,7 +3784,7 @@ function(minNum, maxNum) {
      */
 
     if (!TP.isNumber(minNum) || !TP.isNumber(maxNum)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return Math.max(Math.min(this, maxNum), minNum);
@@ -3850,7 +3849,7 @@ function(power) {
      */
 
     if (!TP.isNumber(power)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     return Math.pow(this, power);
@@ -3992,7 +3991,7 @@ function(aQuoteChar) {
      * @synopsis Returns the receiver as a quoted string.
      * @param {String} aQuoteChar The quote char to use. Default is single
      *     quotes.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -4063,7 +4062,7 @@ function(anObject) {
 /**
  * @synopsis Extensions that make using Strings a bit easier, and which add
  *     support for elements such as string substitutions for output formatting.
- * @description 
+ * @description
  */
 
 //  ------------------------------------------------------------------------
@@ -4085,7 +4084,7 @@ function() {
      *     functions.
      * @description String substitutions are done using registered substitition
      *     functions. This method returns the current registrations.
-     * @returns {Object} 
+     * @returns {Object}
      */
 
     if (TP.notValid(this.$substitutions)) {
@@ -4105,7 +4104,7 @@ function(aSymbol) {
      * @synopsis Returns a substitution registration or undefined.
      * @param {String} aSymbol A single character symbol used to identify the
      *     substitution.
-     * @returns {Object} 
+     * @returns {Object}
      */
 
     return this.getRegisteredSubstitutions().at(aSymbol);
@@ -4147,12 +4146,12 @@ function(aSymbol, anExistenceTest, aDataSymbol, aRegExp, aHandler) {
      *     that is built of all of the 'existence tests' for all of the
      *     registered substitutions matches text in the pattern. The system
      *     automatically registers a number of these substitutions.
-     *     
+     *
      *     One of the most commonly used subsitutions is the 'eval'
      *     substitution, which uses delimiters similar to TSH shell syntax (ala
      *     `...`). This particular substitution is special-cased by its own
      *     regex, as it needs to be performed before all other substitutions.
-     *     
+     *
      *     In any case, this method is used to register a particular
      *     substitution entry with the String type.
      * @param {String} aSymbol The symbol used to identify entities for this
@@ -4542,7 +4541,7 @@ function(aSuffix) {
      * @name endsWith
      * @synopsis Returns true if the receiver ends with the suffix provided.
      * @param {String} aSuffix The string to check as a suffix.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var ind;
@@ -4595,7 +4594,7 @@ function() {
      * @name getContent
      * @synopsis Returns the receiver. This method is used in content processing
      *     to support polymorphic access to String data.
-     * @returns {String} 
+     * @returns {String}
      */
 
     //  Make sure to 'toString()' ourself, so that we don't get an Array of
@@ -4612,7 +4611,7 @@ function() {
      * @name getLocation
      * @synopsis Returns the receiver. This method is used to conform to the
      *     TP.core.URI API.
-     * @returns {String} 
+     * @returns {String}
      */
 
     //  Make sure to 'toString()' ourself, so that we don't get an Array of
@@ -4632,7 +4631,7 @@ function() {
      *     at least one comma ([]) or colon ({}) and has room for at least 1
      *     character for a key and value. Due to bugs in IE with trailing commas
      *     as in [1,] we don't validate this.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (this.getSize() < 5) {
@@ -4661,7 +4660,7 @@ function() {
      * @synopsis Returns true if the path contains a fragment reference. This is
      *     typically associated with anchors, barenames, or full XPointers.
      *     Provided for polymorphic API with TP.core.URI.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return TP.regex.URI_FRAGMENT.test(this);
@@ -4709,7 +4708,7 @@ function(aSource, aChar) {
      * @name overlayCharacters
      * @description Each char matching aChar (which defaults to @) in the
      *     receiver is replaced with a character from aSource as in:
-     *     
+     *
      *     "(@@@) @@@-@@@@".overlayCharacters(3035551212); ... (303) 555-1212
      * @param {Object} aSource The data source providing new characters.
      * @param {String} aChar The character to replace. Defaults to "@".
@@ -4801,7 +4800,7 @@ function(aSource) {
     //  If there is more than one decimal point, then something is
     //  seriously wrong...
     if (patParts.getSize() > 2) {
-        this.raise('TP.sig.InvalidNumericTemplate', arguments);
+        this.raise('TP.sig.InvalidNumericTemplate');
         return this;
     }
 
@@ -5042,7 +5041,7 @@ function(aSource, aSide) {
         matcher = Number.getThousandsMatcher();
         matcher.lastIndex = 0;
         if (matcher.test(sourceStr)) {
-            this.raise('TP.sig.InvalidNumericTemplate', arguments);
+            this.raise('TP.sig.InvalidNumericTemplate');
 
             return this;
         }
@@ -5669,7 +5668,7 @@ function(stripSingle, stripMulti) {
      *     Default is true.
      * @param {Boolean} stripMulti Should we strip multi-line comments? Default
      *     is true.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -5992,9 +5991,9 @@ function(aDataSource, aKeySource, aScope) {
      *     supporting this operation. The built-in substitution operations
      *     supplied with this type support a "formatting" operation via
      *     substitute that allows strings of the form:
-     *     
+     *
      *     "aSymbol{substitutedContent}"
-     *     
+     *
      *     to act as format strings. The symbol defines which string
      *     substitution code should be used (see registerSubstitution()). The
      *     substitute method takes a TP.lang.Hash for aDataSource and aKeySource
@@ -6016,7 +6015,7 @@ function(aDataSource, aKeySource, aScope) {
         dataSymbol,
         results;
 
-    TP.debug('break.content_substitute');
+    TP.stop('break.content_substitute');
 
     //  exit hatch -- no more substitution entities
     if ((TP.notValid(String.$subsRe)) || !String.$subsRe.test(this)) {
@@ -6190,12 +6189,12 @@ function(anItem, aDataSource, aKeySource) {
 
     theHandler = TP.val(aKeySource, theItem);
     if (TP.notValid(theHandler)) {
-        TP.debug('break.formatter');
+        TP.stop('break.formatter');
 
         //  might be a bogus format where no key source or no key
         TP.ifWarn() ?
             TP.warn('Format handler not found for: ' + anItem,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return aDataSource;
     }

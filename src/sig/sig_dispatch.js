@@ -155,7 +155,7 @@ function(aRequest) {
     //  If the signalTargets is TP.ANY, then we just use the 'signal' method
     //  with a null origin
     if (signalTargets === TP.ANY) {
-        TP.signal(null, signalName, arguments, payload);
+        TP.signal(null, signalName, payload);
     } else if (TP.notEmpty(signalTargets)) {
         //  See if we can get a firing policy by getting the type of the
         //  signal and querying it for a firing policy.
@@ -181,7 +181,7 @@ function(aRequest) {
                         TP.ifWarn() ?
                             TP.warn('No window for target. Defaulting to ' +
                                         'codeframe.',
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
 
                         destWin = window;
                     }
@@ -201,7 +201,7 @@ function(aRequest) {
                 } else {
                     //  It was a non-element TIBET object, we can just use
                     //  the 'signal' method
-                    TP.signal(signalTarget, signalName, arguments, payload);
+                    TP.signal(signalTarget, signalName, payload);
                 }
             });
     }

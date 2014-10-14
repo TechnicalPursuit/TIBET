@@ -65,7 +65,7 @@ function(aFaultCode, aFaultString) {
                         'HTTP request aborted: ' + msg);
 
     TP.ifInfo(TP.sys.shouldLogIO()) ?
-            TP.sys.logIO(this, TP.INFO, arguments) : 0;
+            TP.sys.logIO(this, TP.INFO) : 0;
 
     //  TODO: migrate to the TP.core.HTTPURIHandler
 
@@ -118,7 +118,7 @@ function(aFaultCode, aFaultString) {
                         'HTTP request cancelled: ' + msg);
 
     TP.ifInfo(TP.sys.shouldLogIO()) ?
-            TP.sys.logIO(this, TP.INFO, arguments) : 0;
+            TP.sys.logIO(this, TP.INFO) : 0;
 
     //  TODO: migrate to the TP.core.HTTPURIHandler
 
@@ -799,7 +799,7 @@ function(aRequest) {
         response;
 
     if (!TP.isKindOf(aRequest, 'TP.sig.HTTPRequest')) {
-        this.raise('TP.sig.InvalidRequest', arguments);
+        this.raise('TP.sig.InvalidRequest');
 
         return;
     }
@@ -899,7 +899,6 @@ function(aRequest) {
                     url,
                     TP.ifKeyInvalid(aRequest, 'exceptionType',
                                                         'HTTPException'),
-                    arguments,
                     aRequest);
     }
 

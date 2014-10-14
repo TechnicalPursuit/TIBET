@@ -60,7 +60,7 @@ function(anObject) {
     var str;
 
     if (!TP.isValid(anObject)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (TP.isMethod(anObject.asString)) {
@@ -88,7 +88,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided is a conforming duration
      *     string of the form -PnYnMnDTnHnMnS.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var str,
@@ -139,7 +139,7 @@ function(aValue, aFacet) {
      *     found in the facet provided.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -164,7 +164,7 @@ function(aValue, aFacet) {
      *     value provided in the facet specification.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -197,7 +197,7 @@ function(aValue, aFacet) {
      *     the value specified in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -230,7 +230,7 @@ function(aValue, aFacet) {
      *     minimum value provided in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -263,7 +263,7 @@ function(aValue, aFacet) {
      *     value provided in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -303,7 +303,7 @@ function(anObject) {
 
     //  have to start with a real duration
     if (TP.notValid(str = this.from(anObject))) {
-        return this.raise('TP.sig.InvalidDuration', arguments);
+        return this.raise('TP.sig.InvalidDuration');
     }
 
     return Date.getMonthsInDuration(str);
@@ -327,7 +327,7 @@ function(anObject) {
 
     //  have to start with a real duration
     if (TP.notValid(str = this.from(anObject))) {
-        return this.raise('TP.sig.InvalidDuration', arguments);
+        return this.raise('TP.sig.InvalidDuration');
     }
 
     return Date.getSecondsInDuration(str);

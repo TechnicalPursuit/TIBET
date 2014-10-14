@@ -48,7 +48,7 @@ function() {
     /**
      * @name getClosingTag
      * @synopsis Returns the closing tag content for a stream.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var str;
@@ -66,7 +66,7 @@ function() {
     /**
      * @name getOpeningTag
      * @synopsis Returns the stream's opening tag content.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var str;
@@ -125,7 +125,7 @@ function(aNode, aConnection) {
     TP.elementAddNamespace(natNode, 'xml', TP.w3.Xmlns.XML);
 
     if (TP.notValid(aConnection)) {
-        return this.raise('TP.sig.InvalidXMPPConnection', arguments);
+        return this.raise('TP.sig.InvalidXMPPConnection');
     }
 
     this.set('connection', aConnection);
@@ -141,7 +141,7 @@ function() {
     /**
      * @name getClosingTag
      * @synopsis Returns the closing tag text for the receiver.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var str;
@@ -175,7 +175,7 @@ function() {
     /**
      * @name getOpeningTag
      * @synopsis Returns the opening tag content for the receiver.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var str;
@@ -225,7 +225,7 @@ function(aFlag) {
      * @synopsis Combined setter/getter for the receiver's open status. Returns
      *     true if the receiving connection is open.
      * @param {Boolean} aFlag A new value to set for the open status.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (TP.isBoolean(aFlag)) {

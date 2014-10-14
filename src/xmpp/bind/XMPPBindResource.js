@@ -43,7 +43,7 @@ function(resourceName) {
     var resourceNode;
 
     if (TP.isEmpty(resourceName)) {
-        return this.raise('TP.sig.InvalidResourceName', arguments);
+        return this.raise('TP.sig.InvalidResourceName');
     }
 
     //  Make a node in the 'resource binding' namespace with a tag name of

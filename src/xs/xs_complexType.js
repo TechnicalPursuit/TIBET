@@ -79,7 +79,6 @@ function(aValue) {
 
     if (TP.notValid(schemaNode = this.get('schemaNode'))) {
         return this.raise('TP.sig.InvalidNode',
-                            arguments,
                             'No schema definition node provided');
     }
 
@@ -111,7 +110,7 @@ function(aValue, choiceElem) {
 
     var numValidElems,
         allElems,
-        
+
         elemsAreValid,
         compsAreValid;
 
@@ -317,8 +316,7 @@ function(aValue, anElem) {
                     TP.warn(TP.boot.$annotate(
                                 list.at(i),
                                 'Unable to require() base type: ' + typeName),
-                            TP.LOG,
-                            arguments) : 0;
+                            TP.LOG) : 0;
 
                 return true;
             }
@@ -357,7 +355,7 @@ function(aValue, sequenceElem) {
 
         elemsAreValid,
         compsAreValid;
-    
+
     allElems = TP.nodeEvaluateXPath(sequenceElem, './xs:element', TP.NODESET);
 
     if (TP.notEmpty(allElems)) {

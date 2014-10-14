@@ -30,7 +30,7 @@ TIBET platform.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('$getContextGlobals',
-function(params, aContext) {
+function(params, windowContext) {
 
     /**
      * @name $getContextGlobals
@@ -49,7 +49,7 @@ function(params, aContext) {
      *     - that is, they do not start with '$$' or '$'. 'types' Return global
      *     slots that are TIBET types. 'functions' Return global slots that are
      *     functions. 'variables' Return global slots that are not functions.
-     * @param {Window} aContext The window/frame whose globals should be
+     * @param {Window} windowContext The window/frame whose globals should be
      *     returned. Default is the current window.
      * @returns {Array} The list of Strings representing keys on the JavaScript
      *     global object.
@@ -67,7 +67,7 @@ function(params, aContext) {
         key;
 
     arr = TP.ac();
-    context = aContext || TP.global;
+    context = windowContext || TP.global;
 
     if (TP.isValid(params)) {
         //  The default is to return public functions and attributes
@@ -682,7 +682,7 @@ function(aFunction) {
     var func;
 
     if (!TP.isFunction(aFunction)) {
-        TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        TP.raise(this, 'TP.sig.InvalidParameter');
         return aFunction;
     }
 
@@ -940,7 +940,7 @@ function(methodText) {
     if (TP.notValid(self.JsDiff)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. JsDiff not loaded.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
         return;
     }
 
@@ -949,7 +949,7 @@ function(methodText) {
     if (TP.isEmpty(path)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Source path not found.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
         return;
     }
 
@@ -961,7 +961,7 @@ function(methodText) {
     if (TP.isEmpty(content)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Source text not found.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
         return;
     }
 
@@ -978,7 +978,7 @@ function(methodText) {
     if (TP.notValid(match)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Method index not found.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
         return null;
     }
 
@@ -1775,7 +1775,7 @@ function(shouldNotify, shouldThrow, stackDepth) {
     //  don't need to use activations here, only care about length
     if (TP.isArray(stackInfo) && (stackInfo.length > depth)) {
         if (doNotify) {
-            TP.boot.$sterr('RecursionException', stackInfo, TP.ERROR);
+            TP.boot.$stderr('RecursionException', stackInfo, TP.ERROR);
         }
         if (TP.notFalse(doThrow)) {
             throw new Error('RecursionError');
@@ -1826,10 +1826,10 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
 
         // If we're still booting errors that are uncaught are considered FATAL.
         if (!TP.sys.hasStarted()) {
-            TP.fatal(str, TP.BOOT_LOG, arguments);
+            TP.fatal(str, TP.BOOT_LOG);
         } else {
             // Uncaught errors are severe relative to those we raise/catch.
-            TP.ifSevere() ? TP.severe(str, TP.LOG, arguments) : 0;
+            TP.ifSevere() ? TP.severe(str, TP.LOG) : 0;
         }
     } catch (e) {
         // don't let log errors trigger recursion, but don't bury them either.
@@ -1876,7 +1876,7 @@ TP.sys.$signalQueue = TP.ifInvalid(TP.sys.$signalQueue, TP.ac());
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('queue',
-function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
+function(anOrigin, aSignal, aPayload, aPolicy, aType) {
 
     /**
      * @name queue
@@ -1887,7 +1887,6 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
      *     signals found there.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -1899,7 +1898,6 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
     TP.sys.$signalQueue.add(
         TP.ac(TP.ifInvalid(anOrigin, null),
                 TP.ifInvalid(aSignal, null),
-                TP.ifInvalid(aContext, null),
                 TP.ifInvalid(aPayload, null),
                 TP.ifInvalid(aPolicy, null),
                 TP.ifInvalid(aType, null)));
@@ -1910,14 +1908,13 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('queue',
-function(aSignal, aContext, aPayload, aPolicy, aType) {
+function(aSignal, aPayload, aPolicy, aType) {
 
     /**
      * @name queue
      * @synopsis Queues a set of signal parameters for processing at the end of
      *     the current signal handling cycle.
      * @param {TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -1926,13 +1923,13 @@ function(aSignal, aContext, aPayload, aPolicy, aType) {
      * @todo
      */
 
-    return TP.queue(this, aSignal, aContext, aPayload, aPolicy, aType);
+    return TP.queue(this, aSignal, aPayload, aPolicy, aType);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('signal',
-function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
+function(anOrigin, aSignal, aPayload, aPolicy, aType) {
 
     /**
      * @name signal
@@ -1946,7 +1943,6 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
      *     signaling activity is installed in place of this version.
      * @param {Object} anOrigin The originator of the signal.
      * @param {TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -1971,8 +1967,7 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
     if (TP.sys.shouldQueueLoadSignals()) {
         //  capture arguments in an array which could later be used by
         //  apply
-        args = TP.ac(anOrigin, aSignal, aContext, aPayload, aPolicy,
-                        aType);
+        args = TP.ac(anOrigin, aSignal, aPayload, aPolicy, aType);
 
         //  manually add the signal information to the signal queue for
         //  later processing when the signaling system is running
@@ -1983,11 +1978,10 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
         TP.trace(
             'origin: ' + anOrigin +
             '\nsignal: ' + aSignal +
-            '\ncontext: ' + aContext +
             '\nsigarg: ' + aPayload +
             '\npolicy: ' + aPolicy +
             '\ntype: ' + aType,
-            TP.SIGNAL_LOG, arguments) : 0;
+            TP.SIGNAL_LOG) : 0;
 
     return aSignal;
 });
@@ -1995,14 +1989,13 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('signal',
-function(aSignal, aContext, aPayload, aPolicy, aType) {
+function(aSignal, aPayload, aPolicy, aType) {
 
     /**
      * @name signal
      * @synopsis Signals activity to registered observers using the receiver as
      *     the origin of the signal.
      * @param {TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -2012,7 +2005,7 @@ function(aSignal, aContext, aPayload, aPolicy, aType) {
      * @todo
      */
 
-    return TP.signal(this, aSignal, aContext, aPayload, aPolicy, aType);
+    return TP.signal(this, aSignal, aPayload, aPolicy, aType);
 });
 
 //  ------------------------------------------------------------------------
@@ -2327,7 +2320,7 @@ function() {
     }
 
     return TP.signal(it.at(0), it.at(1), it.at(2),
-                        it.at(3), it.at(4), it.at(5));
+                        it.at(3), it.at(4));
 });
 
 //  ------------------------------------------------------------------------
@@ -2713,7 +2706,7 @@ function(aFilter) {
 
         proto;
 
-    TP.debug('break.interface');
+    TP.stop('break.interface');
 
     //  next question is can we find the requested subset on the list?
     filter = TP.ifInvalid(aFilter, 'unique_attributes');
@@ -2724,7 +2717,7 @@ function(aFilter) {
         if (TP.notValid(params = TP.SLOT_FILTERS[filter])) {
             TP.ifWarn() ?
                 TP.warn('Invalid reflection filter: ' + filter,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
             return TP.ac();
         }
@@ -2746,7 +2739,7 @@ function(aFilter) {
     if (!attrs && !methods) {
         TP.ifWarn() ?
             TP.warn('Invalid reflection filter: ' + filter,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return TP.ac();
     }
@@ -2758,7 +2751,7 @@ function(aFilter) {
         //  consider this a performance warning issue.
         TP.ifWarn(TP.sys.cfg('log.scans')) ?
             TP.warn('Scanning ' + filter + ' on ' + this,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
     }
 
     //  set up a proto object for filtering methods
@@ -3252,7 +3245,7 @@ function(aKey, includeUndefined) {
     var includeUndef;
 
     if (!TP.isNumber(aKey)) {
-        this.raise('TP.sig.InvalidKey', arguments);
+        this.raise('TP.sig.InvalidKey');
 
         return false;
     }
@@ -3577,7 +3570,7 @@ function(aSelectFunction) {
 
     //  if we can provide keys and do an 'at' then we can get pairs
     if (!TP.canInvoke(this, ['at', 'getKeys'])) {
-        return this.raise('TP.sig.InvalidPairRequest', arguments);
+        return this.raise('TP.sig.InvalidPairRequest');
     }
 
     //  the work is easy for key/value objects
@@ -3684,7 +3677,7 @@ function(aSelectFunction) {
      * @todo
      */
 
-    return this.raise('TP.sig.InvalidPairRequest', arguments);
+    return this.raise('TP.sig.InvalidPairRequest');
 });
 
 //  ------------------------------------------------------------------------
@@ -3707,7 +3700,7 @@ function(aSelectFunction) {
 
     //  if we can provide keys and do an 'at' then we can get pairs
     if (!TP.canInvoke(this, ['at', 'getKeys'])) {
-        return this.raise('TP.sig.InvalidPairRequest', arguments);
+        return this.raise('TP.sig.InvalidPairRequest');
     }
 
     //  the work is easy for key/value objects
@@ -4075,7 +4068,7 @@ func = function(anAspect, anAction, aDescription) {
     }
 
     //  Keep this after the test above to keep overhead down.
-    TP.debug('break.change');
+    TP.stop('break.change');
 
     //  Build up the signal name we'll be firing.
     sig = 'Change';
@@ -4096,7 +4089,6 @@ func = function(anAspect, anAction, aDescription) {
     desc = TP.isValid(aDescription) ? aDescription : TP.hc();
     if (!TP.canInvoke(desc, 'atPutIfAbsent')) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Description not a collection.');
 
         return;
@@ -4110,8 +4102,7 @@ func = function(anAspect, anAction, aDescription) {
     //  'aspect'Change signals haven't been defined as being subtypes of Change
     //  (although we also supply 'TP.sig.Change' as the default signal type here
     //  so that undefined aspect signals will use that type.
-    TP.signal(this, sig, arguments,
-                desc, TP.INHERITANCE_FIRING, 'TP.sig.Change');
+    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, 'TP.sig.Change');
 
     return this;
 });
@@ -4251,7 +4242,6 @@ function(anAspect, anAction, aDescription) {
     desc = TP.isValid(aDescription) ? aDescription : TP.hc();
     if (!TP.canInvoke(desc, 'atPutIfAbsent')) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Description not a collection.');
 
         return;
@@ -4263,7 +4253,7 @@ function(anAspect, anAction, aDescription) {
     //  note that we force the firing policy here. this allows observers of a
     //  generic Change to see 'aspect'Change notifications, even if those
     //  'aspect'Change signals haven't been defined as being subtypes of Change
-    TP.signal(this, sig, arguments, desc, TP.INHERITANCE_FIRING);
+    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING);
 
     return TP.isValid(target) ? target : this;
 });
@@ -6330,12 +6320,11 @@ function(attributeName, attributeValue, shouldSignal) {
 
     if (!TP.isMutable(this)) {
         return this.raise('TP.sig.NonMutableInstance',
-                            arguments,
                             attributeName);
     }
 
     if (TP.isEmpty(attributeName)) {
-        return this.raise('TP.sig.InvalidKey', arguments);
+        return this.raise('TP.sig.InvalidKey');
     }
 
     //  If we got handed an 'access path', then we need to let it handle this.
@@ -6420,7 +6409,7 @@ function(attributeName, attributeValue, shouldSignal) {
         args;
 
     if (TP.isEmpty(attributeName)) {
-        return this.raise('TP.sig.InvalidKey', arguments);
+        return this.raise('TP.sig.InvalidKey');
     }
 
     //  If we got handed an 'access path', then we need to let it handle this.
@@ -6520,13 +6509,13 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('runDebugger',
-function(aContext) {
+function(callingContext) {
 
     /**
      * @name runDebugger
      * @synopsis If there's a TIBET implementation of a debugging tool this
      *     function will run it if possible.
-     * @param {Function} aContext The function reference to debug.
+     * @param {Function|Arguments} callingContext The context to debug.
      */
 
     return;
@@ -6535,7 +6524,7 @@ function(aContext) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('$launchDebugger',
-function(aContext) {
+function(callingContext) {
 
     /**
      * @name $launchDebugger
@@ -6548,11 +6537,11 @@ function(aContext) {
      *     TP.sys.shouldUseDebugger() is true. Also note that the native
      *     debuggers will only become visible if a) installed and b) are already
      *     open.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Function|Arguments} callingContext The calling context.
      */
 
     if (this.hasDebugger()) {
-        this.runDebugger(aContext);
+        this.runDebugger(callingContext);
     } else {
         //  on IE or Mozilla this will foreground the native debugger, if
         //  installed and open. but it's a bit flakey.
@@ -7533,7 +7522,7 @@ function(keyCriteria, selectionCriteria) {
 
         default:
 
-            return this.raise('TP.sig.InvalidParameter', arguments);
+            return this.raise('TP.sig.InvalidParameter');
     }
 });
 
@@ -8245,7 +8234,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
                             whenError(next, index, e);
                         } else {
                             that.raise('TP.sig.InvokeFailed',
-                                arguments, TP.ec(e, 'Invocation failed'));
+                                TP.ec(e, 'Invocation failed'));
                         }
                     } finally {
                         arr.signal('TP.sig.InvokeNext');
@@ -8256,7 +8245,6 @@ function(aThis, anArgArray, whenError, stopOnError) {
     runner = function () {
         if (stopOnError && errors.length > 0) {
             that.signal('TP.sig.InvokeComplete',
-                arguments,
                 TP.hc('results', results, 'errors', errors));
         }
 
@@ -8265,7 +8253,6 @@ function(aThis, anArgArray, whenError, stopOnError) {
             setTimeout(next);
         } else {
             that.signal('TP.sig.InvokeComplete',
-                arguments,
                 TP.hc('results', results, 'errors', errors));
         }
     };
@@ -8430,7 +8417,7 @@ function(aNumber) {
         thisref;
 
     if (!TP.isNumber(aNumber)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
     }
 
     arr = TP.ac();
@@ -8771,12 +8758,13 @@ TP.boot.Log.prototype.clearEntries = function(aLogName, aLogLevel) {
         function(it) {
 
             //  empty? every entry is suspect...just check level
-            if (TP.isEmpty(aLogName) || (aLogName === it[TP.LOG_ENTRY_NAME])) {
+            if (TP.isEmpty(aLogName) ||
+                    (aLogName === it[TP.boot.LOG_ENTRY_NAME])) {
                 //  no level filter? all entries for the named log go
                 if (TP.isEmpty(aLogLevel)) {
                     return true;
                 } else {
-                    return aLogLevel !== it[TP.LOG_ENTRY_LEVEL];
+                    return aLogLevel !== it[TP.boot.LOG_ENTRY_LEVEL];
                 }
             }
 
@@ -8835,11 +8823,12 @@ TP.boot.Log.prototype.getEntries = function(aLogName, aLogLevel) {
     arr = this.messages.select(
         function(it) {
 
-            if (TP.isEmpty(aLogName) || (aLogName === it[TP.LOG_ENTRY_NAME])) {
+            if (TP.isEmpty(aLogName) ||
+                    (aLogName === it[TP.boot.LOG_ENTRY_NAME])) {
                 if (TP.isEmpty(aLogLevel)) {
                     return true;
                 } else {
-                    return aLogLevel === it[TP.LOG_ENTRY_LEVEL];
+                    return aLogLevel === it[TP.boot.LOG_ENTRY_LEVEL];
                 }
             }
 
@@ -8869,11 +8858,11 @@ TP.boot.Log.prototype.hasEntries = function(aLogName, aLogLevel) {
                 function(it) {
 
                     if (TP.isEmpty(aLogName) ||
-                        (aLogName === it[TP.LOG_ENTRY_NAME])) {
+                        (aLogName === it[TP.boot.LOG_ENTRY_NAME])) {
                         if (TP.isEmpty(aLogLevel)) {
                             return true;
                         } else {
-                            return aLogLevel === it[TP.LOG_ENTRY_LEVEL];
+                            return aLogLevel === it[TP.boot.LOG_ENTRY_LEVEL];
                         }
                     }
 
@@ -8904,7 +8893,7 @@ function(aLogName) {
 
     var flag;
 
-    TP.debug('break.change');
+    TP.stop('break.change');
 
     if (TP.notValid(aLogName)) {
         return;
@@ -8956,7 +8945,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('$$log',
-function(anObject, aLogName, aLogLevel, aContext) {
+function(anObject, aLogName, aLogLevel) {
 
     /**
      * @name $$log
@@ -8967,8 +8956,6 @@ function(anObject, aLogName, aLogLevel, aContext) {
      *     TP.INFERENCE_LOG, etc.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -8982,7 +8969,6 @@ function(anObject, aLogName, aLogLevel, aContext) {
 
         entry,
         stackInfo,
-        args,
 
         stdioDict,
         format,
@@ -9013,7 +8999,7 @@ function(anObject, aLogName, aLogLevel, aContext) {
 
         //  add entry to the low-level log container and grab that entry so
         //  we can augment it with stack and argument data as needed
-        TP.sys.$activity.log(anObject, name, level, aContext);
+        TP.sys.$activity.log(anObject, name, level);
         entry = TP.sys.$activity.last();
 
         //  NOTE that we never log stack information for SYSTEM messages
@@ -9033,18 +9019,8 @@ function(anObject, aLogName, aLogLevel, aContext) {
                 stackInfo.shift();
                 stackInfo.shift();
 
-                //  NOTE this flag only matters when logging stack at large
-                if (TP.sys.shouldLogStackArguments()) {
-                    if (TP.isArgArray(aContext)) {
-                        args = TP.args(aContext);
-                    }
-                }
-
                 //  adjust the entry to hold captured stack/arg data
                 entry.push(stackInfo);
-                if (TP.isArray(args)) {
-                    entry.push(args);
-                }
             }
         }
 
@@ -9073,7 +9049,7 @@ function(anObject, aLogName, aLogLevel, aContext) {
             //  if we're still booting then announce it in the bootlog
             if (!TP.sys.hasStarted()) {
                 if (TP.canInvoke(TP.boot, '$stderr')) {
-                    TP.boot.$stderr(anObject, aContext || arguments);
+                    TP.boot.$stderr(anObject);
                 }
             } else {
               TP.stderr(output, stdioDict);
@@ -9116,7 +9092,7 @@ function(anObject, aLogName, aLogLevel, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('log',
-function(anObject, aLogName, aLogLevel, aContext) {
+function(anObject, aLogName, aLogLevel) {
 
     /**
      * @name log
@@ -9131,8 +9107,6 @@ function(anObject, aLogName, aLogLevel, aContext) {
      *     TP.INFERENCE_LOG, etc.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9141,7 +9115,7 @@ function(anObject, aLogName, aLogLevel, aContext) {
 
     level = TP.ifInvalid(aLogLevel, TP.WARN);
     if (TP.sys.getLogLevel() <= level) {
-        return TP.sys.$$log(anObject, aLogName, aLogLevel, aContext);
+        return TP.sys.$$log(anObject, aLogName, aLogLevel);
     }
 
     return false;
@@ -9173,7 +9147,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logTest',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logTest
@@ -9205,20 +9179,17 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The test data to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
 
-    TP.sys.$testlog.log(anObject, TP.TEST_LOG, TP.SYSTEM,
-                        aContext || arguments);
+    TP.sys.$testlog.log(anObject, TP.TEST_LOG, TP.SYSTEM);
 
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
         console.log(TP.str(anObject));
     }
 
-    TP.sys.log(anObject, TP.TEST_LOG, aLogLevel, aContext || arguments);
+    TP.sys.log(anObject, TP.TEST_LOG, aLogLevel);
 
     //  with all logging complete signal change on the test log
     TP.sys.$logChanged(TP.TEST_LOG);
@@ -9238,7 +9209,7 @@ function(anObject, aLogLevel, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logCSS',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logCSS
@@ -9247,8 +9218,6 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9257,7 +9226,7 @@ function(anObject, aLogLevel, aContext) {
         return false;
     }
 
-    TP.sys.log(anObject, TP.CSS_LOG, aLogLevel, aContext || arguments);
+    TP.sys.log(anObject, TP.CSS_LOG, aLogLevel);
 
     return true;
 });
@@ -9275,7 +9244,7 @@ content that often includes the message, target, arguments, etc.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logInference',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logInference
@@ -9285,8 +9254,6 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9297,8 +9264,7 @@ function(anObject, aLogLevel, aContext) {
 
     TP.sys.log(anObject,
                 TP.INFERENCE_LOG,
-                aLogLevel,
-                aContext || arguments);
+                aLogLevel);
 
     return true;
 });
@@ -9316,7 +9282,7 @@ allowing you to see a single view of all server or host communication.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logIO',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logIO
@@ -9358,8 +9324,6 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9368,7 +9332,7 @@ function(anObject, aLogLevel, aContext) {
         return false;
     }
 
-    TP.sys.log(anObject, TP.IO_LOG, aLogLevel, aContext || arguments);
+    TP.sys.log(anObject, TP.IO_LOG, aLogLevel);
 
     return true;
 });
@@ -9387,7 +9351,7 @@ consistently.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logJob',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logJob
@@ -9396,8 +9360,6 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9406,7 +9368,7 @@ function(anObject, aLogLevel, aContext) {
         return false;
     }
 
-    TP.sys.log(anObject, TP.JOB_LOG, aLogLevel, aContext || arguments);
+    TP.sys.log(anObject, TP.JOB_LOG, aLogLevel);
 
     return true;
 });
@@ -9423,7 +9385,7 @@ keys can be a useful way to help adjust keyboard map entries.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logKey',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logKey
@@ -9432,8 +9394,6 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9442,7 +9402,7 @@ function(anObject, aLogLevel, aContext) {
         return false;
     }
 
-    TP.sys.log(anObject, TP.KEY_LOG, aLogLevel, aContext || arguments);
+    TP.sys.log(anObject, TP.KEY_LOG, aLogLevel);
 
     return true;
 });
@@ -9461,7 +9421,7 @@ path a user took up to the point of an error.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logLink',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logLink
@@ -9471,8 +9431,6 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9481,7 +9439,7 @@ function(anObject, aLogLevel, aContext) {
         return false;
     }
 
-    TP.sys.log(anObject, TP.LINK_LOG, aLogLevel, aContext || arguments);
+    TP.sys.log(anObject, TP.LINK_LOG, aLogLevel);
 
     return true;
 });
@@ -9498,7 +9456,7 @@ cross-domain HTTP request can be logged separately (and are by default).
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logSecurity',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logSecurity
@@ -9507,8 +9465,6 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9517,7 +9473,7 @@ function(anObject, aLogLevel, aContext) {
         return false;
     }
 
-    TP.sys.log(anObject, TP.SECURITY_LOG, aLogLevel, aContext || arguments);
+    TP.sys.log(anObject, TP.SECURITY_LOG, aLogLevel);
 
     return true;
 });
@@ -9535,7 +9491,7 @@ operates. The log entries typically contain the signal object itself.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logSignal',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logSignal
@@ -9547,8 +9503,6 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9565,8 +9519,7 @@ function(anObject, aLogLevel, aContext) {
     if (TP.sys.getLogLevel() <= level) {
         TP.sys.log(anObject.get('message'),
                     TP.SIGNAL_LOG,
-                    level,
-                    aContext || arguments);
+                    level);
     }
 
     return true;
@@ -9585,7 +9538,7 @@ occurs.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('logTransform',
-function(anObject, aLogLevel, aContext) {
+function(anObject, aLogLevel) {
 
     /**
      * @name logTransform
@@ -9593,8 +9546,6 @@ function(anObject, aLogLevel, aContext) {
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
@@ -9605,8 +9556,7 @@ function(anObject, aLogLevel, aContext) {
 
     TP.sys.log(anObject,
                 TP.TRANSFORM_LOG,
-                aLogLevel,
-                aContext || arguments);
+                aLogLevel);
 
     return true;
 });
@@ -9674,7 +9624,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.$$NSMString =
-    'TP.raise(this, "TP.sig.NoSuchMethod", arguments); return;';
+    'TP.raise(this, "TP.sig.NoSuchMethod"); return;';
 
 //  ------------------------------------------------------------------------
 
@@ -9736,7 +9686,7 @@ function(aName) {
     var dnuFunc;
 
     if (TP.isEmpty(aName)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
     }
 
     dnuFunc = function () {
@@ -9774,7 +9724,7 @@ function(aName) {
         delStr;
 
     if (TP.isEmpty(aName)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
     }
 
     delStr = TP.join(
@@ -9791,7 +9741,7 @@ function(aName) {
         //  problem with aName, not a valid function name
         TP.ifWarn() ?
             TP.warn('Unable to construct delegator for ' + aName,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
     }
 
     return delFunc;
@@ -9814,7 +9764,7 @@ function(aName) {
     var nsmFunc;
 
     if (TP.isEmpty(aName)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
     }
 
     nsmFunc = TP.fc(TP.sys.$$NSMString);

@@ -48,7 +48,7 @@
  *     gooReq = TP.sig.GoogleContactsRequest.construct(requestParams);
  *     gooReq.defineMethod('handleRequestSucceeded', function(aResponse) {
  *
- *     TP.info(aResponse.getResult(), TP.LOG, arguments); }); gooReq.fire();
+ *     TP.info(aResponse.getResult(), TP.LOG); }); gooReq.fire();
  * @todo
  */
 

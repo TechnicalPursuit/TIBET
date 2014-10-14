@@ -51,7 +51,7 @@ function(aWindow) {
         unloadListener;
 
     if (!TP.isWindow(aWindow)) {
-        return this.raise('TP.sig.InvalidWindow', arguments);
+        return this.raise('TP.sig.InvalidWindow');
     }
 
     if (TP.$$DEBUG) {

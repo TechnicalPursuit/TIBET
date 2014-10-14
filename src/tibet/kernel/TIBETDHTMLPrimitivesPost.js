@@ -218,7 +218,7 @@ function(aDocument) {
     //  processing) so we just check for TP.isDocument() here, not
     //  TP.isHTMLDocument().
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     headElement = TP.nodeGetFirstElementByTagName(aDocument, 'head');
@@ -255,7 +255,7 @@ function(aDocument) {
     var autofocusedElem;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (TP.isElement(autofocusedElem =
@@ -292,7 +292,7 @@ function(aDocument) {
         index;
 
     if (!TP.isHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     allIFrames = TP.ac();
@@ -337,7 +337,7 @@ function(aDocument) {
      */
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (TP.isHTMLDocument(aDocument)) {
@@ -365,7 +365,7 @@ function(aDocument) {
     var bodyElement;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     bodyElement = TP.nodeGetFirstElementByTagName(aDocument, 'body');
@@ -390,7 +390,7 @@ function(aDocument) {
      */
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.nodeGetFirstElementByTagName(aDocument, 'head');
@@ -414,7 +414,7 @@ function(aDocument) {
     var headElement;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     headElement = TP.nodeGetFirstElementByTagName(aDocument, 'head');
@@ -443,7 +443,7 @@ function(aDocument) {
     var activeElement;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Some browsers (i.e. Webkit) don't support '.activeElement' for XHTML
@@ -489,7 +489,7 @@ function(aDocument) {
         name;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     list = TP.nodeGetElementsByTagName(aDocument, 'a');
@@ -524,7 +524,7 @@ function(aDocument) {
     var titleElem;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (TP.isElement(titleElem =
@@ -570,7 +570,7 @@ function(aDocument, trimFile) {
     if (!TP.isDocument(doc = aDocument)) {
         doc = TP.nodeGetDocument(aDocument);
         if (TP.notValid(doc)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
     }
 
@@ -657,7 +657,7 @@ function(aDocument, aFontSize) {
         measuringDiv;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Derived from the dojotoolkit.org font metric measurer, which is
@@ -741,7 +741,7 @@ function(aDocument) {
         name;
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     list = TP.nodeGetElementsByTagName(aDocument, 'script');
@@ -775,7 +775,7 @@ function(aDocument) {
      */
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.nodeGetElementsByTagName(aDocument, 'script');
@@ -803,7 +803,7 @@ function(theContent) {
     var content;
 
     if (TP.isEmpty(theContent)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     content = theContent;
@@ -836,7 +836,7 @@ function(aDocument, deltaX, deltaY) {
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     TP.nodeGetWindow(aDocument).scrollBy(deltaX, deltaY);
@@ -860,7 +860,7 @@ function(aDocument, x, y) {
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     TP.nodeGetWindow(aDocument).scrollTo(x, y);
@@ -895,7 +895,7 @@ function(aDocument, aURIStr, force) {
     if (!TP.isDocument(doc = aDocument)) {
         doc = TP.nodeGetDocument(aDocument);
         if (TP.notValid(doc)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
     }
 
@@ -942,7 +942,7 @@ function(aDocument, titleText) {
         titleElem;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  NB: We do allow titleText to be ''. So, if title text is not a
@@ -994,7 +994,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     var bodyElem;
 
     if (!TP.isHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (TP.isElement(bodyElem = TP.documentGetBody(aDocument))) {
@@ -1039,7 +1039,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      */
 
     if (!TP.isHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.htmlElementInsertContent(aDocument.documentElement,
@@ -1090,10 +1090,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         str,
         win;
 
-    TP.debug('break.html_content');
+    TP.stop('break.html_content');
 
     if (!TP.isHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(aDocument));
@@ -1339,7 +1339,7 @@ function(anElement, className) {
     var existingClass;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(className)) {
@@ -1401,11 +1401,11 @@ function(anElement, markup, boxType, wantsTransformed) {
         height;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(markup)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     //  Default the box type to TP.BORDER_BOX
@@ -1477,7 +1477,7 @@ insetLeft) {
         ySide;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elemCoords = TP.elementGetBorderBox(anElement);
@@ -1595,11 +1595,11 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
         theDistance;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isNumber(preferredX) || !TP.isNumber(preferredY)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     //  The offsets default to 0.
@@ -1790,11 +1790,11 @@ function(anElement, x, y) {
     var elemCoords;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isNumber(x) || !TP.isNumber(y)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     //  We must obtain the coordinates of the element as they are relative
@@ -1832,7 +1832,7 @@ function(anElement) {
         theTagName;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Since the author might have used a non-default value for the
@@ -1902,7 +1902,7 @@ function(anElement, wantsTransformed) {
         elementBox;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elementDoc = TP.nodeGetDocument(anElement);
@@ -2056,8 +2056,7 @@ function(anElement) {
         busyMessageElement;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments,
-                                                            anElement);
+        return TP.raise(this, 'TP.sig.InvalidElement', anElement);
     }
 
     if (TP.isElement(busyElement = anElement.busyElement)) {
@@ -2134,7 +2133,7 @@ function(anElement) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isSVGNode(anElement)) {
@@ -2174,7 +2173,7 @@ function(anElement) {
         entry;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     clipString = TP.elementGetComputedStyleObj(anElement).clip;
@@ -2245,7 +2244,7 @@ function(anElement, wantsTransformed) {
     var theHeight;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if ((theHeight = anElement.scrollHeight) === 0) {
@@ -2278,7 +2277,7 @@ function(anElement, wantsTransformed) {
     var theWidth;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if ((theWidth = anElement.scrollWidth) === 0) {
@@ -2309,7 +2308,7 @@ function(anElement) {
     var elementColor;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  First, check to see if our computed color is transparent
@@ -2390,11 +2389,11 @@ function(anElement, boxType, wantsTransformed) {
         box;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isWindow(elemWin = TP.nodeGetWindow(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (wantsTransformed) {
@@ -2483,11 +2482,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         ancestorPosition;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isWindow(elemWin = TP.nodeGetWindow(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
@@ -2552,11 +2551,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         ancestorPosition;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isWindow(elemWin = TP.nodeGetWindow(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
@@ -2623,11 +2622,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         ancestorPosition;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isWindow(elemWin = TP.nodeGetWindow(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.isElement(winFrameElem = elemWin.frameElement)) {
@@ -2684,7 +2683,7 @@ function(anElement, boxType, wantsTransformed) {
         returnedBoxType;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Note that offsetHeight returns our equivalent of TP.BORDER_BOX
@@ -2771,7 +2770,7 @@ function(anElement) {
     var str;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isHTMLNode(anElement)) {
@@ -2809,7 +2808,7 @@ function(anElement, wantsTransformed) {
         positionedAncestor;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elemDoc = TP.nodeGetDocument(anElement);
@@ -2862,7 +2861,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         ancestorBox;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elemBox = TP.elementGetBorderBox(anElement, wantsTransformed);
@@ -3034,7 +3033,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         ancestorPosition;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elemDoc = TP.nodeGetDocument(anElement);
@@ -3130,7 +3129,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         ancestorPosition;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elemDoc = TP.nodeGetDocument(anElement);
@@ -3229,7 +3228,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         ancestorPosition;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elemDoc = TP.nodeGetDocument(anElement);
@@ -3338,7 +3337,7 @@ function(anElement, boxType, wantsTransformed) {
         box;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isElement(offsetAncestor = TP.elementGetOffsetParent(anElement))) {
@@ -3377,7 +3376,7 @@ function(anElement, boxType, wantsTransformed) {
     var offsetAncestor;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Make sure that the offsetAncestor is an Element (it may be the
@@ -3414,7 +3413,7 @@ function(anElement, boxType, wantsTransformed) {
     var offsetAncestor;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Make sure that the offsetAncestor is an Element (it may be the
@@ -3452,7 +3451,7 @@ function(anElement, boxType, wantsTransformed) {
     var offsetAncestor;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Make sure that the offsetAncestor is an Element (it may be the
@@ -3500,7 +3499,7 @@ function(anElement, anAncestor, wantsTransformed) {
         ancestor;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     stopAncestor = TP.ifInvalid(anAncestor, TP.nodeGetDocument(anElement));
@@ -3567,7 +3566,7 @@ function(anElement, wantsTransformed) {
         computedStyle;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elemDoc = TP.nodeGetDocument(anElement);
@@ -3621,7 +3620,7 @@ function(anElement, wantsTransformed) {
     var vals;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isTrue(wantsTransformed)) {
@@ -3667,7 +3666,7 @@ function(anElement, xCoord, yCoord) {
         verticalSide;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Get the TP.CONTENT_BOX origin of the supplied Element
@@ -3728,7 +3727,7 @@ function(anElement, boxType, wantsTransformed) {
         returnedBoxType;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     widthVal = TP.elementGetBorderBox(anElement, wantsTransformed).at('width');
@@ -3813,7 +3812,7 @@ function(anElement, className) {
     var re;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  If the native 'classList' property is available, use that.
@@ -3865,7 +3864,7 @@ function(anElement, preserveSpace) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     TP.elementGetStyleObj(anElement).visibility = 'hidden';
@@ -3946,12 +3945,12 @@ function(anElement) {
         elemComputedVisibility;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.notValid(compStyleObj =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle', arguments);
+        return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
     elemComputedDisplay = compStyleObj.display;
@@ -4007,7 +4006,7 @@ function(anElement) {
         isVisible;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  verify that we've got a window (content will be visible) and a
@@ -4049,7 +4048,7 @@ function(anElement) {
     var pageXY;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  If the element is already absolute, just bail out here.
@@ -4085,7 +4084,7 @@ function(anElement) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!/absolute|relative/i.test(
@@ -4114,7 +4113,7 @@ function(anElement) {
         topInPixels;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  If the element is already relative, just bail out here.
@@ -4180,7 +4179,7 @@ function(anElement, deltaX, deltaY) {
         styleObj;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!/absolute|relative/i.test(
@@ -4218,7 +4217,7 @@ function(anElement, x, y) {
     var styleObj;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     styleObj = TP.elementGetStyleObj(anElement);
@@ -4255,7 +4254,7 @@ function(anElement, anotherElement) {
     var otherZ;
 
     if (!TP.isElement(anElement) || !TP.isElement(anotherElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     otherZ = parseInt(TP.elementGetComputedStyleObj(anotherElement).zIndex,
@@ -4283,7 +4282,7 @@ function(anElement, anotherElement) {
     var otherZ;
 
     if (!TP.isElement(anElement) || !TP.isElement(anotherElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     otherZ = parseInt(TP.elementGetComputedStyleObj(anotherElement).zIndex,
@@ -4352,7 +4351,7 @@ function(anElement, anotherElement, offsetX, offsetY, measuringBoxType, preferre
         styleObj;
 
     if (!TP.isElement(anElement) || !TP.isElement(anotherElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     theMeasuringBoxType = TP.ifInvalid(measuringBoxType, TP.BORDER_BOX);
@@ -4476,18 +4475,18 @@ function(anElement, attrName, attrValue) {
         valMatcher;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attrName)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     //  Note here how we just check to make sure the attribute value is
     //  'valid', because it might not necessarily be a String (might be a
     //  Boolean, Number, etc.)
     if (TP.notValid(attrValue)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (TP.notEmpty(existingWholeValue = TP.elementGetAttribute(anElement,
@@ -4534,11 +4533,11 @@ function(anElement, attrName, oldValue, newValue) {
         oldValueRegExp;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(oldValue)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     //  when being asked to make the new value empty we're really not
@@ -4588,7 +4587,7 @@ function(anElement, className) {
         str;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(className)) {
@@ -4637,11 +4636,11 @@ function(anElement, oldClassName, newClassName) {
         oldClassRegExp;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(oldClassName) || TP.isEmpty(newClassName)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     wholeClassValue = TP.elementGetClass(anElement);
@@ -4686,7 +4685,7 @@ function(anElement) {
         textInputElement;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elementDoc = TP.nodeGetDocument(anElement);
@@ -4733,11 +4732,11 @@ function(anElement, deltaX, deltaY) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isNumber(deltaX) || !TP.isNumber(deltaY)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     anElement.scrollLeft += deltaX;
@@ -4762,11 +4761,11 @@ function(anElement, x, y) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isNumber(x) || !TP.isNumber(y)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     anElement.scrollLeft = x;
@@ -4826,7 +4825,7 @@ function(anElement, top, right, bottom, left) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     TP.elementGetStyleObj(anElement).clip =
@@ -4857,7 +4856,7 @@ function(anElement, aHeight) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isNumber(aHeight)) {
@@ -4887,7 +4886,7 @@ function(anElement, aWidth) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isNumber(aWidth)) {
@@ -4912,7 +4911,7 @@ function(anElement) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     TP.elementDefaultDisplay(anElement);
@@ -4965,11 +4964,11 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
         busyHeight;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aMessage)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     busyElement = anElement.busyElement;
@@ -5079,11 +5078,11 @@ function(anElement, aMessage) {
         styleObj;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aMessage)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     busyElement = TP.$elementGetBusyLayer(anElement);
@@ -5164,11 +5163,11 @@ function(anElement, propName, useOffsetAncestors) {
         useOffsets;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(propName)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     useOffsets = TP.ifInvalid(useOffsetAncestors, false);
@@ -5224,18 +5223,18 @@ function(anElement, attrName, attrValue, atEnd, allowDuplicates) {
         valMatcher;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(attrName)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     //  Note here how we just check to make sure the attribute value is
     //  'valid', because it might not necessarily be a String (might be a
     //  Boolean, Number, etc.)
     if (TP.notValid(attrValue)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     shouldAllowDups = TP.ifInvalid(allowDuplicates, false);
@@ -5301,7 +5300,7 @@ function(anElement) {
         clipRect;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elementWidth = TP.elementGetContentWidth(anElement);
@@ -5403,7 +5402,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         returnNode;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
@@ -5771,7 +5770,6 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     if (TP.sys.shouldSignalDOMLoaded()) {
         TP.signal(TP.gid(anElement),
                     'TP.sig.DOMContentLoaded',
-                    arguments,
                     theContent);
     }
 
@@ -5823,7 +5821,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         node;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
@@ -5967,7 +5965,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         //  the original element
         TP.signal(TP.gid(returnNode.parentNode),
                     'TP.sig.DOMContentLoaded',
-                    arguments,
                     theContent);
     }
 
@@ -6009,7 +6006,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         childContainer;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
@@ -6120,7 +6117,6 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     if (TP.sys.shouldSignalDOMLoaded()) {
         TP.signal(TP.gid(anElement),
                     'TP.sig.DOMContentLoaded',
-                    arguments,
                     theContent);
     }
 
@@ -6164,7 +6160,7 @@ function(anElement) {
         processedRootElement;
 
     if (!TP.isHTMLNode(anElement) || !TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments,
+        return TP.raise(this, 'TP.sig.InvalidElement',
                             'Element must be an HTML element.');
     }
 
@@ -6561,7 +6557,7 @@ function(aNode, aDocument) {
         i;
 
     if (!TP.isHTMLNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node must be an HTML node.');
     }
 
@@ -6613,22 +6609,22 @@ function(aNode, aDocument) {
 
         case Node.ENTITY_REFERENCE_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         case Node.ENTITY_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         case Node.DOCUMENT_TYPE_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         case Node.NOTATION_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         case Node.DOCUMENT_NODE:
@@ -6667,7 +6663,7 @@ function(aNode) {
     var resultNode;
 
     if (!TP.isHTMLNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node must be an HTML node.');
     }
 
@@ -6697,13 +6693,13 @@ function(anElement, aContent) {
     var iframeDoc;
 
     if (TP.notValid(aContent)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (!TP.isElement(anElement) ||
         (TP.elementGetLocalName(anElement).toLowerCase() !== 'iframe' &&
             TP.elementGetLocalName(anElement).toLowerCase() !== 'object')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments,
+        return TP.raise(this, 'TP.sig.InvalidElement',
                             'Element must be an iframe.');
     }
 
@@ -6713,7 +6709,7 @@ function(anElement, aContent) {
     iframeDoc = TP.elementGetIFrameDocument(anElement);
 
     if (TP.notValid(iframeDoc)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments,
+        return TP.raise(this, 'TP.sig.InvalidDocument',
                             'iframe document not value.');
     }
 
@@ -6746,13 +6742,13 @@ function(anElement, aContent, loadedFunction, shouldAwake) {
         nodeContent;
 
     if (TP.notValid(aContent)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (!TP.isElement(anElement) ||
         (TP.elementGetLocalName(anElement).toLowerCase() !== 'iframe' &&
             TP.elementGetLocalName(anElement).toLowerCase() !== 'object')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments,
+        return TP.raise(this, 'TP.sig.InvalidElement',
                             'Element must be an iframe.');
     }
 
@@ -6762,7 +6758,7 @@ function(anElement, aContent, loadedFunction, shouldAwake) {
     iframeDoc = TP.elementGetIFrameDocument(anElement);
 
     if (TP.notValid(iframeDoc)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments,
+        return TP.raise(this, 'TP.sig.InvalidDocument',
                             'iframe document not value.');
     }
 
@@ -6823,7 +6819,7 @@ function(aNode, aDocument) {
         elem;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     //  already HTML? we're good to go then
@@ -6885,22 +6881,22 @@ function(aNode, aDocument) {
 
         case Node.ENTITY_REFERENCE_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         case Node.ENTITY_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         case Node.DOCUMENT_TYPE_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         case Node.NOTATION_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         case Node.DOCUMENT_NODE:
@@ -6969,7 +6965,7 @@ function(aNode) {
      */
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.isHTMLNode(aNode)) {
@@ -7000,7 +6996,7 @@ function(aNode, aDocument) {
     var doc;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     doc = TP.isXMLDocument(aDocument) ? aDocument :
@@ -7029,7 +7025,7 @@ function(aNode) {
      */
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     //  already XML? we're good to go then
@@ -7095,7 +7091,7 @@ function(aString, aDocument) {
         div;
 
     if (!TP.isString(aString)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     doc = TP.isHTMLDocument(aDocument) ? aDocument :
@@ -7183,7 +7179,7 @@ function(aString) {
         comments;
 
     if (!TP.isString(aString)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     str = aString;
@@ -7372,7 +7368,7 @@ function(aNode, startIndex, endIndex) {
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+        return TP.raise(this, 'TP.sig.InvalidNode',
                             'Node not a collection Node.');
     }
 
@@ -7438,7 +7434,7 @@ function(aNode, aClassName) {
         classNames;
 
     if (!TP.isElement(aNode) && !TP.isDocument(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     elem = TP.isDocument(aNode) ? aNode.documentElement : aNode;
@@ -7477,7 +7473,7 @@ function(aNode) {
     var elemTagName;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     switch (aNode.nodeType) {
@@ -7540,7 +7536,7 @@ function(aNode) {
         case Node.DOCUMENT_TYPE_NODE:
         case Node.NOTATION_NODE:
 
-            TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+            TP.raise(this, 'TP.sig.UnsupportedOperation');
             break;
 
         default:
@@ -7714,7 +7710,7 @@ function(angle, numIncrements, centerInIncrement) {
         cornerVal;
 
     if (!TP.isNumber(angle)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     center = TP.ifInvalid(centerInIncrement, true);
@@ -7873,7 +7869,7 @@ function(anElement) {
         retElement;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     theElement = anElement;
@@ -7936,11 +7932,11 @@ function(aWindow, aWindowID) {
      */
 
     if (TP.notValid(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.isEmpty(aWindowID)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     //  if the window has been closed, then we'll signal that fact,
@@ -8041,7 +8037,7 @@ function(url, name, aSpec, shouldReplace) {
     }
 
     if (TP.notValid(newWin)) {
-        TP.raise(this, 'TP.sig.WindowException', arguments,
+        TP.raise(this, 'TP.sig.WindowException',
                     'Unable to open window');
         return;
     }
@@ -8095,10 +8091,10 @@ function(aWindow) {
         i,
         len;
 
-    TP.debug('break.document_loaded');
+    TP.stop('break.document_loaded');
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.$$DEBUG) {
@@ -8146,7 +8142,7 @@ function(aWindow) {
                 TP.error(TP.ec(e, TP.join('Pageload function: ',
                                             TP.str(winLoadFuncs[i]),
                                             ' generated error.')),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
         }
     }
 
@@ -8159,7 +8155,7 @@ function(aWindow) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Window style setup generated error.'),
-                            TP.LOG, arguments): 0;
+                            TP.LOG): 0;
     };
     */
 
@@ -8173,7 +8169,7 @@ function(aWindow) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(TP.ec(e, 'Window content awaken generated error.'),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
         }
     }
 
@@ -8187,11 +8183,9 @@ function(aWindow) {
         //  We signal TP.sig.DocumentLoaded using the GID of the window as
         //  the origin.
         TP.signal(TP.gid(aWindow),
-                    'TP.sig.DocumentLoaded',
-                    arguments);
+                    'TP.sig.DocumentLoaded');
         TP.signal('tibet://' + TP.gid(aWindow),
-                    'TP.sig.DocumentLoaded',
-                    arguments);
+                    'TP.sig.DocumentLoaded');
 
         //  We only signal DOMContentLoaded if the system is configured for
         //  it.
@@ -8205,11 +8199,9 @@ function(aWindow) {
             //  triggering of this handler.
             TP.signal(TP.gid(aWindow.document),
                         'TP.sig.DOMContentLoaded',
-                        arguments,
                         aWindow.document.documentElement);
             TP.signal('tibet://' + TP.gid(aWindow) + '/#document',
                         'TP.sig.DOMContentLoaded',
-                        arguments,
                         aWindow.document.documentElement);
         }
     } catch (e) {
@@ -8217,7 +8209,7 @@ function(aWindow) {
             TP.error(
                 TP.ec(
                     e, 'TP.sig.DOMContentLoaded handler generated error.'),
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
     }
 
     return;
@@ -8244,10 +8236,10 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
         winID,
         winDidClose;
 
-    TP.debug('break.document_unloaded');
+    TP.stop('break.document_unloaded');
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     checkWindow = TP.ifInvalid(checkForWindowClosed, true);
@@ -8261,8 +8253,8 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     //      - 'TP.sig.DocumentUnloaded' signal type name
     winID = TP.gid(aWindow);
 
-    TP.signal(winID, 'TP.sig.DocumentUnloaded', arguments);
-    TP.signal('tibet://' + winID, 'TP.sig.DocumentUnloaded', arguments);
+    TP.signal(winID, 'TP.sig.DocumentUnloaded');
+    TP.signal('tibet://' + winID, 'TP.sig.DocumentUnloaded');
 
     //  close open windows if we're unloading the code frame
     if ((TP.$$processDocumentUnloaded.codeframe === aWindow) &&
@@ -8384,7 +8376,7 @@ function(aWindow, aclType) {
     var doc;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(null, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(null, 'TP.sig.InvalidWindow');
     }
 
     if (TP.notValid(TP.sys.getTypeByName('TP.core.User'))) {
@@ -8452,7 +8444,7 @@ function(aWindow) {
         index;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(null, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(null, 'TP.sig.InvalidWindow');
     }
 
     doc = aWindow.document;
@@ -8542,7 +8534,7 @@ function(aWindow, otherWindow, wantsTransformed) {
         frame2OffsetY;
 
     if (!TP.isWindow(aWindow) || !TP.isWindow(otherWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     //  Always set initial values to 0, so that numeric computations won't
@@ -8614,7 +8606,7 @@ function(aWindow, wants2DMatrix) {
         frameElement;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     //  We start with the identity matrix
@@ -8661,7 +8653,7 @@ function(aWindow) {
         win;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     arr = TP.ac();
@@ -8716,7 +8708,7 @@ function(aWindow) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     return TP.ac(aWindow.screen.availWidth, aWindow.screen.availHeight);
@@ -8761,11 +8753,11 @@ function(aWindow, deltaX, deltaY) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (!TP.isNumber(deltaX) || !TP.isNumber(deltaY)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     aWindow.moveBy(deltaX, deltaY);
@@ -8789,11 +8781,11 @@ function(aWindow, x, y) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (!TP.isNumber(x) || !TP.isNumber(y)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     aWindow.moveTo(x, y);

@@ -687,6 +687,25 @@ TP.log.Logger.Inst.defineAttribute('appenders');
 
 //  ----------------------------------------------------------------------------
 
+/**
+ * Whether the logger is buffered. If true, the logger will only trigger append
+ * operations when flush is triggered, normally by reaching a buffer limit.
+ * @type {Boolean}
+ */
+TP.log.Logger.Inst.defineAttribute('buffered', false);
+
+//  ----------------------------------------------------------------------------
+
+/**
+ * The logger's list of entries. This will only contain data if the logger has
+ * been marked as either persistent or buffered. Both cases require the logger
+ * to maintain entries.
+ @type {Array.<TP.log.Entry>}
+ */
+TP.log.Logger.Inst.defineAttribute('entries');
+
+//  ----------------------------------------------------------------------------
+
 TP.log.Logger.Inst.defineMethod('init', function(aName) {
 
     /**
@@ -1507,14 +1526,14 @@ TP.log.Level.Type.defineMethod('construct', function(aName, anIndex) {
         if (level.getLevel() === anIndex) {
             return level;
         } else {
-            return this.raise('InvalidOperation', arguments,
+            return this.raise('InvalidOperation',
                 'TP.log.' + key + ' index cannot be changed.');
         }
     }
 
     // Verify we can place the new level key on TP.log for access.
     if (TP.log.hasOwnProperty(key)) {
-        return this.raise('InvalidLevel', arguments,
+        return this.raise('InvalidLevel',
             'TP.log[' + key + '] already exists.');
     }
 
@@ -1703,7 +1722,9 @@ TP.log.Level.construct('SYSTEM', 800);
 //  ============================================================================
 
 /**
- * TODO
+ * A named object which can be used as a form of log entry annotation. Log
+ * entries containing markers can optionally be filtered or formatted based on
+ * their marker content.
  */
 TP.log.Nestable.defineSubtype('log.Marker');
 
@@ -1799,7 +1820,8 @@ TP.log.Marker.Inst.defineMethod('isCategoryOf', function(nameOrMarker) {
 //  ============================================================================
 
 /**
- * TODO
+ * A type which allows the construction of named timers, objects which can track
+ * elapsed time across operations. Timers are uniqued by name.
  */
 TP.lang.Object.defineSubtype('log.Timer');
 
@@ -1985,7 +2007,11 @@ TP.log.BrowserAppender.Inst.defineMethod('append', function(anEntry) {
     layout = this.getLayout();
     content = layout.layout(anEntry);
 
-    top.console[writer](content);
+    try {
+        top.console[writer](content);
+    } catch (e) {
+        top.console.log(content);
+    }
 
     return this;
 });
@@ -2014,12 +2040,486 @@ TP.log.BrowserLayout.Inst.defineMethod('layout', function(anEntry) {
      * @return {Object} The formatted output. Can be String, Node, etc.
      */
 
+    // TODO
     return this.callNextMethod();
 });
 
 //  ============================================================================
-//  TP and APP Extensions
-//  ----------------------------------------------------------------------------
+//  TP Extensions
+//  ============================================================================
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$log',
+function(anObject, aLogName, aLogLevel) {
+
+    /**
+     * @name $$log
+     * @synopsis Logs anObject to the named log at the level provided. This
+     *     method is a preliminary wrapper for invoking TP.sys.log once enough
+     *     of the kernel has been loaded. Typically you'll use a shortcut for
+     *     either a specific log or specific level as in TP.sys.logIO, or
+     *     TP.warn() etc.
+     * @param {Object} anObject The object to log.
+     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
+     *     string.
+     * @param {Number} aLogLevel TP.INFO or a similar level ID.
+     * @todo
+     */
+
+    var level,
+        name;
+
+    level = TP.ifInvalid(aLogLevel, TP.INFO);
+
+    if (TP.sys.hasStarted()) {
+        name = TP.ifInvalid(aLogName, TP.LOG);
+        return TP.sys.log(anObject, name, level);
+    } else if ((level >= TP.ERROR) && (level < TP.SYSTEM)) {
+        return TP.boot.$stderr(anObject, level);
+    } else {
+        return TP.boot.$stdout(anObject, level);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('debug',
+function(anObject, aLogName) {
+
+    /**
+     * @name debug
+     * @synopsis Logs anObject at TP.DEBUG level, if active.
+     * @param {Object} anObject The object to log.
+     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
+     *     string.
+     * @todo
+     */
+
+    return TP.$$log(anObject,
+                    aLogName || TP.LOG,
+                    TP.DEBUG);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('error',
+function(anObject, aLogName) {
+
+    /**
+     * @name error
+     * @synopsis Logs anObject at TP.ERROR level, if active.
+     * @param {Object} anObject The object to log.
+     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
+     *     string.
+     * @todo
+     */
+
+    return TP.$$log(anObject,
+                    aLogName || TP.LOG,
+                    TP.ERROR);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('fatal',
+function(anObject, aLogName) {
+
+    /**
+     * @name fatal
+     * @synopsis Logs anObject at TP.FATAL level, if active.
+     * @param {Object} anObject The object to log.
+     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
+     *     string.
+     * @todo
+     */
+
+    return TP.$$log(anObject,
+                    aLogName || TP.LOG,
+                    TP.FATAL);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('info',
+function(anObject, aLogName) {
+
+    /**
+     * @name info
+     * @synopsis Logs anObject at TP.INFO level, if active.
+     * @param {Object} anObject The object to log.
+     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
+     *     string.
+     * @todo
+     */
+
+    return TP.$$log(anObject,
+                    aLogName || TP.LOG,
+                    TP.INFO);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('severe',
+function(anObject, aLogName) {
+
+    /**
+     * @name severe
+     * @synopsis Logs anObject at TP.SEVERE level, if active.
+     * @param {Object} anObject The object to log.
+     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
+     *     string.
+     * @todo
+     */
+
+    return TP.$$log(anObject,
+                    aLogName || TP.LOG,
+                    TP.SEVERE);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('system',
+function(anObject, aLogName) {
+
+    /**
+     * @name system
+     * @synopsis Logs anObject at TP.SYSTEM level, if active.
+     * @param {Object} anObject The object to log.
+     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
+     *     string.
+     * @todo
+     */
+
+    return TP.$$log(anObject,
+                    aLogName || TP.LOG,
+                    TP.SYSTEM);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('trace',
+function(anObject, aLogName) {
+
+    /**
+     * @name trace
+     * @synopsis Logs anObject at TP.TRACE level, if active.
+     * @param {Object} anObject The object to log.
+     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
+     *     string.
+     * @todo
+     */
+
+    return TP.$$log(anObject,
+                    aLogName || TP.LOG,
+                    TP.TRACE);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('warn',
+function(anObject, aLogName) {
+
+    /**
+     * @name warn
+     * @synopsis Logs anObject at TP.WARN level, if active.
+     * @param {Object} anObject The object to log.
+     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
+     *     string.
+     * @todo
+     */
+
+    return TP.$$log(anObject,
+                    aLogName || TP.LOG,
+                    TP.WARN);
+});
+
+//  ------------------------------------------------------------------------
+//  Logging Basics
+//  ------------------------------------------------------------------------
+
+TP.defineMethod(TP.sys, 'getLogLevel',
+function() {
+
+    /**
+     * @name getLogLevel
+     * @synopsis Returns the numerical level at which log() and its variants
+     *     will filter output going to the error and activity logs.
+     * @example Get TIBET's current 'log level':
+     *     <code>
+     *          TP.sys.getLogLevel();
+     *          <samp>0</samp>
+     *     </code>
+     * @returns {Number} The current TIBET log level.
+     * @todo
+     */
+
+    //  Make sure to return a Number
+    return parseInt(TP.sys.cfg('log.level'), 10);
+}, TP.PRIMITIVE_TRACK, null, 'TP.sys.getLogLevel');
+
+//  ------------------------------------------------------------------------
+//  Value-Based Branching
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifNull',
+function(aSuspectValue, aDefaultValue) {
+
+    /**
+     * @name ifNull
+     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     *     state of aSuspectValue. If aSuspectValue is TP.isNull() aDefaultValue
+     *     is returned.
+     * @param {Object} aSuspectValue The value to test.
+     * @param {Object} aDefaultValue The value to return if aSuspectValue is ===
+     *     null.
+     * @example Set the value of theObj to true, if anObj is null:
+     *     <code>
+     *          theObj = TP.ifNull(anObj, true);
+     *     </code>
+     * @returns {Object} One of the two values provided.
+     * @todo
+     */
+
+    return (aSuspectValue === null) ? aDefaultValue : aSuspectValue;
+}, false, 'TP.ifNull');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifUndefined',
+function(aSuspectValue, aDefaultValue) {
+
+    /**
+     * @name ifUndefined
+     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     *     state of aSuspectValue. If aSuspectValue is TP.notDefined()
+     *     aDefaultValue is returned.
+     * @param {Object} aSuspectValue The value to test.
+     * @param {Object} aDefaultValue The value to return if aSuspectValue is ===
+     *     undefined.
+     * @example Set the value of theObj to true, if anObj is undefined:
+     *     <code>
+     *          theObj = TP.ifUndefined(anObj, true);
+     *     </code>
+     * @returns {Object} One of the two values provided.
+     * @todo
+     */
+
+    return (aSuspectValue === undefined) ? aDefaultValue : aSuspectValue;
+}, false, 'TP.ifUndefined');
+
+//  ------------------------------------------------------------------------
+//  BRANCH DETECTION
+//  ------------------------------------------------------------------------
+
+/*
+There are some common idioms in TIBET methods related to logging. These
+idioms are built to help support stripping these constructs for production
+code to reduce overhead and code size. The idioms are:
+
+    //  logging idiom(s)
+    TP.ifTrace() ? TP.trace(...) : 0;
+    TP.ifDebug() ? TP.debug(...) : 0;
+    TP.ifInfo() ? TP.info(...) : 0;
+    TP.ifWarn() ? TP.warn(...) : 0;
+    TP.ifError() ? TP.error(...) : 0;
+    TP.ifSevere() ? TP.severe(...) : 0;
+    TP.ifFatal() ? TP.fatal(...) : 0;
+    TP.ifSystem() ? TP.system(...) : 0;
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifEnabled',
+function(aLevel, aFlag) {
+
+    /**
+     * @name ifEnabled
+     * @synopsis Returns true if logging is set at or above aLevel. This
+     *     function is a common routine used by ifError, ifTrace, ifInfo, etc.
+     * @param {Constant} aLevel A TP error level constant such as TP.INFO or
+     * @param {Boolean} aFlag An optional flag to control the return value.
+     *     TP.TRACE.
+     * @returns {Boolean} True if error-level logging is active.
+     * @todo
+     */
+
+    var level = TP.ifInvalid(aLevel, TP.ERROR);
+
+    if (aFlag === undefined) {
+        return TP.sys.getLogLevel() <= level;
+    }
+
+    return aFlag && (TP.sys.getLogLevel() <= level);
+}, false, 'TP.ifEnabled');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifDebug',
+function(aFlag) {
+
+    /**
+     * @name ifDebug
+     * @synopsis Returns true if logging is set at or above TP.DEBUG level. This
+     *     function is commonly used in the idiomatic expression:
+     *     <code>TP.ifDebug() ? TP.debug(...) : 0;code> This idiom can be
+     *     stripped by packaging tools to remove inline logging calls from
+     *     production code.
+     * @param {Boolean} aFlag An optional flag to control the return value.
+     *     Rarely used with this idiomatic variant.
+     * @returns {Boolean} True if error-level logging is active.
+     * @todo
+     */
+
+    return TP.ifEnabled(TP.DEBUG, aFlag);
+}, false, 'TP.ifDebug');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifError',
+function(aFlag) {
+
+    /**
+     * @name ifError
+     * @synopsis Returns true if logging is set at or above TP.ERROR level. This
+     *     function is commonly used in the idiomatic expression:
+     *     <code>TP.ifError() ? TP.error(...) : 0;code> This idiom can be
+     *     stripped by packaging tools to remove inline logging calls from
+     *     production code.
+     * @param {Boolean} aFlag An optional flag to control the return value.
+     *     Rarely used with this idiomatic variant.
+     * @returns {Boolean} True if error-level logging is active.
+     * @todo
+     */
+
+    return TP.ifEnabled(TP.ERROR, aFlag);
+}, false, 'TP.ifError');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifFatal',
+function(aFlag) {
+
+    /**
+     * @name ifFatal
+     * @synopsis Returns true if logging is set at or above TP.FATAL level. This
+     *     function is commonly used in the idiomatic expression:
+     *     <code>TP.ifFatal() ? TP.error(...) : 0;code> This idiom can be
+     *     stripped by packaging tools to remove inline logging calls from
+     *     production code.
+     * @param {Boolean} aFlag An optional flag to control the return value.
+     *     Rarely used with this idiomatic variant.
+     * @returns {Boolean} True if fatal-level logging is active.
+     * @todo
+     */
+
+    return TP.ifEnabled(TP.FATAL, aFlag);
+}, false, 'TP.ifFatal');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifInfo',
+function(aFlag) {
+
+    /**
+     * @name ifInfo
+     * @synopsis Returns true if logging is set at or above TP.INFO level. This
+     *     function is commonly used in the idiomatic expression:
+     *     <code>TP.ifInfo() ? TP.info(...) : 0;code> This idiom can be stripped
+     *     by packaging tools to remove inline logging calls from production
+     *     code.
+     * @param {Boolean} aFlag An optional flag to control the return value.
+     *     Rarely used with this idiomatic variant.
+     * @returns {Boolean} True if info-level logging is active.
+     * @todo
+     */
+
+    return TP.ifEnabled(TP.INFO, aFlag);
+}, false, 'TP.ifInfo');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifSevere',
+function(aFlag) {
+
+    /**
+     * @name ifSevere
+     * @synopsis Returns true if logging is set at or above TP.SEVERE level.
+     *     This function is commonly used in the idiomatic expression:
+     *     <code>TP.ifSevere() ? TP.severe(...) : 0;code> This idiom can be
+     *     stripped by packaging tools to remove inline logging calls from
+     *     production code.
+     * @param {Boolean} aFlag An optional flag to control the return value.
+     *     Rarely used with this idiomatic variant.
+     * @returns {Boolean} True if severe-level logging is active.
+     * @todo
+     */
+
+    return TP.ifEnabled(TP.SEVERE, aFlag);
+}, false, 'TP.ifSevere');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifSystem',
+function(aFlag) {
+
+    /**
+     * @name ifSystem
+     * @synopsis Returns true if logging is set at or above TP.SYSTEM level.
+     *     This function is commonly used in the idiomatic expression:
+     *     <code>TP.ifSystem() ? TP.system(...) : 0;code> This idiom can be
+     *     stripped by packaging tools to remove inline logging calls from
+     *     production code.
+     * @param {Boolean} aFlag An optional flag to control the return value.
+     *     Rarely used with this idiomatic variant.
+     * @returns {Boolean} True if system-level logging is active.
+     * @todo
+     */
+
+    return TP.ifEnabled(TP.SYSTEM, aFlag);
+}, false, 'TP.ifSystem');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifTrace',
+function(aFlag) {
+
+    /**
+     * @name ifTrace
+     * @synopsis Returns true if logging is set at or above TP.TRACE level. This
+     *     function is commonly used in the idiomatic expression:
+     *     <code>TP.ifTrace() ? TP.trace(...) : 0;code> This idiom can be
+     *     stripped by packaging tools to remove inline logging calls from
+     *     production code.
+     * @param {Boolean} aFlag An optional flag to control the return value.
+     *     Rarely used with this idiomatic variant.
+     * @returns {Boolean} True if trace-level logging is active.
+     * @todo
+     */
+
+    return TP.ifEnabled(TP.TRACE, aFlag);
+}, false, 'TP.ifTrace');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifWarn',
+function(aFlag) {
+
+    /**
+     * @name ifWarn
+     * @synopsis Returns true if logging is set at or above TP.WARN level. This
+     *     function is commonly used in the idiomatic expression:
+     *     <code>TP.ifWarn() ? TP.warn(...) : 0;code> This idiom can be stripped
+     *     by packaging tools to remove inline logging calls from production
+     *     code.
+     * @param {Boolean} aFlag An optional flag to control the return value.
+     *     Rarely used with this idiomatic variant.
+     * @returns {Boolean} True if warn-level logging is active.
+     * @todo
+     */
+
+    return TP.ifEnabled(TP.WARN, aFlag);
+}, false, 'TP.ifWarn');
 
 // TODO: replace with defineMethod once API update for TP.defineMethod is done.
 TP.definePrimitive('getLogger', function(aName) {
@@ -2042,7 +2542,9 @@ TP.definePrimitive('getLogger', function(aName) {
     return TP.log.Manager.getLogger(name);
 });
 
-//  ----------------------------------------------------------------------------
+//  ============================================================================
+//  TP Extensions
+//  ============================================================================
 
 APP.defineMethod('getLogger', function(aName) {
 
@@ -2063,6 +2565,176 @@ APP.defineMethod('getLogger', function(aName) {
 
     return TP.log.Manager.getLogger(name);
 });
+
+//  ============================================================================
+//  CHANGE LOG
+//  ============================================================================
+
+//  NOTE that the change log is a separate log to ensure that it cannot be
+//  cleared accidentally when clearing the larger activity log.
+TP.sys.$changes = TP.ifInvalid(TP.sys.$changes, new TP.boot.Log());
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod(TP.sys, 'getChangeLog',
+function() {
+
+    /**
+     * @name getChangeLog
+     * @synopsis Returns the TIBET change log, which contains entries for source
+     *     code changes made if code change tracking is set to true. These
+     *     changes can be exported and merged into a tibet.xml file for loading
+     *     as part of the application.
+     * @returns {TP.boot.Log} A primitive log object.
+     */
+
+    return TP.sys.$changes;
+}, TP.PRIMITIVE_TRACK, null, 'TP.sys.getChangeLog');
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod(TP.sys, 'logCodeChange',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logCodeChange
+     * @synopsis Adds source code to the change log. Returns true if the log
+     *     entry is successful. This method will have no effect when the
+     *     TP.sys.shouldLogCodeChanges() flag is false. NOTE that level does not
+     *     affect what is written here, a call to logCodeChange will always
+     *     update the change log.
+     * @param {Object} anObject The source code change to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    if (!TP.sys.shouldLogCodeChanges()) {
+        return false;
+    }
+
+    //  pure source code with no extras here...and notice that unlike the
+    //  logs we trim, the change log grows without bound until cleared and
+    //  is stored in sequence
+    TP.sys.$changes.log(anObject, TP.CHANGE_LOG, TP.SYSTEM);
+
+    TP.sys.log(anObject, TP.CHANGE_LOG, aLogLevel);
+
+    //  with all logging complete signal change on the change log
+    TP.sys.$logChanged(TP.CHANGE_LOG);
+
+    return true;
+}, TP.PRIMITIVE_TRACK, null, 'TP.sys.logCodeChange');
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod(TP.sys, '$logAttributeChange',
+function(anObject, aTrack,
+            attributeName, attributeValue, attributeDesc) {
+
+    /**
+     * @name $logAttributeChange
+     * @synopsis Adds source code to the change log specific to an attribute
+     *     operation. See logCodeChange() for more detail on change logging.
+     * @param {Object} anObject The source object.
+     * @param {String} aTrack A TIBET Track constant.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} attributeDesc An ECMA5 property descriptor.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    var str,
+        id;
+
+    if (!TP.sys.shouldLogCodeChanges()) {
+        return false;
+    }
+
+    str = TP.ac();
+
+    //  first step is to determine the ID of the object altering an
+    //  attribute definition
+    if (TP.isType(anObject)) {
+        //  the type name is a useable identifier
+        str.push(anObject.getTypeName());
+    } else {
+        //  harder, unless there's a unique ID that can find the object
+        if (TP.canInvoke(anObject, 'getID')) {
+            id = anObject.getID();
+
+            //  is the object a global reference?
+            if (TP.global[id] === anObject) {
+                str.push(id);
+            } else {
+                if (TP.byOID(id) === anObject) {
+                    str.push('TP.byOID(\'', id, '\')');
+                } else {
+                    //  not registered? this is an error
+                    TP.ifWarn() ?
+                        TP.warn('Unregistered object ' +
+                                    id +
+                                    ' can\'t log attribute changes.',
+                                TP.CHANGE_LOG) : 0;
+
+                    return false;
+                }
+            }
+        }
+    }
+
+    if (aTrack === 'Type') {
+        str.push('.Type.defineAttribute(\'', attributeName, '\'');
+    } else if (aTrack === 'Inst') {
+        str.push('.Inst.defineAttribute(\'', attributeName, '\'');
+    } else if (aTrack !== 'Global') {
+        str.push('.defineAttribute(\'', attributeName, '\'');
+    } else {
+        if (TP.canInvoke(anObject, 'getID')) {
+            id = anObject.getID();
+        } else {
+            id = TP.str(anObject);
+        }
+
+        //  global track...this is a different deal and "shouldn't happen"
+        TP.ifWarn() ?
+            TP.warn(id + ' can\'t log global track attribute changes.',
+                    TP.CHANGE_LOG) : 0;
+
+        return false;
+    }
+
+    if (TP.isValid(attributeValue)) {
+        str.push(', ');
+        if (TP.canInvoke(attributeValue, 'asSource')) {
+            str.push(attributeValue.asSource());
+        } else if (TP.canInvoke(attributeValue, 'asString')) {
+            str.push(attributeValue.asString());
+        } else if (TP.canInvoke(attributeValue, 'toString')) {
+            str.push(attributeValue.toString());
+        } else if (TP.isString(attributeValue.nodeValue)) {
+            str.push(attributeValue.nodeValue);
+        } else {
+            str.push('');
+        }
+    }
+
+    str.push(');');
+
+    str = str.join('');
+
+    //  pure source code with no extras here...and notice that unlike the
+    //  logs we trim, the change log grows without bound until cleared and
+    //  is stored in sequence
+    TP.sys.$changes.log(str,
+                        TP.CHANGE_LOG,
+                        TP.TRACE);
+    TP.sys.$logChanged('Change');
+
+    return true;
+}, TP.PRIMITIVE_TRACK, null, 'TP.sys.$logAttributeChange');
 
 //  ----------------------------------------------------------------------------
 //  end

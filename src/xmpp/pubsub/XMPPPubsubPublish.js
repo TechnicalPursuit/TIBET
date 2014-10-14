@@ -78,7 +78,7 @@ function(aNode) {
     var elem;
 
     if (!TP.isKindOf(aNode, TP.xmpp.XData)) {
-        return this.raise('TP.sig.InvalidXMPPXData', arguments, aNode);
+        return this.raise('TP.sig.InvalidXMPPXData', aNode);
     }
 
     elem = this.getNamedDescendant('configure', true);

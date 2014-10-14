@@ -17,117 +17,117 @@
  *     to RFC5122, XMPP URLs begin with the 'xmpp:' scheme, followed by a double
  *     slash, followed the 'authority component' which should be the JID of the
  *     current login:
- *     
+ *
  *     xmpp://testrat@localhost
 
  *     So, to send a message from 'testrat' on 'localhost' to 'inforat' on
  *     'infohost.com', the following URL would be formed:
- *     
+ *
  *     xmpp://testrat@localhost/inforat@infohost.com?message
 
  *     In TIBET, and in accordance with RFC5122, the 'authority component' can
  *     be omitted if it is to default to the 'current XMPP login':
- *     
+ *
  *     xmpp:inforat@infohost.com?message
 
  *     TIBET supports most 'XMPP URL queries', a registry of which can be found
  *     at:
- *     
+ *
  *     http://xmpp.org/registrar/querytypes.html
- *     
+ *
  *     They take the following form (these examples assume a current login /
  *     authenticating authority). Note that XMPP URLs use semicolons (';') as
  *     URI query separators for maximum compatibility with XML:
- *     
+ *
  *     Send an ad-hoc XMPP command:
- *     
+ *
  *     xmpp:infohost.com?command;action=execute;node=Escaped XML...
- *     
+ *
  *     [body is alternate source of node content to send]
- *     
+ *
  *     Discover an XMPP service (not currently supported by TIBET):
- *     
+ *
  *     xmpp:infohost.com?disco;request=info
- *     
+ *
  *     Join a chatroom and invite other JIDs to that room (not currently
  *     supported by TIBET):
- *     
+ *
  *     xmpp:chat.infohost.com?invite;jid=foorat@infohost.com;password=foo
 
  *     Join a chatroom (not currently supported by TIBET):
- *     
+ *
  *     xmpp:chat.infohost.com?join;password=foo
- *     
+ *
  *     Send a message:
- *     
+ *
  *     xmpp:inforat@infohost.com?message;subject=A%20message%20for%20inforat;type=normal;id=message1;thread=7dae34;body=Inforat,%20come%20here%20I%20want%20you
 
  *     [body is alternate source of message to send]
- *     
+ *
  *     Subscribe to a pubsub node:
- *     
+ *
  *     xmpp:pubsub.infohost.com?pubsub;action=subscribe;node=/home/infohost/testrat
- *     
+ *
  *     Unsubscribe from a pubsub node:
- *     
+ *
  *     xmpp:pubsub.infohost.com?pubsub;action=unsubscribe;node=/home/infohost/testrat
- *     
+ *
  *     Receive a file (not currently supported by TIBET):
- *     
+ *
  *     xmpp:infohost.com?recvfile;name=/path/to/file
- *     
+ *
  *     Register with server/service (not currently supported by TIBET):
- *     
+ *
  *     xmpp:infohost.com?register
- *     
+ *
  *     Remove a roster item:
- *     
+ *
  *     xmpp:inforat@infohost.com?remove;name=My%20buddy
 
 
  *     Add or edit a roster item:
- *     
+ *
  *     xmpp:inforat@infohost.com?roster;name=My%20buddy;group=rats
 
  *     [name is user-assigned name, group is user-assigned group]
- *     
+ *
  *     Send a file (not currently supported by TIBET):
- *     
+ *
  *     xmpp:infohost.com?sendfile
- *     
+ *
  *     Subscribe to a JID:
- *     
+ *
  *     xmpp:inforat@infohost.com?subscribe
 
 
  *     Unregister with server/service (not currentlysupported by TIBET):
- *     
+ *
  *     xmpp:infohost.com?unregister
- *     
+ *
  *     Unsubscribe from a JID:
- *     
+ *
  *     xmpp:inforat@infohost.com?unsubscribe
 
  *     Change to a JID's presence (not part of XEP-147):
- *     
+ *
  *     xmpp:infohost.com?presence;show=TP.xmpp.XMLNS.AWAY;status=Gone%20for%20the%20day
- *     
+ *
  *     [to JID ('infohost.com' here) is unused] [body is alternate source of
  *     status]
- *     
+ *
  *     Publish an item to a pubsub node (not part of XEP-147):
- *     
+ *
  *     xmpp:pubsub.infohost.com?pubsub;action=publish;node=/home/infohost/testrat;payload=Here%20is%20some%20data%20
- *     
+ *
  *     [body is alternate source of payload to publish]
- *     
+ *
  *     Retract an item from a pubsub node (not part of XEP-147):
- *     
+ *
  *     xmpp:pubsub.infohost.com?pubsub;action=retract;node=/home/infohost/testrat;itemID=4D62E20579F7C
- *     
+ *
  *     Delete a pubsub node (and all subscriptions) (not part of XEP-147):
- *     
- *     
+ *
+ *
  *     xmpp:pubsub.infohost.com?pubsub;action=delete;node=/home/infohost/testrat
  */
 
@@ -322,7 +322,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  invalid handler, no response can happen
     if (TP.notValid(aHandler)) {
-        this.raise('TP.sig.InvalidHandler', arguments);
+        this.raise('TP.sig.InvalidHandler');
 
         return false;
     }
@@ -335,7 +335,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         signals = TP.ac(aSignal);
     } else {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Improper signal definition.');
 
         return false;
@@ -359,7 +358,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (TP.notValid(pubsubServiceJID = this.get('path'))) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'No path to pubsub service defined.');
 
         return false;
@@ -367,7 +365,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (TP.notValid(pubsubNodeID = this.get('queryDict').at('node'))) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'No pubsub nodeID defined.');
 
         return false;
@@ -392,7 +389,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         //  to come up and retry the observe.
         TP.ifWarn() ?
             TP.warn('Remote subscription data not available',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         //  Note here how we return 'false', telling the main notification
         //  engine to *not* go ahead and process the observation.
@@ -473,7 +470,6 @@ function(aResponse) {
 
                                 return this.raise(
                                         'TP.sig.InvalidXMPPPubsubNode',
-                                        arguments,
                                         'Cannot create node: ' +
                                             pubsubNodeID);
                             }.bind(this));
@@ -515,7 +511,7 @@ function(aSignal) {
         TP.ifWarn() ?
             TP.warn(
             'Invalid signal data for TP.sig.XMPPPubsubEventInput event.',
-            TP.IO_LOG, arguments) : 0;
+            TP.IO_LOG) : 0;
 
         return;
     }
@@ -524,7 +520,7 @@ function(aSignal) {
         TP.ifWarn() ?
             TP.warn(
             'Missing stanza data for TP.sig.XMPPPubsubEventInput event.',
-            TP.IO_LOG, arguments) : 0;
+            TP.IO_LOG) : 0;
 
         return;
     }
@@ -539,7 +535,7 @@ function(aSignal) {
         //  however.
         this.set('ignoreRemoteObservers', true);
 
-        this.signal('TP.sig.XMPPPubsubNodeChanged', arguments, contents);
+        this.signal('TP.sig.XMPPPubsubNodeChanged', contents);
 
         //  Unset the flag
         this.set('ignoreRemoteObservers', false);
@@ -588,7 +584,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  invalid handler, no response can happen
     if (TP.notValid(aHandler)) {
-        this.raise('TP.sig.InvalidHandler', arguments);
+        this.raise('TP.sig.InvalidHandler');
 
         return false;
     }
@@ -601,7 +597,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         signals = TP.ac(aSignal);
     } else {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Improper signal definition.');
 
         return false;
@@ -625,7 +620,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (TP.notValid(pubsubServiceJID = this.get('path'))) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'No path to pubsub service defined.');
 
         return false;
@@ -633,7 +627,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     if (TP.notValid(pubsubNodeID = this.get('queryDict').at('node'))) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'No pubsub nodeID defined.');
 
         return false;
@@ -658,7 +651,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         //  to come up and retry the observe.
         TP.ifWarn() ?
             TP.warn('Remote subscription data not available',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         //  Note here how we return 'false', telling the main notification
         //  engine to *not* go ahead and process the observation.
@@ -709,7 +702,6 @@ function(aResponse) {
 
             if (errorCondition === 'item-not-found') {
                 return this.raise('TP.sig.InvalidXMPPPubsubNode',
-                                    arguments,
                                     'Node doesn\'t exist: ' + pubsubNodeID);
             }
         }.bind(this));
@@ -725,7 +717,7 @@ function(aResponse) {
 //  ------------------------------------------------------------------------
 
 TP.xmpp.URL.Inst.defineMethod('signalObservers',
-function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType,
+function(anOrigin, aSignal, aPayload, aPolicy, aType,
 isCancelable, isBubbling        ) {
 
     /**
@@ -737,7 +729,6 @@ isCancelable, isBubbling        ) {
      *     centralized processing purposes.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -775,7 +766,7 @@ isCancelable, isBubbling        ) {
 
     //  invalid payload, no sense in sending the publish
     if (TP.notValid(aPayload)) {
-        this.raise('TP.sig.InvalidPayload', arguments);
+        this.raise('TP.sig.InvalidPayload');
 
         return false;
     }
@@ -788,7 +779,6 @@ isCancelable, isBubbling        ) {
         signals = TP.ac(aSignal);
     } else {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Improper signal definition.');
 
         return false;
@@ -812,7 +802,6 @@ isCancelable, isBubbling        ) {
 
     if (TP.notValid(pubsubServiceJID = this.get('path'))) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'No path to pubsub service defined.');
 
         return false;
@@ -820,7 +809,6 @@ isCancelable, isBubbling        ) {
 
     if (TP.notValid(pubsubNodeID = this.get('queryDict').at('node'))) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'No pubsub nodeID defined.');
 
         return false;
@@ -831,7 +819,6 @@ isCancelable, isBubbling        ) {
     pubPayloadElem = TP.elem(aPayload);
     if (!TP.isElement(pubPayloadElem)) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Pubsub payload is not XML Element.');
 
         return false;

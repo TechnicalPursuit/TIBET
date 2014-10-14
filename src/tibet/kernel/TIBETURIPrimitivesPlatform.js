@@ -14,16 +14,16 @@ Platform-specific functionality related to file access operations.
 
 /**
  * @File access primitives containing platform-specific coding.
- *     
+ *
  *     Note that many of the Mozilla-based methods here have, over time, been
  *     converted to leverage HTTP requests to access either file or directory
  *     content rather than using the XPCOM calls. This was done to avoid
  *     permissionrequests that arise when trying to access file system data
  *     _even when webooted from that directory_.
- *     
+ *
  *     IE doesn't do that, apparently it's ok with us asking about other files
  *     inthe directory we booted from.
- *     
+ *
  *     Webkit-based browsers don't, in general, allow file-system access.
  * @todo
  */
@@ -55,7 +55,7 @@ TP.hc(
          *     with call parameters.
          * @raises TP.sig.InvalidURI,TP.sig.UnsupportedFeature,
          *     TP.sig.URIException
-         * @returns {Boolean} 
+         * @returns {Boolean}
          * @todo
          */
 
@@ -68,7 +68,7 @@ TP.hc(
             fso;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -81,7 +81,7 @@ TP.hc(
                     'Local directory checks not supported for HTTP URI ',
                     path);
 
-            TP.raise(this, 'TP.sig.UnsupportedFeature', arguments, msg);
+            TP.raise(this, 'TP.sig.UnsupportedFeature', msg);
             request.fail(TP.FAILURE, msg);
 
             return false;
@@ -109,7 +109,7 @@ TP.hc(
             msg = TP.sc('Unable to access ', fname,
                     ' msg: Couldn\'t create "Scripting.FileSystemObject"');
 
-            TP.raise(this, 'TP.sig.URIException', arguments, msg);
+            TP.raise(this, 'TP.sig.URIException', msg);
             request.fail(TP.FAILURE, msg);
 
             return false;
@@ -160,7 +160,7 @@ TP.hc(
             request;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -175,7 +175,7 @@ TP.hc(
             msg = TP.sc('Local file deletion not supported for HTTP URI ',
                         path);
 
-            TP.raise(this, 'TP.sig.InvalidOperation', arguments, msg);
+            TP.raise(this, 'TP.sig.InvalidOperation', msg);
             request.fail(TP.FAILURE, msg);
 
             return false;
@@ -218,7 +218,6 @@ TP.hc(
                     if (report) {
                         TP.raise(this,
                                     'TP.sig.URIException',
-                                    arguments,
                                     TP.ec(e, msg));
                     }
 
@@ -263,7 +262,7 @@ TP.hc(
             fso;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -278,7 +277,7 @@ TP.hc(
             msg = TP.sc('Local file deletion not supported for HTTP URI ',
                             path);
 
-            TP.raise(this, 'TP.sig.InvalidOperation', arguments, msg);
+            TP.raise(this, 'TP.sig.InvalidOperation', msg);
             request.fail(TP.FAILURE, msg);
 
             return false;
@@ -303,7 +302,7 @@ TP.hc(
             msg = TP.sc('Unable to delete ', fname,
                     ' msg: Couldn\'t create "Scripting.FileSystemObject"');
 
-            TP.raise(this, 'TP.sig.URIException', arguments, msg);
+            TP.raise(this, 'TP.sig.URIException', msg);
             request.fail(TP.FAILURE, msg);
 
             return false;
@@ -335,7 +334,7 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
         request.fail(TP.FAILURE, 'Unsupported operation.');
 
         return false;
@@ -362,7 +361,7 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
         request.fail(TP.FAILURE, 'Unsupported operation.');
 
         return false;
@@ -400,7 +399,7 @@ TP.hc(
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
          * @raises TP.sig.InvalidURI
-         * @returns {Boolean} 
+         * @returns {Boolean}
          * @todo
          */
 
@@ -409,7 +408,7 @@ TP.hc(
             request;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -446,7 +445,7 @@ TP.hc(
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
          * @raises TP.sig.InvalidURI
-         * @returns {Boolean} 
+         * @returns {Boolean}
          * @todo
          */
 
@@ -460,7 +459,7 @@ TP.hc(
             fso;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -565,14 +564,14 @@ TP.hc(
                     return result;
                 } else {
                     msg = TP.sc('Unable to access: ', fname);
-                    TP.raise(this, 'TP.sig.URIException', arguments, msg);
+                    TP.raise(this, 'TP.sig.URIException', msg);
 
                     request.fail(TP.FAILURE, msg);
                 }
             }
         } catch (e) {
             msg = TP.sc('Unable to access: ', fname);
-            TP.raise(this, 'TP.sig.URIException', arguments, msg);
+            TP.raise(this, 'TP.sig.URIException', msg);
 
             request.fail(TP.FAILURE, msg);
         }
@@ -589,7 +588,7 @@ TP.hc(
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
          * @raises TP.sig.InvalidURI
-         * @returns {Boolean} 
+         * @returns {Boolean}
          * @todo
          */
 
@@ -598,7 +597,7 @@ TP.hc(
             httpObj;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -669,7 +668,7 @@ TP.hc(
          * @param {TP.sig.Request|TP.lang.Hash} aRequest An optional object
          *     with call parameters.
          * @raises TP.sig.InvalidURI
-         * @returns {Boolean} 
+         * @returns {Boolean}
          * @todo
          */
 
@@ -678,7 +677,7 @@ TP.hc(
             httpObj;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -748,7 +747,7 @@ TP.hc(
          *     reporting.
          * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
-         * @returns {XMLDocument|String|OrderedPair} 
+         * @returns {XMLDocument|String|OrderedPair}
          * @todo
          */
 
@@ -773,7 +772,7 @@ TP.hc(
             result;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -799,13 +798,13 @@ TP.hc(
             try {
                 TP.ifInfo(TP.sys.cfg('log.privilege_requests')) ?
                     TP.info('Privilege request at TP.$fileLoad',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
                 netscape.security.PrivilegeManager.enablePrivilege(
                                                     'UniversalXPConnect');
             } catch (e) {
                 msg = TP.sc('PrivilegeError. url: ', path);
-                TP.raise(this, 'TP.sig.PrivilegeViolation', arguments,
+                TP.raise(this, 'TP.sig.PrivilegeViolation',
                             TP.ec(e, msg));
 
                 request.fail(TP.FAILURE, msg);
@@ -828,7 +827,7 @@ TP.hc(
                             'nsIScriptableInputStream');
             } catch (e) {
                 msg = TP.sc('FileComponentError. url: ', path);
-                TP.raise(this, 'TP.sig.IOException', arguments,
+                TP.raise(this, 'TP.sig.IOException',
                             TP.ec(e, msg));
 
                 request.fail(TP.FAILURE, msg);
@@ -856,7 +855,7 @@ TP.hc(
                 }
             } catch (e) {
                 msg = TP.sc('AccessViolation. url: ', path);
-                TP.raise(this, 'TP.sig.PrivilegeViolation', arguments,
+                TP.raise(this, 'TP.sig.PrivilegeViolation',
                             TP.ec(e, msg));
 
                 request.fail(TP.FAILURE, msg);
@@ -876,7 +875,7 @@ TP.hc(
                 text = httpObj.responseText;
             } catch (e) {
                 msg = TP.sc('Unable to locate: ', path);
-                TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+                TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
                 request.fail(TP.FAILURE, msg);
 
@@ -905,7 +904,7 @@ TP.hc(
          *     reporting.
          * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
-         * @returns {XMLDocument|String|OrderedPair} 
+         * @returns {XMLDocument|String|OrderedPair}
          * @todo
          */
 
@@ -926,7 +925,7 @@ TP.hc(
             result;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  First we try to HTTP functionality here, since it respects the
@@ -977,7 +976,7 @@ TP.hc(
             //  directory and we should exit here.
             if (/cannot locate/.test(TP.str(e))) {
                 msg = TP.sc('Unable to locate: ', path);
-                TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+                TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
                 request.fail(TP.FAILURE, msg);
 
@@ -992,7 +991,7 @@ TP.hc(
             if (/System error: -2146697211/.test(TP.str(e)) &&
                     (httpObj.status === 2 || httpObj.status === 3)) {
                 msg = TP.sc('Unable to locate: ', path);
-                TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+                TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
                 request.fail(TP.FAILURE, msg);
 
@@ -1025,7 +1024,7 @@ TP.hc(
                         if (!fso.FileExists(fname)) {
                             msg = TP.sc('Unable to locate: ', fname);
                             TP.ifInfo() ?
-                                TP.info(msg, TP.LOG, arguments) : 0;
+                                TP.info(msg, TP.LOG) : 0;
 
                             request.fail(TP.FAILURE, msg);
 
@@ -1036,7 +1035,7 @@ TP.hc(
                     }
 
                     msg = TP.sc('Unable to access: ', fname);
-                    TP.raise(this, 'TP.sig.URIException', arguments,
+                    TP.raise(this, 'TP.sig.URIException',
                                 TP.ec(e2, msg));
 
                     request.fail(TP.FAILURE, msg);
@@ -1045,7 +1044,7 @@ TP.hc(
                 }
             } else {
                 msg = TP.sc('Unable to access: ', fname);
-                TP.raise(this, 'TP.sig.URIException', arguments,
+                TP.raise(this, 'TP.sig.URIException',
                             TP.ec(e, msg));
 
                 request.fail(TP.FAILURE, msg);
@@ -1075,7 +1074,7 @@ TP.hc(
          *     reporting.
          * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
-         * @returns {XMLDocument|String|OrderedPair} 
+         * @returns {XMLDocument|String|OrderedPair}
          * @todo
          */
 
@@ -1089,7 +1088,7 @@ TP.hc(
             result;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -1122,7 +1121,7 @@ TP.hc(
             //  It threw an exception, which means that it definitely didn't
             //  find it so we always return null if we get here.
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
             request.fail(TP.FAILURE, msg);
 
@@ -1136,7 +1135,7 @@ TP.hc(
         //  Safari 4.X - all platforms
         if (httpObj.status === 404) {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
             request.fail(TP.FAILURE, msg);
 
@@ -1146,7 +1145,7 @@ TP.hc(
         //  Safari 4.X - Windows
         if (TP.boot.isWin() && httpObj.status === -1100) {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
             request.fail(TP.FAILURE, msg);
 
@@ -1157,7 +1156,7 @@ TP.hc(
         if (TP.boot.isMac() &&
             (httpObj.status === -1100 || httpObj.status === 400)) {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
             request.fail(TP.FAILURE, msg);
 
@@ -1167,7 +1166,7 @@ TP.hc(
         //  Safari 3.1 - Windows
         if (TP.boot.isWin() && httpObj.status === 1789378560) {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
             request.fail(TP.FAILURE, msg);
 
@@ -1195,7 +1194,7 @@ TP.hc(
          *     reporting.
          * @raises TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
-         * @returns {XMLDocument|String|OrderedPair} 
+         * @returns {XMLDocument|String|OrderedPair}
          * @todo
          */
 
@@ -1209,7 +1208,7 @@ TP.hc(
             result;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -1242,7 +1241,7 @@ TP.hc(
             //  It threw an exception, which means that it definitely didn't
             //  find it so we always return null if we get here.
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
             request.fail(TP.FAILURE, msg);
 
@@ -1256,7 +1255,7 @@ TP.hc(
         //  Chrome workaround -- sigh.
         if (httpObj.status === 0 && httpObj.responseText === '') {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG, arguments) : 0;
+            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
             request.fail(TP.FAILURE, msg);
 
@@ -1324,7 +1323,7 @@ TP.hc(
             retVal;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  expand to support virtual uri input
@@ -1380,7 +1379,7 @@ TP.hc(
                                 Components.interfaces.nsIFileOutputStream);
                 } catch (e) {
                     msg = TP.sc('Unable to get component(s) for: ', path);
-                    TP.raise(this, 'TP.sig.URIException', arguments,
+                    TP.raise(this, 'TP.sig.URIException',
                                 TP.ec(e, msg));
 
                     retVal = false;
@@ -1411,7 +1410,6 @@ TP.hc(
                                     path);
                             TP.raise(this,
                                         'TP.sig.URIException',
-                                        arguments,
                                         TP.ec(e, msg));
 
                             retVal = false;
@@ -1477,14 +1475,13 @@ TP.hc(
                     } else {
                         msg = TP.sc('Invalid file save mode ', mode,
                                     ' for ', fname);
-                        TP.raise(this, 'InvalidMode', arguments, msg);
+                        TP.raise(this, 'InvalidMode', msg);
 
                         request.fail(TP.FAILURE, msg);
                     }
                 } catch (e) {
                     msg = TP.sc('Unable to access: ', fname);
-                    TP.raise(this, 'AccessViolation', arguments,
-                                TP.ec(e, msg));
+                    TP.raise(this, 'AccessViolation', TP.ec(e, msg));
 
                     request.fail(TP.FAILURE, msg);
                 }
@@ -1538,7 +1535,7 @@ TP.hc(
             body;
 
         if (!TP.isString(targetUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  for error reporting etc we'll use the expanded URI
@@ -1579,7 +1576,7 @@ TP.hc(
                     msg = TP.sc('Terminated save.',
                                 ' Unable to create backup copy of: ',
                                 path);
-                    TP.raise(this, 'TP.sig.URIException', arguments,
+                    TP.raise(this, 'TP.sig.URIException',
                                 TP.ec(e, msg));
 
                     request.fail(TP.FAILURE, msg);
@@ -1620,7 +1617,7 @@ TP.hc(
                 return true;
             } else {
                 msg = TP.sc('Invalid file save mode ', mode, 'for ', fname);
-                TP.raise(this, 'InvalidMode', arguments, msg);
+                TP.raise(this, 'InvalidMode', msg);
 
                 request.fail(TP.FAILURE, msg);
             }
@@ -1654,7 +1651,7 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
         request.fail(TP.FAILURE, 'Unsupported operation.');
 
         return false;
@@ -1685,7 +1682,7 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
         request.fail(TP.FAILURE, 'Unsupported operation.');
 
         return false;
@@ -1714,7 +1711,7 @@ TP.hc(
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
          *     during operation of this function for Windows).
-         *     
+         *
          *     The shell in this case is the first element of the command line,
          *     but not the "root shell" as it were. In other words, on Windows
          *     you're always starting from cmd.exe (or perhaps hstart.exe on
@@ -1758,7 +1755,7 @@ TP.hc(
             msg;
 
         if (!TP.isString(shellUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         request = TP.request(aRequest);
@@ -1776,7 +1773,7 @@ TP.hc(
         //  command name is required or there's nothing to do
         if (!TP.isString(commandName)) {
             msg = TP.sc('Must supply a commandName to execute.');
-            TP.raise(this, 'TP.sig.InvalidParameter', arguments, msg);
+            TP.raise(this, 'TP.sig.InvalidParameter', msg);
 
             request.fail(TP.FAILURE, msg);
 
@@ -2099,7 +2096,7 @@ TP.hc(
                                     TP.uriInLocalFormat(
                                         TP.sys.cfg('os.comspec_path')));
 
-                    TP.raise(this, 'InvalidShell', arguments,
+                    TP.raise(this, 'InvalidShell',
                                 TP.ec(e, msg));
 
                     request.fail(TP.FAILURE, msg);
@@ -2121,7 +2118,7 @@ TP.hc(
                                 TP.uriInLocalFormat(
                                     TP.sys.cfg('os.comspec_path')));
 
-                    TP.raise(this, 'ProcessException', arguments,
+                    TP.raise(this, 'ProcessException',
                                 TP.ec(e, msg));
 
                     retVal = TP.ac(TP.FAILURE, null, msg);
@@ -2194,7 +2191,7 @@ TP.hc(
                                 TP.sys.cfg('os.comspec_flags').join(' '),
                                 ' for command line: ',
                                 cmdline),
-                            TP.TRACE, arguments) : 0;
+                            TP.TRACE) : 0;
 
                     //  TODO:   older versions use PID, what about newer?
                     //  run(blocking, args, arg size[, pidObj])
@@ -2209,20 +2206,20 @@ TP.hc(
 
                         TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
                             TP.trace('outFile: ' + loadFile,
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
 
                         output = TP.$fileLoad(loadFile);
 
                         loadFile = TP.uriInWebFormat(errFile);
                         TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
                             TP.trace('errFile: ' + loadFile,
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
 
                         errors = TP.$fileLoad(loadFile);
                     }
                 } catch (e) {
                     msg = TP.str(e);
-                    TP.raise(this, 'ExecutionException', arguments,
+                    TP.raise(this, 'ExecutionException',
                                 TP.ec(e));
 
                     request.fail(TP.FAILURE, msg);
@@ -2255,7 +2252,7 @@ TP.hc(
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
          *     during operation of this function for Windows).
-         *     
+         *
          *     The shell in this case is the first element of the command line,
          *     but not the "root shell" as it were. In other words, on Windows
          *     you're always starting from cmd.exe (or perhaps hstart.exe on
@@ -2330,7 +2327,7 @@ TP.hc(
             retVal;
 
         if (!TP.isString(shellUrl)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         request = TP.request(aRequest);
@@ -2348,7 +2345,7 @@ TP.hc(
         //  command name is required or there's nothing to do
         if (!TP.isString(commandName)) {
             msg = TP.sc('Must supply a command to execute.');
-            TP.raise(this, 'TP.sig.InvalidParameter', arguments, msg);
+            TP.raise(this, 'TP.sig.InvalidParameter', msg);
 
             request.fail(TP.FAILURE, msg);
 
@@ -2559,7 +2556,7 @@ TP.hc(
 
             try {
                 TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
-                    TP.trace(cmdline, TP.LOG, arguments) : 0;
+                    TP.trace(cmdline, TP.LOG) : 0;
 
                 //  sync or not we'll be invoking TP.sig.IOCompleted when
                 //  done
@@ -2620,7 +2617,7 @@ TP.hc(
 
                     TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
                         TP.trace('outFile: ' + loadFile,
-                                    TP.LOG, arguments) : 0;
+                                    TP.LOG) : 0;
 
                     output = TP.$fileLoad(loadFile);
 
@@ -2628,13 +2625,13 @@ TP.hc(
 
                     TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
                         TP.trace('errFile: ' + loadFile,
-                                    TP.LOG, arguments) : 0;
+                                    TP.LOG) : 0;
 
                     errors = TP.$fileLoad(loadFile);
                 }
             } catch (e) {
                 msg = TP.str(e);
-                TP.raise(this, 'ExecutionException', arguments, TP.ec(e));
+                TP.raise(this, 'ExecutionException', TP.ec(e));
 
                 request.fail(TP.FAILURE, msg);
 
@@ -2665,7 +2662,7 @@ TP.hc(
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
          *     during operation of this function for Windows).
-         *     
+         *
          *     The shell in this case is the first element of the command line,
          *     but not the "root shell" as it were. In other words, on Windows
          *     you're always starting from cmd.exe (or perhaps hstart.exe on
@@ -2699,7 +2696,7 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
         request.fail(TP.FAILURE, 'Unsupported operation.');
 
         return false;
@@ -2718,7 +2715,7 @@ TP.hc(
          *     that was composed of the command line 'shell flags cmd args' in
          *     that order. (In point of fact, this is what TIBET builds for you
          *     during operation of this function for Windows).
-         *     
+         *
          *     The shell in this case is the first element of the command line,
          *     but not the "root shell" as it were. In other words, on Windows
          *     you're always starting from cmd.exe (or perhaps hstart.exe on
@@ -2752,7 +2749,7 @@ TP.hc(
 
         request = TP.request(aRequest);
 
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
         request.fail(TP.FAILURE, 'Unsupported operation.');
 
         return false;

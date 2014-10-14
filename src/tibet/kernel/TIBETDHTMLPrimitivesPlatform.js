@@ -70,7 +70,7 @@ TP.hc(
             frmID;
 
         if (!TP.isDocument(aDocument)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
 
         if (TP.isString(forcedMIMEType)) {
@@ -200,7 +200,7 @@ TP.hc(
             iframeDoc;
 
         if (!TP.isDocument(aDocument)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
 
         if (TP.isString(forcedMIMEType)) {
@@ -989,7 +989,7 @@ TP.hc(
             scriptContentNode;
 
         if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
 
         newScriptElement = aDocument.createElement('script');
@@ -1029,7 +1029,7 @@ TP.hc(
             scriptContentNode;
 
         if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
 
         newScriptElement = TP.documentCreateElement(aDocument,
@@ -1215,7 +1215,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         TP.elementGetStyleObj(anElement).MozUserSelect = 'none';
@@ -1234,7 +1234,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         TP.elementGetStyleObj(anElement).msUserSelect = 'none';
@@ -1253,7 +1253,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         TP.elementGetStyleObj(anElement).WebkitUserSelect = 'none';
@@ -1280,7 +1280,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         TP.elementGetStyleObj(anElement).MozUserSelect = 'text';
@@ -1299,7 +1299,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         TP.elementGetStyleObj(anElement).msUserSelect = 'text';
@@ -1318,7 +1318,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         TP.elementGetStyleObj(anElement).WebkitUserSelect = 'text';
@@ -1364,7 +1364,7 @@ TP.hc(
             valueInPixels;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         //  Set the initial value to 0.
@@ -1457,7 +1457,7 @@ TP.hc(
             valuesInPixels;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         //  Grab the computed style for the element
@@ -1564,11 +1564,11 @@ TP.hc(
             values;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(aSide)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         //  Set the initial value to 0.
@@ -1657,11 +1657,11 @@ TP.hc(
             valuesInPixels;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(aSide)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         //  Grab the computed style for the element
@@ -1777,7 +1777,7 @@ TP.hc(
             ancestor;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         //  Grab the position of the element
@@ -1863,11 +1863,11 @@ TP.hc(
             values;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(aSide)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         //  Set the initial value to 0.
@@ -1957,11 +1957,11 @@ TP.hc(
             valuesInPixels;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(aSide)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         //  Grab the computed style for the element
@@ -2062,7 +2062,7 @@ TP.hc(
             matrix;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isValid(val =
@@ -2095,7 +2095,7 @@ TP.hc(
             matrix;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isValid(val =
@@ -2128,7 +2128,7 @@ TP.hc(
             matrix;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isValid(val =
@@ -2168,7 +2168,7 @@ TP.hc(
         var newPoint;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         newPoint = TP.nodeGetWindow(anElement).
@@ -2205,7 +2205,7 @@ TP.hc(
             newY;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         /*
@@ -2261,7 +2261,7 @@ TP.hc(
         var newPoint;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         newPoint = TP.nodeGetWindow(anElement).
@@ -2290,7 +2290,7 @@ TP.hc(
          *     coordinate and the second item is the Y coordinate.
          */
 
-        TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+        TP.raise(this, 'TP.sig.UnsupportedOperation');
 
         return TP.ac();
     }
@@ -2318,7 +2318,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         TP.elementGetStyleObj(anElement).MozTransform = aTransformStr;
@@ -2341,7 +2341,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         TP.elementGetStyleObj(anElement).msTransform = aTransformStr;
@@ -2364,7 +2364,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         TP.elementGetStyleObj(anElement).WebkitTransform = aTransformStr;
@@ -2403,7 +2403,7 @@ TP.hc(
             yVal;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         xVal = TP.isNumber(xValue) ? xValue + 'px' : xValue;
@@ -2438,7 +2438,7 @@ TP.hc(
             yVal;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         xVal = TP.isNumber(xValue) ? xValue + 'px' : xValue;
@@ -2473,7 +2473,7 @@ TP.hc(
             yVal;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         xVal = TP.isNumber(xValue) ? xValue + 'px' : xValue;
@@ -2542,11 +2542,11 @@ TP.hc(
          */
 
         if (!TP.isWindow(aWindow)) {
-            return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+            return TP.raise(this, 'TP.sig.InvalidWindow');
         }
 
         if (!TP.isCallable(aFunction)) {
-            return TP.raise(this, 'TP.sig.InvalidFunction', arguments);
+            return TP.raise(this, 'TP.sig.InvalidFunction');
         }
 
         // TODO: 'window.$$newinst' used to be arguments.callee. verify this
@@ -2612,7 +2612,7 @@ TP.hc(
          */
 
         if (!TP.isWindow(aWindow)) {
-            return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+            return TP.raise(this, 'TP.sig.InvalidWindow');
         }
 
         //  Set a slot on the target window that contains our arguments,
@@ -2681,7 +2681,7 @@ TP.hc(
             $$newinst;
 
         if (!TP.isWindow(aWindow)) {
-            return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+            return TP.raise(this, 'TP.sig.InvalidWindow');
         }
 
         constructorObj = aWindow[objectName];
@@ -2758,7 +2758,7 @@ TP.hc(
          */
 
         if (!TP.isWindow(aWindow)) {
-            return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+            return TP.raise(this, 'TP.sig.InvalidWindow');
         }
 
         //  On Mozilla, we don't place this property on any other Window than
@@ -2816,7 +2816,7 @@ TP.hc(
          */
 
         if (!TP.isWindow(aWindow)) {
-            return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+            return TP.raise(this, 'TP.sig.InvalidWindow');
         }
 
         //  On IE, we don't place this property on any other Window than
@@ -2877,7 +2877,7 @@ TP.hc(
          */
 
         if (!TP.isWindow(aWindow)) {
-            return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+            return TP.raise(this, 'TP.sig.InvalidWindow');
         }
 
         //  On Webkit we don't set up a hook for any window other than the
@@ -2950,7 +2950,7 @@ TP.hc(
          */
 
         if (!TP.isWindow(aWindow)) {
-            return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+            return TP.raise(this, 'TP.sig.InvalidWindow');
         }
 
         return aWindow.document.execCommand('Stop');
@@ -2968,7 +2968,7 @@ TP.hc(
          */
 
         if (!TP.isWindow(aWindow)) {
-            return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+            return TP.raise(this, 'TP.sig.InvalidWindow');
         }
 
         return aWindow.stop();

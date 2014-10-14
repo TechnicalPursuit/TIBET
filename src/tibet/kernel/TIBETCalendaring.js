@@ -179,34 +179,34 @@ function(aDate, aFormat) {
      *     date strings. It attempts to produce a valid ISO 8601 string from the
      *     date provided according to the instructions found in the format
      *     string.
-     *     
+     *
      *     While the Date type in TIBET has been extended to support a wide
      *     variety of formatting strings you can only use one of the specific
      *     named formats in this call to ensure a valid 8601 string is produced.
-     *     
+     *
      *     There are three major variations for the date portion of an ISO 8601
      *     string:
-     *     
+     *
      *     YYYY[-]MM[-]DD Year, Month, Day, where each element other than year
      *     is optional.
-     *     
+     *
      *     YYYY[-]W[WW]-[D] Year, WeekOfYear, DayOfWeek (Note that the 'W' is
      *     an explicit 'W' here and the Day is the number of the day of the week
      *     where Monday is day 1 and Sunday is day 7 (unlike JS). Week numbers
      *     are from 01 to 53.
-     *     
+     *
      *     YYYY[-][D] Year, DayOfYear where DayOfYear is from 1 to 366
      *     (supports leap years).
-     *     
+     *
      *     These variations can optionally be combined with a time portion by
      *     adding an uppercase T between the parts as in:
-     *     
+     *
      *     2006-05-08T12:01:23
-     *     
+     *
      *     The time portion of an ISO 8601 string follows the form:
-     *     
+     *
      *     HH[:]MM[:]SS[.mmm][Z|[+|-]th:tm]
-     *     
+     *
      *     If no time zone data is provided the time is considered to be in the
      *     currently active time zone. A trailing Z indicates "zulu" or UTC
      *     time, all other values define an offset from UFC either + or - in
@@ -218,7 +218,7 @@ function(aDate, aFormat) {
      */
 
     if (!TP.isDate(aDate)) {
-        return this.raise('TP.sig.InvalidParameter', arguments, aDate);
+        return this.raise('TP.sig.InvalidParameter', aDate);
     }
 
     if (TP.isEmpty(aFormat)) {
@@ -270,34 +270,34 @@ function(aString) {
      * @description This routine is invoked by the Date type when running its
      *     list of registered Date parsers in an attempt to parse an input
      *     string.
-     *     
+     *
      *     ISO 8601 is the default date format for TIBET both in terms of
      *     output and input. This type is automatically registered with the Date
      *     type as a date parser to ensure we can at least process standard JS
      *     date and ISO 8601 date formats.
-     *     
+     *
      *     There are three major variations for the date portion of an ISO 8601
      *     string:
-     *     
+     *
      *     YYYY[-]MM[-]DD Year, Month, Day
-     *     
+     *
      *     YYYY[-]W[KK]-[D] Year, WeekOfYear, DayOfWeek (Note that the 'W' is
      *     an explicit 'W' here and the Day is the number of the day of the week
      *     where Monday is day 1 and Sunday is day 7 (unlike JS). Week numbers
      *     are from 01 to 53.
-     *     
+     *
      *     YYYY[-][D] Year, DayOfYear where DayOfYear is from 1 to 366 (in leap
      *     years).
-     *     
+     *
      *     These variations can optionally be combined with a time portion by
      *     adding an uppercase T between the parts as in:
-     *     
+     *
      *     2006-05-08T12:01:23
-     *     
+     *
      *     The time portion of an ISO 8601 string follows the form:
-     *     
+     *
      *     HH[:]MM[:]SS[.mmm][Z|[+|-]th:tm]
-     *     
+     *
      *     If no time zone data is provided the time is considered to be in the
      *     currently active time zone. A trailing Z indicates "zulu" or UTC
      *     time, all other values define an offset from UFC either + or - in

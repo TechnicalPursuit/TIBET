@@ -269,7 +269,7 @@ TP.STDERR_ALERT = function(msg, obj, level) {
      * @param {Object|Number} obj Optional annotation, arguments, or a logging
      *     level. This parameter is overloaded. When three arguments are present
      *     should be an annotation or argument array and level should be third.
-     * @param {Number} level A TIBET logging level. Default is TP.ERROR.
+     * @param {Number} level A TIBET logging level. Default is TP.boot.ERROR.
      */
 
     TP.STDERR_LOG(msg, obj, level);
@@ -286,7 +286,7 @@ TP.STDERR_BREAK = function(msg, obj, level) {
      * @param {Object|Number} obj Optional annotation, arguments, or a logging
      *     level. This parameter is overloaded. When three arguments are present
      *     should be an annotation or argument array and level should be third.
-     * @param {Number} level A TIBET logging level. Default is TP.ERROR.
+     * @param {Number} level A TIBET logging level. Default is TP.boot.ERROR.
      */
 
     TP.STDERR_LOG(msg, obj, level);
@@ -303,7 +303,7 @@ TP.STDERR_LOG = function(msg, obj, level) {
      * @param {Object|Number} obj Optional annotation, arguments, or a logging
      *     level. This parameter is overloaded. When three arguments are present
      *     should be an annotation or argument array and level should be third.
-     * @param {Number} level A TIBET logging level. Default is TP.ERROR.
+     * @param {Number} level A TIBET logging level. Default is TP.boot.ERROR.
      */
 
     var ann,
@@ -332,12 +332,13 @@ TP.STDERR_LOG = function(msg, obj, level) {
 
     //  If level wasn't explicitly set above we'll set it now based on the
     //  nature of the input. This is simplistic, but we'll assume if it's a
-    //  simple string it's TP.ERROR and if it's an object it's TP.SEVERE.
+    //  simple string it's TP.boot.ERROR and if it's an object it's
+    //  TP.boot.SEVERE.
     if (TP.boot.$notValid(lvl)) {
         if (typeof msg === 'string') {
-            lvl = TP.ERROR;
+            lvl = TP.boot.ERROR;
         } else {
-            lvl = TP.SEVERE;
+            lvl = TP.boot.SEVERE;
         }
     }
 
@@ -370,7 +371,7 @@ TP.STDERR_NOTIFY = function(msg, obj, level) {
      * @param {Object|Number} obj Optional annotation, arguments, or a logging
      *     level. This parameter is overloaded. When three arguments are present
      *     should be an annotation or argument array and level should be third.
-     * @param {Number} level A TIBET logging level. Default is TP.ERROR.
+     * @param {Number} level A TIBET logging level. Default is TP.boot.ERROR.
      */
 
     TP.STDERR_LOG(msg, obj, level);
@@ -388,7 +389,7 @@ TP.STDERR_NULL = function(msg, obj, level) {
      * @param {Object|Number} obj Optional annotation, arguments, or a logging
      *     level. This parameter is overloaded. When three arguments are present
      *     should be an annotation or argument array and level should be third.
-     * @param {Number} level A TIBET logging level. Default is TP.ERROR.
+     * @param {Number} level A TIBET logging level. Default is TP.boot.ERROR.
      */
 
     return;
@@ -452,7 +453,7 @@ TP.STDOUT_ALERT = function(msg, obj, level) {
      * @param {Object|Number} obj Optional annotation, argument list, or logging
      *     level. This parameter is overloaded. When three arguments are present
      *     should be an annotation or argument array and level should be third.
-     * @param {Number} level A TIBET logging level. Default is TP.INFO.
+     * @param {Number} level A TIBET logging level. Default is TP.boot.INFO.
      */
 
     TP.STDOUT_LOG(msg, obj, level);
@@ -469,7 +470,7 @@ TP.STDOUT_LOG = function(msg, obj, level) {
      * @param {Object|Number} obj Optional annotation, argument list, or logging
      *     level. This parameter is overloaded. When three arguments are present
      *     should be an annotation or argument array and level should be third.
-     * @param {Number} level A TIBET logging level. Default is TP.INFO.
+     * @param {Number} level A TIBET logging level. Default is TP.boot.INFO.
      */
 
     var ann,
@@ -498,7 +499,7 @@ TP.STDOUT_LOG = function(msg, obj, level) {
 
     //  If level wasn't explicitly set above we'll set it now.
     if (TP.boot.$notValid(lvl)) {
-        lvl = TP.INFO;
+        lvl = TP.boot.INFO;
     }
 
     log = msg;
@@ -528,7 +529,7 @@ TP.STDOUT_NOTIFY = function(msg, obj, level) {
      * @param {Object|Number} obj Optional annotation, argument list, or logging
      *     level. This parameter is overloaded. When three arguments are present
      *     should be an annotation or argument array and level should be third.
-     * @param {Number} level A TIBET logging level. Default is TP.INFO.
+     * @param {Number} level A TIBET logging level. Default is TP.boot.INFO.
      */
 
     TP.STDOUT_LOG(msg, obj, level);
@@ -598,7 +599,7 @@ window.onerror = function(msg, url, line, column, errorObj) {
         //  Invoke the currently configured stderr hook function. This will push
         //  the message into the logs and trigger any configured reporters. NOTE
         //  that logging a FATAL error will also terminate the boot process.
-        TP.boot.$stderr(str, TP.FATAL);
+        TP.boot.$stderr(str, TP.boot.FATAL);
     } catch (e) {
         // don't let log errors trigger recursion, but don't bury them either.
         top.console.error('Error logging onerror: ' + e.message);
@@ -975,7 +976,7 @@ TP.boot.isUA = function(browser, varargs) {
      * @param {String} browser The browser or browser UI string, typically one
      *     of: 'ie', 'safari', 'chrome', 'firefox', 'trident', 'webkit', or
      *     'gecko'.
-     * @param {arguments} varargs The remaining arguments can range from 0 to 5
+     * @param {Array} varargs The remaining arguments can range from 0 to 5
      *     in length where the arguments are major, minor, patchMajor,
      *     patchMinor, and comparison respectively. The first 4 are numbers used
      *     to specify a version to varying degrees of detail. The comparison
@@ -1499,7 +1500,7 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
         try {
             if (TP.sys.cfg('log.privilege_requests')) {
                 TP.boot.$stdout('Privilege request at TP.boot.$httpCall',
-                                TP.WARN);
+                                TP.boot.WARN);
             }
 
             netscape.security.PrivilegeManager.enablePrivilege(
@@ -1561,24 +1562,24 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
     try {
         if (TP.sys.cfg('debug.http')) {
             TP.boot.$stdout('TP.boot.$httpCall() targetUrl: ' +
-                targetUrl, TP.TRACE);
+                targetUrl, TP.boot.TRACE);
             TP.boot.$stdout('TP.boot.$httpCall() callType: ' +
-                callType, TP.TRACE);
+                callType, TP.boot.TRACE);
             TP.boot.$stdout('TP.boot.$httpCall() callUri: ' +
-                ((callUri != null) ? callUri : 'n/a'), TP.TRACE);
+                ((callUri != null) ? callUri : 'n/a'), TP.boot.TRACE);
         }
 
         httpObj.send(callUri);
 
         if (TP.sys.cfg('debug.http')) {
             TP.boot.$stdout('TP.boot.$httpCall() status: ' +
-                httpObj.status, TP.TRACE);
+                httpObj.status, TP.boot.TRACE);
             TP.boot.$stdout('TP.boot.$httpCall() headers: ' +
-                httpObj.getAllResponseHeaders(), TP.TRACE);
+                httpObj.getAllResponseHeaders(), TP.boot.TRACE);
 
             if (TP.boot.$$verbose) {
                 TP.boot.$stdout('TP.boot.$httpCall() result: ' +
-                    httpObj.responseText, TP.TRACE);
+                    httpObj.responseText, TP.boot.TRACE);
             }
         }
     } catch (e) {
@@ -1638,7 +1639,8 @@ TP.boot.$httpCreate = function() {
     if (request == null) {
         TP.boot.shouldStop('HTTP request creation failure.');
         TP.boot.$stderr(
-            'RequestCreationError: could not create request object.', TP.FATAL);
+            'RequestCreationError: could not create request object.',
+            TP.boot.FATAL);
     }
 
     return request;
@@ -2496,8 +2498,8 @@ TP.boot.$uriLocation = function(targetUrl) {
      *     moved this will return the Location header value from the redirect,
      *     otherwise the original URL location is returned.
      * @param {String} targetUrl URL of the target resource.
-     * @return {String} The true location of the resource which may or may not be
-     *     at targetUrl.
+     * @return {String} The true location of the resource which may or may not
+     *     be at targetUrl.
      */
 
     if (!targetUrl) {
@@ -2537,11 +2539,11 @@ TP.boot.$uriLocationHttp = function(targetUrl) {
     /**
      * @name $uriLocationHttp
      * @summary Returns the true location of the resource. If the resource has
-     *     been moved this will return the Location header value from the redirect,
-     *     otherwise the original URL location is returned.
+     *     been moved this will return the Location header value from the
+     *     redirect, otherwise the original URL location is returned.
      * @param {String} targetUrl URL of the target resource.
-     * @return {String} The true location of the resource which may or may not be
-     *     at targetUrl.
+     * @return {String} The true location of the resource which may or may not
+     *     be at targetUrl.
      */
 
     var httpObj;
@@ -3107,7 +3109,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
                 if (TP.boot.$loadCached) {
                     if (TP.sys.cfg('debug.cache')) {
                         TP.boot.$stdout('Loaded ' + logpath +
-                                        ' from cache.', TP.TRACE);
+                                        ' from cache.', TP.boot.TRACE);
                     }
 
                     return result;
@@ -3141,7 +3143,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
                     if (lastmod) {
                         if (TP.sys.cfg('debug.cache')) {
                             TP.boot.$stdout('Found ' + logpath +
-                                        ' date ' + lastmod, TP.TRACE);
+                                        ' date ' + lastmod, TP.boot.TRACE);
                         }
 
                         //  NOTE that we'll have to rely on this routine to
@@ -3155,7 +3157,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
                     } else {
                         if (TP.sys.cfg('debug.cache')) {
                             TP.boot.$stdout('No modified date for ' +
-                                            logpath, TP.TRACE);
+                                            logpath, TP.boot.TRACE);
                         }
                     }
                 }
@@ -3233,7 +3235,7 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
         //  security reasons. if we encounter an error we'll retry via XPCOM
         if (TP.boot.isUA('GECKO', 1, 9, 0, TP.UP)) {
             TP.boot.$stdout('Switching to XPCOM for file load operations',
-                            TP.boot.$ec(e), TP.WARN);
+                            TP.boot.$ec(e), TP.boot.WARN);
             TP.sys.setcfg('boot.moz_xpcom', true);
 
             return TP.boot.$uriLoadMozFile(targetUrl, resultType);
@@ -3334,7 +3336,7 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
     try {
         if (TP.sys.cfg('log.privilege_requests')) {
             TP.boot.$stdout('Privilege request at TP.boot.$uriLoadMozFile',
-                TP.WARN);
+                TP.boot.WARN);
         }
 
         netscape.security.PrivilegeManager.enablePrivilege(
@@ -3474,13 +3476,13 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
             if (lastModified) {
                 if (TP.sys.cfg('debug.cache')) {
                     TP.boot.$stdout('Loaded ' + logpath + ' from origin.',
-                                    TP.TRACE);
+                                    TP.boot.TRACE);
                 }
 
                 lastmod = httpObj.getResponseHeader('Last-Modified');
                 if (TP.sys.cfg('debug.cache')) {
                     TP.boot.$stdout('Refreshed ' + logpath +
-                                    ' to ' + lastmod, TP.TRACE);
+                                    ' to ' + lastmod, TP.boot.TRACE);
                 }
 
                 TP.$BOOT_STORAGE.set(
@@ -3503,7 +3505,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                     if (TP.sys.cfg('debug.cache')) {
                         TP.boot.$stdout('Storing ' +
                                         logpath +
-                                        ' to cache.', TP.TRACE);
+                                        ' to cache.', TP.boot.TRACE);
                     }
 
                     response = httpObj.responseText;
@@ -3520,7 +3522,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                         if (TP.sys.cfg('debug.cache')) {
                             TP.boot.$stdout('Checking ' +
                                             logpath +
-                                            ' for chunks.', TP.TRACE);
+                                            ' for chunks.', TP.boot.TRACE);
                         }
 
                         chunks = response.split(
@@ -3544,7 +3546,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                                         'Storing ' +
                                         TP.boot.$uriInTIBETFormat(
                                                             chunkName) +
-                                        ' to cache.', TP.TRACE);
+                                        ' to cache.', TP.boot.TRACE);
                                     }
 
                                     TP.$BOOT_STORAGE.set(
@@ -3577,7 +3579,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                         if (TP.sys.cfg('debug.cache')) {
                             TP.boot.$stdout('Loaded ' +
                                             logpath +
-                                            ' from cache.', TP.TRACE);
+                                            ' from cache.', TP.boot.TRACE);
                         }
                     } else {
                         if (TP.sys.cfg('debug.cache')) {
@@ -3585,7 +3587,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                             //  stamp but no data? ouch.
                             TP.boot.$stdout('Missing ' +
                                             logpath +
-                                            ' in cache.', TP.TRACE);
+                                            ' in cache.', TP.boot.TRACE);
                         }
 
                         //  at a minimum clear the old data so we don't do
@@ -3859,7 +3861,7 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
     try {
         if (TP.sys.cfg('log.privilege_requests')) {
             TP.boot.$stdout('Privilege request at TP.boot.$uriSaveMozFile',
-                           TP.WARN);
+                           TP.boot.WARN);
         }
 
         netscape.security.PrivilegeManager.enablePrivilege(
@@ -4487,7 +4489,7 @@ TP.boot.$currentDocumentLocation = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.getWindowById = function(anID, aContextWindow) {
+TP.sys.getWindowById = function(anID, aWindow) {
 
     /**
      * @name getWindowById
@@ -4497,7 +4499,7 @@ TP.sys.getWindowById = function(anID, aContextWindow) {
      *     don't want the side effect of opening a window if the named one
      *     doesn't exist.
      * @param {String} anID A window/frame name.
-     * @param {Window} aContext A native window to root the search.
+     * @param {Window} aWindow A native window to root the search.
      * @return {Window} A native window reference.
      * @todo
      */
@@ -4523,7 +4525,7 @@ TP.sys.getWindowById = function(anID, aContextWindow) {
         return;
     }
 
-    cWin = aContextWindow || window;
+    cWin = aWindow || window;
 
     //  most common cases in TIBET are 'top' and the aliases 'uicanvas' and
     //  'uiroot'
@@ -5501,18 +5503,16 @@ TP.boot.$clearLog = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$$logReporter = function(entry, context, options) {
+TP.boot.$$logReporter = function(entry, options) {
     var level,
         console,
         sep,
         esc,
         time,
         obj,
-        ctx,
         name,
         delta,
         str,
-        iserr,
         err,
         msg,
         dlimit;
@@ -5523,10 +5523,10 @@ TP.boot.$$logReporter = function(entry, context, options) {
 
     options = options || {};
 
-    level = entry[TP.LOG_ENTRY_LEVEL];
+    level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
     // Track the highest non-system logging level we've seen.
-    if (level > TP.boot.$$logpeak && level < TP.SYSTEM) {
+    if (level > TP.boot.$$logpeak && level < TP.boot.SYSTEM) {
         TP.boot.$$logpeak = level;
     }
 
@@ -5534,9 +5534,8 @@ TP.boot.$$logReporter = function(entry, context, options) {
         return;
     }
 
-    time = entry[TP.LOG_ENTRY_DATE];
-    obj = entry[TP.LOG_ENTRY_PAYLOAD];
-    ctx = entry[TP.LOG_ENTRY_CONTEXT];
+    time = entry[TP.boot.LOG_ENTRY_DATE];
+    obj = entry[TP.boot.LOG_ENTRY_PAYLOAD];
 
     esc = TP.boot.$isValid(options.escape) ? options.escape : true;
     sep = TP.boot.$isValid(options.separator) ? options.separator : '\n';
@@ -5565,15 +5564,6 @@ TP.boot.$$logReporter = function(entry, context, options) {
         str = esc ? TP.boot.$htmlEscape(obj) : obj;
     }
 
-    iserr = TP.boot.Log.isErrorLevel(level);
-    if (iserr && ctx && ctx.callee) {
-        if (typeof ctx.callee.getName === 'function') {
-            str += ' @ ' + ctx.callee.getName();
-        } else if (TP.boot.$isValid(ctx.callee.displayName)) {
-            str += ' @ ' + ctx.callee.displayName;
-        }
-    }
-
     // Output format is;
     //
     //      time   delta    log level  message
@@ -5587,8 +5577,8 @@ TP.boot.$$logReporter = function(entry, context, options) {
     name = TP.boot.Log.getStringForLevel(level) || '';
     name = name.toLowerCase();
 
-    if (TP.boot.$$loglevel === TP.TRACE) {
-        delta = entry[TP.LOG_ENTRY_DELTA];
+    if (TP.boot.$$loglevel === TP.boot.TRACE) {
+        delta = entry[TP.boot.LOG_ENTRY_DELTA];
         dlimit = TP.sys.cfg('boot.delta_threshold');
         if (delta > dlimit) {
             TP.boot.$$bottlenecks += 1;
@@ -5610,7 +5600,7 @@ TP.boot.$$logReporter = function(entry, context, options) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$consoleReporter = function(entry, context, options) {
+TP.boot.$consoleReporter = function(entry, options) {
 
     var msg,
         level;
@@ -5621,34 +5611,34 @@ TP.boot.$consoleReporter = function(entry, context, options) {
     }
 
     TP.sys.setcfg('log.colormode', 'console');
-    msg = TP.boot.$$logReporter(entry, context,
+    msg = TP.boot.$$logReporter(entry,
         { separator: '\n', escape: false, console: true });
     if (TP.boot.$notValid(msg)) {
         return;
     }
 
-    level = entry[TP.LOG_ENTRY_LEVEL];
+    level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
     switch (level) {
-    case TP.TRACE:
+    case TP.boot.TRACE:
         top.console.log(msg);
         break;
-    case TP.INFO:
+    case TP.boot.INFO:
         top.console.log(msg);
         break;
-    case TP.WARN:
+    case TP.boot.WARN:
         top.console.warn(msg);
         break;
-    case TP.ERROR:
+    case TP.boot.ERROR:
         top.console.error(msg);
         break;
-    case TP.SEVERE:
+    case TP.boot.SEVERE:
         top.console.error(msg);
         break;
-    case TP.FATAL:
+    case TP.boot.FATAL:
         top.console.error(msg);
         break;
-    case TP.SYSTEM:
+    case TP.boot.SYSTEM:
         top.console.log(msg);
         break;
     default:
@@ -5661,7 +5651,7 @@ TP.boot.$consoleReporter = function(entry, context, options) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$bootuiReporter = function(entry, context, options) {
+TP.boot.$bootuiReporter = function(entry, options) {
 
     var elem,
         msg,
@@ -5683,41 +5673,42 @@ TP.boot.$bootuiReporter = function(entry, context, options) {
     }
 
     TP.sys.setcfg('log.colormode', 'browser');
-    msg = TP.boot.$$logReporter(entry, context,
+    msg = TP.boot.$$logReporter(entry,
         { separator: '<br/>', escape: true, console: false });
     if (TP.boot.$notValid(msg)) {
         return;
     }
 
-    css = 'log-' + TP.boot.Log.getStringForLevel(TP.boot.$$logpeak).toLowerCase();
+    css = 'log-' +
+        TP.boot.Log.getStringForLevel(TP.boot.$$logpeak).toLowerCase();
     if (TP.boot.$$logcss !== css) {
         TP.boot.$$logcss = css;
         TP.boot.$elementReplaceClass(TP.boot.$getProgressBarElement(),
                                      /log-/, TP.boot.$$logcss);
     }
 
-    level = entry[TP.LOG_ENTRY_LEVEL];
+    level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
     switch (level) {
-    case TP.TRACE:
+    case TP.boot.TRACE:
         TP.boot.$displayMessage(msg);
         break;
-    case TP.INFO:
+    case TP.boot.INFO:
         TP.boot.$displayMessage(msg);
         break;
-    case TP.WARN:
+    case TP.boot.WARN:
         TP.boot.$displayMessage(msg);
         break;
-    case TP.ERROR:
+    case TP.boot.ERROR:
         TP.boot.$displayMessage(msg, true);
         break;
-    case TP.SEVERE:
+    case TP.boot.SEVERE:
         TP.boot.$displayMessage(msg, true);
         break;
-    case TP.FATAL:
+    case TP.boot.FATAL:
         TP.boot.$displayMessage(msg, true);
         break;
-    case TP.SYSTEM:
+    case TP.boot.SYSTEM:
         TP.boot.$displayMessage(msg, true);
         break;
     default:
@@ -5742,7 +5733,7 @@ TP.boot.$bootuiReporter = function(entry, context, options) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$phantomReporter = function(entry, context, options) {
+TP.boot.$phantomReporter = function(entry, options) {
 
     var msg,
         level;
@@ -5753,34 +5744,34 @@ TP.boot.$phantomReporter = function(entry, context, options) {
     }
 
     TP.sys.setcfg('log.colormode', 'console');
-    msg = TP.boot.$$logReporter(entry, context,
+    msg = TP.boot.$$logReporter(entry,
         { separator: '\n', escape: false, console: true });
     if (TP.boot.$notValid(msg)) {
         return;
     }
 
-    level = entry[TP.LOG_ENTRY_LEVEL];
+    level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
     switch (level) {
-    case TP.TRACE:
+    case TP.boot.TRACE:
         top.console.log(msg);
         break;
-    case TP.INFO:
+    case TP.boot.INFO:
         top.console.log(msg);
         break;
-    case TP.WARN:
+    case TP.boot.WARN:
         top.console.warn(msg);
         break;
-    case TP.ERROR:
+    case TP.boot.ERROR:
         top.console.error(msg);
         break;
-    case TP.SEVERE:
+    case TP.boot.SEVERE:
         top.console.error(msg);
         break;
-    case TP.FATAL:
+    case TP.boot.FATAL:
         top.console.error(msg);
         break;
-    case TP.SYSTEM:
+    case TP.boot.SYSTEM:
         // NOTE: we turn off normal system messaging to quiet it down.
         //top.console.log(msg);
         break;
@@ -5898,14 +5889,14 @@ TP.boot.Log.canLogLevel = function(aLevel) {
     /**
      * @name canLogLevel
      * @synopsis Returns true if logging is set at or above aLevel.
-     * @param {Constant} aLevel A TP error level constant such as TP.INFO or
-     *     TP.TRACE. The default is TP.WARN.
+     * @param {Constant} aLevel A TP error level constant such as TP.boot.INFO
+     *     or TP.boot.TRACE. The default is TP.boot.WARN.
      * @returns {Boolean} True if logging is active for the given level.
      */
 
     var level;
 
-    level  = TP.boot.$isValid(aLevel) ? aLevel : TP.WARN;
+    level  = TP.boot.$isValid(aLevel) ? aLevel : TP.boot.WARN;
 
     return TP.boot.$$loglevel <= level;
 };
@@ -5919,24 +5910,24 @@ TP.boot.Log.getStringForLevel = function(aLogLevel) {
      * @summary Returns the string value for the logging level provided.
      * @param {Number} aLogLevel The level to check, defaults to the current
      *     level if no level is passed.
-     * @return {String} The String representation of the log level.
+     * @return {String} The String representation of the boot log level.
      * @todo
      */
 
     switch (aLogLevel) {
-        case TP.TRACE:
+        case TP.boot.TRACE:
             return 'TRACE';
-        case TP.INFO:
+        case TP.boot.INFO:
             return 'INFO';
-        case TP.WARN:
+        case TP.boot.WARN:
             return 'WARN';
-        case TP.ERROR:
+        case TP.boot.ERROR:
             return 'ERROR';
-        case TP.SEVERE:
+        case TP.boot.SEVERE:
             return 'SEVERE';
-        case TP.FATAL:
+        case TP.boot.FATAL:
             return 'FATAL';
-        case TP.SYSTEM:
+        case TP.boot.SYSTEM:
             return 'SYSTEM';
         default:
             // Cap others at SYSTEM
@@ -5951,7 +5942,7 @@ TP.boot.Log.isErrorLevel = function(aLevel) {
     /**
      * @name isErrorLevel
      * @synopsis Returns true if the level provided represents a form of error.
-     * @param {Constant} aLevel A TP error level constant such as TP.SEVERE.
+     * @param {Constant} aLevel A TP error level such as TP.boot.SEVERE.
      * @returns {Boolean} True if the given level is considered an error.
      */
 
@@ -5959,7 +5950,7 @@ TP.boot.Log.isErrorLevel = function(aLevel) {
         return false;
     }
 
-    return aLevel >= TP.ERROR && aLevel < TP.SYSTEM;
+    return aLevel >= TP.boot.ERROR && aLevel < TP.boot.SYSTEM;
 };
 
 //  ------------------------------------------------------------------------
@@ -5970,7 +5961,7 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
      * @name isFatalCondition
      * @synopsis Returns true if the level and stage combine to make the
      *     combination represent a fatal boot error.
-     * @param {Constant} aLevel A TP error level constant such as TP.SEVERE.
+     * @param {Constant} aLevel A TP error level such as TP.boot.SEVERE.
      * @param {Constant} aStage A TP boot stage such as 'rendering'. Defaults to
      *     the current stage.
      * @returns {Boolean} True if the given pairing is considered fatal.
@@ -5983,7 +5974,7 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
         return false;
     }
 
-    if (aLevel === TP.FATAL) {
+    if (aLevel === TP.boot.FATAL) {
         TP.boot.$$stop = 'fatal error detected.';
         return true;
     }
@@ -6184,8 +6175,7 @@ TP.boot.Log.prototype.last = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel,
-                                        aContext)
+TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel)
 {
     /**
      * @name log
@@ -6208,9 +6198,7 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel,
      *     use to display the log.
      * @param {String} aLogName The log name (TP.IO_LOG, etc.) which qualifies
      *     the entry within the overall log. Default value is TP.ACTIVITY_LOG.
-     * @param {Number} aLogLevel A TIBET log level, such as TP.INFO.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context information.
+     * @param {Number} aLogLevel A TIBET log level, such as TP.boot.INFO.
      * @return {Log} The receiver.
      * @todo
      */
@@ -6223,15 +6211,15 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel,
     date = new Date();
     delta = 0;
 
-    if (TP.boot.$$loglevel === TP.TRACE) {
+    if (TP.boot.$$loglevel === TP.boot.TRACE) {
         if (this.messages.length > 1) {
             delta = date.getTime() -
                 this.messages[this.messages.length - 1][0].getTime();
         }
     }
 
-    //  NOTE order here should match TP.LOG_ENTRY_* constants
-    entry = [date, aLogName, aLogLevel, anObject, aContext, delta];
+    //  NOTE order here should match TP.boot.LOG_ENTRY_* constants
+    entry = [date, aLogName, aLogLevel, anObject, delta];
 
     this.messages.push(entry);
 
@@ -6239,7 +6227,7 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel,
         TP.boot.$$errors += 1;
     }
 
-    if (aLogLevel === TP.WARN) {
+    if (aLogLevel === TP.boot.WARN) {
         TP.boot.$$warnings += 1;
     }
 
@@ -6300,12 +6288,12 @@ TP.boot.Log.prototype.report = function(entry) {
     this.index = this.index + 1;
 
     // Always log errors entering the boot log to the console, while respecting
-    // any limit set. The default limit is TP.ERROR.
+    // any limit set. The default limit is TP.boot.ERROR.
     limit = TP.sys.cfg('log.console_threshold');
-    level = entry[TP.LOG_ENTRY_LEVEL];
+    level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
     if (TP.boot.Log.isErrorLevel(level) && level >= limit) {
-        TP.boot.$consoleReporter(entry, arguments, {console: true});
+        TP.boot.$consoleReporter(entry, {console: true});
     }
 
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
@@ -6324,9 +6312,8 @@ TP.boot.Log.prototype.report = function(entry) {
         // Fake a warning and log to the native console, then output the
         // original if we haven't already.
         TP.boot.$consoleReporter(
-            [new Date(), TP.BOOT_LOG, TP.WARN,
-                'Logging reporter \'' + reporter + '\' not found.',
-                arguments]);
+            [new Date(), TP.BOOT_LOG, TP.boot.WARN,
+                'Logging reporter \'' + reporter + '\' not found.']);
         TP.boot.$consoleReporter(entry);
     }
 
@@ -6350,9 +6337,8 @@ TP.boot.Log.prototype.report = function(entry) {
 
         // Can you tell we really want you to see these messages yet? ;)
         TP.boot.$consoleReporter(
-            [new Date(), TP.BOOT_LOG, TP.ERROR,
-                'Error in reporter \'' + reporterName + '\': ' + e.message,
-                arguments]);
+            [new Date(), TP.BOOT_LOG, TP.boot.ERROR,
+                'Error in reporter \'' + reporterName + '\': ' + e.message]);
         TP.boot.$consoleReporter(entry);
     }
 };
@@ -6406,7 +6392,7 @@ TP.sys.getBootLog = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.log = function(anObject, aLogLevel, aContext) {
+TP.boot.log = function(anObject, aLogLevel) {
 
     /**
      * @name log
@@ -6416,20 +6402,17 @@ TP.boot.log = function(anObject, aLogLevel, aContext) {
      *     the particular log viewing logic used to display the log.
      * @param {Object} anObject The object to log.
      * @param {Number} aLogLevel The logging level to use.
-     * @param {arguments} aContext Optional arguments object to provide
-     *     additional context.
      * @return {null}
      * @todo
      */
 
     var level;
 
-    level = (aLogLevel == null) ? TP.INFO : aLogLevel;
+    level = (aLogLevel == null) ? TP.boot.INFO : aLogLevel;
 
     TP.sys.$bootlog.log(anObject,
                             TP.BOOT_LOG,
-                            level,
-                            aContext || arguments);
+                            level);
     return;
 };
 
@@ -6700,7 +6683,8 @@ TP.boot.$flushUIBuffer = function(force) {
 
     buffer = TP.boot.$$msgBuffer;
     if (TP.boot.$notValid(buffer)) {
-        TP.boot.$$msgBuffer = buffer = elem.ownerDocument.createDocumentFragment();
+        TP.boot.$$msgBuffer = buffer =
+            elem.ownerDocument.createDocumentFragment();
     }
 
     bufSize = TP.boot.$$logbufsize || TP.boot.$computeLogBufferSize();
@@ -6708,7 +6692,8 @@ TP.boot.$flushUIBuffer = function(force) {
     if (buffer.childNodes.length > 0 &&
         (force === true || buffer.childNodes.length === bufSize)) {
         TP.boot.$nodeAppendChild(elem, buffer);
-        TP.boot.$$msgBuffer = buffer = elem.ownerDocument.createDocumentFragment();
+        TP.boot.$$msgBuffer = buffer =
+            elem.ownerDocument.createDocumentFragment();
     }
 
     return buffer;
@@ -6956,19 +6941,18 @@ TP.sys.showBootLog = function(reporter, level) {
 
     if (TP.boot.$notValid(rep)) {
         TP.boot.$consoleReporter(
-            [new Date(), TP.BOOT_LOG, TP.WARN,
-                'Boot log reporter \'' + reporter + '\' not found.',
-                arguments]);
+            [new Date(), TP.BOOT_LOG, TP.boot.WARN,
+                'Boot log reporter \'' + reporter + '\' not found.']);
         return;
     }
 
     // By default dump the entire log.
-    lvl = TP.boot.$isValid(level) ? level : TP.TRACE;
+    lvl = TP.boot.$isValid(level) ? level : TP.boot.TRACE;
 
     entries = TP.sys.getBootLog().getEntries();
     entries.forEach(function(entry) {
 
-        if (entry[TP.LOG_ENTRY_LEVEL] < lvl) {
+        if (entry[TP.boot.LOG_ENTRY_LEVEL] < lvl) {
             return;
         }
 
@@ -7119,19 +7103,19 @@ TP.boot.$setStage = function(aStage, aReason) {
         stagetime = TP.boot.$getStageTime(prior);
 
         if (prior === 'paused') {
-            TP.boot.$stdout('', TP.SYSTEM);
+            TP.boot.$stdout('', TP.boot.SYSTEM);
             prefix = 'Paused for ';
         } else {
             prefix = 'Completed in ';
         }
-        TP.boot.$stdout(prefix + stagetime + 'ms', TP.SYSTEM);
+        TP.boot.$stdout(prefix + stagetime + 'ms', TP.boot.SYSTEM);
     }
 
-    TP.boot.$stdout('', TP.SYSTEM);
-    TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
-    TP.boot.$stdout(info.log, TP.SYSTEM);
-    TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
-    TP.boot.$stdout('', TP.SYSTEM);
+    TP.boot.$stdout('', TP.boot.SYSTEM);
+    TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.boot.SYSTEM);
+    TP.boot.$stdout(info.log, TP.boot.SYSTEM);
+    TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.boot.SYSTEM);
+    TP.boot.$stdout('', TP.boot.SYSTEM);
 
     // Capture the time we reached this stage. this is key for reporting the
     // time spent in the current (now prior) stage below.
@@ -7171,21 +7155,21 @@ TP.boot.$setStage = function(aStage, aReason) {
         TP.boot.$stdout('Launched in ' +
             (TP.boot.$getStageTime('started', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
-            'ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
+            'ms with ' + TP.boot.$getBootStats(), TP.boot.SYSTEM);
 
-        TP.boot.$stdout('', TP.SYSTEM);
-        TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+        TP.boot.$stdout('', TP.boot.SYSTEM);
+        TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.boot.SYSTEM);
 
     } else if (TP.boot.$$stage === 'stopped') {
 
-        TP.boot.$stdout(aReason, TP.SYSTEM);
-        TP.boot.$stdout('', TP.SYSTEM);
+        TP.boot.$stdout(aReason, TP.boot.SYSTEM);
+        TP.boot.$stdout('', TP.boot.SYSTEM);
         TP.boot.$stdout('Stopped after ' +
             (TP.boot.$getStageTime('stopped', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
-            'ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
-        TP.boot.$stdout('', TP.SYSTEM);
-        TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+            'ms with ' + TP.boot.$getBootStats(), TP.boot.SYSTEM);
+        TP.boot.$stdout('', TP.boot.SYSTEM);
+        TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.boot.SYSTEM);
     }
 
     TP.boot.$flushLog(true);
@@ -7634,7 +7618,7 @@ TP.boot.$getLibRoot = function() {
 
     TP.boot.shouldStop('unable to compute lib_root');
     TP.boot.$stderr('TP.boot.$getLibRoot() unable to find/compute libroot.',
-                   TP.FATAL);
+                   TP.boot.FATAL);
 };
 
 //  ----------------------------------------------------------------------------
@@ -7665,7 +7649,7 @@ TP.boot.$getRootPath = function() {
     debug = TP.sys.cfg('debug.path');
     if (debug && TP.boot.$$debug) {
         TP.boot.$stdout('TP.boot.$getRootPath() computed rootpath: ' +
-                        TP.boot.$$rootpath, TP.TRACE);
+                        TP.boot.$$rootpath, TP.boot.TRACE);
     }
 
     return path;
@@ -7695,7 +7679,7 @@ TP.boot.$setAppRoot = function(aPath) {
     debug = TP.sys.cfg('debug.path');
     if (debug && TP.boot.$$debug) {
         TP.boot.$stdout('TP.boot.$setAppRoot() defined approot: ' + path,
-                        TP.TRACE);
+                        TP.boot.TRACE);
     }
 
     return TP.boot.$$approot;
@@ -7725,7 +7709,7 @@ TP.boot.$setLibRoot = function(aPath) {
     debug = TP.sys.cfg('debug.path');
     if (debug && TP.boot.$$debug) {
         TP.boot.$stdout('TP.boot.$setLibRoot() defined libroot: ' + path,
-                        TP.TRACE);
+                        TP.boot.TRACE);
     }
 
     return TP.boot.$$libroot;
@@ -7760,20 +7744,21 @@ TP.boot.$configurePackage = function() {
     profile = TP.sys.cfg('boot.profile');
     if (TP.boot.$isEmpty(profile)) {
         TP.boot.$stdout('Empty boot.profile. Checking for boot.package.',
-            TP.TRACE);
+            TP.boot.TRACE);
 
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
 
             TP.boot.$stdout('Empty boot.package. Defaulting to standard.xml.',
-                TP.TRACE);
+                TP.boot.TRACE);
 
             package = 'standard.xml';
         } else {
-            TP.boot.$stdout('Found boot.package. Using: ' + package, TP.TRACE);
+            TP.boot.$stdout('Found boot.package. Using: ' + package,
+                TP.boot.TRACE);
         }
     } else {
-        TP.boot.$stdout('Found boot.profile. Using: ' + profile, TP.TRACE);
+        TP.boot.$stdout('Found boot.profile. Using: ' + profile, TP.boot.TRACE);
     }
 
     // Second phase is processing any boot.profile if found to update any
@@ -7794,7 +7779,7 @@ TP.boot.$configurePackage = function() {
                 if (TP.boot.$notEmpty(config)) {
                     TP.boot.$stdout(
                         'Overriding boot.config (' + config +
-                        ') with profile#config: ' + parts[1], TP.WARN);
+                        ') with profile#config: ' + parts[1], TP.boot.WARN);
                 }
 
                 // Configuration mismatch. We'll go with the one on the
@@ -7824,11 +7809,11 @@ TP.boot.$configurePackage = function() {
         TP.boot.$notEmpty(TP.sys.cfg('boot.package'))) {
         TP.boot.$stdout(
             'Overriding boot.package (' + TP.sys.cfg('boot.package') +
-            ') with profile#config: ' + package, TP.WARN);
+            ') with profile#config: ' + package, TP.boot.WARN);
     }
 
     file = TP.boot.$uriExpandPath(package);
-    TP.boot.$stdout('Loading package: ' + file, TP.TRACE);
+    TP.boot.$stdout('Loading package: ' + file, TP.boot.TRACE);
 
     xml = TP.boot.$uriLoad(file, TP.DOM, 'manifest', false);
     if (xml) {
@@ -7837,7 +7822,7 @@ TP.boot.$configurePackage = function() {
     } else {
 
         err = 'Boot package \'' + package + '\' not found in: ' + file,
-        TP.boot.$stderr(err, TP.FATAL);
+        TP.boot.$stderr(err, TP.boot.FATAL);
 
         throw new Error(err);
     }
@@ -7874,15 +7859,15 @@ TP.boot.$configureBootstrap = function() {
     file = TP.boot.$uriExpandPath(file);
 
     try {
-        TP.boot.$stdout('Loading bootstrap: ' + logpath, TP.TRACE);
+        TP.boot.$stdout('Loading bootstrap: ' + logpath, TP.boot.TRACE);
         str = TP.boot.$uriLoad(file, TP.TEXT, 'source');
         if (!str) {
-            TP.boot.$stderr('Failed to load: ' + file, TP.FATAL);
+            TP.boot.$stderr('Failed to load: ' + file, TP.boot.FATAL);
         }
         obj = JSON.parse(str);
     } catch (e) {
         TP.boot.$stderr('Failed to load: ' + logpath,
-            TP.boot.$ec(e), TP.FATAL);
+            TP.boot.$ec(e), TP.boot.FATAL);
         return;
     }
 
@@ -8003,7 +7988,7 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
                 //  file-based launches are often restricted from accessing
                 //  DOM storage, but we can get to the file system so it's
                 //  unlikely to have a huge impact.
-                TP.boot.$stdout(msg, TP.WARN);
+                TP.boot.$stdout(msg, TP.boot.WARN);
             }
         }
 
@@ -8023,7 +8008,8 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
     switch (TP.sys.cfg('boot.cachemode')) {
         case 'versioned':
 
-            TP.boot.$stdout('Configuring \'versioned\' local cache.', TP.TRACE);
+            TP.boot.$stdout('Configuring \'versioned\' local cache.',
+                TP.boot.TRACE);
 
             //  versioned caches check the package's version as defined in
             //  the root manifest file against the cached version for the
@@ -8044,7 +8030,7 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
         case 'synchronized':
 
             TP.boot.$stdout('Configuring \'synchronized\' local cache.',
-                            TP.TRACE);
+                            TP.boot.TRACE);
 
             //  a synchronized cache means we update every file based on
             //  Last-Modified data to keep the cache synchronized with any
@@ -8055,7 +8041,8 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
 
         case 'manual':
 
-            TP.boot.$stdout('Configuring \'manual\' local cache.', TP.TRACE);
+            TP.boot.$stdout('Configuring \'manual\' local cache.',
+                TP.boot.TRACE);
 
             //  a manual cache means the manifest nodes to update will be
             //  marked manually as needing a refresh. This approach provides
@@ -8066,7 +8053,8 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
 
         case 'stale':
 
-            TP.boot.$stdout('Configuring \'stale\' local cache.', TP.TRACE);
+            TP.boot.$stdout('Configuring \'stale\' local cache.',
+                TP.boot.TRACE);
 
             //  a stale cache means we don't even want to consider metadata
             //  regarding Last-Modified dates for source. all flags are set
@@ -8081,7 +8069,8 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
 
         case 'fresh':
 
-            TP.boot.$stdout('Configuring \'fresh\' local cache.', TP.TRACE);
+            TP.boot.$stdout('Configuring \'fresh\' local cache.',
+                TP.boot.TRACE);
 
             //  cache is considered current without checks of any kind.
             TP.sys.setcfg('import.manifests', true);
@@ -8094,8 +8083,8 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
 
             //  invalid cache mode, treat like an invalid cache
             TP.boot.$stderr('Invalid local cache mode: ' +
-                TP.sys.cfg('boot.cachemode'), TP.ERROR);
-            TP.boot.$stdout('Disabling local cache.', TP.WARN);
+                TP.sys.cfg('boot.cachemode'), TP.boot.ERROR);
+            TP.boot.$stdout('Disabling local cache.', TP.boot.WARN);
 
             TP.sys.setcfg('boot.localcache', false);
 
@@ -8147,8 +8136,8 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     }
 
     if (!cacheVersion) {
-        TP.boot.$stdout('No local cache version string found.', TP.TRACE);
-        TP.boot.$stdout('Simulating \'empty\' local cache.', TP.TRACE);
+        TP.boot.$stdout('No local cache version string found.', TP.boot.TRACE);
+        TP.boot.$stdout('Simulating \'empty\' local cache.', TP.boot.TRACE);
 
         //  no cache or empty version string, consider cache invalid.
         TP.sys.setcfg('import.source', 'remote');
@@ -8157,8 +8146,8 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     }
 
     if (!rootVersion) {
-        TP.boot.$stdout('No target version string found.', TP.TRACE);
-        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.TRACE);
+        TP.boot.$stdout('No target version string found.', TP.boot.TRACE);
+        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.boot.TRACE);
 
         //  no target version for the root package, consider cache valid but
         //  check individual nodes for version/update information.
@@ -8170,8 +8159,8 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     //  if the strings are the same, regardless of their form, then we
     //  consider the cache to be current in all respects.
     if (cacheVersion === rootVersion) {
-        TP.boot.$stdout('Cache and target versions match.', TP.TRACE);
-        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Cache and target versions match.', TP.boot.TRACE);
+        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.boot.TRACE);
 
         TP.sys.setcfg('import.manifests', true);
         TP.sys.setcfg('import.metadata', true);
@@ -8189,7 +8178,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     if (!TP.TIBET_VERSION_SPLITTER.test(rootVersion)) {
         TP.boot.$stderr('Unrecognized target version format: ' +
                         rootVersion);
-        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.boot.TRACE);
 
         TP.sys.setcfg('import.source', 'remote');
 
@@ -8202,7 +8191,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     if (!TP.TIBET_VERSION_SPLITTER.test(cacheVersion)) {
         TP.boot.$stderr('Unrecognized cache version format: ' +
                         cacheVersion);
-        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.boot.TRACE);
 
         TP.sys.setcfg('import.source', 'remote');
 
@@ -8220,7 +8209,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
         TP.boot.$stderr(TP.boot.$join('Major version change from ',
                         cacheParts[1], ' to ', rootParts[1]));
 
-        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.boot.TRACE);
 
         TP.sys.setcfg('import.source', 'remote');
 
@@ -8232,7 +8221,8 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
         TP.boot.$stderr(TP.boot.$join('Minor version change from ',
                         cacheParts[2], ' to ', rootParts[2]));
 
-        TP.boot.$stdout('Simulating \'synchronized\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'synchronized\' local cache.',
+            TP.boot.TRACE);
 
         TP.sys.setcfg('import.source', 'modified');
 
@@ -8244,7 +8234,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
         TP.boot.$stderr(TP.boot.$join('Build version change from ',
                         cacheParts[3], ' to ', rootParts[3]));
 
-        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.boot.TRACE);
 
         TP.sys.setcfg('import.source', 'marked');
 
@@ -8256,7 +8246,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
         TP.boot.$stderr(TP.boot.$join('Patch version change from ',
                         cacheParts[4], ' to ', rootParts[4]));
 
-        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.boot.TRACE);
 
         TP.sys.setcfg('import.source', 'local');
 
@@ -8289,16 +8279,17 @@ TP.boot.$configureOptions = function(anObject) {
                 name = key + '.' + subkey;
                 TP.sys.setcfg(name, value[subkey]);
 
-                TP.boot.$stdout('$configureOption ' + name + ' = ' + value[subkey], TP.TRACE);
+                TP.boot.$stdout('$configureOption ' + name + ' = ' +
+                    value[subkey], TP.boot.TRACE);
 
                 // Update cached values as needed.
                 if (name === 'path.app_root') {
                     TP.boot.$stdout('Overriding path.app_root cache with: ' +
-                        value[subkey], TP.TRACE);
+                        value[subkey], TP.boot.TRACE);
                     TP.boot.$$approot = TP.boot.$uriExpandPath(value[subkey]);
                 } else if (name === 'path.lib_root') {
                     TP.boot.$stdout('Overriding path.lib_root cache with: ' +
-                        value[subkey], TP.TRACE);
+                        value[subkey], TP.boot.TRACE);
                     TP.boot.$$libroot = TP.boot.$uriExpandPath(value[subkey]);
                 }
             });
@@ -8363,13 +8354,13 @@ TP.boot.$$configureOverrides = function(options, activate) {
                 var name = key + '.' + subkey;
 
                 TP.boot.$stdout('Setting override for: ' + name + ' to: \'' +
-                    value[subkey] + '\'', TP.TRACE);
+                    value[subkey] + '\'', TP.boot.TRACE);
 
                 TP.sys.setcfg(name, value[subkey], false, true);
             });
         } else {
             TP.boot.$stdout('Setting override for: ' + key + ' to: \'' +
-                value + '\'', TP.TRACE);
+                value + '\'', TP.boot.TRACE);
             TP.sys.setcfg(key, value, false, true);
         }
     });
@@ -8445,14 +8436,14 @@ TP.boot.$updateDependentVars = function() {
     var level;
 
     // Logging level drives how the UI looks, so it needs to be updated.
-    level = TP.sys.cfg('log.level');
-    if (level < TP.TRACE || level > TP.SYSTEM) {
+    level = TP.sys.cfg('boot.level');
+    if (level < TP.boot.TRACE || level > TP.boot.SYSTEM) {
         // Reset and warn.
-        TP.sys.setcfg('log.level', TP.WARN, false, true);
-        TP.boot.$$loglevel = TP.WARN;
+        TP.sys.setcfg('boot.level', TP.boot.WARN, false, true);
+        TP.boot.$$loglevel = TP.boot.WARN;
         TP.boot.$computeLogBufferSize();
-            TP.boot.$stdout('Invalid log.level: ' + level +
-                '. Forcing to TP.WARN', TP.WARN);
+            TP.boot.$stdout('Invalid boot.level: ' + level +
+                '. Forcing to TP.boot.WARN', TP.boot.WARN);
     } else {
         TP.boot.$$loglevel = level;
     }
@@ -8671,7 +8662,7 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
                                     TP.boot.$join(
                                         'TP.boot.$uniqueNodeList() ',
                                         'removing duplicate: ',
-                                        src), TP.TRACE);
+                                        src), TP.boot.TRACE);
                             }
                         }
                     }
@@ -9006,7 +8997,7 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
         } else if (shouldThrow === false) {
             //  if throw flag is explicitly false then we don't consider
             //  this to be an error, we just report it.
-            TP.boot.$stdout(msg + targetUrl + '.', TP.TRACE);
+            TP.boot.$stdout(msg + targetUrl + '.', TP.boot.TRACE);
         } else {
             TP.boot.$stderr(msg + targetUrl + '.');
         }
@@ -9160,8 +9151,8 @@ TP.boot.$importComponents = function(loadSync) {
      * @summary Dynamically imports a set of application elements read from a
      *     list of 'bootnodes' configured by the invoking function. This boot
      *     node list is a shared property on TP.boot so only one import sequence
-     *     can be running at a time. Normally you'd call importPackage instead of
-     *     this routine to trigger imports.
+     *     can be running at a time. Normally you'd call importPackage instead
+     *     of this routine to trigger imports.
      * @param {Boolean} loadSync Should the import be done synchronously or not?
      *     Default is false so that each file is loaded via a short setTimeout.
      * @return {null}
@@ -9198,7 +9189,7 @@ TP.boot.$importComponents = function(loadSync) {
             TP.boot.shouldStop('invalid component list.');
             TP.boot.$stderr(
                 'TP.boot.$importComponents() ' +
-                'terminated: invalid component list.', TP.FATAL);
+                'terminated: invalid component list.', TP.boot.FATAL);
         }
         return;
     }
@@ -9272,9 +9263,9 @@ TP.boot.$importComponents = function(loadSync) {
                 (nd.getAttribute('defer') === 'true' ||
                 nd.getAttribute('load_deferred') === 'true')) {
                 if (TP.boot.$verbose) {
-                    TP.boot.$stdout('Deferring ' + logpath, TP.TRACE);
+                    TP.boot.$stdout('Deferring ' + logpath, TP.boot.TRACE);
                 } else {
-                    TP.boot.$stdout('Deferring ' + srcpath, TP.TRACE);
+                    TP.boot.$stdout('Deferring ' + srcpath, TP.boot.TRACE);
                 }
 
                 //  re-invoke manually so we move on to the next boot node
@@ -9307,7 +9298,8 @@ TP.boot.$importComponents = function(loadSync) {
         //  source to actually load. Doing this here avoids having to have
         //  an overly complex callback function when we've got to go over
         //  the wire to get the actual source before we can import.
-        TP.boot.$stdout('Loading ' + (srcpath ? srcpath : logpath), TP.TRACE);
+        TP.boot.$stdout('Loading ' + (srcpath ? srcpath : logpath),
+            TP.boot.TRACE);
 
         //  trigger the appropriate "will" hook
         if (srcpath) {
@@ -9446,7 +9438,7 @@ TP.boot.$importComponents = function(loadSync) {
                         ' ',
                         srcpath.slice(srcpath.lastIndexOf('/') + 1));
 
-                TP.boot.$stdout('Preloading image ' + logpath, TP.TRACE);
+                TP.boot.$stdout('Preloading image ' + logpath, TP.boot.TRACE);
 
                 image = new Image();
                 image.src = srcpath;
@@ -9455,7 +9447,7 @@ TP.boot.$importComponents = function(loadSync) {
     } else if (tn === 'echo') {
         //  note we do these regardless of debug/verbose settings
 
-        level = 1 * (nd.getAttribute('level') || TP.INFO);
+        level = 1 * (nd.getAttribute('level') || TP.boot.INFO);
 
         //  first check for content as an attribute
         if ((msg = nd.getAttribute('message')) != null) {
@@ -9511,7 +9503,7 @@ TP.boot.$$importPhase = function() {
 
     // remaining list is our workload for actual importing
     TP.boot.$stdout('Importing ' + nodelist.length + ' components.',
-                   TP.SYSTEM);
+                   TP.boot.SYSTEM);
 
     TP.boot.$$bootnodes = nodelist;
     TP.boot.$$bootindex = 0;
@@ -9621,23 +9613,23 @@ TP.boot.$config = function() {
 
     //  log the environment settings.
     if (TP.sys.cfg('log.bootenv')) {
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout('TIBET Environment Variables', TP.TRACE);
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout(TP.sys.environment, TP.TRACE);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.boot.TRACE);
+        TP.boot.$stdout('TIBET Environment Variables', TP.boot.TRACE);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.boot.TRACE);
+        TP.boot.$stdout(TP.sys.environment, TP.boot.TRACE);
     }
 
     //  log configuration settings and any overrides from the user.
     if (TP.sys.cfg('log.bootcfg')) {
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout('TIBET Configuration Variables', TP.TRACE);
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout(TP.sys.configuration, TP.TRACE);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.boot.TRACE);
+        TP.boot.$stdout('TIBET Configuration Variables', TP.boot.TRACE);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.boot.TRACE);
+        TP.boot.$stdout(TP.sys.configuration, TP.boot.TRACE);
 
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout('TIBET Configuration Overrides', TP.TRACE);
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout(TP.sys.overrides, TP.TRACE);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.boot.TRACE);
+        TP.boot.$stdout('TIBET Configuration Overrides', TP.boot.TRACE);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.boot.TRACE);
+        TP.boot.$stdout(TP.sys.overrides, TP.boot.TRACE);
     }
 
     return;
@@ -9656,7 +9648,7 @@ TP.boot.$expand = function( ) {
     config = TP.sys.cfg('boot.config');
 
     TP.boot.$stdout('Expanding package#config: ' + file + '#' + config,
-                   TP.TRACE);
+                   TP.boot.TRACE);
     TP.boot.$expandPackage(file, config);
 
     return;
@@ -10288,7 +10280,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                             result.push(child);
                         } else {
                             TP.boot.$stdout('Skipping duplicate asset: ' + src,
-                                           TP.WARN);
+                                           TP.boot.WARN);
                         }
                     } else {
                         child.setAttribute('load_package',
@@ -10459,10 +10451,10 @@ TP.boot.launch = function(options) {
         TP.boot.$updateDependentVars();
     }
 
-    TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+    TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.boot.SYSTEM);
     TP.boot.$stdout('TIBET Boot System (TBS) v' + TP.boot.$bootversion,
-                    TP.SYSTEM);
-    TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+                    TP.boot.SYSTEM);
+    TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.boot.SYSTEM);
 
     try {
         //  set the initial stage. this will also capture a start time.
@@ -10475,18 +10467,18 @@ TP.boot.launch = function(options) {
                     'File launch aborted. ' +
                     'On Chrome you need to start the browser with ' +
                     'the --allow-file-access-from-files flag.',
-                    TP.FATAL);
+                    TP.boot.FATAL);
             } else if (TP.boot.isUA('firefox')) {
                 TP.boot.$stderr(
                     'File launch aborted. ' +
                     'On Firefox you must set the config flag ' +
                     '\'security.fileuri.strict_origin_policy\' to false,' +
                     ' via about:config, quit the browser and restart.',
-                    TP.FATAL);
+                    TP.boot.FATAL);
             } else {
                 TP.boot.$stderr(
                     'File launch aborted. Check browser security settings.',
-                    TP.FATAL);
+                    TP.boot.FATAL);
             }
             return;
         }
@@ -10495,7 +10487,7 @@ TP.boot.launch = function(options) {
     // If the browser is considered obsolete we can stop right now.
     if (TP.boot.isObsolete()) {
         TP.boot.$stderr('Obsolete browser/platform: ' + TP.$agent +
-            '. Boot sequence terminated.', TP.FATAL);
+            '. Boot sequence terminated.', TP.boot.FATAL);
         return;
     }
 
@@ -10526,7 +10518,7 @@ TP.boot.launch = function(options) {
             (typeof(window.$$tibet.getFullName) === 'function') ?
                 window.$$tibet.getFullName() :
                 window.$$tibet.name +
-                '. Boot sequence terminated.', TP.FATAL);
+                '. Boot sequence terminated.', TP.boot.FATAL);
         return;
     }
 
@@ -10572,7 +10564,7 @@ TP.boot.main = function() {
         return;
     }
 
-    if (TP.boot.$$logpeak > TP.WARN && TP.sys.cfg('boot.pause_on_error')) {
+    if (TP.boot.$$logpeak > TP.boot.WARN && TP.sys.cfg('boot.pause_on_error')) {
         TP.boot.$setStage('paused');
         TP.boot.$displayStatus('Paused via boot.pause_on_error w/boot errors.');
         return;
@@ -10638,7 +10630,8 @@ TP.boot.$stageAction = function() {
     switch (TP.boot.$getStage()) {
         case 'paused':
             TP.boot.$$restarttime = new Date();
-            TP.boot.$stdout('Startup process reengaged by user.', TP.SYSTEM);
+            TP.boot.$stdout('Startup process reengaged by user.',
+                TP.boot.SYSTEM);
             TP.boot.$activate();
             break;
         case 'import_paused':
@@ -10684,7 +10677,7 @@ TP.boot.$uiRootConfig = function() {
     }
 
     TP.boot.$stdout('Unable to locate ' + uiRootID + ', generating it.',
-        TP.TRACE);
+        TP.boot.TRACE);
 
     // TODO: Verify we need this instead of just body.appendChild. We used
     // to have to work around a bug in IE.
@@ -10773,7 +10766,8 @@ TP.boot.$uiRootReady = function() {
 
     if (TP.boot.$notValid(win)) {
         TP.boot.$stdout(
-            'Unable to locate uiroot, defaulting to current window.', TP.WARN);
+            'Unable to locate uiroot, defaulting to current window.',
+            TP.boot.WARN);
         win = window;
     }
 

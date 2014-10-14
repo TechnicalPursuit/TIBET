@@ -46,7 +46,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided it meets the criteria for a
      *     valid time string with optional time zone data.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -122,7 +122,7 @@ function(aValue, aFacet) {
      *     value provided in the facet specification.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -147,7 +147,7 @@ function(aValue, aFacet) {
 
     //  if we got differing zone data then we've got issues
     if (zone1 !== zone2) {
-        return this.raise('TP.sig.UnsupportedFeature', arguments,
+        return this.raise('TP.sig.UnsupportedFeature',
                     'Timezone comparisons not currently supported.');
     }
 
@@ -196,7 +196,7 @@ function(aValue, aFacet) {
      *     the value specified in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -221,7 +221,7 @@ function(aValue, aFacet) {
 
     //  if we got differing zone data then we've got issues
     if (zone1 !== zone2) {
-        return this.raise('TP.sig.UnsupportedFeature', arguments,
+        return this.raise('TP.sig.UnsupportedFeature',
                     'Timezone comparisons not currently supported.');
     }
 
@@ -270,7 +270,7 @@ function(aValue, aFacet) {
      *     minimum value provided in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -295,7 +295,7 @@ function(aValue, aFacet) {
 
     //  if we got differing zone data then we've got issues
     if (zone1 !== zone2) {
-        return this.raise('TP.sig.UnsupportedFeature', arguments,
+        return this.raise('TP.sig.UnsupportedFeature',
                     'Timezone comparisons not currently supported.');
     }
 
@@ -344,7 +344,7 @@ function(aValue, aFacet) {
      *     value provided in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -369,7 +369,7 @@ function(aValue, aFacet) {
 
     //  if we got differing zone data then we've got issues
     if (zone1 !== zone2) {
-        return this.raise('TP.sig.UnsupportedFeature', arguments,
+        return this.raise('TP.sig.UnsupportedFeature',
                     'Timezone comparisons not currently supported.');
     }
 

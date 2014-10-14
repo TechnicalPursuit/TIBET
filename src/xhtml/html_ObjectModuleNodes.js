@@ -95,7 +95,7 @@ function(type) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.toDataURL(type);
@@ -117,7 +117,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.getContext('2d');
@@ -141,7 +141,7 @@ function(contextId) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.getContext(contextId);
@@ -152,7 +152,7 @@ function(contextId) {
 //  ------------------------------------------------------------------------
 
 TP.html.canvas.Inst.defineMethod('canResolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name canResolveDNU
@@ -161,8 +161,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      * @param {Object} anOrigin The object asking for help. The receiver in this
      *     case.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     TRUE for TP.core.Node subtypes.
@@ -183,7 +183,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.html.canvas.Inst.defineMethod('resolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name resolveDNU
@@ -195,8 +195,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     method calls.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The result of invoking the method using the native
      *     window object.
      * @todo
@@ -208,15 +208,15 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
     //  Make sure that we can obtain a valid 2D context. Without that, we're
     //  going nowhere.
     if (TP.notValid(the2DContext = this.get2DContext())) {
-        return this.raise('TP.sig.InvalidContext', arguments);
+        return this.raise('TP.sig.InvalidContext');
     }
 
     try {
         if (!TP.isCallable(func = the2DContext[aMethodName])) {
-            return this.raise('TP.sig.InvalidFunction', arguments);
+            return this.raise('TP.sig.InvalidFunction');
         }
     } catch (e) {
-        return this.raise('TP.sig.InvalidFunction', arguments, TP.ec(e));
+        return this.raise('TP.sig.InvalidFunction', TP.ec(e));
     }
 
     //  If there weren't any arguments in the arg array, then we have only
@@ -260,7 +260,7 @@ function(attributeName) {
         //  Make sure that we can obtain a valid 2D context. Without that,
         //  we're going nowhere.
         if (TP.notValid(the2DContext = this.get2DContext())) {
-            return this.raise('TP.sig.InvalidContext', arguments);
+            return this.raise('TP.sig.InvalidContext');
         }
 
         val = the2DContext[attributeName];
@@ -298,7 +298,7 @@ function(attributeName, attributeValue) {
     //  Make sure that we can obtain a valid 2D context. Without that, we're
     //  going nowhere.
     if (TP.notValid(the2DContext = this.get2DContext())) {
-        return this.raise('TP.sig.InvalidContext', arguments);
+        return this.raise('TP.sig.InvalidContext');
     }
 
     the2DContext[attributeName] = attributeValue;

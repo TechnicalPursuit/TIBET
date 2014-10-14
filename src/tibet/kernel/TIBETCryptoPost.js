@@ -33,7 +33,7 @@ function(aValue, aPassword) {
         encVal;
 
     if (!TP.isString(aValue) || !TP.isString(aPassword)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     //  If we can create a 'record' from the JSON string
@@ -90,7 +90,7 @@ function(aValue, aPassword) {
         recordStr;
 
     if (!TP.isString(aValue) || !TP.isString(aPassword)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     //  Generate random values to use for the password 'salt' and the encryption
@@ -140,7 +140,7 @@ function(anObject, aHashMode, aHashFormat) {
         result;
 
     if (TP.notValid(anObject)) {
-        return TP.raise(null, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(null, 'TP.sig.InvalidParameter');
     }
 
     str = TP.str(anObject);
@@ -207,7 +207,7 @@ function(anObject, aKey, aHashMode, aHashFormat) {
         hmac;
 
     if (TP.notValid(anObject) || TP.notValid(aKey)) {
-        return TP.raise(null, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(null, 'TP.sig.InvalidParameter');
     }
 
     str = TP.str(anObject);
@@ -264,7 +264,7 @@ function(numberOfBytes) {
      */
 
     if (!TP.isNumber(numberOfBytes)) {
-        return TP.raise(null, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(null, 'TP.sig.InvalidNumber');
     }
 
     return TP.extern.forge.random.getBytesSync(numberOfBytes);
@@ -296,7 +296,7 @@ function(aSalt, params) {
         encKey;
 
     if (!TP.isString(aSalt)) {
-        return this.raise('TP.sig.InvalidString', arguments);
+        return this.raise('TP.sig.InvalidString');
     }
 
     //  Make sure the receiver is a String
@@ -344,7 +344,7 @@ function(aKey, params) {
         buffer;
 
     if (!TP.isString(aKey)) {
-        return this.raise('TP.sig.InvalidString', arguments);
+        return this.raise('TP.sig.InvalidString');
     }
 
     //  Make sure the receiver is a String
@@ -354,7 +354,7 @@ function(aKey, params) {
 
     //  'iv' cannot be empty.
     if (TP.isEmpty(iv = opts.at('iv'))) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     cipher = TP.extern.forge.aes.createDecryptionCipher(aKey, 'CBC');
@@ -393,7 +393,7 @@ function(aKey, params) {
         cipher;
 
     if (!TP.isString(aKey)) {
-        return this.raise('TP.sig.InvalidString', arguments);
+        return this.raise('TP.sig.InvalidString');
     }
 
     //  Make sure the receiver is a String
@@ -403,7 +403,7 @@ function(aKey, params) {
 
     //  'iv' cannot be empty.
     if (TP.isEmpty(iv = opts.at('iv'))) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     cipher = TP.extern.forge.aes.createEncryptionCipher(aKey, 'CBC');

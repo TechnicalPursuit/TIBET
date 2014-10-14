@@ -51,7 +51,7 @@ function(aNode, aURI) {
                     TP.nodeAddDefaultXMLNS(aNode, TP.w3.Xmlns.RSS20),
                     false);
     } else {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (TP.isURI(aURI)) {
@@ -83,7 +83,7 @@ function() {
 
 /**
  * @type {TP.core.RSSElement}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------

@@ -174,7 +174,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UICanvas.Inst.defineMethod('canResolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name canResolveDNU
@@ -186,8 +186,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      * @param {Object} anOrigin The object asking for help. The receiver in this
      *     case.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     TRUE for TP.core.Node subtypes.
@@ -220,7 +220,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
         return win.canResolveDNU(anOrigin,
                                     aMethodName,
                                     anArgArray,
-                                    aContext);
+                                    callingContext);
     }
 
     //  "phase two", check the document
@@ -234,7 +234,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
         return doc.canResolveDNU(anOrigin,
                                     aMethodName,
                                     anArgArray,
-                                    aContext);
+                                    callingContext);
     }
 
     //  out of options
@@ -244,7 +244,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.core.UICanvas.Inst.defineMethod('resolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name resolveDNU
@@ -256,8 +256,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     method calls.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The result of invoking the method using the native
      *     window object.
      * @todo
@@ -268,14 +268,14 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 
     //  some canvases can leverage the content window object wrappers
     if (TP.notValid(win = this.getContentWindow())) {
-        return this.raise('TP.sig.InvalidCanvas', arguments);
+        return this.raise('TP.sig.InvalidCanvas');
     }
 
     //  watch out for recursion by drilling down another level when the
     //  canvas's content window wrapper is the canvas object itself
     if (win === this) {
         if (TP.notValid(win = this.getNativeContentWindow())) {
-            return this.raise('TP.sig.InvalidCanvas', arguments);
+            return this.raise('TP.sig.InvalidCanvas');
         }
     }
 
@@ -284,7 +284,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
             return win.resolveDNU(anOrigin,
                                     aMethodName,
                                     anArgArray,
-                                    aContext);
+                                    callingContext);
         }
     } catch (e) {
     }
@@ -491,14 +491,14 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     map = this.get('$queries');
 
     if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  Make sure that the origin matches one of the kinds of queries we can
     //  process.
     originStr = TP.str(anOrigin);
     if (!/@media |@geo/.test(originStr)) {
-        return this.raise('TP.sig.InvalidOrigin', arguments);
+        return this.raise('TP.sig.InvalidOrigin');
     }
 
     //  If our 'queries' map does not already have an entry
@@ -508,7 +508,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         //  'window@media screen and (max-width:800px)'
         originParts = originStr.split(/@media |@geo/);
         if (originParts.getSize() !== 2) {
-            return this.raise('TP.sig.InvalidQuery', arguments);
+            return this.raise('TP.sig.InvalidQuery');
         }
 
         winID = originParts.first();
@@ -516,7 +516,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
         //  Can't find a Window? Bail out.
         if (!TP.isWindow(win = TP.sys.getWindowById(winID))) {
-            return this.raise('TP.sig.InvalidWindow', arguments);
+            return this.raise('TP.sig.InvalidWindow');
         }
 
         //  If the caller is interested in Geolocation stuff, make sure we're on
@@ -550,7 +550,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
                         TP.signal(originStr,
                                     'TP.sig.GeoPositionChanged',
-                                    arguments,
                                     data);
                     },
                     function(error) {
@@ -593,7 +592,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
                         TP.signal(originStr,
                                     'TP.sig.GeoPositionError',
-                                    arguments,
                                     errorMsg);
                     });
 
@@ -608,12 +606,10 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
                             if (aQuery.matches) {
                               TP.signal(originStr,
                                         'TP.sig.CSSMediaActive',
-                                        arguments,
                                         aQuery.media);
                             } else {
                               TP.signal(originStr,
                                         'TP.sig.CSSMediaInactive',
-                                        arguments,
                                         aQuery.media);
                             }
                         };
@@ -684,14 +680,14 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     map = this.get('$queries');
 
     if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  Make sure that the origin matches one of the kinds of queries we can
     //  process.
     originStr = TP.str(anOrigin);
     if (!/@media |@geo/.test(originStr)) {
-        return this.raise('TP.sig.InvalidOrigin', arguments);
+        return this.raise('TP.sig.InvalidOrigin');
     }
 
     //  If our 'queries' map has an entry for the query, then it's a
@@ -702,7 +698,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         //  'window@media screen and (max-width:800px)'
         originParts = originStr.split(/@media |@geo/);
         if (originParts.getSize() !== 2) {
-            return this.raise('TP.sig.InvalidQuery', arguments);
+            return this.raise('TP.sig.InvalidQuery');
         }
 
         winID = originParts.first();
@@ -786,7 +782,7 @@ function(aWindow, aName, aSpec) {
         //  NOTE that we want to ensure that the object provided is at least
         //  a kind of the receiving type, otherwise we can't return it
         if (!TP.isKindOf(aWindow, this)) {
-            return this.raise('TP.sig.InvalidParameter', arguments);
+            return this.raise('TP.sig.InvalidParameter');
         } else {
             return aWindow;
         }
@@ -1011,13 +1007,13 @@ function(aWindow) {
     } else if (TP.isKindOf(aWindow, TP.core.Window)) {
         nativeWindow = aWindow.getNativeWindow();
     } else {
-        return this.raise('TP.sig.InvalidWindow', arguments);
+        return this.raise('TP.sig.InvalidWindow');
     }
 
     //  NB: Do this again in case the 'native window' call from above is not
     //  valid
     if (TP.notValid(nativeWindow)) {
-        return this.raise('TP.sig.InvalidWindow', arguments);
+        return this.raise('TP.sig.InvalidWindow');
     }
 
     //  If the native window is already instrumented, return here.
@@ -1202,7 +1198,7 @@ function(aWindow) {
         foundOne;
 
     if (!TP.isWindow(aWindow)) {
-        return this.raise('TP.sig.InvalidWindow', arguments);
+        return this.raise('TP.sig.InvalidWindow');
     }
 
     //  get the ID
@@ -1325,7 +1321,6 @@ function(aWindowOrID, theContent, aLoadedFunction) {
     win = TP.sys.getWindowById(aWindowOrID);
     if (TP.notValid(win)) {
         this.raise('TP.sig.InvalidWindow',
-                    arguments,
                     'Unable to find window: ' + aWindowOrID);
 
         return;
@@ -1343,7 +1338,7 @@ function(aWindowOrID, theContent, aLoadedFunction) {
     } else if (TP.isKindOf(theContent, TP.core.URI)) {
         content = theContent.getResource(TP.hc('async', false));
     } else {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
 
         return;
     }
@@ -1467,10 +1462,10 @@ function(aURL, wantsHistoryEntry, onloadFunction) {
         doc,
         blankURI;
 
-    TP.debug('break.window_location');
+    TP.stop('break.window_location');
 
     if (TP.notValid(aURL)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     win = this.getNativeWindow();
@@ -1509,7 +1504,7 @@ function(aURL, wantsHistoryEntry, onloadFunction) {
     //  what we were originally provided. NOTE that we do this operation
     //  after checking for '' as a location which is how we clear content
     if (TP.notValid(url = TP.uc(aURL))) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     //  register any onloadFunction so if the location triggers the proper
@@ -1553,7 +1548,6 @@ function(aURL, wantsHistoryEntry, onloadFunction) {
         win.location = TP.uriExpandPath(url.getLocation());
     } catch (e) {
         this.raise('TP.sig.InvalidWindow',
-                    arguments,
                     'Unable to set window location.', TP.ec(e));
     }
 
@@ -1883,7 +1877,7 @@ function() {
         doc;
 
     if (TP.notValid(win = this.getNativeWindow())) {
-        return this.raise('TP.sig.InvalidWindow', arguments);
+        return this.raise('TP.sig.InvalidWindow');
     }
 
     //  try to reuse one TP.core.Document if at all possible
@@ -1954,7 +1948,7 @@ function(assignIfAbsent) {
     var win;
 
     if (TP.notValid(win = this.getNativeWindow())) {
-        return this.raise('TP.sig.InvalidWindow', arguments);
+        return this.raise('TP.sig.InvalidWindow');
     }
 
     return TP.lid(win, assignIfAbsent);
@@ -2092,7 +2086,6 @@ function(aProvider) {
                         TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
         return this.raise(
             'TP.sig.InvalidProvider',
-            arguments,
             'STDIO provider must implement stdin, stdout, and stderr');
     }
 
@@ -2215,7 +2208,7 @@ function() {
     var win;
 
     if (TP.notValid(win = this.getNativeWindow())) {
-        return this.raise('TP.sig.InvalidWindow', arguments);
+        return this.raise('TP.sig.InvalidWindow');
     }
 
     return win.document;
@@ -2277,7 +2270,7 @@ function() {
     //  note the use of the window acquisition primitive from the boot
     //  system here -- which should get us our native window reference
     if (TP.notValid(win = TP.sys.getWindowById(winID))) {
-        return this.raise('TP.sig.InvalidWindow', arguments);
+        return this.raise('TP.sig.InvalidWindow');
     }
 
     return win;
@@ -2378,7 +2371,7 @@ function(aSignal) {
      * @todo
      */
 
-    TP.debug('break.bind_refresh');
+    TP.stop('break.bind_refresh');
 
     this.getContentDocument().refresh(aSignal);
 

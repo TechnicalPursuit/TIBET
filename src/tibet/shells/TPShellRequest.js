@@ -63,7 +63,7 @@ function(aPayload) {
         payload = aPayload;
     } else {
         //  nothing else is valid
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
 
         return;
     }
@@ -128,7 +128,7 @@ function(aFaultCode, aFaultString) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
      * @param {String} aFaultString A string description of the fault.
-     * @returns {TP.BREAK} 
+     * @returns {TP.BREAK}
      * @todo
      */
 
@@ -175,7 +175,7 @@ function(aFaultCode, aFaultString, anException) {
      * @param {String} aFaultString A string description of the fault.
      * @param {TP.sig.Exception|String} anException An optional exception to
      *     raise.
-     * @returns {TP.BREAK} 
+     * @returns {TP.BREAK}
      * @todo
      */
 
@@ -185,7 +185,6 @@ function(aFaultCode, aFaultString, anException) {
 
     if (TP.isValid(anException)) {
         this.raise(anException,
-                    arguments,
                     TP.ifInvalid(aFaultString, aFaultCode));
     }
 
@@ -203,7 +202,7 @@ function() {
      * @name getEvaltime
      * @synopsis Returns the amount of time in milliseconds that 'eval'
      *     processing occurred during request processing.
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     return this.$summarizeSubrequestData('$evaltime');
@@ -218,7 +217,7 @@ function() {
      * @name getExectime
      * @synopsis Returns the amount of time in milliseconds that the entire
      *     request processing took.
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     return this.$get('$exectime');
@@ -231,7 +230,7 @@ function() {
 
     /**
      * @name getOriginalCmdText
-     * @returns {String} 
+     * @returns {String}
      * @abstract
      * @todo
      */
@@ -264,7 +263,7 @@ function() {
      * @name getTagtime
      * @synopsis Returns the amount of time in milliseconds that tag-specific or
      *     built-in processing occurred during request processing.
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     return this.$summarizeSubrequestData('$tagtime');
@@ -280,7 +279,7 @@ function() {
      * @synopsis Returns the message type, one of a number of values which map
      *     directly to CSS entries and node templates used to provided
      *     theme-able output.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var val;
@@ -327,7 +326,7 @@ function(output, request) {
     var req,
         shell;
 
-    TP.debug('break.tsh_stderr');
+    TP.stop('break.tsh_stderr');
 
     req = TP.request(TP.ifInvalid(request, this));
     if (TP.notTrue(req.at('cmdSilent'))) {
@@ -355,7 +354,7 @@ function() {
      * @todo
      */
 
-    TP.debug('break.tsh_stdin');
+    TP.stop('break.tsh_stdin');
 
     //  If the receiver has a value in TP.STDIN, use it. Otherwise return an
     //  empty Array.
@@ -380,7 +379,7 @@ function(output, request) {
     var req,
         shell;
 
-    TP.debug('break.tsh_stdout');
+    TP.stop('break.tsh_stdout');
 
     req = TP.request(TP.ifInvalid(request, this));
     if (TP.notTrue(req.at('cmdSilent'))) {

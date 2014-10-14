@@ -168,7 +168,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
                                                 observerID +
                                                 ' not found for: ' +
                                                 TP.nodeAsString(anElement),
-                                            TP.LOG, arguments) : 0;
+                                            TP.LOG) : 0;
 
                             return observerID;
                         }
@@ -179,7 +179,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
                 TP.ifWarn(TP.$DEBUG) ?
                     TP.warn('Specified ev:observer not found for: ' +
                                     TP.nodeAsString(anElement),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
             }
         } else {
             //  otherwise, the observer is the global ID of the
@@ -304,7 +304,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
             TP.ifWarn(TP.$DEBUG && TP.$VERBOSE) ?
                             TP.warn('Specified ev:target not found for: ' +
                                             TP.nodeAsString(anElement),
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
         }
     }
 
@@ -393,7 +393,7 @@ function(anElement, shouldRegister) {
         return;
     }
 
-    TP.debug('break.awaken_events');
+    TP.stop('break.awaken_events');
 
     signalName = eventAttrValue.trim();
 

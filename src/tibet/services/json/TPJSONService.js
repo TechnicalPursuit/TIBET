@@ -17,20 +17,20 @@
  *     of the TIBET infrastructure of using request/response pairs, a 'default'
  *     instance of this service will be instantiated and registered to handle
  *     all TP.sig.JSONRequests.
- *     
+ *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'TP.core.JSONServiceDefault'.
- *     
+ *
  *     It is possible, however, to manually set up a server. To do so, execute
  *     the following:
- *     
+ *
  *     myJSONService = TP.core.JSONService.construct('jsonService');
- *     
+ *
  *     You will then need to register your service instance so that it services
  *     TP.sig.JSONRequests (otherwise, the TIBET machinery will instantiate the
  *     'default' instance of TP.core.JSONService as described above and register
  *     it to service these kinds of requests):
- *     
+ *
  *     myJSONService.register();
  * @todo
  */
@@ -82,10 +82,10 @@ function(aRequest) {
         params,
         response;
 
-    TP.debug('break.uri_service');
+    TP.stop('break.uri_service');
 
     if (!TP.isKindOf(aRequest, 'TP.sig.JSONRequest')) {
-        this.raise('TP.sig.InvalidRequest', arguments);
+        this.raise('TP.sig.InvalidRequest');
         return;
     }
 

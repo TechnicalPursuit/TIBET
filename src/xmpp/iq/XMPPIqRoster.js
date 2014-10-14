@@ -38,13 +38,13 @@ function(aGroupName) {
      *     items which belong to the named group provided.
      * @param {String} aGroupName The group to filter by.
      * @raises TP.sig.InvalidParameter
-     * @returns {Array} 
+     * @returns {Array}
      */
 
     var tpElems;
 
     if (TP.notValid(aGroupName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     tpElems = this.getElementsByTagName('item');
@@ -75,7 +75,7 @@ function() {
     /**
      * @name getGroupNames
      * @synopsis Returns an Array of group names in the roster.
-     * @returns {Array} 
+     * @returns {Array}
      */
 
     var arr;
@@ -99,7 +99,7 @@ function() {
      * @name getItems
      * @synopsis Returns an Array of TP.xmpp.IqRosterItem instances for this
      *     roster.
-     * @returns {Array} 
+     * @returns {Array}
      */
 
     return this.getElementsByTagName('item');
@@ -117,7 +117,7 @@ function(aStanza) {
      *     replaced by the current tag/type string, for example
      *     TP.sig.XMPPMessageInput.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 

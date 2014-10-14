@@ -39,7 +39,7 @@ function(aRequest) {
      */
 
     if (TP.notValid(aRequest)) {
-        return this.raise('TP.sig.InvalidRequest', arguments);
+        return this.raise('TP.sig.InvalidRequest');
     }
 
     this.addTrigger(aRequest.getRequestID(), 'TP.sig.RequestCompleted');

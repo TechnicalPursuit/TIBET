@@ -265,7 +265,7 @@ TP.sys.$globals = TP.sys.$globals || [];
 
 //  ------------------------------------------------------------------------
 
-TP.sys.getGlobals = function(params, aContext) {
+TP.sys.getGlobals = function(params, windowContext) {
 
     /**
      * @name getGlobals
@@ -277,14 +277,14 @@ TP.sys.getGlobals = function(params, aContext) {
      *     full kernel has loaded and TP.sys.$getContextGlobals is available.
      * @param {TP.lang.Hash} params A hash of various parameters that affect how
      *     the list is filtered. For details see TP.sys.$getContextGlobals.
-     * @param {Window} aContext The window/frame whose globals should be
+     * @param {Window} windowContext The window/frame whose globals should be
      *     returned. Default is the current window.
      * @returns {Array} An array of all registered globals.
      * @todo
      */
 
     if (typeof TP.sys.$getContextGlobals === 'function') {
-        return TP.sys.$getContextGlobals(aContext);
+        return TP.sys.$getContextGlobals(windowContext);
     } else {
         //  NOTE the forward-dependency here
         return TP.isArray(TP.sys.$globals) ? TP.sys.$globals :
@@ -953,15 +953,8 @@ TP.IGNORED = 10;                        //  not in BPML spec, reserved here
 TP.AND = 'and';
 TP.OR = 'or';
 
-//  log leveling/filtering constants
-TP.TRACE = 0;
-TP.INFO = 1;
-TP.WARN = 2;
-TP.ERROR = 3;
-TP.SEVERE = 4;
-TP.FATAL = 5;
-TP.SYSTEM = 6;
-
+/*
+ * TODO: remove these or update them once logging update is complete.
 //  specialty log names
 TP.LOG = 'Activity';                    //  "meta" log...all logs in one
 TP.BOOT_LOG = 'Boot';                   //  TP.boot processing only
@@ -982,14 +975,7 @@ TP.QUERY_LOG = 'Query';
 TP.SECURITY_LOG = 'Security';
 TP.SIGNAL_LOG = 'Signal';
 TP.TRANSFORM_LOG = 'Transform';
-
-//  log entry slots
-TP.LOG_ENTRY_DATE = 0;
-TP.LOG_ENTRY_NAME = 1;
-TP.LOG_ENTRY_LEVEL = 2;
-TP.LOG_ENTRY_PAYLOAD = 3;
-TP.LOG_ENTRY_STACK_NAMES = 4;
-TP.LOG_ENTRY_STACK_ARGS = 5;
+*/
 
 //  ---
 //  signaling
@@ -1586,7 +1572,7 @@ TP.LOG_ARGS = function() {
 
         var args;
         args = TP.args(arguments);
-        TP.ifTrace() ? TP.trace(args, TP.LOG, arguments) : 0;
+        TP.ifTrace() ? TP.trace(args, TP.LOG) : 0;
     };
 
 TP.NOTIFY_ARGS = function() {
@@ -1607,14 +1593,12 @@ TP.TEST_HANDLER = function(aSignal) {
 
                         //  by having this here we can observe and break
                         //  into the handler to check signal stack traces
-                        TP.debug('break.signal_handler');
+                        TP.stop('break.signal_handler');
 
                         TP.info('TP.TEST_HANDLER fired for: ' +
                                     aSignal.getSignalName() + ' @ ' +
                                     aSignal.getSignalOrigin(),
-                                TP.SIGNAL_LOG,
-                                arguments,
-                                TP.SYSTEM);
+                                TP.SIGNAL_LOG);
                     };
 
 TP.TEST_SETUP_NAME = 'Test_SetUp';      //  the method name of object-level test

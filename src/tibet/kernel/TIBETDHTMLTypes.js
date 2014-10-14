@@ -67,7 +67,7 @@ function(source) {
         //  The source must resolve to a native element.
         obj = TP.elem(obj);
         if (!TP.isElement(obj)) {
-            return this.raise('TP.sig.InvalidParameter', arguments,
+            return this.raise('TP.sig.InvalidParameter',
                 'Could not resolve source to an element: ' + source);
         }
     }
@@ -592,7 +592,7 @@ function(aModifierFunc, modifierData) {
      */
 
     if (!TP.isFunction(aModifierFunc)) {
-        return this.raise('TP.sig.InvalidFunction', arguments,
+        return this.raise('TP.sig.InvalidFunction',
             'Invalid modifier function: ' + aModifierFunc);
     }
 
@@ -1011,7 +1011,7 @@ function(aSignal, aPoint) {
                         break;
                 }
             } catch (e) {
-                this.raise('TP.sig.ModifierFailed', arguments,
+                this.raise('TP.sig.ModifierFailed',
                     'Signal modifier function failed: ' +
                     TP.ec(e, modifierFunc));
             }
@@ -1055,7 +1055,7 @@ function(anElement) {
         //  The source must resolve to a native element.
         actionElem = TP.elem(actionElem);
         if (!TP.isElement(actionElem)) {
-            return this.raise('TP.sig.InvalidParameter', arguments,
+            return this.raise('TP.sig.InvalidParameter',
                 'Could not resolve anElement to an element: ' +
                 anElement);
         }
@@ -1186,7 +1186,7 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
         }
 
         if (!TP.isElement(actionElem)) {
-            return this.raise('TP.sig.InvalidParamter', arguments,
+            return this.raise('TP.sig.InvalidParamter',
                 'No elements found for drag:item path: ' + attrVal);
         }
 
@@ -3143,14 +3143,14 @@ function(aSignal) {
 
     if (TP.isValid(targetTPElem) && targetTPElem.willDrop()) {
         //  Send a 'TP.sig.DOMDNDSucceeded' signal
-        this.signal('TP.sig.DOMDNDSucceeded', arguments, sigPayload);
+        this.signal('TP.sig.DOMDNDSucceeded', sigPayload);
     } else {
         //  Send a 'TP.sig.DOMDNDFailed' signal
-        this.signal('TP.sig.DOMDNDFailed', arguments, sigPayload);
+        this.signal('TP.sig.DOMDNDFailed', sigPayload);
     }
 
     //  Send a 'TP.sig.DOMDNDCompleted' signal
-    this.signal('TP.sig.DOMDNDCompleted', arguments, sigPayload);
+    this.signal('TP.sig.DOMDNDCompleted', sigPayload);
 
     TP.core.UIElementNode.Type.set('currentDNDSource', null);
     TP.core.UIElementNode.Type.set('currentDNDTarget', null);
@@ -3187,7 +3187,7 @@ function(aSignal) {
 TP.core.DNDResponder.Inst.defineMethod('handleTargetIn',
 function(aSignal) {
 
-    //TP.info('Signaled: ' + TP.str(aSignal), TP.LOG, arguments),
+    //TP.info('Signaled: ' + TP.str(aSignal), TP.LOG),
 
     var evtTargetTPElem,
 
@@ -3212,7 +3212,7 @@ function(aSignal) {
 TP.core.DNDResponder.Inst.defineMethod('handleTargetOut',
 function(aSignal) {
 
-    //TP.info('Signaled: ' + TP.str(aSignal), TP.LOG, arguments),
+    //TP.info('Signaled: ' + TP.str(aSignal), TP.LOG),
 
     var targetTPElem;
 
@@ -3462,7 +3462,7 @@ function(aTargetElem, anEvent) {
         itemOffsets;
 
     if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     //  Grab the event target element and wrap it
@@ -3805,7 +3805,7 @@ function() {
         dragClone;
 
     if (TP.notValid(elem = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     if (TP.notEmpty(attrVal = TP.elementGetAttribute(elem,
@@ -4300,7 +4300,7 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
     var machine;
 
     if (TP.notValid(domainSpec)) {
-        return this.raise('TP.sig.InvalidParamter', arguments,
+        return this.raise('TP.sig.InvalidParamter',
             'Invalid domain specification.');
     }
 
@@ -4313,7 +4313,7 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
     //  Validate and store any filter function provided.
     if (TP.isValid(filterFunction)) {
         if (!TP.isFunction(filterFunction)) {
-            return this.raise('TP.sig.InvalidFunction', arguments,
+            return this.raise('TP.sig.InvalidFunction',
                 'Invalid filter function: ' + filterFunction);
         }
         this.$set('filterFunction', filterFunction);
@@ -4322,7 +4322,7 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
     //  Validate and store any range function provided.
     if (TP.isValid(rangeFunction)) {
         if (!TP.isFunction(rangeFunction)) {
-            return this.raise('TP.sig.InvalidFunction', arguments,
+            return this.raise('TP.sig.InvalidFunction',
                 'Invalid range function: ' + rangeFunction);
         }
         this.$set('rangeFunction', rangeFunction);
@@ -4331,7 +4331,7 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
     //  Validate and store any test function provided.
     if (TP.isValid(testFunction)) {
         if (!TP.isFunction(testFunction)) {
-            return this.raise('TP.sig.InvalidFunction', arguments,
+            return this.raise('TP.sig.InvalidFunction',
                 'Invalid test function: ' + testFunction);
         }
         this.$set('testFunction', testFunction);
@@ -4340,7 +4340,7 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
     //  Validate and store any tracking signal.
     if (TP.isValid(trackingSignal)) {
         if (!TP.canInvoke(trackingSignal, 'getSignalName')) {
-            return this.raise('TP.sig.InvalidParameter', arguments,
+            return this.raise('TP.sig.InvalidParameter',
                 'trackingSignal can not provide signal name: ' +
                 trackingSignal);
         }
@@ -4549,7 +4549,7 @@ function(filterFunction) {
      */
 
     if (!TP.isFunction(filterFunction)) {
-        return this.raise('TP.sig.InvalidFunction', arguments,
+        return this.raise('TP.sig.InvalidFunction',
             'Invalid filter function: ' + filterFunction);
     }
 
@@ -4578,7 +4578,7 @@ function(rangeFunction) {
      */
 
     if (!TP.isFunction(rangeFunction)) {
-        return this.raise('TP.sig.InvalidFunction', arguments,
+        return this.raise('TP.sig.InvalidFunction',
             'Invalid range function: ' + rangeFunction);
     }
 
@@ -4607,7 +4607,7 @@ function(testFunction) {
      */
 
     if (!TP.isFunction(testFunction)) {
-        return this.raise('TP.sig.InvalidFunction', arguments,
+        return this.raise('TP.sig.InvalidFunction',
             'Invalid test function: ' + testFunction);
     }
 
@@ -4631,7 +4631,7 @@ function(trackingSignal) {
      */
 
     if (!TP.canInvoke(trackingSignal, 'getSignalName')) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
             'trackingSignal can not provide signal name: ' + trackingSignal);
     }
 

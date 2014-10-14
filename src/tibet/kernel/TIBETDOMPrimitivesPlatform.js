@@ -58,7 +58,7 @@ TP.hc(
             namespaceXML;
 
         if (!TP.isXMLDocument(aDocument)) {
-            return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidXMLDocument');
         }
 
         //  Grab all of the namespace nodes from every element in the
@@ -68,7 +68,7 @@ TP.hc(
                                                         '//namespace::*');
         } catch (e) {
             //  We raise an exception here, but its not fatal so we move on.
-            TP.raise(this, 'TP.sig.DOMException', arguments, TP.ec(e));
+            TP.raise(this, 'TP.sig.DOMException', TP.ec(e));
 
             return aDocument;
         }
@@ -192,7 +192,7 @@ TP.hc(
             index;
 
         if (!TP.isAttributeNode(anAttributeNode)) {
-            return TP.raise(this, 'TP.sig.InvalidAttributeNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidAttributeNode');
         }
 
         //  If its an XML document, then we return 'baseName'.
@@ -233,7 +233,7 @@ TP.hc(
             index;
 
         if (!TP.isAttributeNode(anAttributeNode)) {
-            return TP.raise(this, 'TP.sig.InvalidAttributeNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidAttributeNode');
         }
 
         //  W3C-compliant browsers make no distinction between XML and HTML
@@ -282,7 +282,7 @@ TP.hc(
          */
 
         if (!TP.isAttributeNode(anAttributeNode)) {
-            return TP.raise(this, 'TP.sig.InvalidAttributeNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidAttributeNode');
         }
 
         return anAttributeNode.ownerElement;
@@ -314,12 +314,12 @@ TP.hc(
          */
 
         if (!TP.isAttributeNode(anAttributeNode)) {
-            return TP.raise(this, 'TP.sig.InvalidAttributeNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidAttributeNode');
         }
 
         //  This only works on XML documents in IE
         if (!TP.isXMLDocument(TP.nodeGetDocument(anAttributeNode))) {
-            return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidXMLDocument');
         }
 
         //  Since IE doesn't support DOM Level 2 (where Attribute nodes got
@@ -356,7 +356,7 @@ TP.hc(
         var owner;
 
         if (!TP.isAttributeNode(anAttributeNode)) {
-            return TP.raise(this, 'TP.sig.InvalidAttributeNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidAttributeNode');
         }
 
         //  For some reason, DOM Level 4 removes 'ownerElement'
@@ -463,7 +463,7 @@ TP.hc(
                     break;
                 default:
                     return TP.raise(null, 'TP.sig.InvalidParameter',
-                                    arguments, 'Msxml version: ' +
+                                                'Msxml version: ' +
                                                 versionNumber +
                                                 ' not valid.');
             }
@@ -479,7 +479,7 @@ TP.hc(
             }
 
             if (TP.notValid(doc)) {
-                return TP.raise(null, 'TP.sig.InvalidParameter', arguments,
+                return TP.raise(null, 'TP.sig.InvalidParameter',
                                     'Unable to create a DOM Document.');
             }
         }
@@ -666,11 +666,11 @@ TP.hc(
             newElement;
 
         if (!TP.isDocument(aDocument)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
 
         if (TP.isEmpty(elementName)) {
-            return TP.raise(this, 'TP.sig.InvalidElementType', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElementType');
         }
 
         //  The namespace is the 'null namespace' by default.
@@ -687,7 +687,7 @@ TP.hc(
             }
         } catch (e) {
             return TP.raise(this, 'TP.sig.DOMCreateException',
-                            arguments, TP.ec(e));
+                            TP.ec(e));
         }
 
         return newElement;
@@ -731,11 +731,11 @@ TP.hc(
             prefix;
 
         if (!TP.isDocument(aDocument)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
 
         if (TP.isEmpty(elementName)) {
-            return TP.raise(this, 'TP.sig.InvalidElementType', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElementType');
         }
 
         //  The namespace is the 'null namespace' by default.
@@ -774,7 +774,7 @@ TP.hc(
             }
         } catch (e) {
             return TP.raise(this, 'TP.sig.DOMCreateException',
-                            arguments, TP.ec(e));
+                            TP.ec(e));
         }
 
         return newElement;
@@ -817,11 +817,11 @@ TP.hc(
             newElement;
 
         if (!TP.isDocument(aDocument)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
 
         if (TP.isEmpty(elementName)) {
-            return TP.raise(this, 'TP.sig.InvalidElementType', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElementType');
         }
 
         //  The namespace is the 'null namespace' by default.
@@ -838,7 +838,7 @@ TP.hc(
             }
         } catch (e) {
             return TP.raise(this, 'TP.sig.DOMCreateException',
-                            arguments, TP.ec(e));
+                            TP.ec(e));
         }
 
         return newElement;
@@ -972,7 +972,7 @@ TP.hc(
                     }
 
                     TP.raise(this, 'TP.sig.DOMParseException',
-                                arguments, errorRecord);
+                                errorRecord);
                 }
 
                 return null;
@@ -983,7 +983,7 @@ TP.hc(
             //  would recurse (or we're just 'tasting' the String).
             if (TP.notFalse(report)) {
                 TP.raise(this, 'TP.sig.DOMParseException',
-                            arguments, TP.ec(e));
+                            TP.ec(e));
             }
 
             return null;
@@ -1104,7 +1104,7 @@ TP.hc(
                                     'line', parseErrorObj.line,
                                     'linepos', parseErrorObj.linePos);
 
-                TP.raise(this, 'TP.sig.DOMParseException', arguments,
+                TP.raise(this, 'TP.sig.DOMParseException',
                             errorRecord);
             }
 
@@ -1244,7 +1244,7 @@ TP.hc(
                                             'linepos', 'Unknown');
                     }
 
-                    TP.raise(this, 'TP.sig.DOMParseException', arguments,
+                    TP.raise(this, 'TP.sig.DOMParseException',
                                 errorRecord);
                 }
 
@@ -1255,7 +1255,7 @@ TP.hc(
             //  we're calling this from the logging itself and we would
             //  recurse (or we're just 'tasting' the String).
             if (TP.notFalse(report)) {
-                TP.raise(this, 'TP.sig.DOMParseException', arguments,
+                TP.raise(this, 'TP.sig.DOMParseException',
                             TP.ec(e));
             }
 
@@ -1323,15 +1323,15 @@ TP.hc(
             anElementDoc;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (!TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
-            return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidXMLDocument');
         }
 
         if (TP.isEmpty(aPrefix) || TP.notValid(aURI)) {
-            return TP.raise(this, 'TP.sig.InvalidString', arguments,
+            return TP.raise(this, 'TP.sig.InvalidString',
                             'Invalid or empty prefix or URI');
         }
 
@@ -1426,15 +1426,15 @@ TP.hc(
             i;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (!TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
-            return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidXMLDocument');
         }
 
         if (TP.isEmpty(aPrefix) || TP.isEmpty(aURI)) {
-            return TP.raise(this, 'TP.sig.InvalidString', arguments,
+            return TP.raise(this, 'TP.sig.InvalidString',
                             'Invalid or empty prefix or URI');
         }
 
@@ -1503,7 +1503,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         return TP.ifInvalid(anElement.baseName, anElement.tagName);
@@ -1539,7 +1539,7 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         return anElement.localName;
@@ -1618,11 +1618,11 @@ TP.hc(
             testRegExp;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(attributeName)) {
-            return TP.raise(this, 'TP.sig.InvalidName', arguments);
+            return TP.raise(this, 'TP.sig.InvalidName');
         }
 
         if (TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
@@ -1715,11 +1715,11 @@ TP.hc(
             theAttrName;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(attributeName)) {
-            return TP.raise(this, 'TP.sig.InvalidName', arguments);
+            return TP.raise(this, 'TP.sig.InvalidName');
         }
 
         //  If the document for the supplied element is an XML document,
@@ -2024,11 +2024,11 @@ TP.hc(
             win;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(attributeName)) {
-            return TP.raise(this, 'TP.sig.InvalidName', arguments);
+            return TP.raise(this, 'TP.sig.InvalidName');
         }
 
         //  If the document for the supplied element is an XML document,
@@ -2145,11 +2145,11 @@ TP.hc(
             win;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(attributeName)) {
-            return TP.raise(this, 'TP.sig.InvalidName', arguments);
+            return TP.raise(this, 'TP.sig.InvalidName');
         }
 
         //  If the document for the supplied element is an XML document,
@@ -2442,15 +2442,15 @@ TP.hc(
          */
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(attrName)) {
-            return TP.raise(this, 'TP.sig.InvalidString', arguments);
+            return TP.raise(this, 'TP.sig.InvalidString');
         }
 
         if (TP.notValid(attrValue)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         if (TP.notEmpty(attrNS) &&
@@ -2507,15 +2507,15 @@ TP.hc(
             attrNode;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(attrName)) {
-            return TP.raise(this, 'TP.sig.InvalidString', arguments);
+            return TP.raise(this, 'TP.sig.InvalidString');
         }
 
         if (TP.notValid(attrValue)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         //  Since MSXML doesn't support DOM Level 2, we have to use
@@ -2585,15 +2585,15 @@ TP.hc(
             xmlnsAttrName;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(attrName)) {
-            return TP.raise(this, 'TP.sig.InvalidString', arguments);
+            return TP.raise(this, 'TP.sig.InvalidString');
         }
 
         if (TP.notValid(attrValue)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         if (TP.notEmpty(attrNS) &&
@@ -2791,7 +2791,7 @@ TP.hc(
             str;
 
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         node = shallow ? TP.nodeCloneNode(aNode, false) : aNode;
@@ -2821,7 +2821,7 @@ TP.hc(
                     str = (new XMLSerializer()).serializeToString(node);
                 } catch (e) {
                     TP.raise(this, 'TP.sig.SerializationException',
-                                arguments, TP.ec(e));
+                                TP.ec(e));
                     str = 'Serialization failed.';
                 }
 
@@ -2845,12 +2845,12 @@ TP.hc(
 
             case Node.ENTITY_REFERENCE_NODE:
 
-                TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
             case Node.ENTITY_NODE:
 
-                TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
             case Node.DOCUMENT_TYPE_NODE:
@@ -2860,7 +2860,7 @@ TP.hc(
 
             case Node.NOTATION_NODE:
 
-                TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
             case Node.DOCUMENT_NODE:
@@ -2915,7 +2915,7 @@ TP.hc(
                         }
                     } else {
                         TP.raise(this, 'TP.sig.SerializationException',
-                                    arguments, TP.ec(e));
+                            TP.ec(e));
                         str = 'Serialization failed.';
                     }
                 }
@@ -3066,7 +3066,7 @@ TP.hc(
             i;
 
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  shallow is a nice way to dump element without content
@@ -3119,12 +3119,12 @@ TP.hc(
 
             case Node.ENTITY_REFERENCE_NODE:
 
-                TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
             case Node.ENTITY_NODE:
 
-                TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
             case Node.DOCUMENT_TYPE_NODE:
@@ -3134,7 +3134,7 @@ TP.hc(
 
             case Node.NOTATION_NODE:
 
-                TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
             case Node.DOCUMENT_NODE:
@@ -3189,7 +3189,7 @@ TP.hc(
 
                 //  duplicate the exception we'd see from Nav here for
                 //  consistency
-                TP.raise(this, 'TP.sig.SerializationException', arguments);
+                TP.raise(this, 'TP.sig.SerializationException');
 
                 return 'Serialization failed.';
         }
@@ -3322,7 +3322,7 @@ TP.hc(
             str;
 
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         node = shallow ? TP.nodeCloneNode(aNode, false) : aNode;
@@ -3352,7 +3352,7 @@ TP.hc(
                     str = (new XMLSerializer()).serializeToString(node);
                 } catch (e) {
                     TP.raise(this, 'TP.sig.SerializationException',
-                                arguments, TP.ec(e));
+                                TP.ec(e));
                     str = 'Serialization failed.';
                 }
 
@@ -3376,12 +3376,12 @@ TP.hc(
 
             case Node.ENTITY_REFERENCE_NODE:
 
-                TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
             case Node.ENTITY_NODE:
 
-                TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
             case Node.DOCUMENT_TYPE_NODE:
@@ -3391,7 +3391,7 @@ TP.hc(
 
             case Node.NOTATION_NODE:
 
-                TP.raise(this, 'TP.sig.UnsupportedOperation', arguments);
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
             case Node.DOCUMENT_NODE:
@@ -3446,7 +3446,7 @@ TP.hc(
                         }
                     } else {
                         TP.raise(this, 'TP.sig.SerializationException',
-                                    arguments, TP.ec(e));
+                                    TP.ec(e));
                         str = 'Serialization failed.';
                     }
                 }
@@ -3523,7 +3523,7 @@ TP.hc(
             newDocElem;
 
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  We can't clone an HTML document
@@ -3618,7 +3618,7 @@ TP.hc(
             useString;
 
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  We can't clone an HTML document
@@ -3696,12 +3696,12 @@ TP.hc(
         //  No child nodes for anything that isn't an element, document or
         //  document fragment
         if (!TP.isCollectionNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+            return TP.raise(this, 'TP.sig.InvalidNode',
                                 'Node not a collection Node.');
         }
 
         if (!TP.isNode(aDescendant)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  For documents the question is whether the child is an element
@@ -3776,12 +3776,12 @@ TP.hc(
         //  No child nodes for anything that isn't an element, document or
         //  document fragment
         if (!TP.isCollectionNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+            return TP.raise(this, 'TP.sig.InvalidNode',
                                 'Node not a collection Node.');
         }
 
         if (!TP.isNode(aDescendant)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  For documents the question is whether the child is an element
@@ -3868,12 +3868,12 @@ TP.hc(
         //  No child nodes for anything that isn't an element, document or
         //  document fragment
         if (!TP.isCollectionNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+            return TP.raise(this, 'TP.sig.InvalidNode',
                                 'Node not a collection Node.');
         }
 
         if (!TP.isNode(aDescendant)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  For documents the question is whether the child is an element
@@ -3943,7 +3943,7 @@ TP.hc(
          */
 
         if (!TP.isNode(aNode) || !TP.isNode(otherNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  TODO: For now, this is just TP.todo()ed - since we're still
@@ -3982,7 +3982,7 @@ TP.hc(
          */
 
         if (!TP.isNode(aNode) || !TP.isNode(otherNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  In browsers that implement the W3C's DOM Level 3 'isEqualNode' call,
@@ -4087,19 +4087,19 @@ TP.hc(
         //  Therefore, no DocumentFragments
 
         if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  NB: We can't use TP.isString() here, due to load ordering issues
         //  on startup.
         if (TP.isEmpty(anXPath)) {
-            return TP.raise(this, 'TP.sig.InvalidString', arguments);
+            return TP.raise(this, 'TP.sig.InvalidString');
         }
 
         //  if we need it we can really turn on the XPath logging here
         TP.ifTrace(TP.sys.hasLoaded() && TP.sys.shouldLogXPaths()) ?
             TP.trace('Querying via XPath ' + anXPath,
-                        TP.QUERY_LOG, arguments) : 0;
+                        TP.QUERY_LOG) : 0;
 
         log = TP.ifInvalid(logErrors, true);
 
@@ -4113,7 +4113,7 @@ TP.hc(
         }
 
         if (!TP.isXMLDocument(aNodeDoc)) {
-            return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidXMLDocument');
         }
 
         //  Allow the shortcut convenience that TIBET provides of specifying
@@ -4272,7 +4272,7 @@ TP.hc(
                 if (log) {
                     msg = TP.join('Error evaluating XPath ', anXPath);
                     TP.ifError() ?
-                        TP.error(TP.ec(e, msg), TP.QUERY_LOG, arguments) : 0;
+                        TP.error(TP.ec(e, msg), TP.QUERY_LOG) : 0;
                 }
             }
         }
@@ -4356,7 +4356,7 @@ TP.hc(
 
             msg;
 
-        TP.debug('break.xpath');
+        TP.stop('break.xpath');
 
         //  According to the DOM Level 3 XPath specification, aNode can only be
         //  one of:
@@ -4365,19 +4365,19 @@ TP.hc(
         //  Therefore, no DocumentFragments
 
         if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  NB: We can't use TP.isString() here, due to load ordering issues
         //  on startup.
         if (TP.isEmpty(anXPath)) {
-            return TP.raise(this, 'TP.sig.InvalidString', arguments);
+            return TP.raise(this, 'TP.sig.InvalidString');
         }
 
         //  if we need it we can really turn on the XPath logging here
         TP.ifTrace(TP.sys.hasLoaded() && TP.sys.shouldLogXPaths()) ?
             TP.trace('Querying via XPath ' + anXPath,
-                        TP.QUERY_LOG, arguments) : 0;
+                        TP.QUERY_LOG) : 0;
 
         log = TP.ifInvalid(logErrors, true);
 
@@ -4456,7 +4456,7 @@ TP.hc(
             if (log || !TP.sys.hasLoaded()) {
                 msg = TP.join('Error evaluating XPath ', anXPath);
                 TP.ifError() ?
-                    TP.error(TP.ec(e, msg), TP.QUERY_LOG, arguments) : 0;
+                    TP.error(TP.ec(e, msg), TP.QUERY_LOG) : 0;
             }
         }
 
@@ -4507,7 +4507,7 @@ TP.hc(
         //  no child nodes for anything that isn't an element, document or
         //  document fragment
         if (!TP.isCollectionNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+            return TP.raise(this, 'TP.sig.InvalidNode',
                                 'Node not a collection Node.');
         }
 
@@ -4565,7 +4565,6 @@ TP.hc(
         if (!TP.isCollectionNode(aNode)) {
             return TP.raise(this,
                             'TP.sig.InvalidNode',
-                            arguments,
                             'Node not a collection Node.');
         }
 
@@ -4622,7 +4621,7 @@ TP.hc(
         var doc;
 
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         if (aNode.nodeType === Node.DOCUMENT_NODE) {
@@ -4668,7 +4667,7 @@ TP.hc(
             ancestor;
 
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         if (aNode.nodeType === Node.DOCUMENT_NODE) {
@@ -4753,14 +4752,14 @@ TP.hc(
         //  no child nodes for anything that isn't an element, document or
         //  document fragment
         if (!TP.isCollectionNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+            return TP.raise(this, 'TP.sig.InvalidNode',
                                 'Node not a collection Node.');
         }
 
         //  ID has to be a valid IDREF, but we're not going to be that
         //  strict
         if (TP.isEmpty(anID)) {
-            return TP.raise(this, 'TP.sig.InvalidID', arguments);
+            return TP.raise(this, 'TP.sig.InvalidID');
         }
 
         //  best case we're looking for an ID in an HTML document, which is
@@ -4886,14 +4885,14 @@ TP.hc(
         //  no child nodes for anything that isn't an element, document or
         //  document fragment
         if (!TP.isCollectionNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments,
+            return TP.raise(this, 'TP.sig.InvalidNode',
                                 'Node not a collection Node.');
         }
 
         //  ID has to be a valid IDREF, but we're not going to be that
         //  strict
         if (TP.isEmpty(anID)) {
-            return TP.raise(this, 'TP.sig.InvalidID', arguments);
+            return TP.raise(this, 'TP.sig.InvalidID');
         }
 
         //  best case we're looking for an ID in an HTML document
@@ -4990,7 +4989,7 @@ TP.hc(
             i;
 
         if (!TP.isNode(aNode) || !TP.isNode(otherNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  Grab aNode's document and check to see if otherNode is in the
@@ -5103,7 +5102,7 @@ TP.hc(
             i;
 
         if (!TP.isNode(aNode) || !TP.isNode(otherNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  Grab aNode's document and check to see if otherNode is in the
@@ -5205,7 +5204,7 @@ TP.hc(
             !TP.isNode(secondNode) ||
             (TP.nodeGetDocument(firstNode) !==
                  TP.nodeGetDocument(secondNode))) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  IE's native mechanism won't work on XML documents, so we only
@@ -5274,7 +5273,7 @@ TP.hc(
             !TP.isNode(secondNode) ||
             (TP.nodeGetDocument(firstNode) !==
                  TP.nodeGetDocument(secondNode))) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         insertionPoint = firstNode.nextSibling;

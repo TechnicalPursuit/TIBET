@@ -325,7 +325,7 @@ function(anElement, aDirection) {
      */
 
     if (TP.notValid(anElement)) {
-        this.raise('TP.sig.InvalidElement', arguments);
+        this.raise('TP.sig.InvalidElement');
         return false;
     }
 
@@ -698,7 +698,7 @@ function(aRequest) {
         len,
         i;
 
-    TP.debug('break.bind_stdin');
+    TP.stop('break.bind_stdin');
 
     //  check for any input-related binding references. if we don't have any
     //  then we won't try to return our bound input default value, we'll
@@ -1031,7 +1031,7 @@ function(aValue, shouldSignal) {
     var newval,
         oldval;
 
-    TP.debug('break.bind_stdout');
+    TP.stop('break.bind_stdout');
 
     //  this method may be triggered automatically by low-level change
     //  handlers so we want to filter out extra work when we're not bound.
@@ -1072,7 +1072,7 @@ function(anError) {
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    TP.debug('break.bind_stderr');
+    TP.stop('break.bind_stderr');
 
     //  this method may be triggered automatically by low-level change
     //  handlers so we want to filter out extra work when we're not bound.
@@ -1117,7 +1117,7 @@ function(aSignal) {
 
     var request;
 
-    TP.debug('break.bind_refresh');
+    TP.stop('break.bind_refresh');
 
     //  signals coming into the refresh method should be requests already,
     //  but in case we didn't get one...
@@ -1131,7 +1131,7 @@ function(aSignal) {
         //  debugging mode, just log what we find/would do
         TP.ifTrace(TP.sys.cfg('log.bind_refresh')) ?
             TP.trace(TP.boot.$annotate(this, 'Refreshing bound element.'),
-                TP.LOG, arguments) : 0;
+                TP.LOG) : 0;
 
         this.$refreshBoundAspect(request);
     }
@@ -1638,8 +1638,7 @@ function(aRequest) {
                                         this,
                                         'bind-binding-exception: Unable' +
                                         ' to find model.'),
-                                    TP.LOG,
-                                    arguments) : 0;
+                                    TP.LOG) : 0;
 
                             this.dispatch('bind-binding-exception',
                                             this.getNativeNode());
@@ -1758,7 +1757,7 @@ function(aRequest) {
                                 'bind-binding-exception: Unable to' +
                                 ' find model ' +
                                 modelID),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 this.dispatch('bind-binding-exception',
                                 this.getNativeNode());
@@ -1799,7 +1798,7 @@ function(aRequest) {
                                     'bind-binding-exception: Unable to' +
                                     ' find model ' +
                                     modelID),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                     this.dispatch('bind-binding-exception',
                                     this.getNativeNode());
@@ -1867,7 +1866,7 @@ function(aRequest) {
                                 'bind-binding-exception: Unable to' +
                                 ' find model ' +
                                 modelID),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 this.dispatch('bind-binding-exception',
                                 this.getNativeNode());

@@ -32,7 +32,7 @@ function(targetURI, aRequest) {
      * @description This method performs the actual work of querying a JSONP URL
      *     for its content. Two notable parameters from the request are passed
      *     on to the JSON call:
-     *     
+     *
      *     'callbackFunc' - The name of the Function that the JSON call will
      *     put the result data into and which we then use to populate the result
      *     of the request. 'callbackName' - The name of the actual parameter
@@ -58,10 +58,10 @@ function(targetURI, aRequest) {
         requestParams,
         loadRequest;
 
-    TP.debug('break.uri_load');
+    TP.stop('break.uri_load');
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
-        this.raise('TP.sig.InvalidURI', arguments);
+        this.raise('TP.sig.InvalidURI');
 
         return;
     }
@@ -124,7 +124,7 @@ function(targetURI, aRequest) {
     var request,
         response;
 
-    this.raise('TP.sig.UnsupportedOperation', arguments);
+    this.raise('TP.sig.UnsupportedOperation');
 
     request = TP.request(aRequest);
     response = request.constructResponse(false);
@@ -155,7 +155,7 @@ function(targetURI, aRequest) {
     var request,
         response;
 
-    this.raise('TP.sig.UnsupportedOperation', arguments);
+    this.raise('TP.sig.UnsupportedOperation');
 
     request = TP.request(aRequest);
     response = request.constructResponse(false);

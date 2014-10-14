@@ -2392,7 +2392,7 @@ function(aType) {
         retVal;
 
     if (!TP.isType(aType) && !TP.isString(aType)) {
-        return this.raise('TP.sig.InvalidType', arguments);
+        return this.raise('TP.sig.InvalidType');
     }
 
     this.executeChain();
@@ -2432,7 +2432,7 @@ function(aValue) {
         retVal;
 
     if (!TP.isNumber(aValue)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid Number supplied.');
     }
 
@@ -2440,7 +2440,7 @@ function(aValue) {
 
     if (!TP.isNumber(testVal = this.get('testObj')) &&
         !TP.isNumber(testVal = this.get('$lengthVal'))) {
-        return this.raise('TP.sig.InvalidNumber', arguments);
+        return this.raise('TP.sig.InvalidNumber');
     }
 
     retVal = testVal > aValue;
@@ -2518,7 +2518,7 @@ function(aValue) {
         retVal;
 
     if (!TP.isNumber(aValue)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid Number supplied.');
     }
 
@@ -2526,7 +2526,7 @@ function(aValue) {
 
     if (!TP.isNumber(testVal = this.get('testObj')) &&
         !TP.isNumber(testVal = this.get('$lengthVal'))) {
-        return this.raise('TP.sig.InvalidNumber', arguments);
+        return this.raise('TP.sig.InvalidNumber');
     }
 
     retVal = testVal < aValue;
@@ -2574,14 +2574,14 @@ function(expectedVal, delta) {
         retVal;
 
     if (!TP.isNumber(expectedVal) || !TP.isNumber(delta)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid Number supplied.');
     }
 
     this.executeChain();
 
     if (!TP.isNumber(testVal = this.get('testObj'))) {
-        return this.raise('TP.sig.InvalidNumber', arguments);
+        return this.raise('TP.sig.InvalidNumber');
     }
 
     retVal = (testVal - expectedVal).abs() <= delta;
@@ -2619,13 +2619,13 @@ function(aValue) {
     } else {
 
         if (TP.notValid(aValue)) {
-            return this.raise('TP.sig.InvalidParameter', arguments);
+            return this.raise('TP.sig.InvalidParameter');
         }
 
         this.executeChain();
 
         if (!TP.isCollection(testVal = this.get('testObj'))) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         retVal = TP.contains(this.get('testObj'), aValue);
@@ -2706,7 +2706,7 @@ function(anObject) {
         retVal;
 
     if (TP.notValid(anObject)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     this.executeChain();
@@ -2823,7 +2823,7 @@ function(anObject) {
         retVal;
 
     if (TP.notValid(anObject)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     this.executeChain();
@@ -2870,7 +2870,7 @@ function(aKey) {
         retVal;
 
     if (!TP.isString(aKey)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid String supplied.');
     }
 
@@ -2914,7 +2914,7 @@ function(aKeyArray) {
         retVal;
 
     if (!TP.isArray(aKeyArray)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid Array supplied.');
     }
 
@@ -2958,7 +2958,7 @@ function(aValue) {
         retVal;
 
     if (!TP.isNumber(aValue)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid Number supplied.');
     }
 
@@ -2966,7 +2966,7 @@ function(aValue) {
 
     if (!TP.isNumber(testVal = this.get('testObj')) &&
         !TP.isNumber(testVal = this.get('$lengthVal'))) {
-        return this.raise('TP.sig.InvalidNumber', arguments);
+        return this.raise('TP.sig.InvalidNumber');
     }
 
     retVal = testVal >= aValue;
@@ -3009,7 +3009,7 @@ function(aValue) {
     } else {
 
         if (!TP.isNumber(aValue)) {
-            return this.raise('TP.sig.InvalidParameter', arguments,
+            return this.raise('TP.sig.InvalidParameter',
                                 'Invalid Number supplied.');
         }
 
@@ -3052,7 +3052,7 @@ function(aValue) {
         retVal;
 
     if (!TP.isRegExp(aValue)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid RegExp supplied.');
     }
 
@@ -3088,14 +3088,14 @@ function(setArray) {
         retVal;
 
     if (!TP.isArray(setArray)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid Array supplied.');
     }
 
     this.executeChain();
 
     if (!TP.isArray(testVal = this.get('testObj'))) {
-        return this.raise('TP.sig.InvalidArray', arguments);
+        return this.raise('TP.sig.InvalidArray');
     }
 
     if (this.get('$deep')) {
@@ -3142,7 +3142,7 @@ function(aValue) {
         retVal;
 
     if (!TP.isNumber(aValue)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid Number supplied.');
     }
 
@@ -3150,7 +3150,7 @@ function(aValue) {
 
     if (!TP.isNumber(testVal = this.get('testObj')) &&
         !TP.isNumber(testVal = this.get('$lengthVal'))) {
-        return this.raise('TP.sig.InvalidNumber', arguments);
+        return this.raise('TP.sig.InvalidNumber');
     }
 
     retVal = testVal <= aValue;
@@ -3261,7 +3261,7 @@ function(aName, aValue) {
     //  aValue isn't required, but aName is
 
     if (!TP.isString(aName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     this.executeChain();
@@ -3316,7 +3316,7 @@ function(aName, aValue) {
     //  aValue isn't required, but aName is
 
     if (!TP.isString(aName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     this.executeChain();
@@ -3370,14 +3370,14 @@ function(methodName) {
         retVal;
 
     if (!TP.isString(methodName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid method name supplied.');
     }
 
     this.executeChain();
 
     if (TP.notValid(testVal = this.get('testObj'))) {
-        return this.raise('TP.sig.InvalidObject', arguments);
+        return this.raise('TP.sig.InvalidObject');
     }
 
     if (TP.isType(testVal)) {
@@ -3422,7 +3422,7 @@ function(aFunction) {
         retVal;
 
     if (!TP.isFunction(aFunction)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid Function supplied.');
     }
 
@@ -3458,7 +3458,7 @@ function(aValue) {
         retVal;
 
     if (!TP.isString(aValue)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid String supplied.');
     }
 
@@ -3671,7 +3671,7 @@ function(start, finish) {
         retVal;
 
     if (!TP.isNumber(start) || !TP.isNumber(finish)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid Number supplied.');
     }
 
@@ -3679,7 +3679,7 @@ function(start, finish) {
 
     if (!TP.isNumber(testVal = this.get('testObj')) &&
         !TP.isNumber(testVal = this.get('$lengthVal'))) {
-        return this.raise('TP.sig.InvalidNumber', arguments);
+        return this.raise('TP.sig.InvalidNumber');
     }
 
     retVal = (testVal >= start) && (testVal <= finish);

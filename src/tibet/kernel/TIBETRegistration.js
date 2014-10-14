@@ -37,7 +37,7 @@ over time.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getObjectById',
-function(anID, regOnly, aContext) {
+function(anID, regOnly, nodeContext) {
 
     /**
      * @name getObjectById
@@ -60,9 +60,9 @@ function(anID, regOnly, aContext) {
      *     of the specific URI subtype.
      * @param {String} anID The id to look up.
      * @param {Boolean} regOnly Should lookup stop with registered objects?
-     * @param {Window|Node} aContext An optional window or node specification to
-     *     use for resolution when no other reference is found. Default is the
-     *     current canvas.
+     * @param {Window|Node} nodeContext An optional window or node specification
+     *     to use for resolution when no other reference is found. Default is
+     *     the current canvas.
      * @returns {Object} Typically a TIBET object (meaning nodes are wrapped in
      *     TP.core.Node instances etc) to maintain encapsulation for as long as
      *     possible.
@@ -83,7 +83,7 @@ function(anID, regOnly, aContext) {
         type,
         reg;
 
-    TP.debug('break.gobi');
+    TP.stop('break.gobi');
 
     //  make sure it's something we can manipulate
     if (TP.isEmpty(anID)) {
@@ -181,7 +181,7 @@ function(anID, regOnly, aContext) {
             TP.ifWarn() ?
                 TP.warn('Unable to construct URI for object reference: ' +
                             id,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
             return;
         }
@@ -277,10 +277,10 @@ function(anID, regOnly, aContext) {
     //  logic we'll stick with that one, otherwise we default to either the
     //  current canvas
     if (!TP.isWindow(win)) {
-        win = TP.unwrap(aContext);
+        win = TP.unwrap(nodeContext);
         if (!TP.isWindow(win)) {
-            if (TP.isNode(aContext)) {
-                win = TP.nodeGetWindow(aContext);
+            if (TP.isNode(nodeContext)) {
+                win = TP.nodeGetWindow(nodeContext);
             } else {
                 win = TP.ifInvalid(
                         TP.sys.getWindowById(TP.sys.getUICanvasName()),
@@ -317,7 +317,7 @@ function(anID, regOnly, aContext) {
             TP.ifError() ?
                 TP.error(TP.ec(e,
                             'Error accessing window slot at: ' + id + '. '),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
         }
     }
 
@@ -431,7 +431,7 @@ function(anObj, anID, forceRegistration) {
         TP.ifError() ?
             TP.error('Trying to register object whose ID is already a URN: ' +
                         id,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         return false;
     }

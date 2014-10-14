@@ -34,7 +34,7 @@ function(eventName) {
         type;
 
     if (TP.isEmpty(eventName)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     //  Key events in particular will change their names for easier
@@ -296,7 +296,7 @@ function(anEvent) {
         attr;
 
     if (!TP.isEvent(anEvent)) {
-        return TP.raise(this, 'TP.sig.InvalidEvent', arguments);
+        return TP.raise(this, 'TP.sig.InvalidEvent');
     }
 
     target = TP.eventGetTarget(anEvent);
@@ -897,7 +897,7 @@ isCancelable, isBubbling        ) {
 
         thrownSignal;
 
-    TP.debug('break.signal_dispatch');
+    TP.stop('break.signal_dispatch');
 
     //  copy of the args we can manipulate as needed
     argsOrEvent = anEventOrHash;
@@ -1041,7 +1041,6 @@ isCancelable, isBubbling        ) {
     thrownSignal = TP.signal(
                     origin,
                     TP.isKindOf(aSignal, TP.sig.Signal) ? aSignal : signame,
-                    arguments,
                     argsOrEvent,
                     policy,
                     defaultType,
@@ -1098,7 +1097,7 @@ function(nativeEvt) {
         firingPolicy;
 
     if (!TP.isEvent(nativeEvt)) {
-        return TP.raise(this, 'TP.sig.InvalidEvent', arguments);
+        return TP.raise(this, 'TP.sig.InvalidEvent');
     }
 
     //  Get the native event's target
@@ -1188,7 +1187,7 @@ function(nativeEvt) {
         TP.ifTrace(TP.sys.shouldLogSignals()) ?
             TP.trace('Sending ' + eventName +
                         ' to TIBET with supertype ' + eventSuper,
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         //  Its not TP.DOM_FIRING, so we send the globalID only
         thrownSignal = TP.signal(globalID,
@@ -1201,7 +1200,7 @@ function(nativeEvt) {
         TP.ifTrace(TP.sys.shouldLogSignals()) ?
             TP.trace('Sending ' + eventName +
                         ' to TIBET with supertype ' + eventSuper,
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         //  It is TP.DOM_FIRING, so we send the list of IDs
         fullTargetArray = TP.elementGetEventIds(sourceElement);
@@ -1403,7 +1402,7 @@ function(anElement, invalidateIdCache) {
         elementWin;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.notValid(eventIdArray = anElement.eventIds) ||
@@ -1507,11 +1506,11 @@ function(aWindow, aDocumentNode) {
         origin;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (!TP.isDocument(aDocumentNode)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  NB: We only get listeners from the document that have an
@@ -1580,14 +1579,14 @@ function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
         elementNameArray,
         eventNameArray;
 
-    TP.debug('break.signal_arm');
+    TP.stop('break.signal_arm');
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.notValid(aNodeOrList) || TP.isEmpty(eventNames)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  event name should be a string or array of strings...
@@ -1596,7 +1595,7 @@ function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
     } else if (TP.isCollection(eventNames)) {
         eventNameArray = eventNames;
     } else {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments,
+        return TP.raise(this, 'TP.sig.InvalidParameter',
             'Event specification not a string or collection.');
     }
 
@@ -1714,15 +1713,15 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
         nativeEventName;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.isEmpty(eventNameArray)) {
-        return TP.raise(this, 'TP.sig.InvalidArray', arguments);
+        return TP.raise(this, 'TP.sig.InvalidArray');
     }
 
     if (TP.isDocument(aNode)) {
@@ -1823,11 +1822,11 @@ function(aWindow, aNodeOrList, eventNames, aHandler) {
         eventNameArray;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.notValid(aNodeOrList) || TP.isEmpty(eventNames)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  event name should be a string or array of strings...
@@ -1836,7 +1835,7 @@ function(aWindow, aNodeOrList, eventNames, aHandler) {
     } else if (TP.isCollection(eventNames)) {
         eventNameArray = eventNames;
     } else {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments,
+        return TP.raise(this, 'TP.sig.InvalidParameter',
             'Event specification not a string or collection.');
     }
 
@@ -1928,15 +1927,15 @@ function(aWindow, aNode, eventNameArray, aHandler) {
         nativeEventName;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.isEmpty(eventNameArray)) {
-        return TP.raise(this, 'TP.sig.InvalidArray', arguments);
+        return TP.raise(this, 'TP.sig.InvalidArray');
     }
 
     //  Grab the element's window and its name.

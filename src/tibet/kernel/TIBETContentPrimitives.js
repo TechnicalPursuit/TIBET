@@ -232,8 +232,7 @@ function(aString, smartConversion, shouldReport) {
         return obj;
     } catch (e) {
         if (TP.notFalse(shouldReport)) {
-            return TP.raise(this, 'TP.sig.InvalidJSON', arguments,
-                            TP.ec(e, aString));
+            return TP.raise(this, 'TP.sig.InvalidJSON', TP.ec(e, aString));
         }
 
         return;
@@ -305,8 +304,7 @@ function(anObject) {
                         return TP.json(value);
                     });
     } catch (e) {
-        return TP.raise(this, 'TP.sig.JSONSerializationException',
-                         arguments, TP.ec(e));
+        return TP.raise(this, 'TP.sig.JSONSerializationException', TP.ec(e));
     }
 
     return str;
@@ -335,7 +333,7 @@ function(anObject, aFilterName) {
     node = TP.jsonml2xml(anObject);
 
     if (TP.notValid(node)) {
-        TP.raise(this, 'TP.sig.InvalidXML', arguments,
+        TP.raise(this, 'TP.sig.InvalidXML',
             'Unable to convert object ' + TP.id(anObject) + 'to XML.');
     }
 
@@ -362,7 +360,7 @@ function(aNode) {
     var node;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     //  collections (nodes with a content model) are ok, but we need to work
@@ -477,7 +475,7 @@ function(anObject, shouldReport) {
         node = TP.extern.JsonML.toXML(anObject);
     } catch (e) {
         if (TP.notFalse(shouldReport)) {
-            return TP.raise(this, 'TP.sig.InvalidJSON', arguments,
+            return TP.raise(this, 'TP.sig.InvalidJSON',
                              TP.ec(e, anObject));
         }
 
@@ -503,7 +501,7 @@ function(aNode) {
         elem;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.isXMLDocument(elem = aNode)) {
@@ -680,7 +678,7 @@ shouldRaise) {
     //  can only do this properly with an HTML document since we'll be
     //  loading a script element that needs HTML-specific processing
     if (!TP.isHTMLDocument(contextDoc)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Grab the context window
@@ -696,7 +694,7 @@ shouldRaise) {
         errMsg = TP.join('JSONP call error: ', msg, ' from: ', uri);
 
         if (TP.notFalse(shouldRaise)) {
-            TP.raise(this, 'TP.sig.JSONException', arguments, errMsg);
+            TP.raise(this, 'TP.sig.JSONException', errMsg);
             callback(errMsg);
         }
 
@@ -784,7 +782,7 @@ shouldRaise) {
             elem = TP.nodeAppendChild(head, elem, false);
         }
     } catch (e) {
-        TP.raise(this, 'TP.sig.JSONException', arguments, TP.ec(e));
+        TP.raise(this, 'TP.sig.JSONException', TP.ec(e));
         callback(TP.join('JSONP call error: ', TP.str(e)));
     }
 

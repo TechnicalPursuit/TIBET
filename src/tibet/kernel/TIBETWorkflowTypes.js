@@ -247,11 +247,11 @@ function(aResource) {
      */
 
     if (TP.notValid(aResource)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (this.getResourceById(aResource.get('resourceID'))) {
-        return this.raise('TP.sig.NonUniqueID', arguments);
+        return this.raise('TP.sig.NonUniqueID');
     }
 
     return this.get('instances').atPut(
@@ -275,7 +275,7 @@ function(resourceID) {
 
     //  no id means no resource instance
     if (TP.notValid(resourceID)) {
-        return this.raise('TP.sig.InvalidResourceID', arguments);
+        return this.raise('TP.sig.InvalidResourceID');
     }
 
     if (TP.isValid(inst = TP.core.Resource.getResourceById(resourceID))) {
@@ -612,7 +612,7 @@ function(aSignal) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(TP.ec(e, 'Error in handler: ' + TP.str(handler)),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
             return;
         }
@@ -975,7 +975,7 @@ function(aRequest) {
 
     //  make sure it can respond properly
     if (!TP.canInvoke(aRequest, 'getRequestID')) {
-        return this.raise('TP.sig.InvalidRequest', arguments);
+        return this.raise('TP.sig.InvalidRequest');
     }
 
     //  remove the request using its ID
@@ -1139,7 +1139,7 @@ function(anOrigin, aPayload, aPolicy) {
     this.$set('time', Date.now());
 
     //  fire using the firing origin (defaults to this) so we target better
-    TP.signal(origin, this, arguments, aPayload, policy);
+    TP.signal(origin, this, aPayload, policy);
 
     return this;
 });
@@ -1764,7 +1764,7 @@ function() {
         TP.ifWarn() ?
             TP.warn('Unable to locate response type: ' + typename +
                     '. Defaulting to TP.sig.Response.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return TP.sig.Response;
     }
@@ -1813,7 +1813,7 @@ function(aSignal) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(TP.ec(e, 'Error in handler: ' + TP.str(handler)),
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
             return;
         }
@@ -1989,7 +1989,6 @@ function(aResponse) {
 
     if (!TP.isKindOf(aResponse, 'TP.sig.Response')) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Must supply an instance of TP.sig.Response ' +
                             'or a suitable subtype.');
     }
@@ -2809,7 +2808,7 @@ function(aSuffix, aState, aResultOrFailureCode, aFaultString) {
         join,
         arglen;
 
-    TP.debug('break.request_wrapup');
+    TP.stop('break.request_wrapup');
 
     //  consider this to be "end of processing" time since what follows is
     //  largely about notifying rather than "real work" for the request
@@ -2900,7 +2899,7 @@ function(aSuffix, aState, aResultOrFailureCode, aFaultString) {
             //  name we don't use inheritance firing here... implying that
             //  observers of response signals have to be observing
             //  specifically.
-            TP.signal(id, response, arguments, null, TP.FIRE_ONE);
+            TP.signal(id, response, null, TP.FIRE_ONE);
         }
     }
 
@@ -3148,7 +3147,7 @@ function(anOrigin, aPayload, aPolicy) {
     //  signal using the request id as a channel identifier. this is done
     //  primarily for external observers...the requestor should be notified
     //  in the logic above
-    TP.signal(origin, this, arguments, aPayload, policy);
+    TP.signal(origin, this, aPayload, policy);
 
     return this;
 });
@@ -3495,7 +3494,6 @@ function(keyRingName) {
     ring = TP.tibet.keyring.getInstanceById(keyRingName);
     if (TP.notValid(ring)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Key ring: \'' + keyRingName + '\' not found.');
     }
 
@@ -3927,7 +3925,7 @@ function(aUser) {
      */
 
     if (!TP.isKindOf(aUser, this)) {
-        this.raise('TP.sig.InvalidUser', arguments);
+        this.raise('TP.sig.InvalidUser');
 
         return;
     }
@@ -3959,7 +3957,7 @@ function(aUser) {
      */
 
     if (!TP.isKindOf(aUser, this)) {
-        this.raise('TP.sig.InvalidUser', arguments);
+        this.raise('TP.sig.InvalidUser');
 
         return;
     }
@@ -4252,8 +4250,7 @@ function(resourceID, aSignal) {
         } catch (e) {
             TP.ifWarn() ?
                 TP.warn(TP.ec(e, 'Couldn\'t construct default instance: '),
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
             if (TP.isValid(aSignal)) {
                 //  can't construct an instance...have to let some other
@@ -5375,7 +5372,7 @@ function(aRequest) {
 
     if (TP.notValid(url = aRequest.at('uri'))) {
         if (TP.notValid(url = this.get('serviceURI'))) {
-            this.raise('TP.sig.InvalidURI', arguments,
+            this.raise('TP.sig.InvalidURI',
                                 'Request has no service URI.');
             return;
         }
@@ -5430,7 +5427,6 @@ function(aRequest) {
 
     if (TP.notValid(requestURI) && TP.notValid(serviceURI)) {
         this.raise('TP.sig.InvalidURI',
-                    arguments,
                     'Request has no service URI.');
 
         return;
@@ -5568,7 +5564,7 @@ function(aSignal) {
         TP.ifWarn() ?
             TP.warn('Unable to locate application controller type.' +
                     'Defaulting to TP.core.Application.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
         appType = TP.sys.require('TP.core.Application');
     }
 
@@ -5645,8 +5641,7 @@ function(aSignal) {
 
     TP.ifInfo() ?
         TP.info('Got to TP.core.Application::handleLocationBack',
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
     return this;
 });
@@ -5677,8 +5672,7 @@ function(aSignal) {
 
     TP.ifInfo() ?
         TP.info('Got to TP.core.Application::handleLocationChanged',
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
     if (TP.notValid(tpUICanvasWin = TP.sys.getUICanvas())) {
         //  TODO: Raise an exception?
@@ -5709,8 +5703,7 @@ function(aSignal) {
 
     TP.ifInfo() ?
         TP.info('Got to TP.core.Application::handleLocationNext',
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
     return this;
 });
@@ -5997,16 +5990,16 @@ function(anEvent) {
     //  direction can be determined.
     if (TP.isNumber(entryIndex)) {
         if (entryIndex < this.get('historyIndex')) {
-            this.signal('TP.sig.LocationBack', arguments, decodedVal);
+            this.signal('TP.sig.LocationBack', decodedVal);
         } else if (entryIndex > this.get('historyIndex')) {
-            this.signal('TP.sig.LocationNext', arguments, decodedVal);
+            this.signal('TP.sig.LocationNext', decodedVal);
         }
 
         this.set('historyIndex', entryIndex);
     }
 
     //  In any case, the location changed, so let all observers know.
-    this.signal('TP.sig.LocationChanged', arguments, decodedVal);
+    this.signal('TP.sig.LocationChanged', decodedVal);
 
     return this;
 });
@@ -6047,7 +6040,7 @@ function(histValue) {
         currentHashVal;
 
     if (TP.isEmpty(histValue)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     encodedVal = TP.btoa(histValue.asString());

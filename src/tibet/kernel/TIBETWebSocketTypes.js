@@ -66,7 +66,7 @@ function(aFaultCode, aFaultString) {
                     'WebSocket request aborted: ' + msg);
 
     TP.ifInfo(TP.sys.shouldLogIO()) ?
-                TP.sys.logIO(this, TP.INFO, arguments) : 0;
+                TP.sys.logIO(this, TP.INFO) : 0;
 
     //  TODO: migrate to the TP.core.WebSocketURIHandler
 
@@ -120,7 +120,7 @@ function(aFaultCode, aFaultString) {
                     'WebSocket request cancelled: ' + msg);
 
     TP.ifInfo(TP.sys.shouldLogIO()) ?
-                TP.sys.logIO(this, TP.INFO, arguments) : 0;
+                TP.sys.logIO(this, TP.INFO) : 0;
 
     //  TODO: migrate to the TP.core.WebSocketURIHandler
 
@@ -319,7 +319,7 @@ function() {
     /**
      * @name getResponseStatusCode
      * @synopsis Returns the status code of the response.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.get('statusCode');
@@ -333,7 +333,7 @@ function() {
     /**
      * @name getResponseStatusText
      * @synopsis Returns the status message (text) of the response.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.get('statusText');
@@ -347,7 +347,7 @@ function() {
     /**
      * @name getResponseText
      * @synopsis Returns the response text.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var responseText;
@@ -367,7 +367,7 @@ function() {
     /**
      * @name getResponseXML
      * @synopsis Returns the DOM Node containing the response in XML form.
-     * @returns {XMLDocument} 
+     * @returns {XMLDocument}
      */
 
     var responseText,
@@ -503,7 +503,7 @@ function(aRequest) {
         response;
 
     if (!TP.isKindOf(aRequest, 'TP.sig.WebSocketRequest')) {
-        this.raise('TP.sig.InvalidRequest', arguments);
+        this.raise('TP.sig.InvalidRequest');
 
         return;
     }
@@ -598,7 +598,6 @@ function(aRequest) {
                     TP.ifKeyInvalid(aRequest,
                                     'exceptionType',
                                     'WebSocketException'),
-                    arguments,
                     aRequest);
     }
 

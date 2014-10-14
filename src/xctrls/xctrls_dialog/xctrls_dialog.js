@@ -37,7 +37,7 @@ TP.xctrls.dialog.Inst.defineAttribute(
         'curtain',
         {'value': TP.xpc('//xctrls:curtain[1]', true).
             set('fallbackWith',
-                function(aContext) {
+                function(windowContext) {
                     var curtainElem,
                         docBody;
 
@@ -46,11 +46,11 @@ TP.xctrls.dialog.Inst.defineAttribute(
                                             '"/>');
 
                     if (TP.isValid(docBody =
-                                    TP.wrap(TP.documentGetBody(aContext)))) {
+                            TP.wrap(TP.documentGetBody(windowContext)))) {
                         return TP.unwrap(docBody.insertContent(
                                             curtainElem,
                                             TP.BEFORE_END,
-                                            TP.hc('doc', aContext)));
+                                            TP.hc('doc', windowContext)));
                     }
                 })});
 

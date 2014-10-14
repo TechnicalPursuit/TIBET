@@ -44,7 +44,7 @@ function(styleUrl, inputUrl, paramHash) {
         node2;
 
     if (TP.notValid(url1 = TP.uc(styleUrl))) {
-        this.raise('TP.sig.InvalidURI', arguments, styleUrl);
+        this.raise('TP.sig.InvalidURI', styleUrl);
 
         return;
     }
@@ -52,7 +52,7 @@ function(styleUrl, inputUrl, paramHash) {
     node1 = url1.getNativeNode(TP.hc('async', false));
 
     if (TP.notValid(url2 = TP.uc(inputUrl))) {
-        this.raise('TP.sig.InvalidURI', arguments, inputUrl);
+        this.raise('TP.sig.InvalidURI', inputUrl);
 
         return;
     }
@@ -86,7 +86,7 @@ function(styleUrl, inputNode, paramHash) {
         node1;
 
     if (TP.notValid(url1 = TP.uc(styleUrl))) {
-        this.raise('TP.sig.InvalidURI', arguments, styleUrl);
+        this.raise('TP.sig.InvalidURI', styleUrl);
 
         return;
     }
@@ -120,7 +120,7 @@ function(styleNode, inputUrl, paramHash) {
         node2;
 
     if (TP.notValid(url2 = TP.uc(inputUrl))) {
-        this.raise('TP.sig.InvalidURI', arguments, inputUrl);
+        this.raise('TP.sig.InvalidURI', inputUrl);
         return;
     }
 

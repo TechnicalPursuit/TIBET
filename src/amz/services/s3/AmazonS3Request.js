@@ -96,7 +96,7 @@
  *     s3Req.defineMethod(
  *              'handleRequestSucceeded',
  *              function(aResponse) {
- *                  TP.info(aResponse.getResult(), TP.LOG, arguments);
+ *                  TP.info(aResponse.getResult(), TP.LOG);
  *              });
  *     s3Req.fire();
  * @todo

@@ -374,7 +374,7 @@ function(aTagName, aType, aNamespace) {
         nsHash;
 
     if (!TP.isType(aType)) {
-        return this.raise('TP.sig.InvalidType', arguments, aType);
+        return this.raise('TP.sig.InvalidType', aType);
     }
 
     //  default to the root document namespace, always jabber:client
@@ -401,7 +401,7 @@ function(aCode) {
      * @name getErrorString
      * @synopsis Returns the common error string for the code provided.
      * @param {Number} aCode The numeric error code to look up.
-     * @returns {String} 
+     * @returns {String}
      */
 
     if (TP.notValid(aCode)) {
@@ -422,7 +422,7 @@ function(tagType) {
      *     provided. This is typically a string such as 'get', 'set',
      *     'available', etc.
      * @param {String} tagType The tag type for the stanza type.
-     * @returns {Type} 
+     * @returns {Type}
      */
 
     return this.get('$stanzatypes').at(tagType);
@@ -440,7 +440,7 @@ function(aTagName, aNamespace) {
      * @param {String} aTagName The tag name to be looked up.
      * @param {String} aNamespace The namespace to qualify the tag name by.
      *     Default is TP.xmpp.XMLNS.CLIENT.
-     * @returns {Type} 
+     * @returns {Type}
      * @todo
      */
 

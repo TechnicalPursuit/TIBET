@@ -39,7 +39,7 @@ function(aDataSource, transformParams) {
      * @todo
      */
 
-    TP.debug('break.content_transform');
+    TP.stop('break.content_transform');
 
     //  context, specializer, prefix, suffix, fallback, arglist
     return this.callBestMethod(arguments, aDataSource,
@@ -105,7 +105,7 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
         func,
         tokens;
 
-    TP.debug('break.content_templating');
+    TP.stop('break.content_templating');
 
     //  Force a string representation. This ensures certain Mozilla bugs
     //  don't get triggered by referencing 'this' alone.
@@ -151,7 +151,6 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
         catch (e) {
             return this.raise(
                     'TP.sig.TemplateTokenizationFailed',
-                    arguments,
                     TP.ec(e,
                         TP.sc('Tokenization failed at: ', e.line || 'unknown',
                                 'in template named: ', templateName,
@@ -165,7 +164,6 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
     //  Compilation/creation of a template function failed.
     if (!TP.isFunction(func)) {
         this.raise('TP.sig.InvalidTemplate',
-                    arguments,
                     'Unable to compile string: ' + str);
 
         return;
@@ -358,7 +356,6 @@ function(tokenList, templateName, sourceVarNames) {
             if (!TP.isCallable(commands[command])) {
                 return this.raise(
                         'TP.sig.TemplateCompilationFailed',
-                        arguments,
                             TP.sc('Compilation failed.',
                                     ' Unknown handler for: ', command,
                                     ' with args: ' + args.shift()));
@@ -657,7 +654,7 @@ function(tokenList, templateName, sourceVarNames) {
         '}\n',
         'catch(e)\n',
         '{\n',
-            'TP.ifError() ? TP.error(TP.ec(e), arguments): 0;\n',
+            'TP.ifError() ? TP.error(TP.ec(e)): 0;\n',
         '};\n');
 
     templateFunc = TP.fc('aDataSource', 'aParamHash', funcParts.join(''));
@@ -701,7 +698,7 @@ function(aDataSource, transformParams) {
         urn,
         url;
 
-    TP.debug('break.content_transform');
+    TP.stop('break.content_transform');
 
     if (TP.isEmpty(str = this.toString())) {
         return;
@@ -739,7 +736,7 @@ function(aDataSource, transformParams) {
             TP.ifError() ?
                 TP.error('Unable to compile formatting template: ' +
                                 str,
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
             return;
         }
     } else if (TP.regex.SUBSTITUTION_STRING.test(str)) {
@@ -751,7 +748,7 @@ function(aDataSource, transformParams) {
         if (TP.canInvoke(type, 'transform')) {
             return type.transform(aDataSource, transformParams);
         } else {
-            return TP.raise(this, 'TP.sig.InvalidFormat', arguments,
+            return TP.raise(this, 'TP.sig.InvalidFormat',
                             str + ' does not support transform call.');
         }
     } else {
@@ -770,14 +767,14 @@ function(aDataSource, transformParams) {
                 TP.ifError() ?
                     TP.error('Unable to locate formatting template URN: ' +
                                     urn,
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
                 return;
             }
         } else if (TP.notTrue(urnBuilt)) {
             TP.ifError() ?
                 TP.error('Invalid formatting template URN: ' +
                                 urn,
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
             return;
         }
     }
@@ -835,14 +832,13 @@ function(aDataSource, transformParams) {
 
         val;
 
-    TP.debug('break.content_transform');
+    TP.stop('break.content_transform');
 
     if (TP.notValid(aDataSource)) {
         try {
             return this();
         } catch (e) {
             return this.raise('TP.sig.TransformFailed',
-                                arguments,
                                 TP.ec(e, 'Transform failed'));
         }
     }
@@ -874,7 +870,6 @@ function(aDataSource, transformParams) {
             return retVal + '';
         } catch (e) {
             return this.raise('TP.sig.TransformFailed',
-                                arguments,
                                 TP.ec(e, 'Transform failed'));
         }
     }
@@ -892,7 +887,7 @@ function(aDataSource, transformParams) {
     } else if (TP.canInvoke(aDataSource, 'getItems')) {
         source = aDataSource.getItems();
     } else {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
             'Argument must be a valid collection or object with items.');
     }
 
@@ -920,7 +915,6 @@ function(aDataSource, transformParams) {
         } catch (e) {
             return this.raise(
                     'TP.sig.TransformFailed',
-                    arguments,
                     TP.ec(e, 'Repeating transform failed on item: ' + i));
         }
 

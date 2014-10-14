@@ -66,7 +66,6 @@ function(aValue, aFacet) {
         default:
 
             this.raise('TP.sig.UnsupportedFeature',
-                        arguments,
                         'Invalid format specification for facet');
 
             break;

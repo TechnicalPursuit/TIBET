@@ -33,7 +33,7 @@ function() {
     /**
      * @name getData
      * @synopsis Returns the private data node associated with this node.
-     * @returns {Node} 
+     * @returns {Node}
      */
 
     var natNode;
@@ -64,7 +64,7 @@ function(aNode) {
         node;
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node = aNode;

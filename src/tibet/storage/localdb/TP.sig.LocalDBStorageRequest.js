@@ -84,15 +84,13 @@
  *     req.defineMethod('handleRequestSucceeded',
  *          function(aResponse) {
  *              TP.info('Success! Result: ' + TP.json(aResponse.getResult()),
- *                      TP.LOG,
- *                      arguments);
+ *                      TP.LOG);
  *          });
  *
  *     req.defineMethod('handleRequestFailed',
  *          function(aResponse) {
  *              TP.info('Failure... Result: ' + TP.json(aResponse.getResult()),
- *                      TP.LOG,
- *                      arguments);
+ *                      TP.LOG);
  *          });
  *
  *     req.fire();

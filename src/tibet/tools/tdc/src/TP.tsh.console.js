@@ -310,7 +310,7 @@ function(aResourceID, aRequest) {
     this.set('model', request.at('consoleModel'));
 
     if (TP.notValid(model = this.getModel())) {
-        this.raise('TP.sig.InvalidParameter', arguments,
+        this.raise('TP.sig.InvalidParameter',
             'Console configuration did not include a shell.');
 
         return;
@@ -641,7 +641,7 @@ function() {
      * @todo
      */
 
-    TP.info('fix TP.core.ConsoleService::scrollContent', TP.LOG, arguments);
+    TP.info('fix TP.core.ConsoleService::scrollContent', TP.LOG);
 
     return this;
 
@@ -1192,7 +1192,7 @@ function(aSignal) {
         arr,
         str;
 
-    //TP.info('fix TP.core.ConsoleService::handleDOMModifierKeyChange', TP.LOG, arguments);
+    //TP.info('fix TP.core.ConsoleService::handleDOMModifierKeyChange', TP.LOG);
 
     return;
 
@@ -1379,7 +1379,7 @@ function(aSignal) {
     var id,
         request;
 
-    TP.debug('break.shell_completed');
+    TP.stop('break.shell_completed');
 
     if (TP.canInvoke(aSignal, 'getRequestID')) {
         id = aSignal.getRequestID();
@@ -1813,7 +1813,7 @@ function() {
      * @todo
      */
 
-    //TP.info('fix TP.core.ConsoleService::clearStatus', TP.LOG, arguments);
+    //TP.info('fix TP.core.ConsoleService::clearStatus', TP.LOG);
 
     return this;
 
@@ -1837,7 +1837,7 @@ function(aSignal) {
      *     updated for.
      */
 
-    //TP.info('fix TP.core.ConsoleService::updateStatus', TP.LOG, arguments);
+    //TP.info('fix TP.core.ConsoleService::updateStatus', TP.LOG);
 
     return this;
 
@@ -1914,7 +1914,7 @@ function(rawInput) {
     //  which case we build a shell request and forward it to the shell
     if (TP.notValid(req = this.get('lastInputRequest'))) {
         if (TP.notValid(model = this.get('model'))) {
-            this.raise('TP.sig.InvalidModel', arguments,
+            this.raise('TP.sig.InvalidModel',
                         'Console has no attached shell instance');
 
             return;
@@ -2061,7 +2061,7 @@ function(aModel) {
 
     //  TODO:   do we want to default to a system-level TSH instance here?
     if (TP.notValid(aModel)) {
-        return this.raise('TP.sig.InvalidModel', arguments);
+        return this.raise('TP.sig.InvalidModel');
     }
 
     this.$set('model', aModel);
@@ -2205,7 +2205,7 @@ function(anError, aRequest) {
         outputData,
         outputStr;
 
-    TP.debug('break.tdc_stderr');
+    TP.stop('break.tdc_stderr');
 
     if (TP.isValid(aRequest)) {
         aRequest.atPutIfAbsent('messageType', 'failure');
@@ -2248,7 +2248,7 @@ function(anObject, aDefault, aRequest) {
      * @todo
      */
 
-    TP.debug('break.tdc_stdin');
+    TP.stop('break.tdc_stdin');
 
     this.setPrompt(anObject, 'cmdline_prompt');
     this.setInputContent(aDefault);
@@ -2281,7 +2281,7 @@ function(anObject, aRequest) {
 
         append;
 
-    TP.debug('break.tdc_stdout');
+    TP.stop('break.tdc_stdout');
 
     //  We should see multiple output calls, at least one of which is the
     //  cmdConstruct notifier which tells us to build our output cell.
@@ -2344,7 +2344,7 @@ function(anObject, aRequest) {
                         TP.join('TP.core.ConsoleService.stdout(',
                                 TP.str(outObject), ') generated error.')
                      ),
-                TP.LOG, arguments) : 0;
+                TP.LOG) : 0;
     }
 
     this.scrollToEnd();

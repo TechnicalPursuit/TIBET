@@ -77,7 +77,7 @@ function(anObject) {
      * @description A variety of different objects can be supplied to this
      *     method to extract X and Y values from. Depending on the type of that
      *     object, here is how the X and Y are computed:
-     *     
+     *
      *     Array -> The X is extracted from the object's '.first()' property
      *     and the Y is extracted from the '.last()' property. Event -> The X
      *     and Y corresponding to the document position that the event occurred
@@ -86,8 +86,8 @@ function(anObject) {
      *     TP.BORDER_BOX will be returned. Object -> The X is extracted by
      *     calling '.get("x")' and the Y is extracted by calling '.get("y")'.
      *     These may return undefined values.
-     *     
-     *     
+     *
+     *
      * @param {Object} anObject The object to extract the X and Y for.
      * @raises TP.sig.InvalidObject
      * @returns {Array} An ordered pair where the first item is the X coordinate
@@ -99,7 +99,7 @@ function(anObject) {
         anY;
 
     if (TP.notValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidObject', arguments);
+        return TP.raise(this, 'TP.sig.InvalidObject');
     }
 
     if (TP.isElement(anObject)) {
@@ -139,7 +139,7 @@ function(aDocument) {
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.documentGetBody(aDocument).offsetHeight;
@@ -162,7 +162,7 @@ function(aDocument) {
     var win;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.isWindow(win = TP.nodeGetWindow(aDocument)) ?
@@ -187,7 +187,7 @@ function(aDocument) {
     var win;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.isWindow(win = TP.nodeGetWindow(aDocument)) ?
@@ -211,7 +211,7 @@ function(aDocument) {
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return aDocument.defaultView.innerHeight;
@@ -233,7 +233,7 @@ function(aDocument) {
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return aDocument.documentElement.clientWidth;
@@ -258,7 +258,7 @@ function(aDocument) {
     var propName;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (TP.isDefined(aDocument.mozHidden)) {
@@ -288,7 +288,7 @@ function(aDocument) {
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.documentGetBody(aDocument).offsetWidth;
@@ -312,7 +312,7 @@ function(aDocument) {
     var propName;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (TP.isDefined(aDocument.mozHidden)) {
@@ -352,7 +352,7 @@ function(aDocument) {
     var theSelection;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     theSelection = TP.nodeGetWindow(aDocument).getSelection();
@@ -385,7 +385,7 @@ function(aDocument, toStart) {
     var theSelection;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     theSelection = TP.nodeGetWindow(aDocument).getSelection();
@@ -432,7 +432,7 @@ function(aDocument) {
         theRange;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     theSelection = TP.nodeGetWindow(aDocument).getSelection();
@@ -479,7 +479,7 @@ function(aDocument, newContent) {
         theFragment;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (TP.notValid(theSelection =
@@ -526,7 +526,7 @@ function(aDocument, newContent) {
         theFragment;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (TP.notValid(theSelection =
@@ -570,7 +570,7 @@ function(aDocument) {
     var theSelection;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     theSelection = TP.nodeGetWindow(aDocument).getSelection();
@@ -609,7 +609,7 @@ function(aDocument) {
         selectedElement;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Grab the current selection type. This returns
@@ -660,7 +660,7 @@ function(aDocument) {
         selectionParentElement;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Grab the current selection type. This returns
@@ -720,7 +720,7 @@ function(aDocument) {
         theSelection;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Grab the current selection type. This returns
@@ -751,12 +751,12 @@ function(aDocument) {
      * @name documentGetSelectionType
      * @synopsis Returns the current selection 'type'. This is one of the
      *     following constants:
-     *     
+     *
      *     TP.SELECTION_NONE - no selection TP.SELECTION_TEXT - text (or a
      *     combination of text and elements). TP.SELECTION_ELEMENT - a single,
      *     whole element
-     *     
-     *     
+     *
+     *
      * @param {Document} aDocument The document to obtain the selected type for.
      * @raises TP.sig.InvalidDocument
      * @returns {String} A constant, detailed above, that indicates which type
@@ -767,7 +767,7 @@ function(aDocument) {
         theRange;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     theSelection = TP.nodeGetWindow(aDocument).getSelection();
@@ -819,7 +819,7 @@ function(aDocument, aSelectionMarker) {
     var theSelection;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     theSelection = TP.nodeGetWindow(aDocument).getSelection();
@@ -848,7 +848,7 @@ function(aDocument) {
      */
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  If there is a real, non-collapsed selection, then delete it.
@@ -880,7 +880,7 @@ function(aDocument, newContent) {
         theFragment;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  replace can operate on either an empty selection (in which case it
@@ -927,7 +927,7 @@ function(anElement) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     return (anElement.scrollWidth > anElement.clientWidth ||
@@ -956,11 +956,11 @@ function(anElement, x, y) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isNumber(x) || !TP.isNumber(y)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     return TP.nodeGetDocument(anElement).elementFromPoint(x, y);
@@ -989,11 +989,11 @@ function(anElement) {
         win,
 
         currentElement,
-    
+
         computedStyle;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     doc = TP.nodeGetDocument(anElement);
@@ -1047,7 +1047,7 @@ function(anElement) {
     if (!TP.isElement(anElement) ||
         (TP.elementGetLocalName(anElement).toLowerCase() !== 'iframe' &&
             TP.elementGetLocalName(anElement).toLowerCase() !== 'object')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     return anElement.contentDocument;
@@ -1076,7 +1076,7 @@ function(anElement) {
     if (!TP.isElement(anElement) ||
         (TP.elementGetLocalName(anElement).toLowerCase() !== 'iframe' &&
             TP.elementGetLocalName(anElement).toLowerCase() !== 'object')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Note that here we set the window's name to the id of the element, if
@@ -1116,7 +1116,7 @@ function(anElement) {
     var computedStyle;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Grab the computed style for the element
@@ -1148,7 +1148,7 @@ function(anElement) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     return anElement.outerHTML;
@@ -1178,11 +1178,11 @@ function(anElement, styleProperty, wantsTransformed) {
     var computedStyle;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(styleProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  Grab the computed style for the element
@@ -1225,11 +1225,11 @@ function(anElement, styleProperties, wantsTransformed) {
         i;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(styleProperties)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  Grab the computed style for the element
@@ -1294,7 +1294,7 @@ function(anElement, wants2DMatrix) {
         rect;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     identity = TP.matrixFromCSSString('matrix(1,0,0,1,0,0)');
@@ -1378,7 +1378,7 @@ function(anElement) {
         dot,
         atan2,
         combine,
-    
+
         transformMatrix,
         a,
         b,
@@ -1386,7 +1386,7 @@ function(anElement) {
         d,
         tx,
         ty,
-        
+
         translate,
         m,
         scale,
@@ -1394,33 +1394,33 @@ function(anElement) {
         rotate;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     length = function(a){
         return Math.sqrt(a[0] * a[0] + a[1] * a[1]);
     };
-     
+
     // normalizes the length of the passed point to 1
-     
+
     normalize = function(a){
         var l = length(a);
 
         return l ? [a[0] / l, a[1] / l] : [0, 0];
     };
-     
+
     // returns the dot product of the passed points
-     
+
     dot = function(a, b){
         return a[0] * b[0] + a[1] * b[1];
     };
-     
+
     // returns the principal value of the arc tangent of
     // y/x, using the signs of both arguments to determine
     // the quadrant of the return value
-     
+
     atan2 = Math.atan2;
-     
+
     combine = function(a, b, ascl, bscl){
         return [
             (ascl * a[0]) + (bscl * b[0]),
@@ -1444,32 +1444,32 @@ function(anElement) {
     if ((a * d - b * c) === 0) {
         return null;
     }
- 
+
     // Take care of translation
-    
+
     translate = [tx, ty];
- 
+
     // Put the components into a 2x2 matrix
     m = [[a, b], [c, d]];
- 
+
     // Compute X scale factor and normalize first row.
- 
+
     scale = [length(m[0])];
     m[0] = normalize(m[0]);
- 
+
     // Compute shear factor and make 2nd row orthogonal to 1st.
- 
+
     skew = dot(m[0], m[1]);
     m[1] = combine(m[1], m[0], 1, -skew);
- 
+
     // Now, compute Y scale and normalize 2nd row.
- 
+
     scale[1] = length(m[1]);
     // m[1] = normalize(m[1]) //
     skew /= scale[1];
- 
+
     // Now, get the rotation out
- 
+
     rotate = atan2(m[0][1], m[0][0]);
 
     //  And convert to degrees
@@ -1506,7 +1506,7 @@ function(anElement, includeElement) {
         theRange;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Grab the element name
@@ -1564,7 +1564,7 @@ function(anElement, aClassName) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.notValid(aClassName)) {
@@ -1598,7 +1598,7 @@ function(anElement, opacityLevel) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     TP.elementGetStyleObj(anElement).opacity = opacityLevel;
@@ -1630,7 +1630,7 @@ function(anElement, transformationMatrix) {
     var points;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     points = TP.multiplyMatrix(
@@ -1676,17 +1676,17 @@ function(anElement, aContent) {
         end;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elementName = TP.elementGetLocalName(anElement).toLowerCase();
     if ((elementName !== 'textarea') &&
         (elementName !== 'input' || anElement.type !== 'text')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isString(aContent)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     try {
@@ -1706,7 +1706,7 @@ function(anElement, aContent) {
             anElement.value += aContent;
         }
     } catch (e) {
-        return TP.raise(this, 'TP.sig.DOMComponentException', arguments,
+        return TP.raise(this, 'TP.sig.DOMComponentException',
                         TP.ec(e));
     }
 
@@ -1739,17 +1739,17 @@ function(anElement, aContent) {
         selEnd;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elementName = TP.elementGetLocalName(anElement).toLowerCase();
     if ((elementName !== 'textarea') &&
         (elementName !== 'input' || anElement.type !== 'text')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isString(aContent)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     try {
@@ -1764,7 +1764,7 @@ function(anElement, aContent) {
                                     selStart + aContent.length);
 
     } catch (e) {
-        return TP.raise(this, 'TP.sig.DOMComponentException', arguments,
+        return TP.raise(this, 'TP.sig.DOMComponentException',
                         TP.ec(e));
     }
 
@@ -1783,7 +1783,7 @@ function(aNode) {
      * @synopsis Returns the node's window.
      * @param {Node} aNode The node to use.
      * @raises TP.sig.InvalidNode
-     * @returns {Window} 
+     * @returns {Window}
      */
 
     var doc;
@@ -1824,7 +1824,7 @@ function(aNode) {
      */
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     return TP.isWindow(TP.nodeGetWindow(aNode));
@@ -1856,11 +1856,11 @@ function(aWindow, eventNameArray, aHandler) {
         handler;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.isEmpty(eventNameArray)) {
-        return TP.raise(this, 'TP.sig.InvalidArray', arguments);
+        return TP.raise(this, 'TP.sig.InvalidArray');
     }
 
     handler = TP.ifInvalid(aHandler, TP.$dispatchEventToTIBET);
@@ -1895,7 +1895,7 @@ function(aWindow, objectName) {
      * @param {Window} aWindow The window to construct the object in.
      * @param {String} objectName The 'type name' of the object to construct.
      * @raises TP.sig.InvalidWindow
-     * @returns {Object} 
+     * @returns {Object}
      * @todo
      */
 
@@ -1903,7 +1903,7 @@ function(aWindow, objectName) {
         $$newinst;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     constructorObj = aWindow[objectName];
@@ -1982,11 +1982,11 @@ function(aWindow, eventNameArray, aHandler) {
         handler;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.isEmpty(eventNameArray)) {
-        return TP.raise(this, 'TP.sig.InvalidArray', arguments);
+        return TP.raise(this, 'TP.sig.InvalidArray');
     }
 
     handler = TP.ifInvalid(aHandler, TP.$dispatchEventToTIBET);
@@ -2019,7 +2019,7 @@ function(aWindow) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     return aWindow.innerHeight;
@@ -2040,7 +2040,7 @@ function(aWindow) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     return aWindow.innerWidth;
@@ -2061,7 +2061,7 @@ function(aWindow) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     return aWindow.outerHeight;
@@ -2082,7 +2082,7 @@ function(aWindow) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     return aWindow.outerWidth;
@@ -2102,7 +2102,7 @@ function(aWindow) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     return aWindow.screenX;
@@ -2122,7 +2122,7 @@ function(aWindow) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     return aWindow.screenY;
@@ -2145,11 +2145,11 @@ function(aWindow) {
     var bodyElem;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (!TP.isElement(bodyElem = TP.documentGetBody(aWindow.document))) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     bodyElem.addEventListener(
@@ -2157,7 +2157,7 @@ function(aWindow) {
                 function() {
 
                     TP.sys.isOffline(false);
-                    TP.signal(null, 'TP.sig.AppOnline', arguments);
+                    TP.signal(null, 'TP.sig.AppOnline');
                 },
                 false);
 
@@ -2166,7 +2166,7 @@ function(aWindow) {
                 function() {
 
                     TP.sys.isOffline(true);
-                    TP.signal(null, 'TP.sig.AppOffline', arguments);
+                    TP.signal(null, 'TP.sig.AppOffline');
                 },
                 false);
 
@@ -2192,11 +2192,11 @@ function(aWindow) {
         evtName;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (!TP.isDocument(doc = aWindow.document)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isDefined(doc.mozHidden)) {
@@ -2216,12 +2216,10 @@ function(aWindow) {
                     if (TP.documentIsVisible(doc)) {
                         TP.signal(null,
                             'TP.sig.DocumentVisible',
-                            arguments,
                             TP.documentGetVisibility(doc));
                     } else {
                         TP.signal(null,
                             'TP.sig.DocumentInvisible',
-                            arguments,
                             TP.documentGetVisibility(doc));
                     }
                 },

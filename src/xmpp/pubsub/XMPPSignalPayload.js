@@ -60,7 +60,7 @@ function(aSignal) {
         dat;
 
     if (TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  get the basic instance constructed with standard template and params
@@ -83,7 +83,6 @@ function(aSignal) {
             }
         } catch (e) {
             aSignal.raise('TP.sig.XMPPSerializationException',
-                            arguments,
                             args);
         }
     }
@@ -117,7 +116,7 @@ function() {
     sigTypeName = this.getAttribute('type');
 
     if (!TP.isType(sigType = TP.sys.getTypeByName(sigTypeName))) {
-        return this.raise('TP.sig.SignalTypeNotFound', arguments);
+        return this.raise('TP.sig.SignalTypeNotFound');
     }
 
     org = this.getAttribute('origin');
@@ -127,7 +126,6 @@ function() {
                                         this.getNativeNode().firstChild);
     } catch (e) {
         return this.raise('TP.sig.ReconstitutionFailure',
-                            arguments,
                             TP.ec(e, this.asString()));
     }
 

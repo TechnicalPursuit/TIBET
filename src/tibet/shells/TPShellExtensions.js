@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /**
- * @ 
+ * @
  * @todo
  */
 
@@ -81,7 +81,7 @@ function(aRequest) {
      * @raises TP.sig.InvalidSink
      */
 
-    this.raise('TP.sig.InvalidSink', arguments);
+    this.raise('TP.sig.InvalidSink');
 
     return;
 });
@@ -275,7 +275,7 @@ function(aRequest) {
         re,
         result;
 
-    TP.debug('break.tsh_filter');
+    TP.stop('break.tsh_filter');
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
@@ -310,7 +310,7 @@ function(aRequest) {
             } else {
                 TP.ifWarn() ?
                     TP.warn('Splatting with non-collection content.',
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 if (re.test(TP.str(content))) {
                     aRequest.stdout(TP.ac(content));
@@ -358,7 +358,7 @@ function(aRequest) {
         arr,
         match;
 
-    TP.debug('break.tsh_transform');
+    TP.stop('break.tsh_transform');
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
@@ -407,7 +407,7 @@ function(aRequest) {
             } else {
                 TP.ifWarn() ?
                     TP.warn('Splatting with non-collection content.',
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 aRequest.stdout(re.exec(TP.str(content)));
             }
@@ -459,7 +459,7 @@ function(aRequest) {
         result,
         testfunc;
 
-    TP.debug('break.tsh_filter');
+    TP.stop('break.tsh_filter');
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
@@ -501,7 +501,7 @@ function(aRequest) {
             } else {
                 TP.ifWarn() ?
                     TP.warn('Splatting with non-collection content.',
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 if (testfunc(content)) {
                     aRequest.stdout(content);
@@ -553,7 +553,7 @@ function(aRequest) {
         func,
         result;
 
-    TP.debug('break.tsh_transform');
+    TP.stop('break.tsh_transform');
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
@@ -609,7 +609,7 @@ function(aRequest) {
                 } else {
                     TP.ifWarn() ?
                         TP.warn('Splatting with non-collection content.',
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                     aRequest.stdout(TP.ac(str.transform(content, params)));
                 }
@@ -642,7 +642,7 @@ function(aRequest) {
                 } else {
                     TP.ifWarn() ?
                         TP.warn('Splatting with non-collection content.',
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                     aRequest.stdout(TP.ac(func(content, str)));
                 }
@@ -835,7 +835,7 @@ function(aRequest) {
             } else {
                 TP.ifWarn() ?
                     TP.warn('Splatting with non-collection content.',
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 aRequest.stdout(
                             TP.ac(obj.transform(content, aRequest)));
@@ -1003,7 +1003,7 @@ function(aRequest, cmdType) {
         commitreq,
         content;
 
-    TP.debug('break.tsh_uri');
+    TP.stop('break.tsh_uri');
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';

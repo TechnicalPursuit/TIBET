@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sherpa.halo}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -158,7 +158,7 @@ function(target) {
 
     /**
      * @name focusOn
-     * @param {TP.core.Node} target 
+     * @param {TP.core.Node} target
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
      * @todo
@@ -262,7 +262,7 @@ function(aSignal) {
 
         if (TP.isValid(sigSuffix)) {
             this.signal('TP.sig.Halo' + sigSuffix + 'Click',
-                arguments, aSignal.getEvent(), TP.INHERITANCE_FIRING);
+                aSignal.getEvent(), TP.INHERITANCE_FIRING);
         }
     }
 
@@ -276,7 +276,7 @@ function(aSignal) {
 
     /**
      * @name handleDOMMouseMove
-     * @param {TP.sig.DOMMouseMove} aSignal 
+     * @param {TP.sig.DOMMouseMove} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
      * @todo
@@ -294,7 +294,7 @@ function(aSignal) {
 
     /**
      * @name handleDOMMouseOver
-     * @param {TP.sig.DOMMouseOver} aSignal 
+     * @param {TP.sig.DOMMouseOver} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
      * @todo
@@ -312,7 +312,7 @@ function(aSignal) {
 
     /**
      * @name handleDOMMouseOut
-     * @param {TP.sig.DOMMouseOut} aSignal 
+     * @param {TP.sig.DOMMouseOut} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
      * @todo
@@ -332,13 +332,13 @@ function(aSignal) {
 
     /**
      * @name handleDOMMouseWheel
-     * @param {TP.sig.DOMMouseWheel} aSignal 
+     * @param {TP.sig.DOMMouseWheel} aSignal
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
      * @todo
      */
 
-    //TP.info('got to TP.sherpa.halo::handleDOMMouseWheel', TP.LOG, arguments);
+    //TP.info('got to TP.sherpa.halo::handleDOMMouseWheel', TP.LOG);
     return;
 
     var currentTargetTPElem,
@@ -396,10 +396,10 @@ function(aTarget) {
     /**
      * @name moveAndSizeToTarget
      * @param {undefined} aTarget
- 
+
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
- 
+
      * @todo
      */
 
@@ -496,7 +496,7 @@ function(aSignal) {
      * @name changeHaloFocus
      * @returns {TP.sherpa.halo} The receiver.
      * @abstract
- 
+
      * @todo
      */
 

@@ -50,7 +50,7 @@ function(aNode) {
      */
 
     if (!TP.isKindOf(aNode, TP.xmpp.XDataField)) {
-        return this.raise('TP.sig.InvalidXMPPXDataField', arguments, aNode);
+        return this.raise('TP.sig.InvalidXMPPXDataField', aNode);
     }
 
     //  the data field gets added at the primitive level

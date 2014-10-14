@@ -83,7 +83,7 @@ TP.hc(
          *     grab our CSS sheets early and rip them out of the document to
          *     avoid all of the errors that it will spew to the JavaScript
          *     console.
-         *     
+         *
          *     What errors? Primarily warnings about pseudo-classes or
          *     pseudo-elements, which seems to us to be a possible bug in the
          *     CSS logic of Mozilla since our usage of these is limited to
@@ -92,7 +92,7 @@ TP.hc(
          *     or ID as in #mydiv::head, where the namespace of the element
          *     can't really be known to the CSS processor when it's running --
          *     which is before the body of the document has been constructed.
-         *     
+         *
          *     In any case, we define a function here that is used as the
          *     handler to a DOMNodeInserted event installed on the 'head'
          *     element. It grabs any 'style' elements or 'link' elements (with a
@@ -167,7 +167,7 @@ TP.hc(
          *     grab our CSS sheets early and rip them out of the document to
          *     avoid all of the errors that it will spew to the JavaScript
          *     console.
-         *     
+         *
          *     What errors? Primarily warnings about pseudo-classes or
          *     pseudo-elements, which seems to us to be a possible bug in the
          *     CSS logic of Mozilla since our usage of these is limited to
@@ -176,7 +176,7 @@ TP.hc(
          *     or ID as in #mydiv::head, where the namespace of the element
          *     can't really be known to the CSS processor when it's running --
          *     which is before the body of the document has been constructed.
-         *     
+         *
          *     In any case, we define a function here that is used as the
          *     handler to a DOMNodeInserted event installed on the 'head'
          *     element. It grabs any 'style' elements or 'link' elements (with a
@@ -188,7 +188,7 @@ TP.hc(
 
         var nodeJustInserted,
             nodeWindow,
-            
+
             nodeDoc;
 
         //  The node that was just inserted is the target of the event.
@@ -344,18 +344,18 @@ TP.hc(
             valueInPixels;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(aValue)) {
-            return TP.raise(this, 'TP.sig.InvalidString', arguments);
+            return TP.raise(this, 'TP.sig.InvalidString');
         }
 
         //  If the value is not expressed using 'unit length' (i.e. it is a
         //  keyword such as 'inherit', 'initial', 'none', etc.), then we
         //  bail out here - can't do anything.
         if (!TP.regex.CSS_UNIT.test(aValue)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         targetPropName = TP.ifInvalid(targetProperty, 'left');
@@ -471,18 +471,18 @@ TP.hc(
             valueInPixels;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         if (TP.isEmpty(aValue)) {
-            return TP.raise(this, 'TP.sig.InvalidString', arguments);
+            return TP.raise(this, 'TP.sig.InvalidString');
         }
 
         //  If the value is not expressed using 'unit length' (i.e. it is a
         //  keyword such as 'inherit', 'initial', 'none', etc.), then we
         //  bail out here - can't do anything.
         if (!TP.regex.CSS_UNIT.test(aValue)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         targetPropName = TP.ifInvalid(targetProperty, 'left');
@@ -565,7 +565,7 @@ TP.hc(
             successfulExec;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         ruleArray = TP.ac();
@@ -594,8 +594,7 @@ TP.hc(
                         '@mozilla.org/inspector/dom-utils;1'].getService(
                                 Components.interfaces.nsIDOMUtils);
                 } catch (e) {
-                    TP.raise(this, 'TP.sig.DOMComponentException',
-                                arguments, TP.ec(e));
+                    TP.raise(this, 'TP.sig.DOMComponentException', TP.ec(e));
 
                     return false;
                 }
@@ -644,7 +643,7 @@ TP.hc(
         var ruleArray;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         ruleArray = TP.ac();
@@ -685,7 +684,7 @@ TP.hc(
             i;
 
         if (!TP.isElement(anElement)) {
-            return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+            return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
         ruleArray = TP.ac();
@@ -748,13 +747,13 @@ TP.hc(
             retVal;
 
         if (TP.notValid(aStyleRule)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         if (!TP.sys.shouldRequestPrivileges()) {
             TP.sys.logSecurity(
                 'Permission not available to read style rule origin.',
-                TP.TRACE, arguments);
+                TP.TRACE);
 
             return;
         }
@@ -787,7 +786,6 @@ TP.hc(
                 } catch (e) {
                     return TP.raise(this,
                                     'TP.sig.DOMComponentException',
-                                    arguments,
                                     TP.ec(e));
                 }
 
@@ -834,7 +832,7 @@ TP.hc(
             lineNum;
 
         if (TP.notValid(aStyleRule)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         //  If there's not a valid stylesheet reference associated with this
@@ -877,7 +875,7 @@ TP.hc(
          */
 
         if (TP.notValid(aStyleRule)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         return TP.todo();

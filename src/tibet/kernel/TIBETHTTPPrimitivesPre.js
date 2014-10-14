@@ -63,8 +63,7 @@ function(httpObj) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'HTTP status error.'),
-                        TP.IO_LOG,
-                        arguments) : 0;
+                        TP.IO_LOG) : 0;
     }
 
     return false;
@@ -109,8 +108,7 @@ function(httpObj) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'HTTP redirect error.'),
-                        TP.IO_LOG,
-                        arguments) : 0;
+                        TP.IO_LOG) : 0;
     }
 
     return false;
@@ -674,7 +672,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('httpError',
-function(targetUrl, aSignal, aContext, aRequest) {
+function(targetUrl, aSignal, aRequest) {
 
     /**
      * @name httpError
@@ -693,7 +691,6 @@ function(targetUrl, aSignal, aContext, aRequest) {
      * @param {String} targetUrl The URL being accessed when the error occurred.
      * @param {String|TP.sig.Signal} aSignal The signal which should be raised
      *     by this call.
-     * @param {arguments} aContext The calling context.
      * @param {TP.lang.Hash|TP.sig.Request} aRequest A request/hash with keys.
      * @raises HTTPException
      * @throws Error Throws an Error containing aString.
@@ -723,10 +720,10 @@ function(targetUrl, aSignal, aContext, aRequest) {
     //  for access to the targetUrl
     args.atPut('message', 'HTTP request exception.');
     TP.ifError() ?
-        TP.error(args, TP.IO_LOG, arguments) : 0;
+        TP.error(args, TP.IO_LOG) : 0;
 
     if (!TP.sys.shouldThrowExceptions()) {
-        TP.raise(targetUrl, signal, arguments, args);
+        TP.raise(targetUrl, signal, args);
     } else {
         throw error;
     }
@@ -953,7 +950,7 @@ function(targetUrl, aRequest, httpObj) {
     request.atPut('message', 'HTTP request failed: Timeout');
 
     //  log it consistently with any other error
-    TP.httpError(targetUrl, 'HTTPSendException', arguments, request);
+    TP.httpError(targetUrl, 'HTTPSendException', request);
 
     //  get a response object for the request that we can use to convey the
     //  bad news in a consistent fashion with normal success processing.
@@ -1012,7 +1009,7 @@ function(targetUrl, aRequest, httpObj) {
         sig,
         id;
 
-    TP.debug('break.http_wrapup');
+    TP.stop('break.http_wrapup');
 
     request = TP.request(aRequest);
     url = TP.ifInvalid(targetUrl, request.at('uri'));
@@ -1067,7 +1064,7 @@ function(targetUrl, aRequest, httpObj) {
 
     //  with/without redirect, did we succeed?
     if (!TP.httpDidSucceed(httpObj)) {
-        TP.httpError(url, 'HTTPException', arguments, request);
+        TP.httpError(url, 'HTTPException', request);
         sig.setSignalName('TP.sig.IOFailed');
         sig.fire(id);
     } else {

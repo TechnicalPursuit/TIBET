@@ -17,7 +17,7 @@
  *     As part of the TIBET infrastructure of using request/response pairs, a
  *     'default' instance of this service will be instantiated and registered to
  *     handle all TP.core.WebDAVRequests.
- *     
+ *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'TP.core.WebDAVServiceDefault'. It should have a
  *     vCard entry in the currently executing project (with an 'FN' of
@@ -25,43 +25,43 @@
  *     will be prompted to enter the information about the default server. If
  *     only part of the information is found the user can be prompted to enter
  *     the missing information.
- *     
+ *
  *     It is possible, however, to manually set up a server. To do so, supply
  *     the 'uri' and 'iswebdav' parameters to the service as a set of connection
  *     parameters:
- *     
+ *
  *     webdavService = TP.core.WebDAVService.construct( 'WebDAVTestServer',
  *     TP.hc('uri', 'http://demo.sabredav.org/', 'iswebdav', true));
- *     
+ *
  *     Or have a vCard entry where the 'FN' entry matches the resource ID that
  *     is passed to the 'construct' call as detailed here:
- *     
+ *
  *     E.g.
- *     
+ *
  *     Parameter vCard entry ----------- ----------- resourceID
  *     <FN>WebDAVTestServer</FN> uri <URI>http://demo.sabredav.org/<URI>
  *     iswebdav <X-IS-WEBDAV>true</X-IS-WEBDAV>
- *     
+ *
  *     and then construct it using:
- *     
+ *
  *     webdavService = TP.core.WebDAVService.construct( 'WebDAVTestServer');
- *     
+ *
  *     If these parameters aren't supplied in either the 'construct' call or in
  *     the vCard, the user can be prompted to supply them at runtime by
  *     specifying the placeholder value '{USER}' in the vCard entry:
- *     
+ *
  *     uri <URI>{USER}<URI>
- *     
+ *
  *     Note that the 'iswebdav' parameter is OR'ed against the system-wide
  *     'config' variable, 'http.use_webdav', before an HTTP call is issued.
  *     Since this config variable is usually defaulted to true this parameter
  *     isn't normally necessary.
- *     
+ *
  *     You will then need to register your service instance so that it services
  *     TP.core.WebDAVRequests (otherwise, the TIBET machinery will instantiate
  *     the 'default' instance of TP.core.WebDAVService as described above and
  *     register it to service these kinds of requests):
- *     
+ *
  *     webdavService.register();
  * @todo
  */
@@ -239,7 +239,6 @@ function(aRequest) {
                     url,
                     TP.ifKeyInvalid('request', 'exceptionType',
                         'WebDAVException'),
-                    arguments,
                     aRequest);
     }
 

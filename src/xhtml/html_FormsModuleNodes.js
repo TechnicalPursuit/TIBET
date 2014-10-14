@@ -145,7 +145,7 @@ function() {
         oldVal;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     oldVal = node.value;
@@ -174,7 +174,7 @@ function() {
         oldVal;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     oldVal = this.getSelection();
@@ -206,7 +206,7 @@ function(toStart) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.boot.isUA('IE')) {
@@ -241,7 +241,7 @@ function() {
         sel;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.boot.isUA('IE')) {
@@ -277,7 +277,7 @@ function() {
         end;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.boot.isUA('IE')) {
@@ -314,7 +314,7 @@ function() {
         start;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.boot.isUA('IE')) {
@@ -420,7 +420,7 @@ function(aText) {
         newVal;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     oldVal = this.getSelection();
@@ -455,7 +455,7 @@ function(aStartIndex, anEndIndex) {
         range;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.boot.isUA('IE')) {
@@ -488,7 +488,7 @@ function(aPosition) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     try {
@@ -517,7 +517,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     try {
@@ -544,7 +544,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     try {
@@ -1170,12 +1170,11 @@ function(aValue, elementProperty) {
     if (TP.isArray(value) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target TP.html.inputCheckable does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     //  Generate a selection hash. This should populate the hash with keys that
@@ -1272,12 +1271,11 @@ function(aValue) {
     if (TP.isArray(value) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target TP.html.select does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     //  Generate a selection hash. This should populate the hash with keys that
@@ -1322,7 +1320,7 @@ function() {
         i;
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     dirty = false;
@@ -1416,11 +1414,11 @@ function() {
         i;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     selectionArray = TP.ac();
@@ -1460,7 +1458,7 @@ function() {
         name;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.isEmpty(name = this.getAttribute('name'))) {
@@ -1491,7 +1489,7 @@ function() {
         key;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     key = TP.elementGetAttribute(node, 'id');
@@ -1551,7 +1549,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return TP.bc(node.checked);
@@ -1573,7 +1571,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.checked = true;
@@ -1598,7 +1596,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.checked = false;
@@ -1658,12 +1656,11 @@ function(aValue, elementProperty) {
     if (TP.isArray(value) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target TP.html.inputCheckable does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     //  Generate a selection hash. This should populate the hash with keys that
@@ -1764,12 +1761,11 @@ function(aValue) {
     if (TP.isArray(value) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target TP.html.select does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     //  Generate a selection hash. This should populate the hash with keys that
@@ -1823,12 +1819,11 @@ function() {
     if (!this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     dirty = false;
@@ -1884,7 +1879,7 @@ function(aValue) {
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     if (TP.isString(aValue)) {
@@ -2118,7 +2113,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return TP.ac(node.elements);
@@ -2147,7 +2142,7 @@ function() {
         dict;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     dict = TP.hc();
@@ -2159,7 +2154,7 @@ function() {
                 TP.warn(TP.boot.$annotate(
                             TP.nodeCloneNode(list[i]),
                             'Unable to acquire wrapper.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
             continue;
         }
@@ -2193,11 +2188,11 @@ function(aValue) {
         el;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (!TP.isKindOf(aValue, TP.lang.Hash)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Must provide a hash of key value pairs.');
     }
 
@@ -2209,7 +2204,7 @@ function(aValue) {
                 TP.warn(TP.boot.$annotate(
                             TP.nodeCloneNode(list[i]),
                             'Unable to acquire wrapper.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
             continue;
         }
@@ -2237,7 +2232,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  TODO:   need to deal with bound element/form reset
@@ -2262,7 +2257,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  TODO:   validation hook? parameters to control submit
@@ -2434,7 +2429,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.value;
@@ -2456,7 +2451,7 @@ function(aValue) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.value = TP.str(aValue);
@@ -2533,7 +2528,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.value;
@@ -2555,7 +2550,7 @@ function(aValue) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.value = TP.str(aValue);
@@ -2619,7 +2614,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.value;
@@ -2641,7 +2636,7 @@ function(aValue) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  You can't set the value of a <input type="password"/> field
@@ -2692,7 +2687,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.value;
@@ -2714,7 +2709,7 @@ function(aValue) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.value = TP.str(aValue);
@@ -2824,7 +2819,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.value;
@@ -2846,7 +2841,7 @@ function(aValue) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.value = TP.str(aValue);
@@ -2897,7 +2892,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.value;
@@ -2919,7 +2914,7 @@ function(aValue) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.value = TP.str(aValue);
@@ -2996,7 +2991,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.value;
@@ -3018,7 +3013,7 @@ function(aValue) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.value = TP.str(aValue);
@@ -3197,7 +3192,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.selected;
@@ -3219,7 +3214,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.selected = true;
@@ -3244,7 +3239,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.selected = false;
@@ -3360,12 +3355,11 @@ function(aValue, optionProperty) {
     if (TP.isArray(value) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target TP.html.select does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     //  Generate a selection hash. This should populate the hash with keys that
@@ -3437,7 +3431,7 @@ function() {
 
     //  this object, exit here.
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return (node.type === 'select-multiple');
@@ -3479,12 +3473,11 @@ function(aValue) {
     if (TP.isArray(value) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target TP.html.select does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     //  Generate a selection hash. This should populate the hash with keys that
@@ -3529,7 +3522,7 @@ function() {
         i;
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     dirty = false;
@@ -3653,11 +3646,11 @@ function() {
         i;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     //  If this Select isn't set up to allow multiple selection, then just
@@ -3704,7 +3697,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return TP.ac(node.options);
@@ -3799,7 +3792,7 @@ function(aSignal, anItemset) {
         i;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  find the itemset if we have one. if not then we're a static select
@@ -3820,7 +3813,7 @@ function(aSignal, anItemset) {
     origbox = itemset.getItemContainer();
     if (!TP.isNode(origbox)) {
         //  bad markup construction, should have found a box for items...
-        return this.raise('TP.sig.InvalidMarkup', arguments,
+        return this.raise('TP.sig.InvalidMarkup',
             'Itemset not enclosed in an itembox: ' + itemset.asString());
     }
 
@@ -3841,7 +3834,7 @@ function(aSignal, anItemset) {
             TP.warn(TP.boot.$annotate(
                         this,
                         'Itemset content not a collection.'),
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return;
     }
@@ -3913,14 +3906,13 @@ function(aSignal) {
         arr;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  get our first option, it's the template
     option = TP.nodeGetFirstElementChildByTagName(node, 'option');
     if (TP.notValid(option)) {
         return this.raise('TP.sig.InvalidElement',
-                            arguments,
                             'TP.html.select option child not found.');
     }
 
@@ -3935,7 +3927,7 @@ function(aSignal) {
             TP.warn(TP.boot.$annotate(
                         this,
                         'Itemset is not a collection.'),
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return;
     }
@@ -4011,12 +4003,11 @@ function(aValue, optionProperty) {
     if (TP.isArray(value) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target TP.html.select does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     //  Generate a selection hash. This should populate the hash with keys that
@@ -4120,12 +4111,11 @@ function(aValue) {
     if (TP.isArray(value) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target TP.html.select does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     //  Generate a selection hash. This should populate the hash with keys that
@@ -4176,12 +4166,11 @@ function() {
     if (!this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
-                arguments,
                 'Target TP.html.select does not allow multiple selection');
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     dirty = false;
@@ -4237,7 +4226,7 @@ function(aValue) {
     }
 
     if (TP.notValid(elementArray = this.getElementArray())) {
-        return this.raise('TP.sig.InvalidElementArray', arguments);
+        return this.raise('TP.sig.InvalidElementArray');
     }
 
     if (TP.isString(aValue)) {
@@ -4384,7 +4373,7 @@ function() {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     return node.value;
@@ -4462,7 +4451,7 @@ function(aValue) {
     var node;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     node.value = TP.str(aValue);

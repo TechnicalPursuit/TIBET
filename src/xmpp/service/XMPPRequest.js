@@ -203,7 +203,7 @@
  *     msgReq = TP.sig.XMPPRequest.construct(requestParams);
  *     msgReq.defineMethod('handleRequestSucceeded', function(aResponse) {
  *
- *     TP.info(aResponse.getResult(), TP.LOG, arguments); }); msgReq.fire();
+ *     TP.info(aResponse.getResult(), TP.LOG); }); msgReq.fire();
  * @todo
  */
 

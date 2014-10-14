@@ -14,34 +14,34 @@
  *     a particular Jabber server. The interface is modeled very loosely on the
  *     JDBC pattern of opening a connection and asking for a 'statement', in
  *     this case, a stanza of some form.
- *     
- *     
+ *
+ *
  * @example
 
  *     conn = TP.xmpp.Connection.open(aName,
  *              TP.hc('httpServerURI', aURI,
  *                      'connectionType', TP.xmpp.XMLNS.BINDING));
- *     
+ *
  *     if (!conn.authenticate(aJID, aPassword)) { // auth failed };
- *     
+ *
  *     // <message type="normal"> msg = conn.constructStanza();
- *     
+ *
  *     OR
- *     
+ *
  *     // <iq type="get"> msg = conn.constructStanza('get');
- *     
+ *
  *     OR
- *     
+ *
  *     // <iq type="get"><query xmlns="jabber:iq:auth"></query></iq> msg =
  *     conn.constructStanza('get', null, TP.xmpp.IqAuth.construct());
  *     msg.getPayload('query', TP.xmpp.XMLNS.IQ_AUTH).item(0).set( 'userName',
  *     aJID); msg.set*();
- *     
+ *
  *     res = msg.send(); res.get*();
- *     
+ *
  *     conn.close();
- *     
- *     
+ *
+ *
  * @todo Implement the ability to attach/detach from a transport.
  * @todo
  */
@@ -80,7 +80,7 @@ function(aServerName, aConnectionInfo) {
     var inst;
 
     if (TP.isEmpty(aServerName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     inst = this.construct(aServerName, aConnectionInfo);
@@ -156,7 +156,7 @@ function(aServerName, aConnectionInfo) {
         connectionType;
 
     if (TP.isEmpty(aServerName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     this.callNextMethod();
@@ -219,7 +219,7 @@ function(aJID, aPassword, aMethod) {
         authenticated;
 
     if (TP.notValid(aJID) || (TP.isEmpty(aPassword))) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
 
         return false;
     }
@@ -229,7 +229,6 @@ function(aJID, aPassword, aMethod) {
     //  we should bail out here.
     if (TP.isEmpty(this.get('SASLMechanisms'))) {
         this.raise('TP.sig.XMPPAuthException',
-                    arguments,
                     'No valid authentication mechanisms found');
 
         return false;
@@ -241,7 +240,6 @@ function(aJID, aPassword, aMethod) {
     //  that the caller desired, bail out here.
     if (!this.get('SASLMechanisms').contains(method)) {
         this.raise('TP.sig.UnsupportedXMPPAuthMethod',
-                    arguments,
                     'Desired authentication mechanism not supported');
     }
 
@@ -320,7 +318,7 @@ function(aJID, aPassword) {
         responseChallengeTest;
 
     if (TP.notValid(aJID) || (TP.isEmpty(aPassword))) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
 
         return false;
     }
@@ -371,7 +369,6 @@ function(aJID, aPassword) {
     if ((res.getLocalName() !== 'challenge') ||
         (TP.nodeGetNSURI(res.getNativeNode()) !== TP.xmpp.XMLNS.SASL)) {
         this.raise('TP.sig.UnsupportedXMPPAuthMethod',
-                    arguments,
                     'SASL DIGEST-MD5 not supported');
 
         return false;
@@ -382,7 +379,6 @@ function(aJID, aPassword) {
 
     if (TP.isEmpty(challengeBase64)) {
         this.raise('TP.sig.XMPPAuthException',
-                    arguments,
                     'SASL DIGEST-MD5 challenge data missing');
 
         return false;
@@ -401,7 +397,6 @@ function(aJID, aPassword) {
 
     if (TP.isEmpty(serverNonce)) {
         this.raise('TP.sig.XMPPAuthException',
-                    arguments,
                     'SASL DIGEST-MD5 challenge server nonce not found');
 
         return false;
@@ -490,7 +485,6 @@ function(aJID, aPassword) {
 
         if (TP.isEmpty(responseChallengeBase64)) {
             this.raise('TP.sig.XMPPAuthException',
-                        arguments,
                         'SASL DIGEST-MD5 response text missing');
 
             return false;
@@ -517,7 +511,6 @@ function(aJID, aPassword) {
 
         if (responseChallengeTest !== rspAuth) {
             this.raise('TP.sig.XMPPAuthException',
-                        arguments,
                         'SASL DIGEST-MD5 response test did not match ' +
                         'initial response text');
 
@@ -550,7 +543,6 @@ function(aJID, aPassword) {
     if ((res.getLocalName() !== 'success') ||
         (TP.nodeGetNSURI(res.getNativeNode()) !== TP.xmpp.XMLNS.SASL)) {
         this.raise('TP.sig.XMPPAuthException',
-                    arguments,
                     'SASL DIGEST-MD5 did not successfully authenticate');
 
         return false;
@@ -601,7 +593,7 @@ function(aJID, aPassword) {
         featuresElement;
 
     if (TP.notValid(aJID) || (TP.isEmpty(aPassword))) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
 
         return false;
     }
@@ -699,7 +691,7 @@ function(aJID) {
         jidVal;
 
     if (TP.notValid(aJID)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
 
         return false;
     }
@@ -727,7 +719,6 @@ function(aJID) {
 
     if (TP.notValid(jidElem)) {
         this.raise('TP.sig.XMPPResourceAllocationException',
-                    arguments,
                     TP.join('Server could not allocate resource: ',
                             aJID.get('resourcePath'),
                             ' for JID: ',
@@ -751,8 +742,7 @@ function(aJID) {
                             aJID.asString(),
                             '. JID reset to: ',
                             jidVal),
-                    TP.IO_LOG,
-                    arguments) : 0;
+                    TP.IO_LOG) : 0;
     }
 
     return true;
@@ -823,13 +813,11 @@ function(aStanzaType, toJID, aPayload) {
     tagName = TP.ifInvalid(aStanzaType, 'normal');
     if (!TP.isType(tagType = TP.xmpp.XMLNS.getStanzaType(tagName))) {
         return this.raise('TP.sig.InvalidXMPPStanzaType',
-                            arguments,
                             tagName);
     }
 
     if (TP.notValid(inst = tagType.construct())) {
         return this.raise('TP.sig.InvalidInstantiation',
-                            arguments,
                             tagType);
     }
 
@@ -871,7 +859,7 @@ function(aJID) {
         errorTPElem;
 
     if (TP.notValid(aJID)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
         return false;
     }
 
@@ -897,7 +885,6 @@ function(aJID) {
     if (TP.isValid(errorTPElem)) {
         this.raise(
                 'TP.sig.XMPPSessionEstablishmentException',
-                arguments,
                 TP.join('Server could not establish a session for JID: ',
                         aJID.asString()));
 
@@ -929,7 +916,7 @@ function() {
     /**
      * @name getLastMessageID
      * @synopsis Returns the last generated message ID for this connection.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.$get('msgID');
@@ -943,7 +930,7 @@ function() {
     /**
      * @name getMessageCount
      * @synopsis Returns the count of messages sent by this connection.
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     return this.$get('msgCount');
@@ -1079,7 +1066,7 @@ function(aSignal) {
         //  'undo' the read, so we can get to the data
         //stream.set('index', stream.get('index') - 1, false);
 
-        this.raise('TP.sig.XMPPQueueingException', arguments, TP.ec(e));
+        this.raise('TP.sig.XMPPQueueingException', TP.ec(e));
     }
 
     return;
@@ -1103,7 +1090,7 @@ function(aSignal) {
     if (TP.notValid(aSignal) || TP.notValid(args = aSignal.getPayload())) {
         TP.ifWarn() ?
             TP.warn('Invalid signal data for event.',
-                    TP.IO_LOG, arguments) : 0;
+                    TP.IO_LOG) : 0;
 
         return;
     }
@@ -1111,7 +1098,7 @@ function(aSignal) {
     if (TP.notValid(node = args.at('node'))) {
         TP.ifWarn() ?
             TP.warn('Missing stanza data for event.',
-                    TP.IO_LOG, arguments) : 0;
+                    TP.IO_LOG) : 0;
 
         return;
     }
@@ -1312,7 +1299,6 @@ function(anElement) {
     if ((TP.elementGetLocalName(anElement) !== 'features') ||
         (TP.nodeGetNSURI(anElement) !== TP.xmpp.XMLNS.STREAM)) {
         this.raise('TP.sig.XMPFeatureNegotiationException',
-                    arguments,
                     'Server did not return supported features list');
 
         return;
@@ -1360,7 +1346,7 @@ function() {
         tpElem;
 
     if (this.isOpen()) {
-        this.raise('TP.sig.InvalidOperation', arguments);
+        this.raise('TP.sig.InvalidOperation');
 
         return true;
     }
@@ -1399,11 +1385,11 @@ function(aStanza) {
     var msgID;
 
     if (!this.isOpen() || !this.isAuthenticated()) {
-        return this.raise('TP.sig.XMPPConnectionNotReady', arguments);
+        return this.raise('TP.sig.XMPPConnectionNotReady');
     }
 
     if (!TP.isKindOf(aStanza, TP.xmpp.Stanza)) {
-        return this.raise('TP.sig.InvalidXMPPMessage', arguments);
+        return this.raise('TP.sig.InvalidXMPPMessage');
     }
 
     //  set the message ID on the stanza so we can correlate it later. note
@@ -1444,7 +1430,7 @@ function(aStr) {
      */
 
     if (!this.isOpen() || !this.isAuthenticated()) {
-        return this.raise('TP.sig.XMPPConnectionNotReady', arguments);
+        return this.raise('TP.sig.XMPPConnectionNotReady');
     }
 
     return this.get('transport').transmit(aStr);

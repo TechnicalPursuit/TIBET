@@ -87,7 +87,7 @@ function(cmdSrc, echoRequest, createHistory, echoOutput, shellID, successHandler
 
         shell = TP.core.Resource.getResourceById(shellID);
         if (!TP.isKindOf(shell, 'TP.core.Shell')) {
-            TP.raise(this, 'TP.sig.InvalidParameter', arguments,
+            TP.raise(this, 'TP.sig.InvalidParameter',
                         'Shell ID must be a valid string or shell.');
 
             return;
@@ -95,7 +95,7 @@ function(cmdSrc, echoRequest, createHistory, echoOutput, shellID, successHandler
     } else if (TP.isKindOf(shellID, 'TP.core.Shell')) {
         shell = shellID;
     } else {
-        TP.raise(this, 'TP.sig.InvalidParameter', arguments,
+        TP.raise(this, 'TP.sig.InvalidParameter',
                     'Shell ID must be a valid string or shell.');
 
         return;
@@ -1106,7 +1106,7 @@ function(anIndex, afterExpansion) {
         }
 
         if (TP.notValid(histMatch)) {
-            this.raise('TP.sig.InvalidParameter', arguments, anIndex);
+            this.raise('TP.sig.InvalidParameter', anIndex);
 
             return;
         }
@@ -1296,7 +1296,6 @@ function(aRequest) {
         aRequest.fail(TP.FAILURE, 'Couldn\'t construct response.');
         this.raise(
             'TP.sig.ProcessingException',
-            arguments,
             'Couldn\'t construct response.');
 
         return;
@@ -1437,7 +1436,6 @@ function(aProvider) {
                         TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
         return this.raise(
             'TP.sig.InvalidProvider',
-            arguments,
             'STDIO provider must implement stdin, stdout, and stderr');
     }
 
@@ -1904,7 +1902,7 @@ function(anIndex) {
 
     //  tried to use an index, but it wasn't a number
     if (TP.isNumber(anIndex)) {
-        this.raise('TP.sig.InvalidParameter', arguments, anIndex);
+        this.raise('TP.sig.InvalidParameter', anIndex);
 
         return;
     }
@@ -2236,7 +2234,7 @@ function(aString) {
 
     var str;
 
-    TP.debug('break.tsh_substitutions');
+    TP.stop('break.tsh_substitutions');
 
     str = aString;
 
@@ -2280,20 +2278,20 @@ function(aWindow) {
         if (TP.isString(win)) {
             win = TP.byOID(win);
             if (TP.notValid(win)) {
-                return this.raise('TP.sig.InvalidWindow', arguments);
+                return this.raise('TP.sig.InvalidWindow');
             } else if (!TP.isWindow(win)) {
                 if (!TP.isFunction(win.getNativeWindow)) {
-                    return this.raise('TP.sig.InvalidWindow', arguments);
+                    return this.raise('TP.sig.InvalidWindow');
                 } else {
                     win = win.getNativeWindow();
                 }
             }
         } else if (TP.isFunction(win.getNativeWindow)) {
             if (!TP.isWindow(win = win.getNativeWindow())) {
-                return this.raise('TP.sig.InvalidWindow', arguments);
+                return this.raise('TP.sig.InvalidWindow');
             }
         } else {
-            return this.raise('TP.sig.InvalidWindow', arguments);
+            return this.raise('TP.sig.InvalidWindow');
         }
     }
 
@@ -2323,7 +2321,7 @@ function(aRequest, shouldReport) {
         len,
         i;
 
-    TP.debug('break.tsh_substitutions');
+    TP.stop('break.tsh_substitutions');
 
     if (TP.notValid(node = aRequest.at('cmdNode'))) {
         return aRequest.fail();
@@ -2363,14 +2361,14 @@ function(aRequest) {
 
         stdin;
 
-    TP.debug('break.tsh_substitutions');
+    TP.stop('break.tsh_substitutions');
 
     scope = this.getExecutionInstance();
 
     len = this.getType().POSITIONAL_MAX;
 
-    //  clear any existing positional arguments in the scope...
-    for (i = 0; i < len; i++) {
+        //  clear any existing positional arguments in the scope...
+        for (i = 0; i < len; i++) {
         if (TP.notDefined(scope.at('$' + i))) {
             break;
         }
@@ -2803,7 +2801,7 @@ function(aRequest) {
 
         shell;
 
-    TP.debug('break.tsh_params');
+    TP.stop('break.tsh_params');
 
     if (TP.isValid(dict = aRequest.get('PARAMS'))) {
         return dict;
@@ -2858,7 +2856,7 @@ function(aRequest) {
                     }
 
                     if (TP.isEmpty(name)) {
-                        TP.raise(item, 'TP.sig.InvalidElement', arguments,
+                        TP.raise(item, 'TP.sig.InvalidElement',
                             '<param> tag has no name property or child.');
 
                         return TP.BREAK;
@@ -2879,7 +2877,6 @@ function(aRequest) {
                     if (TP.isEmpty(value)) {
                         TP.raise(item,
                                     'TP.sig.InvalidElement',
-                                    arguments,
                                     '<param> tag has no value property' +
                                     ' or child.');
 
@@ -2953,7 +2950,7 @@ function(aRequest) {
 
         node;
 
-    TP.debug('break.tsh_alias');
+    TP.stop('break.tsh_alias');
 
     shell = aRequest.at('cmdShell');
     argv = this.getArgument(aRequest, 'ARGV');
@@ -3077,7 +3074,7 @@ function(aRequest) {
         if (TP.notDefined(TP.sys.get('configuration').at(name))) {
             TP.ifWarn() ?
                 TP.warn('Unknown flag: ' + name,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
         }
 
         TP.sys.setcfg(name, value);

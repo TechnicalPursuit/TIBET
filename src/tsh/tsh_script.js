@@ -123,7 +123,7 @@ function(aNode, aCommandList, aRequest) {
         last,
         ins;
 
-    TP.debug('break.tsh_pipe_adjust');
+    TP.stop('break.tsh_pipe_adjust');
 
     //  the parse phase assigns pipes to the leading element, but we really
     //  want them assigned to the element which has to work with that as a
@@ -213,10 +213,10 @@ function(commands, aRequest) {
         cond,
         state;
 
-    TP.debug('break.tsh_pipe_connect');
+    TP.stop('break.tsh_pipe_connect');
 
     if (!TP.isArray(commands)) {
-        this.raise('TP.sig.InvalidParameter', arguments,
+        this.raise('TP.sig.InvalidParameter',
             'Sequence must be an Array.');
         return;
     }
@@ -636,7 +636,7 @@ function(source, shell, sibling, request) {
         token = arr[i];
     }
 
-    TP.debug('break.tsh_desugar');
+    TP.stop('break.tsh_desugar');
 
     while (token) {
         switch (mode) {
@@ -691,8 +691,7 @@ function(source, shell, sibling, request) {
                                 TP.ifWarn() ?
                                     TP.warn('Missing attribute name in' +
                                             ' tag input: ' + token.value,
-                                            TP.LOG,
-                                            arguments) : 0;
+                                            TP.LOG) : 0;
 
                                 i += 1;
                                 token = arr[i];
@@ -778,7 +777,7 @@ function(source, shell, sibling, request) {
                                 TP.ifWarn() ?
                                     TP.warn('Missing flag name in tag' +
                                                 ' input.',
-                                            TP.LOG, arguments) : 0;
+                                            TP.LOG) : 0;
                                 break;
                             }
                         } else if (token.value === '.[[') {
@@ -816,7 +815,7 @@ function(source, shell, sibling, request) {
                                     TP.ifWarn() ?
                                         TP.warn('Unexpected end of CDATA' +
                                                     ' input.',
-                                                TP.LOG, arguments) : 0;
+                                                TP.LOG) : 0;
 
                                     break;
                                 }
@@ -843,7 +842,7 @@ function(source, shell, sibling, request) {
                                 TP.ifWarn() ?
                                     TP.warn('Unexpected operator in tag' +
                                                 ' input: ' + token.value,
-                                            TP.LOG, arguments) : 0;
+                                            TP.LOG) : 0;
                             }
 
                             chunk.length = 0;
@@ -888,7 +887,7 @@ function(source, shell, sibling, request) {
                             TP.ifWarn() ?
                                 TP.warn('Unexpected end of prefixed' +
                                             ' attribute.',
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
 
                             break;
                         }
@@ -1192,7 +1191,7 @@ function(source, shell, sibling, request) {
                                             TP.warn('Unable to find' +
                                                         ' custom type ' +
                                                         tagname,
-                                                    TP.LOG, arguments) : 0;
+                                                    TP.LOG) : 0;
                                     }
                                 }
 
@@ -1775,7 +1774,7 @@ function(aRequest) {
     //  BEEN CHANGED TO USE THE TAG PROCESSOR RATHER THAN IT'S OWN TAG
     //  PROCESSING MACHINERY (AT LEAST FOR COMPILATION).
 
-    TP.debug('break.tsh_compile');
+    TP.stop('break.tsh_compile');
 
     node = aRequest.at('cmdNode');
     shell = aRequest.at('cmdShell');
@@ -1903,7 +1902,7 @@ function(aRequest) {
         out,
         service;
 
-    TP.debug('break.tsh_execute');
+    TP.stop('break.tsh_execute');
 
     node = aRequest.at('cmdNode');
     shell = aRequest.at('cmdShell');
@@ -1911,7 +1910,7 @@ function(aRequest) {
     if (TP.sys.cfg('log.tsh_execute')) {
         TP.ifTrace() ?
             TP.trace('tsh_execute:\n' + TP.str(node),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     }
 
     //  nested scripts have to handle their stdio with respect to the outer
@@ -1986,7 +1985,7 @@ function(aRequest) {
         if (TP.elementGetAttribute(root, 'subshell') === 'true') {
             TP.ifWarn() ?
                 TP.warn('Pure subshell not yet supported. Using block.',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
         }
 
         //  copy the children out of the loaded script node into the
@@ -2023,7 +2022,7 @@ function(aRequest) {
         }
 
         //  allow for tag-by-tag debugging at each execution cycle
-        TP.debug(debug);
+        TP.stop(debug);
 
         //  the first child in each segment is the command, remaining
         //  elements in a contiguous segment are the redirects
@@ -2407,7 +2406,7 @@ function(src, shell, request) {
         return src;
     }
 
-    TP.debug('break.tsh_xmlify');
+    TP.stop('break.tsh_xmlify');
 
     //  tokenize and do our best...
     arr = TP.$tokenize(src, this.$tshOperators, true, false, false, false);
@@ -2762,7 +2761,7 @@ function(src, shell, request) {
                 } else {
                     TP.ifWarn() ?
                         TP.warn('Invalid syntax at: ' + token.value,
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                     i += 1;
                 }
@@ -2794,7 +2793,7 @@ function(src, shell, request) {
     if (TP.sys.cfg('log.tsh_xmlify')) {
         TP.ifTrace() ?
             TP.trace('tsh_xmlify:\n' + str,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     }
 
     return str;
@@ -3011,7 +3010,6 @@ function(aFaultCode, aFaultString, anException) {
 
     if (TP.isValid(anException)) {
         this.raise(anException,
-                    arguments,
                     TP.ifInvalid(aFaultString, aFaultCode));
     }
 
@@ -3077,7 +3075,7 @@ function(output, request) {
 
         rootRequest;
 
-    TP.debug('break.tsh_stderr');
+    TP.stop('break.tsh_stderr');
 
     //  merge keys when we get extra parameters via the request/hash.
     req = TP.isValid(request) ? this.getPayload().addAll(request) : this;
@@ -3141,7 +3139,7 @@ function() {
         index,
         value;
 
-    TP.debug('break.tsh_stdin');
+    TP.stop('break.tsh_stdin');
 
     //  if we've already processed the data we'll have it cached in TP.STDIN
     if (TP.isValid(buffer = this.at(TP.STDIN))) {
@@ -3311,7 +3309,7 @@ function(output, request) {
         start,
         end;
 
-    TP.debug('break.tsh_stdout');
+    TP.stop('break.tsh_stdout');
 
     //  merge keys when we get extra parameters via the request/hash.
     req = TP.isValid(request) ? this.getPayload().addAll(request) : this;
@@ -3424,7 +3422,7 @@ function(aRequest) {
         pipe,
         async;
 
-    TP.debug('break.tsh_execute');
+    TP.stop('break.tsh_execute');
 
     aRequest.isActive(true);
 
@@ -3434,7 +3432,7 @@ function(aRequest) {
     if (TP.sys.cfg('log.tsh_run')) {
         TP.ifTrace() ?
             TP.trace('tsh_run:\n' + TP.str(node),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     }
 
     //  capture the current command prefix for defaulting purposes.

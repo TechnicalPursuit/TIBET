@@ -44,7 +44,7 @@ function(aRequest) {
         options,
         obj;
 
-    TP.debug('break.tsh_test');
+    TP.stop('break.tsh_test');
 
     suite = TP.sys.getTypeByName('TP.test.Suite');
     if (TP.notValid(suite)) {

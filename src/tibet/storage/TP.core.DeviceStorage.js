@@ -55,9 +55,9 @@ function(aKey, aPassword) {
 
     var recordStr,
         value;
-    
+
     if (!TP.isString(aKey) || !TP.isString(aPassword)) {
-        return this.raise('TP.sig.InvalidString', arguments);
+        return this.raise('TP.sig.InvalidString');
     }
 
     //  See if there is a 'record' value (a JSON String) at the key. This should
@@ -108,7 +108,7 @@ function(aKey, aValue, aPassword) {
     var recordStr;
 
     if (!TP.isString(aKey) || !TP.isString(aValue) || !TP.isString(aPassword)) {
-        return this.raise('TP.sig.InvalidString', arguments);
+        return this.raise('TP.sig.InvalidString');
     }
 
     recordStr = TP.encryptStorageValue(aValue, aPassword);

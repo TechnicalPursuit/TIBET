@@ -530,13 +530,13 @@ function(startIndexOrSpec, endIndex, aStep) {
      *          myArr.vslice(6, 1, -2).perform(
      *          function(item) {
      *
-     *          TP.info(item, TP.LOG, arguments);
+     *          TP.info(item, TP.LOG);
      *          });
      *          <samp>6 4 2</samp>
      *          myArr.vslice('[2:6:2]').perform(
      *          function(item) {
      *
-     *          TP.info(item, TP.LOG, arguments);
+     *          TP.info(item, TP.LOG);
      *          });
      *          <samp>2 4</samp>
      *     </code>
@@ -716,7 +716,7 @@ function(varargs) {
     /**
      * @name add
      * @synopsis Adds (appends) the argument(s) provided.
-     * @param {arguments} varargs A variable list of arguments.
+     * @param {Array} varargs A variable list of arguments.
      * @returns {Array} The receiver.
      * @signals Change
      * @todo
@@ -762,7 +762,7 @@ function(aCollection) {
         this.push.apply(this, aCollection);
     } else {
         if (!TP.canInvoke(aCollection, 'perform')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         thisref = this;
@@ -887,7 +887,7 @@ function(anObject, aCount) {
     //  count, but not a number? won't try to convert, just warn/exit
     count = parseInt(aCount, 10);
     if (!TP.isNumber(count)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     len = this.length;
@@ -993,7 +993,7 @@ function() {
 
     //  TP.core.Range is an optional type, so we'll need to try to load it
     if (TP.notValid(type = TP.sys.require('TP.core.Range'))) {
-        return this.raise('TP.sig.TypeNotFound', arguments);
+        return this.raise('TP.sig.TypeNotFound');
     }
 
     //  use size of array to configure the range
@@ -1066,7 +1066,7 @@ function(aCollection, aTest) {
         comp = aCollection.copy();
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         comp = aCollection.asArray();
@@ -1130,7 +1130,7 @@ function(aCollection, aTest) {
         comp = aCollection.copy();
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         comp = aCollection.asArray();
@@ -1229,7 +1229,7 @@ function(aCollection, aTest) {
     var arr;
 
     if (!TP.canInvoke(aCollection, 'asArray')) {
-        return this.raise('TP.sig.InvalidCollection', arguments);
+        return this.raise('TP.sig.InvalidCollection');
     }
 
     arr = aCollection.asArray();
@@ -1380,7 +1380,7 @@ function() {
     var type;
 
     if (TP.notValid(type = TP.sys.getTypeByName('TP.core.Iterator'))) {
-        return this.raise('TP.sig.TypeNotFound', arguments);
+        return this.raise('TP.sig.TypeNotFound');
     }
 
     return type;
@@ -1416,7 +1416,7 @@ function(aCollection, aTest) {
      */
 
     if (!TP.canInvoke(aCollection, 'contains')) {
-        return this.raise('TP.sig.InvalidCollection', arguments);
+        return this.raise('TP.sig.InvalidCollection');
     }
 
     return this.select(
@@ -1457,7 +1457,7 @@ function() {
      *     collections. In some sense the reverse of partition, using an
      *     optional function to determine which elements of a set of collections
      *     should be grouped into pairs/triplets/quads etc.
-     * @param {arguments} varargs Variable-length argument list of ordered
+     * @param {Array} varargs Variable-length argument list of ordered
      *     pairs.
      * @returns {Array} An array containing ordered pairs (or triplets, quads,
      *     etc.) constructed from the receiver and incoming collection elements.
@@ -1604,7 +1604,7 @@ function(aCollection, aTest) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -1747,7 +1747,7 @@ function(aCollection, newValue, aTest) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -1808,7 +1808,7 @@ function(aCollection) {
     var arr;
 
     if (!TP.canInvoke(aCollection, 'injectInto')) {
-        return this.raise('TP.sig.InvalidCollection', arguments);
+        return this.raise('TP.sig.InvalidCollection');
     }
 
     arr = this.copy();
@@ -1851,7 +1851,7 @@ function(anItem, anIndex) {
 
     index = parseInt(anIndex, 10);
     if (!TP.isNumber(index)) {
-        return this.raise('TP.sig.InvalidIndex', arguments);
+        return this.raise('TP.sig.InvalidIndex');
     }
 
     index = (index > 0) ? index : this.normalizeIndex(index);
@@ -1900,14 +1900,14 @@ function(aCollection, anIndex) {
 
     index = parseInt(anIndex, 10);
     if (!TP.isNumber(index)) {
-        return this.raise('TP.sig.InvalidIndex', arguments);
+        return this.raise('TP.sig.InvalidIndex');
     }
 
     if (TP.isArray(aCollection)) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -1962,7 +1962,7 @@ function(aCollection) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -2031,7 +2031,7 @@ function(aCollection, anItem) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -2178,7 +2178,7 @@ function(aKey, aValue) {
      */
 
     if (!TP.isNumber(aKey)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (TP.notDefined(this[aKey])) {
@@ -2357,7 +2357,7 @@ function(anIndex) {
 
     index = parseInt(anIndex, 10);
     if (!TP.isNumber(index)) {
-        return this.raise('TP.sig.InvalidIndex', arguments);
+        return this.raise('TP.sig.InvalidIndex');
     }
 
     this.$sortIfNeeded();
@@ -2404,7 +2404,7 @@ function(aCollection) {
         arr = aCollection.copy();
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -2491,7 +2491,7 @@ function(aValue, anItem, aTest) {
 
     ind = this.getPosition(anItem, 0, aTest);
     if (ind === TP.NOT_FOUND) {
-        return this.raise('TP.sig.NotFound', arguments);
+        return this.raise('TP.sig.NotFound');
     }
 
     return this.addAt(aValue, ind + 1);
@@ -2521,7 +2521,7 @@ function(aCollection, anItem, aTest) {
 
     ind = this.getPosition(anItem, 0, aTest);
     if (ind === TP.NOT_FOUND) {
-        return this.raise('TP.sig.NotFound', arguments);
+        return this.raise('TP.sig.NotFound');
     }
 
     return this.addAllAt(aCollection, ind + 1);
@@ -2551,7 +2551,7 @@ function(aCollection, anItem, aTest) {
 
     ind = this.getPosition(anItem, 0, aTest);
     if (ind === TP.NOT_FOUND) {
-        return this.raise('TP.sig.NotFound', arguments);
+        return this.raise('TP.sig.NotFound');
     }
 
     return this.addAllAt(aCollection, ind);
@@ -2615,7 +2615,7 @@ function(aValue, anItem, aTest) {
 
     ind = this.getPosition(anItem, 0, aTest);
     if (ind === TP.NOT_FOUND) {
-        return this.raise('TP.sig.NotFound', arguments);
+        return this.raise('TP.sig.NotFound');
     }
 
     return this.addAt(aValue, ind);
@@ -2629,7 +2629,7 @@ function(aValue) {
     /**
      * @name addFirst
      * @synopsis Adds the values provided to the start of the receiver.
-     * @param {arguments} varargs A variable list of arguments.
+     * @param {Array} varargs A variable list of arguments.
      * @returns {Array} The receiver.
      * @signals Change
      * @todo
@@ -2656,7 +2656,7 @@ function(aValue) {
     /**
      * @name addLast
      * @synopsis Appends the values provided to the end of the receiver.
-     * @param {arguments} varargs A variable list of arguments.
+     * @param {Array} varargs A variable list of arguments.
      * @returns {Array} The receiver.
      * @signals Change
      * @todo
@@ -3189,7 +3189,7 @@ function(aKey) {
     var k;
 
     if (TP.notValid(aKey)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     k = this.at(aKey);
@@ -3199,7 +3199,7 @@ function(aKey) {
 
     if (TP.isMethod(k)) {
         return this.raise('TP.sig.InvalidOperation',
-            arguments, 'Attempt to replace/remove method: ' + k);
+            'Attempt to replace/remove method: ' + k);
     }
 
     delete(this[aKey]);
@@ -3229,7 +3229,7 @@ function(aKeyArray) {
         thisref;
 
     if (TP.notValid(aKeyArray)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     changed = false;
@@ -3248,7 +3248,7 @@ function(aKeyArray) {
 
             if (TP.isMethod(k)) {
                 thisref.raise('TP.sig.InvalidOperation',
-                    arguments, 'Attempt to replace/remove method: ' + k);
+                    'Attempt to replace/remove method: ' + k);
 
                 return TP.BREAK;
             }
@@ -3363,7 +3363,7 @@ function(anObject) {
     var count;
 
     if (TP.notValid(anObject)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  obvious one is math
@@ -3402,7 +3402,7 @@ function(endIndex) {
     var type;
 
     if (TP.notValid(type = TP.sys.require('TP.core.Range'))) {
-        return this.raise('TP.sig.TypeNotFound', arguments);
+        return this.raise('TP.sig.TypeNotFound');
     }
 
     return type.construct(this, endIndex);
@@ -3576,7 +3576,7 @@ function(aCollection) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -3623,7 +3623,7 @@ function(aCollection) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -3817,7 +3817,7 @@ function() {
     var type;
 
     if (TP.notValid(type = TP.sys.getTypeByName('TP.core.Iterator'))) {
-        return this.raise('TP.sig.TypeNotFound', arguments);
+        return this.raise('TP.sig.TypeNotFound');
     }
 
     return type;
@@ -3851,7 +3851,7 @@ function(aCollection) {
      */
 
     if (!TP.canInvoke(aCollection, 'contains')) {
-        return this.raise('TP.sig.InvalidCollection', arguments);
+        return this.raise('TP.sig.InvalidCollection');
     }
 
     return this.select(
@@ -4741,7 +4741,7 @@ function(aCollection) {
         item;
 
     if (!TP.canInvoke(aCollection, 'getKeys')) {
-        this.raise('TP.sig.InvalidCollection', arguments);
+        this.raise('TP.sig.InvalidCollection');
         return;
     }
 
@@ -5633,7 +5633,7 @@ function(oldKey, newKey) {
         shouldSignal;
 
     if (TP.isEmpty(oldKey) || TP.isEmpty(newKey)) {
-        return this.raise('TP.sig.InvalidKey', arguments);
+        return this.raise('TP.sig.InvalidKey');
     }
 
     //  nothing to do here...
@@ -5761,7 +5761,7 @@ function(attributeName, attributeValue, shouldSignal) {
         oldFlag;
 
     if (TP.isEmpty(attributeName)) {
-        return this.raise('TP.sig.InvalidKey', arguments);
+        return this.raise('TP.sig.InvalidKey');
     }
 
     //  If we got handed an 'access path', then we need to let it handle this.
@@ -5892,7 +5892,7 @@ function() {
      *     pairs, an array of key, value sequences, an Object (not recommended
      *     for speed reasons), a hash of key/value pairs, or a simple argument
      *     list of key, value sequences.
-     * @param {arguments} varargs Variable-length argument list of ordered
+     * @param {Array} varargs Variable-length argument list of ordered
      *     pairs.
      * @returns {TP.lang.Hash} The receiver.
      * @signals Change
@@ -6002,7 +6002,7 @@ function(aCollection, aFunction) {
 
     //  anything else has to be able to give us items during a perform
     if (!TP.canInvoke(aCollection, 'perform')) {
-        return this.raise('TP.sig.InvalidCollection', arguments);
+        return this.raise('TP.sig.InvalidCollection');
     }
 
     thisref = this;
@@ -6114,9 +6114,7 @@ function(anItemOrKey, aValue, varargs) {
         key = anItemOrKey.first();
         val = anItemOrKey.last();
     } else {
-        this.raise('TP.sig.InvalidParameter',
-                    arguments,
-                    'Invalid key or item.');
+        this.raise('TP.sig.InvalidParameter', 'Invalid key or item.');
 
         return;
     }
@@ -6158,7 +6156,7 @@ function(anItem) {
      */
 
     if (!TP.isPair(anItem)) {
-        return this.raise('InvalidPair', arguments);
+        return this.raise('InvalidPair');
     }
 
     this.atPut(anItem.first(), anItem.last());
@@ -6194,7 +6192,7 @@ function(anObject, aCount) {
     //  count, but not a number? won't try to convert, just warn/exit
     count = parseInt(aCount, 10);
     if (!TP.isNumber(count)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  number, but less than 1? no work to do
@@ -6511,7 +6509,7 @@ function(anItem, aTest) {
     }
 
     if (!TP.isPair(anItem)) {
-        return this.raise('InvalidPair', arguments);
+        return this.raise('InvalidPair');
     }
 
     test = TP.ifInvalid(aTest, TP.EQUALITY);
@@ -6557,7 +6555,7 @@ function(aCollection, aTest) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -6611,7 +6609,7 @@ function(aCollection, aTest) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -6778,7 +6776,7 @@ function(aCollection, aTest) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -6821,7 +6819,7 @@ function(aCollection, aTest) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -6903,7 +6901,7 @@ function() {
     var type;
 
     if (TP.notValid(type = TP.sys.getTypeByName('TP.core.Iterator'))) {
-        return this.raise('TP.sig.TypeNotFound', arguments);
+        return this.raise('TP.sig.TypeNotFound');
     }
 
     return type;
@@ -6988,7 +6986,7 @@ function(aCollection, aTest) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -7039,7 +7037,7 @@ function(shouldForce) {
      * @name merge
      * @synopsis Merge the receiver's elements with elements from one or more
      *     collections.
-     * @param {arguments} varargs Variable-length argument list of other
+     * @param {Array} varargs Variable-length argument list of other
      *     collections
      * @returns {TP.lang.Hash} A hash containing the merged values from the
      *     receiver and all of the supplied collections.
@@ -7157,7 +7155,7 @@ function(aCollection, aTest) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            this.raise('TP.sig.InvalidCollection', arguments);
+            this.raise('TP.sig.InvalidCollection');
             return 0;
         }
 
@@ -7217,7 +7215,7 @@ function(oldItem, newItem, aTest) {
     var shouldSignal;
 
     if (!TP.isPair(oldItem) || !TP.isPair(newItem)) {
-        this.raise('InvalidPair', arguments);
+        this.raise('InvalidPair');
 
         return 0;
     }
@@ -7275,7 +7273,7 @@ function(aCollection, newItem, aTest) {
         arr = aCollection;
     } else {
         if (!TP.canInvoke(aCollection, 'asArray')) {
-            return this.raise('TP.sig.InvalidCollection', arguments);
+            return this.raise('TP.sig.InvalidCollection');
         }
 
         arr = aCollection.asArray();
@@ -7370,7 +7368,7 @@ function(aCollection, aFunction) {
         thisref;
 
     if (!TP.canInvoke(aCollection, 'getKeys')) {
-        return this.raise('TP.sig.InvalidCollection', arguments,
+        return this.raise('TP.sig.InvalidCollection',
                 'Collection must support getKeys for union operation.');
     }
 
@@ -7442,7 +7440,7 @@ function(aValue, anIndex) {
      */
 
     if (TP.notValid(anIndex)) {
-        return this.raise('TP.sig.InvalidIndex', arguments);
+        return this.raise('TP.sig.InvalidIndex');
     }
 
     return this.atPut(anIndex, aValue);
@@ -7522,7 +7520,6 @@ function(aCollection) {
     if (!TP.canInvoke(aCollection, 'perform')) {
         return this.raise(
                     'TP.sig.InvalidCollection',
-                    arguments,
                     'Collection must support perform for atAll operation.');
     }
 
@@ -7584,7 +7581,6 @@ function(aCollection, aValue) {
     if (!TP.canInvoke(aCollection, 'perform')) {
         return this.raise(
                     'TP.sig.InvalidCollection',
-                    arguments,
                     'Collection must support perform for atAll operation.');
     }
 
@@ -8175,7 +8171,6 @@ function(aCollection) {
     if (!TP.canInvoke(aCollection, 'perform')) {
         return this.raise(
                     'TP.sig.InvalidCollection',
-                    arguments,
                     'Collection must support perform for atAll operation.');
     }
 
@@ -8232,7 +8227,6 @@ function(aKey) {
     if (TP.isEmpty(aKey)) {
         return this.raise(
                     'TP.sig.InvalidParameter',
-                    arguments,
                     'Empty key provided.');
     }
 
@@ -8268,7 +8262,6 @@ function(aKeyArray) {
 
     if (!TP.isArray(aKeyArray)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Invalid key array provided.');
     }
 
@@ -8400,7 +8393,7 @@ function(aSortFunction) {
 //  ------------------------------------------------------------------------
 
 TP.lang.Hash.Inst.defineMethod('canResolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name canResolveDNU
@@ -8412,8 +8405,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      * @param {Object} anOrigin The object asking for help. The receiver in this
      *     case.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
@@ -8440,7 +8433,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.lang.Hash.Inst.defineMethod('resolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name resolveDNU
@@ -8450,8 +8443,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     prefix being removed.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of function resolution.
      * @todo
      */
@@ -8598,7 +8591,7 @@ function(aStep) {
 
     //  new step? then use it
     if (!TP.isNumber(aStep)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  truncate

@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xmpp.Transport}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -105,7 +105,7 @@ function(aConnectionInfo) {
      */
 
     if (TP.notValid(aConnectionInfo)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     this.callNextMethod();

@@ -87,7 +87,7 @@ function(aConnectionInfo) {
      */
 
     if (TP.notValid(aConnectionInfo)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     this.callNextMethod();
@@ -177,7 +177,6 @@ function() {
         (TP.nodeGetNSURI(bodyElement) !== TP.xmpp.XMLNS.HTTP_BIND)) {
         //  the response was not a 'body' element
         return this.raise('TP.sig.XMPPTransportException',
-                            arguments,
                             'No valid "body" element found.');
     }
 
@@ -185,7 +184,6 @@ function() {
         //  the response was a 'body' element, but the server wants us to
         //  terminate.
         return this.raise('TP.sig.XMPPTransportException',
-                            arguments,
                             'Server terminated transport.');
     }
 
@@ -359,7 +357,7 @@ function() {
             lastRID = (Number.random() * 1000000).floor();
             if ((lastRID + TP.xmpp.BOSHTransport.MAXIMUM_PACKETS) >
                                                             TP.MAX_DOUBLE) {
-                this.raise('TP.sig.XMPPBOSHTransportRIDError', arguments);
+                this.raise('TP.sig.XMPPBOSHTransportRIDError');
                 lastRID = 0;
             }
         }
@@ -411,7 +409,7 @@ function() {
     res = instr.read();
 
     if (TP.notValid(res)) {
-        this.raise('TP.sig.InvalidXMPPResponse', arguments);
+        this.raise('TP.sig.InvalidXMPPResponse');
 
         return null;
     }
@@ -428,7 +426,6 @@ function() {
         }
 
         this.raise(errorElement.get('errorException'),
-                    arguments,
                     errorElement.get('errorDescription'));
     }
 
@@ -525,13 +522,11 @@ function(aHref, aRequest) {
             //  This should cause the connection (and the associated
             //  streams) to close.
             return this.raise('TP.sig.XMPPTransportException',
-                                arguments,
                                 errMsg);
         }
     } catch (e) {
         //  some kind of problem with the post
         return this.raise('TP.sig.XMPPTransportException',
-                            arguments,
                             TP.ec(e, httpObj.responseText));
     }
 
@@ -641,13 +636,11 @@ function() {
         //  Serious trouble here - TP.httpPost() automatically takes care of
         //  redirects, etc. so that means there was a real error.
         if (!TP.httpDidSucceed(httpObj)) {
-            return this.raise('TP.sig.XMPPTransportException',
-                                arguments);
+            return this.raise('TP.sig.XMPPTransportException');
         }
     } catch (e) {
         //  some kind of problem with the post
         return this.raise('TP.sig.XMPPTransportException',
-                            arguments,
                             TP.ec(e, httpObj.responseText));
     }
 
@@ -655,7 +648,6 @@ function() {
         TP.isEmpty(httpObj.responseText)) {
         //  problem, no text containing stream id
         return this.raise('TP.sig.XMPPTransportException',
-                            arguments,
                             'No opening stream response from server.');
     }
 
@@ -674,7 +666,6 @@ function() {
     } catch (e) {
         //  some kind of problem parsing the result xmlResult
         return this.raise('TP.sig.DOMParseException',
-                            arguments,
                             TP.ec(e, httpObj.responseText));
     }
 
@@ -756,13 +747,11 @@ function(aStr, extraAttrs) {
                 TP.signal(href, stat);
 
                 return this.raise('TP.sig.XMPPTransportException',
-                                    arguments,
                                     'HTTP Error: ' + stat);
             }
         } catch (e) {
             //  some kind of problem with the post
             return this.raise('TP.sig.XMPPTransportException',
-                                arguments,
                                 TP.ec(e, httpObj.responseText));
         }
 
@@ -839,13 +828,11 @@ function(aStr, extraAttrs) {
 
             if (hadError) {
                 return this.raise('TP.sig.XMPPTransportException',
-                                    arguments,
                                     errMsg);
             }
         } catch (e) {
             //  some kind of problem with the post
             return this.raise('TP.sig.XMPPTransportException',
-                                arguments,
                                 TP.ec(e, httpObj.responseText));
         }
     } else {
@@ -890,7 +877,6 @@ function(aStr, extraAttrs) {
         } catch (e) {
             //  some kind of problem with the post
             return this.raise('TP.sig.XMPPTransportException',
-                                arguments,
                                 TP.ec(e, httpObj.responseText));
         }
     }
@@ -948,7 +934,6 @@ function() {
     } catch (e) {
         //  some kind of problem with the post
         return this.raise('TP.sig.XMPPTransportException',
-                            arguments,
                             TP.ec(e, httpObj.responseText));
     }
 
@@ -1070,7 +1055,7 @@ function(logInfo) {
                         'body', logInfo.at('body'),
                         'xhr', logInfo.at('xhr'),
                         'message', 'XMPP channel input'),
-                TP.TRACE, arguments) : 0;
+                TP.TRACE) : 0;
     }
 
     TP.sys.shouldLogIO(flag);
@@ -1110,7 +1095,7 @@ function(logInfo) {
                         'body', logInfo.at('body'),
                         'xhr', logInfo.at('xhr'),
                         'message', 'XMPP channel output'),
-                TP.TRACE, arguments) : 0;
+                TP.TRACE) : 0;
     }
 
     TP.sys.shouldLogIO(flag);
