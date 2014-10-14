@@ -84,6 +84,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType SimpleXML Paths',
+function() {
+
+    var path;
+
+    this.it('SimpleXML path', function(test, options) {
+        path = TP.apc('@foo');
+        this.assert.isKindOf(path, TP.core.SimpleXMLPath);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType XPath Paths',
 function() {
 
@@ -336,6 +349,9 @@ function() {
         this.assert.isKindOf(path, TP.core.XPathPath);
 
         path = TP.apc('#xpath1(//*)');
+        this.assert.isKindOf(path, TP.core.XPathPath);
+
+        path = TP.apc('#xpath1(@foo)');
         this.assert.isKindOf(path, TP.core.XPathPath);
     });
 });
