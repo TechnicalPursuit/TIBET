@@ -10361,7 +10361,8 @@ function(attributeName) {
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
-    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
+    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName) &&
+                !TP.regex.ATTRIBUTE.test(attributeName)) {
         path = TP.apc(attributeName);
     }
 
@@ -10598,7 +10599,8 @@ function(attributeName, attributeValue, shouldSignal) {
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
-    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
+    } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName) &&
+                !TP.regex.ATTRIBUTE.test(attributeName)) {
         path = TP.apc(attributeName);
     }
 
