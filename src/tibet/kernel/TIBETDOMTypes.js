@@ -4105,7 +4105,9 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    var node,
+    var boolAttrs,
+    
+        node,
 
         oldValue,
 
@@ -4114,6 +4116,12 @@ function(attributeName, attributeValue) {
         prefix,
         name,
         url;
+
+    if (TP.notEmpty(boolAttrs = this.get('booleanAttrs')) &&
+        boolAttrs.containsString(attributeName) &&
+        TP.isFalsey(attributeValue)) {
+            return this.removeAttribute(attributeName);
+    }
 
     node = this.getNativeNode();
 
