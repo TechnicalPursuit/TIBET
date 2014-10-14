@@ -3762,11 +3762,11 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getAttribute',
-function(attributeName, checkAttrNSURI) {
+TP.core.CollectionNode.Inst.defineMethod('$getAttribute',
+function(attributeName) {
 
     /**
-     * @name getAttribute
+     * @name $getAttribute
      * @synopsis Returns the value of the attribute provided.
      * @description The typical operation is to retrieve the attribute from the
      *     receiver's native node. When the attribute is prefixed this method
@@ -3776,9 +3776,6 @@ function(attributeName, checkAttrNSURI) {
      *     for Element nodes; when invoked on a document the documentElement is
      *     targeted.
      * @param {String} attributeName The attribute to find.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
      * @returns {String} The attribute value, if found.
      * @todo
      */
@@ -3791,7 +3788,38 @@ function(attributeName, checkAttrNSURI) {
         node = node.documentElement;
     }
 
-    return TP.elementGetAttribute(node, attributeName, checkAttrNSURI);
+    return TP.elementGetAttribute(node, attributeName, true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('getAttribute',
+function(attributeName) {
+
+    /**
+     * @name getAttribute
+     * @synopsis Returns the value of the attribute provided.
+     * @description The typical operation is to retrieve the attribute from the
+     *     receiver's native node. When the attribute is prefixed this method
+     *     will attempt to find the matching attribute value for that prefix
+     *     based on the document's prefixes and TIBET's canonical prefixing
+     *     information regarding namespaces. Note that this call is only valid
+     *     for Element nodes; when invoked on a document the documentElement is
+     *     targeted.
+     * @param {String} attributeName The attribute to find.
+     * @returns {String} The attribute value, if found.
+     * @todo
+     */
+
+    var funcName;
+
+    //  try attribute manipulation naming convention first
+    funcName = 'getAttr' + attributeName.asStartUpper();
+    if (TP.canInvoke(this, funcName)) {
+        return this[funcName]();
+    }
+
+    return this.$getAttribute(attributeName);
 });
 
 //  ------------------------------------------------------------------------
@@ -3911,7 +3939,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('hasAttribute',
-function(attributeName, checkAttrNSURI) {
+function(attributeName) {
 
     /**
      * @name hasAttribute
@@ -3921,9 +3949,6 @@ function(attributeName, checkAttrNSURI) {
      *     nodes; when invoked on a document wrapper the documentElement is
      *     targeted.
      * @param {String} attributeName The attribute to test.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
      * @raises TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not the receiver has the named attribute.
      * @todo
@@ -3941,7 +3966,7 @@ function(attributeName, checkAttrNSURI) {
         return this.raise('TP.sig.InvalidOperation', arguments, this);
     }
 
-    return TP.elementHasAttribute(node, attributeName, checkAttrNSURI);
+    return TP.elementHasAttribute(node, attributeName, true);
 });
 
 //  ------------------------------------------------------------------------
@@ -3980,8 +4005,8 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeAttribute',
-function(attributeName, checkAttrNSURI) {
+TP.core.CollectionNode.Inst.defineMethod('$removeAttribute',
+function(attributeName) {
 
     /**
      * @name removeAttribute
@@ -3990,9 +4015,6 @@ function(attributeName, checkAttrNSURI) {
      *     standard change notification semantics for native nodes as well as
      *     proper namespace management.
      * @param {String} attributeName The attribute name to remove.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
      * @todo
      */
 
@@ -4015,7 +4037,7 @@ function(attributeName, checkAttrNSURI) {
         //  the namespace URI if the checkAttrNSURIs flag is true.
         attr = TP.$elementGetPrefixedAttributeNode(node,
                                                     attributeName,
-                                                    checkAttrNSURI);
+                                                    true);
     } else {
         attr = node.getAttributeNode(attributeName);
     }
@@ -4033,7 +4055,7 @@ function(attributeName, checkAttrNSURI) {
     }
 
     //  rip out the attribute itself
-    TP.elementRemoveAttribute(node, attributeName, checkAttrNSURI);
+    TP.elementRemoveAttribute(node, attributeName, true);
 
     this.changed('@' + attributeName, TP.DELETE);
 
@@ -4043,7 +4065,33 @@ function(attributeName, checkAttrNSURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('setAttribute',
+TP.core.CollectionNode.Inst.defineMethod('removeAttribute',
+function(attributeName) {
+
+    /**
+     * @name removeAttribute
+     * @synopsis Removes the named attribute. This version is a wrapper around
+     *     the native element node removeAttribute call which attempts to handle
+     *     standard change notification semantics for native nodes as well as
+     *     proper namespace management.
+     * @param {String} attributeName The attribute name to remove.
+     * @todo
+     */
+
+    var funcName;
+
+    //  try attribute manipulation naming convention first
+    funcName = 'removeAttr' + attributeName.asStartUpper();
+    if (TP.canInvoke(this, funcName)) {
+        return this[funcName]();
+    }
+
+    return this.$removeAttribute(attributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('$setAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -4177,8 +4225,35 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('setAttribute',
+function(attributeName, attributeValue) {
+
+    /**
+     * @name setAttribute
+     * @synopsis Sets the value of the named attribute. This version is a
+     *     wrapper around the native element node setAttribute call which
+     *     attempts to handle standard change notification semantics for native
+     *     nodes as well as proper namespace management.
+     * @param {String} attributeName The attribute name to set.
+     * @param {Object} attributeValue The value to set.
+     * @todo
+     */
+
+    var funcName;
+
+    //  try attribute manipulation naming convention first
+    funcName = 'setAttr' + attributeName.asStartUpper();
+    if (TP.canInvoke(this, funcName)) {
+        return this[funcName](attributeValue);
+    }
+
+    return this.$setAttribute(attributeName, attributeValue);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('setAttributes',
-function(attributeHash, checkAttrNSURI) {
+function(attributeHash) {
 
     /**
      * @name setAttributes
@@ -4186,16 +4261,12 @@ function(attributeHash, checkAttrNSURI) {
      *     TP.lang.Hash. For document nodes this operation effectively operates
      *     on the document's documentElement.
      * @param {TP.lang.Hash} attributeHash The attributes to set.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
      * @todo
      */
 
     attributeHash.perform(
         function (kvPair) {
-            this.setAttribute(kvPair.first(), kvPair.last(), checkAttrNSURI);
+            this.setAttribute(kvPair.first(), kvPair.last());
         }.bind(this));
 });
 
@@ -8622,22 +8693,13 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.DocumentFragmentNode.Inst.defineMethod('getAttribute',
-function(attributeName, checkAttrNSURI) {
+function(attributeName) {
 
     /**
      * @name getAttribute
      * @synopsis Returns the value of the attribute provided.
-     * @description The typical operation is to retrieve the attribute from the
-     *     receiver's native node. When the attribute is prefixed this method
-     *     will attempt to find the matching attribute value for that prefix
-     *     based on the document's prefixes and TIBET's canonical prefixing
-     *     information regarding namespaces. Note that this call is only valid
-     *     for Element nodes; when invoked on a document the documentElement is
-     *     targeted. At this level, this method is a no-op.
+     * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute to find.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
      * @returns {String} The attribute value, if found.
      * @todo
      */
@@ -8688,7 +8750,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.DocumentFragmentNode.Inst.defineMethod('hasAttribute',
-function(attributeName, checkAttrNSURI) {
+function(attributeName) {
 
     /**
      * @name hasAttribute
@@ -8699,9 +8761,6 @@ function(attributeName, checkAttrNSURI) {
      *     targeted.
      * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute to test.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
      * @raises TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not the receiver has the named attribute.
      * @todo
@@ -8730,7 +8789,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.DocumentFragmentNode.Inst.defineMethod('removeAttribute',
-function(attributeName, checkAttrNSURI) {
+function(attributeName) {
 
     /**
      * @name removeAttribute
@@ -8740,9 +8799,6 @@ function(attributeName, checkAttrNSURI) {
      *     proper namespace management.
      * @description At this level, this method is a no-op.
      * @param {String} attributeName The attribute name to remove.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
      * @todo
      */
 
@@ -8772,7 +8828,7 @@ function(attributeName, attributeValue) {
 //  ------------------------------------------------------------------------
 
 TP.core.DocumentFragmentNode.Inst.defineMethod('setAttributes',
-function(attributeHash, checkAttrNSURI) {
+function(attributeHash) {
 
     /**
      * @name setAttributes
@@ -8781,10 +8837,6 @@ function(attributeHash, checkAttrNSURI) {
      *     on the document's documentElement.
      * @description At this level, this method is a no-op.
      * @param {TP.lang.Hash} attributeHash The attributes to set.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
      * @todo
      */
 
@@ -10345,9 +10397,10 @@ function(attributeName) {
      */
 
     var path,
-        args,
 
-        funcName;
+        funcName,
+
+        args;
 
     if (TP.isEmpty(attributeName)) {
         return this.raise('TP.sig.InvalidParameter', arguments);
