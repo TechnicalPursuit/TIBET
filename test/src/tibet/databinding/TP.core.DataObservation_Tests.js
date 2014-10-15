@@ -320,7 +320,7 @@ function() {
         //  And *not* for jsonPath1 (it's too high up in the chain)
         this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
 
-        //  But not for the structural path result
+        //  And not for the structural path result
         this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
 
         valuePathResults.empty();
