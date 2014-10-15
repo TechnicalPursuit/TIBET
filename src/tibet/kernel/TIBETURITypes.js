@@ -1529,6 +1529,9 @@ TP.core.URI.Inst.defineAttribute('httpBased');
 TP.core.URI.Inst.defineAttribute('resource');
 TP.core.URI.Inst.defineAttribute('resourceCache');
 
+//  whether the receiver 'creates content' when setting it
+TP.core.URI.Inst.defineAttribute('shouldCreateContent');
+
 //  holder for this instance's uri lookup properties
 TP.core.URI.Inst.defineAttribute('uriNodes');
 TP.core.URI.Inst.defineAttribute('uriRegex');
