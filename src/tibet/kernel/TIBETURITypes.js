@@ -1606,11 +1606,16 @@ function(aURIString) {
 
     index = aURIString.indexOf(':');
 
-    this.$set('uri', aURIString);
-    this.$set('scheme', aURIString.slice(0, index));
+    //  NOTE: These '$set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
+    this.$set('uri', aURIString, false);
+    this.$set('scheme', aURIString.slice(0, index), false);
 
     ssp = aURIString.slice(index + 1);
-    this.$set('schemeSpecificPart', ssp);
+    this.$set('schemeSpecificPart', ssp, false);
 
     //  defer to other methods to handle things each subtype likely needs to
     //  override to finalize instance initialization.
@@ -1703,20 +1708,27 @@ function(schemeSpecificString) {
         return;
     }
 
+    //  NOTE: These '$set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
     if (schemeSpecificString.indexOf('#') !== TP.NOT_FOUND) {
         primaryHref = schemeSpecificString.slice(
                         0, schemeSpecificString.indexOf('#'));
 
         this.$set('primaryHref',
-                    TP.join(this.$get('scheme'), ':', primaryHref));
+                    TP.join(this.$get('scheme'), ':', primaryHref),
+                    false);
 
         if (TP.notEmpty(fragment = schemeSpecificString.slice(
                                     schemeSpecificString.indexOf('#') + 1))) {
-            this.$set('fragment', fragment);
+            this.$set('fragment', fragment, false);
         }
     } else {
         this.$set('primaryHref',
-                    TP.join(this.$get('scheme'), ':', schemeSpecificString));
+                    TP.join(this.$get('scheme'), ':', schemeSpecificString),
+                    false);
     }
 
     return;
@@ -4008,9 +4020,14 @@ function(parts) {
      * @returns {TP.core.URI} The receiver.
      */
 
+    //  NOTE: These '$set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
     if (TP.canInvoke(parts, 'at')) {
-        this.$set('nid', parts.at('nid'));
-        this.$set('nss', parts.at('nss'));
+        this.$set('nid', parts.at('nid'), false);
+        this.$set('nss', parts.at('nss'), false);
     }
 
     return this;
@@ -5569,15 +5586,20 @@ function(parts) {
 
     this.callNextMethod();
 
-    this.set('user', parts.at('user'));
-    this.set('password', parts.at('password'));
+    //  NOTE: These 'set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
 
-    this.set('host', parts.at('host'));
-    this.set('port', parts.at('port'));
+    this.set('user', parts.at('user'), false);
+    this.set('password', parts.at('password'), false);
 
-    this.set('path', parts.at('path'));
-    this.set('query', parts.at('query'));
-    this.set('queryDict', parts.at('queryDict'));
+    this.set('host', parts.at('host'), false);
+    this.set('port', parts.at('port'), false);
+
+    this.set('path', parts.at('path'), false);
+    this.set('query', parts.at('query'), false);
+    this.set('queryDict', parts.at('queryDict'), false);
 
     return this;
 });
@@ -5812,7 +5834,12 @@ function(parts) {
         thePath = thePath.slice(1);
     }
 
-    this.set('path', thePath);
+    //  NOTE: These 'set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
+    this.set('path', thePath, false);
 
     //  generate the internal href
     this.asString();
@@ -6308,8 +6335,13 @@ function(parts) {
 
     this.callNextMethod();
 
-    this.set('host', parts.at('host'));
-    this.set('port', parts.at('port'));
+    //  NOTE: These 'set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
+    this.set('host', parts.at('host'), false);
+    this.set('port', parts.at('port'), false);
 
     return this;
 });
