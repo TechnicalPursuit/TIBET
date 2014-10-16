@@ -2434,6 +2434,31 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getFragmentText',
+function() {
+
+    /**
+     * @name getFragmentText
+     * @synopsis Returns the fragment text of the receiver as a String without
+     *     the fragment scheme portion.
+     * @returns {String} The fragment string.
+     */
+
+    var frag,
+        results;
+
+    //  NOTE that we rely on the initial parse operation to populate any
+    //  fragment portion, otherwise we'd be recomputing.
+    frag = this.$get('fragment');
+    if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(frag))) {
+        return results.at(1);
+    }
+
+    return '';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getHeader',
 function(aHeaderName) {
 
@@ -3000,7 +3025,7 @@ function(aSignal) {
 
         i,
 
-        fragNoPointer,
+        fragText,
 
         aspect;
 
@@ -3025,15 +3050,12 @@ function(aSignal) {
 
             for (i = 0; i < subURIs.getSize(); i++) {
 
-                //  Strip off any 'pointer indicator' (i.e. '#element',
-                //  '#xpointer' or '#xpath1')
-                fragNoPointer = TP.regex.ANY_POINTER.match(
-                                    subURIs.at(i).getFragment()).at(1);
+                fragText = subURIs.at(i).getFragmentText();
 
                 //  If the fragment without the 'pointer indicator' matches the
                 //  path, then signal from both the subURI and ourself. Note
                 //  here that we just reuse the signal name and payload.
-                if (fragNoPointer === path) {
+                if (fragText === path) {
 
                     subURIs.at(i).signal(
                             aSignal.getSignalName(),
@@ -3048,7 +3070,7 @@ function(aSignal) {
             }
         } else {
             //  If we don't have any subURIs, invoke the standard 'changed'
-            //  mechanism (which signals 'TP.sig.ValueChange') from ourself.
+            //  mechanism (which signals 'TP.sig.ValueChange' from ourself).
             this.changed('value', TP.UPDATE, TP.hc('target', resource));
         }
     } else {
