@@ -4451,7 +4451,12 @@ function(aResource, aRequest) {
 
         resource,
 
-        hasID;
+        hasID,
+
+        subURIs,
+        description,
+        fragText,
+        i;
 
     TP.debug('break.uri_resource');
 
@@ -4491,6 +4496,41 @@ function(aResource, aRequest) {
 
     //  clear any expiration computations
     this.expire(false);
+
+    //  SubURIs are URIs that have the same primary resource as us, but also
+    //  have a fragment, indicating that they also have a secondary resource
+    //  pointed to by the fragment
+    subURIs = this.getSubURIs();
+
+    if (TP.notEmpty(subURIs)) {
+
+        //  In order to make sure that all observers of both the subURI and
+        //  ourself (as the primary URI) get notified, we signal from both the
+        //  subURI and ourself. Note here that we just reuse the signal name and
+        //  payload.
+
+        description = TP.hc('action', TP.DELETE, 'target', aResource);
+
+        for (i = 0; i < subURIs.getSize(); i++) {
+
+            fragText = subURIs.at(i).getFragmentText();
+            description.atPut('aspect', fragText);
+
+            subURIs.at(i).signal(
+                    'TP.sig.StructureChange',
+                    arguments,
+                    description);
+
+            this.signal(
+                    'TP.sig.StructureChange',
+                    arguments,
+                    description);
+        }
+    }
+
+    //  Whether or not we have an subURIs, we invoke the standard 'changed'
+    //  mechanism (which signals 'TP.sig.ValueChange' from ourself).
+    this.changed('value', TP.UPDATE, TP.hc('target', aResource));
 
     return this;
 });
