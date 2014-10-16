@@ -656,7 +656,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
         //  The signal name is always TP.sig.ValueChange for paths
         signalName = 'TP.sig.ValueChange';
     } else {
-        signalName = sourceAttr.asTitleCase() + 'Change';
+        signalName = sourceAttr.asStartUpper() + 'Change';
     }
 
     methodName = 'handle' + TP.escapeTypeName(signalName);
