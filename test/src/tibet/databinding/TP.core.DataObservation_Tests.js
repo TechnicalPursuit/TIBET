@@ -900,14 +900,14 @@ function() {
         modelObj = TP.lang.Object.construct();
         modelObj.defineAttribute('salary');
 
-        observerObj = TP.lang.Object.construct();
-        observerObj.defineAttribute('salary');
-
         //  This sets the ID of the object and registers it with an accompanying
         //  'urn:tibet' URN (which will allow the 'defineBinding()' call to turn
         //  change handling on for it).
         modelObj.setID('CurrentEmployee');
         TP.sys.registerObject(modelObj);
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
 
         observerObj.defineBinding('salary', 'CurrentEmployee');
 
@@ -972,14 +972,14 @@ function() {
         modelObj = TP.lang.Object.construct();
         modelObj.defineAttribute('averageSalary');
 
-        observerObj = TP.lang.Object.construct();
-        observerObj.defineAttribute('salary');
-
         //  This sets the ID of the object and registers it with an accompanying
         //  'urn:tibet' URN (which will allow the 'defineBinding()' call to turn
         //  change handling on for it).
         modelObj.setID('CurrentEmployee');
         TP.sys.registerObject(modelObj);
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
 
         observerObj.defineBinding('salary', 'CurrentEmployee', 'averageSalary');
 
