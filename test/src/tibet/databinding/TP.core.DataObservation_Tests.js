@@ -759,7 +759,7 @@ function() {
 TP.lang.Object.Type.describe('Object level binding',
 function() {
 
-    this.it('change notification - concrete reference', function(test, options) {
+    this.it('change notification - concrete reference, simple aspect', function(test, options) {
 
         var modelObj,
             observerObj,
@@ -798,7 +798,7 @@ function() {
         TP.ignore(modelObj, 'SalaryChange', handlerFunc);
     });
 
-    this.it('change notification - virtual reference', function(test, options) {
+    this.it('change notification - virtual reference, simple aspect', function(test, options) {
 
         var modelObj,
             observerObj,
@@ -843,7 +843,7 @@ function() {
         TP.ignore('CurrentEmployee', 'SalaryChange', handlerFunc);
     });
 
-    this.it('using defineBinding() - concrete reference, same aspect', function(test, options) {
+    this.it('using defineBinding() - concrete reference, same simple aspect', function(test, options) {
 
         var modelObj,
             observerObj;
@@ -876,7 +876,7 @@ function() {
                     observerObj.get('salary'));
     });
 
-    this.it('using defineBinding() - virtual reference, same aspect', function(test, options) {
+    this.it('using defineBinding() - virtual reference, same simple aspect', function(test, options) {
 
         var modelObj,
             observerObj;
@@ -915,7 +915,7 @@ function() {
                     observerObj.get('salary'));
     });
 
-    this.it('using defineBinding() - concrete reference, different aspect', function(test, options) {
+    this.it('using defineBinding() - concrete reference, different simple aspect', function(test, options) {
 
         var modelObj,
             observerObj;
@@ -948,7 +948,7 @@ function() {
                     observerObj.get('salary'));
     });
 
-    this.it('using defineBinding() - virtual reference, different aspect', function(test, options) {
+    this.it('using defineBinding() - virtual reference, different simple aspect', function(test, options) {
 
         var modelObj,
             observerObj;
