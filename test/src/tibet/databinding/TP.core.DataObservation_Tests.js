@@ -859,6 +859,60 @@ function() {
                     observerObj.get('salary'));
     });
 
+    this.it('change notification - URI reference, simple aspect', function(test, options) {
+
+        var modelObj,
+            modelURI,
+            observerObj,
+
+            handlerFunc;
+
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
+
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to 'urn:tibet:testdata'
+        //  because it didn't have an existing ID and was assigned as the
+        //  resource to the URI defined above.
+        modelURI.setResource(modelObj);
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        TP.observe(
+            modelURI,
+            'SalaryChange',
+            handlerFunc = function (aSignal) {
+
+                var newValue;
+
+                test.assert.isIdenticalTo(aSignal.getTarget(), modelObj);
+                test.assert.isEqualTo(aSignal.getAspect(), 'salary');
+                test.assert.isEqualTo(aSignal.getAction(), TP.UPDATE);
+
+                newValue = aSignal.getValue();
+                test.assert.isEqualTo(newValue, 42);
+
+                observerObj.set('salary', newValue);
+            });
+
+        modelObj.set('salary', 42);
+
+        this.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    observerObj.get('salary'));
+
+        TP.ignore(modelURI, 'SalaryChange', handlerFunc);
+
+        modelObj.set('salary', 45);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 42 set above.
+        this.assert.isEqualTo(
+                    42,
+                    observerObj.get('salary'));
+    });
+
     this.it('using defineBinding() - concrete reference, same simple aspect', function(test, options) {
 
         var modelObj,
@@ -921,6 +975,46 @@ function() {
 
         //  Destroy the binding
         observerObj.destroyBinding('salary', 'CurrentEmployee');
+
+        modelObj.set('salary', 45);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 42 set above.
+        this.assert.isEqualTo(
+                    42,
+                    observerObj.get('salary'));
+    });
+
+    this.it('using defineBinding() - URI reference, same simple aspect', function(test, options) {
+
+        var modelObj,
+            modelURI,
+            observerObj;
+
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('salary');
+
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to 'urn:tibet:testdata'
+        //  because it didn't have an existing ID and was assigned as the
+        //  resource to the URI defined above.
+        modelURI.setResource(modelObj);
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        observerObj.defineBinding('salary', modelURI);
+
+        //  Set the value of 'salary' on the model object. The binding should
+        //  cause the value of 'salary' on the observer to update
+        modelObj.set('salary', 42);
+
+        this.assert.isEqualTo(
+                    modelObj.get('salary'),
+                    observerObj.get('salary'));
+
+        //  Destroy the binding
+        observerObj.destroyBinding('salary', modelURI);
 
         modelObj.set('salary', 45);
 
@@ -1002,6 +1096,47 @@ function() {
                     42,
                     observerObj.get('salary'));
     });
+
+    this.it('using defineBinding() - URI reference, different simple aspect', function(test, options) {
+
+        var modelObj,
+            modelURI,
+            observerObj;
+
+        modelObj = TP.lang.Object.construct();
+        modelObj.defineAttribute('averageSalary');
+
+        modelURI = TP.uc('urn:tibet:testdata');
+        //  This automatically sets the ID of modelObj to 'urn:tibet:testdata'
+        //  because it didn't have an existing ID and was assigned as the
+        //  resource to the URI defined above.
+        modelURI.setResource(modelObj);
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('salary');
+
+        observerObj.defineBinding('salary', modelURI, 'averageSalary');
+
+        //  Set the value of 'salary' on the model object. The binding should
+        //  cause the value of 'salary' on the observer to update
+        modelObj.set('averageSalary', 42);
+
+        this.assert.isEqualTo(
+                    modelObj.get('averageSalary'),
+                    observerObj.get('salary'));
+
+        //  Destroy the binding
+        observerObj.destroyBinding('salary', modelURI, 'averageSalary');
+
+        modelObj.set('averageSalary', 45);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 42 set above.
+        this.assert.isEqualTo(
+                    42,
+                    observerObj.get('salary'));
+    });
+});
 });
 
 //  ========================================================================
