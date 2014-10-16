@@ -3685,6 +3685,7 @@ function(aRequest, aResult, aResource) {
             fragment = fragment;
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
             fragment = TP.apc(fragment, true);
+            fragment.set('shouldMake', this.get('shouldCreateContent'));
         }
 
         if (TP.canInvoke(result, 'set')) {
