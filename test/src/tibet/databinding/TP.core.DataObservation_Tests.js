@@ -796,6 +796,14 @@ function() {
                     observerObj.get('salary'));
 
         TP.ignore(modelObj, 'SalaryChange', handlerFunc);
+
+        modelObj.set('salary', 45);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 42 set above.
+        this.assert.isEqualTo(
+                    42,
+                    observerObj.get('salary'));
     });
 
     this.it('change notification - virtual reference, simple aspect', function(test, options) {
@@ -841,6 +849,14 @@ function() {
                     observerObj.get('salary'));
 
         TP.ignore('CurrentEmployee', 'SalaryChange', handlerFunc);
+
+        modelObj.set('salary', 45);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of 42 set above.
+        this.assert.isEqualTo(
+                    42,
+                    observerObj.get('salary'));
     });
 
     this.it('using defineBinding() - concrete reference, same simple aspect', function(test, options) {
