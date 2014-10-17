@@ -2439,6 +2439,10 @@ function(anObject, assignIfAbsent) {
         return TP.str(anObject);
     }
 
+    if (TP.canInvoke(anObject, 'getID')) {
+        return anObject.getID();
+    }
+
     //  most everything else can be managed via global ID (nodes, windows,
     //  etc)
     return TP.gid(anObject, assignIfAbsent);
