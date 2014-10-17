@@ -2661,11 +2661,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setAttribute',
+TP.core.UIElementNode.Inst.defineMethod('$setAttribute',
 function(attributeName, attributeValue) {
 
     /**
-     * @name setAttribute
+     * @name $setAttribute
      * @synopsis Sets the value of the named attribute. This version overrides
      *     the one inherited from TP.core.ElementNode to not bother with
      *     snapshotting changes to a transactionally consistent DOM, since this
