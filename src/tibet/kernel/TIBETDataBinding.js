@@ -611,20 +611,19 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
      */
 
     var resource,
-        targetAttr,
         sourceAttr,
 
         signalName,
-        methodName;
+        methodName,
+
+        handler;
 
     if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter', arguments,
             'No attribute name provided for bind.');
     }
 
-    if (TP.isURI(resourceOrURI)) {
-        resource = TP.uc(resourceOrURI).getResource();
-    } else if (TP.isString(resourceOrURI)) {
+    if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
     } else {
         resource = resourceOrURI;
@@ -638,9 +637,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     //  Get the target attribute. If there is no source attribute, then use the
     //  target attribute as the source attribute.
-    targetAttr = targetAttributeName;
     if (TP.notValid(sourceAttr = sourceAttributeName)) {
-        sourceAttr = targetAttr;
+        sourceAttr = targetAttributeName;
     }
 
     //  If the source attribute is an access path, then we compute the signal we
@@ -659,26 +657,38 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
         signalName = sourceAttr.asStartUpper() + 'Change';
     }
 
-    methodName = 'handle' + TP.escapeTypeName(signalName);
-
     //  Make sure that target object has a local method to handle the change
-    if (TP.notValid(target.getMethod(methodName))) {
-        target.defineMethod(
-                    methodName,
-                    function(aSignal) {
+    methodName = 'handle' + TP.escapeTypeName(signalName);
+    if (TP.notValid(handler = target.getMethod(methodName))) {
 
-                        var newVal;
+        //  Define a handler function
+        handler = function(aSignal) {
 
-                        TP.debug('break.bind_change');
+            var newVal,
+                targetAttr;
 
-                        try {
-                            newVal = aSignal.getValue();
-                            this.set(targetAttr, newVal);
-                        } catch (e) {
-                            this.raise('TP.sig.InvalidBinding', arguments);
-                        }
-                    });
+            TP.debug('break.bind_change');
+
+            try {
+                newVal = aSignal.getValue();
+                targetAttr = handler.$aspectMap.at(aSignal.at('aspect'));
+
+                this.set(targetAttr, newVal);
+            } catch (e) {
+                this.raise('TP.sig.InvalidBinding', arguments);
+            }
+        };
+
+        //  Allocate an aspect map that various aspects will register themselves
+        //  with. This allows a set of source aspects to share a single change
+        //  handler function.
+        handler.$aspectMap = TP.hc();
+        target.defineMethod(methodName, handler);
     }
+
+    //  Add an entry to make a mapping between a source aspect and a target
+    //  aspect.
+    handler.$aspectMap.atPut(TP.str(sourceAttr), targetAttributeName);
 
     target.observe(resource, signalName);
 
@@ -763,16 +773,17 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
         targetAttr,
         sourceAttr,
 
-        signalName;
+        signalName,
+        methodName,
+
+        handler;
 
     if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter', arguments,
             'No attribute name provided for bind.');
     }
 
-    if (TP.isURI(resourceOrURI)) {
-        resource = TP.uc(resourceOrURI).getResource();
-    } else if (TP.isString(resourceOrURI)) {
+    if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
     } else {
         resource = resourceOrURI;
@@ -798,6 +809,18 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
         signalName = 'TP.sig.ValueChange';
     } else {
         signalName = sourceAttr.asTitleCase() + 'Change';
+    }
+
+    //  We go ahead and try to get the handler that the defineBinding() call
+    //  installed so that we can remove our interest from it's set of keys.
+    methodName = 'handle' + TP.escapeTypeName(signalName);
+
+    if (TP.isValid(handler = target.getMethod(methodName)) &&
+        TP.isValid(handler.$aspectMap)) {
+
+        //  There was a valid handler and a valid key map - remove our source
+        //  aspect from it.
+        handler.$aspectMap.removeKey(TP.str(sourceAttr));
     }
 
     target.ignore(resource, signalName);
