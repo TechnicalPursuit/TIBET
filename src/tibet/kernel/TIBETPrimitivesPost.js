@@ -1907,7 +1907,8 @@ function(anObject, assignIfAbsent) {
             if (TP.notEmpty(prefix)) {
                 globalID = prefix.replace(/#.+/, '#' + localID);
                 if (assign) {
-                    TP.elementSetAttribute(obj, TP.GLOBAL_ID_ATTR, globalID, true);
+                    TP.elementSetAttribute(
+                            obj, TP.GLOBAL_ID_ATTR, globalID, true);
                 }
                 return globalID;
             }
@@ -1919,6 +1920,9 @@ function(anObject, assignIfAbsent) {
     }
 
     if (TP.isDocument(obj)) {
+
+        prefix = '';
+
         //  if a document doesn't have a window then we have to know its
         //  URI location so we can access it via the URI
         win = TP.nodeGetWindow(obj);
@@ -1949,8 +1953,6 @@ function(anObject, assignIfAbsent) {
             }
 
             prefix = 'tibet://' + globalID + '/';
-        } else {
-            prefix = 'tibet:///';
         }
 
         //  in some sense the URI aspect is irrelevant if the document is in
@@ -1969,7 +1971,7 @@ function(anObject, assignIfAbsent) {
             if (TP.isElement(root)) {
                 if (TP.notEmpty(id = TP.elementGetAttribute(
                                     root, TP.GLOBAL_DOCID_ATTR, true))) {
-                    loc = '#' + id;
+                    loc = id;
                 } else if (TP.isTrue(assign)) {
                     TP.regex.INVALID_ID_CHARS.lastIndex = 0;
                     id = TP.genID().replace('$', 'document_').replace(
@@ -1978,7 +1980,7 @@ function(anObject, assignIfAbsent) {
                     TP.elementSetAttribute(
                             root, TP.GLOBAL_DOCID_ATTR, id, true);
 
-                    loc = '#' + id;
+                    loc = id;
                 } else {
                     loc = '';
                 }
