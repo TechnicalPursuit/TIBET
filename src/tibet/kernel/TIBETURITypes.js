@@ -2730,9 +2730,13 @@ function(aRequest) {
      * @returns {Object} The resource or TP.sig.Response when async.
      */
 
+    var frag;
+
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $getPrimaryResource.
-    if (this.isPrimaryURI() || !this.hasFragment()) {
+    if (this.isPrimaryURI() ||
+        !this.hasFragment() ||
+        ((frag = this.getFragment()) === 'document')) {
         return this.$getPrimaryResource(aRequest, true);
     }
 
@@ -3578,9 +3582,13 @@ function(aResource, aRequest) {
      * @todo
      */
 
+    var frag;
+
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
-    if (this.isPrimaryURI() || !this.hasFragment()) {
+    if (this.isPrimaryURI() ||
+        !this.hasFragment() ||
+        ((frag = this.getFragment()) === 'document')) {
         return this.$setPrimaryResource(aResource, aRequest);
     }
 
