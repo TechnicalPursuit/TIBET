@@ -12196,6 +12196,33 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DocumentNode.Inst.defineMethod('setID',
+function(anID) {
+
+    /**
+     * @name setID
+     * @synopsis Sets the public ID of the receiver. Note that while, for
+     *     Element nodes, this corresponds to the 'local ID' of the receiver,
+     *     for Document nodes this corresponds to the 'global ID' (since they
+     *     don't really have a local ID).
+     * @description Note that this method will assign a generated ID if the
+     *     supplied ID is empty.
+     * @param {String} anID The value to use as a public ID.
+     * @returns {String} The ID that was set.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    TP.elementSetAttribute(
+                    node.documentElement, TP.GLOBAL_DOCID_ATTR, anID, true);
+
+    return anID;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.DocumentNode.Inst.defineMethod('setPhase',
 function(aPhase) {
 
