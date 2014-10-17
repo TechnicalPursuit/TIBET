@@ -9,7 +9,7 @@
     <property name="break.unbound" value="true"/>
     <property name="log.bootcfg" value="true"/>
     <property name="log.bootenv" value="true"/>
-    <property name="log.level" value="1"/>
+    <property name="log.level" value="DEBUG"/>
     <property name="log.inferences" value="true"/>
     <property name="log.null_namespaces" value="true"/>
     <property name="log.stack" value="true"/>

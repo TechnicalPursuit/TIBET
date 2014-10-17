@@ -1898,7 +1898,7 @@ function() {
      * @returns {Boolean} True if the signal can be logged.
      */
 
-    return true;
+    return this.getType().shouldLog();
 });
 
 //  ------------------------------------------------------------------------
@@ -2771,8 +2771,21 @@ alter the behavior of the registration or signal notification process.
 
 TP.lang.Object.defineSubtype('sig:SignalMap');
 
-//  turn off logging unless we're debugging the internals of notification
-TP.sig.SignalMap.shouldLog(false);
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @name initialize
+     * @synopsis Performs one-time setup for the type on startup/import.
+     */
+
+    //  turn off logging unless we're debugging the internals of notification
+    this.shouldLog(false);
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -6208,9 +6221,9 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  help reduce the potential for recursive logging. The activity and
     //  error logs, as well as the signal log itself, are definite no-nos.
     if (TP.sys.shouldLogSignals() &&
-        (anOrigin !== TP.sys.$changeLog) &&
-        (anOrigin !== TP.sys.$patchLog) &&
-        (anOrigin !== TP.sys.$activityLog)) {
+        (anOrigin !== TP.sys.$changes) &&
+        (anOrigin !== TP.sys.$testlog) &&
+        (anOrigin !== TP.sys.$activity)) {
 
         sigstr = aSignal.getSignalName();
         sigtype = TP.sig.SignalMap.$getSignalType(aSignal);

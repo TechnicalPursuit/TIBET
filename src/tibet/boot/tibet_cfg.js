@@ -158,17 +158,9 @@ TP.sys.setcfg('tibet.debug', true);
 //  build file.
 TP.sys.setcfg('tibet.verbose', true);
 
-//  number of log message entries to buffer for INFO level output. This value is
-//  used as a baseline computation point. The actual level will vary based on
-//  the current logging level and this value. See $computeLogBufferSize();
-TP.sys.setcfg('log.buffersize', 5);
-
-//  which boot reporter should we use? bootui, console, silent, phantom.
-TP.sys.setcfg('boot.reporter', 'bootui');
-
-//  which log reporter should we use?
-TP.sys.setcfg('log.reporter', 'console');
-
+//  the logging level for the boot log. best to use strings to define.
+//  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
+TP.sys.setcfg('boot.level', 'DEBUG');
 
 //  ---
 //  code roots
@@ -325,12 +317,23 @@ TP.sys.setcfg('log.verbosecolor', 'grey');
 // or a browser. Note these tests are unlikely to work in other contexts.
 if (typeof navigator === 'undefined') {
   TP.sys.setcfg('boot.context', 'nodejs');
+  TP.sys.setcfg('boot.reporter', 'console');
+
+  TP.sys.setcfg('log.reporter', 'console');
   TP.sys.setcfg('log.colormode', 'terminal');
 } else if (/PhantomJS/.test(navigator.userAgent)) {
-  TP.sys.setcfg('boot.context', 'phantomjs');
+  TP.sys.setcfg('boot.context', 'phantom');
+  TP.sys.setcfg('boot.reporter', 'phantom');
+  TP.sys.setcfg('boot.level', 'WARN');
+
+  TP.sys.setcfg('log.reporter', 'phantom');
   TP.sys.setcfg('log.colormode', 'terminal');
+  TP.sys.setcfg('log.level', 'WARN');
 } else {
   TP.sys.setcfg('boot.context', 'browser');
+  TP.sys.setcfg('boot.reporter', 'bootui');
+
+  TP.sys.setcfg('log.reporter', 'console');
   TP.sys.setcfg('log.colormode', 'console');
 }
 
@@ -911,16 +914,19 @@ TP.sys.setcfg('log.bootcfg', false);
 //  true will dump environment data to boot log
 TP.sys.setcfg('log.bootenv', false);
 
+//  number of log message entries to buffer for INFO level output. This value is
+//  used as a baseline computation point. The actual level will vary based on
+//  the current logging level and this value. See $computeLogBufferSize();
+TP.sys.setcfg('log.buffersize', 5);
+
 //  Which default formatter should be used when sending log output to the
 //  stdout routine?
 TP.sys.setcfg('log.default_format', 'tsh:pp');
 
-//  the logging level for the boot log, which is numerically driven.
-TP.sys.setcfg('boot.level', 1);  //  0 (TRACE) thru 6 (SYSTEM)
-
 //  the logging level for the TP.log logging system. Set once that code has
 //  loaded during kernel startup since the levels are actual instances.
-TP.sys.setcfg('log.level', null); // TP.log.TRACE thru TP.log.SYSTEM
+//  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
+TP.sys.setcfg('log.level', 'INFO');
 
 //  when logging is on the value here will control how large the activity
 //  log can grow before it starts eliminating the oldest entries. NOTE that

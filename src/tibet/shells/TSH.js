@@ -1858,15 +1858,17 @@ function(aRequest) {
 
     /**
      * @name executeLog
-     * @synopsis Outputs the activity log to the current stdout pipeline.
+     * @synopsis Outputs a log's content to the current stdout pipeline.
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
      */
 
-    aRequest.stdout(TP.sys.getActivityLog());
+    /**
+     * @
+     * @todo
+     */
 
-    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------

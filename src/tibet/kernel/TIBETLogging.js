@@ -163,7 +163,6 @@ TP.log.Manager.Type.defineMethod('removeLogger', function(aLogger) {
     return this;
 });
 
-
 //  ============================================================================
 //  Nestable
 //  ============================================================================
@@ -345,6 +344,67 @@ TP.log.Nestable.Inst.defineMethod('getParent', function() {
     this.parent = parent;
 
     return parent;
+});
+
+//  ============================================================================
+//  Defaulted
+//  ============================================================================
+
+/**
+ * A common type for default-able logger containers (APP and TP essentially).
+ */
+
+TP.lang.Object.defineSubtype('log.Defaulted');
+
+// TP.log.Filtered is designed as a trait to be used/mixed in.
+TP.log.Defaulted.isAbstract(true);
+
+//  ----------------------------------------------------------------------------
+
+/**
+ * The default logger instance.
+ * @type {TP.log.Logger}
+ */
+TP.log.Defaulted.defineAttribute('$defaultLogger');
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Defaulted.defineMethod('getDefaultLogger', function() {
+
+    /**
+     * @name getDefaultLogger
+     * @summary Returns the default application logger instance.
+     * @return {TP.log.Logger} The default logger instance.
+     */
+
+    var logger;
+
+    logger = this.$get('defaultLogger');
+    if (TP.notValid(logger)) {
+        logger = this.getLogger();
+    }
+
+    return logger;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Defaulted.defineMethod('setDefaultLogger', function(aLogger) {
+
+    /**
+     * @name setDefaultLogger
+     * @summary Defines the default application logger instance.
+     * @param {TP.log.Logger} aLogger The logger to register as the default.
+     * @return {TP.log.Logger} The receiver.
+     */
+
+    if (!TP.isKindOf(aLogger, TP.log.Logger)) {
+        return this.raise('InvalidParameter');
+    }
+
+    this.$set('$defaultLogger', aLogger);
+
+    return this;
 });
 
 //  ============================================================================
@@ -2049,6 +2109,275 @@ TP.log.BrowserLayout.Inst.defineMethod('layout', function(anEntry) {
 //  ============================================================================
 
 //  ------------------------------------------------------------------------
+//  TP.sys
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('$$log',
+function(anObject, aLogName, aLogLevel) {
+
+    /**
+     * @name $$log
+     * @synopsis A private method for logging to the TIBET log. The log that
+     *     will be modified is based on the supplied log name.
+     * @param {Object} anObject The message/object to log.
+     * @param {String} aLogName The log name, such as TP.IO_LOG,
+     *     TP.INFERENCE_LOG, etc.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    var name,
+        level,
+        iserr,
+
+        actflag,
+        errflag,
+
+        entry,
+        stackInfo,
+
+        stdioDict,
+        format,
+        output,
+        str,
+        msg;
+
+    //  sometimes we can get lucky if a recursion includes logging
+    TP.sys.trapRecursion();
+
+    if (!TP.sys.shouldLogActivities()) {
+        return false;
+    }
+
+    name = TP.ifInvalid(aLogName, TP.LOG);
+    level = TP.ifInvalid(aLogLevel, TP.sys.getLogLevel());
+    iserr = (level > TP.WARN) && (level < TP.SYSTEM);
+
+    //  enclose the entire method in a try/finally block to mask off
+    //  logging temporarily while ensuring it gets turned back on
+    try {
+        //  turn off logging while we log :)
+        actflag = TP.sys.shouldLogActivities();
+        errflag = TP.sys.shouldLogErrors();
+
+        TP.sys.shouldLogActivities(false, false);
+        TP.sys.shouldLogErrors(false, false);
+
+        //  add entry to the low-level log container and grab that entry so
+        //  we can augment it with stack and argument data as needed
+        TP.sys.$activity.log(anObject, name, level);
+        entry = TP.sys.$activity.last();
+
+        //  NOTE that we never log stack information for SYSTEM messages
+        if (level !== TP.SYSTEM) {
+            if (TP.sys.shouldLogStack()) {
+
+                try {
+                    throw new Error();
+                } catch (e) {
+                    stackInfo = TP.getStackInfo(e);
+                }
+
+                //  the 3 here is intended to strip off the logging and
+                //  stack functions themselves so we only see the portion of
+                //  the stack not included in the infrastructure
+                stackInfo.shift();
+                stackInfo.shift();
+                stackInfo.shift();
+
+                //  adjust the entry to hold captured stack/arg data
+                entry.push(stackInfo);
+            }
+        }
+
+        //  keep log from growing without bound
+        if (TP.sys.$activity.getSize() > TP.sys.cfg('log.size_max')) {
+            TP.sys.$activity.shift();
+        }
+
+        stdioDict = TP.hc();
+        stdioDict.atPut('messageLevel', level);
+        stdioDict.atPut('messageType', 'log');
+
+        //  these are for TP.tdp.Console support
+        stdioDict.atPut('cmd',
+                        TP.boot.Log.getStringForLevel(level).toLowerCase());
+
+        format = TP.sys.cfg('log.default_format', 'tsh:pp');
+        output = TP.format(anObject, format, stdioDict);
+
+        stdioDict.atPut('cmdAsIs', true);
+        stdioDict.atPut('cmdBox', false);
+
+        stdioDict.atPut('echoRequest', true);
+
+        if (iserr) {
+            //  if we're still booting then announce it in the bootlog
+            if (!TP.sys.hasStarted()) {
+                if (TP.canInvoke(TP.boot, '$stderr')) {
+                    TP.boot.$stderr(anObject);
+                }
+            } else {
+              TP.stderr(output, stdioDict);
+            }
+        } else {
+            //  NOTE that this logs the original message content
+            //  regardless of what may have been done during this
+            //  function
+            TP.stdout(output, stdioDict);
+        }
+
+        //  allow observers of the log to see changes...
+        TP.sys.$logChanged(name);
+    } catch (e) {
+        try {
+            str = ' obj: ' + TP.str(anObject);
+        } catch (e2) {
+            str = '';
+        }
+        msg = 'Error in TP.sys.$$log: ' + TP.str(e) + str;
+
+        // Make sure the error makes it to the browser console at least.
+        top.console.error(msg);
+
+        // Try to alert if TP.alert is currently active.
+        TP.alert(msg);
+    } finally {
+        TP.sys.shouldLogActivities(actflag, false);
+        TP.sys.shouldLogErrors(errflag, false);
+    }
+
+    //  last chance...invoke the debugger ?
+    if (iserr && TP.sys.shouldUseDebugger()) {
+        TP.sys.$launchDebugger(arguments);
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('log',
+function(anObject, aLogName, aLogLevel) {
+
+    /**
+     * @name log
+     * @synopsis A simple public wrapper for logging to a TIBET log. Normally
+     *     you'll call a method specific to a particular log subset such as
+     *     TP.sys.logInference, or a helper specific to a particular logging
+     *     level such as TP.trace() or TP.warn(). This method largely provides
+     *     symmetry with the TP.boot.log() call which logs to the boot log
+     *     rather than the activity log.
+     * @param {Object} anObject The message/object to log.
+     * @param {String} aLogName The log name, such as TP.IO_LOG,
+     *     TP.INFERENCE_LOG, etc.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    var level;
+
+    level = TP.ifInvalid(aLogLevel, TP.WARN);
+    if (TP.sys.getLogLevel() <= level) {
+        return TP.sys.$$log(anObject, aLogName, aLogLevel);
+    }
+
+    return false;
+});
+
+//  ----------------------------------------------------------------------------
+//
+//  ----------------------------------------------------------------------------
+
+/**
+ * The default logger instance.
+ * @type {TP.log.Logger}
+ */
+TP.$defaultLogger = null;
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('getDefaultLogger', function() {
+
+    /**
+     * @name getDefaultLogger
+     * @summary Returns the default application logger instance.
+     * @return {TP.log.Logger} The default logger instance.
+     */
+
+    var logger;
+
+    logger = this.$get('defaultLogger');
+    if (TP.notValid(logger)) {
+        logger = this.getLogger();
+    }
+
+    return logger;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('setDefaultLogger', function(aLogger) {
+
+    /**
+     * @name setDefaultLogger
+     * @summary Defines the default application logger instance.
+     * @param {TP.log.Logger} aLogger The logger to register as the default.
+     * @return {TP.log.Logger} The receiver.
+     */
+
+    if (!TP.isKindOf(aLogger, TP.log.Logger)) {
+        return this.raise('InvalidParameter');
+    }
+
+    this.$set('$defaultLogger', aLogger);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+// TODO: replace with defineMethod once API update for TP.defineMethod is done.
+TP.definePrimitive('getLogger', function(aName) {
+
+    /**
+     * Returns a logger for the library side of operation. All loggers returned
+     * by this method will inherit (ultimately) from the TP logger.
+     */
+
+    var name;
+
+    if (TP.isEmpty(aName)) {
+        name = 'TP';
+    } else if (aName.indexOf('TP.') !== 0) {
+        name = 'TP.' + aName;
+    } else {
+        name = aName;
+    }
+
+    return TP.log.Manager.getLogger(name);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('getLogLevel', function(aLogger) {
+
+    /**
+     * @name getlogLevel
+     * @summary Returns the logging level for the logger provided, or the
+     *     default logger for the receiver.
+     * @param {TP.log.Logger} aLogger The logger to retrive the level for.
+     * @return {TP.log.Level}
+     */
+
+    return this.getLogger(aLogger).getLevel();
+});
+
+//  ----------------------------------------------------------------------------
 
 TP.definePrimitive('$$log',
 function(anObject, aLogName, aLogLevel) {
@@ -2235,80 +2564,6 @@ function(anObject, aLogName) {
 });
 
 //  ------------------------------------------------------------------------
-//  Logging Basics
-//  ------------------------------------------------------------------------
-
-TP.defineMethod(TP.sys, 'getLogLevel',
-function() {
-
-    /**
-     * @name getLogLevel
-     * @synopsis Returns the numerical level at which log() and its variants
-     *     will filter output going to the error and activity logs.
-     * @example Get TIBET's current 'log level':
-     *     <code>
-     *          TP.sys.getLogLevel();
-     *          <samp>0</samp>
-     *     </code>
-     * @returns {Number} The current TIBET log level.
-     * @todo
-     */
-
-    //  Make sure to return a Number
-    return parseInt(TP.sys.cfg('log.level'), 10);
-}, TP.PRIMITIVE_TRACK, null, 'TP.sys.getLogLevel');
-
-//  ------------------------------------------------------------------------
-//  Value-Based Branching
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('ifNull',
-function(aSuspectValue, aDefaultValue) {
-
-    /**
-     * @name ifNull
-     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
-     *     state of aSuspectValue. If aSuspectValue is TP.isNull() aDefaultValue
-     *     is returned.
-     * @param {Object} aSuspectValue The value to test.
-     * @param {Object} aDefaultValue The value to return if aSuspectValue is ===
-     *     null.
-     * @example Set the value of theObj to true, if anObj is null:
-     *     <code>
-     *          theObj = TP.ifNull(anObj, true);
-     *     </code>
-     * @returns {Object} One of the two values provided.
-     * @todo
-     */
-
-    return (aSuspectValue === null) ? aDefaultValue : aSuspectValue;
-}, false, 'TP.ifNull');
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('ifUndefined',
-function(aSuspectValue, aDefaultValue) {
-
-    /**
-     * @name ifUndefined
-     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
-     *     state of aSuspectValue. If aSuspectValue is TP.notDefined()
-     *     aDefaultValue is returned.
-     * @param {Object} aSuspectValue The value to test.
-     * @param {Object} aDefaultValue The value to return if aSuspectValue is ===
-     *     undefined.
-     * @example Set the value of theObj to true, if anObj is undefined:
-     *     <code>
-     *          theObj = TP.ifUndefined(anObj, true);
-     *     </code>
-     * @returns {Object} One of the two values provided.
-     * @todo
-     */
-
-    return (aSuspectValue === undefined) ? aDefaultValue : aSuspectValue;
-}, false, 'TP.ifUndefined');
-
-//  ------------------------------------------------------------------------
 //  BRANCH DETECTION
 //  ------------------------------------------------------------------------
 
@@ -2347,10 +2602,10 @@ function(aLevel, aFlag) {
     var level = TP.ifInvalid(aLevel, TP.ERROR);
 
     if (aFlag === undefined) {
-        return TP.sys.getLogLevel() <= level;
+        return TP.getLogLevel() <= level;
     }
 
-    return aFlag && (TP.sys.getLogLevel() <= level);
+    return aFlag && (TP.getLogLevel() <= level);
 }, false, 'TP.ifEnabled');
 
 //  ------------------------------------------------------------------------
@@ -2521,49 +2776,485 @@ function(aFlag) {
     return TP.ifEnabled(TP.WARN, aFlag);
 }, false, 'TP.ifWarn');
 
-// TODO: replace with defineMethod once API update for TP.defineMethod is done.
-TP.definePrimitive('getLogger', function(aName) {
+//  ------------------------------------------------------------------------
+//  LOGGING - CORE METHODS
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('$logChanged',
+function(aLogName) {
 
     /**
-     * Returns a logger for the library side of operation. All loggers returned
-     * by this method will inherit (ultimately) from the TP logger.
+     * @name $logChanged
+     * @synopsis Notifies observers, if any, that a particular log has changed.
+     * @description This method provides common flag manipulations which are
+     *     necessary to avoid recursive logging during notification of log
+     *     changes. Note that the patch log and boot logs don't participate in
+     *     this process since they're static by the time this function has been
+     *     installed. Also note that TP.sys.shouldSignalLogChange() is false by
+     *     default.
+     * @param {The} aLogName name of the log that changed. The name provided is
+     *     given a suffix of Log and a [name]LogChange signal is triggered.
+     * @todo
      */
 
-    var name;
+    var flag;
 
-    if (TP.isEmpty(aName)) {
-        name = 'TP';
-    } else if (aName.indexOf('TP.') !== 0) {
-        name = 'TP.' + aName;
-    } else {
-        name = aName;
+    TP.stop('break.change');
+
+    if (TP.notValid(aLogName)) {
+        return;
     }
 
-    return TP.log.Manager.getLogger(name);
+    if (TP.sys.shouldSignalLogChange()) {
+        try {
+            flag = TP.sys.shouldLogActivities();
+            TP.sys.shouldLogActivities(false);
+
+            TP.signal(TP.sys, aLogName + 'LogChange');
+        } catch (e) {
+        } finally {
+            TP.sys.shouldLogActivities(flag);
+        }
+    }
+
+    return;
 });
 
-//  ============================================================================
-//  TP Extensions
-//  ============================================================================
+//  ------------------------------------------------------------------------
+//  ACTIVITY (META) LOG
+//  ------------------------------------------------------------------------
 
-APP.defineMethod('getLogger', function(aName) {
+//  NOTE the activity log is a shared log containing all log content other
+//  than boot/patch entries (found in the boot log), change entries (found
+//  in the change log), and test entries (found in the test log). These two
+//  secondary logs are separate since they contain information important to
+//  the environment and data that should not be cleared without
+//  confirmation.
+TP.sys.$activity = TP.ifInvalid(TP.sys.$activity, new TP.boot.Log());
+
+//  ------------------------------------------------------------------------
+//  TEST LOG
+//  ------------------------------------------------------------------------
+
+//  NOTE that the test log is a separate log to ensure that it cannot be
+//  cleared accidentally when clearing the larger activity log.
+TP.sys.$testlog = TP.ifInvalid(TP.sys.$testlog, new TP.boot.Log());
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logTest',
+function(anObject, aLogLevel) {
 
     /**
-     * Returns a logger for the library side of operation. All loggers returned
-     * by this method will inherit (ultimately) from the APP logger.
+     * @name logTest
+     * @synopsis Adds an entry to the test log. Note that there is no level
+     *     filtering in test logging, the level parameter only filters parallel
+     *     entries which might be made to the activity log.
+     * @description This call is used by test harness routines to log their
+     *     activity. The object argument can provide data in one or more keys
+     *     including:
+     *
+     *     'name'               the test name
+     *     'number'             the test number *in the reporting run*
+     *     'test-status'        the test status. Should be one of:
+     *                              TP.ACTIVE
+     *                              TP.SKIP
+     *                              TP.TODO
+     *     'result-status'      the result status. Should be one of:
+     *                              TP.SUCCEEDED
+     *                              TP.FAILED
+     *                              TP.CANCELLED
+     *                              TP.SKIPPED
+     *                              TP.TIMED_OUT
+     *     'message'            the test message
+     *     'failure-severity'   the severity level of the failure. Usually set
+     *                          to 'fail'.
+     *     'failure-data'       A hash with two keys containing the data:
+     *                              TP.PRODUCED
+     *                              TP.EXPECTED
+     * @param {Object} anObject The test data to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
      */
 
-    var name;
+    TP.sys.$testlog.log(anObject, TP.TEST_LOG, TP.SYSTEM);
 
-    if (TP.isEmpty(aName)) {
-        name = 'APP';
-    } else if (aName.indexOf('APP.') !== 0) {
-        name = 'APP.' + aName;
-    } else {
-        name = aName;
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        console.log(TP.str(anObject));
     }
 
-    return TP.log.Manager.getLogger(name);
+    TP.sys.log(anObject, TP.TEST_LOG, aLogLevel);
+
+    //  with all logging complete signal change on the test log
+    TP.sys.$logChanged(TP.TEST_LOG);
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  CSS LOGGING
+//  ------------------------------------------------------------------------
+
+/**
+ * All CSS processor output can be captured in the CSS log for review provided
+ * that TP.sys.shouldLogCSS() is true.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logCSS',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logCSS
+     * @synopsis Adds anObject to the CSS log. This method will have no effect
+     *     if the TP.sys.shouldLogCSS() flag is false.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    if (!TP.sys.shouldLogCSS()) {
+        return false;
+    }
+
+    TP.sys.log(anObject, TP.CSS_LOG, aLogLevel);
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  INFERENCE LOGGING
+//  ------------------------------------------------------------------------
+
+/*
+The inference log is a simple log for tracking activity of the inferencing
+engine. All messages generated by the inference engine show up here, with
+content that often includes the message, target, arguments, etc.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logInference',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logInference
+     * @synopsis Adds anObject to the inference log. This method will have no
+     *     effect if the TP.sys.shouldLogInferences() flag is false. The default
+     *     logging level for messages of this type is TP.TRACE.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    if (!TP.sys.shouldLogInferences()) {
+        return false;
+    }
+
+    TP.sys.log(anObject,
+                TP.INFERENCE_LOG,
+                aLogLevel);
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  IO LOGGING
+//  ------------------------------------------------------------------------
+
+/*
+The IO log tracks activity of communication primitives for both file and
+http access. All messages generated by communication calls show up here
+allowing you to see a single view of all server or host communication.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logIO',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logIO
+     * @synopsis Logs anObject to the IO log. Note that this method will have no
+     *     effect if TP.sys.shouldLogIO() is false. Also note that this method
+     *     logs information at TP.TRACE.
+     * @description This call is used by various file and http access routines
+     *     to log their activity. The object argument can provide data in one or
+     *     more keys including:
+     *
+     *     'uri'        the targetUrl
+     *     'uriparams'  optional parameters for url-encoding,
+     *     'separator'  optional uri parameter separator
+     *
+     *     'headers'    http headers, or response headers,
+     *     'async'      true or false
+     *     'verb'       the command verb (GET/POST/PUT/DELETE etc)
+     *     'body'       any data content for the call,
+     *
+     *     'noencode'   turns off body content encoding 'mimetype'
+     *     'mimetype'   used for body encoding 'encoding'
+     *     'charset'    encoding used for multi-part
+     *     'mediatype'  used for multi-part encodings
+     *
+     *     'xhr'        the XMLHttpRequest object used, if any
+     *
+     *     'request'    TP.sig.Request reference
+     *     'response'   TP.sig.Response reference
+     *
+     *     'direction'  TP.SEND or TP.RECV
+     *     'message'    the log message
+     *     'object'     any Error object which might be related,
+     *
+     *     'finaluri'   the fully expanded uri w/parameters
+     *     'finalbody'  the TP.str(body) value actually sent
+     *
+     *     Note that IO log entries will only be pushed to the activity log
+     *     (and stdout) when the logging level is INFO.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    if (!TP.sys.shouldLogIO()) {
+        return false;
+    }
+
+    TP.sys.log(anObject, TP.IO_LOG, aLogLevel);
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  JOB LOGGING
+//  ------------------------------------------------------------------------
+
+/*
+The job log contains information on all TP.core.Job processing done by
+TIBET. The TP.core.Job type manages virtually all setInterval/setTimeout
+style processing in TIBET so that all asynchronous processing can be managed
+consistently.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logJob',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logJob
+     * @synopsis Logs a job-related event. This method has no effect if
+     *     TP.sys.shouldLogJobs() is false.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    if (!TP.sys.shouldLogJobs()) {
+        return false;
+    }
+
+    TP.sys.log(anObject, TP.JOB_LOG, aLogLevel);
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  KEY LOGGING
+//  ------------------------------------------------------------------------
+
+/*
+The key log contains information on all key events being logged. Logging
+keys can be a useful way to help adjust keyboard map entries.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logKey',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logKey
+     * @synopsis Logs a key event. This method has no effect if
+     *     TP.sys.shouldLogKeys() is false.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    if (!TP.sys.shouldLogKeys()) {
+        return false;
+    }
+
+    TP.sys.log(anObject, TP.KEY_LOG, aLogLevel);
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  LINK LOGGING
+//  ------------------------------------------------------------------------
+
+/*
+The link log contains information on all links traversed via TIBET's link
+methods such as TP.go2(). This information can be used to provide valuable
+usability analysis data, user tracking data, or debugging information on the
+path a user took up to the point of an error.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logLink',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logLink
+     * @synopsis Logs a link activation event. This method has no effect if
+     *     TP.sys.shouldLogLinks() is false. Also note that link logging occurs
+     *     at TP.TRACE level.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    if (!TP.sys.shouldLogLinks()) {
+        return false;
+    }
+
+    TP.sys.log(anObject, TP.LINK_LOG, aLogLevel);
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  SECURITY LOGGING
+//  ------------------------------------------------------------------------
+
+/*
+Security events such as requesting permissions on Mozilla or performing a
+cross-domain HTTP request can be logged separately (and are by default).
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logSecurity',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logSecurity
+     * @synopsis Logs a security event. This method has no effect if
+     *     TP.sys.shouldLogSecurity() is false.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    if (!TP.sys.shouldLogSecurity()) {
+        return false;
+    }
+
+    TP.sys.log(anObject, TP.SECURITY_LOG, aLogLevel);
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  SIGNAL LOGGING
+//  ------------------------------------------------------------------------
+
+/*
+The signal log tracks the activity of the TIBET signaling engine. This
+subset of log entries can be critical to understanding how your application
+operates. The log entries typically contain the signal object itself.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logSignal',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logSignal
+     * @synopsis Logs a signaling message to the activity log. The signal string
+     *     typically contains the origin, signal name, context, and any
+     *     arguments which were passed. Note that the signal log data will only
+     *     be pushed to the activity log (and stdout) if the log level is
+     *     TP.TRACE.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    var level;
+
+    if (!TP.sys.shouldLogSignals()) {
+        return false;
+    }
+
+    //  since this method "does work" we avoid that unless we're at the
+    //  right level.
+    level = TP.ifInvalid(aLogLevel, TP.TRACE);
+    if (TP.getLogLevel(TP.SIGNAL_LOG) <= level) {
+        TP.sys.log(anObject.get('message'),
+                    TP.SIGNAL_LOG,
+                    level);
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+//  TRANSFORM LOGGING
+//  ------------------------------------------------------------------------
+
+/*
+The transform log contains all output from the content processing system
+The TP.sys.shouldLogTransforms() method controls whether logging actually
+occurs.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('logTransform',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logTransform
+     * @synopsis Logs a content transfomation event to the transform log.
+     * @param {Object} anObject The message/object to log.
+     * @param {Number} aLogLevel The logging level, from TP.TRACE through
+     *     TP.SYSTEM.
+     * @returns {Boolean} True if the logging operation succeeded.
+     * @todo
+     */
+
+    if (!TP.sys.shouldLogTransforms()) {
+        return false;
+    }
+
+    TP.sys.log(anObject,
+                TP.TRANSFORM_LOG,
+                aLogLevel);
+
+    return true;
 });
 
 //  ============================================================================
@@ -2573,23 +3264,6 @@ APP.defineMethod('getLogger', function(aName) {
 //  NOTE that the change log is a separate log to ensure that it cannot be
 //  cleared accidentally when clearing the larger activity log.
 TP.sys.$changes = TP.ifInvalid(TP.sys.$changes, new TP.boot.Log());
-
-//  ------------------------------------------------------------------------
-
-TP.defineMethod(TP.sys, 'getChangeLog',
-function() {
-
-    /**
-     * @name getChangeLog
-     * @synopsis Returns the TIBET change log, which contains entries for source
-     *     code changes made if code change tracking is set to true. These
-     *     changes can be exported and merged into a tibet.xml file for loading
-     *     as part of the application.
-     * @returns {TP.boot.Log} A primitive log object.
-     */
-
-    return TP.sys.$changes;
-}, TP.PRIMITIVE_TRACK, null, 'TP.sys.getChangeLog');
 
 //  ------------------------------------------------------------------------
 
@@ -2735,6 +3409,148 @@ function(anObject, aTrack,
 
     return true;
 }, TP.PRIMITIVE_TRACK, null, 'TP.sys.$logAttributeChange');
+
+//  ============================================================================
+//  MOP Logging Methods
+//  ============================================================================
+
+TP.defineMetaInstMethod('shouldLog',
+function(aFlag, aLogName) {
+
+    /**
+     * @name shouldLog
+     * @synopsis Defines whether the receiver should log to the activity log
+     *     relative to a particular log type. When no type is provided the
+     *     setting takes effect for all logging for the receiver.
+     * @param {Boolean} aFlag The optional state of the flag to be set as a
+     *     result of this call.
+     * @param {String} aLogName One of the TIBET log type names, or a custom
+     *     name if custom logging is being used. See TP.*_LOG for names.
+     * @returns {Boolean} The value of the flag after any optional set.
+     * @todo
+     */
+
+    var flag,
+        owner;
+
+    //  specific instruction/query regarding a particular log
+    if (TP.isString(aLogName)) {
+        if (TP.isBoolean(aFlag)) {
+            this['$shouldLog' + aLogName] = TP.bc(aFlag);
+        }
+
+        flag = this['$shouldLog' + aLogName];
+    } else {
+        if (TP.isBoolean(aFlag)) {
+            this['$shouldLog' + TP.LOG] = TP.bc(aFlag);
+        }
+
+        flag = this['$shouldLog' + TP.LOG];
+    }
+
+    if (TP.isBoolean(flag)) {
+        return flag;
+    } else if (TP.isMethod(this)) {
+        //  functions that are methods can test their owners to see if
+        //  logging is turned off for specific types or instances
+        if (TP.isValid(owner = this[TP.OWNER])) {
+            if (TP.canInvoke(owner, 'shouldLog')) {
+                return owner.shouldLog(aFlag, aLogName);
+            }
+        }
+
+        return true;
+    } else {
+        return true;
+    }
+});
+
+//  ============================================================================
+//  APP Extensions
+//  ============================================================================
+
+/**
+ * The default logger instance.
+ * @type {TP.log.Logger}
+ */
+APP.$defaultLogger = null;
+
+//  ----------------------------------------------------------------------------
+
+APP.defineMethod('getDefaultLogger', function() {
+
+    /**
+     * @name getDefaultLogger
+     * @summary Returns the default application logger instance.
+     * @return {TP.log.Logger} The default logger instance.
+     */
+
+    var logger;
+
+    logger = this.$get('defaultLogger');
+    if (TP.notValid(logger)) {
+        logger = this.getLogger();
+    }
+
+    return logger;
+});
+
+//  ----------------------------------------------------------------------------
+
+APP.defineMethod('getLogLevel', function(aLogger) {
+
+    /**
+     * @name getlogLevel
+     * @summary Returns the logging level for the logger provided, or the
+     *     default logger for the receiver.
+     * @param {TP.log.Logger} aLogger The logger to retrive the level for.
+     * @return {TP.log.Level}
+     */
+
+    return this.getLogger(aLogger).getLevel();
+});
+
+//  ----------------------------------------------------------------------------
+
+APP.defineMethod('getLogger', function(aName) {
+
+    /**
+     * Returns a logger for the library side of operation. All loggers returned
+     * by this method will inherit (ultimately) from the APP logger.
+     */
+
+    var name;
+
+    if (TP.isEmpty(aName)) {
+        name = 'APP';
+    } else if (aName.indexOf('APP.') !== 0) {
+        name = 'APP.' + aName;
+    } else {
+        name = aName;
+    }
+
+    return TP.log.Manager.getLogger(name);
+});
+
+//  ----------------------------------------------------------------------------
+
+APP.defineMethod('setDefaultLogger', function(aLogger) {
+
+    /**
+     * @name setDefaultLogger
+     * @summary Defines the default application logger instance.
+     * @param {TP.log.Logger} aLogger The logger to register as the default.
+     * @return {TP.log.Logger} The receiver.
+     */
+
+    if (!TP.isKindOf(aLogger, TP.log.Logger)) {
+        return this.raise('InvalidParameter');
+    }
+
+    this.$set('$defaultLogger', aLogger);
+
+    return this;
+});
 
 //  ----------------------------------------------------------------------------
 //  end

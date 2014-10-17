@@ -355,7 +355,7 @@ function(aURI, aWindow) {
         },
         function(error) {
             TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),
-                            TP.ERROR);
+                            TP.Log.ERROR);
         });
 
     return this;
@@ -410,7 +410,7 @@ function(aURI, aWindow) {
         },
         function(error) {
             TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),
-                            TP.ERROR);
+                            TP.log.ERROR);
         });
 
     return this;

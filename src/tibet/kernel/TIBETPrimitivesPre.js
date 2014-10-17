@@ -33,11 +33,6 @@
 /*
 To support a variety of functionality, TIBET requires that objects have a
 unique identity which can be used to distinguish them from other objects.
-
-TIBET also allows these objects to be optionally registered so they can be
-accessed via their IDs. (See registerObject() for more info). Certain error
-logging can optionally "auto-register" objects which report errors to assist
-with debugging, but typically objects aren't registered to avoid GC issues.
 */
 
 //  ------------------------------------------------------------------------
@@ -2481,6 +2476,56 @@ function(aValue) {
 
     return aValue !== null;
 }, false, 'TP.notNull');
+
+//  ------------------------------------------------------------------------
+//  Value-Based Branching
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifNull',
+function(aSuspectValue, aDefaultValue) {
+
+    /**
+     * @name ifNull
+     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     *     state of aSuspectValue. If aSuspectValue is TP.isNull() aDefaultValue
+     *     is returned.
+     * @param {Object} aSuspectValue The value to test.
+     * @param {Object} aDefaultValue The value to return if aSuspectValue is ===
+     *     null.
+     * @example Set the value of theObj to true, if anObj is null:
+     *     <code>
+     *          theObj = TP.ifNull(anObj, true);
+     *     </code>
+     * @returns {Object} One of the two values provided.
+     * @todo
+     */
+
+    return (aSuspectValue === null) ? aDefaultValue : aSuspectValue;
+}, false, 'TP.ifNull');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('ifUndefined',
+function(aSuspectValue, aDefaultValue) {
+
+    /**
+     * @name ifUndefined
+     * @synopsis Returns either aSuspectValue or aDefaultValue based on the
+     *     state of aSuspectValue. If aSuspectValue is TP.notDefined()
+     *     aDefaultValue is returned.
+     * @param {Object} aSuspectValue The value to test.
+     * @param {Object} aDefaultValue The value to return if aSuspectValue is ===
+     *     undefined.
+     * @example Set the value of theObj to true, if anObj is undefined:
+     *     <code>
+     *          theObj = TP.ifUndefined(anObj, true);
+     *     </code>
+     * @returns {Object} One of the two values provided.
+     * @todo
+     */
+
+    return (aSuspectValue === undefined) ? aDefaultValue : aSuspectValue;
+}, false, 'TP.ifUndefined');
 
 //  ------------------------------------------------------------------------
 //  TYPE CHECKS
@@ -5979,9 +6024,9 @@ conformance/responsiveness regardless of what the inbound object might be.
 Define the initial default mappings for input, output, and error messaging.
 */
 
-TP.definePrimitive('stdin', TP.STDIN_PROMPT);
-TP.definePrimitive('stdout', TP.STDOUT_LOG);
-TP.definePrimitive('stderr', TP.STDERR_LOG);
+TP.definePrimitive('stdin', TP.boot.STDIN_PROMPT);
+TP.definePrimitive('stdout', TP.boot.STDOUT_LOG);
+TP.definePrimitive('stderr', TP.boot.STDERR_LOG);
 
 //  ------------------------------------------------------------------------
 //  METADATA
@@ -11251,76 +11296,6 @@ function() {
      */
 
     return $STATUS;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('setLogLevel',
-function(aLevel, override) {
-
-    /**
-     * @name setLogLevel
-     * @synopsis Sets the level at which log() calls will filter output.
-     * @param {Number|TP.sig.Signal} aLevel A 'logging level number' (see above)
-     *     or a TIBET signal type of TRACE, INFO, WARN, ERROR, SEVERE, FATAL, or
-     *     SYSTEM. Note that while these signals operate in a leveled scheme,
-     *     only WARN thru FATAL are actually TP.sig.Exceptions.
-     * @param {Boolean} override Whether or not to force setting the log level
-     *     overriding any 'user override' setting. The default is false.
-     * @example Set TIBET's current 'log level', using a log level number:
-     *     <code>
-     *          TP.sys.setLogLevel(1);
-     *          <samp>1</samp>
-     *     </code>
-     * @example Set TIBET's current 'log level', using a log level TIBET type
-     *     object:
-     *     <code>
-     *          TP.sys.setLogLevel(TP.INFO);
-     *          <samp>1</samp>
-     *     </code>
-     * @returns {Number} The numerical error level set.
-     * @todo
-     */
-
-    var level,
-        oldVal;
-
-    if (TP.notValid(aLevel)) {
-        return;
-    }
-
-    //  could actually be set via WARN etc.
-    if (TP.isNumber(aLevel)) {
-        level = aLevel;
-    } else if (TP.canInvoke(aLevel, 'get')) {
-        level = aLevel.get('level');
-    } else {
-        //  might be a string, try a couple of options
-        if (TP.notValid(level = TP['$' + aLevel.toUpperCase()])) {
-            level = TP[aLevel.toUpperCase()];
-            if (!TP.isNumber(level)) {
-                level = null;
-            }
-        }
-    }
-
-    //  still null? level wasn't valid
-    if (TP.notValid(level)) {
-        return;
-    }
-
-    oldVal = TP.sys.cfg('log.level');
-
-    if (oldVal !== level) {
-        //  NB: We don't signal from this call since we do so just after it.
-        TP.sys.setcfg('log.level', level, false, override);
-
-        TP.sys.changed('LogLevel',
-                        TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, level));
-    }
-
-    return TP.sys.cfg('log.level');
 });
 
 //  ------------------------------------------------------------------------

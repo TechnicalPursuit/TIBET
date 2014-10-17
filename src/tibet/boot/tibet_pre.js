@@ -175,12 +175,13 @@ TP.boot.$$verbose = true;
 
 //  log level constants (only used by primitive boot log)
 TP.boot.TRACE = 0;
-TP.boot.INFO = 1;
-TP.boot.WARN = 2;
-TP.boot.ERROR = 3;
-TP.boot.SEVERE = 4;
-TP.boot.FATAL = 5;
-TP.boot.SYSTEM = 6;
+TP.boot.DEBUG = 1;
+TP.boot.INFO = 2;
+TP.boot.WARN = 3;
+TP.boot.ERROR = 4;
+TP.boot.SEVERE = 5;
+TP.boot.FATAL = 6;
+TP.boot.SYSTEM = 7;
 
 //  log entry slot indices (only used by primitive boot log)
 TP.boot.LOG_ENTRY_DATE = 0;

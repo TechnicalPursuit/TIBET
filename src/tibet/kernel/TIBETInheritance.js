@@ -1902,7 +1902,7 @@ myString.asNumber().round().asString();
 
 it constructs a Function instance which performs this task. This function is
 then installed on the proper object thereby avoiding the overhead on future
-calls. The resulting code can also be saved out via the TIBET changeLog to
+calls. The resulting code can also be saved out via the TIBET change log to
 literally have TIBET 'write code for you'. You get the system and some
 fundamental type conversions in place and start running. As the inferencing
 engine makes decisions you save the ones that are correct and improve on the
@@ -2061,27 +2061,23 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                             '();!',
                             TP.INFO);
 
-                //      The ability to make the engine actually
-                //      generate functions and then install them on
-                //      the receiver is analogous to the sort of
-                //      'hotspot' activity a JVM undergoes with the
-                //      difference that the code didn't exist in the
-                //      case of TIBET's inferencing. In a JVM the
-                //      hotspot engine is simply compiling code the
-                //      programmer had to write. In TIBET the engine
-                //      is writing code for the programmer, then
-                //      installing it to avoid future calls to the
-                //      inferencing engine. The results are finally
-                //      added to a change log (TP.sys.$changeLog)
-                //      which can be written via CGI etc to a server
-                //      responsible for acting as a source code
-                //      repository for the application. The result is
-                //      a system which truly figures out what you
-                //      wanted to do, writes code to help you do it,
-                //      installs the code on the proper objects, and
-                //      saves the change to the server so the next
-                //      time you run the application you never invoke
-                //      the inferencer for that function again.
+                //      The ability to make the engine actually generate
+                //      functions and then install them on the receiver is
+                //      analogous to the sort of 'hotspot' activity a JVM
+                //      undergoes with the difference that the code didn't exist
+                //      in the case of TIBET's inferencing. In a JVM the hotspot
+                //      engine is simply compiling code the programmer had to
+                //      write. In TIBET the engine is writing code for the
+                //      programmer, then installing it to avoid future calls to
+                //      the inferencing engine. The results are finally added to
+                //      a change log which can be written via CGI etc to a
+                //      server responsible for acting as a source code
+                //      repository for the application. The result is a system
+                //      which truly figures out what you wanted to do, writes
+                //      code to help you do it, installs the code on the proper
+                //      objects, and saves the change to the server so the next
+                //      time you run the application you never invoke the
+                //      inferencer for that function again.
 
                 //  HERE is a simple, non-hotspot version that works
 
