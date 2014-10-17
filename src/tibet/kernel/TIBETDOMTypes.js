@@ -10733,7 +10733,9 @@ function(anID) {
     var natNode,
         wasRegistered,
 
-        id;
+        id,
+        docID,
+        globalID;
 
     natNode = this.getNativeNode();
 
@@ -10749,6 +10751,11 @@ function(anID) {
     }
 
     TP.elementSetAttribute(natNode, 'id', id, true);
+
+    if (TP.notEmpty(docID = TP.gid(TP.nodeGetDocument(natNode), true))) {
+        globalID = docID.replace(/#.+/, '#' + id);
+        TP.elementSetAttribute(natNode, TP.GLOBAL_ID_ATTR, globalID, true);
+    }
 
     if (wasRegistered) {
         //  Note here how we *refetch the global ID* since that's what we're
