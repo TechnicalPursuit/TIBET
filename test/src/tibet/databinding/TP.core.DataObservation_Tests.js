@@ -2130,7 +2130,7 @@ function() {
                             salaryField.get('@valid').asBoolean());
             });
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
