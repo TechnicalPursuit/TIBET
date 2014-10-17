@@ -3025,9 +3025,7 @@ function(aSignal) {
 
         i,
 
-        fragText,
-
-        aspect;
+        fragText;
 
     resource = this.getResource();
 
@@ -3038,7 +3036,7 @@ function(aSignal) {
 
         //  SubURIs are URIs that have the same primary resource as us, but also
         //  have a fragment, indicating that they also have a secondary resource
-        //  pointed to by the fragment
+        //  pointed to by the fragment.
         subURIs = this.getSubURIs();
 
         if (TP.notEmpty(subURIs)) {
@@ -3053,33 +3051,24 @@ function(aSignal) {
                 fragText = subURIs.at(i).getFragmentText();
 
                 //  If the fragment without the 'pointer indicator' matches the
-                //  path, then signal from both the subURI and ourself. Note
-                //  here that we just reuse the signal name and payload.
+                //  path, then signal from the subURI. Note here that we just
+                //  reuse the signal name and payload.
                 if (fragText === path) {
 
                     subURIs.at(i).signal(
                             aSignal.getSignalName(),
                             arguments,
                             aSignal.getPayload());
-
-                    this.signal(
-                            aSignal.getSignalName(),
-                            arguments,
-                            aSignal.getPayload());
                 }
             }
-        } else {
-            //  If we don't have any subURIs, invoke the standard 'changed'
-            //  mechanism (which signals 'TP.sig.ValueChange' from ourself).
-            this.changed('value', TP.UPDATE, TP.hc('target', resource));
         }
+
+        //  Now that any of the appropriate subURIs have signaled from
+        //  themselves, we signal from ourself.
+        this.signal(aSignal.getSignalName(), arguments, aSignal.getPayload());
     } else {
-
-        aspect = aSignal.atIfInvalid('aspect', 'value');
-
-        //  If we didn't have any paths, invoke the standard 'changed' mechanism
-        //  from ourself.
-        this.changed(aspect, TP.UPDATE, TP.hc('target', resource));
+        //  If we didn't have any paths, then just signal from ourself.
+        this.signal(aSignal.getSignalName(), arguments, aSignal.getPayload());
     }
 
     return this;
