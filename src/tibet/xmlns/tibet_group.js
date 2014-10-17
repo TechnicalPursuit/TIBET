@@ -157,7 +157,7 @@ function(includesGroups) {
         selExpr += ', > tibet|group, *:not(tibet|group) tibet|group';
     }
 
-    results = this.get(selExpr);
+    results = this.get(TP.cpc(selExpr));
 
     results = TP.unwrap(results);
 
@@ -263,7 +263,7 @@ function() {
 
     //  Grab the 'result nodes' using the get call. If there were no
     //  results, return the empty Array.
-    if (TP.notValid(results = contextElem.get(query))) {
+    if (TP.notValid(results = contextElem.get(TP.apc(query)))) {
         return TP.ac();
     }
 

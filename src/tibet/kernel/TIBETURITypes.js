@@ -1526,6 +1526,9 @@ TP.core.URI.Inst.defineAttribute('httpBased');
 TP.core.URI.Inst.defineAttribute('resource');
 TP.core.URI.Inst.defineAttribute('resourceCache');
 
+//  whether the receiver 'creates content' when setting it
+TP.core.URI.Inst.defineAttribute('shouldCreateContent');
+
 //  holder for this instance's uri lookup properties
 TP.core.URI.Inst.defineAttribute('uriNodes');
 TP.core.URI.Inst.defineAttribute('uriRegex');
@@ -1600,11 +1603,16 @@ function(aURIString) {
 
     index = aURIString.indexOf(':');
 
-    this.$set('uri', aURIString);
-    this.$set('scheme', aURIString.slice(0, index));
+    //  NOTE: These '$set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
+    this.$set('uri', aURIString, false);
+    this.$set('scheme', aURIString.slice(0, index), false);
 
     ssp = aURIString.slice(index + 1);
-    this.$set('schemeSpecificPart', ssp);
+    this.$set('schemeSpecificPart', ssp, false);
 
     //  defer to other methods to handle things each subtype likely needs to
     //  override to finalize instance initialization.
@@ -1697,20 +1705,27 @@ function(schemeSpecificString) {
         return;
     }
 
+    //  NOTE: These '$set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
     if (schemeSpecificString.indexOf('#') !== TP.NOT_FOUND) {
         primaryHref = schemeSpecificString.slice(
                         0, schemeSpecificString.indexOf('#'));
 
         this.$set('primaryHref',
-                    TP.join(this.$get('scheme'), ':', primaryHref));
+                    TP.join(this.$get('scheme'), ':', primaryHref),
+                    false);
 
         if (TP.notEmpty(fragment = schemeSpecificString.slice(
                                     schemeSpecificString.indexOf('#') + 1))) {
-            this.$set('fragment', fragment);
+            this.$set('fragment', fragment, false);
         }
     } else {
         this.$set('primaryHref',
-                    TP.join(this.$get('scheme'), ':', schemeSpecificString));
+                    TP.join(this.$get('scheme'), ':', schemeSpecificString),
+                    false);
     }
 
     return;
@@ -2416,6 +2431,31 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getFragmentText',
+function() {
+
+    /**
+     * @name getFragmentText
+     * @synopsis Returns the fragment text of the receiver as a String without
+     *     the fragment scheme portion.
+     * @returns {String} The fragment string.
+     */
+
+    var frag,
+        results;
+
+    //  NOTE that we rely on the initial parse operation to populate any
+    //  fragment portion, otherwise we'd be recomputing.
+    frag = this.$get('fragment');
+    if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(frag))) {
+        return results.at(1);
+    }
+
+    return '';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getHeader',
 function(aHeaderName) {
 
@@ -2687,9 +2727,13 @@ function(aRequest) {
      * @returns {Object} The resource or TP.sig.Response when async.
      */
 
+    var frag;
+
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $getPrimaryResource.
-    if (this.isPrimaryURI() || !this.hasFragment()) {
+    if (this.isPrimaryURI() ||
+        !this.hasFragment() ||
+        ((frag = this.getFragment()) === 'document')) {
         return this.$getPrimaryResource(aRequest, true);
     }
 
@@ -2982,9 +3026,7 @@ function(aSignal) {
 
         i,
 
-        fragNoPointer,
-
-        aspect;
+        fragText;
 
     resource = this.getResource();
 
@@ -2995,7 +3037,7 @@ function(aSignal) {
 
         //  SubURIs are URIs that have the same primary resource as us, but also
         //  have a fragment, indicating that they also have a secondary resource
-        //  pointed to by the fragment
+        //  pointed to by the fragment.
         subURIs = this.getSubURIs();
 
         if (TP.notEmpty(subURIs)) {
@@ -3007,37 +3049,26 @@ function(aSignal) {
 
             for (i = 0; i < subURIs.getSize(); i++) {
 
-                //  Strip off any 'pointer indicator' (i.e. '#element',
-                //  '#xpointer' or '#xpath1')
-                fragNoPointer = TP.regex.ANY_POINTER.match(
-                                    subURIs.at(i).getFragment()).at(1);
+                fragText = subURIs.at(i).getFragmentText();
 
                 //  If the fragment without the 'pointer indicator' matches the
-                //  path, then signal from both the subURI and ourself. Note
-                //  here that we just reuse the signal name and payload.
-                if (fragNoPointer === path) {
+                //  path, then signal from the subURI. Note here that we just
+                //  reuse the signal name and payload.
+                if (fragText === path) {
 
                     subURIs.at(i).signal(
                             aSignal.getSignalName(),
                             aSignal.getPayload());
-
-                    this.signal(
-                            aSignal.getSignalName(),
-                            aSignal.getPayload());
                 }
             }
-        } else {
-            //  If we don't have any subURIs, invoke the standard 'changed'
-            //  mechanism (which signals 'TP.sig.ValueChange') from ourself.
-            this.changed('value', TP.UPDATE, TP.hc('target', resource));
         }
+
+        //  Now that any of the appropriate subURIs have signaled from
+        //  themselves, we signal from ourself.
+        this.signal(aSignal.getSignalName(), arguments, aSignal.getPayload());
     } else {
-
-        aspect = aSignal.atIfInvalid('aspect', 'value');
-
-        //  If we didn't have any paths, invoke the standard 'changed' mechanism
-        //  from ourself.
-        this.changed(aspect, TP.UPDATE, TP.hc('target', resource));
+        //  If we didn't have any paths, then just signal from ourself.
+        this.signal(aSignal.getSignalName(), arguments, aSignal.getPayload());
     }
 
     return this;
@@ -3547,9 +3578,13 @@ function(aResource, aRequest) {
      * @todo
      */
 
+    var frag;
+
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
-    if (this.isPrimaryURI() || !this.hasFragment()) {
+    if (this.isPrimaryURI() ||
+        !this.hasFragment() ||
+        ((frag = this.getFragment()) === 'document')) {
         return this.$setPrimaryResource(aResource, aRequest);
     }
 
@@ -3643,6 +3678,7 @@ function(aRequest, aResult, aResource) {
             fragment = fragment;
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
             fragment = TP.apc(fragment, true);
+            fragment.set('shouldMake', this.get('shouldCreateContent'));
         }
 
         if (TP.canInvoke(result, 'set')) {
@@ -3656,6 +3692,38 @@ function(aRequest, aResult, aResource) {
     }
 
     return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('shouldSignalChange',
+function(aFlag) {
+
+    /**
+     * @name shouldSignalChange
+     * @synopsis Defines whether the receiver should actively signal change
+     *     notifications.
+     * @description In general objects do not signal changes when no observers
+     *     exist. This flag is triggered by observe where the signal being
+     *     observed is a form of Change signal to "arm" the object for change
+     *     notification. You can also manipulate it during multi-step
+     *     manipulations to signal only when a series of changes has been
+     *     completed.
+     * @param {Boolean} aFlag true/false signaling status.
+     * @returns {Boolean} The current status.
+     */
+
+    var url;
+
+    //  When we're not primary, and the flag is true, then we need to configure
+    //  our primary to also send change signal. We don't do this when the flag
+    //  is false, since we don't know what other subURIs of the primary might
+    //  want.
+    if ((url = this.getPrimaryURI()) !== this && TP.isTrue(aFlag)) {
+        url.shouldSignalChange(true);
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -3999,9 +4067,14 @@ function(parts) {
      * @returns {TP.core.URI} The receiver.
      */
 
+    //  NOTE: These '$set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
     if (TP.canInvoke(parts, 'at')) {
-        this.$set('nid', parts.at('nid'));
-        this.$set('nss', parts.at('nss'));
+        this.$set('nid', parts.at('nid'), false);
+        this.$set('nss', parts.at('nss'), false);
     }
 
     return this;
@@ -4370,7 +4443,12 @@ function(aResource, aRequest) {
 
         resource,
 
-        hasID;
+        hasID,
+
+        subURIs,
+        description,
+        fragText,
+        i;
 
     TP.stop('break.uri_resource');
 
@@ -4410,6 +4488,41 @@ function(aResource, aRequest) {
 
     //  clear any expiration computations
     this.expire(false);
+
+    //  SubURIs are URIs that have the same primary resource as us, but also
+    //  have a fragment, indicating that they also have a secondary resource
+    //  pointed to by the fragment
+    subURIs = this.getSubURIs();
+
+    if (TP.notEmpty(subURIs)) {
+
+        //  In order to make sure that all observers of both the subURI and
+        //  ourself (as the primary URI) get notified, we signal from both the
+        //  subURI and ourself. Note here that we just reuse the signal name and
+        //  payload.
+
+        description = TP.hc('action', TP.DELETE, 'target', aResource);
+
+        for (i = 0; i < subURIs.getSize(); i++) {
+
+            fragText = subURIs.at(i).getFragmentText();
+            description.atPut('aspect', fragText);
+
+            subURIs.at(i).signal(
+                    'TP.sig.StructureChange',
+                    arguments,
+                    description);
+
+            this.signal(
+                    'TP.sig.StructureChange',
+                    arguments,
+                    description);
+        }
+    }
+
+    //  Whether or not we have an subURIs, we invoke the standard 'changed'
+    //  mechanism (which signals 'TP.sig.ValueChange' from ourself).
+    this.changed('value', TP.UPDATE, TP.hc('target', aResource));
 
     return this;
 });
@@ -5560,15 +5673,20 @@ function(parts) {
 
     this.callNextMethod();
 
-    this.set('user', parts.at('user'));
-    this.set('password', parts.at('password'));
+    //  NOTE: These 'set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
 
-    this.set('host', parts.at('host'));
-    this.set('port', parts.at('port'));
+    this.set('user', parts.at('user'), false);
+    this.set('password', parts.at('password'), false);
 
-    this.set('path', parts.at('path'));
-    this.set('query', parts.at('query'));
-    this.set('queryDict', parts.at('queryDict'));
+    this.set('host', parts.at('host'), false);
+    this.set('port', parts.at('port'), false);
+
+    this.set('path', parts.at('path'), false);
+    this.set('query', parts.at('query'), false);
+    this.set('queryDict', parts.at('queryDict'), false);
 
     return this;
 });
@@ -5803,7 +5921,12 @@ function(parts) {
         thePath = thePath.slice(1);
     }
 
-    this.set('path', thePath);
+    //  NOTE: These 'set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
+    this.set('path', thePath, false);
 
     //  generate the internal href
     this.asString();
@@ -6299,8 +6422,13 @@ function(parts) {
 
     this.callNextMethod();
 
-    this.set('host', parts.at('host'));
-    this.set('port', parts.at('port'));
+    //  NOTE: These 'set' calls use 'false' to avoid notification!! This is
+    //  necessary when creating a URI, since otherwise the change notification
+    //  mechanism will cause errors trying to get observations set up before
+    //  everything is in place.
+
+    this.set('host', parts.at('host'), false);
+    this.set('port', parts.at('port'), false);
 
     return this;
 });

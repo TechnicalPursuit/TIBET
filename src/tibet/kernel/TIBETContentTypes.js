@@ -1631,6 +1631,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  Note here how we always do the set with a 'false' and then send a
     //  'changed' message later with additional information. We also pass a
     //  second 'false' to avoid warnings on undeclared attributes.
+
+    targetObj.defineAttribute(srcPath);
     retVal = targetObj.set(srcPath, attributeValue, false);
 
     thisType.endChangedAddress();
