@@ -10424,7 +10424,7 @@ function(attributeName) {
         path = attributeName;
     } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName) &&
                 !TP.regex.ATTRIBUTE.test(attributeName)) {
-        path = TP.apc(attributeName);
+        path = TP.apc(attributeName).set('shouldCollapse', true);
     }
 
     if (TP.notValid(path)) {
@@ -10662,7 +10662,7 @@ function(attributeName, attributeValue, shouldSignal) {
         path = attributeName;
     } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName) &&
                 !TP.regex.ATTRIBUTE.test(attributeName)) {
-        path = TP.apc(attributeName);
+        path = TP.apc(attributeName).set('shouldCollapse', true);
     }
 
     if (TP.notValid(path)) {
@@ -11964,7 +11964,7 @@ function(attributeName) {
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
     } else if (TP.regex.NON_SIMPLE_PATH.test(attributeName)) {
-        path = TP.apc(attributeName);
+        path = TP.apc(attributeName).set('shouldCollapse', true);
     }
 
     if (TP.notValid(path)) {
