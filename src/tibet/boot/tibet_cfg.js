@@ -321,6 +321,8 @@ if (typeof navigator === 'undefined') {
 
   TP.sys.setcfg('log.reporter', 'console');
   TP.sys.setcfg('log.colormode', 'terminal');
+
+  TP.sys.setcfg('log.default_appender', 'TP.log.BrowserAppender');
 } else if (/PhantomJS/.test(navigator.userAgent)) {
   TP.sys.setcfg('boot.context', 'phantomjs');
   TP.sys.setcfg('boot.reporter', 'phantom');
@@ -329,12 +331,16 @@ if (typeof navigator === 'undefined') {
   TP.sys.setcfg('log.reporter', 'phantom');
   TP.sys.setcfg('log.colormode', 'terminal');
   TP.sys.setcfg('log.level', 'WARN');
+
+  TP.sys.setcfg('log.default_appender', 'TP.log.BrowserAppender');
 } else {
   TP.sys.setcfg('boot.context', 'browser');
   TP.sys.setcfg('boot.reporter', 'bootui');
 
   TP.sys.setcfg('log.reporter', 'console');
   TP.sys.setcfg('log.colormode', 'console');
+
+  TP.sys.setcfg('log.default_appender', 'TP.log.BrowserAppender');
 }
 
 //  ---
@@ -918,6 +924,10 @@ TP.sys.setcfg('log.bootenv', false);
 //  used as a baseline computation point. The actual level will vary based on
 //  the current logging level and this value. See $computeLogBufferSize();
 TP.sys.setcfg('log.buffersize', 5);
+
+//  The type used to create new logger instances. You can change if you really
+//  need to have a custom subtype of TP.log.Logger, but not usually necessary.
+TP.sys.setcfg('log.default_factory', 'TP.log.Logger');
 
 //  Which default formatter should be used when sending log output to the
 //  stdout routine?

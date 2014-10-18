@@ -8,6 +8,26 @@
  */
 //  ============================================================================
 
+/* TODO:
+//  Phantom TAP-parse-compatible layout (no leading ts, level, etc.)
+
+//  filter based on some log level...or do we just rely on TP.setLogLevel
+// to adjust default log?
+
+// Log entry persistence. this may be worth doing at the root level and allowing
+// filtering by entry/marker content that includes the log name of the entry.
+
+// Log buffering. We should be able to to output/flush in chunks to keep
+// overhead down during rendering etc depending on the appender in question.
+
+// Log coalescing. Some appenders might be able to produce counts for duplicate
+// entries...so they'd basically keep their last entry and flush only when a new
+// entry comes in that's different, or when forced to flush.
+
+//  Configure default logger/appender/layout chains for common logs.
+*/
+
+
 /*
  * Loosely based on log4j 2.0 but adjusted to fit TIBET's unique requirements.
  *
@@ -103,7 +123,20 @@ TP.log.Manager.Type.defineMethod('getLogger', function(aName) {
         return logger;
     }
 
-    return TP.log.Logger.construct(aName);
+    return this.getLoggerFactory().construct(aName);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Manager.Type.defineMethod('getLoggerFactory', function() {
+
+    /**
+     * @name getLoggerFactory
+     * @summary Returns the type to use for construction of new loggers.
+     * @return {TP.log.Logger} A logger type or subtype.
+     */
+
+    return TP.sys.getTypeByName(TP.sys.cfg('log.default_factory'));
 });
 
 //  ----------------------------------------------------------------------------
@@ -172,8 +205,12 @@ TP.log.Manager.Type.defineMethod('removeLogger', function(aLogger) {
      * @return {TP.log.Manager} The receiver.
      */
 
-    if (this.exists(aLogger.getName())) {
-        this.loggers.removeKey(aLogger.getName());
+    var name;
+
+    name = TP.isString(aLogger) ? aLogger : aLogger.getName();
+
+    if (this.exists(name)) {
+        this.loggers.removeKey(name);
     }
 
     return this;
@@ -577,6 +614,14 @@ TP.log.Logger.Type.defineAttribute('defaultAppender');
 
 //  ----------------------------------------------------------------------------
 
+/**
+ * The default type name to use when constructing a default appender instance.
+ * @type {String}
+ */
+TP.log.Logger.Type.defineAttribute('defaultAppenderType');
+
+//  ----------------------------------------------------------------------------
+
 TP.log.Logger.Type.defineMethod('construct', function(aName) {
 
     /**
@@ -628,20 +673,15 @@ TP.log.Logger.Type.defineMethod('getDefaultAppender', function() {
         return inst;
     }
 
-    name = TP.sys.cfg('log.default_appender');
+    name = TP.ifInvalid(this.$get('defaultAppenderType'),
+        TP.sys.cfg('log.default_appender'));
+
     if (TP.notEmpty(name)) {
         type = TP.sys.getTypeByName(name);
     }
 
     if (TP.notValid(type)) {
-        switch (TP.sys.cfg('boot.context')) {
-            case 'phantomjs':
-                type =  TP.sys.getTypeByName('TP.log.PhantomAppender');
-                break;
-            default:
-                type = TP.sys.getTypeByName('TP.log.BrowserAppender');
-                break;
-        }
+        type = TP.sys.getTypeByName('TP.log.ConsoleAppender');
     }
 
     // If the types in question can't be located use one from this file...
@@ -1161,6 +1201,14 @@ TP.log.Appender.Type.defineAttribute('defaultLayout');
 
 //  ----------------------------------------------------------------------------
 
+/**
+ * The default type name to use when constructing a default layout instance.
+ * @type {String}
+ */
+TP.log.Appender.Type.defineAttribute('defaultLayoutType');
+
+//  ----------------------------------------------------------------------------
+
 TP.log.Appender.Type.defineMethod('getDefaultLayout', function() {
 
     /**
@@ -1177,20 +1225,15 @@ TP.log.Appender.Type.defineMethod('getDefaultLayout', function() {
         return inst;
     }
 
-    name = TP.sys.cfg('log.default_layout');
+    name = TP.ifInvalid(this.$get('defaultLayoutType'),
+        TP.sys.cfg('log.default_layout'));
+
     if (TP.notEmpty(name)) {
         type = TP.sys.getTypeByName(name);
     }
 
     if (TP.notValid(type)) {
-        switch (TP.sys.cfg('boot.context')) {
-            case 'phantomjs':
-                type =  TP.sys.getTypeByName('TP.log.PhantomLayout');
-                break;
-            default:
-                type = TP.sys.getTypeByName('TP.log.BrowserLayout');
-                break;
-        }
+        type = TP.sys.getTypeByName('TP.log.ConsoleLayout');
     }
 
     // If the types in question can't be located use one from this file...
@@ -1466,8 +1509,7 @@ TP.log.Filter.Inst.defineMethod('filter', function(anEntry) {
 
 /**
  * A type whose specific subtypes provide alternative ways to format a log
- * Entry. Some common options include browser console form, TIBET console form,
- * and TAP-formatted output for test logging.
+ * Entry. Some common options include browser console form, TDC form, etc.
  */
 TP.lang.Object.defineSubtype('log.Layout');
 
@@ -1486,32 +1528,7 @@ TP.log.Layout.Inst.defineMethod('layout', function(anEntry) {
      * @return {Object} The formatted output. Can be String, Node, etc.
      */
 
-    var str;
-    var marker;
-    var arglist;
-
-    str = '' + anEntry.getDate().asTimestamp() + ' - ' +
-        anEntry.getLogger().getName() + ' ' +
-        anEntry.getLevel().getName();
-
-    // If there's a marker we can output that as well...
-    marker = anEntry.getMarker();
-    if (TP.isValid(marker)) {
-        str += ' [' + marker.getName() + ']';
-    }
-
-    // The arglist may have multiple elements in it which we need to handle.
-    arglist = anEntry.getArglist();
-    if (TP.isValid(arglist)) {
-        str += ' - ';
-        arglist.forEach(function(item) {
-            str += TP.str(item);
-            str += ' ';
-        });
-        str = str.trim() + '.';
-    }
-
-    return str;
+    return TP.str(anEntry);
 });
 
 
@@ -1985,31 +2002,32 @@ TP.log.Timer.Inst.defineMethod('stop', function() {
 });
 
 //  ============================================================================
-//  Default Appenders
+//  Console Appender
 //  ============================================================================
 
 /**
- * An appender specific to output to the typical web browser console. We avoid
- * the term "console" in the name to avoid confusion with the TDC, which uses a
- * different appender since output to the TDC "console" is XHTML-based.
+ * An appender specific to output to the typical JavaScript console object.
  */
-TP.log.Appender.defineSubtype('BrowserAppender');
+TP.log.Appender.defineSubtype('ConsoleAppender');
+
+//  ----------------------------------------------------------------------------
 
 /**
  * The default layout type for this appender.
  * @type {TP.log.Layout}
  */
-TP.log.BrowserAppender.Type.$set('defaultLayout', 'TP.log.BrowserLayout');
+TP.log.ConsoleAppender.Type.$set('defaultLayoutType', 'TP.log.ConsoleLayout');
 
 //  ----------------------------------------------------------------------------
 //  Instance Definition
 //  ----------------------------------------------------------------------------
 
-TP.log.BrowserAppender.Inst.defineMethod('append', function(anEntry) {
+TP.log.ConsoleAppender.Inst.defineMethod('append', function(anEntry) {
 
     /**
      * @name append
-     * @summary Formats the entry data using the receiver's layout.
+     * @summary Formats the entry data using the receiver's layout and writes
+     *     it to the console using the best console API method possible.
      * @param {TP.log.Entry} anEntry The log entry to format and append.
      * @return {TP.log.Appender} The receiver.
      */
@@ -2047,21 +2065,96 @@ TP.log.BrowserAppender.Inst.defineMethod('append', function(anEntry) {
     return this;
 });
 
-
 //  ============================================================================
-//  Default Layouts
+//  TestLog Appender
 //  ============================================================================
 
 /**
- * A layout specific to web browser console output.
+ * An appender specific to outputting test log data to the browser console.
  */
-TP.log.Layout.defineSubtype('BrowserLayout');
+TP.log.Appender.defineSubtype('TestLogAppender');
+
+//  ----------------------------------------------------------------------------
+
+/**
+ * The default layout type for this appender.
+ * @type {TP.log.Layout}
+ */
+TP.log.TestLogAppender.Type.$set('defaultLayoutType', 'TP.log.ArglistLayout');
 
 //  ----------------------------------------------------------------------------
 //  Instance Definition
 //  ----------------------------------------------------------------------------
 
-TP.log.BrowserLayout.Inst.defineMethod('layout', function(anEntry) {
+TP.log.TestLogAppender.Inst.defineMethod('append', function(anEntry) {
+
+    /**
+     * @name append
+     * @summary Formats the entry data using the receiver's layout and writes
+     *     it to the console. One specific difference between this and the
+     *     ConsoleAppender is the focus on using console.log and console.error
+     *     exclusively rather than trace or info, even if those match entry
+     *     level data.
+     * @param {TP.log.Entry} anEntry The log entry to format and append.
+     * @return {TP.log.Appender} The receiver.
+     */
+
+    var name;
+    var writer;
+    var layout;
+    var content;
+
+    // Try to find a matching console API method to our level name. If we find
+    // it we'll use that to output the message content.
+    name = anEntry.getLevel().getName().toLowerCase();
+    switch (name) {
+        case 'warn':
+            writer = 'warn';
+            break;
+        case 'error':
+        case 'severe':
+        case 'fatal':
+            writer = 'error';
+            break;
+        default:
+            // trace, debug, info, system, all
+            writer = 'log';
+            break;
+    }
+
+    // If the entry contains multiple parts and we have access to a
+    // group/groupEnd api via the console we'll group our output to help show
+    // that it's all the result of a single logging call...
+    // TODO:
+
+
+    // Format the little critter...
+    layout = this.getLayout();
+    content = layout.layout(anEntry);
+
+    try {
+        top.console[writer](content);
+    } catch (e) {
+        top.console.log(content);
+    }
+
+    return this;
+});
+
+//  ============================================================================
+//  Console Layout
+//  ============================================================================
+
+/**
+ * A layout specific to JavaScript console output.
+ */
+TP.log.Layout.defineSubtype('ConsoleLayout');
+
+//  ----------------------------------------------------------------------------
+//  Instance Definition
+//  ----------------------------------------------------------------------------
+
+TP.log.ConsoleLayout.Inst.defineMethod('layout', function(anEntry) {
 
     /**
      * @name layout
@@ -2071,8 +2164,75 @@ TP.log.BrowserLayout.Inst.defineMethod('layout', function(anEntry) {
      * @return {Object} The formatted output. Can be String, Node, etc.
      */
 
-    // TODO
-    return this.callNextMethod();
+    var str;
+    var marker;
+    var arglist;
+
+    str = '' + anEntry.getDate().asTimestamp() + ' - ' +
+        anEntry.getLogger().getName() + ' ' +
+        anEntry.getLevel().getName();
+
+    // If there's a marker we can output that as well...
+    marker = anEntry.getMarker();
+    if (TP.isValid(marker)) {
+        str += ' [' + marker.getName() + ']';
+    }
+
+    // The arglist may have multiple elements in it which we need to handle.
+    arglist = anEntry.getArglist();
+    if (TP.isValid(arglist)) {
+        str += ' - ';
+        arglist.forEach(function(item) {
+            str += TP.str(item);
+            str += ' ';
+        });
+        str = str.trim() + '.';
+    }
+
+    return str;
+});
+
+//  ============================================================================
+//  Arglist Layout
+//  ============================================================================
+
+/**
+ * A simple layout specific to JavaScript console output which doesn't include
+ * any timestamp or leveling data, just the content of the Entry argument list.
+ */
+TP.log.Layout.defineSubtype('ArglistLayout');
+
+//  ----------------------------------------------------------------------------
+//  Instance Definition
+//  ----------------------------------------------------------------------------
+
+TP.log.ArglistLayout.Inst.defineMethod('layout', function(anEntry) {
+
+    /**
+     * @name layout
+     * @summary Formats an entry. The default output format for top.console is:
+     *     {ms} - {level} {logger} - {string}
+     * @param {TP.log.Entry} anEntry The entry to format.
+     * @return {Object} The formatted output. Can be String, Node, etc.
+     */
+
+    var str;
+    var marker;
+    var arglist;
+
+    str = '';
+
+    // The arglist may have multiple elements in it which we need to handle.
+    arglist = anEntry.getArglist();
+    if (TP.isValid(arglist)) {
+        arglist.forEach(function(item) {
+            str += TP.str(item);
+            str += ' ';
+        });
+        str = str.trim();
+    }
+
+    return str;
 });
 
 //  ============================================================================
@@ -2178,9 +2338,9 @@ function(argList, aLogLevel) {
     logger = TP.ifInvalid(logger, TP.getDefaultLogger());
     level = TP.isString(aLogLevel) ? TP.log[aLogLevel] : aLogLevel;
 
-    level = TP.ifInvalid(level, TP.log.WARN);
+    level = TP.ifInvalid(level, TP.log.INFO);
 
-    logger.$logArglist(args, level);
+    logger.$logArglist(level, args);
 
     //top.console.log(TP.boot.$str(argList[0]));
 });
@@ -2777,6 +2937,21 @@ TP.sys.$activity = TP.ifInvalid(TP.sys.$activity, new TP.boot.Log());
 //  TEST LOG
 //  ----------------------------------------------------------------------------
 
+(function() {
+    var logger;
+    var appender;
+
+    logger = TP.log.Manager.getLogger(TP.TEST_LOG);
+
+    appender = TP.log.TestLogAppender.construct();
+
+    logger.inheritsAppenders(false);
+    logger.addAppender(appender);
+    logger.setLevel(TP.log.ALL);
+}());
+
+//  ----------------------------------------------------------------------------
+
 TP.sys.defineMethod('logTest',
 function(anObject, aLogLevel) {
 
@@ -2813,12 +2988,6 @@ function(anObject, aLogLevel) {
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
-
-    // TODO: remove this once we can configure the test log appender logic, or
-    // migrate this into that logic
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
-        //console.log(TP.str(anObject));
-    }
 
     TP.sys.$$log([anObject, TP.TEST_LOG], aLogLevel);
 
