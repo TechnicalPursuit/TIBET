@@ -671,9 +671,10 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
             try {
                 newVal = aSignal.getValue();
-                targetAttr = handler.$aspectMap.at(aSignal.at('aspect'));
-
-                this.set(targetAttr, newVal);
+                if (TP.notEmpty(targetAttr =
+                                handler.$aspectMap.at(aSignal.at('aspect')))) {
+                    this.set(targetAttr, newVal);
+                }
             } catch (e) {
                 this.raise('TP.sig.InvalidBinding', arguments);
             }
