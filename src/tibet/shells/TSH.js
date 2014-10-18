@@ -1455,7 +1455,7 @@ function(aRequest) {
         return;
     }
 
-    TP.ifTrace(TP.sys.cfg('log.tsh_phases')) ?
+    TP.ifTrace() && TP.sys.cfg('log.tsh_phases') ?
         TP.trace(Date.now() + ' TP.core.TSH ' + phase,
                     TP.LOG) : 0;
 
@@ -1519,10 +1519,10 @@ function(aRequest) {
                 //  compiled elements which refer to concrete types via
                 //  tibet:sourcetag.
                 if (TP.nodeHasReachedPhase(child, phase, phases)) {
-                    TP.ifTrace(
+                    TP.ifTrace() &&
                             TP.$VERBOSE &&
                             TP.sys.cfg('log.tsh_phases') &&
-                            TP.sys.cfg('log.tsh_phase_skips')) ?
+                            TP.sys.cfg('log.tsh_phase_skips') ?
                                 TP.trace('TP.core.TSH ' + phase +
                                             ' skipping: ' +
                                             TP.name(type) + ' ' +
@@ -1557,10 +1557,10 @@ function(aRequest) {
                 } else {
                     aRequest.atPut('cmdNode', child);
 
-                    TP.ifTrace(
+                    TP.ifTrace() &&
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
-                        TP.sys.cfg('log.tsh_phase_nodes')) ?
+                        TP.sys.cfg('log.tsh_phase_nodes') ?
                             TP.trace(Date.now() + ' TP.core.TSH ' + phase +
                                         ' nodetype: ' + TP.name(type) +
                                         ' ' +
@@ -1685,10 +1685,10 @@ function(aRequest) {
                     }
                 }
             } else {
-                TP.ifTrace(
+                TP.ifTrace() &&
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
-                        TP.sys.cfg('log.tsh_phase_skips')) ?
+                        TP.sys.cfg('log.tsh_phase_skips') ?
                             TP.trace('TP.core.TSH ' + phase +
                                             ' skipping: ' +
                                             TP.name(type) + ' ' +
@@ -1734,10 +1734,10 @@ function(aRequest) {
             if (TP.canInvoke(type, funcName)) {
                 aRequest.atPut('cmdNode', child);
 
-                TP.ifTrace(
+                TP.ifTrace() &&
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
-                        TP.sys.cfg('log.tsh_phase_nodes')) ?
+                        TP.sys.cfg('log.tsh_phase_nodes') ?
                             TP.trace(Date.now() + ' TP.core.TSH ' + phase +
                                             ' nodetype: ' + TP.name(type) +
                                             ' ' +
@@ -1812,10 +1812,10 @@ function(aRequest) {
                     }
                 }
             } else {
-                TP.ifTrace(
+                TP.ifTrace() &&
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
-                        TP.sys.cfg('log.tsh_phase_skips')) ?
+                        TP.sys.cfg('log.tsh_phase_skips') ?
                             TP.trace('TP.core.TSH ' + phase +
                                             ' skipping: ' +
                                             TP.name(type) + ' ' +

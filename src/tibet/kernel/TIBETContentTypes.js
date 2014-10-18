@@ -4606,7 +4606,7 @@ function(aTPNode) {
                 //  flag to TP.DELETE and that's all
                 TP.elementFlagChange(node, TP.SELF, TP.DELETE);
 
-                TP.ifTrace(TP.$DEBUG) ?
+                TP.ifTrace() && TP.$DEBUG ?
                     TP.trace('Node flagged: ' + TP.nodeAsString(node),
                                 TP.LOG) : 0;
             } else {

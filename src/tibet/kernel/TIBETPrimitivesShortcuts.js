@@ -2811,7 +2811,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
     ignore = TP.ifInvalid(ignoreMisses, false);
 
     if (!TP.canInvoke(anObject, handlerName)) {
-        TP.ifWarn(!ignore && TP.sys.shouldLogSignals()) ?
+        TP.ifWarn() && !ignore && TP.sys.shouldLogSignals() ?
             TP.warn(TP.boot.$annotate(anObject,
                 'Direct ' + handlerName + ' invocation failed.'),
                 TP.SIGNAL_LOG) : 0;
@@ -2820,7 +2820,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
     }
 
     if (TP.notValid(aSignal)) {
-        TP.ifWarn(!ignore && TP.sys.shouldLogSignals()) ?
+        TP.ifWarn() && !ignore && TP.sys.shouldLogSignals() ?
             TP.warn(TP.join('Direct ', handlerName, ' invocation failed. ',
                 'No signal name or instance provided.'),
                 TP.SIGNAL_LOG) : 0;

@@ -2526,14 +2526,14 @@ function() {
     if (TP.notEmpty(dateStr)) {
         theDate = Date.from(dateStr);
     } else {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace(this.getID() +
                             ' has no Last-Updated information',
                         TP.LOG) : 0;
         return;
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.trace(this.getID() +
                         ' returning cached Last-Updated: ' +
                         theDate,
@@ -5199,13 +5199,13 @@ function(aRequest) {
         //  result _is_ a wrapper object of some form.
         this.$set('resource', result, false);
     } else if (TP.canInvoke(resource, 'setNativeNode') && TP.isNode(result)) {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Refreshing current node container.',
                         TP.TRACE) : 0;
 
         resource.setNativeNode(result);
     } else if (TP.isNode(result)) {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Creating new node container.',
                         TP.TRACE) : 0;
 
@@ -5404,7 +5404,7 @@ function(aRequest) {
 
     TP.stop('break.uri_load');
 
-    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.sys.logIO('Loading content data for ID: ' +
                     TP.ifInvalid(this.getLocation(), 'FROM_SOURCE'),
                     TP.TRACE) : 0;
@@ -8575,14 +8575,14 @@ function(aURI, aRequest) {
 
         localurl = TP.uriExpandPath(item.at('tibet:localuri'));
         if (TP.notEmpty(localurl)) {
-            TP.ifTrace(TP.$$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                 TP.trace('Found local cache \'' + localurl +
                                 '\' for uri: ' + url,
                             TP.LOG) : 0;
 
             duration = item.at('tibet:duration');
             if (TP.notEmpty(duration)) {
-                TP.ifTrace(TP.$$DEBUG && TP.$$VERBOSE) ?
+                TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                     TP.trace('Found cache duration \'' + duration +
                                     '\' for uri: ' + url,
                                 TP.LOG) : 0;
@@ -8658,14 +8658,14 @@ function(aURI, aRequest) {
     //  if we got here without a viable rewrite uri then we've got to
     //  default back to the original and log a warning
     if (TP.notValid(newuri)) {
-        TP.ifWarn(TP.$$DEBUG && TP.$$VERBOSE) ?
+        TP.ifWarn() && TP.$$DEBUG && TP.$$VERBOSE ?
             TP.warn('Invalid rewrite uri: ' +
                         newurl + '. Using ' + url,
                     TP.LOG) : 0;
 
         uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
     } else {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('Found rewrite uri \'' + newurl + '\' for uri: ' + url,
                         TP.LOG) : 0;
 
@@ -8799,7 +8799,7 @@ function(aURI, aRequest) {
     //  should have found a route in the item if routing is applicable,
     //  otherwise we'll continue to default
     if (TP.isEmpty(route)) {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('Returning default handler type: TP.core.URIHandler',
                         TP.LOG) : 0;
 
@@ -8812,14 +8812,14 @@ function(aURI, aRequest) {
             TP.warn('Unable to load route handler: ' + route,
                     TP.LOG) : 0;
 
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('Returning default handler type: TP.core.URIHandler',
                         TP.LOG) : 0;
 
         return uri.$getDefaultHandler(aRequest);
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.trace('Found route \'' + route + '\' for uri: ' + url,
                     TP.LOG) : 0;
 

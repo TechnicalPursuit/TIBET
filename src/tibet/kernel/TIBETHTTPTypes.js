@@ -64,7 +64,7 @@ function(aFaultCode, aFaultString) {
         TP.isEmpty(msg) ? 'HTTP request aborted.' :
                         'HTTP request aborted: ' + msg);
 
-    TP.ifInfo(TP.sys.shouldLogIO()) ?
+    TP.ifInfo() && TP.sys.shouldLogIO() ?
             TP.sys.logIO(this, TP.INFO) : 0;
 
     //  TODO: migrate to the TP.core.HTTPURIHandler
@@ -117,7 +117,7 @@ function(aFaultCode, aFaultString) {
         TP.isEmpty(msg) ? 'HTTP request cancelled.' :
                         'HTTP request cancelled: ' + msg);
 
-    TP.ifInfo(TP.sys.shouldLogIO()) ?
+    TP.ifInfo() && TP.sys.shouldLogIO() ?
             TP.sys.logIO(this, TP.INFO) : 0;
 
     //  TODO: migrate to the TP.core.HTTPURIHandler

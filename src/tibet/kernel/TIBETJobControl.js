@@ -1725,7 +1725,7 @@ function(aResult) {
         //  do the post-processing work for the current run
         this.$teardown();
 
-        TP.ifTrace(TP.sys.shouldLogJobs()) ?
+        TP.ifTrace() && TP.sys.shouldLogJobs() ?
             TP.sys.logJob('Job ' + this.getPID() +
                 ' completed at ' + TP.dc(this.$get('ended')).asTimestamp(),
                 TP.TRACE) : 0;
@@ -2054,7 +2054,7 @@ function(silently) {
     this.$set('ended', Date.now());
 
     if (TP.notTrue(silently)) {
-        TP.ifTrace(TP.sys.shouldLogJobs()) ?
+        TP.ifTrace() && TP.sys.shouldLogJobs() ?
             TP.sys.logJob('Job ' + this.getPID() +
                     ' killed at ' + TP.dc(this.$get('ended')).asTimestamp(),
                     TP.TRACE) : 0;
@@ -2477,7 +2477,7 @@ function(now) {
      * @returns {TP.core.Job} The receiver.
      */
 
-    TP.ifTrace(TP.sys.shouldLogJobs()) ?
+    TP.ifTrace() && TP.sys.shouldLogJobs() ?
         TP.sys.logJob('Job ' + this.getPID() +
                 ' shutdown requested at ' + TP.dc().asTimestamp(),
                 TP.TRACE) : 0;
@@ -2551,7 +2551,7 @@ function(stepParams) {
     this.$set('started', Date.now());
     this.$set('runstart', this.started);
 
-    TP.ifTrace(TP.sys.shouldLogJobs()) ?
+    TP.ifTrace() && TP.sys.shouldLogJobs() ?
         TP.sys.logJob('Job ' + this.getPID() +
                 ' started at ' + TP.dc(this.$get('started')).asTimestamp(),
                 TP.TRACE) : 0;
@@ -2853,7 +2853,7 @@ function() {
     runstart = Date.now();
     this.$set('runstart', runstart, false);
 
-    TP.ifTrace(TP.sys.shouldLogJobs()) ?
+    TP.ifTrace() && TP.sys.shouldLogJobs() ?
         TP.sys.logJob('Job ' + this.getPID() +
                 ' re-started at ' + TP.dc(runstart).asTimestamp(),
                 TP.TRACE) : 0;

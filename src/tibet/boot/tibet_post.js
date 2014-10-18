@@ -552,6 +552,36 @@ TP.boot.$stderr = TP.boot.STDERR_LOG;
 TP.boot.$stdin = TP.boot.STDIN_PROMPT;
 TP.boot.$stdout = TP.boot.STDOUT_LOG;
 
+//  ------------------------------------------------------------------------
+
+TP.boot.$$log = function(argList, aLogLevel) {
+
+    /**
+     * @name $$log
+     * @summary Routes logging output to either stderr or stdout based on
+     *     logging level.
+     * @param {Arguments} argList A list of arguments from a logging call.
+     * @param {Number} aLogLevel TP.INFO or a similar level name.
+     * @todo
+     */
+
+    var level;
+    var message;
+
+    // Get level in numeric form so we can test leveling below.
+    level = TP.ifInvalid(aLogLevel, TP.INFO);
+    level = TP.boot[level];
+
+    // TODO: Convert argument list into a single message object we can output.
+    message = argList[0];
+
+    if ((level >= TP.boot.ERROR) && (level < TP.boot.SYSTEM)) {
+        return TP.boot.$stderr(message, level);
+    } else {
+        return TP.boot.$stdout(message, level);
+    }
+};
+
 //  ============================================================================
 //  ERROR HANDLING
 //  ============================================================================
@@ -7184,365 +7214,306 @@ code to reduce overhead and code size. The idioms are:
 
 //  ------------------------------------------------------------------------
 
-TP.ifEnabled = function(aLevel, aFlag) {
-
-    /**
-     * @name ifEnabled
-     * @synopsis Returns true if logging is set at or above aLevel. This
-     *     function is a common routine used by ifError, ifTrace, ifInfo, etc.
-     * @param {Constant} aLevel A TP error level constant such as TP.boot.INFO.
-     * @param {Boolean} aFlag An optional flag to control the return value.
-     *     TP.boot.TRACE.
-     * @returns {Boolean} True if error-level logging is active.
-     * @todo
-     */
-
-    var level = TP.ifInvalid(aLevel, TP.boot.ERROR);
-
-    if (aFlag === undefined) {
-        return TP.boot.$$loglevel <= level;
-    }
-
-    return aFlag && (TP.boot.$$loglevel <= level);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.ifDebug = function(aFlag) {
-
-    /**
-     * @name ifDebug
-     * @synopsis Returns true if logging is set at or above TP.boot.DEBUG level.
-     *     This function is commonly used in the idiomatic expression:
-     *     <code>TP.ifDebug() ? TP.debug(...) : 0;code> This idiom can be
-     *     stripped by packaging tools to remove inline logging calls from
-     *     production code.
-     * @param {Boolean} aFlag An optional flag to control the return value.
-     *     Rarely used with this idiomatic variant.
-     * @returns {Boolean} True if error-level logging is active.
-     * @todo
-     */
-
-    return TP.ifEnabled(TP.boot.DEBUG, aFlag);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.ifError = function(aFlag) {
-
-    /**
-     * @name ifError
-     * @synopsis Returns true if logging is set at or above TP.boot.ERROR level.
-     *     This function is commonly used in the idiomatic expression:
-     *     <code>TP.ifError() ? TP.error(...) : 0;code> This idiom can be
-     *     stripped by packaging tools to remove inline logging calls from
-     *     production code.
-     * @param {Boolean} aFlag An optional flag to control the return value.
-     *     Rarely used with this idiomatic variant.
-     * @returns {Boolean} True if error-level logging is active.
-     * @todo
-     */
-
-    return TP.ifEnabled(TP.boot.ERROR, aFlag);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.ifFatal = function(aFlag) {
-
-    /**
-     * @name ifFatal
-     * @synopsis Returns true if logging is set at or above TP.boot.FATAL level.
-     *     This function is commonly used in the idiomatic expression:
-     *     <code>TP.ifFatal() ? TP.error(...) : 0;code> This idiom can be
-     *     stripped by packaging tools to remove inline logging calls from
-     *     production code.
-     * @param {Boolean} aFlag An optional flag to control the return value.
-     *     Rarely used with this idiomatic variant.
-     * @returns {Boolean} True if fatal-level logging is active.
-     * @todo
-     */
-
-    return TP.ifEnabled(TP.boot.FATAL, aFlag);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.ifInfo = function(aFlag) {
-
-    /**
-     * @name ifInfo
-     * @synopsis Returns true if logging is set at or above TP.boot.INFO level.
-     *     This function is commonly used in the idiomatic expression:
-     *     <code>TP.ifInfo() ? TP.info(...) : 0;code> This idiom can be stripped
-     *     by packaging tools to remove inline logging calls from production
-     *     code.
-     * @param {Boolean} aFlag An optional flag to control the return value.
-     *     Rarely used with this idiomatic variant.
-     * @returns {Boolean} True if info-level logging is active.
-     * @todo
-     */
-
-    return TP.ifEnabled(TP.boot.INFO, aFlag);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.ifSevere = function(aFlag) {
-
-    /**
-     * @name ifSevere
-     * @synopsis Returns true if logging is set at or above TP.boot.SEVERE.
-     *     This function is commonly used in the idiomatic expression:
-     *     <code>TP.ifSevere() ? TP.severe(...) : 0;code> This idiom can be
-     *     stripped by packaging tools to remove inline logging calls from
-     *     production code.
-     * @param {Boolean} aFlag An optional flag to control the return value.
-     *     Rarely used with this idiomatic variant.
-     * @returns {Boolean} True if severe-level logging is active.
-     * @todo
-     */
-
-    return TP.ifEnabled(TP.boot.SEVERE, aFlag);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.ifSystem = function(aFlag) {
-
-    /**
-     * @name ifSystem
-     * @synopsis Returns true if logging is set at or above TP.boot.SYSTEM.
-     *     This function is commonly used in the idiomatic expression:
-     *     <code>TP.ifSystem() ? TP.system(...) : 0;code> This idiom can be
-     *     stripped by packaging tools to remove inline logging calls from
-     *     production code.
-     * @param {Boolean} aFlag An optional flag to control the return value.
-     *     Rarely used with this idiomatic variant.
-     * @returns {Boolean} True if system-level logging is active.
-     * @todo
-     */
-
-    return TP.ifEnabled(TP.boot.SYSTEM, aFlag);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.ifTrace = function(aFlag) {
+TP.ifTrace = function(aLogName) {
 
     /**
      * @name ifTrace
-     * @synopsis Returns true if logging is set at or above TP.boot.TRACE level.
-     *     This function is commonly used in the idiomatic expression:
-     *     <code>TP.ifTrace() ? TP.trace(...) : 0;code> This idiom can be
-     *     stripped by packaging tools to remove inline logging calls from
-     *     production code.
-     * @param {Boolean} aFlag An optional flag to control the return value.
-     *     Rarely used with this idiomatic variant.
+     * @synopsis Returns true if logging is enabled for TP.boot.TRACE level
+     *     for the specified log, or the current default log. This function
+     *     is commonly used in the idiomatic expression:
+     *     <code>TP.ifTrace() ? TP.trace(...) : 0;code> This idiom can help
+     *     performance in cases where message construction overhead is high.
+     * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if trace-level logging is active.
      * @todo
      */
 
-    return TP.ifEnabled(TP.boot.TRACE, aFlag);
+    return TP.boot.$$loglevel <= TP.boot.TRACE;
 };
 
 //  ------------------------------------------------------------------------
 
-TP.ifWarn = function(aFlag) {
+TP.ifDebug = function(aLogName) {
+
+    /**
+     * @name ifDebug
+     * @synopsis Returns true if logging is enabled for TP.boot.DEBUG level
+     *     for the specified log, or the current default log. This function
+     *     is commonly used in the idiomatic expression:
+     *     <code>TP.ifDebug() ? TP.debug(...) : 0;code> This idiom can help
+     *     performance in cases where message construction overhead is high.
+     * @param {String} aLogName An optional log name to check for level.
+     * @returns {Boolean} True if debug-level logging is active.
+     * @todo
+     */
+
+    return TP.boot.$$loglevel <= TP.boot.DEBUG;
+};
+
+//  ------------------------------------------------------------------------
+
+TP.ifInfo = function(aLogName) {
+
+    /**
+     * @name ifInfo
+     * @synopsis Returns true if logging is enabled for TP.boot.INFO level
+     *     for the specified log, or the current default log. This function
+     *     is commonly used in the idiomatic expression:
+     *     <code>TP.ifInfo() ? TP.info(...) : 0;code> This idiom can help
+     *     performance in cases where message construction overhead is high.
+     * @param {String} aLogName An optional log name to check for level.
+     * @returns {Boolean} True if info-level logging is active.
+     * @todo
+     */
+
+    return TP.boot.$$loglevel <= TP.boot.INFO;
+};
+
+//  ------------------------------------------------------------------------
+
+TP.ifWarn = function(aLogName) {
 
     /**
      * @name ifWarn
-     * @synopsis Returns true if logging is set at or above TP.boot.WARN level.
-     *     This function is commonly used in the idiomatic expression:
-     *     <code>TP.ifWarn() ? TP.warn(...) : 0;code> This idiom can be stripped
-     *     by packaging tools to remove inline logging calls from production
-     *     code.
-     * @param {Boolean} aFlag An optional flag to control the return value.
-     *     Rarely used with this idiomatic variant.
+     * @synopsis Returns true if logging is enabled for TP.boot.WARN level
+     *     for the specified log, or the current default log. This function
+     *     is commonly used in the idiomatic expression:
+     *     <code>TP.ifWarn() ? TP.warn(...) : 0;code> This idiom can help
+     *     performance in cases where message construction overhead is high.
+     * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if warn-level logging is active.
      * @todo
      */
 
-    return TP.ifEnabled(TP.boot.WARN, aFlag);
+    return TP.boot.$$loglevel <= TP.boot.WARN;
+};
+
+//  ------------------------------------------------------------------------
+
+TP.ifError = function(aLogName) {
+
+    /**
+     * @name ifError
+     * @synopsis Returns true if logging is enabled for TP.boot.ERROR level
+     *     for the specified log, or the current default log. This function
+     *     is commonly used in the idiomatic expression:
+     *     <code>TP.ifError() ? TP.error(...) : 0;code> This idiom can help
+     *     performance in cases where message construction overhead is high.
+     * @param {String} aLogName An optional log name to check for level.
+     * @returns {Boolean} True if error-level logging is active.
+     * @todo
+     */
+
+    return TP.boot.$$loglevel <= TP.boot.ERROR;
+};
+
+//  ------------------------------------------------------------------------
+
+TP.ifSevere = function(aLogName) {
+
+    /**
+     * @name ifSevere
+     * @synopsis Returns true if logging is enabled for TP.boot.SEVERE level
+     *     for the specified log, or the current default log. This function
+     *     is commonly used in the idiomatic expression:
+     *     <code>TP.ifSevere() ? TP.severe(...) : 0;code> This idiom can help
+     *     performance in cases where message construction overhead is high.
+     * @param {String} aLogName An optional log name to check for level.
+     * @returns {Boolean} True if severe-level logging is active.
+     * @todo
+     */
+
+    return TP.boot.$$loglevel <= TP.boot.SEVERE;
+};
+
+//  ------------------------------------------------------------------------
+
+TP.ifFatal = function(aLogName) {
+
+    /**
+     * @name ifFatal
+     * @synopsis Returns true if logging is enabled for TP.boot.FATAL level
+     *     for the specified log, or the current default log. This function
+     *     is commonly used in the idiomatic expression:
+     *     <code>TP.ifFatal() ? TP.fatal(...) : 0;code> This idiom can help
+     *     performance in cases where message construction overhead is high.
+     * @param {String} aLogName An optional log name to check for level.
+     * @returns {Boolean} True if fatal-level logging is active.
+     * @todo
+     */
+
+    return TP.boot.$$loglevel <= TP.boot.FATAL;
+};
+
+//  ------------------------------------------------------------------------
+
+TP.ifSystem = function(aLogName) {
+
+    /**
+     * @name ifSystem
+     * @synopsis Returns true if logging is enabled for TP.boot.SYSTEM level
+     *     for the specified log, or the current default log. This function
+     *     is commonly used in the idiomatic expression:
+     *     <code>TP.ifSystem() ? TP.system(...) : 0;code> This idiom can help
+     *     performance in cases where message construction overhead is high.
+     * @param {String} aLogName An optional log name to check for level.
+     * @returns {Boolean} True if system-level logging is active.
+     * @todo
+     */
+
+    return TP.boot.$$loglevel <= TP.boot.SYSTEM;
 };
 
 //  ============================================================================
 //  LOG PRIMITIVES
 //  ============================================================================
 
-TP.$$log = function(anObject, aLogName, aLogLevel) {
+TP.$$log = function(argList, aLogLevel) {
 
     /**
      * @name $$log
-     * @synopsis Logs anObject to the named log at the level provided. This
-     *     method is a preliminary wrapper for invoking TP.sys.log once enough
-     *     of the kernel has been loaded. Typically you'll use a shortcut for
-     *     either a specific log or specific level as in TP.sys.logIO, or
-     *     TP.warn() etc.
-     * @param {Object} anObject The object to log.
-     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
-     *     string.
-     * @param {Number} aLogLevel TP.boot.INFO or a similar level ID.
+     * @summary Shared routine for routing a logging call such as TP.trace to
+     *     either a boot-level routing or a post-startup routine. The final
+     *     logging is ultimately handled by TP.boot.$std[out|err] or by the
+     *     TP.log infrastructure if the kernel has loaded and started.
+     * @param {Arguments} argList A list of arguments from a logging call.
+     * @param {Number} aLogLevel TP.INFO or a similar level name.
      * @todo
      */
 
-    var level,
-        name;
-
-    level = TP.ifInvalid(aLogLevel, TP.boot.INFO);
-
     if (TP.sys.hasStarted()) {
-        name = TP.ifInvalid(aLogName, TP.LOG);
-        return TP.sys.log(anObject, name, level);
-    } else if ((level >= TP.boot.ERROR) && (level < TP.boot.SYSTEM)) {
-        return TP.boot.$stderr(anObject, level);
+        return TP.sys.$$log(argList, aLogLevel);
     } else {
-        return TP.boot.$stdout(anObject, level);
+        return TP.boot.$$log(argList, aLogLevel);
     }
 };
 
 //  ------------------------------------------------------------------------
 
-TP.debug = function(anObject, aLogName) {
-
-    /**
-     * @name debug
-     * @synopsis Logs anObject at TP.boot.DEBUG level, if active.
-     * @param {Object} anObject The object to log.
-     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
-     *     string.
-     * @todo
-     */
-
-    return TP.$$log(anObject,
-                    aLogName || TP.LOG,
-                    TP.boot.DEBUG);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.error = function(anObject, aLogName) {
-
-    /**
-     * @name error
-     * @synopsis Logs anObject at TP.boot.ERROR level, if active.
-     * @param {Object} anObject The object to log.
-     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
-     *     string.
-     * @todo
-     */
-
-    return TP.$$log(anObject,
-                    aLogName || TP.LOG,
-                    TP.boot.ERROR);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.fatal = function(anObject, aLogName) {
-
-    /**
-     * @name fatal
-     * @synopsis Logs anObject at TP.boot.FATAL level, if active.
-     * @param {Object} anObject The object to log.
-     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
-     *     string.
-     * @todo
-     */
-
-    return TP.$$log(anObject,
-                    aLogName || TP.LOG,
-                    TP.boot.FATAL);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.info = function(anObject, aLogName) {
-
-    /**
-     * @name info
-     * @synopsis Logs anObject at TP.boot.INFO level, if active.
-     * @param {Object} anObject The object to log.
-     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
-     *     string.
-     * @todo
-     */
-
-    return TP.$$log(anObject,
-                    aLogName || TP.LOG,
-                    TP.boot.INFO);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.severe = function(anObject, aLogName) {
-
-    /**
-     * @name severe
-     * @synopsis Logs anObject at TP.boot.SEVERE level, if active.
-     * @param {Object} anObject The object to log.
-     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
-     *     string.
-     * @todo
-     */
-
-    return TP.$$log(anObject,
-                    aLogName || TP.LOG,
-                    TP.boot.SEVERE);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.system = function(anObject, aLogName) {
-
-    /**
-     * @name system
-     * @synopsis Logs anObject at TP.boot.SYSTEM level, if active.
-     * @param {Object} anObject The object to log.
-     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
-     *     string.
-     * @todo
-     */
-
-    return TP.$$log(anObject,
-                    aLogName || TP.LOG,
-                    TP.boot.SYSTEM);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.trace = function(anObject, aLogName) {
+TP.trace = function(varargs) {
 
     /**
      * @name trace
-     * @synopsis Logs anObject at TP.boot.TRACE level, if active.
-     * @param {Object} anObject The object to log.
-     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
-     *     string.
-     * @todo
+     * @synopsis Logs anObject at TP.TRACE level, if active.
+     * @param {Object} varargs One or more arguments. The last argument is
+     *     checked as a possible log name, all other values are considered parts
+     *     of the final message to be logged.
      */
 
-    return TP.$$log(anObject,
-                    aLogName || TP.LOG,
-                    TP.boot.TRACE);
+
+    return TP.$$log(arguments, TP.TRACE);
 };
 
 //  ------------------------------------------------------------------------
 
-TP.warn = function(anObject, aLogName) {
+TP.debug = function(varargs) {
+
+    /**
+     * @name debug
+     * @synopsis Logs anObject at TP.DEBUG level, if active.
+     * @param {Object} varargs One or more arguments. The last argument is
+     *     checked as a possible log name, all other values are considered parts
+     *     of the final message to be logged.
+     */
+
+
+    return TP.$$log(arguments, TP.DEBUG);
+};
+
+//  ------------------------------------------------------------------------
+
+TP.info = function(varargs) {
+
+    /**
+     * @name info
+     * @synopsis Logs anObject at TP.INFO level, if active.
+     * @param {Object} varargs One or more arguments. The last argument is
+     *     checked as a possible log name, all other values are considered parts
+     *     of the final message to be logged.
+     */
+
+
+    return TP.$$log(arguments, TP.INFO);
+};
+
+//  ------------------------------------------------------------------------
+
+TP.warn = function(varargs) {
 
     /**
      * @name warn
-     * @synopsis Logs anObject at TP.boot.WARN level, if active.
-     * @param {Object} anObject The object to log.
-     * @param {String} aLogName TP.LOG by default, but any valid TP.*_LOG or
-     *     string.
-     * @todo
+     * @synopsis Logs anObject at TP.WARN level, if active.
+     * @param {Object} varargs One or more arguments. The last argument is
+     *     checked as a possible log name, all other values are considered parts
+     *     of the final message to be logged.
      */
 
-    return TP.$$log(anObject,
-                    aLogName || TP.LOG,
-                    TP.boot.WARN);
+
+    return TP.$$log(arguments, TP.WARN);
+};
+
+//  ------------------------------------------------------------------------
+
+TP.error = function(varargs) {
+
+    /**
+     * @name error
+     * @synopsis Logs anObject at TP.ERROR level, if active.
+     * @param {Object} varargs One or more arguments. The last argument is
+     *     checked as a possible log name, all other values are considered parts
+     *     of the final message to be logged.
+     */
+
+
+    return TP.$$log(arguments, TP.ERROR);
+};
+
+//  ------------------------------------------------------------------------
+
+TP.severe = function(varargs) {
+
+    /**
+     * @name severe
+     * @synopsis Logs anObject at TP.SEVERE level, if active.
+     * @param {Object} varargs One or more arguments. The last argument is
+     *     checked as a possible log name, all other values are considered parts
+     *     of the final message to be logged.
+     */
+
+
+    return TP.$$log(arguments, TP.SEVERE);
+};
+
+//  ------------------------------------------------------------------------
+
+TP.fatal = function(varargs) {
+
+    /**
+     * @name fatal
+     * @synopsis Logs anObject at TP.FATAL level, if active.
+     * @param {Object} varargs One or more arguments. The last argument is
+     *     checked as a possible log name, all other values are considered parts
+     *     of the final message to be logged.
+     */
+
+
+    return TP.$$log(arguments, TP.FATAL);
+};
+
+//  ------------------------------------------------------------------------
+
+TP.system = function(varargs) {
+
+    /**
+     * @name system
+     * @synopsis Logs anObject at TP.SYSTEM level, if active.
+     * @param {Object} varargs One or more arguments. The last argument is
+     *     checked as a possible log name, all other values are considered parts
+     *     of the final message to be logged.
+     */
+
+
+    return TP.$$log(arguments, TP.SYSTEM);
 };
 
 //  ============================================================================

@@ -378,7 +378,7 @@ TP.hc(
                     request.atPut('message',
                                     'HTTP request completed.');
 
-                    TP.ifInfo(TP.sys.shouldLogIO()) ?
+                    TP.ifInfo() && TP.sys.shouldLogIO() ?
                         TP.sys.logIO(request, TP.INFO) :
                         0;
 
@@ -392,7 +392,7 @@ TP.hc(
             request.atPut('direction', TP.SEND);
             request.atPut('message', 'HTTP request initiated.');
 
-            TP.ifInfo(TP.sys.shouldLogIO()) ?
+            TP.ifInfo() && TP.sys.shouldLogIO() ?
                 TP.sys.logIO(request, TP.INFO) : 0;
 
             //  NB: We have to "'' +" the content string here to
@@ -441,7 +441,7 @@ TP.hc(
                 request.atPut('direction', TP.RECV);
                 request.atPut('message', 'HTTP request completed.');
 
-                TP.ifInfo(TP.sys.shouldLogIO()) ?
+                TP.ifInfo() && TP.sys.shouldLogIO() ?
                     TP.sys.logIO(request, TP.INFO) : 0;
 
                 TP.$httpWrapup(targetUrl, request, httpObj);
@@ -638,7 +638,7 @@ TP.hc(
                     request.atPut('direction', TP.RECV);
                     request.atPut('message', 'HTTP request completed.');
 
-                    TP.ifInfo(TP.sys.shouldLogIO()) ?
+                    TP.ifInfo() && TP.sys.shouldLogIO() ?
                         TP.sys.logIO(request, TP.INFO) : 0;
 
                     TP.$httpWrapup(targetUrl, request, httpObj);
@@ -650,7 +650,7 @@ TP.hc(
             request.atPut('direction', TP.SEND);
             request.atPut('message', 'HTTP request initiated.');
 
-            TP.ifInfo(TP.sys.shouldLogIO()) ?
+            TP.ifInfo() && TP.sys.shouldLogIO() ?
                 TP.sys.logIO(request, TP.INFO) : 0;
 
             //  NB: For Mozilla, we "'' +" the content string here to get a
@@ -674,7 +674,7 @@ TP.hc(
                 request.atPut('direction', TP.RECV);
                 request.atPut('message', 'HTTP request completed.');
 
-                TP.ifInfo(TP.sys.shouldLogIO()) ?
+                TP.ifInfo() && TP.sys.shouldLogIO() ?
                         TP.sys.logIO(request, TP.INFO) : 0;
 
                 TP.$httpWrapup(targetUrl, request, httpObj);
@@ -868,7 +868,7 @@ TP.hc(
                     request.atPut('direction', TP.RECV);
                     request.atPut('message', 'HTTP request completed.');
 
-                    TP.ifInfo(TP.sys.shouldLogIO()) ?
+                    TP.ifInfo() && TP.sys.shouldLogIO() ?
                         TP.sys.logIO(request, TP.INFO) : 0;
 
                     TP.$httpWrapup(targetUrl, request, httpObj);
@@ -880,7 +880,7 @@ TP.hc(
             request.atPut('direction', TP.SEND);
             request.atPut('message', 'HTTP request initiated.');
 
-            TP.ifInfo(TP.sys.shouldLogIO()) ?
+            TP.ifInfo() && TP.sys.shouldLogIO() ?
                 TP.sys.logIO(request, TP.INFO) : 0;
 
             //  NB: For Mozilla, we "'' +" the content string here to get a
@@ -899,7 +899,7 @@ TP.hc(
                 request.atPut('direction', TP.RECV);
                 request.atPut('message', 'HTTP request completed.');
 
-                TP.ifInfo(TP.sys.shouldLogIO()) ?
+                TP.ifInfo() && TP.sys.shouldLogIO() ?
                         TP.sys.logIO(request, TP.INFO) : 0;
 
                 TP.$httpWrapup(targetUrl, request, httpObj);

@@ -163,7 +163,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
                                     TP.nodeGetElementById(doc, observerID))) {
                             return TP.gid(obsElement, true);
                         } else {
-                            TP.ifWarn(TP.$DEBUG) ?
+                            TP.ifWarn() && TP.$DEBUG ?
                                 TP.warn('Specified ev:observer ' +
                                                 observerID +
                                                 ' not found for: ' +
@@ -176,7 +176,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
 
                 observer = arr.join(' ');
             } else {
-                TP.ifWarn(TP.$DEBUG) ?
+                TP.ifWarn() && TP.$DEBUG ?
                     TP.warn('Specified ev:observer not found for: ' +
                                     TP.nodeAsString(anElement),
                                 TP.LOG) : 0;
@@ -301,7 +301,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
         } else {
             //  not unusual when pointing over to TIBET instead of local so
             //  only log this one when VERBOSE is true and only as a warning
-            TP.ifWarn(TP.$DEBUG && TP.$VERBOSE) ?
+            TP.ifWarn() && TP.$DEBUG && TP.$VERBOSE ?
                             TP.warn('Specified ev:target not found for: ' +
                                             TP.nodeAsString(anElement),
                                         TP.LOG) : 0;

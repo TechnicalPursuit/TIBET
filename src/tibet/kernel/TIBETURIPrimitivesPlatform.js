@@ -796,7 +796,7 @@ TP.hc(
         if (TP.sys.cfg('boot.moz_xpcom')) {
             //  file system access in Mozilla requires UniversalXPConnect
             try {
-                TP.ifInfo(TP.sys.cfg('log.privilege_requests')) ?
+                TP.ifInfo() && TP.sys.cfg('log.privilege_requests') ?
                     TP.info('Privilege request at TP.$fileLoad',
                         TP.LOG) : 0;
 
@@ -2181,7 +2181,7 @@ TP.hc(
                 params = TP.sys.cfg('os.comspec_flags').copy().add(
                                                         cmdFile.unquoted());
                 try {
-                    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+                    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                         TP.trace(
                             TP.join(
                                 'Launching ',
@@ -2204,14 +2204,14 @@ TP.hc(
                         //  and return the overall results
                         loadFile = TP.uriInWebFormat(outFile);
 
-                        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+                        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                             TP.trace('outFile: ' + loadFile,
                                         TP.LOG) : 0;
 
                         output = TP.$fileLoad(loadFile);
 
                         loadFile = TP.uriInWebFormat(errFile);
-                        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+                        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                             TP.trace('errFile: ' + loadFile,
                                         TP.LOG) : 0;
 
@@ -2555,7 +2555,7 @@ TP.hc(
             };
 
             try {
-                TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+                TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                     TP.trace(cmdline, TP.LOG) : 0;
 
                 //  sync or not we'll be invoking TP.sig.IOCompleted when
@@ -2615,7 +2615,7 @@ TP.hc(
 
                     loadFile = TP.uriInWebFormat(outFile);
 
-                    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+                    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                         TP.trace('outFile: ' + loadFile,
                                     TP.LOG) : 0;
 
@@ -2623,7 +2623,7 @@ TP.hc(
 
                     loadFile = TP.uriInWebFormat(errFile);
 
-                    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+                    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                         TP.trace('errFile: ' + loadFile,
                                     TP.LOG) : 0;
 

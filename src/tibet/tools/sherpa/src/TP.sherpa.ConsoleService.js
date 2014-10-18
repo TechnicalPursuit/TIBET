@@ -1467,7 +1467,7 @@ function(anError, aRequest) {
     err = TP.isError(anError) ? TP.str(anError) : anError;
 
     if (TP.isValid(request.at('messageLevel'))) {
-        cssClass = TP.boot.Log.getStringForLevel(request.at('messageLevel'));
+        cssClass = request.at('messageLevel').getName().toLowerCase();
         cssClass = TP.ifInvalid(cssClass, 'trace');
     }
 
@@ -1662,8 +1662,7 @@ function(aRequest) {
     }
 
     if (TP.isValid(request.at('messageLevel'))) {
-        cssClass = TP.boot.Log.getStringForLevel(
-                request.at('messageLevel'));
+        cssClass = request.at('messageLevel').getName().toLowerCase();
         cssClass = TP.ifInvalid(cssClass, 'trace');
     }
 
@@ -1753,7 +1752,7 @@ function(anObject, aRequest) {
     }
 
     if (TP.isValid(request.at('messageLevel'))) {
-        cssClass = TP.boot.Log.getStringForLevel(request.at('messageLevel'));
+        cssClass = request.at('messageLevel').getName().toLowerCase();
         cssClass = TP.ifInvalid(cssClass, 'trace');
     }
 

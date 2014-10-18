@@ -949,7 +949,7 @@ function(aContent, aURI, defaultMIME) {
         item,
         ext;
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.sys.logTransform(
                 TP.boot.$annotate(this,
                             'Guessing MIME type for content ID: ' + aURI),
@@ -986,7 +986,7 @@ function(aContent, aURI, defaultMIME) {
                 TP.isValid(info = TP.w3.Xmlns.get('info').at(ns))) {
                 mime = info.at('mimetype');
 
-                TP.ifTrace(TP.$DEBUG) ?
+                TP.ifTrace() && TP.$DEBUG ?
                     TP.sys.logTransform('Returning computed MIME type ' +
                                         mime + ' for content ID: ' + aURI,
                         TP.TRACE) : 0;
@@ -1010,7 +1010,7 @@ function(aContent, aURI, defaultMIME) {
             if (TP.isValid(item)) {
                 mime = item.last().at('mimetype');
 
-                TP.ifTrace(TP.$DEBUG) ?
+                TP.ifTrace() && TP.$DEBUG ?
                     TP.sys.logTransform('Returning computed MIME type ' +
                                         mime + ' for content ID: ' + aURI,
                         TP.TRACE) : 0;
@@ -1061,7 +1061,7 @@ function(aContent, aURI, defaultMIME) {
         }
     }
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.sys.logTransform('Returning computed MIME type ' +
                             mime + ' for content ID: ' + aURI,
             TP.TRACE) : 0;

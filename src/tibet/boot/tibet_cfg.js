@@ -322,7 +322,7 @@ if (typeof navigator === 'undefined') {
   TP.sys.setcfg('log.reporter', 'console');
   TP.sys.setcfg('log.colormode', 'terminal');
 } else if (/PhantomJS/.test(navigator.userAgent)) {
-  TP.sys.setcfg('boot.context', 'phantom');
+  TP.sys.setcfg('boot.context', 'phantomjs');
   TP.sys.setcfg('boot.reporter', 'phantom');
   TP.sys.setcfg('boot.level', 'WARN');
 

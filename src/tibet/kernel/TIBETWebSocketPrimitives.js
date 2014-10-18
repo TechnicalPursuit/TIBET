@@ -156,7 +156,7 @@ function(targetUrl, aRequest) {
             //  close out the timeout job silently
             job.kill(true);
 
-            TP.ifInfo(TP.sys.shouldLogIO()) ?
+            TP.ifInfo() && TP.sys.shouldLogIO() ?
                 TP.sys.logIO(
                         TP.hc('direction', TP.RECV,
                                 'message', 'WebSocket request completed.'),
@@ -171,7 +171,7 @@ function(targetUrl, aRequest) {
 
     //  isolate the actual send call for finer-grained error handling
     try {
-        TP.ifInfo(TP.sys.shouldLogIO()) ?
+        TP.ifInfo() && TP.sys.shouldLogIO() ?
             TP.sys.logIO(
                     TP.hc('direction', TP.SEND,
                             'message', 'WebSocket request initiated.'),

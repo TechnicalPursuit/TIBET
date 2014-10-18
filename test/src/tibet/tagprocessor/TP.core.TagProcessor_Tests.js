@@ -520,8 +520,8 @@ function() {
                 TP.sys.shouldUseDebugger(false);
 
                 //  Same for log level
-                oldLogLevel = TP.sys.getLogLevel();
-                TP.sys.setLogLevel(TP.SEVERE, true);
+                oldLogLevel = TP.getLogLevel();
+                TP.setLogLevel(TP.SEVERE);
 
                 tpDoc = TP.sys.getUICanvas().getDocument();
 
@@ -537,7 +537,7 @@ function() {
                             tpDoc.setContent(result, request);
 
                             //  Put log level back to what it was
-                            TP.sys.setLogLevel(oldLogLevel, true);
+                            TP.setLogLevel(oldLogLevel);
 
                             //  Put the debugger setting back to what it was
                             TP.sys.shouldUseDebugger(usingDebugger);

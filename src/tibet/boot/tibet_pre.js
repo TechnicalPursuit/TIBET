@@ -173,6 +173,19 @@ TP.boot.$$verbose = true;
 //  Configure bootstrap logging control variables.
 //  ---
 
+//  log level NAME constants. These are used as keys into either TP.boot or
+//  TP.log to locate the specific level appropriate during/after startup.
+TP.ALL = 'ALL';
+TP.TRACE = 'TRACE';
+TP.DEBUG = 'DEBUG';
+TP.INFO = 'INFO';
+TP.WARN = 'WARN';
+TP.ERROR = 'ERROR';
+TP.SEVERE = 'SEVERE';
+TP.FATAL = 'FATAL';
+TP.SYSTEM = 'SYSTEM';
+TP.OFF = 'OFF';
+
 //  log level constants (only used by primitive boot log)
 TP.boot.TRACE = 0;
 TP.boot.DEBUG = 1;

@@ -50,7 +50,7 @@ function() {
     //  introduced in Firefox 2.0.0.2+
     name = '' + this;
 
-    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.trace('Faulting in \'' + name + '\'.',
                     TP.LOG) : 0;
 

@@ -1588,14 +1588,14 @@ function() {
 
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
-        oldLogLevel = TP.sys.getLogLevel();
-        TP.sys.setLogLevel(TP.ERROR, true);
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path1.executeSet(model1, 'William', true);
 
         //  Put log level back to what it was
-        TP.sys.setLogLevel(oldLogLevel, true);
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get
         //  independent validation of 'path' execution code.
@@ -1637,14 +1637,14 @@ function() {
 
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
-        oldLogLevel = TP.sys.getLogLevel();
-        TP.sys.setLogLevel(TP.ERROR, true);
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path2.executeSet(model1, 'Bill', true);
 
         //  Put log level back to what it was
-        TP.sys.setLogLevel(oldLogLevel, true);
+        TP.setLogLevel(oldLogLevel);
 
         //  Note - there is a value at '/emp/fname' - the new value set in the
         //  test case above. But structure building wasn't enabled for this
@@ -1720,14 +1720,14 @@ function() {
 
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
-        oldLogLevel = TP.sys.getLogLevel();
-        TP.sys.setLogLevel(TP.ERROR, true);
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path1.executeSet(model1, TP.elem('<bp>110/70</bp>'), true);
 
         //  Put log level back to what it was
-        TP.sys.setLogLevel(oldLogLevel, true);
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get
         //  independent validation of 'path' execution code.
@@ -1769,8 +1769,8 @@ function() {
 
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
-        oldLogLevel = TP.sys.getLogLevel();
-        TP.sys.setLogLevel(TP.ERROR, true);
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         newFrag = TP.frag('<street>111 Main St.</street><city>Anytown</city><state>intoxication</state><postalcode>11111-1111</postalcode>');
 
@@ -1780,7 +1780,7 @@ function() {
         path2.executeSet(model1, newFrag, true);
 
         //  Put log level back to what it was
-        TP.sys.setLogLevel(oldLogLevel, true);
+        TP.setLogLevel(oldLogLevel);
 
         //  Note - there is a value at '/emp/fname' - the new value set in the
         //  test case above. But structure building wasn't enabled for this
@@ -1948,14 +1948,14 @@ function() {
 
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
-        oldLogLevel = TP.sys.getLogLevel();
-        TP.sys.setLogLevel(TP.ERROR, true);
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path1.executeSet(model1, 'moo', true);
 
         //  Put log level back to what it was
-        TP.sys.setLogLevel(oldLogLevel, true);
+        TP.setLogLevel(oldLogLevel);
 
         //  NB: We use a manual mechanism to get to the value to get
         //  independent validation of 'path' execution code.
@@ -1997,14 +1997,14 @@ function() {
 
         //  Turn off logging of WARN and below for now - otherwise, the fact
         //  that we don't have creation turned on will log to the console
-        oldLogLevel = TP.sys.getLogLevel();
-        TP.sys.setLogLevel(TP.ERROR, true);
+        oldLogLevel = TP.getLogLevel();
+        TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
         path2.executeSet(model2, 'goo', true);
 
         //  Put log level back to what it was
-        TP.sys.setLogLevel(oldLogLevel, true);
+        TP.setLogLevel(oldLogLevel);
 
         //  Note - there is a value at '/emp/fname' - the new value set in the
         //  test case above. But structure building wasn't enabled for this

@@ -770,8 +770,6 @@ TP.DELETED = '$$DELETED$$';
 TP.NULL = '$$NULL$$';
 TP.UNDEF = '$$UNDEFINED$$';
 
-TP.ALL = 'ALL';
-
 //  string used to join segments of things together
 TP.JOIN = '__JOIN__';
 
@@ -953,29 +951,23 @@ TP.IGNORED = 10;                        //  not in BPML spec, reserved here
 TP.AND = 'and';
 TP.OR = 'or';
 
-/*
- * TODO: remove these or update them once logging update is complete.
-//  specialty log names
-TP.LOG = 'Activity';                    //  "meta" log...all logs in one
-TP.BOOT_LOG = 'Boot';                   //  TP.boot processing only
-TP.CHANGE_LOG = 'Change';               //  source code changes
-TP.PATCH_LOG = 'Patch';                 //  ecma compliance (in boot log)
-
-//  test log info
-TP.TEST_LOG = 'Test';                   //  test harness processing
-
-//  standard log names
-TP.CSS_LOG = 'CSS';
-TP.INFERENCE_LOG = 'Inference';
-TP.IO_LOG = 'IO';
-TP.JOB_LOG = 'Job';
-TP.KEY_LOG = 'Key';
-TP.LINK_LOG = 'Link';
-TP.QUERY_LOG = 'Query';
-TP.SECURITY_LOG = 'Security';
-TP.SIGNAL_LOG = 'Signal';
-TP.TRANSFORM_LOG = 'Transform';
-*/
+// Commonly used log names.
+TP.LOG = 'TP';
+TP.APP_LOG = 'APP';
+TP.BOOT_LOG = 'boot';
+TP.CHANGE_LOG = 'change';
+TP.CSS_LOG = 'css';
+TP.INFERENCE_LOG = 'inference';
+TP.IO_LOG = 'io';
+TP.JOB_LOG = 'job';
+TP.KEY_LOG = 'key';
+TP.LINK_LOG = 'link';
+TP.PATCH_LOG = 'patch';
+TP.QUERY_LOG = 'query';
+TP.SECURITY_LOG = 'security';
+TP.SIGNAL_LOG = 'signal';
+TP.TEST_LOG = 'test';
+TP.TRANSFORM_LOG = 'transform';
 
 //  ---
 //  signaling

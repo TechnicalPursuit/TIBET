@@ -68,7 +68,7 @@ function(aValue, aNode) {
         node = aNode.getNativeNode();
     }
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace(TP.boot.$annotate(node, 'xs: validating: ' + aValue),
                     TP.LOG) : 0;
 
@@ -77,7 +77,7 @@ function(aValue, aNode) {
     if (TP.notEmpty(typeName = TP.elementGetAttribute(node,
                                                         'xsi:type',
                                                         true))) {
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('found xsi:type ' + typeName,
                         TP.LOG) : 0;
 
@@ -85,13 +85,13 @@ function(aValue, aNode) {
             return type.validate(aValue, aNode);
         }
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('xsi:type ' + typeName + ' not available',
                         TP.LOG) : 0;
     } else if ((node.namespaceURI === TP.w3.Xmlns.XFORMS) &&
                 TP.notEmpty(typeName =
                                 TP.elementGetAttribute(node, 'type'))) {
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('found xforms:type ' + typeName,
                         TP.LOG) : 0;
 
@@ -100,7 +100,7 @@ function(aValue, aNode) {
             return type.validate(aValue, aNode);
         }
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('xforms:type ' + typeName + ' not available',
                         TP.LOG) : 0;
     }
@@ -109,7 +109,7 @@ function(aValue, aNode) {
     //  associated with this node? this means checking based on whether the
     //  node has a namespace or not so we know which attribute to go after
     if (TP.isEmpty(node.namespaceURI)) {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('no namespace uri',
                         TP.LOG) : 0;
 
@@ -120,7 +120,7 @@ function(aValue, aNode) {
             url = attr.value;
         }
     } else {
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('namespace uri ' + node.namespaceURI,
                         TP.LOG) : 0;
 
@@ -146,7 +146,7 @@ function(aValue, aNode) {
         return true;
     }
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace('uri ' + url,
                     TP.LOG) : 0;
 
@@ -166,7 +166,7 @@ function(aValue, aNode) {
         return true;
     }
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace(TP.boot.$annotate(schema, 'Schema: '),
                     TP.LOG) : 0;
 
@@ -174,20 +174,20 @@ function(aValue, aNode) {
     //  already from xsi:type information. once we have this we can find the
     //  type definition referenced via the element tag
     if (TP.isEmpty(typeName)) {
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('empty typename',
                         TP.LOG) : 0;
 
         typeName = node.nodeName;
 
         path = '//*[name() = "xs:element" and @name="' + typeName + '"]';
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('using element path: ' + path,
                         TP.LOG) : 0;
 
         list = TP.nodeEvaluateXPath(schema, path, TP.NODESET);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('element path found ' + list.length + ' nodes',
                         TP.LOG) : 0;
 
@@ -205,7 +205,7 @@ function(aValue, aNode) {
             case 1:
 
                 //  one and only one, so we can use the type attribute
-                TP.ifTrace(TP.$DEBUG) ?
+                TP.ifTrace() && TP.$DEBUG ?
                     TP.trace('found: ' + TP.nodeAsString(list.at(0)),
                                 TP.LOG) : 0;
 
@@ -234,20 +234,20 @@ function(aValue, aNode) {
         }
     }
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace('Looking up schema definition',
                     TP.LOG) : 0;
 
     //  now we try to find a simpleType or complexType definition node
     path = '//*[name() = "xs:simpleType" and @name = "' + typeName + '"]';
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace('using simpleType path: ' + path,
                     TP.LOG) : 0;
 
     list = TP.nodeEvaluateXPath(schema, path, TP.NODESET);
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace('using simpleType path found ' + list.length + ' nodes',
                     TP.LOG) : 0;
 
@@ -256,7 +256,7 @@ function(aValue, aNode) {
                 typeName +
                 '"]';
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('using complexType path: ' + path,
                         TP.LOG) : 0;
 
@@ -266,7 +266,7 @@ function(aValue, aNode) {
                 '"]',
                 TP.NODESET);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('using complex path found ' + list.length + ' nodes',
                         TP.LOG) : 0;
     }

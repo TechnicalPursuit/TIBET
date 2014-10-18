@@ -10294,8 +10294,8 @@ function(aFlag, shouldSignal) {
      *     flag.
      * @description This flag determines whether the content processing system
      *     should log tranformation steps. The logging of this data occurs at
-     *     TRACE level so TP.sys.setLogLevel() must be set to TRACE to capture
-     *     the output in the logs.
+     *     TRACE level so TP.setLogLevel() must be used to set the proper logger
+     *     to TRACE to capture the output in the logs.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling for this call.
@@ -10388,8 +10388,8 @@ function(aFlag, shouldSignal) {
      * @synopsis Controls and returns the value of the XPath query logging flag.
      * @description This flag determines whether XPaths should be output to the
      *     activity log, which can help with performance tuning. The logging of
-     *     this data occurs at TRACE level so TP.sys.setLogLevel() must be set
-     *     to TRACE to capture the output in the logs.
+     *     this data occurs at TRACE level so TP.setLogLevel() must be used to
+     *     set the proper logger to TRACE to capture the output in the logs.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling for this call.

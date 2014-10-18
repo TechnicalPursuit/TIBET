@@ -65,7 +65,7 @@ function(aFaultCode, aFaultString) {
                     'WebSocket request aborted.' :
                     'WebSocket request aborted: ' + msg);
 
-    TP.ifInfo(TP.sys.shouldLogIO()) ?
+    TP.ifInfo() && TP.sys.shouldLogIO() ?
                 TP.sys.logIO(this, TP.INFO) : 0;
 
     //  TODO: migrate to the TP.core.WebSocketURIHandler
@@ -119,7 +119,7 @@ function(aFaultCode, aFaultString) {
                     'WebSocket request cancelled.' :
                     'WebSocket request cancelled: ' + msg);
 
-    TP.ifInfo(TP.sys.shouldLogIO()) ?
+    TP.ifInfo() && TP.sys.shouldLogIO() ?
                 TP.sys.logIO(this, TP.INFO) : 0;
 
     //  TODO: migrate to the TP.core.WebSocketURIHandler

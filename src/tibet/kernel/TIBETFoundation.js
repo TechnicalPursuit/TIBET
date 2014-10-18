@@ -1974,7 +1974,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType) {
         TP.sys.$signalQueue.add(args);
     }
 
-    TP.ifTrace(TP.sys.shouldLogLoadSignals()) ?
+    TP.ifTrace() && TP.sys.shouldLogLoadSignals() ?
         TP.trace(
             'origin: ' + anOrigin +
             '\nsignal: ' + aSignal +
@@ -2749,7 +2749,7 @@ function(aFilter) {
         //  warn for any non-unique scans. when it's a unique scan we can
         //  leverage hasOwnProperty to avoid too much overhead, otherwise we
         //  consider this a performance warning issue.
-        TP.ifWarn(TP.sys.cfg('log.scans')) ?
+        TP.ifWarn() && TP.sys.cfg('log.scans') ?
             TP.warn('Scanning ' + filter + ' on ' + this,
                     TP.LOG) : 0;
     }

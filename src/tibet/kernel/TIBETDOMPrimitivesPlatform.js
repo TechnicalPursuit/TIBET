@@ -4097,7 +4097,7 @@ TP.hc(
         }
 
         //  if we need it we can really turn on the XPath logging here
-        TP.ifTrace(TP.sys.hasLoaded() && TP.sys.shouldLogXPaths()) ?
+        TP.ifTrace() && TP.sys.hasLoaded() && TP.sys.shouldLogXPaths() ?
             TP.trace('Querying via XPath ' + anXPath,
                         TP.QUERY_LOG) : 0;
 
@@ -4375,7 +4375,7 @@ TP.hc(
         }
 
         //  if we need it we can really turn on the XPath logging here
-        TP.ifTrace(TP.sys.hasLoaded() && TP.sys.shouldLogXPaths()) ?
+        TP.ifTrace() && TP.sys.hasLoaded() && TP.sys.shouldLogXPaths() ?
             TP.trace('Querying via XPath ' + anXPath,
                         TP.QUERY_LOG) : 0;
 

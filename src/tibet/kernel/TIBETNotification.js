@@ -2773,22 +2773,6 @@ TP.lang.Object.defineSubtype('sig:SignalMap');
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalMap.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @name initialize
-     * @synopsis Performs one-time setup for the type on startup/import.
-     */
-
-    //  turn off logging unless we're debugging the internals of notification
-    this.shouldLog(false);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 //  for reimporting we test here
 if (TP.notValid(TP.sig.SignalMap.INTERESTS)) {
     TP.sig.SignalMap.INTERESTS = TP.constructOrphanObject();
@@ -2830,6 +2814,22 @@ TP.sig.SignalMap.Type.defineConstant(
 TP.sig.SignalMap.Type.defineConstant(
                     'WARN_REGEX',
                     /Warning/);
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('initialize',
+function() {
+
+    /**
+     * @name initialize
+     * @synopsis Performs one-time setup for the type on startup/import.
+     */
+
+    //  turn off logging unless we're debugging the internals of notification
+    this.shouldLog(false);
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -2954,7 +2954,7 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
         sigType = TP.sig.SignalMap.$getSignalType(aSignal, defaultType);
 
         if (TP.isType(sigType)) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Using signal type named: ' +
                                 sigType.getName(),
                             TP.SIGNAL_LOG) : 0;
@@ -2962,19 +2962,19 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
             sig = sigType.construct(aPayload);
             sig.$set('signalName', aSignal.getSignalName());
 
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Returning instance with signalName: ' +
                                 sig.getSignalName(),
                             TP.SIGNAL_LOG) : 0;
         } else {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Failed to find signal instance for: ' + aSignal,
                             TP.SIGNAL_LOG) : 0;
 
             sig = aSignal;
         }
     } else {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Returning supplied signal instance: ' + aSignal,
                         TP.SIGNAL_LOG) : 0;
 
@@ -3033,7 +3033,7 @@ function(aSignal, aDefaultType) {
 
     //  if we've got a string turn it into a signal type reference
     if (TP.isString(aSignal)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Getting type for aSignal string: ' + aSignal,
                         TP.SIGNAL_LOG) : 0;
 
@@ -3041,7 +3041,7 @@ function(aSignal, aDefaultType) {
         aTypeName = aSignal;
 
         if (TP.notValid(sigType = TP.sys.getTypeByName(aTypeName))) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('No signal type named: ' + aTypeName,
                             TP.SIGNAL_LOG) : 0;
 
@@ -3374,7 +3374,7 @@ function(aHandlerEntry, quiet) {
     //  no root? no interests yet so we need to create a container object that
     //  will manage all data for this origin/signal pair.
     if (TP.notValid(root)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Interest root not found.',
                         TP.SIGNAL_LOG) : 0;
 
@@ -3402,7 +3402,7 @@ function(aHandlerEntry, quiet) {
                 });
 
         if (TP.notValid(entry)) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                     TP.trace('Listener not found.',
                     TP.SIGNAL_LOG) : 0;
         }
@@ -3416,7 +3416,7 @@ function(aHandlerEntry, quiet) {
         }
 
         if (!TP.sys.shouldAllowDuplicateInterests()) {
-            TP.ifWarn(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifWarn() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.warn(
                     TP.join('Duplicate interest registration for origin: ',
                             orgid, ' signal: ',
@@ -3428,7 +3428,7 @@ function(aHandlerEntry, quiet) {
         }
 
         if (entry.suspend === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener currently flagged as suspended.',
                             TP.SIGNAL_LOG) : 0;
 
@@ -3438,7 +3438,7 @@ function(aHandlerEntry, quiet) {
         }
 
         if (entry.remove === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener currently flagged as removed.',
                             TP.SIGNAL_LOG) : 0;
 
@@ -3448,7 +3448,7 @@ function(aHandlerEntry, quiet) {
         }
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
         TP.trace('Creating new listener entry.',
                     TP.SIGNAL_LOG) : 0;
 
@@ -3475,7 +3475,7 @@ function(aHandlerEntry, quiet) {
             source = 'function (triggerSignal) {' + source + '};';
         }
 
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Found function source: ' + source,
                         TP.SIGNAL_LOG) : 0;
 
@@ -3528,7 +3528,7 @@ function(aHandlerEntry, quiet) {
 
         root.listeners.push(entry);
 
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Listener entry created for ID: ' + handlerID,
                         TP.SIGNAL_LOG) : 0;
     }
@@ -3609,7 +3609,7 @@ function(aHandlerEntry) {
     //  no root? no interests yet so we need to create a container object that
     //  will manage all data for this origin/signal pair.
     if (TP.notValid(root)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Interest root not found.',
                         TP.SIGNAL_LOG) : 0;
 
@@ -3631,7 +3631,7 @@ function(aHandlerEntry) {
                 });
 
         if (TP.notValid(entry)) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                     TP.trace('Listener not found.',
                     TP.SIGNAL_LOG) : 0;
             return;
@@ -3641,7 +3641,7 @@ function(aHandlerEntry) {
     if (TP.isValid(entry)) {
 
         if (entry.suspend === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener currently flagged as suspended.',
                             TP.SIGNAL_LOG) : 0;
 
@@ -3651,7 +3651,7 @@ function(aHandlerEntry) {
         }
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
         TP.trace('Removing listener entry.',
                     TP.SIGNAL_LOG) : 0;
 
@@ -3676,7 +3676,7 @@ function(aHandlerEntry) {
             delete map[id];
         }
 
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Listener entry removed for ID: ' + handlerID,
                         TP.SIGNAL_LOG) : 0;
     }
@@ -3738,7 +3738,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
     //  no root? no interests yet so we need to create a container
     if (TP.notValid(root)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Interest root not found.',
                         TP.SIGNAL_LOG) : 0;
 
@@ -3761,7 +3761,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             });
 
     if (TP.notValid(entry)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener entry not found.',
                 TP.SIGNAL_LOG) : 0;
     }
@@ -3771,7 +3771,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     if (TP.isValid(entry)) {
         if (!TP.sys.shouldAllowDuplicateInterests()) {
 
-            TP.ifWarn(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifWarn() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.warn(
                     TP.join('Duplicate interest registration for origin: ',
                             orgid, ' signal: ',
@@ -3783,7 +3783,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
 
         if (entry.suspend === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener entry currently flagged as suspended.',
                             TP.SIGNAL_LOG) : 0;
 
@@ -3797,7 +3797,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
 
         if (entry.remove === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener entry currently flagged as removed.',
                             TP.SIGNAL_LOG) : 0;
 
@@ -3811,7 +3811,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
         TP.trace('Creating listener entry.',
                     TP.SIGNAL_LOG) : 0;
 
@@ -3831,7 +3831,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
     root.listeners.push(entry);
 
-    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
         TP.trace(TP.join('Listener entry created for ID: ',
                             handlerID, ' with handler: ', aHandler),
                     TP.SIGNAL_LOG) : 0;
@@ -3918,7 +3918,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             list = root.listeners;
         }
 
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Removing ' + list.length + ' listener entries.',
                         TP.SIGNAL_LOG) : 0;
 
@@ -4145,7 +4145,7 @@ aSigEntry, checkTarget) {
         //  meaning they're called only once in most cases
         entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
         if (TP.notValid(entry)) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace(TP.join('Interest not found for: ',
                                     orgid, '.', signame),
                             TP.SIGNAL_LOG) : 0;
@@ -4158,7 +4158,7 @@ aSigEntry, checkTarget) {
         //  if the entire block of interests is suspended then do not
         //  notify
         if (entry.suspend === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace(TP.join('Interest for: ', orgid, '.', signame,
                                     ' is flagged as suspended.'),
                             TP.SIGNAL_LOG) : 0;
@@ -4173,7 +4173,7 @@ aSigEntry, checkTarget) {
     // the list won't affect our current iteration work.
     items = entry.listeners.slice(0);
 
-    TP.ifTrace(TP.$$DEBUG && TP.sys.shouldLogSignals()) ?
+    TP.ifTrace() && TP.$$DEBUG && TP.sys.shouldLogSignals() ?
         TP.trace(TP.join(orgid, ':', signame, ' has ', items.length,
                             ' listeners.'),
                     TP.SIGNAL_LOG) : 0;
@@ -4200,7 +4200,7 @@ aSigEntry, checkTarget) {
             //  if the specific handler is suspended or flagged for
             //  removal then just skip it
             if ((item.suspend === true) || (item.remove === true)) {
-                TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+                TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                         TP.trace('Listener ' + i +
                                  ' is suspended or removed.',
                                  TP.SIGNAL_LOG) : 0;
@@ -4234,7 +4234,7 @@ aSigEntry, checkTarget) {
                 if (TP.notEmpty(xml_target) && (xml_target !== TP.ANY)) {
                     if ((xml_target !== targetID) &&
                         (xml_target !== observer)) {
-                        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+                        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                                 TP.trace(TP.join('DOM target check ',
                                 ' wanted: ', xml_target,
                                 ' found: ', targetID,
@@ -4266,7 +4266,7 @@ aSigEntry, checkTarget) {
             }
 
             if (TP.notValid(handler)) {
-                TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+                TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                         TP.trace('Could not find handler with ID: ' +
                         item.handler,
                         TP.SIGNAL_LOG) : 0;
@@ -4632,7 +4632,7 @@ function(originSet, aSignal, aPayload, aType) {
         //  be sure to update the signal as we rotate orgids
         sig.setOrigin(orgid);
 
-        if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
             TP.signal.$suspended = true;
             TP.sys.logSignal('Checking DOM_FIRING id ' +
                             orgid + '.' + signame,
@@ -4643,7 +4643,7 @@ function(originSet, aSignal, aPayload, aType) {
         //  if there's an entry for this origin/signal pair then we'll check
         //  it again when we do the bubbling pass...
         if (TP.isValid(entry = map[orgid + '.' + signame])) {
-            if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+            if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
                 TP.signal.$suspended = true;
                 TP.sys.logSignal(TP.join('DOM_FIRING id ',
                                         orgid, '.', signame,
@@ -4663,7 +4663,7 @@ function(originSet, aSignal, aPayload, aType) {
                                             entry, true);
         }
 
-        if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
             TP.signal.$suspended = true;
             TP.sys.logSignal('Checking DOM_FIRING id ' +
                                 orgid + '.' + TP.ANY,
@@ -4677,7 +4677,7 @@ function(originSet, aSignal, aPayload, aType) {
             //  if there's an entry for this origin and TP.ANY then we'll
             //  check it again when we do the bubbling pass...
             if (TP.isValid(entry = map[orgid + '.' + TP.ANY])) {
-                if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+                if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
                     TP.signal.$suspended = true;
                     TP.sys.logSignal('DOM_FIRING id ' +
                                         orgid + '.' + TP.ANY +
@@ -4716,7 +4716,7 @@ function(originSet, aSignal, aPayload, aType) {
     //  flip the origin array around so we work "bottom up" to bubble
     originArray.reverse();
 
-    if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+    if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
         TP.signal.$suspended = true;
         TP.sys.logSignal(
             'Bubbling DOM_FIRING through preserved IDs: ' +
@@ -6209,7 +6209,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
 
     //  if signaling is turned off then do not notify
     if (TP.sig.SignalMap.INTERESTS.suspend === true) {
-        if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
             TP.sys.logSignal('Root interest map is suspended.',
                             TP.TRACE);
         }

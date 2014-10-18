@@ -4618,7 +4618,7 @@ function(aNode, newNode, shouldAwake) {
             } else if (childContent.childNodes.length > 1) {
                 TP.stop('break.node_discarded');
 
-                TP.ifWarn(TP.sys.cfg('log.node_discarded')) ?
+                TP.ifWarn() && TP.sys.cfg('log.node_discarded') ?
                     TP.warn('Discarding nodes from fragment: ' +
                                 TP.str(childContent),
                             TP.LOG) : 0;
@@ -5070,7 +5070,7 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
             } else if (childContent.childNodes.length > 1) {
                 TP.stop('break.node_discarded');
 
-                TP.ifWarn(TP.sys.cfg('log.node_discarded')) ?
+                TP.ifWarn() && TP.sys.cfg('log.node_discarded') ?
                     TP.warn('Discarding nodes from fragment: ' +
                                 TP.str(childContent),
                             TP.LOG) : 0;
@@ -5565,7 +5565,7 @@ function(aNode, newNode, oldNode, shouldAwake) {
             } else if (childContent.childNodes.length > 1) {
                 TP.stop('break.node_discarded');
 
-                TP.ifWarn(TP.sys.cfg('log.node_discarded')) ?
+                TP.ifWarn() && TP.sys.cfg('log.node_discarded') ?
                     TP.warn('Discarding nodes from fragment: ' +
                                 TP.str(childContent),
                             TP.LOG) : 0;
@@ -8588,7 +8588,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                         TP.nodeIsDetached(currentNode, rootNode)) {
                         TP.stop('break.node_detachment');
 
-                        TP.ifWarn(TP.sys.cfg('log.node_detachment')) ?
+                        TP.ifWarn() && TP.sys.cfg('log.node_detachment') ?
                             TP.warn('Traversal node detached: ' +
                                         TP.str(currentNode, false),
                                     TP.LOG) : 0;
@@ -8797,7 +8797,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                     TP.nodeIsDetached(currentNode, rootNode)) {
                     TP.stop('break.node_detachment');
 
-                    TP.ifWarn(TP.sys.cfg('log.node_detachment')) ?
+                    TP.ifWarn() && TP.sys.cfg('log.node_detachment') ?
                         TP.warn('Traversal node detached: ' +
                                     TP.str(currentNode, false),
                                 TP.LOG) : 0;

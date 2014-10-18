@@ -4102,7 +4102,7 @@ function(attributeName, attributeValue) {
      */
 
     var boolAttrs,
-    
+
         node,
 
         oldValue,
@@ -4604,7 +4604,7 @@ function(newContent, aRequest) {
     if (this.shouldFlagChanges()) {
         TP.elementFlagChange(node, TP.SELF, TP.APPEND);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('Node flagged: ' + TP.nodeAsString(node),
                         TP.LOG) : 0;
     }
@@ -4850,7 +4850,7 @@ function(newContent, aPositionOrPath, aRequest) {
     if (this.shouldFlagChanges()) {
         TP.elementFlagChange(node, TP.SELF, TP.INSERT);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('Node flagged: ' + TP.nodeAsString(node),
                         TP.LOG) : 0;
     }
@@ -5115,7 +5115,7 @@ function(newContent, aRequest) {
     if (this.shouldFlagChanges()) {
         TP.elementFlagChange(node, TP.SELF, TP.UPDATE);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('Node flagged: ' + TP.nodeAsString(node),
                         TP.LOG) : 0;
     }
@@ -6503,7 +6503,7 @@ function(aNode) {
         //  TP.DELETE and that's all
         TP.elementFlagChange(child, TP.SELF, TP.DELETE);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('Node flagged: ' + TP.nodeAsString(child),
                         TP.LOG) : 0;
     } else {
@@ -7068,7 +7068,7 @@ function() {
         //  TP.DELETE and that's all
         TP.elementFlagChange(node, TP.SELF, TP.DELETE);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('Node flagged: ' + TP.nodeAsString(node),
                         TP.LOG) : 0;
     } else {
@@ -8099,7 +8099,7 @@ function(anIndex) {
         //  TP.DELETE and that's all
         TP.elementFlagChange(child, TP.SELF, TP.DELETE);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('Node flagged: ' + TP.nodeAsString(child),
                         TP.LOG) : 0;
     } else {

@@ -1184,7 +1184,7 @@ function(nativeEvt) {
     //  If we have a valid firing policy, use that policy to fire the signal
     if ((TP.isValid(firingPolicy = sourceElement.firingPolicy)) &&
         (firingPolicy !== TP.DOM_FIRING)) {
-        TP.ifTrace(TP.sys.shouldLogSignals()) ?
+        TP.ifTrace() && TP.sys.shouldLogSignals() ?
             TP.trace('Sending ' + eventName +
                         ' to TIBET with supertype ' + eventSuper,
                         TP.SIGNAL_LOG) : 0;
@@ -1197,7 +1197,7 @@ function(nativeEvt) {
                                     sourceElement.firingPolicy,
                                     eventSuper);
     } else {
-        TP.ifTrace(TP.sys.shouldLogSignals()) ?
+        TP.ifTrace() && TP.sys.shouldLogSignals() ?
             TP.trace('Sending ' + eventName +
                         ' to TIBET with supertype ' + eventSuper,
                         TP.SIGNAL_LOG) : 0;

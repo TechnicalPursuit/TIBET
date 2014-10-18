@@ -1129,7 +1129,7 @@ function(aSignal) {
     //  to default to the 'value' aspect is found in $refreshBoundAspect.
     if (this.isBoundElement(TP.STDIN)) {
         //  debugging mode, just log what we find/would do
-        TP.ifTrace(TP.sys.cfg('log.bind_refresh')) ?
+        TP.ifTrace() && TP.sys.cfg('log.bind_refresh') ?
             TP.trace(TP.boot.$annotate(this, 'Refreshing bound element.'),
                 TP.LOG) : 0;
 

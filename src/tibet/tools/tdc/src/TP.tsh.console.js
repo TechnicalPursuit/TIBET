@@ -1878,7 +1878,7 @@ function(aSignal) {
     //  logging level
     //  ---
 
-    str = '' + TP.boot.Log.getStringForLevel(TP.sys.getLogLevel());
+    str = '' + TP.getLogLevel().getName() + '::' + APP.getLogLevel().getName();
     TP.htmlElementSetContent(TP.byId('status3', this.$get('vWin')),
         str, null, false);
 
@@ -2403,8 +2403,7 @@ function(aRequest) {
     }
 
     if (TP.isValid(request.at('messageLevel'))) {
-        cssClass = TP.boot.Log.getStringForLevel(
-                request.at('messageLevel'));
+        cssClass = request.at('messageLevel').getName().toLowerCase();
         cssClass = TP.ifInvalid(cssClass, 'trace');
     }
 
@@ -2490,7 +2489,7 @@ function(anObject, aRequest) {
     }
 
     if (TP.isValid(request.at('messageLevel'))) {
-        cssClass = TP.boot.Log.getStringForLevel(request.at('messageLevel'));
+        cssClass = request.at('messageLevel').getName().toLowerCase();
         cssClass = TP.ifInvalid(cssClass, 'trace');
     }
 
