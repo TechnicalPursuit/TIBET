@@ -54,7 +54,7 @@ TP.log.Manager.defineAttribute('loggers', TP.hc());
  * output.
  * @type {String}
  */
-TP.log.Manager.Type.defineConstant('ROOT_LOGGER_NAME', 'LOG');
+TP.log.Manager.Type.defineConstant('ROOT_LOGGER_NAME', 'ROOT');
 
 //  ----------------------------------------------------------------------------
 
@@ -2156,7 +2156,33 @@ function(argList, aLogLevel) {
      * @todo
      */
 
-    top.console.log(TP.boot.$str(argList[0]));
+    var args;
+    var last;
+    var logger;
+    var level;
+
+    args = TP.args(argList);
+
+    if (args.length > 1) {
+        last = args.last();
+        if (TP.isString(last)) {
+            if (TP.log.Manager.exists(last)) {
+                logger = TP.log.Manager.getLogger(last);
+
+                // NOTE we trim off that argument so we don't log it below.
+                args = args.slice(0, -1);
+            }
+        }
+    }
+
+    logger = TP.ifInvalid(logger, TP.getDefaultLogger());
+    level = TP.isString(aLogLevel) ? TP.log[aLogLevel] : aLogLevel;
+
+    level = TP.ifInvalid(level, TP.log.WARN);
+
+    logger.$logArglist(args, level);
+
+    //top.console.log(TP.boot.$str(argList[0]));
 });
 
 //  ----------------------------------------------------------------------------

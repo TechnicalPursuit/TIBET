@@ -187,14 +187,29 @@ TP.SYSTEM = 'SYSTEM';
 TP.OFF = 'OFF';
 
 //  log level constants (only used by primitive boot log)
-TP.boot.TRACE = 0;
-TP.boot.DEBUG = 1;
-TP.boot.INFO = 2;
-TP.boot.WARN = 3;
-TP.boot.ERROR = 4;
-TP.boot.SEVERE = 5;
-TP.boot.FATAL = 6;
-TP.boot.SYSTEM = 7;
+TP.boot.ALL = 0;
+TP.boot.TRACE = 1;
+TP.boot.DEBUG = 2;
+TP.boot.INFO = 3;
+TP.boot.WARN = 4;
+TP.boot.ERROR = 5;
+TP.boot.SEVERE = 6;
+TP.boot.FATAL = 7;
+TP.boot.SYSTEM = 8;
+TP.boot.OFF = 9;
+
+TP.boot.LOG_NAMES = [
+    'ALL',
+    'TRACE',
+    'DEBUG',
+    'INFO',
+    'WARN',
+    'ERROR',
+    'SEVERE',
+    'FATAL',
+    'SYSTEM',
+    'OFF'
+];
 
 //  log entry slot indices (only used by primitive boot log)
 TP.boot.LOG_ENTRY_DATE = 0;
@@ -872,6 +887,19 @@ TP.boot.$isNumber = function(value) {
     // Sadly, some edge case things might not pass this, but they don't tend to
     // show up during boot processing.
     return typeof(value) === 'number' && !isNaN(value);
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$isString = function(value) {
+
+    /**
+     * @name $isString
+     * @summary Returns true if the value is a valid string.
+     * @return {Boolean} True if the value is a string.
+     */
+
+    return typeof(value) === 'string' || value.constructor === String;
 };
 
 //  ----------------------------------------------------------------------------
