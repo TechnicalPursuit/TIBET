@@ -1523,10 +1523,6 @@ function(targetObj, varargs) {
         return this.raise('TP.sig.InvalidPath', arguments);
     }
 
-    this.preGetAccess(targetObj);
-
-    this.getType().startObservedAddress(this.get('srcPath'));
-
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
     path = this.get('srcPath');
@@ -1537,6 +1533,14 @@ function(targetObj, varargs) {
 
         path = path.transform(args);
     }
+
+    //  Trigger the actual 'get' mechanism, tracking addresses as we go.
+
+    this.preGetAccess(targetObj);
+
+    //  NB: We use the original source path to register with the address change
+    //  notification mechanism
+    this.getType().startObservedAddress(this.get('srcPath'));
 
     retVal = targetObj.get(path);
 
@@ -1605,9 +1609,28 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         op = TP.CREATE;
     }
 
+    //  If the old value is equal to the value that we're setting, then there is
+    //  nothing to do here and we exit. This is important to avoid endless
+    //  recursion when doing a 'two-ended bind' to data referenced by this path.
+    if (TP.equal(oldVal, attributeValue)) {
+        return oldVal;
+    }
+
+    if (TP.regex.HAS_ACP.test(srcPath)) {
+        //  Grab the arguments and slice the first three off (since they're
+        //  targetObj, attributeValue and shouldSignal which we already have).
+        args = TP.args(arguments, 3);
+
+        srcPath = srcPath.transform(args);
+    }
+
+    //  Trigger the actual 'set' mechanism, tracking changed addresses as we go.
+
     this.preSetAccess(targetObj);
 
-    thisType.startChangedAddress(srcPath);
+    //  NB: We use the original source path to register with the address change
+    //  notification mechanism
+    thisType.startChangedAddress(this.get('srcPath'));
 
     //  If we're doing a TP.UPDATE, but we're replacing something that has
     //  structure (i.e. it's not just a scalar value), then we change to
@@ -1619,14 +1642,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                         TP.CREATE);
     } else {
         thisType.registerChangedAddress(thisType.getChangedAddress(), op);
-    }
-
-    if (TP.regex.HAS_ACP.test(srcPath)) {
-        //  Grab the arguments and slice the first three off (since they're
-        //  targetObj, attributeValue and shouldSignal which we already have).
-        args = TP.args(arguments, 3);
-
-        srcPath = srcPath.transform(args);
     }
 
     //  Note here how we always do the set with a 'false' and then send a
@@ -1906,6 +1921,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         retVal,
         traversalLevel,
+        oldVal,
 
         sigFlag,
 
@@ -1921,10 +1937,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return this.raise('TP.sig.InvalidPath', arguments);
     }
 
-    this.set('$createdStructure', false);
-
-    this.preSetAccess(targetObj);
-
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
     path = this.get('srcPath');
@@ -1937,6 +1949,33 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
     this.set('$transformedPath', path);
 
+    //  Trigger the actual 'set' mechanism, tracking changed addresses as we go.
+
+    this.set('$createdStructure', false);
+
+    this.preSetAccess(targetObj);
+
+    //  If our traversal level is 0, that means we're the top level path and we
+    //  can check to see if the end result value is equal to the value we're
+    //  setting. If so, we can just bail out here.
+    //  NB: We have to do this *after* the preSetAccess call so that change path
+    //  data structures are set up properly.
+    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    if (traversalLevel === 0) {
+        oldVal = this.executeGet(targetObj);
+
+        //  If the old value is equal to the value that we're setting, then
+        //  there is nothing to do here and we exit. This is important to avoid
+        //  endless recursion when doing a 'two-ended bind' to data referenced
+        //  by this path.
+        if (TP.equal(oldVal, attributeValue)) {
+            //  We need to restore the change path data structures before
+            //  exiting.
+            this.postSetAccess(targetObj);
+            return oldVal;
+        }
+    }
+
     //  Note here how we always do the set with a 'false' and then send a
     //  'changed' message later with additional information.
 
@@ -1948,8 +1987,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     this.postSetAccess(targetObj);
 
+    //  We're all done - acquire the traversal level again. We have to do this a
+    //  second time, since the pre/post calls manipulate it.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
 
+    //  Only signal change if we're the 'top level' TIBET path - we could've had
+    //  more 'complex paths' buried under us.
     if (traversalLevel === 0) {
 
         if (TP.isValid(shouldSignal)) {
@@ -3190,6 +3233,17 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  This kind of path only works against XML
     if (!TP.isNode(targetObj) && !TP.isKindOf(targetObj, TP.core.Node)) {
         return this.raise('TP.sig.InvalidPath', arguments);
+    }
+
+    var oldVal;
+
+    oldVal = this.executeGet(targetObj);
+
+    //  If the old value is equal to the value that we're setting, then there is
+    //  nothing to do here and we exit. This is important to avoid endless
+    //  recursion when doing a 'two-ended bind' to data referenced by this path.
+    if (TP.equal(oldVal, attributeValue)) {
+        return oldVal;
     }
 
     natTargetObj = TP.unwrap(targetObj);
