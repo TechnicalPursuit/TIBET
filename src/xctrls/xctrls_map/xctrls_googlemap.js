@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.googlemap}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -54,7 +54,7 @@ function() {
 
     /**
      * @name $computeGoogleMapScriptSrc
-     * @returns {String} 
+     * @returns {String}
      * @abstract
      * @todo
      */
@@ -104,7 +104,7 @@ function(aLatLong) {
 
     /**
      * @name $convertLatLongToGoogleLatLong
-     * @param {TP.core.LatLong} aLatLong 
+     * @param {TP.core.LatLong} aLatLong
      * @returns {Object} A Google LatLong object.
      * @abstract
      * @todo
@@ -122,7 +122,7 @@ function(aMarker) {
 
     /**
      * @name $convertMarkerToGoogleMarker
-     * @param {TPMarker} aMarker 
+     * @param {TPMarker} aMarker
      * @returns {Object} A Google marker object.
      * @abstract
      * @todo
@@ -287,7 +287,6 @@ function(aMarker) {
                     function() {
 
                         this.signal('TP_xctrls_MapMarkerClicked',
-                                        null,
                                         aMarker);
                     }.bind(this)));
 
@@ -295,7 +294,7 @@ function(aMarker) {
 
     this.get('markers').push(aMarker);
 
-    this.signal('TP_xctrls_MapMarkerAdded', null, aMarker);
+    this.signal('TP_xctrls_MapMarkerAdded', aMarker);
 
     return this;
 });
@@ -356,7 +355,6 @@ function() {
                 function(marker, location) {
 
                     this.signal('TP_xctrls_MapClicked',
-                                    null,
                                     TP.llc(location.x, location.y));
                 }.bind(this)));
 
@@ -368,7 +366,6 @@ function() {
                 function() {
 
                     this.signal('TP_xctrls_MapPanned',
-                                    null,
                                     this.getCenter());
                 }.bind(this)));
 
@@ -384,7 +381,7 @@ function() {
 
     /**
      * @name getBounds
-     * @returns {TP.core.MapBounds} 
+     * @returns {TP.core.MapBounds}
      * @abstract
      * @todo
      */
@@ -415,7 +412,7 @@ function() {
 
     /**
      * @name getCenter
-     * @returns {TP.core.LatLong} 
+     * @returns {TP.core.LatLong}
      * @abstract
      * @todo
      */
@@ -463,7 +460,6 @@ function(anAddress) {
                                 response.Placemark[0].address);
 
             this.signal('TP_xctrls_MapGeocodeComplete',
-                        null,
                         responseLatLong);
         }.bind(this));
 
@@ -524,7 +520,7 @@ function() {
 
     /**
      * @name getZoom
-     * @returns {Number} 
+     * @returns {Number}
      * @abstract
      * @todo
      */
@@ -539,8 +535,8 @@ function(aMapBounds) {
 
     /**
      * @name getZoomLevelForMapBounds
-     * @param {TP.core.MapBounds} aMapBounds 
-     * @returns {Number} 
+     * @param {TP.core.MapBounds} aMapBounds
+     * @returns {Number}
      * @abstract
      * @todo
      */
@@ -628,7 +624,7 @@ function(aMarker) {
 
     this.get('markers').remove(aMarker, TP.IDENTITY);
 
-    this.signal('TP_xctrls_MapMarkerRemoved', null, aMarker);
+    this.signal('TP_xctrls_MapMarkerRemoved', aMarker);
 
     return this;
 });
@@ -865,7 +861,6 @@ function() {
                             function() {
 
                                 this.signal('TP_xctrls_MapMarkerClicked',
-                                                null,
                                                 aMarker);
                             }.bind(this)));
 

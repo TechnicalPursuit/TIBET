@@ -3065,10 +3065,10 @@ function(aSignal) {
 
         //  Now that any of the appropriate subURIs have signaled from
         //  themselves, we signal from ourself.
-        this.signal(aSignal.getSignalName(), arguments, aSignal.getPayload());
+        this.signal(aSignal.getSignalName(), aSignal.getPayload());
     } else {
         //  If we didn't have any paths, then just signal from ourself.
-        this.signal(aSignal.getSignalName(), arguments, aSignal.getPayload());
+        this.signal(aSignal.getSignalName(), aSignal.getPayload());
     }
 
     return this;
@@ -4510,12 +4510,10 @@ function(aResource, aRequest) {
 
             subURIs.at(i).signal(
                     'TP.sig.StructureChange',
-                    arguments,
                     description);
 
             this.signal(
                     'TP.sig.StructureChange',
-                    arguments,
                     description);
         }
     }

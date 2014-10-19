@@ -127,8 +127,7 @@ function() {
     //  'save' plugin is loaded?
     editorInst.settings.save_onsavecallback =
             function(editor) {
-
-                this.signal('TP.sig.ContentSave', null, this.getValue());
+                this.signal('TP.sig.ContentSave', this.getValue());
             }.bind(this);
 
     this.refresh();
