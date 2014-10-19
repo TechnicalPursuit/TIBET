@@ -1826,7 +1826,7 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
 
         // If we're still booting errors that are uncaught are considered FATAL.
         if (!TP.sys.hasStarted()) {
-            TP.fatal(str, TP.BOOT_LOG);
+            TP.fatal(str);
         } else {
             // Uncaught errors are severe relative to those we raise/catch.
             TP.ifSevere() ? TP.severe(str, TP.LOG) : 0;

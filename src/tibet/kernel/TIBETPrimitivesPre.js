@@ -10627,37 +10627,6 @@ function(aFlag, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('shouldSignalLogChange',
-function(aFlag, shouldSignal) {
-
-    /**
-     * @name shouldSignalLogChange
-     * @synopsis Controls and returns TIBET's LogChange signal flag. TIBET's
-     *     tools alter this flag when they want to interactively display the log
-     *     as it changes.
-     * @param {Boolean} aFlag Turn behavior on or off? Default is false.
-     * @param {Boolean} shouldSignal False to turn off configuration change
-     *     signaling for this call.
-     * @example Configure TIBET to signal LogChange to help tool display. (You
-     *     realize you shouldn't do this right? ;))
-     *     <code>
-     *          TP.sys.shouldSignalLogChange(true);
-     *          <samp>true</samp>
-     *     </code>
-     * @returns {Boolean} Whether or not TIBET signals *LogChange when the
-     *     activity log (or a subset of it) changes.
-     * @todo
-     */
-
-    if (TP.isBoolean(aFlag)) {
-        TP.sys.setcfg('signal.log_change', aFlag, shouldSignal);
-    }
-
-    return TP.sys.cfg('signal.log_change');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sys.defineMethod('shouldThrowEvaluations',
 function(aFlag, shouldSignal) {
 

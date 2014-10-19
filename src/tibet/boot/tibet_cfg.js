@@ -299,48 +299,48 @@ TP.sys.setcfg('boot.uichunked',
 //  ---
 
 // Must use colors in the colors.js set (until we replace/expand).
-TP.sys.setcfg('log.tracecolor', 'grey');
-TP.sys.setcfg('log.infocolor', 'white');
-TP.sys.setcfg('log.warncolor', 'yellow');
-TP.sys.setcfg('log.errorcolor', 'magenta');
-TP.sys.setcfg('log.severecolor', 'red');
-TP.sys.setcfg('log.fatalcolor', 'red');
-TP.sys.setcfg('log.systemcolor', 'cyan');
+TP.sys.setcfg('log.color.trace', 'grey');
+TP.sys.setcfg('log.color.info', 'white');
+TP.sys.setcfg('log.color.warn', 'yellow');
+TP.sys.setcfg('log.color.error', 'magenta');
+TP.sys.setcfg('log.color.severe', 'red');
+TP.sys.setcfg('log.color.fatal', 'red');
+TP.sys.setcfg('log.color.system', 'cyan');
 
-TP.sys.setcfg('log.timecolor', 'grey');
-TP.sys.setcfg('log.deltacolor', 'grey');
-TP.sys.setcfg('log.slowcolor', 'yellow');
-TP.sys.setcfg('log.debugcolor', 'green');
-TP.sys.setcfg('log.verbosecolor', 'grey');
+TP.sys.setcfg('log.color.time', 'grey');
+TP.sys.setcfg('log.color.delta', 'grey');
+TP.sys.setcfg('log.color.slow', 'yellow');
+TP.sys.setcfg('log.color.debug', 'green');
+TP.sys.setcfg('log.color.verbose', 'grey');
 
 // Inadequate, but sufficient to help determine if we're in node, Phantom,
 // or a browser. Note these tests are unlikely to work in other contexts.
 if (typeof navigator === 'undefined') {
+
   TP.sys.setcfg('boot.context', 'nodejs');
   TP.sys.setcfg('boot.reporter', 'console');
 
-  TP.sys.setcfg('log.reporter', 'console');
-  TP.sys.setcfg('log.colormode', 'terminal');
+  TP.sys.setcfg('log.color.mode', 'terminal');
+  TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
-  TP.sys.setcfg('log.default_appender', 'TP.log.BrowserAppender');
 } else if (/PhantomJS/.test(navigator.userAgent)) {
+
   TP.sys.setcfg('boot.context', 'phantomjs');
   TP.sys.setcfg('boot.reporter', 'phantom');
-  TP.sys.setcfg('boot.level', 'WARN');
 
-  TP.sys.setcfg('log.reporter', 'phantom');
-  TP.sys.setcfg('log.colormode', 'terminal');
+  TP.sys.setcfg('boot.level', 'WARN');
   TP.sys.setcfg('log.level', 'WARN');
 
-  TP.sys.setcfg('log.default_appender', 'TP.log.BrowserAppender');
+  TP.sys.setcfg('log.color.mode', 'terminal');
+  TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
+
 } else {
+
   TP.sys.setcfg('boot.context', 'browser');
   TP.sys.setcfg('boot.reporter', 'bootui');
 
-  TP.sys.setcfg('log.reporter', 'console');
-  TP.sys.setcfg('log.colormode', 'console');
-
-  TP.sys.setcfg('log.default_appender', 'TP.log.BrowserAppender');
+  TP.sys.setcfg('log.color.mode', 'console');
+  TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 }
 
 //  ---
@@ -1315,11 +1315,6 @@ TP.sys.setcfg('signal.dom_focus_signals', true);
 //  coming from document objects, so you can always observe a document for
 //  ContentLoaded as part of a page startup sequence.
 TP.sys.setcfg('signal.dom_loaded', true);
-
-//  should LogChange and its variants be signaled when a slice of the
-//  activity log changes? by default no, only the TIBET tools will typically
-//  adjust this, and even then they're more likely to leverage stdout/stderr
-TP.sys.setcfg('signal.log_change', false);
 
 //  should we track handler invocation times across a set of signaling
 //  calls? if true, the $signal function will track stats on each call that

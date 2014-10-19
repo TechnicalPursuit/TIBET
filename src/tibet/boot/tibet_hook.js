@@ -203,7 +203,7 @@ $$findTIBET = function(aWindow) {
 if (self.TP == null) {
 
     //  ---
-    //  Define a slightly more useful error reporter.
+    //  Define a slightly more useful error handler.
     //  ---
 
     //  NOTE: If TP exists it means we're in the init file, not the hook file. In

@@ -9,22 +9,34 @@
 //  ============================================================================
 
 /* TODO:
-//  Phantom TAP-parse-compatible layout (no leading ts, level, etc.)
-
-//  filter based on some log level...or do we just rely on TP.setLogLevel
-// to adjust default log?
-
-// Log entry persistence. this may be worth doing at the root level and allowing
-// filtering by entry/marker content that includes the log name of the entry.
-
-// Log buffering. We should be able to to output/flush in chunks to keep
-// overhead down during rendering etc depending on the appender in question.
-
-// Log coalescing. Some appenders might be able to produce counts for duplicate
-// entries...so they'd basically keep their last entry and flush only when a new
-// entry comes in that's different, or when forced to flush.
-
-//  Configure default logger/appender/layout chains for common logs.
+ *
+ * Configure default logger/appender/layout chains for common logs.
+ *      - change log
+ *
+ * TP.stderr - clean this up and make it solid
+ *
+ * TP.stdout - clean this up and make it solid
+ *
+ * Remove $ec and replace with varargs processing.
+ *
+ * Remove $annotate/Annotation and replace with varargs processing.
+ *
+ * Remove TP.boot.* references from outside the boot system, particularly around
+ * any aspects of logging or stdout/stderr.
+ *
+ * Remove functionality from TP.boot.Log if it isn't called.
+ *
+ * Rebuild showBootLog functionality to use ConsoleAppender or TDCAppender.
+ *
+ * Log entry persistence. this may be worth doing at the root level and allowing
+ * filtering by entry/marker content that includes the log name of the entry.
+ *
+ * Log buffering. We should be able to to output/flush in chunks to keep
+ * overhead down during rendering etc depending on the appender in question.
+ *
+ * Log coalescing. Some appenders might be able to produce counts for duplicate
+ * entries...so they'd basically keep their last entry and flush only when a new
+ * entry comes in that's different, or when forced to flush.
 */
 
 
@@ -674,7 +686,7 @@ TP.log.Logger.Type.defineMethod('getDefaultAppender', function() {
     }
 
     name = TP.ifInvalid(this.$get('defaultAppenderType'),
-        TP.sys.cfg('log.default_appender'));
+        TP.sys.cfg('log.appender'));
 
     if (TP.notEmpty(name)) {
         type = TP.sys.getTypeByName(name);
@@ -1226,7 +1238,7 @@ TP.log.Appender.Type.defineMethod('getDefaultLayout', function() {
     }
 
     name = TP.ifInvalid(this.$get('defaultLayoutType'),
-        TP.sys.cfg('log.default_layout'));
+        TP.sys.cfg('log.layout'));
 
     if (TP.notEmpty(name)) {
         type = TP.sys.getTypeByName(name);
@@ -2341,8 +2353,6 @@ function(argList, aLogLevel) {
     level = TP.ifInvalid(level, TP.log.INFO);
 
     logger.$logArglist(level, args);
-
-    //top.console.log(TP.boot.$str(argList[0]));
 });
 
 //  ----------------------------------------------------------------------------
@@ -2624,19 +2634,11 @@ TP.definePrimitive('setLogLevel', function(aLevel, aLogger) {
 //  ----------------------------------------------------------------------------
 
 /*
-There are some common idioms in TIBET methods related to logging. These
-idioms are built to help support stripping these constructs for production
-code to reduce overhead and code size. The idioms are:
-
-    //  logging idiom(s)
-    TP.ifTrace() ? TP.trace(...) : 0;
-    TP.ifDebug() ? TP.debug(...) : 0;
-    TP.ifInfo() ? TP.info(...) : 0;
-    TP.ifWarn() ? TP.warn(...) : 0;
-    TP.ifError() ? TP.error(...) : 0;
-    TP.ifSevere() ? TP.severe(...) : 0;
-    TP.ifFatal() ? TP.fatal(...) : 0;
-    TP.ifSystem() ? TP.system(...) : 0;
+ *  Utility functions to help limit message construction overhead when needed.
+ *
+ *  The versions here replace the boot system versions and verify that the level
+ *  is enabled for the log name provided (the boot system versions don't since
+ *  there are no loggers at that point in the startup process).
 */
 
 //  ----------------------------------------------------------------------------
@@ -2834,8 +2836,14 @@ function(aLogName) {
 }, false, 'TP.ifSystem');
 
 //  ----------------------------------------------------------------------------
-//
+//  Level Loggers
 //  ----------------------------------------------------------------------------
+
+/*
+ * The methods here are defined in the boot code and delegate through a simple
+ * branching routine which targets TP.boot.$$log during startup and TP.sys.$$log
+ * once the system has started (and can leverage all this nice TP.log stuff :)).
+ */
 
 // TODO: migrate to housekeeping
 TP.definePrimitive('trace', TP.trace);
@@ -2852,11 +2860,11 @@ TP.definePrimitive('system', TP.system);
 //  ============================================================================
 
 /**
- * TODO
+ * Extensions specifically for the APP branch of logging. The methods here
+ * mirror the basic if[Level] and APP[level] methods found on the TP object but
+ * they leverage the APP logger as their primary root rather than the TP logger.
  */
 
-//  ----------------------------------------------------------------------------
-//
 //  ----------------------------------------------------------------------------
 
 /**
@@ -2920,18 +2928,6 @@ APP.system = TP.system;
 //  ============================================================================
 //  TP.sys
 //  ============================================================================
-
-//  ----------------------------------------------------------------------------
-//  ACTIVITY (META) LOG
-//  ----------------------------------------------------------------------------
-
-//  NOTE the activity log is a shared log containing all log content other
-//  than boot/patch entries (found in the boot log), change entries (found
-//  in the change log), and test entries (found in the test log). These two
-//  secondary logs are separate since they contain information important to
-//  the environment and data that should not be cleared without
-//  confirmation.
-TP.sys.$activity = TP.ifInvalid(TP.sys.$activity, new TP.boot.Log());
 
 //  ----------------------------------------------------------------------------
 //  TEST LOG

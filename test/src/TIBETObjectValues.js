@@ -406,7 +406,6 @@ function(aRequest) {
     'TP.core.Browser_TYPE',     tibetBrowserType,       //  TP.core.Browser type
 
     'TP.boot.Annotation',       tpBootAnnotation        //  TP.boot.Annotation
-    //'TP.boot.Log',              tpBootLog               //  TP.boot.Log
     );
 
     //  In order to get an 'undefined' value into our hash, we have to play some
@@ -634,7 +633,6 @@ function(aRequest) {
     tibetBrowserType = TP.ac(TP.meta.core.Browser, TP.lang.Object, TP.lang.RootObject, Object);
 
     tpBootAnnotation = TP.ac(TP.boot.Annotation, Object);
-    tpBootLog = TP.ac(TP.boot.Log, Object);
 
     objTypes = TP.hc(
     TP.NULL,                    nullVal,                //  null
@@ -730,7 +728,6 @@ function(aRequest) {
     'TP.core.Browser_TYPE',     tibetBrowserType,       //  TP.core.Browser type
 
     'TP.boot.Annotation',       tpBootAnnotation        //  TP.boot.Annotation
-    //'TP.boot.Log',              tpBootLog               //  TP.boot.Log
     );
 
     //  In order to get an 'undefined' value into our hash, we have to play some

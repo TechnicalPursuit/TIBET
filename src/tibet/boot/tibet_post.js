@@ -8,6 +8,11 @@
  */
 //  ============================================================================
 
+/*
+ * TODO:
+ *
+ */
+
 /* jshint debug:true,
           eqnull:true,
           evil:true,
@@ -44,20 +49,20 @@ APP = root.APP;
 //  ============================================================================
 
 TP.boot.$$theme = {
-    trace: TP.sys.cfg('log.tracecolor'),
-    info: TP.sys.cfg('log.infocolor'),
-    warn:  TP.sys.cfg('log.warncolor'),
-    error:  TP.sys.cfg('log.errorcolor'),
-    fatal:  TP.sys.cfg('log.fatalcolor'),
-    severe:  TP.sys.cfg('log.severecolor'),
-    system:  TP.sys.cfg('log.systemcolor'),
+    trace: TP.sys.cfg('log.color.trace'),
+    info: TP.sys.cfg('log.color.info'),
+    warn:  TP.sys.cfg('log.color.warn'),
+    error:  TP.sys.cfg('log.color.error'),
+    fatal:  TP.sys.cfg('log.color.fatal'),
+    severe:  TP.sys.cfg('log.color.severe'),
+    system:  TP.sys.cfg('log.color.system'),
 
-    time: TP.sys.cfg('log.timecolor'),
-    delta: TP.sys.cfg('log.deltacolor'),
-    slow: TP.sys.cfg('log.slowcolor'),
+    time: TP.sys.cfg('log.color.time'),
+    delta: TP.sys.cfg('log.color.delta'),
+    slow: TP.sys.cfg('log.color.slow'),
 
-    debug:  TP.sys.cfg('log.debugcolor'),
-    verbose:  TP.sys.cfg('log.verbosecolor')
+    debug:  TP.sys.cfg('log.color.debug'),
+    verbose:  TP.sys.cfg('log.color.verbose')
 };
 
 //  ============================================================================
@@ -5502,7 +5507,7 @@ TP.boot.$ec = function(anError, aMessage) {
 };
 
 //  ============================================================================
-//  Log Reporters
+//  Boot Reporters
 //  ============================================================================
 
 /*
@@ -5643,7 +5648,7 @@ TP.boot.$consoleReporter = function(entry, options) {
         return;
     }
 
-    TP.sys.setcfg('log.colormode', 'console');
+    TP.sys.setcfg('log.color.mode', 'console');
     msg = TP.boot.$$logReporter(entry,
         { separator: '\n', escape: false, console: true });
     if (TP.boot.$notValid(msg)) {
@@ -5705,7 +5710,7 @@ TP.boot.$bootuiReporter = function(entry, options) {
         TP.boot.$consoleConfigured = true;
     }
 
-    TP.sys.setcfg('log.colormode', 'browser');
+    TP.sys.setcfg('log.color.mode', 'browser');
     msg = TP.boot.$$logReporter(entry,
         { separator: '<br/>', escape: true, console: false });
     if (TP.boot.$notValid(msg)) {
@@ -5776,7 +5781,7 @@ TP.boot.$phantomReporter = function(entry, options) {
         return;
     }
 
-    TP.sys.setcfg('log.colormode', 'console');
+    TP.sys.setcfg('log.color.mode', 'console');
     msg = TP.boot.$$logReporter(entry,
         { separator: '\n', escape: false, console: true });
     if (TP.boot.$notValid(msg)) {
@@ -5833,7 +5838,7 @@ TP.boot.$style = function(aString, aStyle) {
         codes,
         result;
 
-    mode = TP.sys.cfg('log.colormode');
+    mode = TP.sys.cfg('log.color.mode');
     styles = TP.boot.$$styles[mode];
 
     try {
@@ -6347,8 +6352,6 @@ TP.boot.Log.prototype.report = function(entry) {
 
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
         reporterName = 'phantom';
-    } else if (TP.sys.hasStarted()) {
-        reporterName = TP.sys.cfg('log.reporter');
     } else {
         reporterName = TP.sys.cfg('boot.reporter');
     }
@@ -6865,7 +6868,7 @@ TP.boot.$displayProgress = function() {
         return;
     }
 
-    if (TP.sys.cfg('log.reporter') !== 'bootui') {
+    if (TP.sys.cfg('boot.reporter') !== 'bootui') {
         return;
     }
 
@@ -6991,7 +6994,7 @@ TP.sys.showBootLog = function(reporter, level) {
     if (TP.boot.$notValid(rep)) {
         TP.boot.$consoleReporter(
             [new Date(), TP.BOOT_LOG, TP.boot.WARN,
-                'Boot log reporter \'' + reporter + '\' not found.']);
+                'Boot reporter \'' + reporter + '\' not found.']);
         return;
     }
 

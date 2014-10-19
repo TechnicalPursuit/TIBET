@@ -6220,10 +6220,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  don't log signals when processing events from the other logs to
     //  help reduce the potential for recursive logging. The activity and
     //  error logs, as well as the signal log itself, are definite no-nos.
-    if (TP.sys.shouldLogSignals() &&
-        (anOrigin !== TP.sys.$changes) &&
-        (anOrigin !== TP.sys.$testlog) &&
-        (anOrigin !== TP.sys.$activity)) {
+    if (TP.sys.shouldLogSignals()) {
 
         sigstr = aSignal.getSignalName();
         sigtype = TP.sig.SignalMap.$getSignalType(aSignal);
