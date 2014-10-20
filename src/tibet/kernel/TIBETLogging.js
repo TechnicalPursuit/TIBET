@@ -196,7 +196,7 @@ function(aLogger) {
 
     var name;
 
-    name = aLogger.getName();
+    name = aLogger.get('name');
     if (this.exists(name)) {
         return this.raise('DuplicateRegistration', name);
     }
@@ -220,7 +220,7 @@ function(aLogger) {
 
     var name;
 
-    name = TP.isString(aLogger) ? aLogger : aLogger.getName();
+    name = TP.isString(aLogger) ? aLogger : aLogger.get('name');
 
     if (this.exists(name)) {
         this.loggers.removeKey(name);
@@ -319,7 +319,7 @@ function(aName) {
 
     this.callNextMethod();
 
-    this.name = aName;
+    this.set('name', aName);
 
     return this;
 });
@@ -345,11 +345,12 @@ function() {
 
     type = this.getType();
 
-    ancestors = this.getAncestorNames().map(function(name) {
-        return type.getInstanceByName(name);
-    });
+    ancestors = this.getAncestorNames().map(
+                            function(name) {
+                                return type.getInstanceByName(name);
+                            });
 
-    this.ancestors = ancestors;
+    this.set('ancestors', ancestors);
 
     return ancestors;
 });
@@ -373,7 +374,7 @@ function() {
         return names;
     }
 
-    str = this.getName();
+    str = this.get('name');
     names = TP.ac();
 
     while (str.indexOf('.') !== TP.NOT_FOUND) {
@@ -381,9 +382,9 @@ function() {
         names.push(str);
     }
 
-    this.ancestorNames = names;
+    this.set('ancestorNames', names);
 
-    return this.ancestorNames;
+    return names;
 });
 
 //  ----------------------------------------------------------------------------
@@ -401,18 +402,18 @@ function() {
     var pname,
         parent;
 
-    if (TP.isValid(this.parent)) {
-        return this.parent;
+    if (TP.isValid(parent = this.$get('parent'))) {
+        return parent;
     }
 
-    if (this.name.indexOf('.') === TP.NOT_FOUND) {
+    if (this.get('name').indexOf('.') === TP.NOT_FOUND) {
         return;
     }
 
-    pname = this.name.slice(0, this.name.lastIndexOf('.'));
+    pname = this.get('name').slice(0, this.get('name').lastIndexOf('.'));
     parent = this.getType().getInstanceByName(pname);
 
-    this.parent = parent;
+    this.set('parent', parent);
 
     return parent;
 });
@@ -454,11 +455,14 @@ function(aFilter) {
      * @return {TP.log.Filtered} The receiver.
      */
 
-    if (TP.notValid(this.filters)) {
-        this.filters = TP.ac();
+    var filters;
+
+    if (TP.notValid(filters = this.get('filters'))) {
+        filters = TP.ac();
+        this.set('filters', filters);
     }
 
-    this.filters.push(aFilter);
+    filters.push(aFilter);
     
     return this;
 });
@@ -474,7 +478,7 @@ function() {
      * @return {TP.log.Filtered} The receiver.
      */
 
-    this.filters = null;
+    this.set('filters', null);
 
     return this;
 });
@@ -532,9 +536,8 @@ function() {
      * @return {Array<.TP.log.Filter>} The filter list.
      */
 
-    return this.filters || TP.ac();
+    return TP.ifInvalid(this.$get('filters'), TP.ac());
 });
-
 
 //  ============================================================================
 //  Leveled
@@ -572,7 +575,7 @@ function() {
      * @return {Number} The current logging level.
      */
 
-    return this.level || TP.log.ALL;
+    return TP.ifInvalid(this.$get('level'), TP.log.ALL);
 });
 
 //  ----------------------------------------------------------------------------
@@ -721,7 +724,7 @@ function() {
     }
 
     inst = type.construct();
-    this.defaultAppender = inst;
+    this.set('defaultAppender', inst);
 
     return inst;
 });
@@ -808,11 +811,11 @@ function(aName) {
     //  proper backstop for level and parent searching.
     if (this.$get('name') === TP.log.Manager.ROOT_LOGGER_NAME) {
 
-        this.level = TP.log.Level.getLevel('info');
+        this.set('level', TP.log.Level.getLevel('info'));
 
-        // The root doesn't inherit anything.
-        this.additiveAppenders = false;
-        this.additiveFilters = false;
+        //  The root doesn't inherit anything.
+        this.set('additiveAppenders', false);
+        this.set('additiveFilters', false);
 
         //  We need a default appender at the root level to backstop things.
         this.addAppender(this.getType().getDefaultAppender());
@@ -834,11 +837,14 @@ function(anAppender) {
      * @return {TP.log.Logger} The receiver.
      */
 
-    if (TP.notValid(this.appenders)) {
-        this.appenders = TP.ac();
+    var appenders;
+
+    if (TP.notValid(appenders = this.get('appenders'))) {
+        appenders = TP.ac();
+        this.set('appenders', appenders);
     }
 
-    this.appenders.push(anAppender);
+    appenders.push(anAppender);
     
     return this;
 });
@@ -859,19 +865,18 @@ function() {
         appenders;
 
     if (!this.inheritsAppenders()) {
-        return this.appenders;
+        return this.$get('appenders');
     }
 
-    parent = this.getParent();
-    if (TP.notValid(parent)) {
+    if (TP.notValid(parent = this.getParent())) {
         return;
     }
 
     appenders = parent.getAppenders();
-    if (TP.notEmpty(this.appenders) && TP.notEmpty(appenders)) {
-        appenders = this.appenders.concat(appenders);
+    if (TP.notEmpty(this.$get('appenders')) && TP.notEmpty(appenders)) {
+        appenders = this.$get('appenders').concat(appenders);
     } else {
-        appenders = TP.ifInvalid(this.appenders, appenders);
+        appenders = TP.ifInvalid(this.$get('appenders'), appenders);
     }
 
     return appenders;
@@ -893,19 +898,18 @@ function() {
         filters;
 
     if (!this.inheritsFilters()) {
-        return this.filters;
+        return this.$get('filters');
     }
 
-    parent = this.getParent();
-    if (TP.notValid(parent)) {
+    if (TP.notValid(parent = this.getParent())) {
         return;
     }
 
     filters = parent.getFilters();
-    if (TP.notEmpty(this.filters) && TP.notEmpty(filters)) {
-        filters = this.filters.concat(filters);
+    if (TP.notEmpty(this.$get('filters')) && TP.notEmpty(filters)) {
+        filters = this.$get('filters').concat(filters);
     } else {
-        filters = TP.ifInvalid(this.filters, filters);
+        filters = TP.ifInvalid(this.$get('filters'), filters);
     }
 
     return filters;
@@ -926,8 +930,8 @@ function() {
 
     var parent;
 
-    if (TP.isValid(this.level)) {
-        return this.level;
+    if (TP.isValid(this.$get('level'))) {
+        return this.$get('level');
     }
 
     parent = this.getParent();
@@ -954,22 +958,22 @@ function() {
     var pname,
         parent;
 
-    if (TP.isValid(this.parent)) {
-        return this.parent;
+    if (TP.isValid(this.$get('parent'))) {
+        return this.$get('parent');
     }
 
-    if (this.name === TP.log.Manager.ROOT_LOGGER_NAME) {
+    if (this.get('name') === TP.log.Manager.ROOT_LOGGER_NAME) {
         return;
     }
 
-    if (this.name.indexOf('.') === TP.NOT_FOUND) {
+    if (this.get('name').indexOf('.') === TP.NOT_FOUND) {
         parent = TP.log.Manager.getRootLogger();
     } else {
-        pname = this.name.slice(0, this.name.lastIndexOf('.'));
+        pname = this.get('name').slice(0, this.get('name').lastIndexOf('.'));
         parent = TP.log.Manager.getLogger(pname);
     }
 
-    this.parent = parent;
+    this.set('parent', parent);
 
     return parent;
 });
@@ -988,10 +992,10 @@ function(aFlag) {
      */
 
     if (aFlag !== undefined) {
-        this.additiveAppenders = aFlag;
+        this.set('additiveAppenders', aFlag);
     }
 
-    return this.additiveAppenders;
+    return this.get('additiveAppenders');
 });
 
 //  ----------------------------------------------------------------------------
@@ -1008,10 +1012,10 @@ function(aFlag) {
      */
 
     if (aFlag !== undefined) {
-        this.additiveFilters = aFlag;
+        this.set('additiveFilters', aFlag);
     }
 
-    return this.additiveFilters;
+    return this.get('additiveFilters');
 });
 
 //  ----------------------------------------------------------------------------
@@ -1067,8 +1071,8 @@ function(anEntry) {
     appenders = this.getAppenders();
     if (TP.notEmpty(appenders)) {
         appenders.forEach(function(appender) {
-            appender.log(entry);
-        });
+                                appender.log(entry);
+                            });
     }
 
     return this;
@@ -1313,7 +1317,7 @@ function() {
     }
 
     inst = type.construct();
-    this.defaultLayout = inst;
+    this.set('defaultLayout', inst);
 
     return inst;
 });
@@ -1357,7 +1361,7 @@ function() {
      * @param {TP.log.Layout} aLayout The layout to use.
      */
 
-    return this.layout || this.getType().getDefaultLayout();
+    return TP.ifInvalid(this.$get('layout'), this.getType().getDefaultLayout());
 });
 
 //  ----------------------------------------------------------------------------
@@ -1546,13 +1550,13 @@ function(aLogger, aLevel, arglist) {
 
     this.date = new Date();
 
-    this.logger = aLogger;
-    this.level = aLevel;
-    this.arglist = arglist;
+    this.set('logger', aLogger);
+    this.set('level', aLevel);
+    this.set('arglist', arglist);
 
     if (arglist && arglist.length > 0) {
         if (TP.isKindOf(arglist.at(0), TP.log.Marker)) {
-            this.marker = arglist.shift();
+            this.set('marker', arglist.shift());
         }
     }
 
@@ -1695,7 +1699,7 @@ function(aName) {
 
     var key;
 
-    if (!aName) {
+    if (TP.isEmpty(aName)) {
         return;
     }
 
@@ -1736,10 +1740,11 @@ function(aLevel) {
 
     var index;
 
-    index = aLevel.getIndex();
-    if (this.index === index) {
+    index = aLevel.get('index');
+
+    if (this.get('index') === index) {
         return 0;
-    } else if (this.index < index) {
+    } else if (this.get('index') < index) {
         return -1;
     } else {
         return 1;
@@ -1758,34 +1763,7 @@ function(aLevel) {
      * @return {Boolean} True if the levels are equal.
      */
 
-    return this.getIndex() === aLevel.getIndex();
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.log.Level.Inst.defineMethod('getIndex',
-function() {
-
-    /**
-     * @name getIndex
-     * @summary Returns the index value of the level.
-     * @return {String} The level index.
-     */
-
-    return this.index;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.log.Level.Inst.defineMethod('getName', function() {
-
-    /**
-     * @name getName
-     * @summary Returns the name of the level.
-     * @return {String} The level name.
-     */
-
-    return this.name;
+    return this.get('index') === aLevel.get('index');
 });
 
 //  ----------------------------------------------------------------------------
@@ -1808,8 +1786,8 @@ function(aName, anIndex) {
 
     this.callNextMethod();
 
-    this.name = aName.toUpperCase();
-    this.index = anIndex;
+    this.set('name', aName.toUpperCase());
+    this.set('index', anIndex);
 
     return this;
 });
@@ -1929,7 +1907,7 @@ function(aName) {
      * @return {TP.log.Marker}
      */
 
-    if (!aName) {
+    if (TP.isEmpty(aName)) {
         return;
     }
 
@@ -2044,7 +2022,7 @@ function() {
 
     var end;
 
-    end = this.end || Date.now();
+    end = TP.ifInvalid(this.end, Date.now());
 
     return end.getTime() - this.start.getTime();
 });
@@ -2310,7 +2288,7 @@ function(argList, aLogLevel) {
         stdioDict.atPut('messageType', 'log');
 
         //  these are for TP.tdp.Console support
-        stdioDict.atPut('cmd', level.getName().toLowerCase());
+        stdioDict.atPut('cmd', level.get('name').toLowerCase());
 
         format = TP.sys.cfg('log.default_format', 'tsh:pp');
         output = TP.format(anObject, format, stdioDict);
@@ -2833,7 +2811,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject, TP.CSS_LOG], aLogLevel);
+    TP.sys.$$log(TP.ac(anObject, TP.CSS_LOG), aLogLevel);
 
     return true;
 });
@@ -2868,7 +2846,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject, TP.INFERENCE_LOG], aLogLevel);
+    TP.sys.$$log(TP.ac(anObject, TP.INFERENCE_LOG), aLogLevel);
 
     return true;
 });
@@ -2935,7 +2913,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject, TP.IO_LOG], aLogLevel);
+    TP.sys.$$log(TP.ac(anObject, TP.IO_LOG), aLogLevel);
 
     return true;
 });
@@ -2971,7 +2949,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject, TP.JOB_LOG], aLogLevel);
+    TP.sys.$$log(TP.ac(anObject, TP.JOB_LOG), aLogLevel);
 
     return true;
 });
@@ -3005,7 +2983,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject, TP.KEY_LOG], aLogLevel);
+    TP.sys.$$log(TP.ac(anObject, TP.KEY_LOG), aLogLevel);
 
     return true;
 });
@@ -3041,7 +3019,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject, TP.LINK_LOG], aLogLevel);
+    TP.sys.$$log(TP.ac(anObject, TP.LINK_LOG), aLogLevel);
 
     return true;
 });
@@ -3075,7 +3053,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject, TP.SECURITY_LOG], aLogLevel);
+    TP.sys.$$log(TP.ac(anObject, TP.SECURITY_LOG), aLogLevel);
 
     return true;
 });
@@ -3111,7 +3089,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject.get('message'), TP.SIGNAL_LOG], level);
+    TP.sys.$$log(TP.ac(anObject.get('message'), TP.SIGNAL_LOG), aLogLevel);
 
     return true;
 });
@@ -3145,7 +3123,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject, TP.TRANSFORM_LOG], aLogLevel);
+    TP.sys.$$log(TP.ac(anObject, TP.TRANSFORM_LOG), aLogLevel);
 
     return true;
 });
@@ -3189,7 +3167,7 @@ function(anEntry) {
 
     // Try to find a matching console API method to our level name. If we find
     // it we'll use that to output the message content.
-    name = anEntry.getLevel().getName().toLowerCase();
+    name = anEntry.getLevel().get('name').toLowerCase();
     if (TP.canInvoke(top.console, name)) {
         writer = name;
     } else {
@@ -3255,13 +3233,13 @@ function(anEntry) {
         arglist;
 
     str = '' + anEntry.getDate().asTimestamp() + ' - ' +
-        anEntry.getLogger().getName() + ' ' +
-        anEntry.getLevel().getName();
+                anEntry.getLogger().get('name') + ' ' +
+                anEntry.getLevel().get('name');
 
     // If there's a marker we can output that as well...
     marker = anEntry.getMarker();
     if (TP.isValid(marker)) {
-        str += ' [' + marker.getName() + ']';
+        str += ' [' + marker.get('name') + ']';
     }
 
     // The arglist may have multiple elements in it which we need to handle.
@@ -3344,7 +3322,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log([anObject, TP.CHANGE_LOG], TP.SYSTEM);
+    TP.sys.$$log(TP.ac(anObject, TP.CHANGE_LOG), TP.SYSTEM);
 
     return true;
 }, TP.PRIMITIVE_TRACK, null, 'TP.sys.logCodeChange');
@@ -3450,7 +3428,7 @@ function(anObject, aLogLevel) {
      * @todo
      */
 
-    TP.sys.$$log([anObject, TP.TEST_LOG], aLogLevel);
+    TP.sys.$$log(TP.ac(anObject, TP.TEST_LOG), aLogLevel);
 
     return true;
 });
@@ -3498,7 +3476,7 @@ function(anEntry) {
 
     // Try to find a matching console API method to our level name. If we find
     // it we'll use that to output the message content.
-    name = anEntry.getLevel().getName().toLowerCase();
+    name = anEntry.getLevel().get('name').toLowerCase();
     switch (name) {
         case 'warn':
             writer = 'warn';
