@@ -192,7 +192,6 @@ function(name) {
         realType,
         typeConstructor,
         instConstructor,
-        codestr,
         root;
 
     if (TP.isEmpty(name)) {
