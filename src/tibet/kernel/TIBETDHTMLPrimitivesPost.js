@@ -5768,7 +5768,9 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     //  We only signal TP.sig.DOMContentLoaded if the system is configured
     //  for it.
     if (TP.sys.shouldSignalDOMLoaded()) {
-        TP.signal(TP.gid(anElement),
+        //  NB: For insert, it's actually the parent node that's changed it's
+        //  content.
+        TP.signal(TP.gid(returnNode.parentNode),
                     'TP.sig.DOMContentLoaded',
                     theContent);
     }
