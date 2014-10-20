@@ -1728,7 +1728,7 @@ function(aResult) {
         TP.ifTrace() && TP.sys.shouldLogJobs() ?
             TP.sys.logJob('Job ' + this.getPID() +
                 ' completed at ' + TP.dc(this.$get('ended')).asTimestamp(),
-                TP.TRACE) : 0;
+                TP.DEBUG) : 0;
 
         //  have to check to see if we already have an failed or cancelled
         //  status since that would imply we can't reset to a success
@@ -2057,7 +2057,7 @@ function(silently) {
         TP.ifTrace() && TP.sys.shouldLogJobs() ?
             TP.sys.logJob('Job ' + this.getPID() +
                     ' killed at ' + TP.dc(this.$get('ended')).asTimestamp(),
-                    TP.TRACE) : 0;
+                    TP.DEBUG) : 0;
     }
 
     //  note that we cancel, not complete here
@@ -2480,7 +2480,7 @@ function(now) {
     TP.ifTrace() && TP.sys.shouldLogJobs() ?
         TP.sys.logJob('Job ' + this.getPID() +
                 ' shutdown requested at ' + TP.dc().asTimestamp(),
-                TP.TRACE) : 0;
+                TP.DEBUG) : 0;
 
     if (now) {
         //  cancel any pending work
@@ -2554,7 +2554,7 @@ function(stepParams) {
     TP.ifTrace() && TP.sys.shouldLogJobs() ?
         TP.sys.logJob('Job ' + this.getPID() +
                 ' started at ' + TP.dc(this.$get('started')).asTimestamp(),
-                TP.TRACE) : 0;
+                TP.DEBUG) : 0;
 
     //  schedule so we deal with possible delay, or run right now
     return this.schedule();
@@ -2856,7 +2856,7 @@ function() {
     TP.ifTrace() && TP.sys.shouldLogJobs() ?
         TP.sys.logJob('Job ' + this.getPID() +
                 ' re-started at ' + TP.dc(runstart).asTimestamp(),
-                TP.TRACE) : 0;
+                TP.DEBUG) : 0;
 
     //  schedule so we deal with possible delay, or run right now
     return this.schedule();

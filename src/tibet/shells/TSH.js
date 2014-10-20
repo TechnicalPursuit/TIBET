@@ -689,7 +689,7 @@ function(aRequest) {
             if (TP.sys.cfg('log.privilege_requests')) {
                 TP.sys.logSecurity('Privilege request at ' +
                        'handle',
-                            TP.TRACE);
+                            TP.DEBUG);
             }
 
             netscape.security.PrivilegeManager.enablePrivilege(

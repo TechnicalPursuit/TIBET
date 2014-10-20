@@ -26,7 +26,7 @@ TP.xmpp.Payload.defineSubtype('SignalPayload');
 //  a list of signal types we won't allow to be published
 TP.xmpp.SignalPayload.Type.defineConstant(
                         'EXCLUSIONS',
-                        TP.ac('TP.sig.Signal', 'INFO', 'TRACE', 'SYSTEM'));
+                        TP.ac('TP.sig.Signal', 'DEBUG', 'INFO', 'TRACE', 'SYSTEM'));
 
 //  Make sure to set the 'namespace', since its cleared by our
 //  TP.xmpp.Payload supertype.

@@ -101,32 +101,32 @@ function() {
 
     this.before(function(suite, options) {
         TP.sys.logTest('This should have an index of 1: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.beforeEach(function(test, options) {
         TP.sys.logTest('This should have an index of 2 or 5: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.it('ordering check 1', function(test, options) {
         TP.sys.logTest('This should have an index of 3: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.it('ordering check 2', function(test, options) {
         TP.sys.logTest('This should have an index of 6: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.afterEach(function(test, options) {
         TP.sys.logTest('This should have an index of 4 or 7: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.after(function(suite, options) {
         TP.sys.logTest('This should have an index of 8: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 });
 
@@ -141,38 +141,38 @@ function() {
 
     this.before(function(suite, options) {
         TP.sys.logTest('This should have an index of 1: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.beforeEach(function(test, options) {
         TP.sys.logTest('This should have an index of 2 or 7: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.it('ordering check 1', function(test, options) {
         TP.sys.logTest('This should have an index of 3: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 5: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
         TP.sys.logTest('This should have an index of 4: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.it('ordering check 2', function(test, options) {
         TP.sys.logTest('This should have an index of 8: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.afterEach(function(test, options) {
         TP.sys.logTest('This should have an index of 6 or 9: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.after(function(suite, options) {
         TP.sys.logTest('This should have an index of 10: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 });
 
@@ -187,44 +187,44 @@ function() {
 
     this.before(function(suite, options) {
         TP.sys.logTest('This should have an index of 1: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.beforeEach(function(test, options) {
         TP.sys.logTest('This should have an index of 2 or 7: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.it('ordering check 1', function(test, options) {
         TP.sys.logTest('This should have an index of 3: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 5: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
         TP.sys.logTest('This should have an index of 4: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.it('ordering check 2', function(test, options) {
         TP.sys.logTest('This should have an index of 8: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 10: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
         TP.sys.logTest('This should have an index of 9: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.afterEach(function(test, options) {
         TP.sys.logTest('This should have an index of 6 or 11: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.after(function(suite, options) {
         TP.sys.logTest('This should have an index of 12: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 });
 
@@ -239,42 +239,42 @@ function() {
 
     this.before(function(suite, options) {
         TP.sys.logTest('This should have an index of 1: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 2: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.beforeEach(function(test, options) {
         TP.sys.logTest('This should have an index of 3: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 4: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.it('ordering check', function(test, options) {
         TP.sys.logTest('This should have an index of 5: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
     });
 
     this.afterEach(function(test, options) {
         TP.sys.logTest('This should have an index of 6: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 7: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.after(function(suite, options) {
         TP.sys.logTest('This should have an index of 8: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 9: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 });
@@ -290,46 +290,46 @@ function() {
 
     this.before(function(suite, options) {
         TP.sys.logTest('This should have an index of 1: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 2: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.beforeEach(function(test, options) {
         TP.sys.logTest('This should have an index of 3: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 4: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.it('ordering check', function(test, options) {
         TP.sys.logTest('This should have an index of 5: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 6: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.afterEach(function(test, options) {
         TP.sys.logTest('This should have an index of 7: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 8: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.after(function(suite, options) {
         TP.sys.logTest('This should have an index of 9: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 10: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 });
@@ -345,55 +345,55 @@ function() {
 
     this.before(function(suite, options) {
         TP.sys.logTest('This should have an index of 1: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 2: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.beforeEach(function(test, options) {
         TP.sys.logTest('This should have an index of 3 or 9: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 5 or 11: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.it('ordering check', function(test, options) {
         TP.sys.logTest('This should have an index of 4: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 6: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.it('ordering check 2', function(test, options) {
         TP.sys.logTest('This should have an index of 10: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 12: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.afterEach(function(test, options) {
         TP.sys.logTest('This should have an index of 7 or 13: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 8 or 14: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 
     this.after(function(suite, options) {
         TP.sys.logTest('This should have an index of 15: ' + (++count),
-                        TP.TRACE);
+                        TP.DEBUG);
         this.then(function() {
             TP.sys.logTest('This should have an index of 16: ' + (++count),
-                            TP.TRACE);
+                            TP.DEBUG);
         });
     });
 });
@@ -645,19 +645,19 @@ TP.test.Suite.Inst.describe('TP.test.Suite case skip check',
 function() {
 
     this.it('case skip check 1', function(test, options) {
-        TP.sys.logTest('You should see this - check 1', TP.TRACE);
+        TP.sys.logTest('You should see this - check 1', TP.DEBUG);
     });
 
     this.it('case skip check 2', function(test, options) {
-        TP.sys.logTest('You should not see this - check 2', TP.TRACE);
+        TP.sys.logTest('You should not see this - check 2', TP.DEBUG);
     }).skip();
 
     this.it('case skip check 3', function(test, options) {
-        TP.sys.logTest('You should see this - check 3', TP.TRACE);
+        TP.sys.logTest('You should see this - check 3', TP.DEBUG);
     });
 
     this.it('case skip check 4', function(test, options) {
-        TP.sys.logTest('You should see this - check 4', TP.TRACE);
+        TP.sys.logTest('You should see this - check 4', TP.DEBUG);
     });
 });
 
@@ -667,7 +667,7 @@ TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #1',
 function() {
 
     this.it('suite skip check 1', function(test, options) {
-        TP.sys.logTest('You should see this - check 1', TP.TRACE);
+        TP.sys.logTest('You should see this - check 1', TP.DEBUG);
     });
 });
 
@@ -677,7 +677,7 @@ TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #2',
 function() {
 
     this.it('suite skip check 2', function(test, options) {
-        TP.sys.logTest('You should not see this - check 2', TP.TRACE);
+        TP.sys.logTest('You should not see this - check 2', TP.DEBUG);
     });
 }).skip();
 
@@ -687,7 +687,7 @@ TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #3',
 function() {
 
     this.it('suite skip check 3', function(test, options) {
-        TP.sys.logTest('You should see this - check 3', TP.TRACE);
+        TP.sys.logTest('You should see this - check 3', TP.DEBUG);
     });
 });
 
@@ -697,7 +697,7 @@ TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #4',
 function() {
 
     this.it('suite skip check 4', function(test, options) {
-        TP.sys.logTest('You should see this - check 4', TP.TRACE);
+        TP.sys.logTest('You should see this - check 4', TP.DEBUG);
     });
 });
 

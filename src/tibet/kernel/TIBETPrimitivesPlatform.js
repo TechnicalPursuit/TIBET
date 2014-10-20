@@ -468,7 +468,7 @@ TP.hc(
         if (!TP.sys.shouldRequestPrivileges()) {
             TP.ifTrace() ? TP.sys.logSecurity(
                 'TIBET not configured to request privileged code execution',
-                TP.TRACE) : 0;
+                TP.DEBUG) : 0;
 
             return false;
         }
@@ -535,7 +535,7 @@ TP.hc(
             if (TP.sys.cfg('log.privilege_requests')) {
                 TP.ifTrace() ? TP.sys.logSecurity('Privilege request at ' +
                             'executePrivileged',
-                            TP.TRACE) : 0;
+                            TP.DEBUG) : 0;
             }
 
             //  Try to get all permissions. This will throw an exception if
@@ -798,7 +798,7 @@ TP.hc(
             if (TP.sys.cfg('log.privilege_requests')) {
                 TP.ifTrace() ? TP.sys.logSecurity('Privilege request at ' +
                             'executePrivileged',
-                            TP.TRACE) : 0;
+                            TP.DEBUG) : 0;
             }
 
             privilegedFunction();

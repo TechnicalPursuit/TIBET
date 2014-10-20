@@ -8098,7 +8098,7 @@ function(aWindow) {
     }
 
     if (TP.$$DEBUG) {
-        TP.boot.$stdout(aWindow.document.documentElement, TP.TRACE);
+        TP.boot.$stdout(aWindow.document.documentElement, TP.DEBUG);
     }
 
     //  clear the flag once we process our checks

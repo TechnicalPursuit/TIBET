@@ -6569,7 +6569,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType) {
             TP.stdout(str);
         } else if (TP.isCallable(TP.boot.$stdout)) {
             //  boot system version
-            TP.boot.$stdout(str, TP.TRACE);
+            TP.boot.$stdout(str, TP.DEBUG);
         }
     }
 
@@ -9670,7 +9670,7 @@ function(aFlag, shouldSignal) {
      *     that turning on other log status flags won't automatically turn on
      *     the log activity flag. The activity log is the 'meta log' capturing
      *     log data from all the other TIBET logs and providing support for
-     *     TRACE, INFO, and SYSTEM messaging. Note that the logging level may
+     *     DEBUG, INFO, and SYSTEM messaging. Note that the logging level may
      *     also affect output.
      * @param {Boolean} aFlag Turn behavior on or off? Default is true.
      * @param {Boolean} shouldSignal False to turn off configuration change
@@ -10294,8 +10294,8 @@ function(aFlag, shouldSignal) {
      *     flag.
      * @description This flag determines whether the content processing system
      *     should log tranformation steps. The logging of this data occurs at
-     *     TRACE level so TP.setLogLevel() must be used to set the proper logger
-     *     to TRACE to capture the output in the logs.
+     *     DEBUG level so TP.setLogLevel() must be used to set the proper logger
+     *     to DEBUG to capture the output in the logs.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling for this call.
@@ -10388,8 +10388,8 @@ function(aFlag, shouldSignal) {
      * @synopsis Controls and returns the value of the XPath query logging flag.
      * @description This flag determines whether XPaths should be output to the
      *     activity log, which can help with performance tuning. The logging of
-     *     this data occurs at TRACE level so TP.setLogLevel() must be used to
-     *     set the proper logger to TRACE to capture the output in the logs.
+     *     this data occurs at DEBUG level so TP.setLogLevel() must be used to
+     *     set the proper logger to DEBUG to capture the output in the logs.
      * @param {Boolean} aFlag Turn behavior on or off? Default is false.
      * @param {Boolean} shouldSignal False to turn off configuration change
      *     signaling for this call.

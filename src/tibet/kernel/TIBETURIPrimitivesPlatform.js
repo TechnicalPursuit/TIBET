@@ -2191,7 +2191,7 @@ TP.hc(
                                 TP.sys.cfg('os.comspec_flags').join(' '),
                                 ' for command line: ',
                                 cmdline),
-                            TP.TRACE) : 0;
+                            TP.DEBUG) : 0;
 
                     //  TODO:   older versions use PID, what about newer?
                     //  run(blocking, args, arg size[, pidObj])

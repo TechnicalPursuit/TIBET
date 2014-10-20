@@ -1991,7 +1991,7 @@ function() {
 
     TP.ifTrace() ?
         TP.sys.logTransform('Clearing content cache for: ' + this.getID(),
-            TP.TRACE) : 0;
+            TP.DEBUG) : 0;
 
     if (TP.isValid(resource = this.get('resource'))) {
         this.ignore(resource, 'Change');
@@ -5199,13 +5199,13 @@ function(aRequest) {
     } else if (TP.canInvoke(resource, 'setNativeNode') && TP.isNode(result)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Refreshing current node container.',
-                        TP.TRACE) : 0;
+                        TP.DEBUG) : 0;
 
         resource.setNativeNode(result);
     } else if (TP.isNode(result)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Creating new node container.',
-                        TP.TRACE) : 0;
+                        TP.DEBUG) : 0;
 
         //  note that we pass ourselves along to establish "ownership"
         result = TP.core.Node.construct(result);
@@ -5405,7 +5405,7 @@ function(aRequest) {
     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.sys.logIO('Loading content data for ID: ' +
                     TP.ifInvalid(this.getLocation(), 'FROM_SOURCE'),
-                    TP.TRACE) : 0;
+                    TP.DEBUG) : 0;
 
     request = this.constructRequest(aRequest);
 
@@ -8109,7 +8109,7 @@ function(aSignal) {
     TP.ifTrace() ?
         TP.sys.logIO(TP.hc('body', dat,
                         'message', 'De-serializing data.'),
-                    TP.TRACE) : 0;
+                    TP.DEBUG) : 0;
 
     //  if we got results then we want to see where to put them...
     replace = TP.ifEmpty(this.getAttribute('tsh:replace', true),
@@ -8301,7 +8301,7 @@ function(aSignal) {
     TP.ifTrace() ?
         TP.sys.logIO(TP.hc('body', node,
                         'message', 'Serializing data.'),
-                    TP.TRACE) : 0;
+                    TP.DEBUG) : 0;
 
     //  we take the method attribute value and remove any NS or '-'
     //  qualifiers that may be there, then look for a method with that name
@@ -8386,7 +8386,7 @@ function(aSignal) {
                         'direction', TP.SEND,
                         'body', str,
                         'message', 'XControls service request initiated.'),
-            TP.TRACE) : 0;
+            TP.DEBUG) : 0;
 
     if (TP.regex.HTTP_SCHEME.test(action.toLowerCase())) {
         //  for a true GET we put the extra data on the uri by putting it in

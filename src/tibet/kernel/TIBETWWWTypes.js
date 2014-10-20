@@ -953,7 +953,7 @@ function(aContent, aURI, defaultMIME) {
         TP.sys.logTransform(
                 TP.boot.$annotate(this,
                             'Guessing MIME type for content ID: ' + aURI),
-            TP.TRACE) : 0;
+            TP.DEBUG) : 0;
 
     if (TP.isValid(content = aContent)) {
         //  often get a TP.core.Node here
@@ -989,7 +989,7 @@ function(aContent, aURI, defaultMIME) {
                 TP.ifTrace() && TP.$DEBUG ?
                     TP.sys.logTransform('Returning computed MIME type ' +
                                         mime + ' for content ID: ' + aURI,
-                        TP.TRACE) : 0;
+                        TP.DEBUG) : 0;
 
                 return mime;
             }
@@ -1013,7 +1013,7 @@ function(aContent, aURI, defaultMIME) {
                 TP.ifTrace() && TP.$DEBUG ?
                     TP.sys.logTransform('Returning computed MIME type ' +
                                         mime + ' for content ID: ' + aURI,
-                        TP.TRACE) : 0;
+                        TP.DEBUG) : 0;
 
                 return mime;
             }
@@ -1064,7 +1064,7 @@ function(aContent, aURI, defaultMIME) {
     TP.ifTrace() && TP.$DEBUG ?
         TP.sys.logTransform('Returning computed MIME type ' +
                             mime + ' for content ID: ' + aURI,
-            TP.TRACE) : 0;
+            TP.DEBUG) : 0;
 
     return mime;
 });

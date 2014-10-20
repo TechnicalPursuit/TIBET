@@ -2565,6 +2565,7 @@ function(aFlag) {
 
 //  create benign messaging signal types
 TP.sig.Signal.defineSubtype('TRACE');
+TP.sig.Signal.defineSubtype('DEBUG');
 TP.sig.Signal.defineSubtype('INFO');
 TP.sig.Signal.defineSubtype('SYSTEM');
 
@@ -2575,10 +2576,8 @@ TP.sig.WARN.defineSubtype('ERROR');
 TP.sig.ERROR.defineSubtype('SEVERE');
 TP.sig.SEVERE.defineSubtype('FATAL');
 
-//  assign numerical constants for each level. note that in this context we
-//  observe a leveling that isn't mirrored perfectly in the inheritance
-//  hierarchy but is appropriate for log filtering
 TP.sig.TRACE.Type.defineAttribute('$level', TP.TRACE);
+TP.sig.DEBUG.Type.defineAttribute('$level', TP.DEBUG);
 TP.sig.INFO.Type.defineAttribute('$level', TP.INFO);
 TP.sig.WARN.Type.defineAttribute('$level', TP.WARN);
 TP.sig.ERROR.Type.defineAttribute('$level', TP.ERROR);
@@ -4636,7 +4635,7 @@ function(originSet, aSignal, aPayload, aType) {
             TP.signal.$suspended = true;
             TP.sys.logSignal('Checking DOM_FIRING id ' +
                             orgid + '.' + signame,
-                            TP.TRACE);
+                            TP.DEBUG);
             TP.signal.$suspended = false;
         }
 
@@ -4648,7 +4647,7 @@ function(originSet, aSignal, aPayload, aType) {
                 TP.sys.logSignal(TP.join('DOM_FIRING id ',
                                         orgid, '.', signame,
                                         ' found, preserving ', orgid),
-                                    TP.TRACE);
+                                    TP.DEBUG);
                 TP.signal.$suspended = false;
             }
 
@@ -4667,7 +4666,7 @@ function(originSet, aSignal, aPayload, aType) {
             TP.signal.$suspended = true;
             TP.sys.logSignal('Checking DOM_FIRING id ' +
                                 orgid + '.' + TP.ANY,
-                                TP.TRACE);
+                                TP.DEBUG);
             TP.signal.$suspended = false;
         }
 
@@ -4682,7 +4681,7 @@ function(originSet, aSignal, aPayload, aType) {
                     TP.sys.logSignal('DOM_FIRING id ' +
                                         orgid + '.' + TP.ANY +
                                         ' found, preserving ' + orgid,
-                                        TP.TRACE);
+                                        TP.DEBUG);
                     TP.signal.$suspended = false;
                 }
 
@@ -4721,7 +4720,7 @@ function(originSet, aSignal, aPayload, aType) {
         TP.sys.logSignal(
             'Bubbling DOM_FIRING through preserved IDs: ' +
                     originArray.toString(),
-                    TP.TRACE);
+                    TP.DEBUG);
         TP.signal.$suspended = false;
     }
 
@@ -6211,7 +6210,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     if (TP.sig.SignalMap.INTERESTS.suspend === true) {
         if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
             TP.sys.logSignal('Root interest map is suspended.',
-                            TP.TRACE);
+                            TP.DEBUG);
         }
 
         return;
@@ -6281,7 +6280,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
                         TP.sys.shouldLogStack(true);
                         TP.ifTrace() ? TP.sys.logSignal(
                                             TP.boot.$annotate(aSignal, str),
-                                            TP.TRACE) : 0;
+                                            TP.DEBUG) : 0;
                     } catch (e) {
                     } finally {
                         TP.sys.shouldLogStack(flag);
@@ -6289,7 +6288,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
                 } else {
                     TP.ifTrace() ? TP.sys.logSignal(
                                             TP.boot.$annotate(aSignal, str),
-                                            TP.TRACE) : 0;
+                                            TP.DEBUG) : 0;
                 }
             }
         }

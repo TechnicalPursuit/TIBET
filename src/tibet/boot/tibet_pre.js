@@ -163,7 +163,7 @@ TP.$$DEBUG = false;
 //  $DEBUG or $$DEBUG.
 TP.$$VERBOSE = false;
 
-//  Boot system versions (TODO: refine to one pair coupled with TP.boot.TRACE)
+//  Boot system versions
 TP.boot.$debug = true;
 TP.boot.$verbose = true;
 TP.boot.$$debug = true;
@@ -1266,7 +1266,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
         return;
       } else if (TP.boot.$argsDone === true) {
         TP.boot.$stdout('Forcing reset of \'' + key +
-                        '\' override to ' + aValue, TP.boot.TRACE);
+                        '\' override to ' + aValue, TP.boot.DEBUG);
       }
     }
 

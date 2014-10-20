@@ -55,8 +55,8 @@ function(aWindow) {
     }
 
     if (TP.$$DEBUG) {
-        TP.boot.$stdout('Arming window: ' + TP.gid(aWindow) + '.', TP.TRACE);
-        TP.boot.$stdout('Adding listeners to ' + aWindow.name + '.', TP.TRACE);
+        TP.boot.$stdout('Arming window: ' + TP.gid(aWindow) + '.', TP.DEBUG);
+        TP.boot.$stdout('Adding listeners to ' + aWindow.name + '.', TP.DEBUG);
     }
 
     //  Set the native window's onerror handler to the standard TIBET
@@ -73,7 +73,7 @@ function(aWindow) {
                         if (TP.$$DEBUG) {
                             TP.boot.$stdout(
                                 'Ignoring DOMContentLoaded from target: ' +
-                                anEvent.target + '.', TP.TRACE);
+                                anEvent.target + '.', TP.DEBUG);
                         }
                         return;
                     }
@@ -83,7 +83,7 @@ function(aWindow) {
                     //  of the document element won't trigger it.
                     if (TP.$$DEBUG) {
                         TP.boot.$stdout('DOMContentLoaded at: ' +
-                            TP.str(anEvent.target), TP.TRACE);
+                            TP.str(anEvent.target), TP.DEBUG);
                     }
 
 
@@ -107,7 +107,7 @@ function(aWindow) {
                             if (TP.$$DEBUG) {
                                 TP.boot.$stdout(
                                     'Ignoring DOMContentUnloaded from target: ' +
-                                    anEvent.target + '.', TP.TRACE);
+                                    anEvent.target + '.', TP.DEBUG);
                             }
                             return;
                         }
@@ -117,7 +117,7 @@ function(aWindow) {
                         //  of the document element won't trigger it.
                         if (TP.$$DEBUG) {
                             TP.boot.$stdout('DOMContentUnloaded at: ' +
-                                TP.str(anEvent.target), TP.TRACE);
+                                TP.str(anEvent.target), TP.DEBUG);
                         }
 
                         aWindow.removeEventListener(

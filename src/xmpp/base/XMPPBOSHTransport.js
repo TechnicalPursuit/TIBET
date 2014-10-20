@@ -1055,7 +1055,7 @@ function(logInfo) {
                         'body', logInfo.at('body'),
                         'xhr', logInfo.at('xhr'),
                         'message', 'XMPP channel input'),
-                TP.TRACE) : 0;
+                TP.DEBUG) : 0;
     }
 
     TP.sys.shouldLogIO(flag);
@@ -1095,7 +1095,7 @@ function(logInfo) {
                         'body', logInfo.at('body'),
                         'xhr', logInfo.at('xhr'),
                         'message', 'XMPP channel output'),
-                TP.TRACE) : 0;
+                TP.DEBUG) : 0;
     }
 
     TP.sys.shouldLogIO(flag);

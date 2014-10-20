@@ -8,10 +8,7 @@
  */
 //  ============================================================================
 
-/* TODO:
- *
- * Configure default logger/appender/layout chains for common logs.
- *      - change log
+/* TODO
  *
  * TP.stderr - clean this up and make it solid
  *
@@ -20,9 +17,6 @@
  * Remove $ec and replace with varargs processing.
  *
  * Remove $annotate/Annotation and replace with varargs processing.
- *
- * Remove TP.boot.* references from outside the boot system, particularly around
- * any aspects of logging or stdout/stderr.
  *
  * Remove functionality from TP.boot.Log if it isn't called.
  *
@@ -2014,240 +2008,6 @@ TP.log.Timer.Inst.defineMethod('stop', function() {
 });
 
 //  ============================================================================
-//  Console Appender
-//  ============================================================================
-
-/**
- * An appender specific to output to the typical JavaScript console object.
- */
-TP.log.Appender.defineSubtype('ConsoleAppender');
-
-//  ----------------------------------------------------------------------------
-
-/**
- * The default layout type for this appender.
- * @type {TP.log.Layout}
- */
-TP.log.ConsoleAppender.Type.$set('defaultLayoutType', 'TP.log.ConsoleLayout');
-
-//  ----------------------------------------------------------------------------
-//  Instance Definition
-//  ----------------------------------------------------------------------------
-
-TP.log.ConsoleAppender.Inst.defineMethod('append', function(anEntry) {
-
-    /**
-     * @name append
-     * @summary Formats the entry data using the receiver's layout and writes
-     *     it to the console using the best console API method possible.
-     * @param {TP.log.Entry} anEntry The log entry to format and append.
-     * @return {TP.log.Appender} The receiver.
-     */
-
-    var name;
-    var writer;
-    var layout;
-    var content;
-
-    // Try to find a matching console API method to our level name. If we find
-    // it we'll use that to output the message content.
-    name = anEntry.getLevel().getName().toLowerCase();
-    if (TP.canInvoke(top.console, name)) {
-        writer = name;
-    } else {
-        writer = 'log';
-    }
-
-    // If the entry contains multiple parts and we have access to a
-    // group/groupEnd api via the console we'll group our output to help show
-    // that it's all the result of a single logging call...
-    // TODO:
-
-
-    // Format the little critter...
-    layout = this.getLayout();
-    content = layout.layout(anEntry);
-
-    try {
-        top.console[writer](content);
-    } catch (e) {
-        top.console.log(content);
-    }
-
-    return this;
-});
-
-//  ============================================================================
-//  TestLog Appender
-//  ============================================================================
-
-/**
- * An appender specific to outputting test log data to the browser console.
- */
-TP.log.Appender.defineSubtype('TestLogAppender');
-
-//  ----------------------------------------------------------------------------
-
-/**
- * The default layout type for this appender.
- * @type {TP.log.Layout}
- */
-TP.log.TestLogAppender.Type.$set('defaultLayoutType', 'TP.log.ArglistLayout');
-
-//  ----------------------------------------------------------------------------
-//  Instance Definition
-//  ----------------------------------------------------------------------------
-
-TP.log.TestLogAppender.Inst.defineMethod('append', function(anEntry) {
-
-    /**
-     * @name append
-     * @summary Formats the entry data using the receiver's layout and writes
-     *     it to the console. One specific difference between this and the
-     *     ConsoleAppender is the focus on using console.log and console.error
-     *     exclusively rather than trace or info, even if those match entry
-     *     level data.
-     * @param {TP.log.Entry} anEntry The log entry to format and append.
-     * @return {TP.log.Appender} The receiver.
-     */
-
-    var name;
-    var writer;
-    var layout;
-    var content;
-
-    // Try to find a matching console API method to our level name. If we find
-    // it we'll use that to output the message content.
-    name = anEntry.getLevel().getName().toLowerCase();
-    switch (name) {
-        case 'warn':
-            writer = 'warn';
-            break;
-        case 'error':
-        case 'severe':
-        case 'fatal':
-            writer = 'error';
-            break;
-        default:
-            // trace, debug, info, system, all
-            writer = 'log';
-            break;
-    }
-
-    // If the entry contains multiple parts and we have access to a
-    // group/groupEnd api via the console we'll group our output to help show
-    // that it's all the result of a single logging call...
-    // TODO:
-
-
-    // Format the little critter...
-    layout = this.getLayout();
-    content = layout.layout(anEntry);
-
-    try {
-        top.console[writer](content);
-    } catch (e) {
-        top.console.log(content);
-    }
-
-    return this;
-});
-
-//  ============================================================================
-//  Console Layout
-//  ============================================================================
-
-/**
- * A layout specific to JavaScript console output.
- */
-TP.log.Layout.defineSubtype('ConsoleLayout');
-
-//  ----------------------------------------------------------------------------
-//  Instance Definition
-//  ----------------------------------------------------------------------------
-
-TP.log.ConsoleLayout.Inst.defineMethod('layout', function(anEntry) {
-
-    /**
-     * @name layout
-     * @summary Formats an entry. The default output format for top.console is:
-     *     {ms} - {level} {logger} - {string}
-     * @param {TP.log.Entry} anEntry The entry to format.
-     * @return {Object} The formatted output. Can be String, Node, etc.
-     */
-
-    var str;
-    var marker;
-    var arglist;
-
-    str = '' + anEntry.getDate().asTimestamp() + ' - ' +
-        anEntry.getLogger().getName() + ' ' +
-        anEntry.getLevel().getName();
-
-    // If there's a marker we can output that as well...
-    marker = anEntry.getMarker();
-    if (TP.isValid(marker)) {
-        str += ' [' + marker.getName() + ']';
-    }
-
-    // The arglist may have multiple elements in it which we need to handle.
-    arglist = anEntry.getArglist();
-    if (TP.isValid(arglist)) {
-        str += ' - ';
-        arglist.forEach(function(item) {
-            str += TP.str(item);
-            str += ' ';
-        });
-        str = str.trim() + '.';
-    }
-
-    return str;
-});
-
-//  ============================================================================
-//  Arglist Layout
-//  ============================================================================
-
-/**
- * A simple layout specific to JavaScript console output which doesn't include
- * any timestamp or leveling data, just the content of the Entry argument list.
- */
-TP.log.Layout.defineSubtype('ArglistLayout');
-
-//  ----------------------------------------------------------------------------
-//  Instance Definition
-//  ----------------------------------------------------------------------------
-
-TP.log.ArglistLayout.Inst.defineMethod('layout', function(anEntry) {
-
-    /**
-     * @name layout
-     * @summary Formats an entry. The default output format for top.console is:
-     *     {ms} - {level} {logger} - {string}
-     * @param {TP.log.Entry} anEntry The entry to format.
-     * @return {Object} The formatted output. Can be String, Node, etc.
-     */
-
-    var str;
-    var marker;
-    var arglist;
-
-    str = '';
-
-    // The arglist may have multiple elements in it which we need to handle.
-    arglist = anEntry.getArglist();
-    if (TP.isValid(arglist)) {
-        arglist.forEach(function(item) {
-            str += TP.str(item);
-            str += ' ';
-        });
-        str = str.trim();
-    }
-
-    return str;
-});
-
-//  ============================================================================
 //  MOP Logging Methods
 //  ============================================================================
 
@@ -2930,67 +2690,6 @@ APP.system = TP.system;
 //  ============================================================================
 
 //  ----------------------------------------------------------------------------
-//  TEST LOG
-//  ----------------------------------------------------------------------------
-
-(function() {
-    var logger;
-    var appender;
-
-    logger = TP.log.Manager.getLogger(TP.TEST_LOG);
-
-    appender = TP.log.TestLogAppender.construct();
-
-    logger.inheritsAppenders(false);
-    logger.addAppender(appender);
-    logger.setLevel(TP.log.ALL);
-}());
-
-//  ----------------------------------------------------------------------------
-
-TP.sys.defineMethod('logTest',
-function(anObject, aLogLevel) {
-
-    /**
-     * @name logTest
-     * @synopsis Adds an entry to the test log. Note that there is no level
-     *     filtering in test logging, the level parameter only filters parallel
-     *     entries which might be made to the activity log.
-     * @description This call is used by test harness routines to log their
-     *     activity. The object argument can provide data in one or more keys
-     *     including:
-     *
-     *     'name'               the test name
-     *     'number'             the test number *in the reporting run*
-     *     'test-status'        the test status. Should be one of:
-     *                              TP.ACTIVE
-     *                              TP.SKIP
-     *                              TP.TODO
-     *     'result-status'      the result status. Should be one of:
-     *                              TP.SUCCEEDED
-     *                              TP.FAILED
-     *                              TP.CANCELLED
-     *                              TP.SKIPPED
-     *                              TP.TIMED_OUT
-     *     'message'            the test message
-     *     'failure-severity'   the severity level of the failure. Usually set
-     *                          to 'fail'.
-     *     'failure-data'       A hash with two keys containing the data:
-     *                              TP.PRODUCED
-     *                              TP.EXPECTED
-     * @param {Object} anObject The test data to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    TP.sys.$$log([anObject, TP.TEST_LOG], aLogLevel);
-
-    return true;
-});
-
-//  ----------------------------------------------------------------------------
 //  CSS LOGGING
 //  ----------------------------------------------------------------------------
 
@@ -3042,8 +2741,7 @@ function(anObject, aLogLevel) {
     /**
      * @name logInference
      * @synopsis Adds anObject to the inference log. This method will have no
-     *     effect if the TP.sys.shouldLogInferences() flag is false. The default
-     *     logging level for messages of this type is TP.TRACE.
+     *     effect if the TP.sys.shouldLogInferences() flag is false.
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
@@ -3078,8 +2776,7 @@ function(anObject, aLogLevel) {
     /**
      * @name logIO
      * @synopsis Logs anObject to the IO log. Note that this method will have no
-     *     effect if TP.sys.shouldLogIO() is false. Also note that this method
-     *     logs information at TP.TRACE.
+     *     effect if TP.sys.shouldLogIO() is false.
      * @description This call is used by various file and http access routines
      *     to log their activity. The object argument can provide data in one or
      *     more keys including:
@@ -3217,8 +2914,7 @@ function(anObject, aLogLevel) {
     /**
      * @name logLink
      * @synopsis Logs a link activation event. This method has no effect if
-     *     TP.sys.shouldLogLinks() is false. Also note that link logging occurs
-     *     at TP.TRACE level.
+     *     TP.sys.shouldLogLinks() is false.
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
@@ -3288,9 +2984,7 @@ function(anObject, aLogLevel) {
      * @name logSignal
      * @synopsis Logs a signaling message to the activity log. The signal string
      *     typically contains the origin, signal name, context, and any
-     *     arguments which were passed. Note that the signal log data will only
-     *     be pushed to the activity log (and stdout) if the log level is
-     *     TP.TRACE.
+     *     arguments which were passed.
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
@@ -3298,18 +2992,11 @@ function(anObject, aLogLevel) {
      * @todo
      */
 
-    var level;
-
     if (!TP.sys.shouldLogSignals()) {
         return false;
     }
 
-    //  since this method "does work" we avoid that unless we're at the
-    //  right level.
-    level = TP.ifInvalid(aLogLevel, TP.TRACE);
-    if (TP.getLogLevel(TP.SIGNAL_LOG) <= level) {
-        TP.sys.$$log([anObject.get('message'), TP.SIGNAL_LOG], level);
-    }
+    TP.sys.$$log([anObject.get('message'), TP.SIGNAL_LOG], level);
 
     return true;
 });
@@ -3349,14 +3036,177 @@ function(anObject, aLogLevel) {
 });
 
 //  ============================================================================
-//  CHANGE LOG
+//  Console Appender
 //  ============================================================================
 
-//  NOTE that the change log is a separate log to ensure that it cannot be
-//  cleared accidentally when clearing the larger activity log.
-TP.sys.$changes = TP.ifInvalid(TP.sys.$changes, new TP.boot.Log());
+/**
+ * An appender specific to output to the typical JavaScript console object.
+ */
+TP.log.Appender.defineSubtype('ConsoleAppender');
 
 //  ----------------------------------------------------------------------------
+
+/**
+ * The default layout type for this appender.
+ * @type {TP.log.Layout}
+ */
+TP.log.ConsoleAppender.Type.$set('defaultLayoutType', 'TP.log.ConsoleLayout');
+
+//  ----------------------------------------------------------------------------
+//  Instance Definition
+//  ----------------------------------------------------------------------------
+
+TP.log.ConsoleAppender.Inst.defineMethod('append', function(anEntry) {
+
+    /**
+     * @name append
+     * @summary Formats the entry data using the receiver's layout and writes
+     *     it to the console using the best console API method possible.
+     * @param {TP.log.Entry} anEntry The log entry to format and append.
+     * @return {TP.log.Appender} The receiver.
+     */
+
+    var name;
+    var writer;
+    var layout;
+    var content;
+
+    // Try to find a matching console API method to our level name. If we find
+    // it we'll use that to output the message content.
+    name = anEntry.getLevel().getName().toLowerCase();
+    if (TP.canInvoke(top.console, name)) {
+        writer = name;
+    } else {
+        switch (name) {
+            case 'severe':
+                writer = 'error';
+                break;
+            case 'fatal':
+                writer = 'error';
+                break;
+            default:
+                // trace, debug, info, system, all
+                writer = 'log';
+                break;
+        }
+    }
+
+    // If the entry contains multiple parts and we have access to a
+    // group/groupEnd api via the console we'll group our output to help show
+    // that it's all the result of a single logging call...
+    // TODO:
+
+
+    // Format the little critter...
+    layout = this.getLayout();
+    content = layout.layout(anEntry);
+
+    try {
+        top.console[writer](content);
+    } catch (e) {
+        top.console.log(content);
+    }
+
+    return this;
+});
+
+//  ============================================================================
+//  Console Layout
+//  ============================================================================
+
+/**
+ * A layout specific to JavaScript console output.
+ */
+TP.log.Layout.defineSubtype('ConsoleLayout');
+
+//  ----------------------------------------------------------------------------
+//  Instance Definition
+//  ----------------------------------------------------------------------------
+
+TP.log.ConsoleLayout.Inst.defineMethod('layout', function(anEntry) {
+
+    /**
+     * @name layout
+     * @summary Formats an entry. The default output format for top.console is:
+     *     {ms} - {level} {logger} - {string}
+     * @param {TP.log.Entry} anEntry The entry to format.
+     * @return {Object} The formatted output. Can be String, Node, etc.
+     */
+
+    var str;
+    var marker;
+    var arglist;
+
+    str = '' + anEntry.getDate().asTimestamp() + ' - ' +
+        anEntry.getLogger().getName() + ' ' +
+        anEntry.getLevel().getName();
+
+    // If there's a marker we can output that as well...
+    marker = anEntry.getMarker();
+    if (TP.isValid(marker)) {
+        str += ' [' + marker.getName() + ']';
+    }
+
+    // The arglist may have multiple elements in it which we need to handle.
+    arglist = anEntry.getArglist();
+    if (TP.isValid(arglist)) {
+        str += ' - ';
+        arglist.forEach(function(item) {
+            str += TP.str(item);
+            str += ' ';
+        });
+        str = str.trim() + '.';
+    }
+
+    return str;
+});
+
+//  ============================================================================
+//  Arglist Layout
+//  ============================================================================
+
+/**
+ * A simple layout specific to JavaScript console output which doesn't include
+ * any timestamp or leveling data, just the content of the Entry argument list.
+ */
+TP.log.Layout.defineSubtype('ArglistLayout');
+
+//  ----------------------------------------------------------------------------
+//  Instance Definition
+//  ----------------------------------------------------------------------------
+
+TP.log.ArglistLayout.Inst.defineMethod('layout', function(anEntry) {
+
+    /**
+     * @name layout
+     * @summary Formats an entry. The default output format for top.console is:
+     *     {ms} - {level} {logger} - {string}
+     * @param {TP.log.Entry} anEntry The entry to format.
+     * @return {Object} The formatted output. Can be String, Node, etc.
+     */
+
+    var str;
+    var marker;
+    var arglist;
+
+    str = '';
+
+    // The arglist may have multiple elements in it which we need to handle.
+    arglist = anEntry.getArglist();
+    if (TP.isValid(arglist)) {
+        arglist.forEach(function(item) {
+            str += TP.str(item);
+            str += ' ';
+        });
+        str = str.trim();
+    }
+
+    return str;
+});
+
+//  ============================================================================
+//  CHANGE LOG
+//  ============================================================================
 
 TP.defineMethod(TP.sys, 'logCodeChange',
 function(anObject, aLogLevel) {
@@ -3365,137 +3215,225 @@ function(anObject, aLogLevel) {
      * @name logCodeChange
      * @synopsis Adds source code to the change log. Returns true if the log
      *     entry is successful. This method will have no effect when the
-     *     TP.sys.shouldLogCodeChanges() flag is false. NOTE that level does not
-     *     affect what is written here, a call to logCodeChange will always
-     *     update the change log.
+     *     TP.sys.shouldLogCodeChanges() flag is false.
      * @param {Object} anObject The source code change to log.
+     * @param {Number} aLogLevel The logging level. Ignored for this call. Code
+     *     changes are always logged at TP.SYSTEM level.
+     * @returns {Boolean} True if the logging operation succeeded.
+     */
+
+    if (!TP.sys.shouldLogCodeChanges()) {
+        return false;
+    }
+
+    TP.sys.$$log([anObject, TP.CHANGE_LOG], TP.SYSTEM);
+
+    return true;
+}, TP.PRIMITIVE_TRACK, null, 'TP.sys.logCodeChange');
+
+//  ----------------------------------------------------------------------------
+//  ChangeLog Appender
+//  ----------------------------------------------------------------------------
+
+/**
+ * An appender specific to tracking code changes that have been logged.
+ */
+TP.log.Appender.defineSubtype('ChangeLogAppender');
+
+//  ----------------------------------------------------------------------------
+
+/**
+ * The default layout type for this appender.
+ * @type {TP.log.Layout}
+ */
+TP.log.ChangeLogAppender.Type.$set('defaultLayoutType', 'TP.log.ArglistLayout');
+
+//  ----------------------------------------------------------------------------
+//  Instance Definition
+//  ----------------------------------------------------------------------------
+
+TP.log.ChangeLogAppender.Inst.defineMethod('append', function(anEntry) {
+
+    /**
+     * @name append
+     * @summary Formats the entry data using the receiver's layout and writes
+     *     it to the console. Logging is always done using the default 'log'
+     *     call rather than a call which might alter the output in any form.
+     * @param {TP.log.Entry} anEntry The log entry to format and append.
+     * @return {TP.log.Appender} The receiver.
+     */
+
+    var layout;
+    var content;
+
+    layout = this.getLayout();
+    content = layout.layout(anEntry);
+
+    top.console.log(content);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+//  Configuration
+//  ----------------------------------------------------------------------------
+
+(function() {
+    var logger;
+    var appender;
+
+    logger = TP.log.Manager.getLogger(TP.CHANGE_LOG);
+    appender = TP.log.ChangeLogAppender.construct();
+
+    logger.inheritsAppenders(false);
+    logger.addAppender(appender);
+    logger.setLevel(TP.log.ALL);
+}());
+
+//  ============================================================================
+//  TEST LOG
+//  ============================================================================
+
+TP.sys.defineMethod('logTest',
+function(anObject, aLogLevel) {
+
+    /**
+     * @name logTest
+     * @synopsis Adds an entry to the test log. Note that there is no level
+     *     filtering in test logging, the level parameter only filters parallel
+     *     entries which might be made to the activity log.
+     * @description This call is used by test harness routines to log their
+     *     activity. The object argument can provide data in one or more keys
+     *     including:
+     *
+     *     'name'               the test name
+     *     'number'             the test number *in the reporting run*
+     *     'test-status'        the test status. Should be one of:
+     *                              TP.ACTIVE
+     *                              TP.SKIP
+     *                              TP.TODO
+     *     'result-status'      the result status. Should be one of:
+     *                              TP.SUCCEEDED
+     *                              TP.FAILED
+     *                              TP.CANCELLED
+     *                              TP.SKIPPED
+     *                              TP.TIMED_OUT
+     *     'message'            the test message
+     *     'failure-severity'   the severity level of the failure. Usually set
+     *                          to 'fail'.
+     *     'failure-data'       A hash with two keys containing the data:
+     *                              TP.PRODUCED
+     *                              TP.EXPECTED
+     * @param {Object} anObject The test data to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
 
-    if (!TP.sys.shouldLogCodeChanges()) {
-        return false;
-    }
-
-    //  pure source code with no extras here...and notice that unlike the
-    //  logs we trim, the change log grows without bound until cleared and
-    //  is stored in sequence
-    TP.sys.$changes.log(anObject, TP.CHANGE_LOG, TP.SYSTEM);
-
-    TP.sys.$$log([anObject, TP.CHANGE_LOG], aLogLevel);
+    TP.sys.$$log([anObject, TP.TEST_LOG], aLogLevel);
 
     return true;
-}, TP.PRIMITIVE_TRACK, null, 'TP.sys.logCodeChange');
+});
+
+//  ----------------------------------------------------------------------------
+//  TestLog Appender
+//  ----------------------------------------------------------------------------
+
+/**
+ * An appender specific to outputting test log data to the browser console.
+ */
+TP.log.Appender.defineSubtype('TestLogAppender');
 
 //  ----------------------------------------------------------------------------
 
-TP.defineMethod(TP.sys, '$logAttributeChange',
-function(anObject, aTrack,
-            attributeName, attributeValue, attributeDesc) {
+/**
+ * The default layout type for this appender.
+ * @type {TP.log.Layout}
+ */
+TP.log.TestLogAppender.Type.$set('defaultLayoutType', 'TP.log.ArglistLayout');
+
+//  ----------------------------------------------------------------------------
+//  Instance Definition
+//  ----------------------------------------------------------------------------
+
+TP.log.TestLogAppender.Inst.defineMethod('append', function(anEntry) {
 
     /**
-     * @name $logAttributeChange
-     * @synopsis Adds source code to the change log specific to an attribute
-     *     operation. See logCodeChange() for more detail on change logging.
-     * @param {Object} anObject The source object.
-     * @param {String} aTrack A TIBET Track constant.
-     * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value.
-     * @param {Object} attributeDesc An ECMA5 property descriptor.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
+     * @name append
+     * @summary Formats the entry data using the receiver's layout and writes
+     *     it to the console. One specific difference between this and the
+     *     ConsoleAppender is the focus on using console.log and console.error
+     *     exclusively rather than trace or info, even if those match entry
+     *     level data.
+     * @param {TP.log.Entry} anEntry The log entry to format and append.
+     * @return {TP.log.Appender} The receiver.
      */
 
-    var str,
-        id;
+    var name;
+    var writer;
+    var layout;
+    var content;
+    var stdio;
 
-    if (!TP.sys.shouldLogCodeChanges()) {
-        return false;
+    // Try to find a matching console API method to our level name. If we find
+    // it we'll use that to output the message content.
+    name = anEntry.getLevel().getName().toLowerCase();
+    switch (name) {
+        case 'warn':
+            writer = 'warn';
+            stdio = 'stdout';
+            break;
+        case 'error':
+        case 'severe':
+        case 'fatal':
+            writer = 'error';
+            stdio = 'stderr';
+            break;
+        default:
+            // trace, debug, info, system, all
+            writer = 'log';
+            stdio = 'stdout';
+            break;
     }
 
-    str = TP.ac();
+    // If the entry contains multiple parts and we have access to a
+    // group/groupEnd api via the console we'll group our output to help show
+    // that it's all the result of a single logging call...
+    // TODO:
 
-    //  first step is to determine the ID of the object altering an
-    //  attribute definition
-    if (TP.isType(anObject)) {
-        //  the type name is a useable identifier
-        str.push(anObject.getTypeName());
-    } else {
-        //  harder, unless there's a unique ID that can find the object
-        if (TP.canInvoke(anObject, 'getID')) {
-            id = anObject.getID();
 
-            //  is the object a global reference?
-            if (TP.global[id] === anObject) {
-                str.push(id);
-            } else {
-                if (TP.byOID(id) === anObject) {
-                    str.push('TP.byOID(\'', id, '\')');
-                } else {
-                    //  not registered? this is an error
-                    TP.ifWarn() ?
-                        TP.warn('Unregistered object ' +
-                                    id +
-                                    ' can\'t log attribute changes.',
-                                TP.CHANGE_LOG) : 0;
+    // Format the little critter...
+    layout = this.getLayout();
+    content = layout.layout(anEntry);
 
-                    return false;
-                }
-            }
-        }
+    try {
+        top.console[writer](content);
+    } catch (e) {
+        top.console.log(content);
     }
 
-    if (aTrack === 'Type') {
-        str.push('.Type.defineAttribute(\'', attributeName, '\'');
-    } else if (aTrack === 'Inst') {
-        str.push('.Inst.defineAttribute(\'', attributeName, '\'');
-    } else if (aTrack !== 'Global') {
-        str.push('.defineAttribute(\'', attributeName, '\'');
-    } else {
-        if (TP.canInvoke(anObject, 'getID')) {
-            id = anObject.getID();
-        } else {
-            id = TP.str(anObject);
-        }
+    TP[stdio](content);
 
-        //  global track...this is a different deal and "shouldn't happen"
-        TP.ifWarn() ?
-            TP.warn(id + ' can\'t log global track attribute changes.',
-                    TP.CHANGE_LOG) : 0;
+    return this;
+});
 
-        return false;
-    }
+//  ----------------------------------------------------------------------------
+//  Configuration
+//  ----------------------------------------------------------------------------
 
-    if (TP.isValid(attributeValue)) {
-        str.push(', ');
-        if (TP.canInvoke(attributeValue, 'asSource')) {
-            str.push(attributeValue.asSource());
-        } else if (TP.canInvoke(attributeValue, 'asString')) {
-            str.push(attributeValue.asString());
-        } else if (TP.canInvoke(attributeValue, 'toString')) {
-            str.push(attributeValue.toString());
-        } else if (TP.isString(attributeValue.nodeValue)) {
-            str.push(attributeValue.nodeValue);
-        } else {
-            str.push('');
-        }
-    }
+(function() {
+    var logger;
+    var appender;
 
-    str.push(');');
+    logger = TP.log.Manager.getLogger(TP.TEST_LOG);
 
-    str = str.join('');
+    appender = TP.log.TestLogAppender.construct();
 
-    //  pure source code with no extras here...and notice that unlike the
-    //  logs we trim, the change log grows without bound until cleared and
-    //  is stored in sequence
-    TP.sys.$changes.log(str,
-                        TP.CHANGE_LOG,
-                        TP.TRACE);
-
-    return true;
-}, TP.PRIMITIVE_TRACK, null, 'TP.sys.$logAttributeChange');
+    logger.inheritsAppenders(false);
+    logger.addAppender(appender);
+    logger.setLevel(TP.log.ALL);
+}());
 
 //  ----------------------------------------------------------------------------
 //  end

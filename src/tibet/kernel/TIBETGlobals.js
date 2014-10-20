@@ -954,6 +954,7 @@ TP.OR = 'or';
 // Commonly used log names.
 TP.LOG = 'TP';
 TP.APP_LOG = 'APP';
+TP.CHANGE_LOG = 'change';
 TP.CSS_LOG = 'css';
 TP.INFERENCE_LOG = 'inference';
 TP.IO_LOG = 'io';

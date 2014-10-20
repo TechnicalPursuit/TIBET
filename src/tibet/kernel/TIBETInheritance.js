@@ -367,13 +367,6 @@ function(name) {
             });
     }
 
-    if (TP.sys.shouldLogCodeChanges()) {
-        codestr = this.getName() + '.defineSubtype(\'' +
-                   nsName + ':' + subtypeName + '\');\n';
-
-        TP.sys.logCodeChange(codestr, TP.TRACE);
-    }
-
     //  Put the type *constructor* under the 'meta' namespace as well.
     TP.defineNamespace('meta.' + nsName, root);
 
@@ -1988,16 +1981,16 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     //  instances of other types...
     if (TP.isType(anOrigin)) {
         TP.sys.logInference('Method inferencing disabled for types.',
-                            TP.TRACE);
+                            TP.DEBUG);
         return;
     }
 
     TP.sys.logInference('Checking for implementers of ' + aMethodName,
-                        TP.TRACE);
+                        TP.DEBUG);
 
     if (TP.notValid(owners = TP.sys.getMethodOwners(aMethodName))) {
         TP.sys.logInference('No implementers of ' + aMethodName + ' found.',
-                            TP.TRACE);
+                            TP.DEBUG);
         return;
     }
 
@@ -2010,12 +2003,12 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     len = owners.getSize();
     if (len === 0) {
         TP.sys.logInference('No implementers of ' + aMethodName + ' found.',
-                            TP.TRACE);
+                            TP.DEBUG);
         return;
     } else {
         TP.sys.logInference('Found ' + len + ' implementer(s) of ' +
                             aMethodName + '.',
-                            TP.TRACE);
+                            TP.DEBUG);
     }
 
     for (i = 0; i < len; i++) {
@@ -2035,7 +2028,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                             asMethodName +
                             //'()' +
                             '.... would recurse. Skipping.',
-                            TP.TRACE);
+                            TP.DEBUG);
             continue;
         }
 
@@ -2106,7 +2099,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
                 TP.sys.logInference('Generating inferred ' + aMethodName +
                                     ' method:\n' + s,
-                                    TP.TRACE);
+                                    TP.DEBUG);
 
                 f = TP.fc(s);
 
@@ -2145,7 +2138,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                     str += aMethodName + '\',' +
                         f.toString().strip(' anonymous') + ');\n';
 
-                    TP.sys.logCodeChange(str, TP.TRACE);
+                    TP.sys.logCodeChange(str, TP.DEBUG);
                 }
 
                 //  go ahead and run it to resolve this invocation
@@ -2220,7 +2213,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
         TP.sys.logInference((orgid || 'Unresolvable window ') +
                 ' triggered backstop for method ' + aMethodName,
-                TP.TRACE);
+                TP.DEBUG);
         return;
     }
 
@@ -2234,7 +2227,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         TP.$$isDNU(anOrigin.addLocalMethod)) {
         TP.sys.logInference((orgid || 'Unresponsive object ') +
                 ' triggered backstop for method ' + aMethodName,
-                TP.TRACE);
+                TP.DEBUG);
         return;
     }
 
@@ -2249,7 +2242,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         TP.sys.logInference(anOrigin.getTypeName() + ' ' +
                 orgid + ' triggered DNU ' + aMethodName + ' at ' +
                 stackInfo.join(' \u00BB '),
-                TP.TRACE);
+                TP.DEBUG);
     }
 
     //  option for origin to reattempt method...this gives individual
@@ -2262,7 +2255,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         TP.sys.logInference(anOrigin.getTypeName() + ' ' +
                             orgid + ' canResolve DNU ' +
                             aMethodName + '(...) !',
-                            TP.TRACE);
+                            TP.DEBUG);
 
         return anOrigin.resolveDNU(anOrigin, aMethodName, anArgArray,
                                     callingContext);
@@ -2276,7 +2269,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                                     aMethodName.slice(3) + '") from ' +
                                     anOrigin.getTypeName() +
                                     '.' + aMethodName + '(...)',
-                                    TP.TRACE);
+                                    TP.DEBUG);
 
                 //  try as(). If that doesn't return a defined value it
                 //  failed to find a resolution so fall thru to TP.sys.infer
@@ -2294,7 +2287,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                                     '") from ' + anOrigin.getTypeName() +
                                     '.' + aMethodName +
                                     '(...) was unsuccessful.',
-                                    TP.TRACE);
+                                    TP.DEBUG);
             }
 
             //  'as' method
@@ -2310,7 +2303,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
                 TP.sys.logInference('Inferring ' + typeName + '.from(\'' +
                                         anOrigin.getTypeName() + '\')',
-                                        TP.TRACE);
+                                        TP.DEBUG);
 
                 //  see if we can grab the other type
                 targetType = TP.sys.getTypeByName(typeName);
@@ -2324,7 +2317,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
                     TP.sys.logInference('Checking against types ' +
                                         supers,
-                                        TP.TRACE);
+                                        TP.DEBUG);
 
                     len = supers.getSize();
                     for (i = 0; i < len; i++) {
@@ -2340,7 +2333,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                             TP.sys.logInference('Invoking ' +
                                                 typeName + '.from(\'' +
                                                 superName + '\')',
-                                                TP.TRACE);
+                                                TP.DEBUG);
 
                             //  HERE is a string-based version. The
                             //  as()/from() transformation is fairly
@@ -2365,7 +2358,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                 TP.sys.logInference('Inferring ' + typeName + '.from(\'' +
                                     anOrigin.getTypeName() +
                                     '\') was unsuccessful.',
-                                    TP.TRACE);
+                                    TP.DEBUG);
             }
 
             //  'regular' method
@@ -2383,7 +2376,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     //  no luck
     TP.sys.logInference(anOrigin.getTypeName() + ' ' + orgid +
                         ' could not solve for ' + aMethodName,
-                        TP.TRACE);
+                        TP.DEBUG);
 
     //  last chance...invoke the debugger :)
     if (TP.sys.shouldUseDebugger()) {
@@ -7091,14 +7084,14 @@ function() {
                         if (obj.isInitialized()) {
                             TP.boot.$stdout(
                             'Skipping initialized type: ' + item,
-                            TP.TRACE);
+                            TP.DEBUG);
 
                             return;
                         }
 
                         //  for debugging it's helpful to see what's
                         //  being initialized in particular
-                        TP.boot.$stdout('Initializing type: ' + item, TP.TRACE);
+                        TP.boot.$stdout('Initializing type: ' + item, TP.DEBUG);
 
                         obj.initialize();
                         obj.isInitialized(true);

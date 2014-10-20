@@ -753,7 +753,7 @@ TP.hc(
         if (!TP.sys.shouldRequestPrivileges()) {
             TP.sys.logSecurity(
                 'Permission not available to read style rule origin.',
-                TP.TRACE);
+                TP.DEBUG);
 
             return;
         }

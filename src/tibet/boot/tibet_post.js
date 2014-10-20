@@ -9,7 +9,7 @@
 //  ============================================================================
 
 /*
- * TODO:
+ * TODO
  *
  */
 
@@ -1600,24 +1600,24 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
     try {
         if (TP.sys.cfg('debug.http')) {
             TP.boot.$stdout('TP.boot.$httpCall() targetUrl: ' +
-                targetUrl, TP.TRACE);
+                targetUrl, TP.DEBUG);
             TP.boot.$stdout('TP.boot.$httpCall() callType: ' +
-                callType, TP.TRACE);
+                callType, TP.DEBUG);
             TP.boot.$stdout('TP.boot.$httpCall() callUri: ' +
-                ((callUri != null) ? callUri : 'n/a'), TP.TRACE);
+                ((callUri != null) ? callUri : 'n/a'), TP.DEBUG);
         }
 
         httpObj.send(callUri);
 
         if (TP.sys.cfg('debug.http')) {
             TP.boot.$stdout('TP.boot.$httpCall() status: ' +
-                httpObj.status, TP.TRACE);
+                httpObj.status, TP.DEBUG);
             TP.boot.$stdout('TP.boot.$httpCall() headers: ' +
-                httpObj.getAllResponseHeaders(), TP.TRACE);
+                httpObj.getAllResponseHeaders(), TP.DEBUG);
 
             if (TP.boot.$$verbose) {
                 TP.boot.$stdout('TP.boot.$httpCall() result: ' +
-                    httpObj.responseText, TP.TRACE);
+                    httpObj.responseText, TP.DEBUG);
             }
         }
     } catch (e) {
@@ -3147,7 +3147,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
                 if (TP.boot.$loadCached) {
                     if (TP.sys.cfg('debug.cache')) {
                         TP.boot.$stdout('Loaded ' + logpath +
-                                        ' from cache.', TP.TRACE);
+                                        ' from cache.', TP.DEBUG);
                     }
 
                     return result;
@@ -3181,7 +3181,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
                     if (lastmod) {
                         if (TP.sys.cfg('debug.cache')) {
                             TP.boot.$stdout('Found ' + logpath +
-                                        ' date ' + lastmod, TP.TRACE);
+                                        ' date ' + lastmod, TP.DEBUG);
                         }
 
                         //  NOTE that we'll have to rely on this routine to
@@ -3195,7 +3195,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
                     } else {
                         if (TP.sys.cfg('debug.cache')) {
                             TP.boot.$stdout('No modified date for ' +
-                                            logpath, TP.TRACE);
+                                            logpath, TP.DEBUG);
                         }
                     }
                 }
@@ -3514,13 +3514,13 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
             if (lastModified) {
                 if (TP.sys.cfg('debug.cache')) {
                     TP.boot.$stdout('Loaded ' + logpath + ' from origin.',
-                                    TP.TRACE);
+                                    TP.DEBUG);
                 }
 
                 lastmod = httpObj.getResponseHeader('Last-Modified');
                 if (TP.sys.cfg('debug.cache')) {
                     TP.boot.$stdout('Refreshed ' + logpath +
-                                    ' to ' + lastmod, TP.TRACE);
+                                    ' to ' + lastmod, TP.DEBUG);
                 }
 
                 TP.$BOOT_STORAGE.set(
@@ -3543,7 +3543,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                     if (TP.sys.cfg('debug.cache')) {
                         TP.boot.$stdout('Storing ' +
                                         logpath +
-                                        ' to cache.', TP.TRACE);
+                                        ' to cache.', TP.DEBUG);
                     }
 
                     response = httpObj.responseText;
@@ -3560,7 +3560,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                         if (TP.sys.cfg('debug.cache')) {
                             TP.boot.$stdout('Checking ' +
                                             logpath +
-                                            ' for chunks.', TP.TRACE);
+                                            ' for chunks.', TP.DEBUG);
                         }
 
                         chunks = response.split(
@@ -3584,7 +3584,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                                         'Storing ' +
                                         TP.boot.$uriInTIBETFormat(
                                                             chunkName) +
-                                        ' to cache.', TP.TRACE);
+                                        ' to cache.', TP.DEBUG);
                                     }
 
                                     TP.$BOOT_STORAGE.set(
@@ -3617,7 +3617,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                         if (TP.sys.cfg('debug.cache')) {
                             TP.boot.$stdout('Loaded ' +
                                             logpath +
-                                            ' from cache.', TP.TRACE);
+                                            ' from cache.', TP.DEBUG);
                         }
                     } else {
                         if (TP.sys.cfg('debug.cache')) {
@@ -3625,7 +3625,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
                             //  stamp but no data? ouch.
                             TP.boot.$stdout('Missing ' +
                                             logpath +
-                                            ' in cache.', TP.TRACE);
+                                            ' in cache.', TP.DEBUG);
                         }
 
                         //  at a minimum clear the old data so we don't do
@@ -5615,7 +5615,7 @@ TP.boot.$$logReporter = function(entry, options) {
     name = TP.boot.Log.getStringForLevel(level) || '';
     name = name.toLowerCase();
 
-    if (TP.boot.$$loglevel === TP.TRACE) {
+    if (TP.boot.$$loglevel === TP.DEBUG) {
         delta = entry[TP.boot.LOG_ENTRY_DELTA];
         dlimit = TP.sys.cfg('boot.delta_threshold');
         if (delta > dlimit) {
@@ -5659,6 +5659,9 @@ TP.boot.$consoleReporter = function(entry, options) {
 
     switch (level) {
     case TP.boot.TRACE:
+        top.console.log(msg);
+        break;
+    case TP.boot.DEBUG:
         top.console.log(msg);
         break;
     case TP.boot.INFO:
@@ -5731,6 +5734,9 @@ TP.boot.$bootuiReporter = function(entry, options) {
     case TP.boot.TRACE:
         TP.boot.$displayMessage(msg);
         break;
+    case TP.boot.DEBUG:
+        TP.boot.$displayMessage(msg);
+        break;
     case TP.boot.INFO:
         TP.boot.$displayMessage(msg);
         break;
@@ -5792,6 +5798,9 @@ TP.boot.$phantomReporter = function(entry, options) {
 
     switch (level) {
     case TP.boot.TRACE:
+        top.console.log(msg);
+        break;
+    case TP.boot.DEBUG:
         top.console.log(msg);
         break;
     case TP.boot.INFO:
@@ -5928,7 +5937,7 @@ TP.boot.Log.canLogLevel = function(aLevel) {
      * @name canLogLevel
      * @synopsis Returns true if logging is set at or above aLevel.
      * @param {Constant} aLevel A logging level constant such as TP.INFO
-     *     or TP.TRACE. The default is TP.WARN.
+     *     or TP.DEBUG. The default is TP.WARN.
      * @returns {Boolean} True if logging is active for the given level.
      */
 
@@ -5961,6 +5970,8 @@ TP.boot.Log.getStringForLevel = function(aLogLevel) {
     switch (aLogLevel) {
         case TP.boot.TRACE:
             return 'TRACE';
+        case TP.boot.DEBUG:
+            return 'DEBUG';
         case TP.boot.INFO:
             return 'INFO';
         case TP.boot.WARN:
@@ -6999,7 +7010,7 @@ TP.sys.showBootLog = function(reporter, level) {
     }
 
     // By default dump the entire log.
-    lvl = TP.boot.$isValid(level) ? level : TP.TRACE;
+    lvl = TP.boot.$isValid(level) ? level : TP.DEBUG;
     lvl = typeof lvl === 'string' ? TP.boot[lvl] : lvl;
 
     entries = TP.sys.getBootLog().getEntries();
@@ -7068,19 +7079,23 @@ TP.boot.showUIRoot = function() {
 //  ============================================================================
 
 /*
-There are some common idioms in TIBET methods related to logging. These
-idioms are built to help support stripping these constructs for production
-code to reduce overhead and code size. The idioms are:
-
-    //  logging idiom(s)
-    TP.ifTrace() ? TP.trace(...) : 0;
-    TP.ifDebug() ? TP.debug(...) : 0;
-    TP.ifInfo() ? TP.info(...) : 0;
-    TP.ifWarn() ? TP.warn(...) : 0;
-    TP.ifError() ? TP.error(...) : 0;
-    TP.ifSevere() ? TP.severe(...) : 0;
-    TP.ifFatal() ? TP.fatal(...) : 0;
-    TP.ifSystem() ? TP.system(...) : 0;
+ *  Utility functions to help limit message construction overhead when needed.
+ *
+ *  You don't have to use these if message-building for a particular log call
+ *  isn't high (just a string) since the level-specific methods such as TP.trace
+ *  etc. must limit based on level as well. They are useful when the message to
+ *  build would require a lot more overhead, or if you'd like to be able to
+ *  eventually strip the message from production code (since the pattern of
+ *  usage for these is idiomatic in TIBET and can be scanned/removed via tools).
+ *
+ *  TP.ifTrace() ? TP.trace(...) : 0;
+ *  TP.ifDebug() ? TP.debug(...) : 0;
+ *  TP.ifInfo() ? TP.info(...) : 0;
+ *  TP.ifWarn() ? TP.warn(...) : 0;
+ *  TP.ifError() ? TP.error(...) : 0;
+ *  TP.ifSevere() ? TP.severe(...) : 0;
+ *  TP.ifFatal() ? TP.fatal(...) : 0;
+ *  TP.ifSystem() ? TP.system(...) : 0;
 */
 
 //  ------------------------------------------------------------------------
@@ -8026,7 +8041,7 @@ TP.boot.$getRootPath = function() {
     debug = TP.sys.cfg('debug.path');
     if (debug && TP.boot.$$debug) {
         TP.boot.$stdout('TP.boot.$getRootPath() computed rootpath: ' +
-                        TP.boot.$$rootpath, TP.TRACE);
+                        TP.boot.$$rootpath, TP.DEBUG);
     }
 
     return path;
@@ -8056,7 +8071,7 @@ TP.boot.$setAppRoot = function(aPath) {
     debug = TP.sys.cfg('debug.path');
     if (debug && TP.boot.$$debug) {
         TP.boot.$stdout('TP.boot.$setAppRoot() defined approot: ' + path,
-                        TP.TRACE);
+                        TP.DEBUG);
     }
 
     return TP.boot.$$approot;
@@ -8086,7 +8101,7 @@ TP.boot.$setLibRoot = function(aPath) {
     debug = TP.sys.cfg('debug.path');
     if (debug && TP.boot.$$debug) {
         TP.boot.$stdout('TP.boot.$setLibRoot() defined libroot: ' + path,
-                        TP.TRACE);
+                        TP.DEBUG);
     }
 
     return TP.boot.$$libroot;
@@ -8121,21 +8136,21 @@ TP.boot.$configurePackage = function() {
     profile = TP.sys.cfg('boot.profile');
     if (TP.boot.$isEmpty(profile)) {
         TP.boot.$stdout('Empty boot.profile. Checking for boot.package.',
-            TP.TRACE);
+            TP.DEBUG);
 
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
 
             TP.boot.$stdout('Empty boot.package. Defaulting to standard.xml.',
-                TP.TRACE);
+                TP.DEBUG);
 
             package = 'standard.xml';
         } else {
             TP.boot.$stdout('Found boot.package. Using: ' + package,
-                TP.TRACE);
+                TP.DEBUG);
         }
     } else {
-        TP.boot.$stdout('Found boot.profile. Using: ' + profile, TP.TRACE);
+        TP.boot.$stdout('Found boot.profile. Using: ' + profile, TP.DEBUG);
     }
 
     // Second phase is processing any boot.profile if found to update any
@@ -8190,7 +8205,7 @@ TP.boot.$configurePackage = function() {
     }
 
     file = TP.boot.$uriExpandPath(package);
-    TP.boot.$stdout('Loading package: ' + file, TP.TRACE);
+    TP.boot.$stdout('Loading package: ' + file, TP.DEBUG);
 
     xml = TP.boot.$uriLoad(file, TP.DOM, 'manifest', false);
     if (xml) {
@@ -8236,7 +8251,7 @@ TP.boot.$configureBootstrap = function() {
     file = TP.boot.$uriExpandPath(file);
 
     try {
-        TP.boot.$stdout('Loading bootstrap: ' + logpath, TP.TRACE);
+        TP.boot.$stdout('Loading bootstrap: ' + logpath, TP.DEBUG);
         str = TP.boot.$uriLoad(file, TP.TEXT, 'source');
         if (!str) {
             TP.boot.$stderr('Failed to load: ' + file, TP.FATAL);
@@ -8386,7 +8401,7 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
         case 'versioned':
 
             TP.boot.$stdout('Configuring \'versioned\' local cache.',
-                TP.TRACE);
+                TP.DEBUG);
 
             //  versioned caches check the package's version as defined in
             //  the root manifest file against the cached version for the
@@ -8407,7 +8422,7 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
         case 'synchronized':
 
             TP.boot.$stdout('Configuring \'synchronized\' local cache.',
-                            TP.TRACE);
+                            TP.DEBUG);
 
             //  a synchronized cache means we update every file based on
             //  Last-Modified data to keep the cache synchronized with any
@@ -8419,7 +8434,7 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
         case 'manual':
 
             TP.boot.$stdout('Configuring \'manual\' local cache.',
-                TP.TRACE);
+                TP.DEBUG);
 
             //  a manual cache means the manifest nodes to update will be
             //  marked manually as needing a refresh. This approach provides
@@ -8431,7 +8446,7 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
         case 'stale':
 
             TP.boot.$stdout('Configuring \'stale\' local cache.',
-                TP.TRACE);
+                TP.DEBUG);
 
             //  a stale cache means we don't even want to consider metadata
             //  regarding Last-Modified dates for source. all flags are set
@@ -8447,7 +8462,7 @@ TP.boot.$configureLocalCache = function(shouldWarn) {
         case 'fresh':
 
             TP.boot.$stdout('Configuring \'fresh\' local cache.',
-                TP.TRACE);
+                TP.DEBUG);
 
             //  cache is considered current without checks of any kind.
             TP.sys.setcfg('import.manifests', true);
@@ -8513,8 +8528,8 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     }
 
     if (!cacheVersion) {
-        TP.boot.$stdout('No local cache version string found.', TP.TRACE);
-        TP.boot.$stdout('Simulating \'empty\' local cache.', TP.TRACE);
+        TP.boot.$stdout('No local cache version string found.', TP.DEBUG);
+        TP.boot.$stdout('Simulating \'empty\' local cache.', TP.DEBUG);
 
         //  no cache or empty version string, consider cache invalid.
         TP.sys.setcfg('import.source', 'remote');
@@ -8523,8 +8538,8 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     }
 
     if (!rootVersion) {
-        TP.boot.$stdout('No target version string found.', TP.TRACE);
-        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.TRACE);
+        TP.boot.$stdout('No target version string found.', TP.DEBUG);
+        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.DEBUG);
 
         //  no target version for the root package, consider cache valid but
         //  check individual nodes for version/update information.
@@ -8536,8 +8551,8 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     //  if the strings are the same, regardless of their form, then we
     //  consider the cache to be current in all respects.
     if (cacheVersion === rootVersion) {
-        TP.boot.$stdout('Cache and target versions match.', TP.TRACE);
-        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Cache and target versions match.', TP.DEBUG);
+        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.DEBUG);
 
         TP.sys.setcfg('import.manifests', true);
         TP.sys.setcfg('import.metadata', true);
@@ -8555,7 +8570,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     if (!TP.TIBET_VERSION_SPLITTER.test(rootVersion)) {
         TP.boot.$stderr('Unrecognized target version format: ' +
                         rootVersion);
-        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.DEBUG);
 
         TP.sys.setcfg('import.source', 'remote');
 
@@ -8568,7 +8583,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
     if (!TP.TIBET_VERSION_SPLITTER.test(cacheVersion)) {
         TP.boot.$stderr('Unrecognized cache version format: ' +
                         cacheVersion);
-        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.DEBUG);
 
         TP.sys.setcfg('import.source', 'remote');
 
@@ -8586,7 +8601,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
         TP.boot.$stderr(TP.boot.$join('Major version change from ',
                         cacheParts[1], ' to ', rootParts[1]));
 
-        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.DEBUG);
 
         TP.sys.setcfg('import.source', 'remote');
 
@@ -8599,7 +8614,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
                         cacheParts[2], ' to ', rootParts[2]));
 
         TP.boot.$stdout('Simulating \'synchronized\' local cache.',
-            TP.TRACE);
+            TP.DEBUG);
 
         TP.sys.setcfg('import.source', 'modified');
 
@@ -8611,7 +8626,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
         TP.boot.$stderr(TP.boot.$join('Build version change from ',
                         cacheParts[3], ' to ', rootParts[3]));
 
-        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.DEBUG);
 
         TP.sys.setcfg('import.source', 'marked');
 
@@ -8623,7 +8638,7 @@ TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
         TP.boot.$stderr(TP.boot.$join('Patch version change from ',
                         cacheParts[4], ' to ', rootParts[4]));
 
-        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.TRACE);
+        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.DEBUG);
 
         TP.sys.setcfg('import.source', 'local');
 
@@ -8657,16 +8672,16 @@ TP.boot.$configureOptions = function(anObject) {
                 TP.sys.setcfg(name, value[subkey]);
 
                 TP.boot.$stdout('$configureOption ' + name + ' = ' +
-                    value[subkey], TP.TRACE);
+                    value[subkey], TP.DEBUG);
 
                 // Update cached values as needed.
                 if (name === 'path.app_root') {
                     TP.boot.$stdout('Overriding path.app_root cache with: ' +
-                        value[subkey], TP.TRACE);
+                        value[subkey], TP.DEBUG);
                     TP.boot.$$approot = TP.boot.$uriExpandPath(value[subkey]);
                 } else if (name === 'path.lib_root') {
                     TP.boot.$stdout('Overriding path.lib_root cache with: ' +
-                        value[subkey], TP.TRACE);
+                        value[subkey], TP.DEBUG);
                     TP.boot.$$libroot = TP.boot.$uriExpandPath(value[subkey]);
                 }
             });
@@ -8731,13 +8746,13 @@ TP.boot.$$configureOverrides = function(options, activate) {
                 var name = key + '.' + subkey;
 
                 TP.boot.$stdout('Setting override for: ' + name + ' to: \'' +
-                    value[subkey] + '\'', TP.TRACE);
+                    value[subkey] + '\'', TP.DEBUG);
 
                 TP.sys.setcfg(name, value[subkey], false, true);
             });
         } else {
             TP.boot.$stdout('Setting override for: ' + key + ' to: \'' +
-                value + '\'', TP.TRACE);
+                value + '\'', TP.DEBUG);
             TP.sys.setcfg(key, value, false, true);
         }
     });
@@ -9053,7 +9068,7 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
                                     TP.boot.$join(
                                         'TP.boot.$uniqueNodeList() ',
                                         'removing duplicate: ',
-                                        src), TP.TRACE);
+                                        src), TP.DEBUG);
                             }
                         }
                     }
@@ -9388,7 +9403,7 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
         } else if (shouldThrow === false) {
             //  if throw flag is explicitly false then we don't consider
             //  this to be an error, we just report it.
-            TP.boot.$stdout(msg + targetUrl + '.', TP.TRACE);
+            TP.boot.$stdout(msg + targetUrl + '.', TP.DEBUG);
         } else {
             TP.boot.$stderr(msg + targetUrl + '.');
         }
@@ -9654,9 +9669,9 @@ TP.boot.$importComponents = function(loadSync) {
                 (nd.getAttribute('defer') === 'true' ||
                 nd.getAttribute('load_deferred') === 'true')) {
                 if (TP.boot.$verbose) {
-                    TP.boot.$stdout('Deferring ' + logpath, TP.TRACE);
+                    TP.boot.$stdout('Deferring ' + logpath, TP.DEBUG);
                 } else {
-                    TP.boot.$stdout('Deferring ' + srcpath, TP.TRACE);
+                    TP.boot.$stdout('Deferring ' + srcpath, TP.DEBUG);
                 }
 
                 //  re-invoke manually so we move on to the next boot node
@@ -9690,7 +9705,7 @@ TP.boot.$importComponents = function(loadSync) {
         //  an overly complex callback function when we've got to go over
         //  the wire to get the actual source before we can import.
         TP.boot.$stdout('Loading ' + (srcpath ? srcpath : logpath),
-            TP.TRACE);
+            TP.DEBUG);
 
         //  trigger the appropriate "will" hook
         if (srcpath) {
@@ -9829,7 +9844,7 @@ TP.boot.$importComponents = function(loadSync) {
                         ' ',
                         srcpath.slice(srcpath.lastIndexOf('/') + 1));
 
-                TP.boot.$stdout('Preloading image ' + logpath, TP.TRACE);
+                TP.boot.$stdout('Preloading image ' + logpath, TP.DEBUG);
 
                 image = new Image();
                 image.src = srcpath;
@@ -10004,23 +10019,23 @@ TP.boot.$config = function() {
 
     //  log the environment settings.
     if (TP.sys.cfg('log.bootenv')) {
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout('TIBET Environment Variables', TP.TRACE);
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout(TP.sys.environment, TP.TRACE);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.DEBUG);
+        TP.boot.$stdout('TIBET Environment Variables', TP.DEBUG);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.DEBUG);
+        TP.boot.$stdout(TP.sys.environment, TP.DEBUG);
     }
 
     //  log configuration settings and any overrides from the user.
     if (TP.sys.cfg('log.bootcfg')) {
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout('TIBET Configuration Variables', TP.TRACE);
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout(TP.sys.configuration, TP.TRACE);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.DEBUG);
+        TP.boot.$stdout('TIBET Configuration Variables', TP.DEBUG);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.DEBUG);
+        TP.boot.$stdout(TP.sys.configuration, TP.DEBUG);
 
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout('TIBET Configuration Overrides', TP.TRACE);
-        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.TRACE);
-        TP.boot.$stdout(TP.sys.overrides, TP.TRACE);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.DEBUG);
+        TP.boot.$stdout('TIBET Configuration Overrides', TP.DEBUG);
+        TP.boot.$stdout(TP.sys.cfg('boot.uichunked'), TP.DEBUG);
+        TP.boot.$stdout(TP.sys.overrides, TP.DEBUG);
     }
 
     return;
@@ -10039,7 +10054,7 @@ TP.boot.$expand = function( ) {
     config = TP.sys.cfg('boot.config');
 
     TP.boot.$stdout('Expanding package#config: ' + file + '#' + config,
-                   TP.TRACE);
+                   TP.DEBUG);
     TP.boot.$expandPackage(file, config);
 
     return;
@@ -11068,7 +11083,7 @@ TP.boot.$uiRootConfig = function() {
     }
 
     TP.boot.$stdout('Unable to locate ' + uiRootID + ', generating it.',
-        TP.TRACE);
+        TP.DEBUG);
 
     // TODO: Verify we need this instead of just body.appendChild. We used
     // to have to work around a bug in IE.
