@@ -226,7 +226,6 @@ function(aNode) {
         if (!TP.isDocument(node)) {
             TP.raise(this,
                         'TP.sig.InvalidDocument',
-                        arguments,
                         'Unable to escape style. Missing CDATA block?');
 
             return;
@@ -236,7 +235,6 @@ function(aNode) {
         if (!TP.isNode(node)) {
             TP.raise(this,
                         'TP.sig.InvalidNode',
-                        arguments,
                         'Unable to escape style. Missing CDATA block?');
 
             return;
@@ -317,7 +315,7 @@ function(aMatrix) {
             [aMatrix[0][0], aMatrix[1][0], aMatrix[0][3]],
             [aMatrix[0][1], aMatrix[1][1], aMatrix[1][3]],
         ];
-    
+
     return matrix;
 });
 

@@ -423,7 +423,7 @@ function(aFaultCode, aFaultString) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
-                TP.LOG, arguments) : 0;
+                TP.LOG) : 0;
     } finally {
         this.set('statusCode', TP.CANCELLED);
     }
@@ -489,7 +489,7 @@ function(aResult) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     } finally {
         //  have to check to see if we already have an failed or cancelled
         //  status since that means we can't set to a success status
@@ -558,7 +558,7 @@ function(aFaultCode, aFaultString) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     } finally {
         this.set('statusCode', TP.ERRORED);
     }
@@ -627,7 +627,7 @@ function(aFaultCode, aFaultString) {
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     } finally {
         this.set('statusCode', TP.FAILED);
     }
@@ -1238,7 +1238,7 @@ function(controlParams) {
 
     //  make sure it's a proper "request"
     if (!TP.canInvoke(controlParams, 'atIfInvalid')) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  get a clean instance prepared
@@ -1294,7 +1294,7 @@ function(anObjectArray, aMethodArray, aParamArray) {
 
     //  Can't proceed without an Array of objects or methods
     if (!TP.isArray(anObjectArray) || !TP.isArray(aMethodArray)) {
-        return this.raise('TP.sig.InvalidArray', arguments);
+        return this.raise('TP.sig.InvalidArray');
     }
 
     params = TP.ifInvalid(aParamArray, TP.ac());
@@ -1324,14 +1324,14 @@ function(anObjectArray, aMethodArray, aParamArray) {
                     invokerFunc.methodArray.at(invokerFunc.methodIndex)].apply(
                             target, invokerFunc.paramArray);
 
-                TP.ifInfo() ? TP.info(result, TP.LOG, arguments) : 0;
+                TP.ifInfo() ? TP.info(result, TP.LOG) : 0;
 
                 //  Increment the method index to go on to the next method.
                 invokerFunc.methodIndex++;
             } catch (e) {
                 TP.ifError() ?
                     TP.error(TP.ec(e, 'Error in invocation.'),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                 invokerFunc.stopTest = true;
             }
@@ -1725,10 +1725,10 @@ function(aResult) {
         //  do the post-processing work for the current run
         this.$teardown();
 
-        TP.ifTrace(TP.sys.shouldLogJobs()) ?
+        TP.ifTrace() && TP.sys.shouldLogJobs() ?
             TP.sys.logJob('Job ' + this.getPID() +
                 ' completed at ' + TP.dc(this.$get('ended')).asTimestamp(),
-                TP.TRACE, arguments) : 0;
+                TP.DEBUG) : 0;
 
         //  have to check to see if we already have an failed or cancelled
         //  status since that would imply we can't reset to a success
@@ -1979,7 +1979,6 @@ function(stepParams) {
         }
     } catch (e) {
         this.raise('TP.sig.JobException',
-                    arguments,
                     TP.ec(e, 'Error in compute function'));
     }
 
@@ -2055,10 +2054,10 @@ function(silently) {
     this.$set('ended', Date.now());
 
     if (TP.notTrue(silently)) {
-        TP.ifTrace(TP.sys.shouldLogJobs()) ?
+        TP.ifTrace() && TP.sys.shouldLogJobs() ?
             TP.sys.logJob('Job ' + this.getPID() +
                     ' killed at ' + TP.dc(this.$get('ended')).asTimestamp(),
-                    TP.TRACE, arguments) : 0;
+                    TP.DEBUG) : 0;
     }
 
     //  note that we cancel, not complete here
@@ -2478,10 +2477,10 @@ function(now) {
      * @returns {TP.core.Job} The receiver.
      */
 
-    TP.ifTrace(TP.sys.shouldLogJobs()) ?
+    TP.ifTrace() && TP.sys.shouldLogJobs() ?
         TP.sys.logJob('Job ' + this.getPID() +
                 ' shutdown requested at ' + TP.dc().asTimestamp(),
-                TP.TRACE, arguments) : 0;
+                TP.DEBUG) : 0;
 
     if (now) {
         //  cancel any pending work
@@ -2552,10 +2551,10 @@ function(stepParams) {
     this.$set('started', Date.now());
     this.$set('runstart', this.started);
 
-    TP.ifTrace(TP.sys.shouldLogJobs()) ?
+    TP.ifTrace() && TP.sys.shouldLogJobs() ?
         TP.sys.logJob('Job ' + this.getPID() +
                 ' started at ' + TP.dc(this.$get('started')).asTimestamp(),
-                TP.TRACE, arguments) : 0;
+                TP.DEBUG) : 0;
 
     //  schedule so we deal with possible delay, or run right now
     return this.schedule();
@@ -2595,7 +2594,7 @@ function() {
                     TP.ec(e, TP.join('Job ',
                                         this.getPID(),
                                         ' configuration failed.')),
-                    TP.JOB_LOG, arguments) : 0;
+                    TP.JOB_LOG) : 0;
         }
     }
 
@@ -2854,10 +2853,10 @@ function() {
     runstart = Date.now();
     this.$set('runstart', runstart, false);
 
-    TP.ifTrace(TP.sys.shouldLogJobs()) ?
+    TP.ifTrace() && TP.sys.shouldLogJobs() ?
         TP.sys.logJob('Job ' + this.getPID() +
                 ' re-started at ' + TP.dc(runstart).asTimestamp(),
-                TP.TRACE, arguments) : 0;
+                TP.DEBUG) : 0;
 
     //  schedule so we deal with possible delay, or run right now
     return this.schedule();
@@ -2891,7 +2890,7 @@ function() {
                     TP.ec(e, TP.join('Job ',
                                         this.getPID(),
                                         ' pre-processing failed.')),
-                    TP.JOB_LOG, arguments) : 0;
+                    TP.JOB_LOG) : 0;
         }
     }
 
@@ -2926,7 +2925,7 @@ function() {
                     TP.ec(e, TP.join('Job ',
                                         this.getPID(),
                                         ' pos-processing failed.')),
-                    TP.JOB_LOG, arguments) : 0;
+                    TP.JOB_LOG) : 0;
         }
     }
 
@@ -3137,8 +3136,7 @@ function() {
             TP.ifWarn() ?
                 TP.warn(TP.join('Job ', this.getPID(), ' step ',
                                 this.iteration, ' was unsuccessful.'),
-                        TP.JOB_LOG,
-                        arguments) : 0;
+                        TP.JOB_LOG) : 0;
         }
     } catch (e) {
         this.wasSuccessful = false;
@@ -3148,7 +3146,7 @@ function() {
                 TP.ec(e, TP.join('Job ',
                                     this.getPID(),
                                     ' step-processing error.')),
-                TP.JOB_LOG, arguments) : 0;
+                TP.JOB_LOG) : 0;
 
         //  bit of a cheat here, but we'll call the private method
         //  and set failed as the status
@@ -3161,7 +3159,7 @@ function() {
                                     this.getPID(),
                                     ' failed. ',
                                     'Job remains available in job list.')),
-                TP.JOB_LOG, arguments) : 0;
+                TP.JOB_LOG) : 0;
 
         exit = true;
     } finally {
@@ -3319,7 +3317,7 @@ function(aJob) {
     var job;
 
     if (TP.notValid(aJob)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  if it's a job, not a pid, then we can just kill it

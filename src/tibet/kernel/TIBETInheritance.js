@@ -196,7 +196,7 @@ function(name) {
         root;
 
     if (TP.isEmpty(name)) {
-        return this.raise('TP.sig.InvalidTypeName', arguments);
+        return this.raise('TP.sig.InvalidTypeName');
     }
 
     parts = name.split(/:|\./);
@@ -211,7 +211,7 @@ function(name) {
             if (parts[0] === 'APP' || parts[0] === 'TP') {
                 TP.ifError() ?
                     TP.error('Invalid namespace: ' + parts[0],
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
                 return;
             }
 
@@ -232,7 +232,7 @@ function(name) {
     }
 
     if (TP.regex.INTERNAL_TYPENAME.test(subtypeName)) {
-        return this.raise('TP.sig.InvalidTypeName', arguments);
+        return this.raise('TP.sig.InvalidTypeName');
     }
 
     //  define an object that matches the namespace if necessary
@@ -365,13 +365,6 @@ function(name) {
                     cache.add(wholeName);
                 }
             });
-    }
-
-    if (TP.sys.shouldLogCodeChanges()) {
-        codestr = this.getName() + '.defineSubtype(\'' +
-                   nsName + ':' + subtypeName + '\');\n';
-
-        TP.sys.logCodeChange(codestr, TP.TRACE, arguments);
     }
 
     //  Put the type *constructor* under the 'meta' namespace as well.
@@ -613,7 +606,7 @@ function() {
     //  don't continue if we didnt' find a type or we'd recurse due to
     //  finding the receiver and trying to restart at construct
     if (TP.notValid(type) || (type === this)) {
-        this.raise('TP.sig.NoConcreteType', arguments);
+        this.raise('TP.sig.NoConcreteType');
         return;
     }
 
@@ -850,11 +843,11 @@ function(aParser) {
 
     //  this method is only appropriate for types
     if (!TP.isType(this)) {
-        return TP.raise(this, 'TP.sig.InvalidOperation', arguments);
+        return TP.raise(this, 'TP.sig.InvalidOperation');
     }
 
     if (!TP.canInvoke(aParser, 'parse')) {
-        return this.raise('TP.sig.InvalidParser', arguments,
+        return this.raise('TP.sig.InvalidParser',
                 'Registered parsers must implement \'parse\'');
     }
 
@@ -889,7 +882,7 @@ function(aParser) {
     var parsers;
 
     if (!TP.canInvoke(aParser, 'parse')) {
-        return this.raise('TP.sig.InvalidParser', arguments,
+        return this.raise('TP.sig.InvalidParser',
                 'Registered parsers must implement \'parse\'');
     }
 
@@ -1183,7 +1176,7 @@ function(typeOrFormat, formatParams) {
         args;
 
     if (TP.notValid(typeOrFormat)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  try to jump quickly to asString() when it's clearly not a type name
@@ -1749,7 +1742,7 @@ to leverage the functions here.
 //  ------------------------------------------------------------------------
 
 Window.Inst.defineMethod('canResolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name canResolveDNU
@@ -1758,8 +1751,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     for objects that are acting as proxies or adaptors.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
@@ -1773,7 +1766,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('canResolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name canResolveDNU
@@ -1782,64 +1775,13 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     for objects that are acting as proxies or adaptors.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
      * @todo
      */
-
-    /*
-     * TODO Scott: Both metadata and packaging has changed since this was
-     * written... is this logic still valid?
-
-    var tname,
-        track,
-        fname,
-        entry,
-        modID,
-        script,
-        target;
-
-    //  get the receiver's typename, or name of receiver if receiver is a
-    //  type...we'll use this combined with the method name to find any
-    //  entries for "extensions" which might need to be loaded to resolve
-    tname = this.getTypeName();
-    track = TP.isType(this) ? TP.TYPE_TRACK : TP.INST_TRACK;
-
-    fname = tname + '_' + track + '_' + aMethodName;
-
-    //  make sure we've got full metadata at our disposal for lookups
-    entry = TP.sys.getMetadata('methods', true).at(fname);
-    if (TP.isEmpty(entry)) {
-        return false;
-    }
-
-    modID = entry.at(1);
-
-    //  NOTE the decode here to ensure paths with browser-specific suffixes
-    //  get properly reconstituted
-    script = TP.uriExpandPath(TP.sys.$$decodeMetadata(modID));
-    target = entry.at(2);
-    if (TP.sys.hasPackage(script, target)) {
-        //  already loaded and couldn't run it...no point in trying
-        return false;
-    }
-
-    //  log it so we can tune better by seeing which methods tend to trigger
-    //  loads of different packages.
-    TP.ifTrace() ?
-        TP.trace(TP.join('DNU ', fname,
-                            ' triggering script ', script,
-                            ' import.'),
-                    TP.LOG, arguments) : 0;
-
-    //  this will bring that package. in if it isn't already loaded. we don't
-    //  have a basedir spec here and we don't want to force a reload, but we
-    //  do want a synchronous load
-    TP.boot.$importPackage(script, target, null, null, true);
-    */
 
     //  found a node showing we have a method with that name? then we can
     //  resolve it by loading that node
@@ -1849,7 +1791,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('resolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name resolveDNU
@@ -1857,8 +1799,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     responded TRUE to canResolveDNU() for the parameters given.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of function resolution.
      * @todo
      */
@@ -1953,7 +1895,7 @@ myString.asNumber().round().asString();
 
 it constructs a Function instance which performs this task. This function is
 then installed on the proper object thereby avoiding the overhead on future
-calls. The resulting code can also be saved out via the TIBET changeLog to
+calls. The resulting code can also be saved out via the TIBET change log to
 literally have TIBET 'write code for you'. You get the system and some
 fundamental type conversions in place and start running. As the inferencing
 engine makes decisions you save the ones that are correct and improve on the
@@ -1963,7 +1905,7 @@ ones that aren't. (In other words the inference log is a kind of todo list).
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('infer',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name infer
@@ -2017,8 +1959,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     more and more intelligence in the inferencer over time.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name to invoke if found.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of execution if possible.
      * @todo
      */
@@ -2033,22 +1975,22 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
         len,
         parents;
 
-    TP.debug('break.infer');
+    TP.stop('break.infer');
 
     //  no inferencing possible on types, we don't convert type objects to
     //  instances of other types...
     if (TP.isType(anOrigin)) {
         TP.sys.logInference('Method inferencing disabled for types.',
-                            TP.TRACE, arguments);
+                            TP.DEBUG);
         return;
     }
 
     TP.sys.logInference('Checking for implementers of ' + aMethodName,
-                        TP.TRACE, arguments);
+                        TP.DEBUG);
 
     if (TP.notValid(owners = TP.sys.getMethodOwners(aMethodName))) {
         TP.sys.logInference('No implementers of ' + aMethodName + ' found.',
-                            TP.TRACE, arguments);
+                            TP.DEBUG);
         return;
     }
 
@@ -2061,12 +2003,12 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
     len = owners.getSize();
     if (len === 0) {
         TP.sys.logInference('No implementers of ' + aMethodName + ' found.',
-                            TP.TRACE, arguments);
+                            TP.DEBUG);
         return;
     } else {
         TP.sys.logInference('Found ' + len + ' implementer(s) of ' +
                             aMethodName + '.',
-                            TP.TRACE, arguments);
+                            TP.DEBUG);
     }
 
     for (i = 0; i < len; i++) {
@@ -2086,7 +2028,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
                             asMethodName +
                             //'()' +
                             '.... would recurse. Skipping.',
-                            TP.TRACE, arguments);
+                            TP.DEBUG);
             continue;
         }
 
@@ -2096,7 +2038,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
                             '.' +
                             aMethodName +
                             '()',
-                            TP.INFO, arguments);
+                            TP.INFO);
 
         if (TP.sys.$$shouldInvokeInferences()) {
             //if (TP.isCallable(anOrigin[asMethodName]))
@@ -2110,29 +2052,25 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
                             '.' +
                             aMethodName +
                             '();!',
-                            TP.INFO, arguments);
+                            TP.INFO);
 
-                //      The ability to make the engine actually
-                //      generate functions and then install them on
-                //      the receiver is analogous to the sort of
-                //      'hotspot' activity a JVM undergoes with the
-                //      difference that the code didn't exist in the
-                //      case of TIBET's inferencing. In a JVM the
-                //      hotspot engine is simply compiling code the
-                //      programmer had to write. In TIBET the engine
-                //      is writing code for the programmer, then
-                //      installing it to avoid future calls to the
-                //      inferencing engine. The results are finally
-                //      added to a change log (TP.sys.$changeLog)
-                //      which can be written via CGI etc to a server
-                //      responsible for acting as a source code
-                //      repository for the application. The result is
-                //      a system which truly figures out what you
-                //      wanted to do, writes code to help you do it,
-                //      installs the code on the proper objects, and
-                //      saves the change to the server so the next
-                //      time you run the application you never invoke
-                //      the inferencer for that function again.
+                //      The ability to make the engine actually generate
+                //      functions and then install them on the receiver is
+                //      analogous to the sort of 'hotspot' activity a JVM
+                //      undergoes with the difference that the code didn't exist
+                //      in the case of TIBET's inferencing. In a JVM the hotspot
+                //      engine is simply compiling code the programmer had to
+                //      write. In TIBET the engine is writing code for the
+                //      programmer, then installing it to avoid future calls to
+                //      the inferencing engine. The results are finally added to
+                //      a change log which can be written via CGI etc to a
+                //      server responsible for acting as a source code
+                //      repository for the application. The result is a system
+                //      which truly figures out what you wanted to do, writes
+                //      code to help you do it, installs the code on the proper
+                //      objects, and saves the change to the server so the next
+                //      time you run the application you never invoke the
+                //      inferencer for that function again.
 
                 //  HERE is a simple, non-hotspot version that works
 
@@ -2161,7 +2099,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 
                 TP.sys.logInference('Generating inferred ' + aMethodName +
                                     ' method:\n' + s,
-                                    TP.TRACE, arguments);
+                                    TP.DEBUG);
 
                 f = TP.fc(s);
 
@@ -2200,7 +2138,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
                     str += aMethodName + '\',' +
                         f.toString().strip(' anonymous') + ');\n';
 
-                    TP.sys.logCodeChange(str, TP.TRACE, arguments);
+                    TP.sys.logCodeChange(str, TP.DEBUG);
                 }
 
                 //  go ahead and run it to resolve this invocation
@@ -2225,7 +2163,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('dnu',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name dnu
@@ -2239,8 +2177,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     If all else fails the debugging hook is invoked.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name to invoke if found.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of execution if possible.
      * @todo
      */
@@ -2258,7 +2196,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
         len,
         superName;
 
-    TP.debug('break.dnu');
+    TP.stop('break.dnu');
 
     if (TP.notValid(anOrigin)) {
         return;
@@ -2271,11 +2209,11 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
     //  windows are notoriously poor at dealing with DNUs since
     //  they're "special objects" in the browser world, so don't try
     if (TP.isWindow(anOrigin)) {
-        TP.debug('break.unbound');
+        TP.stop('break.unbound');
 
         TP.sys.logInference((orgid || 'Unresolvable window ') +
                 ' triggered backstop for method ' + aMethodName,
-                TP.TRACE, arguments);
+                TP.DEBUG);
         return;
     }
 
@@ -2289,7 +2227,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
         TP.$$isDNU(anOrigin.addLocalMethod)) {
         TP.sys.logInference((orgid || 'Unresponsive object ') +
                 ' triggered backstop for method ' + aMethodName,
-                TP.TRACE, arguments);
+                TP.DEBUG);
         return;
     }
 
@@ -2304,7 +2242,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
         TP.sys.logInference(anOrigin.getTypeName() + ' ' +
                 orgid + ' triggered DNU ' + aMethodName + ' at ' +
                 stackInfo.join(' \u00BB '),
-                TP.TRACE, arguments);
+                TP.DEBUG);
     }
 
     //  option for origin to reattempt method...this gives individual
@@ -2313,14 +2251,14 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
     if (anOrigin.canResolveDNU(anOrigin,
                                         aMethodName,
                                         anArgArray,
-                                        aContext)) {
+                                        callingContext)) {
         TP.sys.logInference(anOrigin.getTypeName() + ' ' +
                             orgid + ' canResolve DNU ' +
                             aMethodName + '(...) !',
-                            TP.TRACE, arguments);
+                            TP.DEBUG);
 
         return anOrigin.resolveDNU(anOrigin, aMethodName, anArgArray,
-                                    aContext);
+                                    callingContext);
     }
 
     if (TP.sys.$$shouldUseInferencing()) {
@@ -2331,7 +2269,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
                                     aMethodName.slice(3) + '") from ' +
                                     anOrigin.getTypeName() +
                                     '.' + aMethodName + '(...)',
-                                    TP.TRACE, arguments);
+                                    TP.DEBUG);
 
                 //  try as(). If that doesn't return a defined value it
                 //  failed to find a resolution so fall thru to TP.sys.infer
@@ -2349,7 +2287,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
                                     '") from ' + anOrigin.getTypeName() +
                                     '.' + aMethodName +
                                     '(...) was unsuccessful.',
-                                    TP.TRACE, arguments);
+                                    TP.DEBUG);
             }
 
             //  'as' method
@@ -2365,7 +2303,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 
                 TP.sys.logInference('Inferring ' + typeName + '.from(\'' +
                                         anOrigin.getTypeName() + '\')',
-                                        TP.TRACE, arguments);
+                                        TP.DEBUG);
 
                 //  see if we can grab the other type
                 targetType = TP.sys.getTypeByName(typeName);
@@ -2379,7 +2317,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 
                     TP.sys.logInference('Checking against types ' +
                                         supers,
-                                        TP.TRACE, arguments);
+                                        TP.DEBUG);
 
                     len = supers.getSize();
                     for (i = 0; i < len; i++) {
@@ -2395,7 +2333,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
                             TP.sys.logInference('Invoking ' +
                                                 typeName + '.from(\'' +
                                                 superName + '\')',
-                                                TP.TRACE, arguments);
+                                                TP.DEBUG);
 
                             //  HERE is a string-based version. The
                             //  as()/from() transformation is fairly
@@ -2420,14 +2358,14 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
                 TP.sys.logInference('Inferring ' + typeName + '.from(\'' +
                                     anOrigin.getTypeName() +
                                     '\') was unsuccessful.',
-                                    TP.TRACE, arguments);
+                                    TP.DEBUG);
             }
 
             //  'regular' method
             //  using the TP.sys.infer call to look for as(), get(), from()
             //  combinations that will produce a path to the target
             anObj = TP.sys.infer(anOrigin, aMethodName,
-                                    anArgArray, aContext);
+                                    anArgArray, callingContext);
 
             if (TP.isDefined(anObj)) {
                 return anObj;
@@ -2438,7 +2376,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
     //  no luck
     TP.sys.logInference(anOrigin.getTypeName() + ' ' + orgid +
                         ' could not solve for ' + aMethodName,
-                        TP.TRACE, arguments);
+                        TP.DEBUG);
 
     //  last chance...invoke the debugger :)
     if (TP.sys.shouldUseDebugger()) {
@@ -2755,7 +2693,7 @@ function(name) {
      * @todo
      */
 
-    return this.raise('TP.sig.InheritanceException', arguments,
+    return this.raise('TP.sig.InheritanceException',
                                         'Attempt to subtype Native type.');
 });
 
@@ -2999,7 +2937,6 @@ function(aSignal) {
     //  handle things
     if (TP.notValid(inst = this.construct())) {
         return this.raise('TP.sig.InvalidHandler',
-                            arguments,
                             'Unable to construct handler instance.');
     }
 
@@ -3055,7 +2992,6 @@ function(aSignal) {
     //  try to construct an instance and get it to handle things
     if (TP.notValid(inst = this.from(aSignal))) {
         return this.raise('TP.sig.InvalidHandler',
-                            arguments,
                             'Unable to construct handler instance');
     }
 
@@ -3154,7 +3090,7 @@ function(anInterface, anObject, shouldForce) {
             TP.ifWarn() ?
                 TP.warn(TP.ec(e, 'Unable to assign backstop method: ' +
                                     fname),
-                        TP.INFERENCE_LOG, arguments) : 0;
+                        TP.INFERENCE_LOG) : 0;
         }
     }
 
@@ -3193,7 +3129,7 @@ function(anInterface, anObject, shouldForce) {
         func;
 
     if (TP.notValid(anObject)) {
-        TP.raise(null, 'TP.sig.InvalidParameter', arguments);
+        TP.raise(null, 'TP.sig.InvalidParameter');
         return;
     }
 
@@ -3228,7 +3164,7 @@ function(anInterface, anObject, shouldForce) {
             TP.ifWarn() ?
                 TP.warn(TP.ec(e, 'Unable to assign delegation wrapper: ' +
                                     fname),
-                        TP.INFERENCE_LOG, arguments) : 0;
+                        TP.INFERENCE_LOG) : 0;
         }
     }
 
@@ -3307,7 +3243,7 @@ function(anInterface, anObject) {
                 TP.ifWarn() ?
                     TP.warn(TP.ec(e, 'Unable to assign NSM method: ' +
                                         fname),
-                            TP.INFERENCE_LOG, arguments) : 0;
+                            TP.INFERENCE_LOG) : 0;
             }
         } else {
             if (TP.owns(target, fname) && TP.$$isDNU(target[fname])) {
@@ -3318,7 +3254,7 @@ function(anInterface, anObject) {
                     TP.ifWarn() ?
                         TP.warn(TP.ec(e, 'Unable to remove DNU method: ' +
                                             fname),
-                                TP.INFERENCE_LOG, arguments) : 0;
+                                TP.INFERENCE_LOG) : 0;
                 }
             }
         }
@@ -3344,7 +3280,7 @@ function(varargs) {
     /**
      * @name addTraitsFrom
      * @synopsis Adds trait types in the arguments list to the receiver.
-     * @param {arguments} varargs A variable list of 0 to N TIBET types that
+     * @param {Array} varargs A variable list of 0 to N TIBET types that
      *     represent 'traits' to add to the receiving type.
      * @returns {TP.lang.RootObject} The receiving type.
      */
@@ -3738,7 +3674,7 @@ function() {
 
         //  If we have unresolved traits, bail out here.
         if (TP.notEmpty(unresolvedTraits)) {
-            return this.raise('TP.sig.InvalidInstantiation', arguments,
+            return this.raise('TP.sig.InvalidInstantiation',
                                 TP.sc('Unresolved type traits: ',
                                         TP.str(unresolvedTraits)));
         }
@@ -3808,7 +3744,7 @@ function() {
 
         //  If we have unresolved traits, bail out here.
         if (TP.notEmpty(unresolvedTraits)) {
-            return this.raise('TP.sig.InvalidInstantiation', arguments,
+            return this.raise('TP.sig.InvalidInstantiation',
                                 TP.sc('Unresolved instance traits: ',
                                         TP.str(unresolvedTraits)));
         }
@@ -4184,7 +4120,7 @@ function(propertyNames, resolverObject) {
     }
 
     if (!TP.isArray(propertyNames)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                 'Not a valid Array of property names for trait resolution.');
     }
 
@@ -4335,7 +4271,7 @@ function(propertyNames, resolverObject) {
     }
 
     if (!TP.isArray(propertyNames)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                 'Not a valid Array of property names for trait resolution.');
     }
 
@@ -4364,7 +4300,7 @@ function(aList) {
      * @todo
      */
 
-    return this.raise('TP.sig.InvalidType', arguments, this);
+    return this.raise('TP.sig.InvalidType', this);
 });
 
 //  ------------------------------------------------------------------------
@@ -4414,7 +4350,7 @@ function(aList) {
      * @todo
      */
 
-    return this.raise('TP.sig.InvalidType', arguments, this);
+    return this.raise('TP.sig.InvalidType', this);
 });
 
 //  ------------------------------------------------------------------------
@@ -4581,7 +4517,7 @@ function(aType) {
 
     //  is it a valid type
     if (TP.notValid(aType)) {
-        this.raise('TP.sig.InvalidType', arguments);
+        this.raise('TP.sig.InvalidType');
 
         return false;
     }
@@ -4745,10 +4681,10 @@ function(aNote, aPrefix, anException) {
 
         TP.ifWarn() ?
             TP.warn(prefix + note + '\n\n' + stackInfo.join('\n'),
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
     } else {
         TP.ifWarn() ?
-            TP.warn(prefix + note, TP.LOG, arguments) : 0;
+            TP.warn(prefix + note, TP.LOG) : 0;
     }
 
     if (TP.notEmpty(anException)) {
@@ -5739,13 +5675,13 @@ function(name) {
         return typ.defineSubtype(name);
     }
 
-    return this.raise('TP.sig.InvalidType', arguments, this);
+    return this.raise('TP.sig.InvalidType', this);
 });
 
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('canResolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name canResolveDNU
@@ -5756,8 +5692,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      * @param {Object} anOrigin The object asking for help. The receiver in this
      *     case.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
@@ -5775,7 +5711,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
 
         //  defer to type for more advanced resolution options
         return typ.canResolveDNU(
-                    anOrigin, aMethodName, anArgArray, aContext);
+                    anOrigin, aMethodName, anArgArray, callingContext);
     }
 
     return false;
@@ -5799,7 +5735,7 @@ function() {
     if (TP.isType(typ)) {
         return typ.construct.apply(typ, arguments);
     } else {
-        return this.raise('TP.sig.InvalidType', arguments, this);
+        return this.raise('TP.sig.InvalidType', this);
     }
 });
 
@@ -5825,7 +5761,7 @@ function() {
     if (TP.isType(typ)) {
         return typ;
     } else {
-        return this.raise('TP.sig.InvalidType', arguments, this);
+        return this.raise('TP.sig.InvalidType', this);
     }
 
     return;
@@ -5834,7 +5770,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('resolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name resolveDNU
@@ -5843,8 +5779,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     string instance that means conversion via asType() would succeed.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The results of function resolution.
      * @todo
      */
@@ -5865,7 +5801,7 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
         }
     }
 
-    return this.raise('TP.sig.InvalidType', arguments, this);
+    return this.raise('TP.sig.InvalidType', this);
 });
 
 //  ========================================================================
@@ -6166,7 +6102,7 @@ function() {
     //  abstract since we would be "incomplete"
             //  if (TP.isArray(this.$needs) && (this.$needs.length > 0))
             //  {
-            //    return this.raise('TP.sig.InvalidInstantiation', arguments);
+            //    return this.raise('TP.sig.InvalidInstantiation');
             //  };
 
     //  alternative view of "abstract" in which we do a "clustering"
@@ -6337,7 +6273,7 @@ function() {
     //  We could use this[functionName] but that won't provide a way to avoid
     //  recursions.
     if (TP.notValid(theFunction)) {
-        return this.raise('TP.sig.InvalidContext', arguments);
+        return this.raise('TP.sig.InvalidContext');
     }
 
     if (theFunction.hasOwnProperty('$$superfunc')) {
@@ -6483,7 +6419,7 @@ function() {
     // We could use this[functionName] but that won't provide a way to avoid
     // recursions.
     if (TP.notValid(theFunction)) {
-        return this.raise('TP.sig.InvalidContext', arguments);
+        return this.raise('TP.sig.InvalidContext');
     }
 
     if (theFunction.hasOwnProperty('$$superfunc')) {
@@ -6536,7 +6472,7 @@ from, is, validate, handle, etc.
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('callBestMethod',
-function(aContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
+function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 
     /**
      * @name callBestMethod
@@ -6546,15 +6482,17 @@ function(aContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *         this.callBestMethod(
      *              arguments, myString, 'from', '', 'fromObject');
      *     will try to invoke this.fromString, then this.fromObject.
-     * @param {arguments} aContext The arguments object of the calling context.
+     * @param {Arguments} callingContext The arguments object of the calling
+     *     context.
      * @param {Object} anObject The object to specialize on.
      * @param {String} aPrefix The method prefix to use. No default, must exist.
      * @param {String} aSuffix The method suffix to use. Defaults to ''.
      * @param {String} aFallback A method name to call in its exact form should
      *     no other method be found. No default, just returns without fallback.
      * @param {Array|arguments} anArgArray An optional argument list. Not
-     *     required in most cases since that data is available from aContext.
-     *     Only used when the original arguments should be altered for the call.
+     *     required in most cases since that data is available from
+     *         callingContext. Only used when the original arguments should be
+     *         altered for the call.
      * @returns {Object} The result of invoking the method found.
      * @todo
      */
@@ -6562,14 +6500,14 @@ function(aContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
     var name,
         args;
 
-    name = this.getBestMethodName(aContext, anObject, aPrefix, aSuffix,
+    name = this.getBestMethodName(callingContext, anObject, aPrefix, aSuffix,
                                     aFallback, anArgArray);
 
     if (TP.isEmpty(name)) {
         return;
     }
 
-    args = TP.args(anArgArray || aContext);
+    args = TP.args(anArgArray || callingContext);
 
     return this[name].apply(this, args);
 });
@@ -6577,29 +6515,31 @@ function(aContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getBestMethod',
-function(aContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
+function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 
     /**
      * @name getBestMethod
      * @synopsis Finds the best method possible which begins with the common
      *     prefix provided. The match is based on the type of anObject, with the
      *     most specific type first. See 'callBestMethod' for an example.
-     * @param {arguments} aContext The arguments object of the calling context.
+     * @param {Arguments} callingContext The arguments object of the calling
+     *     context.
      * @param {Object} anObject The object to specialize on.
      * @param {String} aPrefix The method prefix to use. No default, must exist.
      * @param {String} aSuffix The method suffix to use. Defaults to ''.
      * @param {String} aFallback A method name to call in its exact form should
      *     no other method be found. No default, just returns without fallback.
      * @param {Array|arguments} anArgArray An optional argument list. Not
-     *     required in most cases since that data is available from aContext.
-     *     Only used when the original arguments should be altered for the call.
+     *     required in most cases since that data is available from
+     *     callingContext. Only used when the original arguments should be
+     *     altered for the call.
      * @returns {Function} The method found, or null.
      * @todo
      */
 
     var name;
 
-    name = this.getBestMethodName(aContext, anObject, aPrefix, aSuffix,
+    name = this.getBestMethodName(callingContext, anObject, aPrefix, aSuffix,
                                     aFallback, anArgArray);
 
     if (TP.notEmpty(name)) {
@@ -6612,7 +6552,7 @@ function(aContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getBestMethodName',
-function(aContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
+function(callingContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 
     /**
      * @name getBestMethodName
@@ -6621,15 +6561,17 @@ function(aContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
      *     with the most specific type first. For example, a call of
      *     this.getBestMethodName(arguments, myString, 'from'); will try to find
      *     this.fromString, then this.fromObject.
-     * @param {arguments} aContext The arguments object of the calling context.
+     * @param {Arguments} callingContext The arguments object of the calling
+     *     context.
      * @param {Object} anObject The object to specialize on.
      * @param {String} aPrefix The method prefix to use. No default, must exist.
      * @param {String} aSuffix The method suffix to use. Defaults to ''.
      * @param {String} aFallback A method name to call in its exact form should
      *     no other method be found. No default, just returns without fallback.
      * @param {Array|arguments} anArgArray An optional argument list. Not
-     *     required in most cases since that data is available from aContext.
-     *     Only used when the original arguments should be altered for the call.
+     *     required in most cases since that data is available from
+     *     callingContext. Only used when the original arguments should be
+     *     altered for the call.
      * @returns {String} The method name found, or null.
      * @todo
      */
@@ -6650,7 +6592,7 @@ function(aContext, anObject, aPrefix, aSuffix, aFallback, anArgArray) {
 
     prefix = aPrefix;
     suffix = aSuffix || '';
-    args = TP.args(anArgArray || aContext);
+    args = TP.args(anArgArray || callingContext);
 
     if (TP.isNull(anObject)) {
         name = prefix + 'Null' + suffix;
@@ -7142,14 +7084,14 @@ function() {
                         if (obj.isInitialized()) {
                             TP.boot.$stdout(
                             'Skipping initialized type: ' + item,
-                            TP.TRACE);
+                            TP.DEBUG);
 
                             return;
                         }
 
                         //  for debugging it's helpful to see what's
                         //  being initialized in particular
-                        TP.boot.$stdout('Initializing type: ' + item, TP.TRACE);
+                        TP.boot.$stdout('Initializing type: ' + item, TP.DEBUG);
 
                         obj.initialize();
                         obj.isInitialized(true);
@@ -8076,11 +8018,11 @@ function(aFunction) {
         track;
 
     if (TP.notValid(aFunction)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (TP.isType(this)) {
-        return this.raise('TP.sig.InvalidOperation', arguments,
+        return this.raise('TP.sig.InvalidOperation',
                                                 'Cannot replace types');
     }
 
@@ -8094,7 +8036,6 @@ function(aFunction) {
         } catch (e) {
             return this.raise(
                 'TP.sig.InvalidFunction',
-                arguments,
                 TP.ec(e, TP.id(owner) + '.defineMethod(func); failed.'));
         }
     }

@@ -99,7 +99,7 @@ function(aDocument) {
      */
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  NOTE the inversion of the name, this is the true call but it's not
@@ -141,7 +141,7 @@ function(aDocument) {
         docTypeInfo;
 
     if (!TP.isXMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidXMLDocument');
     }
 
     theDocType = aDocument.doctype;
@@ -214,7 +214,7 @@ function(aDocument) {
         metaValue;
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     metaTags = aDocument.getElementsByTagName('meta');
@@ -271,11 +271,11 @@ function(aNode, namespaceURI) {
         str;
 
     if (!TP.isDocument(aNode) && !TP.isElement(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.isEmpty(namespaceURI)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     elem = TP.isDocument(aNode) ? aNode.documentElement : aNode;
@@ -283,7 +283,7 @@ function(aNode, namespaceURI) {
     str = TP.str(elem);
 
     if (!TP.regex.CONTAINS_ELEM_MARKUP.test(str)) {
-        return TP.raise(this, 'TP.sig.InvalidMarkup', arguments);
+        return TP.raise(this, 'TP.sig.InvalidMarkup');
     }
 
     //  Test the element to make sure that we don't already have an 'xmlns'

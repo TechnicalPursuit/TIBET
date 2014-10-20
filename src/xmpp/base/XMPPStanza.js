@@ -125,7 +125,7 @@ function(aNode) {
      */
 
     if (!TP.isKindOf(aNode, TP.xmpp.Payload)) {
-        return this.raise('TP.sig.InvalidXMPPPayload', arguments, aNode);
+        return this.raise('TP.sig.InvalidXMPPPayload', aNode);
     }
 
     //  the payload gets added at the primitive level
@@ -145,7 +145,7 @@ function() {
      * @synopsis Creates an appropriate response object based on the current
      *     packet.
      * @raises SubtypeResponsibility
-     * @returns {TP.xmpp.Stanza} 
+     * @returns {TP.xmpp.Stanza}
      */
 
     return TP.override();
@@ -181,7 +181,7 @@ function() {
     /**
      * @name getDefaultType
      * @synopsis Returns the default stanza type for the receiver.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -197,7 +197,7 @@ function() {
      * @name getFrom
      * @synopsis Returns the 'from' address for the packet. This is a string
      *     representing a JID.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getAttribute('from');
@@ -213,7 +213,7 @@ function() {
      * @synopsis Returns the message ID for the receiver. Each packet is
      *     assigned a unique ID which can be used to correlate request/response
      *     pairs and other results.
-     * @returns {String} 
+     * @returns {String}
      */
 
     //  note we return what the internal node thinks, it's authoritative
@@ -235,7 +235,7 @@ function(aTagName, aNamespace) {
      *     'query'.
      * @param {String} aNamespace The namespace any tags should be qualified by,
      *     such as IQ_ROSTER.
-     * @returns {Array} 
+     * @returns {Array}
      * @todo
      */
 
@@ -334,7 +334,7 @@ function() {
      * @synopsis Returns the value of the receiver's 'type' attribute, if any.
      *     If the type had no value it is set to the default type as a result of
      *     this call and the default type is returned.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -356,7 +356,7 @@ function() {
     /**
      * @name getTo
      * @synopsis Returns the receiver's 'to' address. This is the target JID.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getAttribute('to');
@@ -380,7 +380,7 @@ function(aSignal) {
     if (TP.notValid(aSignal) || TP.notValid(args = aSignal.getPayload())) {
         TP.ifWarn() ?
             TP.warn('Invalid signal data for event.',
-                    TP.IO_LOG, arguments) : 0;
+                    TP.IO_LOG) : 0;
 
         return;
     }
@@ -388,7 +388,7 @@ function(aSignal) {
     if (TP.notValid(node = args.at('node'))) {
         TP.ifWarn() ?
             TP.warn('Missing stanza data for event.',
-                    TP.IO_LOG, arguments) : 0;
+                    TP.IO_LOG) : 0;
 
         return;
     }
@@ -424,7 +424,7 @@ function(aConnection) {
     }
 
     if (TP.notValid(conn = this.get('connection'))) {
-        return this.raise('TP.sig.InvalidXMPPConnection', arguments);
+        return this.raise('TP.sig.InvalidXMPPConnection');
     }
 
     return conn.send(this);
@@ -472,7 +472,6 @@ function(aStanzaType) {
     arr = this.getType().get('stanzaTypes');
     if (TP.notValid(arr) || !arr.containsString(stanzaType)) {
         return this.raise('TP.sig.InvalidXMPPStanzaType',
-                            arguments,
                             stanzaType);
     }
 

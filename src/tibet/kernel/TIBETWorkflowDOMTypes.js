@@ -82,7 +82,7 @@ function(anID) {
 
     xml = this.getVCardXML();
     if (TP.notValid(xml)) {
-        return this.raise('TP.sig.InvalidXML', arguments,
+        return this.raise('TP.sig.InvalidXML',
                                     'Unable to acquire vCard XML');
     }
 
@@ -489,7 +489,7 @@ function(anID) {
 
     xml = this.getKeyringXML();
     if (TP.notValid(xml)) {
-        return this.raise('TP.sig.InvalidXML', arguments,
+        return this.raise('TP.sig.InvalidXML',
                                     'Unable to acquire keyring XML');
     }
 
@@ -855,7 +855,7 @@ function(aNode, aRequest) {
         i;
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  Normalize the node to try to reduce the number of Text nodes as much as
@@ -916,11 +916,11 @@ function(aNode, aProcessor) {
         filteredNodes;
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (!TP.isString(methodName = this.getTargetMethod())) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  Grab the processor-wide tag type hash that is used to cache tag types.
@@ -1033,11 +1033,11 @@ function(aNode, aProcessor, aRequest) {
         subProcessor;
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (!TP.isString(methodName = this.getTargetMethod())) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (TP.isEmpty(nodes = this.getFilteredNodes(aNode, aProcessor))) {
@@ -1153,7 +1153,7 @@ function(aNode) {
     //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  The default phase grabs *all* nodes here - not just Elements. Note that
@@ -1220,7 +1220,7 @@ function(aNode) {
     //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     query = 'descendant-or-self::*[namespace-uri() = "' +
@@ -1287,7 +1287,7 @@ function(aNode) {
     //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     query = './/processing-instruction(\'tibet-stylesheet\')';
@@ -1379,7 +1379,7 @@ function(aNode) {
     var queriedNodes;
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We're only interested in Element-type Nodes.
@@ -1441,7 +1441,7 @@ function(aNode) {
     var queriedNodes;
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We're only interested in Element-type Nodes.
@@ -1502,7 +1502,7 @@ function(aNode) {
     var queriedNodes;
 
     if (!TP.isNode(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We're only interested in Element-type Nodes.
@@ -1641,7 +1641,7 @@ function(aNode) {
     //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We're only interested in elements that either are in the 'ev:' namespace
@@ -1743,7 +1743,7 @@ function(aNode) {
     //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We're only interested in elements that have a local name of 'info'.
@@ -1809,7 +1809,7 @@ function(aNode) {
     //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We're only interested in elements that either are in the 'bind:'
@@ -1943,7 +1943,7 @@ function(aNode) {
     //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We're only interested in elements that either are in the 'ev:' namespace
@@ -2045,7 +2045,7 @@ function(aNode) {
     //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We're only interested in elements that have a local name of 'info'.
@@ -2111,7 +2111,7 @@ function(aNode) {
     //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
     //  context node for evaluating an XPath expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  We're only interested in elements that either are in the 'bind:'

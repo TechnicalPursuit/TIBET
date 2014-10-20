@@ -67,7 +67,6 @@ function(aNode) {
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode',
-                            arguments,
                             'No node provided.');
     }
 

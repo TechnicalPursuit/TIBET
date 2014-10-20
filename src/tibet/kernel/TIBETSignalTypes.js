@@ -26,7 +26,7 @@
  *     able to monitor such as style changes or similar aspects which don't have
  *     native events associated with them (yet). In these cases you can use a
  *     TP.core.Monitor to observe the object(s) and test them for a condition.
- *     
+ *
  *     For example, you might set up a monitor on an element's background color
  *     which signals "UIColorChange" when the background goes from blue to red.
  *     You'd do this by passing the monitor constructor a simple function which
@@ -145,7 +145,7 @@ function(aTarget, aTest, aSignal) {
     //  monitor can be constructed for common cases.
     test = TP.ifInvalid(aTest, this.getType().getDefaultTest());
     if (!TP.isCallable(test)) {
-        this.raise('TP.sig.InvalidParameter', arguments,
+        this.raise('TP.sig.InvalidParameter',
                     'Test must be a runnable function.');
 
         return;
@@ -157,7 +157,7 @@ function(aTarget, aTest, aSignal) {
     //  avoid requiring a signal name during instance construction
     signal = TP.ifInvalid(aSignal, this.getType().getDefaultSignal());
     if (TP.notValid(signal)) {
-        this.raise('TP.sig.InvalidParameter', arguments,
+        this.raise('TP.sig.InvalidParameter',
                     'Signal must be valid signal name or type.');
 
         return;
@@ -212,7 +212,6 @@ function(aTarget) {
             !TP.isKindOf(target, TP.core.URI)) {
             this.raise(
                 'TP.sig.InvalidParameter',
-                arguments,
                 'Target must be string ID, URI, or acquisition function.');
 
             continue;
@@ -359,7 +358,6 @@ function(aTarget) {
             !TP.isKindOf(target, TP.core.URI)) {
             this.raise(
                 'TP.sig.InvalidParameter',
-                arguments,
                 'Target must be string ID, URI, or acquisition function.');
 
             continue;
@@ -551,7 +549,7 @@ TP.core.ResizeMonitor.Type.defineAttribute(
     function(target) {
 
         var elem,
-    
+
             oldHeight,
             oldWidth,
 
@@ -637,16 +635,8 @@ function() {
 
     var targetElem;
 
-    //  The default is to compute the target responder from the signal's
-    //  context. Many times, responder signals are dispatched after
-    //  computing a particular 'target element'. This element is set as the
-    //  signal's context.
-    if (!TP.isElement(targetElem = this.getContext())) {
-        //  If that's not available, we'll try to use the signal's target.
-        //  If that doesn't work, we just return null
-        if (!TP.isElement(targetElem = this.getTarget())) {
-            return null;
-        }
+    if (!TP.isElement(targetElem = this.getTarget())) {
+        return null;
     }
 
     return TP.wrap(targetElem);
@@ -839,7 +829,7 @@ function() {
      * @synopsis Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMLoaded' signals.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return TP.sys.shouldLogDOMLoadedSignals();
@@ -901,7 +891,7 @@ function() {
     /**
      * @name getLevel
      * @synopsis Returns the error level for the receiving signal.
-     * @returns {Number} 
+     * @returns {Number}
      */
 
     return TP.ERROR;
@@ -947,15 +937,15 @@ TP.sig.DOMErrorIndicationSignal.defineSubtype('DOMServiceError');
  * @description TP.sig.DOMUISignal and its subtypes handle UI signals thrown
  *     from pages and are basically types that map a browser's native events
  *     into TIBET signal types.
- *     
+ *
  *     We do define TIBET signal mappings for some of the DOM Level 3 Events at
  *     the bottom of this file. These are used throughout TIBET in our quest for
  *     standards-compliance :-).
- *     
+ *
  *     At the TP.sig.DOMUISignal level, all signals are configured to return
  *     'false' to the native event handler. Therefore, the following signals
  *     have the following behavior:
- *     
+ *
  *     TP.sig.DOMClick -> We don't want to perform the default behavior (esp.
  *     for Links, which would be to follow the link). TP.sig.DOMContextMenu ->
  *     We don't want the context menu to show. TP.sig.DOMMouseDown -> We don't
@@ -963,13 +953,13 @@ TP.sig.DOMErrorIndicationSignal.defineSubtype('DOMServiceError');
  *     don't want the mouse up's default action to happen. TP.sig.DOMReset -> In
  *     general, we don't reset FORMs this way in TIBET. TP.sig.DOMSubmit -> In
  *     general, we don't submit FORMs this way in TIBET.
- *     
+ *
  *     The following signal types override that behavior and return 'true':
- *     
+ *
  *     TP.sig.DOMKeySignal -> All subtypes of the key signal want to perform
  *     their default behavior, which is to allow the key stroke.
  *     TP.sig.DOMMouseOver -> Don't show Link URLs in the status bar.
- *     
+ *
  *     This parameter can always be set to a different value in the signal
  *     handlers themselves.
  * @todo
@@ -994,7 +984,7 @@ TP.sig.DOMUISignal.Type.defineAttribute('armingHandler',
 //  ------------------------------------------------------------------------
 
 TP.sig.DOMUISignal.Type.defineMethod('arm',
-function(anOrigin, aHandler, aPolicy, aContext) {
+function(anOrigin, aHandler, aPolicy, windowContext) {
 
     /**
      * @name arm
@@ -1005,8 +995,9 @@ function(anOrigin, aHandler, aPolicy, aContext) {
      *     handler to be used instead of routing the event to TIBET.
      * @param {String|Function} aPolicy An (optional) parameter that defines the
      *     firing policy which should be used when firing.
-     * @param {Window} aContext An optional window to search for the element(s).
-     *     If not provided then the TP.context() method is used to fine one.
+     * @param {Window} windowContext An optional window to search for the
+     *     element(s). If not provided then the TP.context() method is used to
+     *     find one.
      * @returns {TP.sig.Signal} The receiver.
      * @todo
      */
@@ -1019,7 +1010,7 @@ function(anOrigin, aHandler, aPolicy, aContext) {
         return;
     }
 
-    context = TP.ifInvalid(aContext, TP.nodeGetWindow(anOrigin));
+    context = TP.ifInvalid(windowContext, TP.nodeGetWindow(anOrigin));
     context = TP.ifInvalid(context, TP.sys.getUICanvas(true));
 
     if (TP.isDocument(context)) {
@@ -1042,7 +1033,7 @@ function(anOrigin, aHandler, aPolicy, aContext) {
 //  ------------------------------------------------------------------------
 
 TP.sig.DOMUISignal.Type.defineMethod('disarm',
-function(anOrigin, aHandler, aContext) {
+function(anOrigin, aHandler, windowContext) {
 
     /**
      * @name disarm
@@ -1052,8 +1043,9 @@ function(anOrigin, aHandler, aContext) {
      * @param {Array|Object|String} anOrigin The origin or origins to disarm.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of routing the event to TIBET.
-     * @param {Window} aContext An optional window to search for the element(s).
-     *     If not provided then the TP.context() method is used to fine one.
+     * @param {Window} windowContext An optional window to search for the
+     *     element(s). If not provided then the TP.context() method is used to
+     *     find one.
      * @returns {TP.sig.Signal} The receiver.
      * @todo
      */
@@ -1065,7 +1057,7 @@ function(anOrigin, aHandler, aContext) {
         return;
     }
 
-    context = TP.ifInvalid(aContext, TP.nodeGetWindow(anOrigin));
+    context = TP.ifInvalid(windowContext, TP.nodeGetWindow(anOrigin));
     context = TP.ifInvalid(context, TP.sys.getUICanvas(true));
 
     if (TP.isDocument(context)) {
@@ -1478,7 +1470,7 @@ function() {
      * @synopsis Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMFocus' signals.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return TP.sys.shouldLogDOMFocusSignals();
@@ -1517,7 +1509,7 @@ function() {
      * @synopsis Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMFocus' signals.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return TP.sys.shouldLogDOMFocusSignals();
@@ -1588,7 +1580,7 @@ function() {
      * @synopsis Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMFocus' signals.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return TP.sys.shouldLogDOMFocusSignals();
@@ -1622,7 +1614,7 @@ function() {
      * @synopsis Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns whether TIBET should
      *     be logging 'TP.sig.DOMFocus' signals.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return TP.sys.shouldLogDOMFocusSignals();
@@ -2101,7 +2093,7 @@ function(aFlag) {
      *     default action. If a flag is provided this flag is used to set the
      *     prevent status.
      * @param {Boolean} aFlag yes or no?
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -2150,7 +2142,7 @@ function() {
      * @name shouldLog
      * @synopsis Returns true when the signal can be logged during signal
      *     processing. At this level, this method returns false.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return false;
@@ -2167,7 +2159,7 @@ function() {
      * @name getDirection
      * @synopsis Returns the mouse wheel direction as either TP.UP or TP.DOWN
      *     depending on the specific delta direction.
-     * @returns {TP.UP|TP.DOWN} 
+     * @returns {TP.UP|TP.DOWN}
      */
 
     return (this.getWheelDelta() > 0) ? TP.UP : TP.DOWN;

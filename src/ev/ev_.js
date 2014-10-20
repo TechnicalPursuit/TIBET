@@ -163,12 +163,12 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
                                     TP.nodeGetElementById(doc, observerID))) {
                             return TP.gid(obsElement, true);
                         } else {
-                            TP.ifWarn(TP.$DEBUG) ?
+                            TP.ifWarn() && TP.$DEBUG ?
                                 TP.warn('Specified ev:observer ' +
                                                 observerID +
                                                 ' not found for: ' +
                                                 TP.nodeAsString(anElement),
-                                            TP.LOG, arguments) : 0;
+                                            TP.LOG) : 0;
 
                             return observerID;
                         }
@@ -176,10 +176,10 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
 
                 observer = arr.join(' ');
             } else {
-                TP.ifWarn(TP.$DEBUG) ?
+                TP.ifWarn() && TP.$DEBUG ?
                     TP.warn('Specified ev:observer not found for: ' +
                                     TP.nodeAsString(anElement),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
             }
         } else {
             //  otherwise, the observer is the global ID of the
@@ -301,10 +301,10 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
         } else {
             //  not unusual when pointing over to TIBET instead of local so
             //  only log this one when VERBOSE is true and only as a warning
-            TP.ifWarn(TP.$DEBUG && TP.$VERBOSE) ?
+            TP.ifWarn() && TP.$DEBUG && TP.$VERBOSE ?
                             TP.warn('Specified ev:target not found for: ' +
                                             TP.nodeAsString(anElement),
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
         }
     }
 
@@ -393,7 +393,7 @@ function(anElement, shouldRegister) {
         return;
     }
 
-    TP.debug('break.awaken_events');
+    TP.stop('break.awaken_events');
 
     signalName = eventAttrValue.trim();
 

@@ -37,7 +37,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided represents an integer with
      *     optional leading + or - sign.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -65,12 +65,11 @@ function(aValue, aFacet) {
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
      * @raises TP.sig.InvalidOperation
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -87,7 +86,7 @@ function(aValue, aFacet) {
      *     specified number of total digits.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 

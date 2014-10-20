@@ -55,7 +55,7 @@ function(anElement, expandVirtuals) {
         computedBase;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     elem = anElement;
@@ -136,7 +136,7 @@ function(anElement) {
         controller;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isDocument(doc = TP.nodeGetDocument(anElement))) {
@@ -198,7 +198,7 @@ function(anElement, uriAttrNames, aPrefix, aSuffix) {
         basePath;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     computedBase = null;
@@ -398,7 +398,7 @@ function(aNode) {
         retNode;
 
     if (!TP.isNode(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (!TP.nodeIsDetached(aNode)) {

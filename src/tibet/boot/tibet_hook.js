@@ -203,7 +203,7 @@ $$findTIBET = function(aWindow) {
 if (self.TP == null) {
 
     //  ---
-    //  Define a slightly more useful error reporter.
+    //  Define a slightly more useful error handler.
     //  ---
 
     //  NOTE: If TP exists it means we're in the init file, not the hook file. In
@@ -1219,7 +1219,7 @@ if (window.onerror.failedlaunch !== true &&
                     ndx;
 
                 if (typeof(aString) !== 'string') {
-                    return TP.boot.$raise(this, 'InvalidParameter', arguments);
+                    return TP.boot.$raise(this, 'InvalidParameter');
                 }
 
                 atobData = [];
@@ -2099,7 +2099,7 @@ if (window.onerror.failedlaunch !== true &&
 
     //  ------------------------------------------------------------------------
 
-    TP.boot.$raise = function(anOrigin, anException, aContext, aPayload) {
+    TP.boot.$raise = function(anOrigin, anException, aPayload) {
 
         /**
          * @name $raise
@@ -2109,8 +2109,6 @@ if (window.onerror.failedlaunch !== true &&
          * @param {Object} anOrigin The origin signaled for this event. Can be a
          *     string to allow spoofing of element IDs etc.
          * @param {Object} anException The signal being triggered.
-         * @param {Object} aContext An object, or arguments, which defines the
-         *     context of the error.
          * @param {Object} aPayload arguments for the signal.
          * @return {null}
          * @todo
@@ -2118,7 +2116,7 @@ if (window.onerror.failedlaunch !== true &&
 
         //  NOTE the context gets dropped here since the primitive version
         //  takes an element as the context
-        return TP.boot.$$dispatch(anOrigin, anException, null, aPayload);
+        return TP.boot.$$dispatch(anOrigin, anException, aPayload);
     };
 
     //  ------------------------------------------------------------------------

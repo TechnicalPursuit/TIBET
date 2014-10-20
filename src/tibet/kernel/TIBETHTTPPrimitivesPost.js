@@ -34,7 +34,7 @@ function(httpObj) {
      */
 
     if (TP.notValid(httpObj)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  IE prefers an empty function here
@@ -120,7 +120,7 @@ function(targetUrl, aRequest) {
                 TP.ifWarn() ?
                     TP.warn('Content-Type supplied to GET call.' +
                                 ' Forcing to be ' + TP.URL_ENCODED + '.',
-                            TP.IO_LOG, arguments) : 0;
+                            TP.IO_LOG) : 0;
             }
         }
 
@@ -271,7 +271,7 @@ function(httpVerb, targetUrl, aRequest) {
     request.atPut('verb', httpVerb);
 
     if (TP.isEmpty(targetUrl)) {
-        return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
+        return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
                             request);
     }
 
@@ -286,7 +286,7 @@ function(httpVerb, targetUrl, aRequest) {
                     TP.ifKeyInvalid(request,
                                     'exceptionType',
                                     'HTTPException'),
-                    arguments, request);
+                    request);
     }
 
     return httpObj;
@@ -321,7 +321,7 @@ function(httpVerb, targetUrl, aRequest) {
     request.atPut('verb', httpVerb);
 
     if (TP.isEmpty(targetUrl)) {
-        return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
+        return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
                             request);
     }
 
@@ -340,7 +340,7 @@ function(httpVerb, targetUrl, aRequest) {
                     TP.ifKeyInvalid(request,
                                     'exceptionType',
                                     'HTTPException'),
-                    arguments, request);
+                    request);
     }
 
     return httpObj;

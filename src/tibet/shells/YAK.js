@@ -1088,7 +1088,7 @@ function(aRequest) {
 
     //  first make sure we can construct a valid response
     if (TP.notValid(response = aRequest.constructResponse())) {
-        this.raise('TP.sig.ProcessingException', arguments,
+        this.raise('TP.sig.ProcessingException',
                     'Couldn\'t construct response.');
 
         return;
@@ -1664,7 +1664,7 @@ function(aSignal) {
     if (TP.notValid(aSignal) || TP.notValid(args = aSignal.getPayload())) {
         TP.ifWarn() ?
             TP.warn('Invalid signal data for TP.sig.XMPPInput event.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return;
     }
@@ -1672,7 +1672,7 @@ function(aSignal) {
     if (TP.notValid(node = args.at('node'))) {
         TP.ifWarn() ?
             TP.warn('Missing stanza data for TP.sig.XMPPInput event.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return;
     }

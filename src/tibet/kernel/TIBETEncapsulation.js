@@ -364,7 +364,7 @@ function(attributeName, attributeValue, shouldSignal) {
                             TP.tname(this) === 'Window' ?
                                 TP.sc(' -- Possible unbound function') :
                                 ''),
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
     }
 
     op = TP.UPDATE;
@@ -604,7 +604,7 @@ function(anIndex, varargs) {
      *     [[0,1],[2,3]]. This is equivalent to the syntax arr[1][1];
      * @param {Number} anIndex The index to access. Note that this value is the
      *     first index in a potential list of indicies.
-     * @param {arguments} varargs A variable list of 0 to N additional indexes
+     * @param {Array} varargs A variable list of 0 to N additional indexes
      *     which descend into nested array children.
      * @returns {Object} The value at the index.
      * @addon Array
@@ -634,7 +634,7 @@ function(anIndex, varargs) {
     switch (len) {
         case 0:
 
-            return TP.raise(this, 'TP.sig.InvalidIndex', arguments);
+            return TP.raise(this, 'TP.sig.InvalidIndex');
 
         default:
 
@@ -673,7 +673,7 @@ function(anIndex, varargs, aValue) {
      *     the location found by traversing to the last index (arguments.length
      *     - 2) provided.
      * @param {Number} anIndex The index to set/update.
-     * @param {arguments} varargs A variable list of 0 to N additional indexes
+     * @param {Array} varargs A variable list of 0 to N additional indexes
      *     which descend into nested array children.
      * @param {Object} aValue The object to place at anIndex. NOTE that the
      *     position of this attribute may actually vary if multiple indexes are
@@ -723,7 +723,7 @@ function(anIndex, varargs, aValue) {
     len = arguments.length;
     switch (len) {
         case 0:
-            return TP.raise(this, 'TP.sig.InvalidIndex', arguments);
+            return TP.raise(this, 'TP.sig.InvalidIndex');
 
         default:
 
@@ -737,7 +737,7 @@ function(anIndex, varargs, aValue) {
                     //  can't access an object at the index provided, so
                     //  we'll raise an exception for now. in some cases we
                     //  might have preferred to build a new container
-                    return TP.raise(this, 'TP.sig.InvalidIndex', arguments);
+                    return TP.raise(this, 'TP.sig.InvalidIndex');
                 }
             }
 
@@ -752,7 +752,7 @@ function(anIndex, varargs, aValue) {
                     obj[arguments[len - 2]] = arguments[len - 1];
                 } catch (e) {
                     return TP.raise(this, 'TP.sig.ArrayException',
-                                    arguments, TP.ec(e));
+                                    TP.ec(e));
                 }
             }
 
@@ -1322,7 +1322,7 @@ function() {
         msg = TP.join('Error creating function: ',
                     TP.args(arguments).join(' :: '));
 
-        TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG, arguments) : 0;
+        TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
 
         return null;
     }
@@ -1421,7 +1421,7 @@ function() {
             newinst[arguments[i]] =
                     TP.notDefined(arguments[i + 1]) ? null : arguments[i + 1];
         } else {
-            //  TP.raise(newinst, 'TP.sig.DuplicateKey', arguments,
+            //  TP.raise(newinst, 'TP.sig.DuplicateKey',
             //              arguments[i]);
         }
     }
@@ -1466,7 +1466,7 @@ function(pattern, flags) {
     } catch (e) {
         msg = TP.join('Error creating regex: ', restr);
 
-        TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG, arguments) : 0;
+        TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
 
         return null;
     }
@@ -1486,7 +1486,7 @@ function() {
 
     /**
      * @name construct
-     * @param {arguments} varargs A variable list of 0 to N values to build the
+     * @param {Array} varargs A variable list of 0 to N values to build the
      *     String from.
      * @returns {String} A new instance.
      * @abtract Constructs and returns a new instance of String from the

@@ -4,8 +4,6 @@
     name="phantom" default="phantom" basedir="~lib">
 
 <config id="properties" if="boot.phaseone">
-    <property name="log.reporter" value="phantom"/>
-    <property name="log.level" value="0"/>
 </config>
 
 <config id="phantom">

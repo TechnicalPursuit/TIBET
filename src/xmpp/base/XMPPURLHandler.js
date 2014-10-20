@@ -61,7 +61,7 @@ function(targetURI, aRequest) {
 
         loadRequest;
 
-    TP.debug('break.uri_load');
+    TP.stop('break.uri_load');
 
     request = TP.request(aRequest);
     response = request.constructResponse();
@@ -402,7 +402,7 @@ function(targetURI, aRequest) {
     var request,
         response;
 
-    this.raise('TP.sig.UnsupportedOperation', arguments);
+    this.raise('TP.sig.UnsupportedOperation');
 
     request = TP.request(aRequest);
     response = request.constructResponse(false);
@@ -446,7 +446,7 @@ function(targetURI, aRequest) {
 
         content;
 
-    TP.debug('break.uri_save');
+    TP.stop('break.uri_save');
 
     request = TP.request(aRequest);
     response = request.constructResponse();

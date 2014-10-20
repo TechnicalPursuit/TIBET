@@ -336,7 +336,7 @@ function(aPath) {
 
     //  Need at least a path to test.
     if (TP.isEmpty(path = aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidPath', arguments,
+        return TP.raise(this, 'TP.sig.InvalidPath',
                         'Unable to create an empty path.');
     }
 
@@ -349,7 +349,7 @@ function(aPath) {
 
         //  If it still has ACP expressions, then it's an invalid path
         if (TP.regex.HAS_ACP.test(path)) {
-            return this.raise('TP.sig.InvalidPath', arguments);
+            return this.raise('TP.sig.InvalidPath');
         }
 
         //  Now, so as to not change the overall meaning of the path, go back to
@@ -804,7 +804,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     get data.
-     * @param {arguments} varargs The arguments to execute the get with. The
+     * @param {Array} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -830,7 +830,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {arguments} varargs Any remaining arguments will be used as values
+     * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
@@ -1293,8 +1293,7 @@ function(targetObj) {
                     //  changes, mostly used in 'path'ed attributes) as the
                     //  default signal type here so that undefined aspect
                     //  signals will use that type.
-                    TP.signal(targetObj, aspectSigName, arguments,
-                                description,
+                    TP.signal(targetObj, aspectSigName, description,
                                 TP.INHERITANCE_FIRING,
                                 pathAction === TP.UPDATE ?
                                                 'TP.sig.Change':
@@ -1310,7 +1309,7 @@ function(targetObj) {
                             'target', targetObj,
                             TP.CHANGE_PATHS, changedPaths);
 
-            TP.signal(targetObj, sigName, arguments, description);
+            TP.signal(targetObj, sigName, description);
         }
     }
 
@@ -1499,7 +1498,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     get data.
-     * @param {arguments} varargs The arguments to execute the get with. The
+     * @param {Array} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -1515,12 +1514,12 @@ function(targetObj, varargs) {
         retVal;
 
     if (TP.notValid(targetObj)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  This kind of path won't work against XML
     if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
-        return this.raise('TP.sig.InvalidPath', arguments);
+        return this.raise('TP.sig.InvalidPath');
     }
 
     //  Fill in any templated expressions in the path (which must be numeric
@@ -1566,7 +1565,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {arguments} varargs Any remaining arguments will be used as values
+     * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
@@ -1590,12 +1589,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         mutatedStructure;
 
     if (TP.notValid(targetObj)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  This kind of path won't work against XML
     if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
-        return this.raise('TP.sig.InvalidPath', arguments);
+        return this.raise('TP.sig.InvalidPath');
     }
 
     srcPath = this.get('srcPath');
@@ -1843,7 +1842,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     get data.
-     * @param {arguments} varargs The arguments to execute the get with. The
+     * @param {Array} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -1859,12 +1858,12 @@ function(targetObj, varargs) {
         retVal;
 
     if (TP.notValid(targetObj)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  This kind of path won't work against XML
     if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
-        return this.raise('TP.sig.InvalidPath', arguments);
+        return this.raise('TP.sig.InvalidPath');
     }
 
     this.preGetAccess(targetObj);
@@ -1909,7 +1908,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {arguments} varargs Any remaining arguments will be used as values
+     * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @raises TP.sig.InvalidParameter, TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
@@ -1929,12 +1928,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         executedPaths;
 
     if (TP.notValid(targetObj)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  This kind of path won't work against XML
     if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
-        return this.raise('TP.sig.InvalidPath', arguments);
+        return this.raise('TP.sig.InvalidPath');
     }
 
     //  Fill in any templated expressions in the path (which must be numeric
@@ -3045,7 +3044,7 @@ function(targetObj, varargs) {
      *     object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     get data.
-     * @param {arguments} varargs The arguments to execute the get with. The
+     * @param {Array} varargs The arguments to execute the get with. The
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
@@ -3073,12 +3072,12 @@ function(targetObj, varargs) {
         sourceObjectID;
 
     if (TP.notValid(targetObj)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  This kind of path only works against XML
     if (!TP.isNode(targetObj) && !TP.isKindOf(targetObj, TP.core.Node)) {
-        return this.raise('TP.sig.InvalidPath', arguments);
+        return this.raise('TP.sig.InvalidPath');
     }
 
     pathSrc = this.get('srcPath');
@@ -3185,7 +3184,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @param {arguments} varargs Any remaining arguments will be used as values
+     * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
      * @raises TP.sig.InvalidParameter, TP.sig.InvalidPath
      * @returns {TP.core.XPathPath} The receiver.
@@ -3227,12 +3226,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         executedPaths;
 
     if (TP.notValid(targetObj)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  This kind of path only works against XML
     if (!TP.isNode(targetObj) && !TP.isKindOf(targetObj, TP.core.Node)) {
-        return this.raise('TP.sig.InvalidPath', arguments);
+        return this.raise('TP.sig.InvalidPath');
     }
 
     var oldVal;
@@ -3296,8 +3295,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             TP.warn(TP.boot.$annotate(
                         this,
                         'Unable to set value for path: ' + path),
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
         return this;
     }
@@ -3484,7 +3482,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                     this,
                                     'Path probably points to scalar value.' +
                                     ' Unable to set value.'),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                     return;
                 }
@@ -3499,7 +3497,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                         this,
                         'Path probably points to scalar value.' +
                         ' Unable to set value.'),
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return;
     }
@@ -3680,8 +3678,7 @@ function(aNode, flagChanges) {
                         this,
                         'Unable to obtain content to set for path: ' +
                         path),
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
     } else {
         //  To be API compliant, we wrap the single Element in an Array
         content = TP.ac(content);
@@ -3728,8 +3725,7 @@ function(aNode, flagChanges) {
                         this,
                         'Unable to obtain content to set for path: ' +
                         path),
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
     }
 
     return content;
@@ -3848,8 +3844,7 @@ function(aNode, flagChanges) {
                         this,
                         'Unable to obtain content to set for path: ' +
                         path),
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
     }
 
     return content;
@@ -4665,9 +4660,9 @@ function(aTPNode) {
                 //  flag to TP.DELETE and that's all
                 TP.elementFlagChange(node, TP.SELF, TP.DELETE);
 
-                TP.ifTrace(TP.$DEBUG) ?
+                TP.ifTrace() && TP.$DEBUG ?
                     TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
             } else {
                 //  if we're not flagging then just rip it out of the DOM
                 TP.nodeRemoveChild(elem, node);
@@ -4732,8 +4727,7 @@ function(aNode, flagChanges) {
                             this,
                             'Unable to obtain content to set for path: ' +
                             path),
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
             return TP.ac();
         }
@@ -4787,8 +4781,7 @@ function(aNode, flagChanges) {
                 TP.warn(TP.boot.$annotate(
                             this,
                             'Unable to build content for path: ' + path),
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
             return TP.ac();
         }
@@ -4978,7 +4971,7 @@ function(aFlag) {
                     TP.warn('Found non-native XPath constructs in XPath: ' +
                             path +
                             '. Forcing XPath to use non native parser.',
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 this.set('isNative', false);
 
@@ -5061,7 +5054,7 @@ function(aPath, forceNative) {
                     TP.warn('Found non-native XPath constructs in XPath: ' +
                             aPath +
                             '. Forcing XPath to use non native parser.',
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
             }
 
             pathType = false;

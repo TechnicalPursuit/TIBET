@@ -77,7 +77,6 @@ function(aRequest) {
         node = TP.node(body);
         if (TP.notValid(node)) {
             this.raise('TP.sig.InvalidSOAPContent',
-                        arguments,
                         'Unable to convert request body to XML.');
             return;
         }

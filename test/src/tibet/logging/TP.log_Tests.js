@@ -19,30 +19,30 @@ TP.log.Manager.describe('logger registration',
 function() {
 
     this.it('verify a logger does not exist', function(test, options) {
-        this.assert.isFalse(TP.log.Manager.exists('test'));
+        this.assert.isFalse(TP.log.Manager.exists('foofy'));
     });
 
     this.it('verify a logger does exist', function(test, options) {
-        TP.log.Manager.getLogger('test');
-        this.assert.isTrue(TP.log.Manager.exists('test'));
+        TP.log.Manager.getLogger('foofy');
+        this.assert.isTrue(TP.log.Manager.exists('foofy'));
     });
 
     this.it('registers new loggers on construct', function(test, options) {
-        TP.log.Logger.construct('test');
-        this.assert.isTrue(TP.log.Manager.exists('test'));
+        TP.log.Logger.construct('foofy');
+        this.assert.isTrue(TP.log.Manager.exists('foofy'));
     });
 
     this.it('rejects duplicate logger registrations', function(test, options) {
         this.assert.raises(function() {
-            var logger = TP.log.Logger.construct('test');
+            var logger = TP.log.Logger.construct('foofy');
             TP.log.Manager.registerLogger(logger);
         }, 'DuplicateRegistration');
     });
 
     this.it('can remove (unregister) loggers', function(test, options) {
-        var logger = TP.log.Logger.construct('test');
+        var logger = TP.log.Logger.construct('foofy');
         TP.log.Manager.removeLogger(logger);
-        var logger2 = TP.log.Logger.construct('test');
+        var logger2 = TP.log.Logger.construct('foofy');
 
         this.refute.isIdenticalTo(logger, logger2);
     });
@@ -60,7 +60,7 @@ function() {
     });
 
     this.afterEach(function() {
-        TP.log.Manager.loggers.empty();
+        TP.log.Manager.removeLogger(root);
         root = null;
     });
 
@@ -111,7 +111,11 @@ function() {
     });
 
     this.afterEach(function() {
-        TP.log.Manager.loggers.empty();
+        TP.log.Manager.removeLogger(root);
+        TP.log.Manager.removeLogger('foofy');
+        TP.log.Manager.removeLogger('foofy.nested');
+        TP.log.Manager.removeLogger('foofy.nested.some');
+        TP.log.Manager.removeLogger('foofy.nested.some.more');
         root = null;
     });
 
@@ -122,33 +126,33 @@ function() {
     });
 
     this.it('can create top-level loggers', function(test, options) {
-        this.assert.isValid(TP.log.Manager.getLogger('test'));
+        this.assert.isValid(TP.log.Manager.getLogger('foofy'));
     });
 
     this.it('uniques loggers by lower-case name', function(test, options) {
-        var logger1 = TP.log.Manager.getLogger('test');
-        var logger2 = TP.log.Manager.getLogger('Test');
-        var logger3 = TP.log.Manager.getLogger('TEST');
+        var logger1 = TP.log.Manager.getLogger('foofy');
+        var logger2 = TP.log.Manager.getLogger('Foofy');
+        var logger3 = TP.log.Manager.getLogger('FOOFY');
 
         this.assert.isIdenticalTo(logger1, logger2);
         this.assert.isIdenticalTo(logger1, logger3);
     });
 
     this.it('top-level logger parent is root logger', function(test, options) {
-        var logger = TP.log.Manager.getLogger('test');
+        var logger = TP.log.Manager.getLogger('foofy');
 
         this.assert.isIdenticalTo(logger.getParent(), root);
     });
 
     this.it('can create hierarchical loggers', function(test, options) {
-        var logger = TP.log.Manager.getLogger('test.nested');
+        var logger = TP.log.Manager.getLogger('foofy.nested');
         this.assert.isValid(logger);
-        this.assert.isEqualTo(logger.getName(), 'test.nested');
+        this.assert.isEqualTo(logger.getName(), 'foofy.nested');
     });
 
     this.it('singly-nested loggers get proper parent', function(test, options) {
-        var logger = TP.log.Manager.getLogger('test.nested');
-        var primary = TP.log.Manager.getLogger('test');
+        var logger = TP.log.Manager.getLogger('foofy.nested');
+        var primary = TP.log.Manager.getLogger('foofy');
         var parent = logger.getParent();
 
         this.assert.isIdenticalTo(parent, primary);
@@ -156,8 +160,8 @@ function() {
 
     this.it('multiply-nested loggers get proper parent',
             function(test, options) {
-        var logger = TP.log.Manager.getLogger('test.nested.some.more');
-        var primary = TP.log.Manager.getLogger('test.nested.some');
+        var logger = TP.log.Manager.getLogger('foofy.nested.some.more');
+        var primary = TP.log.Manager.getLogger('foofy.nested.some');
         var parent = logger.getParent();
 
         this.assert.isIdenticalTo(parent, primary);
@@ -199,25 +203,31 @@ function() {
 TP.log.Manager.describe('logger levels',
 function() {
 
-    // NOTE: Root logger level defaulting is tested elsewhere.
+    var root;
+
+    this.beforeEach(function() {
+        root = TP.log.Manager.getRootLogger();
+    });
 
     this.afterEach(function() {
-        TP.log.Manager.loggers.empty();
+        TP.log.Manager.removeLogger(root);
+        root = null;
+        TP.log.Manager.removeLogger('foofy');
+        TP.log.Manager.removeLogger('foofy.nested');
+        TP.log.Manager.removeLogger('foofy.nested.some');
     });
 
     this.it('primary loggers inherit parent/root level',
             function(test, options) {
-        var root = TP.log.Manager.getRootLogger();
-        var logger = TP.log.Manager.getLogger('test');
+        var logger = TP.log.Manager.getLogger('foofy');
 
         this.assert.isIdenticalTo(root.getLevel(), logger.getLevel());
     });
 
     this.it('multiply-nested loggers inherit ancestor level',
             function(test, options) {
-        var root = TP.log.Manager.getRootLogger();
-        var logger = TP.log.Manager.getLogger('test');
-        var nested = TP.log.Manager.getLogger('test.nested.some');
+        var logger = TP.log.Manager.getLogger('foofy');
+        var nested = TP.log.Manager.getLogger('foofy.nested.some');
 
         logger.setLevel(TP.log.TRACE);
 
@@ -227,7 +237,7 @@ function() {
 
     this.it('computes whether logging is enabled properly',
             function(test, options) {
-        var logger = TP.log.Manager.getLogger('test');
+        var logger = TP.log.Manager.getLogger('foofy');
 
         this.assert.isTrue(logger.isEnabled(TP.log.ALL), 'All');
         this.assert.isTrue(logger.isEnabled(TP.log.INFO), 'Info');
@@ -241,15 +251,19 @@ function() {
 TP.log.Manager.describe('logger appenders',
 function() {
 
+    var root;
     var logger;
 
     this.beforeEach(function() {
-        logger = TP.log.Manager.getLogger('test');
+        root = TP.log.Manager.getRootLogger();
+        logger = TP.log.Manager.getLogger('foofy');
     });
 
     this.afterEach(function() {
-        TP.log.Manager.loggers.empty();
+        TP.log.Manager.removeLogger(logger);
         logger = null;
+        TP.log.Manager.removeLogger(root);
+        root = null;
     });
 
     this.it('new loggers have no appenders', function() {
@@ -259,7 +273,6 @@ function() {
 
     this.it('new loggers inherit root appenders', function() {
         // Root logger doesn't have default appenders...add one for this test.
-        var root = TP.log.Manager.getRootLogger();
         root.addAppender(TP.log.Appender.construct());
 
         try {
@@ -270,6 +283,9 @@ function() {
     });
 
     this.it('loggers can define appenders', function() {
+        // Root logger doesn't have default appenders...add one for this test.
+        root.addAppender(TP.log.Appender.construct());
+
         logger.addAppender(TP.log.Appender.construct());
         // Note the 2 here...one from root, one we defined...
         this.assert.isEqualTo(logger.getAppenders().length, 2);
@@ -294,15 +310,19 @@ function() {
 TP.log.Manager.describe('logger filters',
 function() {
 
+    var root;
     var logger;
 
     this.beforeEach(function() {
-        logger = TP.log.Manager.getLogger('test');
+        root = TP.log.Manager.getRootLogger();
+        logger = TP.log.Manager.getLogger('foofy');
     });
 
     this.afterEach(function() {
-        TP.log.Manager.loggers.empty();
+        TP.log.Manager.removeLogger(logger);
         logger = null;
+        TP.log.Manager.removeLogger(root);
+        root = null;
     });
 
     this.it('new loggers have no filters', function() {
@@ -312,7 +332,6 @@ function() {
 
     this.it('new loggers inherit root filters', function() {
         // Root logger doesn't have filters by default...add one for this test.
-        var root = TP.log.Manager.getRootLogger();
         root.addFilter(TP.log.Filter.construct());
 
         try {
@@ -328,7 +347,6 @@ function() {
     });
 
     this.it('loggers can restrict filters', function() {
-        var root = TP.log.Manager.getRootLogger();
         root.addFilter(TP.log.Filter.construct());
 
         logger.inheritsFilters(false);

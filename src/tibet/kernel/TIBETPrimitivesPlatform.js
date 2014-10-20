@@ -468,7 +468,7 @@ TP.hc(
         if (!TP.sys.shouldRequestPrivileges()) {
             TP.ifTrace() ? TP.sys.logSecurity(
                 'TIBET not configured to request privileged code execution',
-                TP.TRACE, arguments) : 0;
+                TP.DEBUG) : 0;
 
             return false;
         }
@@ -505,7 +505,6 @@ TP.hc(
 
                     TP.raise(this,
                             'TP.sig.PrivilegeViolation',
-                            arguments,
                             TP.sc('Unable to obtain privileges for: '),
                                     privilegedOp);
 
@@ -536,7 +535,7 @@ TP.hc(
             if (TP.sys.cfg('log.privilege_requests')) {
                 TP.ifTrace() ? TP.sys.logSecurity('Privilege request at ' +
                             'executePrivileged',
-                            TP.TRACE, arguments) : 0;
+                            TP.DEBUG) : 0;
             }
 
             //  Try to get all permissions. This will throw an exception if
@@ -657,7 +656,6 @@ TP.hc(
             //  Go ahead and raise a TIBET exception.
             TP.raise(this,
                     'TP.sig.PrivilegeViolation',
-                    arguments,
                     TP.ec(e, TP.join('Unable to obtain privileges for: ',
                                     privilegedOp)));
         }
@@ -732,8 +730,7 @@ TP.hc(
                 TP.error(
                     'TIBET not configured to request privileged code' +
                     ' execution',
-                    TP.SECURITY_LOG,
-                    arguments) : 0;
+                    TP.SECURITY_LOG) : 0;
 
             return false;
         }
@@ -770,7 +767,6 @@ TP.hc(
 
                     TP.raise(this,
                             'TP.sig.PrivilegeViolation',
-                            arguments,
                             TP.sc('Unable to obtain privileges for: '),
                                     privilegedOp);
 
@@ -802,7 +798,7 @@ TP.hc(
             if (TP.sys.cfg('log.privilege_requests')) {
                 TP.ifTrace() ? TP.sys.logSecurity('Privilege request at ' +
                             'executePrivileged',
-                            TP.TRACE, arguments) : 0;
+                            TP.DEBUG) : 0;
             }
 
             privilegedFunction();
@@ -874,7 +870,6 @@ TP.hc(
             //  Go ahead and raise a TIBET exception.
             TP.raise(this,
                     'TP.sig.PrivilegeViolation',
-                    arguments,
                     TP.ec(e, TP.join('Unable to obtain privileges for: ',
                                     privilegedOp)));
         }
@@ -1374,7 +1369,7 @@ TP.hc(
             domName;
 
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  NB: This test is 'special-cased' as regular HTML documents test
@@ -1486,7 +1481,7 @@ TP.hc(
             domName;
 
         if (!TP.isNode(aNode)) {
-            return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+            return TP.raise(this, 'TP.sig.InvalidNode');
         }
 
         //  NB: This test is 'special-cased' as regular HTML documents test

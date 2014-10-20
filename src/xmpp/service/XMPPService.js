@@ -17,7 +17,7 @@
  *     of the TIBET infrastructure of using request/response pairs, a 'default'
  *     instance of this service will be instantiated and registered to handle
  *     all TP.sig.XMPPRequests.
- *     
+ *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'TP.core.XMPPServiceDefault'. It should have a
  *     vCard entry in the currently executing project (with an 'FN' of
@@ -25,86 +25,86 @@
  *     will be prompted to enter the information about the default server. If
  *     only part of the information is found the user can be prompted to enter
  *     the missing information.
- *     
+ *
  *     It is possible, however, to manually set up a server. To do so, supply
  *     the 'serviceURI', 'serverName' and 'connectionType' parameters to the
  *     service as a set of connection parameters:
- *     
+ *
  *     xmppService = TP.core.XMPPService.construct( 'localXMPPServer',
  *     TP.hc('serviceURI', 'http://localhost:5280/http-bind/', 'serverName',
  *     'infohost.com', 'connectionType', TP.xmpp.XMLNS.BINDING));
- *     
+ *
  *     Or have a vCard entry where the 'FN' entry matches the resource ID that
  *     is passed to the 'construct' call as detailed here:
- *     
+ *
  *     E.g.
- *     
+ *
  *     Parameter vCard entry ----------- ----------- resourceID
  *     <FN>localXMPPServer</FN> serviceURI
  *     <URI>http://localhost:5280/http-bind/<URI> serverName
  *     <N>localXMPPServer</N> connectionType
  *     <X-XMPP-CONN-TYPE>BINDING</X-XMPP-CONN-TYPE>
- *     
+ *
  *     and then construct it using:
- *     
+ *
  *     xmppService = TP.core.XMPPService.construct('localXMPPServer');
- *     
+ *
  *     If these parameters aren't supplied in either the 'construct' call or in
  *     the vCard, the user can be prompted to supply them at runtime by
  *     specifying the placeholder value '{USER}' in the vCard entry:
- *     
+ *
  *     serviceURI <URI>{USER}<URI>
- *     
+ *
  *     You will then need to register your service instance so that it services
  *     TP.sig.XMPPRequests (otherwise, the TIBET machinery will instantiate the
  *     'default' instance of TP.core.XMPPService as described above and register
  *     it to service these kinds of requests):
- *     
+ *
  *     xmppService.register();
- *     
+ *
  *     // If the vCard associated with the current 'effective' user // role
  *     ('demo', 'admin', 'devl', 'mgr', 'qa', 'user', etc.) // has an entry
  *     '<JABBERID>....</JABBERID>', that will be used // as the 'connectionJID'
  *     (the 'from JID') for this connection.
- *     
+ *
  *     // There are several ways to use a connection. A connection can // be
  *     opened and authenticated or, if the 'connectionJID' is // 'new' to the
  *     server, it can try to register with it.
- *     
+ *
  *     Open and authenticate a connection:
- *     
+ *
  *     if (xmppService.openConnection()) { xmppService.authenticateConnection(
  *     TP.jid('testrat
  * @infohost.com'),
  'testrat');
- *     
+ *
  *     xmppService.setupCurrentUser(); } else { // Can't open connection };
- *     
+ *
  *     OR
- *     
+ *
  *     Register with a server:
- *     
+ *
  *     if (xmppService.openConnection()) { // initiateRegistration does return
  *     a TP.lang.Hash // containing the names and current values of any extra //
  *     fields that may be required by a particular server so // that you can
  *     process those. We don't use those here - we // just assume that username
  *     and password are all that's // required. regFields =
  *     xmppService.initiateRegistration();
- *     
+ *
  *     // Normally, we'd be supplying a TP.lang.Hash here that had // a key for
  *     every key we found in regFields above, but for // this example we just
  *     assume 'username' and 'password'. xmppService.finalizeRegistration(
  *     TP.hc('username', 'foorat', 'password', 'foorat'));
- *     
+ *
  *     // Now that we've registered with the server, authenticate // our
  *     connection with it. xmppService.authenticateConnection( TP.jid('foorat
  * @infohost.com'),
  'foorat');
- *     
+ *
  *     xmppService.setupCurrentUser(); } else { // Can't open connection };
- *     
+ *
  *     Shut down a connection:
- *     
+ *
  *     xmppService.shutdownConnection();
  * @todo
  */
@@ -338,7 +338,6 @@ function(aJID, aPassword) {
         //  If a TP.core.User hasn't been constructed (the TP.core.User type
         //  should have defaulted it), then raise an exception and return.
         return this.raise('TP.sig.XMPPAuthException',
-                            arguments,
                             'No effective user.');
     }
 
@@ -675,7 +674,7 @@ function() {
     //  an open one. We're registering a JID with this server and hoping
     //  that it will authenticate.
     if (!this.hasOpenConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotOpen', arguments);
+        return this.raise('TP.sig.XMPPConnectionNotOpen');
     }
 
     conn = this.get('connection');
@@ -720,14 +719,14 @@ function(regNode) {
         fieldElems;
 
     if (TP.notValid(regNode) || !TP.isKindOf(regNode, TP.xmpp.IqResult)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  Note that we don't check for an authenticated connection here, only
     //  an open one. We're registering a JID with this server and hoping
     //  that it will authenticate.
     if (!this.hasOpenConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotOpen', arguments);
+        return this.raise('TP.sig.XMPPConnectionNotOpen');
     }
 
     //  Allocate a hash to store the field names and field values.
@@ -778,14 +777,14 @@ function(registrationValues) {
         res;
 
     if (TP.notValid(registrationValues)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  Note that we don't check for an authenticated connection here, only
     //  an open one. We're registering a JID with this server and hoping
     //  that it will authenticate.
     if (!this.hasOpenConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotOpen', arguments);
+        return this.raise('TP.sig.XMPPConnectionNotOpen');
     }
 
     conn = this.get('connection');
@@ -840,12 +839,11 @@ function(stanzaID, toJID, aName, aGroup) {
      */
 
     if (TP.notValid(toJID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     return TP.todo();
@@ -870,8 +868,7 @@ function(stanzaID) {
         stanza;
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     conn = this.get('connection');
@@ -913,12 +910,11 @@ function(stanzaID, toJID, aName) {
      */
 
     if (TP.notValid(toJID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     return TP.todo();
@@ -947,16 +943,15 @@ function(stanzaID, toJID, aCommandAction, aCommandElem) {
      */
 
     if (TP.notValid(toJID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (!TP.isElement(aCommandElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     return TP.todo();
@@ -988,15 +983,14 @@ function(stanzaID, toJID, aMessage, aSubject, aThreadID, aMessageType) {
         stanza;
 
     if (TP.notValid(toJID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  NB: aMessage, aSubject and aThreadID can all be empty here (even
     //  though having no message might make chatting a bit difficult ;-) ).
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     conn = this.get('connection');
@@ -1068,14 +1062,13 @@ function(stanzaID, presenceState, aStatus) {
         stanza;
 
     if (TP.isEmpty(presenceState)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  NB: aStatus can be empty here.
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     conn = this.get('connection');
@@ -1132,12 +1125,11 @@ function(stanzaID, aJID) {
         stanza;
 
     if (TP.notValid(aJID)) {
-        return this.raise('TP.sig.InvalidJID', arguments);
+        return this.raise('TP.sig.InvalidJID');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     conn = this.get('connection');
@@ -1186,12 +1178,11 @@ function(stanzaID, aJID) {
         stanza;
 
     if (TP.notValid(aJID)) {
-        return this.raise('TP.sig.InvalidJID', arguments);
+        return this.raise('TP.sig.InvalidJID');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     conn = this.get('connection');
@@ -1270,12 +1261,11 @@ function(stanzaID, pubsubServiceJID, nodeID, aSubscribeModel, aPublishModel) {
         newDataField;
 
     if (TP.isEmpty(nodeID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     pubsubJID = TP.ifEmpty(pubsubServiceJID, this.get('pubsubJID'));
@@ -1391,12 +1381,11 @@ function(stanzaID, pubsubServiceJID, nodeID) {
         pubsubPayload;
 
     if (TP.isEmpty(nodeID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     pubsubJID = TP.ifEmpty(pubsubServiceJID, this.get('pubsubJID'));
@@ -1481,16 +1470,15 @@ function(stanzaID, pubsubServiceJID, nodeID, xmlContent, anAccessModel) {
         newDataField;
 
     if (TP.isEmpty(nodeID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (!TP.isNode(xmlContent)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     pubsubJID = TP.ifEmpty(pubsubServiceJID, this.get('pubsubJID'));
@@ -1612,12 +1600,11 @@ function(stanzaID, pubsubServiceJID, nodeID, itemID) {
         pubsubPayload;
 
     if (TP.isEmpty(nodeID) || TP.isEmpty(itemID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     pubsubJID = TP.ifEmpty(pubsubServiceJID, this.get('pubsubJID'));
@@ -1691,8 +1678,7 @@ function(stanzaID, pubsubServiceJID) {
         pubsubPayload;
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     pubsubJID = TP.ifEmpty(pubsubServiceJID, this.get('pubsubJID'));
@@ -1747,7 +1733,7 @@ function(aName) {
      */
 
     if (TP.isEmpty(aName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  First, we set the slot itself - note the usage of '$set()' to avoid
@@ -1797,12 +1783,11 @@ function(stanzaID, pubsubServiceJID, nodeID) {
         pubsubPayload;
 
     if (TP.isEmpty(nodeID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     pubsubJID = TP.ifEmpty(pubsubServiceJID, this.get('pubsubJID'));
@@ -1877,12 +1862,11 @@ function(stanzaID, pubsubServiceJID, nodeID) {
         pubsubPayload;
 
     if (TP.isEmpty(nodeID)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (!this.hasAuthConnection()) {
-        return this.raise('TP.sig.XMPPConnectionNotAuthenticated',
-                            arguments);
+        return this.raise('TP.sig.XMPPConnectionNotAuthenticated');
     }
 
     pubsubJID = TP.ifEmpty(pubsubServiceJID, this.get('pubsubJID'));

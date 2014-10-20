@@ -258,12 +258,12 @@ TP.hc(
         //  URI
         url = targetUrl || request.at('uri');
         if (TP.isEmpty(url)) {
-            return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
+            return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
                                 request);
         }
 
         if (!TP.isKindOf(url, String)) {
-            return TP.httpError(url, 'TP.sig.InvalidParameter', arguments,
+            return TP.httpError(url, 'TP.sig.InvalidParameter',
                                 request);
         }
 
@@ -328,7 +328,7 @@ TP.hc(
             request.atPut('message', TP.str(e));
 
             return TP.httpError(targetUrl, 'HTTPException',
-                                arguments, request);
+                                request);
         }
 
         //  configure headers based on URI and header collection
@@ -339,7 +339,7 @@ TP.hc(
             request.atPut('message', TP.str(e));
 
             return TP.httpError(targetUrl, 'HTTPHeaderException',
-                                arguments, request);
+                                request);
         }
 
         //  configure for async processing as needed
@@ -378,8 +378,8 @@ TP.hc(
                     request.atPut('message',
                                     'HTTP request completed.');
 
-                    TP.ifInfo(TP.sys.shouldLogIO()) ?
-                        TP.sys.logIO(request, TP.INFO, arguments) :
+                    TP.ifInfo() && TP.sys.shouldLogIO() ?
+                        TP.sys.logIO(request, TP.INFO) :
                         0;
 
                     TP.$httpWrapup(targetUrl, request, httpObj);
@@ -392,8 +392,8 @@ TP.hc(
             request.atPut('direction', TP.SEND);
             request.atPut('message', 'HTTP request initiated.');
 
-            TP.ifInfo(TP.sys.shouldLogIO()) ?
-                TP.sys.logIO(request, TP.INFO, arguments) : 0;
+            TP.ifInfo() && TP.sys.shouldLogIO() ?
+                TP.sys.logIO(request, TP.INFO) : 0;
 
             //  NB: We have to "'' +" the content string here to
             //  get a primitive string - for some reason, Gecko
@@ -428,7 +428,7 @@ TP.hc(
                     }
 
                     TP.ifWarn() ?
-                        TP.warn(estr, TP.LOG, arguments) : 0;
+                        TP.warn(estr, TP.LOG) : 0;
                 } else {
                     //  throw so the outer catch block can handle it
                     throw e2;
@@ -441,8 +441,8 @@ TP.hc(
                 request.atPut('direction', TP.RECV);
                 request.atPut('message', 'HTTP request completed.');
 
-                TP.ifInfo(TP.sys.shouldLogIO()) ?
-                    TP.sys.logIO(request, TP.INFO, arguments) : 0;
+                TP.ifInfo() && TP.sys.shouldLogIO() ?
+                    TP.sys.logIO(request, TP.INFO) : 0;
 
                 TP.$httpWrapup(targetUrl, request, httpObj);
             }
@@ -458,7 +458,7 @@ TP.hc(
                                         TP.str(e));
 
             return TP.httpError(targetUrl, 'HTTPSendException',
-                                arguments, request);
+                                request);
         }
 
         //  NOTE:   appears to be a Moz bug here when the connection
@@ -471,7 +471,7 @@ TP.hc(
                                     'target?');
 
             return TP.httpError(targetUrl, 'HTTPException',
-                                arguments, request);
+                                request);
         }
 
         return httpObj;
@@ -521,12 +521,12 @@ TP.hc(
         //  URI
         url = targetUrl || request.at('uri');
         if (TP.isEmpty(url)) {
-            return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
+            return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
                                 request);
         }
 
         if (!TP.isKindOf(url, String)) {
-            return TP.httpError(url, 'TP.sig.InvalidParameter', arguments,
+            return TP.httpError(url, 'TP.sig.InvalidParameter',
                                 request);
         }
 
@@ -590,7 +590,7 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPException', arguments,
+            return TP.httpError(targetUrl, 'HTTPException',
                                 request);
         }
 
@@ -601,7 +601,7 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPHeaderException', arguments,
+            return TP.httpError(targetUrl, 'HTTPHeaderException',
                                 request);
         }
 
@@ -638,8 +638,8 @@ TP.hc(
                     request.atPut('direction', TP.RECV);
                     request.atPut('message', 'HTTP request completed.');
 
-                    TP.ifInfo(TP.sys.shouldLogIO()) ?
-                        TP.sys.logIO(request, TP.INFO, arguments) : 0;
+                    TP.ifInfo() && TP.sys.shouldLogIO() ?
+                        TP.sys.logIO(request, TP.INFO) : 0;
 
                     TP.$httpWrapup(targetUrl, request, httpObj);
                 };
@@ -650,8 +650,8 @@ TP.hc(
             request.atPut('direction', TP.SEND);
             request.atPut('message', 'HTTP request initiated.');
 
-            TP.ifInfo(TP.sys.shouldLogIO()) ?
-                TP.sys.logIO(request, TP.INFO, arguments) : 0;
+            TP.ifInfo() && TP.sys.shouldLogIO() ?
+                TP.sys.logIO(request, TP.INFO) : 0;
 
             //  NB: For Mozilla, we "'' +" the content string here to get a
             //  primitive string - here, we just do it for consistency with
@@ -674,8 +674,8 @@ TP.hc(
                 request.atPut('direction', TP.RECV);
                 request.atPut('message', 'HTTP request completed.');
 
-                TP.ifInfo(TP.sys.shouldLogIO()) ?
-                        TP.sys.logIO(request, TP.INFO, arguments) : 0;
+                TP.ifInfo() && TP.sys.shouldLogIO() ?
+                        TP.sys.logIO(request, TP.INFO) : 0;
 
                 TP.$httpWrapup(targetUrl, request, httpObj);
             }
@@ -689,7 +689,7 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', 'HTTP request failed: ' + TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPSendException', arguments,
+            return TP.httpError(targetUrl, 'HTTPSendException',
                                 request);
         }
 
@@ -740,12 +740,12 @@ TP.hc(
         //  URI
         url = targetUrl || request.at('uri');
         if (TP.isEmpty(url)) {
-            return TP.httpError(targetUrl, 'TP.sig.InvalidURI', arguments,
+            return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
                                 request);
         }
 
         if (!TP.isKindOf(url, String)) {
-            return TP.httpError(url, 'TP.sig.InvalidParameter', arguments,
+            return TP.httpError(url, 'TP.sig.InvalidParameter',
                                 request);
         }
 
@@ -757,7 +757,7 @@ TP.hc(
                                         'make cross-domain HTTP call');
 
             return TP.httpError(targetUrl, 'TP.sig.PrivilegeViolation',
-                                arguments, request);
+                                request);
         }
 
         //  expand the url as needed using any query data in the request.
@@ -820,7 +820,7 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPException', arguments,
+            return TP.httpError(targetUrl, 'HTTPException',
                                 request);
         }
 
@@ -831,7 +831,7 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPHeaderException', arguments,
+            return TP.httpError(targetUrl, 'HTTPHeaderException',
                                 request);
         }
 
@@ -868,8 +868,8 @@ TP.hc(
                     request.atPut('direction', TP.RECV);
                     request.atPut('message', 'HTTP request completed.');
 
-                    TP.ifInfo(TP.sys.shouldLogIO()) ?
-                        TP.sys.logIO(request, TP.INFO, arguments) : 0;
+                    TP.ifInfo() && TP.sys.shouldLogIO() ?
+                        TP.sys.logIO(request, TP.INFO) : 0;
 
                     TP.$httpWrapup(targetUrl, request, httpObj);
                 };
@@ -880,8 +880,8 @@ TP.hc(
             request.atPut('direction', TP.SEND);
             request.atPut('message', 'HTTP request initiated.');
 
-            TP.ifInfo(TP.sys.shouldLogIO()) ?
-                TP.sys.logIO(request, TP.INFO, arguments) : 0;
+            TP.ifInfo() && TP.sys.shouldLogIO() ?
+                TP.sys.logIO(request, TP.INFO) : 0;
 
             //  NB: For Mozilla, we "'' +" the content string here to get a
             //  primitive string - here, we just do it for consistency with
@@ -899,8 +899,8 @@ TP.hc(
                 request.atPut('direction', TP.RECV);
                 request.atPut('message', 'HTTP request completed.');
 
-                TP.ifInfo(TP.sys.shouldLogIO()) ?
-                        TP.sys.logIO(request, TP.INFO, arguments) : 0;
+                TP.ifInfo() && TP.sys.shouldLogIO() ?
+                        TP.sys.logIO(request, TP.INFO) : 0;
 
                 TP.$httpWrapup(targetUrl, request, httpObj);
             }
@@ -914,7 +914,7 @@ TP.hc(
             request.atPut('object', e);
             request.atPut('message', 'HTTP request failed: ' + TP.str(e));
 
-            return TP.httpError(targetUrl, 'HTTPSendException', arguments,
+            return TP.httpError(targetUrl, 'HTTPSendException',
                                 request);
         }
 
@@ -946,7 +946,7 @@ TP.hc(
 
         if (TP.notValid(xhr)) {
             return TP.httpError(
-                    targetUrl, 'HTTPCreateException', arguments,
+                    targetUrl, 'HTTPCreateException',
                             TP.hc('message',
                                     'Unable to instantiate XHR object.'));
         }
@@ -1005,7 +1005,7 @@ TP.hc(
 
         if (TP.notValid(xhr)) {
             return TP.httpError(
-                    targetUrl, 'HTTPCreateException', arguments,
+                    targetUrl, 'HTTPCreateException',
                             TP.hc('message',
                                     'Unable to instantiate XHR object.'));
         }
@@ -1039,7 +1039,7 @@ TP.hc(
 
         if (TP.notValid(xhr)) {
             return TP.httpError(
-                    targetUrl, 'HTTPCreateException', arguments,
+                    targetUrl, 'HTTPCreateException',
                             TP.hc('message',
                                     'Unable to instantiate XHR object.'));
         }

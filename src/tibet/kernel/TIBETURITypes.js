@@ -184,7 +184,7 @@ function(aURI, $$vetted) {
         type,
         err;
 
-    TP.debug('break.uri_construct');
+    TP.stop('break.uri_construct');
 
     //  this method invokes itself with a fully-expanded URI once the
     //  concrete subtype has been determined. By checking here we can avoid
@@ -279,7 +279,6 @@ function(aURI, $$vetted) {
                 //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
                 return this.raise(
                         'TP.sig.NoConcreteType',
-                        arguments,
                         'Unable to locate concrete type for URI: ' + url);
             }
         }
@@ -287,7 +286,7 @@ function(aURI, $$vetted) {
         err = TP.ec(e,
             TP.join(TP.sc('URI construct produced error for: '),
                 url));
-        return this.raise('TP.sig.URIException', arguments, err);
+        return this.raise('TP.sig.URIException', err);
     } finally {
         TP.sys.shouldLogRaise(flag);
     }
@@ -380,7 +379,7 @@ function(aDocument) {
         path;
 
     if (!TP.isDocument(aDocument)) {
-        this.raise('TP.sig.InvalidDocument', arguments);
+        this.raise('TP.sig.InvalidDocument');
 
         return;
     }
@@ -443,7 +442,7 @@ function(aWindow) {
      */
 
     if (!TP.isWindow(aWindow)) {
-        this.raise('TP.sig.InvalidWindow', arguments);
+        this.raise('TP.sig.InvalidWindow');
         return;
     }
 
@@ -501,7 +500,6 @@ function(aScheme) {
 
     if (!TP.isString(aScheme)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Scheme is empty or null.');
     }
 
@@ -565,7 +563,7 @@ function(anInstance) {
     var dict;
 
     if (!TP.canInvoke(anInstance, 'getID')) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     //  update our instance registry with the instance, keying it under the
@@ -592,7 +590,7 @@ function(anInstance) {
     var dict;
 
     if (!TP.canInvoke(anInstance, 'getID')) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     //  update our instance registry by removing the instance, finding it's key
@@ -649,7 +647,6 @@ function(aURI, aRequest) {
     tname = TP.sys.cfg('uri.handler');
     if (TP.isEmpty(tname)) {
         this.raise('TP.sig.InvalidConfiguration',
-                    arguments,
                     'uri.handler has no type name specified.');
 
         //  always return at least our default type
@@ -658,7 +655,7 @@ function(aURI, aRequest) {
 
     type = TP.sys.require(tname);
     if (TP.notValid(type)) {
-        this.raise('TP.sig.TypeNotFound', arguments, tname);
+        this.raise('TP.sig.TypeNotFound', tname);
 
         //  always return at least our default type
         return TP.core.URIHandler;
@@ -715,7 +712,7 @@ function(aURI, aCatalog, aFilter) {
         catalog,
         delegates;
 
-    TP.debug('break.uri_catalog');
+    TP.stop('break.uri_catalog');
 
     //  typically we'll be using a cached catalog, or a root catalog passed
     //  in so we can merge data with it properly
@@ -740,7 +737,7 @@ function(aURI, aCatalog, aFilter) {
                 }
 
                 if (TP.notValid(xml)) {
-                    this.raise('TP.sig.InvalidXML', arguments,
+                    this.raise('TP.sig.InvalidXML',
                                 'Catalog files must be valid XML.');
 
                     return;
@@ -759,7 +756,7 @@ function(aURI, aCatalog, aFilter) {
             } else {
                 //  error creating top-level catalog...just complain and
                 //  exit
-                this.raise('TP.sig.InvalidCatalog', arguments,
+                this.raise('TP.sig.InvalidCatalog',
                             'Unable to create top-level URI catalog.');
 
                 return;
@@ -931,7 +928,7 @@ function(aURI) {
         delegates,
         rewrites;
 
-    TP.debug('break.uri_entry');
+    TP.stop('break.uri_entry');
 
     //  NOTE that this will force catalog creation on first invocation
     cat = this.$getURICatalog();
@@ -1010,7 +1007,7 @@ function(aURI) {
                     TP.ifWarn() ?
                         TP.warn('Invalid RegExp source: ' + str +
                                     ' in URI catalog.',
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                     continue;
                 }
@@ -1056,7 +1053,7 @@ function(aURI) {
                     TP.ifWarn() ?
                         TP.warn('Invalid RegExp source: ' + str +
                                     ' in URI catalog.',
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                     continue;
                 }
@@ -1109,7 +1106,7 @@ function(url, entry, key) {
         str,
         re;
 
-    TP.debug('break.uri_map');
+    TP.stop('break.uri_map');
 
     //  construct empty map so we don't have to do this work twice
     map = TP.hc();
@@ -1244,7 +1241,7 @@ function(forceRefresh) {
 
         key;
 
-    TP.debug('break.uri_profile');
+    TP.stop('break.uri_profile');
 
     //  NOTE that this profile is cached under tibet.uriprofile so it can be
     //  looked up only when it's changing
@@ -1343,7 +1340,7 @@ function(aProfile, useWildcards) {
         role,
         user;
 
-    TP.debug('break.uri_profile');
+    TP.stop('break.uri_profile');
 
     //  profile defaults to current runtime profile
     profile = aProfile || TP.core.URI.$getURIProfile();
@@ -1445,7 +1442,7 @@ function(aURI, aRequest) {
     var rewriter,
         type;
 
-    TP.debug('break.uri_rewrite');
+    TP.stop('break.uri_rewrite');
 
     rewriter = TP.sys.cfg('uri.rewriter');
     type = TP.sys.require(rewriter);
@@ -1456,7 +1453,7 @@ function(aURI, aRequest) {
         TP.ifWarn() ?
             TP.warn('URI rewriter: ' + rewriter +
                         ' does not support rewrite(); using default.',
-                    TP.IO_LOG, arguments) : 0;
+                    TP.IO_LOG) : 0;
 
         return TP.core.URIRewriter.rewrite(aURI, aRequest);
     }
@@ -1486,7 +1483,7 @@ function(aURI, aRequest) {
     var router,
         type;
 
-    TP.debug('break.uri_route');
+    TP.stop('break.uri_route');
 
     router = TP.sys.cfg('uri.router');
     type = TP.sys.require(router);
@@ -1497,7 +1494,7 @@ function(aURI, aRequest) {
         TP.ifWarn() ?
             TP.warn('URI router: ' + router +
                     ' does not support route(); using default.',
-                    TP.IO_LOG, arguments) : 0;
+                    TP.IO_LOG) : 0;
 
         return TP.core.URIRouter.route(aURI, aRequest);
     }
@@ -1702,7 +1699,7 @@ function(schemeSpecificString) {
     var primaryHref,
         fragment;
 
-    TP.debug('break.uri_parse');
+    TP.stop('break.uri_parse');
 
     if (TP.isEmpty(schemeSpecificString)) {
         return;
@@ -1994,7 +1991,7 @@ function() {
 
     TP.ifTrace() ?
         TP.sys.logTransform('Clearing content cache for: ' + this.getID(),
-            TP.TRACE, arguments) : 0;
+            TP.DEBUG) : 0;
 
     if (TP.isValid(resource = this.get('resource'))) {
         this.ignore(resource, 'Change');
@@ -2302,7 +2299,7 @@ function(anObject, resultType, collapse) {
 
     var obj;
 
-    TP.debug('break.uri_filter');
+    TP.stop('break.uri_filter');
 
     if (TP.isValid(anObject)) {
         switch (resultType) {
@@ -2529,18 +2526,18 @@ function() {
     if (TP.notEmpty(dateStr)) {
         theDate = Date.from(dateStr);
     } else {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace(this.getID() +
                             ' has no Last-Updated information',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
         return;
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.trace(this.getID() +
                         ' returning cached Last-Updated: ' +
                         theDate,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     this.$set('lastUpdated', theDate);
 
@@ -2814,7 +2811,7 @@ function(aRequest, aResult, aResource) {
     var result,
         resultType;
 
-    TP.debug('break.uri_content');
+    TP.stop('break.uri_content');
 
     //  Try to collapse and process using the smartest objects possible.
     result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
@@ -2850,7 +2847,7 @@ function(aRequest, aResult, aResource) {
         fragment,
         result;
 
-    TP.debug('break.uri_fragment');
+    TP.stop('break.uri_fragment');
 
     resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
 
@@ -3061,7 +3058,6 @@ function(aSignal) {
 
                     subURIs.at(i).signal(
                             aSignal.getSignalName(),
-                            arguments,
                             aSignal.getPayload());
                 }
             }
@@ -3069,10 +3065,10 @@ function(aSignal) {
 
         //  Now that any of the appropriate subURIs have signaled from
         //  themselves, we signal from ourself.
-        this.signal(aSignal.getSignalName(), arguments, aSignal.getPayload());
+        this.signal(aSignal.getSignalName(), aSignal.getPayload());
     } else {
         //  If we didn't have any paths, then just signal from ourself.
-        this.signal(aSignal.getSignalName(), arguments, aSignal.getPayload());
+        this.signal(aSignal.getSignalName(), aSignal.getPayload());
     }
 
     return this;
@@ -3113,7 +3109,7 @@ function(aProperty, aFlag) {
         fname;
 
     if (!TP.isString(aProperty)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
         return;
     }
 
@@ -3124,7 +3120,7 @@ function(aProperty, aFlag) {
         if (TP.canInvoke(url, fname)) {
             return url[fname](aFlag);
         } else {
-            this.raise('TP.sig.InvalidFunction', arguments);
+            this.raise('TP.sig.InvalidFunction');
             return;
         }
     }
@@ -3280,10 +3276,10 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
         subrequest,
         thisref;
 
-    TP.debug('break.uri_content');
+    TP.stop('break.uri_content');
 
     if (!TP.canInvoke(this, contentFName)) {
-        this.raise('TP.sig.InvalidParameter', arguments,
+        this.raise('TP.sig.InvalidParameter',
             'Must supply content accessor function name.');
 
         return;
@@ -3510,7 +3506,7 @@ function(aResource, aRequest) {
         oldResource,
         newResource;
 
-    TP.debug('break.uri_resource');
+    TP.stop('break.uri_resource');
 
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
@@ -3623,7 +3619,7 @@ function(aRequest, aResult, aResource) {
 
     var result;
 
-    TP.debug('break.uri_content');
+    TP.stop('break.uri_content');
 
     if (TP.isKindOf(aResult, 'TP.sig.Response')) {
         result = aResult.getResult();
@@ -3638,7 +3634,7 @@ function(aRequest, aResult, aResource) {
     if (TP.canInvoke(result, 'set')) {
         result.set('content', aResource);
     } else {
-        this.raise('TP.sig.InvalidResource', arguments,
+        this.raise('TP.sig.InvalidResource',
             'Unable to modify target resource.');
     }
 
@@ -3666,7 +3662,7 @@ function(aRequest, aResult, aResource) {
     var fragment,
         result;
 
-    TP.debug('break.uri_fragment');
+    TP.stop('break.uri_fragment');
 
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
@@ -3688,11 +3684,11 @@ function(aRequest, aResult, aResource) {
         if (TP.canInvoke(result, 'set')) {
             result.set(fragment, aResource);
         } else {
-            this.raise('TP.sig.InvalidResource', arguments,
+            this.raise('TP.sig.InvalidResource',
                 'Unable to modify target resource.');
         }
     } else {
-        this.raise('TP.sig.InvalidFragment', arguments);
+        this.raise('TP.sig.InvalidFragment');
     }
 
     return result;
@@ -3761,7 +3757,7 @@ function(aDataSource, aRequest) {
     var subrequest,
         async;
 
-    TP.debug('break.uri_transform');
+    TP.stop('break.uri_transform');
 
     //  If we're going to have to request the data then the key thing we
     //  want to avoid is having an incoming request complete() before the
@@ -3867,7 +3863,7 @@ function(headerData) {
 
         theDate;
 
-    TP.debug('break.uri_headers');
+    TP.stop('break.uri_headers');
 
     dict = this.$get('headers');
 
@@ -4033,7 +4029,6 @@ function(aNID) {
 
     if (!TP.isString(aNID)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Scheme is empty or null.');
     }
 
@@ -4102,7 +4097,7 @@ function(schemeSpecificString) {
     var match,
         hash;
 
-    TP.debug('break.uri_parse');
+    TP.stop('break.uri_parse');
             /*
     //  NOTE that the concept of 'primary' and 'fragment' aren't relevant
     //  for this type, so we don't invoke the supertype method here, we set
@@ -4149,7 +4144,7 @@ function(aRequest, filterResult) {
         resultType,
         response;
 
-    TP.debug('break.uri_resource');
+    TP.stop('break.uri_resource');
 
     //  If we're not the primary URI, that means we have a fragment. So we have
     //  to get the 'whole' resource from the primary URI and then proceed
@@ -4269,7 +4264,7 @@ function(aRequest) {
         url,
         handler;
 
-    TP.debug('break.uri_load');
+    TP.stop('break.uri_load');
 
     request = this.constructRequest(aRequest);
 
@@ -4305,7 +4300,7 @@ function(aRequest) {
         url,
         handler;
 
-    TP.debug('break.uri_nuke');
+    TP.stop('break.uri_nuke');
 
     request = this.constructRequest(aRequest);
 
@@ -4342,7 +4337,7 @@ function(aRequest) {
         url,
         handler;
 
-    TP.debug('break.uri_save');
+    TP.stop('break.uri_save');
 
     request = this.constructRequest(aRequest);
 
@@ -4455,7 +4450,7 @@ function(aResource, aRequest) {
         fragText,
         i;
 
-    TP.debug('break.uri_resource');
+    TP.stop('break.uri_resource');
 
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
@@ -4515,12 +4510,10 @@ function(aResource, aRequest) {
 
             subURIs.at(i).signal(
                     'TP.sig.StructureChange',
-                    arguments,
                     description);
 
             this.signal(
                     'TP.sig.StructureChange',
-                    arguments,
                     description);
         }
     }
@@ -4632,7 +4625,7 @@ function() {
         fragment,
         content;
 
-    TP.debug('break.uri_mime');
+    TP.stop('break.uri_mime');
 
     //  TODO:   if we're a fragment then is it possible that our MIME type
     //  could differ from that of our container?
@@ -4879,7 +4872,7 @@ function(aRequest, filterResult) {
         response,
         result;
 
-    TP.debug('break.uri_resource');
+    TP.stop('break.uri_resource');
 
     //  TODO:   do we need a fragment check here for any reason?
     if ((url = this.getPrimaryURI()) !== this) {
@@ -5030,13 +5023,13 @@ function(aRequest) {
 
         mime;
 
-    TP.debug('break.uri_cache');
+    TP.stop('break.uri_cache');
 
     //  TODO:   verify the receiver should cache anything...it should be
     //  either a "caching" URI (whatever that means) or a primary URI.
 
     if (TP.notValid(aRequest)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'No request object.');
     }
 
@@ -5148,13 +5141,13 @@ function(aRequest) {
             //  is to be able to "reconstitute" the data as needed
             result = type.constructContentObject(this, dom || dat);
             if (TP.notValid(result)) {
-                return this.raise('', arguments,
+                return this.raise('',
                     'Content handler failed to produce output.');
             } else {
                 this.$set('resource', result, false);
             }
         } else {
-            return this.raise('TP.sig.InvalidParameter', arguments,
+            return this.raise('TP.sig.InvalidParameter',
                             'Content handler API not supported.');
         }
     } else if (TP.isNode(dom)) {
@@ -5204,15 +5197,15 @@ function(aRequest) {
         //  result _is_ a wrapper object of some form.
         this.$set('resource', result, false);
     } else if (TP.canInvoke(resource, 'setNativeNode') && TP.isNode(result)) {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Refreshing current node container.',
-                        TP.TRACE, arguments) : 0;
+                        TP.DEBUG) : 0;
 
         resource.setNativeNode(result);
     } else if (TP.isNode(result)) {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Creating new node container.',
-                        TP.TRACE, arguments) : 0;
+                        TP.DEBUG) : 0;
 
         //  note that we pass ourselves along to establish "ownership"
         result = TP.core.Node.construct(result);
@@ -5292,7 +5285,7 @@ function(aRequest) {
         thisref,
         async;
 
-    TP.debug('break.uri_process');
+    TP.stop('break.uri_process');
 
     //  This request will be used for transformation processing.
     request = this.constructSubRequest(aRequest);
@@ -5407,12 +5400,12 @@ function(aRequest) {
         url,
         handler;
 
-    TP.debug('break.uri_load');
+    TP.stop('break.uri_load');
 
-    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.sys.logIO('Loading content data for ID: ' +
                     TP.ifInvalid(this.getLocation(), 'FROM_SOURCE'),
-                    TP.TRACE, arguments) : 0;
+                    TP.DEBUG) : 0;
 
     request = this.constructRequest(aRequest);
 
@@ -5457,7 +5450,7 @@ function(aRequest) {
         url,
         handler;
 
-    TP.debug('break.uri_nuke');
+    TP.stop('break.uri_nuke');
 
     //  TODO:   when the receiver has a fragment what then? Are we supposed
     //  to remove only the fragment subset of the receiver?
@@ -5497,7 +5490,7 @@ function(aRequest) {
         url,
         handler;
 
-    TP.debug('break.uri_save');
+    TP.stop('break.uri_save');
 
     //  TODO:   when the receiver has a fragment what then? Should just
     //          update "document href" and save that?
@@ -6131,7 +6124,7 @@ function(schemeSpecificString) {
      * @returns {TP.lang.Hash} The parsed URI 'components'.
      */
 
-    TP.debug('break.uri_parse');
+    TP.stop('break.uri_parse');
 
     //  NOTE that the concept of 'primary' and 'fragment' aren't relevant
     //  for this type, so we don't invoke the supertype method here, we set
@@ -6178,7 +6171,7 @@ function(aRequest, filterResult) {
         resultType,
         response;
 
-    TP.debug('break.uri_resource');
+    TP.stop('break.uri_resource');
 
     request = this.constructRequest(aRequest);
     async = this.rewriteRequestMode(request);
@@ -6275,7 +6268,7 @@ function(aRequest) {
         url,
         handler;
 
-    TP.debug('break.uri_load');
+    TP.stop('break.uri_load');
 
     request = this.constructRequest(aRequest);
 
@@ -6311,7 +6304,7 @@ function(aRequest) {
         url,
         handler;
 
-    TP.debug('break.uri_nuke');
+    TP.stop('break.uri_nuke');
 
     request = this.constructRequest(aRequest);
 
@@ -6348,7 +6341,7 @@ function(aRequest) {
         url,
         handler;
 
-    TP.debug('break.uri_save');
+    TP.stop('break.uri_save');
 
     request = this.constructRequest(aRequest);
 
@@ -6703,7 +6696,7 @@ function(aURIString) {
         //  before we try to raise we need at least a uri slot.
         this.$set('uri', aURIString);
 
-        return this.raise('TP.sig.InvalidURI', arguments,
+        return this.raise('TP.sig.InvalidURI',
                     'Invalid TIBET URL prefix or scheme: ' + aURIString);
     }
 
@@ -7012,7 +7005,7 @@ function(forceRefresh) {
         } else {
             TP.ifWarn() ?
                 TP.warn('Invalid URI specification: ' + path,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
             return;
         }
@@ -7062,7 +7055,7 @@ function() {
 
     //  first check is a regex that should work on all valid TIBET URLs
     if (!TP.regex.TIBET_URI_SPLITTER.test(url)) {
-        return TP.raise(url, 'TP.sig.InvalidURI', arguments, url);
+        return TP.raise(url, 'TP.sig.InvalidURI', url);
     }
 
     //  keep the parts around in split form for faster processing elsewhere
@@ -7189,7 +7182,7 @@ function(aRequest, filterResult) {
         tpwin,
         inst;
 
-    TP.debug('break.uri_resource');
+    TP.stop('break.uri_resource');
 
     request = this.constructRequest(aRequest);
     refresh = request.at('refresh');
@@ -7275,7 +7268,7 @@ function(aRequest, filterResult) {
             err = TP.join(TP.sc('Unable to locate window '), canvas,
                         TP.sc(' for URI: '), this.getPath());
 
-            TP.ifWarn() ? TP.warn(err, TP.LOG, arguments) : 0;
+            TP.ifWarn() ? TP.warn(err, TP.LOG) : 0;
 
             request.fail(TP.FAILURE, err);
 
@@ -7331,7 +7324,7 @@ function(aRequest, filterResult) {
                 err = TP.ec(e,
                         TP.join(TP.sc('URI access produced error for: '),
                                 this.asString()));
-                this.raise('TP.sig.URIException', arguments, err);
+                this.raise('TP.sig.URIException', err);
                 request.fail(TP.FAILURE, err);
 
                 return this.$getResourceResult(request,
@@ -7562,7 +7555,7 @@ function(request, result, async, filter) {
         resultType,
         response;
 
-    TP.debug('break.uri_resource');
+    TP.stop('break.uri_resource');
 
     resource = result;
 
@@ -7605,7 +7598,7 @@ function(aRequest) {
     if (this.isHTTPBased()) {
         return TP.httpDelete(this.asString(), aRequest);
     } else {
-        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
     }
 });
 
@@ -7626,7 +7619,7 @@ function(aRequest) {
     if (this.isHTTPBased()) {
         return TP.httpGet(this.asString(), aRequest);
     } else {
-        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
     }
 });
 
@@ -7647,7 +7640,7 @@ function(aRequest) {
     if (this.isHTTPBased()) {
         return TP.httpHead(this.asString(), aRequest);
     } else {
-        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
     }
 });
 
@@ -7668,7 +7661,7 @@ function(aRequest) {
     if (this.isHTTPBased()) {
         return TP.httpOptions(this.asString(), aRequest);
     } else {
-        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
     }
 });
 
@@ -7689,7 +7682,7 @@ function(aRequest) {
     if (this.isHTTPBased()) {
         return TP.httpPost(this.asString(), aRequest);
     } else {
-        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
     }
 });
 
@@ -7710,7 +7703,7 @@ function(aRequest) {
     if (this.isHTTPBased()) {
         return TP.httpPut(this.asString(), aRequest);
     } else {
-        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
     }
 });
 
@@ -7731,7 +7724,7 @@ function(aRequest) {
     if (this.isHTTPBased()) {
         return TP.httpTrace(this.asString(), aRequest);
     } else {
-        this.raise('TP.sig.UnsupportedOperation', arguments, this.asString());
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
     }
 });
 
@@ -7846,7 +7839,7 @@ function(aRequest) {
 
     var url;
 
-    TP.debug('break.uri_cache');
+    TP.stop('break.uri_cache');
 
     //  if we're just an alias for a concrete file or http url then we
     //  continue to look like a proxy for that reference in string form
@@ -7901,7 +7894,7 @@ function(targetURI, aRequest) {
      * @todo
      */
 
-    TP.debug('break.uri_load');
+    TP.stop('break.uri_load');
 
     //  DB, File and HTTP urls have their own handlers. This default handler
     //  is typically leveraged only by javascript: and urn: resources whose
@@ -7932,7 +7925,7 @@ function(targetURI, aRequest) {
     var request,
         response;
 
-    TP.debug('break.uri_nuke');
+    TP.stop('break.uri_nuke');
 
     TP.todo('Implement nuke for non-file/http/db urls.');
 
@@ -7976,7 +7969,7 @@ function(targetURI, aRequest) {
     var request,
         response;
 
-    TP.debug('break.uri_save');
+    TP.stop('break.uri_save');
 
     //  DB, File and HTTP urls have their own handlers. This default handler
     //  is typically leveraged only by javascript: and urn: resources whose
@@ -8116,7 +8109,7 @@ function(aSignal) {
     TP.ifTrace() ?
         TP.sys.logIO(TP.hc('body', dat,
                         'message', 'De-serializing data.'),
-                    TP.TRACE, arguments) : 0;
+                    TP.DEBUG) : 0;
 
     //  if we got results then we want to see where to put them...
     replace = TP.ifEmpty(this.getAttribute('tsh:replace', true),
@@ -8167,12 +8160,12 @@ function(aSignal) {
                         TP.error(TP.boot.$annotate(
                                     dat,
                                     'Instance replacement data not XML.'),
-                                    TP.IO_LOG, arguments) : 0;
+                                    TP.IO_LOG) : 0;
                 }
             } else {
                 TP.ifError() ?
                     TP.error('Instance: ' + instID + ' not found.',
-                                TP.IO_LOG, arguments) : 0;
+                                TP.IO_LOG) : 0;
             }
 
             break;
@@ -8187,7 +8180,6 @@ function(aSignal) {
             target = this.getAttribute('tsh:target', true);
             if (TP.isEmpty(target)) {
                 return this.raise('TP.sig.InvalidParameter',
-                                    arguments,
                                     this.asString());
             }
 
@@ -8227,14 +8219,14 @@ function(aSignal) {
                                                 dat,
                                                 'Instance replacement' +
                                                 ' data not XML.'),
-                                        TP.IO_LOG, arguments) : 0;
+                                        TP.IO_LOG) : 0;
                             }
                         } else {
                             //  problem since this is XML specific
                             TP.ifError() ?
                                 TP.error('Specified instance ' + instID +
                                             ' not found.',
-                                            TP.IO_LOG, arguments) : 0;
+                                            TP.IO_LOG) : 0;
                         }
                     } else {
                         //  no instance ID? just the target URI then so we
@@ -8261,7 +8253,7 @@ function(aSignal) {
             //  the target data. at the moment we treat it more like a
             //  qualified attribute name
             if (TP.isEmpty(target = this.getAttribute(replace, true))) {
-                return this.raise('TP.sig.InvalidParameter', arguments,
+                return this.raise('TP.sig.InvalidParameter',
                         'Missing required replace/target specification.');
             }
 
@@ -8293,7 +8285,6 @@ function(aSignal) {
     //  is a reserved property in IE (one more for theory over practice)
     if (TP.notValid(node = aSignal.getPayload().at('body'))) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Signal has no content.');
 
         this.dispatch('tsh-service-error',
@@ -8310,7 +8301,7 @@ function(aSignal) {
     TP.ifTrace() ?
         TP.sys.logIO(TP.hc('body', node,
                         'message', 'Serializing data.'),
-                    TP.TRACE, arguments) : 0;
+                    TP.DEBUG) : 0;
 
     //  we take the method attribute value and remove any NS or '-'
     //  qualifiers that may be there, then look for a method with that name
@@ -8326,7 +8317,6 @@ function(aSignal) {
     }
 
     this.raise('TP.sig.UnsupportedOperation',
-                arguments,
                 'Serialization method not found: ' + method);
 
     this.dispatch('tsh-service-error',
@@ -8362,7 +8352,6 @@ function(aSignal) {
 
     if (TP.notValid(args = aSignal.getPayload())) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Signal has no arguments.');
 
         this.dispatch('tsh-service-error',
@@ -8374,7 +8363,6 @@ function(aSignal) {
 
     if (TP.notValid(node = aSignal.getPayload().at('body'))) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Signal has no content.');
 
         this.dispatch('tsh-service-error',
@@ -8398,7 +8386,7 @@ function(aSignal) {
                         'direction', TP.SEND,
                         'body', str,
                         'message', 'XControls service request initiated.'),
-            TP.TRACE, arguments) : 0;
+            TP.DEBUG) : 0;
 
     if (TP.regex.HTTP_SCHEME.test(action.toLowerCase())) {
         //  for a true GET we put the extra data on the uri by putting it in
@@ -8427,7 +8415,7 @@ function(aSignal) {
         //  leverage the action as a URI and just load it that way
         url = TP.uc(action);
 
-        sig = this.signal('tsh-service-transmit-done', arguments,
+        sig = this.signal('tsh-service-transmit-done',
                         TP.hc('body', url.getNativeNode()));
 
         this['handletsh-service-transmit-done'](sig);
@@ -8510,7 +8498,7 @@ function(aURI, aRequest) {
 
         newuri;
 
-    TP.debug('break.uri_rewrite');
+    TP.stop('break.uri_rewrite');
 
     //  the request can decline rewriting via flag...check that first
     if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_rewrite'))) {
@@ -8585,17 +8573,17 @@ function(aURI, aRequest) {
 
         localurl = TP.uriExpandPath(item.at('tibet:localuri'));
         if (TP.notEmpty(localurl)) {
-            TP.ifTrace(TP.$$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                 TP.trace('Found local cache \'' + localurl +
                                 '\' for uri: ' + url,
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
             duration = item.at('tibet:duration');
             if (TP.notEmpty(duration)) {
-                TP.ifTrace(TP.$$DEBUG && TP.$$VERBOSE) ?
+                TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                     TP.trace('Found cache duration \'' + duration +
                                     '\' for uri: ' + url,
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                 updated = item.at('tibet:updated');
                 if (TP.notEmpty(updated)) {
@@ -8668,16 +8656,16 @@ function(aURI, aRequest) {
     //  if we got here without a viable rewrite uri then we've got to
     //  default back to the original and log a warning
     if (TP.notValid(newuri)) {
-        TP.ifWarn(TP.$$DEBUG && TP.$$VERBOSE) ?
+        TP.ifWarn() && TP.$$DEBUG && TP.$$VERBOSE ?
             TP.warn('Invalid rewrite uri: ' +
                         newurl + '. Using ' + url,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
     } else {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('Found rewrite uri \'' + newurl + '\' for uri: ' + url,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         uri = newuri;
     }
@@ -8743,7 +8731,7 @@ function(aURI, aRequest) {
 
         handler;
 
-    TP.debug('break.uri_route');
+    TP.stop('break.uri_route');
 
     //  the request can decline rewriting via flag...check that first
     if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_rewrite'))) {
@@ -8809,9 +8797,9 @@ function(aURI, aRequest) {
     //  should have found a route in the item if routing is applicable,
     //  otherwise we'll continue to default
     if (TP.isEmpty(route)) {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('Returning default handler type: TP.core.URIHandler',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         return uri.$getDefaultHandler(aRequest);
     }
@@ -8820,18 +8808,18 @@ function(aURI, aRequest) {
     if (TP.notValid(handler)) {
         TP.ifWarn() ?
             TP.warn('Unable to load route handler: ' + route,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('Returning default handler type: TP.core.URIHandler',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         return uri.$getDefaultHandler(aRequest);
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.trace('Found route \'' + route + '\' for uri: ' + url,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     //  went to some trouble to come up with this, so cache it for next time
     map.atPut('route', handler);
@@ -8871,7 +8859,7 @@ function(targetURI, aRequest) {
         result,
         response;
 
-    TP.debug('break.uri_load');
+    TP.stop('break.uri_load');
 
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
@@ -8880,7 +8868,7 @@ function(targetURI, aRequest) {
     //  most supported browsers can handle at least loading from the file
     //  system via an XMLHttpRequest if nothing else, but just in case....
     if (!TP.canInvoke(TP, '$fileLoad')) {
-        this.raise('TP.sig.UnsupportedOperation', arguments);
+        this.raise('TP.sig.UnsupportedOperation');
         if (TP.canInvoke(aRequest, 'fail')) {
             aRequest.fail(TP.FAILURE, 'Unsupported operation.');
         }
@@ -8888,7 +8876,7 @@ function(targetURI, aRequest) {
     }
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
-        this.raise('TP.sig.InvalidURI', arguments);
+        this.raise('TP.sig.InvalidURI');
         if (TP.canInvoke(aRequest, 'fail')) {
             aRequest.fail(TP.FAILURE, 'Invalid URI: ' + targetURI);
         }
@@ -8992,7 +8980,7 @@ function(targetURI, aRequest) {
         result,
         response;
 
-    TP.debug('break.uri_nuke');
+    TP.stop('break.uri_nuke');
 
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
@@ -9001,7 +8989,7 @@ function(targetURI, aRequest) {
     //  only IE and Moz currently support file deletes so if we're down
     //  to this handler we're hopefully on one of those browsers :)
     if (!TP.canInvoke(TP, '$fileDelete')) {
-        this.raise('TP.sig.UnsupportedOperation', arguments);
+        this.raise('TP.sig.UnsupportedOperation');
         if (TP.canInvoke(aRequest, 'fail')) {
             aRequest.fail(TP.FAILURE, 'Unsupported operation.');
         }
@@ -9009,7 +8997,7 @@ function(targetURI, aRequest) {
     }
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
-        this.raise('TP.sig.InvalidURI', arguments);
+        this.raise('TP.sig.InvalidURI');
         if (TP.canInvoke(aRequest, 'fail')) {
             aRequest.fail(TP.FAILURE, 'Invalid URI: ' + targetURI);
         }
@@ -9090,7 +9078,7 @@ function(targetURI, aRequest) {
         result,
         response;
 
-    TP.debug('break.uri_save');
+    TP.stop('break.uri_save');
 
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
@@ -9099,7 +9087,7 @@ function(targetURI, aRequest) {
     //  only IE and Moz currently support file save access so if we're down
     //  to this handler we're hopefully on one of those browsers :)
     if (!TP.canInvoke(TP, '$fileSave')) {
-        this.raise('TP.sig.UnsupportedOperation', arguments);
+        this.raise('TP.sig.UnsupportedOperation');
         if (TP.canInvoke(aRequest, 'fail')) {
             aRequest.fail(TP.FAILURE, 'Unsupported operation.');
         }
@@ -9108,7 +9096,7 @@ function(targetURI, aRequest) {
     }
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
-        this.raise('TP.sig.InvalidURI', arguments);
+        this.raise('TP.sig.InvalidURI');
         if (TP.canInvoke(aRequest, 'fail')) {
             aRequest.fail(TP.FAILURE, 'Invalid URI: ' + targetURI);
         }
@@ -9210,7 +9198,7 @@ function(targetURI, aRequest) {
         targetLoc,
         loadRequest;
 
-    TP.debug('break.uri_load');
+    TP.stop('break.uri_load');
 
     request = targetURI.constructRequest(aRequest);
     response = request.constructResponse();
@@ -9280,7 +9268,7 @@ function(targetURI, aRequest) {
 
         useWebDAV;
 
-    TP.debug('break.uri_nuke');
+    TP.stop('break.uri_nuke');
 
     request = targetURI.constructRequest(aRequest);
     response = request.constructResponse();
@@ -9366,7 +9354,7 @@ function(targetURI, aRequest) {
         content,
         useWebDAV;
 
-    TP.debug('break.uri_save');
+    TP.stop('break.uri_save');
 
     request = targetURI.constructRequest(aRequest);
     response = request.constructResponse();

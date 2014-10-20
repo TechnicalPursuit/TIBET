@@ -274,22 +274,19 @@ function(anObject, optFormat) {
 
     for (i = 0; i < len; i++) {
         str += '<span class="Date" data-name="timestamp">' +
-                    obj[i][TP.LOG_ENTRY_DATE] +
+                    obj[i][TP.boot.LOG_ENTRY_DATE] +
                 '<\/span>' +
                 '<span class="String" data-name="log-name">' +
-                    obj[i][TP.LOG_ENTRY_NAME] +
+                    obj[i][TP.boot.LOG_ENTRY_NAME] +
                 '<\/span>' +
                 '<span class="Number" data-name="log-level">' +
-                    obj[i][TP.LOG_ENTRY_LEVEL] +
+                    obj[i][TP.boot.LOG_ENTRY_LEVEL] +
                 '<\/span>' +
                 '<span class="String" data-name="log-entry">' +
-                    obj[i][TP.LOG_ENTRY_PAYLOAD] +
-                '<\/span>' +
-                '<span class="String" data-name="log-context">' +
-                    obj[i][TP.LOG_ENTRY_CONTEXT] +
+                    obj[i][TP.boot.LOG_ENTRY_PAYLOAD] +
                 '<\/span>' +
                 '<span class="String" data-name="log-delta">' +
-                    obj[i][TP.LOG_ENTRY_DELTA] +
+                    obj[i][TP.boot.LOG_ENTRY_DELTA] +
                 '<\/span>';
     }
 

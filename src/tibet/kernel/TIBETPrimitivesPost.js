@@ -2224,9 +2224,7 @@ function(anObject, assignIfAbsent) {
                             //  problems. apparently we're trying to get the
                             //  ID for a detached node. which won't work
                             //  in most any case
-                            this.raise('TP.sig.DetachedNodeException',
-                                        arguments,
-                                        obj);
+                            this.raise('TP.sig.DetachedNodeException', obj);
 
                             return;
                         }
@@ -2690,7 +2688,7 @@ function(anObject, aFormat, formatParams) {
         return;
     }
 
-    TP.debug('break.format');
+    TP.stop('break.format');
 
     //  If the 'shouldWrap' flag in the format params isn't false, wrap the
     //  object so that we ensure we're talking to TIBET objects.
@@ -3237,15 +3235,15 @@ function(aType, aString, aLocale) {
     var type;
 
     if (!TP.isType(type = TP.sys.require(aType))) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (!TP.canInvoke(type, 'parse')) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (!TP.isString(aString)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  Date.parse is already defined in ECMAScript to return a Number...
@@ -5056,7 +5054,7 @@ function(aPath) {
 
     //  Need at least a path to test.
     if (TP.isEmpty(path = aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidPath', arguments,
+        return TP.raise(this, 'TP.sig.InvalidPath',
                         'Unable to get type of empty path.');
     }
 
@@ -5069,7 +5067,7 @@ function(aPath) {
 
         //  If it still has ACP expressions, then it's an invalid path
         if (TP.regex.HAS_ACP.test(path)) {
-            return this.raise('TP.sig.InvalidPath', arguments);
+            return this.raise('TP.sig.InvalidPath');
         }
 
         //  Now, so as to not change the overall meaning of the path, go back to

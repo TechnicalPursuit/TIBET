@@ -21,7 +21,7 @@
  *     "gesture" made from combining multiple mouse/keyboard events such as a
  *     "grab" operation which may require a mouse down and 2 or more mouse move
  *     operations.
- *     
+ *
  *     A signal coalescer leverages three key concepts: triggers, spoilers, and
  *     notifiers. Triggers are the signals a coalescer is watching for, spoilers
  *     are events which cause the coalescer to reset, and the notifier is the
@@ -339,7 +339,7 @@ function(aSignalName) {
      */
 
     if (TP.notValid(aSignalName)) {
-        return this.raise('TP.sig.InvalidSignal', arguments);
+        return this.raise('TP.sig.InvalidSignal');
     }
 
     this.$set('notifier', aSignalName);
@@ -356,7 +356,7 @@ function(aFlag) {
      * @name shouldAutoReset
      * @synopsis Sets/gets the value for the auto-reset flag.
      * @param {Boolean} aFlag The setting for auto-reset.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (TP.isDefined(aFlag)) {

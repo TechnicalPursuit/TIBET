@@ -71,7 +71,7 @@ function() {
      * @name getRequestQueue
      * @synopsis Returns the receiver's request queue, the list of requests
      *     which are currently awaiting processing.
-     * @returns {Array} 
+     * @returns {Array}
      */
 
     return this.$get('requestQueue');
@@ -175,7 +175,6 @@ function(aRequest) {
     //  error
     if (!TP.isType(reqType = TP.sys.getTypeByName(req.getTypeName()))) {
         return this.raise('TP.sig.InvalidType',
-                            arguments,
                             req.getTypeName());
     }
 
@@ -189,7 +188,7 @@ function(aRequest) {
         return this[fname](req);
     }
 
-    return this.raise('TP.sig.UnhandledInputRequest', arguments, fname);
+    return this.raise('TP.sig.UnhandledInputRequest', fname);
 });
 
 //  ------------------------------------------------------------------------
@@ -218,7 +217,7 @@ function(aSignal) {
      * @name handleUserInputRequest
      * @synopsis Responds to input requests, either handling them directly or
      *     queuing them for later processing.
-     * @param {TP.sig.UserInputRequest} aSignal 
+     * @param {TP.sig.UserInputRequest} aSignal
      */
 
     return;
@@ -233,7 +232,7 @@ function(aSignal) {
      * @name handleUserInpuSeries
      * @synopsis Responds to input series, either handling them directly or
      *     queuing them for later processing.
-     * @param {TP.sig.UserInputSeries} aSignal 
+     * @param {TP.sig.UserInputSeries} aSignal
      */
 
     return;
@@ -248,7 +247,7 @@ function(aSignal) {
      * @name handleUserOutputRequest
      * @synopsis Responds to output requests, either handling them directly or
      *     queuing them for later processing.
-     * @param {TP.sig.UserOutputRequest} aSignal 
+     * @param {TP.sig.UserOutputRequest} aSignal
      */
 
     return;
@@ -282,7 +281,7 @@ function(aSignal) {
      * @synopsis Queues the incoming signal for later processing. This method is
      *     typically invoked automatically by services that are currently
      *     blocked servicing a prior request.
-     * @param {TP.sig.UserIORequest} aSignal 
+     * @param {TP.sig.UserIORequest} aSignal
      */
 
     this.get('requestQueue').add(aSignal);
@@ -300,7 +299,7 @@ function(aRequest) {
      * @synopsis Performs any updates necessary to ensure that the display is
      *     current with the current state of the request. The default
      *     implementation does nothing.
-     * @param {TP.sig.UserIORequest} aRequest 
+     * @param {TP.sig.UserIORequest} aRequest
      * @returns {TP.core.UserIOService} The receiver.
      * @todo
      */

@@ -114,7 +114,6 @@ function(aNode) {
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode',
-                            arguments,
                             'No node provided.');
     }
 
@@ -189,7 +188,7 @@ function(attributeName) {
      * @synopsis Returns the value of the named attribute. If the attribute
      *     doesn't exist an empty string is returned.
      * @param {String} attributeName The attribute to retrieve.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var natNode;
@@ -234,7 +233,7 @@ function() {
      * @synopsis Returns the receiver's namespace. This is based on the value of
      *     the native's node namespace if present, otherwise it returns the
      *     namespace mapped for the receiver's type.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var namespaceURI;
@@ -284,7 +283,6 @@ function(aName, createIfAbsent) {
                 elem = TP.nodeAppendChild(natElem, elem);
             } else {
                 return this.raise('TP.sig.XMPPNodeCorruption',
-                                    arguments,
                                     elem);
             }
         }
@@ -307,7 +305,7 @@ function(aStanza) {
      *     replaced by the current tag/type string, for example
      *     XMPPMessageInput.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -347,7 +345,7 @@ function() {
     /**
      * @name getTagName
      * @synopsis Returns the tag's nodeName.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var natNode;
@@ -368,7 +366,7 @@ function() {
      * @name getTagType
      * @synopsis Returns the value of any 'type' attribute on the receiver.
      *     Examples are 'get','set','normal','chat', etc.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var natNode;
@@ -389,7 +387,7 @@ function() {
      * @name isError
      * @synopsis Returns true if the receiver contains an error packet, or is
      *     otherwise of type 'error'.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var errorTPDescendant;
@@ -415,7 +413,7 @@ function() {
      * @name isSignal
      * @synopsis Returns true if the receiver represents a TIBET Signal in
      *     encoded form.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return false;
@@ -456,7 +454,7 @@ function(aTagType) {
      * @synopsis Sets the value of any 'type' attribute on the receiver.
      *     Examples are 'get', 'set', 'normal', 'chat', etc.
      * @param {String} aTagType The tag type to use for the receiver.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var natNode;

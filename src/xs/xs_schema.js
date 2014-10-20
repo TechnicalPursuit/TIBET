@@ -88,7 +88,7 @@ function(forceDefinition) {
         schemaElems;
 
     if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     //  Process simple types

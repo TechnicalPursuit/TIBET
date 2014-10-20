@@ -127,8 +127,7 @@ function() {
     //  'save' plugin is loaded?
     editorInst.settings.save_onsavecallback =
             function(editor) {
-
-                this.signal('TP.sig.ContentSave', null, this.getValue());
+                this.signal('TP.sig.ContentSave', this.getValue());
             }.bind(this);
 
     this.refresh();
@@ -354,7 +353,7 @@ function(publishName) {
         'handleRequestSucceeded',
 function(aResponse) {
 
-            TP.info(aResponse.getResponseText(), TP.LOG, arguments);
+            TP.info(aResponse.getResponseText(), TP.LOG);
 });
 
     msgReq.defineMethod(
@@ -363,8 +362,7 @@ function(aResponse) {
 
             TP.ifError() ?
                 TP.error(aResponse.getResponseText(),
-                            TP.LOG,
-                            arguments) : 0;
+                            TP.LOG) : 0;
 });
 
     msgReq.fire();
@@ -415,7 +413,7 @@ function(shareFlag, shareName) {
         'handleRequestSucceeded',
 function(aResponse) {
 
-            TP.info(aResponse.getResponseText(), TP.LOG, arguments);
+            TP.info(aResponse.getResponseText(), TP.LOG);
 });
 
     msgReq.defineMethod(
@@ -424,8 +422,7 @@ function(aResponse) {
 
             TP.ifError() ?
                 TP.error(aResponse.getResponseText(),
-                            TP.LOG,
-                            arguments) : 0;
+                            TP.LOG) : 0;
 });
 
     msgReq.fire();

@@ -47,7 +47,7 @@ function(state) {
 
     if (TP.isEmpty(state)) {
         TP.ifWarn() ?
-            TP.warn('No state name in state object.', TP.LOG, arguments) : 0;
+            TP.warn('No state name in state object.', TP.LOG) : 0;
     }
 
     if (TP.isNumber(state)) {
@@ -178,7 +178,7 @@ function(startState) {
         if (TP.notEmpty(prereqs = this.get('statePrereqs').at(startState))) {
             if (!prereqs.contains(TP.READY)) {
                 //  Not a valid start state...
-                this.raise('InvalidStartState', arguments, startState);
+                this.raise('InvalidStartState', startState);
 
                 return;
             }
@@ -251,13 +251,11 @@ function(signalState) {
     prereqs = this.get('statePrereqs').at(TP.COMPLETED);
     if (TP.isEmpty(prereqs) || !prereqs.contains(current)) {
         this.signal('TP.sig.StateTransition',
-                    arguments,
                     TP.hc('oldState', current, 'newState', TP.CANCELLED));
     }
 
     // Let observers know that the state machine logic has completed.
     this.signal('TP.sig.StateTransition',
-                arguments,
                 TP.hc('oldState', current, 'newState', TP.COMPLETED));
 
     //  Turn off any observations we may have in place regarding input
@@ -339,7 +337,6 @@ function(stateName, stateCheck, statePrereqs) {
         funcName = 'accept' + this.getNameForState(stateName);
         if (!TP.canInvoke(stateCheck, funcName)) {
             this.raise('TP.sig.InvalidStateHandler',
-                        arguments,
                         funcName + ' not implemented by ' + stateCheck);
 
             return;
@@ -596,7 +593,6 @@ function(signalOrParams) {
         if (stateCount > 1) {
             newState = TP.FAILED;
             this.raise('InvalidStateMachine',
-                        arguments,
                         'Multiple valid states for transition from ' +
                             oldState);
 
@@ -612,7 +608,6 @@ function(signalOrParams) {
         this.set('state', newState);
 
         this.signal('TP.sig.StateTransition',
-                    arguments,
                     TP.hc('oldState', oldState, 'newState', newState,
                             'trigger', signalOrParams));
 
@@ -630,7 +625,6 @@ function(signalOrParams) {
             this.set('state', newState);
 
             this.signal('TP.sig.StateTransition',
-                        arguments,
                         TP.hc('oldState', oldState, 'newState', newState,
                                 'trigger', signalOrParams));
         }
@@ -644,7 +638,6 @@ function(signalOrParams) {
         }
     } else {
         this.signal('TP.sig.StateInput',
-                    arguments,
                     TP.hc('currentState', oldState,
                             'trigger', signalOrParams));
     }
@@ -691,7 +684,7 @@ function(stateMachine) {
     this.callNextMethod();
 
     if (!TP.isKindOf(stateMachine, 'TP.core.StateMachine')) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
 
         return;
     }
@@ -987,7 +980,6 @@ function(aSignal) {
                     }
                 } catch (e) {
                     this.raise('InvalidStateHandler',
-                                arguments,
                                 TP.ec(e, TP.str(handler)));
                 }
             }
@@ -1103,7 +1095,6 @@ function(actionName, aSignal) {
                 }
             } catch (e) {
                 this.raise('InvalidStateHandler',
-                            arguments,
                             TP.ec(e, TP.str(handler)));
             }
         }

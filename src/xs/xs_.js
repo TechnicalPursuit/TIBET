@@ -53,11 +53,11 @@ function(aValue, aNode) {
 
         attr;
 
-    TP.debug('break.validate');
+    TP.stop('break.validate');
 
     //  have to have a schema reference of some kind
     if (TP.notValid(aNode)) {
-        return this.raise('TP.sig.InvalidParameter', arguments,
+        return this.raise('TP.sig.InvalidParameter',
                             'Invalid target node for schema validation.');
     }
 
@@ -68,50 +68,50 @@ function(aValue, aNode) {
         node = aNode.getNativeNode();
     }
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace(TP.boot.$annotate(node, 'xs: validating: ' + aValue),
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     //  simple check is whether there's an xsi:type attribute and a type to
     //  handle it
     if (TP.notEmpty(typeName = TP.elementGetAttribute(node,
                                                         'xsi:type',
                                                         true))) {
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('found xsi:type ' + typeName,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         if (TP.isType(type = TP.sys.require(typeName))) {
             return type.validate(aValue, aNode);
         }
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('xsi:type ' + typeName + ' not available',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     } else if ((node.namespaceURI === TP.w3.Xmlns.XFORMS) &&
                 TP.notEmpty(typeName =
                                 TP.elementGetAttribute(node, 'type'))) {
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('found xforms:type ' + typeName,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         //  secondary check (HACK) is for xforms:model/type attributes
         if (TP.isType(type = TP.sys.require(typeName))) {
             return type.validate(aValue, aNode);
         }
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('xforms:type ' + typeName + ' not available',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     }
 
     //  next question is can we find the type definition in a schema file
     //  associated with this node? this means checking based on whether the
     //  node has a namespace or not so we know which attribute to go after
     if (TP.isEmpty(node.namespaceURI)) {
-        TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('no namespace uri',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         if (TP.isAttributeNode(attr = TP.nodeEvaluateXPath(
                 node,
@@ -120,9 +120,9 @@ function(aValue, aNode) {
             url = attr.value;
         }
     } else {
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('namespace uri ' + node.namespaceURI,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         if (TP.isAttributeNode(attr = TP.nodeEvaluateXPath(
                 node,
@@ -146,14 +146,14 @@ function(aValue, aNode) {
         return true;
     }
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace('uri ' + url,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     if (TP.notValid(tpuri = TP.uc(url))) {
         TP.ifWarn() ?
             TP.warn('Unable to resolve XML Schema URI: ' + url,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return true;
     }
@@ -161,35 +161,35 @@ function(aValue, aNode) {
     if (TP.notValid(schema = tpuri.getNativeNode(TP.hc('async', false)))) {
         TP.ifWarn() ?
             TP.warn('Unable to load XML Schema from URI: ' + url,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return true;
     }
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace(TP.boot.$annotate(schema, 'Schema: '),
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     //  try to find an element-level type definition if we don't have one
     //  already from xsi:type information. once we have this we can find the
     //  type definition referenced via the element tag
     if (TP.isEmpty(typeName)) {
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('empty typename',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         typeName = node.nodeName;
 
         path = '//*[name() = "xs:element" and @name="' + typeName + '"]';
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('using element path: ' + path,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         list = TP.nodeEvaluateXPath(schema, path, TP.NODESET);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('element path found ' + list.length + ' nodes',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         switch (list.length) {
             case 0:
@@ -198,16 +198,16 @@ function(aValue, aNode) {
                 TP.ifWarn() ?
                     TP.warn('Unable to find XML Schema element: ' +
                                 typeName + ' in XML Schema: ' + url,
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 return true;
 
             case 1:
 
                 //  one and only one, so we can use the type attribute
-                TP.ifTrace(TP.$DEBUG) ?
+                TP.ifTrace() && TP.$DEBUG ?
                     TP.trace('found: ' + TP.nodeAsString(list.at(0)),
-                                TP.LOG, arguments) : 0;
+                                TP.LOG) : 0;
 
                 typeName = TP.elementGetAttribute(list.at(0), 'type');
 
@@ -228,37 +228,37 @@ function(aValue, aNode) {
                 TP.ifWarn() ?
                     TP.warn('Unsupported multi-element schema definition' +
                                 ' found for: ' + typeName,
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
                 return true;
         }
     }
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace('Looking up schema definition',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     //  now we try to find a simpleType or complexType definition node
     path = '//*[name() = "xs:simpleType" and @name = "' + typeName + '"]';
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace('using simpleType path: ' + path,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     list = TP.nodeEvaluateXPath(schema, path, TP.NODESET);
 
-    TP.ifTrace(TP.$DEBUG) ?
+    TP.ifTrace() && TP.$DEBUG ?
         TP.trace('using simpleType path found ' + list.length + ' nodes',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     if (TP.isEmpty(list)) {
         path = '//*[name() = "xs:complexType" and @name = "' +
                 typeName +
                 '"]';
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('using complexType path: ' + path,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
         list = TP.nodeEvaluateXPath(schema,
                 '//*[name() = "xs:complexType" and @name = "' +
@@ -266,16 +266,16 @@ function(aValue, aNode) {
                 '"]',
                 TP.NODESET);
 
-        TP.ifTrace(TP.$DEBUG) ?
+        TP.ifTrace() && TP.$DEBUG ?
             TP.trace('using complex path found ' + list.length + ' nodes',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
     }
 
     if (TP.isEmpty(list)) {
         TP.ifWarn() ?
             TP.warn('Unable to resolve XML Schema type: ' + typeName +
                         ' in XML Schema: ' + url,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return true;
     }
@@ -284,7 +284,7 @@ function(aValue, aNode) {
         TP.ifWarn() ?
             TP.warn('Unable to load/require XML Schema type: ' + typeName +
                         ' in XML Schema: ' + url,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return true;
     }

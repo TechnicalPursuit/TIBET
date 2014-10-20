@@ -11,8 +11,8 @@
 /*
 Before inheritance, inferencing, and signaling can be fully implemented there
 are a number of elements which are needed to provide a solid foundation. Those
-include additional reflection, iteration, type checking, encapsulation, logging,
-and more. This file provides the foundational elements leading up to the
+include additional reflection, iteration, type checking, encapsulation, and
+more. This file provides the foundational elements leading up to the
 construction of the TIBET metaobject/inheritance system and the rest of the
 TIBET platform.
 */
@@ -30,7 +30,7 @@ TIBET platform.
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('$getContextGlobals',
-function(params, aContext) {
+function(params, windowContext) {
 
     /**
      * @name $getContextGlobals
@@ -49,7 +49,7 @@ function(params, aContext) {
      *     - that is, they do not start with '$$' or '$'. 'types' Return global
      *     slots that are TIBET types. 'functions' Return global slots that are
      *     functions. 'variables' Return global slots that are not functions.
-     * @param {Window} aContext The window/frame whose globals should be
+     * @param {Window} windowContext The window/frame whose globals should be
      *     returned. Default is the current window.
      * @returns {Array} The list of Strings representing keys on the JavaScript
      *     global object.
@@ -67,7 +67,7 @@ function(params, aContext) {
         key;
 
     arr = TP.ac();
-    context = aContext || TP.global;
+    context = windowContext || TP.global;
 
     if (TP.isValid(params)) {
         //  The default is to return public functions and attributes
@@ -682,7 +682,7 @@ function(aFunction) {
     var func;
 
     if (!TP.isFunction(aFunction)) {
-        TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        TP.raise(this, 'TP.sig.InvalidParameter');
         return aFunction;
     }
 
@@ -940,7 +940,7 @@ function(methodText) {
     if (TP.notValid(self.JsDiff)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. JsDiff not loaded.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
         return;
     }
 
@@ -949,7 +949,7 @@ function(methodText) {
     if (TP.isEmpty(path)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Source path not found.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
         return;
     }
 
@@ -961,7 +961,7 @@ function(methodText) {
     if (TP.isEmpty(content)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Source text not found.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
         return;
     }
 
@@ -978,7 +978,7 @@ function(methodText) {
     if (TP.notValid(match)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Method index not found.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
         return null;
     }
 
@@ -1775,7 +1775,7 @@ function(shouldNotify, shouldThrow, stackDepth) {
     //  don't need to use activations here, only care about length
     if (TP.isArray(stackInfo) && (stackInfo.length > depth)) {
         if (doNotify) {
-            TP.boot.$sterr('RecursionException', stackInfo, TP.ERROR);
+            TP.boot.$stderr('RecursionException', stackInfo, TP.log.ERROR);
         }
         if (TP.notFalse(doThrow)) {
             throw new Error('RecursionError');
@@ -1826,10 +1826,10 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
 
         // If we're still booting errors that are uncaught are considered FATAL.
         if (!TP.sys.hasStarted()) {
-            TP.fatal(str, TP.BOOT_LOG, arguments);
+            TP.fatal(str);
         } else {
             // Uncaught errors are severe relative to those we raise/catch.
-            TP.ifSevere() ? TP.severe(str, TP.LOG, arguments) : 0;
+            TP.ifSevere() ? TP.severe(str, TP.LOG) : 0;
         }
     } catch (e) {
         // don't let log errors trigger recursion, but don't bury them either.
@@ -1876,7 +1876,7 @@ TP.sys.$signalQueue = TP.ifInvalid(TP.sys.$signalQueue, TP.ac());
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('queue',
-function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
+function(anOrigin, aSignal, aPayload, aPolicy, aType) {
 
     /**
      * @name queue
@@ -1887,7 +1887,6 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
      *     signals found there.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -1899,7 +1898,6 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
     TP.sys.$signalQueue.add(
         TP.ac(TP.ifInvalid(anOrigin, null),
                 TP.ifInvalid(aSignal, null),
-                TP.ifInvalid(aContext, null),
                 TP.ifInvalid(aPayload, null),
                 TP.ifInvalid(aPolicy, null),
                 TP.ifInvalid(aType, null)));
@@ -1910,14 +1908,13 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('queue',
-function(aSignal, aContext, aPayload, aPolicy, aType) {
+function(aSignal, aPayload, aPolicy, aType) {
 
     /**
      * @name queue
      * @synopsis Queues a set of signal parameters for processing at the end of
      *     the current signal handling cycle.
      * @param {TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -1926,13 +1923,13 @@ function(aSignal, aContext, aPayload, aPolicy, aType) {
      * @todo
      */
 
-    return TP.queue(this, aSignal, aContext, aPayload, aPolicy, aType);
+    return TP.queue(this, aSignal, aPayload, aPolicy, aType);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('signal',
-function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
+function(anOrigin, aSignal, aPayload, aPolicy, aType) {
 
     /**
      * @name signal
@@ -1946,7 +1943,6 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
      *     signaling activity is installed in place of this version.
      * @param {Object} anOrigin The originator of the signal.
      * @param {TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -1971,23 +1967,21 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
     if (TP.sys.shouldQueueLoadSignals()) {
         //  capture arguments in an array which could later be used by
         //  apply
-        args = TP.ac(anOrigin, aSignal, aContext, aPayload, aPolicy,
-                        aType);
+        args = TP.ac(anOrigin, aSignal, aPayload, aPolicy, aType);
 
         //  manually add the signal information to the signal queue for
         //  later processing when the signaling system is running
         TP.sys.$signalQueue.add(args);
     }
 
-    TP.ifTrace(TP.sys.shouldLogLoadSignals()) ?
+    TP.ifTrace() && TP.sys.shouldLogLoadSignals() ?
         TP.trace(
             'origin: ' + anOrigin +
             '\nsignal: ' + aSignal +
-            '\ncontext: ' + aContext +
             '\nsigarg: ' + aPayload +
             '\npolicy: ' + aPolicy +
             '\ntype: ' + aType,
-            TP.SIGNAL_LOG, arguments) : 0;
+            TP.SIGNAL_LOG) : 0;
 
     return aSignal;
 });
@@ -1995,14 +1989,13 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('signal',
-function(aSignal, aContext, aPayload, aPolicy, aType) {
+function(aSignal, aPayload, aPolicy, aType) {
 
     /**
      * @name signal
      * @synopsis Signals activity to registered observers using the receiver as
      *     the origin of the signal.
      * @param {TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -2012,7 +2005,7 @@ function(aSignal, aContext, aPayload, aPolicy, aType) {
      * @todo
      */
 
-    return TP.signal(this, aSignal, aContext, aPayload, aPolicy, aType);
+    return TP.signal(this, aSignal, aPayload, aPolicy, aType);
 });
 
 //  ------------------------------------------------------------------------
@@ -2327,7 +2320,7 @@ function() {
     }
 
     return TP.signal(it.at(0), it.at(1), it.at(2),
-                        it.at(3), it.at(4), it.at(5));
+                        it.at(3), it.at(4));
 });
 
 //  ------------------------------------------------------------------------
@@ -2713,7 +2706,7 @@ function(aFilter) {
 
         proto;
 
-    TP.debug('break.interface');
+    TP.stop('break.interface');
 
     //  next question is can we find the requested subset on the list?
     filter = TP.ifInvalid(aFilter, 'unique_attributes');
@@ -2724,7 +2717,7 @@ function(aFilter) {
         if (TP.notValid(params = TP.SLOT_FILTERS[filter])) {
             TP.ifWarn() ?
                 TP.warn('Invalid reflection filter: ' + filter,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
             return TP.ac();
         }
@@ -2746,7 +2739,7 @@ function(aFilter) {
     if (!attrs && !methods) {
         TP.ifWarn() ?
             TP.warn('Invalid reflection filter: ' + filter,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
         return TP.ac();
     }
@@ -2756,9 +2749,9 @@ function(aFilter) {
         //  warn for any non-unique scans. when it's a unique scan we can
         //  leverage hasOwnProperty to avoid too much overhead, otherwise we
         //  consider this a performance warning issue.
-        TP.ifWarn(TP.sys.cfg('log.scans')) ?
+        TP.ifWarn() && TP.sys.cfg('log.scans') ?
             TP.warn('Scanning ' + filter + ' on ' + this,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
     }
 
     //  set up a proto object for filtering methods
@@ -3252,7 +3245,7 @@ function(aKey, includeUndefined) {
     var includeUndef;
 
     if (!TP.isNumber(aKey)) {
-        this.raise('TP.sig.InvalidKey', arguments);
+        this.raise('TP.sig.InvalidKey');
 
         return false;
     }
@@ -3577,7 +3570,7 @@ function(aSelectFunction) {
 
     //  if we can provide keys and do an 'at' then we can get pairs
     if (!TP.canInvoke(this, ['at', 'getKeys'])) {
-        return this.raise('TP.sig.InvalidPairRequest', arguments);
+        return this.raise('TP.sig.InvalidPairRequest');
     }
 
     //  the work is easy for key/value objects
@@ -3684,7 +3677,7 @@ function(aSelectFunction) {
      * @todo
      */
 
-    return this.raise('TP.sig.InvalidPairRequest', arguments);
+    return this.raise('TP.sig.InvalidPairRequest');
 });
 
 //  ------------------------------------------------------------------------
@@ -3707,7 +3700,7 @@ function(aSelectFunction) {
 
     //  if we can provide keys and do an 'at' then we can get pairs
     if (!TP.canInvoke(this, ['at', 'getKeys'])) {
-        return this.raise('TP.sig.InvalidPairRequest', arguments);
+        return this.raise('TP.sig.InvalidPairRequest');
     }
 
     //  the work is easy for key/value objects
@@ -4075,7 +4068,7 @@ func = function(anAspect, anAction, aDescription) {
     }
 
     //  Keep this after the test above to keep overhead down.
-    TP.debug('break.change');
+    TP.stop('break.change');
 
     //  Build up the signal name we'll be firing.
     sig = 'Change';
@@ -4096,7 +4089,6 @@ func = function(anAspect, anAction, aDescription) {
     desc = TP.isValid(aDescription) ? aDescription : TP.hc();
     if (!TP.canInvoke(desc, 'atPutIfAbsent')) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Description not a collection.');
 
         return;
@@ -4110,8 +4102,7 @@ func = function(anAspect, anAction, aDescription) {
     //  'aspect'Change signals haven't been defined as being subtypes of Change
     //  (although we also supply 'TP.sig.Change' as the default signal type here
     //  so that undefined aspect signals will use that type.
-    TP.signal(this, sig, arguments,
-                desc, TP.INHERITANCE_FIRING, 'TP.sig.Change');
+    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, 'TP.sig.Change');
 
     return this;
 });
@@ -4251,7 +4242,6 @@ function(anAspect, anAction, aDescription) {
     desc = TP.isValid(aDescription) ? aDescription : TP.hc();
     if (!TP.canInvoke(desc, 'atPutIfAbsent')) {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Description not a collection.');
 
         return;
@@ -4263,7 +4253,7 @@ function(anAspect, anAction, aDescription) {
     //  note that we force the firing policy here. this allows observers of a
     //  generic Change to see 'aspect'Change notifications, even if those
     //  'aspect'Change signals haven't been defined as being subtypes of Change
-    TP.signal(this, sig, arguments, desc, TP.INHERITANCE_FIRING);
+    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING);
 
     return TP.isValid(target) ? target : this;
 });
@@ -6330,12 +6320,11 @@ function(attributeName, attributeValue, shouldSignal) {
 
     if (!TP.isMutable(this)) {
         return this.raise('TP.sig.NonMutableInstance',
-                            arguments,
                             attributeName);
     }
 
     if (TP.isEmpty(attributeName)) {
-        return this.raise('TP.sig.InvalidKey', arguments);
+        return this.raise('TP.sig.InvalidKey');
     }
 
     //  If we got handed an 'access path', then we need to let it handle this.
@@ -6420,7 +6409,7 @@ function(attributeName, attributeValue, shouldSignal) {
         args;
 
     if (TP.isEmpty(attributeName)) {
-        return this.raise('TP.sig.InvalidKey', arguments);
+        return this.raise('TP.sig.InvalidKey');
     }
 
     //  If we got handed an 'access path', then we need to let it handle this.
@@ -6520,13 +6509,13 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('runDebugger',
-function(aContext) {
+function(callingContext) {
 
     /**
      * @name runDebugger
      * @synopsis If there's a TIBET implementation of a debugging tool this
      *     function will run it if possible.
-     * @param {Function} aContext The function reference to debug.
+     * @param {Function|Arguments} callingContext The context to debug.
      */
 
     return;
@@ -6535,7 +6524,7 @@ function(aContext) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('$launchDebugger',
-function(aContext) {
+function(callingContext) {
 
     /**
      * @name $launchDebugger
@@ -6548,11 +6537,11 @@ function(aContext) {
      *     TP.sys.shouldUseDebugger() is true. Also note that the native
      *     debuggers will only become visible if a) installed and b) are already
      *     open.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Function|Arguments} callingContext The calling context.
      */
 
     if (this.hasDebugger()) {
-        this.runDebugger(aContext);
+        this.runDebugger(callingContext);
     } else {
         //  on IE or Mozilla this will foreground the native debugger, if
         //  installed and open. but it's a bit flakey.
@@ -7533,7 +7522,7 @@ function(keyCriteria, selectionCriteria) {
 
         default:
 
-            return this.raise('TP.sig.InvalidParameter', arguments);
+            return this.raise('TP.sig.InvalidParameter');
     }
 });
 
@@ -8245,7 +8234,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
                             whenError(next, index, e);
                         } else {
                             that.raise('TP.sig.InvokeFailed',
-                                arguments, TP.ec(e, 'Invocation failed'));
+                                TP.ec(e, 'Invocation failed'));
                         }
                     } finally {
                         arr.signal('TP.sig.InvokeNext');
@@ -8256,7 +8245,6 @@ function(aThis, anArgArray, whenError, stopOnError) {
     runner = function () {
         if (stopOnError && errors.length > 0) {
             that.signal('TP.sig.InvokeComplete',
-                arguments,
                 TP.hc('results', results, 'errors', errors));
         }
 
@@ -8265,7 +8253,6 @@ function(aThis, anArgArray, whenError, stopOnError) {
             setTimeout(next);
         } else {
             that.signal('TP.sig.InvokeComplete',
-                arguments,
                 TP.hc('results', results, 'errors', errors));
         }
     };
@@ -8430,7 +8417,7 @@ function(aNumber) {
         thisref;
 
     if (!TP.isNumber(aNumber)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
     }
 
     arr = TP.ac();
@@ -8667,951 +8654,6 @@ function(aValue) {
 });
 
 //  ------------------------------------------------------------------------
-//  LOGGING - COMPONENT FILTERING
-//  ------------------------------------------------------------------------
-
-/**
- * For the TIBET logging system to function more effectively it's necessary to
- * have ways to control which components are activated for certain forms of
- * logging. This is accomplished by a combination of flags which are maintained
- * on an instance and type level which the logging methods check when logging.
- * @todo
- */
-
-//  ------------------------------------------------------------------------
-
-TP.defineMetaInstMethod('shouldLog',
-function(aFlag, aLogName) {
-
-    /**
-     * @name shouldLog
-     * @synopsis Defines whether the receiver should log to the activity log
-     *     relative to a particular log type. When no type is provided the
-     *     setting takes effect for all logging for the receiver.
-     * @param {Boolean} aFlag The optional state of the flag to be set as a
-     *     result of this call.
-     * @param {String} aLogName One of the TIBET log type names, or a custom
-     *     name if custom logging is being used. See TP.*_LOG for names.
-     * @returns {Boolean} The value of the flag after any optional set.
-     * @todo
-     */
-
-    var flag,
-        owner;
-
-    //  specific instruction/query regarding a particular log
-    if (TP.isString(aLogName)) {
-        if (TP.isBoolean(aFlag)) {
-            this['$shouldLog' + aLogName] = TP.bc(aFlag);
-        }
-
-        flag = this['$shouldLog' + aLogName];
-    } else {
-        if (TP.isBoolean(aFlag)) {
-            this['$shouldLog' + TP.LOG] = TP.bc(aFlag);
-        }
-
-        flag = this['$shouldLog' + TP.LOG];
-    }
-
-    if (TP.isBoolean(flag)) {
-        return flag;
-    } else if (TP.isMethod(this)) {
-        //  functions that are methods can test their owners to see if
-        //  logging is turned off for specific types or instances
-        if (TP.isValid(owner = this[TP.OWNER])) {
-            if (TP.canInvoke(owner, 'shouldLog')) {
-                return owner.shouldLog(aFlag, aLogName);
-            }
-        }
-
-        return true;
-    } else {
-        return true;
-    }
-});
-
-//  ------------------------------------------------------------------------
-//  LOGGING - TP.boot.Log ENHANCEMENTS
-//  ------------------------------------------------------------------------
-
-/**
- *  Additional methods for the primitive log type. These support simple log
- *  maintenance by leveraging more of the TIBET kernel than the boot system
- *  scripts can assume.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.boot.Log.prototype.clearEntries = function(aLogName, aLogLevel) {
-
-    /**
-     * @name clearEntries
-     * @synopsis Removes all entries whose log name and level matches the log
-     *     name and level provided. For example, providing a log name of
-     *     TP.IO_LOG will remove all IO log entries from the activity log, while
-     *     adding a level of TP.ERROR will remove all IO log entries that have a
-     *     level of TP.ERROR.
-     * @param {String} aLogName The log name, such as TP.IO_LOG,
-     *     TP.INFERENCE_LOG, etc. Default is the entire activity log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM. Default is to remove all levels.
-     * @todo
-     */
-
-    if (TP.isEmpty(aLogName)) {
-        this.messages.length = 0;
-
-        return this;
-    }
-
-    //  compact will remove anything which this function returns true for,
-    //  so our goal is to return true whenever an entry matches our spec
-    return this.messages.compact(
-        function(it) {
-
-            //  empty? every entry is suspect...just check level
-            if (TP.isEmpty(aLogName) || (aLogName === it[TP.LOG_ENTRY_NAME])) {
-                //  no level filter? all entries for the named log go
-                if (TP.isEmpty(aLogLevel)) {
-                    return true;
-                } else {
-                    return aLogLevel !== it[TP.LOG_ENTRY_LEVEL];
-                }
-            }
-
-            return false;
-        });
-};
-
-//  ------------------------------------------------------------------------
-
-TP.boot.Log.prototype.lastEntry = function(aLogName, aLogLevel) {
-
-    /**
-     * @name lastEntry
-     * @synopsis Returns the last entry for the named log. If no log name is
-     *     provided then the last entry of any category is returned.
-     * @param {String} aLogName The log name, such as TP.IO_LOG,
-     *     TP.INFERENCE_LOG, etc.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @returns {Array} The log entry containing the last entry for the named
-     *     log.
-     * @todo
-     */
-
-    var list,
-        entry;
-
-    if (TP.isEmpty(list = this.getEntries(aLogName, aLogLevel))) {
-        return null;
-    }
-
-    entry = list.last();
-
-    return entry;
-};
-
-//  ------------------------------------------------------------------------
-
-TP.boot.Log.prototype.getEntries = function(aLogName, aLogLevel) {
-
-    /**
-     * @name getEntries
-     * @synopsis Returns an array containing the entries for the named log which
-     *     match the log level provided.
-     * @param {String} aLogName The log name, such as TP.IO_LOG,
-     *     TP.INFERENCE_LOG, etc.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @returns {Array} An array of the individual log entries (which are
-     *     themselves Arrays) for the named log.
-     * @todo
-     */
-
-    var arr;
-
-    arr = this.messages.select(
-        function(it) {
-
-            if (TP.isEmpty(aLogName) || (aLogName === it[TP.LOG_ENTRY_NAME])) {
-                if (TP.isEmpty(aLogLevel)) {
-                    return true;
-                } else {
-                    return aLogLevel === it[TP.LOG_ENTRY_LEVEL];
-                }
-            }
-
-            return false;
-        });
-
-    return arr;
-};
-
-//  ------------------------------------------------------------------------
-
-TP.boot.Log.prototype.hasEntries = function(aLogName, aLogLevel) {
-
-    /**
-     * @name $hasLogEntries
-     * @synopsis Returns true if the activity log has entries for the named log.
-     * @param {String} aLogName The log name, such as TP.IO_LOG,
-     *     TP.INFERENCE_LOG, etc.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @returns {Boolean} True if the log has entries.
-     * @todo
-     */
-
-    return TP.isValid(
-            this.messages.detect(
-                function(it) {
-
-                    if (TP.isEmpty(aLogName) ||
-                        (aLogName === it[TP.LOG_ENTRY_NAME])) {
-                        if (TP.isEmpty(aLogLevel)) {
-                            return true;
-                        } else {
-                            return aLogLevel === it[TP.LOG_ENTRY_LEVEL];
-                        }
-                    }
-
-                    return false;
-                }));
-};
-
-//  ------------------------------------------------------------------------
-//  LOGGING - CORE METHODS
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('$logChanged',
-function(aLogName) {
-
-    /**
-     * @name $logChanged
-     * @synopsis Notifies observers, if any, that a particular log has changed.
-     * @description This method provides common flag manipulations which are
-     *     necessary to avoid recursive logging during notification of log
-     *     changes. Note that the patch log and boot logs don't participate in
-     *     this process since they're static by the time this function has been
-     *     installed. Also note that TP.sys.shouldSignalLogChange() is false by
-     *     default.
-     * @param {The} aLogName name of the log that changed. The name provided is
-     *     given a suffix of Log and a [name]LogChange signal is triggered.
-     * @todo
-     */
-
-    var flag;
-
-    TP.debug('break.change');
-
-    if (TP.notValid(aLogName)) {
-        return;
-    }
-
-    if (TP.sys.shouldSignalLogChange()) {
-        try {
-            flag = TP.sys.shouldLogActivities();
-            TP.sys.shouldLogActivities(false);
-
-            TP.signal(TP.sys, aLogName + 'LogChange');
-        } catch (e) {
-        } finally {
-            TP.sys.shouldLogActivities(flag);
-        }
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-//  ACTIVITY (META) LOG
-//  ------------------------------------------------------------------------
-
-//  NOTE the activity log is a shared log containing all log content other
-//  than boot/patch entries (found in the boot log), change entries (found
-//  in the change log), and test entries (found in the test log). These two
-//  secondary logs are separate since they contain information important to
-//  the environment and data that should not be cleared without
-//  confirmation.
-TP.sys.$activity = TP.ifInvalid(TP.sys.$activity, new TP.boot.Log());
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getActivityLog',
-function() {
-
-    /**
-     * @name getActivityLog
-     * @synopsis Returns the overall TIBET activity log, which contains log
-     *     entries covering all client-side activity other than boot/patch
-     *     logging and source code change logging.
-     * @returns {TP.boot.Log} A primitive log object.
-     */
-
-    return TP.sys.$activity;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('$$log',
-function(anObject, aLogName, aLogLevel, aContext) {
-
-    /**
-     * @name $$log
-     * @synopsis A private method for logging to the TIBET log. The log that
-     *     will be modified is based on the supplied log name.
-     * @param {Object} anObject The message/object to log.
-     * @param {String} aLogName The log name, such as TP.IO_LOG,
-     *     TP.INFERENCE_LOG, etc.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    var name,
-        level,
-        iserr,
-
-        actflag,
-        errflag,
-
-        entry,
-        stackInfo,
-        args,
-
-        stdioDict,
-        format,
-        output,
-        str,
-        msg;
-
-    //  sometimes we can get lucky if a recursion includes logging
-    TP.sys.trapRecursion();
-
-    if (!TP.sys.shouldLogActivities()) {
-        return false;
-    }
-
-    name = TP.ifInvalid(aLogName, TP.LOG);
-    level = TP.ifInvalid(aLogLevel, TP.sys.getLogLevel());
-    iserr = (level > TP.WARN) && (level < TP.SYSTEM);
-
-    //  enclose the entire method in a try/finally block to mask off
-    //  logging temporarily while ensuring it gets turned back on
-    try {
-        //  turn off logging while we log :)
-        actflag = TP.sys.shouldLogActivities();
-        errflag = TP.sys.shouldLogErrors();
-
-        TP.sys.shouldLogActivities(false, false);
-        TP.sys.shouldLogErrors(false, false);
-
-        //  add entry to the low-level log container and grab that entry so
-        //  we can augment it with stack and argument data as needed
-        TP.sys.$activity.log(anObject, name, level, aContext);
-        entry = TP.sys.$activity.last();
-
-        //  NOTE that we never log stack information for SYSTEM messages
-        if (level !== TP.SYSTEM) {
-            if (TP.sys.shouldLogStack()) {
-
-                try {
-                    throw new Error();
-                } catch (e) {
-                    stackInfo = TP.getStackInfo(e);
-                }
-
-                //  the 3 here is intended to strip off the logging and
-                //  stack functions themselves so we only see the portion of
-                //  the stack not included in the infrastructure
-                stackInfo.shift();
-                stackInfo.shift();
-                stackInfo.shift();
-
-                //  NOTE this flag only matters when logging stack at large
-                if (TP.sys.shouldLogStackArguments()) {
-                    if (TP.isArgArray(aContext)) {
-                        args = TP.args(aContext);
-                    }
-                }
-
-                //  adjust the entry to hold captured stack/arg data
-                entry.push(stackInfo);
-                if (TP.isArray(args)) {
-                    entry.push(args);
-                }
-            }
-        }
-
-        //  keep log from growing without bound
-        if (TP.sys.$activity.getSize() > TP.sys.cfg('log.size_max')) {
-            TP.sys.$activity.shift();
-        }
-
-        stdioDict = TP.hc();
-        stdioDict.atPut('messageLevel', level);
-        stdioDict.atPut('messageType', 'log');
-
-        //  these are for TP.tdp.Console support
-        stdioDict.atPut('cmd',
-                        TP.boot.Log.getStringForLevel(level).toLowerCase());
-
-        format = TP.sys.cfg('log.default_format', 'tsh:pp');
-        output = TP.format(anObject, format, stdioDict);
-
-        stdioDict.atPut('cmdAsIs', true);
-        stdioDict.atPut('cmdBox', false);
-
-        stdioDict.atPut('echoRequest', true);
-
-        if (iserr) {
-            //  if we're still booting then announce it in the bootlog
-            if (!TP.sys.hasStarted()) {
-                if (TP.canInvoke(TP.boot, '$stderr')) {
-                    TP.boot.$stderr(anObject, aContext || arguments);
-                }
-            } else {
-              TP.stderr(output, stdioDict);
-            }
-        } else {
-            //  NOTE that this logs the original message content
-            //  regardless of what may have been done during this
-            //  function
-            TP.stdout(output, stdioDict);
-        }
-
-        //  allow observers of the log to see changes...
-        TP.sys.$logChanged(name);
-    } catch (e) {
-        try {
-            str = ' obj: ' + TP.str(anObject);
-        } catch (e2) {
-            str = '';
-        }
-        msg = 'Error in TP.sys.$$log: ' + TP.str(e) + str;
-
-        // Make sure the error makes it to the browser console at least.
-        top.console.error(msg);
-
-        // Try to alert if TP.alert is currently active.
-        TP.alert(msg);
-    } finally {
-        TP.sys.shouldLogActivities(actflag, false);
-        TP.sys.shouldLogErrors(errflag, false);
-    }
-
-    //  last chance...invoke the debugger ?
-    if (iserr && TP.sys.shouldUseDebugger()) {
-        TP.sys.$launchDebugger(arguments);
-    }
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('log',
-function(anObject, aLogName, aLogLevel, aContext) {
-
-    /**
-     * @name log
-     * @synopsis A simple public wrapper for logging to a TIBET log. Normally
-     *     you'll call a method specific to a particular log subset such as
-     *     TP.sys.logInference, or a helper specific to a particular logging
-     *     level such as TP.trace() or TP.warn(). This method largely provides
-     *     symmetry with the TP.boot.log() call which logs to the boot log
-     *     rather than the activity log.
-     * @param {Object} anObject The message/object to log.
-     * @param {String} aLogName The log name, such as TP.IO_LOG,
-     *     TP.INFERENCE_LOG, etc.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    var level;
-
-    level = TP.ifInvalid(aLogLevel, TP.WARN);
-    if (TP.sys.getLogLevel() <= level) {
-        return TP.sys.$$log(anObject, aLogName, aLogLevel, aContext);
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-//  TEST LOG
-//  ------------------------------------------------------------------------
-
-//  NOTE that the test log is a separate log to ensure that it cannot be
-//  cleared accidentally when clearing the larger activity log.
-TP.sys.$testlog = TP.ifInvalid(TP.sys.$testlog, new TP.boot.Log());
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getTestLog',
-function() {
-
-    /**
-     * @name getTestLog
-     * @synopsis Returns the TIBET test log, which contains entries for all
-     *     tests run during one or more test suite executions.
-     * @returns {TP.boot.Log} A primitive log object.
-     */
-
-    return TP.sys.$testlog;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logTest',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logTest
-     * @synopsis Adds an entry to the test log. Note that there is no level
-     *     filtering in test logging, the level parameter only filters parallel
-     *     entries which might be made to the activity log.
-     * @description This call is used by test harness routines to log their
-     *     activity. The object argument can provide data in one or more keys
-     *     including:
-     *
-     *     'name'               the test name
-     *     'number'             the test number *in the reporting run*
-     *     'test-status'        the test status. Should be one of:
-     *                              TP.ACTIVE
-     *                              TP.SKIP
-     *                              TP.TODO
-     *     'result-status'      the result status. Should be one of:
-     *                              TP.SUCCEEDED
-     *                              TP.FAILED
-     *                              TP.CANCELLED
-     *                              TP.SKIPPED
-     *                              TP.TIMED_OUT
-     *     'message'            the test message
-     *     'failure-severity'   the severity level of the failure. Usually set
-     *                          to 'fail'.
-     *     'failure-data'       A hash with two keys containing the data:
-     *                              TP.PRODUCED
-     *                              TP.EXPECTED
-     * @param {Object} anObject The test data to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    TP.sys.$testlog.log(anObject, TP.TEST_LOG, TP.SYSTEM,
-                        aContext || arguments);
-
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
-        console.log(TP.str(anObject));
-    }
-
-    TP.sys.log(anObject, TP.TEST_LOG, aLogLevel, aContext || arguments);
-
-    //  with all logging complete signal change on the test log
-    TP.sys.$logChanged(TP.TEST_LOG);
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-//  CSS LOGGING
-//  ------------------------------------------------------------------------
-
-/**
- * All CSS processor output can be captured in the CSS log for review provided
- * that TP.sys.shouldLogCSS() is true.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logCSS',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logCSS
-     * @synopsis Adds anObject to the CSS log. This method will have no effect
-     *     if the TP.sys.shouldLogCSS() flag is false.
-     * @param {Object} anObject The message/object to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    if (!TP.sys.shouldLogCSS()) {
-        return false;
-    }
-
-    TP.sys.log(anObject, TP.CSS_LOG, aLogLevel, aContext || arguments);
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-//  INFERENCE LOGGING
-//  ------------------------------------------------------------------------
-
-/*
-The inference log is a simple log for tracking activity of the inferencing
-engine. All messages generated by the inference engine show up here, with
-content that often includes the message, target, arguments, etc.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logInference',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logInference
-     * @synopsis Adds anObject to the inference log. This method will have no
-     *     effect if the TP.sys.shouldLogInferences() flag is false. The default
-     *     logging level for messages of this type is TP.TRACE.
-     * @param {Object} anObject The message/object to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    if (!TP.sys.shouldLogInferences()) {
-        return false;
-    }
-
-    TP.sys.log(anObject,
-                TP.INFERENCE_LOG,
-                aLogLevel,
-                aContext || arguments);
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-//  IO LOGGING
-//  ------------------------------------------------------------------------
-
-/*
-The IO log tracks activity of communication primitives for both file and
-http access. All messages generated by communication calls show up here
-allowing you to see a single view of all server or host communication.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logIO',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logIO
-     * @synopsis Logs anObject to the IO log. Note that this method will have no
-     *     effect if TP.sys.shouldLogIO() is false. Also note that this method
-     *     logs information at TP.TRACE.
-     * @description This call is used by various file and http access routines
-     *     to log their activity. The object argument can provide data in one or
-     *     more keys including:
-     *
-     *     'uri'        the targetUrl
-     *     'uriparams'  optional parameters for url-encoding,
-     *     'separator'  optional uri parameter separator
-     *
-     *     'headers'    http headers, or response headers,
-     *     'async'      true or false
-     *     'verb'       the command verb (GET/POST/PUT/DELETE etc)
-     *     'body'       any data content for the call,
-     *
-     *     'noencode'   turns off body content encoding 'mimetype'
-     *     'mimetype'   used for body encoding 'encoding'
-     *     'charset'    encoding used for multi-part
-     *     'mediatype'  used for multi-part encodings
-     *
-     *     'xhr'        the XMLHttpRequest object used, if any
-     *
-     *     'request'    TP.sig.Request reference
-     *     'response'   TP.sig.Response reference
-     *
-     *     'direction'  TP.SEND or TP.RECV
-     *     'message'    the log message
-     *     'object'     any Error object which might be related,
-     *
-     *     'finaluri'   the fully expanded uri w/parameters
-     *     'finalbody'  the TP.str(body) value actually sent
-     *
-     *     Note that IO log entries will only be pushed to the activity log
-     *     (and stdout) when the logging level is INFO.
-     * @param {Object} anObject The message/object to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    if (!TP.sys.shouldLogIO()) {
-        return false;
-    }
-
-    TP.sys.log(anObject, TP.IO_LOG, aLogLevel, aContext || arguments);
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-//  JOB LOGGING
-//  ------------------------------------------------------------------------
-
-/*
-The job log contains information on all TP.core.Job processing done by
-TIBET. The TP.core.Job type manages virtually all setInterval/setTimeout
-style processing in TIBET so that all asynchronous processing can be managed
-consistently.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logJob',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logJob
-     * @synopsis Logs a job-related event. This method has no effect if
-     *     TP.sys.shouldLogJobs() is false.
-     * @param {Object} anObject The message/object to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    if (!TP.sys.shouldLogJobs()) {
-        return false;
-    }
-
-    TP.sys.log(anObject, TP.JOB_LOG, aLogLevel, aContext || arguments);
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-//  KEY LOGGING
-//  ------------------------------------------------------------------------
-
-/*
-The key log contains information on all key events being logged. Logging
-keys can be a useful way to help adjust keyboard map entries.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logKey',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logKey
-     * @synopsis Logs a key event. This method has no effect if
-     *     TP.sys.shouldLogKeys() is false.
-     * @param {Object} anObject The message/object to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    if (!TP.sys.shouldLogKeys()) {
-        return false;
-    }
-
-    TP.sys.log(anObject, TP.KEY_LOG, aLogLevel, aContext || arguments);
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-//  LINK LOGGING
-//  ------------------------------------------------------------------------
-
-/*
-The link log contains information on all links traversed via TIBET's link
-methods such as TP.go2(). This information can be used to provide valuable
-usability analysis data, user tracking data, or debugging information on the
-path a user took up to the point of an error.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logLink',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logLink
-     * @synopsis Logs a link activation event. This method has no effect if
-     *     TP.sys.shouldLogLinks() is false. Also note that link logging occurs
-     *     at TP.TRACE level.
-     * @param {Object} anObject The message/object to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    if (!TP.sys.shouldLogLinks()) {
-        return false;
-    }
-
-    TP.sys.log(anObject, TP.LINK_LOG, aLogLevel, aContext || arguments);
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-//  SECURITY LOGGING
-//  ------------------------------------------------------------------------
-
-/*
-Security events such as requesting permissions on Mozilla or performing a
-cross-domain HTTP request can be logged separately (and are by default).
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logSecurity',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logSecurity
-     * @synopsis Logs a security event. This method has no effect if
-     *     TP.sys.shouldLogSecurity() is false.
-     * @param {Object} anObject The message/object to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    if (!TP.sys.shouldLogSecurity()) {
-        return false;
-    }
-
-    TP.sys.log(anObject, TP.SECURITY_LOG, aLogLevel, aContext || arguments);
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-//  SIGNAL LOGGING
-//  ------------------------------------------------------------------------
-
-/*
-The signal log tracks the activity of the TIBET signaling engine. This
-subset of log entries can be critical to understanding how your application
-operates. The log entries typically contain the signal object itself.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logSignal',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logSignal
-     * @synopsis Logs a signaling message to the activity log. The signal string
-     *     typically contains the origin, signal name, context, and any
-     *     arguments which were passed. Note that the signal log data will only
-     *     be pushed to the activity log (and stdout) if the log level is
-     *     TP.TRACE.
-     * @param {Object} anObject The message/object to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    var level;
-
-    if (!TP.sys.shouldLogSignals()) {
-        return false;
-    }
-
-    //  since this method "does work" we avoid that unless we're at the
-    //  right level.
-    level = TP.ifInvalid(aLogLevel, TP.TRACE);
-    if (TP.sys.getLogLevel() <= level) {
-        TP.sys.log(anObject.get('message'),
-                    TP.SIGNAL_LOG,
-                    level,
-                    aContext || arguments);
-    }
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-//  TRANSFORM LOGGING
-//  ------------------------------------------------------------------------
-
-/*
-The transform log contains all output from the content processing system
-The TP.sys.shouldLogTransforms() method controls whether logging actually
-occurs.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('logTransform',
-function(anObject, aLogLevel, aContext) {
-
-    /**
-     * @name logTransform
-     * @synopsis Logs a content transfomation event to the transform log.
-     * @param {Object} anObject The message/object to log.
-     * @param {Number} aLogLevel The logging level, from TP.TRACE through
-     *     TP.SYSTEM.
-     * @param {arguments} aContext An arguments object providing call stack and
-     *     context data.
-     * @returns {Boolean} True if the logging operation succeeded.
-     * @todo
-     */
-
-    if (!TP.sys.shouldLogTransforms()) {
-        return false;
-    }
-
-    TP.sys.log(anObject,
-                TP.TRANSFORM_LOG,
-                aLogLevel,
-                aContext || arguments);
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
 //  METHOD CONFORMANCE
 //  ------------------------------------------------------------------------
 
@@ -9674,7 +8716,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sys.$$NSMString =
-    'TP.raise(this, "TP.sig.NoSuchMethod", arguments); return;';
+    'TP.raise(this, "TP.sig.NoSuchMethod"); return;';
 
 //  ------------------------------------------------------------------------
 
@@ -9736,7 +8778,7 @@ function(aName) {
     var dnuFunc;
 
     if (TP.isEmpty(aName)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
     }
 
     dnuFunc = function () {
@@ -9774,7 +8816,7 @@ function(aName) {
         delStr;
 
     if (TP.isEmpty(aName)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
     }
 
     delStr = TP.join(
@@ -9791,7 +8833,7 @@ function(aName) {
         //  problem with aName, not a valid function name
         TP.ifWarn() ?
             TP.warn('Unable to construct delegator for ' + aName,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
     }
 
     return delFunc;
@@ -9814,7 +8856,7 @@ function(aName) {
     var nsmFunc;
 
     if (TP.isEmpty(aName)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
     }
 
     nsmFunc = TP.fc(TP.sys.$$NSMString);

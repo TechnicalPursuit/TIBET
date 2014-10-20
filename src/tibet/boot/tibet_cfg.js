@@ -110,8 +110,7 @@ TP.sys.setcfg('boot.nourlargs', false);
 TP.sys.setcfg('boot.defer', true);
 
 //  what threshold in milliseconds constitues something worth colorizing to draw
-//  attention to the fact it's a long-running step that may need tuning. This
-//  value is only applied when logging is TP.TRACE level.
+//  attention to the fact it's a long-running step that may need tuning.
 TP.sys.setcfg('boot.delta_threshold', 50);
 
 //  maximum number of errors before we automatically stop the boot process.
@@ -158,17 +157,9 @@ TP.sys.setcfg('tibet.debug', true);
 //  build file.
 TP.sys.setcfg('tibet.verbose', true);
 
-//  number of log message entries to buffer for INFO level output. This value is
-//  used as a baseline computation point. The actual level will vary based on
-//  the current logging level and this value. See $computeLogBufferSize();
-TP.sys.setcfg('log.buffersize', 5);
-
-//  which boot reporter should we use? bootui, console, silent, phantom.
-TP.sys.setcfg('boot.reporter', 'bootui');
-
-//  which log reporter should we use?
-TP.sys.setcfg('log.reporter', 'console');
-
+//  the logging level for the boot log. best to use strings to define.
+//  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
+TP.sys.setcfg('boot.level', 'DEBUG');
 
 //  ---
 //  code roots
@@ -307,31 +298,48 @@ TP.sys.setcfg('boot.uichunked',
 //  ---
 
 // Must use colors in the colors.js set (until we replace/expand).
-TP.sys.setcfg('log.tracecolor', 'grey');
-TP.sys.setcfg('log.infocolor', 'white');
-TP.sys.setcfg('log.warncolor', 'yellow');
-TP.sys.setcfg('log.errorcolor', 'magenta');
-TP.sys.setcfg('log.severecolor', 'red');
-TP.sys.setcfg('log.fatalcolor', 'red');
-TP.sys.setcfg('log.systemcolor', 'cyan');
+TP.sys.setcfg('log.color.trace', 'grey');
+TP.sys.setcfg('log.color.info', 'white');
+TP.sys.setcfg('log.color.warn', 'yellow');
+TP.sys.setcfg('log.color.error', 'magenta');
+TP.sys.setcfg('log.color.severe', 'red');
+TP.sys.setcfg('log.color.fatal', 'red');
+TP.sys.setcfg('log.color.system', 'cyan');
 
-TP.sys.setcfg('log.timecolor', 'grey');
-TP.sys.setcfg('log.deltacolor', 'grey');
-TP.sys.setcfg('log.slowcolor', 'yellow');
-TP.sys.setcfg('log.debugcolor', 'green');
-TP.sys.setcfg('log.verbosecolor', 'grey');
+TP.sys.setcfg('log.color.time', 'grey');
+TP.sys.setcfg('log.color.delta', 'grey');
+TP.sys.setcfg('log.color.slow', 'yellow');
+TP.sys.setcfg('log.color.debug', 'green');
+TP.sys.setcfg('log.color.verbose', 'grey');
 
 // Inadequate, but sufficient to help determine if we're in node, Phantom,
 // or a browser. Note these tests are unlikely to work in other contexts.
 if (typeof navigator === 'undefined') {
+
   TP.sys.setcfg('boot.context', 'nodejs');
-  TP.sys.setcfg('log.colormode', 'terminal');
+  TP.sys.setcfg('boot.reporter', 'console');
+
+  TP.sys.setcfg('log.color.mode', 'terminal');
+  TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
+
 } else if (/PhantomJS/.test(navigator.userAgent)) {
+
   TP.sys.setcfg('boot.context', 'phantomjs');
-  TP.sys.setcfg('log.colormode', 'terminal');
+  TP.sys.setcfg('boot.reporter', 'phantom');
+
+  TP.sys.setcfg('boot.level', 'WARN');
+  TP.sys.setcfg('log.level', 'WARN');
+
+  TP.sys.setcfg('log.color.mode', 'terminal');
+  TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
+
 } else {
+
   TP.sys.setcfg('boot.context', 'browser');
-  TP.sys.setcfg('log.colormode', 'console');
+  TP.sys.setcfg('boot.reporter', 'bootui');
+
+  TP.sys.setcfg('log.color.mode', 'console');
+  TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 }
 
 //  ---
@@ -911,12 +919,23 @@ TP.sys.setcfg('log.bootcfg', false);
 //  true will dump environment data to boot log
 TP.sys.setcfg('log.bootenv', false);
 
+//  number of log message entries to buffer for INFO level output. This value is
+//  used as a baseline computation point. The actual level will vary based on
+//  the current logging level and this value. See $computeLogBufferSize();
+TP.sys.setcfg('log.buffersize', 5);
+
+//  The type used to create new logger instances. You can change if you really
+//  need to have a custom subtype of TP.log.Logger, but not usually necessary.
+TP.sys.setcfg('log.default_factory', 'TP.log.Logger');
+
 //  Which default formatter should be used when sending log output to the
 //  stdout routine?
 TP.sys.setcfg('log.default_format', 'tsh:pp');
 
-//  what output/logging level will filter the error and activity logging?
-TP.sys.setcfg('log.level', 1);  //  0 (TRACE) thru 6 (SYSTEM)
+//  the logging level for the TP.log logging system. Set once that code has
+//  loaded during kernel startup since the levels are actual instances.
+//  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
+TP.sys.setcfg('log.level', 'INFO');
 
 //  when logging is on the value here will control how large the activity
 //  log can grow before it starts eliminating the oldest entries. NOTE that
@@ -1041,10 +1060,6 @@ TP.sys.setcfg('log.signal_stack', false);
 //  default primarily due to permission requirements in Mozilla :(. Used to
 //  be useful before they went and made stack access a security issue again.
 TP.sys.setcfg('log.stack', false);
-
-//  if $error is called should the call stack arguments be included? NOTE
-//  that this flag is only used when log.stack is true
-TP.sys.setcfg('log.stack_arguments', false);
 
 //  when logging the call stack should we try to get file information such
 //  as filenames and line numbers for the functions?
@@ -1299,11 +1314,6 @@ TP.sys.setcfg('signal.dom_focus_signals', true);
 //  coming from document objects, so you can always observe a document for
 //  ContentLoaded as part of a page startup sequence.
 TP.sys.setcfg('signal.dom_loaded', true);
-
-//  should LogChange and its variants be signaled when a slice of the
-//  activity log changes? by default no, only the TIBET tools will typically
-//  adjust this, and even then they're more likely to leverage stdout/stderr
-TP.sys.setcfg('signal.log_change', false);
 
 //  should we track handler invocation times across a set of signaling
 //  calls? if true, the $signal function will track stats on each call that

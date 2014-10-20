@@ -77,7 +77,7 @@ function(anItem) {
         ndx = keys.getPosition(id);
         if (TP.notValid(ndx)) {
             //  oops! didn't find our index!
-            this.raise('TP.sig.InvalidTriggerID', arguments);
+            this.raise('TP.sig.InvalidTriggerID');
             return false;
         }
 
@@ -148,8 +148,8 @@ function(aFlag) {
      * @name shouldAllowOverflow
      * @synopsis Sets/gets the value for the allow-overflow flag. If this flag
      *     is true the receiver will allow extra notifications to occur.
-     * @param {Boolean} aFlag 
-     * @returns {Boolean} 
+     * @param {Boolean} aFlag
+     * @returns {Boolean}
      */
 
     if (TP.isDefined(aFlag)) {
@@ -171,8 +171,8 @@ function(aFlag) {
      * @synopsis Sets/gets the value for the order-matters flag. If this flag is
      *     true the receiver will require notifications to happen in the same
      *     order they are registered.
-     * @param {Boolean} aFlag 
-     * @returns {Boolean} 
+     * @param {Boolean} aFlag
+     * @returns {Boolean}
      */
 
     if (TP.isDefined(aFlag)) {

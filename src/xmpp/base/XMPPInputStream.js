@@ -39,7 +39,7 @@ function() {
     /**
      * @name atStart
      * @synopsis Returns true if there are no packets in the stream.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return (this.get('index') === 0);
@@ -53,7 +53,7 @@ function() {
     /**
      * @name atEnd
      * @synopsis Returns true if there are no unread packets in the stream.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var arr;
@@ -107,7 +107,7 @@ function() {
     /**
      * @name getIndex
      * @synopsis Returns the current index location of the stream
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return this.$get('index');
@@ -135,7 +135,7 @@ function(anIndex) {
         elem;
 
     if (!this.isOpen()) {
-        this.raise('TP.sig.XMPPConnectionNotOpen', arguments);
+        this.raise('TP.sig.XMPPConnectionNotOpen');
         return;
     }
 
@@ -158,7 +158,7 @@ function(anIndex) {
 
     if (TP.notValid(elem = TP.nodeGetChildElementAt(this.get('stream'),
                                                     ndx))) {
-        return this.raise('TP.sig.XMPPReadException', arguments);
+        return this.raise('TP.sig.XMPPReadException');
     }
 
     try {
@@ -171,7 +171,7 @@ function(anIndex) {
             TP.error(TP.ec(e, TP.join('Error creating TP.xmpp.Node from "',
                                         TP.nodeAsString(elem, false),
                                         '".')),
-                        TP.IO_LOG, arguments) : 0;
+                        TP.IO_LOG) : 0;
     }
 
     return xmppnode;
@@ -239,7 +239,7 @@ function(content, response) {
         stream;
 
     if (TP.notValid(content)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (TP.isString(content) && TP.isEmpty(content)) {
@@ -285,7 +285,6 @@ function(content, response) {
             }
         } catch (e) {
             return this.raise('TP.sig.DOMParseException',
-                                arguments,
                                 TP.ec(e, content));
         }
     } else if (TP.isNode(content)) {
@@ -304,7 +303,7 @@ function(content, response) {
             TP.nodeAppendChild(stream, TP.nodeCloneNode(node, true));
         }
     } else {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     TP.nodeNormalize(stream);

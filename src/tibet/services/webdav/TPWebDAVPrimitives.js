@@ -217,7 +217,6 @@ function(targetUrl, aRequest) {
     propertyNames = request.at('propertyNames');
     if (TP.notValid(propertyNames) || !TP.isArray(propertyNames)) {
         TP.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Must provide property name Array for WebDAV get ' +
                     'properties operation.');
 
@@ -421,7 +420,6 @@ function(targetUrl, aRequest) {
     propertyEntry = request.at('property');
     if (TP.notValid(propertyEntry)) {
         TP.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Must provide property TP.lang.Hash for WebDAV get ' +
                     'property operation.');
 
@@ -546,7 +544,6 @@ function(targetUrl, aRequest) {
     propertyEntry = request.at('property');
     if (TP.notValid(propertyEntry)) {
         TP.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Must provide property TP.lang.Hash for WebDAV get ' +
                     'property operation.');
 
@@ -606,7 +603,6 @@ function(targetUrl, aRequest) {
     propertyEntry = request.at('property');
     if (TP.notValid(propertyEntry)) {
         TP.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Must provide property TP.lang.Hash for WebDAV get ' +
                     'property operation.');
 
@@ -653,7 +649,6 @@ function(targetUrl, aRequest, useQuery) {
 
     if (TP.notValid(verb)) {
         TP.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Must provide verb for WebDAV operation.');
 
         return;
@@ -786,7 +781,6 @@ function(targetUrl, aRequest) {
     destination = request.at('destination');
     if (TP.notValid(destination)) {
         TP.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Must provide destination for WebDAV copy operation.');
 
         return;
@@ -1009,7 +1003,6 @@ function(targetUrl, aRequest) {
     destination = request.at('destination');
     if (TP.notValid(destination)) {
         TP.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Must provide destination for WebDAV move operation.');
 
         return;
@@ -1279,7 +1272,6 @@ function(targetUrl, aRequest) {
     locktoken = request.at('locktoken');
     if (TP.notValid(locktoken)) {
         TP.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Must provide lock token for WebDAV unlock operation.');
 
         return;

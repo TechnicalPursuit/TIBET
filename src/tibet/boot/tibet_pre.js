@@ -163,7 +163,7 @@ TP.$$DEBUG = false;
 //  $DEBUG or $$DEBUG.
 TP.$$VERBOSE = false;
 
-//  Boot system versions (TODO: refine to one pair coupled with TP.TRACE)
+//  Boot system versions
 TP.boot.$debug = true;
 TP.boot.$verbose = true;
 TP.boot.$$debug = true;
@@ -172,6 +172,51 @@ TP.boot.$$verbose = true;
 //  ---
 //  Configure bootstrap logging control variables.
 //  ---
+
+//  log level NAME constants. These are used as keys into either TP.boot or
+//  TP.log to locate the specific level appropriate during/after startup.
+TP.ALL = 'ALL';
+TP.TRACE = 'TRACE';
+TP.DEBUG = 'DEBUG';
+TP.INFO = 'INFO';
+TP.WARN = 'WARN';
+TP.ERROR = 'ERROR';
+TP.SEVERE = 'SEVERE';
+TP.FATAL = 'FATAL';
+TP.SYSTEM = 'SYSTEM';
+TP.OFF = 'OFF';
+
+//  log level constants (only used by primitive boot log)
+TP.boot.ALL = 0;
+TP.boot.TRACE = 1;
+TP.boot.DEBUG = 2;
+TP.boot.INFO = 3;
+TP.boot.WARN = 4;
+TP.boot.ERROR = 5;
+TP.boot.SEVERE = 6;
+TP.boot.FATAL = 7;
+TP.boot.SYSTEM = 8;
+TP.boot.OFF = 9;
+
+TP.boot.LOG_NAMES = [
+    'ALL',
+    'TRACE',
+    'DEBUG',
+    'INFO',
+    'WARN',
+    'ERROR',
+    'SEVERE',
+    'FATAL',
+    'SYSTEM',
+    'OFF'
+];
+
+//  log entry slot indices (only used by primitive boot log)
+TP.boot.LOG_ENTRY_DATE = 0;
+TP.boot.LOG_ENTRY_NAME = 1;
+TP.boot.LOG_ENTRY_LEVEL = 2;
+TP.boot.LOG_ENTRY_PAYLOAD = 3;
+TP.boot.LOG_ENTRY_DELTA = 4;
 
 //  the actual buffer size used. the log.level setting is used as a starting
 //  point but adjusted based on log level to balance speed with user-feedback.
@@ -204,26 +249,6 @@ TP.NOT_FOUND = -1;                          //  missing data
 TP.BAD_INDEX = -1;                          //  bad array index
 TP.NO_SIZE = -1;                            //  bad object size
 TP.NO_RESULT = Number.NEGATIVE_INFINITY;    //  invalid response
-
-//  log level constants (OBSOLETE)
-TP.TRACE = 0;
-TP.INFO = 1;
-TP.WARN = 2;
-TP.ERROR = 3;
-TP.SEVERE = 4;
-TP.FATAL = 5;
-TP.SYSTEM = 6;
-
-//  log names
-TP.BOOT_LOG = 'Boot';
-
-//  log entry slot indices
-TP.LOG_ENTRY_DATE = 0;
-TP.LOG_ENTRY_NAME = 1;
-TP.LOG_ENTRY_LEVEL = 2;
-TP.LOG_ENTRY_PAYLOAD = 3;
-TP.LOG_ENTRY_CONTEXT = 4;
-TP.LOG_ENTRY_DELTA = 5;
 
 //  file load return types
 TP.DOM = 1;
@@ -866,6 +891,19 @@ TP.boot.$isNumber = function(value) {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$isString = function(value) {
+
+    /**
+     * @name $isString
+     * @summary Returns true if the value is a valid string.
+     * @return {Boolean} True if the value is a string.
+     */
+
+    return typeof(value) === 'string' || value.constructor === String;
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$isValid = function(value) {
 
     /**
@@ -1228,7 +1266,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
         return;
       } else if (TP.boot.$argsDone === true) {
         TP.boot.$stdout('Forcing reset of \'' + key +
-                        '\' override to ' + aValue, TP.TRACE);
+                        '\' override to ' + aValue, TP.boot.DEBUG);
       }
     }
 
@@ -1248,7 +1286,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
         if (shouldSignal !== false &&
             TP.sys.hasStarted() &&
             typeof(window.$signal) === 'function') {
-            window.$signal(TP.sys, aKey + 'Change', arguments, aKey);
+            window.$signal(TP.sys, aKey + 'Change', aKey);
         }
     }
 

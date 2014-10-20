@@ -95,7 +95,7 @@ function(aLocale) {
         } else if (TP.canInvoke(aLocale, 'localizeString')) {
             locale = aLocale;
         } else {
-            this.raise('TP.sig.InvalidParameter', arguments);
+            this.raise('TP.sig.InvalidParameter');
 
             locale = TP.core.Locale;
         }
@@ -130,7 +130,7 @@ function(aLocale, sourceLocale, forceRefresh) {
     var locale,
         localeObj;
 
-    TP.debug('break.locale_localize');
+    TP.stop('break.locale_localize');
 
     locale = TP.ifInvalid(aLocale, TP.sys.getLocale());
 
@@ -147,8 +147,7 @@ function(aLocale, sourceLocale, forceRefresh) {
 
         TP.ifWarn() ?
             TP.warn('Couldn\'t find locale for: ' + locale,
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
         return this;
     }
@@ -169,17 +168,17 @@ function(aLocale, sourceLocale, forceRefresh) {
  *     language/country code as specified in ISO 639. Therefore, the
  *     TP.core.Locale for U.S. English is registered under the key 'en-us'. If a
  *     locale existed for French Canadian, it would be registered under 'fr-ca'.
- *     
+ *
  *     The TIBET boot property 'locale' defines the default locale to load when
  *     an application starts. If this value is not specified it defaults to
  *     'en-us'.
- *     
+ *
  *     When the current locale is set (via TP.sys.setLocale(aLocale)), it takes
  *     over responsibility for several localization functions including offering
  *     support for string translation, data formats, and data validations. Also
  *     supported are parse routines specific to dealing with Boolean, Number,
  *     Date, and String input.
- *     
+ *
  *     Additional support for localization of content is provided by the
  *     TP.core.URI type's rewrite function, which uses the current locale's
  *     language code as a qualifier for locating URI aliases and other mapping
@@ -353,7 +352,7 @@ function(aLocale, aKey) {
     var key;
 
     if (!TP.isSubtypeOf(aLocale, TP.core.Locale)) {
-        return this.raise('TP.sig.InvalidLocale', arguments, aLocale);
+        return this.raise('TP.sig.InvalidLocale', aLocale);
     }
 
     key = TP.ifInvalid(aKey, aLocale.getISOKey());
@@ -401,7 +400,7 @@ function(anObject, sourceLocale, forceRefresh) {
     var tname,
         fname;
 
-    TP.debug('break.locale_localize');
+    TP.stop('break.locale_localize');
 
     //  we'll be using the type name to switch, or build a method lookup key
     //  so we start there
@@ -1058,7 +1057,7 @@ function(aString, sourceLocale) {
 
     var str;
 
-    TP.debug('break.locale_parse');
+    TP.stop('break.locale_parse');
 
     str = this.localizeString(aString, sourceLocale);
 
@@ -1086,7 +1085,7 @@ function(aString, sourceLocale) {
      * @todo
      */
 
-    TP.debug('break.locale_parse');
+    TP.stop('break.locale_parse');
 
     //  the typical originator for a parse() is the object itself, so we'll
     //  normally have gone through Date.parse() which first tries the TIBET
@@ -1122,7 +1121,7 @@ function(aString, sourceLocale) {
     var str,
         sep;
 
-    TP.debug('break.locale_parse');
+    TP.stop('break.locale_parse');
 
     str = aString;
 
@@ -1160,7 +1159,7 @@ function(aString, sourceLocale) {
      * @todo
      */
 
-    TP.debug('break.locale_parse');
+    TP.stop('break.locale_parse');
 
     return this.localizeString(aString, sourceLocale);
 });

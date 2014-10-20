@@ -116,9 +116,9 @@ function(aRequest) {
      * @param {TP.sig.ShellRequest} aRequest The current shell request.
      */
 
-    TP.ifTrace(TP.sys.cfg('log.css_processing')) ?
+    TP.ifTrace() && TP.sys.cfg('log.css_processing') ?
         TP.trace('Merging css:sheet elements into css:sheetset',
-                    TP.CSS_LOG, arguments) : 0;
+                    TP.CSS_LOG) : 0;
 
     //  TODO:   tidy up the css:sheet elements from tagCompile phase.
 

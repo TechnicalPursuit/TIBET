@@ -91,7 +91,7 @@ function(aString, aShell, aRequest, asTokens) {
         result2,
         identValue;
 
-    TP.debug('break.tsh_desugar');
+    TP.stop('break.tsh_desugar');
 
     str = aString;
 
@@ -129,7 +129,7 @@ function(aString, aShell, aRequest, asTokens) {
 
         case '^':
 
-            TP.debug('break.tsh_history');
+            TP.stop('break.tsh_history');
 
             //  regular expression-based history substitution relative to
             //  the previous command's fully-expanded text content
@@ -247,7 +247,7 @@ function(aString, aShell, aRequest, asTokens) {
                 //  processing since the alias could reference new tags or
                 //  other content the tsh_cmd tag can't process itself.
                 if (alias !== token.value) {
-                    TP.debug('break.tsh_alias');
+                    TP.stop('break.tsh_alias');
 
                     //  before we submit as a "new request" we have to
                     //  process any local variable interpolations in the
@@ -612,7 +612,7 @@ function(aliasString, aTokenArray) {
         str,
         num;
 
-    TP.debug(TP.sys.cfg('break.tsh_alias') ||
+    TP.stop(TP.sys.cfg('break.tsh_alias') ||
                 TP.sys.cfg('break.tsh_interpolate'));
 
     //  if the alias has no variables we can do simple concatenation
@@ -905,7 +905,7 @@ function(REQUEST$$) {
         $SCOPE,
         $SCRIPT;
 
-    TP.debug(TP.sys.cfg('break.tsh_fetch') || TP.sys.cfg('break.tsh_cmd'));
+    TP.stop(TP.sys.cfg('break.tsh_fetch') || TP.sys.cfg('break.tsh_cmd'));
 
     $REQUEST = REQUEST$$;
     $NODE = $REQUEST.at('cmdNode');
@@ -1098,7 +1098,7 @@ function(REQUEST$$, CMDTYPE$$) {
         $SCOPE,
         $SCRIPT;
 
-    TP.debug('break.tsh_cmd');
+    TP.stop('break.tsh_cmd');
 
     $REQUEST = REQUEST$$;
 
@@ -1382,7 +1382,7 @@ function(REQUEST$$, CMDTYPE$$) {
             TIME$$,
             SCRIPT$$;
 
-        TP.debug('break.tsh_execute');
+        TP.stop('break.tsh_execute');
 
         INPUT$$ = $REQUEST.stdin();
         LOOP$$ = $REQUEST.at('cmdIterate');
@@ -1942,9 +1942,9 @@ function(aRequest) {
      * @returns {TP.BREAK}
      */
 
-    TP.debug('break.tsh_cmd');
+    TP.stop('break.tsh_cmd');
 
-    this.raise('TP.sig.InvalidOperation', arguments);
+    this.raise('TP.sig.InvalidOperation');
 
     return TP.BREAK;
 });

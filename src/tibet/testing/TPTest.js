@@ -401,7 +401,7 @@ function(target, options) {
 
     params = TP.hc(options);
 
-    TP.sys.logTest('# TIBET starting test run', TP.TRACE);
+    TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 
     if (TP.notValid(suites)) {
         TP.sys.logTest('0..0');
@@ -437,7 +437,7 @@ function(target, options) {
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
     if (exclusives === true) {
-        TP.sys.logTest('# filtering for exclusive suite(s).', TP.TRACE);
+        TP.sys.logTest('# filtering for exclusive suite(s).', TP.DEBUG);
         suitelist = suitelist.filter(
                         function(suite) {
                             return suite.isExclusive();
@@ -510,7 +510,7 @@ function(target, options) {
         TP.sys.setcfg('test.running', false);
     };
 
-    TP.sys.logTest('# ' + suitelist.length + ' suite(s) found.', TP.TRACE);
+    TP.sys.logTest('# ' + suitelist.length + ' suite(s) found.', TP.DEBUG);
 
     cases = 0;
     suitelist.perform(
@@ -1019,7 +1019,7 @@ function(caseName, caseFunc) {
 
     testCase = TP.test.Case.construct(this, caseName, caseFunc);
     if (TP.notValid(testCase)) {
-        this.raise('InvalidTestCase', arguments);
+        this.raise('InvalidTestCase');
         return;
     }
 
@@ -1113,7 +1113,7 @@ function(options) {
         failed + ' fail, ' +
         skipped + ' skip, ' +
         ignored + ' todo, ' +
-        errored + ' error.', TP.TRACE);
+        errored + ' error.', TP.DEBUG);
 
     return this;
 });
@@ -1182,8 +1182,8 @@ function(options) {
         firstPromise;
 
     //  Output a small 'suite header'
-    TP.sys.logTest('#', TP.TRACE);
-    TP.sys.logTest('# describe(' + this.getSuiteName() + ')', TP.TRACE);
+    TP.sys.logTest('#', TP.DEBUG);
+    TP.sys.logTest('# describe(' + this.getSuiteName() + ')', TP.DEBUG);
 
     params = TP.hc(options);
 
@@ -1200,7 +1200,7 @@ function(options) {
                             'skipped', caselist.getSize());
         this.set('statistics', statistics);
 
-        TP.sys.logTest('# SKIP - test suite skipped.', TP.TRACE);
+        TP.sys.logTest('# SKIP - test suite skipped.', TP.DEBUG);
         TP.sys.logTest('# pass: 0 pass, 0 fail, ' +
             this.get('statistics').at('skipped') + ' skip, 0 todo, 0 error.');
 
@@ -1216,7 +1216,7 @@ function(options) {
                 })
                 ) {
                     TP.sys.logTest('# filtering for exclusive test cases.',
-                                    TP.TRACE);
+                                    TP.DEBUG);
 
                     caselist = caselist.filter(
                                 function(test) {

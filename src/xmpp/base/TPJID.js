@@ -54,7 +54,7 @@ function(aString) {
      *     Note that each JID is a singleton relative to that string.
      * @param {String} aString A valid JID: [node@]domain[/resource].
      * @raises TP.sig.InvalidJID
-     * @returns {TP.xmpp.JID} 
+     * @returns {TP.xmpp.JID}
      */
 
     var hostInd,
@@ -71,7 +71,7 @@ function(aString) {
     }
 
     if (!TP.isString(aString)) {
-        return this.raise('TP.sig.InvalidJID', arguments, aString);
+        return this.raise('TP.sig.InvalidJID', aString);
     }
 
     hostInd = aString.lastIndexOf('@');
@@ -79,7 +79,7 @@ function(aString) {
     //  the @ has to be between two actual values, not at the end
     if ((aString.indexOf('@') === 0) ||
         (hostInd === (aString.getSize() - 1))) {
-        return this.raise('TP.sig.InvalidJID', arguments, aString);
+        return this.raise('TP.sig.InvalidJID', aString);
     }
 
     //  Grab the 'node identifier' and 'host identifier' portions of the
@@ -194,7 +194,7 @@ function(aString) {
      * @synopsis Constructs a new JID instance for use with XMPP connections.
      * @param {String} aString A valid JID: [node@]domain[/resource].
      * @raises TP.sig.InvalidJID
-     * @returns {TP.xmpp.JID} 
+     * @returns {TP.xmpp.JID}
      */
 
     this.callNextMethod();
@@ -244,7 +244,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  invalid handler, no response can happen
     if (TP.notValid(aHandler)) {
-        this.raise('TP.sig.InvalidHandler', arguments);
+        this.raise('TP.sig.InvalidHandler');
 
         return false;
     }
@@ -257,7 +257,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         signals = TP.ac(aSignal);
     } else {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Improper signal definition.');
 
         return false;
@@ -323,7 +322,7 @@ function() {
      * @name getBareJID
      * @synopsis Returns the [node@]domain portion of the JID, but no resource
      *     information.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var ndx,
@@ -346,7 +345,7 @@ function() {
     /**
      * @name getDomain
      * @synopsis Returns the domain portion of the JID.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var ndx,
@@ -371,7 +370,7 @@ function() {
     /**
      * @name getNode
      * @synopsis Returns the node (or component name) portion of the JID.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var str;
@@ -408,7 +407,7 @@ function() {
     /**
      * @name getResourcePath
      * @synopsis Returns the resource portion of the JID, if available.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var ndx,
@@ -436,7 +435,7 @@ function() {
      *     available. This is typically only available for the current user's
      *     JID(s). JIDs representing roster entries themselves won't have a
      *     roster.
-     * @returns {TP.xmpp.IqRoster} 
+     * @returns {TP.xmpp.IqRoster}
      */
 
     return this.$get('roster');
@@ -461,7 +460,7 @@ function(aSignal) {
     if (TP.notValid(aSignal) || TP.notValid(args = aSignal.getPayload())) {
         TP.ifWarn() ?
             TP.warn('Invalid signal data for TP.sig.XMPPPresence event.',
-                    TP.IO_LOG, arguments) : 0;
+                    TP.IO_LOG) : 0;
 
         return;
     }
@@ -469,7 +468,7 @@ function(aSignal) {
     if (TP.notValid(node = args.at('node'))) {
         TP.ifWarn() ?
             TP.warn('Missing stanza data for TP.sig.XMPPPresence event.',
-                    TP.IO_LOG, arguments) : 0;
+                    TP.IO_LOG) : 0;
 
         return;
     }
@@ -500,15 +499,15 @@ function(aSignal) {
 
     //  First, make sure we can get a signal name
     if (!TP.isURI(sigURI = TP.uc(aSignal.getOrigin()))) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     if (TP.notValid(sigURIHash = sigURI.get('queryDict'))) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (TP.isEmpty(sigName = sigURIHash.at('node'))) {
-        return this.raise('TP.sig.InvalidSignal', arguments);
+        return this.raise('TP.sig.InvalidSignal');
     }
 
     //  TP.sig.XMPPPubsubNodeChanged signals always have an Array as their
@@ -536,7 +535,7 @@ function(aSignal) {
         sig = sigPayload.asTP_sig_Signal();
         sig.fire(this);
     } else {
-        this.signal(sigName, arguments);
+        this.signal(sigName);
     }
 
     //  Unset the flag
@@ -613,7 +612,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  invalid handler, no response can happen
     if (TP.notValid(aHandler)) {
-        this.raise('TP.sig.InvalidHandler', arguments);
+        this.raise('TP.sig.InvalidHandler');
 
         return false;
     }
@@ -626,7 +625,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         signals = TP.ac(aSignal);
     } else {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Improper signal definition.');
 
         return false;
@@ -666,7 +664,6 @@ function(aPresencePacket) {
 
     if (!TP.isKindOf(aPresencePacket, 'TP.xmpp.Presence')) {
         return this.raise('TP.sig.InvalidXMPPPacket',
-                            arguments,
                             aPresencePacket);
     }
 
@@ -687,7 +684,7 @@ function(aRoster) {
      */
 
     if (!TP.isKindOf(aRoster, 'TP.xmpp.IqRoster')) {
-        return this.raise('TP.sig.InvalidParameter', arguments, aRoster);
+        return this.raise('TP.sig.InvalidParameter', aRoster);
     }
 
     return this.$set('roster', aRoster);
@@ -696,7 +693,7 @@ function(aRoster) {
 //  ------------------------------------------------------------------------
 
 TP.xmpp.JID.Inst.defineMethod('signalObservers',
-function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType,
+function(anOrigin, aSignal, aPayload, aPolicy, aType,
 isCancelable, isBubbling        ) {
 
     /**
@@ -708,7 +705,6 @@ isCancelable, isBubbling        ) {
      *     centralized processing purposes.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -745,7 +741,7 @@ isCancelable, isBubbling        ) {
 
     //  invalid payload, no sense in sending the publish
     if (TP.notValid(aPayload)) {
-        this.raise('TP.sig.InvalidPayload', arguments);
+        this.raise('TP.sig.InvalidPayload');
 
         return false;
     }
@@ -758,7 +754,6 @@ isCancelable, isBubbling        ) {
         signals = TP.ac(aSignal);
     } else {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Improper signal definition.');
 
         return false;
@@ -797,7 +792,7 @@ isCancelable, isBubbling        ) {
         sigPayload = TP.xmlnode(aPayload);
     }
 
-    sigURI.signal('TP.sig.XMPPPubsubNodeChanged', arguments, sigPayload);
+    sigURI.signal('TP.sig.XMPPPubsubNodeChanged', sigPayload);
 
     //  We never signal the local observers - signalling with us as an
     //  origin is meant to go out over the wire.
@@ -814,7 +809,7 @@ function() {
     /**
      * @name asJID
      * @synopsis Returns the receiver as a TP.xmpp.JID instance.
-     * @returns {TP.xmpp.JID} 
+     * @returns {TP.xmpp.JID}
      */
 
     return TP.xmpp.JID.construct(this);

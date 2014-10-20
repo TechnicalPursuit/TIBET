@@ -206,7 +206,7 @@ function(aURIString) {
 
         dbName,
         resourceID,
-    
+
         uriQuery,
         queryDict;
 
@@ -216,7 +216,7 @@ function(aURIString) {
     results = this.getType().LOCALDB_REGEX.exec(aURIString);
 
     if (TP.notValid(results) || TP.isEmpty(dbName = results.at(1))) {
-        return this.raise('TP.sig.InvalidURI', arguments,
+        return this.raise('TP.sig.InvalidURI',
                     'Invalid local URL - no dbName: ' + aURIString);
     }
 
@@ -287,7 +287,7 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {Object} 
+     * @returns {Object}
      * @todo
      */
 

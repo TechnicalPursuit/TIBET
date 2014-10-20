@@ -82,7 +82,6 @@ function(aValue) {
 
     if (TP.notValid(schemaNode = this.get('schemaNode'))) {
         return this.raise('TP.sig.InvalidNode',
-                            arguments,
                             'No schema definition node provided');
     }
 
@@ -157,7 +156,6 @@ function(aValue, listElem) {
 
     if (TP.notValid(aValue)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'TP.xs.list validation requires non-null input');
     }
 
@@ -172,7 +170,6 @@ function(aValue, listElem) {
             values = aValue.toString();
         } else {
             return this.raise('TP.sig.InvalidParameter',
-                                arguments,
                                 'TP.xs.list validation requires string input');
         }
     } else {
@@ -196,8 +193,7 @@ function(aValue, listElem) {
                 TP.warn(TP.boot.$annotate(
                             listElem,
                             'Unable to locate base specification'),
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
             return true;
         }
@@ -225,8 +221,7 @@ function(aValue, listElem) {
                 TP.warn(TP.boot.$annotate(
                             listElem,
                             'Unable to require() base type: ' + typeName),
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
             return true;
         }
@@ -291,8 +286,7 @@ function(aValue, restrictionElem) {
             TP.warn(TP.boot.$annotate(
                         restrictionElem,
                         'Unable to locate base specification'),
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
         return true;
     }
@@ -306,8 +300,7 @@ function(aValue, restrictionElem) {
             TP.warn(TP.boot.$annotate(
                         restrictionElem,
                         'Unable to require() base type: ' + typeName),
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
         return true;
     }
@@ -402,7 +395,6 @@ function(aValue, unionElem) {
 
     if (TP.notValid(aValue)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'TP.xs.union validation requires non-null input');
     }
 
@@ -440,8 +432,7 @@ function(aValue, unionElem) {
                 TP.warn(TP.boot.$annotate(
                             unionElem,
                             'Unable to require() base type: ' + typeName),
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
             return true;
         }
@@ -458,8 +449,7 @@ function(aValue, unionElem) {
             TP.warn(TP.boot.$annotate(
                         unionElem,
                         'Unable to locate base specification'),
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
         return true;
     }

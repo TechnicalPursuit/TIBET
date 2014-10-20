@@ -366,8 +366,7 @@ function(anItemOrKey, aValue) {
         key = anItemOrKey.first();
         val = anItemOrKey.last();
     } else {
-        return this.raise('TP.sig.InvalidParameter', arguments,
-                                'Invalid key or item.');
+        return this.raise('TP.sig.InvalidParameter', 'Invalid key or item.');
     }
 
     if (TP.isDefined(this.at(key))) {
@@ -857,7 +856,7 @@ function(aKey, aValue) {
     } catch (e) {
     }
 
-    this.raise('TP.sig.InvalidPayload', arguments,
+    this.raise('TP.sig.InvalidPayload',
                     'Unable to set payload parameter: ' + aKey);
 
     return this;
@@ -1021,7 +1020,7 @@ function(anOrigin, aPayload, aPolicy) {
 
     //  if the signal has an origin fire from there, otherwise the
     //  signal itself will be the origin
-    return TP.signal(this.getOrigin(), this, arguments, aPayload, aPolicy);
+    return TP.signal(this.getOrigin(), this, aPayload, aPolicy);
 });
 
 //  ------------------------------------------------------------------------
@@ -1043,20 +1042,6 @@ function() {
     }
 
     return NaN;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.Signal.Inst.defineMethod('getContext',
-function() {
-
-    /**
-     * @name getContext
-     * @synopsis Returns a handle to the context in which the signal originated.
-     * @returns {Function} The Function context of the receiver.
-     */
-
-    return this.context;
 });
 
 //  ------------------------------------------------------------------------
@@ -1804,25 +1789,6 @@ function(aHandler) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('setContext',
-function(aContext) {
-
-    /**
-     * @name setContext
-     * @synopsis Sets the originating context of the signal.
-     * @description Note that this method does not signal 'Change', even if it's
-     *     'shouldSignalChange' attribute is true.
-     * @param {Function|Context} aContext The calling context.
-     * @returns {TP.sig.Signal} The receiver.
-     */
-
-    this.context = aContext;
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Signal.Inst.defineMethod('setOrigin',
 function(anOrigin) {
 
@@ -1932,7 +1898,7 @@ function() {
      * @returns {Boolean} True if the signal can be logged.
      */
 
-    return true;
+    return this.getType().shouldLog();
 });
 
 //  ------------------------------------------------------------------------
@@ -2599,6 +2565,7 @@ function(aFlag) {
 
 //  create benign messaging signal types
 TP.sig.Signal.defineSubtype('TRACE');
+TP.sig.Signal.defineSubtype('DEBUG');
 TP.sig.Signal.defineSubtype('INFO');
 TP.sig.Signal.defineSubtype('SYSTEM');
 
@@ -2609,10 +2576,8 @@ TP.sig.WARN.defineSubtype('ERROR');
 TP.sig.ERROR.defineSubtype('SEVERE');
 TP.sig.SEVERE.defineSubtype('FATAL');
 
-//  assign numerical constants for each level. note that in this context we
-//  observe a leveling that isn't mirrored perfectly in the inheritance
-//  hierarchy but is appropriate for log filtering
 TP.sig.TRACE.Type.defineAttribute('$level', TP.TRACE);
+TP.sig.DEBUG.Type.defineAttribute('$level', TP.DEBUG);
 TP.sig.INFO.Type.defineAttribute('$level', TP.INFO);
 TP.sig.WARN.Type.defineAttribute('$level', TP.WARN);
 TP.sig.ERROR.Type.defineAttribute('$level', TP.ERROR);
@@ -2805,9 +2770,6 @@ alter the behavior of the registration or signal notification process.
 
 TP.lang.Object.defineSubtype('sig:SignalMap');
 
-//  turn off logging unless we're debugging the internals of notification
-TP.sig.SignalMap.shouldLog(false);
-
 //  ------------------------------------------------------------------------
 
 //  for reimporting we test here
@@ -2851,6 +2813,22 @@ TP.sig.SignalMap.Type.defineConstant(
 TP.sig.SignalMap.Type.defineConstant(
                     'WARN_REGEX',
                     /Warning/);
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('initialize',
+function() {
+
+    /**
+     * @name initialize
+     * @synopsis Performs one-time setup for the type on startup/import.
+     */
+
+    //  turn off logging unless we're debugging the internals of notification
+    this.shouldLog(false);
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -2975,29 +2953,29 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
         sigType = TP.sig.SignalMap.$getSignalType(aSignal, defaultType);
 
         if (TP.isType(sigType)) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Using signal type named: ' +
                                 sigType.getName(),
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             sig = sigType.construct(aPayload);
             sig.$set('signalName', aSignal.getSignalName());
 
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Returning instance with signalName: ' +
                                 sig.getSignalName(),
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
         } else {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Failed to find signal instance for: ' + aSignal,
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             sig = aSignal;
         }
     } else {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Returning supplied signal instance: ' + aSignal,
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         sig = aSignal;
     }
@@ -3054,17 +3032,17 @@ function(aSignal, aDefaultType) {
 
     //  if we've got a string turn it into a signal type reference
     if (TP.isString(aSignal)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Getting type for aSignal string: ' + aSignal,
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         //  the signal type name will be the signal name.
         aTypeName = aSignal;
 
         if (TP.notValid(sigType = TP.sys.getTypeByName(aTypeName))) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('No signal type named: ' + aTypeName,
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             //  try to get the best default signal possible here
             if (TP.sig.SignalMap.ERROR_REGEX.test(aSignal) ||
@@ -3196,7 +3174,7 @@ function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserv
         observer,
         handlers;
 
-    TP.debug('break.signal_register');
+    TP.stop('break.signal_register');
 
     if ((TP.isEmpty(anOrigin)) || (anOrigin === '*')) {
         origins = TP.ANY;
@@ -3395,9 +3373,9 @@ function(aHandlerEntry, quiet) {
     //  no root? no interests yet so we need to create a container object that
     //  will manage all data for this origin/signal pair.
     if (TP.notValid(root)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Interest root not found.',
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         entry = TP.constructOrphanObject();
         entry.target = orgid;
@@ -3423,9 +3401,9 @@ function(aHandlerEntry, quiet) {
                 });
 
         if (TP.notValid(entry)) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                     TP.trace('Listener not found.',
-                    TP.SIGNAL_LOG, arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
         }
     }
 
@@ -3437,21 +3415,21 @@ function(aHandlerEntry, quiet) {
         }
 
         if (!TP.sys.shouldAllowDuplicateInterests()) {
-            TP.ifWarn(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifWarn() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.warn(
                     TP.join('Duplicate interest registration for origin: ',
                             orgid, ' signal: ',
                             signame, ' handler: ',
                             handlerID, ' ignored.'),
-                    TP.SIGNAL_LOG, arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
 
             return;
         }
 
         if (entry.suspend === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener currently flagged as suspended.',
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             delete entry.suspend;
 
@@ -3459,9 +3437,9 @@ function(aHandlerEntry, quiet) {
         }
 
         if (entry.remove === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener currently flagged as removed.',
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             delete entry.remove;
 
@@ -3469,9 +3447,9 @@ function(aHandlerEntry, quiet) {
         }
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
         TP.trace('Creating new listener entry.',
-                    TP.SIGNAL_LOG, arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
 
     //  Simple. Just use the object provided.
     entry = aHandlerEntry;
@@ -3485,7 +3463,7 @@ function(aHandlerEntry, quiet) {
                 TP.warn(TP.boot.$annotate(
                             entry,
                             'Invalid handler in listener.'),
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
         } else {
             //  NOTE we have to run the TP.xmlEntitiesToLiterals() call here
             //  since XML will require quotes etc. to be in entity form
@@ -3496,9 +3474,9 @@ function(aHandlerEntry, quiet) {
             source = 'function (triggerSignal) {' + source + '};';
         }
 
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Found function source: ' + source,
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         //  if we have source, try to get a function handle to it
         if (TP.isString(source)) {
@@ -3533,8 +3511,7 @@ function(aHandlerEntry, quiet) {
                     TP.ifError() ?
                         TP.error(
                             TP.ec(e, 'Problem creating handler function.'),
-                            TP.SIGNAL_LOG,
-                            arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
                     return;
                 }
@@ -3550,9 +3527,9 @@ function(aHandlerEntry, quiet) {
 
         root.listeners.push(entry);
 
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Listener entry created for ID: ' + handlerID,
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
     }
 
     return;
@@ -3631,9 +3608,9 @@ function(aHandlerEntry) {
     //  no root? no interests yet so we need to create a container object that
     //  will manage all data for this origin/signal pair.
     if (TP.notValid(root)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Interest root not found.',
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         return;
     }
@@ -3653,9 +3630,9 @@ function(aHandlerEntry) {
                 });
 
         if (TP.notValid(entry)) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                     TP.trace('Listener not found.',
-                    TP.SIGNAL_LOG, arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
             return;
         }
     }
@@ -3663,9 +3640,9 @@ function(aHandlerEntry) {
     if (TP.isValid(entry)) {
 
         if (entry.suspend === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener currently flagged as suspended.',
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             delete entry.suspend;
 
@@ -3673,9 +3650,9 @@ function(aHandlerEntry) {
         }
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
         TP.trace('Removing listener entry.',
-                    TP.SIGNAL_LOG, arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
 
     //  Simple. Just use the object provided.
     entry = aHandlerEntry;
@@ -3698,9 +3675,9 @@ function(aHandlerEntry) {
             delete map[id];
         }
 
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Listener entry removed for ID: ' + handlerID,
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
     }
 
     return;
@@ -3760,9 +3737,9 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
     //  no root? no interests yet so we need to create a container
     if (TP.notValid(root)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Interest root not found.',
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         entry = TP.constructOrphanObject();
         entry.target = orgid;
@@ -3783,9 +3760,9 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             });
 
     if (TP.notValid(entry)) {
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener entry not found.',
-                TP.SIGNAL_LOG, arguments) : 0;
+                TP.SIGNAL_LOG) : 0;
     }
 
     //  if we find an entry we have two options, first if the entry "isn't
@@ -3793,21 +3770,21 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     if (TP.isValid(entry)) {
         if (!TP.sys.shouldAllowDuplicateInterests()) {
 
-            TP.ifWarn(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifWarn() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.warn(
                     TP.join('Duplicate interest registration for origin: ',
                             orgid, ' signal: ',
                             signame, ' handler: ',
                             handlerID, ' ignored.'),
-                    TP.SIGNAL_LOG, arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
 
             return;
         }
 
         if (entry.suspend === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener entry currently flagged as suspended.',
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             delete entry.suspend;
 
@@ -3819,9 +3796,9 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
 
         if (entry.remove === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace('Listener entry currently flagged as removed.',
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             delete entry.remove;
 
@@ -3833,9 +3810,9 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
     }
 
-    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
         TP.trace('Creating listener entry.',
-                    TP.SIGNAL_LOG, arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
 
     //  if we arrived here there must not have been an entry already
     entry = TP.constructOrphanObject();
@@ -3853,10 +3830,10 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
     root.listeners.push(entry);
 
-    TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
         TP.trace(TP.join('Listener entry created for ID: ',
                             handlerID, ' with handler: ', aHandler),
-                    TP.SIGNAL_LOG, arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
 
     return;
 });
@@ -3940,9 +3917,9 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             list = root.listeners;
         }
 
-        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
             TP.trace('Removing ' + list.length + ' listener entries.',
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         for (i = 0; i < list.length; i++) {
             item = list.at(i);
@@ -4120,7 +4097,7 @@ aSigEntry, checkTarget) {
         xml_target,
         targetID;
 
-    TP.debug('break.signal_notify');
+    TP.stop('break.signal_notify');
 
     //  callers need to already have set up a signal instance
     if (TP.notValid(aSignal)) {
@@ -4167,10 +4144,10 @@ aSigEntry, checkTarget) {
         //  meaning they're called only once in most cases
         entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
         if (TP.notValid(entry)) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace(TP.join('Interest not found for: ',
                                     orgid, '.', signame),
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             aSignal.setOrigin(originalOrigin);
 
@@ -4180,10 +4157,10 @@ aSigEntry, checkTarget) {
         //  if the entire block of interests is suspended then do not
         //  notify
         if (entry.suspend === true) {
-            TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                 TP.trace(TP.join('Interest for: ', orgid, '.', signame,
                                     ' is flagged as suspended.'),
-                            TP.SIGNAL_LOG, arguments) : 0;
+                            TP.SIGNAL_LOG) : 0;
 
             aSignal.setOrigin(originalOrigin);
 
@@ -4195,10 +4172,10 @@ aSigEntry, checkTarget) {
     // the list won't affect our current iteration work.
     items = entry.listeners.slice(0);
 
-    TP.ifTrace(TP.$$DEBUG && TP.sys.shouldLogSignals()) ?
+    TP.ifTrace() && TP.$$DEBUG && TP.sys.shouldLogSignals() ?
         TP.trace(TP.join(orgid, ':', signame, ' has ', items.length,
                             ' listeners.'),
-                    TP.SIGNAL_LOG, arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
 
     //  try/finally for signal stack
     try {
@@ -4222,10 +4199,10 @@ aSigEntry, checkTarget) {
             //  if the specific handler is suspended or flagged for
             //  removal then just skip it
             if ((item.suspend === true) || (item.remove === true)) {
-                TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+                TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                         TP.trace('Listener ' + i +
                                  ' is suspended or removed.',
-                                 TP.SIGNAL_LOG, arguments) : 0;
+                                 TP.SIGNAL_LOG) : 0;
 
                 continue;
             }
@@ -4244,7 +4221,7 @@ aSigEntry, checkTarget) {
 
             //  to help with DOM filter and handler debugging we'll put
             //  a break option in
-            TP.debug('break.signal_handler');
+            TP.stop('break.signal_handler');
 
             //  if we're using strict XMLEvent or DOM firing then
             //  we have to check to see if the signal's target matches
@@ -4256,13 +4233,13 @@ aSigEntry, checkTarget) {
                 if (TP.notEmpty(xml_target) && (xml_target !== TP.ANY)) {
                     if ((xml_target !== targetID) &&
                         (xml_target !== observer)) {
-                        TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+                        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                                 TP.trace(TP.join('DOM target check ',
                                 ' wanted: ', xml_target,
                                 ' found: ', targetID,
                                 '. Skipping listener: ',
                                 TP.str(item)),
-                                TP.SIGNAL_LOG, arguments) : 0;
+                                TP.SIGNAL_LOG) : 0;
 
                         continue;
                     }
@@ -4288,10 +4265,10 @@ aSigEntry, checkTarget) {
             }
 
             if (TP.notValid(handler)) {
-                TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE) ?
+                TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                         TP.trace('Could not find handler with ID: ' +
                         item.handler,
-                        TP.SIGNAL_LOG, arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
                 continue;
             }
 
@@ -4357,8 +4334,7 @@ aSigEntry, checkTarget) {
                                             handler.getID(),
                                             '\nhandler: ',
                                             hFunc.getName())),
-                                    TP.SIGNAL_LOG,
-                                    arguments) : 0;
+                                    TP.SIGNAL_LOG) : 0;
                         } else {
                             TP.ifError() ?
                                     TP.error(
@@ -4367,8 +4343,7 @@ aSigEntry, checkTarget) {
                                             '.', signame,
                                             ' responder: ',
                                             handler.getID())),
-                                    TP.SIGNAL_LOG,
-                                    arguments) : 0;
+                                    TP.SIGNAL_LOG) : 0;
                         }
                     } catch (e2) {
                     }
@@ -4398,8 +4373,7 @@ aSigEntry, checkTarget) {
                 TP.error(
                     TP.ec(e, TP.join('Problem executing handlers for: ',
                                     TP.str(aSignal))),
-                    TP.SIGNAL_LOG,
-                    arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
     } finally {
         //  "pop" the signal stack, throwing away the last signal
         //  and making the current signal the one at the end of the
@@ -4413,7 +4387,7 @@ aSigEntry, checkTarget) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.defineMethod('FIRE_ONE',
-function(anOrigin, aSignal, aContext, aPayload, aType) {
+function(anOrigin, aSignal, aPayload, aType) {
 
     /**
      * @name FIRE_ONE
@@ -4421,7 +4395,6 @@ function(anOrigin, aSignal, aContext, aPayload, aType) {
      *     which handles the majority of work in the signaling process.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
@@ -4452,7 +4425,6 @@ function(anOrigin, aSignal, aContext, aPayload, aType) {
 
     //  configure the signal instance
     sig.setOrigin(anOrg);
-    sig.setContext(aContext);
 
     //  work with a consistent ID
     orgid = TP.id(anOrg);
@@ -4497,7 +4469,7 @@ function(anOrigin, aSignal, aContext, aPayload, aType) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.defineMethod('DEFAULT_FIRING',
-function(anOrigin, signalSet, aContext, aPayload, aType) {
+function(anOrigin, signalSet, aPayload, aType) {
 
     /**
      * @name DEFAULT_FIRING
@@ -4505,7 +4477,6 @@ function(anOrigin, signalSet, aContext, aPayload, aType) {
      *     signal/origin pair is provided this method defers to FIRE_ONE.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
@@ -4535,11 +4506,11 @@ function(anOrigin, signalSet, aContext, aPayload, aType) {
             //  array of signals but only the array as an origin
             for (j = 0; j < signalSet.getSize(); j++) {
                 res = policy(
-                    orgid, signalSet.at(j), aContext, aPayload, aType);
+                    orgid, signalSet.at(j), aPayload, aType);
             }
         } else {
             //  one signal, one origin
-            res = policy(orgid, signalSet, aContext, aPayload, aType);
+            res = policy(orgid, signalSet, aPayload, aType);
         }
     } else if (TP.isArray(anOrigin)) {
         //  otherwise, its an Array, but its an Array of 'origin sets'.
@@ -4551,7 +4522,7 @@ function(anOrigin, signalSet, aContext, aPayload, aType) {
 
                 for (j = 0; j < signalSet.getSize(); j++) {
                     res = policy(
-                        orgid, signalSet.at(j), aContext, aPayload, aType);
+                        orgid, signalSet.at(j), aPayload, aType);
                 }
             }
         } else {
@@ -4560,7 +4531,7 @@ function(anOrigin, signalSet, aContext, aPayload, aType) {
                 //  work with a consistent ID
                 orgid = TP.id(anOrigin.at(i));
 
-                res = policy(orgid, signalSet, aContext, aPayload, aType);
+                res = policy(orgid, signalSet, aPayload, aType);
             }
         }
     }
@@ -4571,7 +4542,7 @@ function(anOrigin, signalSet, aContext, aPayload, aType) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.defineMethod('DOM_FIRING',
-function(originSet, aSignal, aContext, aPayload, aType) {
+function(originSet, aSignal, aPayload, aType) {
 
     /**
      * @name DOM_FIRING
@@ -4586,7 +4557,6 @@ function(originSet, aSignal, aContext, aPayload, aType) {
      *     target element and must be global String IDs. These are normally
      *     generated via UI.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
@@ -4606,11 +4576,11 @@ function(originSet, aSignal, aContext, aPayload, aType) {
         originArray,
         len;
 
-    TP.debug('break.signal_domfiring');
+    TP.stop('break.signal_domfiring');
 
     //  in the DOM model we can only fire if we have a signal and origin
     if (TP.notValid(aSignal) || TP.notValid(originSet)) {
-        return TP.sig.SignalMap.raise('TP.sig.InvalidDOMSignal', arguments);
+        return TP.sig.SignalMap.raise('TP.sig.InvalidDOMSignal');
     }
 
     map = TP.sig.SignalMap.INTERESTS;
@@ -4637,9 +4607,6 @@ function(originSet, aSignal, aContext, aPayload, aType) {
         signame = TP.ANY;
     }
 
-    //  configure the signal instance with any passed argument data
-    sig.setContext(aContext);
-
     //  set the phase to capturing to get started
     sig.setPhase(TP.CAPTURING_PHASE);
 
@@ -4664,24 +4631,23 @@ function(originSet, aSignal, aContext, aPayload, aType) {
         //  be sure to update the signal as we rotate orgids
         sig.setOrigin(orgid);
 
-        if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
             TP.signal.$suspended = true;
             TP.sys.logSignal('Checking DOM_FIRING id ' +
                             orgid + '.' + signame,
-                            TP.TRACE, arguments);
+                            TP.DEBUG);
             TP.signal.$suspended = false;
         }
 
         //  if there's an entry for this origin/signal pair then we'll check
         //  it again when we do the bubbling pass...
         if (TP.isValid(entry = map[orgid + '.' + signame])) {
-            if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+            if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
                 TP.signal.$suspended = true;
                 TP.sys.logSignal(TP.join('DOM_FIRING id ',
                                         orgid, '.', signame,
                                         ' found, preserving ', orgid),
-                                    TP.TRACE,
-                                    arguments);
+                                    TP.DEBUG);
                 TP.signal.$suspended = false;
             }
 
@@ -4696,11 +4662,11 @@ function(originSet, aSignal, aContext, aPayload, aType) {
                                             entry, true);
         }
 
-        if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
             TP.signal.$suspended = true;
             TP.sys.logSignal('Checking DOM_FIRING id ' +
                                 orgid + '.' + TP.ANY,
-                                TP.TRACE, arguments);
+                                TP.DEBUG);
             TP.signal.$suspended = false;
         }
 
@@ -4710,12 +4676,12 @@ function(originSet, aSignal, aContext, aPayload, aType) {
             //  if there's an entry for this origin and TP.ANY then we'll
             //  check it again when we do the bubbling pass...
             if (TP.isValid(entry = map[orgid + '.' + TP.ANY])) {
-                if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+                if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
                     TP.signal.$suspended = true;
                     TP.sys.logSignal('DOM_FIRING id ' +
                                         orgid + '.' + TP.ANY +
                                         ' found, preserving ' + orgid,
-                                        TP.TRACE, arguments);
+                                        TP.DEBUG);
                     TP.signal.$suspended = false;
                 }
 
@@ -4749,12 +4715,12 @@ function(originSet, aSignal, aContext, aPayload, aType) {
     //  flip the origin array around so we work "bottom up" to bubble
     originArray.reverse();
 
-    if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+    if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
         TP.signal.$suspended = true;
         TP.sys.logSignal(
             'Bubbling DOM_FIRING through preserved IDs: ' +
                     originArray.toString(),
-                    TP.TRACE, arguments);
+                    TP.DEBUG);
         TP.signal.$suspended = false;
     }
 
@@ -4829,7 +4795,7 @@ function(originSet, aSignal, aContext, aPayload, aType) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.defineMethod('RESPONDER_FIRING',
-function(originSet, aSignal, aContext, aPayload, aType) {
+function(originSet, aSignal, aPayload, aType) {
 
 
     /**
@@ -4841,7 +4807,6 @@ function(originSet, aSignal, aContext, aPayload, aType) {
      * @param {Array|Object} originSet The originator(s) of the signal. Unused
      *     for this firing policy.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
@@ -4859,11 +4824,10 @@ function(originSet, aSignal, aContext, aPayload, aType) {
 
         i;
 
-    TP.debug('break.signal_responderfiring');
+    TP.stop('break.signal_responderfiring');
 
     if (TP.notValid(aSignal)) {
-        return TP.sig.SignalMap.raise('TP.sig.InvalidResponderSignal',
-                                        arguments);
+        return TP.sig.SignalMap.raise('TP.sig.InvalidResponderSignal');
     }
 
     //  get a valid signal instance configured
@@ -4876,9 +4840,6 @@ function(originSet, aSignal, aContext, aPayload, aType) {
     if (TP.isEmpty(signame = sig.getSignalName())) {
         signame = TP.ANY;
     }
-
-    //  configure the signal instance with any passed argument data
-    sig.setContext(aContext);
 
     //  get the target responder
     targetResponder = sig.getTargetResponder();
@@ -4998,7 +4959,7 @@ function(originSet, aSignal, aContext, aPayload, aType) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.defineMethod('EXCEPTION_FIRING',
-function(anOrigin, signalSet, aContext, aPayload, aType) {
+function(anOrigin, signalSet, aPayload, aType) {
 
     /**
      * @name EXCEPTION_FIRING
@@ -5007,7 +4968,6 @@ function(anOrigin, signalSet, aContext, aPayload, aType) {
      *     propagation.
      * @param {Object} anOrigin The originator of the signal.
      * @param {Array|TP.sig.Signal} signalSet The signal(s) to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
@@ -5057,7 +5017,6 @@ function(anOrigin, signalSet, aContext, aPayload, aType) {
     }
 
     //  configure the signal instance
-    sig.setContext(aContext);
     sig.setOrigin(orig);
 
     //  only one origin so fetch it now outside the loop
@@ -5104,7 +5063,7 @@ function(anOrigin, signalSet, aContext, aPayload, aType) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.defineMethod('INHERITANCE_FIRING',
-function(anOrigin, aSignal, aContext, aPayload, aType) {
+function(anOrigin, aSignal, aPayload, aType) {
 
     /**
      * @name INHERITANCE_FIRING
@@ -5112,7 +5071,6 @@ function(anOrigin, aSignal, aContext, aPayload, aType) {
      *     signal are notified. This is a single origin/single signal policy.
      * @param {Object} anOrigin The originator of the signal.
      * @param {TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
      *     type itself isn't found and a new signal subtype must be created.
@@ -5144,8 +5102,7 @@ function(anOrigin, aSignal, aContext, aPayload, aType) {
             TP.ifError() ?
                 TP.error(
                     'Invalid Signal Array For Firing Policy. Truncating.',
-                    TP.SIGNAL_LOG,
-                    arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
 
             aSig = aSignal[0];
         }
@@ -5154,8 +5111,7 @@ function(anOrigin, aSignal, aContext, aPayload, aType) {
             TP.ifError() ?
                 TP.error(
                     'Invalid Signal For Firing Policy. Terminating.',
-                    TP.SIGNAL_LOG,
-                    arguments) : 0;
+                    TP.SIGNAL_LOG) : 0;
 
             return;
         }
@@ -5171,7 +5127,6 @@ function(anOrigin, aSignal, aContext, aPayload, aType) {
     }
 
     //  configure the signal instance
-    sig.setContext(aContext);
     sig.setOrigin(orig);
 
     orgid = TP.id(orig);
@@ -5709,8 +5664,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
     if (TP.notValid(aHandler)) {
         TP.ifError() ?
             TP.error('Invalid signal handler.',
-                        TP.SIGNAL_LOG,
-                        arguments) : 0;
+                        TP.SIGNAL_LOG) : 0;
 
         return;
     }
@@ -6135,7 +6089,7 @@ working versions of the signaling primitives.
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('signal',
-function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, isBubbling) {
+function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
      * @name signal
@@ -6144,7 +6098,6 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
      *     and event.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -6192,7 +6145,7 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
     origin = TP.isTypeName(anOrigin) ? TP.sys.require(anOrigin) : anOrigin;
     if (TP.canInvoke(origin, 'signalObservers')) {
         shouldSignalMap = origin.signalObservers(
-                                            anOrigin, aSignal, aContext,
+                                            anOrigin, aSignal,
                                             aPayload, aPolicy, aType,
                                             isCancelable, isBubbling);
         if (!shouldSignalMap) {
@@ -6221,7 +6174,7 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
         TP.isValid(owner = type.getSignalOwner())) {
         if ((owner !== origin) && TP.canInvoke(owner, 'signalObservers')) {
             shouldSignalMap = owner.signalObservers(
-                                                anOrigin, aSignal, aContext,
+                                                anOrigin, aSignal,
                                                 aPayload, aPolicy, aType,
                                                 isCancelable, isBubbling);
             if (!shouldSignalMap) {
@@ -6232,13 +6185,13 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
 
     //  watch out for DOMFocus signals trying to work between the tools and
     //  the debugger...basically unusable in that mode
-    TP.debug(TP.sys.cfg('break.signal') &&
+    TP.stop(TP.sys.cfg('break.signal') &&
                 (TP.name(aSignal).indexOf('DOMFocus') !== 0));
 
     if (TP.sys.cfg('break.signal_exception')) {
         if (/Invalid|Exception/.test(aSignal) ||
             TP.isKindOf(aSignal, TP.sig.Exception)) {
-            TP.debug();
+            TP.stop();
         }
     }
 
@@ -6255,9 +6208,9 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
 
     //  if signaling is turned off then do not notify
     if (TP.sig.SignalMap.INTERESTS.suspend === true) {
-        if (TP.ifTrace(TP.$DEBUG && TP.$$VERBOSE)) {
+        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
             TP.sys.logSignal('Root interest map is suspended.',
-                            TP.TRACE, arguments);
+                            TP.DEBUG);
         }
 
         return;
@@ -6266,10 +6219,7 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
     //  don't log signals when processing events from the other logs to
     //  help reduce the potential for recursive logging. The activity and
     //  error logs, as well as the signal log itself, are definite no-nos.
-    if (TP.sys.shouldLogSignals() &&
-        (anOrigin !== TP.sys.$changeLog) &&
-        (anOrigin !== TP.sys.$patchLog) &&
-        (anOrigin !== TP.sys.$activityLog)) {
+    if (TP.sys.shouldLogSignals()) {
 
         sigstr = aSignal.getSignalName();
         sigtype = TP.sig.SignalMap.$getSignalType(aSignal);
@@ -6330,7 +6280,7 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
                         TP.sys.shouldLogStack(true);
                         TP.ifTrace() ? TP.sys.logSignal(
                                             TP.boot.$annotate(aSignal, str),
-                                            TP.TRACE, arguments) : 0;
+                                            TP.DEBUG) : 0;
                     } catch (e) {
                     } finally {
                         TP.sys.shouldLogStack(flag);
@@ -6338,7 +6288,7 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
                 } else {
                     TP.ifTrace() ? TP.sys.logSignal(
                                             TP.boot.$annotate(aSignal, str),
-                                            TP.TRACE, arguments) : 0;
+                                            TP.DEBUG) : 0;
                 }
             }
         }
@@ -6361,7 +6311,7 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
     }
 
     //  hand off to policy do do the actual firing of the signal(s)
-    sig = pol(anOrigin, aSignal, aContext, aPayload, aType,
+    sig = pol(anOrigin, aSignal, aPayload, aType,
                 isCancelable, isBubbling);
 
     if (TP.sys.shouldTrackSignalStats()) {
@@ -6392,7 +6342,7 @@ function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType, isCancelable, is
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('raise',
-function(anOrigin, anException, aContext, aPayload) {
+function(anOrigin, anException, aPayload) {
 
     /**
      * @name raise
@@ -6408,7 +6358,6 @@ function(anOrigin, anException, aContext, aPayload) {
      *     TP.sys.shouldLogStack() for more information.
      * @param {Object} anOrigin The exception's origin.
      * @param {TP.sig.Exception} anException The exception to raise.
-     * @param {Function|Context} aContext A calling context.
      * @param {Object} aPayload Optional argument object.
      * @todo
      */
@@ -6509,58 +6458,48 @@ function(anOrigin, anException, aContext, aPayload) {
 
             switch (level) {
                 case TP.TRACE:
-                    TP.trace(str, TP.LOG, aContext);
+                    TP.trace(str, TP.LOG);
                     break;
                 case TP.INFO:
-                    TP.info(str, TP.LOG, aContext);
+                    TP.info(str, TP.LOG);
                     break;
                 case TP.WARN:
                     TP.isValid(aPayload) ?
                         TP.warn(TP.boot.$annotate(aPayload, str),
-                                TP.LOG,
-                                aContext) :
+                                TP.LOG) :
                         TP.warn(str,
-                                TP.LOG,
-                                aContext);
+                                TP.LOG);
                     break;
                 case TP.ERROR:
                     TP.isValid(aPayload) ?
                         TP.error(TP.boot.$annotate(aPayload, str),
-                                TP.LOG,
-                                aContext) :
+                                TP.LOG) :
                         TP.error(str,
-                                TP.LOG,
-                                aContext);
+                                TP.LOG);
                     break;
                 case TP.SEVERE:
                     TP.isValid(aPayload) ?
                         TP.severe(TP.boot.$annotate(aPayload, str),
-                                TP.LOG,
-                                aContext) :
+                                TP.LOG) :
                         TP.severe(str,
-                                TP.LOG,
-                                aContext);
+                                TP.LOG);
                     break;
                 case TP.FATAL:
                     TP.isValid(aPayload) ?
                         TP.fatal(TP.boot.$annotate(aPayload, str),
-                                TP.LOG,
-                                aContext) :
+                                TP.LOG) :
                         TP.fatal(str,
-                                TP.LOG,
-                                aContext);
+                                TP.LOG);
                     break;
                 case TP.SYSTEM:
-                    TP.system(str, TP.LOG, aContext);
+                    TP.system(str, TP.LOG);
                     break;
                 default:
                     TP.isValid(aPayload) ?
                         TP.error(TP.boot.$annotate(aPayload, str),
-                                TP.LOG,
-                                aContext) :
+                                TP.LOG) :
                         TP.error(str,
-                                TP.LOG,
-                                aContext);
+                                TP.LOG);
                     break;
             }
         }
@@ -6609,7 +6548,7 @@ function(anOrigin, anException, aContext, aPayload) {
     //  performs a list-oriented process which stops when the signal is
     //  "handled" at a particular exception.
     $handled = false;
-    TP.signal(orig, exceptions, aContext, aPayload, TP.EXCEPTION_FIRING);
+    TP.signal(orig, exceptions, aPayload, TP.EXCEPTION_FIRING);
 
     //  if the type's handled flag is still false then we throw a real error
     if (TP.sys.shouldThrowExceptions() && !$handled) {
@@ -6790,7 +6729,7 @@ function(aMutationRecord) {
         entry;
 
     if (!TP.isNode(targetNode = aMutationRecord.target)) {
-        return this.raise('TP.sig.InvalidNode', arguments);
+        return this.raise('TP.sig.InvalidNode');
     }
 
     if (!TP.isType(targetType = TP.wrap(targetNode).getType())) {
@@ -6804,7 +6743,7 @@ function(aMutationRecord) {
             fname = 'handlePeerTP_sig_DOMAttrChanged';
 
             if (!TP.isElement(targetNode = aMutationRecord.target)) {
-                return this.raise('TP.sig.InvalidElement', arguments);
+                return this.raise('TP.sig.InvalidElement');
             }
 
             if (TP.canInvoke(targetType, fname)) {
@@ -7022,7 +6961,7 @@ function(aURI) {
 
     //  Not a valid URI? We can't initialize properly then...
     if (!TP.isURI(uri = TP.uc(aURI))) {
-        this.raise('TP.sig.InvalidURI', arguments);
+        this.raise('TP.sig.InvalidURI');
 
         return null;
     }
@@ -7102,7 +7041,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         sigTypes;
 
     if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  See if we have an observer count. If not, initialize it to 1.
@@ -7172,7 +7111,7 @@ function() {
 
     //  Try to obtain the event source object.
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource', arguments);
+        this.raise('TP.sig.InvalidSource');
 
         return false;
     }
@@ -7182,7 +7121,7 @@ function() {
 
     //  Signal it to any observers, since the spec doesn't provide for a
     //  native-level 'close' event handler... booo.
-    this.signal('TP.sig.SourceClosed', arguments);
+    this.signal('TP.sig.SourceClosed');
 
     this.set('$eventSource', null);
 
@@ -7232,7 +7171,7 @@ function() {
     //  If there is no valid URI, then we can't open the connection... return
     //  false.
     if (!TP.isURI(sourceURI = this.get('uri'))) {
-        this.raise('TP.sig.InvalidURI', arguments);
+        this.raise('TP.sig.InvalidURI');
 
         return false;
     }
@@ -7241,7 +7180,7 @@ function() {
     try {
         eventSource = new EventSource(sourceURI.asString());
     } catch (e) {
-        this.raise('TP.sig.InvalidSource', arguments);
+        this.raise('TP.sig.InvalidSource');
 
         return false;
     }
@@ -7282,7 +7221,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         sigTypes;
 
     if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  See if we have an observer count. If not, we use the value of 0.
@@ -7356,7 +7295,7 @@ function(signalTypes) {
         handlerRegistry;
 
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource', arguments);
+        this.raise('TP.sig.InvalidSource');
 
         return this;
     }
@@ -7399,7 +7338,7 @@ function(signalTypes) {
                                 'source', evt.source
                                 );
 
-                    thisArg.signal(signalName, arguments, payload);
+                    thisArg.signal(signalName, payload);
 
                     return;
                 };
@@ -7432,7 +7371,7 @@ function() {
     var eventSource;
 
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource', arguments);
+        this.raise('TP.sig.InvalidSource');
 
         return this;
     }
@@ -7450,7 +7389,7 @@ function() {
                         'readyState', eventSource.readyState
                         );
 
-            this.signal('TP.sig.SourceOpen', arguments, payload);
+            this.signal('TP.sig.SourceOpen', payload);
 
             return;
         }.bind(this),
@@ -7471,7 +7410,7 @@ function() {
                         'source', evt.source
                         );
 
-            this.signal('TP.sig.SourceDataReceived', arguments, payload);
+            this.signal('TP.sig.SourceDataReceived', payload);
 
             return;
         }.bind(this),
@@ -7487,7 +7426,7 @@ function() {
             //  is 'failing the connection'. In this case, we signal a
             //  'TP.sig.SourceClosed' and return.
             if (eventSource.readyState === EventSource.CLOSED) {
-                this.signal('TP.sig.SourceClosed', arguments);
+                this.signal('TP.sig.SourceClosed');
 
                 return;
             }
@@ -7496,7 +7435,7 @@ function() {
             //  browser is trying to 'reestablish the connection'. In this case,
             //  we signal a 'TP.sig.SourceReconnecting' and return.
             if (eventSource.readyState === EventSource.CONNECTING) {
-                this.signal('TP.sig.SourceReconnecting', arguments);
+                this.signal('TP.sig.SourceReconnecting');
 
                 return;
             }
@@ -7509,7 +7448,7 @@ function() {
                         'readyState', eventSource.readyState
                         );
 
-            this.signal('TP.sig.SourceError', arguments, payload);
+            this.signal('TP.sig.SourceError', payload);
 
             return;
         }.bind(this),
@@ -7542,7 +7481,7 @@ function(signalTypes) {
         handlerRegistry;
 
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource', arguments);
+        this.raise('TP.sig.InvalidSource');
 
         return this;
     }

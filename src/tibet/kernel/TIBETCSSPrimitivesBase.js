@@ -224,7 +224,7 @@ function(targetDoc, cssHref, inlineRuleText) {
         newNativeElem;
 
     if (!TP.isDocument(targetDoc)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Make sure that the target document has a valid 'head' element or
@@ -271,7 +271,7 @@ function(targetDoc, linkHref, beforeNode) {
         before;
 
     if (!TP.isDocument(targetDoc)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Make sure that the target document has a valid 'head' element or
@@ -325,7 +325,7 @@ function(targetDoc, styleText, beforeNode) {
         before;
 
     if (!TP.isDocument(targetDoc)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Make sure that the target document has a valid 'head' element or
@@ -381,11 +381,11 @@ function(cssElements, targetDoc) {
         localName;
 
     if (!TP.isDocument(targetDoc)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (!TP.isArray(cssElements)) {
-        return TP.raise(this, 'TP.sig.InvalidArray', arguments);
+        return TP.raise(this, 'TP.sig.InvalidArray');
     }
 
     for (i = 0; i < cssElements.getSize(); i++) {
@@ -445,16 +445,16 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
         destWindow;
 
     if (!TP.isDocument(targetDoc)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if ((TP.elementGetLocalName(anElement).toLowerCase() !== 'link') ||
         (TP.elementGetAttribute(anElement, 'rel') !== 'stylesheet')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     shouldOnlyIfAbsent = TP.ifInvalid(onlyIfAbsent, false);
@@ -555,15 +555,15 @@ function(anElement, targetDoc) {
         sourceDirectory;
 
     if (!TP.isDocument(targetDoc)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.elementGetLocalName(anElement).toLowerCase() !== 'style') {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     cssText = TP.styleElementGetContent(anElement);
@@ -628,7 +628,7 @@ function(aDocument) {
         res;
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Make sure that the source document has a valid 'head' element or
@@ -684,7 +684,7 @@ function(aDocument) {
         i;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Grab all of the style sheets in the document, whether they
@@ -759,7 +759,7 @@ function(aDocument) {
         matchingElement;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  For some reason, some CSS selector queries can return the document
@@ -812,11 +812,11 @@ function(anElement) {
     var doc;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isDocument(doc = TP.nodeGetDocument(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     return TP.nodeGetWindow(doc).getComputedStyle(anElement, null);
@@ -858,11 +858,11 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
         pixelsPerPoint;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aValue)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     //  If it's just a pixel value, then we can do a simple parse here and
@@ -1013,7 +1013,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
         if (TP.notValid(targetProperty)) {
             TP.ifError() ?
                 TP.error('Percentage computation needs target property',
-                            TP.CSS_LOG, arguments) : 0;
+                            TP.CSS_LOG) : 0;
 
             return 0;
         }
@@ -1061,7 +1061,7 @@ function(anElement) {
         i;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  Initially set the flag to say that we haven't created a new sheet.
@@ -1172,15 +1172,15 @@ function(anElement, pixelValue, aPropertyName) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (!TP.isNumber(pixelValue)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     if (!TP.isString(aPropertyName)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  If the property name is either a *[t|T]op* or *[b|B]ottom*, then we're
@@ -1216,7 +1216,7 @@ function(anElement) {
 
     if (!TP.isElement(anElement) ||
         (TP.elementGetLocalName(anElement).toLowerCase() !== 'style')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.notValid(anElement.firstChild)) {
@@ -1247,7 +1247,7 @@ function(anElement, styleText) {
 
     if (!TP.isElement(anElement) ||
         (TP.elementGetLocalName(anElement).toLowerCase() !== 'style')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  If there's no valid text node under the style element, create one
@@ -1280,7 +1280,7 @@ function(aStyleRule) {
      */
 
     if (TP.notValid(aStyleRule)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  The DOM standard is to just return the parentStyleSheet property of
@@ -1319,7 +1319,7 @@ function(aStylesheet, expandImports) {
         i;
 
     if (TP.notValid(aStylesheet)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     shouldExpand = TP.ifInvalid(expandImports, true);
@@ -1374,11 +1374,11 @@ function(aStylesheet, selectorText) {
         i;
 
     if (TP.notValid(aStylesheet)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (TP.isEmpty(selectorText)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     resultRules = TP.ac();
@@ -1435,12 +1435,12 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
         newRuleIndex;
 
     if (TP.notValid(aStylesheet)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  NB: We allow empty rule text
     if (TP.isEmpty(selectorText)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments);
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     theRuleText = TP.ifInvalid(ruleText, '');
@@ -1471,7 +1471,7 @@ function(aStylesheet, ruleIndex) {
      */
 
     if (TP.notValid(aStylesheet)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  The W3C standard is 'deleteRule'.
@@ -1502,13 +1502,13 @@ function(anElement) {
     var localName;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     localName = TP.elementGetLocalName(anElement).toLowerCase();
 
     if ((localName !== 'link') && (localName !== 'style')) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     return anElement.sheet;

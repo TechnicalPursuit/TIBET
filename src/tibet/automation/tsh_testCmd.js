@@ -111,7 +111,7 @@ function(aRequest) {
         resolvedValue,
         resolvedTN;
 
-    TP.debug('break.tsh_uri');
+    TP.stop('break.tsh_uri');
 
     shell = aRequest.at('cmdShell');
 

@@ -43,10 +43,10 @@ function(aRequest) {
     var node,
         shell,
         target,
-    
+
         obj;
 
-    TP.debug('break.tsh_lint');
+    TP.stop('break.tsh_lint');
 
     node = aRequest.at('cmdNode');
     shell = aRequest.at('cmdShell');

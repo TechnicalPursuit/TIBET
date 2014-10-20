@@ -49,7 +49,7 @@ function(itemID) {
         elem;
 
     if (TP.isEmpty(itemID)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
     }
 
     newItem = TP.node('<item xmlns="' + TP.xmpp.XMLNS.PUBSUB + '"/>');

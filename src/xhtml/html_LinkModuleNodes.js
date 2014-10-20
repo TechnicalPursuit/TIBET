@@ -53,7 +53,7 @@ function(aRequest) {
         str,
         newNode;
 
-    TP.debug('break.css_processing');
+    TP.stop('break.css_processing');
 
     //  wall off conversion of TP.html.link elements so the css processing
     //  pipeline never gets off the ground.

@@ -50,9 +50,9 @@ function() {
     //  introduced in Firefox 2.0.0.2+
     name = '' + this;
 
-    TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
+    TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.trace('Faulting in \'' + name + '\'.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     //  require the type, telling TIBET that we're doing this for a proxy
     type = TP.sys.require(name, null, true);
@@ -61,7 +61,7 @@ function() {
         TP.ifError() ?
             TP.error('Faulting in \'' + name +
                             '\' failed. Removing proxy.',
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
         TP.sys.defineGlobal(name, null, true);
     }
@@ -156,7 +156,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.lang.Proxy.Inst.defineMethod('canResolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name canResolveDNU
@@ -165,8 +165,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     for objects that are acting as proxies or adaptors.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Boolean} TRUE means resolveDNU() will be called. FALSE means
      *     the standard DNU machinery will continue processing. The default is
      *     FALSE.
@@ -307,7 +307,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.lang.Proxy.Inst.defineMethod('resolveDNU',
-function(anOrigin, aMethodName, anArgArray, aContext) {
+function(anOrigin, aMethodName, anArgArray, callingContext) {
 
     /**
      * @name resolveDNU
@@ -315,8 +315,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
      *     responded TRUE to canResolveDNU() for the parameters given.
      * @param {Object} anOrigin The object asking for help.
      * @param {String} aMethodName The method name that failed.
-     * @param {arguments} anArgArray Optional arguments to function.
-     * @param {Function|Context} aContext The calling context.
+     * @param {Array} anArgArray Optional arguments to function.
+     * @param {Function|Arguments} callingContext The calling context.
      * @returns {Object} The result of function execution.
      * @todo
      */
@@ -326,7 +326,8 @@ function(anOrigin, aMethodName, anArgArray, aContext) {
     type = this.$$fault();
 
     if (TP.isType(type)) {
-        return type.resolveDNU(anOrigin, aMethodName, anArgArray, aContext);
+        return type.resolveDNU(anOrigin, aMethodName, anArgArray,
+            callingContext);
     }
 
     return;
@@ -392,14 +393,13 @@ function() {
                     TP.ec(e, TP.join('Error initializing ',
                                         id,
                                         ' type proxy')),
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
         }
     }
 
     TP.ifTrace() ?
         TP.trace('Initialized ' + len + ' type proxies.',
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     return;
 });

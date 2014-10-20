@@ -128,7 +128,7 @@ TP.definePrimitive('atob',
             ndx;
 
         if (!TP.isString(aString)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         arr = aString.split('');
@@ -228,7 +228,7 @@ TP.definePrimitive('btoa',
             end;
 
         if (TP.notValid(anObject)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         arr = TP.str(anObject).split('');

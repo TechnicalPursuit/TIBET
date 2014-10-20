@@ -44,7 +44,7 @@ TP.hc(
             deltaY;
 
         if (!TP.isEvent(anEvent)) {
-            return TP.raise(this, 'TP.sig.InvalidEvent', arguments);
+            return TP.raise(this, 'TP.sig.InvalidEvent');
         }
 
         //  If the Event object has already been normalized, then just return.
@@ -129,7 +129,7 @@ TP.hc(
         }
 
         if (!TP.isEvent(anEvent)) {
-            return TP.raise(this, 'TP.sig.InvalidEvent', arguments);
+            return TP.raise(this, 'TP.sig.InvalidEvent');
         }
 
         //  Make sure to set $normalized here because other calls in this
@@ -191,7 +191,7 @@ TP.hc(
             deltaY;
 
         if (!TP.isEvent(anEvent)) {
-            return TP.raise(this, 'TP.sig.InvalidEvent', arguments);
+            return TP.raise(this, 'TP.sig.InvalidEvent');
         }
 
         //  If the Event object has already been normalized, then just

@@ -428,7 +428,7 @@ function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
 
     //  only work on string type references
     if (!TP.isString(aPackageName)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  process the URI reference into something explicit for the package
@@ -456,7 +456,7 @@ function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
                         (TP.notValid(aTarget) ? 'default' : aTarget) +
                         ' import. ' + 'Target \'' +
                         aTarget + '\' already imported.',
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
             return 0;
         }
@@ -466,7 +466,7 @@ function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
         TP.info('Importing package: ' + aPackageName +
                 ' target: ' + (TP.notValid(aTarget) ? 'default' : aTarget) +
                 ' from file: ' + file,
-                TP.LOG, arguments) : 0;
+                TP.LOG) : 0;
 
     //  NOTE the TP.boot reference here, which means boot code must exist
     return TP.boot.$importPackage(file, aTarget, aBaseDir, sync);
@@ -525,7 +525,7 @@ function(aURI, aRequest) {
 
     url = TP.uc(aURI);
     if (TP.notValid(url)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     //  adjust the path per any rewrite rules in place for the URI. Note
@@ -566,7 +566,7 @@ function(aTypeName, shouldReload, isProxy) {
         type,
         typeinfo;
 
-    TP.debug('break.require');
+    TP.stop('break.require');
 
     reload = TP.ifInvalid(shouldReload, false);
     proxy = TP.ifInvalid(isProxy, false);
@@ -577,7 +577,7 @@ function(aTypeName, shouldReload, isProxy) {
             return aTypeName;
         }
 
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  we get called with a variety of inputs...don't bother if the string
@@ -600,145 +600,6 @@ function(aTypeName, shouldReload, isProxy) {
             typeinfo = TP.sys.getMetadata('types');
         }
     }
-
-    /*
-     * TODO Scott: Both metadata and packaging has changed since this was
-     * written... is this logic still valid?
-
-    var notfounds,
-        typename,
-        entries,
-        types,
-        entry,
-        len,
-        i,
-        parts,
-        file,
-        url,
-        request;
-
-    typeinfo = TP.ifInvalid(typeinfo, TP.sys.getMetadata('types'));
-
-    typename = aTypeName;
-    entries = TP.ac();
-    types = TP.ac();
-
-    //  check to see if we've already been here...unless reload is true.
-    notfounds = TP.sys.getMissingTypes();
-    if (TP.notTrue(reload)) {
-        if (notfounds.hasKey(typename)) {
-            return;
-        }
-    }
-
-    //  loop until we find the first ancestor that is loaded. along the way
-    //  we'll capture the types we have to load into a list
-    while (TP.notValid(TP.sys.getTypeByName(typename, !proxy))) {
-        notfounds = notfounds || TP.sys.getMissingTypes();
-        entry = typeinfo.at(typename);
-        if (TP.notValid(entry)) {
-            notfounds.atPut(typename, null);
-            TP.ifWarn(TP.$$DEBUG && TP.$$VERBOSE) ?
-                TP.warn('No metadata for type: ' + typename,
-                        TP.LOG, arguments) : 0;
-
-                return;
-        } else {
-            notfounds.removeKey(typename);
-        }
-
-        //  unshift pushes on the front so when we start iterating below
-        //  we'll be working from the highest supertype in the tree first.
-        entries.unshift(typename, entry);
-
-        //  supertype is first portion of the current type's entry. capture
-        //  that and keep feeding the loop until we find a type that's
-        //  already been loaded.
-        typename = entry.split('|').first();
-    }
-
-    request = TP.request();
-
-    len = entries.getSize();
-    for (i = 0; i < len; i += 2) {
-        typename = entries.at(i);
-        entry = entries.at(i + 1);
-        parts = entry.split('|');
-
-        //  a type entry is a string of the form supertype|filepath
-        file = parts.at(1);
-        file = TP.sys.$$decodeMetadata(file);
-
-        //  get TP.core.URI to do the work of making sure we've got a proper
-        //  file reference, that we expand it from TIBET form, etc.
-        url = TP.uc(file);
-        if (TP.isURI(url)) {
-            if (TP.sys.hasLoaded()) {
-                TP.ifTrace(TP.$DEBUG && TP.$VERBOSE) ?
-                    TP.trace('Importing type: ' + typename +
-                                    ' from file: ' + file,
-                                TP.LOG, arguments) : 0;
-            } else {
-                TP.boot.$stdout(
-                    'Loading ' + TP.boot.$uriInTIBETFormat(file) +
-                    ' for type ' + typename + '.', TP.TRACE);
-            }
-
-            TP.boot.$scriptWillLoad(file);
-
-            //  NOTE that we don't force reload on supers, only the primary
-            //  target type
-            if (i + 2 === len) {
-                request.atPut('refresh', reload);
-            } else {
-                request.atPut('refresh', false);
-            }
-            TP.sys.importScript(url, request);
-
-            TP.boot.$scriptDidLoad(file);
-        } else {
-            //  if we don't have a valid file then we're out of luck
-            TP.ifWarn(TP.$DEBUG && TP.$VERBOSE) ?
-                TP.warn('Unable to lookup script file for: ' + typename,
-                        TP.LOG, arguments) : 0;
-
-            return;
-        }
-
-        //  if TP.core.URI was successful then the type is now registered...
-        type = TP.sys.getTypeByName(typename, !proxy);
-
-        if (TP.notValid(type)) {
-            TP.ifWarn(TP.$DEBUG && TP.$VERBOSE) ?
-                TP.warn('Unable to import type: ' + typename,
-                        TP.LOG, arguments) : 0;
-
-            return;
-        } else {
-            types.push(type);
-        }
-    }
-
-    //  just like the initial load process, we wait for all types to load,
-    //  then initialize those that we loaded along the way
-    len = types.getSize();
-    for (i = 0; i < len; i++) {
-        type = types.at(i);
-        if (TP.canInvoke(type, 'initialize') &&
-            (type.initialize[TP.OWNER] === type)) {
-            try {
-                type.initialize();
-                type.isInitialized(true);
-            } catch (e) {
-                this.raise('TP.sig.InitializationException',
-                            arguments,
-                            'Unable to initialize ' + type.getName());
-            }
-        }
-    }
-
-    return type;
-    */
 
     return null;
 });

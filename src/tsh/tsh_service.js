@@ -26,7 +26,7 @@ TP.tsh.service.Type.defineMethod('cmdAddContent',
 function(aRequest) {
 
     /**
-     * @inheritDoc 
+     * @inheritDoc
      * @todo
      */
 
@@ -39,7 +39,7 @@ TP.tsh.service.Type.defineMethod('cmdFilterInput',
 function(aRequest) {
 
     /**
-     * @inheritDoc 
+     * @inheritDoc
      * @todo
      */
 
@@ -52,7 +52,7 @@ TP.tsh.service.Type.defineMethod('cmdGetContent',
 function(aRequest) {
 
     /**
-     * @inheritDoc 
+     * @inheritDoc
      * @todo
      */
 
@@ -65,7 +65,7 @@ TP.tsh.service.Type.defineMethod('cmdSetContent',
 function(aRequest) {
 
     /**
-     * @inheritDoc 
+     * @inheritDoc
      * @todo
      */
 
@@ -78,7 +78,7 @@ TP.tsh.service.Type.defineMethod('cmdTransformInput',
 function(aRequest) {
 
     /**
-     * @inheritDoc 
+     * @inheritDoc
      * @todo
      */
 
@@ -105,7 +105,7 @@ function(aRequest) {
     var node,
         inst;
 
-    TP.debug('break.tsh_request');
+    TP.stop('break.tsh_request');
 
     node = aRequest.at('cmdNode');
     inst = TP.wrap(node);
@@ -151,7 +151,7 @@ function(aRequest) {
 
         subrequest;
 
-    TP.debug('break.tsh_service');
+    TP.stop('break.tsh_service');
 
     node = aRequest.at('cmdNode');
     shell = aRequest.at('cmdShell');
@@ -179,7 +179,7 @@ function(aRequest) {
         //  optionally we might have a parameter tag child which specifies
         //  what we need
         if (TP.isEmpty(url = this.getActionParam(aRequest, 'href'))) {
-            this.raise('TP.sig.InvalidParameter', arguments,
+            this.raise('TP.sig.InvalidParameter',
                 'Missing required resource attribute for: ' + TP.str(node));
 
             this.dispatch('tsh-service-error', node,
@@ -191,7 +191,7 @@ function(aRequest) {
 
     url = TP.uc(url);
     if (TP.notValid(url)) {
-        this.raise('TP.sig.InvalidParameter', arguments,
+        this.raise('TP.sig.InvalidParameter',
             'Invalid resource attribute for: ' + TP.str(node));
 
         this.dispatch('tsh-service-error', node,
@@ -203,7 +203,7 @@ function(aRequest) {
     //  method is the operation we'll be routing to a handler.
     if (TP.isEmpty(method = TP.elementGetAttribute(node, 'tsh:method', true))) {
         if (TP.isEmpty(method = this.getActionParam(aRequest, 'method'))) {
-            this.raise('TP.sig.InvalidParameter', arguments,
+            this.raise('TP.sig.InvalidParameter',
                 'Missing required method attribute for: ' + TP.str(node));
 
             this.dispatch('tsh-service-error', node,
@@ -220,7 +220,7 @@ function(aRequest) {
     handler = TP.core.URI.route(url, dict);
 
     if (TP.notValid(handler)) {
-        this.raise('TP.sig.InvalidHandler', arguments,
+        this.raise('TP.sig.InvalidHandler',
             'Missing required handler type for: ' + TP.str(node));
 
         this.dispatch('tsh-service-error', node,
@@ -370,8 +370,7 @@ function(aRequest) {
             alert('tsh:service succeeded');
             TP.ifInfo() ?
                 TP.info('The results are: ' + TP.str(aRequest.getResult()),
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
                         /*
             args = TP.hc('response', aSignal,

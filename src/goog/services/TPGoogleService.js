@@ -192,8 +192,7 @@ function(aSignal) {
                     TP.notEmpty(error)) {
                     TP.ifError() ?
                         TP.error('Google login error: ' + responseText,
-                                    TP.LOG,
-                                    arguments) : 0;
+                                    TP.LOG) : 0;
                 } else {
                     if (TP.notEmpty(auth)) {
                         authToken = auth.at(1);

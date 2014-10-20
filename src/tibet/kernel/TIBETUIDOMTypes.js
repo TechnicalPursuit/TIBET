@@ -78,7 +78,7 @@ function(aDocument) {
         themeID;
 
     if (!TP.isDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  First, we add the "core" stylesheet - this should be the stylesheet
@@ -268,13 +268,11 @@ function(mimeType, themeName) {
 
     if (TP.notValid(mimeType)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Must supply a valid TP.ietf.Mime reference.');
     }
 
     if (TP.notValid(themeName)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Must supply a valid theme name.');
     }
 
@@ -325,7 +323,7 @@ function(aTargetElem, anEvent) {
         blurSignal;
 
     if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     //  Grab the event target element and wrap it
@@ -367,7 +365,7 @@ function(aTargetElem, anEvent) {
         focusSignal;
 
     if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     //  Grab the event target element and wrap it
@@ -418,7 +416,7 @@ function(aTargetElem, anEvent) {
         sigName;
 
     if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     //  Grab the event target element and wrap it
@@ -514,7 +512,7 @@ function(aTargetElem, anEvent) {
         deactivateSignal;
 
     if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     //  Grab the event target element and wrap it
@@ -564,7 +562,7 @@ function(aTargetElem, anEvent) {
         activateSignal;
 
     if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     //  Grab the event target element and wrap it
@@ -610,7 +608,7 @@ function(aTargetElem, anEvent) {
         deactivateSignal;
 
     if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     //  Grab the event target element and wrap it
@@ -655,7 +653,7 @@ function(aTargetElem, nodesAdded) {
         i;
 
     if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     //  Allocate a tag processor and initialize it with the ATTACH_PHASES
@@ -699,7 +697,7 @@ function(aTargetElem, nodesRemoved) {
         i;
 
     if (!TP.isElement(aTargetElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     //  Allocate a tag processor and initialize it with the DETACH_PHASES
@@ -742,7 +740,7 @@ function() {
     }
 
     if (TP.notValid(xml = url.getNativeNode(TP.hc('async', false)))) {
-        return this.raise('TP.sig.InvalidKeymap', arguments);
+        return this.raise('TP.sig.InvalidKeymap');
     }
 
     this.set('keyBindingsURI', url);
@@ -1057,7 +1055,7 @@ function(focusedTPElem, moveAction) {
         prevGroupName,
 
         resultElem,
-        
+
         wantGroups;
 
     currentIsInGroup = false;
@@ -1717,7 +1715,7 @@ function(includeBody) {
         currentElement;
 
     if (!TP.isDocument(currentDoc = this.getNativeDocument())) {
-        return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+        return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
     //  Couldn't find a focused element
@@ -2782,7 +2780,7 @@ function(aTPElem) {
      */
 
     if (TP.notValid(aTPElem)) {
-        return this.raise('TP.sig.InvalidElement', arguments, aTPElem);
+        return this.raise('TP.sig.InvalidElement', aTPElem);
     }
 
     this.setAttribute('tibet:group', aTPElem.getLocalID());
@@ -3031,7 +3029,7 @@ function(transformType, varargs) {
      *     local transformations. This should be one of the following:
      *     TP.ROTATE, TP.SKEW, TP.SCALE,
      *     TP.TRANSLATE.
-     * @param {arguments} varargs One or more additional arguments to provide to
+     * @param {Array} varargs One or more additional arguments to provide to
      *     configure the transform.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -3086,7 +3084,6 @@ function(aTransformRecord) {
 
     if (TP.notValid(aTransformRecord)) {
         return this.raise('TP.sig.InvalidParameter',
-                            arguments,
                             'Must supply a valid transform record.');
     }
 
@@ -3353,7 +3350,7 @@ function(transformType, transformIndex, varargs) {
      * @param {Number} transformIndex The index of the transform to set the
      *     values of. If this argument is not supplied or invalid, 0 (the first
      *     transform of the specified type) is assumed.
-     * @param {arguments} varargs One or more additional arguments to provide to
+     * @param {Array} varargs One or more additional arguments to provide to
      *     configure the transform.
      * @returns {TP.core.UIElementNode} The receiver.
      */
@@ -4110,7 +4107,7 @@ function(oldItem, newItem) {
      */
 
     if (!TP.isElement(oldItem) || !TP.isElement(newItem)) {
-        return this.raise('TP.sig.InvalidElement', arguments);
+        return this.raise('TP.sig.InvalidElement');
     }
 
     TP.wrap(oldItem).set('selected', false);
@@ -4145,7 +4142,7 @@ function(content) {
      */
 
     //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('alert: ' + content, TP.LOG, arguments) : 0;
+    TP.ifInfo() ? TP.info('alert: ' + content, TP.LOG) : 0;
 
     return this;
 });
@@ -4180,7 +4177,7 @@ function(content) {
      */
 
     //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('help: ' + content, TP.LOG, arguments) : 0;
+    TP.ifInfo() ? TP.info('help: ' + content, TP.LOG) : 0;
 
     return this;
 });
@@ -4198,7 +4195,7 @@ function(content) {
      */
 
     //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('hint: ' + content, TP.LOG, arguments) : 0;
+    TP.ifInfo() ? TP.info('hint: ' + content, TP.LOG) : 0;
 
     return this;
 });
@@ -4706,8 +4703,7 @@ function(aSignal) {
             TP.info('Popped the focus stack. Stack now has:\n' +
                  $focus_stack.collect(
                      function (item) {return item.asString()}).join('\n'),
-                TP.LOG,
-                arguments) : 0;
+                TP.LOG) : 0;
         */
     }
 
@@ -4733,8 +4729,7 @@ function(aSignal) {
             TP.info('Pushed the focus stack. Stack now has:\n' +
                  $focus_stack.collect(
                      function (item) {return item.asString()}).join('\n'),
-                TP.LOG,
-                arguments) : 0;
+                TP.LOG) : 0;
         */
     }
 
@@ -5384,7 +5379,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('signal',
-function(aSignal, aContext, aPayload, aPolicy, aType, isCancelable,
+function(aSignal, aPayload, aPolicy, aType, isCancelable,
 isBubbling) {
 
     /**
@@ -5393,8 +5388,6 @@ isBubbling) {
      *     arguments are passed to the registered handlers along with the origin
      *     and event.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context (unused in this
-     *     override).
      * @param {Object} aPayload Optional argument object (unused in this
      *     override).
      * @param {Function} aPolicy A "firing" policy that will define how the
@@ -5410,10 +5403,9 @@ isBubbling) {
      * @todo
      */
 
-    TP.debug('break.signal_dispatch');
+    TP.stop('break.signal_dispatch');
 
     return this.dispatch(aSignal,
-                            this.getNativeNode(),   //  the target element
                             aPayload,
                             aPolicy,
                             isCancelable,
@@ -5423,7 +5415,7 @@ isBubbling) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('signalAfterUnwind',
-function(aSignal, aContext, aPayload, aPolicy, aType, isCancelable,
+function(aSignal, aPayload, aPolicy, aType, isCancelable,
 isBubbling) {
 
     /**
@@ -5433,8 +5425,6 @@ isBubbling) {
      *     the possibility that the signal could be cancelled and wants the UI
      *     to update before the signal is fired.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context (unused in this
-     *     override).
      * @param {Object} aPayload Optional argument object (unused in this
      *     override).
      * @param {Function} aPolicy A "firing" policy that will define how the
@@ -5450,13 +5440,12 @@ isBubbling) {
      * @todo
      */
 
-    TP.debug('break.signal_dispatch');
+    TP.stop('break.signal_dispatch');
 
     (function() {
 
             return this.dispatch(
                             aSignal,
-                            this.getNativeNode(),   //  the target element
                             aPayload,
                             aPolicy,
                             isCancelable,

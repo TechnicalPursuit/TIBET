@@ -49,7 +49,7 @@ function(aRequest) {
         newNode,
         str;
 
-    TP.debug('break.css_processing');
+    TP.stop('break.css_processing');
 
     //  wall off conversion of TP.html.style elements so the css processing
     //  pipeline never gets off the ground.

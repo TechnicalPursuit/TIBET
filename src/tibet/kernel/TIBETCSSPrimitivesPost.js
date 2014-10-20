@@ -411,7 +411,7 @@ function(m1, m2, aHue) {
         hue6;
 
     if (!TP.isNumber(m1) || !TP.isNumber(m2) || !TP.isNumber(aHue)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     hue = aHue;
@@ -480,7 +480,7 @@ function(aHue, aSaturation, aLightness, anAlpha) {
     if (!TP.isNumber(aHue) ||
         !TP.isNumber(aSaturation) ||
         !TP.isNumber(aLightness)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     theHue = ((aHue % 360) + 360) % 360 / 360;
@@ -539,7 +539,7 @@ function(aString) {
         rgbResults;
 
     if (!TP.isString(aString)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (/transparent/.test(aString)) {
@@ -661,7 +661,7 @@ function(aString) {
         b;
 
     if (!TP.isString(aString)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  If its an 'rgba' color, then process it separately and bail out
@@ -786,7 +786,7 @@ function(aString) {
     var hexString;
 
     if (!TP.isString(aString)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (TP.isString(hexString = TP.convertColorStringToHex(aString))) {
@@ -819,7 +819,7 @@ function(aLongNumber) {
         i;
 
     if (!TP.isNumber(aLongNumber)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     hexChars = '0123456789ABCDEF';
@@ -867,7 +867,7 @@ function(color1, color2, aPercentage) {
     if (!TP.isNumber(color1) ||
         !TP.isNumber(color2) ||
         !TP.isNumber(aPercentage)) {
-        return TP.raise(this, 'TP.sig.InvalidNumber', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNumber');
     }
 
     n = 0;
@@ -952,11 +952,11 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
         pixelValue;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aPropertyName) || TP.isEmpty(aPercentage)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  Different properties compute their percentages differently. Switch
@@ -1157,11 +1157,11 @@ function(anElement, aPropertyName, aPropertyValue, wantsTransformed) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aPropertyName) || TP.isEmpty(aPropertyValue)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  If the value is a percentage, then use the routine defined above to
@@ -1221,7 +1221,7 @@ function(anElement, aProperty, aValue) {
         value;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     style = TP.elementGetStyle(anElement);
@@ -1269,12 +1269,12 @@ function(anElement, aProperty) {
         styleStr;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.notValid(compStyleObj =
                     TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle', arguments);
+        return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
     if (TP.isString(aProperty)) {
@@ -1327,15 +1327,15 @@ function(anElement, aProperty) {
         value;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (TP.notValid(compStyleObj = TP.elementGetComputedStyleObj(anElement))) {
-        return TP.raise(this, 'TP.sig.InvalidStyle', arguments);
+        return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
     value = compStyleObj[aProperty.asDOMName()];
@@ -1372,7 +1372,7 @@ function(anElement, aProperty) {
         styleStr;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     style = TP.elementGetStyleObj(anElement).cssText.toLowerCase();
@@ -1426,7 +1426,7 @@ function(anElement) {
     var styleObj;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isStyleDeclaration(styleObj = anElement.style)) {
@@ -1458,11 +1458,11 @@ function(anElement, aProperty) {
         styleHash;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     style = anElement.style.cssText.toLowerCase();
@@ -1490,7 +1490,7 @@ function(anElement, aProperty) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     return TP.notEmpty(TP.elementGetStyle(anElement, aProperty));
@@ -1518,11 +1518,11 @@ function(anElement, aProperty) {
     var vals;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     if (TP.isArray(vals = anElement[aProperty + '_vals'])) {
@@ -1556,11 +1556,11 @@ function(anElement, aProperty) {
     var val;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     val = TP.elementPopStyleProperty(anElement, aProperty);
@@ -1613,11 +1613,11 @@ function(anElement, aProperty, aPropertyValue) {
         vals;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  NB: We allow aPropertyValue to be empty, but not null or undefined,
@@ -1654,11 +1654,11 @@ function(anElement, aProperty, aPropertyValue) {
      */
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     //  Get the current value of the style property and 'push' it onto the
@@ -1695,7 +1695,7 @@ function(anElement, aProperty) {
         css;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     css = TP.elementGetStyle(anElement);
@@ -1735,11 +1735,11 @@ function(anElement, aProperty) {
         i;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     style = TP.elementGetStyleObj(anElement).cssText.toLowerCase();
@@ -1782,7 +1782,7 @@ function(anElement, aProperty, oldValue, newValue) {
         css;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     css = TP.elementGetStyle(anElement);
@@ -1842,7 +1842,7 @@ function(anElement, theStyle) {
     var styleObj;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     styleObj = TP.elementGetStyleObj(anElement);
@@ -1855,7 +1855,7 @@ function(anElement, theStyle) {
         //  Pass 'false' to not quote values with whitespace.
         styleObj.cssText = TP.styleStringFromHash(theStyle, false);
     } else {
-        return TP.raise(this, 'InvalidStyle', arguments,
+        return TP.raise(this, 'InvalidStyle',
                         'Style content must be string or TP.lang.Hash');
     }
 
@@ -1883,11 +1883,11 @@ function(anElement, aProperty, aPropertyValue) {
         styleHash;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aProperty)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter', arguments);
+        return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
     style = TP.elementGetStyleObj(anElement).cssText.toLowerCase();
@@ -2210,8 +2210,7 @@ function(selectorStr) {
                         TP.ifWarn() ?
                             TP.warn('\'\\\' encountered - ' +
                                         'unknown resolution',
-                                    TP.LOG,
-                                    arguments) : 0;
+                                    TP.LOG) : 0;
                     }
 
                     break;
@@ -2234,8 +2233,7 @@ function(selectorStr) {
 
                     TP.ifWarn() ?
                         TP.warn('\'<\' encountered - unknown resolution',
-                                TP.LOG,
-                                arguments) : 0;
+                                TP.LOG) : 0;
 
                     break;
 
@@ -2277,9 +2275,7 @@ function(selectorStr) {
 
                     TP.ifWarn() ?
                         TP.warn('\'-\' encountered - unknown resolution',
-                                TP.LOG,
-                                arguments) : 0;
-
+                                TP.LOG) : 0;
                     break;
 
                 case EXCLAMATION_CHR:
@@ -2329,8 +2325,7 @@ function(selectorStr) {
                         TP.ifWarn() ?
                             TP.warn('Standalone \'|\' encountered -' +
                                         ' unknown resolution',
-                                    TP.LOG,
-                                    arguments) : 0;
+                                    TP.LOG) : 0;
                     }
 
                     break;
@@ -2355,8 +2350,7 @@ function(selectorStr) {
                         TP.ifWarn() ?
                             TP.warn('Standalone \'^\' encountered' +
                                     ' - unknown resolution',
-                                    TP.LOG,
-                                    arguments) : 0;
+                                    TP.LOG) : 0;
                     }
 
                     break;
@@ -2375,8 +2369,7 @@ function(selectorStr) {
                         TP.ifWarn() ?
                             TP.warn('Standalone \'$\' encountered' +
                                     ' - unknown resolution',
-                                    TP.LOG,
-                                    arguments) : 0;
+                                    TP.LOG) : 0;
                     }
 
                     break;
@@ -2385,8 +2378,7 @@ function(selectorStr) {
 
                     TP.ifWarn() ?
                         TP.warn('Unknown token encountered: ' + nextChar,
-                                    TP.LOG,
-                                    arguments) : 0;
+                                    TP.LOG) : 0;
 
                     break;
             }
@@ -2675,8 +2667,7 @@ function(strSelectorText, strictPseudos) {
                                 TP.warn('Unrecognized attribute' +
                                                 ' operator: ' +
                                                 currentToken,
-                                            TP.LOG,
-                                            arguments) : 0;
+                                            TP.LOG) : 0;
 
                             break;
                     }
@@ -2874,8 +2865,7 @@ function(strSelectorText, strictPseudos) {
             default:
                 TP.ifWarn() ?
                     TP.warn('Unknown token encountered: ' + currentToken,
-                                TP.LOG,
-                                arguments) : 0;
+                                TP.LOG) : 0;
 
                 break;
         }

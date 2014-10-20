@@ -56,7 +56,7 @@ function() {
             TP.ifWarn() ?
                 TP.warn('Unable to load application controller type: ' +
                             typeName,
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
         }
     }
 
@@ -174,7 +174,7 @@ function(aRequest) {
      */
 
     var elem,
-    
+
         cfg,
         opts,
 

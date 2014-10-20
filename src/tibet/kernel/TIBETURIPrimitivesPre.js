@@ -55,7 +55,7 @@ function(aPath) {
         newpath;
 
     if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
     //  start by "normalizing" so we match our test/conversion regexes
@@ -114,7 +114,7 @@ function(aPath) {
         slash;
 
     if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
     path = aPath;
@@ -159,7 +159,7 @@ function(aPath) {
         value,
         start;
 
-    TP.debug('break.uri_virtual');
+    TP.stop('break.uri_virtual');
 
     //  not a real path, but we can't assume what should come next
     if (TP.isEmpty(aPath)) {
@@ -274,11 +274,11 @@ function(aURI, aNode, shouldClone) {
         parts;
 
     if (!TP.isString(aURI)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
     if (TP.notValid(aNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.isNode(aNode)) {
@@ -286,7 +286,7 @@ function(aURI, aNode, shouldClone) {
     } else if (TP.canInvoke(aNode, 'getNativeNode')) {
         node = aNode.getNativeNode();
     } else {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     clone = TP.ifInvalid(shouldClone, true);
@@ -426,7 +426,7 @@ function(aPath) {
     var path;
 
     if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
     //  On Windows we can be drive:\something or \\something. All others
@@ -605,7 +605,7 @@ function(aPath, aRoot) {
             second,
             path;
 
-        TP.debug('break.uri_resolve');
+        TP.stop('break.uri_resolve');
 
         //  deal with looping when more than two args
         if (arguments.length > 2) {
@@ -742,7 +742,7 @@ function(aPath, aRoot) {
             delim;
 
         if (!TP.isString(aPath)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         if (TP.isEmpty(aQuery)) {
@@ -790,7 +790,7 @@ function(aPath, aRoot) {
         var path;
 
         if (!TP.isString(aPath)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         if (aPath.toLowerCase().indexOf('file:') !== 0) {
@@ -826,7 +826,7 @@ function(aPath, aRoot) {
          */
 
         if (!TP.isString(aPath)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         //  If the path doesn't start with the launch root, then we can assume
@@ -852,7 +852,7 @@ function(aPath, aRoot) {
             path;
 
         if (!TP.isString(aPath)) {
-            return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+            return TP.raise(this, 'TP.sig.InvalidURI');
         }
 
         if (aPath.toLowerCase().indexOf('file:') === 0) {
@@ -918,7 +918,7 @@ function(aPath, aRoot) {
             i,
             partial;
 
-        TP.debug('break.uri_resolve');
+        TP.stop('break.uri_resolve');
 
         //  the "path we append" to the second path to get the first path when
         //  the first path doesn't exist is null
@@ -1273,7 +1273,7 @@ function(aPath, aRoot) {
                 //  didn't resolve? then we can consider the first URI
                 //  invalid
                 if (TP.isEmpty(first) || (first.indexOf('~') === 0)) {
-                    return TP.raise(this, 'TP.sig.InvalidURI', arguments,
+                    return TP.raise(this, 'TP.sig.InvalidURI',
                             'First URI must resolve to absolute path.');
                 }
             } else if (first.indexOf('//') === 0) {
@@ -1334,10 +1334,10 @@ function(aPath, resourceOnly) {
         type,
         canvas;
 
-    TP.debug('break.uri_virtual');
+    TP.stop('break.uri_virtual');
 
     if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
     url = aPath;
@@ -1502,7 +1502,6 @@ function(text, type, report) {
         if (TP.notFalse(report)) {
             TP.raise(this,
                     'TP.sig.DOMParseException',
-                    arguments,
                     TP.ec(e, TP.join('Unable to parse: ', text)));
         }
 
@@ -1546,7 +1545,7 @@ function(targetUrl, resultType) {
      */
 
     if (!TP.isString(targetUrl)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
     if (!TP.isRegExp(TP.regex.XML_EXTENSIONS)) {
@@ -1600,7 +1599,7 @@ function(aPath, aSeparator) {
         sep;
 
     if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
     name = TP.uriName(aPath);
@@ -1635,7 +1634,7 @@ function(aPath) {
         index;
 
     if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
     //  paths containing backslashes, such as paths on Windows, will use
@@ -1735,7 +1734,7 @@ function(targetUrl, aRoot) {
         url;
 
     if (!TP.isString(targetUrl)) {
-        return TP.raise(this, 'TP.sig.InvalidURI', arguments);
+        return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
     if (TP.uriIsAbsolute(targetUrl)) {

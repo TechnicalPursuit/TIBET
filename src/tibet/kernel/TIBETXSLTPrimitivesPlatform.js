@@ -657,10 +657,10 @@ TP.hc(
             docAttrs,
             foundDefaultNSAttr;
 
-        TP.debug('break.node_xslt');
+        TP.stop('break.node_xslt');
 
         if (!TP.isXMLDocument(styleDoc)) {
-            return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidXMLDocument');
         }
 
         //  have to have a document or the tranformation will fail
@@ -671,7 +671,7 @@ TP.hc(
                                 TP.nodeCloneNode(inputNode, true));
             } catch (e) {
                 return TP.raise(this, 'TP.sig.InvalidXMLDocument',
-                                arguments, TP.ec(e));
+                                TP.ec(e));
             }
         } else {
             inputDoc = inputNode;
@@ -765,10 +765,10 @@ TP.hc(
 
                     TP.ifWarn() ?
                         TP.warn(exceptionWarningMsg,
-                                TP.TRANSFORM_LOG, arguments) : 0;
+                                TP.TRANSFORM_LOG) : 0;
                 }
 
-                TP.raise(this, 'TP.sig.XSLTException', arguments, TP.ec(e));
+                TP.raise(this, 'TP.sig.XSLTException', TP.ec(e));
 
                 return;
             }
@@ -793,7 +793,7 @@ TP.hc(
             //  and exit here.
             if (!TP.isXMLDocument(resultDoc) ||
                 TP.notValid(resultDoc.documentElement)) {
-                TP.raise(this, 'TP.sig.XSLTException', arguments,
+                TP.raise(this, 'TP.sig.XSLTException',
                             'Unable to produce valid XML document.');
 
                 return;
@@ -872,10 +872,10 @@ TP.hc(
 
                 TP.ifWarn() ?
                     TP.warn(exceptionWarningMsg,
-                            TP.TRANSFORM_LOG, arguments) : 0;
+                            TP.TRANSFORM_LOG) : 0;
             }
 
-            TP.raise(this, 'TP.sig.XSLTException', arguments, TP.ec(e));
+            TP.raise(this, 'TP.sig.XSLTException', TP.ec(e));
 
             return;
         }
@@ -951,10 +951,10 @@ TP.hc(
 
             result;
 
-        TP.debug('break.node_xslt');
+        TP.stop('break.node_xslt');
 
         if (!TP.isXMLDocument(styleDoc)) {
-            return TP.raise(this, 'TP.sig.InvalidDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidDocument');
         }
 
         //  We 'auto-wrap' html 'script' and 'style' elements in CDATA
@@ -1071,7 +1071,7 @@ TP.hc(
 
             if (TP.notValid(freeThreadedStyleDoc)) {
                 return TP.raise(
-                        this, 'TP.sig.InvalidParameter', arguments,
+                        this, 'TP.sig.InvalidParameter',
                         'Unable to create a free threaded XSL document.');
             }
 
@@ -1104,7 +1104,7 @@ TP.hc(
             }
 
             if (TP.notValid(xslTemplate)) {
-                return TP.raise(this, 'TP.sig.InvalidParameter', arguments,
+                return TP.raise(this, 'TP.sig.InvalidParameter',
                                     'Unable to create a XSL DOM Template.');
             }
 
@@ -1120,7 +1120,7 @@ TP.hc(
                 //  namespace
                 processor.addObject(self, 'urn:ecma:262-3');
             } catch (e) {
-                return TP.raise(this, 'TP.sig.XSLTException', arguments,
+                return TP.raise(this, 'TP.sig.XSLTException',
                                 TP.ec(e));
             }
         }
@@ -1171,7 +1171,7 @@ TP.hc(
             //  perform the actual transformation.
             processor.transform();
         } catch (e) {
-            return TP.raise(this, 'TP.sig.XSLTException', arguments,
+            return TP.raise(this, 'TP.sig.XSLTException',
                             TP.ec(e));
         }
 
@@ -1192,7 +1192,7 @@ TP.hc(
         //  attempting to parse it.
         node = TP.documentFromString(result, null, true);
         if (!TP.isXMLDocument(node) || TP.notValid(node.documentElement)) {
-            TP.raise(this, 'TP.sig.XSLTException', arguments,
+            TP.raise(this, 'TP.sig.XSLTException',
                     'Unable to produce valid XML document.');
 
             return;
@@ -1246,10 +1246,10 @@ TP.hc(
             docAttrs,
             foundDefaultNSAttr;
 
-        TP.debug('break.node_xslt');
+        TP.stop('break.node_xslt');
 
         if (!TP.isXMLDocument(styleDoc)) {
-            return TP.raise(this, 'TP.sig.InvalidXMLDocument', arguments);
+            return TP.raise(this, 'TP.sig.InvalidXMLDocument');
         }
 
         //  have to have a document or the tranformation will fail
@@ -1260,7 +1260,7 @@ TP.hc(
                                 TP.nodeCloneNode(inputNode, true));
             } catch (e) {
                 return TP.raise(this, 'TP.sig.InvalidXMLDocument',
-                                arguments, TP.ec(e));
+                                TP.ec(e));
             }
         } else {
             inputDoc = inputNode;
@@ -1373,7 +1373,7 @@ TP.hc(
                 //  parameters.
                 processor.importStylesheet(realStyleDoc);
             } catch (e) {
-                TP.raise(this, 'TP.sig.XSLTException', arguments, TP.ec(e));
+                TP.raise(this, 'TP.sig.XSLTException', TP.ec(e));
 
                 return;
             }
@@ -1398,7 +1398,7 @@ TP.hc(
             //  and exit here.
             if (!TP.isXMLDocument(resultDoc) ||
                 TP.notValid(resultDoc.documentElement)) {
-                TP.raise(this, 'TP.sig.XSLTException', arguments,
+                TP.raise(this, 'TP.sig.XSLTException',
                             'Unable to produce valid XML document.');
 
                 return;
@@ -1456,7 +1456,7 @@ TP.hc(
                 }
             }
         } catch (e) {
-            TP.raise(this, 'TP.sig.XSLTException', arguments, TP.ec(e));
+            TP.raise(this, 'TP.sig.XSLTException', TP.ec(e));
 
             return;
         }

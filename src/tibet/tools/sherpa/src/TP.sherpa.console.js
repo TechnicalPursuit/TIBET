@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sherpa.console}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -240,7 +240,7 @@ function() {
         null,
         TP.hc('consoleModel', tsh,
                 'consoleView', this));
-                
+
     return this;
 });
 
@@ -758,7 +758,7 @@ function(aSignal) {
     //  logging level
     //  ---
 
-    str = '' + TP.boot.Log.getStringForLevel(TP.sys.getLogLevel());
+    str = '' + TP.getLogLevel().getName() + '::' + APP.getLogLevel().getName();
     TP.htmlElementSetContent(TP.byId('status3', this.$get('vWin')),
         str, null, false);
 
@@ -799,7 +799,7 @@ function() {
 
     var marker,
         editor,
-    
+
         range;
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
@@ -865,12 +865,12 @@ function(anObject, shouldAppend) {
     var textInput,
 
         val,
-    
+
         editor,
         marker,
-    
+
         range,
-    
+
         start,
         end;
 
@@ -902,10 +902,10 @@ function(anObject, shouldAppend) {
         editor.replaceSelection(val);
 
         end = textInput.getCursor();
-    
+
         this.teardownInputMark();
     }
-    
+
     if (TP.notValid(range)) {
 
         start = textInput.getCursor();
@@ -980,7 +980,7 @@ function(aFlag) {
      * @name shouldConcealInput
      * @synopsis Returns false for now.
      * @param {Boolean} aFlag The new value to set.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return false;
@@ -1151,7 +1151,7 @@ function(uniqueID, dataRecord) {
         marker,
         range,
         outputRange,
-   
+
         hid,
         hidStr,
 
@@ -1162,9 +1162,9 @@ function(uniqueID, dataRecord) {
         record,
 
         statsStr,
- 
+
         resultTypeStr,
- 
+
         recordStr;
 
     textInput = this.get('textInput');
@@ -1178,7 +1178,7 @@ function(uniqueID, dataRecord) {
                 'from': {'line': range.to.line, 'ch': range.to.ch},
                 'to': {'line': range.to.line, 'ch': range.to.ch + 1}
             };
-        
+
             textInput.insertAtCursor(' ');
         } else {
             outputRange = {
@@ -1272,7 +1272,7 @@ function(uniqueID, dataRecord) {
     doc = textInput.getNativeContentDocument();
 
     if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
-    
+
         console.log('Couldn\'t find out cell for: ' + uniqueID);
         return this;
     }
@@ -1376,7 +1376,7 @@ function(from, to) {
 
         marks,
         results,
-    
+
         elem,
 
         i;
@@ -1421,17 +1421,17 @@ function() {
     if (TP.isValid(this.get('currentInputMarker'))) {
         if (TP.isValid(
                 currentInputRange = this.get('currentInputMarker').find())) {
-            
+
             newEvalRange = {'anchor': currentInputRange.from,
                             'head': currentInputRange.to};
 
             this.set('currentEvalMarker', this.generateEvalMarkAt(newEvalRange));
         }
     }
-    
+
     if (TP.notValid(this.get('currentEvalMarker'))) {
         newEvalRange = this.computeEvalMarkRange();
-    
+
         this.set('currentInputMarker',
                     this.generateInputMarkAt({anchor: newEvalRange.anchor,
                                             head: newEvalRange.head}));
@@ -1455,7 +1455,7 @@ function(direction, endPoint) {
      */
 
     var currentEvalMarker,
-    
+
         cimRange,
 
         editor,
@@ -1618,7 +1618,7 @@ function() {
      */
 
     var inputText,
-   
+
         marker,
 
         editor,
@@ -1655,11 +1655,11 @@ function() {
      */
 
     var promptMark,
-   
+
         range,
 
         editor,
-    
+
         head,
 
         matcher,
@@ -1737,7 +1737,7 @@ function() {
      */
 
     var editor,
-    
+
         anchor,
         searchCursor,
         lineInfo,
@@ -1787,7 +1787,7 @@ function() {
      */
 
     var editor,
-    
+
         selection,
         range;
 

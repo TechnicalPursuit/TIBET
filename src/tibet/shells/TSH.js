@@ -689,7 +689,7 @@ function(aRequest) {
             if (TP.sys.cfg('log.privilege_requests')) {
                 TP.sys.logSecurity('Privilege request at ' +
                        'handle',
-                            TP.TRACE, arguments);
+                            TP.DEBUG);
             }
 
             netscape.security.PrivilegeManager.enablePrivilege(
@@ -705,8 +705,7 @@ function(aRequest) {
                 ' false.\n',
                 'You may need signed.applets.codebase_principal_support\n',
                 'set to true. See the TIBET installation guide for more.'),
-                TP.WARN,
-                arguments);
+                TP.WARN);
         }
     }
 
@@ -758,7 +757,7 @@ function(aSignal) {
         timeend,
         exectime;
 
-    TP.debug('break.shell_response');
+    TP.stop('break.shell_response');
 
     response = aSignal;
     request = response.getRequest();
@@ -1038,7 +1037,7 @@ function(aRequest) {
 
         nextPhase;
 
-    TP.debug('break.shell_execute');
+    TP.stop('break.shell_execute');
 
     //  no request means no work :)
     if (TP.notValid(aRequest)) {
@@ -1251,7 +1250,7 @@ function(aRequest) {
             TP.ifWarn() ?
                 TP.warn('Invalid phase set in request: ' +
                             aRequest.at('cmdPhases'),
-                        TP.LOG, arguments) : 0;
+                        TP.LOG) : 0;
 
             phases = this.getType().NOCACHE_PHASES;
         }
@@ -1296,7 +1295,7 @@ function(aRequest) {
             //  console.
             root = aRequest.at('cmdRoot');
             if (TP.nodeIsDetached(root, rootDoc)) {
-                TP.debug('break.node_detached');
+                TP.stop('break.node_detached');
 
                 cmdNode = aRequest.at('cmdNode');
                 if (TP.nodeIsDetached(cmdNode, rootDoc)) {
@@ -1456,9 +1455,9 @@ function(aRequest) {
         return;
     }
 
-    TP.ifTrace(TP.sys.cfg('log.tsh_phases')) ?
+    TP.ifTrace() && TP.sys.cfg('log.tsh_phases') ?
         TP.trace(Date.now() + ' TP.core.TSH ' + phase,
-                    TP.LOG, arguments) : 0;
+                    TP.LOG) : 0;
 
     //  the node we should process should be found in cmdNode. it can change
     //  between phases as replacement documents/nodes are built etc, but it
@@ -1520,17 +1519,17 @@ function(aRequest) {
                 //  compiled elements which refer to concrete types via
                 //  tibet:sourcetag.
                 if (TP.nodeHasReachedPhase(child, phase, phases)) {
-                    TP.ifTrace(
+                    TP.ifTrace() &&
                             TP.$VERBOSE &&
                             TP.sys.cfg('log.tsh_phases') &&
-                            TP.sys.cfg('log.tsh_phase_skips')) ?
+                            TP.sys.cfg('log.tsh_phase_skips') ?
                                 TP.trace('TP.core.TSH ' + phase +
                                             ' skipping: ' +
                                             TP.name(type) + ' ' +
                                             TP.nodeAsString(child,
                                                             false,
                                                             true),
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
 
                     //  don't reprocess. descend or continue.
                     if (TP.isElement(
@@ -1558,17 +1557,17 @@ function(aRequest) {
                 } else {
                     aRequest.atPut('cmdNode', child);
 
-                    TP.ifTrace(
+                    TP.ifTrace() &&
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
-                        TP.sys.cfg('log.tsh_phase_nodes')) ?
+                        TP.sys.cfg('log.tsh_phase_nodes') ?
                             TP.trace(Date.now() + ' TP.core.TSH ' + phase +
                                         ' nodetype: ' + TP.name(type) +
                                         ' ' +
                                         TP.nodeAsString(child, false, true),
-                                    TP.LOG, arguments) : 0;
+                                    TP.LOG) : 0;
 
-                    TP.debug('break.tsh_phase_exec');
+                    TP.stop('break.tsh_phase_exec');
                     try {
                       result = type[funcName](aRequest);
                     } catch (e) {
@@ -1589,7 +1588,7 @@ function(aRequest) {
                     //  Not a Node, an Array or one of our constants...
                     message = 'No return value running: ' +
                                 TP.name(type) + '.' + funcName;
-                    TP.warn(message, TP.LOG, arguments);
+                    TP.warn(message, TP.LOG);
                     */
                     //  Need to set both - we return result, but use retval in
                     //  tests below.
@@ -1675,7 +1674,7 @@ function(aRequest) {
                     //  sure that the child is still contained in the node
                     //  to trap potentially bad transform logic
                     if (TP.nodeIsDetached(child, rootDoc)) {
-                        TP.debug('break.node_detachment');
+                        TP.stop('break.node_detachment');
 
                         message = 'TP.core.TSH ' + phase +
                                     ' node detached: ' +
@@ -1686,17 +1685,17 @@ function(aRequest) {
                     }
                 }
             } else {
-                TP.ifTrace(
+                TP.ifTrace() &&
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
-                        TP.sys.cfg('log.tsh_phase_skips')) ?
+                        TP.sys.cfg('log.tsh_phase_skips') ?
                             TP.trace('TP.core.TSH ' + phase +
                                             ' skipping: ' +
                                             TP.name(type) + ' ' +
                                             TP.nodeAsString(child,
                                                             false,
                                                             true),
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
             }
 
             return result;
@@ -1735,19 +1734,19 @@ function(aRequest) {
             if (TP.canInvoke(type, funcName)) {
                 aRequest.atPut('cmdNode', child);
 
-                TP.ifTrace(
+                TP.ifTrace() &&
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
-                        TP.sys.cfg('log.tsh_phase_nodes')) ?
+                        TP.sys.cfg('log.tsh_phase_nodes') ?
                             TP.trace(Date.now() + ' TP.core.TSH ' + phase +
                                             ' nodetype: ' + TP.name(type) +
                                             ' ' +
                                             TP.nodeAsString(child,
                                                             false,
                                                             true),
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
 
-                TP.debug('break.tsh_phase_exec');
+                TP.stop('break.tsh_phase_exec');
                 try {
                   result = type[funcName](aRequest);
                 } catch (e) {
@@ -1803,7 +1802,7 @@ function(aRequest) {
                     //  sure that the child is still contained in the node
                     //  to trap potentially bad transform logic
                     if (TP.nodeIsDetached(child, rootDoc)) {
-                        TP.debug('break.node_detachment');
+                        TP.stop('break.node_detachment');
                         message = 'TP.core.TSH ' + phase +
                                     ' node detached: ' +
                                     TP.nodeAsString(child, false);
@@ -1813,17 +1812,17 @@ function(aRequest) {
                     }
                 }
             } else {
-                TP.ifTrace(
+                TP.ifTrace() &&
                         TP.$VERBOSE &&
                         TP.sys.cfg('log.tsh_phases') &&
-                        TP.sys.cfg('log.tsh_phase_skips')) ?
+                        TP.sys.cfg('log.tsh_phase_skips') ?
                             TP.trace('TP.core.TSH ' + phase +
                                             ' skipping: ' +
                                             TP.name(type) + ' ' +
                                             TP.nodeAsString(child,
                                                             false,
                                                             true),
-                                        TP.LOG, arguments) : 0;
+                                        TP.LOG) : 0;
             }
 
             return result;
@@ -1859,15 +1858,17 @@ function(aRequest) {
 
     /**
      * @name executeLog
-     * @synopsis Outputs the activity log to the current stdout pipeline.
+     * @synopsis Outputs a log's content to the current stdout pipeline.
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
      */
 
-    aRequest.stdout(TP.sys.getActivityLog());
+    /**
+     * @
+     * @todo
+     */
 
-    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -2556,7 +2557,6 @@ function(aRequest) {
                 } catch (e) {
                     this.raise(
                         'TP.sig.InitializationException',
-                        arguments,
                         'Unable to initialize ' + urlType.getName());
                 }
             }

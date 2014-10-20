@@ -52,7 +52,7 @@ function() {
     //  If the value (i.e. the method body) already has a '$spiedFunc', that
     //  means that a spy or stub has already been installed on it.
     if (TP.isMethod(this.$spiedFunc)) {
-        return this.raise('TP.sig.InvalidFunction', arguments,
+        return this.raise('TP.sig.InvalidFunction',
                             'Function is already a spy');
     }
 
@@ -85,13 +85,13 @@ function() {
         owner;
 
     if (!TP.isMethod(this)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  If the value (i.e. the method body) already has a '$spiedFunc', that
     //  means that a spy or stub has already been installed on it.
     if (TP.isMethod(this.$spiedFunc)) {
-        return this.raise('TP.sig.InvalidFunction', arguments,
+        return this.raise('TP.sig.InvalidFunction',
                             'Function is already a stub');
     }
 
@@ -124,7 +124,7 @@ function(target, name, value, track, display) {
     //  If the value (i.e. the method body) already has a '$spiedFunc', that
     //  means that a spy or stub has already been installed on it.
     if (TP.isMethod(value.$spiedFunc)) {
-        return this.raise('TP.sig.InvalidFunction', arguments,
+        return this.raise('TP.sig.InvalidFunction',
                             'Function is already a spy or stub');
     }
 
@@ -167,7 +167,7 @@ function(target, name, value, track, display) {
     //  If the value (i.e. the method body) already has a '$spiedFunc', that
     //  means that a spy or stub has already been installed on it.
     if (TP.isMethod(value.$spiedFunc)) {
-        return this.raise('TP.sig.InvalidFunction', arguments,
+        return this.raise('TP.sig.InvalidFunction',
                             'Function is already a spy or stub');
     }
 
@@ -241,7 +241,7 @@ function(methodName) {
         existingMethod;
 
     if (!TP.isString(methodName)) {
-        return this.raise('TP.sig.InvalidString', arguments);
+        return this.raise('TP.sig.InvalidString');
     }
 
     //  Get the method on the receiver by asking the reflection system.
@@ -269,7 +269,7 @@ function(methodName) {
         existingMethod;
 
     if (!TP.isString(methodName)) {
-        return this.raise('TP.sig.InvalidString', arguments);
+        return this.raise('TP.sig.InvalidString');
     }
 
     //  Get the method on the receiver by asking the reflection system.
@@ -301,7 +301,7 @@ function(methodName) {
         existingMethod;
 
     if (!TP.isString(methodName)) {
-        return this.raise('TP.sig.InvalidString', arguments);
+        return this.raise('TP.sig.InvalidString');
     }
 
     //  Get the method on the receiver by asking the reflection system.

@@ -57,7 +57,7 @@ function() {
     /**
      * @name isAsyncOnly
      * @synopsis Returns true if the receiver can't process synchronously.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return this.$get('supportedModes') === TP.core.SyncAsync.ASYNCHRONOUS;
@@ -72,7 +72,7 @@ function() {
      * @name isSyncOnly
      * @synopsis Returns true if the receiver can process body synchronously and
      *     asynchronously.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return this.$get('supportedModes') === TP.core.SyncAsync.DUAL_MODE;
@@ -86,7 +86,7 @@ function() {
     /**
      * @name isSyncOnly
      * @synopsis Returns true if the receiver can't process asynchronously.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return this.$get('supportedModes') === TP.core.SyncAsync.SYNCHRONOUS;
@@ -111,14 +111,14 @@ function(aProcessMode) {
 
     //  validate mode against our list of 'approved' modes
     if (!TP.core.SyncAsync.MODES.containsString(aProcessMode)) {
-        return this.raise('TP.sig.InvalidProcessMode', arguments);
+        return this.raise('TP.sig.InvalidProcessMode');
     }
 
     //  if we're not dual mode then the mode better match the supported mode
     if ((supported = this.get('supportedModes')) !==
                                             TP.core.SyncAsync.DUAL_MODE) {
         if (aProcessMode !== supported) {
-            return this.raise('TP.sig.InvalidProcessMode', arguments);
+            return this.raise('TP.sig.InvalidProcessMode');
         }
     }
 
@@ -158,7 +158,7 @@ function() {
     /**
      * @name isSynchronous
      * @synopsis Returns true if the receiver can support synchronous operation.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return !this.getType().isAsyncOnly();
@@ -221,8 +221,7 @@ function(aRequest) {
     if (async && this.getType().isSyncOnly()) {
         TP.ifWarn() ?
             TP.warn('Overriding async request for sync-only URI: ' + uri,
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
         async = false;
     }
@@ -238,8 +237,7 @@ function(aRequest) {
 
         TP.ifWarn() ?
             TP.warn('Overriding sync request for async-only URI: ' + uri,
-                    TP.LOG,
-                    arguments) : 0;
+                    TP.LOG) : 0;
 
         async = true;
     }

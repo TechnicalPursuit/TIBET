@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.xctrls.yahoomap}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -203,7 +203,6 @@ function(aMarker) {
                 function() {
 
                     this.signal('TP_xctrls_MapMarkerClicked',
-                                    null,
                                     aMarker);
                 }.bind(this));
 
@@ -211,7 +210,7 @@ function(aMarker) {
 
     this.get('markers').push(aMarker);
 
-    this.signal('TP_xctrls_MapMarkerAdded', null, aMarker);
+    this.signal('TP_xctrls_MapMarkerAdded', aMarker);
 
     return this;
 });
@@ -280,7 +279,6 @@ function() {
                     }
 
                     this.signal('TP_xctrls_MapClicked',
-                                    null,
                                     TP.llc(location.Lat, location.Lon));
                 }.bind(this)));
 
@@ -292,7 +290,6 @@ function() {
                 function() {
 
                     this.signal('TP_xctrls_MapPanned',
-                                    null,
                                     this.getCenter());
                     justPanned = true;
                 }.bind(this)));
@@ -305,7 +302,6 @@ function() {
                 function() {
 
                     this.signal('TP_xctrls_MapPanned',
-                                    null,
                                     this.getCenter());
                 }.bind(this)));
 
@@ -397,7 +393,6 @@ function(response) {
             responseLatLong.set('description', response.Address);
 
             this.signal('TP_xctrls_MapGeocodeComplete',
-                            null,
                             responseLatLong);
         }.bind(this));
 
@@ -558,7 +553,7 @@ function(aMarker) {
 
     this.get('markers').remove(aMarker, TP.IDENTITY);
 
-    this.signal('TP_xctrls_MapMarkerRemoved', null, aMarker);
+    this.signal('TP_xctrls_MapMarkerRemoved', aMarker);
 
     return this;
 });
@@ -673,7 +668,7 @@ function(aLatLong) {
     this.get('map').panToLatLon(centerLatLong);
 
     //  NB: Do this to be consistent with the other maps.
-    this.signal('TP_xctrls_MapPanned', null, theLatLong);
+    this.signal('TP_xctrls_MapPanned', theLatLong);
 
     return this;
 });
@@ -702,7 +697,7 @@ function(aLatLong, zoomLevel) {
             yahooZoomLevel);
 
     //  NB: Do this to be consistent with the other maps.
-    this.signal('TP_xctrls_MapPanned', null, aLatLong);
+    this.signal('TP_xctrls_MapPanned', aLatLong);
 
     return this;
 });
@@ -832,7 +827,6 @@ function() {
                             function() {
 
                                 this.signal('TP_xctrls_MapMarkerClicked',
-                                                null,
                                                 aMarker);
                             }.bind(this));
 

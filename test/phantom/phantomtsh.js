@@ -59,8 +59,9 @@
     PhantomTSH.COLORS = {
         gray: ['\x1B[90m', '\x1B[39m'],     // admin output
         yellow: ['\x1B[33m', '\x1B[39m'],   // warning output
-        green: ['\x1B[32m', '\x1B[39m'],    // passing output
-        red: ['\x1B[31m', '\x1B[39m']       // error output
+        green: ['\x1B[32m', '\x1B[39m'],    // passing/debug output
+        magenta: ['\x1B[35m', '\x1B[39m'],  // error, non-fatal
+        red: ['\x1B[31m', '\x1B[39m']       // severe/fatal output
     };
 
     /**
@@ -306,13 +307,13 @@
         var status,
             color;
         var now = new Date().getTime();
-        var msg = 'Finished in ' +
+        var msg = '# !!! Finished in ' +
             (now - PhantomTSH.start) + ' ms' +
             ' w/TSH exec time of ' +
             (PhantomTSH.startExec ? (now - PhantomTSH.startExec) : 0) + ' ms.';
 
         if (reason && reason.length) {
-            console.log(reason);
+            console.log('# !!! ' + reason);
         }
 
         status = PhantomTSH.status === null ?
@@ -352,7 +353,7 @@
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
         console.log(PhantomTSH.color('gray',
-            'Loading TIBET via ' + PhantomTSH.url + ' at ' +
+            '# !!! Loading TIBET via ' + PhantomTSH.url + ' at ' +
             (new Date()).toLocaleString()));
 
         //  Flip flags to allow liberal content loading (cross-origin XHR,
@@ -410,7 +411,7 @@
                 function() {
                     PhantomTSH.startExec = new Date().getTime();
                     console.log(PhantomTSH.color('gray',
-                        'TIBET loaded. Starting execution at ' +
+                        '# !!! TIBET loaded. Starting execution at ' +
                         (PhantomTSH.startExec - PhantomTSH.start) + ' ms.'));
 
                     //  It is important for somewhere in the 'tsh' function to
@@ -466,7 +467,8 @@
             // bad, but might be todo item...
             if (/# TODO/.test(msg)) {
                 // warning but basically ignored
-                console.log(PhantomTSH.color('yellow', 'not ok') + msg.slice(6));
+                console.log(PhantomTSH.color('yellow', 'not ok') +
+                    msg.slice(6));
             } else {
                 // true error
                 console.log(PhantomTSH.color('red', 'not ok') + msg.slice(6));
@@ -484,7 +486,24 @@
             console.log(msg);
         } else {
             // incorrect output...must be #, ok, or not ok to start a line.
-            console.log(PhantomTSH.color('yellow', msg));
+            // Check for typical indicators from TIBET logging re: level.
+            if (/TRACE/.test(msg)) {
+                console.log(PhantomTSH.color('gray', '# !!! ' + msg));
+            } else if (/DEBUG/.test(msg)) {
+                console.log(PhantomTSH.color('magenta', '# !!! ' + msg));
+            } else if (/INFO/.test(msg)) {
+                console.log('# !!! ' + msg);
+            } else if (/WARN/.test(msg)) {
+                console.log(PhantomTSH.color('yellow', '# !!! ' + msg));
+            } else if (/ERROR/.test(msg)) {
+                console.log(PhantomTSH.color('magenta', '# !!! ' + msg));
+            } else if (/SEVERE|FATAL/.test(msg)) {
+                console.log(PhantomTSH.color('red', '# !!! ' + msg));
+            } else if (/SYSTEM/.test(msg)) {
+                console.log(PhantomTSH.color('gray', '# !!! ' + msg));
+            } else {
+                console.log('# !!! ' + msg);
+            }
         }
     };
 

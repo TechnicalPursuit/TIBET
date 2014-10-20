@@ -37,7 +37,7 @@ function() {
      * @synopsis Constructs an appropriate response object based on the current
      *     packet. For message packets the response uses the same message type
      *     and simply inverts the from/to attributes.
-     * @returns {TP.xmpp.Stanza} 
+     * @returns {TP.xmpp.Stanza}
      */
 
     var thread,
@@ -68,7 +68,7 @@ function() {
     /**
      * @name getBody
      * @synopsis Returns the body text, i.e. the message, from the receiver.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getChildTextContent('body');
@@ -82,7 +82,7 @@ function() {
     /**
      * @name getDefaultType
      * @synopsis Returns the default stanza type for the receiver.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -97,7 +97,7 @@ function() {
     /**
      * @name getHtml
      * @synopsis Returns the html content, if any, of the receiver.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var tpNodes,
@@ -132,7 +132,7 @@ function(aStanza) {
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalName() calls as the stanza.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -208,7 +208,7 @@ function() {
     /**
      * @name getSubject
      * @synopsis Returns the subject, if any, of the receiver.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getChildTextContent('subject');
@@ -222,7 +222,7 @@ function() {
     /**
      * @name getThread
      * @synopsis Returns the thread id, if any, of the receiver.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getChildTextContent('thread');
@@ -277,7 +277,7 @@ function(aString) {
     htmlElem = TP.elementFromString(str);
 
     if (!TP.isElement(htmlElem)) {
-        return this.raise('TP.sig.InvalidXMPPMarkup', arguments, str);
+        return this.raise('TP.sig.InvalidXMPPMarkup', str);
     }
 
     TP.nodeAppendChild(elem, htmlElem);

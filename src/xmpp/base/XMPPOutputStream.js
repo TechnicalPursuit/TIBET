@@ -44,7 +44,7 @@ function() {
 
         //  we'll need data from our connection to do the send
         if (TP.notValid(conn = this.getConnection())) {
-            return this.raise('TP.sig.InvalidXMPPConnection', arguments);
+            return this.raise('TP.sig.InvalidXMPPConnection');
         }
 
         //  Note how we pass 'true' here because, for the stream to be
@@ -67,7 +67,7 @@ function() {
      * @raises TP.sig.InvalidOperation
      */
 
-    return this.raise('TP.sig.InvalidOperation', arguments);
+    return this.raise('TP.sig.InvalidOperation');
 });
 
 //  ------------------------------------------------------------------------
@@ -90,7 +90,7 @@ function(content) {
         conn;
 
     if (TP.notValid(content)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     if (TP.isString(content) && TP.isEmpty(content)) {
@@ -107,7 +107,6 @@ function(content) {
                 elem = TP.elementFromString(content);
             } catch (e) {
                 return this.raise('TP.sig.DOMParseException',
-                                    arguments,
                                     TP.ec(e, content));
             }
         }
@@ -121,7 +120,7 @@ function(content) {
         //  declaration on the front of the representation.
         str = content.asString(false);
     } else {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  NB: won't be a element when closing the connection
@@ -133,7 +132,7 @@ function(content) {
 
     //  we'll need data from our connection to do the send
     if (TP.notValid(conn = this.getConnection())) {
-        return this.raise('TP.sig.InvalidXMPPConnection', arguments);
+        return this.raise('TP.sig.InvalidXMPPConnection');
     }
 
     conn.sendRaw(str);

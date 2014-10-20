@@ -31,7 +31,7 @@ TP.core.Device.Type.defineConstant('REDIRECTOR',
         var normalizedEvent,
             targetElem;
 
-        TP.debug('break.device_redirect');
+        TP.stop('break.device_redirect');
 
         normalizedEvent = aSignal.getEvent();
 
@@ -81,7 +81,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         dict,
         arr;
 
-    TP.debug('break.device_observe');
+    TP.stop('break.device_observe');
 
     if (TP.isArray(aSignal)) {
         signals = aSignal;
@@ -91,7 +91,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         signals = TP.ac(aSignal);
     } else {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Improper signal definition.');
 
         return false;
@@ -130,7 +129,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  invalid handler, no response can happen
     if (TP.notValid(handler)) {
-        this.raise('TP.sig.InvalidHandler', arguments);
+        this.raise('TP.sig.InvalidHandler');
 
         return false;
     }
@@ -263,7 +262,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         dict,
         arr;
 
-    TP.debug('break.device_ignore');
+    TP.stop('break.device_ignore');
 
     if (TP.isArray(aSignal)) {
         signals = aSignal;
@@ -273,7 +272,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         signals = TP.ac(aSignal);
     } else {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Improper signal definition.');
 
         return false;
@@ -352,7 +350,7 @@ function(aSignal, aHandler) {
 //  ------------------------------------------------------------------------
 
 TP.core.Device.Type.defineMethod('signalObservers',
-function(anOrigin, aSignal, aContext, aPayload, aPolicy, aType,
+function(anOrigin, aSignal, aPayload, aPolicy, aType,
 isCancelable, isBubbling) {
 
     /**
@@ -364,7 +362,6 @@ isCancelable, isBubbling) {
      *     centralized processing purposes.
      * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
-     * @param {Context} aContext The originating context.
      * @param {Object} aPayload Optional argument object.
      * @param {Function} aPolicy A "firing" policy that will define how the
      *     signal is fired.
@@ -388,7 +385,7 @@ isCancelable, isBubbling) {
         typename,
         type;
 
-    TP.debug('break.device_signal');
+    TP.stop('break.device_signal');
 
     //  have to recast this into something we can pass to the invoke
     //  observers call, or we have to duplicate that logic when provided
@@ -407,7 +404,6 @@ isCancelable, isBubbling) {
         signals = TP.ac(aSignal);
     } else {
         this.raise('TP.sig.InvalidParameter',
-                    arguments,
                     'Improper signal definition.');
 
         return false;
@@ -437,7 +433,6 @@ isCancelable, isBubbling) {
 
             if (TP.notValid(type)) {
                 this.raise('TP.sig.InvalidType',
-                            arguments,
                             'Unable to find signal type: ' + typename);
 
                 return false;
@@ -449,7 +444,6 @@ isCancelable, isBubbling) {
             if (TP.notValid(signal)) {
                 this.raise(
                     'TP.sig.InvalidSignal',
-                    arguments,
                     'Unable to construct signal instance: ' + signame);
 
                 return false;
@@ -555,7 +549,7 @@ function() {
     if (TP.notValid(type)) {
         TP.ifError() ?
                 TP.error('Unable to install keyboard type: ' + name,
-                            TP.LOG, arguments) : 0;
+                            TP.LOG) : 0;
 
         return;
     }
@@ -729,7 +723,7 @@ function() {
 
     url = TP.uc(path);
     if (TP.notValid(xml = url.getNativeNode(req))) {
-      return this.raise('TP.sig.InvalidKeymap', arguments);
+      return this.raise('TP.sig.InvalidKeymap');
     }
 
     this.$set('mapuri', url);
@@ -875,8 +869,7 @@ function(singletonName, normalizedEvent, aSignal) {
         if (TP.notValid(signal = this.get(singletonName))) {
             TP.ifWarn() ?
                 TP.warn('Event singleton not found for: ' + singletonName,
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
             return;
         }
 
@@ -935,7 +928,7 @@ function(singletonName, normalizedEvent, aSignal) {
                                     normalizedEvent.$special : false
                 );
 
-            TP.sys.logKey(logInfo, null, arguments);
+            TP.sys.logKey(logInfo, null);
         }
 
         //  Look for keyboard shortcut. As we see each key signal we look in
@@ -997,7 +990,7 @@ function(singletonName, normalizedEvent, aSignal) {
                         TP.handle(handler, shortcutSig);
                     } catch (e) {
                         TP.raise(this, 'TP.sig.HandlerException',
-                                    arguments, TP.ec(e));
+                                    TP.ec(e));
                     }
                 }
 
@@ -1090,7 +1083,7 @@ function(singletonName, normalizedEvent, aSignal) {
                     TP.handle(handler, signal);
                 } catch (e) {
                     TP.raise(this, 'TP.sig.HandlerException',
-                                arguments, TP.ec(e));
+                                TP.ec(e));
                 }
             }
         }
@@ -1528,7 +1521,7 @@ function(anEvent) {
         vk;
 
     if (TP.notValid(anEvent)) {
-        this.raise('TP.sig.InvalidEvent', arguments);
+        this.raise('TP.sig.InvalidEvent');
         return;
     }
 
@@ -1651,7 +1644,7 @@ function(keyNameOrGlyph) {
         elem;
 
     if (!TP.isString(keyNameOrGlyph)) {
-        this.raise('TP.sig.InvalidParameter', arguments);
+        this.raise('TP.sig.InvalidParameter');
         return;
     }
 
@@ -2546,8 +2539,7 @@ function(singletonName, normalizedEvent, aSignal) {
         if (TP.notValid(signal = this.get(singletonName))) {
             TP.ifWarn() ?
                 TP.warn('Event singleton not found for: ' + singletonName,
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
             return;
         }
@@ -2592,8 +2584,7 @@ function(singletonName, normalizedEvent, aSignal) {
             try {
                 TP.handle(handler, signal);
             } catch (e) {
-                TP.raise(this, 'TP.sig.HandlerException',
-                            arguments, TP.ec(e));
+                TP.raise(this, 'TP.sig.HandlerException', TP.ec(e));
             }
         }
     }
@@ -2630,7 +2621,7 @@ function(singletonName, normalizedEvent, aSignal) {
                     TP.handle(handler, signal);
                 } catch (e) {
                     TP.raise(this, 'TP.sig.HandlerException',
-                                arguments, TP.ec(e));
+                                TP.ec(e));
                 }
             }
         }

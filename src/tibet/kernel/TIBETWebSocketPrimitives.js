@@ -27,7 +27,7 @@ function(wsObj) {
      */
 
     if (TP.notValid(wsObj)) {
-        return this.raise('TP.sig.InvalidParameter', arguments);
+        return this.raise('TP.sig.InvalidParameter');
     }
 
     //  Null out the 'onmessage' handler to prevent it from posting any
@@ -80,7 +80,6 @@ function(targetUrl, aRequest) {
     if (TP.isEmpty(url)) {
         return TP.webSocketError(targetUrl,
                                     'TP.sig.InvalidURI',
-                                    arguments,
                                     request);
     }
 
@@ -89,7 +88,6 @@ function(targetUrl, aRequest) {
     if (TP.notValid(wsObj = url.get('webSocketObj'))) {
         return TP.webSocketError(targetUrl,
                                     'TP.sig.InvalidWebSocket',
-                                    arguments,
                                     request);
     }
 
@@ -105,7 +103,6 @@ function(targetUrl, aRequest) {
 
         return TP.webSocketError(targetUrl,
                                     'TP.sig.PrivilegeViolation',
-                                    arguments,
                                     request);
     };
     */
@@ -159,11 +156,11 @@ function(targetUrl, aRequest) {
             //  close out the timeout job silently
             job.kill(true);
 
-            TP.ifInfo(TP.sys.shouldLogIO()) ?
+            TP.ifInfo() && TP.sys.shouldLogIO() ?
                 TP.sys.logIO(
                         TP.hc('direction', TP.RECV,
                                 'message', 'WebSocket request completed.'),
-                        TP.INFO, arguments) : 0;
+                        TP.INFO) : 0;
 
             //  Grab any data sent back by the server and shove it onto
             //  websocket object as 'responseData'
@@ -174,11 +171,11 @@ function(targetUrl, aRequest) {
 
     //  isolate the actual send call for finer-grained error handling
     try {
-        TP.ifInfo(TP.sys.shouldLogIO()) ?
+        TP.ifInfo() && TP.sys.shouldLogIO() ?
             TP.sys.logIO(
                     TP.hc('direction', TP.SEND,
                             'message', 'WebSocket request initiated.'),
-                    TP.INFO, arguments) : 0;
+                    TP.INFO) : 0;
 
         //  NB: For Mozilla, we "'' +" the content string here to get a
         //  primitive string - here, we just do it for consistency with
@@ -202,8 +199,7 @@ function(targetUrl, aRequest) {
         request.atPut('object', e);
         request.atPut('message', 'WebSocket request failed: ' + TP.str(e));
 
-        return TP.webSocketError(targetUrl, 'WebSocketSendException',
-                                    arguments, request);
+        return TP.webSocketError(targetUrl, 'WebSocketSendException', request);
     }
 
     return wsObj;
@@ -234,14 +230,12 @@ function(targetUrl, aRequest) {
     if (TP.isEmpty(url)) {
         return TP.webSocketError(targetUrl,
                                     'TP.sig.InvalidURI',
-                                    arguments,
                                     request);
     }
 
     if (TP.notValid(wsObj = url.get('webSocketObj'))) {
         return TP.webSocketError(targetUrl,
                                     'TP.sig.InvalidWebSocket',
-                                    arguments,
                                     request);
     }
 
@@ -260,8 +254,8 @@ function(targetUrl, openCallback) {
      * @name webSocketCreate
      * @synopsis Returns a WebSocket object for use.
      * @param {String} targetUrl The request's target URL.
-     * @param {Function} openCallback 
-     * @returns {WebSocket} 
+     * @param {Function} openCallback
+     * @returns {WebSocket}
      * @todo
      */
 
@@ -313,8 +307,7 @@ function(targetUrl, openCallback) {
 
             TP.ifInfo() ?
                 TP.info('The socket for: ' + targetUrl + ' just closed',
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
             //  Clear the cached websocket object
             TP.uc(targetUrl).set('webSocketObj', null);
@@ -331,13 +324,11 @@ function(targetUrl, openCallback) {
 
             TP.ifInfo() ?
                 TP.info('The socket for: ' + targetUrl + ' had an error',
-                        TP.LOG,
-                        arguments) : 0;
+                        TP.LOG) : 0;
 
             //  Let the system know about an error
             TP.webSocketError(targetUrl,
                                 'WebSocketException',
-                                arguments,
                                 TP.hc('message', 'WebSocket error',
                                         'object', TP.ec(errorEvt),
                                         'wsObj', wsObj));
@@ -387,7 +378,6 @@ function(targetUrl, openCallback) {
         return TP.webSocketError(
                         targetUrl,
                         'WebSocketCreateException',
-                        arguments,
                         TP.hc('message',
                                 'Unable to instantiate WebSocket object.'));
     }
@@ -398,7 +388,7 @@ function(targetUrl, openCallback) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('webSocketError',
-function(targetUrl, aSignal, aContext, aRequest) {
+function(targetUrl, aSignal, aRequest) {
 
     /**
      * @name webSocketError
@@ -406,17 +396,16 @@ function(targetUrl, aSignal, aContext, aRequest) {
      *     will cause both the IO log and Error log to be updated to reflect the
      *     error condition.
      * @description aRequest could contain 1 or more of the following keys:
-     *     
+     *
      *     'uri' - the targetUrl 'uriparams' - URI query parameters 'body' -
      *     string content 'wsObj' - websocket object 'response' -
      *     TP.sig.Response 'object' - any error object 'message' - error string
      *     'direction' - send/recv
-     *     
-     *     
+     *
+     *
      * @param {String} targetUrl The URL being accessed when the error occurred.
      * @param {String|TP.sig.Signal} aSignal The signal which should be raised
      *     by this call.
-     * @param {arguments} aContext The calling context.
      * @param {TP.lang.Hash|TP.sig.Request} aRequest A request/hash with keys.
      * @raises WebSocketException
      * @throws Error Throws an Error containing aString.
@@ -455,7 +444,7 @@ function(targetUrl, aSignal, aContext, aRequest) {
     //  for access to the targetUrl
     args.atPut('message', 'WebSocket request exception.');
     TP.ifError() ?
-        TP.error(args, TP.IO_LOG, arguments) : 0;
+        TP.error(args, TP.IO_LOG) : 0;
 
     //  since we're throwing an exception below we'll rely on debug mode to
     //  tell us if we should log here...the error may be handled higher up
@@ -463,11 +452,11 @@ function(targetUrl, aSignal, aContext, aRequest) {
         TP.ifError() ?
             TP.error(TP.hc('object', error,
                             'message', 'WebSocket request exception.'),
-                        TP.IO_LOG, arguments) : 0;
+                        TP.IO_LOG) : 0;
     }
 
     //  for TIBET-style observers we do a raise so they can respond
-    TP.raise(targetUrl, signal, arguments, args);
+    TP.raise(targetUrl, signal, args);
 
     //  if we're not already throwing exceptions (so the raise will have
     //  done it) then we need to ensure that callers see this error...
@@ -522,8 +511,7 @@ function(targetUrl, aRequest, wsObj) {
     request.atPut('message', 'WebSocket request failed: Timeout');
 
     //  log it consistently with any other error
-    TP.webSocketError(targetUrl, 'WebSocketSendException', arguments,
-                        request);
+    TP.webSocketError(targetUrl, 'WebSocketSendException', request);
 
     //  get a response object for the request that we can use to convey the
     //  bad news in a consistent fashion with normal success processing.
@@ -578,7 +566,7 @@ function(targetUrl, aRequest, wsObj) {
         sig,
         id;
 
-    TP.debug('break.websocket_wrapup');
+    TP.stop('break.websocket_wrapup');
 
     request = TP.request(aRequest);
     url = TP.ifInvalid(targetUrl, request.at('uri'));

@@ -28,11 +28,11 @@ function(anElement, aSelector) {
     var matchesSelector;
 
     if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement', arguments);
+        return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     if (TP.isEmpty(aSelector)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments,
+        return TP.raise(this, 'TP.sig.InvalidString',
                         'Invalid or empty selector');
     }
 
@@ -109,16 +109,16 @@ function(aNode, aSelector, autoCollapse) {
         i,
         result;
 
-    TP.debug('break.query_css');
+    TP.stop('break.query_css');
 
     theNode = TP.isWindow(aNode) ? aNode.document : aNode;
 
     if (!TP.isNode(theNode)) {
-        return TP.raise(this, 'TP.sig.InvalidNode', arguments);
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.isEmpty(aSelector)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments,
+        return TP.raise(this, 'TP.sig.InvalidString',
                         'Invalid or empty selector');
     }
 
@@ -201,7 +201,7 @@ function(aSelector) {
      */
 
     if (TP.isEmpty(aSelector)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments,
+        return TP.raise(this, 'TP.sig.InvalidString',
                         'Invalid or empty selector');
     }
 
@@ -246,15 +246,15 @@ function(aWindow, queryStr) {
     var queryResult;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.notValid(aWindow.matchMedia)) {
-        return TP.raise(this, 'TP.sig.UnsupportedFeature', arguments);
+        return TP.raise(this, 'TP.sig.UnsupportedFeature');
     }
 
     if (TP.isEmpty(queryStr)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments,
+        return TP.raise(this, 'TP.sig.InvalidString',
                         'Invalid or empty query');
     }
 
@@ -294,15 +294,15 @@ function(aWindow, queryStr, watchFunction) {
     var queryResult;
 
     if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow', arguments);
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     if (TP.notValid(aWindow.matchMedia)) {
-        return TP.raise(this, 'TP.sig.UnsupportedFeature', arguments);
+        return TP.raise(this, 'TP.sig.UnsupportedFeature');
     }
 
     if (TP.isEmpty(queryStr)) {
-        return TP.raise(this, 'TP.sig.InvalidString', arguments,
+        return TP.raise(this, 'TP.sig.InvalidString',
                         'Invalid or empty query');
     }
 

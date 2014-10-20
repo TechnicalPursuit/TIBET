@@ -289,7 +289,7 @@ function(aURI, resultType) {
      */
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     this.get('promiseProvider').thenPromise(
@@ -334,7 +334,7 @@ function(aURI, aWindow) {
      */
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     //  Fetch the result and then set the Window's body to the result.
@@ -355,7 +355,7 @@ function(aURI, aWindow) {
         },
         function(error) {
             TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),
-                            TP.ERROR);
+                            TP.Log.ERROR);
         });
 
     return this;
@@ -380,7 +380,7 @@ function(aURI, aWindow) {
     var thisArg;
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
-        return this.raise('TP.sig.InvalidURI', arguments);
+        return this.raise('TP.sig.InvalidURI');
     }
 
     //  Fetch the result and then set the Window's body to the result.
@@ -410,7 +410,7 @@ function(aURI, aWindow) {
         },
         function(error) {
             TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),
-                            TP.ERROR);
+                            TP.log.ERROR);
         });
 
     return this;
@@ -490,7 +490,7 @@ function(aNode) {
      */
 
     if (TP.sys.cfg('boot.context') !== 'phantomjs') {
-        return this.raise('TP.sig.UnsupportedOperation', arguments);
+        return this.raise('TP.sig.UnsupportedOperation');
     }
 
     //  http://phantomjs.org/api/webpage/property/clip-rect.html

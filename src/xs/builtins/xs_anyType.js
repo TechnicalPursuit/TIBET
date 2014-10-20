@@ -54,7 +54,7 @@ function(anObject) {
      *     this type's value space but to support usage for type validation we
      *     define it to exclude null and undefined.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     //  everything is valid at this level as long as it's a real object
@@ -72,7 +72,7 @@ function(aValue, aFacet) {
      *     instance of the receiver when restricted by the facet given.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -93,8 +93,7 @@ function(aValue, aFacet) {
         TP.warn(TP.boot.$annotate(
                     aFacet,
                     'Unable to find facet resolution method'),
-                TP.LOG,
-                arguments) : 0;
+                TP.LOG) : 0;
 
     return true;
 });
@@ -110,7 +109,7 @@ function(aValue, aFacet) {
      *     found in the facet provided.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -137,13 +136,12 @@ function(aValue, aFacet) {
      *     for the TP.xs.decimal type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     //  this facet is only supported for TP.xs.decimal
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -160,13 +158,12 @@ function(aValue, aFacet) {
      *     length, as length is computed for the receiving type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     //  strings and string-like types support this, but nothing else
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -183,13 +180,12 @@ function(aValue, aFacet) {
      *     value provided in the facet specification.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     //  float and date/time types support this
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -206,13 +202,12 @@ function(aValue, aFacet) {
      *     the value specified in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     //  float and date/time types support this
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -230,13 +225,12 @@ function(aValue, aFacet) {
      *     defined in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     //  string and string-like types support this facet
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -253,13 +247,12 @@ function(aValue, aFacet) {
      *     minimum value provided in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     //  float and date/time types support this
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -276,13 +269,12 @@ function(aValue, aFacet) {
      *     value provided in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     //  float and date/time types support this
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -300,13 +292,12 @@ function(aValue, aFacet) {
      *     type). instance of the receiver when restricted by the facet given.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     //  string and string-like types support this facet
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -326,7 +317,7 @@ function(aValue, aFacet) {
      *     type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -352,13 +343,12 @@ function(aValue, aFacet) {
      *     total number of decimal digits specified in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
     //  supported by TP.xs.decimal and its descendants
     this.raise('TP.sig.UnsupportedFeature',
-                arguments,
                 'Unsupported facet for this schema type');
 
     return false;
@@ -377,7 +367,7 @@ function(aValue, aFacet) {
      *     TP.xs.simpleType.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
