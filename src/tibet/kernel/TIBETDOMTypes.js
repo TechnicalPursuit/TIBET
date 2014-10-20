@@ -2543,61 +2543,13 @@ function(attributeName, attributeValue, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('setTextContent',
-function(aString) {
-
-    /**
-     * @name setTextContent
-     * @synopsis Sets the text value of the receiver's first text node to
-     *     aString. If no text node exists, a new one is created.
-     * @param {String} aString The content text to set.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var node;
-
-    node = this.getNativeNode();
-
-    //  NOTE localization here
-    TP.nodeSetTextContent(
-                node, aString.localize(this.getContentLanguage()));
-
-    this.changed('value', TP.UPDATE);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('setUri',
-function(aURI) {
-
-    /**
-     * @name setUri
-     * @synopsis Sets the 'source URI' of the receiver. This allows tracking of
-     *     the source that the receiver came from.
-     * @param {TP.core.URI} aURI The URI to set as the receiver's source URI.
-     * @raises TP.sig.InvalidParameter
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    if (!TP.isURI(aURI)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    this.$set('uri', aURI.asString(), false);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
      * @name setValue
-     * @synopsis Sets the value of the receiver's node. For general node types
-     *     this method sets the value/content of the node.
+     * @synopsis Sets the text value of the receiver's first text node to
+     *     aValue. For general node types this method sets the value/content of
+     *     the node.
      * @description For common nodes the standard attribute list and the type of
      *     input determines what is actually manipulated. For element and
      *     document nodes the behavior is a little different. When the receiver
@@ -2644,11 +2596,74 @@ function(aValue, shouldSignal) {
     if (TP.notValid(flag = shouldSignal)) {
         flag = this.shouldSignalChange();
     }
+
     if (flag) {
         this.changed('value', TP.UPDATE);
     }
 
+    //  Since, at the TP.core.Node level, setting the value is equivalent to
+    //  setting the content, we signal that we've done that.
+
+    try {
+        //  We only signal TP.sig.DOMContentLoaded if the system is configured
+        //  for it.
+        if (TP.sys.shouldSignalDOMLoaded()) {
+            TP.signal(TP.gid(node),
+                        'TP.sig.DOMContentLoaded',
+                        newValue);
+        }
+    } catch (e) {
+        TP.ifError() ?
+            TP.error(
+                TP.ec(e,
+                        'TP.sig.DOMContentLoaded handler generated error.'),
+                TP.LOG) : 0;
+    }
+
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Inst.defineMethod('setUri',
+function(aURI) {
+
+    /**
+     * @name setUri
+     * @synopsis Sets the 'source URI' of the receiver. This allows tracking of
+     *     the source that the receiver came from.
+     * @param {TP.core.URI} aURI The URI to set as the receiver's source URI.
+     * @raises TP.sig.InvalidParameter
+     * @returns {TP.core.Node} The receiver.
+     */
+
+    if (!TP.isURI(aURI)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    this.$set('uri', aURI.asString(), false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @name setValue
+     * @synopsis Sets the value of the receiver's node. For general node types
+     *     this method sets the value/content of the node. See this type's
+     *     'setTextContent' method for more information.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {TP.core.Node} The receiver.
+     * @todo
+     */
+
+    return this.setTextContent(aValue, shouldSignal);
 });
 
 //  ------------------------------------------------------------------------
