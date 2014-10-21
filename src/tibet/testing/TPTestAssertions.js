@@ -1670,28 +1670,31 @@ function(aFunction, anException) {
         name = TP.isString(anException) ? anException : TP.name(anException);
     }
 
-    // Stub out raise so it doesn't actually invoke/throw etc.
+    //  Stub out raise so it doesn't actually invoke/throw etc.
     TP.raise = TP.test.stub(TP, 'raise', function() {
         exception = arguments[1];
     });
 
+    //  Here we use 'this.assert(true)' and 'this.assert(false)' so that this
+    //  routine 'plays well' with the rest of the assertion framework (refute,
+    //  etc.)
     try {
         aFunction();
         if (TP.isValid(exception)) {
             if (TP.isEmpty(name)) {
-                this.get('currentTestCase').pass();
+                this.assert(true);
             } else if (TP.str(exception) === name) {
-                this.get('currentTestCase').pass();
+                this.assert(true);
             } else {
-                this.get('currentTestCase').fail(
-                    TP.FAILURE,
+                this.assert(
+                    false,
                     'Expected function to raise' +
                         (TP.notEmpty(name) ? ' ' + name : '.') +
                     ' but raised ' + TP.str(exception));
             }
         } else {
-            this.get('currentTestCase').fail(
-                TP.FAILURE,
+            this.assert(
+                false,
                 'Expected function to raise' +
                     (TP.notEmpty(name) ? ' ' + name : '.'));
         }
@@ -1732,19 +1735,19 @@ function(aFunction, aSignal) {
 
     if (TP.isValid(signal)) {
         if (TP.isEmpty(name)) {
-            this.get('currentTestCase').pass();
-        } else if (TP.str(signal).indexOf(name) !== -1) {
-            this.get('currentTestCase').pass();
+            this.assert(true);
+        } else if (TP.str(signal).indexOf(name) !== TP.NOT_FOUND) {
+            this.assert(true);
         } else {
-            this.get('currentTestCase').fail(
-                TP.FAILURE,
+            this.assert(
+                false,
                 'Expected function to signal' +
                     (TP.notEmpty(name) ? ' ' + name : '.') +
                 ' but signaled ' + TP.str(signal));
         }
     } else {
-        this.get('currentTestCase').fail(
-            TP.FAILURE,
+        this.assert(
+            false,
             'Expected function to signal' +
                 (TP.notEmpty(name) ? ' ' + name : '.'));
     }
@@ -1768,19 +1771,19 @@ function(aFunction, anError) {
 
     try {
         aFunction();
-        // Didn't throw. That's a fail for this particular assertion.
-        this.get('currentTestCase').fail(
-            TP.FAILURE,
+        //  Didn't throw. That's a fail for this particular assertion.
+        this.assert(
+            false,
             'Expected function to throw' +
                 (TP.notEmpty(name) ? ' ' + name : '.'));
     } catch (e) {
-        // success if e matches what's expected
+        //  success if e matches what's expected
         if (e instanceof type) {
-            this.get('currentTestCase').pass();
+            this.assert(true);
         } else {
-            // Didn't throw what we expected.
-            this.get('currentTestCase').fail(
-                TP.FAILURE,
+            //  Didn't throw what we expected.
+            this.assert(
+                false,
                 'Expected function to throw' +
                     (TP.notEmpty(name) ? ' ' + name : ' Error') +
                 ' but threw ' + TP.tname(e));
