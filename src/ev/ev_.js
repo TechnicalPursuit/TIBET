@@ -51,12 +51,13 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
      */
 
     var doc,
-        win,
 
         signalName,
         observer,
         target,
         handler,
+
+        win,
 
         armingTarget,
 
@@ -80,7 +81,6 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
         entries;
 
     doc = TP.nodeGetDocument(anElement);
-    win = TP.nodeGetWindow(doc);
 
     signalName = aSignalName;
     observer = anObserver;
@@ -242,6 +242,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
                 //  Otherwise, we use the window's global id, put the '#'
                 //  back on the handler id and use the handler id to compute
                 //  the overall handler id.
+                win = TP.ifInvalid(TP.nodeGetWindow(doc), TP.sys.uiwin(true));
                 handler = TP.gid(win) + '#' + handler;
             }
         } else if (TP.isElement(elem = TP.nodeGetElementById(doc, handler))) {
