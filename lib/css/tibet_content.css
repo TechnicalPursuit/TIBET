@@ -118,6 +118,12 @@ html, body {
   color: #999;
 }
 
+.follow.calltoaction {
+    font-size: 108%;
+    font-weight: bold;
+    color: #333;
+}
+
 #focalpoint {
   margin: 12px 48px 0 48px;
   color: #999;
@@ -237,7 +243,7 @@ a.image-link:hover img {
 }
 
 .calltoaction {
-    font-size: 108%;
+    font-size: 93%;
     font-weight: bold;
     color: #910;
 }
