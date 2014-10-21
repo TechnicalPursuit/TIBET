@@ -1660,6 +1660,50 @@ function(anObject, aComment) {
 //  ASSERTIONS - SIGNALING
 //  ------------------------------------------------------------------------
 
+TP.test.TestMethodCollection.defineAssertion('didSignal',
+function(aTarget, aSignal) {
+
+    var name,
+        targetGID,
+    
+        hadSignal;
+
+    if (TP.isValid(aSignal)) {
+        name = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
+    }
+
+    if (!this.get('currentTestCase').getSuite().get('$capturingSignals')) {
+        this.assert(
+            false,
+            TP.sc('Can\'t check for signaling since',
+                    ' we\'re not capturing signals.'));
+    }
+
+    //  Sinon *really* doesn't like TIBET objects - it's 'deepEqual' call
+    //  recurses endlessly. Therefore, we use a Sinon matcher that will only
+    //  check identity.
+    hadSignal = TP.signal.calledWith(
+                    TP.extern.sinon.match.same(aTarget),
+                    name);
+    
+    //  If it didn't have the target/signal match by using target identity, we
+    //  give it another chance by using the global ID of the target - very
+    //  common in DOM signaling.
+    if (!hadSignal) {
+        targetGID = TP.gid(aTarget);
+
+        hadSignal = TP.signal.calledWith(targetGID, name);
+    }
+
+    this.assert(
+        hadSignal,
+        TP.sc('Expected ', TP.id(aTarget), ' to have signaled ', name, '.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.TestMethodCollection.defineAssertion('raises',
 function(aFunction, anException) {
 

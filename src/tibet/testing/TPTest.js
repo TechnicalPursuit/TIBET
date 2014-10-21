@@ -663,6 +663,12 @@ TP.test.Suite.Inst.defineAttribute('$internalPromise');
  */
 TP.test.Suite.Inst.defineAttribute('$currentPromise');
 
+/**
+ * Whether or not we're capturing signals.
+ * @type {Boolean}
+ */
+TP.test.Suite.Inst.defineAttribute('$capturingSignals');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1412,6 +1418,40 @@ function(options) {
             suite.$set('$internalPromise', null);
             suite.executeAfter(err, options);
         });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('startTrackingSignals',
+function() {
+
+    /**
+     * Starts tracking signals for usage by assertion methods.
+     * @return {TP.test.Suite} The receiver.
+     */
+
+    this.set('$capturingSignals', true);
+
+    TP.signal = TP.signal.asSpy();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('stopTrackingSignals',
+function() {
+
+    /**
+     * Stops tracking signals for usage by assertion methods.
+     * @return {TP.test.Suite} The receiver.
+     */
+
+    TP.signal.restore();
+
+    this.set('$capturingSignals', false);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
