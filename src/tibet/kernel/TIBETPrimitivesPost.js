@@ -1941,40 +1941,85 @@ function(anObject, assignIfAbsent) {
 
         //  this should return either an empty string, or a URI that
         //  resolves to a file: or http[s]: address
-        loc = TP.documentGetLocation(obj) || '';
-        if (TP.isEmpty(loc)) {
-            root = obj.documentElement;
-            if (TP.isElement(root)) {
-                if (TP.notEmpty(id = TP.elementGetAttribute(
-                                    root, TP.GLOBAL_DOCID_ATTR, true))) {
+        if (TP.isElement(root = obj.documentElement) &&
+            TP.notEmpty(id = TP.elementGetAttribute(
+                            root, TP.GLOBAL_DOCID_ATTR, true))) {
+
+            //  If the document ID was assigned before this document was placed
+            //  into a Window, or was placed into a different window, this 'id'
+            //  won't have a prefix containing the current Window ID. We will
+            //  update it to contain that.
+            if (win) {
+
+                //  It doesn't start with our current prefix
+                if (!id.startsWith(prefix)) {
+                    //  If it starts with another prefix, slice that off
+                    if (TP.regex.TIBET_URI.test(id)) {
+                        id = id.slice(id.indexOf('/', 8) + 1);
+                    }
+
                     loc = id;
-                } else if (assign) {
+
+                    if (TP.regex.URI_FRAGMENT.test(loc)) {
+                        //  had a # fragment identifier so we won't need #document
+                        loc = encodeURI(prefix + loc);
+                    } else {
+                        //  NOTE we add the '#document' element reference as our
+                        //  barename when no specific sub-element is the document
+                        loc = encodeURI(prefix + loc + '#document');
+                    }
+
+                    if (TP.isElement(root) && assign) {
+                        TP.elementSetAttribute(
+                                root, TP.GLOBAL_DOCID_ATTR, loc, true);
+                    }
+
+                    //  Remove all of the 'tibet:globalID' attributes from any
+                    //  elements in the document that have them - this will
+                    //  cause them to reset
+                    TP.nodeEvaluateCSS(obj, '*[tibet|globalID]').forEach(
+                            function(anElem) {
+                                TP.elementRemoveAttribute(
+                                    anElem, 'tibet:globalID', true);
+                            });
+                } else {
+                    loc = id;
+                }
+            } else {
+                loc = id;
+            }
+        } else {
+            loc = TP.documentGetLocation(obj) || '';
+
+            if (TP.isEmpty(loc)) {
+                if (TP.isElement(root)) {
                     TP.regex.INVALID_ID_CHARS.lastIndex = 0;
                     id = TP.genID().replace('$', 'document_').replace(
                                             TP.regex.INVALID_ID_CHARS, '_');
 
-                    TP.elementSetAttribute(
-                            root, TP.GLOBAL_DOCID_ATTR, id, true);
-
                     loc = id;
                 } else {
+                    //  empty location, empty document
                     loc = '';
                 }
+            }
+
+            if (TP.regex.URI_FRAGMENT.test(loc)) {
+                //  had a # fragment identifier so we won't need #document
+                loc = encodeURI(prefix + loc);
             } else {
-                //  empty document, empty location
-                loc = '';
+                //  NOTE we add the '#document' element reference as our
+                //  barename when no specific sub-element is the document
+                loc = encodeURI(prefix + loc + '#document');
+            }
+
+            if (TP.isElement(root) && assign) {
+                TP.elementSetAttribute(
+                        root, TP.GLOBAL_DOCID_ATTR, loc, true);
             }
         }
 
-        if (TP.regex.URI_FRAGMENT.test(loc)) {
-            //  had a # fragment identifier so we won't need #document
-            return encodeURI(prefix + loc);
-        } else {
-            //  NOTE we add the '#document' element reference as our
-            //  barename when no specific sub-element is the document (which
-            //  happens with XForms instance documents)
-            return encodeURI(prefix + loc + '#document');
-        }
+        return loc;
     }
 
     if (TP.isNode(obj)) {
