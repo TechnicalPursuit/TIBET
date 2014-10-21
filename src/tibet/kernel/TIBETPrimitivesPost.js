@@ -1927,31 +1927,7 @@ function(anObject, assignIfAbsent) {
         //  URI location so we can access it via the URI
         win = TP.nodeGetWindow(obj);
         if (TP.isWindow(win)) {
-            //  we cache the global ID on windows under the globalID slot so
-            //  look there first
-            if (TP.isEmpty(globalID = win.$$globalID)) {
-                //  Get the Array of parent window names
-                pnames = TP.windowGetParentNames(win);
-
-                //  the local ID for our window
-                localID = TP.lid(win, assign);
-
-                //  if no localID then call TP.lid() again, forcing it to
-                //  assign.
-                if (TP.isEmpty(localID)) {
-                    localID = TP.lid(win, true);
-                }
-
-                //  add our name (the window where we started this
-                //  process) onto the end of the window's name array
-                pnames.push(localID);
-
-                //  join the names together with a '.'
-                globalID = pnames.join('.');
-
-                win.$$globalID = globalID;
-            }
-
+            globalID = TP.objectGlobalID(win, assign);
             prefix = 'tibet://' + globalID + '/';
         }
 
