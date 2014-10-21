@@ -1663,17 +1663,18 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('raises',
 function(aFunction, anException) {
 
-    var name;
-    var exception;
+    var name,
+        exception;
 
     if (TP.isValid(anException)) {
         name = TP.isString(anException) ? anException : TP.name(anException);
     }
 
     //  Stub out raise so it doesn't actually invoke/throw etc.
-    TP.raise = TP.test.stub(TP, 'raise', function() {
-        exception = arguments[1];
-    });
+    TP.raise = TP.raise.asStub(
+                    function() {
+                        exception = arguments[1];
+                    });
 
     //  Here we use 'this.assert(true)' and 'this.assert(false)' so that this
     //  routine 'plays well' with the rest of the assertion framework (refute,
@@ -1710,21 +1711,22 @@ function(aFunction, anException) {
 TP.test.TestMethodCollection.defineAssertion('signals',
 function(aFunction, aSignal) {
 
-    var name;
-    var signal;
+    var name,
+        signal;
 
     if (TP.isValid(aSignal)) {
         name = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
     }
 
-    // Stub out signal so it doesn't actually invoke/throw etc.
-    TP.signal = TP.test.stub(TP, 'signal', function() {
-        signal = arguments[1];
-    });
+    //  Stub out signal so it doesn't actually invoke/throw etc.
+    TP.signal = TP.signal.asStub(
+                    function() {
+                        signal = arguments[1];
+                    });
 
-    // Stub out raise to avoid seeing any exception output so we stay focused on
-    // the signaling test aspect.
-    TP.raise = TP.test.stub(TP, 'raise');
+    //  Stub out raise to avoid seeing any exception output so we stay focused
+    //  on the signaling test aspect.
+    TP.raise = TP.raise.asStub();
 
     try {
         aFunction();
@@ -1760,13 +1762,17 @@ function(aFunction, aSignal) {
 TP.test.TestMethodCollection.defineAssertion('throws',
 function(aFunction, anError) {
 
-    var name;
-    var type;
+    var name,
+        type;
 
     if (TP.isValid(anError)) {
-        name = TP.isString(anError) ? anError : TP.name(anError);
-        type = TP.isString(anError) ? TP.sys.getTypeByName(anError) :
-            anError;
+        name = TP.isString(anError) ?
+                    anError :
+                    TP.name(anError);
+
+        type = TP.isString(anError) ?
+                    TP.sys.getTypeByName(anError) :
+                    anError;
     }
 
     try {
