@@ -1660,11 +1660,57 @@ function(anObject, aComment) {
 //  ASSERTIONS - SIGNALING
 //  ------------------------------------------------------------------------
 
+TP.test.TestMethodCollection.defineAssertion('didSignal',
+function(aTarget, aSignal) {
+
+    var name,
+        targetGID,
+    
+        hadSignal;
+
+    if (TP.isValid(aSignal)) {
+        name = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
+    }
+
+    if (!this.get('currentTestCase').getSuite().get('$capturingSignals')) {
+        this.assert(
+            false,
+            TP.sc('Can\'t check for signaling since',
+                    ' we\'re not capturing signals.'));
+    }
+
+    //  Sinon *really* doesn't like TIBET objects - it's 'deepEqual' call
+    //  recurses endlessly. Therefore, we use a Sinon matcher that will only
+    //  check identity.
+    hadSignal = TP.signal.calledWith(
+                    TP.extern.sinon.match.same(aTarget),
+                    name);
+    
+    //  If it didn't have the target/signal match by using target identity, we
+    //  give it another chance by using the global ID of the target - very
+    //  common in DOM signaling.
+    if (!hadSignal) {
+        targetGID = TP.gid(aTarget);
+
+        hadSignal = TP.signal.calledWith(targetGID, name);
+    }
+
+    this.assert(
+        hadSignal,
+        TP.sc('Expected ', TP.id(aTarget), ' to have signaled ', name, '.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.TestMethodCollection.defineAssertion('raises',
 function(aFunction, anException) {
 
     var name,
         exception;
+
+    this.assertMinArguments(arguments, 2);
 
     if (TP.isValid(anException)) {
         name = TP.isString(anException) ? anException : TP.name(anException);
@@ -1689,15 +1735,15 @@ function(aFunction, anException) {
             } else {
                 this.assert(
                     false,
-                    'Expected function to raise' +
-                        (TP.notEmpty(name) ? ' ' + name : '.') +
-                    ' but raised ' + TP.str(exception));
+                    TP.sc('Expected function to raise',
+                                (TP.notEmpty(name) ? ' ' + name : '.'),
+                            ' but raised ', TP.str(exception)));
             }
         } else {
             this.assert(
                 false,
-                'Expected function to raise' +
-                    (TP.notEmpty(name) ? ' ' + name : '.'));
+                TP.sc('Expected function to raise',
+                        (TP.notEmpty(name) ? ' ' + name : '.')));
         }
     } finally {
         TP.raise.restore();
@@ -1713,6 +1759,8 @@ function(aFunction, aSignal) {
 
     var name,
         signal;
+
+    this.assertMinArguments(arguments, 2);
 
     if (TP.isValid(aSignal)) {
         name = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
@@ -1743,15 +1791,15 @@ function(aFunction, aSignal) {
         } else {
             this.assert(
                 false,
-                'Expected function to signal' +
-                    (TP.notEmpty(name) ? ' ' + name : '.') +
-                ' but signaled ' + TP.str(signal));
+                TP.sc('Expected function to signal',
+                            (TP.notEmpty(name) ? ' ' + name : '.'),
+                        ' but signaled ' + TP.str(signal)));
         }
     } else {
         this.assert(
             false,
-            'Expected function to signal' +
-                (TP.notEmpty(name) ? ' ' + name : '.'));
+            TP.sc('Expected function to signal',
+                    (TP.notEmpty(name) ? ' ' + name : '.')));
     }
 
     return;
@@ -1764,6 +1812,8 @@ function(aFunction, anError) {
 
     var name,
         type;
+
+    this.assertMinArguments(arguments, 2);
 
     if (TP.isValid(anError)) {
         name = TP.isString(anError) ?
@@ -1780,8 +1830,8 @@ function(aFunction, anError) {
         //  Didn't throw. That's a fail for this particular assertion.
         this.assert(
             false,
-            'Expected function to throw' +
-                (TP.notEmpty(name) ? ' ' + name : '.'));
+            TP.sc('Expected function to throw',
+                    (TP.notEmpty(name) ? ' ' + name : '.')));
     } catch (e) {
         //  success if e matches what's expected
         if (e instanceof type) {
@@ -1790,9 +1840,9 @@ function(aFunction, anError) {
             //  Didn't throw what we expected.
             this.assert(
                 false,
-                'Expected function to throw' +
-                    (TP.notEmpty(name) ? ' ' + name : ' Error') +
-                ' but threw ' + TP.tname(e));
+                TP.sc('Expected function to throw',
+                            (TP.notEmpty(name) ? ' ' + name : ' Error'),
+                        ' but threw ' + TP.tname(e)));
         }
     }
 
