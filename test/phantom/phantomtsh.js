@@ -353,8 +353,11 @@
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
         console.log(PhantomTSH.color('gray',
-            '# !!! Loading TIBET via ' + PhantomTSH.url + ' at ' +
-            (new Date()).toLocaleString()));
+            '# !!! Starting PhantomJS version: ' +
+                JSON.stringify(phantom.version) + ' at ' +
+                (new Date()).toLocaleString()));
+        console.log(PhantomTSH.color('gray',
+            '# !!! Loading TIBET via ' + PhantomTSH.url + '.'));
 
         //  Flip flags to allow liberal content loading (cross-origin XHR,
         //  'file://' URLs and the like).
