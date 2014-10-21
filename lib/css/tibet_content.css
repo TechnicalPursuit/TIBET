@@ -80,6 +80,7 @@ code {
 
 html, body {
   border-radius: 3px;
+  overflow: auto;
 }
 
 #content {
@@ -92,7 +93,6 @@ html, body {
   min-width: 600px;
   margin-left: auto;
   margin-right: auto;
-  overflow: auto;
   border-radius: 3px;
 }
 
@@ -116,6 +116,12 @@ html, body {
   font-size: 93%;
   margin: 12px 0;
   color: #999;
+}
+
+.follow.calltoaction {
+    font-size: 108%;
+    font-weight: bold;
+    color: #333;
 }
 
 #focalpoint {
@@ -237,7 +243,7 @@ a.image-link:hover img {
 }
 
 .calltoaction {
-    font-size: 108%;
+    font-size: 93%;
     font-weight: bold;
     color: #910;
 }
