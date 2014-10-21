@@ -184,14 +184,6 @@ function() {
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the top-level window', function(test, options) {
 
         this.assert.isIdenticalTo(
-            TP.uc('tibet://top/#document').getResource(params),
-            TP.byOID('top').getDocument(),
-            TP.sc('tibet://top/#document should find the document of the' +
-                    ' top-level Window.'));
-
-        //  The last slash should be optional
-
-        this.assert.isIdenticalTo(
             TP.uc('tibet://top#document').getResource(params),
             TP.byOID('top').getDocument(),
             TP.sc('tibet://top#document should find the document of the' +
