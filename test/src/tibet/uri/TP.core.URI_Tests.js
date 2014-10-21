@@ -164,14 +164,17 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.Window of the top-level window', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.Window of the top-level window - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top/').getResource(params),
             TP.byOID('top'),
             TP.sc('tibet://top/ should find the top-level Window.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.Window of the top-level window', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top').getResource(params),
@@ -181,7 +184,7 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the top-level window', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the top-level window - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top/#document').getResource(params),
@@ -194,8 +197,6 @@ function() {
 
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the top-level window', function(test, options) {
 
-        //  The last slash should be optional
-
         this.assert.isIdenticalTo(
             TP.uc('tibet://top#document').getResource(params),
             TP.byOID('top').getDocument(),
@@ -205,7 +206,7 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve nested TP.html.iframe in top-level window', function(test, options) {
+    this.it('TIBETURL: Retrieve nested TP.html.iframe in top-level window - extra slash', function(test, options) {
 
         //  Get the <iframe> element that has an id of UIROOT
         this.assert.isIdenticalTo(
@@ -213,9 +214,13 @@ function() {
             TP.byId('UIROOT', TP.win('top')),
             TP.sc('tibet://top/#UIROOT should find the iframe element with' +
                     ' id "UIROOT" in the top-level window\'s document.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
 
+    this.it('TIBETURL: Retrieve nested TP.html.iframe in top-level window', function(test, options) {
+
+        //  Get the <iframe> element that has an id of UIROOT
         this.assert.isIdenticalTo(
             TP.uc('tibet://top#UIROOT').getResource(params).getNativeNode(),
             TP.byId('UIROOT', TP.win('top')),
@@ -225,14 +230,17 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.Window of UIROOT', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.Window of UIROOT - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/').getResource(params),
             TP.core.Window.construct('UIROOT'),
             TP.sc('tibet://UIROOT/ should find the Window named "UIROOT".'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.Window of UIROOT', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT').getResource(params),
@@ -242,15 +250,18 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of UIROOT', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of UIROOT - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT/#document').getResource(params),
             TP.core.Window.construct('UIROOT').getDocument(),
             TP.sc('tibet://UIROOT/#document should find the' +
                     ' document of the Window named "UIROOT".'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of UIROOT', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://UIROOT#document').getResource(params),
@@ -261,15 +272,18 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.Window of named window', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.Window of named window - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT/').getResource(params),
             TP.core.Window.construct('top.UIROOT'),
             TP.sc('tibet://top.UIROOT/ should find the Window named' +
                     ' "UIROOT".'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.Window of named window', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT').getResource(params),
@@ -280,15 +294,18 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #1', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #1 - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT/#document').getResource(params),
             TP.core.Window.construct('top.UIROOT').getDocument(),
             TP.sc('tibet://top.UIROOT/#document should find the' +
                     ' document of the Window named "UIROOT".'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #1', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://top.UIROOT#document').getResource(params),
@@ -299,7 +316,7 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #2', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #2 - extra slash', function(test, options) {
 
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
@@ -308,9 +325,11 @@ function() {
             TP.core.Window.construct('UIROOT').getDocument(),
             TP.sc('tibet://UIROOT/future_path/ should find the document of' +
                     ' the Window named "UIROOT".'));
+    });
 
-        //  The last slash should be optional
+    //  ---
 
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #2', function(test, options) {
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
         this.assert.isIdenticalTo(
@@ -322,7 +341,7 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #3', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #3 - extra slash', function(test, options) {
 
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
@@ -331,8 +350,11 @@ function() {
             TP.core.Window.construct('UIROOT').getDocument(),
             TP.sc('tibet://UIROOT/future_path/#document should find the ' +
                     'document of the Window named "UIROOT".'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #3', function(test, options) {
 
         //  'future_path' could be a document that will be loaded in the future.
         //  This will return the document that's currently loaded in 'UIROOT'.
@@ -345,14 +367,17 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.Window of the current UI canvas', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.Window of the current UI canvas - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/').getResource(params),
             TP.sys.getUICanvas(),
             TP.sc('tibet://uicanvas/ should find the current UI canvas Window.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.Window of the current UI canvas', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas').getResource(params),
@@ -362,23 +387,29 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the current UI canvas', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the current UI canvas - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#document').getResource(params),
             TP.sys.getUICanvas().getDocument(),
             TP.sc('tibet://uicanvas/#document should find the document of the' +
                     ' current UI canvas Window.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the current UI canvas - extra tibet://uicanvas/', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#document').getResource(params),
             TP.sys.getUICanvas().getDocument(),
             TP.sc('tibet://uicanvas#document should find the document of the' +
                     ' current UI canvas Window.'));
+    });
 
-        //  The 'tibet://uicanvas/' should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of the current UI canvas', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('#document').getResource(params),
@@ -389,28 +420,66 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer barename', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer barename - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#top_background').getResource(params).getNativeNode(),
             TP.byId('top_background'),
             TP.sc('tibet://uicanvas/#top_background should find the element with' +
                     ' id "top_background" in the current UI canvas.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer barename - extra tibet://uicanvas/', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#top_background').getResource(params).getNativeNode(),
             TP.byId('top_background'),
             TP.sc('tibet://uicanvas#top_background should find the element with' +
                     ' id "top_background" in the current UI canvas.'));
+    });
 
-        //  The 'tibet://uicanvas/' should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer barename', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('#top_background').getResource(params).getNativeNode(),
             TP.byId('top_background'),
             TP.sc('#top_background should find the element with' +
+                    ' id "top_background" in the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer barename and TP.DOM result type - extra slash', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas/#top_background').getResource(newParams),
+            TP.byId('top_background'),
+            TP.sc('tibet://uicanvas/#top_background should find the element with' +
+                    ' id "top_background" in the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer barename and TP.DOM result type - extra tibet://uicanvas/', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas#top_background').getResource(newParams),
+            TP.byId('top_background'),
+            TP.sc('tibet://uicanvas#top_background should find the element with' +
                     ' id "top_background" in the current UI canvas.'));
     });
 
@@ -424,22 +493,6 @@ function() {
         newParams.atPut('resultType', TP.DOM);
 
         this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas/#top_background').getResource(newParams),
-            TP.byId('top_background'),
-            TP.sc('tibet://uicanvas/#top_background should find the element with' +
-                    ' id "top_background" in the current UI canvas.'));
-
-        //  The last slash should be optional
-
-        this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas#top_background').getResource(newParams),
-            TP.byId('top_background'),
-            TP.sc('tibet://uicanvas#top_background should find the element with' +
-                    ' id "top_background" in the current UI canvas.'));
-
-        //  The 'tibet://uicanvas/' should be optional
-
-        this.assert.isIdenticalTo(
             TP.uc('#top_background').getResource(newParams),
             TP.byId('top_background'),
             TP.sc('#top_background should find the element with' +
@@ -448,28 +501,66 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(/1/2)').getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas/#element(/1/2) should find the body element' +
                     ' in the document of the current UI canvas.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme - extra tibet://uicanvas/', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#element(/1/2)').getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas#element(/1/2) should find the body element' +
                     ' in the document of the current UI canvas.'));
+    });
 
-        //  The 'tibet://uicanvas/' should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('#element(/1/2)').getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('#element(/1/2) should find the body element' +
+                    ' in the document of the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer element() scheme and TP.DOM result type - extra slash', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas/#element(/1/2)').getResource(newParams),
+            TP.sys.getUICanvas().getNativeDocument().body,
+            TP.sc('tibet://uicanvas/#element(/1/2) should find the body element' +
+                    ' in the document of the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer element() scheme and TP.DOM result type - extra tibet://uicanvas/', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas#element(/1/2)').getResource(newParams),
+            TP.sys.getUICanvas().getNativeDocument().body,
+            TP.sc('tibet://uicanvas#element(/1/2) should find the body element' +
                     ' in the document of the current UI canvas.'));
     });
 
@@ -483,22 +574,6 @@ function() {
         newParams.atPut('resultType', TP.DOM);
 
         this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas/#element(/1/2)').getResource(newParams),
-            TP.sys.getUICanvas().getNativeDocument().body,
-            TP.sc('tibet://uicanvas/#element(/1/2) should find the body element' +
-                    ' in the document of the current UI canvas.'));
-
-        //  The last slash should be optional
-
-        this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas#element(/1/2)').getResource(newParams),
-            TP.sys.getUICanvas().getNativeDocument().body,
-            TP.sc('tibet://uicanvas#element(/1/2) should find the body element' +
-                    ' in the document of the current UI canvas.'));
-
-        //  The 'tibet://uicanvas/' should be optional
-
-        this.assert.isIdenticalTo(
             TP.uc('#element(/1/2)').getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('#element(/1/2) should find the body element' +
@@ -507,7 +582,7 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme with ID', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme with ID - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(top_background/1)'
@@ -516,8 +591,11 @@ function() {
             TP.sc('tibet://uicanvas/#element(top_background/1) should find the' +
                     ' first child of the body element in the document of the' +
                     ' current UI canvas.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme with ID - extra tibet://uicanvas/', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#element(top_background/1)'
@@ -526,14 +604,53 @@ function() {
             TP.sc('tibet://uicanvas#element(top_background/1) should find the' +
                     ' first child of the body element in the document of the' +
                     ' current UI canvas.'));
+    });
 
-        //  The 'tibet://uicanvas/' should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer element() scheme with ID', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('#element(top_background/1)'
                     ).getResource(params).getNativeNode(),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
             TP.sc('#element(top_background/1) should find the' +
+                    ' first child of the body element in the document of the' +
+                    ' current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer element() scheme with ID and TP.DOM result type - extra slash', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas/#element(top_background/1)'
+                    ).getResource(newParams),
+            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.sc('tibet://uicanvas/#element(top_background/1) should find the' +
+                    ' first child of the body element in the document of the' +
+                    ' current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer element() scheme with ID and TP.DOM result type - extra tibet://uicanvas/', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas#element(top_background/1)'
+                    ).getResource(newParams),
+            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.sc('tibet://uicanvas#element(top_background/1) should find the' +
                     ' first child of the body element in the document of the' +
                     ' current UI canvas.'));
     });
@@ -548,26 +665,6 @@ function() {
         newParams.atPut('resultType', TP.DOM);
 
         this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas/#element(top_background/1)'
-                    ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
-            TP.sc('tibet://uicanvas/#element(top_background/1) should find the' +
-                    ' first child of the body element in the document of the' +
-                    ' current UI canvas.'));
-
-        //  The last slash should be optional
-
-        this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas#element(top_background/1)'
-                    ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
-            TP.sc('tibet://uicanvas#element(top_background/1) should find the' +
-                    ' first child of the body element in the document of the' +
-                    ' current UI canvas.'));
-
-        //  The 'tibet://uicanvas/' should be optional
-
-        this.assert.isIdenticalTo(
             TP.uc('#element(top_background/1)'
                     ).getResource(newParams),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -578,7 +675,7 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpath1() scheme', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpath1() scheme - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#xpath1(/$def:html/$def:body)'
@@ -586,8 +683,11 @@ function() {
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas/#xpath1(/$def:html/$def:body) should find ' +
                     'the body element in the document of the current UI canvas.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpath1() scheme - extra tibet://uicanvas/', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#xpath1(/$def:html/$def:body)'
@@ -595,14 +695,51 @@ function() {
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas#xpath1(/$def:html/$def:body) should find ' +
                     'the body element in the document of the current UI canvas.'));
+    });
 
-        //  The 'tibet://uicanvas/' should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpath1() scheme', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('#xpath1(/$def:html/$def:body)'
                     ).getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('#xpath1(/$def:html/$def:body) should find ' +
+                    'the body element in the document of the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer xpath1() scheme with TP.DOM result type - extra slash', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas/#xpath1(/$def:html/$def:body)'
+                    ).getResource(newParams),
+            TP.sys.getUICanvas().getNativeDocument().body,
+            TP.sc('tibet://uicanvas/#xpath1(/$def:html/$def:body) should find ' +
+                    'the body element in the document of the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer xpath1() scheme with TP.DOM result type - extra tibet://uicanvas/', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas#xpath1(/$def:html/$def:body)'
+                    ).getResource(newParams),
+            TP.sys.getUICanvas().getNativeDocument().body,
+            TP.sc('tibet://uicanvas#xpath1(/$def:html/$def:body) should find ' +
                     'the body element in the document of the current UI canvas.'));
     });
 
@@ -616,24 +753,6 @@ function() {
         newParams.atPut('resultType', TP.DOM);
 
         this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas/#xpath1(/$def:html/$def:body)'
-                    ).getResource(newParams),
-            TP.sys.getUICanvas().getNativeDocument().body,
-            TP.sc('tibet://uicanvas/#xpath1(/$def:html/$def:body) should find ' +
-                    'the body element in the document of the current UI canvas.'));
-
-        //  The last slash should be optional
-
-        this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas#xpath1(/$def:html/$def:body)'
-                    ).getResource(newParams),
-            TP.sys.getUICanvas().getNativeDocument().body,
-            TP.sc('tibet://uicanvas#xpath1(/$def:html/$def:body) should find ' +
-                    'the body element in the document of the current UI canvas.'));
-
-        //  The 'tibet://uicanvas/' should be optional
-
-        this.assert.isIdenticalTo(
             TP.uc('#xpath1(/$def:html/$def:body)'
                     ).getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -643,7 +762,7 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpointer() scheme', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpointer() scheme - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#xpointer(/$def:html/$def:body)'
@@ -651,8 +770,11 @@ function() {
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas/#xpointer(/$def:html/$def:body) should find ' +
                     'the body element in the document of the current UI canvas.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpointer() scheme - extra tibet://uicanvas/', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#xpointer(/$def:html/$def:body)'
@@ -660,14 +782,51 @@ function() {
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('tibet://uicanvas#xpointer(/$def:html/$def:body) should find ' +
                     'the body element in the document of the current UI canvas.'));
+    });
 
-        //  The 'tibet://uicanvas/' should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using XPointer xpointer() scheme', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('#xpointer(/$def:html/$def:body)'
                     ).getResource(params).getNativeNode(),
             TP.sys.getUICanvas().getNativeDocument().body,
             TP.sc('#xpointer(/$def:html/$def:body) should find ' +
+                    'the body element in the document of the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer xpointer() scheme with TP.DOM result type - extra slash', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas/#xpointer(/$def:html/$def:body)'
+                    ).getResource(newParams),
+            TP.sys.getUICanvas().getNativeDocument().body,
+            TP.sc('tibet://uicanvas/#xpointer(/$def:html/$def:body) should find ' +
+                    'the body element in the document of the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using XPointer xpointer() scheme with TP.DOM result type - extra tibet://uicanvas/', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas#xpointer(/$def:html/$def:body)'
+                    ).getResource(newParams),
+            TP.sys.getUICanvas().getNativeDocument().body,
+            TP.sc('tibet://uicanvas#xpointer(/$def:html/$def:body) should find ' +
                     'the body element in the document of the current UI canvas.'));
     });
 
@@ -681,24 +840,6 @@ function() {
         newParams.atPut('resultType', TP.DOM);
 
         this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas/#xpointer(/$def:html/$def:body)'
-                    ).getResource(newParams),
-            TP.sys.getUICanvas().getNativeDocument().body,
-            TP.sc('tibet://uicanvas/#xpointer(/$def:html/$def:body) should find ' +
-                    'the body element in the document of the current UI canvas.'));
-
-        //  The last slash should be optional
-
-        this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas#xpointer(/$def:html/$def:body)'
-                    ).getResource(newParams),
-            TP.sys.getUICanvas().getNativeDocument().body,
-            TP.sc('tibet://uicanvas#xpointer(/$def:html/$def:body) should find ' +
-                    'the body element in the document of the current UI canvas.'));
-
-        //  The 'tibet://uicanvas/' should be optional
-
-        this.assert.isIdenticalTo(
             TP.uc('#xpointer(/$def:html/$def:body)'
                     ).getResource(newParams),
             TP.sys.getUICanvas().getNativeDocument().body,
@@ -708,7 +849,7 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Retrieve TP.core.ElementNode using TIBET-extension XPointer css() scheme', function(test, options) {
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using TIBET-extension XPointer css() scheme - extra slash', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#css(#top_background > *:first-child)'
@@ -717,8 +858,11 @@ function() {
             TP.sc('tibet://uicanvas/#css(#top_background > *:first-child) should' +
                     ' find any children of the element with id "top_background"' +
                     ' in the document of the current UI canvas.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using TIBET-extension XPointer css() scheme - extra tibet://uicanvas/', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#css(#top_background > *:first-child)'
@@ -727,14 +871,53 @@ function() {
             TP.sc('tibet://uicanvas#css(#top_background > *:first-child) should' +
                     ' find any children of the element with id "top_background"' +
                     ' in the document of the current UI canvas.'));
+    });
 
-        //  The 'tibet://uicanvas/' should be optional
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.ElementNode using TIBET-extension XPointer css() scheme', function(test, options) {
 
         this.assert.isIdenticalTo(
             TP.uc('#css(#top_background > *:first-child)'
                     ).getResource(params).getNativeNode(),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
             TP.sc('#css(#top_background > *:first-child) should' +
+                    ' find any children of the element with id "top_background"' +
+                    ' in the document of the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using TIBET-extension XPointer css() scheme with TP.DOM result type - extra slash', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas/#css(#top_background > *:first-child)'
+                    ).getResource(newParams),
+            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.sc('tibet://uicanvas/#css(#top_background > *:first-child) should' +
+                    ' find any children of the element with id "top_background"' +
+                    ' in the document of the current UI canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve Element using TIBET-extension XPointer css() scheme with TP.DOM result type - extra tibet://uicanvas/', function(test, options) {
+
+        var newParams;
+
+        newParams = params.copy();
+        newParams.atPut('resultType', TP.DOM);
+
+        this.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas#css(#top_background > *:first-child)'
+                    ).getResource(newParams),
+            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.sc('tibet://uicanvas#css(#top_background > *:first-child) should' +
                     ' find any children of the element with id "top_background"' +
                     ' in the document of the current UI canvas.'));
     });
@@ -749,26 +932,6 @@ function() {
         newParams.atPut('resultType', TP.DOM);
 
         this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas/#css(#top_background > *:first-child)'
-                    ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
-            TP.sc('tibet://uicanvas/#css(#top_background > *:first-child) should' +
-                    ' find any children of the element with id "top_background"' +
-                    ' in the document of the current UI canvas.'));
-
-        //  The last slash should be optional
-
-        this.assert.isIdenticalTo(
-            TP.uc('tibet://uicanvas#css(#top_background > *:first-child)'
-                    ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
-            TP.sc('tibet://uicanvas#css(#top_background > *:first-child) should' +
-                    ' find any children of the element with id "top_background"' +
-                    ' in the document of the current UI canvas.'));
-
-        //  The 'tibet://uicanvas/' should be optional
-
-        this.assert.isIdenticalTo(
             TP.uc('#css(#top_background > *:first-child)'
                     ).getResource(newParams),
             TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
@@ -779,13 +942,16 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Try to retrieve TP.core.Window of a bogus window', function(test, options) {
+    this.it('TIBETURL: Try to retrieve TP.core.Window of a bogus window - extra slash', function(test, options) {
 
         this.refute.isDefined(
             TP.uc('tibet://fluffy/').getResource(params),
             TP.sc('tibet://fluffy/ should return undefined.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Try to retrieve TP.core.Window of a bogus window', function(test, options) {
 
         this.refute.isDefined(
             TP.uc('tibet://fluffy').getResource(params),
@@ -794,13 +960,16 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer barename', function(test, options) {
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer barename - extra slash', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top/#fluffy').getResource(params),
             TP.sc('tibet://top/#fluffy should return null.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer barename', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top#fluffy').getResource(params),
@@ -809,13 +978,16 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer xpath1() query', function(test, options) {
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer xpath1() query - extra slash', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top/#xpath1(fluffy)').getResource(params),
             TP.sc('tibet://top/#xpath1(fluffy) should return the empty Array.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer xpath1() query', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top#xpath1(fluffy)').getResource(params),
@@ -824,13 +996,16 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer element() query', function(test, options) {
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer element() query - extra slash', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top/#element(fluffy)').getResource(params),
             TP.sc('tibet://top/#element(fluffy) should return the empty Array.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer element() query', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top#element(fluffy)').getResource(params),
@@ -839,13 +1014,16 @@ function() {
 
     //  ---
 
-    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer css() query', function(test, options) {
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer css() query - extra slash', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top/#css(fluffy)').getResource(params),
             TP.sc('tibet://top/#css(fluffy) should return the empty Array.'));
+    });
 
-        //  The last slash should be optional
+    //  ---
+
+    this.it('TIBETURL: Trying to retrieve TP.core.ElementNode of bogus element in top-level window using an XPointer css() query', function(test, options) {
 
         this.assert.isEmpty(
             TP.uc('tibet://top#css(fluffy)').getResource(params),
