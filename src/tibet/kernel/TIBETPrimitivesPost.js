@@ -1948,7 +1948,7 @@ function(anObject, assignIfAbsent) {
                 if (TP.notEmpty(id = TP.elementGetAttribute(
                                     root, TP.GLOBAL_DOCID_ATTR, true))) {
                     loc = id;
-                } else if (TP.isTrue(assign)) {
+                } else if (assign) {
                     TP.regex.INVALID_ID_CHARS.lastIndex = 0;
                     id = TP.genID().replace('$', 'document_').replace(
                                             TP.regex.INVALID_ID_CHARS, '_');
@@ -2037,6 +2037,12 @@ function(anObject, assignIfAbsent) {
 
         if (assign) {
             obj.$$globalID = globalID;
+            if (TP.isDocument(doc = obj.document) &&
+                TP.isElement(root = doc.documentElement)) {
+
+                TP.elementSetAttribute(
+                        root, TP.GLOBAL_WINID_ATTR, globalID, true);
+            }
         }
 
         return globalID;
