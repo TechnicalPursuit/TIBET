@@ -46,8 +46,7 @@ function() {
      * @raises TP.sig.InvalidFunction
      */
 
-    var name,
-        owner;
+    var spy;
 
     //  If the value (i.e. the method body) already has a '$spiedFunc', that
     //  means that a spy or stub has already been installed on it.
@@ -56,20 +55,25 @@ function() {
                             'Function is already a spy');
     }
 
+    spy = TP.test.spy(this);
+    spy.$spiedFunc = this;
+
     if (!TP.isMethod(this)) {
-        return TP.test.spy(this);
+        return spy;
     }
 
-    name = this[TP.NAME];
-    owner = this[TP.OWNER];
+    spy[TP.NAME] = this[TP.NAME];
+    spy[TP.OWNER] = this[TP.OWNER];
+    spy[TP.TRACK] = this[TP.TRACK];
+    spy[TP.DISPLAY] = this[TP.DISPLAY] + '.spy';
 
-    return TP.test.spy(owner, name);
+    return spy;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.FunctionProto.defineMethod('asStub',
-function() {
+function(altValue) {
 
     /**
      * @name asStub
@@ -77,12 +81,12 @@ function() {
      * @description If the receiver is a method on an object, then this method
      *     will replace that method with a stub. If the receiver is not a
      *     method, this method will raise a TP.sig.InvalidMethod exception.
+     * @param {Object} altValue The alternative method value (aka method 'body').
      * @returns {Function} The stubbing Function object.
      * @raises TP.sig.InvalidParameter,TP.sig.InvalidFunction
      */
 
-    var name,
-        owner;
+    var stub;
 
     if (!TP.isMethod(this)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -95,96 +99,15 @@ function() {
                             'Function is already a stub');
     }
 
-    name = this[TP.NAME];
-    owner = this[TP.OWNER];
+    stub = TP.test.stub(this[TP.OWNER], this[TP.NAME], altValue);
+    stub.$spiedFunc = this;
 
-    return TP.test.stub(owner, name);
-});
+    stub[TP.NAME] = this[TP.NAME];
+    stub[TP.OWNER] = this[TP.OWNER];
+    stub[TP.TRACK] = this[TP.TRACK];
+    stub[TP.DISPLAY] = this[TP.DISPLAY] + '.stub';
 
-//  ------------------------------------------------------------------------
-
-TP.defineMetaInstMethod('defineSpy',
-function(target, name, value, track, display) {
-
-    /**
-     * @name defineSpy
-     * @synopsis Defines a Sinon.JS 'spy' on a TIBET-style method.
-     * @param {Object} target The target object.
-     * @param {String} name The method name.
-     * @param {Object} value The method value (aka method 'body').
-     * @param {String} track The method track (Inst, Type, Local).
-     * @param {String} display The method display name. Defaults to the owner
-     *     ID plus the track and name.
-     * @returns {Function} The newly defined 'spy' method.
-     * @raises TP.sig.InvalidFunction
-     */
-
-    var spyMethod;
-
-    //  If the value (i.e. the method body) already has a '$spiedFunc', that
-    //  means that a spy or stub has already been installed on it.
-    if (TP.isMethod(value.$spiedFunc)) {
-        return this.raise('TP.sig.InvalidFunction',
-                            'Function is already a spy or stub');
-    }
-
-    spyMethod = value.asSpy();
-
-    spyMethod[TP.NAME] = name;
-    spyMethod[TP.OWNER] = target;
-    spyMethod[TP.TRACK] = track;
-    spyMethod[TP.DISPLAY] = display + '.spy';
-
-    //  We also want to make sure we can get back to the original function
-    //  that was installed so that we can restore.
-    spyMethod.$spiedFunc = value;
-
-    target[name] = spyMethod;
-
-    return spyMethod;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.defineMetaInstMethod('defineStub',
-function(target, name, value, track, display) {
-
-    /**
-     * @name defineStub
-     * @synopsis Defines a Sinon.JS 'stub' on a TIBET-style method.
-     * @param {Object} target The target object.
-     * @param {String} name The method name.
-     * @param {Object} value The method value (aka method 'body').
-     * @param {String} track The method track (Inst, Type, Local).
-     * @param {String} display The method display name. Defaults to the owner
-     *     ID plus the track and name.
-     * @returns {Function} The newly defined 'stub' method.
-     * @raises TP.sig.InvalidFunction
-     */
-
-    var stubMethod;
-
-    //  If the value (i.e. the method body) already has a '$spiedFunc', that
-    //  means that a spy or stub has already been installed on it.
-    if (TP.isMethod(value.$spiedFunc)) {
-        return this.raise('TP.sig.InvalidFunction',
-                            'Function is already a spy or stub');
-    }
-
-    stubMethod = value.asStub();
-
-    stubMethod[TP.NAME] = name;
-    stubMethod[TP.OWNER] = target;
-    stubMethod[TP.TRACK] = track;
-    stubMethod[TP.DISPLAY] = display + '.stub';
-
-    //  We also want to make sure we can get back to the original function
-    //  that was installed so that we can restore.
-    stubMethod.$spiedFunc = value;
-
-    target[name] = stubMethod;
-
-    return stubMethod;
+    return stub;
 });
 
 //  ------------------------------------------------------------------------
@@ -276,23 +199,20 @@ function(methodName) {
     methodInfo = this.getMethodInfoFor(methodName);
     existingMethod = methodInfo.at('owner').getMethod(methodName);
 
-    return TP.defineSpy(methodInfo.at('owner'),
-                        methodInfo.at('name'),
-                        existingMethod,
-                        methodInfo.at('track'),
-                        methodInfo.at('display'));
+    return existingMethod.asSpy();
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('stubOn',
-function(methodName) {
+function(methodName, altValue) {
 
     /**
      * @name stubOn
      * @synopsis Creates a Sinon.JS 'stub' on the receiver in place of the method
      *     named by the supplied name.
      * @param {String} methodName The name of the method to install a stub on.
+     * @param {Object} altValue The alternative method value (aka method 'body').
      * @returns {Function} The stubbing Function object.
      * @raises TP.sig.InvalidString
      */
@@ -308,11 +228,7 @@ function(methodName) {
     methodInfo = this.getMethodInfoFor(methodName);
     existingMethod = methodInfo.at('owner').getMethod(methodName);
 
-    return TP.defineStub(methodInfo.at('owner'),
-                            methodInfo.at('name'),
-                            existingMethod,
-                            methodInfo.at('track'),
-                            methodInfo.at('display'));
+    return existingMethod.asStub(altValue);
 });
 
 //	------------------------------------------------------------------------

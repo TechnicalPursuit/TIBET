@@ -11,7 +11,6 @@
 /**
  * @synopsis Types supporting various date, time, timezone, and calendar
  *     functionality.
- * @summary TIBETCalendaring
  * @todo
  */
 
