@@ -2084,9 +2084,6 @@ function(anObject, assignIfAbsent) {
             obj.$$globalID = globalID;
             if (TP.isDocument(doc = obj.document) &&
                 TP.isElement(root = doc.documentElement)) {
-
-                TP.elementSetAttribute(
-                        root, TP.GLOBAL_WINID_ATTR, globalID, true);
             }
         }
 
