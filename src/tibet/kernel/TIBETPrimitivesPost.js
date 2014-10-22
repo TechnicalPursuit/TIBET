@@ -1982,6 +1982,10 @@ function(anObject, assignIfAbsent) {
                                 TP.elementRemoveAttribute(
                                     anElem, 'tibet:globalID', true);
                             });
+                    TP.ac(obj.getElementsByTagName('*')).forEach(
+                            function(anElem) {
+                                delete anElem.eventIds;
+                            });
                 } else {
                     loc = id;
                 }
