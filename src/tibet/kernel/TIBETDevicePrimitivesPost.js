@@ -1457,11 +1457,13 @@ function(anElement, invalidateIdCache) {
             theElement = theElement.parentNode;
         }
 
-        //  The looping will have terminated at a 'document' node.
+        //  The looping will have terminated at a 'document' node - add it's ID.
+        eventIdArray.push(TP.gid(elementDoc));
+        
         //  See if that document has a window and if it does, append
         //  its global ID to the end of the event ids.
         elementWin = TP.nodeGetWindow(elementDoc);
-        if (TP.isElement(elementWin)) {
+        if (TP.isWindow(elementWin)) {
             eventIdArray.push(TP.gid(elementWin));
         }
 
