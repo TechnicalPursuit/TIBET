@@ -1666,7 +1666,9 @@ function(aTarget, aSignal) {
     var name,
         targetGID,
     
-        hadSignal;
+        hadSignal,
+    
+        originMatcher;
 
     if (TP.isValid(aSignal)) {
         name = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
@@ -1692,7 +1694,29 @@ function(aTarget, aSignal) {
     if (!hadSignal) {
         targetGID = TP.gid(aTarget);
 
-        hadSignal = TP.signal.calledWith(targetGID, name);
+        //  Note that we have to use a custom matcher here, because signal
+        //  origins can either be a String representing a single origin or an
+        //  Array representing an origin set. Note, also, how we test for truth
+        //  and only set the flag then. Since this function will be called once
+        //  for each item in the set of all origins since we started capturing
+        //  signals, it very well may become false *after* it has been set to
+        //  true, unless the last item always matches.
+        originMatcher = TP.extern.sinon.match(
+                function(value) {
+                    if (TP.isString(value)) {
+                        if (value === targetGID) {
+                            hadSignal = true;
+                        }
+                    }
+
+                    if (TP.isArray(value)) {
+                        if (value.contains(targetGID)) {
+                            hadSignal = true;
+                        }
+                    }
+                });
+
+        TP.signal.calledWith(originMatcher, name);
     }
 
     this.assert(
