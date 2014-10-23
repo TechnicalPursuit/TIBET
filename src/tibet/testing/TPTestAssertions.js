@@ -1667,6 +1667,8 @@ function(aTarget, aSignal) {
         targetGID,
     
         originMatcher,
+
+        isSpecialSignal,
         signalMatcher,
         eventMatcher,
     
@@ -1732,12 +1734,17 @@ function(aTarget, aSignal) {
         originMatcher = TP.extern.sinon.match.any;
     }
 
-    //  If signalName is real and is not a key event or a mouse event, then we
-    //  construct a real matcher for signals. Otherwise, we use Sinon's 'any'
-    //  matcher for signals.
-    if (TP.isValid(signalName) &&
-            !TP.regex.KEY_EVENT.test(signalName) &&
-            !TP.regex.MOUSE_EVENT.test(signalName)) {
+    //  A 'special signal' is one that is either a key or mouse event, but is
+    //  not a special TIBET manufactured 'event sequence' (denoted by the double
+    //  underscore - '__').
+    isSpecialSignal = (TP.regex.KEY_EVENT.test(signalName) ||
+                        TP.regex.MOUSE_EVENT.test(signalName)) &&
+                        !/__/.test(signalName);
+
+    //  If signalName is real and is not a "special signal", then we construct a
+    //  real matcher for signals. Otherwise, we use Sinon's 'any' matcher for
+    //  signals.
+    if (TP.isValid(signalName) && !isSpecialSignal) {
 
         //  Note that we have to use a custom matcher here, because signal
         //  types can either be a String representing a single name or a
@@ -1766,13 +1773,11 @@ function(aTarget, aSignal) {
         signalMatcher = TP.extern.sinon.match.any;
     }
 
-    //  If signalName is real and is either a key event or a mouse event, then
-    //  we construct a real matcher for events (which will be the 3rd argument
-    //  to these kinds of calls to TP.signal). Otherwise, we use Sinon's 'any'
-    //  matcher for events.
-    if (TP.isValid(signalName) &&
-            (TP.regex.KEY_EVENT.test(signalName) ||
-             TP.regex.MOUSE_EVENT.test(signalName))) {
+    //  If signalName is real and is a "special signal", then we construct a
+    //  real matcher for events (which will be the 3rd argument to these kinds
+    //  of calls to TP.signal). Otherwise, we use Sinon's 'any' matcher for
+    //  events.
+    if (TP.isValid(signalName) && isSpecialSignal) {
 
         eventMatcher = TP.extern.sinon.match(
                     function(value) {
