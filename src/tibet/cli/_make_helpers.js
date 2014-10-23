@@ -15,9 +15,11 @@
 'use strict';
 
 var CLI = require('./_cli');
+var fs = require('fs');
 var sh = require('shelljs');
 var path = require('path');
 var Q = require('q');
+var zlib = require('zlib');
 
 /**
  * Canonical `helper` object for internal utility functions.
@@ -47,6 +49,7 @@ helpers.rollup = function(make, options) {
     var ext;
     var file;
     var pkg;
+    var zip;
     var config;
     var dir;
     var prefix;
@@ -118,13 +121,39 @@ helpers.rollup = function(make, options) {
     try {
         make.log('writing ' + result.output.length + ' chars to: ' + file);
         result.output.to(file);
-        deferred.resolve();
-        return deferred.promise;
+
+        if (!options.zip) {
+            deferred.resolve();
+            return deferred.promise;
+        }
     } catch (e) {
         make.error('Unable to write to: ' + file);
         deferred.reject(e);
         return deferred.promise;
     }
+
+    // gzip as well...
+    if (options.zip) {
+        file = file + '.gz';
+        make.log('creating zipped output in ' + file);
+        return Q.denodeify(zlib.gzip)(result.output).then(
+            function(result) {
+                try {
+                    fs.writeFileSync(file, result);
+                    deferred.resolve();
+                    return deferred.promise;
+                } catch (e) {
+                    make.error('Unable to write to: ' + file);
+                    deferred.reject(e);
+                    return deferred.promise;
+                }
+            },
+            function(error) {
+                make.error('Unable to compress: ' + file.slice(0, -3));
+                deferred.reject(error);
+                return deferred.promise;
+            });
+        }
 };
 
 module.exports = helpers;

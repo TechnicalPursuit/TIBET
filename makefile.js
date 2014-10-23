@@ -336,7 +336,8 @@ targets.rollup_init = function(make) {
         dir: './lib/src',
         prefix: 'tibet_',
         headers: false,
-        minify: false
+        minify: false,
+        zip: true
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -344,7 +345,8 @@ targets.rollup_init = function(make) {
             dir: './lib/src',
             prefix: 'tibet_',
             headers: false,
-            minify: true
+            minify: true,
+            zip: true
         });
     }).then(
     function() {
@@ -364,7 +366,8 @@ targets.rollup_hook = function(make) {
         dir: './lib/src',
         prefix: 'tibet_',
         headers: false,
-        minify: false
+        minify: false,
+        zip: true
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -372,7 +375,8 @@ targets.rollup_hook = function(make) {
             dir: './lib/src',
             prefix: 'tibet_',
             headers: false,
-            minify: true
+            minify: true,
+            zip: true
         });
     }).then(
     function() {
@@ -392,7 +396,8 @@ targets.rollup_base = function(make) {
         dir: './lib/src',
         prefix: 'tibet_',
         headers: false,
-        minify: false
+        minify: false,
+        zip: true
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -400,7 +405,8 @@ targets.rollup_base = function(make) {
             dir: './lib/src',
             prefix: 'tibet_',
             headers: false,
-            minify: true
+            minify: true,
+            zip: true
         });
     }).then(
     function() {
@@ -420,7 +426,8 @@ targets.rollup_developer = function(make) {
         dir: './lib/src',
         prefix: 'tibet_',
         headers: false,
-        minify: false
+        minify: false,
+        zip: true
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -428,7 +435,8 @@ targets.rollup_developer = function(make) {
             dir: './lib/src',
             prefix: 'tibet_',
             headers: false,
-            minify: true
+            minify: true,
+            zip: true
         });
     }).then(
     function() {
@@ -448,7 +456,8 @@ targets.rollup_full = function(make) {
         dir: './lib/src',
         prefix: 'tibet_',
         headers: false,
-        minify: false
+        minify: false,
+        zip: true
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -456,7 +465,8 @@ targets.rollup_full = function(make) {
             dir: './lib/src',
             prefix: 'tibet_',
             headers: false,
-            minify: true
+            minify: true,
+            zip: true
         });
     }).then(
     function() {
