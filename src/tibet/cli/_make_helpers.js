@@ -94,7 +94,8 @@ helpers.rollup = function(make, options) {
 
     make.log('rolling up ' + prefix + root);
 
-    cmd = 'tibet rollup --package \'' + pkg +
+    cmd = path.join(module.filename, '..', '..', '..', '..', 'bin', 'tibet') +
+        ' rollup --package \'' + pkg +
         '\' --config ' + config +
         (headers ? '' : ' --no-headers') +
         (minify ? ' --minify' : '');
@@ -105,7 +106,8 @@ helpers.rollup = function(make, options) {
     });
 
     if (result.code !== 0) {
-        make.error('Error processing rollup.');
+        make.error('Error processing rollup:');
+        make.error('' + result.output);
         deferred.reject(result.output);
         return deferred.promise;
     }
@@ -128,6 +130,7 @@ helpers.rollup = function(make, options) {
         }
     } catch (e) {
         make.error('Unable to write to: ' + file);
+        make.error('' + e.message);
         deferred.reject(e);
         return deferred.promise;
     }
@@ -144,12 +147,14 @@ helpers.rollup = function(make, options) {
                     return deferred.promise;
                 } catch (e) {
                     make.error('Unable to write to: ' + file);
+                    make.error('' + e.message);
                     deferred.reject(e);
                     return deferred.promise;
                 }
             },
             function(error) {
                 make.error('Unable to compress: ' + file.slice(0, -3));
+                make.error('' + error);
                 deferred.reject(error);
                 return deferred.promise;
             });
