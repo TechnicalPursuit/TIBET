@@ -55,8 +55,10 @@ function() {
 
         this.then(
             function(result) {
-                test.assert.hasAttribute(TP.byId('testResults'), 'test1');
-                test.assert.hasAttribute(TP.byId('testResults'), 'test2');
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'handler_specifies_control');
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'control_specifies_handler');
             },
             function(error) {
                 TP.sys.logTest(
@@ -107,7 +109,8 @@ function() {
 
         this.then(
             function(result) {
-                test.assert.hasAttribute(TP.byId('testResults'), 'docloaded_fired');
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'document_contentloaded_fired');
                 test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
             },
             function(error) {
@@ -133,7 +136,8 @@ function() {
 
         this.then(
             function(result) {
-                test.assert.hasAttribute(TP.byId('testResults'), 'elemloaded_fired');
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'element_contentloaded_fired');
                 test.assert.didSignal(TP.byId('testDiv'), 'TP.sig.DOMContentLoaded');
             });
 
@@ -273,8 +277,198 @@ function() {
                     interestMapKeys,
                     TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_F2_Up');
             });
-
     });
+
+    //  ---
+
+    this.it('multi origins and multi signals', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents4.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function(result) {
+
+                var seq;
+
+                seq = test.getDriver().startSequence();
+                seq.click(TP.byId('fooDiv'));
+                seq.perform();
+            },
+            function(error) {
+                TP.sys.logTest(
+                    'Event sequence error: ' + TP.str(error), TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'multisignal_singleorigin');
+                test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
+
+                //  Remove the attribute in preparation for the next test.
+                TP.elementRemoveAttribute(TP.byId('testResults'),
+                                            'multisignal_singleorigin',
+                                            true);
+            });
+
+        this.then(
+            function(result) {
+
+                var seq;
+
+                seq = test.getDriver().startSequence();
+                seq.doubleClick(TP.byId('fooDiv'));
+                seq.perform();
+            },
+            function(error) {
+                TP.sys.logTest(
+                    'Event sequence error: ' + TP.str(error), TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'multisignal_singleorigin');
+                test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMDblClick');
+            });
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.TP.sig.DOMClick');
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.TP.sig.DOMDblClick');
+
+
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barDiv.TP.sig.DOMClick');
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazDiv.TP.sig.DOMClick');
+            });
+
+        this.getDriver().setLocation(unloadURI);
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.TP.sig.DOMClick');
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.TP.sig.DOMDblClick');
+
+
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barDiv.TP.sig.DOMClick');
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazDiv.TP.sig.DOMClick');
+            });
+    });
+
+    //  ---
+
+    this.it('ANY origins and ANY signals', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents5.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function(result) {
+
+                var seq;
+
+                seq = test.getDriver().startSequence();
+                seq.click(TP.byId('fooDiv'));
+                seq.perform();
+            },
+            function(error) {
+                TP.sys.logTest(
+                    'Event sequence error: ' + TP.str(error), TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'anysignal_singleorigin');
+                test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
+            });
+
+        this.then(
+            function(result) {
+
+                var seq;
+
+                seq = test.getDriver().startSequence();
+                seq.doubleClick(TP.byId('bazDiv'));
+                seq.perform();
+            },
+            function(error) {
+                TP.sys.logTest(
+                    'Event sequence error: ' + TP.str(error), TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'singlesignal_anyorigin');
+                test.assert.didSignal(TP.byId('bazDiv'), 'TP.sig.DOMDblClick');
+            });
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.ANY');
+                test.assert.contains(
+                    interestMapKeys,
+                    'ANY.TP.sig.DOMClick');
+            });
+
+        this.getDriver().setLocation(unloadURI);
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.ANY');
+                test.refute.contains(
+                    interestMapKeys,
+                    'ANY.TP.sig.DOMClick');
+            });
+    }).skip();
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
