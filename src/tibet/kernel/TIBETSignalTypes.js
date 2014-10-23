@@ -1567,7 +1567,6 @@ TP.sig.DOMFocusIn.Type.defineAttribute('cancelable', false);
 
 TP.sig.DOMFocusIn.Type.defineConstant('NATIVE_NAME', 'focusin');
 
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------

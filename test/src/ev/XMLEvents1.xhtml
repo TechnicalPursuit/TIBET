@@ -33,7 +33,7 @@
 
 	<ev:script type="text/javascript" event="TP.sig.DOMClick" observer="fooButton">
 		<![CDATA[
-        TP.byOID('testResults').setAttribute('test1', 'true');
+        TP.byOID('testResults').setAttribute('handler_specifies_control', 'true');
 		]]>
 	</ev:script>
 
@@ -53,7 +53,7 @@
 
 	<ev:script type="text/javascript" id="barButtonHandler">
 		<![CDATA[
-        TP.byOID('testResults').setAttribute('test2', 'true');
+        TP.byOID('testResults').setAttribute('control_specifies_handler', 'true');
 		]]>
 	</ev:script>
 
