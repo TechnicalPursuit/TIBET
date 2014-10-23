@@ -16,7 +16,7 @@
 var sh = require('shelljs');
 var path = require('path');
 var nodeCLI = require('shelljs-nodecli');
-var helpers = require('tibet/src/tibet/cli/_make_helpers');
+var helpers = require('./src/tibet/cli/_make_helpers');
 
 //  ---
 //  targets
