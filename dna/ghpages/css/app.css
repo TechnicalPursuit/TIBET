@@ -2,4 +2,28 @@
  * @overview CSS for the {{appname}} application.
  */
 
+/* hello & startup styles. remove when app template has been updated */
+.hello {
+    font-size: 123%;
+    font-weight: bold;
+    max-width: 500px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+.startup {
+    max-width: 500px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.startup p {
+    font-size: 108%;
+}
+
+.startup a {
+  color: #369;
+  text-decoration: underline;
+}
+
 
