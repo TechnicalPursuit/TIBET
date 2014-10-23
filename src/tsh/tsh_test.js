@@ -42,6 +42,7 @@ function(aRequest) {
         ignore_only,
         ignore_skip,
         options,
+        suiteName,
         obj;
 
     TP.stop('break.tsh_test');
@@ -56,7 +57,11 @@ function(aRequest) {
 
     ignore_only = shell.getArgument(aRequest, 'tsh:ignore_only', false);
     ignore_skip = shell.getArgument(aRequest, 'tsh:ignore_skip', false);
-    options = TP.hc('ignore_only', ignore_only, 'ignore_skip', ignore_skip);
+    suiteName = shell.getArgument(aRequest, 'tsh:suite',
+        shell.getArgument(aRequest, 'ARG1'));
+    options = TP.hc('ignore_only', ignore_only,
+        'ignore_skip', ignore_skip,
+        'suite', suiteName);
 
     target = shell.getArgument(aRequest, 'ARG0');
     if (TP.isEmpty(target)) {
@@ -85,6 +90,7 @@ function(aRequest) {
 
         obj.runTestSuites(options).then(
             function(result) {
+                // TODO: should we pass non-null results?
                 aRequest.complete();
             },
             function(error) {

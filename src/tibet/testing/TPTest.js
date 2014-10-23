@@ -430,7 +430,14 @@ function(target, options) {
                         if (suite.isExclusive() && !params.at('ignore_only')) {
                             exclusives = true;
                         }
-                        suitelist.push(suite);
+
+                        if (TP.notEmpty(params.at('suite'))) {
+                            if (params.at('suite') === suiteName) {
+                                suitelist.push(suite);
+                            }
+                        } else {
+                            suitelist.push(suite);
+                        }
                     });
             });
 
