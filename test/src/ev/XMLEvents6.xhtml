@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+</head>
+
+<body xmlns:ev="http://www.w3.org/2001/xml-events">
+
+	<h2>XML Events Test #6</h2><br/>
+	<br/>
+	<br/>
+	This test sets up 3 XMLEvents &lt;ev:listener&gt; elements. They show 3 different capabilities of XMLEvents: stopping the default action, stopping the propagation of the event to any other handlers and showing a 'capturing' rather than 'bubbling' (the default) handler.<br/>
+	<br/>
+	<br/>
+	This &lt;ev:listener&gt; element has an 'event' value of 'DOMKeyPress' (the TIBET equivalent of 'keypress') and an 'observer' containing the identifier 'fooField', which points it to the text field we're observing for key presses. It also has a 'defaultAction' attribute set to 'cancel', which is what cancels the keypress's default action and which is why no characters are seen in the field.<br/>
+
+	<ev:listener event="TP.sig.DOMKeyPress" observer="fooField" defaultAction="cancel"/>
+
+	<input id="fooField" type="text"/><br/>
+
+	<br/>
+	<br/>
+	This &lt;ev:listener&gt; element has an 'event' value of 'DOMKeyPress' (the TIBET equivalent of 'keypress') and an 'observer' containing the identifier 'barField', which points it to the text field we're observing for key presses. It also has a 'propagate' attribute set to 'stop', which means that it stops propagation of keypress events from the barField up to the barFieldWrapper. This stops the &lt;ev:script&gt; handler, which is observing the barFieldWrapper for DOMKeyPress, from ever firing.<br/>
+
+	<span id="barFieldWrapper">
+		<input id="barField" type="text"/><br/>
+	</span>
+
+	<ev:listener event="TP.sig.DOMKeyPress" observer="barField" propagate="stop"/>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMKeyPress" observer="barFieldWrapper">
+		<![CDATA[
+        //  Should not have gotten here
+        TP.byOID('testResults').setAttribute('barfieldwrapper_keypress', 'true');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMKeyPress" observer="barField">
+		<![CDATA[
+        //  Should have gotten here
+        TP.byOID('testResults').setAttribute('barfield_keypress', 'true');
+		]]>
+	</ev:script>
+
+	<br/>
+	<br/>
+	This &lt;ev:script&gt; element has an 'event' value of 'DOMKeyPress' (the TIBET equivalent of 'keypress') and an 'observer' containing the identifier 'bazField', which points it to the text field we're observing for key presses. It also has a 'phase' attribute set to 'capture', which means that it will execute before any 'bubbling' (the default) handlers, no matter the order in which it is defined. The first &lt;ev:script&gt; handler, which is not a capturing handler, fires second.<br/>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMKeyPress" observer="bazField">
+		<![CDATA[
+        TP.byOID('testResults').setAttribute('bazfield_keypress_2nd', TP.dc());
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMKeyPress" observer="bazField" phase="capture">
+		<![CDATA[
+        TP.byOID('testResults').setAttribute('bazfield_keypress_1st', TP.dc());
+		]]>
+	</ev:script>
+
+	<input id="bazField" type="text"/><br/>
+
+    <!-- The test result data goes here -->
+    <span id="testResults"/>
+
+</body>
+</html>
