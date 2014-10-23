@@ -620,6 +620,358 @@ function() {
             });
     });
 
+    //  ---
+
+    this.it('keypresses executing shell scripts', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents7.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function(result) {
+
+                test.getDriver().startSequence().
+                        sendKeys('[Shift]X[Shift-Up]').
+                        perform();
+            },
+            function(error) {
+                TP.sys.logTest(
+                    'Event sequence error: ' + TP.str(error), TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+
+                var testVal;
+
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'shiftXkey_fired');
+                testVal = TP.elementGetAttribute(
+                                TP.byId('testResults'),
+                                'shiftXkey_fired',
+                                true);
+                test.assert.isEqualTo(testVal, 'fired_shiftXkey');
+
+                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_X_Up');
+            });
+
+        this.then(
+            function(result) {
+
+                test.getDriver().startSequence().
+                        sendKeys('[Shift]Y[Shift-Up]').
+                        perform();
+            },
+            function(error) {
+                TP.sys.logTest(
+                    'Event sequence error: ' + TP.str(error), TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+
+                var testVal;
+
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'shiftYkey_fired');
+                testVal = TP.elementGetAttribute(
+                                TP.byId('testResults'),
+                                'shiftYkey_fired',
+                                true);
+                test.assert.matches(testVal, /.+"signame":"TP.sig.DOM_Y_Up".+/);
+
+                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_Y_Up');
+            });
+
+        this.then(
+            function(result) {
+
+                test.getDriver().startSequence().
+                        sendKeys('[Shift]Z[Shift-Up]').
+                        perform();
+            },
+            function(error) {
+                TP.sys.logTest(
+                    'Event sequence error: ' + TP.str(error), TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+
+                var testVal;
+
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'shiftZkey_fired');
+                testVal = TP.elementGetAttribute(
+                                TP.byId('testResults'),
+                                'shiftZkey_fired',
+                                true);
+                test.assert.isEqualTo(testVal, '"TP.sig.DOMKeyUp"');
+
+                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_Z_Up');
+            });
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_X_Up');
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Y_Up');
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Z_Up');
+            });
+
+        this.getDriver().setLocation(unloadURI);
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_X_Up');
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Y_Up');
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Z_Up');
+            });
+    });
+
+    //  ---
+
+    this.it('keypress sequences', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents8.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function(result) {
+
+                test.getDriver().startSequence().
+                        sendKeys('[Shift]A[Shift-Up]').
+                        sendKeys('[Shift]S[Shift-Up]').
+                        perform();
+            },
+            function(error) {
+                TP.sys.logTest(
+                    'Event sequence error: ' + TP.str(error), TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'alpha_sequence_fired');
+
+                test.assert.didSignal(TP.sys.uidoc(),
+                                        'TP.sig.DOM_A_Up__TP.sig.DOM_S_Up');
+            });
+
+        this.then(
+            function(result) {
+
+                test.getDriver().startSequence().
+                        sendKeys('\u0062').
+                        sendKeys('[Shift]S[Shift-Up]').
+                        perform();
+            },
+            function(error) {
+                TP.sys.logTest(
+                    'Event sequence error: ' + TP.str(error), TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+
+                test.assert.hasAttribute(TP.byId('testResults'),
+                                            'unicode_sequence_fired');
+
+                test.assert.didSignal(TP.sys.uidoc(),
+                                        'TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
+            });
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
+            });
+
+        this.getDriver().setLocation(unloadURI);
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
+            });
+    });
+
+    //  ---
+
+    this.it('markup-level change notification', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents9.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function(result) {
+
+                var seq;
+
+                seq = test.getDriver().startSequence();
+                seq.click(TP.byId('setSalaryButton'));
+                seq.perform();
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+
+                var testVal;
+
+                testVal = TP.uc('urn:tibet:empObject').getResource().get(
+                                                    TP.apc('person.salary'));
+
+                test.assert.isEqualTo(testVal, 42);
+
+                test.assert.isEqualTo(
+                    TP.byOID('salaryField').get('value').asNumber(),
+                    42);
+
+                test.assert.didSignal(TP.byId('setSalaryButton'),
+                                        'TP.sig.DOMClick');
+                test.assert.didSignal(TP.byId('msgField'),
+                                        'TP.sig.DOMContentLoaded');
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:empObject#tibet(person.salary)'),
+                        'TP.sig.ValueChange');
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:empObject'),
+                        'TP.sig.ValueChange');
+            });
+
+        this.then(
+            function(result) {
+
+                var seq;
+
+                seq = test.getDriver().startSequence();
+                seq.click(TP.byId('setSSNButton'));
+                seq.perform();
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+
+        this.then(
+            function(result) {
+
+                var testVal;
+
+                testVal = TP.uc('urn:tibet:empObject').getResource().get(
+                                                    TP.apc('person.SSN'));
+
+                test.assert.isEqualTo(testVal, '111-22-3333');
+
+                test.assert.isEqualTo(
+                    TP.byOID('ssnField').get('value'),
+                    '111-22-3333');
+
+                test.assert.didSignal(TP.byId('setSSNButton'),
+                                        'TP.sig.DOMClick');
+                test.assert.didSignal(TP.byId('msgField'),
+                                        'TP.sig.DOMContentLoaded');
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:empObject#tibet(person.SSN)'),
+                        'TP.sig.ValueChange');
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:empObject'),
+                        'TP.sig.ValueChange');
+            });
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.assert.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOMContentLoaded');
+                test.assert.contains(
+                    interestMapKeys,
+                    'urn:tibet:empObject.TP.sig.Change');
+                test.assert.contains(
+                    interestMapKeys,
+                    'urn:tibet:empObject#tibet(person.salary).TP.sig.ValueChange');
+                test.assert.contains(
+                    interestMapKeys,
+                    'urn:tibet:empObject#tibet(person.SSN).TP.sig.ValueChange');
+            });
+
+        this.getDriver().setLocation(unloadURI);
+
+        this.then(
+            function() {
+                var interestMapKeys;
+
+                interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
+
+                test.refute.contains(
+                    interestMapKeys,
+                    TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOMContentLoaded');
+                test.refute.contains(
+                    interestMapKeys,
+                    'urn:tibet:empObject.TP.sig.Change');
+                test.refute.contains(
+                    interestMapKeys,
+                    'urn:tibet:empObject#tibet(person.salary).TP.sig.ValueChange');
+                test.refute.contains(
+                    interestMapKeys,
+                    'urn:tibet:empObject#tibet(person.SSN).TP.sig.ValueChange');
+            });
+    });
+
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
