@@ -2277,7 +2277,7 @@ TP.regex.DOWN_END = /[Dd]own$/;
 TP.regex.UP_END = /[Uu]p$/;
 
 TP.regex.KEY_EVENT = /^key|DOMKey|_(?:Up|Down|Press)$/;
-TP.regex.MOUSE_EVENT = /^mouse|DOMMouse/;
+TP.regex.MOUSE_EVENT = /^mouse|DOMMouse|DOMClick|DOMDblClick/;
 
 TP.regex.HANDLER_NAME = /^handle([-_a-zA-Z0-9]+)$/;
 
