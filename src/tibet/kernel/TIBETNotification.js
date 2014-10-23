@@ -3633,6 +3633,7 @@ function(aHandlerEntry) {
             TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                     TP.trace('Listener not found.',
                     TP.SIGNAL_LOG) : 0;
+
             return;
         }
     }
@@ -3924,10 +3925,10 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         for (i = 0; i < list.length; i++) {
             item = list.at(i);
 
-            // Flag for removal.
+            //  Flag for removal.
             item.remove === true;
 
-            // If we're supposed to remove entirely next step is to compact.
+            //  If we're supposed to remove entirely next step is to compact.
             if (!TP.sys.shouldIgnoreViaFlag()) {
                 root.listeners = list.select(
                                     function(entry) {
@@ -3953,6 +3954,10 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
                                     });
             }
         }
+    }
+
+    if (TP.isEmpty(root.listeners)) {
+        delete map[id];
     }
 
     return;
