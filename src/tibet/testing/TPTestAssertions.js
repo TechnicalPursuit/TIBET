@@ -1663,16 +1663,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('didSignal',
 function(aTarget, aSignal) {
 
-    var name,
+    var signalName,
         targetGID,
     
-        hadSignal,
+        originMatcher,
+        signalMatcher,
+        eventMatcher,
     
-        originMatcher;
-
-    if (TP.isValid(aSignal)) {
-        name = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
-    }
+        hadMatch;
 
     if (!this.get('currentTestCase').getSuite().get('$capturingSignals')) {
         this.assert(
@@ -1681,47 +1679,127 @@ function(aTarget, aSignal) {
                     ' we\'re not capturing signals.'));
     }
 
-    //  Sinon *really* doesn't like TIBET objects - it's 'deepEqual' call
-    //  recurses endlessly. Therefore, we use a Sinon matcher that will only
-    //  check identity.
-    hadSignal = TP.signal.calledWith(
-                    TP.extern.sinon.match.same(aTarget),
-                    name);
-    
-    //  If it didn't have the target/signal match by using target identity, we
-    //  give it another chance by using the global ID of the target - very
-    //  common in DOM signaling.
-    if (!hadSignal) {
+    if (aTarget === TP.ANY) {
+        targetGID = TP.ANY;
+    } else if (TP.isValid(aTarget)) {
         targetGID = TP.gid(aTarget);
+    }
+
+    if (aSignal === TP.ANY) {
+        signalName = TP.ANY;
+    } else if (TP.isValid(aSignal)) {
+        signalName = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
+    }
+
+    //  Note, how we test for truth and only set these flags then. Since these
+    //  functions will be called once for each item in the set of all signal
+    //  dispatch invocations since we started capturing signals, they very well
+    //  may become false *after* they have been set to true, unless the last
+    //  item always matches both.
+
+    //  If targetGID is real, then we construct a real matcher. Otherwise, we
+    //  use Sinon's 'any' matcher for origins.
+    if (TP.isValid(targetGID)) {
 
         //  Note that we have to use a custom matcher here, because signal
         //  origins can either be a String representing a single origin or an
-        //  Array representing an origin set. Note, also, how we test for truth
-        //  and only set the flag then. Since this function will be called once
-        //  for each item in the set of all origins since we started capturing
-        //  signals, it very well may become false *after* it has been set to
-        //  true, unless the last item always matches.
+        //  Array representing an origin set.
         originMatcher = TP.extern.sinon.match(
                 function(value) {
-                    if (TP.isString(value)) {
-                        if (value === targetGID) {
-                            hadSignal = true;
+                    var val;
+
+                    if (!TP.isString(value) && !TP.isArray(value)) {
+                        val = TP.gid(value);
+                    } else {
+                        val = value;
+                    }
+
+                    if (TP.isString(val)) {
+                        if (val === targetGID) {
+                            return true;
                         }
                     }
 
-                    if (TP.isArray(value)) {
-                        if (value.contains(targetGID)) {
-                            hadSignal = true;
+                    if (TP.isArray(val)) {
+                        if (val.contains(targetGID)) {
+                            return true;
                         }
                     }
+
+                    return false;
                 });
-
-        TP.signal.calledWith(originMatcher, name);
+    } else {
+        originMatcher = TP.extern.sinon.match.any;
     }
 
+    //  If signalName is real and is not a key event or a mouse event, then we
+    //  construct a real matcher for signals. Otherwise, we use Sinon's 'any'
+    //  matcher for signals.
+    if (TP.isValid(signalName) &&
+            !TP.regex.KEY_EVENT.test(signalName) &&
+            !TP.regex.MOUSE_EVENT.test(signalName)) {
+
+        //  Note that we have to use a custom matcher here, because signal
+        //  types can either be a String representing a single name or a
+        //  TP.sig.Signal instance that has to be tested against all of it's
+        //  signal names.
+        signalMatcher = TP.extern.sinon.match(
+                function(value) {
+                    var sigNames;
+
+                    if (TP.isString(value)) {
+                        if (value === signalName) {
+                            return true;
+                        }
+                    }
+
+                    if (TP.isKindOf(value, TP.sig.Signal)) {
+                        sigNames = value.getSignalNames();
+                        if (sigNames.contains(signalName)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+    } else {
+        signalMatcher = TP.extern.sinon.match.any;
+    }
+
+    //  If signalName is real and is either a key event or a mouse event, then
+    //  we construct a real matcher for events (which will be the 3rd argument
+    //  to these kinds of calls to TP.signal). Otherwise, we use Sinon's 'any'
+    //  matcher for events.
+    if (TP.isValid(signalName) &&
+            (TP.regex.KEY_EVENT.test(signalName) ||
+             TP.regex.MOUSE_EVENT.test(signalName))) {
+
+        eventMatcher = TP.extern.sinon.match(
+                    function(value) {
+                        var signal,
+                            sigNames;
+
+                        if (TP.isEvent(value)) {
+                            signal = TP.wrap(value);
+                            sigNames = signal.getSignalNames();
+                            if (sigNames.contains(signalName)) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    });
+    } else {
+        eventMatcher = TP.extern.sinon.match.any;
+    }
+
+    //  Try the match.
+    hadMatch = TP.signal.calledWith(originMatcher, signalMatcher, eventMatcher);
+
     this.assert(
-        hadSignal,
-        TP.sc('Expected ', TP.id(aTarget), ' to have signaled ', name, '.'));
+        hadMatch,
+        TP.sc('Expected ', TP.id(aTarget),
+                ' to have signaled ', signalName, '.'));
 
     return;
 });
