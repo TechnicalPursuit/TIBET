@@ -1,6 +1,7 @@
 # Operational directories.
 log/
 tmp/
+lib/src
 
 # Third-party code directories.
 node_modules/
