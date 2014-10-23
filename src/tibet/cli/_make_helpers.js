@@ -94,6 +94,9 @@ helpers.rollup = function(make, options) {
 
     make.log('rolling up ' + prefix + root);
 
+    // The big path construction here is to locate the tibet command relative to
+    // the current module. This is necessary for the npm prepublish step (used
+    // by TravisCI etc) so they can build tibet without having it installed yet.
     cmd = path.join(module.filename, '..', '..', '..', '..', 'bin', 'tibet') +
         ' rollup --package \'' + pkg +
         '\' --config ' + config +
