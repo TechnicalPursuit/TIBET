@@ -458,7 +458,7 @@ function(anID, nodeContext) {
     /**
      * @name byOID
      * @synopsis A convenience wrapper for the TP.sys.getObjectById() call.
-     *     NOTE: unlike the other $by* calls this function begins its search
+     *     NOTE: unlike the other TP.by* calls this function begins its search
      *     with the TIBET object registry and proceeds to check the UI
      *     canvas/context only after registrations and other sources have been
      *     tested. Use TP.$() or TP.byId() if you are focused on the UI only.

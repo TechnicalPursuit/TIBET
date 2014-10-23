@@ -3519,7 +3519,7 @@ function(aHandlerEntry, quiet) {
         }
     } else if (handlerID.startsWith('#')) {
         //  local document ID reference, should have been converted to a
-        //  global ID but $byOID will default to TP.sys.getUICanvas()
+        //  global ID but TP.byOID() will default to TP.sys.getUICanvas()
     }
 
     if (TP.isValid(handlerID)) {
