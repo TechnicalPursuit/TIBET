@@ -1021,7 +1021,7 @@ function(anObject, aCount, aComment) {
     this.assertMinArguments(arguments, 2);
 
     this.assert(
-        TP.equalTo(TP.size(anObject), aCount),
+        TP.equal(TP.size(anObject), aCount),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be size of: ', aCount));
 

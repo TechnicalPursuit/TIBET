@@ -3922,18 +3922,26 @@ TP.hc(
          *     descendants.
          * @description This method follows the DOM Level 3 standard for
          *     checking Nodes for equality with each other. This specification
-         *     states that two Nodes are equal if: - The two nodes are of the
-         *     same type - The following string attributes are equal (they are
-         *     either both null or they have the same length and are character
-         *     for character identical): - nodeName - localName - namespaceURI -
-         *     prefix - nodeValue - The 'attributes' NamedNodeMaps are equal
-         *     (they are either both null or have the same length and for each
-         *     node that exists in one map there is a node that exists in the
-         *     other map and is equal although *not necessarily at the same
-         *     index*). - The 'childNodes' NodeLists are equal (they are either
-         *     both null or have the same length and contain equal nodes *at the
-         *     same index*). Note that this method normalizes these nodes to
-         *     make sure that this comparison is performed accurately.
+         *     states that two Nodes are equal if:
+         *          -   The two nodes are of the same type
+         *          -   The following string attributes are equal (they are
+         *              either both null or they have the same length and are
+         *              character for character identical):
+         *                  -   nodeName
+         *                  -   localName
+         *                  -   namespaceURI
+         *                  -   prefix
+         *                  -   nodeValue
+         *          -   The 'attributes' NamedNodeMaps are equal (they are
+         *              either both null or have the same length and for each
+         *              node that exists in one map there is a node that exists
+         *              in the other map and is equal although *not necessarily
+         *              at the same index*).
+         *          -   The 'childNodes' NodeLists are equal (they are either
+         *              both null or have the same length and contain equal
+         *              nodes *at the same index*). Note that this method
+         *              normalizes these nodes to make sure that this comparison
+         *              is performed accurately.
          * @param {Node} aNode The node to check against otherNode.
          * @param {Node} otherNode The node to check against aNode.
          * @returns {Boolean} Whether or not the two nodes are *equal* (not
@@ -3961,18 +3969,26 @@ TP.hc(
          *     descendants.
          * @description This method follows the DOM Level 3 standard for
          *     checking Nodes for equality with each other. This specification
-         *     states that two Nodes are equal if: - The two nodes are of the
-         *     same type - The following string attributes are equal (they are
-         *     either both null or they have the same length and are character
-         *     for character identical): - nodeName - localName - namespaceURI -
-         *     prefix - nodeValue - The 'attributes' NamedNodeMaps are equal
-         *     (they are either both null or have the same length and for each
-         *     node that exists in one map there is a node that exists in the
-         *     other map and is equal although *not necessarily at the same
-         *     index*). - The 'childNodes' NodeLists are equal (they are either
-         *     both null or have the same length and contain equal nodes *at the
-         *     same index*). Note that this method normalizes these nodes to
-         *     make sure that this comparison is performed accurately.
+         *     states that two Nodes are equal if:
+         *          -   The two nodes are of the same type
+         *          -   The following string attributes are equal (they are
+         *              either both null or they have the same length and are
+         *              character for character identical):
+         *                  -   nodeName
+         *                  -   localName
+         *                  -   namespaceURI
+         *                  -   prefix
+         *                  -   nodeValue
+         *          -   The 'attributes' NamedNodeMaps are equal (they are
+         *              either both null or have the same length and for each
+         *              node that exists in one map there is a node that exists
+         *              in the other map and is equal although *not necessarily
+         *              at the same index*).
+         *          -   The 'childNodes' NodeLists are equal (they are either
+         *              both null or have the same length and contain equal
+         *              nodes *at the same index*). Note that this method
+         *              normalizes these nodes to make sure that this comparison
+         *              is performed accurately.
          * @param {Node} aNode The node to check against otherNode.
          * @param {Node} otherNode The node to check against aNode.
          * @returns {Boolean} Whether or not the two nodes are *equal* (not
