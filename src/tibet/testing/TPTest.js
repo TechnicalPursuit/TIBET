@@ -780,8 +780,8 @@ function(result, options) {
     func = this.get('afterAll');
     if (TP.isCallable(func)) {
 
-        //  We provide a 'then()', 'thenPromise()' and 'thenWait()' API to our
-        //  drivers.
+        //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
+        //  'thenWait()' API to our drivers.
         thisArg = this;
 
         drivers = this.$get('drivers');
@@ -837,8 +837,8 @@ function(result, options) {
     func = this.get('beforeAll');
     if (TP.isCallable(func)) {
 
-        //  We provide a 'then()', 'thenPromise()' and 'thenWait()' API to our
-        //  drivers.
+        //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
+        //  'thenWait()' API to our drivers.
         thisArg = this;
 
         drivers = this.$get('drivers');
@@ -1608,6 +1608,24 @@ function(onFulfilled, onRejected) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Suite.Inst.defineMethod('thenAllowGUIRefresh',
+function() {
+
+    /**
+     * A convenience mechanism to give the GUI a chance to refresh.
+     * @return {TP.test.Suite} The receiver.
+     */
+
+    this.thenPromise(
+        function(resolver, rejector) {
+            setTimeout(resolver, TP.sys.cfg('test.anti_starve_timeout'));
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Suite.Inst.defineMethod('thenPromise',
 function(aFunction) {
 
@@ -2022,8 +2040,8 @@ function(options) {
         this.$set('mslimit', options.at('case_timeout'));
     }
 
-    //  We provide a 'then()', 'thenPromise()' and 'thenWait()' API to our
-    //  drivers.
+    //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
+    //  'thenWait()' API to our drivers.
     thisArg = this;
 
     drivers = this.getSuite().$get('drivers');
@@ -2360,6 +2378,24 @@ function(onFulfilled, onRejected) {
     //  promise set by our parent stack frame 'earlier' in our computation.
     this.$set('$currentPromise', newPromise);
     this.$set('$internalPromise', newPromise);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('thenAllowGUIRefresh',
+function() {
+
+    /**
+     * A convenience mechanism to give the GUI a chance to refresh.
+     * @return {TP.test.Case} The receiver.
+     */
+
+    this.thenPromise(
+        function(resolver, rejector) {
+            setTimeout(resolver, TP.sys.cfg('test.anti_starve_timeout'));
+        });
 
     return this;
 });
