@@ -78,7 +78,7 @@ Detailed API documentation is generated from within TIBET itself
 via the `:man` command.
 
 For more information on TIBET and TPI products and services see <a
-href="http://technicalpursuit.com" target="_blank">technicalpursuit.com</a>.
+href="http://www.technicalpursuit.com" target="_blank">www.technicalpursuit.com</a>.
 
 # App Templates
 
@@ -132,6 +132,6 @@ href="http://help.github.com/articles/using-pull-requests" target="_blank">pull
 requests</a>. Using pull requests is great way to keep discussion of new
 features visible to the entire TIBET community.
 
-Additional contact info is available at <a href="http://technicalpursuit.com"
-target="_blank">technicalpursuit.com</a>.
+Additional contact info is available at <a href="http://www.technicalpursuit.com"
+target="_blank">www.technicalpursuit.com</a>.
 

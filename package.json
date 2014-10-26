@@ -3,11 +3,11 @@
     "version": "v5.0.0-dev.116+g52240583fc.1405184580500",
     "description": "The TIBET Environment.",
     "keywords": ["CLI", "IDE", "JavaScript", "Environment", "Platform", "Framework", "TIBET"],
-    "homepage": "http://technicalpursuit.com",
+    "homepage": "http://www.technicalpursuit.com",
     "author": {
         "name": "Technical Pursuit Inc.",
         "email": "tibet@technicalpursuit.com",
-        "url": "http://technicalpursuit.com"
+        "url": "http://www.technicalpursuit.com"
     },
     "contributors": [{
         "name": "Scott Shattuck",

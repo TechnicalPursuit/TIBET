@@ -59,7 +59,7 @@
 
   <!--  state code cache file entry with http source and 30 days -->
   <uri name="tibet:///~lib_dat/statecodes.xml"
-    uri="http://technicalpursuit.com/tibet/app/tdc/TIBET-INF/dat/statecodes.xml"
+    uri="http://www.technicalpursuit.com/tibet/app/tdc/TIBET-INF/dat/statecodes.xml"
     tibet:localuri="tibet:///~app_inf/dat/statecodes.xml"
     tibet:duration="P30D" tibet:updated="20060130T10:01:23"/>
 
@@ -69,11 +69,11 @@
     tibet:role="Manager" />
 
   <!--  mapping a server file to a type when we're running offline -->
-  <uri name="http://technicalpursuit.com/dat/test_data.xml"
+  <uri name="http://www.technicalpursuit.com/dat/test_data.xml"
     tibet:offline="true" tibet:urihandler="MyFakeServer"/>
 
   <!--  mapping a server file to a file when we're in a test env -->
-  <uri name="http://technicalpursuit.com/dat/data.xml"
+  <uri name="http://www.technicalpursuit.com/dat/data.xml"
     uri="tibet:///~app_dat/test/test_data.xml"
     tibet:env="test"/>
 

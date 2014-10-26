@@ -5,5 +5,5 @@
   xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
   <rewriteURI uriStartString="http://www.delegated.com"
-    rewritePrefix="http://technicalpursuit.com"/>
+    rewritePrefix="http://www.technicalpursuit.com"/>
 </catalog>
