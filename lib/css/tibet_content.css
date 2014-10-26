@@ -219,8 +219,8 @@ a.image-link img {
   border: 2px solid #666;
   border-radius: 5px;
   box-shadow: 0 0 2px 2px #999;
-  width: 136px;
-  height: 136px;
+  width: 102px;
+  height: 102px;
 }
 
 a.image-link:hover img {
@@ -287,20 +287,20 @@ a.image-link:hover img {
 }
 
 #tech_logos {
-  height: 24px;
+  height: 18px;
   margin-top: 2em;
   margin-left: auto;
   margin-right: auto;
 }
 
 #tech_logos img {
-  height: 24px;
-  width: 76px;
+  height: 18px;
+  width: 57px;
 }
 
 .detail-intro {
   position: relative;
-  margin: 48px 0 0 48px;
+  margin: 70px 0 0 48px;
 }
 
 .detail-intro .lead {
@@ -330,8 +330,8 @@ a.image-link:hover img {
   border: 1px solid #666;
   border-radius: 5px;
   box-shadow: 0 0 2px 2px #999;
-  width: 136px;
-  height: 136px;
+  width: 102px;
+  height: 102px;
   cursor: default;
 }
 
@@ -364,7 +364,7 @@ a.image-link:hover img {
 .detail-topics dd {
   float: left;
   width: 65%;
-  color: #999;
+  color: #777;
   margin-bottom: 18px;
 }
 
@@ -373,15 +373,11 @@ a.image-link:hover img {
   margin: 12px 6px 12px 0;
 }
 
+.client-logo {
+  width: 76px;
+}
 .tagline {
   font-size: 90%;
-}
-
-.tagline a {
-  margin: 0 32px;
-}
-.tagline span {
-  margin: 0 32px;
 }
 
 .pointer {
@@ -392,8 +388,6 @@ a.image-link:hover img {
 }
 
 #legal {
-  margin-top: 24px;
-  margin-bottom: 12px;
   left: 0;
   right: 0;
   margin-left: auto;
@@ -409,7 +403,7 @@ a.image-link:hover img {
 }
 
 #legal .trade {
-    margin: 18px 0 6px 0;
+    margin: 6px 0;
     font-size: 85%;
 }
 
