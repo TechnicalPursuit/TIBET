@@ -902,6 +902,8 @@ function() {
      *     responder status.
      */
 
+    var focusTPElem;
+
     //  If the type is holding a real $focusingTPElement, then we want to
     //  reject accepting focused responder status because this means that the
     //  element that we *really* want to focus on (and which is now contained in
@@ -909,8 +911,11 @@ function() {
     //  the one we're processing focused responder status for. So we reject
     //  focused responder status here and then this property will be cleared
     //  and when the desired target element is focused, we will accept it.
-    if (TP.isKindOf(
-            this.getType().get('$focusingTPElement'), TP.core.UIElementNode)) {
+    focusTPElem = this.getType().get('$focusingTPElement');
+    
+    if (TP.isKindOf(focusTPElem, TP.core.UIElementNode) &&
+        !focusTPElem.identicalTo(this)) {
+
         return false;
     }
 
