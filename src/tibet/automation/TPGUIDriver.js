@@ -1353,7 +1353,7 @@ function(target, type, args, callback, currentElement) {
                 TP.extern.syn.key.options(args, 'mousedown'),
                 finalTarget);
 
-            callback();
+            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
 
         break;
 
@@ -1366,7 +1366,7 @@ function(target, type, args, callback, currentElement) {
                 TP.extern.syn.key.options(args, 'mouseup'),
                 finalTarget);
 
-            callback();
+            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
 
         break;
 
@@ -1379,7 +1379,7 @@ function(target, type, args, callback, currentElement) {
                 TP.extern.syn.key.options(args, 'keydown'),
                 finalTarget);
 
-            callback();
+            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
 
         break;
 
@@ -1392,7 +1392,7 @@ function(target, type, args, callback, currentElement) {
                 TP.extern.syn.key.options(args, 'keyup'),
                 finalTarget);
 
-            callback();
+            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
 
         break;
 
