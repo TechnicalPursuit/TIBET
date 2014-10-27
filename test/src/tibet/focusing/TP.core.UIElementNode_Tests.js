@@ -1970,7 +1970,128 @@ function() {
                 test.fail();
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-});
+
+    //  ---
+
+    this.it('Focusing tab order tests', function(test, options) {
+
+        var loadURI,
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing9.xhtml');
+
+        driver = this.getDriver();
+        driver.setLocation(loadURI);
+
+        this.then(
+            function(result) {
+                var docOrderResults,
+                    tabOrderResults;
+
+                //  ---
+
+                docOrderResults =
+                    TP.byCSS('#testGroup1 input').collect(
+                                function (anElem) {
+                                    return anElem.getAttribute('id');
+                                });
+
+                test.assert.isEqualTo(
+                    docOrderResults,
+                    TP.ac('field_1', 'field_2', 'field_3', 'field_4'));
+
+                tabOrderResults = TP.byCSS('#testGroup1 input').sort(
+                                                    TP.TABINDEX_ORDER_SORT);
+                tabOrderResults = tabOrderResults.collect(
+                                    function (anElem) {
+                                        return anElem.getAttribute('id');
+                                    });
+
+                test.assert.isEqualTo(
+                    tabOrderResults,
+                    TP.ac('field_1', 'field_2', 'field_3', 'field_4'));
+
+                //  ---
+
+                docOrderResults =
+                    TP.byCSS('#testGroup2 input').collect(
+                                function (anElem) {
+                                    return anElem.getAttribute('id');
+                                });
+
+                test.assert.isEqualTo(
+                    docOrderResults,
+                    TP.ac('field_5', 'field_6', 'field_7', 'field_8'));
+
+                tabOrderResults = TP.byCSS('#testGroup2 input').sort(
+                                                    TP.TABINDEX_ORDER_SORT);
+                tabOrderResults = tabOrderResults.collect(
+                                    function (anElem) {
+                                        return anElem.getAttribute('id');
+                                    });
+
+                test.assert.isEqualTo(
+                    tabOrderResults,
+                    TP.ac('field_5', 'field_6', 'field_7', 'field_8'));
+
+                //  ---
+
+                docOrderResults =
+                    TP.byCSS('#testGroup3 input').collect(
+                                function (anElem) {
+                                    return anElem.getAttribute('id');
+                                });
+
+                test.assert.isEqualTo(
+                    docOrderResults,
+                    TP.ac('field_9', 'field_10', 'field_11',
+                            'field_12', 'field_13', 'field_14'));
+
+                tabOrderResults = TP.byCSS('#testGroup3 input').sort(
+                                                    TP.TABINDEX_ORDER_SORT);
+                tabOrderResults = tabOrderResults.collect(
+                                    function (anElem) {
+                                        return anElem.getAttribute('id');
+                                    });
+
+                test.assert.isEqualTo(
+                    tabOrderResults,
+                    TP.ac('field_9', 'field_10', 'field_11',
+                            'field_12', 'field_13', 'field_14'));
+
+                //  ---
+
+                docOrderResults =
+                    TP.byCSS('#testGroup4 input').collect(
+                                function (anElem) {
+                                    return anElem.getAttribute('id');
+                                });
+
+                test.assert.isEqualTo(
+                    docOrderResults,
+                    TP.ac('field_15', 'field_16', 'field_17', 'field_18',
+                            'field_19', 'field_20', 'field_21', 'field_22'));
+
+                tabOrderResults = TP.byCSS('#testGroup4 input').sort(
+                                                    TP.TABINDEX_ORDER_SORT);
+                tabOrderResults = tabOrderResults.collect(
+                                    function (anElem) {
+                                        return anElem.getAttribute('id');
+                                    });
+
+                test.assert.isEqualTo(
+                    tabOrderResults,
+                    TP.ac('field_21', 'field_17', 'field_15', 'field_16',
+                            'field_18', 'field_19', 'field_20', 'field_22'));
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+}).timeout(20000);
 
 TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focus stack',
 function() {
