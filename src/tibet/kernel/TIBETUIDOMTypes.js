@@ -4030,11 +4030,23 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('focus',
-function() {
+function(moveAction) {
 
     /**
      * @name focus
      * @synopsis Focuses the receiver for keyboard input.
+     * @param {Constant} moveAction The type of 'move' that the user requested.
+     *     This can be one of the following:
+     *          TP.FIRST
+     *          TP.LAST
+     *          TP.NEXT
+     *          TP.PREVIOUS
+     *          TP.FIRST_IN_GROUP
+     *          TP.LAST_IN_GROUP
+     *          TP.FIRST_IN_NEXT_GROUP
+     *          TP.FIRST_IN_PREVIOUS_GROUP
+     *          TP.FOLLOWING
+     *          TP.PRECEDING.
      * @returns {TP.core.UIElementNode} The receiver.
      * @todo
      */
@@ -4494,10 +4506,10 @@ function(aSignal) {
 
     var focusingTPElem;
 
-    //  The receiver is the currently focused element, but TIBET's focus manager
-    //  machinery stashes a reference to the element we're going to next. If
-    //  we're blurring but not coming through the TIBET focus manager, this will
-    //  be null.
+    //  The receiver is the currently focused element, but TIBET's focus
+    //  navigation machinery stashes a reference to the element we're going to
+    //  next. If we're blurring but not coming through the TIBET focus manager,
+    //  this will be null.
 
     focusingTPElem = this.getType().get('$focusingTPElement');
 
