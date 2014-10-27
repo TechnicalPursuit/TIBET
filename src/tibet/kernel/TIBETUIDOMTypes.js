@@ -2605,7 +2605,7 @@ function() {
     //  element, and exit here. The new element will be pushed by the
     //  becomeFocusedResponder() method.
     if (TP.notValid(newFocusContext) ||
-            newFocusContext.equalTo(currentFocusContext.getNativeNode())) {
+            newFocusContext.identicalTo(currentFocusContext.getNativeNode())) {
 
         $focus_stack.pop();
         this.signal('TP.sig.UIDidPopFocus');
@@ -2619,7 +2619,7 @@ function() {
 
     foundContext = $focus_stack.detect(
             function (aTPElement) {
-                return aTPElement.getFocusContextElement().equalTo(
+                return aTPElement.getFocusContextElement().identicalTo(
                                                         newFocusContext);
             });
 
