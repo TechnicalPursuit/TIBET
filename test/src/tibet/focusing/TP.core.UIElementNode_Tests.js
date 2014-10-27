@@ -2162,6 +2162,8 @@ function() {
 
                 test.then(
                     function() {
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
                         TP.signal.reset();
                     });
 
@@ -2181,7 +2183,7 @@ function() {
                         test.assert.isSizeOf($focus_stack, 1);
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem1));
-                
+
                         //  TP.sig.UIFocusNext      -   bodyElem
                         test.assert.didSignal(bodyElem, 'TP.sig.UIFocusNext');
 
