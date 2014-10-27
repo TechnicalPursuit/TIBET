@@ -2635,7 +2635,6 @@ function() {
         //  previously focused element. We're gonna re-push the previously
         //  focused element when we focus it below.
         tpElementToFocus = $focus_stack.pop();
-        this.signal('TP.sig.UIDidPopFocus');
 
         //  Reset the 'focusing element' to be the previously focused element.
         //  The presence of this element will cause the currently focusing
