@@ -1242,7 +1242,10 @@ function(target, type, args, callback, currentElement) {
 
         syn,
 
-        finalTarget;
+        finalTarget,
+        
+        doc,
+        newEvent;
 
     sequenceEntries = this.get('sequenceEntries');
 
@@ -1291,6 +1294,8 @@ function(target, type, args, callback, currentElement) {
     if (!TP.isElement(finalTarget = target)) {
         finalTarget = currentElement;
     }
+
+    doc = TP.nodeGetDocument(finalTarget);
 
     //  The three parameters are:
     //      1. The type of operation, used in the switch below.
@@ -1396,9 +1401,46 @@ function(target, type, args, callback, currentElement) {
 
         break;
 
+        case 'sendevent':
+
+            newEvent = TP.documentCreateEvent(doc, args);
+            finalTarget.dispatchEvent(newEvent);
+
+            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
+
+        break;
+
         default:
         break;
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Sequence.Inst.defineMethod('sendEvent',
+function(eventInfo, aPath) {
+
+    /**
+     * @name sendEvent
+     * @synopsis Sends the event as described in the supplied eventInfo. See the
+     *     TP.documentCreateEvent() call for more information on the fields
+     *     recognized ere.
+     * @param {TP.lang.Hash|Object} eventInfo The event information used to
+     *     create the event to send.
+     * @param {TP.core.AccessPath} aPath The access path to the target element
+     *     that should be the target of the event. If this isn't supplied,
+     *     the currently focused element in the receiver's owning driver's
+     *     window context will be used as the target for this event.
+     * @return {TP.gui.Sequence} The receiver.
+     */
+
+    var target;
+
+    target = TP.ifInvalid(aPath, TP.CURRENT);
+
+    this.get('sequenceEntries').add(TP.ac('sendevent', target, eventInfo));
 
     return this;
 });
