@@ -902,6 +902,8 @@ function() {
      *     responder status.
      */
 
+    var focusTPElem;
+
     //  If the type is holding a real $focusingTPElement, then we want to
     //  reject accepting focused responder status because this means that the
     //  element that we *really* want to focus on (and which is now contained in
@@ -909,8 +911,11 @@ function() {
     //  the one we're processing focused responder status for. So we reject
     //  focused responder status here and then this property will be cleared
     //  and when the desired target element is focused, we will accept it.
-    if (TP.isKindOf(
-            this.getType().get('$focusingTPElement'), TP.core.UIElementNode)) {
+    focusTPElem = this.getType().get('$focusingTPElement');
+    
+    if (TP.isKindOf(focusTPElem, TP.core.UIElementNode) &&
+        !focusTPElem.identicalTo(this)) {
+
         return false;
     }
 
@@ -2600,7 +2605,7 @@ function() {
     //  element, and exit here. The new element will be pushed by the
     //  becomeFocusedResponder() method.
     if (TP.notValid(newFocusContext) ||
-            newFocusContext.equalTo(currentFocusContext.getNativeNode())) {
+            newFocusContext.identicalTo(currentFocusContext.getNativeNode())) {
 
         $focus_stack.pop();
         this.signal('TP.sig.UIDidPopFocus');
@@ -2614,7 +2619,7 @@ function() {
 
     foundContext = $focus_stack.detect(
             function (aTPElement) {
-                return aTPElement.getFocusContextElement().equalTo(
+                return aTPElement.getFocusContextElement().identicalTo(
                                                         newFocusContext);
             });
 
@@ -2630,7 +2635,6 @@ function() {
         //  previously focused element. We're gonna re-push the previously
         //  focused element when we focus it below.
         tpElementToFocus = $focus_stack.pop();
-        this.signal('TP.sig.UIDidPopFocus');
 
         //  Reset the 'focusing element' to be the previously focused element.
         //  The presence of this element will cause the currently focusing
@@ -4030,11 +4034,23 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('focus',
-function() {
+function(moveAction) {
 
     /**
      * @name focus
      * @synopsis Focuses the receiver for keyboard input.
+     * @param {Constant} moveAction The type of 'move' that the user requested.
+     *     This can be one of the following:
+     *          TP.FIRST
+     *          TP.LAST
+     *          TP.NEXT
+     *          TP.PREVIOUS
+     *          TP.FIRST_IN_GROUP
+     *          TP.LAST_IN_GROUP
+     *          TP.FIRST_IN_NEXT_GROUP
+     *          TP.FIRST_IN_PREVIOUS_GROUP
+     *          TP.FOLLOWING
+     *          TP.PRECEDING.
      * @returns {TP.core.UIElementNode} The receiver.
      * @todo
      */
@@ -4494,10 +4510,10 @@ function(aSignal) {
 
     var focusingTPElem;
 
-    //  The receiver is the currently focused element, but TIBET's focus manager
-    //  machinery stashes a reference to the element we're going to next. If
-    //  we're blurring but not coming through the TIBET focus manager, this will
-    //  be null.
+    //  The receiver is the currently focused element, but TIBET's focus
+    //  navigation machinery stashes a reference to the element we're going to
+    //  next. If we're blurring but not coming through the TIBET focus manager,
+    //  this will be null.
 
     focusingTPElem = this.getType().get('$focusingTPElement');
 

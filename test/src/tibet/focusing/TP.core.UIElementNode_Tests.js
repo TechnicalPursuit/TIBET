@@ -8,6 +8,11 @@
  */
 //  ========================================================================
 
+/* JSHint checking */
+
+/* global $focus_stack:true
+*/
+
 //  ========================================================================
 //  TP.core.UIElementNode
 //  ========================================================================
@@ -1958,6 +1963,819 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
                     });
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+    //  ---
+
+    this.it('Focusing tab order tests', function(test, options) {
+
+        var loadURI,
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing9.xhtml');
+
+        driver = this.getDriver();
+        driver.setLocation(loadURI);
+
+        this.then(
+            function(result) {
+                var docOrderResults,
+                    tabOrderResults;
+
+                //  ---
+
+                docOrderResults =
+                    TP.byCSS('#testGroup1 input').collect(
+                                function (anElem) {
+                                    return anElem.getAttribute('id');
+                                });
+
+                test.assert.isEqualTo(
+                    docOrderResults,
+                    TP.ac('field_1', 'field_2', 'field_3', 'field_4'));
+
+                tabOrderResults = TP.byCSS('#testGroup1 input').sort(
+                                                    TP.TABINDEX_ORDER_SORT);
+                tabOrderResults = tabOrderResults.collect(
+                                    function (anElem) {
+                                        return anElem.getAttribute('id');
+                                    });
+
+                test.assert.isEqualTo(
+                    tabOrderResults,
+                    TP.ac('field_1', 'field_2', 'field_3', 'field_4'));
+
+                //  ---
+
+                docOrderResults =
+                    TP.byCSS('#testGroup2 input').collect(
+                                function (anElem) {
+                                    return anElem.getAttribute('id');
+                                });
+
+                test.assert.isEqualTo(
+                    docOrderResults,
+                    TP.ac('field_5', 'field_6', 'field_7', 'field_8'));
+
+                tabOrderResults = TP.byCSS('#testGroup2 input').sort(
+                                                    TP.TABINDEX_ORDER_SORT);
+                tabOrderResults = tabOrderResults.collect(
+                                    function (anElem) {
+                                        return anElem.getAttribute('id');
+                                    });
+
+                test.assert.isEqualTo(
+                    tabOrderResults,
+                    TP.ac('field_5', 'field_6', 'field_7', 'field_8'));
+
+                //  ---
+
+                docOrderResults =
+                    TP.byCSS('#testGroup3 input').collect(
+                                function (anElem) {
+                                    return anElem.getAttribute('id');
+                                });
+
+                test.assert.isEqualTo(
+                    docOrderResults,
+                    TP.ac('field_9', 'field_10', 'field_11',
+                            'field_12', 'field_13', 'field_14'));
+
+                tabOrderResults = TP.byCSS('#testGroup3 input').sort(
+                                                    TP.TABINDEX_ORDER_SORT);
+                tabOrderResults = tabOrderResults.collect(
+                                    function (anElem) {
+                                        return anElem.getAttribute('id');
+                                    });
+
+                test.assert.isEqualTo(
+                    tabOrderResults,
+                    TP.ac('field_9', 'field_10', 'field_11',
+                            'field_12', 'field_13', 'field_14'));
+
+                //  ---
+
+                docOrderResults =
+                    TP.byCSS('#testGroup4 input').collect(
+                                function (anElem) {
+                                    return anElem.getAttribute('id');
+                                });
+
+                test.assert.isEqualTo(
+                    docOrderResults,
+                    TP.ac('field_15', 'field_16', 'field_17', 'field_18',
+                            'field_19', 'field_20', 'field_21', 'field_22'));
+
+                tabOrderResults = TP.byCSS('#testGroup4 input').sort(
+                                                    TP.TABINDEX_ORDER_SORT);
+                tabOrderResults = tabOrderResults.collect(
+                                    function (anElem) {
+                                        return anElem.getAttribute('id');
+                                    });
+
+                test.assert.isEqualTo(
+                    tabOrderResults,
+                    TP.ac('field_21', 'field_17', 'field_15', 'field_16',
+                            'field_18', 'field_19', 'field_20', 'field_22'));
+            },
+            function(error) {
+                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
+                                TP.ERROR);
+                test.fail();
+            });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+}).timeout(20000);
+
+TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focus stack',
+function() {
+
+    var initialElem;
+
+    //  ---
+
+    this.beforeEach(
+        function() {
+
+            //  This is used in the first test below.
+            initialElem = $focus_stack.last();
+
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
+
+    //  ---
+
+    this.it('Focus stack - simple test', function(test, options) {
+
+        var loadURI,
+            driver;
+
+        loadURI = TP.uc('~lib_tst/src/tibet/focusing/FocusingStack1.xhtml');
+
+        driver = this.getDriver();
+        driver.setLocation(loadURI);
+
+        this.then(
+            function(result) {
+                var bodyElem,
+
+                    elem1,
+                    elem2,
+                    elem3,
+                    elem4,
+
+                    focusedElem;
+
+                bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
+
+                elem1 = TP.byId('focusTestField1');
+                elem2 = TP.byId('focusTestField2');
+                elem3 = TP.byId('focusTestField3');
+                elem4 = TP.byId('focusTestField4');
+
+                //  Due to the way the markup is written here, the tab order for
+                //  this test is:
+                //      1 - 2 - 3 - 4
+
+                //  But, because elem3 forms its own focusing context due to the
+                //  'tibet:focuscontext' attribute, tabbing (or shift-tabbing)
+                //  to it will push the last element onto the focus stack and
+                //  that element is what will be focused when elem3 is blurred.
+
+                //  The first focused element in this file will be the <body>
+                //  Test that theory.
+                focusedElem = driver.getFocusedElement();
+                test.assert.isIdenticalTo(focusedElem, bodyElem);
+
+                //  ---
+
+                test.then(
+                    function() {
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                    });
+
+                //  ---
+
+                driver.startSequence().
+                        sendKeys('[Tab]').
+                        perform();
+
+                test.then(
+                    function() {
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem1);
+
+                        //  At this point, the focus stack should have one item
+                        //  on it - the focused element (wrapped).
+                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem1));
+
+                        //  TP.sig.UIFocusNext      -   bodyElem
+                        test.assert.didSignal(bodyElem, 'TP.sig.UIFocusNext');
+
+                        //  TP.sig.UIBlur           -   initialElem
+                        test.assert.didSignal(initialElem, 'TP.sig.UIBlur');
+
+                        //  TP.sig.UIDidPopFocus    -   initialElem
+                        test.assert.didSignal(initialElem,
+                                                'TP.sig.UIDidPopFocus');
+
+                        //  TP.sig.DOMBlur          -   window/initialElem
+                        test.assert.didSignal(initialElem, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.UIFocus          -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIFocus');
+
+                        //  TP.sig.UIDidPushFocus   -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem1
+                        test.assert.didSignal(elem1, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidBlur        -   initialElem
+                        test.assert.didSignal(initialElem, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidFocus       -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIDidFocus');
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                driver.startSequence().
+                        sendKeys('[Tab]').
+                        perform();
+
+                test.then(
+                    function() {
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem2);
+
+                        //  At this point, the focus stack should have one item
+                        //  on it - the focused element (wrapped).
+                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem2));
+
+                        //  TP.sig.UIFocusNext      -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIFocusNext');
+
+                        //  TP.sig.UIBlur           -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIBlur');
+
+                        //  TP.sig.UIDidPopFocus    -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIDidPopFocus');
+
+                        //  TP.sig.DOMBlur          -   window/elem1
+                        test.assert.didSignal(elem1, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.UIFocus          -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIFocus');
+
+                        //  TP.sig.UIDidPushFocus   -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidBlur        -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidFocus       -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                driver.startSequence().
+                        sendKeys('[Tab]').
+                        perform();
+
+                test.then(
+                    function() {
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem3);
+
+                        //  At this point, the focus stack should have two items
+                        //  on it, because we entered a new focusing context -
+                        //  the previous element (elem2) and the currently
+                        //  focused element (elem3)
+                        test.assert.isSizeOf($focus_stack, 2);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem3));
+                        test.assert.isIdenticalTo($focus_stack.first(),
+                                                    TP.wrap(elem2));
+
+                        //  No 'Pop' event since we entered a new context.
+
+                        //  TP.sig.UIFocusNext      -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIFocusNext');
+
+                        //  TP.sig.UIBlur           -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIBlur');
+
+                        //  TP.sig.DOMBlur          -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.UIFocus          -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIFocus');
+
+                        //  TP.sig.UIDidPushFocus   -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidBlur        -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidFocus       -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                driver.startSequence().
+                        sendKeys('[Tab]').
+                        perform();
+
+                test.then(
+                    function() {
+                        //  We're currently on elem3, but because of the focus
+                        //  stack when we leave elem3, elem4 will be briefly
+                        //  focused (because there is no way to cancel - ie.
+                        //  prevent default - for the focus event) and then
+                        //  elem2 will be refocused.
+
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem2);
+
+                        //  At this point, the focus stack should have one item
+                        //  on it - the focused element (wrapped).
+                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem2));
+
+                        //  TP.sig.UIFocusNext      -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIFocusNext');
+
+                        //  TP.sig.UIBlur           -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIBlur');
+
+                        //  TP.sig.UIDidPopFocus    -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidPopFocus');
+
+                        //  TP.sig.DOMBlur          -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.UIFocus          -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem4
+                        test.assert.didSignal(elem4, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIBlur           -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIBlur');
+
+                        //  TP.sig.DOMBlur          -   window/elem4
+                        test.assert.didSignal(elem4, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.UIFocus          -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIFocus');
+
+                        //  TP.sig.UIDidPushFocus   -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidBlur        -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidBlur        -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidFocus       -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                //  This will put us at elem4
+                driver.startSequence().
+                        sendKeys('[Shift][Tab][Shift-Up]').
+                        sendKeys('[Shift][Tab][Shift-Up]').
+                        perform();
+
+                test.then(
+                    function() {
+
+                        //  This should've put us at elem4
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem4);
+
+                        //  At this point, the focus stack should have one item
+                        //  on it - the focused element (wrapped).
+                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem4));
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                driver.startSequence().
+                        sendKeys('[Shift][Tab][Shift-Up]').
+                        perform();
+
+                test.then(
+                    function() {
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem3);
+
+                        //  At this point, the focus stack should have two items
+                        //  on it, because we entered a new focusing context -
+                        //  the previous element (elem2) and the currently
+                        //  focused element (elem4)
+                        test.assert.isSizeOf($focus_stack, 2);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem3));
+                        test.assert.isIdenticalTo($focus_stack.first(),
+                                                    TP.wrap(elem4));
+
+                        //  No 'Pop' event since we entered a new context.
+
+                        //  TP.sig.UIFocusPrevious  -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIFocusPrevious');
+
+                        //  TP.sig.UIBlur           -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIBlur');
+
+                        //  TP.sig.DOMBlur          -   window/elem4
+                        test.assert.didSignal(elem4, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.UIFocus          -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIFocus');
+
+                        //  TP.sig.UIDidPushFocus   -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidBlur        -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidFocus       -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                driver.startSequence().
+                        sendKeys('[Shift][Tab][Shift-Up]').
+                        perform();
+
+                test.then(
+                    function() {
+                        focusedElem = driver.getFocusedElement();
+
+                        //  We're currently on elem3, but because of the focus
+                        //  stack when we leave elem3, elem2 will be briefly
+                        //  focused (because there is no way to cancel - ie.
+                        //  prevent default - for the focus event) and then
+                        //  elem4 will be refocused.
+
+                        test.assert.isIdenticalTo(focusedElem, elem4);
+
+                        //  At this point, the focus stack should have one item
+                        //  on it - the focused element (wrapped).
+                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem4));
+
+                        //  TP.sig.UIFocusPrevious  -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIFocusPrevious');
+
+                        //  TP.sig.UIBlur           -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIBlur');
+
+                        //  TP.sig.UIDidPopFocus    -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidPopFocus');
+
+                        //  TP.sig.DOMBlur          -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.UIFocus          -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIBlur           -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIBlur');
+
+                        //  TP.sig.DOMBlur          -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.UIFocus          -   elem4
+                        test.assert.didSignal(elem2, 'TP.sig.UIFocus');
+
+                        //  TP.sig.UIDidPushFocus   -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem4
+                        test.assert.didSignal(elem4, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidBlur        -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidBlur        -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidFocus       -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidFocus');
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                //  This will put us at elem1
+                driver.startSequence().
+                        sendKeys('[Tab]').
+                        perform();
+
+                test.then(
+                    function() {
+
+                        //  This should've put us at elem1
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem1);
+
+                        //  At this point, the focus stack should have one item
+                        //  on it - the focused element (wrapped).
+                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem1));
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                //  This will put us at elem2
+                driver.startSequence().
+                        click(elem2).
+                        perform();
+
+                test.then(
+                    function() {
+
+                        //  This should've put us at elem2
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem2);
+
+                        //  At this point, the focus stack should have one item
+                        //  on it - the focused element (wrapped).
+                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem2));
+
+                        //  TP.sig.UIActivate       -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIActivate');
+
+                        //  TP.sig.UIBlur           -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIBlur');
+
+                        //  TP.sig.UIDidPopFocus    -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIDidPopFocus');
+
+                        //  TP.sig.DOMBlur          -   window/elem1
+                        test.assert.didSignal(elem1, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.UIFocus          -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIFocus');
+
+                        //  TP.sig.UIDidPushFocus   -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidActivate    -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidActivate');
+
+                        //  TP.sig.UIDidBlur        -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidFocus       -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
+
+                        //  TP.sig.UIDeactivate       -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDeactivate');
+
+                        //  TP.sig.UIDidDeactivate    -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidDeactivate');
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                //  This will put us at elem3
+                driver.startSequence().
+                        click(elem3).
+                        perform();
+
+                test.then(
+                    function() {
+
+                        //  This should've put us at elem3
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem3);
+
+                        //  At this point, the focus stack should have two items
+                        //  on it, because we entered a new focusing context -
+                        //  the previous element (elem2) and the currently
+                        //  focused element (elem4)
+                        test.assert.isSizeOf($focus_stack, 2);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem3));
+                        test.assert.isIdenticalTo($focus_stack.first(),
+                                                    TP.wrap(elem2));
+
+                        //  No 'Pop' event since we entered a new context.
+
+                        //  TP.sig.UIActivate      -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIActivate');
+
+                        //  TP.sig.UIBlur           -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIBlur');
+
+                        //  TP.sig.DOMBlur          -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.DOMChange        -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMChange');
+
+                        //  TP.sig.UIFocus          -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIFocus');
+
+                        //  TP.sig.UIDidPushFocus   -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidActivate    -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidActivate');
+
+                        //  TP.sig.UIDidBlur        -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidFocus       -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
+
+                        //  TP.sig.UIDeactivate     -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDeactivate');
+
+                        //  TP.sig.UIDidDeactivate  -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidDeactivate');
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
+                //  ---
+
+                //  This will attempt to put us at elem4
+                driver.startSequence().
+                        click(elem4).
+                        perform();
+
+                test.then(
+                    function() {
+                        //  We're currently on elem3, but because of the focus
+                        //  stack when we leave elem3, elem4 will be briefly
+                        //  focused (because there is no way to cancel - ie.
+                        //  prevent default - for the focus event) and then
+                        //  elem2 will be refocused.
+
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem2);
+
+                        //  At this point, the focus stack should have one item
+                        //  on it - the focused element (wrapped).
+                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isIdenticalTo($focus_stack.last(),
+                                                    TP.wrap(elem2));
+
+                        //  TP.sig.UIActivate       -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIActivate');
+
+                        //  TP.sig.UIBlur           -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIBlur');
+
+                        //  TP.sig.UIDidPopFocus    -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidPopFocus');
+
+                        //  TP.sig.DOMBlur          -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.DOMChange        -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMChange');
+
+                        //  TP.sig.UIFocus          -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem4
+                        test.assert.didSignal(elem4, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidActivate    -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidActivate');
+
+                        //  TP.sig.UIBlur           -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIBlur');
+
+                        //  TP.sig.DOMBlur          -   window/elem4
+                        test.assert.didSignal(elem4, 'TP.sig.DOMBlur');
+
+                        //  TP.sig.DOMChange        -   window/elem4
+                        test.assert.didSignal(elem4, 'TP.sig.DOMChange');
+
+                        //  TP.sig.UIFocus          -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIFocus');
+
+                        //  TP.sig.UIDidPushFocus   -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDidBlur        -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidBlur        -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidBlur');
+
+                        //  TP.sig.UIDidFocus       -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
+
+                        //  TP.sig.UIDeactivate     -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDeactivate');
+
+                        //  TP.sig.UIDidDeactivate  -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidDeactivate');
+
+                        //  Reset the spy on TP.signal in preparation for the
+                        //  next step in this test.
+                        TP.signal.reset();
+                });
+
             },
             function(error) {
                 TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
