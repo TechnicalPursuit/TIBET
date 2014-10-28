@@ -139,7 +139,7 @@ Cmd.prototype.parse = function(options) {
         this.PARSE_OPTIONS.boolean.forEach(function(flag) {
             if (process.argv.indexOf('--' + flag) === -1 &&
                 process.argv.indexOf('--no-' + flag) === -1) {
-                delete(cmd.options[flag]);
+                delete cmd.options[flag];
             }
         });
     }
@@ -149,7 +149,7 @@ Cmd.prototype.parse = function(options) {
         Object.keys(this.PARSE_OPTIONS['default']).forEach(function(flag) {
             if (process.argv.indexOf('--' + flag) === -1 &&
                 process.argv.indexOf('--no-' + flag) === -1) {
-                delete(cmd.options[flag]);
+                delete cmd.options[flag];
             }
         });
     }
@@ -173,8 +173,7 @@ Cmd.prototype.parse = function(options) {
 
 
 /**
- * Perform the actual command processing. Typically you want to override this
- * method. The default implementation simply echoes the command arguments.
+ * Perform the actual command processing. Typically you want to override this.
  */
 Cmd.prototype.execute = function() {
     return;
