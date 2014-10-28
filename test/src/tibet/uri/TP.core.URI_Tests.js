@@ -1639,7 +1639,7 @@ function() {
                     return qPromise;
                 });
         });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -2515,7 +2515,7 @@ function() {
                     return qPromise;
                 });
         });
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
