@@ -61,7 +61,8 @@ targets.rollup = function(make) {
         dir: './build',
         prefix: 'app_',
         headers: true,
-        minify: false
+        minify: false,
+        zip: false
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~app_cfg/app.xml',
@@ -69,7 +70,8 @@ targets.rollup = function(make) {
             dir: './build',
             prefix: 'app_',
             headers: true,
-            minify: true
+            minify: true,
+            zip: false
         });
     }).then(
     function() {
