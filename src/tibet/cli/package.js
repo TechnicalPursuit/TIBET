@@ -139,17 +139,14 @@ Cmd.prototype.pkgOpts = null;
 //  ---
 
 /**
- * Top-level processing of the package to produce an asset list. For this type
- * and subtypes of the package command you should look to the "executeForEach"
- * method for the actual node-by-node processing logic.
- * @return {Number} A return code. Non-zero indicates an error.
+ * Process inbound configuration flags and provide for adjustment via the
+ * finalizePackageOptions call. On completion of this routine the receiver's
+ * package options are fully configured.
+ * @return {Object} The package options after being fully configured.
  */
-Cmd.prototype.execute = function() {
+Cmd.prototype.configurePackageOptions = function(options) {
 
-    var Package;    // The _Package.js export.
-    var list;       // The result list of asset references.
-
-    this.pkgOpts = this.options;
+    this.pkgOpts = options || this.options;
 
     // If we're doing a missing file scan we need to override/assign values to
     // the other parameters to ensure we get a full list of known assets from
@@ -161,8 +158,8 @@ Cmd.prototype.execute = function() {
         this.options.scripts = true;
         this.options.style = true;
         this.options.phase = 'all';
-        delete this.options.include;
-        delete this.options.exclude;
+        this.options.include = null;
+        this.options.exclude = null;
     }
 
     // If silent isn't explicitly set but we're doing a full expansion turn
@@ -193,18 +190,27 @@ Cmd.prototype.execute = function() {
     // the package options they need.
     this.finalizePackageOptions();
 
-    Package = require(path.join(__dirname, '_Package.js'));
-    this.package = new Package(this.pkgOpts);
+    return this.pkgOpts;
+};
 
-    if (this.pkgOpts.all) {
-        this.package.expandAll();
-        list = this.package.listAllAssets();
-    } else {
-        this.package.expandPackage();
-        list = this.package.listPackageAssets();
-    }
 
+/**
+ * Top-level processing of the package to produce an asset list. For this type
+ * and subtypes of the package command you should look to the "executeForEach"
+ * method for the actual node-by-node processing logic.
+ * @return {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.execute = function() {
+
+    var list;       // The result list of asset references.
+
+    this.configurePackageOptions();
+    list = this.getPackageAssetList();
+
+    // TODO: try/catch for errors? need a result code from the overall loop.
     this.executeForEach(list);
+
+    return 0;
 };
 
 
@@ -222,7 +228,6 @@ Cmd.prototype.executeForEach = function(list) {
     var buildDir;
     var dirs;
     var files;
-    var cwd;
     var count;
 
     cmd = this;
@@ -260,7 +265,6 @@ Cmd.prototype.executeForEach = function(list) {
     // Package files are provided in fully expanded form to avoid problems
     // with potentially different virtual path prefixing etc. We need to
     // adapt the local file references accordingly.
-    cwd = process.cwd();
     files = files.map(function(file) {
         return path.join(process.cwd(), file);
     });
@@ -289,6 +293,32 @@ Cmd.prototype.executeForEach = function(list) {
  */
 Cmd.prototype.finalizePackageOptions = function() {
     this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+};
+
+
+/**
+ * Return the list of assets for the receiver based on its current package
+ * options. The package options are determined by configurePackageOptions and
+ * the finalizePackageOptions call it invokes.
+ * @return {Array} The package options.
+ */
+Cmd.prototype.getPackageAssetList = function() {
+
+    var Package;    // The _Package.js export.
+    var list;       // The result list of asset references.
+
+    Package = require(path.join(__dirname, '_Package.js'));
+    this.package = new Package(this.pkgOpts);
+
+    if (this.pkgOpts.all) {
+        this.package.expandAll();
+        list = this.package.listAllAssets();
+    } else {
+        this.package.expandPackage();
+        list = this.package.listPackageAssets();
+    }
+
+    return list;
 };
 
 
