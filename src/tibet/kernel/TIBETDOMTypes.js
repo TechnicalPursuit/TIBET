@@ -3627,6 +3627,11 @@ TP.core.CollectionNode.Type.defineAttribute('tagname', null);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  Whether or not we're already in the middle of 'transforming' a piece of
+//  markup. This helps avoid endless recursions between the 'transform' method
+//  and the 'compile' method/tag processing pipeline.
+TP.core.CollectionNode.Inst.defineAttribute('$alreadyTransforming');
+
 TP.core.CollectionNode.Inst.defineAttribute('preppedReps');
 
 //  ------------------------------------------------------------------------
@@ -4453,7 +4458,9 @@ function(anObject, aParamHash) {
     var templateName,
         templateFunc,
 
-        result,
+        resultStr,
+        resultNode,
+        resultTPNode,
 
         str,
         urn;
@@ -4464,14 +4471,34 @@ function(anObject, aParamHash) {
         templateFunc = TP.uc(templateName).getResource();
         if (TP.isCallable(templateFunc)) {
             //  Run the transform Function
-            result = templateFunc.transform(anObject, aParamHash);
+            resultStr = templateFunc.transform(anObject, aParamHash);
 
             //  Strip out any 'attr="null"' attributes - existence of null
             //  attributes can cause unintended consequences.
             TP.regex.XML_ATTR_CONTAINING_NULL.lastIndex = 0;
-            result = result.strip(TP.regex.XML_ATTR_CONTAINING_NULL);
+            resultStr = resultStr.strip(TP.regex.XML_ATTR_CONTAINING_NULL);
 
-            return result;
+            //  Now, we need to make sure that any constructs that were
+            //  generated into the result that need tag compilation are
+            //  processed.
+
+            //  Try to create a real Node from the supplied content (passing
+            //  'true' to TP.nodeAsString() so that it will report parsing
+            //  errors). If we can't parse a valid Node from the content, we
+            //  just return the String.
+            if (TP.isElement(
+                    resultNode = TP.nodeFromString(resultStr, null, true)) &&
+                TP.notTrue(this.get('$alreadyTransforming'))) {
+
+                this.set('$alreadyTransforming', true);
+                resultTPNode = TP.wrap(resultNode);
+                resultTPNode.compile();
+                this.set('$alreadyTransforming', false);
+
+                return resultTPNode.asString();
+            } else {
+                return resultStr;
+            }
         }
     }
 
@@ -4481,8 +4508,9 @@ function(anObject, aParamHash) {
     //  We want a compiled Function so we go ahead and compile a Function
     //  off of our String representation, but don't register the Function as
     //  the template.
-    if (TP.notEmpty(str) && TP.isCallable(
-                        templateFunc = str.compile(null, true, false))) {
+    if (TP.notEmpty(str) &&
+        TP.isCallable(templateFunc = str.compile(null, true, false))) {
+
         //  Create a template name per tsh:template model.
         //  TODO:   convert genID into a "hash code" for uniquing.
         templateName = 'template_' + TP.genID();
@@ -4495,21 +4523,37 @@ function(anObject, aParamHash) {
 
     if (TP.isCallable(templateFunc)) {
         //  Run the transform Function
-        result = templateFunc.transform(anObject, aParamHash);
+        resultStr = templateFunc.transform(anObject, aParamHash);
 
         //  Strip out any 'attr="null"' attributes - existence of null
         //  attributes can cause unintended consequences.
         TP.regex.XML_ATTR_CONTAINING_NULL.lastIndex = 0;
-        result = result.strip(TP.regex.XML_ATTR_CONTAINING_NULL);
+        resultStr = resultStr.strip(TP.regex.XML_ATTR_CONTAINING_NULL);
 
-        return result;
+        //  Now, we need to make sure that any constructs that were generated
+        //  into the result that need tag compilation are processed.
+
+        //  Try to create a real Node from the supplied content (passing 'true'
+        //  to TP.nodeAsString() so that it will report parsing errors). If we
+        //  can't parse a valid Node from the content, we just return the
+        //  String.
+        if (TP.isElement(
+                resultNode = TP.nodeFromString(resultStr, null, true)) &&
+            TP.notTrue(this.get('$alreadyTransforming'))) {
+
+            this.set('$alreadyTransforming', true);
+            resultTPNode = TP.wrap(resultNode);
+            resultTPNode.compile();
+            this.set('$alreadyTransforming', false);
+
+            return resultTPNode.asString();
+        } else {
+            return resultStr;
+        }
     }
 
     //  Didn't have a template function and couldn't build one either.
-
-    //  TODO: Raise an exception?
-
-    return null;
+    return this.raise('TP.sig.InvalidFunction');
 });
 
 //  ------------------------------------------------------------------------
@@ -10425,6 +10469,70 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('defineBinding',
+function(targetAttributeName, resourceOrURI, sourceAttributeName) {
+
+    /**
+     * @name defineBinding
+     * @synopsis Adds a binding to the instance receiver.
+     * @param {String} targetAttributeName The target attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
+     * @returns {Object} The receiver.
+     * @todo
+     */
+
+    var targetAttr;
+
+    targetAttr = targetAttributeName;
+
+    //  If the targetAttributeName is either '@content' or '@value', then we
+    //  trim it down to 'content' or 'value' - these have special meanings in
+    //  TIBET.
+    if (targetAttr === '@content') {
+        targetAttr = 'content';
+    } else if (targetAttr === '@value') {
+        targetAttr = 'value';
+    }
+
+    return this.callNextMethod(targetAttr, resourceOrURI, sourceAttributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('destroyBinding',
+function(targetAttributeName, resourceOrURI, sourceAttributeName) {
+
+    /**
+     * @name destroyBinding
+     * @synopsis Removes a binding from the instance receiver.
+     * @param {String} targetAttributeName The target attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
+     * @returns {Object} The receiver.
+     * @todo
+     */
+
+    var targetAttr;
+
+    targetAttr = targetAttributeName;
+
+    //  If the targetAttributeName is either '@content' or '@value', then we
+    //  trim it down to 'content' or 'value' - these have special meanings in
+    //  TIBET.
+    if (targetAttr === '@content') {
+        targetAttr = 'content';
+    } else if (targetAttr === '@value') {
+        targetAttr = 'value';
+    }
+
+    return this.callNextMethod(targetAttr, resourceOrURI, sourceAttributeName);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('get',
 function(attributeName) {
 
@@ -12923,7 +13031,8 @@ function(anObject, aParamHash) {
 
         dataNode,
 
-        result;
+        result,
+        resultTPNode;
 
     TP.stop('break.content_transform');
 
@@ -12945,7 +13054,20 @@ function(anObject, aParamHash) {
 
     result = TP.documentTransformNode(node, dataNode, aParamHash);
 
-    if (TP.isNode(result)) {
+    //  Now, we need to make sure that any constructs that were generated into
+    //  the result that need tag compilation are processed.
+
+    if (TP.isElement(result) &&
+        TP.notTrue(this.get('$alreadyTransforming'))) {
+
+        this.set('$alreadyTransforming', true);
+        resultTPNode = TP.wrap(result);
+        resultTPNode.compile();
+        this.set('$alreadyTransforming', false);
+
+        return resultTPNode.asString();
+
+    } else if (TP.isNode(result)) {
         return TP.str(result);
     }
 
