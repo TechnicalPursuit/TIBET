@@ -2158,6 +2158,11 @@ function() {
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
 
+                //  Some browsers aggressively optimize by not shifting focus
+                //  until it is shown that there is user interaction. Therefore,
+                //  we focus the body element manually.
+                bodyElem.focus();
+
                 //  ---
 
                 test.then(
