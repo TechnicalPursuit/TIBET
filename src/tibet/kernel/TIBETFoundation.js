@@ -5817,9 +5817,10 @@ function(attributeName, facetName) {
 
     var pathVal;
 
-    if (TP.isValid(pathVal = this.getFacetValueFor(attributeName, facetName)) &&
-        pathVal.isAccessPath()) {
-            return pathVal;
+    pathVal = this.getFacetSettingFor(attributeName, facetName);
+
+    if (TP.isValid(pathVal) && pathVal.isAccessPath()) {
+        return pathVal;
     }
 
     return null;
@@ -5848,14 +5849,14 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('getFacetValueFor',
+TP.defineMetaInstMethod('getFacetSettingFor',
 function(attributeName, facetName) {
 
     /**
-     * @name getFacetValueFor
-     * @synopsis Returns any facet value, if any, for the attribute and facet
-     *     provided. See the 'TP.sys.addMetadata()' call for more information
-     *     about facets.
+     * @name getFacetSettingFor
+     * @synopsis Returns any facet setting, if any, for the type attribute and
+     *     facet provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about facets.
      * @param {String} attributeName The name of the attribute to get the facet
      *     value for.
      * @param {String} facetName The name of the facet to get the facet value
