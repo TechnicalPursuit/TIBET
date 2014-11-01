@@ -203,17 +203,30 @@ function(aString) {
 //  ------------------------------------------------------------------------
 
 TP.core.JSONContent.Type.defineMethod('validate',
-function(aString) {
+function(anObject) {
 
     /**
      * @name validate
      * @synopsis Returns true if the string parameter is valid
      *     TP.core.JSONContent.
-     * @param {String} aString A string to test.
-     * @returns {Boolean}
+     * @param {Object} anObject The object to test.
+     * @returns {Boolean} True if the object can be validated.
      */
 
-    return TP.notEmpty(TP.json2js(aString));
+    var anObj,
+        str;
+
+    if (TP.notValid(anObj = anObject.get('data'))) {
+        anObj = anObject;
+    }
+
+    str = TP.json(anObj);
+
+    if (TP.isValid(TP.json2js(str))) {
+        return this.callNextMethod(anObj);
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
