@@ -5958,15 +5958,18 @@ function(aPath) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('getDescriptorFor',
-function(attributeName) {
+function(attributeName, includeSupertypes) {
 
     /**
      * @name getDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the attribute
+     * @synopsis Returns the property descriptor, if any, for the type attribute
      *     provided. See the 'TP.sys.addMetadata()' call for more information
      *     about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
@@ -5977,8 +5980,41 @@ function(attributeName) {
                             this.getName() + '_Type_' + attributeName);
 
     if (TP.isValid(entry)) {
-        //  NB: We use primitive property access here since 'descriptorObj' is
-        //  property of a property descriptor
+        //  NB: We use primitive property access here since 'descriptorObj'
+        //  is property of a property descriptor
+        return entry.descriptorObj;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getInstDescriptorFor',
+function(attributeName, includeSupertypes) {
+
+    /**
+     * @name getInstDescriptorFor
+     * @synopsis Returns the property descriptor, if any, for the instance
+     *     attribute provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about property descriptors.
+     * @param {String} attributeName The name of the attribute to get the
+     *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
+     * @returns {Object} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    var entry;
+
+    entry = TP.sys.$$meta_attributes.at(
+                            this.getName() + '_Inst_' + attributeName);
+
+    if (TP.isValid(entry)) {
+        //  NB: We use primitive property access here since 'descriptorObj'
+        //  is property of a property descriptor
         return entry.descriptorObj;
     }
 
@@ -5988,34 +6024,25 @@ function(attributeName) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('getDescriptorFor',
-function(attributeName) {
+function(attributeName, includeSupertypes) {
 
     /**
      * @name getDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the attribute
-     *     provided. See the 'TP.sys.addMetadata()' call for more information
-     *     about property descriptors.
+     * @synopsis Returns the property descriptor, if any, for the instance
+     *     attribute provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
 
-    var entry;
-
-    entry = TP.sys.$$meta_attributes.at(
-                            this.getTypeName() + '_Inst_' + attributeName);
-
-    if (TP.isValid(entry)) {
-        //  NB: We use primitive property access here since 'descriptorObj' is
-        //  property of a property descriptor
-        return entry.descriptorObj;
-    }
-
-    return null;
+    return this.getType().getInstDescriptorFor(attributeName,
+                                                includeSupertypes);
 });
-
-//  ------------------------------------------------------------------------
 //  TP.lang.RootObject - INSTANCE CONSTRUCTION
 //  ------------------------------------------------------------------------
 

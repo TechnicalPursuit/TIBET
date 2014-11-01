@@ -5829,15 +5829,42 @@ function(attributeName, facetName) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getDescriptorFor',
-function(attributeName) {
+function(attributeName, includeSupertypes) {
 
     /**
      * @name getDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the attribute
-     *     provided. See the 'TP.sys.addMetadata()' call for more information
-     *     about property descriptors.
+     * @synopsis Returns the property descriptor, if any, for the type
+     *     attribute provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
+     * @returns {Object} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    //  At this level, we just return null. See the implementation on
+    //  TP.lang.RootObject for a real implementation of this method.
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getInstDescriptorFor',
+function(attributeName, includeSupertypes) {
+
+    /**
+     * @name getInstDescriptorFor
+     * @synopsis Returns the property descriptor, if any, for the instance
+     *     attribute provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about property descriptors.
+     * @param {String} attributeName The name of the attribute to get the
+     *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
