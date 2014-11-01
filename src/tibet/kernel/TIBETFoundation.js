@@ -5879,20 +5879,6 @@ function(attributeName, facetName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineCommonMethod('isAccessPath',
-function() {
-
-    /**
-     * @name isAccessPath
-     * @synopsis Returns whether or not the receiver is an access path object.
-     * @returns {Boolean} False - most receivers are not a path.
-     */
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.defineMetaInstMethod('get',
 function(attributeName) {
 
@@ -5961,6 +5947,20 @@ function(attributeName) {
 
     //  let the standard mechanism handle it
     return this.getProperty(attributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineCommonMethod('isAccessPath',
+function() {
+
+    /**
+     * @name isAccessPath
+     * @synopsis Returns whether or not the receiver is an access path object.
+     * @returns {Boolean} False - most receivers are not a path.
+     */
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
