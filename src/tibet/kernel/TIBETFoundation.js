@@ -5893,37 +5893,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('setFacetValueFor',
-function(attributeName, facetName, facetValue) {
-
-    /**
-     * @name setFacetValueFor
-     * @synopsis Sets the facet value for the attribute and facet provided.
-     *     See the 'TP.sys.addMetadata()' call for more information about
-     *     facets.
-     * @param {String} attributeName The name of the attribute to get the facet
-     *     value for.
-     * @param {String} facetName The name of the facet to get the facet value
-     *     for.
-     * @param {String} facetValue The value to set the facet to.
-     * @returns {Object} The value of the supplied facet of the supplied
-     *     attribute.
-     */
-
-    var descriptor;
-
-    descriptor = this.getDescriptorFor(attributeName);
-    //  NB: We use primitive property access here since descriptors are
-    //  primitive object.
-    if (TP.isValid(descriptor)) {
-        descriptor[facetName] = facetValue;
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.defineMetaInstMethod('get',
 function(attributeName) {
 
