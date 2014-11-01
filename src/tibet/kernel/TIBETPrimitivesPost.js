@@ -4795,7 +4795,7 @@ function(anObject, aType) {
     var type;
 
     //  not much to check, but we won't call this failure
-    if (TP.notValid(aType)) {
+    if (!TP.isType(aType)) {
         return true;
     }
 
