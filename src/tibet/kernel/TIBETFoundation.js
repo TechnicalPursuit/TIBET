@@ -4101,7 +4101,7 @@ func = function(anAspect, anAction, aDescription) {
     //  generic Change to see 'aspect'Change notifications, even if those
     //  'aspect'Change signals haven't been defined as being subtypes of Change
     //  (although we also supply 'TP.sig.Change' as the default signal type here
-    //  so that undefined aspect signals will use that type.
+    //  so that undefined aspect signals will use that type).
     TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, 'TP.sig.Change');
 
     return this;
