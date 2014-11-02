@@ -4095,14 +4095,15 @@ func = function(anAspect, anAction, aDescription) {
     }
     desc.atPutIfAbsent('aspect', asp);
     desc.atPutIfAbsent('action', anAction || TP.UPDATE);
+    desc.atPutIfAbsent('facet', 'value');
     desc.atPutIfAbsent('target', this);
 
     //  Note that we force the firing policy here. This allows observers of a
     //  generic Change to see 'aspect'Change notifications, even if those
     //  'aspect'Change signals haven't been defined as being subtypes of Change
-    //  (although we also supply 'TP.sig.Change' as the default signal type here
-    //  so that undefined aspect signals will use that type).
-    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, 'TP.sig.Change');
+    //  (although we also supply 'TP.sig.ValueChange' as the default signal type
+    //  here so that undefined aspect signals will use that type).
+    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, 'TP.sig.ValueChange');
 
     return this;
 });
