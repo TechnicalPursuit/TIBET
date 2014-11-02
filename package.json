@@ -40,6 +40,7 @@
         "codemirror": "TechnicalPursuit/codemirror#4.3.0",
         "connect": "*",
         "connect-gzip-static": "*",
+        "csslint": "*",
         "d3": "TechnicalPursuit/d3",
         "diff": "*",
         "jquery": "TechnicalPursuit/jquery",
