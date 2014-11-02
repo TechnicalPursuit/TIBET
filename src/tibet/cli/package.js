@@ -205,6 +205,7 @@ Cmd.prototype.execute = function() {
     var list;       // The result list of asset references.
 
     this.configurePackageOptions();
+
     list = this.getPackageAssetList();
 
     // TODO: try/catch for errors? need a result code from the overall loop.
