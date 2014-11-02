@@ -4573,7 +4573,7 @@ function(anObject) {
      *     instance of the type and failing that checks for each supertype as an
      *     option.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean}
+     * @returns {Boolean} True if the object can be validated.
      */
 
     //  function instances can be used to validate via invocation
@@ -4617,16 +4617,251 @@ function(anObject) {
     /**
      * @name validate
      * @synopsis Tests the incoming value to see if it represents a valid
-     *     instance of the receiving type. In performing this test the receiver
-     *     will use the callBestMethod approach to find a validation suitable
-     *     for any supertype of the inbound data if there is no specific
-     *     function for the object's direct type.
+     *     instance of the receiving type.
+     * @description In performing this test the receiver will begin with
+     *     validating any aspects on the supplied that match any validity facets
+     *     on the receiver. If none can be found, then it will use the
+     *     callBestMethod() approach to find a validation suitable for any
+     *     supertype of the inbound data if there is no specific function for
+     *     the object's direct type.
      * @param {Object} anObject The object to test.
      * @returns {Boolean} True if the object can be validated.
      */
 
-    //  context, specializer, prefix, suffix, fallback, arglist
-    return this.callBestMethod(arguments, this, 'validate');
+    var validityInfo,
+        setAtLeastOne,
+    
+        isValid;
+
+    //  First, attempt to validate any aspects on the supplied object. This will
+    //  return a Hash of validity information.
+    validityInfo = this.validateAspects(anObject);
+
+    setAtLeastOne = false;
+
+    isValid = true;
+
+    //  Loop over the validity information hash. There has to be at least one
+    //  that returned a non 'TP.NO_RESULT' value in order for us to not just use
+    //  the callBestMethod() approach at the bottom.
+    validityInfo.perform(
+        function(kvPair) {
+  
+            var truthVal;
+
+            //  If there was at least one validity test that returned either
+            //  true or false (but not TP.NO_RESULT), then we use that value to
+            //  set the facet on the object and to avoid the callBestMethod()
+            //  approach below.
+            if ((truthVal = kvPair.last()) !== TP.NO_RESULT) {
+
+                anObject.setFacet(kvPair.first(), TP.VALID, truthVal);
+
+                setAtLeastOne = true;
+
+                //  If isValid is true, we go ahead and set it to the truth
+                //  value. If it's already false, we do *not* want to possibly
+                //  set it to true, since this operation can be considered a
+                //  'union' of all truth values.
+                if (isValid) {
+                    isValid = truthVal;
+                }
+            }
+        });
+
+    //  We didn't find at least one validity test - use callBestMethod()
+    //  approach.
+    if (!setAtLeastOne) {
+        //  context, specializer, prefix, suffix, fallback, arglist
+        isValid = this.callBestMethod(arguments, this, 'validate');
+    }
+
+    return isValid;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('validateAspects',
+function(anObject, aspectNames) {
+
+    /**
+     * @name validateAspects
+     * @synopsis Validates the aspects of the supplied object against any
+     *     validity facets that are defined by the receiver.
+     * @param {Object} anObject The object to test.
+     * @param {Array} aspectNames An array of aspect names to test. If not
+     *     supplied, then all of the aspects of the supplied object are tested.
+     * @returns {Boolean} The result of executing all of the validity facets for
+     *     the aspect names.
+     */
+
+    var hadFacetCheck,
+        constraintsResult,
+
+        aspectsToCheck,
+
+        results,
+
+        len,
+        i,
+
+        aspectName,
+        constraints;
+
+    hadFacetCheck = false;
+
+    //  No aspect names supplied - use all of the aspects of the supplied
+    //  object.
+    if (TP.isEmpty(aspectNames)) {
+        aspectsToCheck = anObject.getKeys();
+    } else {
+        aspectsToCheck = aspectNames;
+    }
+
+    //  The result of this method is hash containing the aspect name and the
+    //  result of running that aspect's validity facet.
+    results = TP.hc();
+
+    len = aspectsToCheck.getSize();
+    for (i = 0; i < len; i++) {
+
+        aspectName = aspectsToCheck.at(i);
+
+        //  Get the facet setting (not the value - we'll compute that) for the
+        //  validity facet of the aspect. If there is no validity constraint for
+        //  this aspect, then put a value of TP.NO_RESULT into that result entry
+        //  and move on.
+        if (TP.notValid(constraints = this.getInstFacetSettingFor(
+                                        aspectName,
+                                        TP.VALID))) {
+        
+            results.atPut(aspectName, TP.NO_RESULT);
+
+            continue;
+        }
+
+        hadFacetCheck = true;
+
+        //  Otherwise, there was a set of validity constraints (a literal Object
+        //  containing 1...n of them). Execute those constraints and put the
+        //  result into the result entry for that aspect.
+
+        constraintsResult = this.validateConstraintsOn(
+                                anObject.get(aspectName), constraints);
+
+        results.atPut(aspectName, constraintsResult);
+    }
+
+    return results;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('validateConstraintsOn',
+function(anObject, constraints) {
+
+    /**
+     * @name validateConstraints
+     * @synopsis Validates a supplied object against a set of validity
+     *     constraints supplied in a second, literal POJO object.
+     * @param {Object} anObject The object to test.
+     * @param {Object} constraints The POJO object containing 1...n validity
+     *     constraints. These include:
+               dataType (JS/TIBET type object, String resolved to JS/TIBET type
+                            object, URI resolved to JS/TIBET type object)
+               enumeration (Array, comma-separated String, AccessPath)
+               fractionDigits (Number, String, AccessPath to either)
+               maxExclusive (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               maxInclusive (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               maxLength (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               maxValue (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               minExclusive (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               minInclusive (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               minLength (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               minValue (Number or object that can be 'asNumber'ed, AccessPath)
+               pattern (RegExp, AccessPath)
+               totalDigits (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               whitespace
+
+               equal (Object that can be compared, AccessPath)
+               notEqual (Object that can be compared, AccessPath)
+               unique
+               moreThan (Number or object that can be 'asNumber'ed, AccessPath)
+               lessThan (Number or object that can be 'asNumber'ed, AccessPath)
+
+               maxSelected (Number or object that can be 'asNumber'ed,
+                            AccessPath)
+               minSelected (Number or object that can be 'asNumber'ed,
+                            AccessPath)
+     * @returns {Boolean} Whether or not the object passed the supplied validity
+     *     constraints.
+     */
+
+    var constraintNames,
+
+        len,
+        i,
+    
+        constraintName,
+        constraint,
+    
+        result;
+
+    //  Set the initial result to false.
+    result = false;
+
+    //  Get all of the keys from the literal POJO object. This will be the names
+    //  of all of our constraints.
+    constraintNames = TP.keys(constraints);
+
+    len = constraintNames.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Grab the constraint.
+        constraintName = constraintNames.at(i);
+        constraint = constraints[constraintName];
+
+        switch(constraintName) {
+
+            case 'dataType':
+
+                //  If the constraint is 'dataType', then try to obtain a JS or
+                //  TIBET type object given a number of different ways - URI,
+                //  String, etc.
+                if (!TP.isType(constraint)) {
+                    if (TP.isURI(constraint)) {
+                        constraint = TP.uc(constraint).getResource();
+                    }
+
+                    if (TP.isString(constraint)) {
+                        constraint = TP.sys.getTypeByName(constraint);
+                    }
+                }
+
+                //  If we successfully got a type, then validate the supplied
+                //  object with it.
+                if (TP.isType(constraint)) {
+                    result = constraint.validate(anObject);
+
+                    //  If the result was false, then there's no need to proceed
+                    //  (all tests must pass). So just break and then we'll
+                    //  return false.
+                    if (!result) {
+                        break;
+                    }
+                }
+        }
+    }
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
@@ -5900,6 +6135,8 @@ function(propertyName, methodBody) {
 });
 
 //  ------------------------------------------------------------------------
+//  Access Path Aliases
+//  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('getAccessPathAliases',
 function(aPath) {
@@ -5956,17 +6193,22 @@ function(aPath) {
 });
 
 //  ------------------------------------------------------------------------
+//  Attribute Property Descriptors
+//  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('getDescriptorFor',
-function(attributeName) {
+function(attributeName, includeSupertypes) {
 
     /**
      * @name getDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the attribute
+     * @synopsis Returns the property descriptor, if any, for the type attribute
      *     provided. See the 'TP.sys.addMetadata()' call for more information
      *     about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
@@ -5977,8 +6219,41 @@ function(attributeName) {
                             this.getName() + '_Type_' + attributeName);
 
     if (TP.isValid(entry)) {
-        //  NB: We use primitive property access here since 'descriptorObj' is
-        //  property of a property descriptor
+        //  NB: We use primitive property access here since 'descriptorObj'
+        //  is property of a property descriptor
+        return entry.descriptorObj;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getInstDescriptorFor',
+function(attributeName, includeSupertypes) {
+
+    /**
+     * @name getInstDescriptorFor
+     * @synopsis Returns the property descriptor, if any, for the instance
+     *     attribute provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about property descriptors.
+     * @param {String} attributeName The name of the attribute to get the
+     *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
+     * @returns {Object} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    var entry;
+
+    entry = TP.sys.$$meta_attributes.at(
+                            this.getName() + '_Inst_' + attributeName);
+
+    if (TP.isValid(entry)) {
+        //  NB: We use primitive property access here since 'descriptorObj'
+        //  is property of a property descriptor
         return entry.descriptorObj;
     }
 
@@ -5988,31 +6263,310 @@ function(attributeName) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('getDescriptorFor',
-function(attributeName) {
+function(attributeName, includeSupertypes) {
 
     /**
      * @name getDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the attribute
-     *     provided. See the 'TP.sys.addMetadata()' call for more information
-     *     about property descriptors.
+     * @synopsis Returns the property descriptor, if any, for the instance
+     *     attribute provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
 
-    var entry;
+    return this.getType().getInstDescriptorFor(attributeName,
+                                                includeSupertypes);
+});
 
-    entry = TP.sys.$$meta_attributes.at(
-                            this.getTypeName() + '_Inst_' + attributeName);
+//  ------------------------------------------------------------------------
+//  Attribute Facets
+//  ------------------------------------------------------------------------
 
-    if (TP.isValid(entry)) {
-        //  NB: We use primitive property access here since 'descriptorObj' is
-        //  property of a property descriptor
-        return entry.descriptorObj;
+TP.lang.RootObject.Inst.defineMethod('checkFacets',
+function(aspectName, facetList) {
+
+    /**
+     * @name checkFacets
+     * @synopsis Checks the facets of the supplied aspect on the receiver
+     *     according to the list of facets supplied (or TP.FACET_NAMES if one
+     *     isn't supplied). If a valid facet value can be computed for a
+     *     particular aspect, that facet value is set for that aspect.
+     * @param {String} aspectName The name of the aspect to check the facets
+     *     for.
+     * @param {Array} facetList The list of facets to check. This is an optional
+     *     parameter.
+     * @returns {TP.lang.RootObject} The receiver.
+     */
+
+    var facets,
+
+        len,
+        i,
+
+        facetName,
+        result;
+
+    //  Default the set of facets to check to TP.FACET_NAMES, which are the list
+    //  of standard facets for all TIBET attributes.
+    facets = TP.ifInvalid(facetList, TP.FACET_NAMES);
+
+    len = facets.getSize();
+    for (i = 0; i < len; i++) {
+
+        facetName = facets.at(i);
+
+        //  Grab the facet value (which is different than the facet setting -
+        //  the facet value could be a computed value).
+        if (TP.isValid(result = this.getFacetValueFor(aspectName, facetName))) {
+
+            //  We got a valid valid - set it.
+            this.setFacet(aspectName, facetName, result);
+        }
     }
 
-    return null;
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('facetChanged',
+function(anAspect, aFacet, aDescription) {
+
+    /**
+     * @name facetChanged
+     * @synopsis Notifies observers that the named facet of the receiver has
+     *     changed.
+     * @param {String} anAspect The aspect of the receiver that changed. This is
+     *     usually an attribute name.
+     * @param {String} aFacet The facet of the receiver that changed. This is
+     * usually one of the standard TIBET facets listed in TP.FACET_NAMES.
+     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     *     change.
+     * @returns {Object} The receiver.
+     * @signals Change
+     */
+
+    var asp,
+        baseSig,
+        sig,
+        desc;
+
+    if (!this.shouldSignalChange()) {
+        return;
+    }
+
+    //  Build up the signal name we'll be firing.
+    asp = TP.ifKeyInvalid(aDescription, 'aspect', anAspect) || 'value';
+
+    //  The 'base signal' name is the actual real Signal type that gets fired
+    //  (as opposed to the aspectName + facetName + 'Change' spoofed signal that
+    //  is computed and observed). This will be that signal's supertype.
+
+    //  In this case, the base signal name will be something like
+    //  'TP.sig.RelevantChange'.
+    baseSig = 'TP.sig.' + aFacet.asStartUpper() + 'Change';
+
+    //  The signal name will be the spoofed ('unreal') signal name. In this
+    //  case, it might be something like 'SSNRelevantChange'
+    sig = asp.toString().asStartUpper() + aFacet.asStartUpper() + 'Change';
+
+    //  Build up a standard form for the description hash.
+    desc = TP.isValid(aDescription) ? aDescription : TP.hc();
+    if (!TP.canInvoke(desc, 'atPutIfAbsent')) {
+        this.raise('TP.sig.InvalidParameter',
+                    'Description not a collection.');
+
+        return;
+    }
+    desc.atPutIfAbsent('aspect', asp);
+    desc.atPutIfAbsent('action', TP.UPDATE);
+    desc.atPutIfAbsent('facet', aFacet);
+    desc.atPutIfAbsent('target', this);
+
+    //  Fire the signal. Note that we force the firing policy here. This allows
+    //  observers of a generic 'facet change' signal of some sort to see 'aspect'
+    //  facet Change notifications, even if those 'aspect' facet Change signals
+    //  haven't been defined as being subtypes of FacetChange (although we also
+    //  supply the base signal name as the default signal type here so that
+    //  undefined aspect signals will use that type).
+    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, baseSig);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('getFacetValueFor',
+function(aspectName, facetName) {
+
+    /**
+     * @name getFacetValueFor
+     * @synopsis Returns the facet value for the named facet of the named aspect
+     *     on the receiver.
+     * @description Note that the facet value is *not* the same as the facet
+     *     setting. The facet setting is the mechanism, supplied by the code
+     *     author, of computing the facet value. It may be a simple literal
+     *     value, an access path or the name of a method to execute on the
+     *     receiver. These are all different ways that a facet value may be
+     *     obtained on the receiver.
+     * @param {String} aspectName The name of the aspect to return the facet
+     *      value for.
+     * @param {String} facetName The name of the facet to return the facet
+     *      value for.
+     * @returns {Object} The value of the named facet of the named aspect on the
+     *      receiver.
+     */
+
+    var facetSetting,
+        facetValue;
+
+    //  First, make sure that the aspect has a facet named by the facetName. If
+    //  not, just return null
+    if (TP.notValid(facetSetting = this.getType().getInstFacetSettingFor(
+                                                    aspectName,
+                                                    facetName))) {
+        return null;
+    }
+
+    //  We compute the facet value differently depending on whether we're
+    //  computing the validity facet or not.
+    switch(facetName) {
+
+        case TP.VALID:
+
+            //  The validity facet is computed by a method, since it is a more
+            //  complex calculation than any of the other facets.
+            facetValue = this.getType().validateConstraintsOn(
+                                this.get(aspectName), facetSetting);
+
+        break;
+
+        default:
+
+            //  Otherwise, use a series of object tests to try to obtain the
+            //  best value for the facet.
+            if (TP.isBoolean(facetSetting)) {
+                facetValue = facetSetting;
+            } else if (TP.isArray(facetSetting)) {
+                facetValue = facetSetting;
+            } else if (facetSetting.isAccessPath()) {
+                facetValue = facetSetting.executeGet(this);
+            } else if (TP.isString(facetSetting) &&
+                        TP.isMethod(this[facetSetting])) {
+                facetValue = this[facetSetting]();
+            } else if (TP.isString(facetSetting)) {
+                facetValue = facetSetting;
+            }
+
+        break;
+    }
+
+    return facetValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('$setFacet',
+function(aspectName, facetName, facetValue, shouldSignal) {
+
+    /**
+     * @name $setFacet
+     * @synopsis Sets the value of the named facet of the named aspect to the
+     *     value provided. This method should be called from any 'custom facet
+     *     setter' in order to a) set the property and b) signal a change, if
+     *     configured.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {Object} The receiver.
+     */
+
+    var facetSlotName,
+        currentFacetVal,
+    
+        sigFlag;
+
+    //  If the facet is 'value', then use the standard 'set' mechanism.
+    if (facetName === 'value') {
+        return this.set(aspectName, facetValue);
+    }
+
+    //  The internal facet slot name will always be something like
+    //  '$SSN_required'.
+    facetSlotName = '$' + aspectName + '_' + facetName;
+
+    //  Grab the current value of the internal slot and compare it to the
+    //  supplied value. Only go through the act of setting it and signaling a
+    //  change if they're different.
+    currentFacetVal = this.get(facetSlotName);
+    if (currentFacetVal !== facetValue) {
+
+        //  If the internal slot is not defined on the receiver, define it.
+        //  Otherwise, TIBET's '$set' method will whine ;-).
+        if (TP.notDefined(this[facetSlotName])) {
+            this.defineAttribute(facetSlotName);
+        }
+
+        //  Use '$set' here along with false to make sure the core '$set' method
+        //  does *not* signal change with this internal slot - we do a custom
+        //  change signal below.
+        this.$set(facetSlotName, facetValue, false);
+
+        if (TP.notValid(sigFlag = shouldSignal)) {
+            sigFlag = this.shouldSignalChange();
+        }
+
+        if (sigFlag) {
+
+            //  Call facetChanged with all of the appropriate information.
+            this.facetChanged(aspectName,
+                                facetName,
+                                TP.hc(TP.OLDVAL, currentFacetVal,
+                                        TP.NEWVAL, facetValue));
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('setFacet',
+function(aspectName, facetName, facetValue, shouldSignal) {
+
+    /**
+     * @name setFacet
+     * @synopsis Sets the value of the named facet of the named aspect to the
+     *     value provided.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {Object} The receiver.
+     */
+
+    var funcName;
+
+    //  First, check to see if the receiver provides a 'custom setter' method
+    //  for this facet/aspect combination. Something like 'setSSNRequired'.
+    funcName = 'set' + aspectName.asStartUpper() + facetName.asStartUpper();
+
+    if (TP.canInvoke(this, funcName)) {
+        this[funcName](facetValue);
+    } else {
+        //  No custom setter implemented - use the standard $setFacet() method.
+        this.$setFacet(aspectName, facetName, facetValue, shouldSignal);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

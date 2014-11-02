@@ -4095,14 +4095,15 @@ func = function(anAspect, anAction, aDescription) {
     }
     desc.atPutIfAbsent('aspect', asp);
     desc.atPutIfAbsent('action', anAction || TP.UPDATE);
+    desc.atPutIfAbsent('facet', 'value');
     desc.atPutIfAbsent('target', this);
 
-    //  Note that we force the firing policy here. This allows observers of a
-    //  generic Change to see 'aspect'Change notifications, even if those
-    //  'aspect'Change signals haven't been defined as being subtypes of Change
-    //  (although we also supply 'TP.sig.Change' as the default signal type here
-    //  so that undefined aspect signals will use that type.
-    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, 'TP.sig.Change');
+    //  Fire the signal. Note that we force the firing policy here. This allows
+    //  observers of a generic Change to see 'aspect'Change notifications, even
+    //  if those 'aspect'Change signals haven't been defined as being subtypes
+    //  of Change (although we also supply 'TP.sig.ValueChange' as the default
+    //  signal type here so that undefined aspect signals will use that type).
+    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, 'TP.sig.ValueChange');
 
     return this;
 });
@@ -5817,9 +5818,10 @@ function(attributeName, facetName) {
 
     var pathVal;
 
-    if (TP.isValid(pathVal = this.getFacetValueFor(attributeName, facetName)) &&
-        pathVal.isAccessPath()) {
-            return pathVal;
+    pathVal = this.getFacetSettingFor(attributeName, facetName);
+
+    if (TP.isValid(pathVal) && pathVal.isAccessPath()) {
+        return pathVal;
     }
 
     return null;
@@ -5828,15 +5830,18 @@ function(attributeName, facetName) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getDescriptorFor',
-function(attributeName) {
+function(attributeName, includeSupertypes) {
 
     /**
      * @name getDescriptorFor
-     * @synopsis Returns the property descriptor, if any, for the attribute
-     *     provided. See the 'TP.sys.addMetadata()' call for more information
-     *     about property descriptors.
+     * @synopsis Returns the property descriptor, if any, for the type
+     *     attribute provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about property descriptors.
      * @param {String} attributeName The name of the attribute to get the
      *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
      * @returns {Object} The property descriptor of the attribute on the
      *     receiver.
      */
@@ -5848,14 +5853,38 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('getFacetValueFor',
+TP.defineMetaInstMethod('getInstDescriptorFor',
+function(attributeName, includeSupertypes) {
+
+    /**
+     * @name getInstDescriptorFor
+     * @synopsis Returns the property descriptor, if any, for the instance
+     *     attribute provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about property descriptors.
+     * @param {String} attributeName The name of the attribute to get the
+     *     property descriptor for.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property descriptors. The
+     *     default is true.
+     * @returns {Object} The property descriptor of the attribute on the
+     *     receiver.
+     */
+
+    //  At this level, we just return null. See the implementation on
+    //  TP.lang.RootObject for a real implementation of this method.
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getFacetSettingFor',
 function(attributeName, facetName) {
 
     /**
-     * @name getFacetValueFor
-     * @synopsis Returns any facet value, if any, for the attribute and facet
-     *     provided. See the 'TP.sys.addMetadata()' call for more information
-     *     about facets.
+     * @name getFacetSettingFor
+     * @synopsis Returns any facet setting, if any, for the type attribute and
+     *     facet provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about facets.
      * @param {String} attributeName The name of the attribute to get the facet
      *     value for.
      * @param {String} facetName The name of the facet to get the facet value
@@ -5878,47 +5907,32 @@ function(attributeName, facetName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineCommonMethod('isAccessPath',
-function() {
+TP.defineMetaInstMethod('getInstFacetSettingFor',
+function(attributeName, facetName) {
 
     /**
-     * @name isAccessPath
-     * @synopsis Returns whether or not the receiver is an access path object.
-     * @returns {Boolean} False - most receivers are not a path.
-     */
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.defineMetaInstMethod('setFacetValueFor',
-function(attributeName, facetName, facetValue) {
-
-    /**
-     * @name setFacetValueFor
-     * @synopsis Sets the facet value for the attribute and facet provided.
-     *     See the 'TP.sys.addMetadata()' call for more information about
-     *     facets.
+     * @name getInstFacetSettingFor
+     * @synopsis Returns any facet value, if any, for the instance attribute and
+     *     facet provided. See the 'TP.sys.addMetadata()' call for more
+     *     information about facets.
      * @param {String} attributeName The name of the attribute to get the facet
      *     value for.
      * @param {String} facetName The name of the facet to get the facet value
      *     for.
-     * @param {String} facetValue The value to set the facet to.
      * @returns {Object} The value of the supplied facet of the supplied
      *     attribute.
      */
 
     var descriptor;
 
-    descriptor = this.getDescriptorFor(attributeName);
+    descriptor = this.getInstDescriptorFor(attributeName);
     //  NB: We use primitive property access here since descriptors are
     //  primitive object.
     if (TP.isValid(descriptor)) {
-        descriptor[facetName] = facetValue;
+        return descriptor[facetName];
     }
 
-    return this;
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -5991,6 +6005,20 @@ function(attributeName) {
 
     //  let the standard mechanism handle it
     return this.getProperty(attributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineCommonMethod('isAccessPath',
+function() {
+
+    /**
+     * @name isAccessPath
+     * @synopsis Returns whether or not the receiver is an access path object.
+     * @returns {Boolean} False - most receivers are not a path.
+     */
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------

@@ -4795,14 +4795,16 @@ function(anObject, aType) {
     var type;
 
     //  not much to check, but we won't call this failure
-    if (TP.notValid(aType)) {
+    if (!TP.isType(aType)) {
         return true;
     }
 
     //  objects can sometimes spoof type membership, and we allow that here
     //  by offering the right to answer to the object first
     if (TP.canInvoke(anObject, 'isa')) {
-        return anObject.isa(aType);
+        if (!anObject.isa(aType)) {
+            return false;
+        }
     }
 
     //  apparently not a viable TIBET-enhanced object, perhaps the type can

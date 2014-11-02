@@ -2733,6 +2733,23 @@ function() {
 TP.sig.Change.defineSubtype('IndexChange');
 
 //  ------------------------------------------------------------------------
+//  TP.sig.FacetChange
+//  ------------------------------------------------------------------------
+
+/*
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Change.defineSubtype('FacetChange');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.FacetChange.defineSubtype('ReadonlyChange');
+TP.sig.FacetChange.defineSubtype('RelevantChange');
+TP.sig.FacetChange.defineSubtype('RequiredChange');
+
+//  ------------------------------------------------------------------------
 //  TP.sig.ValueChange
 //  ------------------------------------------------------------------------
 
@@ -2741,7 +2758,7 @@ TP.sig.Change.defineSubtype('IndexChange');
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Change.defineSubtype('ValueChange');
+TP.sig.FacetChange.defineSubtype('ValueChange');
 
 //  ------------------------------------------------------------------------
 //  TP.sig.StructureChange
