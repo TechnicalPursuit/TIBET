@@ -6047,6 +6047,294 @@ function(attributeName, includeSupertypes) {
     return this.getType().getInstDescriptorFor(attributeName,
                                                 includeSupertypes);
 });
+
+//  ------------------------------------------------------------------------
+//  Attribute Facets
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('checkFacets',
+function(aspectName, facetList) {
+
+    /**
+     * @name checkFacets
+     * @synopsis Checks the facets of the supplied aspect on the receiver
+     *     according to the list of facets supplied (or TP.FACET_NAMES if one
+     *     isn't supplied). If a valid facet value can be computed for a
+     *     particular aspect, that facet value is set for that aspect.
+     * @param {String} aspectName The name of the aspect to check the facets
+     *     for.
+     * @param {Array} facetList The list of facets to check. This is an optional
+     *     parameter.
+     * @returns {TP.lang.RootObject} The receiver.
+     */
+
+    var facets,
+
+        len,
+        i,
+
+        facetName,
+        result;
+
+    //  Default the set of facets to check to TP.FACET_NAMES, which are the list
+    //  of standard facets for all TIBET attributes.
+    facets = TP.ifInvalid(facetList, TP.FACET_NAMES);
+
+    len = facets.getSize();
+    for (i = 0; i < len; i++) {
+
+        facetName = facets.at(i);
+
+        //  Grab the facet value (which is different than the facet setting -
+        //  the facet value could be a computed value).
+        if (TP.isValid(result = this.getFacetValueFor(aspectName, facetName))) {
+
+            //  We got a valid valid - set it.
+            this.setFacet(aspectName, facetName, result);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('facetChanged',
+function(anAspect, aFacet, aDescription) {
+
+    /**
+     * @name facetChanged
+     * @synopsis Notifies observers that the named facet of the receiver has
+     *     changed.
+     * @param {String} anAspect The aspect of the receiver that changed. This is
+     *     usually an attribute name.
+     * @param {String} aFacet The facet of the receiver that changed. This is
+     * usually one of the standard TIBET facets listed in TP.FACET_NAMES.
+     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     *     change.
+     * @returns {Object} The receiver.
+     * @signals Change
+     */
+
+    var asp,
+        baseSig,
+        sig,
+        desc;
+
+    if (!this.shouldSignalChange()) {
+        return;
+    }
+
+    //  Build up the signal name we'll be firing.
+    asp = TP.ifKeyInvalid(aDescription, 'aspect', anAspect) || 'value';
+
+    //  The 'base signal' name is the actual real Signal type that gets fired
+    //  (as opposed to the aspectName + facetName + 'Change' spoofed signal that
+    //  is computed and observed). This will be that signal's supertype.
+
+    //  In this case, the base signal name will be something like
+    //  'TP.sig.RelevantChange'.
+    baseSig = 'TP.sig.' + aFacet.asStartUpper() + 'Change';
+
+    //  The signal name will be the spoofed ('unreal') signal name. In this
+    //  case, it might be something like 'SSNRelevantChange'
+    sig = asp.toString().asStartUpper() + aFacet.asStartUpper() + 'Change';
+
+    //  Build up a standard form for the description hash.
+    desc = TP.isValid(aDescription) ? aDescription : TP.hc();
+    if (!TP.canInvoke(desc, 'atPutIfAbsent')) {
+        this.raise('TP.sig.InvalidParameter',
+                    'Description not a collection.');
+
+        return;
+    }
+    desc.atPutIfAbsent('aspect', asp);
+    desc.atPutIfAbsent('action', TP.UPDATE);
+    desc.atPutIfAbsent('facet', aFacet);
+    desc.atPutIfAbsent('target', this);
+
+    //  Fire the signal. Note that we force the firing policy here. This allows
+    //  observers of a generic 'facet change' signal of some sort to see 'aspect'
+    //  facet Change notifications, even if those 'aspect' facet Change signals
+    //  haven't been defined as being subtypes of FacetChange (although we also
+    //  supply the base signal name as the default signal type here so that
+    //  undefined aspect signals will use that type).
+    TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, baseSig);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('getFacetValueFor',
+function(aspectName, facetName) {
+
+    /**
+     * @name getFacetValueFor
+     * @synopsis Returns the facet value for the named facet of the named aspect
+     *     on the receiver.
+     * @description Note that the facet value is *not* the same as the facet
+     *     setting. The facet setting is the mechanism, supplied by the code
+     *     author, of computing the facet value. It may be a simple literal
+     *     value, an access path or the name of a method to execute on the
+     *     receiver. These are all different ways that a facet value may be
+     *     obtained on the receiver.
+     * @param {String} aspectName The name of the aspect to return the facet
+     *      value for.
+     * @param {String} facetName The name of the facet to return the facet
+     *      value for.
+     * @returns {Object} The value of the named facet of the named aspect on the
+     *      receiver.
+     */
+
+    var facetSetting,
+        facetValue;
+
+    //  First, make sure that the aspect has a facet named by the facetName. If
+    //  not, just return null
+    if (TP.notValid(facetSetting = this.getType().getInstFacetSettingFor(
+                                                    aspectName,
+                                                    facetName))) {
+        return null;
+    }
+
+    //  We compute the facet value differently depending on whether we're
+    //  computing the validity facet or not.
+    switch(facetName) {
+
+        case TP.VALID:
+
+            //  The validity facet is computed by a method, since it is a more
+            //  complex calculation than any of the other facets.
+            facetValue = this.getType().validateConstraintsOn(
+                                this.get(aspectName), facetSetting);
+
+        break;
+
+        default:
+
+            //  Otherwise, use a series of object tests to try to obtain the
+            //  best value for the facet.
+            if (TP.isBoolean(facetSetting)) {
+                facetValue = facetSetting;
+            } else if (TP.isArray(facetSetting)) {
+                facetValue = facetSetting;
+            } else if (facetSetting.isAccessPath()) {
+                facetValue = facetSetting.executeGet(this);
+            } else if (TP.isString(facetSetting) &&
+                        TP.isMethod(this[facetSetting])) {
+                facetValue = this[facetSetting]();
+            } else if (TP.isString(facetSetting)) {
+                facetValue = facetSetting;
+            }
+
+        break;
+    }
+
+    return facetValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('$setFacet',
+function(aspectName, facetName, facetValue, shouldSignal) {
+
+    /**
+     * @name $setFacet
+     * @synopsis Sets the value of the named facet of the named aspect to the
+     *     value provided. This method should be called from any 'custom facet
+     *     setter' in order to a) set the property and b) signal a change, if
+     *     configured.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {Object} The receiver.
+     */
+
+    var facetSlotName,
+        currentFacetVal,
+    
+        sigFlag;
+
+    //  If the facet is 'value', then use the standard 'set' mechanism.
+    if (facetName === 'value') {
+        return this.set(aspectName, facetValue);
+    }
+
+    //  The internal facet slot name will always be something like
+    //  '$SSN_required'.
+    facetSlotName = '$' + aspectName + '_' + facetName;
+
+    //  Grab the current value of the internal slot and compare it to the
+    //  supplied value. Only go through the act of setting it and signaling a
+    //  change if they're different.
+    currentFacetVal = this.get(facetSlotName);
+    if (currentFacetVal !== facetValue) {
+
+        //  If the internal slot is not defined on the receiver, define it.
+        //  Otherwise, TIBET's '$set' method will whine ;-).
+        if (TP.notDefined(this[facetSlotName])) {
+            this.defineAttribute(facetSlotName);
+        }
+
+        //  Use '$set' here along with false to make sure the core '$set' method
+        //  does *not* signal change with this internal slot - we do a custom
+        //  change signal below.
+        this.$set(facetSlotName, facetValue, false);
+
+        if (TP.notValid(sigFlag = shouldSignal)) {
+            sigFlag = this.shouldSignalChange();
+        }
+
+        if (sigFlag) {
+
+            //  Call facetChanged with all of the appropriate information.
+            this.facetChanged(aspectName,
+                                facetName,
+                                TP.hc(TP.OLDVAL, currentFacetVal,
+                                        TP.NEWVAL, facetValue));
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('setFacet',
+function(aspectName, facetName, facetValue, shouldSignal) {
+
+    /**
+     * @name setFacet
+     * @synopsis Sets the value of the named facet of the named aspect to the
+     *     value provided.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {Object} The receiver.
+     */
+
+    var funcName;
+
+    //  First, check to see if the receiver provides a 'custom setter' method
+    //  for this facet/aspect combination. Something like 'setSSNRequired'.
+    funcName = 'set' + aspectName.asStartUpper() + facetName.asStartUpper();
+
+    if (TP.canInvoke(this, funcName)) {
+        this[funcName](facetValue);
+    } else {
+        //  No custom setter implemented - use the standard $setFacet() method.
+        this.$setFacet(aspectName, facetName, facetValue, shouldSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  TP.lang.RootObject - INSTANCE CONSTRUCTION
 //  ------------------------------------------------------------------------
 

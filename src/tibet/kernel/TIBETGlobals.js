@@ -1013,6 +1013,14 @@ TP.SORTED = 'sorted';
 TP.OLDVAL = 'oldval';
 TP.NEWVAL = 'newval';
 
+//  facet names
+TP.READONLY = 'readonly';
+TP.RELEVANT = 'relevant';
+TP.REQUIRED = 'required';
+TP.VALID = 'valid';
+
+TP.FACET_NAMES = [TP.READONLY, TP.RELEVANT, TP.REQUIRED, TP.VALID];
+
 //  ---
 //  IO/URI support
 //  ---
