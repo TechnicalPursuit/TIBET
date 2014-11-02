@@ -5900,6 +5900,8 @@ function(propertyName, methodBody) {
 });
 
 //  ------------------------------------------------------------------------
+//  Access Path Aliases
+//  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('getAccessPathAliases',
 function(aPath) {
@@ -5955,6 +5957,8 @@ function(aPath) {
     return null;
 });
 
+//  ------------------------------------------------------------------------
+//  Attribute Property Descriptors
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('getDescriptorFor',
