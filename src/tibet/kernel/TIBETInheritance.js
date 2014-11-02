@@ -4573,7 +4573,7 @@ function(anObject) {
      *     instance of the type and failing that checks for each supertype as an
      *     option.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean}
+     * @returns {Boolean} True if the object can be validated.
      */
 
     //  function instances can be used to validate via invocation
@@ -4617,16 +4617,251 @@ function(anObject) {
     /**
      * @name validate
      * @synopsis Tests the incoming value to see if it represents a valid
-     *     instance of the receiving type. In performing this test the receiver
-     *     will use the callBestMethod approach to find a validation suitable
-     *     for any supertype of the inbound data if there is no specific
-     *     function for the object's direct type.
+     *     instance of the receiving type.
+     * @description In performing this test the receiver will begin with
+     *     validating any aspects on the supplied that match any validity facets
+     *     on the receiver. If none can be found, then it will use the
+     *     callBestMethod() approach to find a validation suitable for any
+     *     supertype of the inbound data if there is no specific function for
+     *     the object's direct type.
      * @param {Object} anObject The object to test.
      * @returns {Boolean} True if the object can be validated.
      */
 
-    //  context, specializer, prefix, suffix, fallback, arglist
-    return this.callBestMethod(arguments, this, 'validate');
+    var validityInfo,
+        setAtLeastOne,
+    
+        isValid;
+
+    //  First, attempt to validate any aspects on the supplied object. This will
+    //  return a Hash of validity information.
+    validityInfo = this.validateAspects(anObject);
+
+    setAtLeastOne = false;
+
+    isValid = true;
+
+    //  Loop over the validity information hash. There has to be at least one
+    //  that returned a non 'TP.NO_RESULT' value in order for us to not just use
+    //  the callBestMethod() approach at the bottom.
+    validityInfo.perform(
+        function(kvPair) {
+  
+            var truthVal;
+
+            //  If there was at least one validity test that returned either
+            //  true or false (but not TP.NO_RESULT), then we use that value to
+            //  set the facet on the object and to avoid the callBestMethod()
+            //  approach below.
+            if ((truthVal = kvPair.last()) !== TP.NO_RESULT) {
+
+                anObject.setFacet(kvPair.first(), TP.VALID, truthVal);
+
+                setAtLeastOne = true;
+
+                //  If isValid is true, we go ahead and set it to the truth
+                //  value. If it's already false, we do *not* want to possibly
+                //  set it to true, since this operation can be considered a
+                //  'union' of all truth values.
+                if (isValid) {
+                    isValid = truthVal;
+                }
+            }
+        });
+
+    //  We didn't find at least one validity test - use callBestMethod()
+    //  approach.
+    if (!setAtLeastOne) {
+        //  context, specializer, prefix, suffix, fallback, arglist
+        isValid = this.callBestMethod(arguments, this, 'validate');
+    }
+
+    return isValid;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('validateAspects',
+function(anObject, aspectNames) {
+
+    /**
+     * @name validateAspects
+     * @synopsis Validates the aspects of the supplied object against any
+     *     validity facets that are defined by the receiver.
+     * @param {Object} anObject The object to test.
+     * @param {Array} aspectNames An array of aspect names to test. If not
+     *     supplied, then all of the aspects of the supplied object are tested.
+     * @returns {Boolean} The result of executing all of the validity facets for
+     *     the aspect names.
+     */
+
+    var hadFacetCheck,
+        constraintsResult,
+
+        aspectsToCheck,
+
+        results,
+
+        len,
+        i,
+
+        aspectName,
+        constraints;
+
+    hadFacetCheck = false;
+
+    //  No aspect names supplied - use all of the aspects of the supplied
+    //  object.
+    if (TP.isEmpty(aspectNames)) {
+        aspectsToCheck = anObject.getKeys();
+    } else {
+        aspectsToCheck = aspectNames;
+    }
+
+    //  The result of this method is hash containing the aspect name and the
+    //  result of running that aspect's validity facet.
+    results = TP.hc();
+
+    len = aspectsToCheck.getSize();
+    for (i = 0; i < len; i++) {
+
+        aspectName = aspectsToCheck.at(i);
+
+        //  Get the facet setting (not the value - we'll compute that) for the
+        //  validity facet of the aspect. If there is no validity constraint for
+        //  this aspect, then put a value of TP.NO_RESULT into that result entry
+        //  and move on.
+        if (TP.notValid(constraints = this.getInstFacetSettingFor(
+                                        aspectName,
+                                        TP.VALID))) {
+        
+            results.atPut(aspectName, TP.NO_RESULT);
+
+            continue;
+        }
+
+        hadFacetCheck = true;
+
+        //  Otherwise, there was a set of validity constraints (a literal Object
+        //  containing 1...n of them). Execute those constraints and put the
+        //  result into the result entry for that aspect.
+
+        constraintsResult = this.validateConstraintsOn(
+                                anObject.get(aspectName), constraints);
+
+        results.atPut(aspectName, constraintsResult);
+    }
+
+    return results;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('validateConstraintsOn',
+function(anObject, constraints) {
+
+    /**
+     * @name validateConstraints
+     * @synopsis Validates a supplied object against a set of validity
+     *     constraints supplied in a second, literal POJO object.
+     * @param {Object} anObject The object to test.
+     * @param {Object} constraints The POJO object containing 1...n validity
+     *     constraints. These include:
+               dataType (JS/TIBET type object, String resolved to JS/TIBET type
+                            object, URI resolved to JS/TIBET type object)
+               enumeration (Array, comma-separated String, AccessPath)
+               fractionDigits (Number, String, AccessPath to either)
+               maxExclusive (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               maxInclusive (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               maxLength (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               maxValue (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               minExclusive (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               minInclusive (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               minLength (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               minValue (Number or object that can be 'asNumber'ed, AccessPath)
+               pattern (RegExp, AccessPath)
+               totalDigits (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               whitespace
+
+               equal (Object that can be compared, AccessPath)
+               notEqual (Object that can be compared, AccessPath)
+               unique
+               moreThan (Number or object that can be 'asNumber'ed, AccessPath)
+               lessThan (Number or object that can be 'asNumber'ed, AccessPath)
+
+               maxSelected (Number or object that can be 'asNumber'ed,
+                            AccessPath)
+               minSelected (Number or object that can be 'asNumber'ed,
+                            AccessPath)
+     * @returns {Boolean} Whether or not the object passed the supplied validity
+     *     constraints.
+     */
+
+    var constraintNames,
+
+        len,
+        i,
+    
+        constraintName,
+        constraint,
+    
+        result;
+
+    //  Set the initial result to false.
+    result = false;
+
+    //  Get all of the keys from the literal POJO object. This will be the names
+    //  of all of our constraints.
+    constraintNames = TP.keys(constraints);
+
+    len = constraintNames.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Grab the constraint.
+        constraintName = constraintNames.at(i);
+        constraint = constraints[constraintName];
+
+        switch(constraintName) {
+
+            case 'dataType':
+
+                //  If the constraint is 'dataType', then try to obtain a JS or
+                //  TIBET type object given a number of different ways - URI,
+                //  String, etc.
+                if (!TP.isType(constraint)) {
+                    if (TP.isURI(constraint)) {
+                        constraint = TP.uc(constraint).getResource();
+                    }
+
+                    if (TP.isString(constraint)) {
+                        constraint = TP.sys.getTypeByName(constraint);
+                    }
+                }
+
+                //  If we successfully got a type, then validate the supplied
+                //  object with it.
+                if (TP.isType(constraint)) {
+                    result = constraint.validate(anObject);
+
+                    //  If the result was false, then there's no need to proceed
+                    //  (all tests must pass). So just break and then we'll
+                    //  return false.
+                    if (!result) {
+                        break;
+                    }
+                }
+        }
+    }
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
