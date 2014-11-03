@@ -6258,7 +6258,25 @@ function(attributeName, includeSupertypes) {
     var entry;
 
     entry = TP.sys.$$meta_attributes.at(
-                            this.getName() + '_Type_' + attributeName);
+                        this.getName() + '_Type_' + attributeName);
+
+    //  If we didn't find an entry in for the type itself, and the flag doesn't
+    //  prevent us with checking with the supertypes, then do so.
+    //  Note the explicit 'notFalse' check here - by default, this parameter is
+    //  true.
+    if (TP.notFalse(includeSupertypes) && TP.notValid(entry)) {
+
+        //  Since supertype names are always reported from most-to-least
+        //  specific, this will properly find any overrides on descriptors from
+        //  higher-level supertypes.
+        this.getSupertypeNames().perform(
+                function(aTypeName) {
+                    if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
+                                    aTypeName + '_Type_' + attributeName))) {
+                        return TP.BREAK;
+                    }
+                });
+    }
 
     if (TP.isValid(entry)) {
         //  NB: We use primitive property access here since 'descriptorObj'
@@ -6291,7 +6309,25 @@ function(attributeName, includeSupertypes) {
     var entry;
 
     entry = TP.sys.$$meta_attributes.at(
-                            this.getName() + '_Inst_' + attributeName);
+                        this.getName() + '_Inst_' + attributeName);
+
+    //  If we didn't find an entry in for the type itself, and the flag doesn't
+    //  prevent us with checking with the supertypes, then do so.
+    //  Note the explicit 'notFalse' check here - by default, this parameter is
+    //  true.
+    if (TP.notFalse(includeSupertypes) && TP.notValid(entry)) {
+
+        //  Since supertype names are always reported from most-to-least
+        //  specific, this will properly find any overrides on descriptors from
+        //  higher-level supertypes.
+        this.getSupertypeNames().perform(
+                function(aTypeName) {
+                    if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
+                                    aTypeName + '_Inst_' + attributeName))) {
+                        return TP.BREAK;
+                    }
+                });
+    }
 
     if (TP.isValid(entry)) {
         //  NB: We use primitive property access here since 'descriptorObj'
