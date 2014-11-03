@@ -159,7 +159,7 @@ TP.sys.setcfg('tibet.verbose', true);
 
 //  the logging level for the boot log. best to use strings to define.
 //  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
-TP.sys.setcfg('boot.level', 'DEBUG');
+TP.sys.setcfg('boot.level', 'INFO');
 
 //  ---
 //  code roots
@@ -338,7 +338,7 @@ if (typeof navigator === 'undefined') {
   TP.sys.setcfg('boot.context', 'browser');
   TP.sys.setcfg('boot.reporter', 'bootui');
 
-  TP.sys.setcfg('log.color.mode', 'console');
+  TP.sys.setcfg('log.color.mode', 'browser');
   TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 }
 

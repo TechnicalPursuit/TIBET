@@ -5787,7 +5787,7 @@ TP.boot.$phantomReporter = function(entry, options) {
         return;
     }
 
-    TP.sys.setcfg('log.color.mode', 'console');
+    TP.sys.setcfg('log.color.mode', 'terminal');
     msg = TP.boot.$$logReporter(entry,
         { separator: '\n', escape: false, console: true });
     if (TP.boot.$notValid(msg)) {
@@ -6823,7 +6823,7 @@ TP.boot.$displayMessage = function(aString, flush) {
         msgNode = TP.boot.$documentFromString(
             '<div xmlns="http://www.w3.org/1999/xhtml"><div></div></div>');
         if (!msgNode) {
-            console.log('Unable to create log message template.');
+            top.console.log('Unable to create log message template.');
         }
         TP.boot.$$msgTemplate = msgNode.firstChild.firstChild;
     }
@@ -6842,7 +6842,7 @@ TP.boot.$displayMessage = function(aString, flush) {
                 '<div xmlns="http://www.w3.org/1999/xhtml"><div><pre>' +
                 TP.boot.$htmlEscape(message) + '</pre></div></div>');
             if (!msgNode) {
-                console.log('Unable to create log message element.');
+                top.console.log('Unable to create log message element.');
             } else {
                 msgNode = msgNode.firstChild.firstChild;
             }
@@ -8874,19 +8874,19 @@ TP.boot.$updateDependentVars = function() {
 
     // Reconfigure the color scheme based on any updates to the log colors.
     TP.boot.$$theme = {
-        trace: TP.sys.cfg('log.tracecolor'),
-        info: TP.sys.cfg('log.infocolor'),
-        warn:  TP.sys.cfg('log.warncolor'),
-        error:  TP.sys.cfg('log.errorcolor'),
-        fatal:  TP.sys.cfg('log.fatalcolor'),
-        severe:  TP.sys.cfg('log.severecolor'),
-        system:  TP.sys.cfg('log.systemcolor'),
+        trace: TP.sys.cfg('log.color.trace'),
+        info: TP.sys.cfg('log.color.info'),
+        warn:  TP.sys.cfg('log.color.warn'),
+        error:  TP.sys.cfg('log.color.error'),
+        fatal:  TP.sys.cfg('log.color.fatal'),
+        severe:  TP.sys.cfg('log.color.severe'),
+        system:  TP.sys.cfg('log.color.system'),
 
-        time: TP.sys.cfg('log.timecolor'),
-        delta: TP.sys.cfg('log.deltacolor'),
-        slow: TP.sys.cfg('log.slowcolor'),
-        debug:  TP.sys.cfg('log.debugcolor'),
-        verbose:  TP.sys.cfg('log.verbosecolor')
+        time: TP.sys.cfg('log.color.time'),
+        delta: TP.sys.cfg('log.color.delta'),
+        slow: TP.sys.cfg('log.color.slow'),
+        debug:  TP.sys.cfg('log.color.debug'),
+        verbose:  TP.sys.cfg('log.color.verbose')
     };
 };
 

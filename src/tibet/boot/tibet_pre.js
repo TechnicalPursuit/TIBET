@@ -528,7 +528,7 @@ TP.boot.$$styles.browser = {
     'yellowBG'    : ['<span style="background-color:yellow;">',  '</span>']
 };
 
-// Generate one for output to the browser console that avoids injection markup
+// Generate one for output to the browser console that avoids injecting markup
 // or control codes...neither will work.
 TP.boot.$$styles.console = (function() {
     var i,
