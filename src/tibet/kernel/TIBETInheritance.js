@@ -6139,7 +6139,7 @@ function(propertyName, methodBody) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('getAccessPathAliases',
-function(aPath) {
+function(aPath, includeSupertypes) {
 
     /**
      * @name getAccessPathAliases
@@ -6147,6 +6147,9 @@ function(aPath) {
      *     aliased names that the receiver uses for a particular path (i.e.
      *     '/person/lastName' might map to 'lastName').
      * @param {String} aPath The path to check for aliases.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for path aliases. The default is
+     *     true.
      * @returns {Array|null} An Array of access path aliases for the receiver or
      *     null.
      */
@@ -6154,6 +6157,24 @@ function(aPath) {
     var entry;
 
     entry = TP.sys.$$meta_pathinfo.at(this.getName() + '_Type');
+
+    //  If we didn't find an entry in for the type itself, and the flag doesn't
+    //  prevent us with checking with the supertypes, then do so.
+    //  Note the explicit 'notFalse' check here - by default, this parameter is
+    //  true.
+    if (TP.notFalse(includeSupertypes) && TP.notValid(entry)) {
+
+        //  Since supertype names are always reported from most-to-least
+        //  specific, this will properly find any overrides on path aliases from
+        //  higher-level supertypes.
+        this.getSupertypeNames().perform(
+                function(aTypeName) {
+                    if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
+                                    aTypeName + '_Type'))) {
+                        return TP.BREAK;
+                    }
+                });
+    }
 
     if (TP.isValid(entry)) {
         //  NB: We use primitive property access here since 'entry' is a
@@ -6167,7 +6188,7 @@ function(aPath) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('getAccessPathAliases',
-function(aPath) {
+function(aPath, includeSupertypes) {
 
     /**
      * @name getAccessPathAliases
@@ -6175,6 +6196,9 @@ function(aPath) {
      *     aliased names that the receiver uses for a particular path (i.e.
      *     '/person/lastName' might map to 'lastName').
      * @param {String} aPath The path to check for aliases.
+     * @param {Boolean} includeSupertypes Whether or not to include the
+     *     receiver's supertypes when looking for property path aliases. The
+     *     default is true.
      * @returns {Array|null} An Array of access path aliases for the receiver or
      *     null.
      */
@@ -6182,6 +6206,24 @@ function(aPath) {
     var entry;
 
     entry = TP.sys.$$meta_pathinfo.at(this.getTypeName() + '_Inst');
+
+    //  If we didn't find an entry in for the type itself, and the flag doesn't
+    //  prevent us with checking with the supertypes, then do so.
+    //  Note the explicit 'notFalse' check here - by default, this parameter is
+    //  true.
+    if (TP.notFalse(includeSupertypes) && TP.notValid(entry)) {
+
+        //  Since supertype names are always reported from most-to-least
+        //  specific, this will properly find any overrides on path aliases from
+        //  higher-level supertypes.
+        this.getSupertypeNames().perform(
+                function(aTypeName) {
+                    if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
+                                    aTypeName + '_Inst'))) {
+                        return TP.BREAK;
+                    }
+                });
+    }
 
     if (TP.isValid(entry)) {
         //  NB: We use primitive property access here since 'entry' is a
