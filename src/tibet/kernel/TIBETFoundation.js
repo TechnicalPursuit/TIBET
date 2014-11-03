@@ -5816,15 +5816,45 @@ function(attributeName, facetName) {
      *     null.
      */
 
-    var pathVal;
+    var internalSlotName,
+        pathVal;
 
-    pathVal = this.getFacetSettingFor(attributeName, facetName);
+    //  This method gets called from every getter & setter in the whole system.
+    //  When we look up descriptors, by default this occurs 'up' the entire type
+    //  hierarchy of the receiver (see the getDescriptorFor() methods). These
+    //  descriptors contain the access path settings for a particular attribute.
 
-    if (TP.isValid(pathVal) && pathVal.isAccessPath()) {
-        return pathVal;
+    //  Therefore, to avoid that lookup overhead we cache any access path for a
+    //  particular attribute/facet pair on the object itself the first time it
+    //  is looked up.
+
+    internalSlotName = attributeName + '_' + facetName;
+
+    if (TP.notValid(this.$$access_paths)) {
+
+        //  NB: This is a JS literal object since this operates at a very low
+        //  level and trying to use a TP.lang.Hash here causes an endless
+        //  recursion.
+        this.$$access_paths = {};
     }
 
-    return null;
+    //  Note here how we use a 'not defined' test here because the value very
+    //  well might be 'null' which means that there really is no *access path*
+    //  value for this attribute/facet pair (there very well might be another
+    //  type of value).
+    if (TP.notDefined(pathVal = this.$$access_paths[internalSlotName])) {
+
+        pathVal = this.getFacetSettingFor(attributeName, facetName);
+
+        if (TP.isValid(pathVal) && pathVal.isAccessPath()) {
+            this.$$access_paths[internalSlotName] = pathVal;
+        } else {
+            this.$$access_paths[internalSlotName] = null;
+            pathVal = null;
+        }
+    }
+
+    return pathVal;
 });
 
 //  ------------------------------------------------------------------------
