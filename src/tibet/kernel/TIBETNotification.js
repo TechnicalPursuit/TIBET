@@ -2748,6 +2748,7 @@ TP.sig.Change.defineSubtype('FacetChange');
 TP.sig.FacetChange.defineSubtype('ReadonlyChange');
 TP.sig.FacetChange.defineSubtype('RelevantChange');
 TP.sig.FacetChange.defineSubtype('RequiredChange');
+TP.sig.FacetChange.defineSubtype('ValidChange');
 
 //  ------------------------------------------------------------------------
 //  TP.sig.ValueChange
