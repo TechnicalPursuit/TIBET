@@ -170,42 +170,42 @@ TP.sys.hasFeatureTest = function(aFeatureName) {
 
 TP.sys.addFeatureTest('gecko',
                         function() {
-                            return TP.boot.isUA('gecko');
+                            return TP.sys.isUA('gecko');
                         });
 
 TP.sys.addFeatureTest('firefox',
                         function() {
-                            return TP.boot.isUA('firefox');
+                            return TP.sys.isUA('firefox');
                         });
 
 TP.sys.addFeatureTest('trident',
                         function() {
-                            return TP.boot.isUA('trident');
+                            return TP.sys.isUA('trident');
                         });
 
 TP.sys.addFeatureTest('ie',
                         function() {
-                            return TP.boot.isUA('ie');
+                            return TP.sys.isUA('ie');
                         });
 
 TP.sys.addFeatureTest('webkit',
                         function() {
-                            return TP.boot.isUA('webkit');
+                            return TP.sys.isUA('webkit');
                         });
 
 TP.sys.addFeatureTest('safari',
                         function() {
-                            return TP.boot.isUA('safari');
+                            return TP.sys.isUA('safari');
                         });
 
 TP.sys.addFeatureTest('chrome',
                         function() {
-                            return TP.boot.isUA('chrome');
+                            return TP.sys.isUA('chrome');
                         });
 
 TP.sys.addFeatureTest('opera',
                         function() {
-                            return TP.boot.isUA('opera');
+                            return TP.sys.isUA('opera');
                         });
 
 //  ----------------------------------------------------------------------------
@@ -954,7 +954,7 @@ else if (TP.$agent.indexOf('msie') !== -1)
 //  DETECTION QUERIES
 //  ----------------------------------------------------------------------------
 
-TP.boot.getBrowser = function() {
+TP.sys.getBrowser = function() {
 
     /**
      * @name getBrowser
@@ -968,7 +968,7 @@ TP.boot.getBrowser = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.getBrowserUI = function() {
+TP.sys.getBrowserUI = function() {
 
     /**
      * @name getBrowserUI
@@ -982,21 +982,21 @@ TP.boot.getBrowserUI = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.isMac = function() {
+TP.sys.isMac = function() {
 
     return TP.$platform.indexOf('mac') === 0;
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.isNix = function() {
+TP.sys.isNix = function() {
 
     return TP.$platform.indexOf('*nix') === 0;
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.isWin = function() {
+TP.sys.isWin = function() {
 
     return TP.$platform.indexOf('win') === 0 ||
             TP.$platform.indexOf('vista') === 0;
@@ -1004,7 +1004,7 @@ TP.boot.isWin = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.isUA = function(browser, varargs) {
+TP.sys.isUA = function(browser, varargs) {
 
     /**
      * @name isUA
@@ -1084,7 +1084,7 @@ TP.boot.isUA = function(browser, varargs) {
 
         case 2:
 
-            //  got a major version number only, ala TP.boot.isUA('IE', 7),
+            //  got a major version number only, ala TP.sys.isUA('IE', 7),
             //  so the comparison is simple
             return TP[bmajor] === arguments[1];
 
@@ -1229,7 +1229,7 @@ and JScript versions available in IE. We test for that information here.
 
 //  ----------------------------------------------------------------------------
 
-if (TP.boot.isUA('IE')) {
+if (TP.sys.isUA('IE')) {
 
     //  NB: Put this in an enclosing function so that we can use local vars
     //  without them being hoisted into the global space
@@ -1274,7 +1274,7 @@ if (TP.boot.isUA('IE')) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.isMSXML = function(version, comparison) {
+TP.sys.isMSXML = function(version, comparison) {
 
     /**
      * @name isMSXML
@@ -1299,7 +1299,7 @@ TP.boot.isMSXML = function(version, comparison) {
 //  SUPPORTED PLATFORM TRACKING
 //  ----------------------------------------------------------------------------
 
-TP.boot.isObsolete = function() {
+TP.sys.isObsolete = function() {
 
     /**
      * @name isObsolete
@@ -1320,7 +1320,7 @@ TP.boot.isObsolete = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.isSupported = function() {
+TP.sys.isSupported = function() {
 
     /**
      * @name isSupported
@@ -1409,7 +1409,7 @@ TP.sys.getLaunchRoot = function() {
             port.toString() !== '80') {
             str += ':' + port;
         }
-    } else if (TP.boot.isWin()) {
+    } else if (TP.sys.isWin()) {
         //  on windows if you don't include the drive spec in the root the
         //  files won't be found. this is consistent with IE behavior.
         loc = decodeURI(window.location.toString());
@@ -1533,7 +1533,7 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
     }
 
     //  same domain? if not we'll need permission to do this
-    if (TP.boot.isUA('GECKO') &&
+    if (TP.sys.isUA('GECKO') &&
         (targetUrl.indexOf(TP.sys.getLaunchRoot()) !== 0)) {
         try {
             if (TP.sys.cfg('log.privilege_requests')) {
@@ -1556,7 +1556,7 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
         //  If its Mozilla, and we're not trying to load XML, then set
         //  the MIME type to 'text/plain' to avoid parsing errors due to
         //  Moz trying to turn everything into XML and then complaining
-        if (TP.boot.isUA('GECKO') &&
+        if (TP.sys.isUA('GECKO') &&
             (TP.boot.$uriResultType(targetUrl) !== TP.DOM)) {
             httpObj.overrideMimeType('text/plain');
         }
@@ -1644,7 +1644,7 @@ TP.boot.$httpCreate = function() {
         len,
         i;
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         //  first check here _should be_ for IE's built-in, however...
         //  TIBET doesn't use this object by default, because of the
         //  following limitations on calls made by using this object:
@@ -1905,7 +1905,7 @@ TP.boot.$uriInLocalFormat = function(aPath) {
 
     //  non-windows platforms we support don't need anything else, for
     //  example file:///usr/local/tibet becomes /usr/local/tibet :)
-    if (!TP.boot.isWin()) {
+    if (!TP.sys.isWin()) {
         return path;
     }
 
@@ -2162,7 +2162,7 @@ TP.boot.$uriMinusFileScheme = function(aPath) {
 
     //  on Windows we may need to slice 1 more character if the path
     //  matches /drive: rather than a UNC path
-    if (TP.boot.isWin() && (/^\/\w:/).test(path)) {
+    if (TP.sys.isWin() && (/^\/\w:/).test(path)) {
         path = path.slice(1);
     }
 
@@ -2197,7 +2197,7 @@ TP.boot.$uriPlusFileScheme = function(aPath) {
 
     prefix = 'file://';
 
-    if (TP.boot.isWin() && (/^\w:/).test(aPath)) {
+    if (TP.sys.isWin() && (/^\w:/).test(aPath)) {
         prefix = prefix + '/';
     }
 
@@ -2637,11 +2637,11 @@ TP.boot.$uriLastModified = function(targetUrl) {
     fname = TP.boot.$uriWithRoot(targetUrl);
 
     if (fname.toLowerCase().indexOf('file') === 0) {
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             return TP.boot.$uriLastModifiedIEFile(fname);
-        } else if (TP.boot.isUA('GECKO')) {
+        } else if (TP.sys.isUA('GECKO')) {
             return TP.boot.$uriLastModifiedMozFile(fname);
-        } else if (TP.boot.isUA('WEBKIT')) {
+        } else if (TP.sys.isUA('WEBKIT')) {
             //  can't access file system on safari so we assume the file was
             //  recently modified to ensure current data on loads
             return (new Date());
@@ -2725,7 +2725,7 @@ TP.boot.$uriLastModifiedMozFile = function(targetUrl) {
 
     //  If its Mozilla, and we're not trying to load XML, then set the MIME
     //  type to 'text/plain' to avoid parsing errors.
-    if (TP.boot.isUA('GECKO') &&
+    if (TP.sys.isUA('GECKO') &&
         TP.boot.$uriResultType(targetUrl) !== TP.DOM) {
         httpObj.overrideMimeType('text/plain');
     }
@@ -2923,7 +2923,7 @@ TP.boot.$uriExistsFile = function(targetUrl) {
 
     //  If its Mozilla, and we're not trying to load XML, then set the MIME
     //  type to 'text/plain' to avoid parsing errors.
-    if (TP.boot.isUA('GECKO') &&
+    if (TP.sys.isUA('GECKO') &&
         TP.boot.$uriResultType(targetUrl) !== TP.DOM) {
         httpObj.overrideMimeType('text/plain');
     }
@@ -2940,7 +2940,7 @@ TP.boot.$uriExistsFile = function(targetUrl) {
         //  between that case and the case where its either a file or a
         //  directory, but really doesn't exist.
 
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             //  IE versions less than 8:
 
             //  If an exception is thrown with 'The system cannot locate the
@@ -2967,7 +2967,7 @@ TP.boot.$uriExistsFile = function(targetUrl) {
             //  NOTE: in IE8 and higher, this will have an http status
             //  code of 0 and the exception will have: 'System error:
             //  -2146697195'
-        } else if (TP.boot.isUA('GECKO')) {
+        } else if (TP.sys.isUA('GECKO')) {
             if (/Access to restricted URI denied/.test(e.message)) {
                 TP.boot.$stderr('AccessException: ' + targetUrl,
                                 TP.boot.$ec(e));
@@ -2981,25 +2981,25 @@ TP.boot.$uriExistsFile = function(targetUrl) {
         }
     }
 
-    if (TP.boot.isUA('WEBKIT')) {
+    if (TP.sys.isUA('WEBKIT')) {
         //  Safari 4.X - all platforms
         if (httpObj.status === 404) {
             return false;
         }
 
         //  Safari 4.X - Windows
-        if (TP.boot.isWin() && httpObj.status === -1100) {
+        if (TP.sys.isWin() && httpObj.status === -1100) {
             return false;
         }
 
         //  Safari 3.1 - Mac
-        if (TP.boot.isMac() &&
+        if (TP.sys.isMac() &&
             (httpObj.status === -1100 || httpObj.status === 400)) {
             return false;
         }
 
         //  Safari 3.1 - Windows
-        if (TP.boot.isWin() && httpObj.status === 1789378560) {
+        if (TP.sys.isWin() && httpObj.status === 1789378560) {
             return false;
         }
 
@@ -3211,7 +3211,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
     }
 
     if (targetUrl.toLowerCase().indexOf('file') === 0) {
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             result = TP.boot.$uriLoadIEFile(targetUrl, resultType);
         } else if (TP.sys.cfg('boot.moz_xpcom')) {
             //  if the uriLoadCommonFile has to switch into privilege mode
@@ -3259,7 +3259,7 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
 
     //  If its Mozilla, and we're not trying to load XML, then set the MIME
     //  type to 'text/plain' to avoid parsing errors.
-    if (TP.boot.isUA('GECKO') && (resultType !== TP.DOM)) {
+    if (TP.sys.isUA('GECKO') && (resultType !== TP.DOM)) {
         httpObj.overrideMimeType('text/plain');
     }
 
@@ -3271,7 +3271,7 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
     } catch (e) {
         //  as of FF3 HTTP calls to the file system can fail for a number of
         //  security reasons. if we encounter an error we'll retry via XPCOM
-        if (TP.boot.isUA('GECKO', 1, 9, 0, TP.UP)) {
+        if (TP.sys.isUA('GECKO', 1, 9, 0, TP.UP)) {
             TP.boot.$stdout('Switching to XPCOM for file load operations',
                             TP.boot.$ec(e), TP.WARN);
             TP.sys.setcfg('boot.moz_xpcom', true);
@@ -3478,7 +3478,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
     //  When accessing XML on IE we can leverage the DOMDocument load
     //  method for fast synchronous access provided we don't need to be
     //  leveraging header data for Last-Modified times.
-    if (TP.boot.isUA('IE') && resultType === TP.DOM && !lastModified) {
+    if (TP.sys.isUA('IE') && resultType === TP.DOM && !lastModified) {
         doc = TP.boot.$documentCreate();
         doc.load(targetUrl);
 
@@ -3774,11 +3774,11 @@ TP.boot.$uriSave = function(targetUrl, fileContent, fileMode) {
     fname = TP.boot.$uriWithRoot(targetUrl);
 
     if (fname.toLowerCase().indexOf('file') === 0) {
-        if (TP.boot.isUA('GECKO')) {
+        if (TP.sys.isUA('GECKO')) {
             return TP.boot.$uriSaveMozFile(fname, fileContent, fileMode);
-        } else if (TP.boot.isUA('IE')) {
+        } else if (TP.sys.isUA('IE')) {
             return TP.boot.$uriSaveIEFile(fname, fileContent, fileMode);
-        } else if (TP.boot.isUA('WEBKIT')) {
+        } else if (TP.sys.isUA('WEBKIT')) {
             return TP.boot.$uriSaveWebkitFile(fname, fileContent, fileMode);
         }
     } else {
@@ -4073,7 +4073,7 @@ TP.boot.$documentCreate = function(versionNumber) {
      * @return {XMLDocument} A new XML document.
      */
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         return TP.boot.$documentCreateIE(versionNumber);
     } else {
         return document.implementation.createDocument('', '', null);
@@ -4204,7 +4204,7 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
         $STATUS = 0;
         $ERROR = null;
 
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             aNode.appendChild(newNode);
             theNode = newNode;
         } else {
@@ -4262,7 +4262,7 @@ TP.boot.$nodeInsertBefore = function(aNode, newNode, insertionPointNode) {
     var nodeDoc,
         theNode;
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         aNode.insertBefore(newNode, insertionPointNode);
     } else {
         if (aNode.nodeType === Node.DOCUMENT_NODE) {
@@ -4301,7 +4301,7 @@ TP.boot.$nodeReplaceChild = function(aNode, newNode, oldNode) {
     var nodeDoc,
         theNode;
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         aNode.replaceChild(newNode, oldNode);
     } else {
         if (aNode.nodeType === Node.DOCUMENT_NODE) {
@@ -4342,7 +4342,7 @@ TP.boot.$documentFromString = function(aString) {
      * @return {Node}
      */
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         return TP.boot.$documentFromStringIE(aString);
     } else {
         return TP.boot.$documentFromStringCommon(aString);
@@ -4354,10 +4354,10 @@ TP.boot.$documentFromString = function(aString) {
 //  ----------------------------------------------------------------------------
 
 //  parse once by defining externally to the function we'll use this in
-if (TP.boot.isUA('GECKO')) {
+if (TP.sys.isUA('GECKO')) {
     TP.boot.$$xmlParseErrorMsgMatcher =
         /XML Parsing Error: ([^\n]+)\nLocation: [^\n]+\nLine Number (\d+), Column (\d+)/;
-} else if (TP.boot.isUA('WEBKIT')) {
+} else if (TP.sys.isUA('WEBKIT')) {
     TP.boot.$$xmlParseErrorMsgMatcher =
         /error on line (\d+) at column (\d+): ([^<]+)/;
 }
@@ -4445,7 +4445,7 @@ TP.boot.$nodeAsString = function(aNode) {
      * @return {String} The String representation of the supplied Node.
      */
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         return TP.boot.$nodeAsStringIE(aNode);
     } else {
         return TP.boot.$nodeAsStringCommon(aNode);
@@ -8901,7 +8901,7 @@ TP.boot.$ifUnlessPassed = function(aNode) {
      * @summary Tests if and unless conditions on the node, returning true if
      *     the node passes and should be retained based on those conditions.
      *     This test is typically used to filter for the current browser
-     *     environment based on TP.boot.isUA()-style tests.
+     *     environment based on TP.sys.isUA()-style tests.
      * @param {Node} aNode
      * @return {Boolean}
      */
@@ -8934,9 +8934,9 @@ TP.boot.$ifUnlessPassed = function(aNode) {
                     value = true;
                 }
 
-                //  special case for common filter based on TP.boot.isUA()
+                //  special case for common filter based on TP.sys.isUA()
                 if (TP.boot.$$USER_AGENT_REGEX.test(key)) {
-                    condition = TP.boot.isUA.apply(this, key.split('.'));
+                    condition = TP.sys.isUA.apply(this, key.split('.'));
                 } else {
                     condition = TP.sys.cfg(key, TP.sys.env(key));
                 }
@@ -8963,9 +8963,9 @@ TP.boot.$ifUnlessPassed = function(aNode) {
                     value = true;
                 }
 
-                //  special case for common filter based on TP.boot.isUA()
+                //  special case for common filter based on TP.sys.isUA()
                 if (TP.boot.$$USER_AGENT_REGEX.test(key)) {
-                    condition = TP.boot.isUA.apply(this, key.split('.'));
+                    condition = TP.sys.isUA.apply(this, key.split('.'));
                 } else {
                     condition = TP.sys.cfg(key, TP.sys.env(key));
                 }
@@ -9141,7 +9141,7 @@ TP.boot.$initializeLocalStorage = function() {
         internalStore: internalStore,
 
         //  10MB limit on IE, 5MB limit on Moz / Safari
-        size: TP.boot.isUA('IE') ? 10 * 1024 * 1024 : 5 * 1024 * 1024,
+        size: TP.sys.isUA('IE') ? 10 * 1024 * 1024 : 5 * 1024 * 1024,
 
         _formatKey: function(aKey) {
 
@@ -9306,7 +9306,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     TP.boot.$$onerrorURL = scriptUrl;
 
     try {
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             //  set the 'text' property of the new script element. this
             //  loads the code synchronously and makes it available to the
             //  system.
@@ -9761,7 +9761,7 @@ TP.boot.$importComponents = function(loadSync) {
                     }
                 };
 
-                if (TP.boot.isUA('IE')) {
+                if (TP.sys.isUA('IE')) {
                     elem.onreadystatechange = function() {
 
                         if (elem.readyState === 'loaded' ||
@@ -10868,13 +10868,13 @@ TP.boot.launch = function(options) {
     } catch (e) {
         if (window.location.protocol.indexOf('file') === 0) {
             // File launch issue.
-            if (TP.boot.isUA('chrome')) {
+            if (TP.sys.isUA('chrome')) {
                 TP.boot.$stderr(
                     'File launch aborted. ' +
                     'On Chrome you need to start the browser with ' +
                     'the --allow-file-access-from-files flag.',
                     TP.FATAL);
-            } else if (TP.boot.isUA('firefox')) {
+            } else if (TP.sys.isUA('firefox')) {
                 TP.boot.$stderr(
                     'File launch aborted. ' +
                     'On Firefox you must set the config flag ' +
@@ -10891,7 +10891,7 @@ TP.boot.launch = function(options) {
     }
 
     // If the browser is considered obsolete we can stop right now.
-    if (TP.boot.isObsolete()) {
+    if (TP.sys.isObsolete()) {
         TP.boot.$stderr('Obsolete browser/platform: ' + TP.$agent +
             '. Boot sequence terminated.', TP.FATAL);
         return;
@@ -10929,7 +10929,7 @@ TP.boot.launch = function(options) {
     }
 
     //  warn about unsupported platforms but don't halt the boot process
-    if (!TP.boot.isSupported()) {
+    if (!TP.sys.isSupported()) {
         TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent +
         '. You may experience problems.');
     }

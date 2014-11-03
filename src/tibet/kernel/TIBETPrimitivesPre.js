@@ -2611,7 +2611,7 @@ function(anObj) {
     }
 
     //  Firefox 28
-    if (TP.boot.getBrowser() === 'firefox') {
+    if (TP.sys.getBrowser() === 'firefox') {
         if (anObj === self.Blob) {
             return 'Blob';
         } else if (anObj === self.CameraCapabilities) {
@@ -2668,7 +2668,7 @@ function(anObj) {
     }
 
     //  Chrome 33
-    if (TP.boot.getBrowser() === 'chrome') {
+    if (TP.sys.getBrowser() === 'chrome') {
         if (anObj === self.CSS) {
             return 'CSS';
         } else if (anObj === self.Intl) {
@@ -2681,7 +2681,7 @@ function(anObj) {
     }
 
     //  Safari 7
-    if (TP.boot.getBrowser() === 'safari') {
+    if (TP.sys.getBrowser() === 'safari') {
         if (anObj === self.CSS) {
             return 'CSS';
         } else if (anObj === self.Intl) {
@@ -11380,7 +11380,7 @@ function() {
             (port.toString() !== '80')) {
             str += ':' + port;
         }
-    } else if (TP.boot.isWin()) {
+    } else if (TP.sys.isWin()) {
         //  on windows if you don't include the drive spec in the root the
         //  files won't be found. this is consistent with IE behavior.
         return decodeURI(window.location.toString()).slice(0,

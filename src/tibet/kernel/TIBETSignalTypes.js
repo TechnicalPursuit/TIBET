@@ -2122,11 +2122,11 @@ TP.sig.DOMMouseSignal.defineSubtype('DOMMouseWheel');
 //  Type Constants
 //  ------------------------------------------------------------------------
 
-if (TP.boot.isUA('GECKO')) {
+if (TP.sys.isUA('GECKO')) {
     TP.sig.DOMMouseWheel.Type.defineConstant('NATIVE_NAME', 'DOMMouseScroll');
 }
 
-if (TP.boot.isUA('IE') || TP.boot.isUA('WEBKIT')) {
+if (TP.sys.isUA('IE') || TP.sys.isUA('WEBKIT')) {
     TP.sig.DOMMouseWheel.Type.defineConstant('NATIVE_NAME', 'mousewheel');
 }
 

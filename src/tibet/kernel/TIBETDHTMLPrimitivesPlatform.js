@@ -287,7 +287,7 @@ TP.hc(
 TP.definePrimitive('documentCreateEvent',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aDocument, anEventSpec) {
 
@@ -1202,7 +1202,7 @@ TP.hc(
 TP.definePrimitive('elementDisableUserSelect',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anElement) {
 
@@ -1267,7 +1267,7 @@ TP.hc(
 TP.definePrimitive('elementEnableUserSelect',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anElement) {
 
@@ -2039,7 +2039,7 @@ TP.hc(
 TP.definePrimitive('elementGetTransformMatrix',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anElement, wants2DMatrix) {
         /**
@@ -2301,7 +2301,7 @@ TP.hc(
 TP.definePrimitive('elementSetTransform',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anElement, aTransformStr) {
 
@@ -2378,7 +2378,7 @@ TP.hc(
 TP.definePrimitive('elementSetTransformOrigin',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anElement, xValue, yValue) {
 
@@ -2493,7 +2493,7 @@ TP.hc(
 TP.definePrimitive('windowBuildFunctionFor',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aWindow, aFunction) {
 
@@ -2742,7 +2742,7 @@ TP.hc(
 TP.definePrimitive('windowInstallOnBeforeUnloadHook',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aWindow, aFunction) {
 

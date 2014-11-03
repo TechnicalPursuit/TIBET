@@ -741,7 +741,7 @@ function(aRequest) {
 
 TP.definePrimitive('$$setupHostTypesValues',
 function(aRequest) {
-    if (TP.boot.getBrowser() === 'firefox') {
+    if (TP.sys.getBrowser() === 'firefox') {
 
         //  Slots on Firefox 28
 
@@ -1142,7 +1142,7 @@ function(aRequest) {
         'XMLHttpRequest', self.XMLHttpRequest,
         'XMLHttpRequestEventTarget', self.XMLHttpRequestEventTarget
         );
-    } else if (TP.boot.getBrowser() === 'chrome') {
+    } else if (TP.sys.getBrowser() === 'chrome') {
 
         //  Slots on Chrome 33
 
@@ -1620,7 +1620,7 @@ function(aRequest) {
         'XPathResult', self.XPathResult,
         'XSLTProcessor', self.XSLTProcessor
         );
-    } else if (TP.boot.getBrowser() === 'safari') {
+    } else if (TP.sys.getBrowser() === 'safari') {
 
         //  Slots on Safari 7.0.1
 

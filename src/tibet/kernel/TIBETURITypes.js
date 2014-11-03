@@ -5973,7 +5973,7 @@ function(url) {
     var path;
 
     //  by default the 'path' is whatever comes after the scheme
-    if (TP.boot.isWin()) {
+    if (TP.sys.isWin()) {
         path = url.slice(url.indexOf(':///') + 4);
     } else {
         path = url.slice(url.indexOf('://') + 3);

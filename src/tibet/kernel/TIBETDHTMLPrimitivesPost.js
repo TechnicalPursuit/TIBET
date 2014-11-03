@@ -81,7 +81,7 @@ function() {
         //  size. This won't normally cause problems since the 'html'
         //  element in html documents don't have a font size assigned (or
         //  used).
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             docStyleObj = TP.elementGetStyleObj(document.documentElement);
             oldFontSize = docStyleObj.fontSize;
             docStyleObj.fontSize = '100%';
@@ -111,7 +111,7 @@ function() {
 
         //  If we're in IE, we need to put the document element's font size
         //  back to what it was.
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             //  docStyleObj is set above in the first 'if we're in IE'
             //  code.
             docStyleObj.fontSize = oldFontSize;
@@ -674,7 +674,7 @@ function(aDocument, aFontSize) {
     //  this computation has already been done.
     if (TP.notValid(numPixels = TP.FONT_HEIGHTS.at(aFontSize))) {
         //  We need to adjust the font size in IE
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             docStyleObj = TP.elementGetStyleObj(aDocument.documentElement);
             oldFontSize = docStyleObj.fontSize;
             docStyleObj.fontSize = '100%';
@@ -711,7 +711,7 @@ function(aDocument, aFontSize) {
 
         //  If we're in IE, we need to put the document element's font size
         //  back to what it was.
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             //  docStyleObj is set above in the first 'if we're in IE' code.
             docStyleObj.fontSize = oldFontSize;
         }
@@ -1189,7 +1189,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         str = strContent;
     }
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         //  IE doesn't do a good job of handling '&apos;' - but it can
         //  handle the numeric version.
         str = str.replace(/&apos;/g, '&#39;');
@@ -1209,7 +1209,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  TP.$$processDocumentUnloaded() manually since altering the DOM won't
     //  cause a true unload signal to be fired - you have to alter the
     //  location to have that happen
-    if (TP.boot.isUA('GECKO') || TP.boot.isUA('WEBKIT')) {
+    if (TP.sys.isUA('GECKO') || TP.sys.isUA('WEBKIT')) {
         try {
             aDocument.open(TP.HTML_TEXT_ENCODED, 'replace');
             aDocument.write('');
@@ -1263,7 +1263,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         TP.core.Window.$$isDocumentWriting = true;
         aDocument.open(TP.HTML_TEXT_ENCODED, 'replace');
 
-        if (TP.boot.isUA('WEBKIT')) {
+        if (TP.sys.isUA('WEBKIT')) {
             //  Loop over and clear all 'global variable references' for
             //  consistency between browsers. Mozilla tends to clear any
             //  user-placed global slots, as does IE, but Safari tends not
@@ -3896,7 +3896,7 @@ function(anElement) {
 
         //  Make sure and detach the resizing event handlers since they'll
         //  be reattached when the busy element is shown.
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             anElement.ownerDocument.parentWindow.detachEvent(
                 'onresize',
                 busyElement.busyResizeFunction);
@@ -5035,7 +5035,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
             busyElemStyleObj.height = busyHeight + 'px';
         };
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         anElement.ownerDocument.parentWindow.attachEvent(
             'onresize',
             busyElement.busyResizeFunction);
@@ -5496,7 +5496,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         //  native call, insertAdjacentHTML, if we're on IE or we create a
         //  contextual fragment and use the DOM, if we're on a W3C compliant
         //  browser.
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             //  IE doesn't do a good job of handling '&apos;' - but it can
             //  handle the numeric version.
             strContent = strContent.replace(/&apos;/g, '&#39;');
@@ -5866,7 +5866,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         //  native call, insertAdjacentHTML, if we're on IE or we create a
         //  contextual fragment and use the DOM, if we're on a W3C compliant
         //  browser.
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             //  IE doesn't do a good job of handling '&apos;' - but it can
             //  handle the numeric version.
             strContent = strContent.replace(/&apos;/g, '&#39;');
@@ -6035,7 +6035,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     if (TP.isNode(nodeContent)) {
         //  Clear the node
 
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             elemTagName = anElement.tagName.toLowerCase();
 
             //  We can use 'innerHTML' here to clear out the old content of
@@ -6060,7 +6060,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         //  come from another document.
         nodeContent = TP.nodeAppendChild(anElement, nodeContent, false);
     } else if (TP.isString(strContent)) {
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             //  IE doesn't do a good job of handling '&apos;' - but it can
             //  handle the numeric version.
             strContent = strContent.replace(/&apos;/g, '&#39;');
@@ -7482,7 +7482,7 @@ function(aNode) {
         case Node.ELEMENT_NODE:
 
             if (TP.isHTMLNode(aNode)) {
-                if (TP.boot.isUA('IE')) {
+                if (TP.sys.isUA('IE')) {
                     elemTagName = aNode.tagName.toLowerCase();
 
                     //  We can use 'innerHTML' here to clear out the old
@@ -8022,7 +8022,7 @@ function(url, name, aSpec, shouldReplace) {
     }
 
     //  HACK:   convert top/left into screenX/screenY for mozilla browsers
-    if (TP.notEmpty(spec) && TP.boot.isUA('GECKO')) {
+    if (TP.notEmpty(spec) && TP.sys.isUA('GECKO')) {
         spec = spec.replace('top', 'screenY');
         spec = spec.replace('left', 'screenX');
     }
@@ -8260,7 +8260,7 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
 
     //  close open windows if we're unloading the code frame
     if ((TP.$$processDocumentUnloaded.codeframe === aWindow) &&
-            TP.boot.isUA('GECKO')) {
+            TP.sys.isUA('GECKO')) {
         TP.core.Window.closeRegisteredWindows();
 
         return;
@@ -8892,7 +8892,7 @@ function(aWindow) {
     //  Set up key handlers for 'keypress' and 'keydown' (depending on the
     //  browser) aWindow's documentElement (or body) so that backspace
     //  won't cause TIBET to be flushed back to its frameset.
-    if (TP.boot.isUA('GECKO') || TP.boot.isUA('WEBKIT')) {
+    if (TP.sys.isUA('GECKO') || TP.sys.isUA('WEBKIT')) {
         aWindow.document.documentElement.addEventListener(
             'keypress',
             function(anEvent) {
@@ -8902,7 +8902,7 @@ function(aWindow) {
                     anEvent.preventDefault();
                 }
             },false);
-    } else if (TP.boot.isUA('IE')) {
+    } else if (TP.sys.isUA('IE')) {
         TP.documentGetBody(aWindow.document).attachEvent(
             'onkeydown',
             function(anEvent) {
@@ -8938,7 +8938,7 @@ function(aWindow) {
     //  whatever TIBET's canvas window is. Note: Do not shortcut this by using
     //  'canvasWindow'. The actual ui canvas window may change as the
     //  application is executed.
-    if (TP.boot.isUA('GECKO')) {
+    if (TP.sys.isUA('GECKO')) {
         aWindow.addEventListener('focus',
                 function(anEvent) {
 
@@ -8956,7 +8956,7 @@ function(aWindow) {
                     }
                 },
                 false);
-    } else if (TP.boot.isUA('WEBKIT')) {
+    } else if (TP.sys.isUA('WEBKIT')) {
         aWindow.addEventListener('focus',
                 function(anEvent) {
 
@@ -8964,7 +8964,7 @@ function(aWindow) {
                         TP.sys.getUICanvas(true).focus();
                     }
                 });
-    } else if (TP.boot.isUA('IE')) {
+    } else if (TP.sys.isUA('IE')) {
         aWindow.attachEvent('onfocus',
                 function(anEvent) {
 

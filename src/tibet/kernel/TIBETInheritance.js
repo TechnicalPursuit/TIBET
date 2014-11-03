@@ -3055,7 +3055,7 @@ function(anInterface, anObject, shouldForce) {
     //  on Moz there's no reason to build dnu methods at the top level
     //  unless we're being asked to force overlaying a method we find. the
     //  built-in backstop will do what we need otherwise
-    if (TP.boot.isUA('GECKO') && (target === TP.ObjectProto)) {
+    if (TP.sys.isUA('GECKO') && (target === TP.ObjectProto)) {
         return 0;
     }
 
@@ -3216,7 +3216,7 @@ function(anInterface, anObject) {
     //  on Moz there's no real backstop method installation, so the only
     //  thing we could do would be to install a method whose goal is to
     //  "deaden" the backstop in this location
-    if (TP.boot.isUA('GECKO') && (target === TP.ObjectProto)) {
+    if (TP.sys.isUA('GECKO') && (target === TP.ObjectProto)) {
         deaden = true;
     }
 
@@ -4630,7 +4630,7 @@ function(anObject) {
 
     var validityInfo,
         setAtLeastOne,
-    
+
         isValid;
 
     //  First, attempt to validate any aspects on the supplied object. This will
@@ -4646,7 +4646,7 @@ function(anObject) {
     //  the callBestMethod() approach at the bottom.
     validityInfo.perform(
         function(kvPair) {
-  
+
             var truthVal;
 
             //  If there was at least one validity test that returned either
@@ -4734,7 +4734,7 @@ function(anObject, aspectNames) {
         if (TP.notValid(constraints = this.getInstFacetSettingFor(
                                         aspectName,
                                         TP.VALID))) {
-        
+
             results.atPut(aspectName, TP.NO_RESULT);
 
             continue;
@@ -4809,10 +4809,10 @@ function(anObject, constraints) {
 
         len,
         i,
-    
+
         constraintName,
         constraint,
-    
+
         result;
 
     //  Set the initial result to false.
@@ -6568,7 +6568,7 @@ function(aspectName, facetName, facetValue, shouldSignal) {
 
     var facetSlotName,
         currentFacetVal,
-    
+
         sigFlag;
 
     //  If the facet is 'value', then use the standard 'set' mechanism.

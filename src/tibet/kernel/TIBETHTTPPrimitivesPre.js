@@ -824,7 +824,7 @@ function(targetUrl, aRequest, httpObj) {
 
     //  on moz we have to avoid duplication of this header, which seems
     //  to appear as if by magic...
-    if (TP.boot.isUA('GECKO')) {
+    if (TP.sys.isUA('GECKO')) {
         if (TP.isDefined(h = headers.at('Pragma'))) {
             if (h === 'no-cache') {
                 headers.removeKey('Pragma');
@@ -896,7 +896,7 @@ function(targetUrl, aRequest, httpObj) {
         val = headers.at(key);
 
         if (TP.isArray(val)) {
-            if (TP.boot.isUA('WEBKIT')) {
+            if (TP.sys.isUA('WEBKIT')) {
                 //  It's an Array of settings, so we join it with a ', '
                 httpObj.setRequestHeader(key, val.join(', '));
             } else {

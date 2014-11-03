@@ -5682,7 +5682,7 @@ function() {
 
     var domName;
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         domName = 'styleFloat';
     } else {
         domName = 'cssFloat';
@@ -5711,7 +5711,7 @@ function() {
      */
 
     if (this.toString() === 'float') {
-        if (TP.boot.isUA('IE')) {
+        if (TP.sys.isUA('IE')) {
             return 'styleFloat';
         } else {
             return 'cssFloat';

@@ -180,12 +180,12 @@ if (TP.notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
         'submit', 'TP.sig.DOMSubmit',
         'unload', 'TP.sig.DOMUnload');
 
-    if (TP.boot.isUA('GECKO')) {
+    if (TP.sys.isUA('GECKO')) {
         TP.DOM_SIGNAL_TYPE_MAP.atPut('DOMMouseScroll',
                                         'TP.sig.DOMMouseWheel');
     }
 
-    if (TP.boot.isUA('IE') || TP.boot.isUA('WEBKIT')) {
+    if (TP.sys.isUA('IE') || TP.sys.isUA('WEBKIT')) {
         TP.DOM_SIGNAL_TYPE_MAP.atPut('mousewheel',
                                         'TP.sig.DOMMouseWheel');
     }

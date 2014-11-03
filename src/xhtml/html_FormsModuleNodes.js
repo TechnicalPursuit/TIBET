@@ -211,7 +211,7 @@ function(toStart) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         //  Nasty code to get the current indices of the selection in IE,
         //  which is going away in IE9... so why bother?
         return this;
@@ -246,7 +246,7 @@ function() {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         if (TP.notValid(sel = this.getNativeDocument().selection)) {
             return '';
         }
@@ -282,7 +282,7 @@ function() {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         range = this.getNativeDocument().selection.createRange();
 
         rangeDup = range.duplicate();
@@ -319,7 +319,7 @@ function() {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         range = this.getNativeDocument().selection.createRange();
 
         rangeDup = range.duplicate();
@@ -460,7 +460,7 @@ function(aStartIndex, anEndIndex) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         range = node.createTextRange();
         range.collapse(true);
         range.moveStart('character', aStartIndex);

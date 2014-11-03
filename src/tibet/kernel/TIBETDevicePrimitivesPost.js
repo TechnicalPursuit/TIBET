@@ -552,14 +552,14 @@ function(anEvent) {
 
     switch (button) {
         case 0:
-            if (!TP.boot.isUA('IE')) {
+            if (!TP.sys.isUA('IE')) {
                 return TP.LEFT;
             }
 
             break;
 
         case 1:
-            if (TP.boot.isUA('IE')) {
+            if (TP.sys.isUA('IE')) {
                 return TP.LEFT;
             } else {
                 return TP.MIDDLE;
@@ -571,7 +571,7 @@ function(anEvent) {
             return TP.RIGHT;
 
         case 4:
-            if (TP.boot.isUA('IE')) {
+            if (TP.sys.isUA('IE')) {
                 return TP.MIDDLE;
             }
             break;
@@ -1151,7 +1151,7 @@ function(nativeEvt) {
         sourceElement = currentElement;
     }
 
-    if (TP.boot.isUA('IE')) {
+    if (TP.sys.isUA('IE')) {
         //  If the object that has the handler (the 'this' object) is
         //  window's document and the source of the event is not the
         //  document's body, then that means it was a bubbled event. If it's
@@ -1459,7 +1459,7 @@ function(anElement, invalidateIdCache) {
 
         //  The looping will have terminated at a 'document' node - add it's ID.
         eventIdArray.push(TP.gid(elementDoc));
-        
+
         //  See if that document has a window and if it does, append
         //  its global ID to the end of the event ids.
         elementWin = TP.nodeGetWindow(elementDoc);
@@ -1779,7 +1779,7 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
                     };
             theHandler.$$wrapper = wrapperHandler;
 
-            if (TP.boot.isUA('IE')) {
+            if (TP.sys.isUA('IE')) {
                 element.attachEvent('on' + nativeEventName,
                                     wrapperHandler);
             } else {
@@ -1978,7 +1978,7 @@ function(aWindow, aNode, eventNameArray, aHandler) {
                 theHandler = theHandler.$$wrapper;
             }
 
-            if (TP.boot.isUA('IE')) {
+            if (TP.sys.isUA('IE')) {
                 element.detachEvent('on' + nativeEventName,
                                     theHandler);
             } else {

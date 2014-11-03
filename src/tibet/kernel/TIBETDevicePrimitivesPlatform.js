@@ -17,7 +17,7 @@ Platform-specific functionality related to mouse and keyboard.
 TP.definePrimitive('eventNormalize',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anEvent, currentTarget) {
 

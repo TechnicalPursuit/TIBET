@@ -134,7 +134,7 @@ TP.hc(
 TP.definePrimitive('$fileDelete',
 TP.hc(
     'test',
-    TP.boot.getBrowser,
+    TP.sys.getBrowser,
     'firefox',
     function(targetUrl, aRequest) {
 
@@ -388,7 +388,7 @@ Webkit provides limited facilities for its browsers.
 TP.definePrimitive('$fileExists',
 TP.hc(
     'test',
-    TP.boot.getBrowser,
+    TP.sys.getBrowser,
     'firefox',
     function(targetUrl, aRequest) {
 
@@ -633,14 +633,14 @@ TP.hc(
         }
 
         //  Safari 4.X - Windows
-        if (TP.boot.isWin() && httpObj.status === -1100) {
+        if (TP.sys.isWin() && httpObj.status === -1100) {
             request.complete(false);
 
             return false;
         }
 
         //  Safari 3.1 - Mac
-        if (TP.boot.isMac() &&
+        if (TP.sys.isMac() &&
             (httpObj.status === -1100 || httpObj.status === 400)) {
             request.complete(false);
 
@@ -648,7 +648,7 @@ TP.hc(
         }
 
         //  Safari 3.1 - Windows
-        if (TP.boot.isWin() && httpObj.status === 1789378560) {
+        if (TP.sys.isWin() && httpObj.status === 1789378560) {
             request.complete(false);
 
             return false;
@@ -730,7 +730,7 @@ TP.hc(
 TP.definePrimitive('$fileLoad',
 TP.hc(
     'test',
-    TP.boot.getBrowser,
+    TP.sys.getBrowser,
     'firefox',
     function(targetUrl, aRequest) {
 
@@ -1143,7 +1143,7 @@ TP.hc(
         }
 
         //  Safari 4.X - Windows
-        if (TP.boot.isWin() && httpObj.status === -1100) {
+        if (TP.sys.isWin() && httpObj.status === -1100) {
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
@@ -1153,7 +1153,7 @@ TP.hc(
         }
 
         //  Safari 3.1 - Mac
-        if (TP.boot.isMac() &&
+        if (TP.sys.isMac() &&
             (httpObj.status === -1100 || httpObj.status === 400)) {
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
@@ -1164,7 +1164,7 @@ TP.hc(
         }
 
         //  Safari 3.1 - Windows
-        if (TP.boot.isWin() && httpObj.status === 1789378560) {
+        if (TP.sys.isWin() && httpObj.status === 1789378560) {
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
@@ -1289,7 +1289,7 @@ capable server or a REST-based (Rails perhaps ;)) server with PUT support.
 TP.definePrimitive('$fileSave',
 TP.hc(
     'test',
-    TP.boot.getBrowser,
+    TP.sys.getBrowser,
     'firefox',
     function(targetUrl, aRequest) {
 
@@ -1696,7 +1696,7 @@ TP.hc(
 TP.definePrimitive('$fileExecute',
 TP.hc(
     'test',
-    TP.boot.getBrowser,
+    TP.sys.getBrowser,
     'firefox',
     function(shellUrl, aRequest) {
 
@@ -1781,7 +1781,7 @@ TP.hc(
         }
 
         //  when not a real value we'll just default to an empty prefix value
-        if (TP.boot.isWin()) {
+        if (TP.sys.isWin()) {
             shell = TP.uriInLocalFormat(TP.ifInvalid(shellUrl, ''));
         } else {
             //  on *NIX we'll use the comspec, so we'll try to exec the same
@@ -1792,7 +1792,7 @@ TP.hc(
         }
 
         if (/ /.test(shell)) {
-            if (TP.boot.isWin()) {
+            if (TP.sys.isWin()) {
                 //  on Windows we can quote the path
                 shell = '"' + shell + '"';
             } else {
@@ -1859,7 +1859,7 @@ TP.hc(
 
                 //  note the "invalid" here, not "empty" to allow setting
                 //  empty flags
-                if (TP.boot.isWin()) {
+                if (TP.sys.isWin()) {
                     flags = TP.ifInvalid(shellFlags, '');
                 } else {
                     flags = TP.ifInvalid(shellFlags,
@@ -1878,7 +1878,7 @@ TP.hc(
                 //  spaces in it.
                 cmd = TP.uriInLocalFormat(commandName);
                 if (/ /.test(cmd)) {
-                    if (TP.boot.isWin()) {
+                    if (TP.sys.isWin()) {
                         cmd = '"' + cmd + '"';
                     } else {
                         cmd = cmd.replace(/ /g, '\\ ');
@@ -1905,7 +1905,7 @@ TP.hc(
                 if (TP.notEmpty(inFile = TP.ifInvalid(stdIn, ''))) {
                     inFile = TP.uriInLocalFormat(inFile);
                     if (/ /.test(inFile)) {
-                        if (TP.boot.isWin()) {
+                        if (TP.sys.isWin()) {
                             inFile = '"' + inFile + '"';
                         } else {
                             inFile = inFile.replace(/ /g, '\\ ');
@@ -1922,7 +1922,7 @@ TP.hc(
                                 TP.ifInvalid(stdErr, TP.uriTempFileName()));
 
                 if (/ /.test(errFile)) {
-                    if (TP.boot.isWin()) {
+                    if (TP.sys.isWin()) {
                         errFile = '"' + errFile + '"';
                     } else {
                         errFile = errFile.replace(/ /g, '\\ ');
@@ -1933,7 +1933,7 @@ TP.hc(
                                 TP.ifInvalid(stdOut, TP.uriTempFileName()));
 
                 if (/ /.test(outFile)) {
-                    if (TP.boot.isWin()) {
+                    if (TP.sys.isWin()) {
                         outFile = '"' + outFile + '"';
                     } else {
                         outFile = outFile.replace(/ /g, '\\ ');
@@ -1965,12 +1965,12 @@ TP.hc(
 
                 //  to help avoid problems with async we use a temp file
                 //  name for our generated batch file as well
-                cmdext = TP.boot.isWin() ? 'bat' : 'sh';
+                cmdext = TP.sys.isWin() ? 'bat' : 'sh';
                 cmdFile = TP.uriExpandPath(TP.uriTempFileName(
                                                 null, null, cmdext));
                 cmdFile = TP.uriInLocalFormat(cmdFile);
 
-                if (TP.boot.isWin()) {
+                if (TP.sys.isWin()) {
                     cmdText = TP.join('@echo off\n', cmdline);
                     if (async) {
                         //  when async we need a semaphore file 'touch' to
@@ -2007,7 +2007,7 @@ TP.hc(
                 }
 
                 if (/ /.test(cmdFile)) {
-                    if (TP.boot.isWin()) {
+                    if (TP.sys.isWin()) {
                         cmdFile = TP.join('"', cmdFile, '"');
                     } else {
                         cmdFile = cmdFile.replace(/ /g, '\\ ');

@@ -1176,7 +1176,7 @@ function(nativeEvent) {
         case 'keydown':
 
             //  suppress dups for IE...we manage repeat differently
-            if (TP.boot.isUA('IE')) {
+            if (TP.sys.isUA('IE')) {
                 lastEvent = TP.core.Keyboard.get('lastDown');
                 if (TP.isEvent(lastEvent) &&
                     TP.eventIsDuplicate(lastEvent, ev)) {
@@ -1207,7 +1207,7 @@ function(nativeEvent) {
         case 'keypress':
 
             //  suppress dups for IE...we manage repeat differently
-            if (TP.boot.isUA('IE')) {
+            if (TP.sys.isUA('IE')) {
                 lastEvent = TP.core.Keyboard.get('lastPress');
                 if (TP.isEvent(lastEvent) &&
                     TP.eventIsDuplicate(lastEvent, ev)) {
@@ -1229,7 +1229,7 @@ function(nativeEvent) {
         case 'keyup':
 
             //  suppress dups for IE...we manage repeat differently
-            if (TP.boot.isUA('IE')) {
+            if (TP.sys.isUA('IE')) {
                 lastEvent = TP.core.Keyboard.get('lastUp');
                 if (TP.isEvent(lastEvent) &&
                     TP.eventIsDuplicate(lastEvent, ev)) {
@@ -1256,7 +1256,7 @@ function(nativeEvent) {
     //  'lastEventName' slot to be something else (like null...), then we
     //  replace it with a copy of the event record. This is because IE
     //  pitches a fit if we try to keep a reference to Event objects around.
-    if (TP.boot.isUA('IE') && TP.core.Keyboard.get(lastEventName) === ev) {
+    if (TP.sys.isUA('IE') && TP.core.Keyboard.get(lastEventName) === ev) {
         TP.core.Keyboard.$set(lastEventName, ev.copy());
     }
 
@@ -1967,7 +1967,7 @@ function(normalizedEvent) {
 
     key = TP.eventGetKeyCode(normalizedEvent);
 
-    if (TP.boot.isUA('GECKO') && TP.boot.isMac()) {
+    if (TP.sys.isUA('GECKO') && TP.sys.isMac()) {
         //  hozed on some keys, they report 0 as keyCode. have to wait for
         //  press event...thankfully moz will produce one (for now)
         if (key === 0) {
@@ -1982,7 +1982,7 @@ function(normalizedEvent) {
     //  provide a press event if it's actually an arrow. Also, home and $
     //  are confused. Cool huh?
     if (key >= 36 && key <= 40) {
-        if (TP.boot.isUA('GECKO')) {
+        if (TP.sys.isUA('GECKO')) {
             //  wait for press to decide
             normalizedEvent.$notSignaled = true;
 
@@ -2006,7 +2006,7 @@ function(normalizedEvent) {
             lastDown.$notSignaled = true;
             lastDown.$special = true;
 
-            lastDown = TP.boot.isUA('IE') ? lastDown.copy() : lastDown;
+            lastDown = TP.sys.isUA('IE') ? lastDown.copy() : lastDown;
 
             TP.core.Keyboard.$set('downTimer',
                 setTimeout(
@@ -2054,7 +2054,7 @@ function(normalizedEvent) {
         key,
         timer;
 
-    if (TP.boot.isUA('GECKO')) {
+    if (TP.sys.isUA('GECKO')) {
         lastDown = TP.core.Keyboard.get('lastDown');
 
         special = normalizedEvent.which === 0;
@@ -2141,7 +2141,7 @@ function(normalizedEvent) {
         lastKey,
         timer;
 
-    if (TP.boot.isUA('GECKO')) {
+    if (TP.sys.isUA('GECKO')) {
         lastEvent = TP.core.Keyboard.get('lastPress') ||
                     TP.core.Keyboard.get('lastDown');
 
@@ -2701,7 +2701,7 @@ function(normalizedEvent) {
     //  cause event-level confusion. the semantics should be maintained by
     //  the application however that dblclick is "more click"
     thisRef = this;
-    theEvent = TP.boot.isUA('IE') ?
+    theEvent = TP.sys.isUA('IE') ?
                         normalizedEvent.copy() :
                         normalizedEvent;
 
@@ -2884,7 +2884,7 @@ function(nativeEvent) {
     //  'lastEventName' slot to be something else (like null...), then we
     //  replace it with a copy of the event record. This is because IE
     //  pitches a fit if we try to keep a reference to Event objects around.
-    if (TP.boot.isUA('IE') && TP.core.Mouse.get(lastEventName) === ev) {
+    if (TP.sys.isUA('IE') && TP.core.Mouse.get(lastEventName) === ev) {
         TP.core.Mouse.$set(lastEventName, ev.copy());
     }
 

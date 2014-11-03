@@ -25,7 +25,7 @@
 TP.definePrimitive('isError',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anObj) {
 
@@ -75,7 +75,7 @@ TP.hc(
 TP.definePrimitive('isNamedNodeMap',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'trident',
     function(anObj) {
 
@@ -154,7 +154,7 @@ TP.hc(
 TP.definePrimitive('isNodeList',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'trident',
     function(anObj) {
 
@@ -271,7 +271,7 @@ TP.hc(
 TP.definePrimitive('isXMLNode',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'trident',
     function(anObj) {
 
@@ -351,7 +351,7 @@ TP.hc(
 TP.definePrimitive('isXHR',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'trident',
     function(anObj) {
 
@@ -405,7 +405,7 @@ TP.hc(
 TP.definePrimitive('executePrivileged',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged, privilegedFunction) {
         /**
@@ -912,7 +912,7 @@ TP.hc(
 TP.definePrimitive('errorAsString',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(errorObj) {
 
@@ -1050,7 +1050,7 @@ TP.hc(
 TP.definePrimitive('getStackInfo',
 TP.hc(
     'test',
-    TP.boot.getBrowser,
+    TP.sys.getBrowser,
     'firefox',
     function(errorObj) {
 
@@ -1268,7 +1268,7 @@ TP.hc(
 TP.definePrimitive('$setPrivilegeFlag',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(setting) {
 
@@ -1341,7 +1341,7 @@ TP.hc(
 TP.definePrimitive('$nodeToString',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aNode) {
 
@@ -1579,7 +1579,7 @@ TP.hc(
 TP.definePrimitive('objectToString',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anObject) {
 

@@ -431,7 +431,7 @@ function(aPath) {
 
     //  On Windows we can be drive:\something or \\something. All others
     //  need a /something path for this test to work
-    if ((TP.boot.isWin() &&
+    if ((TP.sys.isWin() &&
             (TP.regex.WINDOWS_PATH.test(aPath) ||
                 TP.regex.UNC_PATH.test(aPath))) ||
         TP.regex.ROOT_PATH.test(aPath)) {
@@ -454,7 +454,7 @@ function(aPath) {
 
     //  if we're not on Windows we're done. should have a path of the form
     //  /blah, or ../blah, etc.
-    if (!TP.boot.isWin()) {
+    if (!TP.sys.isWin()) {
         return path;
     }
 
@@ -551,7 +551,7 @@ function(aPath, aRoot) {
             return true;
         }
 
-        if (TP.boot.isWin()) {
+        if (TP.sys.isWin()) {
             //  on Windows we can also have either drive:\blah, or \\blah paths
             //  which are considered absolute
             return TP.regex.WINDOWS_PATH.test(path) ||
@@ -802,7 +802,7 @@ function(aPath, aRoot) {
 
         //  on Windows we may need to slice 1 more character if the path
         //  matches /drive: rather than a UNC path
-        if (TP.boot.isWin() && /^\/\w:/.test(path)) {
+        if (TP.sys.isWin() && /^\/\w:/.test(path)) {
             path = path.slice(1);
         }
 
@@ -861,7 +861,7 @@ function(aPath, aRoot) {
 
         prefix = 'file://';
 
-        if (TP.boot.isWin() && /^\w:/.test(aPath)) {
+        if (TP.sys.isWin() && /^\w:/.test(aPath)) {
             prefix = prefix + '/';
         }
 

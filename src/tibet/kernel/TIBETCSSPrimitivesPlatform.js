@@ -69,7 +69,7 @@ TP.hc(
 TP.definePrimitive('$eventHandleStyleInsertion',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(insertionEvent) {
 
@@ -546,7 +546,7 @@ TP.hc(
 TP.definePrimitive('elementGetAppliedNativeStyleRules',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anElement) {
 
@@ -725,7 +725,7 @@ TP.hc(
 TP.definePrimitive('styleRuleGetSourceInfo',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aStyleRule) {
 

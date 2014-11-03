@@ -210,7 +210,7 @@ TP.hc(
 TP.definePrimitive('httpCall',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(targetUrl, aRequest) {
 
@@ -927,7 +927,7 @@ TP.hc(
 TP.definePrimitive('httpCreate',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(targetUrl, aRequest) {
 

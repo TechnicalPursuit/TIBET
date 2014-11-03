@@ -146,7 +146,7 @@ TP.hc(
 TP.definePrimitive('$documentEscapeContent',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aDocument, tagNameArray) {
 
@@ -277,7 +277,7 @@ TP.hc(
 TP.definePrimitive('$fixupNamespacedAttributesPre',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(inputNode) {
 
@@ -416,7 +416,7 @@ TP.hc(
 TP.definePrimitive('$fixupNamespacedAttributesPost',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(inputNode, resultDoc) {
 
@@ -612,7 +612,7 @@ TP.hc(
 TP.definePrimitive('documentTransformNode',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(styleDoc, inputNode, paramHash) {
 

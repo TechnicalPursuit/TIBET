@@ -254,7 +254,7 @@ TP.hc(
 TP.definePrimitive('attributeGetOwnerElement',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anAttributeNode) {
 
@@ -627,7 +627,7 @@ TP.hc(
 TP.definePrimitive('documentCreateElement',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aDocument, elementName, elementNS) {
 
@@ -850,7 +850,7 @@ TP.hc(
 TP.definePrimitive('documentFromString',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aString, defaultNS, shouldReport) {
 
@@ -1766,7 +1766,7 @@ TP.hc(
 TP.definePrimitive('$$elementPreserveIFrameContent',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anElement) {
 
@@ -2233,7 +2233,7 @@ TP.hc(
 TP.definePrimitive('$$elementRestoreIFrameContent',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anElement, docElemsHash) {
 
@@ -2399,7 +2399,7 @@ TP.hc(
 TP.definePrimitive('elementSetAttributeInNS',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(anElement, attrName, attrValue, attrNS) {
 
@@ -2662,7 +2662,7 @@ TP.hc(
 TP.definePrimitive('nodeAsString',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aNode, wantsXMLDeclaration, shallow) {
 
@@ -3647,7 +3647,7 @@ TP.hc(
 TP.definePrimitive('nodeContainsNode',
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function(aNode, aDescendant) {
 
@@ -4824,7 +4824,7 @@ TP.hc(
         //  NB: This code must be written this way, because nodeFromID()
         //  will not exist on versions of MSXML prior to version 4 and will
         //  throw an exception if an attempt is made to use it.
-        if (TP.boot.isMSXML(4, TP.UP)) {
+        if (TP.sys.isMSXML(4, TP.UP)) {
             try {
                 result = aNode.nodeFromID(realID);
             } catch (e) {
@@ -5326,7 +5326,7 @@ TP.hc(
 TP.runConditionalFunction(
 TP.hc(
     'test',
-    TP.boot.getBrowserUI,
+    TP.sys.getBrowserUI,
     'gecko',
     function() {
 

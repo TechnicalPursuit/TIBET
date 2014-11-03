@@ -682,7 +682,7 @@ function(aRequest) {
      * @todo
      */
 
-    if (TP.boot.isUA('GECKO') &&
+    if (TP.sys.isUA('GECKO') &&
         TP.isTrue(this.getVariable('PRIVILEGED')) &&
         TP.sys.shouldRequestPrivileges()) {
         try {

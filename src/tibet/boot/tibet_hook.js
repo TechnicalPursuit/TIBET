@@ -440,7 +440,7 @@ TP.boot.$notValid = function(aValue) {
 //  ------------------------------------------------------------------------
 
 /*
-The rest of TIBET uses the TP.boot.isUA() function, these are intended to be
+The rest of TIBET uses the TP.sys.isUA() function, these are intended to be
 used only at the boot level for the hook file.
 */
 
