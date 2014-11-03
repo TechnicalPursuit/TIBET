@@ -582,7 +582,7 @@ function(aRequest) {
 
     //  output any startup announcement for the shell
     req = TP.sig.UserOutputRequest.construct(
-                    TP.hc('cmdTitle', 'Announcement',
+                    TP.hc('cmdTitle', '',
                             'echoRequest', true,
                             'output', str,
                             'cssClass', 'inbound_announce',
