@@ -1888,7 +1888,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         lpath = node.src || node.source || '';
         lpath = TP.boot.$uriInTIBETFormat(lpath);
     } else {
-        lpath = TP.NO_LOAD_PATH;
+        lpath = '';
     }
 
     // source path is any path specified by the rollup logic, or the load path

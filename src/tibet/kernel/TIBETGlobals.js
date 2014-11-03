@@ -622,9 +622,8 @@ TP.LOAD_NODE = '$loadNode';
 TP.LOAD_PATH = '$loadPath';
 TP.SRC_PATH = '$srcPath';
 
-TP.NO_LOAD_PATH = '<no_load_node>';
-TP.BUILTIN_LOAD_NODE = {};
-TP.BUILTIN_LOAD_NODE.src = '<built_in>';
+TP.BUILTIN_LOAD_NODE = TP.boot.$documentFromString(
+    '<script></script>').childNodes[0];
 
 TP.LOAD_PACKAGE = 'load_package';
 TP.LOAD_CONFIG = 'load_config';
