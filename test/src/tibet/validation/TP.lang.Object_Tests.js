@@ -94,7 +94,6 @@ TP.test.SimpleJSONType.Inst.defineAttribute(
             'required': true
         });
 
-
 //  ------------------------------------------------------------------------
 
 TP.test.SimpleJSONType.defineSubtype('test.SimpleJSONTypeWithSetter');
@@ -155,8 +154,6 @@ function() {
 TP.lang.Object.Inst.describe('Simple JSON content validation',
 function() {
 
-    //  ---
-
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
@@ -166,6 +163,8 @@ function() {
         function() {
             this.getSuite().stopTrackingSignals();
         });
+
+    //  ---
 
     this.it('object-level individual aspect facet checking', function(test, options) {
 
@@ -182,6 +181,8 @@ function() {
 
         testObj.checkFacets('SSN');
     });
+
+    //  ---
 
     this.it('object-level setting with manual setter', function(test, options) {
 
@@ -207,6 +208,8 @@ function() {
         test.assert.didSignal(testObj, 'SSNRequiredChange');
     });
 
+    //  ---
+
     this.it('object-level setting with instance-level setter', function(test, options) {
 
         var testObj;
@@ -228,6 +231,8 @@ function() {
         test.assert.didSignal(testObj, 'SSNRequiredChange');
         test.assert.didSignal(testObj, 'SSNValidChange');
     });
+
+    //  ---
 
     this.it('object-level setting with local-level setter', function(test, options) {
 
@@ -258,8 +263,80 @@ function() {
         test.assert.didSignal(testObj, 'SSNChange');
         test.assert.didSignal(testObj, 'TP.sig.StructureChange');
         test.assert.didSignal(testObj, 'SSNRequiredChange');
+        test.assert.didSignal(testObj, 'SSNValidChange');
 
         test.assert.isTrue(ranLocalHandler);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('test.Employee');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.test.Employee.Inst.defineAttribute(
+        'SSN',
+        {
+            'value': undefined,
+            'valid':
+            {
+                'dataType': 'TP.test.SSN',
+            },
+            'required': true
+        });
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.Inst.describe('Object-level validation',
+function() {
+
+    this.it('using defineBinding() - concrete reference, same simple aspect', function(test, options) {
+
+        var modelObj,
+            observerObj;
+
+        modelObj = TP.test.Employee.construct();
+
+        observerObj = TP.lang.Object.construct();
+        observerObj.defineAttribute('SSN');
+        observerObj.defineAttribute('SSNIsValid');
+
+        observerObj.defineBinding('SSN', modelObj, 'SSN');
+        observerObj.defineBinding('SSNIsValid', modelObj, 'SSN:' + TP.VALID);
+
+        //  Set the value of 'SSN' on the model object. The binding should
+        //  cause the value of 'SSN' on the observer to update.
+        modelObj.set('SSN', '555-55-5555');
+        modelObj.setFacet('SSN', TP.VALID, true);
+
+        this.assert.isEqualTo(
+                    modelObj.get('SSN'),
+                    observerObj.get('SSN'));
+
+        this.assert.isEqualTo(
+                    true,
+                    observerObj.get('SSNIsValid'));
+
+        //  Destroy the bindings
+        observerObj.destroyBinding('SSN', modelObj, 'SSN');
+        observerObj.destroyBinding('SSNIsValid', modelObj, 'SSN:' + TP.VALID);
+
+        modelObj.set('SSN', '111-11-1111');
+        modelObj.setFacet('SSN', TP.VALID, false);
+
+        //  Because there is now no binding between these two, observerObj
+        //  should still have the value of '555-55-5555' set above.
+        this.assert.isEqualTo(
+                    '555-55-5555',
+                    observerObj.get('SSN'));
+
+        //  And the valid setting should still be true.
+        this.assert.isEqualTo(
+                    true,
+                    observerObj.get('SSNIsValid'));
     });
 });
 

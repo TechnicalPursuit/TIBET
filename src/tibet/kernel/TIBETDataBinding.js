@@ -613,7 +613,11 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
     var resource,
         sourceAttr,
 
+        parts,
+        facetName,
         signalName,
+        aspectKey,
+
         methodName,
 
         handler;
@@ -644,6 +648,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
     //  If the source attribute is an access path, then we compute the signal we
     //  observe differently.
     if (sourceAttr.isAccessPath()) {
+
         //  Do a 'get' to establish the interest in the path - we're not really
         //  interested in the value though. We don't do this if it's a URI,
         //  though, since the URI will do that automatically.
@@ -653,26 +658,59 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
         //  The signal name is always TP.sig.ValueChange for paths
         signalName = 'TP.sig.ValueChange';
+
+        //  The key into the aspect map is simply the path's String
+        //  representation.
+        aspectKey = TP.str(sourceAttr);
     } else {
-        signalName = sourceAttr.asStartUpper() + 'Change';
+        //  If the source attribute denoted a binding to a facet change
+        //  (indicated by a colon - ':'), then split that and compute the facet
+        //  name and the signal name from it.
+        if (TP.regex.HAS_COLON.test(sourceAttr)) {
+            parts = sourceAttr.split(':');
+
+            sourceAttr = parts.at(0);
+            facetName = parts.at(1);
+
+            signalName = sourceAttr.asStartUpper() +
+                            facetName.asStartUpper() +
+                            'Change';
+        
+        } else {
+
+            //  Otherwise, it's a simple 'value' change.
+            facetName = 'value';
+            signalName = sourceAttr.asStartUpper() + 'Change';
+        }
+
+        //  The key into the aspect map is the source attr name + ':' + the
+        //  facet name
+        aspectKey = sourceAttr + ':' + facetName;
     }
 
     //  Make sure that target object has a local method to handle the change
     methodName = 'handle' + TP.escapeTypeName(signalName);
+
     if (TP.notValid(handler = target.getMethod(methodName))) {
 
         //  Define a handler function
         handler = function(aSignal) {
 
             var newVal,
+                aspect,
+                facet,
+
                 targetAttr;
 
             TP.stop('break.bind_change');
 
             try {
                 newVal = aSignal.getValue();
+                aspect = aSignal.at('aspect');
+                facet = aSignal.at('facet');
+
                 if (TP.notEmpty(targetAttr =
-                                handler.$aspectMap.at(aSignal.at('aspect')))) {
+                                handler.$aspectMap.at(aspect + ':' + facet))) {
                     this.set(targetAttr, newVal);
                 }
             } catch (e) {
@@ -689,7 +727,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     //  Add an entry to make a mapping between a source aspect and a target
     //  aspect.
-    handler.$aspectMap.atPut(TP.str(sourceAttr), targetAttributeName);
+    handler.$aspectMap.atPut(aspectKey, targetAttributeName);
 
     target.observe(resource, signalName);
 
@@ -771,10 +809,13 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
      */
 
     var resource,
-        targetAttr,
         sourceAttr,
 
+        parts,
+        facetName,
         signalName,
+        aspectKey,
+
         methodName,
 
         handler;
@@ -798,18 +839,43 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
     //  Get the target attribute. If there is no source attribute, then use the
     //  target attribute as the source attribute.
-    targetAttr = targetAttributeName;
     if (TP.notValid(sourceAttr = sourceAttributeName)) {
-        sourceAttr = targetAttr;
+        sourceAttr = targetAttributeName;
     }
 
     //  If the source attribute is an access path, then we compute the signal we
     //  observe differently.
     if (sourceAttr.isAccessPath()) {
+
         //  The signal name is always TP.sig.ValueChange for paths
         signalName = 'TP.sig.ValueChange';
+
+        //  The key into the aspect map is simply the path's String
+        //  representation.
+        aspectKey = TP.str(sourceAttr);
     } else {
-        signalName = sourceAttr.asTitleCase() + 'Change';
+        //  If the source attribute denoted a binding to a facet change
+        //  (indicated by a colon - ':'), then split that and compute the facet
+        //  name and the signal name from it.
+        if (TP.regex.HAS_COLON.test(sourceAttr)) {
+            parts = sourceAttr.split(':');
+
+            sourceAttr = parts.at(0);
+            facetName = parts.at(1);
+
+            signalName = sourceAttr.asStartUpper() +
+                            facetName.asStartUpper() +
+                            'Change';
+        } else {
+
+            //  Otherwise, it's a simple 'value' change.
+            facetName = 'value';
+            signalName = sourceAttr.asStartUpper() + 'Change';
+        }
+
+        //  The key into the aspect map is the source attr name + ':' + the
+        //  facet name
+        aspectKey = sourceAttr + ':' + facetName;
     }
 
     //  We go ahead and try to get the handler that the defineBinding() call
@@ -821,7 +887,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 
         //  There was a valid handler and a valid key map - remove our source
         //  aspect from it.
-        handler.$aspectMap.removeKey(TP.str(sourceAttr));
+        handler.$aspectMap.removeKey(aspectKey);
     }
 
     target.ignore(resource, signalName);
