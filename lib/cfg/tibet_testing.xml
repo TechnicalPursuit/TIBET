@@ -44,6 +44,8 @@
     <config ref="logging"/>
     <config ref="formatting"/>
     <config ref="grouping"/>
+    <config ref="validation"/>
+
     <config ref="ev"/>
     <config ref="sig"/>
     <config ref="html"/>
@@ -84,6 +86,10 @@
     <script src="~lib_tst/src/tibet/formatting/String_Tests.js" />
     <script src="~lib_tst/src/tibet/formatting/TP.lang.Object_Tests.js" />
     <script src="~lib_tst/src/tibet/formatting/TP.templateParser_Tests.js" />
+</config>
+
+<config id="validation">
+    <script src="~lib_tst/src/tibet/validation/TP.lang.Object_Tests.js" />
 </config>
 
 <config id="grouping">
