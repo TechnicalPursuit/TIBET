@@ -204,7 +204,6 @@
  *
  *     See tsh_script.js for a full description of how these characters are
  *     combined into TSH-specific operators.
- * @todo
  */
 
 /* JSHint checking */
@@ -402,7 +401,6 @@ function(aResourceID, aRequest) {
      *     containing an optional "parentShell" key used to define a parent for
      *     the newly constructed shell instance.
      * @returns {TP.core.TSH} A new instance.
-     * @todo
      */
 
     var name;
@@ -464,7 +462,6 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
      *     containing parameters.
      * @returns {TP.core.TSH} The receiver.
-     * @todo
      */
 
     var user,
@@ -679,7 +676,6 @@ function(aRequest) {
      *     false by default.
      * @param {TP.sig.Request} aRequest The request to be serviced.
      * @returns {Object} The handler function's results.
-     * @todo
      */
 
     if (TP.sys.isUA('GECKO') &&
@@ -786,7 +782,6 @@ function(aFlag) {
      *     compute execution time and object creation counts among other things.
      * @param {Boolean} aFlag The optional value to set.
      * @returns {Boolean} The current setting.
-     * @todo
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -994,7 +989,6 @@ function(aString) {
  *     // NEW: replace above with string template execution/evaluation // where
  *     the template is provided with the request as the // source data and the
  *     window and document are injected?
- * @todo
  */
 
 //  ------------------------------------------------------------------------
@@ -1839,8 +1833,6 @@ TP.core.TSH.Inst.defineMethod('executeEcho',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
     var args;
@@ -1864,11 +1856,9 @@ function(aRequest) {
      * @returns {TP.sig.Request} The request.
      */
 
-    /**
-     * @
-     * @todo
-     */
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -1882,7 +1872,6 @@ function(aRequest) {
      *     command.
      * @returns {TP.sig.Request} The request.
      * @abstract
-     * @todo
      */
 
     var args,
@@ -1909,7 +1898,6 @@ function(aRequest) {
      *     command.
      * @returns {TP.sig.Request} The request.
      * @abstract
-     * @todo
      */
 
     var req;
@@ -1936,11 +1924,11 @@ TP.core.TSH.Inst.defineMethod('executeSort',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -1949,10 +1937,11 @@ TP.core.TSH.Inst.defineMethod('executeUniq',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    aRequest.stdout('Not yet implemented.');
+
+    return aRequest.complete();
 
 });
 
@@ -1964,11 +1953,11 @@ TP.core.TSH.Inst.defineMethod('executeBreak',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -1977,11 +1966,11 @@ TP.core.TSH.Inst.defineMethod('executeExpect',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -1990,11 +1979,11 @@ TP.core.TSH.Inst.defineMethod('executeWatch',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -2005,11 +1994,11 @@ TP.core.TSH.Inst.defineMethod('executeJob',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -2018,11 +2007,11 @@ TP.core.TSH.Inst.defineMethod('executeKill',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -2112,8 +2101,6 @@ TP.core.TSH.Inst.defineMethod('executeDump',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
     var arg,
@@ -2139,8 +2126,6 @@ TP.core.TSH.Inst.defineMethod('executeEdit',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
     var arg,
@@ -2186,8 +2171,6 @@ TP.core.TSH.Inst.defineMethod('executeScreen',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
     var tdp,
@@ -2209,11 +2192,11 @@ TP.core.TSH.Inst.defineMethod('executeInspect',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -2222,8 +2205,6 @@ TP.core.TSH.Inst.defineMethod('executeReflect',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
     var node,
@@ -2349,8 +2330,6 @@ TP.core.TSH.Inst.defineMethod('executeEntity',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
     var arg,
@@ -2720,11 +2699,11 @@ TP.core.TSH.Inst.defineMethod('executeBuiltins',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -2733,8 +2712,6 @@ TP.core.TSH.Inst.defineMethod('executeGlobals',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
     var keys;
@@ -2763,11 +2740,39 @@ TP.core.TSH.Inst.defineMethod('executeHelp',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
+    var methods;
+    var shell;
 
+    methods = this.getInterface('methods');
+    methods = methods.filter(function(method) {
+        return /^execute([A-Z])+/.test(method);
+    });
+
+    shell = this;
+
+    methods = methods.map(function(method) {
+        var func;
+        var name;
+        var str;
+
+        func = shell[method];
+
+        name = method.slice('execute'.length);
+
+        str = ':' + name.slice(0,1)[0].toLowerCase() + name.slice(1);
+
+        if (TP.isFunction(func) && TP.notEmpty(func.$$abstract)) {
+            str += ' - ' + func.$$abstract;
+        }
+
+        return str;
+    });
+
+    aRequest.stdout(methods.sort());
+
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -2776,8 +2781,6 @@ TP.core.TSH.Inst.defineMethod('executeShorts',
 function(aRequest) {
 
     /**
-     * @
-     * @todo
      */
 
     var keys;
@@ -2860,7 +2863,9 @@ function(aRequest) {
      *     be less consistent.
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -2907,7 +2912,9 @@ function(aRequest) {
      *     shell execution timing to an $observe call.
      */
 
+    aRequest.stdout('Not yet implemented.');
 
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -3217,35 +3224,88 @@ function(aSignal) {
 //  HELP TOPICS
 //  ------------------------------------------------------------------------
 
-/*
+TP.core.TSH.Type.defineMethod('addHelpTopic',
+function(command, abstract, usage, description) {
+
+    /**
+     * Adds a help abstract for a particular shell command. The resulting text
+     * is output by the :help command.
+     */
+
+    var name;
+    var method;
+
+    name = 'execute' + command.slice(1).asTitleCase();
+
+    method = this.Inst[name];
+
+    if (TP.isFunction(method)) {
+        method.$$abstract = abstract;
+        method.$$usage = usage;
+        method.$$description = description;
+    }
+
+    return method;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.addHelpTopic(':about', 'Outputs a simple identification string.');
+TP.core.TSH.addHelpTopic(':alias', 'Define or display a command alias.');
+TP.core.TSH.addHelpTopic(':as', 'Transforms stdin and writes it to stdout.');
+TP.core.TSH.addHelpTopic(':break', 'Sets a debugger breakpoint.');
+TP.core.TSH.addHelpTopic(':builtins', 'Lists the available built-in functions.');
 TP.core.TSH.addHelpTopic(':change', 'Stores a string as a change log entry.');
+TP.core.TSH.addHelpTopic(':changedFS', 'Displays a list of pending FS changes.');
+TP.core.TSH.addHelpTopic(':clear', 'Clears the console output region.');
 TP.core.TSH.addHelpTopic(':colors', 'Generates a table of the 216 websafe colors.');
 TP.core.TSH.addHelpTopic(':counts', 'Generates a table of object creation counts.');
-TP.core.TSH.addHelpTopic(':edit', 'Generates an editor for an object.');
-TP.core.TSH.addHelpTopic(':entities', 'Generates a table of XML entity codes.');
-TP.core.TSH.addHelpTopic(':flags', 'Generates a table of TIBET control flags.');
+TP.core.TSH.addHelpTopic(':dump', 'Dumps a detailed version of stdout to stdout.');
+TP.core.TSH.addHelpTopic(':echo', 'Echoes the arguments provided for debugging.');
+TP.core.TSH.addHelpTopic(':edit', 'Generates an editor for the value at stdin.');
+TP.core.TSH.addHelpTopic(':entity', 'Generates a table of XML entity codes.');
+TP.core.TSH.addHelpTopic(':expect', 'Sets an expectation to be verified.');
+TP.core.TSH.addHelpTopic(':export', 'Writes the previous buffer to a target.');
+TP.core.TSH.addHelpTopic(':flag', 'Generates a table of TIBET control flags.');
 TP.core.TSH.addHelpTopic(':globals', 'Display global variables, functions, etc.');
 TP.core.TSH.addHelpTopic(':halo', 'Sets up the Halo on a visible document.');
+TP.core.TSH.addHelpTopic(':help', 'Outputs a list of available commands.');
 TP.core.TSH.addHelpTopic(':import', 'Loads/executes a JavaScript/TIBET source file.');
-TP.core.TSH.addHelpTopic(':inspect', 'Generates an inspector for a particular object.');
+TP.core.TSH.addHelpTopic(':inspect', 'Generates an inspector for stdin data.');
 TP.core.TSH.addHelpTopic(':instrument', 'Instrument a window/frame for TIBET.');
 TP.core.TSH.addHelpTopic(':interests', 'Displays the XML-based signal interest map.');
-TP.core.TSH.addHelpTopic(':jobs', 'Generates a table of active "processes".');
+TP.core.TSH.addHelpTopic(':job', 'Generates a table of active "processes".');
 TP.core.TSH.addHelpTopic(':kill', 'Kill an active TIBET "job" instance.');
 TP.core.TSH.addHelpTopic(':line', 'Displays a line number from a URI[line] entry.');
 TP.core.TSH.addHelpTopic(':lint', 'Lint check an object or set of objects.');
 TP.core.TSH.addHelpTopic(':load', 'Loads the content text and/or xml of a URI.');
 TP.core.TSH.addHelpTopic(':log', 'Generates a listing of a particular log.');
+TP.core.TSH.addHelpTopic(':login', 'Logs in to a specific user profile.');
+TP.core.TSH.addHelpTopic(':logout', 'Logs out of a specific user profile.');
 TP.core.TSH.addHelpTopic(':ls', 'Lists the contents of the current path.');
+TP.core.TSH.addHelpTopic(':open', 'Opens a URI in a window/canvas.');
 TP.core.TSH.addHelpTopic(':reflect', 'Generates a table of object reflection data.');
+TP.core.TSH.addHelpTopic(':save', 'Saves current data to the current user profile.');
+TP.core.TSH.addHelpTopic(':screen', 'Sets the canvas being viewed to a screen.');
+TP.core.TSH.addHelpTopic(':set', 'Sets a shell variable to a specified value.');
+TP.core.TSH.addHelpTopic(':sleep', 'Pauses and waits a specified amount of time.');
+TP.core.TSH.addHelpTopic(':shorts', 'Outputs a list of "shortcut" functions.');
+TP.core.TSH.addHelpTopic(':sort', 'Sorts stdin and writes it to stdout.');
 TP.core.TSH.addHelpTopic(':source', 'Reloads the source file for an object/type.');
+TP.core.TSH.addHelpTopic(':sourceFS', 'Sources in pending file system changes.');
 TP.core.TSH.addHelpTopic(':sync', 'Updates a target file relative to a source file.');
 TP.core.TSH.addHelpTopic(':test', 'Executes an object\'s tests or test suite.');
+TP.core.TSH.addHelpTopic(':tibet', 'Runs a tibet CLI call. Requires active TDS.');
 TP.core.TSH.addHelpTopic(':tidy', 'Runs a URI through the HTML Tidy service.');
+TP.core.TSH.addHelpTopic(':types', 'Outputs a list of available system types.');
+TP.core.TSH.addHelpTopic(':uniq', 'Uniques stdin and writes it to stdout.');
+TP.core.TSH.addHelpTopic(':unwatchFS', 'Ignores file system changes. Requires TDS.');
 TP.core.TSH.addHelpTopic(':validate', 'Runs the W3C validation service on a URL.');
+TP.core.TSH.addHelpTopic(':wait', 'Pauses execution until a signal is received.');
+TP.core.TSH.addHelpTopic(':watch', 'Sets a value watch expression to be monitored.');
+TP.core.TSH.addHelpTopic(':watchFS', 'Observes file system changes. Requires TDS.');
 TP.core.TSH.addHelpTopic(':xpath', 'Executes an XPath expression against a node.');
 TP.core.TSH.addHelpTopic(':xslt', 'Transforms a node using an XSLT node/file.');
-*/
 
 //  ------------------------------------------------------------------------
 //  end

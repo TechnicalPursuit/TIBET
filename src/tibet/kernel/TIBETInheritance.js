@@ -7823,19 +7823,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  TYPE ATTRIBUTE WRAPPERS
-//  ------------------------------------------------------------------------
-
-/*
-Using set()/get() on a Type will actually trigger JS's copy-on-write
-machinery and set what Smalltalk would refer to as a "class instance
-attribute" since each Type has its own value. Smalltalk also supports
-"class attributes" which are declared by a Type and then shared by all
-subtype objects (the Type objects themselves). The wrappers in this section
-provide support for that feature in TIBET.
-*/
-
-//  ------------------------------------------------------------------------
 //  METHOD ACQUISITION
 //  ------------------------------------------------------------------------
 
