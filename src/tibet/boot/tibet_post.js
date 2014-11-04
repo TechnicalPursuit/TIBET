@@ -490,9 +490,10 @@ TP.boot.STDOUT_LOG = function(msg, obj, level) {
             break;
         case 2:
             //  object/string + either an annotation/context or log level
-            if (TP.boot.$isNumber(obj) ||
-                    (TP.boot.$isString(obj) &&
-                    TP.boot.LOG_NAMES.indexOf(obj) !== -1)) {
+            if (TP.boot.$isNumber(obj)) {
+                lvl = obj;
+            } else if (TP.boot.$isString(obj) &&
+                    TP.boot.LOG_NAMES.indexOf(obj) !== -1) {
                 lvl = TP.boot[obj];
             } else {
                 ann = obj;
