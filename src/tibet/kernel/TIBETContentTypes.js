@@ -1286,6 +1286,7 @@ function(targetObj) {
                                 'address', pathEntry.at('address'),
                                 'action', pathAction,
                                 'target', targetObj,
+                                'facet', 'value',
                                 TP.CHANGE_PATHS, changedPaths);
 
                 for (k = 0; k < aliasesLen; k++) {
@@ -1320,6 +1321,7 @@ function(targetObj) {
                             'address', pathEntry.at('address'),
                             'action', pathAction,
                             'target', targetObj,
+                            'facet', 'value',
                             TP.CHANGE_PATHS, changedPaths);
 
             TP.signal(targetObj, sigName, description);

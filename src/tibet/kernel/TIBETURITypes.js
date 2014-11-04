@@ -4501,7 +4501,9 @@ function(aResource, aRequest) {
         //  subURI and ourself. Note here that we just reuse the signal name and
         //  payload.
 
-        description = TP.hc('action', TP.DELETE, 'target', aResource);
+        description = TP.hc('action', TP.DELETE,
+                            'target', aResource,
+                            'facet', 'value');
 
         for (i = 0; i < subURIs.getSize(); i++) {
 

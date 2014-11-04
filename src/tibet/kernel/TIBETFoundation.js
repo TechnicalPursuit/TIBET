@@ -4249,6 +4249,7 @@ function(anAspect, anAction, aDescription) {
     }
     desc.atPutIfAbsent('aspect', asp);
     desc.atPutIfAbsent('action', anAction || TP.UPDATE);
+    desc.atPutIfAbsent('facet', 'value');
     desc.atPutIfAbsent('target', target || this);
 
     //  note that we force the firing policy here. this allows observers of a
