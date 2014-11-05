@@ -5060,6 +5060,12 @@ function(anObject) {
         return;
     }
 
+    if (TP.isString(anObject) ||
+        TP.isNumber(anObject) ||
+        TP.isBoolean(anObject)) {
+        return anObject;
+    }
+
     if (TP.isNodeList(anObject)) {
         return anObject[0];
     }
