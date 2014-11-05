@@ -2745,6 +2745,20 @@ TP.sig.Change.defineSubtype('FacetChange');
 
 //  ------------------------------------------------------------------------
 
+TP.sig.FacetChange.Inst.defineMethod('getFacet',
+function() {
+
+    /**
+     * @name getFacet
+     * @synopsis Returns the facet of the sender which changed.
+     * @returns {String} The facet of the receiver.
+     */
+
+    return this.at('facet');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.FacetChange.defineSubtype('ReadonlyChange');
 TP.sig.FacetChange.defineSubtype('RelevantChange');
 TP.sig.FacetChange.defineSubtype('RequiredChange');
