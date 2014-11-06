@@ -4322,7 +4322,7 @@ aSigEntry, checkTarget) {
 
                     //  run the handler, making sure we can catch any
                     //  exceptions that are signaled
-                    handler.handle(aSignal);
+                    handler.handle(aSignal, false, signame);
                 }
             } else {
                 try {
@@ -4340,7 +4340,7 @@ aSigEntry, checkTarget) {
 
                         //  run the handler, making sure we can catch
                         //  any exceptions that are signaled
-                        handler.handle(aSignal);
+                        handler.handle(aSignal, false, signame);
                     }
 
                     //  TODO:   add check here regarding removal of the
