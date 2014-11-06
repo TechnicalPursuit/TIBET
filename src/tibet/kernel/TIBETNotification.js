@@ -4291,12 +4291,9 @@ aSigEntry, checkTarget) {
 
             //  a side effect of having objects registered under 'tibet:urn's is
             //  that the handler can't be the TIBETURN URI itself. Therefore, if
-            //  the item's handler starts with 'tibet:urn' and the handler
-            //  returned via 'TP.byOID' is the origin object *itself*, (and
-            //  there's no sense in the object informing itself), then go ahead
-            //  and use the URI object as the handler object.
-            if (TP.regex.TIBET_URN.test(item.handler) &&
-                handler === originalOrigin) {
+            //  the item's handler starts with 'tibet:urn', then go ahead and
+            //  use the URI object as the handler object.
+            if (TP.regex.TIBET_URN.test(item.handler)) {
                 handler = TP.uc(item.handler);
             }
 
