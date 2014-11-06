@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.test.SSN}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -42,7 +42,7 @@ function(anObject) {
 
 /**
  * @type {TP.test.SimpleJSONType}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -305,7 +305,7 @@ function() {
         observerObj.defineAttribute('SSNIsValid');
 
         observerObj.defineBinding('SSN', modelObj, 'SSN');
-        observerObj.defineBinding('SSNIsValid', modelObj, 'SSN:' + TP.VALID);
+        observerObj.defineBinding('SSNIsValid', modelObj, 'SSN', TP.VALID);
 
         //  Set the value of 'SSN' on the model object. The binding should
         //  cause the value of 'SSN' on the observer to update.
@@ -322,7 +322,7 @@ function() {
 
         //  Destroy the bindings
         observerObj.destroyBinding('SSN', modelObj, 'SSN');
-        observerObj.destroyBinding('SSNIsValid', modelObj, 'SSN:' + TP.VALID);
+        observerObj.destroyBinding('SSNIsValid', modelObj, 'SSN', TP.VALID);
 
         modelObj.set('SSN', '111-11-1111');
         modelObj.setFacet('SSN', TP.VALID, false);
