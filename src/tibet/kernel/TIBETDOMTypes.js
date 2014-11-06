@@ -10470,7 +10470,8 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('defineBinding',
-function(targetAttributeName, resourceOrURI, sourceAttributeName) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
 
     /**
      * @name defineBinding
@@ -10479,6 +10480,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName) {
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
      * @returns {Object} The receiver.
      * @todo
      */
@@ -10496,7 +10499,8 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName) {
         targetAttr = 'value';
     }
 
-    return this.callNextMethod(targetAttr, resourceOrURI, sourceAttributeName);
+    return this.callNextMethod(targetAttr, resourceOrURI, sourceAttributeName,
+                                sourceFacetName);
 });
 
 //  ------------------------------------------------------------------------

@@ -597,7 +597,8 @@ output TIBET lets you adjust your page in almost any form necessary.
 //  ========================================================================
 
 TP.definePrimitive('defineBinding',
-function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
+function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
 
     /**
      * @name defineBinding
@@ -607,13 +608,14 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
      * @returns {Object} The target object.
      */
 
     var resource,
         sourceAttr,
 
-        parts,
         facetName,
         signalName,
         aspectKey,
@@ -639,14 +641,45 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
             'No resource spec provided for bind.');
     }
 
-    //  Get the target attribute. If there is no source attribute, then use the
+    //  Get the source attribute. If there is no source attribute, then use the
     //  target attribute as the source attribute.
     if (TP.notValid(sourceAttr = sourceAttributeName)) {
         sourceAttr = targetAttributeName;
     }
 
-    //  If the source attribute is an access path, then we compute the signal we
-    //  observe differently.
+    //  Get the source facet. If there is no source facet, then default it to
+    //  'value'.
+    if (TP.notValid(facetName = sourceFacetName)) {
+        facetName = 'value';
+    } else {
+        facetName = facetName.toLowerCase();
+    }
+
+    //  Choose the correct subtype of TP.sig.FacetSignal to use, depending on
+    //  facet.
+    switch (facetName) {
+
+        case 'readonly':
+            signalName = 'TP.sig.ReadonlyChange';
+            break;
+
+        case 'relevant':
+            signalName = 'TP.sig.RelevantChange';
+            break;
+
+        case 'required':
+            signalName = 'TP.sig.RequiredChange';
+            break;
+
+        case 'valid':
+            signalName = 'TP.sig.ValidChange';
+            break;
+
+        case 'value':
+            signalName = 'TP.sig.ValueChange';
+            break;
+    }
+
     if (sourceAttr.isAccessPath()) {
 
         //  Do a 'get' to establish the interest in the path - we're not really
@@ -655,38 +688,21 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
         if (!TP.isURI(resource)) {
             resource.get(sourceAttr);
         }
-
-        //  The signal name is always TP.sig.ValueChange for paths
-        signalName = 'TP.sig.ValueChange';
-
-        //  The key into the aspect map is simply the path's String
-        //  representation.
-        aspectKey = TP.str(sourceAttr);
     } else {
-        //  If the source attribute denoted a binding to a facet change
-        //  (indicated by a colon - ':'), then split that and compute the facet
-        //  name and the signal name from it.
-        if (TP.regex.HAS_COLON.test(sourceAttr)) {
-            parts = sourceAttr.split(':');
-
-            sourceAttr = parts.at(0);
-            facetName = parts.at(1);
-
-            signalName = sourceAttr.asStartUpper() +
-                            facetName.asStartUpper() +
-                            'Change';
-        
-        } else {
-
-            //  Otherwise, it's a simple 'value' change.
-            facetName = 'value';
+        //  If the facet is 'value' as well, but the sourceAttr *isn't*, then we
+        //  go ahead and set up for a spoofed <aspect>Change signal (if the
+        //  sourceAttr is 'value' we'd rather have a signal name of
+        //  'TP.sig.ValueChange' than 'ValueChange').
+        if (facetName === 'value' && sourceAttr !== 'value') {
             signalName = sourceAttr.asStartUpper() + 'Change';
         }
-
-        //  The key into the aspect map is the source attr name + ':' + the
-        //  facet name
-        aspectKey = sourceAttr + ':' + facetName;
     }
+
+    //  The key into the aspect map is the global ID of the resource, the source
+    //  attr name and the source facet name all joined together.
+    aspectKey = TP.gid(resource) + TP.JOIN +
+                TP.str(sourceAttr) + TP.JOIN +
+                facetName;
 
     //  Make sure that target object has a local method to handle the change
     methodName = 'handle' + TP.escapeTypeName(signalName);
@@ -700,6 +716,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
                 aspect,
                 facet,
 
+                mapKey,
+
                 targetAttr;
 
             TP.stop('break.bind_change');
@@ -709,9 +727,19 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
                 aspect = aSignal.at('aspect');
                 facet = aSignal.at('facet');
 
-                if (TP.notEmpty(targetAttr =
-                                handler.$aspectMap.at(aspect + ':' + facet))) {
-                    this.set(targetAttr, newVal);
+                mapKey = TP.gid(aSignal.getOrigin()) +
+                                TP.JOIN +
+                                TP.str(aspect) +
+                                TP.JOIN +
+                                facetName;
+
+                if (TP.notEmpty(targetAttr = handler.$aspectMap.at(mapKey))) {
+
+                    if (TP.isURI(this)) {
+                        this.getResource().set(targetAttr, newVal);
+                    } else {
+                        this.set(targetAttr, newVal);
+                    }
                 }
             } catch (e) {
                 this.raise('TP.sig.InvalidBinding');
@@ -729,6 +757,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
     //  aspect.
     handler.$aspectMap.atPut(aspectKey, targetAttributeName);
 
+    //  Observe the target.
     target.observe(resource, signalName);
 
     return target;
@@ -737,7 +766,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineBinding',
-function(targetAttributeName, resourceOrURI, sourceAttributeName) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
 
     /**
      * @name defineBinding
@@ -746,17 +776,21 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName) {
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
      * @returns {Object} The receiver.
      */
 
     return TP.defineBinding(
-            this, targetAttributeName, resourceOrURI, sourceAttributeName);
+            this, targetAttributeName, resourceOrURI,
+            sourceAttributeName, sourceFacetName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('defineBinding',
-function(targetAttributeName, resourceOrURI, sourceAttributeName) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
 
     /**
      * @name defineBinding
@@ -765,17 +799,21 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName) {
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
      * @returns {Object} The receiver.
      */
 
     return TP.defineBinding(
-            this, targetAttributeName, resourceOrURI, sourceAttributeName);
+            this, targetAttributeName, resourceOrURI,
+            sourceAttributeName, sourceFacetName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('defineBinding',
-function(targetAttributeName, resourceOrURI, sourceAttributeName) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
 
     /**
      * @name defineBinding
@@ -784,34 +822,39 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName) {
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
      * @returns {Object} The receiver.
      * @todo
      */
 
     return TP.defineBinding(
-            this, targetAttributeName, resourceOrURI, sourceAttributeName);
+            this, targetAttributeName, resourceOrURI,
+            sourceAttributeName, sourceFacetName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('destroyBinding',
-function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
+function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
 
     /**
-     * @name destroyBinding
-     * @synopsis Removes a binding from the supplied target object.
+     * @name defineBinding
+     * @synopsis Adds a binding to the supplied target object.
      * @param {Object} target The target object to define the binding on.
      * @param {String} targetAttributeName The target attribute name.
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
      * @returns {Object} The target object.
      */
 
     var resource,
         sourceAttr,
 
-        parts,
         facetName,
         signalName,
         aspectKey,
@@ -837,49 +880,62 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
             'No resource spec provided for bind.');
     }
 
-    //  Get the target attribute. If there is no source attribute, then use the
+    //  Get the source attribute. If there is no source attribute, then use the
     //  target attribute as the source attribute.
     if (TP.notValid(sourceAttr = sourceAttributeName)) {
         sourceAttr = targetAttributeName;
     }
 
-    //  If the source attribute is an access path, then we compute the signal we
-    //  observe differently.
-    if (sourceAttr.isAccessPath()) {
-
-        //  The signal name is always TP.sig.ValueChange for paths
-        signalName = 'TP.sig.ValueChange';
-
-        //  The key into the aspect map is simply the path's String
-        //  representation.
-        aspectKey = TP.str(sourceAttr);
+    //  Get the source facet. If there is no source facet, then default it to
+    //  'value'.
+    if (TP.notValid(facetName = sourceFacetName)) {
+        facetName = 'value';
     } else {
-        //  If the source attribute denoted a binding to a facet change
-        //  (indicated by a colon - ':'), then split that and compute the facet
-        //  name and the signal name from it.
-        if (TP.regex.HAS_COLON.test(sourceAttr)) {
-            parts = sourceAttr.split(':');
-
-            sourceAttr = parts.at(0);
-            facetName = parts.at(1);
-
-            signalName = sourceAttr.asStartUpper() +
-                            facetName.asStartUpper() +
-                            'Change';
-        } else {
-
-            //  Otherwise, it's a simple 'value' change.
-            facetName = 'value';
-            signalName = sourceAttr.asStartUpper() + 'Change';
-        }
-
-        //  The key into the aspect map is the source attr name + ':' + the
-        //  facet name
-        aspectKey = sourceAttr + ':' + facetName;
+        facetName = facetName.toLowerCase();
     }
 
-    //  We go ahead and try to get the handler that the defineBinding() call
-    //  installed so that we can remove our interest from it's set of keys.
+    //  Choose the correct subtype of TP.sig.FacetSignal to use, depending on
+    //  facet.
+    switch (facetName) {
+
+        case 'readonly':
+            signalName = 'TP.sig.ReadonlyChange';
+            break;
+
+        case 'relevant':
+            signalName = 'TP.sig.RelevantChange';
+            break;
+
+        case 'required':
+            signalName = 'TP.sig.RequiredChange';
+            break;
+
+        case 'valid':
+            signalName = 'TP.sig.ValidChange';
+            break;
+
+        case 'value':
+            signalName = 'TP.sig.ValueChange';
+            break;
+    }
+
+    if (!sourceAttr.isAccessPath()) {
+        //  If the facet is 'value' as well, but the sourceAttr *isn't*, then we
+        //  go ahead and set up for a spoofed <aspect>Change signal (if the
+        //  sourceAttr is 'value' we'd rather have a signal name of
+        //  'TP.sig.ValueChange' than 'ValueChange').
+        if (facetName === 'value' && sourceAttr !== 'value') {
+            signalName = sourceAttr.asStartUpper() + 'Change';
+        }
+    }
+
+    //  The key into the aspect map is the global ID of the resource, the source
+    //  attr name and the source facet name all joined together.
+    aspectKey = TP.gid(resource) + TP.JOIN +
+                TP.str(sourceAttr) + TP.JOIN +
+                facetName;
+
+    //  Make sure that target object has a local method to handle the change
     methodName = 'handle' + TP.escapeTypeName(signalName);
 
     if (TP.isValid(handler = target.getMethod(methodName)) &&
@@ -890,6 +946,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
         handler.$aspectMap.removeKey(aspectKey);
     }
 
+    //  Ignore the target.
     target.ignore(resource, signalName);
 
     return target;
@@ -898,7 +955,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('destroyBinding',
-function(targetAttributeName, resourceOrURI, sourceAttributeName) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
 
     /**
      * @name destroyBinding
@@ -907,18 +965,22 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName) {
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
      * @returns {Object} The receiver.
      * @todo
      */
 
     return TP.destroyBinding(
-            this, targetAttributeName, resourceOrURI, sourceAttributeName);
+            this, targetAttributeName, resourceOrURI,
+            sourceAttributeName, sourceFacetName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('destroyBinding',
-function(targetAttributeName, resourceOrURI, sourceAttributeName) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
 
     /**
      * @name destroyBinding
@@ -927,18 +989,22 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName) {
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
      * @returns {Object} The receiver.
      * @todo
      */
 
     return TP.destroyBinding(
-            this, targetAttributeName, resourceOrURI, sourceAttributeName);
+            this, targetAttributeName, resourceOrURI,
+            sourceAttributeName, sourceFacetName);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('destroyBinding',
-function(targetAttributeName, resourceOrURI, sourceAttributeName) {
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
 
     /**
      * @name destroyBinding
@@ -947,12 +1013,15 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName) {
      * @param {Object} resourceOrURI The resource specification.
      * @param {String} sourceAttributeName The source attribute name. If not
      *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
      * @returns {Object} The receiver.
      * @todo
      */
 
     return TP.destroyBinding(
-            this, targetAttributeName, resourceOrURI, sourceAttributeName);
+            this, targetAttributeName, resourceOrURI,
+            sourceAttributeName, sourceFacetName);
 });
 
 //  ------------------------------------------------------------------------
