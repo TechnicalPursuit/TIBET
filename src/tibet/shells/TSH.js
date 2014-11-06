@@ -3243,6 +3243,8 @@ function(command, abstract, usage, description) {
         method.$$abstract = abstract;
         method.$$usage = usage;
         method.$$description = description;
+    } else {
+        TP.warn('Defining help for non-existent shell command: ' + command);
     }
 
     return method;

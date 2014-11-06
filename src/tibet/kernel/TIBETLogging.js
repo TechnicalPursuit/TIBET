@@ -463,7 +463,7 @@ function(aFilter) {
     }
 
     filters.push(aFilter);
-    
+
     return this;
 });
 
@@ -607,7 +607,7 @@ function(aLevel) {
      */
 
     this.$set('level', aLevel);
-    
+
     return this;
 });
 
@@ -845,7 +845,7 @@ function(anAppender) {
     }
 
     appenders.push(anAppender);
-    
+
     return this;
 });
 
@@ -1385,7 +1385,7 @@ function(anEntry) {
     }
 
     this.append(entry);
-    
+
     return this;
 });
 
@@ -1764,6 +1764,20 @@ function(aLevel) {
      */
 
     return this.get('index') === aLevel.get('index');
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Level.Inst.defineMethod('getName',
+function(aLevel) {
+
+    /**
+     * @name getName
+     * @synopsis Returns the level name, typically one of 'TRACE', 'DEBUG', etc.
+     * @return {String} The level name.
+     */
+
+    return this.$get('name');
 });
 
 //  ----------------------------------------------------------------------------
