@@ -1063,7 +1063,7 @@ function(aRequest, cmdType) {
         });
 
     subrequest.defineMethod('failJob',
-        function(aFaultCode, aFaultString) {
+        function(aFaultCode, aFaultString, aFaultStack) {
 
             switch (arguments.length) {
                 case 1:

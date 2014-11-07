@@ -3336,7 +3336,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
     });
 
     subrequest.defineMethod('failJob',
-    function(aFaultCode, aFaultString) {
+    function(aFaultCode, aFaultString, aFaultStack) {
 
             if (TP.canInvoke(thisref, failureFName)) {
                 thisref[failureFName](aFaultCode, aFaultString);
@@ -3803,7 +3803,7 @@ function(aDataSource, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString) {
+            function(aFaultCode, aFaultString, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
                         aRequest.fail(aFaultCode, aFaultString);
@@ -4726,7 +4726,7 @@ function(aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString) {
+            function(aFaultCode, aFaultString, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
                         aRequest.fail(aFaultCode, aFaultString);
@@ -4939,7 +4939,7 @@ function(aRequest, filterResult) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString) {
+            function(aFaultCode, aFaultString, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
                         aRequest.fail(aFaultCode, aFaultString);
@@ -5347,7 +5347,7 @@ function(aRequest) {
             });
 
     subrequest.defineMethod('failJob',
-    function(aFaultCode, aFaultString) {
+    function(aFaultCode, aFaultString, aFaultStack) {
 
             //  Inform any originally inbound request of our status.
             if (TP.canInvoke(aRequest, 'fail')) {
@@ -8924,7 +8924,7 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString) {
+            function(aFaultCode, aFaultString, aFaultStack) {
 
                     //  update the target's header and content information, in
                     //  that order so that any content change signaling happens
@@ -9024,7 +9024,7 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString) {
+            function(aFaultCode, aFaultString, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
                         aRequest.fail(aFaultCode, aFaultString);
@@ -9138,7 +9138,7 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString) {
+            function(aFaultCode, aFaultString, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
                         aRequest.fail(aFaultCode, aFaultString);

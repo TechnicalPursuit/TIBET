@@ -334,7 +334,7 @@ function(aResult) {
             return aRequest.complete(aResult || subrequest.getResult());
 });
     subrequest.defineMethod('failJob',
-function(aFaultCode, aFaultString) {
+function(aFaultCode, aFaultString, aFaultStack) {
 
             this.$wrapupJob('Failed', TP.FAILED,
                             aFaultCode, aFaultString);

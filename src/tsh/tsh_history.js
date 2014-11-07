@@ -160,7 +160,7 @@ function(aRequest) {
             return aRequest.complete(aResult || req.getResult());
         });
     req.defineMethod('failJob',
-        function(aFaultCode, aFaultString) {
+        function(aFaultCode, aFaultString, aFaultStack) {
 
             return aRequest.fail(aFaultCode, aFaultString);
         });

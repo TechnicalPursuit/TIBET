@@ -32,7 +32,7 @@ TP.sig.HTTPRequest.Type.defineAttribute('responseType', 'TP.sig.HTTPResponse');
 //  ------------------------------------------------------------------------
 
 TP.sig.HTTPRequest.Inst.defineMethod('failJob',
-function(aFaultCode, aFaultString) {
+function(aFaultCode, aFaultString, aFaultStack) {
 
     /**
      * @name failJob
@@ -42,6 +42,9 @@ function(aFaultCode, aFaultString) {
      * @param {Object} aFaultCode A reason for the failure.
      * @param {String} aFaultString A text description of the reason for the
      *     failure.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.sig.HTTPRequest}
      * @todo
      */
