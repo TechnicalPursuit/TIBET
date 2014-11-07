@@ -848,7 +848,7 @@ function(entries) {
                     newEntries.push(TP.ac(entry.at(0), aTarget, entry.at(2)));
                 });
         } else {
-            newEntries.push(entry);
+            newEntries.push(TP.ac(entry.at(0), targets, entry.at(2)));
         }
     }
 
@@ -1243,7 +1243,7 @@ function(target, type, args, callback, currentElement) {
         syn,
 
         finalTarget,
-        
+
         doc,
         newEvent;
 
