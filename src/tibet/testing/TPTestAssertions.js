@@ -1665,13 +1665,13 @@ function(aTarget, aSignal) {
 
     var signalName,
         targetGID,
-    
+
         originMatcher,
 
         isSpecialSignal,
         signalMatcher,
         eventMatcher,
-    
+
         hadMatch;
 
     if (!this.get('currentTestCase').getSuite().get('$capturingSignals')) {
