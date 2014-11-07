@@ -105,7 +105,7 @@ APP[TP.NAME] = 'APP';
 
 //  -----------------------------------------------------------------------
 //  Preliminary bootstrap methods required by TP.defineSlot() and
-//  TP.defineMethod()
+//  TP.defineMethodSlot()
 //  -----------------------------------------------------------------------
 
 //  Needed during boot
@@ -2089,10 +2089,10 @@ TP.defineSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod = function(target, name, value, track, desc, display, owner) {
+TP.defineMethodSlot = function(target, name, value, track, desc, display, owner) {
 
     /**
-     * @name defineMethod
+     * @name defineMethodSlot
      * @synopsis Defines a method, tracking all necessary metadata.
      * @param {Object} target The target object.
      * @param {String} name The method name.
@@ -2117,7 +2117,7 @@ TP.defineMethod = function(target, name, value, track, desc, display, owner) {
     if (!TP.isCallable(value) || !TP.isCallable(value.asMethod)) {
         TP.ifError() ?
             TP.error('Invalid method body for ' +
-                        'TP.defineMethod: ' + name,
+                        'TP.defineMethodSlot: ' + name,
                         TP.LOG) : 0;
         return;
     }
@@ -2219,11 +2219,11 @@ TP.defineMethod = function(target, name, value, track, desc, display, owner) {
 };
 
 //  Manual method registration.
-TP.defineMethod[TP.NAME] = 'defineMethod';
-TP.defineMethod[TP.OWNER] = TP;
-TP.defineMethod[TP.TRACK] = TP.PRIMITIVE_TRACK;
-TP.defineMethod[TP.DISPLAY] = 'TP.defineMethod';
-TP.defineMethod[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.defineMethodSlot[TP.NAME] = 'defineMethodSlot';
+TP.defineMethodSlot[TP.OWNER] = TP;
+TP.defineMethodSlot[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.defineMethodSlot[TP.DISPLAY] = 'TP.defineMethodSlot';
+TP.defineMethodSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
 //  ------------------------------------------------------------------------
 
@@ -2262,7 +2262,7 @@ TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.LOCAL_TRACK);
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP, 'definePrimitive',
+TP.defineMethodSlot(TP, 'definePrimitive',
 function(name, bodyOrConditionals, desc, display, owner) {
 
     /**
@@ -2335,7 +2335,7 @@ function(name, bodyOrConditionals, desc, display, owner) {
         method = bodyOrConditionals;
     }
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             TP, name, method, TP.PRIMITIVE_TRACK, desc, display, owner);
 
 }, TP.PRIMITIVE_TRACK, null, 'TP.definePrimitive');
@@ -3090,7 +3090,7 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.sys, 'shouldLogCodeChanges',
+TP.defineMethodSlot(TP.sys, 'shouldLogCodeChanges',
 function(aFlag, shouldSignal) {
 
     /**
@@ -3121,7 +3121,7 @@ function(aFlag, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.sys, '$$shouldConstructDNUs',
+TP.defineMethodSlot(TP.sys, '$$shouldConstructDNUs',
 function(aFlag, shouldSignal) {
 
     /**
@@ -3239,7 +3239,7 @@ NativeTypeStub.prototype.defineMethod =
      * @returns {Object} The receiver.
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             this.$$target, methodName, methodBody, TP.TYPE_TRACK,
             desc, null, this[TP.OWNER]);
 };
@@ -3513,7 +3513,7 @@ NativeInstStub.prototype.defineMethod =
      * @returns {Object} The receiver.
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             this.$$target, methodName, methodBody, TP.INST_TRACK,
             desc, null, this[TP.OWNER]);
 };
@@ -3719,7 +3719,7 @@ Window.Inst[TP.OWNER] = Window;
 //  Native Type Extensions
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.FunctionProto, '$constructPrototype',
+TP.defineMethodSlot(TP.FunctionProto, '$constructPrototype',
 function() {
 
     /**
@@ -3853,7 +3853,7 @@ function(methodName, methodBody) {
 
     var method;
 
-    method = TP.defineMethod(
+    method = TP.defineMethodSlot(
             TP.global, methodName, methodBody,
             TP.GLOBAL_TRACK, null, 'TP.global.' + methodName);
 
@@ -3903,7 +3903,7 @@ function(methodName, methodBody) {
                 continue;
         }
 
-        TP.defineMethod(
+        TP.defineMethodSlot(
                 target,
                 methodName,
                 methodBody,
@@ -3957,7 +3957,7 @@ function(methodName, methodBody) {
                 continue;
         }
 
-        TP.defineMethod(
+        TP.defineMethodSlot(
                 target,
                 methodName,
                 methodBody,
@@ -3983,7 +3983,7 @@ function(methodName, methodBody) {
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
         } else {
-            TP.defineMethod(
+            TP.defineMethodSlot(
                     target,
                     methodName,
                     methodBody,
@@ -4002,7 +4002,7 @@ function(methodName, methodBody) {
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
         } else {
-            TP.defineMethod(
+            TP.defineMethodSlot(
                     target,
                     methodName,
                     methodBody,
@@ -4059,7 +4059,7 @@ function(methodName, methodBody) {
                 continue;
         }
 
-        TP.defineMethod(
+        TP.defineMethodSlot(
                     target,
                     methodName,
                     methodBody,
@@ -4076,7 +4076,7 @@ function(methodName, methodBody) {
         //  Empty block
     } else {
 
-        TP.defineMethod(
+        TP.defineMethodSlot(
                     target,
                     methodName,
                     methodBody,
@@ -4716,7 +4716,7 @@ function(anID) {
 //  TP.sys Methods
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.sys, 'defineAttribute',
+TP.defineMethodSlot(TP.sys, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -4737,7 +4737,7 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.sys, 'defineMethod',
+TP.defineMethodSlot(TP.sys, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
@@ -4757,7 +4757,7 @@ function(methodName, methodBody, desc, display) {
      * @todo
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             TP.sys, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
 });
 
@@ -4765,7 +4765,7 @@ function(methodName, methodBody, desc, display) {
 //  TP.boot Methods
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.boot, 'defineAttribute',
+TP.defineMethodSlot(TP.boot, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -4786,7 +4786,7 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.boot, 'defineMethod',
+TP.defineMethodSlot(TP.boot, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
@@ -4806,7 +4806,7 @@ function(methodName, methodBody, desc, display) {
      * @todo
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             TP.boot, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
 });
 
@@ -4814,7 +4814,7 @@ function(methodName, methodBody, desc, display) {
 //  APP Methods
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(APP, 'defineAttribute',
+TP.defineMethodSlot(APP, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -4835,7 +4835,7 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(APP, 'defineMethod',
+TP.defineMethodSlot(APP, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
@@ -4855,7 +4855,7 @@ function(methodName, methodBody, desc, display) {
      * @todo
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             APP, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
 });
 
@@ -4955,13 +4955,13 @@ function(methodName, methodBody, desc) {
      * @todo
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             this, methodName, methodBody, TP.LOCAL_TRACK, desc, null, this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.FunctionProto, 'defineAttribute',
+TP.defineMethodSlot(TP.FunctionProto, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -5008,7 +5008,7 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.FunctionProto, 'defineConstant',
+TP.defineMethodSlot(TP.FunctionProto, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
@@ -5055,7 +5055,7 @@ function(constantName, constantValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.FunctionProto, 'defineMethod',
+TP.defineMethodSlot(TP.FunctionProto, 'defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
@@ -5098,7 +5098,7 @@ function(methodName, methodBody, desc) {
         track = TP.LOCAL_TRACK;
     }
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             target, methodName, methodBody, track, desc, null, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineMethod');
 
@@ -5106,7 +5106,7 @@ function(methodName, methodBody, desc) {
 //  TP.lang.RootObject - TYPE DEFINITION
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Type, 'defineAttribute',
+TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -5137,7 +5137,7 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Type, 'defineConstant',
+TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
@@ -5168,7 +5168,7 @@ function(constantName, constantValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Type, 'defineMethod',
+TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
@@ -5199,13 +5199,13 @@ function(methodName, methodBody, desc) {
         owner = this;
     }
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
                 this, methodName, methodBody, track, desc, null, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineMethod');
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Inst, 'defineAttribute',
+TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -5236,7 +5236,7 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Inst, 'defineConstant',
+TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
@@ -5266,7 +5266,7 @@ function(constantName, constantValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Inst, 'defineMethod',
+TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
@@ -5297,7 +5297,7 @@ function(methodName, methodBody, desc) {
         owner = this;
     }
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
                 this, methodName, methodBody, track, desc, null, owner);
 
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineMethod');
@@ -5340,7 +5340,7 @@ Window.Type.defineMethod = function(methodName, methodBody, desc) {
 
     var display = 'Window.Type.' + methodName;
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             Window, methodName, methodBody, TP.TYPE_TRACK, desc, display);
 };
 
