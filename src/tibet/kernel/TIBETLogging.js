@@ -3318,7 +3318,7 @@ function(anEntry) {
 //  CHANGE LOG
 //  ============================================================================
 
-TP.defineMethod(TP.sys, 'logCodeChange',
+TP.sys.defineMethod('logCodeChange',
 function(anObject, aLogLevel) {
 
     /**
@@ -3339,7 +3339,7 @@ function(anObject, aLogLevel) {
     TP.sys.$$log(TP.ac(anObject, TP.CHANGE_LOG), TP.SYSTEM);
 
     return true;
-}, TP.PRIMITIVE_TRACK, null, 'TP.sys.logCodeChange');
+});
 
 //  ----------------------------------------------------------------------------
 //  ChangeLog Appender

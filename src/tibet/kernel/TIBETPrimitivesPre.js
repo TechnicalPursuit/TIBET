@@ -695,7 +695,7 @@ if (!TP.sys.constructOID) {
 //  Manual setup
 TP.sys.constructOID[TP.NAME] = 'constructOID';
 TP.sys.constructOID[TP.OWNER] = TP.sys;
-TP.sys.constructOID[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.sys.constructOID[TP.TRACK] = TP.LOCAL_TRACK;
 TP.sys.constructOID[TP.DISPLAY] = 'TP.sys.constructOID';
 TP.sys.constructOID[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
@@ -1817,7 +1817,7 @@ TP.objectGetMetadataName = function(anObject) {
 //  Manual method registration.
 TP.objectGetMetadataName[TP.NAME] = 'objectGetMetadataName';
 TP.objectGetMetadataName[TP.OWNER] = TP.sys;
-TP.objectGetMetadataName[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.objectGetMetadataName[TP.TRACK] = TP.LOCAL_TRACK;
 TP.objectGetMetadataName[TP.DISPLAY] = 'TP.objectGetMetadataName';
 TP.objectGetMetadataName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
@@ -1996,7 +1996,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 //  Manual method registration.
 TP.sys.addMetadata[TP.NAME] = 'addMetadata';
 TP.sys.addMetadata[TP.OWNER] = TP.sys;
-TP.sys.addMetadata[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.sys.addMetadata[TP.TRACK] = TP.LOCAL_TRACK;
 TP.sys.addMetadata[TP.DISPLAY] = 'TP.sys.addMetadata';
 TP.sys.addMetadata[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
@@ -2253,12 +2253,12 @@ TP.sys.addMetadata(TP, TP.objectSetLoadNode, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(Function, TP.FunctionProto.asMethod,
                     TP.METHOD, TP.INST_TRACK);
 TP.sys.addMetadata(String, TP.StringProto.strip, TP.METHOD, TP.INST_TRACK);
-TP.sys.addMetadata(TP.sys, TP.sys.constructOID, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP.sys, TP.sys.constructOID, TP.METHOD, TP.LOCAL_TRACK);
 TP.sys.addMetadata(TP, TP.getFunctionName, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(Function, TP.FunctionProto.$getName,
                     TP.METHOD, TP.INST_TRACK);
 TP.sys.addMetadata(TP, TP.objectGetMetadataName, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.LOCAL_TRACK);
 
 //  ------------------------------------------------------------------------
 
@@ -3117,7 +3117,7 @@ function(aFlag, shouldSignal) {
     }
 
     return TP.sys.cfg('log.code_changes');
-}, TP.PRIMITIVE_TRACK, null, 'TP.sys.shouldLogCodeChanges');
+}, TP.LOCAL_TRACK, null, 'TP.sys.shouldLogCodeChanges');
 
 //  ------------------------------------------------------------------------
 
@@ -3149,7 +3149,7 @@ function(aFlag, shouldSignal) {
     }
 
     return TP.sys.cfg('tibet.$$construct_dnus');
-}, TP.PRIMITIVE_TRACK, null, 'TP.sys.$$shouldConstructDNUs');
+}, TP.LOCAL_TRACK, null, 'TP.sys.$$shouldConstructDNUs');
 
 //  -----------------------------------------------------------------------
 //  Native Types - PROPERTY CREATION SUPPORT
