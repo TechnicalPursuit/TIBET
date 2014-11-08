@@ -584,6 +584,149 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('uriJoinFragments',
+function(aPath, aFragment) {
+
+    /**
+     * @name uriJoinFragment
+     * @synopsis Joins a URI and a pointer fragment.
+     * @param {String} aPath The URI string used as the prefix.
+     * @param {String} aFragment The pointer fragment. Note that this may contain
+     *     an XPointer and, if the path contains one as well and they don't
+     *     match, the path will be returned unchanged.
+     * @raises TP.sig.InvalidURI
+     * @returns {String} A properly joined URI/Query string.
+     * @todo
+     */
+
+    var result,
+        i,
+
+        url,
+        expr,
+
+        pathFragment,
+        pathScheme,
+        pathExpr,
+
+        parts,
+        results,
+
+        fragmentScheme,
+
+        joinChar;
+
+    //  deal with looping when more than two args
+    if (arguments.length > 2) {
+        result = arguments[0];
+        for (i = 1; i < arguments.length; i++) {
+            result = TP.uriJoinFragments(result, arguments[i]);
+        }
+
+        return result;
+    }
+
+    if (!TP.isString(aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidURI');
+    }
+
+    if (TP.isEmpty(aFragment)) {
+        return aPath;
+    }
+
+    url = '';
+    expr = '';
+
+    //  Capture any fragment data that the path itself is providing.
+    pathFragment = '';
+    if (TP.regex.URI_FRAGMENT.test(aPath)) {
+
+        parts = aPath.split('#');
+        url = parts.first();
+
+        pathFragment = parts.last();
+
+        //  See if the path fragment contains an XPointer. If so, grab it's
+        //  scheme and expression.
+        if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(pathFragment))) {
+            pathScheme = results.at(1);
+            pathExpr = results.at(2);
+        }
+    } else {
+        url = aPath;
+    }
+
+    //  We do not process barename XPointers any further.
+    if (TP.notEmpty(pathFragment) &&
+        TP.regex.BARENAME.test('#' + pathFragment)) {
+        return aPath;
+    }
+
+    //  If the pointer has actual XPointer content (whether or not preceded by a
+    //  '#'), extract it
+    if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(aFragment))) {
+        fragmentScheme = results.at(1);
+        expr = results.at(2);
+    } else {
+        //  Otherwise, guess the pointer scheme based on the path type.
+        fragmentScheme = TP.getPointerScheme(aFragment);
+        expr = aFragment;
+    }
+
+    //  If no scheme could be computed from the fragment, but the path did have
+    //  a scheme, then set the fragment's scheme to the path's scheme.
+    if (TP.isEmpty(fragmentScheme) && TP.notEmpty(pathScheme)) {
+        fragmentScheme = pathScheme;
+    }
+
+    //  If we now have both a path scheme and a fragment scheme but they're not
+    //  the same, then just return the original path.
+    if (TP.notEmpty(pathScheme) &&
+        TP.notEmpty(fragmentScheme) &&
+        pathScheme !== fragmentScheme) {
+        return aPath;
+    }
+
+    //  If there was an existing path expression, join it together with the
+    //  fragment's expression using the standard 'join character'.
+    if (TP.notEmpty(pathExpr)) {
+        switch (fragmentScheme) {
+            case 'css':
+                joinChar = ' ';
+                break;
+
+            case 'tibet':
+                joinChar = '.';
+                break;
+
+            case 'xpath1':
+            case 'xpointer':
+                joinChar = '/';
+                break;
+
+            default:
+                joinChar = '';
+        }
+
+        //  If the leading character of the expression is already a valid join
+        //  character for this expression type, then set the joinChar to the
+        //  empty String.
+        if (expr.charAt(0) === joinChar) {
+            joinChar = '';
+        }
+
+        expr = pathExpr + joinChar + expr;
+    }
+
+    //  Return a fully-formed URL, including the computed fragment scheme and
+    //  expression.
+    result = url + '#' + fragmentScheme + '(' + expr + ')';
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('uriJoinPaths',
 function(firstPath, secondPath) {
 
