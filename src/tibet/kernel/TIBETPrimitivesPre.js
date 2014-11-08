@@ -4781,6 +4781,72 @@ function(methodName, methodBody, desc, display) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.defineMethod('describe',
+function(suiteName, suiteFunc) {
+
+    /**
+     * @name describe
+     * @synopsis Adds a new test suite definition to an object. When the suite
+     *     name matches a method name that suite is automatically associated
+     *     with the specific method.
+     * @param {String} suiteName The name of the new test suite. Should be
+     *     unique to the particular receiver. If this matches a method name the
+     *     suite is associated with that method.
+     * @param {Function} suiteFunc The function representing the test suite.
+     *     Should contain at least one call to 'this.it', the test case
+     *     definition method on TP.test.Suite.
+     */
+
+    return TP.test.Suite.addSuite(this, suiteName, suiteFunc);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod('getTestFixture',
+function(options) {
+
+    /**
+     * Creates and returns test fixture data suitable for the receiver. This
+     * method is used to produce "the object under test" for test cases that
+     * target the receiver. The default is the receiver itself.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {Object} A test fixture for the receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod('getTestSuites',
+function(options) {
+
+    /**
+     * Returns the dictionary containing test suites for the receiver.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {TP.lang.Hash} A hash keyed by the receiver's ID.
+     */
+
+    return TP.test.Suite.getTargetSuites(this, options);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod('runTestSuites',
+function(options) {
+
+    /**
+     * Runs the test suites associated with the receiver. Options which help
+     * configure and control the testing process can be provided.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {Promise} A Promise to be used as necessary.
+     */
+
+    return TP.test.Suite.runTargetSuites(this, options);
+});
+
+//  ------------------------------------------------------------------------
 //  TP.sys Methods
 //  ------------------------------------------------------------------------
 
