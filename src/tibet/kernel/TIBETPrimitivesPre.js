@@ -4713,6 +4713,55 @@ function(anID) {
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
+//  TP Methods
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(TP, 'defineAttribute',
+function(attributeName, attributeValue) {
+
+    /**
+     * @name defineAttribute
+     * @synopsis Adds/defines a new local attribute for the receiver. The
+     *     attribute gets a default value if provided. In the current release
+     *     the other three parameters are ignored.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} attributeValue The attribute value or a property
+     *     descriptor object.
+     * @returns {Object} The newly defined attribute value.
+     * @todo
+     */
+
+    return TP.defineAttributeSlot(
+            TP, attributeName, attributeValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(TP, 'defineMethod',
+function(methodName, methodBody, desc, display) {
+
+    /**
+     * @name defineMethod
+     * @synopsis Adds the method with name and body provided as a local method.
+     *     Local methods are directly methods on the receiving instance. These
+     *     methods differ from 'instance' methods in that the behavior is NOT
+     *     inherited unless the owner object happens to serve as a prototype.
+     * @param {String} methodName The name of the new method.
+     * @param {Function} methodBody The actual method implementation.
+     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
+     *     is supplied here, it is ignored in favor of the methodBody parameter
+     *     to this method.
+     * @param {String} display Optional string defining the public display name
+     *     for the function.
+     * @returns {Function} The newly defined method.
+     * @todo
+     */
+
+    return TP.defineMethodSlot(
+            TP, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
+});
+
+//  ------------------------------------------------------------------------
 //  TP.sys Methods
 //  ------------------------------------------------------------------------
 
