@@ -589,14 +589,14 @@ function() {
 
         TP.lang.Object.defineSubtype('test.SimpleEmployee');
 
-        TP.test.SimpleEmployee.defineAttribute('firstName');
-        TP.test.SimpleEmployee.defineAttribute('lastName');
+        TP.test.SimpleEmployee.Inst.defineAttribute('firstName');
+        TP.test.SimpleEmployee.Inst.defineAttribute('lastName');
 
         //  ---
 
         TP.lang.Object.defineSubtype('test.ComplexPathEmployee');
 
-        TP.test.ComplexPathEmployee.defineAttribute('data');
+        TP.test.ComplexPathEmployee.Inst.defineAttribute('data');
 
         //  These paths assume a root instance property of 'data'
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
