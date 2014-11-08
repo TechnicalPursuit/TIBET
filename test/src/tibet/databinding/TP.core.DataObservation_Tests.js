@@ -1531,7 +1531,7 @@ function() {
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
-                                            'CurrentEmployee', 
+                                            'CurrentEmployee',
                                             TP.apc('emp.salary'));
 
                 modelObj.set('emp.salary', 45);
@@ -1871,7 +1871,7 @@ function() {
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
-                                            'CurrentEmployee', 
+                                            'CurrentEmployee',
                                             TP.apc('/emp/salary'));
 
                 modelObj.set('/emp/salary', 45);
