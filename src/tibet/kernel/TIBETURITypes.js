@@ -2448,7 +2448,7 @@ function() {
     //  fragment portion, otherwise we'd be recomputing.
     frag = this.$get('fragment');
     if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(frag))) {
-        return results.at(1);
+        return results.at(2);
     }
 
     return '';
