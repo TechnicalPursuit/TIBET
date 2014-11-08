@@ -39,7 +39,7 @@ TP.runConditionalFunction(
     'true',
     function() {
 
-        TP.defineAttribute(TP, '$$atobData', TP.ac());
+        TP.defineAttributeSlot(TP, '$$atobData', TP.ac());
 
         TP.definePrimitive('$$atobInit',
         function() {
@@ -72,7 +72,7 @@ TP.runConditionalFunction(
 
         //  ---
 
-        TP.defineAttribute(TP, '$$btoaData', TP.ac());
+        TP.defineAttributeSlot(TP, '$$btoaData', TP.ac());
 
         TP.definePrimitive('$$btoaInit',
         function() {

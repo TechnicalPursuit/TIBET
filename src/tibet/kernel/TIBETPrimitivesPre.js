@@ -3199,7 +3199,7 @@ NativeTypeStub.prototype.defineAttribute =
      * @returns {Object} The newly defined attribute value.
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             this.$$target, attributeName, attributeValue,
             TP.TYPE_TRACK, this[TP.OWNER]);
 };
@@ -3218,7 +3218,7 @@ NativeTypeStub.prototype.defineConstant =
      * @returns {Object} The newly defined constant value.
      */
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
             this.$$target, constantName, constantValue,
             TP.TYPE_TRACK, this[TP.OWNER]);
 };
@@ -3472,7 +3472,7 @@ NativeInstStub.prototype.defineAttribute =
      * @returns {Object} The newly defined attribute value.
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             this.$$target, attributeName, attributeValue,
             TP.INST_TRACK, this[TP.OWNER]);
 };
@@ -3491,7 +3491,7 @@ NativeInstStub.prototype.defineConstant =
      * @returns {Object} The newly defined constant value.
      */
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
             this.$$target, constantName, constantValue,
             TP.INST_TRACK, this[TP.OWNER]);
 };
@@ -4091,11 +4091,11 @@ function(methodName, methodBody) {
 
 //  -----------------------------------------------------------------------
 
-TP.definePrimitive('defineAttribute',
+TP.definePrimitive('defineAttributeSlot',
 function(target, name, value, track, owner) {
 
     /**
-     * @name defineAttribute
+     * @name defineAttributeSlot
      * @synopsis Defines an attribute, tracking all necessary metadata.
      * @description Note that the 'value' property can either take an initial
      *     object value or a property descriptor. That property descriptor can
@@ -4164,15 +4164,15 @@ function(target, name, value, track, owner) {
     }
 
     return attribute;
-}, false, 'TP.defineAttribute');
+}, false, 'TP.defineAttributeSlot');
 
 //  -----------------------------------------------------------------------
 
-TP.definePrimitive('defineConstant',
+TP.definePrimitive('defineConstantSlot',
 function(target, name, value, track, owner) {
 
     /**
-     * @name defineConstant
+     * @name defineConstantSlot
      * @synopsis Defines a constant , tracking all necessary metadata.
      * @param {Object} target The target object.
      * @param {String} name The constant name.
@@ -4230,7 +4230,7 @@ function(target, name, value, track, owner) {
 
     return constant;
 
-}, false, 'TP.defineConstant');
+}, false, 'TP.defineConstantSlot');
 
 //  ------------------------------------------------------------------------
 
@@ -4731,7 +4731,7 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             TP.sys, attributeName, attributeValue, TP.LOCAL_TRACK);
 });
 
@@ -4780,7 +4780,7 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             TP.boot, attributeName, attributeValue, TP.LOCAL_TRACK);
 });
 
@@ -4829,7 +4829,7 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             APP, attributeName, attributeValue, TP.LOCAL_TRACK);
 });
 
@@ -4912,7 +4912,7 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             this, attributeName, attributeValue, TP.LOCAL_TRACK, this);
 });
 
@@ -4932,7 +4932,7 @@ function(constantName, constantValue) {
      * @returns {Object} The newly defined constant value.
      */
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
             this, constantName, constantValue, TP.LOCAL_TRACK, this);
 });
 
@@ -5002,7 +5002,7 @@ function(attributeName, attributeValue) {
         track = TP.LOCAL_TRACK;
     }
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             target, attributeName, attributeValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineAttribute');
 
@@ -5049,7 +5049,7 @@ function(constantName, constantValue) {
         track = TP.LOCAL_TRACK;
     }
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
             target, constantName, constantValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineConstant');
 
@@ -5131,7 +5131,7 @@ function(attributeName, attributeValue) {
         owner = this;
     }
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
                 this, attributeName, attributeValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineAttribute');
 
@@ -5162,7 +5162,7 @@ function(constantName, constantValue) {
         owner = this;
     }
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
                 this, constantName, constantValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineConstant');
 
@@ -5230,7 +5230,7 @@ function(attributeName, attributeValue) {
         owner = this;
     }
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
                 this, attributeName, attributeValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineAttribute');
 
@@ -5260,7 +5260,7 @@ function(constantName, constantValue) {
         owner = this;
     }
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
                 this, constantName, constantValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineConstant');
 

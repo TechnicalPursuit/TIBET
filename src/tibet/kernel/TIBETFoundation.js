@@ -747,10 +747,10 @@ function() {
             //  Set up our globals. Note that we don't even have to append the
             //  TP.$$unwindElem to a document or anything to get
             //  MutationObserver goodness.
-            TP.defineAttribute(TP,
-                                '$$unwindElem',
-                                document.createElement('div'));
-            TP.defineAttribute(TP, '$$unwindQueue', TP.ac());
+            TP.defineAttributeSlot(TP,
+                                    '$$unwindElem',
+                                    document.createElement('div'));
+            TP.defineAttributeSlot(TP, '$$unwindQueue', TP.ac());
 
             //  Define a function that runs all functions in the
             //  TP.$$unwindQueue and then empties the queue.
