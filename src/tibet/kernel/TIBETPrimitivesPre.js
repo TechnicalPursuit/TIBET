@@ -4737,6 +4737,25 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMethodSlot(TP, 'defineConstant',
+function(constantName, constantValue) {
+
+    /**
+     * @name defineConstant
+     * @synopsis Adds the constant with name and value provided as a 'local'
+     *     constant.
+     * @param {String} constantName The constant name.
+     * @param {Object} constantValue The constant value or a property descriptor
+     *     object.
+     * @returns {Object} The newly defined constant value.
+     */
+
+    return TP.defineConstantSlot(
+            TP, constantName, constantValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMethodSlot(TP, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
@@ -4782,6 +4801,25 @@ function(attributeName, attributeValue) {
 
     return TP.defineAttributeSlot(
             TP.sys, attributeName, attributeValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(TP.sys, 'defineConstant',
+function(constantName, constantValue) {
+
+    /**
+     * @name defineConstant
+     * @synopsis Adds the constant with name and value provided as a 'local'
+     *     constant.
+     * @param {String} constantName The constant name.
+     * @param {Object} constantValue The constant value or a property descriptor
+     *     object.
+     * @returns {Object} The newly defined constant value.
+     */
+
+    return TP.defineConstantSlot(
+            TP.sys, constantName, constantValue, TP.LOCAL_TRACK);
 });
 
 //  ------------------------------------------------------------------------
@@ -4835,6 +4873,25 @@ function(attributeName, attributeValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMethodSlot(TP.boot, 'defineConstant',
+function(constantName, constantValue) {
+
+    /**
+     * @name defineConstant
+     * @synopsis Adds the constant with name and value provided as a 'local'
+     *     constant.
+     * @param {String} constantName The constant name.
+     * @param {Object} constantValue The constant value or a property descriptor
+     *     object.
+     * @returns {Object} The newly defined constant value.
+     */
+
+    return TP.defineConstantSlot(
+            TP.boot, constantName, constantValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMethodSlot(TP.boot, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
@@ -4880,6 +4937,25 @@ function(attributeName, attributeValue) {
 
     return TP.defineAttributeSlot(
             APP, attributeName, attributeValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(APP, 'defineConstant',
+function(constantName, constantValue) {
+
+    /**
+     * @name defineConstant
+     * @synopsis Adds the constant with name and value provided as a 'local'
+     *     constant.
+     * @param {String} constantName The constant name.
+     * @param {Object} constantValue The constant value or a property descriptor
+     *     object.
+     * @returns {Object} The newly defined constant value.
+     */
+
+    return TP.defineConstantSlot(
+            APP, constantName, constantValue, TP.LOCAL_TRACK);
 });
 
 //  ------------------------------------------------------------------------
