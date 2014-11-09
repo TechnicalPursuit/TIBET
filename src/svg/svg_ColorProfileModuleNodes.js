@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.color_profile}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ TP.core.UIElementNode.defineSubtype('svg:color_profile');
 
 TP.svg.color_profile.addTraitsFrom(TP.svg.Element);
 
-TP.svg.color_profile.set('uriAttrs', TP.ac('xlink:href'));
+TP.svg.color_profile.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  For markup generation purposes, this type's 'localName' uses a dash
 //  ('-'), not an underscore ('_') like we had to use for the type name.

@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.text}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ TP.core.UIElementNode.defineSubtype('svg:text');
 
 TP.svg.text.addTraitsFrom(TP.svg.Element);
 
-TP.svg.text.set('uriAttrs',
+TP.svg.text.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask', 'fill', 'stroke'));
 
 //  ========================================================================
@@ -32,7 +32,7 @@ TP.svg.text.set('uriAttrs',
 
 /**
  * @type {TP.svg.tspan}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -41,7 +41,7 @@ TP.core.UIElementNode.defineSubtype('svg:tspan');
 
 TP.svg.tspan.addTraitsFrom(TP.svg.Element);
 
-TP.svg.tspan.set('uriAttrs', TP.ac('fill', 'stroke'));
+TP.svg.tspan.Type.set('uriAttrs', TP.ac('fill', 'stroke'));
 
 //  ========================================================================
 //  TP.svg.tref
@@ -49,7 +49,7 @@ TP.svg.tspan.set('uriAttrs', TP.ac('fill', 'stroke'));
 
 /**
  * @type {TP.svg.tref}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -58,7 +58,7 @@ TP.core.UIElementNode.defineSubtype('svg:tref');
 
 TP.svg.tref.addTraitsFrom(TP.svg.Element);
 
-TP.svg.tref.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
+TP.svg.tref.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 //  ========================================================================
 //  TP.svg.textPath
@@ -66,7 +66,7 @@ TP.svg.tref.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 /**
  * @type {TP.svg.textPath}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -75,7 +75,7 @@ TP.core.UIElementNode.defineSubtype('svg:textpath');
 
 TP.svg.textpath.addTraitsFrom(TP.svg.Element);
 
-TP.svg.textpath.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
+TP.svg.textpath.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 //  ========================================================================
 //  TP.svg.altGlyph
@@ -83,7 +83,7 @@ TP.svg.textpath.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 /**
  * @type {TP.svg.altGlyph}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -92,7 +92,7 @@ TP.core.UIElementNode.defineSubtype('svg:altGlyph');
 
 TP.svg.altGlyph.addTraitsFrom(TP.svg.Element);
 
-TP.svg.altGlyph.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
+TP.svg.altGlyph.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 //  ========================================================================
 //  TP.svg.altGlyphDef
@@ -100,7 +100,7 @@ TP.svg.altGlyph.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 /**
  * @type {TP.svg.altGlyphDef}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -115,7 +115,7 @@ TP.svg.altGlyphDef.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.altGlyphItem}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -130,7 +130,7 @@ TP.svg.altGlyphItem.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.glyphRef}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------

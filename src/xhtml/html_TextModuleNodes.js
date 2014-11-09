@@ -60,7 +60,7 @@ TP.html.Attrs.defineSubtype('address');
 
 TP.html.Citation.defineSubtype('blockquote');
 
-TP.html.blockquote.set('uriAttrs', TP.ac('cite'));
+TP.html.blockquote.Type.set('uriAttrs', TP.ac('cite'));
 
 //  ========================================================================
 //  TP.html.br
@@ -292,7 +292,7 @@ TP.html.Attrs.defineSubtype('pre');
 
 TP.html.Citation.defineSubtype('q');
 
-TP.html.q.set('uriAttrs', TP.ac('cite'));
+TP.html.q.Type.set('uriAttrs', TP.ac('cite'));
 
 //  ========================================================================
 //  TP.html.ruby (HTML 5)

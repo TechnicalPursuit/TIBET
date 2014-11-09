@@ -65,7 +65,7 @@ TP.html.Attrs.defineSubtype('script');
 
 TP.html.script.set('booleanAttrs', TP.ac('async', 'defer'));
 
-TP.html.script.set('uriAttrs', TP.ac('src'));
+TP.html.script.Type.set('uriAttrs', TP.ac('src'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

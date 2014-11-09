@@ -21,7 +21,7 @@
 
 TP.html.Citation.defineSubtype('del');
 
-TP.html.del.set('uriAttrs', TP.ac('cite'));
+TP.html.del.Type.set('uriAttrs', TP.ac('cite'));
 
 //  ========================================================================
 //  TP.html.ins
@@ -36,7 +36,7 @@ TP.html.del.set('uriAttrs', TP.ac('cite'));
 
 TP.html.Citation.defineSubtype('ins');
 
-TP.html.ins.set('uriAttrs', TP.ac('cite'));
+TP.html.ins.Type.set('uriAttrs', TP.ac('cite'));
 
 //  ------------------------------------------------------------------------
 //  end

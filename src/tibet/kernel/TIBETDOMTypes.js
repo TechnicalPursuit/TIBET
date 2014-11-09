@@ -14484,7 +14484,7 @@ TP.xsl.Element.defineSubtype('stylesheet');
 
 TP.xsl.Element.defineSubtype('import');
 
-TP.xsl['import'].set('uriAttrs', TP.ac('href'));
+TP.xsl['import'].Type.set('uriAttrs', TP.ac('href'));
 
 //  ------------------------------------------------------------------------
 //  xsl:include
@@ -14492,7 +14492,7 @@ TP.xsl['import'].set('uriAttrs', TP.ac('href'));
 
 TP.xsl.Element.defineSubtype('include');
 
-TP.xsl.include.set('uriAttrs', TP.ac('href'));
+TP.xsl.include.Type.set('uriAttrs', TP.ac('href'));
 
 //  ========================================================================
 //  XINCLUDE PROCESSING
@@ -14510,7 +14510,7 @@ TP.xi.Element.isAbstract(true);
 
 TP.xi.Element.defineSubtype('include');
 
-TP.xi.include.set('uriAttrs', TP.ac('href'));
+TP.xi.include.Type.set('uriAttrs', TP.ac('href'));
 
 //  ------------------------------------------------------------------------
 

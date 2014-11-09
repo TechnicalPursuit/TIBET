@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.cursor}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ TP.core.UIElementNode.defineSubtype('svg:cursor');
 
 TP.svg.cursor.addTraitsFrom(TP.svg.Element);
 
-TP.svg.cursor.set('uriAttrs', TP.ac('xlink:href'));
+TP.svg.cursor.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------
 //  end

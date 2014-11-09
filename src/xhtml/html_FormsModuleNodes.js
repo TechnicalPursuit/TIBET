@@ -677,7 +677,7 @@ TP.html.input.set('booleanAttrs',
                 'formNoValidate', 'indeterminate', 'multiple',
                 'readOnly', 'required', 'willValidate'));
 
-TP.html.input.set('uriAttrs', TP.ac('src', 'usemap'));
+TP.html.input.Type.set('uriAttrs', TP.ac('src', 'usemap'));
 
 TP.html.input.addTraitsFrom(TP.core.EmptyElementNode);
 TP.html.input.Inst.resolveTraits(
@@ -2058,7 +2058,7 @@ TP.html.form.Type.defineConstant('NODE_TYPE_NAMES',
 
 TP.html.form.set('booleanAttrs', TP.ac('noValidate'));
 
-TP.html.form.set('uriAttrs', TP.ac('action'));
+TP.html.form.Type.set('uriAttrs', TP.ac('action'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

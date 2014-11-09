@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.animate}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ TP.core.UIElementNode.defineSubtype('svg:animate');
 
 TP.svg.animate.addTraitsFrom(TP.svg.Element);
 
-TP.svg.animate.set('uriAttrs', TP.ac('xlink:href'));
+TP.svg.animate.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
 //  TP.svg.set
@@ -31,7 +31,7 @@ TP.svg.animate.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.set}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -40,7 +40,7 @@ TP.core.UIElementNode.defineSubtype('svg:set');
 
 TP.svg.set.addTraitsFrom(TP.svg.Element);
 
-TP.svg.set.set('uriAttrs', TP.ac('xlink:href'));
+TP.svg.set.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
 //  TP.svg.animateMotion
@@ -48,7 +48,7 @@ TP.svg.set.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.animateMotion}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -57,7 +57,7 @@ TP.core.UIElementNode.defineSubtype('svg:animateMotion');
 
 TP.svg.animateMotion.addTraitsFrom(TP.svg.Element);
 
-TP.svg.animateMotion.set('uriAttrs', TP.ac('xlink:href'));
+TP.svg.animateMotion.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
 //  TP.svg.animateTransform
@@ -65,7 +65,7 @@ TP.svg.animateMotion.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.animateTransform}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -74,7 +74,7 @@ TP.core.UIElementNode.defineSubtype('svg:animateTransform');
 
 TP.svg.animateTransform.addTraitsFrom(TP.svg.Element);
 
-TP.svg.animateTransform.set('uriAttrs', TP.ac('xlink:href'));
+TP.svg.animateTransform.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
 //  TP.svg.animateColor
@@ -82,7 +82,7 @@ TP.svg.animateTransform.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.animateColor}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -97,7 +97,7 @@ TP.svg.animateColor.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.mpath}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------

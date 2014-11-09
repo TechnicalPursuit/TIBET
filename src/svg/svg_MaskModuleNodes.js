@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.mask}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,8 @@ TP.core.UIElementNode.defineSubtype('svg:mask');
 
 TP.svg.mask.addTraitsFrom(TP.svg.Element);
 
-TP.svg.mask.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
+TP.svg.mask.Type.set('uriAttrs',
+        TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ------------------------------------------------------------------------
 //  end

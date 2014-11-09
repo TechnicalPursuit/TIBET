@@ -14,14 +14,14 @@
 
 /**
  * @type {TP.svg.path}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
 
 TP.svg.Shape.defineSubtype('path');
 
-TP.svg.Shape.set('uriAttrs',
+TP.svg.Shape.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'marker', 'marker-start',
         'marker-mid', 'marker-end', 'mask', 'fill', 'stroke'));
 
@@ -31,7 +31,7 @@ TP.svg.Shape.set('uriAttrs',
 
 /**
  * @type {TP.svg.rect}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -44,7 +44,7 @@ TP.svg.Shape.defineSubtype('rect');
 
 /**
  * @type {TP.svg.circle}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -57,14 +57,14 @@ TP.svg.Shape.defineSubtype('circle');
 
 /**
  * @type {TP.svg.line}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
 
 TP.svg.Shape.defineSubtype('line');
 
-TP.svg.line.set('uriAttrs',
+TP.svg.line.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'marker', 'marker-start',
         'marker-mid', 'marker-end', 'mask', 'fill', 'stroke'));
 
@@ -74,7 +74,7 @@ TP.svg.line.set('uriAttrs',
 
 /**
  * @type {TP.svg.ellipse}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -87,14 +87,14 @@ TP.svg.Shape.defineSubtype('ellipse');
 
 /**
  * @type {TP.svg.polyline}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
 
 TP.svg.Shape.defineSubtype('polyline');
 
-TP.svg.polyline.set('uriAttrs',
+TP.svg.polyline.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'marker', 'marker-start',
         'marker-mid', 'marker-end', 'mask', 'fill', 'stroke'));
 
@@ -104,14 +104,14 @@ TP.svg.polyline.set('uriAttrs',
 
 /**
  * @type {TP.svg.polygon}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
 
 TP.svg.Shape.defineSubtype('polygon');
 
-TP.svg.polygon.set('uriAttrs',
+TP.svg.polygon.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'marker', 'marker-start',
         'marker-mid', 'marker-end', 'mask', 'fill', 'stroke'));
 

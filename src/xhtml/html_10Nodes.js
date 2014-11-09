@@ -32,7 +32,7 @@
 
 TP.html.CoreAttrs.defineSubtype('applet');
 
-TP.html.applet.set('uriAttrs', TP.ac('src'));
+TP.html.applet.Type.set('uriAttrs', TP.ac('src'));
 
 //  ========================================================================
 //  TP.html.basefont
@@ -163,7 +163,7 @@ TP.html.iframe.Inst.resolveTraits(
             'removeKeys', 'transform'),
         TP.html.CoreAttrs);
 
-TP.html.iframe.set('uriAttrs', TP.ac('src', 'longdesc'));
+TP.html.iframe.Type.set('uriAttrs', TP.ac('src', 'longdesc'));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -339,7 +339,7 @@ function(attributeName) {
      *     globals on their content window if a value for the attribute cannot
      *     be found on the receiver itself.
      * @param {String} attributeName The name/key of the attribute to return.
-     * @returns {Object} 
+     * @returns {Object}
      */
 
     var val,

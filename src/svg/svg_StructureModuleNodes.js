@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.svg}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ TP.core.UIElementNode.defineSubtype('svg:svg');
 
 TP.svg.svg.addTraitsFrom(TP.svg.Element);
 
-TP.svg.svg.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
+TP.svg.svg.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ========================================================================
 //  TP.svg.g
@@ -31,7 +31,7 @@ TP.svg.svg.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 /**
  * @type {TP.svg.g}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -40,7 +40,7 @@ TP.core.UIElementNode.defineSubtype('svg:g');
 
 TP.svg.g.addTraitsFrom(TP.svg.Element);
 
-TP.svg.g.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
+TP.svg.g.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ========================================================================
 //  TP.svg.defs
@@ -48,7 +48,7 @@ TP.svg.g.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 /**
  * @type {TP.svg.defs}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -57,7 +57,7 @@ TP.core.UIElementNode.defineSubtype('svg:defs');
 
 TP.svg.defs.addTraitsFrom(TP.svg.Element);
 
-TP.svg.defs.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
+TP.svg.defs.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ========================================================================
 //  TP.svg.desc
@@ -65,7 +65,7 @@ TP.svg.defs.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 /**
  * @type {TP.svg.desc}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -80,7 +80,7 @@ TP.svg.desc.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.title}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -95,7 +95,7 @@ TP.svg.title.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.metadata}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -110,7 +110,7 @@ TP.svg.metadata.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.symbol}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -119,7 +119,7 @@ TP.core.UIElementNode.defineSubtype('svg:symbol');
 
 TP.svg.symbol.addTraitsFrom(TP.svg.Element);
 
-TP.svg.symbol.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
+TP.svg.symbol.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ========================================================================
 //  TP.svg.use
@@ -127,7 +127,7 @@ TP.svg.symbol.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 /**
  * @type {TP.svg.use}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -136,7 +136,7 @@ TP.core.UIElementNode.defineSubtype('svg:use');
 
 TP.svg.use.addTraitsFrom(TP.svg.Element);
 
-TP.svg.use.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
+TP.svg.use.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ------------------------------------------------------------------------
 //  end
