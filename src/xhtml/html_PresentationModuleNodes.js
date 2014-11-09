@@ -62,7 +62,7 @@ TP.html.Attrs.defineSubtype('datalist');
 
 TP.html.Attrs.defineSubtype('details');
 
-TP.html.details.set('booleanAttrs', TP.ac('open'));
+TP.html.details.Type.set('booleanAttrs', TP.ac('open'));
 
 //  ========================================================================
 //  html:hr
@@ -77,7 +77,7 @@ TP.html.details.set('booleanAttrs', TP.ac('open'));
 
 TP.html.Aligned.defineSubtype('hr');
 
-TP.html.hr.set('booleanAttrs', TP.ac('noShade'));
+TP.html.hr.Type.set('booleanAttrs', TP.ac('noShade'));
 
 TP.html.hr.addTraitsFrom(TP.core.EmptyElementNode);
 TP.html.hr.Inst.resolveTraits(
@@ -114,7 +114,7 @@ TP.html.Attrs.defineSubtype('i');
 
 TP.html.Attrs.defineSubtype('output');
 
-TP.html.output.set('booleanAttrs', TP.ac('willValidate'));
+TP.html.output.Type.set('booleanAttrs', TP.ac('willValidate'));
 
 //  ========================================================================
 //  html:meter (HTML 5)

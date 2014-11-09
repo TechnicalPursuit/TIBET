@@ -73,7 +73,7 @@ TP.html.Attrs.defineSubtype('center');
 
 TP.html.List.defineSubtype('dir');
 
-TP.html.dir.set('booleanAttrs', TP.ac('compact'));
+TP.html.dir.Type.set('booleanAttrs', TP.ac('compact'));
 
 //  ========================================================================
 //  TP.html.font
@@ -101,7 +101,7 @@ TP.html.CoreAttrs.defineSubtype('font');
 
 TP.html.CoreAttrs.defineSubtype('frame');
 
-TP.html.frame.set('booleanAttrs', TP.ac('noResize'));
+TP.html.frame.Type.set('booleanAttrs', TP.ac('noResize'));
 
 //  ========================================================================
 //  TP.html.frameset
@@ -132,7 +132,7 @@ TP.html.CoreAttrs.defineSubtype('frameset');
 //  an IFRAME is an element...
 TP.html.CoreAttrs.defineSubtype('iframe');
 
-TP.html.iframe.set('booleanAttrs', TP.ac('seamless', 'allowFullscreen'));
+TP.html.iframe.Type.set('booleanAttrs', TP.ac('seamless', 'allowFullscreen'));
 
 //  IFRAME elements are also UI canvases just like windows
 TP.html.iframe.addTraitsFrom(TP.core.UICanvas);
@@ -441,7 +441,7 @@ TP.html.Attrs.defineSubtype('listing');
 
 TP.html.List.defineSubtype('menu');
 
-TP.html.menu.set('booleanAttrs', TP.ac('compact'));
+TP.html.menu.Type.set('booleanAttrs', TP.ac('compact'));
 
 //  ========================================================================
 //  TP.html.noframes

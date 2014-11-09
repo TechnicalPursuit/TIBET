@@ -336,7 +336,7 @@ TP.html.Attrs.defineSubtype('object');
 
 TP.html.object.isAbstract(true);
 
-TP.html.object.set('booleanAttrs',
+TP.html.object.Type.set('booleanAttrs',
             TP.ac('declare', 'typeMustMatch', 'willValidate'));
 
 TP.html.object.Type.set('uriAttrs', TP.ac('classid', 'codebase', 'usemap', 'data'));
