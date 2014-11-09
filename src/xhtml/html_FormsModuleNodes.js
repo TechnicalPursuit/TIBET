@@ -904,29 +904,6 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
 //  ------------------------------------------------------------------------
 
-TP.html.input.Type.defineMethod('shouldAutoWrapItems',
-function(anObject, formatArgs) {
-
-    /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
-     *     'auto-wrap items'. See those methods for more information.
-     * @param {Object} anObject The Object of content to wrap in markup.
-     * @param {TP.lang.Hash} formatArgs An optional object containing
-     *     parameters.
-     * @returns {Boolean} Whether or not we automatically wrap items.
-     * @todo
-     */
-
-    if (TP.isBoolean(formatArgs.at('autowrap'))) {
-        return formatArgs.at('autowrap');
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.html.input.Type.defineMethod('getConcreteType',
 function(aNodeOrId) {
 
@@ -962,8 +939,6 @@ function(aNodeOrId) {
 });
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
 
 TP.html.input.Type.defineMethod('handlePeerTP_sig_DOMChange',
 function(aTargetElem, anEvent) {
@@ -988,6 +963,31 @@ function(aTargetElem, anEvent) {
     }
 });
 
+//  ------------------------------------------------------------------------
+
+TP.html.input.Type.defineMethod('shouldAutoWrapItems',
+function(anObject, formatArgs) {
+
+    /**
+     * @name shouldAutoWrapItems
+     * @synopsis Whether or not our fromArray() / fromObject() methods
+     *     'auto-wrap items'. See those methods for more information.
+     * @param {Object} anObject The Object of content to wrap in markup.
+     * @param {TP.lang.Hash} formatArgs An optional object containing
+     *     parameters.
+     * @returns {Boolean} Whether or not we automatically wrap items.
+     * @todo
+     */
+
+    if (TP.isBoolean(formatArgs.at('autowrap'))) {
+        return formatArgs.at('autowrap');
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.html.input.Inst.defineMethod('isSingleValued',
