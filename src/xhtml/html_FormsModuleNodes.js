@@ -588,6 +588,11 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue(aValue);
 
+    //  If the values are equal, there's nothing to do here - bail out.
+    if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        return this;
+    }
+
     //  showas is the attribute we use to define formatting pipelines for
     //  the UI controls, so if we have that attribute we have formatting
     if (this.hasAttribute('xctrls:showas')) {
@@ -1961,6 +1966,11 @@ function(aValue, shouldSignal) {
     oldValue = this.getValue();
 
     newValue = this.produceValue(aValue);
+
+    //  If the values are equal, there's nothing to do here - bail out.
+    if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        return this;
+    }
 
     this.setDisplayValue(newValue);
 
@@ -4325,6 +4335,11 @@ function(aValue, shouldSignal) {
     oldValue = this.getValue();
 
     newValue = this.produceValue(aValue);
+
+    //  If the values are equal, there's nothing to do here - bail out.
+    if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        return this;
+    }
 
     this.setDisplayValue(newValue);
 
