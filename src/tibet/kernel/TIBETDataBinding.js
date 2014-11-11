@@ -733,11 +733,26 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                                 TP.JOIN +
                                 facetName;
 
+                //  If we found a target attribute registration under the key,
+                //  then perform the set()
                 if (TP.notEmpty(targetAttr = handler.$aspectMap.at(mapKey))) {
 
+                    //  If this is a URI, and it's not a primary URI (i.e. it
+                    //  has a fragment pointing to a subresource), then we want
+                    //  to get the primary URI and perform a 'set' against it's
+                    //  resource using the path from the fragment.
+                    //  Otherwise, if it's a primary URI, then just set using
+                    //  the registered target attribute.
                     if (TP.isURI(this)) {
-                        this.getResource().set(targetAttr, newVal);
+                        if (!this.isPrimaryURI()) {
+                            this.getPrimaryURI().getResource().set(
+                                            this.getFragmentText(), newVal);
+                        } else {
+                            this.getResource().set(targetAttr, newVal);
+                        }
                     } else {
+                        //  Otherwise, it's not a URI - just do the set with the
+                        //  registered target attribute.
                         this.set(targetAttr, newVal);
                     }
                 }
