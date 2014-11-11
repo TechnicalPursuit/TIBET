@@ -3703,27 +3703,16 @@ function(aFlag) {
      * @name shouldSignalChange
      * @synopsis Defines whether the receiver should actively signal change
      *     notifications.
-     * @description In general objects do not signal changes when no observers
-     *     exist. This flag is triggered by observe where the signal being
-     *     observed is a form of Change signal to "arm" the object for change
-     *     notification. You can also manipulate it during multi-step
-     *     manipulations to signal only when a series of changes has been
-     *     completed.
+     * @description In general URI objects do not signal changes from their own
+     *      properties, because they act as 'value holders' for their resources.
+     *      They will signal Change when their resources do so, acting as a
+     *      'forwarding' mechanism for their resources.
      * @param {Boolean} aFlag true/false signaling status.
      * @returns {Boolean} The current status.
      */
 
-    var url;
-
-    //  When we're not primary, and the flag is true, then we need to configure
-    //  our primary to also send change signal. We don't do this when the flag
-    //  is false, since we don't know what other subURIs of the primary might
-    //  want.
-    if ((url = this.getPrimaryURI()) !== this && TP.isTrue(aFlag)) {
-        url.shouldSignalChange(true);
-    }
-
-    return this.callNextMethod();
+    //  Yes, TP.core.URIs are hardcoded to return false here.
+    return false;
 });
 
 //  ------------------------------------------------------------------------
