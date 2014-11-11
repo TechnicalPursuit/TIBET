@@ -162,7 +162,7 @@ Cmd.prototype.getScript = function() {
     }
 
     script = script || '';
-    if (script.indexOf(prefix) !== 0) {
+    if (script.length > 0 && script.indexOf(prefix) !== 0) {
         script = prefix + '\'' + script + '\'';
     } else {
         script = prefix;
