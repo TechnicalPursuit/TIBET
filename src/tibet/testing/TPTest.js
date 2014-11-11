@@ -351,24 +351,47 @@ function(target, options) {
      */
 
     var suites,
+        suite,
         id;
 
     suites = TP.test.Suite.$get('suites');
 
-    if (TP.notValid(target)) {
-        return suites;
+    // If we have a specific target restrict our hash down to just that target's
+    // suites as a first step.
+    if (TP.isValid(target)) {
+
+        id = TP.id(target);
+        if (TP.isEmpty(id)) {
+            this.raise('InvalidID');
+        }
+
+        suites = TP.hc(id, suites.at(id));
     }
 
-    id = TP.id(target);
-    if (TP.isEmpty(id)) {
-        this.raise('InvalidID');
+    // No options means no filtering criteria...
+    if (TP.notValid(options)) {
+        return suites;
     }
 
     // TODO: if options includes things like inherited etc. we need to collect
     // more suites rather than assuming a single slice.
 
-    //  Return the result as a "slice" of the overall hash for consistency.
-    return TP.hc(id, suites.at(id));
+    if (TP.notEmpty(options.suite)) {
+        suite = suites.getValues().filter(function(item) {
+            return item.getKeys().contains(options.suite);
+        }).collect(function(item) {
+            return item.at(options.suite);
+        }).first();
+
+        if (TP.isValid(suite)) {
+            return TP.hc(id || options.suite, TP.hc(options.suite, suite));
+        } else {
+            return;
+        }
+    } else {
+        return suites;
+    }
+
 });
 
 //  ------------------------------------------------------------------------
