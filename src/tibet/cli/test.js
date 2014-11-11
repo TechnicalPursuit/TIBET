@@ -57,11 +57,18 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
  * @type {String}
  */
 Cmd.prototype.HELP =
-'Runs the TIBET phantomtsh script runner to test your application.\n\n' +
+'Runs unit, functional, and/or integration tests on your application.\n\n' +
+
+'CLI-initiated tests are run in the context of phantomjs and support\n' +
+'the use of the full TIBET test harness and UI driver feature set.\n\n' +
 
 'The default operation makes use of ~app_test/phantom.xml as the\n' +
 'boot.profile (which controls what code is loaded) and a TSH shell\n' +
 'command of \':test\' which will run all test suites in the profile.\n\n' +
+
+'You can specify a particular test target object or test suite to\n' +
+'run as the first argument to the command. If you need to specify\n' +
+'both a target and suite use --target and --suite respectively.\n\n' +
 
 'Output is to the terminal in colorized TAP format by default.\n' +
 'Future versions will support additional test output formatters.\n\n' +
@@ -70,7 +77,7 @@ Cmd.prototype.HELP =
 'can easily test components simply by naming them via the --script\n' +
 'parameter. For example, you can run all String tests via:\n\n' +
 
-'tibet test --script \':test String\'\n';
+'tibet test [--script] \':test String\'\n';
 
 
 /**
@@ -80,6 +87,7 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         boolean: ['selftest'],
+        string: ['target', 'suite'],
         default: {}
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -88,7 +96,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [target] [--ignore-only]';
+Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--ignore-only]';
 
 //  ---
 //  Instance Methods
@@ -144,15 +152,15 @@ Cmd.prototype.getProfile = function() {
  */
 Cmd.prototype.getScript = function() {
 
-    var script;
+    var target;
     var prefix;
 
-    if (CLI.notEmpty(this.options.script)) {
-        script = this.options.script;
+    if (CLI.notEmpty(this.options.target)) {
+        target = this.options.target;
     } else {
         // The options._ object holds non-qualified parameters. [0] is the
-        // command name (tsh in this case). [1] should be the "script" to run.
-        script = this.options._[1];
+        // command name (tsh in this case). [1] should be the "target" to run.
+        target = this.options._[1];
     }
 
     if (CLI.inProject()) {
@@ -161,14 +169,18 @@ Cmd.prototype.getScript = function() {
         prefix = ':test -ignore_only ';
     }
 
-    script = script || '';
-    if (script.length > 0 && script.indexOf(prefix) !== 0) {
-        script = prefix + '\'' + script + '\'';
+    target = target || '';
+    if (target.length > 0 && target.indexOf(prefix) !== 0) {
+        target = prefix + '\'' + target + '\'';
     } else {
-        script = prefix;
+        target = prefix;
     }
 
-    return script;
+    if (CLI.notEmpty(this.options.suite)) {
+        target = target.trim() + ' -suite=\'' + this.options.suite + '\'';
+    }
+
+    return target;
 };
 
 
