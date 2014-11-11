@@ -326,7 +326,7 @@ function(target, suiteName, suiteFunc) {
 
     suite = dict.at(suiteName);
     if (TP.notValid(suite)) {
-        suite = TP.test.Suite.construct(this, suiteName, suiteFunc);
+        suite = TP.test.Suite.construct(target, suiteName, suiteFunc);
         dict.atPut(suiteName, suite);
     } else {
         suite.addSuite(suiteFunc);
@@ -1219,7 +1219,7 @@ function(options) {
 
     //  Output a small 'suite header'
     TP.sys.logTest('#', TP.DEBUG);
-    TP.sys.logTest('# describe(' + this.getSuiteName() + ')', TP.DEBUG);
+    TP.sys.logTest('# ' + this.get('suiteOwner').getID() + '.describe(' + this.getSuiteName() + ')', TP.DEBUG);
 
     params = TP.hc(options);
 
