@@ -644,7 +644,7 @@ function() {
     TP.info('fix TP.core.ConsoleService::scrollContent', TP.LOG);
 
     return this;
-
+/*
     var contentDiv,
         scrollGrip,
         scrollBar,
@@ -667,6 +667,7 @@ function() {
     contentDiv.scrollTop = scrollGrip.offsetTop * scrollFactor;
 
     return this;
+*/
 });
 
 //  ------------------------------------------------------------------------
@@ -1188,13 +1189,13 @@ function(aSignal) {
      * @todo
      */
 
+    return;
+/*
     var evt,
         arr,
         str;
 
     //TP.info('fix TP.core.ConsoleService::handleDOMModifierKeyChange', TP.LOG);
-
-    return;
 
     evt = aSignal.getEvent();
 
@@ -1214,6 +1215,7 @@ function(aSignal) {
         aSignal.getShiftKey()) {
         this.toggleScrollViewOpen();
     }
+*/
 });
 
 //  ------------------------------------------------------------------------
@@ -1816,10 +1818,11 @@ function() {
     //TP.info('fix TP.core.ConsoleService::clearStatus', TP.LOG);
 
     return this;
-
+/*
     TP.status('');
 
     return this;
+*/
 });
 
 //  ------------------------------------------------------------------------
@@ -1840,7 +1843,7 @@ function(aSignal) {
     //TP.info('fix TP.core.ConsoleService::updateStatus', TP.LOG);
 
     return this;
-
+/*
     var model,
         doc,
         outCell,
@@ -1883,6 +1886,7 @@ function(aSignal) {
         str, null, false);
 
     return;
+*/
 });
 
 //  ------------------------------------------------------------------------

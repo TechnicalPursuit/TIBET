@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sherpa.world}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -242,7 +242,7 @@ function(screenRowNum, screenColNum) {
 
     /**
      * @name fitToScreen
-     * @param {Number} screenNum 
+     * @param {Number} screenNum
      * @returns {TP.sherpa.world} The receiver.
      */
 
@@ -254,7 +254,7 @@ function(screenRowNum, screenColNum) {
 
         translateX,
         translateY,
-    
+
         width,
         height;
 
@@ -304,11 +304,11 @@ function() {
      * @returns {TP.sherpa.world} The receiver.
      */
 
+    return this;
+/*
     var worldSize,
         worldWidth,
         worldHeight;
-
-    return this;
 
     worldSize = this.getComputedWidthAndHeight();
     worldWidth = worldSize.first();
@@ -339,6 +339,7 @@ function() {
     this.set('currentFocus', TP.SELF);
 
     return this;
+*/
 });
 
 //  ------------------------------------------------------------------------
@@ -352,7 +353,7 @@ function() {
      */
 
     return this;
-
+/*
     var nativeDoc,
         windowWidth,
         windowHeight;
@@ -365,6 +366,7 @@ function() {
     this.setView(TP.rtc(0, 0, windowWidth, windowHeight));
 
     return this;
+*/
 });
 
 //  ------------------------------------------------------------------------

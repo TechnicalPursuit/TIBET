@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.core.Searcher}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -178,8 +178,7 @@ function(usingText) {
         methodNames.perform(
             function(aMethodName) {
                 var methodName,
-                    ownerName,
-                    trackName;
+                    ownerName;
 
                 methodName = aMethodName.slice(aMethodName.lastIndexOf('_') + 1);
 

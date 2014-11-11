@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sherpa.quickbar}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -158,7 +158,7 @@ function(aSignal) {
     if (currentResultItem.getLocalName().toLowerCase() === 'li') {
         this.set('currentResultItem', currentResultItem);
     }
-    
+
     this.updateResultDetail();
 
     return this;
@@ -348,8 +348,7 @@ function() {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    var detailTile,
-        currentResultItem;
+    var detailTile;
 
     if (TP.notValid(detailTile = TP.byOID('detailTile'))) {
         detailTile = TP.byOID('Sherpa').makeTile('detailTile');
@@ -805,7 +804,7 @@ function(plainText) {
      * @synopsis Converts text intended for the input cell so it's properly
      *     displayed.
      * @param {String} plainText The string to convert.
-     * @returns {String} 
+     * @returns {String}
      */
 
     //  For now, we just return the plain text that was handed to us.
