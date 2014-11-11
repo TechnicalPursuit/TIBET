@@ -615,7 +615,8 @@ CLI.inGruntProject = function() {
     file = this.GRUNT_FILE;
 
     return sh.test('-f', path.join(cwd, file)) &&
-        sh.test('-f', path.join(cwd, './node_modules/.bin/grunt'));
+        (sh.which('grunt') ||
+         sh.test('-f', path.join(cwd, './node_modules/.bin/grunt')));
 };
 
 
@@ -632,7 +633,8 @@ CLI.inGulpProject = function() {
     file = this.GULP_FILE;
 
     return sh.test('-f', path.join(cwd, file)) &&
-        sh.test('-f', path.join(cwd, './node_modules/.bin/gulp'));
+        (sh.which('gulp') ||
+        sh.test('-f', path.join(cwd, './node_modules/.bin/gulp')));
 };
 
 
@@ -916,21 +918,29 @@ CLI.runFallback = function(command) {
     // that are local) suggest they run `tibet init` first.
     if (!sh.test('-e', 'node_modules')) {
         this.notInitialized();
+        return;
     }
 
+    // Make option is our first choice for non-command operations.
     if (this.hasMakeTarget(command)) {
         this.warn('Delegating to \'tibet make ' + command + '\'');
-        this.runViaMake(command);
-    } else if (this.inGruntProject(command)) {
-        this.warn('Attempting \'grunt ' + command + '\'');
-        this.runViaGrunt(command);
-    } else if (this.inGulpProject()) {
-        this.warn('Attempting \'gulp ' + command + '\'');
-        this.runViaGulp(command);
-    } else {
-        this.error('Command not found: ' + command + '.');
-        process.exit(1);
+        return this.runViaMake(command);
     }
+
+    // If we find both a grunt executable and a gruntfile we can try grunt.
+    if (this.inGruntProject(command)) {
+        this.warn('Attempting \'grunt ' + command + '\'');
+        return this.runViaGrunt(command);
+    }
+
+    // If we find both a gulp executable and a gulpfile we can try gulp.
+    if (this.inGulpProject()) {
+        this.warn('Attempting \'gulp ' + command + '\'');
+        return this.runViaGulp(command);
+    }
+
+    this.error('Command not found: ' + command + '.');
+    process.exit(1);
 };
 
 
@@ -941,11 +951,14 @@ CLI.runFallback = function(command) {
  */
 CLI.runViaGrunt = function(command) {
 
-    var cmd;        // Command string we'll be executing via grunt.
+    var cmd;        // Binding reference.
+    var str;        // Command string we'll be executing via grunt.
     var child;      // spawned child process for grunt execution.
 
-    cmd = 'grunt ' + process.argv.slice(2).join(' ');
-    this.debug('spawning: ' + cmd);
+    cmd = this;
+
+    str = 'grunt ' + process.argv.slice(2).join(' ');
+    this.debug('spawning: ' + str);
 
     child = require('child_process').spawn('./node_modules/.bin/grunt',
         process.argv.slice(2),
@@ -954,16 +967,16 @@ CLI.runViaGrunt = function(command) {
 
     child.stdout.on('data', function(data) {
         var msg = '' + data;
-        this.log(msg);
+        cmd.log(msg);
     });
 
     child.stderr.on('data', function(data) {
         var msg = '' + data;
-        this.error(msg);
+        cmd.error(msg);
     });
 
     child.on('error', function(err) {
-        this.error('' + err.message);
+        cmd.error('' + err.message);
     });
 
     child.on('exit', function(code) {
@@ -981,29 +994,32 @@ CLI.runViaGrunt = function(command) {
  */
 CLI.runViaGulp = function(command) {
 
-    var cmd;        // Command string we'll be executing via gulp.
+    var cmd;        // Binding reference.
+    var str;        // Command string we'll be executing via gulp.
     var child;      // spawned child process for gulp execution.
 
-    cmd = './node_modules/.bin/gulp ' + process.argv.slice(2).join(' ');
-    this.debug('spawning: ' + cmd);
+    cmd = this;
+
+    str = './node_modules/.bin/gulp ' + process.argv.slice(2).join(' ');
+    this.debug('spawning: ' + str);
 
     child = require('child_process').spawn('./node_modules/.bin/gulp',
         process.argv.slice(2),
-        { cwd: this.getAppRoot() }
+        { cwd: cmd.getAppRoot() }
     );
 
     child.stdout.on('data', function(data) {
         var msg = '' + data;
-        this.log(msg);
+        cmd.log(msg);
     });
 
     child.stderr.on('data', function(data) {
         var msg = '' + data;
-        this.error(msg);
+        cmd.error(msg);
     });
 
     child.on('error', function(err) {
-        this.error('' + err.message);
+        cmd.error('' + err.message);
     });
 
     child.on('exit', function(code) {
