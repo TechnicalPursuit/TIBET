@@ -89,7 +89,7 @@ var CLI = {};
  * `help` and `make`.
  * @type {number}
  */
-CLI.CHARS_PER_LINE = 50;
+CLI.CHARS_PER_LINE = 55;
 
 
 /**

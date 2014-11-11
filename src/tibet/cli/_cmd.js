@@ -174,9 +174,21 @@ Cmd.prototype.parse = function(options) {
 
 /**
  * Perform the actual command processing. Typically you want to override this.
+ * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    return;
+    return 0;
+};
+
+
+/**
+ * Verify any command prerequisites are in place (such as necessary binaries
+ * etc). If the execution should stop this method will return a non-zero result
+ * code.
+ * @return {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.prereqs = function() {
+    return 0;
 };
 
 
@@ -194,6 +206,8 @@ Cmd.prototype.prompt = CLI.prompt;
  */
 Cmd.prototype.run = function(options) {
 
+    var code;
+
     // Config data can be pulled directly from the CLI.
     this.config = CLI.config;
 
@@ -206,6 +220,11 @@ Cmd.prototype.run = function(options) {
 
     if (this.options.help) {
         return this.help();
+    }
+
+    code = this.prereqs();
+    if (code !== 0) {
+        return code;
     }
 
     this.execute();

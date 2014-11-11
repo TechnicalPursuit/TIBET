@@ -530,6 +530,9 @@ TP.sys.setcfg('path.lib_deps', '~lib/deps');
 TP.sys.setcfg('path.app_dna', '~app_inf/dna');
 TP.sys.setcfg('path.lib_dna', '~lib/dna');
 
+TP.sys.setcfg('path.app_etc', '~app/etc');
+TP.sys.setcfg('path.lib_etc', '~lib/etc');
+
 TP.sys.setcfg('path.app_html', '~app/html');
 TP.sys.setcfg('path.lib_html', '~lib_lib/html');
 

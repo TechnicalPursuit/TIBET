@@ -7,7 +7,7 @@
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview TIBET package/config processing. Routines here provide ways to get
  *     asset listings from TIBET package files and their configurations. This is
- *     a Node.js routine primarily focused on CLI support. The various commands
+ *     a Node.js package primarily focused on CLI support. The various commands
  *     which operate on files such as lint, package, and rollup leverage this
  *     functionality to provide them with project-specific asset lists.
  */

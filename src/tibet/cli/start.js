@@ -157,16 +157,16 @@ Cmd.prototype.execute = function() {
     }
 
     server.stdout.on('data', function(data) {
-        // Why the '' + ?. Apparently to 'copy' the string :)
+        // Why the '' + ?. Copy/convert the string for output.
         var msg = '' + data;
         cmd.log(msg);
     });
 
     server.stderr.on('data', function(data) {
-        // Why the '' + ?. Apparently to 'copy' the string :)
+        // Why the '' + ?. Copy/convert the string for output.
         var msg = '' + data;
 
-        // Somebody down below likes to write error output with empty lines.
+        // Ignore any empty lines.
         if (msg.trim().length === 0) {
             return;
         }

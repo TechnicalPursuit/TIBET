@@ -15,7 +15,7 @@
 
 var sh = require('shelljs');
 var path = require('path');
-var nodeCLI = require('shelljs-nodecli');
+var nodecli = require('shelljs-nodecli');
 var helpers = require('./src/tibet/cli/_make_helpers');
 
 //  ---
@@ -483,7 +483,7 @@ targets.test_cli = function(make) {
     var result;
 
     make.log('starting mocha...');
-    result = nodeCLI.exec('mocha', '--ui bdd', '--reporter dot',
+    result = nodecli.exec('mocha', '--ui bdd', '--reporter dot',
             './test/mocha/cli_test.js');
 
     if (result.code !== 0) {

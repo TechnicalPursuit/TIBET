@@ -10,9 +10,6 @@ var sh = require('shelljs');
 var nodecli = require('shelljs-nodecli');
 var helpers = require('tibet/src/tibet/cli/_make_helpers');
 
-// Uncomment to run node_modules-based utilities via shelljs.
-// var nodeCLI = require('shelljs-nodecli');
-
 // Uncomment to include TIBET's make helper routines for rollups.
 // var helpers = require('tibet/src/tibet/cli/_make_helpers');
 

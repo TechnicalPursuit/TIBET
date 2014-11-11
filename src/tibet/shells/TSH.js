@@ -378,10 +378,7 @@ TP.core.TSH.Inst.defineAttribute('testVerbose', false);
 
 //  the announcement used when a shell of this type starts up
 TP.core.TSH.Inst.defineAttribute('announcement',
-    TP.join('TIBET&#8482; Interactive Web Shell (TP.core.TSH) ',
-            TP.sys.getLibVersion(), '\n',
-            'Copyright (C) 1999, Technical Pursuit Inc, ',
-            'All Rights Reserved. Patents Pending.'));
+    TP.join('TIBET Shell (TSH) ', TP.sys.getLibVersion()));
 
 //  additional information presented when a shell of this type starts up
 TP.core.TSH.Inst.defineAttribute('introduction', null);

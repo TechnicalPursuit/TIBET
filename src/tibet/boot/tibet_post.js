@@ -5799,29 +5799,28 @@ TP.boot.$phantomReporter = function(entry, options) {
 
     switch (level) {
     case TP.boot.TRACE:
-        top.console.log(msg);
+        top.console.log('trace ' + msg);
         break;
     case TP.boot.DEBUG:
-        top.console.log(msg);
+        top.console.log('debug ' + msg);
         break;
     case TP.boot.INFO:
-        top.console.log(msg);
+        top.console.log('info ' + msg);
         break;
     case TP.boot.WARN:
-        top.console.warn(msg);
+        top.console.warn('warn ' + msg);
         break;
     case TP.boot.ERROR:
-        top.console.error(msg);
+        top.console.error('error ' + msg);
         break;
     case TP.boot.SEVERE:
-        top.console.error(msg);
+        top.console.error('severe ' + msg);
         break;
     case TP.boot.FATAL:
-        top.console.error(msg);
+        top.console.error('fatal ' + msg);
         break;
     case TP.boot.SYSTEM:
-        // NOTE: we turn off normal system messaging to quiet it down.
-        //top.console.log(msg);
+        top.console.log('system ' + msg);
         break;
     default:
         top.console.log(msg);

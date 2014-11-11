@@ -12,21 +12,15 @@
  * A script runner specific to loading and executing TIBET Shell commands within
  * the context of PhantomJS. The primary value of this script is that it allows
  * the execution of TIBET commands such as the tsh:test command (which runs unit
- * tests) to be triggered from the command line.
+ * tests) to be triggered from the command line The 'tibet tsh' command is a
+ * wrapper for invoking this script for just such a purpose.
  *
- * Command line arguments currently use position:
- *
- *      phantomjs phantomtsh.js <script> <url>
- *
- * The script argument is the typical one to change and requires quoting to
- * handle any spaces etc. The url argument is available but frankly should
- * rarely if ever be used since a proper launch file is a challenge to
- * configure and the one provided is general enough to handle most cases.
- *
- * For maximum flexibility and to avoid spurious timeout errors this script
+ * For maximum flexibility and to avoid spurious timeout errors this program
  * depends on an 'idle timeout' rather than an 'elapsed time' timeout. As long
  * as the script being run is actively outputting to the console or invoking the
- * phantomjs callback handler it will keep running.
+ * phantomjs callback handler it will keep running without timing out. The
+ * default timeout is 5 seconds. A separate boot timeout is typically set to
+ * the default timeout * 3 or 15 seconds by default.
  */
 
 /*eslint no-eval:0*/
@@ -61,8 +55,19 @@
         yellow: ['\x1B[33m', '\x1B[39m'],   // warning output
         green: ['\x1B[32m', '\x1B[39m'],    // passing/debug output
         magenta: ['\x1B[35m', '\x1B[39m'],  // error, non-fatal
-        red: ['\x1B[31m', '\x1B[39m']       // severe/fatal output
+        red: ['\x1B[31m', '\x1B[39m'],      // severe/fatal output
+        white: ['\x1B[37m', '\x1B[39m'],    // general logging
+        blue: ['\x1B[34m', '\x1B[39m'],     // currently unused
+        cyan: ['\x1B[36m', '\x1B[39m']      // currently unused
     };
+
+    /**
+     * The default logging level. Roughly equivalent to the logging levels from
+     * the TIBET boot system (ALL, TRACE, DEBUG, INFO, WARN, ERROR, SEVERE,
+     * FATAL, SYSTEM) running from 0 to N.
+     * @type {Number}
+     */
+    PhantomTSH.DEFAULT_LEVEL = 5;       // default is ERROR
 
     /**
      * The default boot profile to attempt to load. This can be altered on the
@@ -70,7 +75,7 @@
      * to the form used on a TIBET boot url (e.g. 'development#teamtibet-full').
      * @type {String}
      */
-    PhantomTSH.DEFAULT_PROFILE = 'phantom';
+    PhantomTSH.DEFAULT_PROFILE = '~lib_etc/phantom/phantom';
 
     /**
      * The number of milliseconds without output before execution of the script
@@ -79,12 +84,6 @@
      * @type {Number}
      */
     PhantomTSH.DEFAULT_TIMEOUT = 5000;
-
-    /**
-     * The default TSH command to execute. Value here should be legal TSH.
-     * @type {String}
-     */
-    PhantomTSH.DEFAULT_TSH = ':echo Welcome to TIBET!';
 
     /**
      * The default URL to load. Value here is a TIBET startup page adapted to
@@ -106,18 +105,82 @@
      */
     PhantomTSH.FAILURE = 2;
 
+    /**
+     * The command help string.
+     * @type {String}
+     */
+    PhantomTSH.HELP =
+        'Runs phantomjs to load TIBET and execute a TIBET Shell (TSH) script.\n\n' +
+
+        'Leveraged by other TIBET command-line utilities such as \'tibet tsh\' or\n' +
+        '\'tibet test\' to access TIBET Shell functionality from the command line.\n\n' +
+
+        'Use --script to define the TSH script to run, quoting as needed for your\n' +
+        'particular shell. For example, --script \':echo "Hi"\'\n\n' +
+
+        'You can use --profile to alter the profile used regardless of the boot URL.\n' +
+        'Using a different boot profile is the best way to alter what code TIBET will\n' +
+        'load prior to running your script. The profile value should match the form\n' +
+        'used on a TIBET launch URL: namely a config.xml#id pattern pointing to the\n' +
+        'manifest file and config tag you want to use as your boot profile.\n\n' +
+
+        'You should not normally need to alter the url used to boot TIBET however\n' +
+        'use --url to point to a different boot URL if you find that necessary.\n' +
+        'The URL must point to a valid TIBET-enabled boot file to work properly.\n' +
+        'A good test is trying to load your intended boot URL directly from an HTML5\n' +
+        'browser. If TIBET can boot it into a supported browser from the file system\n' +
+        'it should function properly inside of PhantomJS.\n\n' +
+
+        '--params allows you to provide a URL-encoded string suitable for use as\n' +
+        'a set of parameters for the URL to be used. Examples might be adding a\n' +
+        'logging level by using --params \'boot.level=debug\' as a param string.\n\n' +
+
+        '--timeout allows you to change the default idle timeout from 5 seconds to\n' +
+        'some other value specified in milliseconds (5000 is 5 seconds). Note that\n' +
+        'the timeout is an idle timeout meaning it is reset any time output is sent\n' +
+        'to PhantomJS. There is no maximum amount of time an operation can run but\n' +
+        'output must be sent to PhantomJS within the timeout period.\n\n' +
+
+        'Additional <flags> for this command include:\n' +
+        '\t[--color]   - Colorizes the output in the terminal. [true]\n' +
+        '\t[--errimg]  - Capture PhantomError_{ts}.png onError. [false]\n' +
+        '\t[--tap]     - Specifies test anything protocol format. [false]\n' +
+        '\t[--debug]   - Activates additional debugging output. [false]\n' +
+        '\t[--quiet]   - Silences startup/finish message display. [false]\n' +
+        '\t[--system]  - Activates system-level message display. [false]\n' +
+        '\t[--level]   - Sets the TIBET logging level filter. [ERROR]\n' +
+        '\t[--help]    - Outputs this content along with the usage string.\n' +
+        '\t[--usage]   - Outputs the usage string.\n';
+
+    /**
+     * Logging levels used by --level parameter processing to determine the
+     * proper level to filter message output.
+     * @type {Object}
+     */
+    PhantomTSH.LEVELS = {
+        ALL: 0,
+        TRACE: 1,
+        DEBUG: 2,
+        INFO: 3,
+        WARN: 4,
+        ERROR: 5,
+        SEVERE: 6,
+        FATAL: 7,
+        SYSTEM: 8,
+        OFF: 9
+    };
 
     /**
      * Option list defining command line flag parser options for minimist.
      * @type {Object}
      */
     PhantomTSH.PARSE_OPTIONS = {
-        'boolean': ['color', 'image', 'help', 'usage', 'debug', 'tap'],
+        'boolean': ['color', 'errimg', 'help', 'usage', 'debug', 'tap',
+            'system', 'quiet'],
         'string': ['script', 'url', 'profile', 'params'],
         'number': ['timeout'],
         'default': {
-            color: true,
-            tap: true
+            color: true
         }
     };
 
@@ -127,6 +190,19 @@
      * @type {Number}
      */
     PhantomTSH.SUCCESS = 0;
+
+    /**
+     * A string used when --tap is true so that any output produced which isn't
+     * properly formatted for TAP will be output as an annotated TAP comment.
+     */
+    PhantomTSH.TAP_PREFIX = '# ';
+
+    /**
+     * The command usage string.
+     * @type {String}
+     */
+    PhantomTSH.USAGE = 'phantomjs phantomtsh.js --script <script> ' +
+        '[--url <url>] [--profile <profile>] [--timeout <timeout>] [--help] [<flags>]';
 
 
     //  ---
@@ -154,6 +230,12 @@
     PhantomTSH.lastMessage = null;
 
     /**
+     * The logging level used to filter output coming from the TIBET client.
+     * @type {Number}
+     */
+    PhantomTSH.level = null;
+
+    /**
      * The PhantomJS page object used to manage the PhantomJS interface.
      * @type {Page}
      */
@@ -161,7 +243,6 @@
 
     /**
      * The script text to run. This should be a valid command line for TSH.
-     * Defaults to PhantomTSH.DEFAULT_TSH.
      * @type {String}
      */
     PhantomTSH.script = null;
@@ -223,10 +304,11 @@
     /**
      * Returns the string wrapped in color codes appropriate to the specified
      * color name. The color name must be found in PhantomTSH.COLORS.
-     * @param {String} c
+     * @param {String} string The string to color.
+     * @param {String} color The name of the color to be used.
      * @return {String} The colorized string, if the color is found.
      */
-    PhantomTSH.color = function(color, string) {
+    PhantomTSH.color = function(string, color) {
         var pair;
 
         if (PhantomTSH.argv.color === false) {
@@ -248,18 +330,18 @@
      * @param {String} tshInput The TSH command line to execute.
      */
     PhantomTSH.exec = function(tshInput) {
-        var str,
-            start,
-            interval;
+        var fallback,
+            handler;
 
-        var fallback = TP.hc(
+        fallback = TP.hc(
             'notify', TP.ac(),
             'stdin', TP.ac(),
             'stdout', TP.ac(),
             'stderr', TP.ac());
 
-        var handler = function(aSignal, stdioResults) {
-            var results;
+        handler = function(aSignal, stdioResults) {
+            var results,
+                str;
 
             if (TP.isValid(stdioResults)) {
                 results = stdioResults.copy();
@@ -280,7 +362,7 @@
             try {
                 window.callPhantom(str);
             } catch (e) {
-                console.log(e.message);
+                PhantomTSH.log(e.message, 'red');
                 phantom.exit(1);
             }
         };
@@ -305,28 +387,35 @@
      */
     PhantomTSH.exit = function(reason, code) {
         var status,
+            now,
+            msg,
             color;
-        var now = new Date().getTime();
-        var msg = '# !!! Finished in ' +
-            (now - PhantomTSH.start) + ' ms' +
-            ' w/TSH exec time of ' +
-            (PhantomTSH.startExec ? (now - PhantomTSH.startExec) : 0) + ' ms.';
-
-        if (reason && reason.length) {
-            console.log('# !!! ' + reason);
-        }
 
         status = PhantomTSH.status === null ?
             (code === undefined ? 0 : code) :
             PhantomTSH.status;
 
         if (status === 0) {
-            color = 'gray';
+            color = 'white';
         } else {
             color = 'red';
         }
 
-        console.log(PhantomTSH.color(color, msg));
+        if (reason && reason.length) {
+            PhantomTSH.log(reason, color);
+        }
+
+        if (!PhantomTSH.argv.quiet) {
+            now = new Date().getTime();
+
+            msg = 'Finished in ' +
+                (now - PhantomTSH.start) + ' ms' +
+                ' w/TSH exec time of ' +
+                (PhantomTSH.startExec ? (now - PhantomTSH.startExec) : 0) + ' ms.';
+
+            PhantomTSH.log(msg, 'gray');
+        }
+
         phantom.exit(status);
     };
 
@@ -335,11 +424,88 @@
      * Outputs simple help/usage information.
      */
     PhantomTSH.help = function() {
-        console.log('Usage: phantomjs phantomtsh.js [--script <script>] ' +
-            '[--url <url>] [--timeout <timeout>] [<flags>]\n' +
-            '\nwhere <flags> include:\n' +
-            '\t[--no-color]\n\t[--no-tap]\n\t[--debug]\n\t[--help]\n\t[--usage]\n');
+
+        // For help we output an extra leading blank line prior to usage.
+        console.log('');
+        this.usage(false);
+
+        console.log('\n' + PhantomTSH.HELP);
+
         phantom.exit(0);
+    };
+
+
+    /**
+     * Logs a message, prefixing it as a TAP comment if in TAP mode.
+     * @param {String} message The string to output.
+     * @param {String} color The name of a color to use for output.
+     */
+    PhantomTSH.log = function(message, color) {
+        var level,
+            msg;
+
+        // Determine the level of the message, if any. The parse here depends on
+        // TIBET sending a level as a part of the message output, which is
+        // normally only done by the phantomReporter in the TIBET boot code.
+        if (/^TRACE/i.test(message)) {
+            level = 1;
+        } else if (/^DEBUG/i.test(message)) {
+            level = 2;
+        } else if (/^INFO/i.test(message)) {
+            level = 3;
+        } else if (/^WARN/i.test(message)) {
+            level = 4;
+        } else if (/^ERROR/i.test(message)) {
+            level = 5;
+        } else if (/^SEVERE/i.test(message)) {
+            level = 6;
+        } else if (/^FATAL/i.test(message)) {
+            level = 7;
+        } else if (/^SYSTEM/i.test(message)) {
+
+            if (!PhantomTSH.argv.system) {
+                return;
+            }
+
+            level = 8;
+        }
+
+        // If we have a level verify we should continue processing it.
+        if (level !== void(0) && PhantomTSH.level > level) {
+            return;
+        }
+
+        if (PhantomTSH.argv.tap) {
+            msg = PhantomTSH.TAP_PREFIX + message;
+        } else {
+            msg = '' + message;
+        }
+
+        // If color is explicit we go with that, otherwise we check the content
+        // to see if it matches a typical output format from TIBET itself.
+        if (color !== void(0)) {
+            msg = PhantomTSH.color(msg, color);
+        } else {
+            if (/^TRACE/i.test(msg)) {
+                msg = PhantomTSH.color(msg, 'gray');
+            } else if (/^DEBUG/i.test(msg)) {
+                msg = PhantomTSH.color(msg, 'green');
+            } else if (/^INFO/i.test(msg)) {
+                msg = PhantomTSH.color(msg, 'white');
+            } else if (/^WARN/i.test(msg)) {
+                msg = PhantomTSH.color(msg, 'yellow');
+            } else if (/^ERROR/i.test(msg)) {
+                msg = PhantomTSH.color(msg, 'magenta');
+            } else if (/^(SEVERE|FATAL)/i.test(msg)) {
+                msg = PhantomTSH.color(msg, 'red');
+            } else if (/^SYSTEM/i.test(msg)) {
+                msg = PhantomTSH.color(msg, 'cyan');
+            } else {
+                msg = PhantomTSH.color(msg, 'white');
+            }
+        }
+
+        console.log(msg);
     };
 
 
@@ -350,14 +516,29 @@
      * triggers the page.onCallback hook function.
      */
     PhantomTSH.main = function() {
+        var index;
+        var root;
+        var fragment;
+
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
-        console.log(PhantomTSH.color('gray',
-            '# !!! Starting PhantomJS version: ' +
-                JSON.stringify(phantom.version) + ' at ' +
-                (new Date()).toLocaleString()));
-        console.log(PhantomTSH.color('gray',
-            '# !!! Loading TIBET via ' + PhantomTSH.url + '.'));
+
+        if (!PhantomTSH.argv.quiet) {
+            PhantomTSH.log('Starting PhantomJS ' +
+                    phantom.version.major + '.' +
+                    phantom.version.minor + '.' +
+                    phantom.version.patch +
+                    ' at ' + (new Date()).toLocaleString(),
+                'gray');
+
+            if (PhantomTSH.argv.debug) {
+                index = PhantomTSH.url.indexOf('#');
+                root = PhantomTSH.url.slice(0, index);
+                fragment = PhantomTSH.url.slice(index + 1);
+                PhantomTSH.log(root, 'gray');
+                PhantomTSH.log(fragment, 'gray');
+            }
+        }
 
         //  Flip flags to allow liberal content loading (cross-origin XHR,
         //  'file://' URLs and the like).
@@ -378,8 +559,8 @@
 
         //  Check for page load success
         if (status !== 'success') {
-            PhantomTSH.exit(PhantomTSH.color('red',
-                'Error opening URL: ' + PhantomTSH.url),
+            PhantomTSH.exit(
+                PhantomTSH.color('Error opening URL: ', 'red') + PhantomTSH.url,
                 PhantomTSH.ERROR);
         } else {
             // Wait for TIBET to be available
@@ -407,15 +588,18 @@
                         });
 
                     if (typeof tibetStarted === 'string') {
-                        throw new Error('Stopped: '+ tibetStarted);
+                        throw new Error('Stopped: ' + tibetStarted);
                     }
                     return tibetStarted;
                 },
                 function() {
                     PhantomTSH.startExec = new Date().getTime();
-                    console.log(PhantomTSH.color('gray',
-                        '# !!! TIBET loaded. Starting execution at ' +
-                        (PhantomTSH.startExec - PhantomTSH.start) + ' ms.'));
+
+                    if (!PhantomTSH.argv.quiet) {
+                        PhantomTSH.log('TIBET loaded. Starting execution at ' +
+                            (PhantomTSH.startExec - PhantomTSH.start) + ' ms.',
+                            'gray');
+                    }
 
                     //  It is important for somewhere in the 'tsh' function to
                     //  call PhantomTSH.exit()!
@@ -430,20 +614,36 @@
      * Processes any command line arguments in preparation for execution.
      */
     PhantomTSH.parse = function() {
-        var argv;
+        var argv,
+            level;
 
         argv = minimist(system.args);
         PhantomTSH.argv = argv;
 
-        if (argv.debug) {
-            console.log(JSON.stringify(argv));
-        }
-
-        if (argv.help || argv.usage) {
+        if (argv.help) {
             PhantomTSH.help();
         }
 
-        PhantomTSH.script = argv.script || PhantomTSH.DEFAULT_TSH;
+        if (argv.usage || !argv.script) {
+            PhantomTSH.usage();
+        }
+
+        if (argv.level) {
+            level = PhantomTSH.LEVELS[argv.level.toUpperCase()];
+            if (level !== void(0)) {
+                PhantomTSH.level = level;
+            } else {
+                PhantomTSH.level = PhantomTSH.DEFAULT_LEVEL;
+            }
+        } else {
+            PhantomTSH.level = PhantomTSH.DEFAULT_LEVEL;
+        }
+
+        if (PhantomTSH.argv.debug) {
+            PhantomTSH.log(JSON.stringify(argv));
+        }
+
+        PhantomTSH.script = argv.script;
 
         PhantomTSH.url = argv.url || PhantomTSH.DEFAULT_URL;
         PhantomTSH.url = fs.absolute(PhantomTSH.url);
@@ -465,48 +665,35 @@
     PhantomTSH.tap = function(msg) {
         if (/^#/.test(msg)) {
             // comment
-            console.log(PhantomTSH.color('gray', msg));
+            if (/^# PASS:/.test(msg)) {
+                console.log(PhantomTSH.color(msg, 'green'));
+            } else if (/^# FAIL:/.test(msg)) {
+                console.log(PhantomTSH.color(msg, 'red'));
+            } else {
+                console.log(PhantomTSH.color(msg, 'gray'));
+            }
         } else if (/^not ok/.test(msg)) {
             // bad, but might be todo item...
             if (/# TODO/.test(msg)) {
                 // warning but basically ignored
-                console.log(PhantomTSH.color('yellow', 'not ok') +
+                console.log(PhantomTSH.color('not ok', 'yellow') +
                     msg.slice(6));
             } else {
                 // true error
-                console.log(PhantomTSH.color('red', 'not ok') + msg.slice(6));
+                console.log(PhantomTSH.color('not ok', 'red') + msg.slice(6));
                 PhantomTSH.status = -1;
             }
         } else if (/^ok/.test(msg)) {
             // passed
-            console.log(PhantomTSH.color('green', 'ok') + msg.slice(2));
+            console.log(PhantomTSH.color('ok', 'green') + msg.slice(2));
         } else if (/^bail out!/i.test(msg)) {
             // termination signal
-            console.log(PhantomTSH.color('red', 'Bail out!') + msg.slice(8));
+            console.log(PhantomTSH.color('Bail out!', 'red') + msg.slice(8));
             PhantomTSH.status = -1;
         } else if (/^\d{1}\.\.\d+$/.test(msg)) {
             // the plan
             console.log(msg);
         } else {
-            // incorrect output...must be #, ok, or not ok to start a line.
-            // Check for typical indicators from TIBET logging re: level.
-            if (/TRACE/.test(msg)) {
-                console.log(PhantomTSH.color('gray', '# !!! ' + msg));
-            } else if (/DEBUG/.test(msg)) {
-                console.log(PhantomTSH.color('magenta', '# !!! ' + msg));
-            } else if (/INFO/.test(msg)) {
-                console.log('# !!! ' + msg);
-            } else if (/WARN/.test(msg)) {
-                console.log(PhantomTSH.color('yellow', '# !!! ' + msg));
-            } else if (/ERROR/.test(msg)) {
-                console.log(PhantomTSH.color('magenta', '# !!! ' + msg));
-            } else if (/SEVERE|FATAL/.test(msg)) {
-                console.log(PhantomTSH.color('red', '# !!! ' + msg));
-            } else if (/SYSTEM/.test(msg)) {
-                console.log(PhantomTSH.color('gray', '# !!! ' + msg));
-            } else {
-                console.log('# !!! ' + msg);
-            }
         }
     };
 
@@ -521,12 +708,26 @@
             var now = new Date().getTime();
             if (now - PhantomTSH.lastActivity > PhantomTSH.timeout) {
                 clearInterval(PhantomTSH.timer);
-                PhantomTSH.exit(PhantomTSH.color('red', 'Operation timed out.'),
+                PhantomTSH.exit(PhantomTSH.color('Operation timed out.', 'red'),
                     PhantomTSH.ERROR);
             }
         }, 250);
 
         PhantomTSH.page.evaluate(PhantomTSH.exec, PhantomTSH.script);
+    };
+
+
+    /**
+     * Outputs simple usage information. Used as part of help() or as a
+     * standalone usage output routine.
+     * @param {Boolean} exit If explicitly false don't exit after output.
+     */
+    PhantomTSH.usage = function(exit) {
+        console.log('Usage: ' + PhantomTSH.USAGE);
+
+        if (exit !== false) {
+            phantom.exit(0);
+        }
     };
 
 
@@ -558,12 +759,12 @@
                 } catch (e) {
                     if (/Stopped/.test(e.message)) {
                         PhantomTSH.exit(
-                            PhantomTSH.color('red', e.message),
+                            PhantomTSH.color(e.message, 'red'),
                             PhantomTSH.ERROR);
                     } else {
                         PhantomTSH.exit(
-                            PhantomTSH.color('red',
-                                'Error in ready check: ' + e.message),
+                            PhantomTSH.color('Error in ready check: ' +
+                                e.message, 'red'),
                             PhantomTSH.ERROR);
                     }
                 }
@@ -571,7 +772,7 @@
                 if (!ready) {
                     // Ran out of time...
                     PhantomTSH.exit(
-                        PhantomTSH.color('red', 'Operation timed out.'),
+                        PhantomTSH.color('Operation timed out.', 'red'),
                         PhantomTSH.ERROR);
                 } else {
                     // Ready in time...clear the status check interval and our
@@ -582,8 +783,8 @@
                         onReady();
                     } catch (e) {
                         PhantomTSH.exit(
-                            PhantomTSH.color('red',
-                                'Error in ready function: ' + e.message),
+                            PhantomTSH.color('Error in ready function: ' +
+                                e.message, 'red'),
                             PhantomTSH.ERROR);
                     }
                 }
@@ -609,7 +810,7 @@
         PhantomTSH.lastActivity = new Date().getTime();
 
         if (!data) {
-            PhantomTSH.exit(PhantomTSH.color('yellow', 'Failed: ') +
+            PhantomTSH.exit(PhantomTSH.color('Failed: ', 'yellow') +
                 'No result data.', PhantomTSH.FAILURE);
         }
 
@@ -624,7 +825,7 @@
         if (results.stderr.length > 0) {
             output = results.stderr.length > 1 ? results.stderr.join('\n') :
                 results.stderr[0];
-            PhantomTSH.exit(PhantomTSH.color('yellow', 'Failed: ') +
+            PhantomTSH.exit(PhantomTSH.color('Failed: ', 'yellow') +
                 output && output.trim ? output.trim() : '',
                 PhantomTSH.FAILURE);
         } else if (results.stdout.length > 0) {
@@ -648,12 +849,11 @@
         PhantomTSH.lastActivity = new Date().getTime();
 
         // If we're doing TAP-complaint processing then redirect.
-        if (PhantomTSH.argv.tap === false) {
-            console.log(msg);
-            return;
+        if (PhantomTSH.argv.tap) {
+            PhantomTSH.tap(msg);
+        } else {
+            PhantomTSH.log(msg);
         }
-
-        PhantomTSH.tap(msg);
     };
 
 
@@ -666,8 +866,9 @@
     PhantomTSH.page.onError = function(msg, trace) {
         var str;
 
-        //TODO: do we want to activate this via command-line flag?
-        //PhantomTSH.page.render('Loaded.png');
+        if (PhantomTSH.argv.errimg) {
+            PhantomTSH.page.render('PhantomError_' + (new Date().getTime()) + '.png');
+        }
 
         // Only log errors if the application didn't just do it for us. Usually
         // TIBET will log an error if it can and we don't want duplicate output.

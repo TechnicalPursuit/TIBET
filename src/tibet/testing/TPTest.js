@@ -405,7 +405,7 @@ function(target, options) {
 
     if (TP.notValid(suites)) {
         TP.sys.logTest('0..0');
-        TP.sys.logTest('# PASS: 0 pass, 0 fail, 0 skip, 0 todo, 0 error.');
+        TP.sys.logTest('# PASS: 0 pass, 0 fail, 0 skip, 0 todo, 0 errors.');
         return;
     }
 
@@ -512,7 +512,7 @@ function(target, options) {
             failed + ' fail, ' +
             skipped + ' skip, ' +
             ignored + ' todo, ' +
-            errored + ' error.');
+            errored + ' errors.');
 
         TP.sys.setcfg('test.running', false);
     };
@@ -1126,7 +1126,7 @@ function(options) {
         failed + ' fail, ' +
         skipped + ' skip, ' +
         ignored + ' todo, ' +
-        errored + ' error.', TP.DEBUG);
+        errored + ' errors.', TP.DEBUG);
 
     return this;
 });
@@ -1215,7 +1215,7 @@ function(options) {
 
         TP.sys.logTest('# SKIP - test suite skipped.', TP.DEBUG);
         TP.sys.logTest('# pass: 0 pass, 0 fail, ' +
-            this.get('statistics').at('skipped') + ' skip, 0 todo, 0 error.');
+            this.get('statistics').at('skipped') + ' skip, 0 todo, 0 errors.');
 
         return Q.Promise.resolve();
     }
