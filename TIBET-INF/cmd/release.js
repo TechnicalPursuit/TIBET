@@ -309,7 +309,6 @@ Cmd.prototype.phaseOne = function() {
 
     cmd = 'git fetch --dry-run';
     result = this.shexec(cmd);
-console.log('git fetch: "'+ result.output.slice(0, -1) + '"');
     if ((result.output.slice(0, -1).length > 0) && !this.options.local) {
         throw new Error('Cannot release from out-of-date local branch.');
     }
@@ -537,9 +536,8 @@ Cmd.prototype.phaseTwo = function(source) {
 
         sh.exec(cmd, function(code, output) {
             if (code !== 0) {
-// TODO: uncomment when lint-free and test update is in place.
-                //release.error(output);
-                //return;
+                release.error(output);
+                return;
             }
 
             release.phaseThree({content: content, source: source});
@@ -670,7 +668,7 @@ Cmd.prototype.phaseThree = function(meta) {
 
     //  'Writes out a latest.js file to be used @ technicalpursuit.com\n' +
     latest = meta.content.slice(meta.content.indexOf('release({'),
-       meta.content.indexOf('});') + 3) ;
+       meta.content.indexOf('});') + 3);
     this.info('Update technicalpursuit.com\'s latest.js file with:');
     this.log(latest);
 
