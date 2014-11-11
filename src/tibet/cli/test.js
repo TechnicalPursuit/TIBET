@@ -129,7 +129,7 @@ Cmd.prototype.getProfile = function() {
     }
 
     if (CLI.inProject()) {
-        profile = profile || '~app/test/phantom';
+        profile = profile || '~app_cfg/phantom';
     } else {
         profile = profile || '~lib_etc/phantom/phantom';
     }
