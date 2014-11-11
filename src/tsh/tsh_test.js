@@ -57,13 +57,17 @@ function(aRequest) {
 
     ignore_only = shell.getArgument(aRequest, 'tsh:ignore_only', false);
     ignore_skip = shell.getArgument(aRequest, 'tsh:ignore_skip', false);
+
     suiteName = shell.getArgument(aRequest, 'tsh:suite',
         shell.getArgument(aRequest, 'ARG1'));
+    suiteName = suiteName.unquoted();
+
     options = TP.hc('ignore_only', ignore_only,
         'ignore_skip', ignore_skip,
         'suite', suiteName);
 
     target = shell.getArgument(aRequest, 'ARG0');
+
     if (TP.isEmpty(target)) {
 
         suite.runTargetSuites(null, options).then(
