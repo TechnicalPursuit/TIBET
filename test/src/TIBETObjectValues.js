@@ -517,7 +517,6 @@ function(aRequest) {
         tibetBrowserType,
 
         tpBootAnnotation,
-        tpBootLog,
 
         objTypes;
 

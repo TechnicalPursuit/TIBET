@@ -16,7 +16,6 @@
 'use strict';
 
 var CLI = require('./_cli');
-var beautify = require('js-beautify').js_beautify;
 
 
 //  ---

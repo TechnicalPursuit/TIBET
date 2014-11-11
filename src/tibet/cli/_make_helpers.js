@@ -49,7 +49,6 @@ helpers.rollup = function(make, options) {
     var ext;
     var file;
     var pkg;
-    var zip;
     var config;
     var dir;
     var prefix;

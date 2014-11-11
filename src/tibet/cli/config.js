@@ -186,9 +186,9 @@ Cmd.prototype.setConfig = function(path, value) {
 
         // If the value is potentially a number or boolean we need to convert to
         // that so we don't quote it as a string value.
-        if (value === "true") {
+        if (value === 'true') {
             value = true;
-        } else if (value === "false") {
+        } else if (value === 'false') {
             value = false;
         } else if (!isNaN(parseInt(value, 10))) {
             value = parseInt(value, 10);

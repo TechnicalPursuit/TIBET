@@ -2223,7 +2223,7 @@ function(argList, aLogLevel) {
      * @returns {Boolean} True if the logging operation succeeded.
      * @todo
      */
-
+/*
     var name,
         level,
         iserr,
@@ -2351,6 +2351,7 @@ function(argList, aLogLevel) {
     }
 
     return true;
+*/
 });
 
 //  ============================================================================

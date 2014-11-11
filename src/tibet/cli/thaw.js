@@ -61,7 +61,7 @@ Cmd.prototype.HELP =
 'setting for lib_root to its default value of ~/node_modules/tibet.\n\n' +
 
 'Since it is inherently destructive this command requires --force to\n' +
-'actually run.'
+'actually run.';
 
 
 /**
@@ -84,22 +84,15 @@ Cmd.prototype.execute = function() {
     var path;
     var sh;
 
-    var cmd;
     var err;
     var app_inf;
-    var app_npm;
     var infroot;
-    var libbase;
-    var srcroot;
 
     var json;
     var list;
-    var bundle;
 
     path = require('path');
     sh = require('shelljs');
-
-    cmd = this;
 
     app_inf = CLI.expandPath('~app_inf');
 

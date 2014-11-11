@@ -3673,7 +3673,7 @@ TP.test.Expect.Inst.defineMethod('throw',
 function(errorConstructor, errMsg, comment) {
 
     var expectedErrMsg,
-        theConstructor,
+        TheConstructor,
 
         testObj,
 
@@ -3687,7 +3687,7 @@ function(errorConstructor, errMsg, comment) {
         faultStr;
 
     expectedErrMsg = errMsg;
-    theConstructor = errorConstructor;
+    TheConstructor = errorConstructor;
 
     thrown = false;
     desiredError = null;
@@ -3696,21 +3696,21 @@ function(errorConstructor, errMsg, comment) {
 
     if (arguments.length === 0) {
         expectedErrMsg = null;
-        theConstructor = null;
-    } else if (TP.isRegExp(theConstructor) || TP.isString(theConstructor)) {
-        expectedErrMsg = theConstructor;
-        theConstructor = null;
-    } else if (TP.isError(theConstructor)) {
-        desiredError = theConstructor;
+        TheConstructor = null;
+    } else if (TP.isRegExp(TheConstructor) || TP.isString(TheConstructor)) {
+        expectedErrMsg = TheConstructor;
+        TheConstructor = null;
+    } else if (TP.isError(TheConstructor)) {
+        desiredError = TheConstructor;
         expectedErrMsg = null;
-        theConstructor = null;
-    } else if (TP.isNativeType(theConstructor)) {
-        name = TP.name(theConstructor.prototype) || TP.name(theConstructor);
-        if (name === 'Error' && theConstructor !== Error) {
-            name = TP.name(new theConstructor());
+        TheConstructor = null;
+    } else if (TP.isNativeType(TheConstructor)) {
+        name = TP.name(TheConstructor.prototype) || TP.name(TheConstructor);
+        if (name === 'Error' && TheConstructor !== Error) {
+            name = TP.name(new TheConstructor());
         }
     } else {
-        theConstructor = null;
+        TheConstructor = null;
     }
 
     this.executeChain();
@@ -3731,8 +3731,8 @@ function(errorConstructor, errMsg, comment) {
                                     ' instead of ',
                                     TP.str(err));
             }
-        } else if (TP.isValid(theConstructor)) {
-            retVal = (err instanceof theConstructor);
+        } else if (TP.isValid(TheConstructor)) {
+            retVal = (err instanceof TheConstructor);
             if (!retVal) {
                 faultStr = TP.sc('Expected ', TP.id(testObj),
                                     ' to throw ',

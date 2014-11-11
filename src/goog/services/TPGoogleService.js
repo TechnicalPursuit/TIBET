@@ -129,7 +129,6 @@ function(aRequest) {
      */
 
     var params;
-    var version;
 
     //  All requests to Google are async...
     aRequest.atPut('async', true);

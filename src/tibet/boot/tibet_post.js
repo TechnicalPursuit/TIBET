@@ -7798,7 +7798,9 @@ TP.boot.$getAppHead = function() {
         parts,
         keys,
         key,
-        lib;
+        lib,
+        i,
+        len;
 
     if (TP.boot.$$apphead != null) {
         return TP.boot.$$apphead;
@@ -7901,13 +7903,11 @@ TP.boot.$getLibRoot = function() {
 
     var comp,
         root,
-        file,
         loc,
         test,
         ndx,
         path,
         parts,
-        list,
         scripts,
         i,
         len;
@@ -7978,6 +7978,7 @@ TP.boot.$getLibRoot = function() {
         /* eslint-disable no-fallthrough */
     case 'script':
         void(0);
+        /* falls through */
     default:
         /* eslint-enable no-fallthrough */
 

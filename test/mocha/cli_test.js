@@ -12,6 +12,7 @@
  */
 //  ========================================================================
 
+/* global describe, it */
 var expect = require('chai').expect;
 var CLI = require('tibet/src/tibet/cli/_cli');
 

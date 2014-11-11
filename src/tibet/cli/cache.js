@@ -195,7 +195,6 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
     var line;
 
     var dir;
-    var files;
 
     var libBuilt;
     var libFiles;

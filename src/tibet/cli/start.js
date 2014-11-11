@@ -103,7 +103,7 @@ Cmd.prototype.execute = function() {
     var inuse;  // Flag to trap EADDRINUSE exceptions.
     var msg;    // Shared message content.
     var url;    // Url for file-based launch messaging.
-    var indexpage   // Config parameter for index page.
+    var indexpage;  // Config parameter for index page.
     var index;  // URL to the index page.
 
     cmd = this;
