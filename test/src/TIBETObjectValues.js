@@ -28,8 +28,7 @@ NOTE:	Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 /* JSHint checking */
 
-/* global Window: true,
-          Document: true,
+/* global Document: true,
           HTMLDocument: true,
           XMLDocument: true,
           Attr: true,

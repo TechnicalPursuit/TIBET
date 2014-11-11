@@ -18,8 +18,7 @@
           eqnull:true,
           maxerr:999
 */
-/* global Window:true,
-          $$checked:true,
+/* global $$checked:true,
           $$tibet:true,
           $$getNextWindow:true,
           $$findTIBET:true,
@@ -448,7 +447,7 @@ used only at the boot level for the hook file.
 
 //  For Safari only...
 if (!self.Window) {
-    Window = self.constructor;
+    Window = self.constructor; /* jshint ignore:line */
 }
 
 //  ------------------------------------------------------------------------

@@ -24,9 +24,6 @@ supertype type definitions, while also supporting local specialization.
 
 /* JSHint checking */
 
-/* global Window:false
-*/
-
 /* jshint evil:true,
           newcap:false
 */
