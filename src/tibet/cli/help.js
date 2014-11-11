@@ -168,6 +168,13 @@ Cmd.prototype.execute = function() {
 
     if (CLI.isInitialized() || CLI.inLibrary()) {
         cmds = this.getMakeTargets();
+
+        // Filter to remove any "private" targets the project doesn't want
+        // shown via help.
+        cmds = cmds.filter(function(name) {
+            return name.indexOf('_') !== 0;
+        });
+
         if (cmds.length > 0) {
             this.info('\nmakefile.js targets include:\n');
             this.logCommands(cmds);
