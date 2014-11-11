@@ -60,7 +60,9 @@ function(aRequest) {
 
     suiteName = shell.getArgument(aRequest, 'tsh:suite',
         shell.getArgument(aRequest, 'ARG1'));
-    suiteName = suiteName.unquoted();
+    if (TP.notEmpty(suiteName)) {
+        suiteName = suiteName.unquoted();
+    }
 
     options = TP.hc('ignore_only', ignore_only,
         'ignore_skip', ignore_skip,
