@@ -262,6 +262,7 @@ TP.hc(
         return typeof(anObj) !== 'string' &&
                 anObj.length !== undefined &&
                 anObj.item !== undefined &&
+                anObj.nodeType === undefined &&
                 anObj.cssText === undefined;
     }
 ));
