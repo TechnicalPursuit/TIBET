@@ -688,24 +688,24 @@ Object.Type.defineMethod('preventExtensions', Object.preventExtensions);
 Object.Type.defineMethod('seal', Object.seal);
 
 //  We don't expose an 'Object.Inst', but we need to register these methods...
-TP.defineMethod(TP.ObjectProto, 'hasOwnProperty',
-                TP.ObjectProto.hasOwnProperty, TP.INST_TRACK,
-                false, 'Object.Inst.hasOwnProperty', Object);
-TP.defineMethod(TP.ObjectProto, 'isPrototypeOf',
-                TP.ObjectProto.isPrototypeOf, TP.INST_TRACK,
-                false, 'Object.Inst.isPrototypeOf', Object);
-TP.defineMethod(TP.ObjectProto, 'propertyIsEnumerable',
-                TP.ObjectProto.propertyIsEnumerable, TP.INST_TRACK,
-                false, 'Object.Inst.propertIsEnumerable', Object);
-TP.defineMethod(TP.ObjectProto, 'toLocaleString',
-                TP.ObjectProto.toLocaleString, TP.INST_TRACK,
-                false, 'Object.Inst.toLocaleString', Object);
-TP.defineMethod(TP.ObjectProto, 'toString',
-                TP.ObjectProto.toString, TP.INST_TRACK,
-                false, 'Object.Inst.toString', Object);
-TP.defineMethod(TP.ObjectProto, 'valueOf',
-                TP.ObjectProto.valueOf, TP.INST_TRACK,
-                false, 'Object.Inst.valueOf', Object);
+TP.defineMethodSlot(TP.ObjectProto, 'hasOwnProperty',
+                    TP.ObjectProto.hasOwnProperty, TP.INST_TRACK,
+                    false, 'Object.Inst.hasOwnProperty', Object);
+TP.defineMethodSlot(TP.ObjectProto, 'isPrototypeOf',
+                    TP.ObjectProto.isPrototypeOf, TP.INST_TRACK,
+                    false, 'Object.Inst.isPrototypeOf', Object);
+TP.defineMethodSlot(TP.ObjectProto, 'propertyIsEnumerable',
+                    TP.ObjectProto.propertyIsEnumerable, TP.INST_TRACK,
+                    false, 'Object.Inst.propertIsEnumerable', Object);
+TP.defineMethodSlot(TP.ObjectProto, 'toLocaleString',
+                    TP.ObjectProto.toLocaleString, TP.INST_TRACK,
+                    false, 'Object.Inst.toLocaleString', Object);
+TP.defineMethodSlot(TP.ObjectProto, 'toString',
+                    TP.ObjectProto.toString, TP.INST_TRACK,
+                    false, 'Object.Inst.toString', Object);
+TP.defineMethodSlot(TP.ObjectProto, 'valueOf',
+                    TP.ObjectProto.valueOf, TP.INST_TRACK,
+                    false, 'Object.Inst.valueOf', Object);
 
 RegExp.Inst.defineMethod('exec', TP.RegExpProto.exec);
 RegExp.Inst.defineMethod('test', TP.RegExpProto.test);

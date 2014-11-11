@@ -105,7 +105,7 @@ APP[TP.NAME] = 'APP';
 
 //  -----------------------------------------------------------------------
 //  Preliminary bootstrap methods required by TP.defineSlot() and
-//  TP.defineMethod()
+//  TP.defineMethodSlot()
 //  -----------------------------------------------------------------------
 
 //  Needed during boot
@@ -695,7 +695,7 @@ if (!TP.sys.constructOID) {
 //  Manual setup
 TP.sys.constructOID[TP.NAME] = 'constructOID';
 TP.sys.constructOID[TP.OWNER] = TP.sys;
-TP.sys.constructOID[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.sys.constructOID[TP.TRACK] = TP.LOCAL_TRACK;
 TP.sys.constructOID[TP.DISPLAY] = 'TP.sys.constructOID';
 TP.sys.constructOID[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
@@ -1817,7 +1817,7 @@ TP.objectGetMetadataName = function(anObject) {
 //  Manual method registration.
 TP.objectGetMetadataName[TP.NAME] = 'objectGetMetadataName';
 TP.objectGetMetadataName[TP.OWNER] = TP.sys;
-TP.objectGetMetadataName[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.objectGetMetadataName[TP.TRACK] = TP.LOCAL_TRACK;
 TP.objectGetMetadataName[TP.DISPLAY] = 'TP.objectGetMetadataName';
 TP.objectGetMetadataName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
@@ -1996,7 +1996,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 //  Manual method registration.
 TP.sys.addMetadata[TP.NAME] = 'addMetadata';
 TP.sys.addMetadata[TP.OWNER] = TP.sys;
-TP.sys.addMetadata[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.sys.addMetadata[TP.TRACK] = TP.LOCAL_TRACK;
 TP.sys.addMetadata[TP.DISPLAY] = 'TP.sys.addMetadata';
 TP.sys.addMetadata[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
@@ -2089,10 +2089,10 @@ TP.defineSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod = function(target, name, value, track, desc, display, owner) {
+TP.defineMethodSlot = function(target, name, value, track, desc, display, owner) {
 
     /**
-     * @name defineMethod
+     * @name defineMethodSlot
      * @synopsis Defines a method, tracking all necessary metadata.
      * @param {Object} target The target object.
      * @param {String} name The method name.
@@ -2117,7 +2117,7 @@ TP.defineMethod = function(target, name, value, track, desc, display, owner) {
     if (!TP.isCallable(value) || !TP.isCallable(value.asMethod)) {
         TP.ifError() ?
             TP.error('Invalid method body for ' +
-                        'TP.defineMethod: ' + name,
+                        'TP.defineMethodSlot: ' + name,
                         TP.LOG) : 0;
         return;
     }
@@ -2219,11 +2219,11 @@ TP.defineMethod = function(target, name, value, track, desc, display, owner) {
 };
 
 //  Manual method registration.
-TP.defineMethod[TP.NAME] = 'defineMethod';
-TP.defineMethod[TP.OWNER] = TP;
-TP.defineMethod[TP.TRACK] = TP.PRIMITIVE_TRACK;
-TP.defineMethod[TP.DISPLAY] = 'TP.defineMethod';
-TP.defineMethod[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
+TP.defineMethodSlot[TP.NAME] = 'defineMethodSlot';
+TP.defineMethodSlot[TP.OWNER] = TP;
+TP.defineMethodSlot[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.defineMethodSlot[TP.DISPLAY] = 'TP.defineMethodSlot';
+TP.defineMethodSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
 //  ------------------------------------------------------------------------
 
@@ -2253,16 +2253,16 @@ TP.sys.addMetadata(TP, TP.objectSetLoadNode, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(Function, TP.FunctionProto.asMethod,
                     TP.METHOD, TP.INST_TRACK);
 TP.sys.addMetadata(String, TP.StringProto.strip, TP.METHOD, TP.INST_TRACK);
-TP.sys.addMetadata(TP.sys, TP.sys.constructOID, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP.sys, TP.sys.constructOID, TP.METHOD, TP.LOCAL_TRACK);
 TP.sys.addMetadata(TP, TP.getFunctionName, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(Function, TP.FunctionProto.$getName,
                     TP.METHOD, TP.INST_TRACK);
 TP.sys.addMetadata(TP, TP.objectGetMetadataName, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.PRIMITIVE_TRACK);
+TP.sys.addMetadata(TP.sys, TP.sys.addMetadata, TP.METHOD, TP.LOCAL_TRACK);
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP, 'definePrimitive',
+TP.defineMethodSlot(TP, 'definePrimitive',
 function(name, bodyOrConditionals, desc, display, owner) {
 
     /**
@@ -2335,7 +2335,7 @@ function(name, bodyOrConditionals, desc, display, owner) {
         method = bodyOrConditionals;
     }
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             TP, name, method, TP.PRIMITIVE_TRACK, desc, display, owner);
 
 }, TP.PRIMITIVE_TRACK, null, 'TP.definePrimitive');
@@ -3090,7 +3090,7 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.sys, 'shouldLogCodeChanges',
+TP.defineMethodSlot(TP.sys, 'shouldLogCodeChanges',
 function(aFlag, shouldSignal) {
 
     /**
@@ -3117,11 +3117,11 @@ function(aFlag, shouldSignal) {
     }
 
     return TP.sys.cfg('log.code_changes');
-}, TP.PRIMITIVE_TRACK, null, 'TP.sys.shouldLogCodeChanges');
+}, TP.LOCAL_TRACK, null, 'TP.sys.shouldLogCodeChanges');
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.sys, '$$shouldConstructDNUs',
+TP.defineMethodSlot(TP.sys, '$$shouldConstructDNUs',
 function(aFlag, shouldSignal) {
 
     /**
@@ -3149,7 +3149,7 @@ function(aFlag, shouldSignal) {
     }
 
     return TP.sys.cfg('tibet.$$construct_dnus');
-}, TP.PRIMITIVE_TRACK, null, 'TP.sys.$$shouldConstructDNUs');
+}, TP.LOCAL_TRACK, null, 'TP.sys.$$shouldConstructDNUs');
 
 //  -----------------------------------------------------------------------
 //  Native Types - PROPERTY CREATION SUPPORT
@@ -3199,7 +3199,7 @@ NativeTypeStub.prototype.defineAttribute =
      * @returns {Object} The newly defined attribute value.
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             this.$$target, attributeName, attributeValue,
             TP.TYPE_TRACK, this[TP.OWNER]);
 };
@@ -3218,7 +3218,7 @@ NativeTypeStub.prototype.defineConstant =
      * @returns {Object} The newly defined constant value.
      */
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
             this.$$target, constantName, constantValue,
             TP.TYPE_TRACK, this[TP.OWNER]);
 };
@@ -3239,7 +3239,7 @@ NativeTypeStub.prototype.defineMethod =
      * @returns {Object} The receiver.
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             this.$$target, methodName, methodBody, TP.TYPE_TRACK,
             desc, null, this[TP.OWNER]);
 };
@@ -3472,7 +3472,7 @@ NativeInstStub.prototype.defineAttribute =
      * @returns {Object} The newly defined attribute value.
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             this.$$target, attributeName, attributeValue,
             TP.INST_TRACK, this[TP.OWNER]);
 };
@@ -3491,7 +3491,7 @@ NativeInstStub.prototype.defineConstant =
      * @returns {Object} The newly defined constant value.
      */
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
             this.$$target, constantName, constantValue,
             TP.INST_TRACK, this[TP.OWNER]);
 };
@@ -3513,7 +3513,7 @@ NativeInstStub.prototype.defineMethod =
      * @returns {Object} The receiver.
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             this.$$target, methodName, methodBody, TP.INST_TRACK,
             desc, null, this[TP.OWNER]);
 };
@@ -3719,7 +3719,7 @@ Window.Inst[TP.OWNER] = Window;
 //  Native Type Extensions
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.FunctionProto, '$constructPrototype',
+TP.defineMethodSlot(TP.FunctionProto, '$constructPrototype',
 function() {
 
     /**
@@ -3853,7 +3853,7 @@ function(methodName, methodBody) {
 
     var method;
 
-    method = TP.defineMethod(
+    method = TP.defineMethodSlot(
             TP.global, methodName, methodBody,
             TP.GLOBAL_TRACK, null, 'TP.global.' + methodName);
 
@@ -3903,7 +3903,7 @@ function(methodName, methodBody) {
                 continue;
         }
 
-        TP.defineMethod(
+        TP.defineMethodSlot(
                 target,
                 methodName,
                 methodBody,
@@ -3957,7 +3957,7 @@ function(methodName, methodBody) {
                 continue;
         }
 
-        TP.defineMethod(
+        TP.defineMethodSlot(
                 target,
                 methodName,
                 methodBody,
@@ -3983,7 +3983,7 @@ function(methodName, methodBody) {
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
         } else {
-            TP.defineMethod(
+            TP.defineMethodSlot(
                     target,
                     methodName,
                     methodBody,
@@ -4002,7 +4002,7 @@ function(methodName, methodBody) {
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
         } else {
-            TP.defineMethod(
+            TP.defineMethodSlot(
                     target,
                     methodName,
                     methodBody,
@@ -4059,7 +4059,7 @@ function(methodName, methodBody) {
                 continue;
         }
 
-        TP.defineMethod(
+        TP.defineMethodSlot(
                     target,
                     methodName,
                     methodBody,
@@ -4076,7 +4076,7 @@ function(methodName, methodBody) {
         //  Empty block
     } else {
 
-        TP.defineMethod(
+        TP.defineMethodSlot(
                     target,
                     methodName,
                     methodBody,
@@ -4091,11 +4091,11 @@ function(methodName, methodBody) {
 
 //  -----------------------------------------------------------------------
 
-TP.definePrimitive('defineAttribute',
+TP.definePrimitive('defineAttributeSlot',
 function(target, name, value, track, owner) {
 
     /**
-     * @name defineAttribute
+     * @name defineAttributeSlot
      * @synopsis Defines an attribute, tracking all necessary metadata.
      * @description Note that the 'value' property can either take an initial
      *     object value or a property descriptor. That property descriptor can
@@ -4164,15 +4164,15 @@ function(target, name, value, track, owner) {
     }
 
     return attribute;
-}, false, 'TP.defineAttribute');
+}, false, 'TP.defineAttributeSlot');
 
 //  -----------------------------------------------------------------------
 
-TP.definePrimitive('defineConstant',
+TP.definePrimitive('defineConstantSlot',
 function(target, name, value, track, owner) {
 
     /**
-     * @name defineConstant
+     * @name defineConstantSlot
      * @synopsis Defines a constant , tracking all necessary metadata.
      * @param {Object} target The target object.
      * @param {String} name The constant name.
@@ -4230,7 +4230,7 @@ function(target, name, value, track, owner) {
 
     return constant;
 
-}, false, 'TP.defineConstant');
+}, false, 'TP.defineConstantSlot');
 
 //  ------------------------------------------------------------------------
 
@@ -4713,10 +4713,10 @@ function(anID) {
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
-//  TP.sys Methods
+//  TP Methods
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.sys, 'defineAttribute',
+TP.defineMethodSlot(TP, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -4731,13 +4731,32 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    return TP.defineAttribute(
-            TP.sys, attributeName, attributeValue, TP.LOCAL_TRACK);
+    return TP.defineAttributeSlot(
+            TP, attributeName, attributeValue, TP.LOCAL_TRACK);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.sys, 'defineMethod',
+TP.defineMethodSlot(TP, 'defineConstant',
+function(constantName, constantValue) {
+
+    /**
+     * @name defineConstant
+     * @synopsis Adds the constant with name and value provided as a 'local'
+     *     constant.
+     * @param {String} constantName The constant name.
+     * @param {Object} constantValue The constant value or a property descriptor
+     *     object.
+     * @returns {Object} The newly defined constant value.
+     */
+
+    return TP.defineConstantSlot(
+            TP, constantName, constantValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(TP, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
@@ -4757,7 +4776,141 @@ function(methodName, methodBody, desc, display) {
      * @todo
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
+            TP, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod('describe',
+function(suiteName, suiteFunc) {
+
+    /**
+     * @name describe
+     * @synopsis Adds a new test suite definition to an object. When the suite
+     *     name matches a method name that suite is automatically associated
+     *     with the specific method.
+     * @param {String} suiteName The name of the new test suite. Should be
+     *     unique to the particular receiver. If this matches a method name the
+     *     suite is associated with that method.
+     * @param {Function} suiteFunc The function representing the test suite.
+     *     Should contain at least one call to 'this.it', the test case
+     *     definition method on TP.test.Suite.
+     */
+
+    return TP.test.Suite.addSuite(this, suiteName, suiteFunc);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod('getTestFixture',
+function(options) {
+
+    /**
+     * Creates and returns test fixture data suitable for the receiver. This
+     * method is used to produce "the object under test" for test cases that
+     * target the receiver. The default is the receiver itself.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {Object} A test fixture for the receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod('getTestSuites',
+function(options) {
+
+    /**
+     * Returns the dictionary containing test suites for the receiver.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {TP.lang.Hash} A hash keyed by the receiver's ID.
+     */
+
+    return TP.test.Suite.getTargetSuites(this, options);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethod('runTestSuites',
+function(options) {
+
+    /**
+     * Runs the test suites associated with the receiver. Options which help
+     * configure and control the testing process can be provided.
+     * @param {TP.lang.Hash} options A dictionary of test options.
+     * @return {Promise} A Promise to be used as necessary.
+     */
+
+    return TP.test.Suite.runTargetSuites(this, options);
+});
+
+//  ------------------------------------------------------------------------
+//  TP.sys Methods
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(TP.sys, 'defineAttribute',
+function(attributeName, attributeValue) {
+
+    /**
+     * @name defineAttribute
+     * @synopsis Adds/defines a new local attribute for the receiver. The
+     *     attribute gets a default value if provided. In the current release
+     *     the other three parameters are ignored.
+     * @param {String} attributeName The attribute name.
+     * @param {Object} attributeValue The attribute value or a property
+     *     descriptor object.
+     * @returns {Object} The newly defined attribute value.
+     * @todo
+     */
+
+    return TP.defineAttributeSlot(
+            TP.sys, attributeName, attributeValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(TP.sys, 'defineConstant',
+function(constantName, constantValue) {
+
+    /**
+     * @name defineConstant
+     * @synopsis Adds the constant with name and value provided as a 'local'
+     *     constant.
+     * @param {String} constantName The constant name.
+     * @param {Object} constantValue The constant value or a property descriptor
+     *     object.
+     * @returns {Object} The newly defined constant value.
+     */
+
+    return TP.defineConstantSlot(
+            TP.sys, constantName, constantValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(TP.sys, 'defineMethod',
+function(methodName, methodBody, desc, display) {
+
+    /**
+     * @name defineMethod
+     * @synopsis Adds the method with name and body provided as a local method.
+     *     Local methods are directly methods on the receiving instance. These
+     *     methods differ from 'instance' methods in that the behavior is NOT
+     *     inherited unless the owner object happens to serve as a prototype.
+     * @param {String} methodName The name of the new method.
+     * @param {Function} methodBody The actual method implementation.
+     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
+     *     is supplied here, it is ignored in favor of the methodBody parameter
+     *     to this method.
+     * @param {String} display Optional string defining the public display name
+     *     for the function.
+     * @returns {Function} The newly defined method.
+     * @todo
+     */
+
+    return TP.defineMethodSlot(
             TP.sys, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
 });
 
@@ -4765,7 +4918,7 @@ function(methodName, methodBody, desc, display) {
 //  TP.boot Methods
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.boot, 'defineAttribute',
+TP.defineMethodSlot(TP.boot, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -4780,13 +4933,32 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             TP.boot, attributeName, attributeValue, TP.LOCAL_TRACK);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.boot, 'defineMethod',
+TP.defineMethodSlot(TP.boot, 'defineConstant',
+function(constantName, constantValue) {
+
+    /**
+     * @name defineConstant
+     * @synopsis Adds the constant with name and value provided as a 'local'
+     *     constant.
+     * @param {String} constantName The constant name.
+     * @param {Object} constantValue The constant value or a property descriptor
+     *     object.
+     * @returns {Object} The newly defined constant value.
+     */
+
+    return TP.defineConstantSlot(
+            TP.boot, constantName, constantValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(TP.boot, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
@@ -4806,7 +4978,7 @@ function(methodName, methodBody, desc, display) {
      * @todo
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             TP.boot, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
 });
 
@@ -4814,7 +4986,7 @@ function(methodName, methodBody, desc, display) {
 //  APP Methods
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(APP, 'defineAttribute',
+TP.defineMethodSlot(APP, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -4829,13 +5001,32 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             APP, attributeName, attributeValue, TP.LOCAL_TRACK);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(APP, 'defineMethod',
+TP.defineMethodSlot(APP, 'defineConstant',
+function(constantName, constantValue) {
+
+    /**
+     * @name defineConstant
+     * @synopsis Adds the constant with name and value provided as a 'local'
+     *     constant.
+     * @param {String} constantName The constant name.
+     * @param {Object} constantValue The constant value or a property descriptor
+     *     object.
+     * @returns {Object} The newly defined constant value.
+     */
+
+    return TP.defineConstantSlot(
+            APP, constantName, constantValue, TP.LOCAL_TRACK);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMethodSlot(APP, 'defineMethod',
 function(methodName, methodBody, desc, display) {
 
     /**
@@ -4855,7 +5046,7 @@ function(methodName, methodBody, desc, display) {
      * @todo
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             APP, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
 });
 
@@ -4912,7 +5103,7 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             this, attributeName, attributeValue, TP.LOCAL_TRACK, this);
 });
 
@@ -4932,7 +5123,7 @@ function(constantName, constantValue) {
      * @returns {Object} The newly defined constant value.
      */
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
             this, constantName, constantValue, TP.LOCAL_TRACK, this);
 });
 
@@ -4955,13 +5146,13 @@ function(methodName, methodBody, desc) {
      * @todo
      */
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             this, methodName, methodBody, TP.LOCAL_TRACK, desc, null, this);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.FunctionProto, 'defineAttribute',
+TP.defineMethodSlot(TP.FunctionProto, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -5002,13 +5193,13 @@ function(attributeName, attributeValue) {
         track = TP.LOCAL_TRACK;
     }
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
             target, attributeName, attributeValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineAttribute');
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.FunctionProto, 'defineConstant',
+TP.defineMethodSlot(TP.FunctionProto, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
@@ -5049,13 +5240,13 @@ function(constantName, constantValue) {
         track = TP.LOCAL_TRACK;
     }
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
             target, constantName, constantValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineConstant');
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.FunctionProto, 'defineMethod',
+TP.defineMethodSlot(TP.FunctionProto, 'defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
@@ -5098,7 +5289,7 @@ function(methodName, methodBody, desc) {
         track = TP.LOCAL_TRACK;
     }
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             target, methodName, methodBody, track, desc, null, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineMethod');
 
@@ -5106,7 +5297,7 @@ function(methodName, methodBody, desc) {
 //  TP.lang.RootObject - TYPE DEFINITION
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Type, 'defineAttribute',
+TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -5131,13 +5322,13 @@ function(attributeName, attributeValue) {
         owner = this;
     }
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
                 this, attributeName, attributeValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineAttribute');
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Type, 'defineConstant',
+TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
@@ -5162,13 +5353,13 @@ function(constantName, constantValue) {
         owner = this;
     }
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
                 this, constantName, constantValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineConstant');
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Type, 'defineMethod',
+TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
@@ -5199,13 +5390,13 @@ function(methodName, methodBody, desc) {
         owner = this;
     }
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
                 this, methodName, methodBody, track, desc, null, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineMethod');
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Inst, 'defineAttribute',
+TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineAttribute',
 function(attributeName, attributeValue) {
 
     /**
@@ -5230,13 +5421,13 @@ function(attributeName, attributeValue) {
         owner = this;
     }
 
-    return TP.defineAttribute(
+    return TP.defineAttributeSlot(
                 this, attributeName, attributeValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineAttribute');
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Inst, 'defineConstant',
+TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineConstant',
 function(constantName, constantValue) {
 
     /**
@@ -5260,13 +5451,13 @@ function(constantName, constantValue) {
         owner = this;
     }
 
-    return TP.defineConstant(
+    return TP.defineConstantSlot(
                 this, constantName, constantValue, track, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineConstant');
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethod(TP.lang.RootObject.Inst, 'defineMethod',
+TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineMethod',
 function(methodName, methodBody, desc) {
 
     /**
@@ -5297,7 +5488,7 @@ function(methodName, methodBody, desc) {
         owner = this;
     }
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
                 this, methodName, methodBody, track, desc, null, owner);
 
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineMethod');
@@ -5340,7 +5531,7 @@ Window.Type.defineMethod = function(methodName, methodBody, desc) {
 
     var display = 'Window.Type.' + methodName;
 
-    return TP.defineMethod(
+    return TP.defineMethodSlot(
             Window, methodName, methodBody, TP.TYPE_TRACK, desc, display);
 };
 

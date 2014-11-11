@@ -2711,7 +2711,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('failJob',
-function(aFaultCode, aFaultString) {
+function(aFaultCode, aFaultString, aFaultStack) {
 
     /**
      * @name failJob
@@ -2720,6 +2720,9 @@ function(aFaultCode, aFaultString) {
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
      * @param {String} aFaultString A string description of the fault.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.sig.Request} The receiver.
      * @todo
      */

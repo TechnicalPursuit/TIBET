@@ -1777,13 +1777,16 @@ TP.test.Case.Inst.defineAttribute('$internalExpect');
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('errorJob',
-function(aFaultCode, aFaultString) {
+function(aFaultCode, aFaultString, aFaultStack) {
 
     /**
      * Internal method for handling errors thrown by test functions.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
      * @param {String} aFaultString A string description of the fault.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      */
 
     //  NOTE that even though we had an error we still resolve, not reject. This
@@ -1792,8 +1795,14 @@ function(aFaultCode, aFaultString) {
 
     this.set('msend', Date.now());
 
-    TP.sys.logTest('not ok - ' + this.getCaseName() + ' error' +
-        (aFaultString ? ': ' + aFaultString : '') + '.');
+    if (TP.isValid(aFaultStack)) {
+        TP.sys.logTest('not ok - ' + this.getCaseName() + ' error' +
+            (aFaultString ? ': ' + aFaultString : '') + '.\n' +
+            aFaultStack.join('\n'));
+    } else {
+        TP.sys.logTest('not ok - ' + this.getCaseName() + ' error' +
+            (aFaultString ? ': ' + aFaultString : '') + '.');
+    }
 
     return this;
 });
@@ -1826,13 +1835,16 @@ function(anObj) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('failJob',
-function(aFaultCode, aFaultString) {
+function(aFaultCode, aFaultString, aFaultStack) {
 
     /**
      * Internal method for handling notifications of test failures.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
      * @param {String} aFaultString A string description of the fault.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      */
 
     var msg;
@@ -1844,8 +1856,14 @@ function(aFaultCode, aFaultString) {
 
     this.set('msend', Date.now());
 
-    msg = 'not ok - ' + this.getCaseName() +
-        (aFaultString ? ': ' + aFaultString : '') + '.';
+    if (TP.isValid(aFaultStack)) {
+        msg = 'not ok - ' + this.getCaseName() +
+            (aFaultString ? ': ' + aFaultString : '') + '.\n' +
+            aFaultStack.join('\n');
+    } else {
+        msg = 'not ok - ' + this.getCaseName() +
+            (aFaultString ? ': ' + aFaultString : '') + '.';
+    }
 
     if (this.isTodo()) {
         msg += ' # TODO ';

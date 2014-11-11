@@ -612,6 +612,10 @@ function(mouseLocation, mouseButton) {
     } else if (TP.isElement(mouseLocation)) {
         //  Otherwise, if an Element has been supplied, use that.
         target = mouseLocation;
+    } else if (TP.isKindOf(mouseLocation, TP.core.ElementNode)) {
+        //  Otherwise, if a TP.core.ElementNode has been supplied, unwrap and use
+        //  that.
+        target = TP.unwrap(mouseLocation);
     } else if (mouseLocation.isAccessPath()) {
         //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
         //  used to determine the target element.
@@ -742,6 +746,10 @@ function(mouseLocation, mouseButton) {
     } else if (TP.isElement(mouseLocation)) {
         //  Otherwise, if an Element has been supplied, use that.
         target = mouseLocation;
+    } else if (TP.isKindOf(mouseLocation, TP.core.ElementNode)) {
+        //  Otherwise, if a TP.core.ElementNode has been supplied, unwrap and use
+        //  that.
+        target = TP.unwrap(mouseLocation);
     } else if (mouseLocation.isAccessPath()) {
         //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
         //  used to determine the target element.
@@ -836,8 +844,10 @@ function(entries) {
 
         targets = entry.at(1);
 
-        if (TP.isElement(targets)) {
-            //  The target is already an element
+        if (TP.isNode(targets)) {
+            //  The target is already a Node
+        } else if (TP.isKindOf(targets, TP.core.Node)) {
+            targets = TP.unwrap(targets);
         } else if (targets.isAccessPath()) {
             targets = targets.executeGet(driver.getCurrentNativeDocument());
         }
@@ -848,7 +858,7 @@ function(entries) {
                     newEntries.push(TP.ac(entry.at(0), aTarget, entry.at(2)));
                 });
         } else {
-            newEntries.push(entry);
+            newEntries.push(TP.ac(entry.at(0), targets, entry.at(2)));
         }
     }
 
@@ -985,6 +995,10 @@ function(mouseLocation, mouseButton) {
     } else if (TP.isElement(mouseLocation)) {
         //  Otherwise, if an Element has been supplied, use that.
         target = mouseLocation;
+    } else if (TP.isKindOf(mouseLocation, TP.core.ElementNode)) {
+        //  Otherwise, if a TP.core.ElementNode has been supplied, unwrap and use
+        //  that.
+        target = TP.unwrap(mouseLocation);
     } else if (mouseLocation.isAccessPath()) {
         //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
         //  used to determine the target element.
@@ -1080,6 +1094,10 @@ function(mouseLocation, mouseButton) {
     } else if (TP.isElement(mouseLocation)) {
         //  Otherwise, if an Element has been supplied, use that.
         target = mouseLocation;
+    } else if (TP.isKindOf(mouseLocation, TP.core.ElementNode)) {
+        //  Otherwise, if a TP.core.ElementNode has been supplied, unwrap and use
+        //  that.
+        target = TP.unwrap(mouseLocation);
     } else if (mouseLocation.isAccessPath()) {
         //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
         //  used to determine the target element.
@@ -1243,7 +1261,7 @@ function(target, type, args, callback, currentElement) {
         syn,
 
         finalTarget,
-        
+
         doc,
         newEvent;
 

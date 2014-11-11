@@ -5060,6 +5060,12 @@ function(anObject) {
         return;
     }
 
+    if (TP.isString(anObject) ||
+        TP.isNumber(anObject) ||
+        TP.isBoolean(anObject)) {
+        return anObject;
+    }
+
     if (TP.isNodeList(anObject)) {
         return anObject[0];
     }
@@ -5184,6 +5190,63 @@ function(aPath) {
     //  Additionally, we're now out of things to check, so we just punt to
     //  this type.
     return TP.CSS_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getPointerScheme',
+function(aPath) {
+
+    /**
+     * @name getPointerScheme
+     * @synopsis Returns the 'pointer scheme' given a path.
+     * @description Depending on the type of path supplied, this method will
+     *     return the proper 'scheme' to be used in an XPointer. These are the
+     *     current return values:
+     *
+     *     TP.TIBET_PATH_TYPE               ->      'tibet'
+     *     TP.CSS_PATH_TYPE                 ->      'css'
+     *     TP.XPATH_PATH_TYPE               ->      'xpath1'
+     *     TP.XPOINTER_PATH_TYPE            ->      'xpointer'
+     *     TP.XTENSION_POINTER_PATH_TYPE    ->      'css'
+     *     TP.BARENAME_PATH_TYPE            ->      ''
+     *
+     *     Note that if the path consists only of word characters that a value
+     *     of 'tibet' will be returned.
+     * @param {String} aPath The path to return the scheme of.
+     * @returns {String} An XPointer scheme depending on path type.
+     */
+
+    var pathType;
+
+    //  Need at least a path to test.
+    if (TP.isEmpty(aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidPath',
+                        'Unable to get type of empty path.');
+    }
+
+    //  The default, if the path only contains word characters, is 'tibet'.
+    if (TP.regex.ONLY_WORD.test(aPath)) {
+        return 'tibet';
+    }
+
+    pathType = TP.getPathType(aPath);
+
+    switch(pathType) {
+        case TP.TIBET_PATH_TYPE:
+            return 'tibet';
+        case TP.CSS_PATH_TYPE:
+        case TP.XTENSION_POINTER_PATH_TYPE:
+            return 'css';
+        case TP.XPATH_PATH_TYPE:
+            return 'xpath1';
+        case TP.XPOINTER_PATH_TYPE:
+            return 'xpointer';
+        case TP.BARENAME_PATH_TYPE:
+            return '';
+    }
+
+    return '';
 });
 
 //  ------------------------------------------------------------------------

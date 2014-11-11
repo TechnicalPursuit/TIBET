@@ -2656,23 +2656,22 @@ function() {
     //  Since, in some sense, all subtypes of TP.sig.Change are 'spoofed',
     //  and change notification relies on INHERITANCE_FIRING (i.e. the
     //  handler can just implement a method for handling TP.sig.Change
-    //  itself), we need to make sure that 'TP.sig.Change' is unshifted onto
-    //  the return value here.
+    //  itself), we need to make sure that all type names, including the direct
+    //  type, are included here.
 
     //  This is different than the supertype's version of this method, which
     //  (when a signal is spoofed) will *not* add the signal's real type
     //  name, but will just use the spoofed name and the supertype signal
     //  names.
 
-    names = this.getSupertypeSignalNames();
+    names = this.getTypeSignalNames();
 
-    //  If the list of names doesn't already contain 'TP.sig.Change' itself, add
-    //  'Change' as a signal name.
-    if (!names.contains('TP.sig.Change')) {
-        names.unshift('TP.sig.Change');
+    //  If the list of names doesn't already contain the *signal name* itself,
+    //  add it as a signal name onto the front. Change signals are always
+    //  spoofed so this is very common.
+    if (!names.contains(this.getSignalName())) {
+        names.unshift(this.getSignalName());
     }
-
-    names.unshift(this.getSignalName());
 
     return names;
 });
@@ -2742,6 +2741,20 @@ TP.sig.Change.defineSubtype('IndexChange');
 //  ------------------------------------------------------------------------
 
 TP.sig.Change.defineSubtype('FacetChange');
+
+//  ------------------------------------------------------------------------
+
+TP.sig.FacetChange.Inst.defineMethod('getFacet',
+function() {
+
+    /**
+     * @name getFacet
+     * @synopsis Returns the facet of the sender which changed.
+     * @returns {String} The facet of the receiver.
+     */
+
+    return this.at('facet');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -4278,12 +4291,9 @@ aSigEntry, checkTarget) {
 
             //  a side effect of having objects registered under 'tibet:urn's is
             //  that the handler can't be the TIBETURN URI itself. Therefore, if
-            //  the item's handler starts with 'tibet:urn' and the handler
-            //  returned via 'TP.byOID' is the origin object *itself*, (and
-            //  there's no sense in the object informing itself), then go ahead
-            //  and use the URI object as the handler object.
-            if (TP.regex.TIBET_URN.test(item.handler) &&
-                handler === originalOrigin) {
+            //  the item's handler starts with 'tibet:urn', then go ahead and
+            //  use the URI object as the handler object.
+            if (TP.regex.TIBET_URN.test(item.handler)) {
                 handler = TP.uc(item.handler);
             }
 
@@ -4309,7 +4319,7 @@ aSigEntry, checkTarget) {
 
                     //  run the handler, making sure we can catch any
                     //  exceptions that are signaled
-                    handler.handle(aSignal);
+                    handler.handle(aSignal, false, signame);
                 }
             } else {
                 try {
@@ -4327,7 +4337,7 @@ aSigEntry, checkTarget) {
 
                         //  run the handler, making sure we can catch
                         //  any exceptions that are signaled
-                        handler.handle(aSignal);
+                        handler.handle(aSignal, false, signame);
                     }
 
                     //  TODO:   add check here regarding removal of the

@@ -42,8 +42,11 @@ TP.core.JobStatus.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineAttribute('result');
+
 TP.core.JobStatus.Inst.defineAttribute('faultCode');
 TP.core.JobStatus.Inst.defineAttribute('faultText');
+TP.core.JobStatus.Inst.defineAttribute('faultStack');
+
 TP.core.JobStatus.Inst.defineAttribute('statusCode');
 TP.core.JobStatus.Inst.defineAttribute('statusText');
 
@@ -73,6 +76,7 @@ function(aFaultCode, aFaultString) {
         } else {
             hash.atPut('text', aFaultString);
         }
+        hash.atPut('stack', TP.getStackInfo(aFaultCode));
     } else if (TP.isNumber(aFaultCode)) {
         hash.atPut('code', aFaultCode);
         hash.atPut('text', aFaultString);
@@ -535,8 +539,10 @@ function(aFaultCode, aFaultString) {
      */
 
     var hash,
+
         code,
-        text;
+        text,
+        stack;
 
     //  avoid issues with perhaps calling this more than once
     if (this.isCompleting() || this.didComplete()) {
@@ -547,14 +553,17 @@ function(aFaultCode, aFaultString) {
     this.set('statusCode', TP.ERRORING);
 
     hash = this.checkFaultArguments(aFaultCode, aFaultString);
+
     code = hash.at('code');
     text = hash.at('text');
+    stack = hash.at('stack');
 
     this.set('faultCode', code);
     this.set('faultText', text);
+    this.set('faultStack', stack);
 
     try {
-        this.errorJob(code, text);
+        this.errorJob(code, text, stack);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
@@ -569,7 +578,7 @@ function(aFaultCode, aFaultString) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('errorJob',
-function(aFaultCode, aFaultString) {
+function(aFaultCode, aFaultString, aFaultStack) {
 
     /**
      * @name errorJob
@@ -578,6 +587,9 @@ function(aFaultCode, aFaultString) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the error.
      * @param {String} aFaultString A string description of the fault.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.core.JobStatus} The receiver.
      * @todo
      */
@@ -604,8 +616,10 @@ function(aFaultCode, aFaultString) {
      */
 
     var hash,
+
         code,
-        text;
+        text,
+        stack;
 
     //  avoid issues with perhaps calling this more than once
     if (this.isCompleting() || this.didComplete()) {
@@ -616,14 +630,28 @@ function(aFaultCode, aFaultString) {
     this.set('statusCode', TP.FAILING);
 
     hash = this.checkFaultArguments(aFaultCode, aFaultString);
+
     code = hash.at('code');
     text = hash.at('text');
 
+    //  If aFaultCode wasn't an Error object, then the 'stack' property of the
+    //  hash will not be populated. Try to populate it here.
+    if (!TP.isError(aFaultCode)) {
+        try {
+            throw new Error('Stack Trace');
+        } catch (e) {
+            stack = TP.getStackInfo(e);
+        }
+    } else {
+        stack = hash.at('stack');
+    }
+
     this.set('faultCode', code);
     this.set('faultText', text);
+    this.set('faultStack', stack);
 
     try {
-        this.failJob(code, text);
+        this.failJob(code, text, stack);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
@@ -638,7 +666,7 @@ function(aFaultCode, aFaultString) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('failJob',
-function(aFaultCode, aFaultString) {
+function(aFaultCode, aFaultString, aFaultStack) {
 
     /**
      * @name failJob
@@ -647,6 +675,9 @@ function(aFaultCode, aFaultString) {
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
      * @param {String} aFaultString A string description of the fault.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.core.JobStatus} The receiver.
      * @todo
      */
@@ -671,6 +702,26 @@ function() {
     }
 
     return this.$get('faultCode');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JobStatus.Inst.defineMethod('getFaultStack',
+function() {
+
+    /**
+     * @name getFaultStack
+     * @synopsis Returns the fault stack of the receiver.
+     * @returns {Array} An Array of Arrays that contain information derived
+     *     from the JavaScript stack when the fault occurred.
+     */
+
+// TODO: direct slot access?
+    if (TP.notDefined(this.faultStack)) {
+        this.getType().Inst.defineAttribute('faultStack');
+    }
+
+    return this.$get('faultStack');
 });
 
 //  ------------------------------------------------------------------------

@@ -412,7 +412,7 @@ function(aRequest) {
     //  trickery with the underlying hash... TODO: clean this up
     objValues.$get('$$hash')[TP.UNDEF] = undefined;
 
-    TP.defineAttribute(TP, '$$commonObjectValues', objValues);
+    TP.defineAttributeSlot(TP, '$$commonObjectValues', objValues);
 });
 
 //	------------------------------------------------------------------------
@@ -734,7 +734,7 @@ function(aRequest) {
     //  trickery with the underlying hash... TODO: clean this up
     objTypes.$get('$$hash')[TP.UNDEF] = TP.ac();
 
-    TP.defineAttribute(TP, '$$commonObjectTypes', objTypes);
+    TP.defineAttributeSlot(TP, '$$commonObjectTypes', objTypes);
 });
 
 //	------------------------------------------------------------------------

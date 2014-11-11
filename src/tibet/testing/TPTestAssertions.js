@@ -1000,6 +1000,22 @@ function(anObject, someContent, aComment) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.TestMethodCollection.defineAssertion('hasKey',
+function(anObject, aKeyName, aComment) {
+
+    this.assertMinArguments(arguments, 2);
+
+    this.assert(
+        TP.keys(anObject).contains(aKeyName),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject),
+                ' to have a key of: ' + aKeyName));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.TestMethodCollection.defineAssertion('isEmpty',
 function(anObject, aComment) {
 
@@ -1665,13 +1681,13 @@ function(aTarget, aSignal) {
 
     var signalName,
         targetGID,
-    
+
         originMatcher,
 
         isSpecialSignal,
         signalMatcher,
         eventMatcher,
-    
+
         hadMatch;
 
     if (!this.get('currentTestCase').getSuite().get('$capturingSignals')) {

@@ -161,7 +161,7 @@ function(aRequest) {
             });
 
         req.defineMethod('failJob',
-            function(aFaultCode, aFaultString) {
+            function(aFaultCode, aFaultString, aFaultStack) {
 
                 //  Make sure to unset the variable on the shell that contains
                 //  the signal that fired us.

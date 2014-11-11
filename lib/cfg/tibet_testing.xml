@@ -122,6 +122,7 @@
 </config>
 
 <config id="uri">
+    <script src="~lib_tst/src/tibet/uri/TP.URI_Tests.js" />
     <script src="~lib_tst/src/tibet/uri/TP.core.URI_Tests.js" />
 </config>
 

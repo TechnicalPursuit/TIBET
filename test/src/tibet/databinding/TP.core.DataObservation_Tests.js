@@ -589,14 +589,14 @@ function() {
 
         TP.lang.Object.defineSubtype('test.SimpleEmployee');
 
-        TP.test.SimpleEmployee.defineAttribute('firstName');
-        TP.test.SimpleEmployee.defineAttribute('lastName');
+        TP.test.SimpleEmployee.Inst.defineAttribute('firstName');
+        TP.test.SimpleEmployee.Inst.defineAttribute('lastName');
 
         //  ---
 
         TP.lang.Object.defineSubtype('test.ComplexPathEmployee');
 
-        TP.test.ComplexPathEmployee.defineAttribute('data');
+        TP.test.ComplexPathEmployee.Inst.defineAttribute('data');
 
         //  These paths assume a root instance property of 'data'
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
@@ -1531,7 +1531,7 @@ function() {
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
-                                            'CurrentEmployee', 
+                                            'CurrentEmployee',
                                             TP.apc('emp.salary'));
 
                 modelObj.set('emp.salary', 45);
@@ -1871,7 +1871,7 @@ function() {
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
-                                            'CurrentEmployee', 
+                                            'CurrentEmployee',
                                             TP.apc('/emp/salary'));
 
                 modelObj.set('/emp/salary', 45);

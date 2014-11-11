@@ -1353,6 +1353,11 @@ function(anElement) {
             wholeName = kvPair.first();
             nsURIVal = kvPair.last();
 
+            //  We don't process the default namespace.
+            if (wholeName === 'xmlns') {
+                return;
+            }
+
             entry = docXMLNSAttrs.at(wholeName);
 
             //  If the document element has an attribute defined exactly the

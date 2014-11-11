@@ -2668,7 +2668,7 @@ TP.CHANGE_PATHS = 'paths';
 //  path detection and values
 //  ---
 
-TP.regex.ANY_POINTER = /\w+\((.+)\)/;
+TP.regex.ANY_POINTER = /(\w+)\((.*)\)/;
 
 //  one or more of any characters with optional preceding or following
 //  whitespace

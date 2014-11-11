@@ -1499,17 +1499,27 @@ event handlers.
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getHandler',
-function(aSignal, dontTraverseSpoofs) {
+function(aSignal, dontTraverseSpoofs, startSignalName) {
 
     /**
      * @name getHandler
      * @synopsis Returns the specific function or method which the receiver
      *     would (or did) leverage to respond to the signal provided.
+     * @description Note that the startSignalName parameter contains an optional
+     *     signal name to 'start consideration' from. The computation machinery
+     *     in this method will always derive it's signal names by querying
+     *     aSignal, but sometimes the caller already knows that it wants to
+     *     'skip ahead' to consider signals further down in the chain (the
+     *     INHERITANCE_FIRING policy in the notification system does this).
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
      * @param {Boolean} dontTraverseSpoofs True will mean that traversing up the
      *     supertype chain will be disabled for 'spoofed' signals (i.e. signals
      *     where the signal name doesn't match the type name). The default is
      *     false.
+     * @param {String} startSignalName The signal name to start considering
+     *     handlers if the supplied signal has more than one signal name. This
+     *     parameter is optional and, if not supplied, all of the signal names
+     *     as computed from the supplied signal will be used.
      * @returns {Function} The specific function or method that would be (or
      *     was) invoked.
      * @todo
@@ -1520,9 +1530,10 @@ function(aSignal, dontTraverseSpoofs) {
 
         fName,
         sigTypeNames,
-        sigType,
+        startNameIndex,
 
-        i;
+        i,
+        sigType;
 
     if (TP.notValid(aSignal)) {
         return;
@@ -1533,33 +1544,45 @@ function(aSignal, dontTraverseSpoofs) {
 
     hasOrigin = TP.isEmpty(orig) ? false : true;
 
-    //  check first for explicit one to avoid overhead when the handler
-    //  is specific to the signal
+    //  If the startSignalName wasn't supplied or it's the same as the signal's
+    //  'direct' signal name, then go ahead and consider that the receiver may
+    //  have the handler directly on it without traversing the type chain.
+    if (TP.isEmpty(startSignalName) ||
+        startSignalName === aSignal.getSignalName()) {
 
-    if (hasOrigin) {
-        fName = aSignal.getType().getHandlerName(orig, false, aSignal);
+        //  check first for explicit one to avoid overhead when the handler
+        //  is specific to the signal
 
+        if (hasOrigin) {
+            fName = aSignal.getType().getHandlerName(orig, false, aSignal);
+
+            if (TP.canInvoke(this, fName)) {
+                return this[fName];
+            }
+
+            fName = aSignal.getType().getHandlerName(orig, true, aSignal);
+
+            if (TP.canInvoke(this, fName)) {
+                return this[fName];
+            }
+        }
+
+        fName = aSignal.getType().getHandlerName(null, false, aSignal);
         if (TP.canInvoke(this, fName)) {
             return this[fName];
         }
 
-        fName = aSignal.getType().getHandlerName(orig, true, aSignal);
-
+        fName = aSignal.getType().getHandlerName(null, true, aSignal);
         if (TP.canInvoke(this, fName)) {
             return this[fName];
         }
     }
 
-    fName = aSignal.getType().getHandlerName(null, false, aSignal);
-    if (TP.canInvoke(this, fName)) {
-        return this[fName];
-    }
-
-    fName = aSignal.getType().getHandlerName(null, true, aSignal);
-    if (TP.canInvoke(this, fName)) {
-        return this[fName];
-    }
-
+    //  If the signal is spoofed, then we want all of the signal names based on
+    //  type, including the one for the actual type of the signal. This is
+    //  because the *signal* name of the signal will be the spoofed name,
+    //  whereas the *type* name of the signal will be it's real concrete type
+    //  and we want that to be considered as well.
     if (aSignal.isSpoofed()) {
         if (dontTraverseSpoofs) {
             return;
@@ -1574,8 +1597,19 @@ function(aSignal, dontTraverseSpoofs) {
         sigTypeNames = aSignal.getSupertypeSignalNames();
     }
 
+    //  If a startSignalName was supplied and it can be found in the list of
+    //  computed signal names, then slice off all signal names in the list
+    //  *before* that.
+    if (TP.notEmpty(startSignalName) &&
+            (startNameIndex = sigTypeNames.indexOf(startSignalName)) !==
+                                                            TP.NOT_FOUND) {
+        sigTypeNames = sigTypeNames.slice(startNameIndex);
+    }
+
     for (i = 0; i < sigTypeNames.getSize(); i++) {
+
         if (TP.isType(sigType = TP.sys.getTypeByName(sigTypeNames.at(i)))) {
+
             //  Note here how we do *not* supply aSignal as the third
             //  parameter to these methods... we want to use just the signal
             //  type's signal name, not any override supplied by the aSignal
@@ -1611,7 +1645,7 @@ function(aSignal, dontTraverseSpoofs) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('handle',
-function(aSignal, dontTraverseSpoofs) {
+function(aSignal, dontTraverseSpoofs, startSignalName) {
 
     /**
      * @name handle
@@ -1628,6 +1662,10 @@ function(aSignal, dontTraverseSpoofs) {
      *     supertype chain will be disabled for 'spoofed' signals (i.e. signals
      *     where the signal name doesn't match the type name). The default is
      *     false.
+     * @param {String} startSignalName The signal name to start considering
+     *     handlers if the supplied signal has more than one signal name. This
+     *     parameter is optional and, if not supplied, all of the signal names
+     *     as computed from the supplied signal will be used.
      * @returns {Object} The handler function's results.
      * @todo
      */
@@ -1635,7 +1673,7 @@ function(aSignal, dontTraverseSpoofs) {
     var handlerFunc;
 
     if (TP.isCallable(handlerFunc = this.getHandler(
-                                            aSignal, dontTraverseSpoofs))) {
+                            aSignal, dontTraverseSpoofs, startSignalName))) {
         return handlerFunc.apply(this, TP.ac(aSignal));
     }
 

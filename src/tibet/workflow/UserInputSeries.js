@@ -136,7 +136,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.UserInputSeries.Inst.defineMethod('failJob',
-function(aFaultCode, aFaultString) {
+function(aFaultCode, aFaultString, aFaultStack) {
 
     /**
      * @name failJob
@@ -148,6 +148,9 @@ function(aFaultCode, aFaultString) {
      * @param {Object} aFaultCode A code providing additional information on
      *     what went wrong.
      * @param {String} aFaultString Description of the error.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.sig.UserInputSeries} The receiver.
      * @todo
      */
