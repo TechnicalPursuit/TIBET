@@ -11814,10 +11814,8 @@ function(aNode, phaseList, outerElem) {
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 TP.definePrimitive('nodeHasReachedPhase',
 function(aNode, targetPhase, targetPhaseList, nodeOnly) {
-/* eslint-enable no-unused-vars */
 
     /**
      * @name nodeHasReachedPhase

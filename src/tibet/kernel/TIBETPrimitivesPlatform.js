@@ -883,7 +883,6 @@ TP.hc(
         return permissionObtained;
     },
     'webkit',
-    /* eslint-disable no-unused-vars */
     function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged, privilegedFunction) {
         /**
          * @name executePrivileged
@@ -910,7 +909,6 @@ TP.hc(
 
         return false;
     }
-    /* eslint-enable no-unused-vars */
 ));
 
 //  ------------------------------------------------------------------------

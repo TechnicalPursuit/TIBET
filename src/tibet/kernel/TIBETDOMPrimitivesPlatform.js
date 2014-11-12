@@ -2285,7 +2285,6 @@ TP.hc(
 
         return;
     },
-    /* eslint-disable no-unused-vars */
     'trident',
     function(anElement, docElemsHash) {
 
@@ -2310,7 +2309,6 @@ TP.hc(
 
         return;
     },
-    /* eslint-enable no-unused-vars */
     'webkit',
     function(anElement, docElemsHash) {
 
