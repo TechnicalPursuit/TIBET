@@ -25,11 +25,16 @@
 
 /*eslint no-eval:0*/
 /*global phantom:false, require:false*/
-;(function(root) {
+(function(root) {
 
-    var fs = require('fs');
-    var system = require('system');
-    var minimist = require('minimist');
+    var fs,
+        system,
+        minimist,
+        PhantomTSH;
+
+    fs = require('fs');
+    system = require('system');
+    minimist = require('minimist');
 
     //  ---
     //  PhantomTSH
@@ -38,7 +43,7 @@
     /**
      * A common root object for all our functionality.
      */
-    var PhantomTSH = {};
+    PhantomTSH = {};
 
 
     //  ---
@@ -516,9 +521,9 @@
      * triggers the page.onCallback hook function.
      */
     PhantomTSH.main = function() {
-        var index;
-        var root;
-        var fragment;
+        var index,
+            root,
+            fragment;
 
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
@@ -694,6 +699,8 @@
             // the plan
             console.log(msg);
         } else {
+            // TODO: what about "leftovers" ?
+            void(0);
         }
     };
 
@@ -742,10 +749,10 @@
      * @param {Number} timeOutMillis A millisecond timeout duration.
      */
     PhantomTSH.wait = function(isReady, onReady, timeOutMillis) {
-        var timeout; // milliseconds before we time out.
-        var start; // start time in milliseconds (now).
-        var ready; // is test condition fulfilled?
-        var interval; // the interval used to retest ready state.
+        var timeout,  // milliseconds before we time out.
+            start,    // start time in milliseconds (now).
+            ready,    // is test condition fulfilled?
+            interval; // the interval used to retest ready state.
 
         timeout = timeOutMillis ? timeOutMillis : PhantomTSH.timeout;
         ready = false;
@@ -804,8 +811,8 @@
      * @param {String} result The callback data.
      */
     PhantomTSH.page.onCallback = function(data) {
-        var results;
-        var output;
+        var results,
+            output;
 
         PhantomTSH.lastActivity = new Date().getTime();
 

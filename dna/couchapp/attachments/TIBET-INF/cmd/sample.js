@@ -12,16 +12,19 @@
 
 'use strict';
 
-var CLI = require('tibet/src/tibet/cli/_cli');
+var CLI,        // The TIBET CLI utility module.
+    Parent,     // The command supertype.
+    Cmd;        // The command type.
 
+CLI = require('tibet/src/tibet/cli/_cli');
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('tibet/src/tibet/cli/_cmd');
+Parent = require('tibet/src/tibet/cli/_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 

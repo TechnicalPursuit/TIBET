@@ -1,12 +1,16 @@
-var couchapp = require('couchapp');
-var path = require('path');
-var ddoc = {
+var couchapp,   // The couchapp module. Used for push support.
+    path,       // The path module.
+    ddoc;       // The design document we'll configure/push.
+
+couchapp = require('couchapp');
+path = require('path');
+ddoc = {
     _id: '_design/app',
     rewrites: [
-        { from: '/', to: 'index.html' },
-        { from: '/api', to: '../../' },
-        { from: '/api/*', to: '../../*' },
-        { from: '/*', to: '*' }
+        {from: '/', to: 'index.html'},
+        {from: '/api', to: '../../'},
+        {from: '/api/*', to: '../../*'},
+        {from: '/*', to: '*'}
     ]
 };
 

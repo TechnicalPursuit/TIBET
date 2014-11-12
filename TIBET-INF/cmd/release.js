@@ -13,17 +13,21 @@
 
 'use strict';
 
-var CLI = require('tibet/src/tibet/cli/_cli');
-var beautify = require('js-beautify');
+var CLI,
+    beautify,
+    Parent,
+    Cmd;
 
+CLI = require('tibet/src/tibet/cli/_cli');
+beautify = require('js-beautify');
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('tibet/src/tibet/cli/_cmd');
+Parent = require('tibet/src/tibet/cli/_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -263,17 +267,17 @@ Cmd.prototype.getSuffix = function(suffix) {
  * wait. If the build succeeds phaseTwo is invoked.
  */
 Cmd.prototype.phaseOne = function() {
-    var cmd;
-    var result;
-    var source;
-    var version;
-    var match;
-    var major;
-    var minor;
-    var patch;
-    var suffix;
-    var sh;
-    var release;
+    var cmd,
+        result,
+        source,
+        version,
+        match,
+        major,
+        minor,
+        patch,
+        suffix,
+        sh,
+        release;
 
     //  ---
     //  Verify minimum required arguments etc.
@@ -338,7 +342,7 @@ Cmd.prototype.phaseOne = function() {
     match = source.describe.match(/^(.*)-(\d+)-g([a-zA-Z0-9]+)(-dirty)*$/);
     if (CLI.isValid(match)) {
         source.ptag = match[1];
-        source.commits = parseInt(match[2]);
+        source.commits = parseInt(match[2], 10);
         source.phash = match[3];
     } else {
         throw new Error('Unable to parse branch description: ' +
@@ -429,16 +433,16 @@ Cmd.prototype.phaseOne = function() {
  */
 Cmd.prototype.phaseTwo = function(source) {
 
-    var hb;
-    var fs;
-    var file;
-    var data;
-    var content;
-    var template;
-    var sh;
-    var cmd;
-    var release;
-    var result;
+    var hb,
+        fs,
+        file,
+        data,
+        content,
+        template,
+        sh,
+        cmd,
+        release,
+        result;
 
     hb = require('handlebars');
     fs = require('fs');
@@ -561,12 +565,12 @@ Cmd.prototype.phaseTwo = function(source) {
  */
 Cmd.prototype.phaseThree = function(meta) {
 
-    var release;
-    var result;
-    var devtag;
-    var mastertag;
-    var commands;
-    var latest;
+    var release,
+        result,
+        devtag,
+        mastertag,
+        commands,
+        latest;
 
     // Build the proposed release tag so we can verify with user...
     mastertag = meta.source.semver.split('+')[0];

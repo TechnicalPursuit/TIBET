@@ -6,12 +6,15 @@
 
 'use strict';
 
-var sh = require('shelljs');
-var nodecli = require('shelljs-nodecli');
-var helpers = require('tibet/src/tibet/cli/_make_helpers');
+var sh,
+    nodecli,
+    helpers,
+    getDatabaseParameters,
+    targets;
 
-// Uncomment to include TIBET's make helper routines for rollups.
-// var helpers = require('tibet/src/tibet/cli/_make_helpers');
+sh = require('shelljs');
+nodecli = require('shelljs-nodecli');
+helpers = require('tibet/src/tibet/cli/_make_helpers');
 
 
 /**
@@ -21,10 +24,10 @@ var helpers = require('tibet/src/tibet/cli/_make_helpers');
  * @param {Object} make The make command instance.
  * @return {Object} An object containing db_url and db_name keys.
  */
-var getDatabaseParameters = function(make) {
-    var db_url;
-    var db_name;
-    var result;
+getDatabaseParameters = function(make) {
+    var db_url,
+        db_name,
+        result;
 
     if (!make) {
         throw new Error('Invalid call to helper function. No task provided.');
@@ -50,7 +53,7 @@ var getDatabaseParameters = function(make) {
 /**
  * Canonical `targets` object for exporting the various target functions.
  */
-var targets = {};
+targets = {};
 
 /**
  */
@@ -119,10 +122,10 @@ targets.rollup = function(make) {
  * Create a new CouchDB database.
  */
 targets.createdb = function(make) {
-    var params;
-    var db_url;
-    var db_name;
-    var nano;
+    var params,
+        db_url,
+        db_name,
+        nano;
 
     params = getDatabaseParameters(make);
     db_url = params.db_url;
@@ -147,10 +150,10 @@ targets.createdb = function(make) {
  * Push the current app.js and attachments content to CouchDB.
  */
 targets.pushdb = function(make) {
-    var params;
-    var db_url;
-    var db_name;
-    var result;
+    var params,
+        db_url,
+        db_name,
+        result;
 
     params = getDatabaseParameters(make);
     db_url = params.db_url;
@@ -185,11 +188,11 @@ targets.pushdb = function(make) {
  * Remove the current CouchDB database.
  */
 targets.removedb = function(make) {
-    var params;
-    var db_url;
-    var db_name;
-    var result;
-    var nano;
+    var params,
+        db_url,
+        db_name,
+        result,
+        nano;
 
     params = getDatabaseParameters(make);
     db_url = params.db_url;
