@@ -827,7 +827,7 @@ function(aLongNumber) {
 
     /* jshint bitwise:false */
     /* eslint-disable no-constant-condition */
-    for (i = 24; (i -= 4) >= 0; ) {
+    for (i = 24; (i -= 4) >= 0;) {
         str += hexChars.charAt((aLongNumber >> i) & 0xF);
     }
     /* eslint-enable no-constant-condition */
@@ -876,7 +876,7 @@ function(color1, color2, aPercentage) {
 
     /* jshint bitwise:false */
     /* eslint-disable no-constant-condition */
-    for (i = 24; (i -= 8) >= 0; ) {
+    for (i = 24; (i -= 8) >= 0;) {
         ca = (color1 >> i) & 0xFF;
         cb = (color2 >> i) & 0xFF;
         cc = Math.floor(ca * (1 - aPercentage) + cb * aPercentage);

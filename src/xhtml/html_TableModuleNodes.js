@@ -109,8 +109,8 @@ TP.backstop(
 //  ------------------------------------------------------------------------
 
 TP.html.table.Type.defineMethod('generateMarkup',
-function(anObject, attrStr, itemFormat, shouldAutoWrap,
-formatArgs, theRequest        ) {
+function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
+theRequest) {
 
     /**
      * @name generateMarkup
@@ -319,8 +319,8 @@ TP.backstop(
 //  ------------------------------------------------------------------------
 
 TP.html.tr.Type.defineMethod('generateMarkup',
-function(anObject, attrStr, itemFormat, shouldAutoWrap,
-formatArgs, theRequest        ) {
+function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
+theRequest) {
 
     /**
      * @name generateMarkup

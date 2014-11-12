@@ -254,7 +254,7 @@ function(aFilterName) {
 
     for (i = 0; i < len; i++) {
         key = keys.at(i);
-        arr.push( '<', key, '>', TP.xmlstr(this.at(key)), '<\/', key, '>');
+        arr.push('<', key, '>', TP.xmlstr(this.at(key)), '<\/', key, '>');
     }
 
     //  We're done - we can remove the recursion flag.

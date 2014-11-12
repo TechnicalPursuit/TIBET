@@ -6732,7 +6732,7 @@ function(segmentOpConstant, occurrenceCount) {
 
 TP.core.Path.Inst.defineMethod('insertSegment',
 function(segmentOpConstant, segmentArgs, insPointSegmentConstant,
-occurrenceCount        ) {
+occurrenceCount) {
 
     /**
      * @name insertSegment

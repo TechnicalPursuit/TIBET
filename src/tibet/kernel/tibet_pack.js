@@ -434,9 +434,9 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
         else if (identHead.test(c) ||
                 (tsh && (c === '~' ||
                          c === '#' ||
-                        (c === '.' && src.charAt(i + 1) === '/' ) ||
+                        (c === '.' && src.charAt(i + 1) === '/') ||
                         (c === '.' && src.charAt(i + 1) === '.' &&
-                            src.charAt(i + 2) === '/' )
+                            src.charAt(i + 2) === '/')
                         ))) {
 
             //  identifiers start with $, _, or a-zA-Z, then allow 0-9

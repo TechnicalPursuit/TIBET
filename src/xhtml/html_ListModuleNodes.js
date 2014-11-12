@@ -201,8 +201,8 @@ TP.html.ul.Type.set('booleanAttrs', TP.ac('compact'));
 //  ------------------------------------------------------------------------
 
 TP.html.ul.Type.defineMethod('generateMarkup',
-function(anObject, attrStr, itemFormat, shouldAutoWrap,
-formatArgs, theRequest        ) {
+function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
+theRequest) {
 
     /**
      * @name generateMarkup

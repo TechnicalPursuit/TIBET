@@ -25,6 +25,7 @@
         "space-after-keywords": [1, "always"],
         "space-before-blocks": [1, "always"],
         "space-in-brackets": [1, "never"],
+        "space-in-parens": [1, "never"],
         "strict": 0,
         "wrap-iife": [1, "outside"],
         "vars-on-top": 1
