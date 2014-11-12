@@ -787,7 +787,7 @@ TP.sig.DOMSignal.Type.defineAttribute('defaultPolicy', TP.DOM_FIRING);
 TP.sig.DOMSignal.Type.defineAttribute('bubbling', true);
 TP.sig.DOMSignal.Type.defineAttribute('cancelable', true);
 
-    //  ------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 //  DOM Initialization Signals
 //  ------------------------------------------------------------------------
 
@@ -801,8 +801,8 @@ TP.sig.DOMInitializationSignal.Type.defineAttribute('cancelable', false);
 /*
 TP.sig.DOMInitializationSignal.defineSubtype('DOMModelConstruct');     //  XForms
 TP.sig.DOMInitializationSignal.defineSubtype('DOMModelConstructDone'); //  XForms
-TP.sig.DOMInitializationSignal.defineSubtype('DOMReady');                  //  XForms
-TP.sig.DOMInitializationSignal.defineSubtype('DOMModelDestruct');          //  XForms
+TP.sig.DOMInitializationSignal.defineSubtype('DOMReady');              //  XForms
+TP.sig.DOMInitializationSignal.defineSubtype('DOMModelDestruct');      //  XForms
 */
 
 //  ------------------------------------------------------------------------
