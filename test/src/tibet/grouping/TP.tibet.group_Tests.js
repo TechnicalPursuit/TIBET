@@ -56,9 +56,8 @@ function() {
                         TP.ac('bar'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
@@ -98,9 +97,8 @@ function() {
                         TP.ac('foo', 'bar', 'baz'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
@@ -159,9 +157,8 @@ function() {
                         TP.ac('goo'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
@@ -230,9 +227,8 @@ function() {
 
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
@@ -286,9 +282,8 @@ function() {
                         TP.ac('gar', 'gaz'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
@@ -319,9 +314,8 @@ function() {
                         TP.ac('gooGroup', 'fooGroup'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
@@ -358,9 +352,8 @@ function() {
                         TP.ac('mooGroup'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
@@ -397,9 +390,8 @@ function() {
                         TP.ac('mooGroup', 'nooGroup'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
@@ -466,9 +458,8 @@ function() {
                 test.assert.isNull(tpElem.getNextGroupName());
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
     //  ---
@@ -534,9 +525,8 @@ function() {
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'gooGroup');
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
@@ -575,9 +565,8 @@ function() {
                     });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 

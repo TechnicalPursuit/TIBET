@@ -233,11 +233,11 @@ function() {
 
     this.it('\'all nodes\' - no mutation', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc(testDataLoc + '#nochange');
+        loadURI = TP.uc(testDataLoc + '#nochange');
 
-        this.getDriver().fetchResource(uri, TP.DOM);
+        this.getDriver().fetchResource(loadURI, TP.DOM);
 
         this.then(
             function(result) {
@@ -260,19 +260,18 @@ function() {
                 test.pass();
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + testDataLoc,
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
     this.it('\'all nodes\' - attribute mutation', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc(testDataLoc + '#attrchange');
+        loadURI = TP.uc(testDataLoc + '#attrchange');
 
-        this.getDriver().fetchResource(uri, TP.DOM);
+        this.getDriver().fetchResource(loadURI, TP.DOM);
 
         this.then(
             function(result) {
@@ -286,18 +285,18 @@ function() {
                 test.pass();
             },
             function(error) {
-                console.log('couldnt get data');
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
     this.it('\'all nodes\' - more attribute mutation', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc(testDataLoc + '#moreattrchange');
+        loadURI = TP.uc(testDataLoc + '#moreattrchange');
 
-        this.getDriver().fetchResource(uri, TP.DOM);
+        this.getDriver().fetchResource(loadURI, TP.DOM);
 
         this.then(
             function(result) {
@@ -313,18 +312,18 @@ function() {
                 test.pass();
             },
             function(error) {
-                console.log('couldnt get data');
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
     this.it('\'all nodes\' - content mutation', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc(testDataLoc + '#contentchange');
+        loadURI = TP.uc(testDataLoc + '#contentchange');
 
-        this.getDriver().fetchResource(uri, TP.DOM);
+        this.getDriver().fetchResource(loadURI, TP.DOM);
 
         this.then(
             function(result) {
@@ -339,18 +338,18 @@ function() {
                 test.pass();
             },
             function(error) {
-                console.log('couldnt get data');
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
     this.it('\'all nodes\' - more content mutation', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc(testDataLoc + '#morecontentchange');
+        loadURI = TP.uc(testDataLoc + '#morecontentchange');
 
-        this.getDriver().fetchResource(uri, TP.DOM);
+        this.getDriver().fetchResource(loadURI, TP.DOM);
 
         this.then(
             function(result) {
@@ -368,8 +367,8 @@ function() {
                 test.pass();
             },
             function(error) {
-                console.log('couldnt get data');
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 });
@@ -385,11 +384,11 @@ function() {
 
     this.it('XML Base processing', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XMLBaseTest1.xml');
+        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XMLBaseTest1.xml');
 
-        this.getDriver().setLocation(uri);
+        this.getDriver().setLocation(loadURI);
 
         this.then(
             function(result) {
@@ -427,11 +426,11 @@ function() {
 
     this.it('TIBET stylesheet PI processing - single level', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL1.xml');
+        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL1.xml');
 
-        this.getDriver().setLocation(uri);
+        this.getDriver().setLocation(loadURI);
 
         this.then(
             function(result) {
@@ -456,11 +455,11 @@ function() {
 
     this.it('TIBET stylesheet PI processing - multi level', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL2.xml');
+        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL2.xml');
 
-        this.getDriver().setLocation(uri);
+        this.getDriver().setLocation(loadURI);
 
         this.then(
             function(result) {
@@ -498,11 +497,11 @@ function() {
 
     this.it('whole file inclusion', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
+        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
 
-        this.getDriver().fetchResource(uri, TP.DOM);
+        this.getDriver().fetchResource(loadURI, TP.DOM);
 
         this.then(
             function(result) {
@@ -548,19 +547,18 @@ function() {
                         });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
     this.it('partial file inclusion', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude2.xml');
+        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude2.xml');
 
-        this.getDriver().setLocation(uri);
+        this.getDriver().setLocation(loadURI);
 
         this.then(
             function(result) {
@@ -574,9 +572,8 @@ function() {
                 test.assert.isElement(TP.byId('partialParagraph'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 });

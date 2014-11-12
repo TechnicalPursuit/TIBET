@@ -17,11 +17,11 @@ function() {
 
     this.it('simple XSL transformation', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc('~lib_tst/src/tibet/xslt/XMLArray2XHTMLTable.xsl');
+        loadURI = TP.uc('~lib_tst/src/tibet/xslt/XMLArray2XHTMLTable.xsl');
 
-        this.getDriver().fetchResource(uri, TP.WRAP);
+        this.getDriver().fetchResource(loadURI, TP.WRAP);
 
         this.then(
             function(tpXSLTDoc) {
@@ -58,19 +58,18 @@ function() {
 
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
     this.it('XSL transformation with parameters - using default values', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc('~lib_tst/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
+        loadURI = TP.uc('~lib_tst/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
 
-        this.getDriver().fetchResource(uri, TP.WRAP);
+        this.getDriver().fetchResource(loadURI, TP.WRAP);
 
         this.then(
             function(tpXSLTDoc) {
@@ -103,19 +102,18 @@ function() {
                     data.getSize() / 2);
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
     this.it('XSL transformation with parameters - supply scalar values', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc('~lib_tst/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
+        loadURI = TP.uc('~lib_tst/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
 
-        this.getDriver().fetchResource(uri, TP.WRAP);
+        this.getDriver().fetchResource(loadURI, TP.WRAP);
 
         this.then(
             function(tpXSLTDoc) {
@@ -154,19 +152,18 @@ function() {
                     data.getSize() / 3);
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 
     this.it('XSL transformation with parameters - supply node values', function(test, options) {
 
-        var uri;
+        var loadURI;
 
-        uri = TP.uc('~lib_tst/src/tibet/xslt/ReflectNodeParam.xsl');
+        loadURI = TP.uc('~lib_tst/src/tibet/xslt/ReflectNodeParam.xsl');
 
-        this.getDriver().fetchResource(uri, TP.WRAP);
+        this.getDriver().fetchResource(loadURI, TP.WRAP);
 
         this.then(
             function(tpXSLTDoc) {
@@ -206,9 +203,8 @@ function() {
                     data.getSize());
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + uri.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');

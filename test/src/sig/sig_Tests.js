@@ -47,9 +47,8 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
 
         this.then(
@@ -130,9 +129,8 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
 
         this.then(

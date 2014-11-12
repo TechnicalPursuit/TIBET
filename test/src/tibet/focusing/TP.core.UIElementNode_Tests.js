@@ -153,9 +153,8 @@ function() {
                     });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -298,9 +297,8 @@ function() {
                     });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -514,9 +512,8 @@ function() {
                     });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -737,9 +734,8 @@ function() {
                     });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -967,9 +963,8 @@ function() {
                     });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -1289,9 +1284,8 @@ function() {
                     });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -1623,9 +1617,8 @@ function() {
                     });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -1965,9 +1958,8 @@ function() {
                     });
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -2085,9 +2077,8 @@ function() {
                             'field_18', 'field_19', 'field_20', 'field_22'));
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
@@ -2783,9 +2774,8 @@ function() {
 
             },
             function(error) {
-                TP.sys.logTest('Couldn\'t get resource: ' + loadURI.getLocation(),
-                                TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 });
