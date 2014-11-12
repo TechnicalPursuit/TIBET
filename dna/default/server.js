@@ -39,37 +39,52 @@
 
 'use strict';
 
-var http = require('http');
-var minimist = require('minimist');
+var http,           // Web server baseline.
+    minimist,       // Argument processing.
 
-// Express baseline components.
-var express = require('express');
-var bodyParser = require('body-parser');
-var compression = require('compression');
-var csurf = require('csurf');
-var morgan = require('morgan');
-var session = require('express-session');
-var serveStatic = require('serve-static');
+    express,        // Express web framework.
+    bodyParser,     // Express body parser.
+    compression,    // Express gzip/compression.
+    //csurf,          // Express cross-site protection.
+    morgan,         // Express logging.
+    session,        // Express session management.
+    serveStatic,    // Express file-system serving.
 
-// TIBET Development Server addons.
-var TDS = require('tibet/etc/tds-middleware');
+    TDS,            // TIBET middleware addons.
+
+    argv,           // The argument list.
+    app_root,       // Computed TIBET application root.
+    app,            // Express application instance.
+    port;           // Port to listen on.
+
+// Require our components.
+http = require('http');
+minimist = require('minimist');
+express = require('express');
+bodyParser = require('body-parser');
+compression = require('compression');
+//csurf = require('csurf');
+morgan = require('morgan');
+session = require('express-session');
+serveStatic = require('serve-static');
+TDS = require('tibet/etc/tds/tds-middleware');
 
 //  ---
 //  Argument Processing
 //  ---
 
-var argv = minimist(process.argv.slice(2)) || {_:[]};
+argv = minimist(process.argv.slice(2)) || {_: []};
 
 // Since server.js typically sits in the project root directory we can work with
 // __dirname here as a default.
-var app_root = argv.app_root || __dirname;
+app_root = argv.app_root || __dirname;
 
 // Ensure the TDS loads configuration data from our computed root.
 argv.app_root = app_root;
 TDS.initPackage(argv);
 
 // Lots of options for where to get a port number but try to leverage TDS first.
-var port = TDS.getcfg('port') ||
+port = TDS.getcfg('port') ||
     TDS.getcfg('tds.port') ||
     process.env.npm_package_config_port ||
     process.env.PORT ||
@@ -79,7 +94,7 @@ var port = TDS.getcfg('port') ||
 //  Server Stack Configuration
 //  ---
 
-var app = express();
+app = express();
 
 // TODO: add login authentication based on params or some such.
 // get data from tibet.json for user/pass lists.
@@ -97,8 +112,8 @@ app.use(session({
 // reactivate this. for now it isn't being sent to the client appropriately.
 //app.use(csurf());
 
-app.use(bodyParser.json({ type: 'application/json' }));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({type: 'application/json'}));
+app.use(bodyParser.urlencoded({extended: false}));
 
 //  Express logger.
 //  TODO: Add options control in tibet.json.
@@ -107,7 +122,6 @@ app.use(morgan('dev', {skip: TDS.logFilter}));
 //  ---
 //  ---
 
-// TODO: convert this to POST once testing is done.
 // Let the client access the tibet command line functionality. Potentially not
 // secure, but at least the command being run and the command set is somewhat
 // constrained.
@@ -149,14 +163,13 @@ app.use(serveStatic(app_root));
 app.use(compression());
 
 // Serve a general 404 if no other handler too care of the request.
-app.use(function(req, res, next){
+app.use(function(req, res, next) {
   res.send(404, TDS.getcfg('tds.404'));
 });
 
 // Provide simple error handler middleware here.
-app.use(function(err, req, res, next){
+app.use(function(err, req, res, next) {
   console.error(err.stack);
-
 // TODO: dump stack/error back to the client...?
   res.send(500, TDS.getcfg('tds.500'));
 });
@@ -172,4 +185,3 @@ app.use(function(err, req, res, next){
 http.createServer(app).listen(port);
 
 }());
-

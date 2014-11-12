@@ -15,20 +15,26 @@
 
 'use strict';
 
-var path = require('path');
+var path,
+    jsDAV,
+    watch,
+    Package,
+    TDS;
 
-var jsDAV = require('jsDAV/lib/jsdav');
-var watch = require('watch');
+path = require('path');
+
+jsDAV = require('jsDAV/lib/jsdav');
+watch = require('watch');
 
 // Load the CLI's package support to help with option and configuration data.
-var Package = require('../src/tibet/cli/_Package');
+Package = require('../../src/tibet/cli/_Package');
 
 
 //  ---
 //  TIBET Data Server Root
 //  ---
 
-var TDS = {};
+TDS = {};
 
 /**
  * The package instance assisting with configuration data loading/lookup.
@@ -122,20 +128,16 @@ TDS.cli = function(options) {
 
     return function (req, res, next) {
 
-        var out;    // Output buffer.
-        var cli;    // Spawned child process for the server.
-        var cmd;    // The command being requested.
-        var argv;   // Non-named argument collector.
-        var params; // Named argument collector.
-        var child;  // child process module.
+        var cli,    // Spawned child process for the server.
+            cmd,    // The command being requested.
+            params, // Named argument collector.
+            child;  // child process module.
 
         cmd = req.param('cmd');
         if (!cmd) {
             cmd = 'help';
         }
 
-        argv = '';
-        out = [];
         params = [cmd];
 
         Object.keys(req.query).forEach(function(key) {
@@ -143,8 +145,6 @@ TDS.cli = function(options) {
 
             if (key === 'cmd') {
                 void(0);    // skip
-            } else if (key === 'argv') {
-                argv = req.query[key];
             } else {
                 value = req.query[key];
 
@@ -183,18 +183,19 @@ TDS.patcher = function(options) {
 
     return function (req, res, next) {
 
-        var body;
-        var data;
-        var type;
-        var target;
-        var text;
-        var content;
-        var root;
-        var url;
-        var diff;
-        var fs;
+        var body,
+            data,
+            type,
+            target,
+            text,
+            content,
+            root,
+            url,
+            diff,
+            fs,
+            err;
 
-        var err = function(code, message) {
+        err = function(code, message) {
             console.error(message);
             res.send(code, message);
             res.end();
@@ -306,7 +307,9 @@ TDS.patcher = function(options) {
  */
 TDS.watcher = function(options) {
     var root,
-        changedFileName;
+        changedFileName,
+        writeSSEHead,
+        writeSSEData;
 
     changedFileName = '';
     root = path.resolve(TDS.expandPath(TDS.getcfg('tds.watch_root')));
@@ -339,7 +342,7 @@ TDS.watcher = function(options) {
             changedFileName = changedFileName.replace(TDS.getAppHead(), '');
         });
 
-    var writeSSEHead = function (req, res, cb) {
+    writeSSEHead = function (req, res, cb) {
         res.writeHead(
             200,
             {
@@ -355,7 +358,7 @@ TDS.watcher = function(options) {
         }
     };
 
-    var writeSSEData = function (req, res, eventName, eventData, cb) {
+    writeSSEData = function (req, res, eventName, eventData, cb) {
         var id;
 
         id = (new Date()).getTime();
@@ -371,9 +374,9 @@ TDS.watcher = function(options) {
 
     return function (req, res, next) {
 
-        if (req.headers.accept && req.headers.accept === 'text/event-stream') {
+        var eventName;
 
-            var eventName;
+        if (req.headers.accept && req.headers.accept === 'text/event-stream') {
 
             if (changedFileName !== '') {
                 eventName = TDS.getcfg('tds.watch_event');
@@ -442,4 +445,3 @@ TDS.webdav.jsDAV_CORS_Plugin = require('jsDAV/lib/DAV/plugins/cors');
 module.exports = TDS;
 
 }());
-
