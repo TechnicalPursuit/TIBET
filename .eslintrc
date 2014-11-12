@@ -17,7 +17,7 @@
         "no-floating-decimal": 1,
         "no-shadow": 0,
         "no-unused-expressions": 0,
-        "no-unused-vars": 0,
+        "no-unused-vars": [0, {"vars": "all", "args": "none"}],
         "no-underscore-dangle": 0,
         "no-wrap-func": 1,
         "quotes": [2, "single"],
