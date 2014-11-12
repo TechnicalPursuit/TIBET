@@ -34,7 +34,7 @@ TP.html.Attrs.defineSubtype('command');
 
 TP.html.Attrs.defineSubtype('keygen');
 
-TP.html.keygen.set('booleanAttrs',
+TP.html.keygen.Type.set('booleanAttrs',
         TP.ac('autofocus', 'disabled', 'willValidate'));
 
 //  ========================================================================
@@ -63,9 +63,9 @@ TP.html.Attrs.defineSubtype('noscript');
 
 TP.html.Attrs.defineSubtype('script');
 
-TP.html.script.set('booleanAttrs', TP.ac('async', 'defer'));
+TP.html.script.Type.set('booleanAttrs', TP.ac('async', 'defer'));
 
-TP.html.script.set('uriAttrs', TP.ac('src'));
+TP.html.script.Type.set('uriAttrs', TP.ac('src'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

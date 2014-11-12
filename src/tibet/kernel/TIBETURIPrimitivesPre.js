@@ -504,8 +504,7 @@ function(aPath, aRoot) {
     }
 
     //  local? definately need to convert
-    if (TP.regex.WINDOWS_PATH.test(aPath) ||
-        TP.regex.UNC_PATH.test(aPath)) {
+    if (TP.regex.WINDOWS_PATH.test(aPath) || TP.regex.UNC_PATH.test(aPath)) {
         path = aPath.replace(/\\\\/g, '/').replace(/\\/g, '/');
         return TP.uriPlusFileScheme(path.unquoted());
     }
@@ -554,8 +553,7 @@ function(aPath) {
     if (TP.sys.isWin()) {
         //  on Windows we can also have either drive:\blah, or \\blah paths
         //  which are considered absolute
-        return TP.regex.WINDOWS_PATH.test(path) ||
-            TP.regex.UNC_PATH.test(path);
+        return TP.regex.WINDOWS_PATH.test(path) || TP.regex.UNC_PATH.test(path);
     } else {
         //  non-Windows paths need a leading slash
         return path.first() === '/';

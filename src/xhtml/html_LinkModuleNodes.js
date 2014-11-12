@@ -21,7 +21,7 @@
 
 TP.html.Attrs.defineSubtype('link');
 
-TP.html.link.set('uriAttrs', TP.ac('href'));
+TP.html.link.Type.set('uriAttrs', TP.ac('href'));
 
 TP.html.link.addTraitsFrom(TP.core.EmptyElementNode);
 TP.html.link.Inst.resolveTraits(

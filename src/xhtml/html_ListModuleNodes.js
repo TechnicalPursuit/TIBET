@@ -21,7 +21,7 @@
 
 TP.html.List.defineSubtype('dl');
 
-TP.html.dl.set('booleanAttrs', TP.ac('compact'));
+TP.html.dl.Type.set('booleanAttrs', TP.ac('compact'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -179,7 +179,7 @@ TP.html.Attrs.defineSubtype('dd');
 
 TP.html.List.defineSubtype('ol');
 
-TP.html.ol.set('booleanAttrs', TP.ac('compact', 'reversed'));
+TP.html.ol.Type.set('booleanAttrs', TP.ac('compact', 'reversed'));
 
 //  ========================================================================
 //  TP.html.ul
@@ -194,7 +194,7 @@ TP.html.ol.set('booleanAttrs', TP.ac('compact', 'reversed'));
 
 TP.html.List.defineSubtype('ul');
 
-TP.html.ul.set('booleanAttrs', TP.ac('compact'));
+TP.html.ul.Type.set('booleanAttrs', TP.ac('compact'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

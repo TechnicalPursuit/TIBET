@@ -69,7 +69,7 @@
 
 TP.html.Attrs.defineSubtype('fieldset');
 
-TP.html.fieldset.set('booleanAttrs', TP.ac('disabled', 'willValidate'));
+TP.html.fieldset.Type.set('booleanAttrs', TP.ac('disabled', 'willValidate'));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -589,6 +589,11 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue(aValue);
 
+    //  If the values are equal, there's nothing to do here - bail out.
+    if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        return this;
+    }
+
     //  showas is the attribute we use to define formatting pipelines for
     //  the UI controls, so if we have that attribute we have formatting
     if (this.hasAttribute('xctrls:showas')) {
@@ -673,12 +678,12 @@ TP.html.Focused.defineSubtype('input');
 //  can't construct concrete instances of this
 TP.html.input.isAbstract(true);
 
-TP.html.input.set('booleanAttrs',
+TP.html.input.Type.set('booleanAttrs',
         TP.ac('autofocus', 'defaultChecked', 'checked', 'disabled',
                 'formNoValidate', 'indeterminate', 'multiple',
                 'readOnly', 'required', 'willValidate'));
 
-TP.html.input.set('uriAttrs', TP.ac('src', 'usemap'));
+TP.html.input.Type.set('uriAttrs', TP.ac('src', 'usemap'));
 
 TP.html.input.addTraitsFrom(TP.core.EmptyElementNode);
 TP.html.input.Inst.resolveTraits(
@@ -905,29 +910,6 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
 //  ------------------------------------------------------------------------
 
-TP.html.input.Type.defineMethod('shouldAutoWrapItems',
-function(anObject, formatArgs) {
-
-    /**
-     * @name shouldAutoWrapItems
-     * @synopsis Whether or not our fromArray() / fromObject() methods
-     *     'auto-wrap items'. See those methods for more information.
-     * @param {Object} anObject The Object of content to wrap in markup.
-     * @param {TP.lang.Hash} formatArgs An optional object containing
-     *     parameters.
-     * @returns {Boolean} Whether or not we automatically wrap items.
-     * @todo
-     */
-
-    if (TP.isBoolean(formatArgs.at('autowrap'))) {
-        return formatArgs.at('autowrap');
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.html.input.Type.defineMethod('getConcreteType',
 function(aNodeOrId) {
 
@@ -963,8 +945,6 @@ function(aNodeOrId) {
 });
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
 
 TP.html.input.Type.defineMethod('handlePeerTP_sig_DOMChange',
 function(aTargetElem, anEvent) {
@@ -989,6 +969,31 @@ function(aTargetElem, anEvent) {
     }
 });
 
+//  ------------------------------------------------------------------------
+
+TP.html.input.Type.defineMethod('shouldAutoWrapItems',
+function(anObject, formatArgs) {
+
+    /**
+     * @name shouldAutoWrapItems
+     * @synopsis Whether or not our fromArray() / fromObject() methods
+     *     'auto-wrap items'. See those methods for more information.
+     * @param {Object} anObject The Object of content to wrap in markup.
+     * @param {TP.lang.Hash} formatArgs An optional object containing
+     *     parameters.
+     * @returns {Boolean} Whether or not we automatically wrap items.
+     * @todo
+     */
+
+    if (TP.isBoolean(formatArgs.at('autowrap'))) {
+        return formatArgs.at('autowrap');
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.html.input.Inst.defineMethod('isSingleValued',
@@ -1963,6 +1968,11 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue(aValue);
 
+    //  If the values are equal, there's nothing to do here - bail out.
+    if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        return this;
+    }
+
     this.setDisplayValue(newValue);
 
     //  signal as needed
@@ -2057,9 +2067,9 @@ TP.html.form.Type.defineConstant('NODE_TYPE_NAMES',
             'url', 'TP.html.inputUrl',
             'week', 'TP.html.inputWeek'));
 
-TP.html.form.set('booleanAttrs', TP.ac('noValidate'));
+TP.html.form.Type.set('booleanAttrs', TP.ac('noValidate'));
 
-TP.html.form.set('uriAttrs', TP.ac('action'));
+TP.html.form.Type.set('uriAttrs', TP.ac('action'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -3070,7 +3080,7 @@ TP.html.Aligned.defineSubtype('legend');
 
 TP.html.Attrs.defineSubtype('optgroup');
 
-TP.html.optgroup.set('booleanAttrs', TP.ac('disabled'));
+TP.html.optgroup.Type.set('booleanAttrs', TP.ac('disabled'));
 
 //  ========================================================================
 //  TP.html.option
@@ -3087,7 +3097,7 @@ TP.html.optgroup.set('booleanAttrs', TP.ac('disabled'));
 
 TP.html.Attrs.defineSubtype('option');
 
-TP.html.option.set('booleanAttrs',
+TP.html.option.Type.set('booleanAttrs',
             TP.ac('disabled', 'defaultSelected', 'selected'));
 
 //  ------------------------------------------------------------------------
@@ -3278,7 +3288,7 @@ TP.html.Focused.defineSubtype('select');
 
 //  ------------------------------------------------------------------------
 
-TP.html.select.set('booleanAttrs',
+TP.html.select.Type.set('booleanAttrs',
         TP.ac('autofocus', 'disabled', 'multiple', 'required', 'willValidate'));
 
 TP.backstop(TP.ac('add', 'remove'), TP.html.select.getInstPrototype());
@@ -4327,6 +4337,11 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue(aValue);
 
+    //  If the values are equal, there's nothing to do here - bail out.
+    if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        return this;
+    }
+
     this.setDisplayValue(newValue);
 
     //  signal as needed
@@ -4357,7 +4372,7 @@ function(aValue, shouldSignal) {
 
 TP.html.Focused.defineSubtype('textarea');
 
-TP.html.textarea.set('booleanAttrs',
+TP.html.textarea.Type.set('booleanAttrs',
         TP.ac('autofocus', 'disabled', 'readOnly', 'required', 'willValidate'));
 
 TP.html.textarea.addTraitsFrom(TP.html.textUtilities);
@@ -4498,7 +4513,7 @@ function(aValue) {
 
 TP.html.inputClickable.defineSubtype('button');
 
-TP.html.button.set('booleanAttrs',
+TP.html.button.Type.set('booleanAttrs',
             TP.ac('autofocus', 'disabled', 'formNoValidate', 'willValidate'));
 
 //  ------------------------------------------------------------------------

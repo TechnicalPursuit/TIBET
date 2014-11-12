@@ -21,7 +21,7 @@
 
 TP.html.Focused.defineSubtype('a');
 
-TP.html.a.set('uriAttrs', TP.ac('href'));
+TP.html.a.Type.set('uriAttrs', TP.ac('href'));
 
 //  ------------------------------------------------------------------------
 //  end

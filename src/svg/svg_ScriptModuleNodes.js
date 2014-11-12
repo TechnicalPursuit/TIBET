@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.script}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ TP.core.UIElementNode.defineSubtype('svg:script');
 
 TP.svg.script.addTraitsFrom(TP.svg.Element);
 
-TP.svg.script.set('uriAttrs', TP.ac('xlink:href'));
+TP.svg.script.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ------------------------------------------------------------------------
 //  end

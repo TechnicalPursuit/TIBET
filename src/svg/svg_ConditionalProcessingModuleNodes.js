@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.switch}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -25,8 +25,8 @@ TP.core.UIElementNode.defineSubtype('svg:switch');
 //  have to use the 'slot name' version of the type name.
 TP.svg['switch'].addTraitsFrom(TP.svg.Element);
 
-TP.svg['switch'].set(
-        'uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
+TP.svg['switch'].Type.set('uriAttrs',
+        TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ------------------------------------------------------------------------
 //  end

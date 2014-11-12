@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.Shape}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ TP.core.UIElementNode.defineSubtype('svg:Shape');
 
 TP.svg.Shape.addTraitsFrom(TP.svg.Element);
 
-TP.svg.Shape.set('uriAttrs',
+TP.svg.Shape.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask', 'fill', 'stroke'));
 
 //  ------------------------------------------------------------------------

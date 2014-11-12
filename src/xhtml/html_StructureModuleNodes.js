@@ -48,7 +48,7 @@ TP.html.Attrs.defineSubtype('aside');
 
 TP.html.Attrs.defineSubtype('body');
 
-TP.html.body.set('uriAttrs', TP.ac('background'));
+TP.html.body.Type.set('uriAttrs', TP.ac('background'));
 
 //  ========================================================================
 //  TP.html.figcaption (HTML 5)

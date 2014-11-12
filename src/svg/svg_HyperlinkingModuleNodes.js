@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.a}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -24,7 +24,7 @@ TP.core.UIElementNode.defineSubtype('svg:a');
 TP.svg.a.addTraitsFrom(TP.svg.Element);
 
 
-TP.svg.a.set('uriAttrs',
+TP.svg.a.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask', 'xlink:href'));
 
 //  ------------------------------------------------------------------------

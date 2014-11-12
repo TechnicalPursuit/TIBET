@@ -319,7 +319,7 @@ function(attributeName, attributeValue) {
 
 TP.html.Attrs.defineSubtype('embed');
 
-TP.html.embed.set('uriAttrs', TP.ac('src'));
+TP.html.embed.Type.set('uriAttrs', TP.ac('src'));
 
 //  ========================================================================
 //  TP.html.object
@@ -336,10 +336,10 @@ TP.html.Attrs.defineSubtype('object');
 
 TP.html.object.isAbstract(true);
 
-TP.html.object.set('booleanAttrs',
+TP.html.object.Type.set('booleanAttrs',
             TP.ac('declare', 'typeMustMatch', 'willValidate'));
 
-TP.html.object.set('uriAttrs', TP.ac('classid', 'codebase', 'usemap', 'data'));
+TP.html.object.Type.set('uriAttrs', TP.ac('classid', 'codebase', 'usemap', 'data'));
 
 //  ------------------------------------------------------------------------
 
@@ -404,7 +404,7 @@ TP.html.param.executeTraitResolution();
 
 TP.html.Attrs.defineSubtype('source');
 
-TP.html.source.set('uriAttrs', TP.ac('src'));
+TP.html.source.Type.set('uriAttrs', TP.ac('src'));
 
 //  ========================================================================
 //  TP.html.video (HTML 5)

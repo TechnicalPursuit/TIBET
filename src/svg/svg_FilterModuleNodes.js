@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.filter}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ TP.core.UIElementNode.defineSubtype('svg:filter');
 
 TP.svg.filter.addTraitsFrom(TP.svg.Element);
 
-TP.svg.filter.set('uriAttrs', TP.ac('xlink:href'));
+TP.svg.filter.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 //  ========================================================================
 //  TP.svg.feBlend
@@ -31,7 +31,7 @@ TP.svg.filter.set('uriAttrs', TP.ac('xlink:href'));
 
 /**
  * @type {TP.svg.feBlend}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -46,7 +46,7 @@ TP.svg.feBlend.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feColorMatrix}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -61,7 +61,7 @@ TP.svg.feColorMatrix.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feComponentTransfer}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -76,7 +76,7 @@ TP.svg.feComponentTransfer.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feComposite}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -91,7 +91,7 @@ TP.svg.feComposite.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feConvolveMatrix}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -106,7 +106,7 @@ TP.svg.feConvolveMatrix.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feDiffuseLighting}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -121,7 +121,7 @@ TP.svg.feDiffuseLighting.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feDisplacementMap}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -136,7 +136,7 @@ TP.svg.feDisplacementMap.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feFlood}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -151,7 +151,7 @@ TP.svg.feFlood.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feGaussianBlur}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -166,7 +166,7 @@ TP.svg.feGaussianBlur.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feImage}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -181,7 +181,7 @@ TP.svg.feImage.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feMerge}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -196,7 +196,7 @@ TP.svg.feMerge.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feMergeNode}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -211,7 +211,7 @@ TP.svg.feMergeNode.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feMorphology}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -226,7 +226,7 @@ TP.svg.feMorphology.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feOffset}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -241,7 +241,7 @@ TP.svg.feOffset.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feSpecularLighting}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -256,7 +256,7 @@ TP.svg.feSpecularLighting.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feTile}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -271,7 +271,7 @@ TP.svg.feTile.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feTurbulence}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -286,7 +286,7 @@ TP.svg.feTurbulence.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feDistantLight}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -301,7 +301,7 @@ TP.svg.feDistantLight.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.fePointLight}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -316,7 +316,7 @@ TP.svg.fePointLight.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feSpotLight}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -331,7 +331,7 @@ TP.svg.feSpotLight.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feFuncR}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -346,7 +346,7 @@ TP.svg.feFuncR.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feFuncG}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -361,7 +361,7 @@ TP.svg.feFuncG.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feFuncB}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -376,7 +376,7 @@ TP.svg.feFuncB.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.feFuncA}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------

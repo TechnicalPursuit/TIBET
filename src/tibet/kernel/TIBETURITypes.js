@@ -3703,27 +3703,16 @@ function(aFlag) {
      * @name shouldSignalChange
      * @synopsis Defines whether the receiver should actively signal change
      *     notifications.
-     * @description In general objects do not signal changes when no observers
-     *     exist. This flag is triggered by observe where the signal being
-     *     observed is a form of Change signal to "arm" the object for change
-     *     notification. You can also manipulate it during multi-step
-     *     manipulations to signal only when a series of changes has been
-     *     completed.
+     * @description In general URI objects do not signal changes from their own
+     *      properties, because they act as 'value holders' for their resources.
+     *      They will signal Change when their resources do so, acting as a
+     *      'forwarding' mechanism for their resources.
      * @param {Boolean} aFlag true/false signaling status.
      * @returns {Boolean} The current status.
      */
 
-    var url;
-
-    //  When we're not primary, and the flag is true, then we need to configure
-    //  our primary to also send change signal. We don't do this when the flag
-    //  is false, since we don't know what other subURIs of the primary might
-    //  want.
-    if ((url = this.getPrimaryURI()) !== this && TP.isTrue(aFlag)) {
-        url.shouldSignalChange(true);
-    }
-
-    return this.callNextMethod();
+    //  Yes, TP.core.URIs are hardcoded to return false here.
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -4489,40 +4478,61 @@ function(aResource, aRequest) {
     //  clear any expiration computations
     this.expire(false);
 
-    //  SubURIs are URIs that have the same primary resource as us, but also
+    //  Sub URIs are URIs that have the same primary resource as us, but also
     //  have a fragment, indicating that they also have a secondary resource
-    //  pointed to by the fragment
+    //  pointed to by the fragment.
     subURIs = this.getSubURIs();
 
     if (TP.notEmpty(subURIs)) {
 
-        //  In order to make sure that all observers of both the subURI and
-        //  ourself (as the primary URI) get notified, we signal from both the
-        //  subURI and ourself. Note here that we just reuse the signal name and
-        //  payload.
-
-        description = TP.hc('action', TP.DELETE,
-                            'target', aResource,
-                            'facet', 'value');
-
+        //  If we have sub URIs, then observers of them will be expecting to get
+        //  a TP.sig.StructureChange with 'value' as the aspect that changed (we
+        //  swapped out the entire resource, so the values of those will have
+        //  definitely changed).
         for (i = 0; i < subURIs.getSize(); i++) {
 
             fragText = subURIs.at(i).getFragmentText();
-            description.atPut('aspect', fragText);
+
+            //  The 'action' here is TP.DELETE, since the entire resource got
+            //  changed. This very well may mean structural changes occurred and
+            //  the resource that the subURI pointed to doesn't even exist
+            //  anymore.
+            //  The 'target' here is computed by running the fragment against
+            //  the resource.
+            description = TP.hc(
+                    'action', TP.DELETE,
+                    'aspect', 'value',
+                    'facet', 'value',
+                    'target', aResource,
+
+                    //  Given that the target is the 'whole' new value, each sub
+                    //  URI needs to know it's old and new value by directly
+                    //  querying the respective object with the fragment text
+                    //  (which represents the query).
+                    TP.OLDVAL, TP.isValid(resource) ?
+                                resource.get(fragText) :
+                                undefined,
+                    TP.NEWVAL, aResource.get(fragText));
 
             subURIs.at(i).signal(
                     'TP.sig.StructureChange',
                     description);
-
-            this.signal(
-                    'TP.sig.StructureChange',
-                    description);
         }
-    }
 
-    //  Whether or not we have an subURIs, we invoke the standard 'changed'
-    //  mechanism (which signals 'TP.sig.ValueChange' from ourself).
-    this.changed('value', TP.UPDATE, TP.hc('target', aResource));
+        //  Now that we're done signaling the sub URIs, it's time to signal a
+        //  TP.sig.StructureChange from ourself. Note how we reset the old and
+        //  new values to the 'whole' old and new values.
+        description.atPut(TP.OLDVAL, resource);
+        description.atPut(TP.NEWVAL, aResource);
+
+        this.signal(
+            'TP.sig.StructureChange',
+            description);
+    } else {
+        //  If we don't have subURIs, we invoke the standard 'changed' mechanism
+        //  (which signals 'TP.sig.ValueChange' from ourself).
+        this.changed('value', TP.UPDATE, TP.hc('target', aResource));
+    }
 
     return this;
 });

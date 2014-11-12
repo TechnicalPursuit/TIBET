@@ -21,9 +21,9 @@
 
 TP.html.Focused.defineSubtype('area');
 
-TP.html.area.set('booleanAttrs', TP.ac('noHref'));
+TP.html.area.Type.set('booleanAttrs', TP.ac('noHref'));
 
-TP.html.area.set('uriAttrs', TP.ac('href'));
+TP.html.area.Type.set('uriAttrs', TP.ac('href'));
 
 TP.html.area.addTraitsFrom(TP.core.EmptyElementNode);
 TP.html.area.Inst.resolveTraits(

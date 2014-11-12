@@ -26,7 +26,7 @@ TP.html.Element.isAbstract(true);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.html.Element.set('booleanAttrs',
+TP.html.Element.Type.set('booleanAttrs',
         TP.ac('translate', 'itemScope', 'hidden', 'draggable',
                 'isContentEditable','spellcheck',
                 'commandHidden', 'commandDisabled', 'commandChecked'));

@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.clipPath}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -23,7 +23,7 @@ TP.core.UIElementNode.defineSubtype('svg:clipPath');
 
 TP.svg.clipPath.addTraitsFrom(TP.svg.Element);
 
-TP.svg.clipPath.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
+TP.svg.clipPath.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 //  ------------------------------------------------------------------------
 //  end

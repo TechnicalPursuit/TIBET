@@ -22,7 +22,7 @@ TP.core.ActionElementNode.defineSubtype('tsh:template');
 
 TP.tsh.template.addTraitsFrom(TP.tsh.Element);
 
-TP.tsh.template.Type.defineAttribute('uriAttrs', TP.ac('src'));
+TP.tsh.template.Type.set('uriAttrs', TP.ac('src'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

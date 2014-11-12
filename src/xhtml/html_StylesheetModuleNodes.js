@@ -21,7 +21,7 @@
 
 TP.html.Attrs.defineSubtype('style');
 
-TP.html.style.set('booleanAttrs', TP.ac('scoped'));
+TP.html.style.Type.set('booleanAttrs', TP.ac('scoped'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
