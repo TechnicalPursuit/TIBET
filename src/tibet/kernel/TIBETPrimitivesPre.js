@@ -3161,10 +3161,10 @@ function(aFlag, shouldSignal) {
 //  track.
 
 /* jshint -W054 */
-/* eslint-disable no-new-func,one-var */
+/* eslint-disable no-new-func,one-var,vars-on-top */
 var NativeTypeStub = new Function();
 NativeTypeStub.prototype = {};
-/* eslint-enable no-new-func,one-var */
+/* eslint-enable no-new-func,one-var,vars-on-top */
 /* jshint +W054 */
 
 //  ---
@@ -3435,10 +3435,10 @@ Window.Type[TP.OWNER] = Window;
 //  ---
 
 /* jshint -W054 */
-/* eslint-disable no-new-func,one-var */
+/* eslint-disable no-new-func,one-var,vars-on-top */
 var NativeInstStub = new Function();
 NativeInstStub.prototype = {};
-/* eslint-enable no-new-func,one-var */
+/* eslint-enable no-new-func,one-var,vars-on-top */
 /* jshint +W054 */
 
 //  ---

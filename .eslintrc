@@ -21,6 +21,7 @@
         "no-wrap-func": 1,
         "quotes": [2, "single"],
         "radix": 1,
-        "strict": 0
+        "strict": 0,
+        "vars-on-top": 1
     }
 }
