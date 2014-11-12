@@ -23,6 +23,7 @@
         "quotes": [2, "single"],
         "radix": 1,
         "space-after-keywords": [1, "always"],
+        "space-before-blocks": [1, "always"],
         "strict": 0,
         "wrap-iife": [1, "outside"],
         "vars-on-top": 1

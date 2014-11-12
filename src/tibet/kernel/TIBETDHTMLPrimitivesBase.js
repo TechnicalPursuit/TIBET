@@ -1397,13 +1397,13 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    length = function(a){
+    length = function(a) {
         return Math.sqrt(a[0] * a[0] + a[1] * a[1]);
     };
 
     // normalizes the length of the passed point to 1
 
-    normalize = function(a){
+    normalize = function(a) {
         var l = length(a);
 
         return l ? [a[0] / l, a[1] / l] : [0, 0];
@@ -1411,7 +1411,7 @@ function(anElement) {
 
     // returns the dot product of the passed points
 
-    dot = function(a, b){
+    dot = function(a, b) {
         return a[0] * b[0] + a[1] * b[1];
     };
 
@@ -1421,7 +1421,7 @@ function(anElement) {
 
     atan2 = Math.atan2;
 
-    combine = function(a, b, ascl, bscl){
+    combine = function(a, b, ascl, bscl) {
         return [
             (ascl * a[0]) + (bscl * b[0]),
             (ascl * a[1]) + (bscl * b[1])
