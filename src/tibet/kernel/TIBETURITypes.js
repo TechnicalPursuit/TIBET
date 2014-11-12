@@ -6190,12 +6190,10 @@ function(aRequest, filterResult) {
     //  get rid of leading javascript: portion so we can eval the rest
     str = this.get('jsSource');
     try {
-        throw new Error('SecurityViolation');
         //  TODO: security check
-        /*
+        /* eslint-disable no-eval */
         eval('$$result = ' + str);
         result = $$result;
-        */
     } catch (e) {
         msg = TP.sc('Error acquiring resource via: ') + str;
         request.fail(TP.FAILURE, msg);

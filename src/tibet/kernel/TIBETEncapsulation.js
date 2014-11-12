@@ -1229,8 +1229,12 @@ function() {
             break;
         default:
             //  shouldn't get here, Date() takes up to 7 arguments...
-            //eval('$$newinst = new Date(' +
-             //       TP.sys.$buildArgString(0, arguments.length) + ');');
+            //  TODO: really? this could be a security hole if the argument list
+            //  provided turned into a viable attack.
+            /* eslint-disable no-eval */
+            eval('$$newinst = new Date(' +
+                TP.sys.$buildArgString(0, arguments.length) + ');');
+            /* eslint-enable no-eval */
             break;
     }
 

@@ -3526,11 +3526,11 @@ function(aHandlerEntry, quiet) {
 
                 return TP.sig.SignalMap.$registerHandlerEntry(entry);
             } else {
-                TP.error('Unsupported handler registration.', TP.SIGNAL_LOG);
-                /*
                 try {
                     win = window;
+                    /* eslint-disable no-eval */
                     eval('win.$$handler = ' + source);
+                    /* eslint-enable no-eval */
                     win.$$handler.setID(hash);
                     handlerID = win.$$handler.getID();
 
@@ -3548,7 +3548,6 @@ function(aHandlerEntry, quiet) {
 
                     return;
                 }
-                */
             }
         }
     } else if (handlerID.startsWith('#')) {
