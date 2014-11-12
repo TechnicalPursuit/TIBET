@@ -52,6 +52,7 @@
         "handlebars": "*",
         "js-beautify": "*",
         "jsDAV": "*",
+        "jshint": "*",
         "mocha": "*",
         "morgan": "*",
         "minimist": "*",
@@ -67,6 +68,9 @@
         "watch": "*",
         "xpath": "TechnicalPursuit/xpath",
         "xmldom": "*"
+    },
+    "devDependencies": {
+        "grunt": "*"
     },
     "engines": {
         "node": ">=0.8",

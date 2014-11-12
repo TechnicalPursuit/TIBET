@@ -617,7 +617,7 @@ function() {
         var inputVal,
             correctResults;
 
-        inputVal = ':testCmd "function() {}" "function() {alert(x)}" "function() {alert({{x}})}" foo="function() {}" bar="function() {alert(x)}" baz="function() {alert({{x}})}"';
+        inputVal = ':testCmd "function() {}" "function(x) {alert(x)}" "function() {alert({{x}})}" foo="function() {}" bar="function(x) {alert(x)}" baz="function() {alert({{x}})}"';
         correctResults =
             TP.hc(
                 'foo',
@@ -629,18 +629,18 @@ function() {
                         'Resolved value', function () {}),
                 'bar',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function() {alert(x)}"',
+                        'Original value', '"function(x) {alert(x)}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function() {alert(x)}',
+                        'Expanded value', 'function(x) {alert(x)}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function() {alert(x)}),
+                        'Resolved value', function(x) {alert(x);}),
                 'baz',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"function() {alert({{x}})}"',
                         'Expanded value tname', 'String',
                         'Expanded value', 'function() {alert(2)}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function() {alert(2)}),
+                        'Resolved value', function() {alert(2);}),
                 'ARG0',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"function() {}"',
@@ -650,18 +650,18 @@ function() {
                         'Resolved value', function () {}),
                 'ARG1',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function() {alert(x)}"',
+                        'Original value', '"function(x) {alert(x)}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function() {alert(x)}',
+                        'Expanded value', 'function(x) {alert(x)}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function() {alert(x)}),
+                        'Resolved value', function(x) {alert(x);}),
                 'ARG2',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"function() {alert({{x}})}"',
                         'Expanded value tname', 'String',
                         'Expanded value', 'function() {alert(2)}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function() {alert(2)})
+                        'Resolved value', function() {alert(2);})
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResults);

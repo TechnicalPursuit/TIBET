@@ -54,7 +54,7 @@ function() {
 
     this.it('errors implicitly via syntax or other error', function() {
         /* eslint-disable */
-        foo = thiswontwork;
+        foo = thiswontwork;     // jshint ignore:line
         /* eslint-enable */
     });
 });
@@ -62,7 +62,7 @@ function() {
 Array.Inst.describe('slice (syntax error in describe())',
 function() {
         /* eslint-disable */
-        foo = thiswontwork;
+        foo = thiswontwork;     // jshint ignore:line
         /* eslint-enable */
     this.it('slices and dices', function() {
     });
@@ -72,7 +72,7 @@ Array.Inst.describe('slice (syntax error in it())',
 function() {
     this.it('makes julienne fries (syntax error)', function() {
         /* eslint-disable */
-        foo = thiswontwork;
+        foo = thiswontwork;     // jshint ignore:line
         /* eslint-enable */
     });
 });

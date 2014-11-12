@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sherpa.editortile}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -107,18 +107,16 @@ function(aSignal) {
 
     var headers,
         i,
-    
+
         elem,
 
         textInput,
         val,
 
         heading,
-    
+
         replacement,
-        focusElem,
-    
-        $$func;
+        focusElem;
 
     this.ignore(aSignal.getSignalOrigin(), aSignal.getSignalName);
 
@@ -152,7 +150,7 @@ function(aSignal) {
                 if (TP.notEmpty(val = textInput.getDisplayValue())) {
 val = 'TP.tibet.helloworld.defineMethod(\'tshCompile\',' + val + ');';
 
-                    eval(val);
+                    eval(val);  /* jshint ignore:line */
 
                     replacement = TP.unwrap(TP.process('<tibet:helloworld/>'));
                     //TP.$$currentFocus.setContent('<tibet:helloworld/>');
@@ -192,14 +190,14 @@ function(categoryElem, itemElem) {
 
     var categoryText,
         itemName,
-   
+
         textInput,
-    
+
         targetTPElement,
         targetType,
-    
+
         natElem,
-   
+
         str,
 
         i,
@@ -273,9 +271,9 @@ TP.sherpa.editortile.Inst.defineMethod('drawPropertyList',
 function() {
 
     var targetTPElement,
-    
+
         groups,
-    
+
         propertyList,
         result;
 
@@ -304,7 +302,7 @@ function() {
                 result += '<h1>' + kvPair.first() + '</h1>';
 
                 if (TP.isEmpty(list = kvPair.last())) {
-                
+
                     result += '</section>';
 
                     return;

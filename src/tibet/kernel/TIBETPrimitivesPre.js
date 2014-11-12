@@ -22,9 +22,7 @@
 
 /* JSHint checking */
 
-/* global Window:false,
-          $STATUS:true
-*/
+/* global $STATUS:true */
 
 //  ------------------------------------------------------------------------
 //  OBJECT IDENTITY - PART I

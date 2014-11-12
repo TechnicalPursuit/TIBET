@@ -127,7 +127,6 @@ TDS.cli = function(options) {
         var cmd;    // The command being requested.
         var argv;   // Non-named argument collector.
         var params; // Named argument collector.
-        var result; // ShellJS result data.
         var child;  // child process module.
 
         cmd = req.param('cmd');
@@ -147,13 +146,13 @@ TDS.cli = function(options) {
             } else if (key === 'argv') {
                 argv = req.query[key];
             } else {
-                value = req.query[key]
+                value = req.query[key];
 
                 params.push('--' + key);
                 if (value !== null &&
                     value !== undefined &&
                     value !== true &&
-                    value !== "") {
+                    value !== '') {
                     params.push(value);
                 }
             }
@@ -207,7 +206,7 @@ TDS.patcher = function(options) {
         fs = require('fs');
 
         body = req.body;
-        if (body == null) {
+        if (body === null || body === undefined) {
             return err(400, 'No patch data provided.');
         }
 
@@ -243,7 +242,7 @@ TDS.patcher = function(options) {
 
         root = path.resolve(TDS.expandPath(TDS.getcfg('tds.patch_root')));
 
-        if (!url.indexOf(root) === 0) {
+        if (url.indexOf(root) !== 0) {
             return err(403, 'Patch target outside patch directory.');
         }
 

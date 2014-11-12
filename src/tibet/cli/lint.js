@@ -19,9 +19,7 @@
 var CLI = require('./_cli');
 
 var beautify = require('js-beautify').js_beautify;
-var csslint = require( 'csslint' ).CSSLint
 var dom = require('xmldom');
-var eslint = require('eslint');
 var sh = require('shelljs');
 
 //  ---
@@ -59,23 +57,18 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 Cmd.prototype.HELP =
 'Runs a variety of lint tools on files specified in a package#config.\n\n' +
 
-'For JavaScript files TIBET relies on eslint. CSS files are checked\n' +
-'via csslint. XML files are checked via a simple xmldom parse. JSON\n' +
-'files are checked via a simple JSON.parse.\n\n' +
-
 '--scan tells the linter to scan the directory tree and ignore any\n' +
 'package#config specification. Without this flag only files found\n' +
 'in the project package files will be linted, making it easy to lint\n' +
-'just the files your project actually makes direct use of.\n\n' +
+'only those files your project actually makes direct use of.\n\n' +
 
 '--stop tells the linter to stop after the first file with errors.\n\n' +
 
 '[package-opts] refers to valid options for a TIBET Package object.\n' +
 'These include --package, --config, --phase, --assets, etc.\n' +
-'See help on the \'tibet package\' command for more information.\n\n' +
-
 'The package#config defaults to ~app_cfg/app.xml and its default\n' +
-'config (usually #base).\n\n' +
+'config (usually #base) so your typical configuration is linted.\n' +
+'See help on the \'tibet package\' command for more information.\n\n' +
 
 '[eslint-opts] refers to --esconfig, --esrules, and --esformat which\n' +
 'let you configure eslint to meet your specific needs. The linter will\n' +
@@ -84,7 +77,12 @@ Cmd.prototype.HELP =
 '[csslint-opts] refers to --cssconfig which allows you to specify a\n' +
 'specific .csslintrc file whose content should be used. The lint command\n' +
 'relies on .csslintrc as used by the csslint command line. The default\n' +
-'file is the one in your project, followed by the TIBET library version.\n';
+'file is the one in your project, followed by the TIBET library version.\n\n' +
+
+'All of the linters can be disabled individually by using a --no- prefix.\n' +
+'For example: --no-csslint --no-eslint --no-jsonlint --no-xmllint will turn\n' +
+'off all the currently supported linters.\n\n';
+
 
 /**
  * Command argument parsing options.
@@ -92,10 +90,15 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['scan', 'stop', 'all', 'silent', 'nodes', 'reset'],
+        boolean: ['scan', 'stop', 'all', 'silent', 'nodes', 'reset',
+            'csslint', 'eslint', 'jsonlint', 'xmllint'],
         string: ['esconfig', 'esrules', 'esformat', 'cssconfig',
             'package', 'config', 'phase'],
         default: {
+            cssslint: true,
+            eslint: true,
+            jsonlint: true,
+            xmllint: true,
             nodes: true,
             silent: true
         }
@@ -120,7 +123,8 @@ Cmd.prototype.XML_EXTENSIONS = [
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet lint [--scan] [--stop] [package-opts] [eslint-opts]';
+Cmd.prototype.USAGE =
+    'tibet lint [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]';
 
 
 //  ---
@@ -137,7 +141,9 @@ Cmd.prototype.configureCSSLintOptions = function() {
     var text;
     var lines;
     var rules;
+    var csslint;
 
+    csslint = require( 'csslint' ).CSSLint;
     rules = csslint.getRuleset();
 
     if (this.options.cssconfig) {
@@ -205,12 +211,6 @@ Cmd.prototype.configureEslintOptions = function() {
 
     args = ['node', 'eslint'];
 
-    if (this.options.eslintrc === false) {
-    // TODO: figure out why this throws errors in eslint...
-    //    args.push('--no-eslintrc');
-        void(0);        // keep lint happy about empty blocks
-    }
-
     if (this.options.esconfig) {
         args.push('-c' + this.options.esconfig);
     }
@@ -270,24 +270,32 @@ Cmd.prototype.execute = function() {
     // handle each file individually in whatever order we might come across it.
     files = this.executeForEach(list);
 
-    result = this.validateCSSFiles(files.css);
-    if (this.options.stop && result.count !== 0) {
-        return this.summarize(result);
+    if (this.options.csslint) {
+        result = this.validateCSSFiles(files.css);
+        if (this.options.stop && result.count !== 0) {
+            return this.summarize(result);
+        }
     }
 
-    this.validateJSONFiles(files.json, result);
-    if (this.options.stop && result.count !== 0) {
-        return this.summarize(result);
+    if (this.options.jsonlint) {
+        result = this.validateJSONFiles(files.json, result);
+        if (this.options.stop && result.count !== 0) {
+            return this.summarize(result);
+        }
     }
 
-    this.validateSourceFiles(files.js, result);
-    if (this.options.stop && result.count !== 0) {
-        return this.summarize(result);
+    if (this.options.eslint) {
+        result = this.validateSourceFiles(files.js, result);
+        if (this.options.stop && result.count !== 0) {
+            return this.summarize(result);
+        }
     }
 
-    this.validateXMLFiles(files.xml, result);
-    if (this.options.stop && result.count !== 0) {
-        return this.summarize(result);
+    if (this.options.xmllint) {
+        result = this.validateXMLFiles(files.xml, result);
+        if (this.options.stop && result.count !== 0) {
+            return this.summarize(result);
+        }
     }
 
     return this.summarize(result);
@@ -414,8 +422,8 @@ Cmd.prototype.summarize = function(results) {
 
     var msg;
 
-    msg = '' + results.count + ' errors in ' + results.files +
-        ' processed files.';
+    msg = '' + results.count + ' errors in ' + results.checked + ' of ' +
+        results.files + ' files.';
 
     if (results.count !== 0) {
         this.error(msg);
@@ -470,9 +478,12 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
     var cmd;
     var formatter;
     var ruleset;
+    var csslint;
+
+    csslint = require( 'csslint' ).CSSLint;
 
     cmd = this;
-    results = results || { count: 0, files: 0 };
+    results = results || { checked: 0, count: 0, files: 0 };
 
     files = Array.isArray(files) ? files : [files];
     if (files.length) {
@@ -507,6 +518,8 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
 
         cmd.verbose('linting: ' + file + '...');
 
+        results.checked += 1;
+
         text = sh.cat(file);
         if (!text) {
             results.count += 1;
@@ -538,7 +551,7 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
         // True will end the loop but we only do that if we're doing
         // stop-on-first style linting.
         if (cmd.options.stop) {
-            return results.count === 1;
+            return results.count >= 1;
         } else {
             return false;
         }
@@ -559,7 +572,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
     var cmd;
 
     cmd = this;
-    results = results || { count: 0, files: 0 };
+    results = results || { checked: 0, count: 0, files: 0 };
 
     files = Array.isArray(files) ? files : [files];
     if (files.length) {
@@ -571,6 +584,8 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         var text;
 
         cmd.verbose('linting: ' + file + '...');
+
+        results.checked += 1;
 
         text = sh.cat(file);
         if (!text) {
@@ -589,7 +604,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         // True will end the loop but we only do that if we're doing
         // stop-on-first style linting.
         if (cmd.options.stop) {
-            return results.count === 1;
+            return results.count >= 1;
         } else {
             return false;
         }
@@ -609,10 +624,13 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
 
     var cmd;
     var args;
+    var eslint;
+
+    eslint = require('eslint');
 
     cmd = this;
     args = this.configureEslintOptions();
-    results = results || { count: 0, files: 0 };
+    results = results || { checked: 0, count: 0, files: 0 };
 
     files = Array.isArray(files) ? files : [files];
     if (files.length) {
@@ -625,18 +643,16 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
             var result;
 
             cmd.verbose('linting: ' + file + '...');
+
+            results.checked += 1;
+
             result = eslint.cli.execute(args.concat(file));
-
             results.count = results.count + result;
-
-            if (result !== 0 && cmd.options.stop) {
-                throw new Error(result);
-            }
 
             // True will end the loop but we only do that if we're doing
             // stop-on-first style linting.
             if (cmd.options.stop) {
-                return results.count === 1;
+                return results.count >= 1;
             } else {
                 return false;
             }
@@ -667,7 +683,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
     var current;
 
     cmd = this;
-    results = results || { count: 0, files: 0 };
+    results = results || { checked: 0, count: 0, files: 0 };
 
     files = Array.isArray(files) ? files : [files];
     if (files.length) {
@@ -696,6 +712,8 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
         current = file;
         cmd.verbose('linting ' + file + '...');
 
+        results.checked += 1;
+
         text = sh.cat(file);
         if (!text) {
             cmd.error('Unable to read ' + file);
@@ -716,7 +734,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
         // True will end the loop but we only do that if we're doing
         // stop-on-first style linting.
         if (cmd.options.stop) {
-            return results.count === 1;
+            return results.count >= 1;
         } else {
             return false;
         }

@@ -2924,7 +2924,7 @@ function(aRequest) {
 
     req.fire(this);
 
-    return;
+    return aRequest.complete(str);
 });
 
 //  ------------------------------------------------------------------------

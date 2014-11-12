@@ -213,9 +213,6 @@ function(aSignal) {
         sigSuffix,
         lastCorner;
 
-        editorType,
-        methodName;
-
     if (aSignal.getShiftKey()) {
         aSignal.preventDefault();
         aSignal.stopPropagation();
@@ -319,10 +316,11 @@ function(aSignal) {
      */
 
     return this;
-
+/*
     this.hideHaloCorner();
 
     return this;
+*/
 });
 
 //  ------------------------------------------------------------------------
@@ -340,7 +338,7 @@ function(aSignal) {
 
     //TP.info('got to TP.sherpa.halo::handleDOMMouseWheel', TP.LOG);
     return;
-
+/*
     var currentTargetTPElem,
         newTargetTPElem;
 
@@ -365,6 +363,7 @@ function(aSignal) {
     }
 
     return this;
+*/
 });
 
 //  ------------------------------------------------------------------------

@@ -22,7 +22,8 @@ var CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+// NOTE this is a subtype of the 'tsh' command focused on running :test.
+var Parent = require('./tsh');
 
 var Cmd = function(){};
 Cmd.prototype = new Parent();
@@ -44,7 +45,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * The default path to the TIBET-specific phantomjs test runner.
  * @type {String}
  */
-Cmd.DEFAULT_RUNNER = '~lib_tst/phantom/phantomtsh.js';
+Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 
 
 //  ---
@@ -56,11 +57,18 @@ Cmd.DEFAULT_RUNNER = '~lib_tst/phantom/phantomtsh.js';
  * @type {String}
  */
 Cmd.prototype.HELP =
-'Runs the TIBET phantomtsh test runner to test your application.\n\n' +
+'Runs unit, functional, and/or integration tests on your application.\n\n' +
+
+'CLI-initiated tests are run in the context of phantomjs and support\n' +
+'the use of the full TIBET test harness and UI driver feature set.\n\n' +
 
 'The default operation makes use of ~app_test/phantom.xml as the\n' +
 'boot.profile (which controls what code is loaded) and a TSH shell\n' +
 'command of \':test\' which will run all test suites in the profile.\n\n' +
+
+'You can specify a particular test target object or test suite to\n' +
+'run as the first argument to the command. If you need to specify\n' +
+'both a target and suite use --target and --suite respectively.\n\n' +
 
 'Output is to the terminal in colorized TAP format by default.\n' +
 'Future versions will support additional test output formatters.\n\n' +
@@ -69,7 +77,7 @@ Cmd.prototype.HELP =
 'can easily test components simply by naming them via the --script\n' +
 'parameter. For example, you can run all String tests via:\n\n' +
 
-'tibet test --script \':test String\'\n';
+'tibet test [--script] \':test String\'\n';
 
 
 /**
@@ -79,7 +87,7 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         boolean: ['selftest'],
-        string: ['script', 'profile'],
+        string: ['target', 'suite'],
         default: {}
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -88,103 +96,93 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE =
-    'tibet test [--profile <url>] [--params <params>] [--script <tsh>]';
+Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--ignore-only]';
 
 //  ---
 //  Instance Methods
 //  ---
 
 /**
- * Perform the actual command processing logic.
+ * Performs any final processing of the argument list prior to execution.
+ * @param {Array.<String>} arglist The argument list to finalize.
+ * @return {Array.<String>} The finalized argument list.
  */
-Cmd.prototype.execute = function() {
+Cmd.prototype.finalizePhantomArglist = function(arglist) {
 
-    var sh;         // The shelljs module.
-    var proc;       // The child_process module.
-    var child;      // The spawned child process.
-    var testpath;   // Path to the TIBET test runner script.
-    var profile;    // The test profile to use.
-    var script;     // The test script to run.
-    var cmd;        // Local binding variable.
-    var arglist;    // Array of parameters to spawn.
-
-    // We can run in the TIBET library, or in a project, but not in an
-    // un-initialized project.
-    if (CLI.inProject() && !CLI.isInitialized()) {
-        return CLI.notInitialized();
+    if ((arglist.indexOf('--tap') === -1) &&
+            (arglist.indexOf('--no-tap') === -1)) {
+        arglist.push('--tap');
     }
 
-    sh = require('shelljs');
-    proc = require('child_process');
+    return arglist;
+};
 
-    cmd = this;
 
-    // Verify we can find the test runner script.
-    testpath = CLI.expandPath(Cmd.DEFAULT_RUNNER);
-    if (!sh.test('-e', testpath)) {
-        this.error('Cannot find runner at: ' + testpath);
-        return;
-    }
+/**
+ * Computes and returns the proper profile to boot in support of the TSH.
+ * @return {String} The profile to boot.
+ */
+Cmd.prototype.getProfile = function() {
 
-    if (CLI.notEmpty(this.options.script)) {
-        script = this.options.script;
+    var profile;
+
+    if (CLI.notEmpty(this.options.profile)) {
+        profile = this.options.profile;
     }
 
     if (CLI.isValid(this.options.selftest)) {
-        profile = '~lib/test/phantom/phantom#selftest';
+        profile = '~lib_etc/phantom/phantom#selftest';
     } else if (CLI.notEmpty(this.options.profile)) {
         profile = this.options.profile;
     }
 
     if (CLI.inProject()) {
-        script = script || ':test';
-        profile = profile || '~app/test/phantom';
+        profile = profile || '~app_cfg/phantom';
     } else {
-        script = script || ':test -ignore_only';
-        profile = profile || '~lib/test/phantom/phantom';
+        profile = profile || '~lib_etc/phantom/phantom';
     }
 
-    arglist = [testpath, '--profile', profile, '--script', script];
-    if (CLI.notEmpty(this.options.params)) {
-        arglist.push('--params', this.options.params);
-    }
-
-    // Run a manufactured tsh:test command just as we would in the TDC/Sherpa.
-    child = proc.spawn('phantomjs', arglist);
-
-    child.stdout.on('data', function(data) {
-        // Copy and remove newline.
-        var msg = data.slice(0, -1);
-        cmd.log(msg);
-    });
-
-    child.stderr.on('data', function(data) {
-        // Copy and remove newline.
-        var msg = data.slice(0, -1);
-
-        // Somebody down below likes to write error output with empty lines.
-        if (msg && typeof msg.trim === 'function' && msg.trim().length === 0) {
-            return;
-        }
-
-        // A lot of errors will include what appears to be a common 'header'
-        // output message from events.js:72 etc. which provides no useful
-        // data but clogs up the output. Filter those messages.
-        if (/throw er;/.test(msg)) {
-            return;
-        }
-
-        cmd.error(msg);
-    });
-
-    child.on('close', function(code) {
-        if (code !== 0) {
-            cmd.error('Testing stopped with status: ' + code);
-        }
-        process.exit(code);
-    });
+    return profile;
 };
+
+
+/**
+ * Computes and returns the TIBET Shell script command line to be run.
+ * @return {String} The TIBET Shell script command to execute.
+ */
+Cmd.prototype.getScript = function() {
+
+    var target;
+    var prefix;
+
+    if (CLI.notEmpty(this.options.target)) {
+        target = this.options.target;
+    } else {
+        // The options._ object holds non-qualified parameters. [0] is the
+        // command name (tsh in this case). [1] should be the "target" to run.
+        target = this.options._[1];
+    }
+
+    if (CLI.inProject()) {
+        prefix = ':test ';
+    } else {
+        prefix = ':test -ignore_only ';
+    }
+
+    target = target || '';
+    if (target.length > 0 && target.indexOf(prefix) !== 0) {
+        target = prefix + '\'' + target + '\'';
+    } else {
+        target = prefix;
+    }
+
+    if (CLI.notEmpty(this.options.suite)) {
+        target = target.trim() + ' -suite=\'' + this.options.suite + '\'';
+    }
+
+    return target;
+};
+
 
 module.exports = Cmd;
 

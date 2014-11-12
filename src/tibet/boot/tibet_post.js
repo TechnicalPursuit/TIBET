@@ -5799,29 +5799,28 @@ TP.boot.$phantomReporter = function(entry, options) {
 
     switch (level) {
     case TP.boot.TRACE:
-        top.console.log(msg);
+        top.console.log('trace ' + msg);
         break;
     case TP.boot.DEBUG:
-        top.console.log(msg);
+        top.console.log('debug ' + msg);
         break;
     case TP.boot.INFO:
-        top.console.log(msg);
+        top.console.log('info ' + msg);
         break;
     case TP.boot.WARN:
-        top.console.warn(msg);
+        top.console.warn('warn ' + msg);
         break;
     case TP.boot.ERROR:
-        top.console.error(msg);
+        top.console.error('error ' + msg);
         break;
     case TP.boot.SEVERE:
-        top.console.error(msg);
+        top.console.error('severe ' + msg);
         break;
     case TP.boot.FATAL:
-        top.console.error(msg);
+        top.console.error('fatal ' + msg);
         break;
     case TP.boot.SYSTEM:
-        // NOTE: we turn off normal system messaging to quiet it down.
-        //top.console.log(msg);
+        top.console.log('system ' + msg);
         break;
     default:
         top.console.log(msg);
@@ -7799,7 +7798,9 @@ TP.boot.$getAppHead = function() {
         parts,
         keys,
         key,
-        lib;
+        lib,
+        i,
+        len;
 
     if (TP.boot.$$apphead != null) {
         return TP.boot.$$apphead;
@@ -7902,13 +7903,11 @@ TP.boot.$getLibRoot = function() {
 
     var comp,
         root,
-        file,
         loc,
         test,
         ndx,
         path,
         parts,
-        list,
         scripts,
         i,
         len;
@@ -7979,6 +7978,7 @@ TP.boot.$getLibRoot = function() {
         /* eslint-disable no-fallthrough */
     case 'script':
         void(0);
+        /* falls through */
     default:
         /* eslint-enable no-fallthrough */
 
