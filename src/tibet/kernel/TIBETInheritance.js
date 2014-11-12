@@ -4885,7 +4885,7 @@ function(anObject, constraints) {
         constraintName = constraintNames.at(i);
         constraint = constraints[constraintName];
 
-        switch(constraintName) {
+        switch (constraintName) {
 
             case 'dataType':
 
@@ -6573,7 +6573,7 @@ function(aspectName, facetName) {
 
     //  We compute the facet value differently depending on whether we're
     //  computing the validity facet or not.
-    switch(facetName) {
+    switch (facetName) {
 
         case TP.VALID:
 

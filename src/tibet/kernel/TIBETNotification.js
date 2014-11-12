@@ -6779,7 +6779,7 @@ function(aMutationRecord) {
 
     mutationType = aMutationRecord.type;
 
-    switch(mutationType) {
+    switch (mutationType) {
         case 'attributes':
             fname = 'handlePeerTP_sig_DOMAttrChanged';
 

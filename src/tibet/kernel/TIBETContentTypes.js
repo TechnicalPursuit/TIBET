@@ -2815,7 +2815,7 @@ function(targetObj, attributeValue, shouldSignal) {
                             op = TP.DELETE;
                         } else if (TP.isDefined(targetObj.get(index))) {
                             op = TP.UPDATE;
-                        } else{
+                        } else {
                             op = TP.CREATE;
                         }
 

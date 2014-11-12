@@ -464,7 +464,7 @@ function() {
                     (function() {
                         try {
                             TP.boot.$setStage('liftoff');
-                        } finally{
+                        } finally {
                             //  Set our final stage/state flags so dependent
                             //  pieces of logic can switch to their "started"
                             //  states (ie. no more boot log usage etc.)

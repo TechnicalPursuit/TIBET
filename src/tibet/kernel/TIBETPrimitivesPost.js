@@ -5233,7 +5233,7 @@ function(aPath) {
 
     pathType = TP.getPathType(aPath);
 
-    switch(pathType) {
+    switch (pathType) {
         case TP.TIBET_PATH_TYPE:
             return 'tibet';
         case TP.CSS_PATH_TYPE:

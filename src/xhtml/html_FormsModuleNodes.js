@@ -1204,7 +1204,7 @@ function(aValue, elementProperty) {
 
         item = elementArray.at(i);
 
-        switch(aspect) {
+        switch (aspect) {
             case 'value':
                 val = item.value;
             break;
@@ -1690,7 +1690,7 @@ function(aValue, elementProperty) {
 
         item = elementArray.at(i);
 
-        switch(aspect) {
+        switch (aspect) {
             case 'value':
                 val = item.value;
             break;
@@ -3404,7 +3404,7 @@ function(aValue, optionProperty) {
 
         item = elementArray.at(i);
 
-        switch(aspect) {
+        switch (aspect) {
             case 'value':
                 val = item.value;
             break;
@@ -4052,7 +4052,7 @@ function(aValue, optionProperty) {
 
         item = elementArray.at(i);
 
-        switch(aspect) {
+        switch (aspect) {
             case 'value':
                 val = item.value;
             break;
