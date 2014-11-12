@@ -14330,6 +14330,7 @@ function(aRequest, functionName) {
                         //  in a loop we interpret the splat as a directive
                         //  to return an array of results rather than a
                         //  single string so we loop here
+                        /* eslint-disable no-loop-func */
                         result = content.select(
                             function(item) {
 
@@ -14337,6 +14338,7 @@ function(aRequest, functionName) {
                                                         node,
                                                         aRequest);
                             }.bind(this));
+                        /* eslint-enable no-loop-func */
 
                         break;
 
@@ -14346,6 +14348,7 @@ function(aRequest, functionName) {
                         //  things in a loop we interpret the splat as a
                         //  directive to return an array of results rather
                         //  than a single string so we loop here
+                        /* eslint-disable no-loop-func */
                         result = content.collect(
                             function(item) {
 
@@ -14353,6 +14356,7 @@ function(aRequest, functionName) {
                                                             node,
                                                             aRequest);
                             }.bind(this));
+                        /* eslint-enable no-loop-func */
 
                         break;
 
@@ -15473,7 +15477,9 @@ function(aNode) {
                             ).replace(/\&nbsp;/g, ' '
                             ).replace(/\&amp;/g, '&');
 
+        /* eslint-disable no-eval */
         $$inst = eval(jsString);
+        /* eslint-enable no-eval */
     } catch (e) {
         return this.raise('InvalidTP.core.XMLRPCNode',
                             TP.ec(e, TP.join('Error in: ', jsString)));

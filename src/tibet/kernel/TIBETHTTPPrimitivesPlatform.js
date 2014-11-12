@@ -47,6 +47,7 @@ TP.hc(
 
         retMsg = TP.ac();
 
+        /* eslint-disable new-cap */
         successfulExec = TP.executePrivileged(
             TP.ACCESS_XDOMAIN_XMLHTTP,
             'This TIBET-based application would like to read XMLHttpRequest security information',
@@ -190,6 +191,7 @@ TP.hc(
                     retMsg.push(TP.str(e));
                 }
             });
+            /* eslint-enable new-cap */
 
         if (successfulExec) {
             return retMsg.join('');

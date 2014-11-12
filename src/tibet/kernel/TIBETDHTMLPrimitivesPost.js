@@ -4544,6 +4544,7 @@ function(anElement, attrName, oldValue, newValue) {
     //  replacing, we're removing
     if (TP.isEmpty(newValue)) {
         //  TODO: Code here??
+        void(0);
     }
 
     //  If there was no prior value, then just set the attribute to the new
@@ -8823,6 +8824,7 @@ function(aWindow) {
 
     //  NB: This function needs to be forked in order to be 'outside' of the
     //  window stoppage procedure above.
+    /* eslint-disable no-wrap-func */
     (function() {
 
         var loc,
@@ -8868,6 +8870,7 @@ function(aWindow) {
                                         'tibet_settinglocation');
                         }));
     }).afterUnwind();
+    /* eslint-enable no-wrap-func */
 });
 
 //  ------------------------------------------------------------------------

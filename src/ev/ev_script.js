@@ -200,7 +200,9 @@ function(aRequest) {
             //  to window/document are proper
             win = TP.nodeGetWindow(node) || window;
             /* jshint -W061 */
+            /* eslint-disable no-eval */
             eval('win.$$handler = ' + source);
+            /* eslint-enable no-eval */
             /* jshint +W061 */
             win[funcID] = win.$$handler;
         } catch (e) {

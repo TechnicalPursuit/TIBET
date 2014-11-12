@@ -1762,6 +1762,8 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
         element = foundElements.at(i);
 
         len2 = eventNameArray.getSize();
+
+        /* eslint-disable no-loop-func */
         for (i2 = 0; i2 < len2; i2++) {
             eventName = eventNameArray.at(i2);
             nativeEventName = TP.eventNameNativeValue(eventName);
@@ -1790,6 +1792,7 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
 
             element.firingPolicy = thePolicy;
         }
+        /* eslint-enable no-loop-func */
     }
 
     return;

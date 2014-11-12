@@ -254,6 +254,7 @@ function(targetURI, aRequest) {
 
         //  TODO: Figure this out.
         //  content = targetURI.get('$lastAdded');
+        void(0);
     } else {
         //  Setting the content
 

@@ -2723,6 +2723,7 @@ function(aRequest, allForms) {
                         expandedVal = val;
                     } else if (val.charAt(0) === '`') {
                         //  We leave 'val' alone here and let it get expanded.
+                        void(0);
                     } else {
                         val = val.unquoted();
                     }

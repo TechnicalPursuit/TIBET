@@ -435,7 +435,7 @@ function(aPath) {
             (TP.regex.WINDOWS_PATH.test(aPath) ||
                 TP.regex.UNC_PATH.test(aPath))) ||
         TP.regex.ROOT_PATH.test(aPath)) {
-        return unescape(aPath);
+        return window.unescape(aPath);
     }
 
     //  make sure we've got the fully-expanded path for what follows
@@ -446,11 +446,11 @@ function(aPath) {
     if (path.indexOf('file:') !== 0) {
         //  NOTE that we don't return the expanded path, we leave the
         //  incoming path in whatever form it came in, minus any escaping
-        return unescape(aPath);
+        return window.unescape(aPath);
     }
 
     //  remove the file scheme prefix. we clearly won't need that
-    path = unescape(TP.uriMinusFileScheme(path));
+    path = window.unescape(TP.uriMinusFileScheme(path));
 
     //  if we're not on Windows we're done. should have a path of the form
     //  /blah, or ../blah, etc.
@@ -469,7 +469,7 @@ function(aPath) {
 
     //  didn't look right after conversion? return original path minus any
     //  file scheme and hope for the best
-    return unescape(TP.uriMinusFileScheme(aPath));
+    return window.unescape(TP.uriMinusFileScheme(aPath));
 });
 
 //  ------------------------------------------------------------------------
@@ -1515,6 +1515,8 @@ function(aPath, resourceOnly) {
         path = url;
     }
 
+    /* eslint-disable no-script-url */
+
     //  with the path portion extracted we can check for the most common
     //  cases now, which are those involving ~ references (otherwise why use
     //  a TIBET URI :))
@@ -1590,6 +1592,8 @@ function(aPath, resourceOnly) {
                                 'javascript:' + canvas + '.');
         }
     }
+
+    /* eslint-enable no-script-url */
 
     //  if we had tibet:/// with no canvas spec we allow that to be removed,
     //  but all other cases where a canvas is defined we must preserve

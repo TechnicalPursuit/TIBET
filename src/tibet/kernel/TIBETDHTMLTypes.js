@@ -4160,6 +4160,8 @@ TP.core.DragTracker.Type.defineConstant('VEND_ACCEPT',
 //  domain object returned by a domainSpec.
 //  ---
 
+/* eslint-disable new-cap */
+
 TP.core.DragTracker.Type.defineConstant('GLOBAL_CENTER',
     function(target) {
         var rect;
@@ -4234,6 +4236,7 @@ TP.core.DragTracker.Type.defineConstant('PAGE_Y_COORDS',
         return;
     });
 
+/* eslint-enable new-cap */
 
 //  ---
 //  "Test functions"...functions which return a boolean result relative to the

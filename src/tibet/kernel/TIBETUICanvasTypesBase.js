@@ -126,7 +126,7 @@ function(aWindow) {
                                 false);
 
                         tibetWin.TP.$$processDocumentUnloaded(aWindow);
-                    },
+                    };
 
     aWindow.addEventListener('unload', unloadListener, false);
 

@@ -5,13 +5,19 @@
     },
     "globals": {
         "TP": true,
-        "APP": true
+        "APP": true,
+        "Window": false,
+        "self": false
     },
     "rules": {
         "camelcase": 0,
         "consistent-return": 0,
+        "no-extend-native": 0,
+        "no-shadow": 0,
         "no-unused-expressions": 0,
+        "no-unused-vars": 1,
         "no-underscore-dangle": 0,
+        "no-wrap-func": 1,
         "quotes": [2, "single"],
         "strict": 0
     }

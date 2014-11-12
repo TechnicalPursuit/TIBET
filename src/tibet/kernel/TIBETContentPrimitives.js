@@ -180,8 +180,8 @@ function(aString, smartConversion, shouldReport) {
                     text,
                     function(key, value) {
 
-                        var newArr,
-                            i;
+                        var arr,
+                            j;
 
                         //  If the value matches an ISO Date, then turn it
                         //  into a Date object.
@@ -201,12 +201,12 @@ function(aString, smartConversion, shouldReport) {
                         //  If its a 'JS Array', convert it into a TIBETized
                         //  Array.
                         if (TP.isMemberOf(value, Array)) {
-                            newArr = TP.ac();
-                            for (i = 0; i < value.length; i++) {
-                                newArr.push(value[i]);
+                            arr = TP.ac();
+                            for (j = 0; j < value.length; j++) {
+                                arr.push(value[j]);
                             }
 
-                            return newArr;
+                            return arr;
                         }
 
                         return value;
@@ -761,6 +761,7 @@ shouldRaise) {
                 //  after 1 second after this function is called (which is
                 //  called after the callback function whose reference is
                 //  embedded in the JSON).
+                /* eslint-disable no-wrap-func */
                 (function() {
 
                     if (TP.isCallable(contextWin[callbackID])) {
@@ -769,6 +770,7 @@ shouldRaise) {
                         contextWin[callbackID] = null;
                     }
                 }).fork(TP.sys.cfg('jsonp.delay'));
+                /* eslint-enable no-wrap-func */
             });
 
     //  adding the elem to the 'head' will start the loading process
@@ -790,6 +792,7 @@ shouldRaise) {
 });
 
 /* jshint ignore:start */
+/* eslint-disable */
 
 //  ------------------------------------------------------------------------
 //  JSONML parsers/serializers
@@ -1209,6 +1212,7 @@ TP.extern.JsonML = JsonML;
 
 })(JsonML, document);
 
+/* eslint-enable */
 /* jshint ignore:end */
 
 //  ========================================================================

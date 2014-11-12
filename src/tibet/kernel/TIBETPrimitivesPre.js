@@ -684,7 +684,7 @@ if (!TP.sys.constructOID) {
 
         //  NOTE that starting with anything other than a number allows
         //  these to work as ID[REF] values when no prefix is provided
-        return ((!!aPrefix) ? aPrefix + TP.OID_PREFIX : TP.OID_PREFIX) +
+        return ((aPrefix) ? aPrefix + TP.OID_PREFIX : TP.OID_PREFIX) +
                 Math.random().toString(32).replace('0.',
                         Date.now().toString(32));
     };
@@ -818,7 +818,7 @@ TP.StringProto.getName = TP.FunctionProto.$getName;
 //  Add it directly to TP.ArrayProto - we don't worry about capturing metadata
 //  about this method as we'll be replacing it very soon with the "real"
 //  implementation anyway.
-TP.ArrayProto.at = function(anIndex, varargs) {
+TP.ArrayProto.at = function(anIndex) {
 
     /**
      * @name at
@@ -833,8 +833,6 @@ TP.ArrayProto.at = function(anIndex, varargs) {
      *     [[0,1],[2,3]]. This is equivalent to the syntax arr[1][1];
      * @param {Number} anIndex The index to access. Note that this value is the
      *     first index in a potential list of indicies.
-     * @param {Array} varargs A variable list of 0 to N additional indexes
-     *     which descend into nested array children.
      * @returns {Object} The value at the index.
      * @addon Array
      * @todo
@@ -850,7 +848,7 @@ TP.ArrayProto.at = function(anIndex, varargs) {
 //  Add it directly to TP.ArrayProto - we don't worry about capturing metadata
 //  about this method as we'll be replacing it very soon with the "real"
 //  implementation anyway.
-TP.ArrayProto.atPut = function(anIndex, varargs, aValue) {
+TP.ArrayProto.atPut = function(anIndex, aValue) {
 
     /**
      * @name atPut
@@ -859,14 +857,12 @@ TP.ArrayProto.atPut = function(anIndex, varargs, aValue) {
      *     bracket syntax. This version does not provide change notification.
      *     NOTE that this initial version does not support vararg values or
      *     negative indices.
-     * @description To support multi-dimensional access this method will allow
+     * @description To support multi-dimensional access expanded versions allow
      *     more than one index parameter as in arr.atPut(1, 2, 'foo') so that,
      *     in reality, aValue is defined by the last argument and is placed in
      *     the location found by traversing to the last index (arguments.length
      *     - 2) provided.
      * @param {Number} anIndex The index to set/update.
-     * @param {Array} varargs A variable list of 0 to N additional indexes
-     *     which descend into nested array children.
      * @param {Object} aValue The object to place at anIndex. NOTE that the
      *     position of this attribute may actually vary if multiple indexes are
      *     supplied.
@@ -875,7 +871,7 @@ TP.ArrayProto.atPut = function(anIndex, varargs, aValue) {
      * @todo
      */
 
-    this[anIndex] = varargs;
+    this[anIndex] = aValue;
 
     return this;
 };
@@ -902,7 +898,9 @@ TP.PHash = function() {
 
     //  internal hash and list of true keys for the receiver
     /* jshint -W010 */
+    /* eslint-disable no-new-object */
     this.$$hash = new Object();
+    /* eslint-enable no-new-object */
     /* jshint +W010 */
     this[TP.ID] = TP.sys.constructOID();
 
@@ -933,7 +931,7 @@ TP.PHash = function() {
     //  isAccessPath
     //  ---
 
-    this.isAccessPath = function(aType) {
+    this.isAccessPath = function() {
 
         /**
          * @name isAccessPath
@@ -1050,19 +1048,19 @@ TP.PHash = function() {
          */
 
         var keys,
-            len,
-            i,
+            length,
+            j,
             arr;
 
         arr = TP.ac();
         arr.push('TP.hc(');
 
         keys = Object.keys(this.$$hash);
-        len = keys.length;
+        length = keys.length;
 
-        for (i = 0; i < len; i++) {
-            arr.push(TP.src(keys[i]), ', ', TP.src(this.$$hash[keys[i]]));
-            if ((i + 1) < len) {
+        for (j = 0; j < length; j++) {
+            arr.push(TP.src(keys[j]), ', ', TP.src(this.$$hash[keys[j]]));
+            if ((j + 1) < length) {
                 arr.push(', ');
             }
         }
@@ -1345,16 +1343,16 @@ TP.PHash = function() {
 
         var arr,
             keys,
-            len,
-            i;
+            length,
+            j;
 
         arr = TP.ac();
 
         keys = Object.keys(this.$$hash);
-        len = keys.length;
+        length = keys.length;
 
-        for (i = 0; i < len; i++) {
-            arr.push(keys[i], this.$$hash[keys[i]]);
+        for (j = 0; j < length; j++) {
+            arr.push(keys[j], this.$$hash[keys[j]]);
         }
 
         return arr;
@@ -1478,16 +1476,16 @@ TP.PHash = function() {
 
         var arr,
             keys,
-            len,
-            i;
+            length,
+            j;
 
         arr = TP.ac();
 
         keys = Object.keys(this.$$hash);
-        len = keys.length;
+        length = keys.length;
 
-        for (i = 0; i < len; i++) {
-            arr.push(this.$$hash[keys[i]]);
+        for (j = 0; j < length; j++) {
+            arr.push(this.$$hash[keys[j]]);
         }
 
         return arr;
@@ -1540,26 +1538,26 @@ TP.PHash = function() {
          * @returns {Object} The receiver.
          */
 
-        var i,
+        var j,
             keys,
-            len,
+            length,
             item;
 
         item = TP.ac();
 
         keys = Object.keys(this.$$hash);
-        len = keys.length;
+        length = keys.length;
 
-        for (i = 0; i < len; i++) {
+        for (j = 0; j < length; j++) {
             //  update iteration edge flags so our function can tell when
             //  its at the start/end of the overall collection
-            aFunction.$first = (i === 0) ? true : false;
-            aFunction.$last = (i === len - 1) ? true : false;
+            aFunction.$first = (j === 0) ? true : false;
+            aFunction.$last = (j === length - 1) ? true : false;
 
-            item[0] = keys[i];
-            item[1] = this.$$hash[keys[i]];
+            item[0] = keys[j];
+            item[1] = this.$$hash[keys[j]];
 
-            if (aFunction(item, i) === TP.BREAK) {
+            if (aFunction(item, j) === TP.BREAK) {
                 break;
             }
         }
@@ -1629,10 +1627,9 @@ TP.PHash = function() {
          * @todo
          */
 
-        var val,
-            name;
+        var name;
 
-        if (TP.isDefined(val = this[attributeName])) {
+        if (TP.isDefined(this[attributeName])) {
             name = attributeName;
         } else {
             TP.ifWarn() ?
@@ -3033,7 +3030,7 @@ function () {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
             /[xy]/g,
             function(c) {
-                var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
                     return v.toString(16);
             });
     /* jshint bitwise:true */
@@ -3051,7 +3048,9 @@ TP.sys.$statistics collection holds the data collected.
 
 if (TP.notValid(TP.sys.$statistics)) {
     /* jshint -W010 */
+    /* eslint-disable no-new-object */
     TP.sys.$statistics = new Object();
+    /* eslint-enable no-new-object */
     /* jshint +W010 */
 }
 
@@ -3162,8 +3161,10 @@ function(aFlag, shouldSignal) {
 //  track.
 
 /* jshint -W054 */
+/* eslint-disable no-new-func */
 var NativeTypeStub = new Function();
 NativeTypeStub.prototype = {};
+/* eslint-enable no-new-func */
 /* jshint +W054 */
 
 //  ---
@@ -3352,13 +3353,12 @@ NativeTypeStub.prototype.describe =
 //  ---
 
 NativeTypeStub.prototype.getTestFixture =
-    function(options) {
+    function() {
 
     /**
      * Creates and returns test fixture data suitable for the receiver. This
      * method is used to produce "the object under test" for test cases that
      * target the receiver. The default is the receiver itself.
-     * @param {TP.lang.Hash} options A dictionary of test options.
      * @return {Object} A test fixture for the receiver.
      */
 
@@ -3435,8 +3435,10 @@ Window.Type[TP.OWNER] = Window;
 //  ---
 
 /* jshint -W054 */
+/* eslint-disable no-new-func */
 var NativeInstStub = new Function();
 NativeInstStub.prototype = {};
+/* eslint-enable no-new-func */
 /* jshint +W054 */
 
 //  ---
@@ -3626,13 +3628,12 @@ NativeInstStub.prototype.describe =
 //  ---
 
 NativeInstStub.prototype.getTestFixture =
-    function(options) {
+    function() {
 
     /**
      * Creates and returns test fixture data suitable for the receiver. This
      * method is used to produce "the object under test" for test cases that
      * target the receiver. The default is the receiver itself.
-     * @param {TP.lang.Hash} options A dictionary of test options.
      * @return {Object} A test fixture for the receiver.
      */
 
@@ -3778,8 +3779,10 @@ main tree but notice that you can have other trees.
 
 //  NB: We don't want closures here...
 /* jshint -W054 */
+/* eslint-disable no-new-func */
 TP.lang.RootObject$$Type = new Function();
 TP.lang.RootObject$$Inst = new Function();
+/* eslint-enable no-new-func */
 /* jshint +W054 */
 
 TP.lang.RootObject$$Type.prototype = Object.$constructPrototype();
@@ -3820,7 +3823,7 @@ TP.lang.RootObject.localName = 'RootObject';
 TP.lang.RootObject.Type = TP.lang.RootObject[TP.TYPEC].prototype;
 TP.lang.RootObject.Type[TP.OWNER] = TP.lang.RootObject;
 TP.lang.RootObject.Inst = TP.lang.RootObject[TP.INSTC].prototype;
-TP.lang.RootObject.Inst[TP.OWNER]= TP.lang.RootObject;
+TP.lang.RootObject.Inst[TP.OWNER] = TP.lang.RootObject;
 
 //  -----------------------------------------------------------------------
 //  EXTERNAL LIBRARY SUPPORT
@@ -3980,6 +3983,7 @@ function(methodName, methodBody) {
         if (TP.isMethod(existingMethod = target[methodName]) &&
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
+            void(0);
         } else {
             TP.defineMethodSlot(
                     target,
@@ -3999,6 +4003,7 @@ function(methodName, methodBody) {
         if (TP.isMethod(existingMethod = target[methodName]) &&
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
+            void(0);
         } else {
             TP.defineMethodSlot(
                     target,
@@ -4072,6 +4077,7 @@ function(methodName, methodBody) {
     if (TP.isMethod(existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
         //  Empty block
+        void(0);
     } else {
 
         TP.defineMethodSlot(
@@ -4802,7 +4808,7 @@ function(suiteName, suiteFunc) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethod('getTestFixture',
-function(options) {
+function() {
 
     /**
      * Creates and returns test fixture data suitable for the receiver. This
@@ -5749,7 +5755,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('alert',
-function(aMessage, aLevel) {
+function(aMessage) {
 
     /**
      * @name alert
@@ -5758,8 +5764,6 @@ function(aMessage, aLevel) {
      *     message in a modal fashion, or act in a non-modal fashion, offering
      *     usability improvements.
      * @param {String} aMessage The message for the user.
-     * @param {Number|String} aLevel A TIBET logging level or a CSS class name
-     *     for styling.
      * @example Notify the user of some event:
      *     <code>
      *          TP.alert('TIBET Rocks!');
@@ -5771,13 +5775,15 @@ function(aMessage, aLevel) {
      * @todo
      */
 
-    return alert(TP.sc(aMessage));
+    /* eslint-disable no-alert */
+    return window.alert(TP.sc(aMessage));
+    /* eslint-enable no-alert */
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('confirm',
-function(anAction, aLevel) {
+function(anAction) {
 
     /**
      * @name confirm
@@ -5787,8 +5793,6 @@ function(anAction, aLevel) {
      *     non-modal fashion, offering usability improvements over the native
      *     confirm function.
      * @param {String} aQuestion The question for the user.
-     * @param {Number|String} aLevel A TIBET logging level or a CSS class name
-     *     for styling.
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.confirm('Perform Action?');
@@ -5802,13 +5806,15 @@ function(anAction, aLevel) {
      * @todo
      */
 
-    return confirm(TP.sc(anAction));
+    /* eslint-disable no-alert */
+    return window.confirm(TP.sc(anAction));
+    /* eslint-enable no-alert */
 });
 
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('prompt',
-function(aQuestion, aDefaultAnswer, aLevel) {
+function(aQuestion, aDefaultAnswer) {
 
     /**
      * @name prompt
@@ -5820,8 +5826,6 @@ function(aQuestion, aDefaultAnswer, aLevel) {
      * @param {String} aQuestion The question for the user.
      * @param {String} aDefaultAnswer The default answer, provided in the input
      *     field.
-     * @param {Number|String} aLevel A TIBET logging level or a CSS class name
-     *     for styling.
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.prompt('Favorite color', 'Black');
@@ -5835,7 +5839,9 @@ function(aQuestion, aDefaultAnswer, aLevel) {
      * @todo
      */
 
-    return prompt(TP.sc(aQuestion), TP.sc(aDefaultAnswer) || '');
+    /* eslint-disable no-alert */
+    return window.prompt(TP.sc(aQuestion), TP.sc(aDefaultAnswer) || '');
+    /* eslint-enable no-alert */
 });
 
 //  ------------------------------------------------------------------------
@@ -5948,7 +5954,9 @@ function(aFlagOrParam) {
 
     try {
         /* jshint -W087 */
+        /* eslint-disable no-debugger */
         debugger;
+        /* eslint-enable no-debugger */
         /* jshint +W087 */
     } catch (e) {
     }
@@ -5968,7 +5976,7 @@ provided here to support the DOM primitives during early kernel operation.
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('ac',
-function(varargs) {
+function() {
 
     /**
      * @name ac
@@ -5987,8 +5995,6 @@ function(varargs) {
      *     versions of TP.ac() defined later in the loading process support
      *     passing arguments and nodelist objects to convert them into native
      *     arrays for easier processing.
-     * @param {Array} varargs A variable list of 0 to N elements to place in
-     *     the array.
      * @example Construct a simple array:
      *     <code>
      *          arr = TP.ac();
@@ -6010,7 +6016,9 @@ function(varargs) {
     //  NOTE that we don't use literal creation syntax since that can have
     //  differing behavior on IE based on current window export state.
     /* jshint -W009 */
+    /* eslint-disable no-array-constructor */
     arr = new Array();
+    /* eslint-enable no-array-constructor */
     /* jshint +W009 */
     if (arguments.length === 0) {
         return arr;
@@ -6070,15 +6078,12 @@ function(anArgArray, aStart, anEnd) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('join',
-function(varargs) {
+function() {
 
     /**
      * @name join
      * @synopsis Constructs and returns a new string instance by joining the
-     *     arguments via an Array. This can be quite a bit faster than the
-     *     equivalent += approach depending on the browser.
-     * @param {Array} varargs A variable list of 0 to N strings to join into
-     *     a single string.
+     *     arguments via an Array.
      * @example Construct a new joined string of markup without using +=:
      *     <code>
      *          str = TP.join('Hello ', username, ' from TIBET!');
@@ -6086,22 +6091,6 @@ function(varargs) {
      * @returns {String} A new string.
      * @todo
      */
-
-            /*
-    var arr,
-        len,
-        i;
-
-    //  literal here since we won't be messaging this except with join
-    arr = [];
-
-    len = arguments.length;
-    for (i = 0; i < len; i++) {
-        arr[i] = arguments[i];
-    };
-
-    return arr.join('');
-            */
 
     //  NB: In modern browsers, going back to the old '+=' method of String
     //  concatenation seems to yield about a 40% performance gain.
@@ -6123,7 +6112,7 @@ function(varargs) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('add',
-function(varargs) {
+function() {
 
     /**
      * @name add
@@ -6131,8 +6120,6 @@ function(varargs) {
      *     version does not provide change notification so it's equivalent to
      *     the native Array push call, but instead of returning a count like
      *     push(), it returns the receiver for easier method chaining.
-     * @param {Array} varargs A variable list of 0 to N elements to place in
-     *     the array.
      * @example Add one or more elements to an array:
      *     <code>
      *          arr = TP.ac();
@@ -6724,7 +6711,7 @@ function(aCanvas) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('signal',
-function(anOrigin, aSignal, aPayload, aPolicy, aType) {
+function(anOrigin, aSignal, aPayload) {
 
     /**
      * @name signal
@@ -6736,11 +6723,6 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType) {
      * @param {TP.sig.Signal} aSignal The signal type to be fired.
      * @param {Object} aPayload An object containing optional arguments. Passed
      *     without alteration to handlers -- the "payload".
-     * @param {Function} aPolicy A signaling policy which defines how the signal
-     *     should be fired.
-     * @param {String|TP.sig.Signal} aType An optional default type to use as a
-     *     supertype when the signal type isn't found and must be created.
-     * @todo
      */
 
     //  during early kernel load calls to this will simply get written to
@@ -9045,7 +9027,9 @@ function(verbose) {
     }
 
     /* jshint -W009 */
+    /* eslint-disable no-array-constructor */
     arr = new Array();
+    /* eslint-enable no-array-constructor */
     /* jshint +W009 */
 
     try {

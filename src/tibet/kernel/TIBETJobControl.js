@@ -2706,6 +2706,7 @@ function() {
         } else {
             //  no-op, we have an interval and it should be telling the work
             //  to occur. Note that we shouldn't really end up here.
+            void(0);
         }
 
         return this;
@@ -3079,6 +3080,7 @@ function() {
             //  when limit is a function it's hard to say what we should
             //  compute based on since we have no way to know how close the
             //  job is to being done, so we don't try :)
+            void(0);
         }
     }
 
@@ -3242,6 +3244,7 @@ function() {
             } else {
                 //  no-op. already have an interval and it'll call back when
                 //  it's ready
+                void(0);
             }
         } else {
             //  re-queue via the iterate call for the next interval

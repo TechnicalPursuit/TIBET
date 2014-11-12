@@ -236,6 +236,7 @@ TP.definePrimitive('btoa',
         out = '';
         end = 0;
 
+        /* eslint-disable no-constant-condition */
         while (end === 0) {
             c = TP.isDefined(arr[++ndx]) ? arr[ndx].charCodeAt(0) :
                                         ((end = 1) ? 0 : 0);
@@ -252,6 +253,7 @@ TP.definePrimitive('btoa',
             if (end === 2) { w = '='; }
             if (end < 3) { out += u + v + w + x; }
         }
+        /* eslint-enable no-constant-condition */
 
         //  Don't do 76 step as a) Mozilla doesn't and b) the XML Schema
         //  spec doesn't allow for it... just return 'out'.

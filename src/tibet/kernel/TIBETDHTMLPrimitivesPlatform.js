@@ -2552,10 +2552,12 @@ TP.hc(
         // TODO: 'window.$$newinst' used to be arguments.callee. verify this
         // still works :) In fact, with eval() changing to be globally scoped
         // this entire thing may not work anyway.
+        /* eslint-disable no-eval */
         eval(
             'aWindow.$$newinst = function () {window.$$newinst.$realFunc(' +
             TP.sys.$buildArgString(0, aFunction.getArity() - 1) +
             ')}');
+        /* eslint-enable no-eval */
 
         aWindow.$$newinst.$realFunc = aFunction;
 
@@ -2622,6 +2624,7 @@ TP.hc(
         //  Switching on the arguments length, create a new object, using
         //  the supplied object name, by evaling the code that puts a slot
         //  on the context window.
+        /* eslint-disable no-eval */
         switch (arguments.length) {
             case    2:
                 eval('aWindow.$$newinst = new ' + objectName + '()');
@@ -2653,6 +2656,7 @@ TP.hc(
                         2, arguments.length, 'window.creationArgs') + ')');
                 break;
         }
+        /* eslint-enable no-eval */
 
         //  Set the slot used to make our arguments available to the eval()
         //  in the target window back to null.
@@ -2693,6 +2697,7 @@ TP.hc(
         //  we start by using the built-in constructor for any arguments so
         //  behavior is consistent with native JS, and then we try parsing
         //  on our own
+        /* eslint-disable no-eval, new-cap */
         switch (arguments.length) {
             case    2:
                 $$newinst = new constructorObj();
@@ -2732,6 +2737,7 @@ TP.hc(
                     TP.sys.$buildArgString(2, arguments.length) + ');');
                 break;
         }
+        /* eslint-enable no-eval, new-cap */
 
         return $$newinst;
     }

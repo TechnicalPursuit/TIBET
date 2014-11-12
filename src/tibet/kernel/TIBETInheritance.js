@@ -124,14 +124,11 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('asString',
-function(verbose) {
+function() {
 
     /**
      * @name asString
      * @synopsis Returns the receiver as a simple string.
-     * @param {Boolean} verbose Whether or not to return the 'verbose' version
-     *     of the TP.lang.RootObject's String representation. This flag is
-     *     ignored in this version of this method.
      * @returns {String} The simple string form of the receiver.
      */
 
@@ -257,7 +254,9 @@ function(name) {
     //  closures -- it always builds the new function at the global scope).
 
     //  build the instance side
+    /* eslint-disable no-new-func */
     TP.sys[instName] = new Function();
+    /* eslint-enable no-new-func */
 
     instConstructor = TP.sys[instName];
     instConstructor[TP.NAME] = instName;
@@ -267,7 +266,9 @@ function(name) {
     instConstructor.prototype[TP.ID] = instName;
 
     //  build the type side
+    /* eslint-disable no-new-func */
     TP.sys[typeName] = new Function();
+    /* eslint-enable no-new-func */
 
     typeConstructor = TP.sys[typeName];
     typeConstructor[TP.NAME] = typeName;
@@ -288,7 +289,9 @@ function(name) {
     //  create the 'type' as an instance of the type constructor side. This
     //  is the magic juju part. The object you get back isn't a function so
     //  it gets to inherit like normal. Just don't say 'new' to it ;).
+    /* eslint-disable new-cap */
     realType = new typeConstructor();
+    /* eslint-enable new-cap */
     nsObj[subtypeName] = realType;
 
     //  assign owners for the constructors
@@ -558,6 +561,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 TP.lang.RootObject.Type.defineMethod('constructForSignal',
 function(aSignal) {
 
@@ -567,12 +571,14 @@ function(aSignal) {
      *     provided. This method defaults to calling construct() to acquire the
      *     instance and should be overridden for types which require parameters
      *     for successful instance creation.
+     * @param {TP.core.Signal} aSignal The signal instance to build for.
      * @returns {Object} A new instance, if possible.
      * @todo
      */
 
     return this.construct();
 });
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -759,6 +765,7 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 TP.lang.RootObject.Type.defineMethod('fromObject',
 function(anObj) {
 
@@ -773,6 +780,7 @@ function(anObj) {
 
     return this.construct.apply(this, arguments);
 });
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -1378,6 +1386,7 @@ function(aDate, transformParams) {
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 String.Inst.defineMethod('transformNumber',
 function(aNumber, transformParams) {
 
@@ -1404,6 +1413,7 @@ function(aNumber, transformParams) {
     //  return bad format string, not data, for debugging
     return str;
 });
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -1775,6 +1785,7 @@ to leverage the functions here.
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 Window.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
@@ -1796,9 +1807,11 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     //  default is to let main routines handle it
     return false;
 });
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 TP.defineMetaInstMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
@@ -1821,6 +1834,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     //  resolve it by loading that node
     return TP.canInvoke(anOrigin, aMethodName);
 });
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -2378,7 +2392,9 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                             //  since it's an arguments array.
 
                             /* jshint -W009 */
+                            /* eslint-disable no-array-constructor */
                             arr = new Array();
+                            /* eslint-enable no-array-constructor */
                             /* jshint +W009 */
                             arr.push(anOrigin);
 
@@ -2753,6 +2769,7 @@ function() {
      * @returns {Object}
      */
 
+    /* eslint-disable new-cap */
     if (TP.notValid(TP.ifInvalid(TP[this.$getName()],
                                     TP.global[this.$getName()]))) {
         //  TODO: Why do we do this?
@@ -2761,6 +2778,7 @@ function() {
         return new TP.ifInvalid(TP[this.$getName()],
                                     TP.global[this.$getName()])();
     }
+    /* eslint-enable new-cap */
 });
 
 //  ------------------------------------------------------------------------
@@ -3932,6 +3950,7 @@ function(resolution, propName, targetObject, forInstances) {
             } else {
                 //  TODO: Raise an exception - type name doesn't point to a
                 //  valid type.
+                void(0);
             }
         } else if (TP.isString(resolution)) {
             //  The resolution is a String, which means it should've just been a
@@ -3948,6 +3967,7 @@ function(resolution, propName, targetObject, forInstances) {
             } else {
                 //  TODO: Raise an exception - type name doesn't point to a
                 //  valid type.
+                void(0);
             }
         } else if (TP.isType(resolutionType = resolution) &&
                     resolutionType !== mainType) {
@@ -3964,6 +3984,7 @@ function(resolution, propName, targetObject, forInstances) {
         } else {
             //  TODO: Raise an exception - type name doesn't point to a valid
             //  type.
+            void(0);
         }
 
         //  If the resolution type value is not a method, then it's an
@@ -5425,7 +5446,9 @@ function(aString, sourceLocale) {
     //  kernel isn't loaded completely? use native call
     if (!TP.sys.hasKernel()) {
         /* jshint -W053 */
+        /* eslint-disable no-new-wrappers */
         return new Boolean(aString);
+        /* eslint-enable no-new-wrappers */
         /* jshint +W053 */
     }
 
@@ -5693,7 +5716,9 @@ function(aString, sourceLocale) {
     if (!TP.sys.hasKernel()) {
         //  number only takes one argument (at most)
         /* jshint -W053 */
+        /* eslint-disable no-new-wrappers */
         return new Number(aString);
+        /* eslint-enable no-new-wrappers */
         /* jshint +W053 */
     }
 

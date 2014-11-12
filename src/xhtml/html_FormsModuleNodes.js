@@ -95,6 +95,7 @@ function(aSignal) {
     if (TP.isTrue(aSignal.at('deep'))) {
         //  TODO:   fix this
         //return this.$refreshBoundRoots(aSignal);
+        void(0);
     }
 
     return;

@@ -680,7 +680,7 @@ function(elemOrId, attrName, oldValue, newValue, checkAttrNSURI, nodeContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('setAttr',
-function(elemOrId, attrName, attrValue, checkAttrNSURI,  nodeContext) {
+function(elemOrId, attrName, attrValue, checkAttrNSURI, nodeContext) {
 
     /**
      * @name setAttr
@@ -1553,8 +1553,7 @@ function(anElement, effectName, effectParams, nodeContext) {
         function(anElement) {
 
             var prevJob,
-
-                stepParams,
+                params,
                 allElems,
                 i;
 
@@ -1572,8 +1571,8 @@ function(anElement, effectName, effectParams, nodeContext) {
                 //  is more than 1 element in that set, then we're not the
                 //  only one, so we just remove ourself from the list of
                 //  elements.
-                if (TP.isValid(stepParams = prevJob.$get('parameters')) &&
-                    TP.isArray(allElems = stepParams.at('target')) &&
+                if (TP.isValid(params = prevJob.$get('parameters')) &&
+                    TP.isArray(allElems = params.at('target')) &&
                     (allElems.length > 1)) {
                     for (i = 0; i < allElems.length; i++) {
                         if (allElems[i] === anElement) {
@@ -1990,6 +1989,7 @@ function(elemOrId, anAspect, aValue, nodeContext) {
                 }
             } else {
                 //  TODO:   warn?
+                void(0);
             }
         }
     } else {
@@ -2006,6 +2006,7 @@ function(elemOrId, anAspect, aValue, nodeContext) {
             }
         } else {
             //  TODO:   warn?
+            void(0);
         }
     }
 

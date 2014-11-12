@@ -215,9 +215,11 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
                         TP.sys.getTypeByName('sig:dispatch')) &&
             TP.core.ElementNode.getConcreteType(anElement) !==
                         sigDispatchType) {
+            /* eslint-disable no-script-url */
             handler = TP.join('javascript:',
                                 'TP.sig.XMLNS.dispatchSignal(',
                                     'triggerSignal.getResolvedTarget());');
+            /* eslint-enable no-script-url */
         } else {
             handler = TP.gid(anElement, true);
         }
@@ -249,6 +251,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
             handler = TP.gid(elem, true);
         } else {
             //  not empty, but not found. perhaps "external" so we'll allow
+            void(0);
         }
     }
 

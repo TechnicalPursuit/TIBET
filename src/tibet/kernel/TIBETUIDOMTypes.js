@@ -912,7 +912,7 @@ function() {
     //  focused responder status here and then this property will be cleared
     //  and when the desired target element is focused, we will accept it.
     focusTPElem = this.getType().get('$focusingTPElement');
-    
+
     if (TP.isKindOf(focusTPElem, TP.core.UIElementNode) &&
         !focusTPElem.identicalTo(this)) {
 
@@ -4676,6 +4676,7 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
     //  alert('got to did blur');
+        void(0);
     }
 
     return;
@@ -4695,6 +4696,7 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
     //  alert('got to did focus');
+        void(0);
     }
 
     return;
@@ -4713,6 +4715,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
+        void(0);
 
         /*
         TP.ifInfo() ?
@@ -4739,6 +4742,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
+        void(0);
 
         /*
         TP.ifInfo() ?

@@ -18,21 +18,21 @@
  *     using request/response pairs, a 'default' instance of this service will
  *     be instantiated and registered to handle all
  *     TP.sig.LocalDBStorageRequests.
- *     
+ *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'TP.core.LocalDBStorageServiceDefault'.
- *     
+ *
  *     It is possible, however, to manually set up a server. To do so, execute
  *     the following:
- *     
+ *
  *     myLocalDBStorageService = TP.core.LocalDBStorageService.construct(
  *          'localLocalDBStorageServer');
- *     
+ *
  *     You will then need to register your service instance so that it services
  *     TP.sig.LocalDBStorageRequests (otherwise, the TIBET machinery will
  *     instantiate the 'default' instance of TP.core.LocalDBStorageService as
  *     described above and register it to service these kinds of requests):
- *     
+ *
  *     myLocalDBStorageService.register();
  *
  *    The backing storage for local DB storage is W3C-specified 'local storage'.

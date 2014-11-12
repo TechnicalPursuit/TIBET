@@ -111,10 +111,12 @@ TP.hc(
         //  those slots returns a value of 'unknown', as opposed to
         //  'undefined', which is what they would be if they weren't defined
         //  at all. Sheesh...
+        /* eslint-disable valid-typeof */
         if (typeof anObj.getNamedItem === 'unknown' &&
             typeof anObj.setNamedItem === 'unknown') {
             return true;
         }
+        /* eslint-enable valid-typeof */
 
         if (TP.isValid(anObj.getNamedItem) &&
                 TP.isValid(anObj.setNamedItem)) {
@@ -187,10 +189,12 @@ TP.hc(
         //  making the 'typeof' call on that slot returns a value of
         //  'unknown', as opposed to 'undefined', which is what it would be
         //  if it wasn't defined at all. Sheesh...
+        /* eslint-disable valid-typeof */
         if (typeof anObj.length === 'number' &&
             typeof anObj.item === 'unknown') {
             return true;
         }
+        /* eslint-enable valid-typeof */
 
         if (TP.isArray(anObj)) {
             //  empty, or first element is a node? assume they all are
@@ -555,6 +559,7 @@ TP.hc(
             //  If the privilege status is already ENABLE, then skip all of
             //  the rest of this and don't abuse the user with dialog boxes
             if (TP.PRIVILEGE_FLAGS.at(privilegedOp) === 'ENABLE') {
+                void(0);
             } else {
                 //  We obtained permission, but is it 'PROMPT' or 'ENABLE'??
 
@@ -877,6 +882,7 @@ TP.hc(
         return permissionObtained;
     },
     'webkit',
+    /* eslint-disable no-unused-vars */
     function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged, privilegedFunction) {
         /**
          * @name executePrivileged
@@ -903,6 +909,7 @@ TP.hc(
 
         return false;
     }
+    /* eslint-enable no-unused-vars */
 ));
 
 //  ------------------------------------------------------------------------
@@ -1320,7 +1327,7 @@ TP.hc(
         TP.PRIVILEGE_FLAGS.atPut(TP.HOST_CMD_EXEC, setting);
     },
     'webkit',
-    function(setting) {
+    function() {
 
         /**
          * @name $setPrivilegeFlag
@@ -1343,8 +1350,7 @@ TP.hc(
     'test',
     TP.sys.getBrowserUI,
     'gecko',
-    function(aNode) {
-
+    function() {
         //  This is a no-op for Gecko.
     },
     'trident',

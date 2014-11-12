@@ -630,6 +630,7 @@ function(aRequest) {
                     //  if we're logged in, initiate the run sequence which will
                     //  load any startup files but allow the login output
                     //  message to display by forking the call here
+                    /* eslint-disable no-wrap-func */
                     (function() {
 
                         shell.initProfile();
@@ -638,6 +639,7 @@ function(aRequest) {
                         shell.signal('TP.sig.TSH_Login');
 
                      }).fork(20);
+                    /* eslint-enable no-wrap-func */
 
                     return;
                 });
@@ -1606,7 +1608,7 @@ function(aRequest) {
 
                             if (TP.nodeContainsNode(cmdRoot, newnode)) {
                                 //  Descendant of detached root - error
-
+                                void(0);
                             } else {
                                 //  newnode is a replacement root
 
@@ -1627,6 +1629,7 @@ function(aRequest) {
                             //  root is not detached - is newnode detached?
                             if (TP.nodeIsDetached(newnode, rootDoc)) {
                                 //  TODO
+                                void(0);
                             } else {
                                 //  neither cmdRoot or newnode is detached
 
@@ -2064,6 +2067,8 @@ function(aRequest) {
     //  specified.
     repeat = this.getArgument(aRequest, 'tsh:repeat', false, true);
 
+    /* eslint-disable no-loop-func */
+
     len = input.getSize();
     for (i = 0; i < len; i++) {
         item = input.at(i);
@@ -2086,6 +2091,8 @@ function(aRequest) {
 
         aRequest.stdout(result);
     }
+
+    /* eslint-enable no-loop-func */
 
     aRequest.complete();
 

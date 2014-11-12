@@ -44,7 +44,7 @@
         "d3": "TechnicalPursuit/d3",
         "diff": "*",
         "jquery": "TechnicalPursuit/jquery",
-        "eslint": "TechnicalPursuit/eslint",
+        "eslint": "*",
         "esprima": "*",
         "escodegen": "*",
         "esmangle": "*",

@@ -36,7 +36,7 @@ TP.html.Element.set('booleanAttrs',
 //  ------------------------------------------------------------------------
 
 TP.html.Element.Inst.defineMethod('addCSSClass',
-function(aCSSClass,atEnd) {
+function(aCSSClass, atEnd) {
 
     /**
      * @name addCSSClass
@@ -110,7 +110,7 @@ function(aCSSClass) {
 //  ------------------------------------------------------------------------
 
 TP.html.Element.Inst.defineMethod('replaceCSSClass',
-function(oldCSSClass,newCSSClass) {
+function(oldCSSClass, newCSSClass) {
 
     /**
      * @name replaceCSSClass

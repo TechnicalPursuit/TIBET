@@ -8,6 +8,8 @@
  */
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-labels, no-loop-func */
+
 /**
  * @type {TP.tsh.script}
  * @synopsis Provides support for the TIBET Shell (TSH) during raw content
@@ -1005,6 +1007,7 @@ function(source, shell, sibling, request) {
 
                         if (block < 0) {
                             //  TODO:   raise? too many closing delimiters
+                            void(0);
                         }
                     }
 
@@ -1054,6 +1057,7 @@ function(source, shell, sibling, request) {
                             //  within a block we have a potential error.
                             if (block > 0) {
                                 //  TODO:   raise?
+                                void(0);
                             }
 
                             //  splice the token into the pipe attribute so
@@ -1084,6 +1088,7 @@ function(source, shell, sibling, request) {
                     //  a potentially missing/unbalanced set of delimiters
 
                     //  TODO:   raise?
+                    void(0);
                 }
 
                 //  close the overall command/src tag
@@ -1242,6 +1247,8 @@ function(source, shell, sibling, request) {
                         //      //  substitution rather than a operator and
                         //      //  handled at the tsh:cmd tag level.
 
+                            /* eslint-disable no-fallthrough */
+
                             case '#':
 
                                 //  If this starts with a Number, then it
@@ -1293,6 +1300,9 @@ function(source, shell, sibling, request) {
                                 //  through
 
                             case '~':
+
+                                /* eslint-enable no-fallthrough */
+
                                 //  TIBET virtual URI syntax. NOTE that
                                 //  officially you could type ~23 and that
                                 //  would be legal JS, but the odds of that
@@ -3628,4 +3638,3 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

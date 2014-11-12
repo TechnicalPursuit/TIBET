@@ -116,10 +116,8 @@ TP.hc(
         return;
     },
     TP.DEFAULT,
-    function(aDocument) {
-
+    function() {
         //  On other platforms, this is a no-op.
-
         return;
     }
 ));
@@ -131,10 +129,8 @@ TP.hc(
     'test',
     'trident',
     'true',
-    function(aPrefix) {
-
+    function() {
         //  On the Trident platform, this is not used.
-
         return;
     },
     TP.DEFAULT,
@@ -1037,7 +1033,7 @@ TP.hc(
             report,
             xmlDoc,
 
-            contentString,
+            //contentString,
             str,
 
             successfulParse,
@@ -1072,7 +1068,7 @@ TP.hc(
         //  Note that, since MSXML predefines this, you can still have
         //  'xml:' attributes on elements in the document.
         TP.regex.XML_XMLNS_STRIP.lastIndex = 0;
-        contentString = aString.strip(TP.regex.XML_XMLNS_STRIP);
+        //contentString = aString.strip(TP.regex.XML_XMLNS_STRIP);
 
         //  configure to work around issues with IE security patches
         xmlDoc.setProperty('ProhibitDTD', prohibit);
@@ -1832,7 +1828,7 @@ TP.hc(
         return holderHash;
     },
     'trident',
-    function(anElement) {
+    function() {
 
         /**
          * @name $$elementPreserveIFrameContent
@@ -1846,8 +1842,6 @@ TP.hc(
          *     https://bugzilla.mozilla.org/show_bug.cgi?id=254144
          *     https://bugs.webkit.org/show_bug.cgi?id=13574 This version of
          *     this method just returns null.
-         * @param {Element} anElement The element to preserve iframe content
-         *     for.
          * @returns {TP.lang.Hash} A hash containing the document Elements for
          *     each of the iframe's found under anElement (or for anElement
          *     itself if its an iframe).
@@ -2018,10 +2012,7 @@ TP.hc(
 
         var qualified,
             attr,
-
-            theAttrName,
-
-            win;
+            theAttrName;
 
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement');
@@ -2081,9 +2072,7 @@ TP.hc(
 
         //  If there has been CSS processing going on in anElement's Window,
         //  then go ahead and process any custom declarations.
-        if (TP.isWindow(win = TP.nodeGetWindow(anElement))) {
-        //if (TP.isWindow(win = TP.nodeGetWindow(anElement)) &&
-        //  TP.isValid(win.$globalStyleRules)) {
+        if (TP.isWindow(TP.nodeGetWindow(anElement))) {
             //  Invoke the CSS attribute change machinery. Note here that we
             //  have no new value, since we're removing the attribute.
             TP.$elementProcessCSSAttributeChange(
@@ -2139,10 +2128,7 @@ TP.hc(
 
         var qualified,
             attr,
-
-            theAttrName,
-
-            win;
+            theAttrName;
 
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement');
@@ -2198,9 +2184,7 @@ TP.hc(
         //  If there has been CSS processing going on in anElement's Window,
         //  then go ahead and process any changes that removing this
         //  attribute will have brought.
-        if (TP.isWindow(win = TP.nodeGetWindow(anElement))) {
-        //if (TP.isValid(win = TP.nodeGetWindow(anElement)) &&
-        //  TP.isValid(win.$globalStyleRules)) {
+        if (TP.isWindow(TP.nodeGetWindow(anElement))) {
             //  Invoke the CSS attribute change machinery. Note here that we
             //  have no new value, since we're removing the attribute.
             TP.$elementProcessCSSAttributeChange(
@@ -2301,6 +2285,7 @@ TP.hc(
 
         return;
     },
+    /* eslint-disable no-unused-vars */
     'trident',
     function(anElement, docElemsHash) {
 
@@ -2325,6 +2310,7 @@ TP.hc(
 
         return;
     },
+    /* eslint-enable no-unused-vars */
     'webkit',
     function(anElement, docElemsHash) {
 
@@ -2863,6 +2849,8 @@ TP.hc(
                 TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
+                /* eslint-disable no-fallthrough */
+
             case Node.DOCUMENT_NODE:
 
                 /* jshint -W086 */
@@ -2876,7 +2864,13 @@ TP.hc(
                 //  through...
 
             case Node.ELEMENT_NODE:
+
+                //  Note here how we don't break, but continue falling
+                //  through...
+
             default:
+
+                /* eslint-enable no-fallthrough */
 
                 //  Try to serialize the node. If it fails, report an error.
                 try {
@@ -3137,6 +3131,8 @@ TP.hc(
                 TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
+                /* eslint-disable no-fallthrough */
+
             case Node.DOCUMENT_NODE:
 
                 /* jshint -W086 */
@@ -3150,7 +3146,13 @@ TP.hc(
                 //  through...
 
             case Node.ELEMENT_NODE:
+
+                //  Note here how we don't break, but continue falling
+                //  through...
+
             default:
+
+                /* eslint-enable no-fallthrough */
 
                 //  Make sure that there is valid xml to use.
                 //  NB: If node is a DOCUMENT_NODE, then it will *already*
@@ -3394,6 +3396,8 @@ TP.hc(
                 TP.raise(this, 'TP.sig.UnsupportedOperation');
                 break;
 
+                /* eslint-disable no-fallthrough */
+
             case Node.DOCUMENT_NODE:
 
                 /* jshint -W086 */
@@ -3407,7 +3411,278 @@ TP.hc(
                 //  through...
 
             case Node.ELEMENT_NODE:
+
+                //  Note here how we don't break, but continue falling
+                //  through...
+
             default:
+
+                /* eslint-enable no-fallthrough */
+
+                //  Make sure that there is valid xml to use.
+                //  NB: If node is a DOCUMENT_NODE, then it will *already*
+                //  have an XML header on it. This affects our logic below.
+                if (TP.isString(str = node.xml)) {
+                    //  NB: we check for a space after the 'xml' part here
+                    //  to avoid finding PIs. We only want the XML
+                    //  declaration.
+
+                    //  If we wanted a declaration, the supplied Node was
+                    //  an XML document, and there isn't a declaration, then
+                    //  prepend one.
+                    if (wantsXMLDeclaration &&
+                        (TP.isXMLDocument(node) ||
+                            TP.isXMLDocument(node.parentNode))) {
+                        if (!str.startsWith('<?xml ')) {
+                            str = TP.XML_10_HEADER + '\n' + str;
+                        }
+                    } else {
+                        //  Otherwise, if we didn't want a declaration, but
+                        //  there was one, slice the header off.
+                        if (str.startsWith('<?xml ')) {
+                            str = str.slice(str.indexOf('?>') + 2);
+                        }
+                    }
+
+                    return str;
+                } else if (TP.isString(str = node.outerHTML)) {
+                    return str;
+                } else if (TP.isHTMLDocument(node) ||
+                            TP.isXHTMLDocument(node)) {
+                    return node.documentElement.outerHTML;
+                }
+
+                /* jshint +W086 */
+
+                //  duplicate the exception we'd see from Nav here for
+                //  consistency
+                TP.raise(this, 'TP.sig.SerializationException');
+
+                return 'Serialization failed.';
+        }
+    },
+    'webkit',
+    function(aNode, wantsXMLDeclaration, shallow) {
+
+        /**
+         * @name nodeAsString
+         * @synopsis Returns the string representation of aNode.
+         * @description This function takes in a flag as to whether the caller
+         *     wants a specific behavior as to the presence of an XML
+         *     declaration. The behavior of this function as to this flag's
+         *     state is as follows:
+         *
+         *     Flag value Existing declaration? Output ----------
+         *     --------------------- ------ Not defined Yes With declaration Not
+         *     defined No Without declaration True Yes With declaration True No
+         *     With declaration False Yes Without declaration False No Without
+         *     declaration
+         *
+         *     NOTE: This flag is only used when the supplied Node is an XML
+         *     document.
+         * @param {Node} aNode The node to transform.
+         * @param {Boolean} wantsXMLDeclaration Whether or not the caller wants
+         *     an XML declaration placed on the front of the string
+         *     representation. Default is false.
+         * @param {Boolean} shallow True to output just the node when it's an
+         *     element node so no children are represented. Default is false.
+         * @example Create an XML document with an attribute and a text node
+         *     child and generate the string representation of each construct
+         *     (with no XML declaration):
+         *     <code>
+         *          xmlDoc = TP.documentFromString(
+         *          '<foo xmlns:bar="http://www.bar.com" bar:baz="bazify">Hi
+         *         there</foo>');
+         *          <samp>[object XMLDocument]</samp>
+         *          TP.nodeAsString(xmlDoc);
+         *          <samp>&lt;foo xmlns:bar="http://www.bar.com"
+         *         bar:baz="bazify"&gt;Hi there&lt;/foo&gt;</samp>
+         *          TP.nodeAsString(xmlDoc.documentElement);
+         *          <samp>&lt;foo xmlns:bar="http://www.bar.com"
+         *         bar:baz="bazify"&gt;Hi there&lt;/foo&gt;</samp>
+         *          TP.nodeAsString(xmlDoc.documentElement.attributes[1]);
+         *          <samp>bazify</samp>
+         *          TP.nodeAsString(xmlDoc.documentElement.firstChild);
+         *          <samp>Hi there</samp>
+         *     </code>
+         * @example Create an XML document with an attribute and a text node
+         *     child and generate the string representation of each construct
+         *     (with an XML declaration):
+         *     <code>
+         *          xmlDoc = TP.documentFromString(
+         *          '<foo xmlns:bar="http://www.bar.com" bar:baz="bazify">Hi
+         *         there</foo>');
+         *          <samp>[object XMLDocument]</samp>
+         *          TP.nodeAsString(xmlDoc, true);
+         *          <samp>&lt;?xml version="1.0"?&gt;&lt;foo
+         *         xmlns:bar="http://www.bar.com" bar:baz="bazify"&gt;Hi
+         *         there&lt;/foo&gt;</samp>
+         *          TP.nodeAsString(xmlDoc.documentElement, true);
+         *          <samp>&lt;foo xmlns:bar="http://www.bar.com"
+         *         bar:baz="bazify"&gt;Hi there&lt;/foo&gt;</samp>
+         *     </code>
+         * @example Create an XML document with a namespaced root node, add two
+         *     'null namespaced' children to it and generate the string
+         *     representation:
+         *     <code>
+         *          xmlDoc = TP.documentFromString(
+         *          '<foo xmlns="http://www.foo.com"/>');
+         *          <samp>[object XMLDocument]</samp>
+         *          TP.nodeAppendChild(
+         *          xmlDoc.documentElement,
+         *          TP.documentCreateElement(xmlDoc, 'bar', null));
+         *          <samp>[object Element]</samp>
+         *          TP.nodeAppendChild(
+         *          xmlDoc.documentElement,
+         *          TP.documentCreateElement(xmlDoc, 'baz', ''));
+         *          <samp>[object Element]</samp>
+         *          TP.nodeAsString(xmlDoc, true);
+         *          <samp>&lt;foo xmlns="http://www.foo.com"&gt;&lt;bar
+         *         xmlns=""/&gt;&lt;baz xmlns=""/&gt;&lt;/foo&gt;</samp>
+         *     </code>
+         * @example Create a document fragment in an XML document, append some
+         *     <code>
+         *          elements to it, and generate its string representation:
+         *          xmlDoc = TP.documentFromString(
+         *          '<foo xmlns:bar="http://www.bar.com" bar:baz="bazify">Hi
+         *         there</foo>');
+         *          <samp>[object XMLDocument]</samp>
+         *          docFrag = TP.documentCreateFragment(xmlDoc);
+         *          TP.nodeAppendChild(
+         *          docFrag,
+         *          TP.documentCreateElement(xmlDoc, 'span',
+         *         TP.w3.Xmlns.XHTML));
+         *          TP.nodeAppendChld(
+         *          docFrag,
+         *          TP.documentCreateElement(xmlDoc, 'span',
+         *         TP.w3.Xmlns.XHTML));
+         *          TP.nodeAsString(docFrag);
+         *          <samp>&lt;span
+         *         xmlns="http://www.w3.org/1999/xhtml"/&gt;&lt;span
+         *         xmlns="http://www.w3.org/1999/xhtml"/&gt;</samp>
+         *     </code>
+         * @example Generate a string representation of an HTML document:
+         *     <code>
+         *          TP.nodeAsString(document);
+         *          <samp>...HTML output...</samp>
+         *     </code>
+         * @example Generate a string representation of an HTML element:
+         *     <code>
+         *          TP.nodeAsString(TP.documentGetBody(document));
+         *          <samp>...HTML output...</samp>
+         *     </code>
+         * @returns {String} The String produced by 'rendering' the supplied
+         *     node.
+         * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
+         *     the method.
+         * @raise TP.sig.SerializationException Raised when the serialization
+         *     machinery encounters an error serializing the node.
+         * @raise TP.sig.UnsupportedOperation Raised when a Node is supplied
+         *     that this method doesn't know how to generate a string
+         *     representation of. These include Nodes of type:
+         *     Node.ENTITY_REFERENCE_NODE Node.ENTITY_NODE
+         *     Node.NOTATION_NODE
+         * @todo
+         */
+
+        var node,
+            str;
+
+        if (!TP.isNode(aNode)) {
+            return TP.raise(this, 'TP.sig.InvalidNode');
+        }
+
+        node = shallow ? TP.nodeCloneNode(aNode, false) : aNode;
+
+        //  depending on the node type we can optimize this call a bit
+        switch (node.nodeType) {
+            case Node.ATTRIBUTE_NODE:
+
+                return node.name + '="' + node.value + '"';
+
+            case Node.TEXT_NODE:
+
+                return node.data;
+
+            case Node.CDATA_SECTION_NODE:
+
+                return '<![CDATA[' + node.data + ']]>';
+
+            case Node.DOCUMENT_FRAGMENT_NODE:
+
+                //  You can't run XPaths on document fragments on Mozilla,
+                //  so the null namespace 'workaround' that we use below for
+                //  Elements and Documents won't work anyway. Therefore, for
+                //  document fragments, we just shortstop the process here
+                //  and create a String from it the best we can.
+                try {
+                    str = (new XMLSerializer()).serializeToString(node);
+                } catch (e) {
+                    TP.raise(this, 'TP.sig.SerializationException',
+                                TP.ec(e));
+                    str = 'Serialization failed.';
+                }
+
+                //  If the node was originally an HTML node, then we need to
+                //  make sure its return value is HTML
+                if (TP.isHTMLNode(node)) {
+                    return TP.stringAsHTMLString(str);
+                } else {
+                    return str;
+                }
+
+                break;
+
+            case Node.PROCESSING_INSTRUCTION_NODE:
+
+                return '<?' + node.target + ' ' + node.data + '?>';
+
+            case Node.COMMENT_NODE:
+
+                return '<!--' + node.data + '-->';
+
+            case Node.ENTITY_REFERENCE_NODE:
+
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
+                break;
+
+            case Node.ENTITY_NODE:
+
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
+                break;
+
+            case Node.DOCUMENT_TYPE_NODE:
+
+                return '<!DOCTYPE ' + node.name +
+                        ' PUBLIC ' + node.publicId + ' ' + node.systemId + '>';
+
+            case Node.NOTATION_NODE:
+
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
+                break;
+
+                /* eslint-disable no-fallthrough */
+
+            case Node.DOCUMENT_NODE:
+
+                /* jshint -W086 */
+
+                //  No document element? Return the empty string.
+                if (TP.notValid(node.documentElement)) {
+                    return '';
+                }
+
+                //  Note here how we don't break, but continue falling
+                //  through...
+
+            case Node.ELEMENT_NODE:
+
+                //  Note here how we don't break, but continue falling
+                //  through...
+
+            default:
+
+                /* eslint-enable no-fallthrough */
 
                 //  Try to serialize the node. If it fails, report an error.
                 try {
@@ -3629,7 +3904,7 @@ TP.hc(
         shouldBeDeep = TP.ifInvalid(deep, true);
         useString = TP.ifInvalid(viaString, false);
 
-        if (shouldBeDeep && viaString) {
+        if (shouldBeDeep && useString) {
             if (TP.isXMLDocument(aNode)) {
                 return TP.documentFromString(TP.nodeAsString(aNode));
             } else {
@@ -4998,7 +5273,7 @@ TP.hc(
         var nodeDoc,
             theNode,
 
-            prefix,
+            //prefix,
 
             childNodes,
             len,
@@ -5072,16 +5347,19 @@ TP.hc(
             //  need to redefine the same namespace, so we can remove the
             //  namespace node defining that namespace (if there is one).
             if (aNode.namespaceURI === theNode.namespaceURI) {
+                void(0);
                 //  use the prefix that was defined for the element, if
                 //  there is one.
+                /*
                 if (TP.notEmpty(prefix = theNode.prefix)) {
-                    //theNode.removeAttributeNS(TP.w3.Xmlns.XMLNS,
-                    //                          'xmlns:' + prefix);
+                    theNode.removeAttributeNS(TP.w3.Xmlns.XMLNS,
+                                              'xmlns:' + prefix);
                 } else {
                     //  Otherwise, just remove the default namespace 'xmlns'
                     //  one.
-                    //theNode.removeAttributeNS(TP.w3.Xmlns.XMLNS, 'xmlns');
+                    theNode.removeAttributeNS(TP.w3.Xmlns.XMLNS, 'xmlns');
                 }
+                */
             }
         } else if (TP.isFragment(theNode)) {
             //  theNode is a fragment. We need to do this process, but one
@@ -5092,13 +5370,16 @@ TP.hc(
 
             for (i = 0; i < len; i++) {
                 if (aNode.namespaceURI === childNodes[i].namespaceURI) {
+                    void(0);
+                    /*
                     if (TP.notEmpty(prefix = childNodes[i].prefix)) {
-                        //childNodes[i].removeAttributeNS(TP.w3.Xmlns.XMLNS,
-                        //                              'xmlns:' + prefix);
+                        childNodes[i].removeAttributeNS(TP.w3.Xmlns.XMLNS,
+                                                      'xmlns:' + prefix);
                     } else {
-                        //childNodes[i].removeAttributeNS(TP.w3.Xmlns.XMLNS,
-                        //                              'xmlns');
+                        childNodes[i].removeAttributeNS(TP.w3.Xmlns.XMLNS,
+                                                      'xmlns');
                     }
+                    */
                 }
             }
         }

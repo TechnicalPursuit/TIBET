@@ -50,7 +50,7 @@ function() {
      * @synopsis Returns the message type, one of a number of values which map
      *     directly to CSS entries and node templates used to provided
      *     theme-able output.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var val;
@@ -73,7 +73,7 @@ function(aFlag) {
      *     error response request.
      * @param {Boolean} aFlag True will signify the receiver holds an error
      *     message to respond to.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (TP.isBoolean(aFlag)) {
@@ -90,4 +90,3 @@ function(aFlag) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

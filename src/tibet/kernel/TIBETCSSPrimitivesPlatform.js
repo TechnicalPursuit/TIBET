@@ -602,9 +602,11 @@ TP.hc(
                 rules = queryObj.getCSSStyleRules(anElement);
 
                 //  Repackage this into an array for convenience.
+                /* eslint-disable new-cap */
                 for (i = 0; i < rules.Count(); i++) {
                     ruleArray.push(rules.GetElementAt(i));
                 }
+                /* eslint-enable new-cap */
             });
 
         //  If we couldn't successfully execute the XPCOM call...

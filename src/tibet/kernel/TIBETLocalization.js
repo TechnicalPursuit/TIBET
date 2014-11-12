@@ -1135,7 +1135,9 @@ function(aString, sourceLocale) {
     str = str.replace(sep, '.');
 
     /* jshint -W053 */
+    /* eslint-disable no-new-wrappers */
     return new Number(str);
+    /* eslint-enable no-new-wrappers */
     /* jshint +W053 */
 });
 

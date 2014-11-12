@@ -28,8 +28,7 @@
  *      usage           // Display usage of the command. Default is false.
  */
 
-/* eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0,
-   no-unused-vars:0 */
+/* eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0 */
 (function() {
 
 'use strict';
@@ -724,6 +723,57 @@ CLI.logItems = function(aList) {
     }
 
     this.info(buffer);
+};
+
+
+/**
+ * Returns a new String representing the obj with a leading number of padChar
+ * characters according to the supplied length.
+ * @param {Object} obj The object to format with leading characters.
+ * @param {Number} length The number of characters to pad the String
+ *     representation with.
+ * @param {String} padChar The pad character to use to pad the String
+ *     representation.
+ * @return {String}
+ */
+CLI.lpad = function(obj, length, padChar) {
+
+    var str,
+        pad;
+
+    str = '' + obj;
+    pad = padChar || ' ';
+
+    while (str.length < length) {
+        str = pad + str;
+    }
+
+    return str;
+};
+
+/**
+ * Returns a new String representing the obj with a trailing number of padChar
+ * characters according to the supplied length.
+ * @param {Object} obj The object to format with trailing characters.
+ * @param {Number} length The number of characters to pad the String
+ *     representation with.
+ * @param {String} padChar The pad character to use to pad the String
+ *     representation.
+ * @return {String}
+ */
+CLI.rpad = function(obj, length, padChar) {
+
+    var str,
+        pad;
+
+    str = '' + obj;
+    pad = padChar || ' ';
+
+    while (str.length < length) {
+        str = str + pad;
+    }
+
+    return str;
 };
 
 

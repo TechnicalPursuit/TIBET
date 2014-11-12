@@ -826,9 +826,11 @@ function(aLongNumber) {
     str = '#';
 
     /* jshint bitwise:false */
+    /* eslint-disable no-constant-condition */
     for (i = 24; (i -= 4) >= 0; ) {
         str += hexChars.charAt((aLongNumber >> i) & 0xF);
     }
+    /* eslint-enable no-constant-condition */
     /* jshint bitwise:true */
 
     return str;
@@ -873,12 +875,14 @@ function(color1, color2, aPercentage) {
     n = 0;
 
     /* jshint bitwise:false */
+    /* eslint-disable no-constant-condition */
     for (i = 24; (i -= 8) >= 0; ) {
         ca = (color1 >> i) & 0xFF;
         cb = (color2 >> i) & 0xFF;
         cc = Math.floor(ca * (1 - aPercentage) + cb * aPercentage);
         n |= cc << i;
     }
+    /* eslint-enable no-constant-condition */
     /* jshint bitwise:true */
 
     return n;
@@ -2046,31 +2050,31 @@ function(aValueString) {
 //  SELECTOR PARSING
 //  ------------------------------------------------------------------------
 
-TP.SELECTOR_IDENTIFIER  = 1;
+TP.SELECTOR_IDENTIFIER = 1;
 TP.SELECTOR_ADJACENT_SIBLING_COMBINATOR = 2;
 TP.SELECTOR_DOT = 3;
-TP.SELECTOR_COLON   = 4;
+TP.SELECTOR_COLON = 4;
 TP.SELECTOR_ATTR_EQUALS = 5;
-TP.SELECTOR_ASTERISK    = 6;
-TP.SELECTOR_ESCAPED_COLON   = 7;
-TP.SELECTOR_LEFT_PAREN  = 8;
+TP.SELECTOR_ASTERISK = 6;
+TP.SELECTOR_ESCAPED_COLON = 7;
+TP.SELECTOR_LEFT_PAREN = 8;
 TP.SELECTOR_RIGHT_PAREN = 9;
 TP.SELECTOR_EOF = 10;
-TP.SELECTOR_STRING  = 11;
-TP.SELECTOR_HASH    = 12;
-TP.SELECTOR_BANG    = 13;
-TP.SELECTOR_CHILD_COMBINATOR    = 14;
-TP.SELECTOR_GENERAL_SIBLING_COMBINATOR  = 15;
-TP.SELECTOR_ATTR_START  = 16;
-TP.SELECTOR_ATTR_END    = 17;
-TP.SELECTOR_ATTR_SPACE_EQUALS   = 18;
-TP.SELECTOR_ATTR_HYPHEN_EQUALS  = 19;
-TP.SELECTOR_ATTR_BEGIN_EQUALS   = 20;
+TP.SELECTOR_STRING = 11;
+TP.SELECTOR_HASH = 12;
+TP.SELECTOR_BANG = 13;
+TP.SELECTOR_CHILD_COMBINATOR = 14;
+TP.SELECTOR_GENERAL_SIBLING_COMBINATOR = 15;
+TP.SELECTOR_ATTR_START = 16;
+TP.SELECTOR_ATTR_END = 17;
+TP.SELECTOR_ATTR_SPACE_EQUALS = 18;
+TP.SELECTOR_ATTR_HYPHEN_EQUALS = 19;
+TP.SELECTOR_ATTR_BEGIN_EQUALS = 20;
 TP.SELECTOR_ATTR_END_EQUALS = 21;
-TP.SELECTOR_ATTR_SUBSTR_EQUALS  = 22;
+TP.SELECTOR_ATTR_SUBSTR_EQUALS = 22;
 TP.SELECTOR_ATTR_EXISTS = 23;
-TP.SELECTOR_WHITESPACE  = 24;
-TP.SELECTOR_NAME    = 25;
+TP.SELECTOR_WHITESPACE = 24;
+TP.SELECTOR_NAME = 25;
 TP.SELECTOR_UNKNOWN = 26;
 
 //  ------------------------------------------------------------------------
@@ -2099,24 +2103,24 @@ function(selectorStr) {
      *     method.
      */
 
-    var PERIOD_CHR  = '.',
-        COLON_CHR   = ':',
-        LEFT_PAREN_CHR  = '(',
-        RIGHT_PARENT_CHR    = ')',
-        LEFT_ANGLEBRACKET_CHR   = '<',
-        RIGHT_ANGLEBRACKET_CHR  = '>',
-        HASH_CHR    = '#',
-        ASTERISK_CHR    = '*',
-        EQUAL_CHR   = '=',
-        HYPHEN_CHR  = '-',
+    var PERIOD_CHR = '.',
+        COLON_CHR = ':',
+        LEFT_PAREN_CHR = '(',
+        RIGHT_PARENT_CHR = ')',
+        LEFT_ANGLEBRACKET_CHR = '<',
+        RIGHT_ANGLEBRACKET_CHR = '>',
+        HASH_CHR = '#',
+        ASTERISK_CHR = '*',
+        EQUAL_CHR = '=',
+        HYPHEN_CHR = '-',
         EXCLAMATION_CHR = '!',
-        LEFT_SQUAREBRACKET_CHR  = '[',
+        LEFT_SQUAREBRACKET_CHR = '[',
         RIGHT_SQUAREBRACKET_CHR = ']',
         ATTR_TILDE_CHAR = '~',
-        VERTICAL_BAR_CHR    = '|',
-        PLUS_CHAR   = '+',
-        CFLEX_CHR   = '^',
-        DOLLAR_CHR  = '$',
+        VERTICAL_BAR_CHR = '|',
+        PLUS_CHAR = '+',
+        CFLEX_CHR = '^',
+        DOLLAR_CHR = '$',
         ESC_CHR = '\\',
 
         parseRecord;

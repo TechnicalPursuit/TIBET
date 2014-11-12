@@ -1310,7 +1310,7 @@ function(targetObj) {
                     TP.signal(targetObj, aspectSigName, description,
                                 TP.INHERITANCE_FIRING,
                                 pathAction === TP.UPDATE ?
-                                                'TP.sig.Change':
+                                                'TP.sig.Change' :
                                                 'TP.sig.StructureChange');
                 }
             }
@@ -4102,7 +4102,7 @@ function() {
                         TP.extern.XPathParser.NamespaceResolver.prototype;
 
         TP.extern.XPathNamespaceResolver.prototype.getNamespace =
-            function(prefix,n) {
+            function(prefix, n) {
 
                 var namespace;
 
@@ -4192,7 +4192,9 @@ function() {
 
                     default:
 
+                        /* eslint-disable no-eval */
                         eval('$$result = ' + ln);
+                        /* eslint-enable no-eval */
 
                         if (TP.isNumber($$result)) {
                             return new TP.extern.XPathParser.XNumber(

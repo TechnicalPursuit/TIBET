@@ -13,11 +13,11 @@
  * @synopsis A type containing common data and functions for the browser.
  * @description TP.core.Browser is responsible for containing browser-specific
  *     features such as event registration and dispatch functions.
- *     
+ *
  *     This type is also registered under the global 'browser' to make it
  *     symmetric with the 'window' and 'document' globals with which it is
  *     associated.
- *     
+ *
  *     Note that this type loads in sections, the first section provides the
  *     common functionality and base methods, the second section is loaded via
  *     the boot system's conditional loading model so that browser-specific

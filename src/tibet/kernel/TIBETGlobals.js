@@ -180,30 +180,33 @@ TP.defineNamespace = function(namespaceName, root) {
 
             //  TODO: replace with a common method (no closure) applied via
             //  addLocalMethod
+
+            /* eslint-disable no-loop-func */
             currentObj[names[i]].getTypeNames =
                             function() {
 
                                 var keys,
-                                    names,
+                                    namelist,
                                     len,
-                                    i,
+                                    j,
                                     typename;
 
                                 keys = TP.keys(this);
-                                names = TP.ac();
+                                namelist = TP.ac();
 
                                 len = keys.getSize();
-                                for (i = 0; i < len; i++) {
+                                for (j = 0; j < len; j++) {
                                     typename = this[TP.NAME] +
                                                 '.' +
-                                                keys.at(i);
+                                                keys.at(j);
                                     if (TP.isType(typename.asType())) {
-                                        names.push(typename);
+                                        namelist.push(typename);
                                     }
                                 }
 
-                                return names;
+                                return namelist;
                             };
+            /* eslint-enable no-loop-func */
         }
 
         currentObj = currentObj[names[i]];
@@ -1142,32 +1145,31 @@ TP.JS_TEXT_ENCODED = 'text/javascript';
 //  html support
 //  ---
 
-TP.HTML_401_TAGS =
-        {
-    'a' : true, 'abbr' : true, 'acronym' : true, 'address' : true,
-    'applet' : true, 'area' : true, 'b' : true, 'base' : true,
-    'basefont' : true, 'bdo' : true, 'big' : true, 'blockquote' : true,
-    'body' : true, 'br' : true, 'button' : true, 'caption' : true,
-    'center' : true, 'cite' : true, 'code' : true, 'col' : true,
-    'colgroup' : true, 'dd' : true, 'del' : true, 'dfn' : true,
-    'dir' : true, 'div' : true, 'dl' : true, 'dt' : true,
-    'em' : true, 'embed' : true, 'fieldset' : true, 'font' : true,
-    'form' : true, 'frame' : true, 'frameset' : true, 'h1' : true,
-    'h2' : true, 'h3' : true, 'h4' : true, 'h5' : true,
-    'h6' : true, 'head' : true, 'hr' : true, 'html' : true,
-    'i' : true, 'iframe' : true, 'img' : true, 'input' : true,
-    'isindex' : true, 'kbd' : true, 'label' : true, 'legend' : true,
-    'li' : true, 'link' : true, 'map' : true, 'menu' : true,
-    'meta' : true, 'noframes' : true, 'noscript' : true, 'object' : true,
-    'ol' : true, 'optgroup' : true, 'option' : true, 'p' : true,
-    'param' : true, 'pre' : true, 'q' : true, 's' : true,
-    'samp' : true, 'script' : true, 'select' : true, 'small' : true,
-    'span' : true, 'strike' : true, 'strong' : true, 'style' : true,
-    'sub' : true, 'sup' : true, 'table' : true, 'tbody' : true,
-    'td' : true, 'textarea' : true, 'tfoot' : true, 'th' : true,
-    'thead' : true, 'title' : true, 'tr' : true, 'tt' : true,
-    'u' : true, 'ul' : true, 'val' : true
-        };
+TP.HTML_401_TAGS = {
+    'a': true, 'abbr': true, 'acronym': true, 'address': true,
+    'applet': true, 'area': true, 'b': true, 'base': true,
+    'basefont': true, 'bdo': true, 'big': true, 'blockquote': true,
+    'body': true, 'br': true, 'button': true, 'caption': true,
+    'center': true, 'cite': true, 'code': true, 'col': true,
+    'colgroup': true, 'dd': true, 'del': true, 'dfn': true,
+    'dir': true, 'div': true, 'dl': true, 'dt': true,
+    'em': true, 'embed': true, 'fieldset': true, 'font': true,
+    'form': true, 'frame': true, 'frameset': true, 'h1': true,
+    'h2': true, 'h3': true, 'h4': true, 'h5': true,
+    'h6': true, 'head': true, 'hr': true, 'html': true,
+    'i': true, 'iframe': true, 'img': true, 'input': true,
+    'isindex': true, 'kbd': true, 'label': true, 'legend': true,
+    'li': true, 'link': true, 'map': true, 'menu': true,
+    'meta': true, 'noframes': true, 'noscript': true, 'object': true,
+    'ol': true, 'optgroup': true, 'option': true, 'p': true,
+    'param': true, 'pre': true, 'q': true, 's': true,
+    'samp': true, 'script': true, 'select': true, 'small': true,
+    'span': true, 'strike': true, 'strong': true, 'style': true,
+    'sub': true, 'sup': true, 'table': true, 'tbody': true,
+    'td': true, 'textarea': true, 'tfoot': true, 'th': true,
+    'thead': true, 'title': true, 'tr': true, 'tt': true,
+    'u': true, 'ul': true, 'val': true
+};
 
 //  ---
 //  css support
@@ -1359,25 +1361,24 @@ TP.XSLT_EXEC = 'XSLT_EXEC';
 
 TP.PRIVILEGE_FLAGS = {};
 
-TP.PRIVILEGE_DESCRIPTIONS =
-        {
-    'SHOW_ABOUT' : 'Show a special "about:" panel',
-    'READ_HISTORY' : 'Read the browing history',
-    'READ_PREFERENCE' : 'Read a preference',
-    'WRITE_PREFERENCE' : 'Store a preference',
-    'MANIPULATE_WINDOW' : 'Manipulate a window',
-    'READ_EXECUTION_STACK' : 'Read the JavaScript execution stack',
-    'ACCESS_XDOMAIN_FRAME' : 'Access a window from another domain',
-    'ACCESS_DOM_INSPECT' : 'Inspect a DOM element',
+TP.PRIVILEGE_DESCRIPTIONS = {
+    'SHOW_ABOUT': 'Show a special "about:" panel',
+    'READ_HISTORY': 'Read the browing history',
+    'READ_PREFERENCE': 'Read a preference',
+    'WRITE_PREFERENCE': 'Store a preference',
+    'MANIPULATE_WINDOW': 'Manipulate a window',
+    'READ_EXECUTION_STACK': 'Read the JavaScript execution stack',
+    'ACCESS_XDOMAIN_FRAME': 'Access a window from another domain',
+    'ACCESS_DOM_INSPECT': 'Inspect a DOM element',
 
-    'ACCESS_XDOMAIN_XMLHTTP' : 'Access data from another domain',
-    'HOST_XSLT_EXEC' : 'Execute an XSLT stylesheet',
+    'ACCESS_XDOMAIN_XMLHTTP': 'Access data from another domain',
+    'HOST_XSLT_EXEC': 'Execute an XSLT stylesheet',
 
-    'HOST_FILE_ACCESS' : 'General file system access',
-    'HOST_FILE_DELETE' : 'Delete a file',
-    'HOST_FILE_SAVE' : 'Save a file',
-    'HOST_CMD_EXEC' : 'Execute a shell command'
-        };
+    'HOST_FILE_ACCESS': 'General file system access',
+    'HOST_FILE_DELETE': 'Delete a file',
+    'HOST_FILE_SAVE': 'Save a file',
+    'HOST_CMD_EXEC': 'Execute a shell command'
+};
 
 //  ------------------------------------------------------------------------
 //  REFLECTION KEYS
@@ -1638,7 +1639,7 @@ TP.RETURN_EMPTY = function() { return ''; };
 TP.RETURN_SPACE = function() { return ' '; };
 
 //  union and addAll "duplicate discriminators"
-TP.RETURN_ORIG = function(key, orig, knew) { return orig; };
+TP.RETURN_ORIG = function(key, orig) { return orig; };
 TP.RETURN_NEW = function(key, orig, knew) { return knew; };
 
 TP.RETURN_TOSTRING = function() { return this.toString(); };
@@ -1744,42 +1745,42 @@ TP.NATURAL_ORDER_SORT = function(a, b) {
             }
         };
 
-        compareRight = function(a,b) {
+        compareRight = function(a, b) {
 
             var bias,
-                ia,
-                ib,
+                ia2,
+                ib2,
 
-                ca,
-                cb;
+                ca2,
+                cb2;
 
             bias = 0;
-            ia = 0;
-            ib = 0;
+            ia2 = 0;
+            ib2 = 0;
 
             //  The longest run of digits wins.  That aside, the greatest
             //  value wins, but we can't know that it will until we've
             //  scanned both numbers to know that they have the same
             //  magnitude, so we remember it in BIAS.
-            for (;; ia++, ib++) {
-                ca = a.charAt(ia);
-                cb = b.charAt(ib);
+            for (;; ia2++, ib2++) {
+                ca2 = a.charAt(ia2);
+                cb2 = b.charAt(ib2);
 
-                if (!isDigitChar(ca) && !isDigitChar(cb)) {
+                if (!isDigitChar(ca2) && !isDigitChar(cb2)) {
                     return bias;
-                } else if (!isDigitChar(ca)) {
+                } else if (!isDigitChar(ca2)) {
                     return -1;
-                } else if (!isDigitChar(cb)) {
+                } else if (!isDigitChar(cb2)) {
                     return +1;
-                } else if (ca < cb) {
+                } else if (ca2 < cb2) {
                     if (bias === 0) {
                         bias = -1;
                     }
-                } else if (ca > cb) {
+                } else if (ca2 > cb2) {
                     if (bias === 0) {
                         bias = +1;
                     }
-                } else if (ca === 0 && cb === 0) {
+                } else if (ca2 === 0 && cb2 === 0) {
                     return bias;
                 }
             }
@@ -1790,6 +1791,7 @@ TP.NATURAL_ORDER_SORT = function(a, b) {
         nza = 0;
         nzb = 0;
 
+        /* eslint-disable no-constant-condition */
         while (true) {
             //  only count the number of zeroes leading the last number
             //  compared
@@ -1843,6 +1845,7 @@ TP.NATURAL_ORDER_SORT = function(a, b) {
 
             ++ia; ++ib;
         }
+        /* eslint-enable no-constant-condition */
     };
 
 //  compareTo sort block which sorts based on "magnitude"

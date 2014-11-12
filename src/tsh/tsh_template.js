@@ -384,11 +384,13 @@ function(aTemplateName, aDataSource, formatParams) {
     uri = TP.uc(TP.TIBET_URN_PREFIX + aTemplateName);
     if (TP.notValid(uri)) {
         //  TODO
+        void(0);
     }
 
     template = uri.getResource(TP.hc('resultType', TP.WRAP));
     if (TP.notValid(template) || !TP.canInvoke(template, 'format')) {
         //  TODO
+        void(0);
     }
 
     //  If the template is a type of TP.core.CollectionNode, then we have to

@@ -74,77 +74,77 @@ TP.boot.$tshOpRegex = /^\.[|&<>\(\{\[;][|&<>!\*\?\(\{\[]*/;
 //  Considered 'built-in' by TIBET, but other schemes are added when
 //  registered.
 TP.boot.$uriSchemes = {
-    'tibet':'tibet',    // common
-    'urn':'urn',        // common
-    'http':'http',      // common
-    'https':'https',    // common
-    'file':'file',      // common
-    'xmpp':'xmpp',      // common
-    'about':'about',    // common
-    'mailto':'mailto',  // common
-    'tel':'tel',        // common
-    'news':'news',      // common
-    'nntp':'nntp',      // common
-    'ftp':'ftp',        // common
-    'ws':'ws',          // common
-    'wss':'wss',        // common
+    'tibet': 'tibet',    // common
+    'urn': 'urn',        // common
+    'http': 'http',      // common
+    'https': 'https',    // common
+    'file': 'file',      // common
+    'xmpp': 'xmpp',      // common
+    'about': 'about',    // common
+    'mailto': 'mailto',  // common
+    'tel': 'tel',        // common
+    'news': 'news',      // common
+    'nntp': 'nntp',      // common
+    'ftp': 'ftp',        // common
+    'ws': 'ws',          // common
+    'wss': 'wss',        // common
 
-    'aaa':'aaa',
-    'aaas':'aaas',
-    'acap':'acap',
-    'cap':'cap',
-    'cid':'cid',
-    'crid':'crid',
-    'data':'data',
-    'dav':'dav',
-    'dict':'dict',
-    'dns':'dns',
-    'fax':'fax',
-    'go':'go',
-    'gopher':'gopher',
-    'h323':'h323',
-    'icap':'icap',
-    'im':'im',
-    'imap':'imap',
-    'info':'info',
-    'ipp':'ipp',
-    'iris':'iris',
-    'iris.beep':'iris.beep',
-    'iris.xpc':'iris.xpc',
-    'iris.xpcs':'iris.xpcs',
-    'iris.lws':'iris.lws',
-    'ldap':'ldap',
-    'lsid':'lsid',
-    'mid':'mid',
-    'modem':'modem',
-    'msrp':'msrp',
-    'msrps':'msrps',
-    'mtqp':'mtqp',
-    'mupdate':'mupdate',
-    'nfs':'nfs',
-    'opaquelocktoken':'opaquelocktoken',
-    'pop':'pop',
-    'pres':'pres',
-    'prospero':'prospero',
-    'rtsp':'rtsp',
-    'service':'service',
-    'shttp':'shttp',
-    'sip':'sip',
-    'sips':'sips',
-    'snmp':'snmp',
-    'soap.beep':'soap.beep',
-    'soap.beeps':'soap.beeps',
-    'tag':'tag',
-    'telnet':'telnet',
-    'tftp':'tftp',
-    'thismessage':'thismessage',
-    'tip':'tip',
-    'tv':'tv',
-    'vemmi':'vemmi',
-    'wais':'wais',
-    'xmlrpc.beep':'xmlrpc.beep',
-    'z39.50r':'z39.50r',
-    'z39.50s':'z39.50s'
+    'aaa': 'aaa',
+    'aaas': 'aaas',
+    'acap': 'acap',
+    'cap': 'cap',
+    'cid': 'cid',
+    'crid': 'crid',
+    'data': 'data',
+    'dav': 'dav',
+    'dict': 'dict',
+    'dns': 'dns',
+    'fax': 'fax',
+    'go': 'go',
+    'gopher': 'gopher',
+    'h323': 'h323',
+    'icap': 'icap',
+    'im': 'im',
+    'imap': 'imap',
+    'info': 'info',
+    'ipp': 'ipp',
+    'iris': 'iris',
+    'iris.beep': 'iris.beep',
+    'iris.xpc': 'iris.xpc',
+    'iris.xpcs': 'iris.xpcs',
+    'iris.lws': 'iris.lws',
+    'ldap': 'ldap',
+    'lsid': 'lsid',
+    'mid': 'mid',
+    'modem': 'modem',
+    'msrp': 'msrp',
+    'msrps': 'msrps',
+    'mtqp': 'mtqp',
+    'mupdate': 'mupdate',
+    'nfs': 'nfs',
+    'opaquelocktoken': 'opaquelocktoken',
+    'pop': 'pop',
+    'pres': 'pres',
+    'prospero': 'prospero',
+    'rtsp': 'rtsp',
+    'service': 'service',
+    'shttp': 'shttp',
+    'sip': 'sip',
+    'sips': 'sips',
+    'snmp': 'snmp',
+    'soap.beep': 'soap.beep',
+    'soap.beeps': 'soap.beeps',
+    'tag': 'tag',
+    'telnet': 'telnet',
+    'tftp': 'tftp',
+    'thismessage': 'thismessage',
+    'tip': 'tip',
+    'tv': 'tv',
+    'vemmi': 'vemmi',
+    'wais': 'wais',
+    'xmlrpc.beep': 'xmlrpc.beep',
+    'z39.50r': 'z39.50r',
+    'z39.50s': 'z39.50s'
 };
 
 //  ------------------------------------------------------------------------
@@ -280,7 +280,6 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
 
     var digit,
         hexDigit,
-        octalDigit,
         identHead,
         identBody,
         keywords,
@@ -292,7 +291,6 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
         reserved,
 
         result,
-        len,
         i,
         c,
         cc,
@@ -319,7 +317,6 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
     //  common regular expressions used for character testing
     digit = /[0-9]/;
     hexDigit = /[0-9a-fA-F]/;
-    octalDigit = /[0-7]/;
 
     //  NB: we allow '@' as a leading character for an identifer, so that users
     //  can use 'dereferencing sugar', but the system will strip this before it
@@ -398,7 +395,6 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
         return result;
     }
 
-    len = src.length;
     i = 0;
     lines = 1;
 
@@ -439,8 +435,8 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                 (tsh && (c === '~' ||
                          c === '#' ||
                         (c === '.' && src.charAt(i + 1) === '/' ) ||
-                        (c === '.' && src.charAt(i + 1) === '.' && src.charAt(i + 2) ==='/' )
-
+                        (c === '.' && src.charAt(i + 1) === '.' &&
+                            src.charAt(i + 2) === '/' )
                         ))) {
 
             //  identifiers start with $, _, or a-zA-Z, then allow 0-9
@@ -568,6 +564,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                                         src.charAt(i + 1) === quote) {
                                         //  don't add the backslash as we don't
                                         //  want it encoded
+                                        void(0);
                                     } else {
                                         attr += c;
                                     }

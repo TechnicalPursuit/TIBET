@@ -313,7 +313,7 @@ function(aMatrix) {
 
     matrix = [
             [aMatrix[0][0], aMatrix[1][0], aMatrix[0][3]],
-            [aMatrix[0][1], aMatrix[1][1], aMatrix[1][3]],
+            [aMatrix[0][1], aMatrix[1][1], aMatrix[1][3]]
         ];
 
     return matrix;

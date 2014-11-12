@@ -475,7 +475,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         lastSourcedScript,
         newScripts,
 
-        headElem,
         scripts,
 
         i,
@@ -611,7 +610,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  then the only way to get them to execute is to create new script
     //  elements, and copy over either the text content source (for inline
     //  scripts) or the 'src' attribute.
-    if (TP.isElement(headElem = aDocument.getElementsByTagName('head')[0])) {
+    if (TP.isElement(aDocument.getElementsByTagName('head')[0])) {
         //  Note the usage of 'getElementsByTagNameNS' here - we only want XHTML
         //  script nodes - not any other namespace's 'script' elements (in case
         //  they've defined them).
@@ -1192,7 +1191,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
 
     prefix = TP.notEmpty(prefix) ? ':' + prefix : '';
     tagstr = TP.join('<', tagName, ' xmlns' + prefix + '="', toXMLNS, '"',
-      (prefix === ':tibet' ? '': ' xmlns:tibet="' + TP.w3.Xmlns.TIBET + '" ') +
+      (prefix === ':tibet' ? '' : ' xmlns:tibet="' + TP.w3.Xmlns.TIBET + '" ') +
                         sourceTagStr,
                         ' ', attrStr,
                         '>',
@@ -1985,17 +1984,11 @@ function(anElement, attributeName, stripPrefixes) {
      */
 
     var elementPrefix,
-
         dict,
-
         attrs,
-
         len,
         i,
-
-        attrName,
-
-        nsIndex;
+        attrName;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -2024,7 +2017,7 @@ function(anElement, attributeName, stripPrefixes) {
         if (stripPrefixes) {
             attrName = attrName.slice(attrName.indexOf(':') + 1);
             dict.atPut(attrName, attrs[i].value);
-        } else if ((nsIndex = attrName.indexOf(':')) !== -1) {
+        } else if ((attrName.indexOf(':')) !== -1) {
             //  Otherwise, if we have a prefix, then put in one entry with the
             //  prefixed named
             dict.atPut(attrName, attrs[i].value);
@@ -2916,6 +2909,7 @@ function(anElement, attributeName, checkAttrNSURI) {
             //  we're supposed to look for. basically we're forced into the
             //  same logic as if the flag were false...all we can do is fall
             //  through and go by prefix alone
+            void(0);
         }
     }
 
@@ -3462,12 +3456,8 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      */
 
     var arr,
-
         prefix,
-        lname,
-
         nsuri,
-
         methodName;
 
     if (!TP.isElement(anElement)) {
@@ -3487,7 +3477,6 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
         //  the parts should be in the regex
         prefix = arr.at(1);
-        lname = arr.at(2);
 
         //  one possible check is whether the tag shares the prefix (a
         //  presumption admittedly but the most common case)
@@ -4033,7 +4022,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     var awakenContent,
 
         nodeContent,
-        elemGID,
+        //elemGID,
         returnNode;
 
     if (!TP.isXMLNode(anElement)) {
@@ -4068,7 +4057,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 
     //  Before we remove anElement from its parent, we capture its 'gid' for
     //  later use.
-    elemGID = TP.gid(anElement);
+    //elemGID = TP.gid(anElement);
 
     //  Replace anElement in its parent with the new node (pass in false to
     //  awaken the content - we don't awaken XML).
@@ -6984,7 +6973,7 @@ function(node) {
 
                 for (i = 0; i < len; i++) {
                     //  If we find that prefix within the attribute name
-                    if (attrs[i].name.indexOf(attrPrefix) !== TP.NOT_FOUND) {
+                    if (attrs[i].name.indexOf(prefix) !== TP.NOT_FOUND) {
                         //  If we've been given a valid attrValue to test,
                         //  then we only return true if that value matches
                         //  the actual attribute value.
@@ -8532,6 +8521,8 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
     terminal = aNode;
     rootNode = TP.nodeGetTopAncestor(terminal);
 
+    /* eslint-disable no-labels */
+
     //  Each entry in the list is either an array (when it's the root entry)
     //  or a nodelist, so "outer" is something we have to iterate over.
     while ((outer = list.shift())) {
@@ -8656,6 +8647,8 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
             }
         }
     }
+
+    /* eslint-enable no-labels */
 
     return;
 });
@@ -8866,9 +8859,10 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                     currentNode = next;
                     continue;
                 } else if (ret === TP.DESCEND) {
-                        //  skip cycles on returned node, descend into
-                        //  children by dropping out of here without a
-                        //  return or continue call.
+                    //  skip cycles on returned node, descend into
+                    //  children by dropping out of here without a
+                    //  return or continue call.
+                    void(0);
                 } else if (TP.isValid(ret)) {
                     TP.ifWarn() ?
                         TP.warn('Unrecognized traversal return value: ' +
@@ -11255,7 +11249,7 @@ function(aNode, aNamespaceURI, includeDescendants) {
 
         str.replace(
                 re,
-                function(wholeMatch, prefix, uri) {
+                function(wholeMatch, prefix) {
 
                     if (TP.notEmpty(prefix)) {
                         arr.push(prefix);
@@ -11418,6 +11412,8 @@ function(aNode, includeDescendants) {
 
             arr = TP.ac(aNode.namespaceURI);
             break;
+
+            /* eslint-disable no-fallthrough */
 
         case Node.DOCUMENT_NODE:
 
@@ -11818,8 +11814,10 @@ function(aNode, phaseList, outerElem) {
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 TP.definePrimitive('nodeHasReachedPhase',
 function(aNode, targetPhase, targetPhaseList, nodeOnly) {
+/* eslint-enable no-unused-vars */
 
     /**
      * @name nodeHasReachedPhase

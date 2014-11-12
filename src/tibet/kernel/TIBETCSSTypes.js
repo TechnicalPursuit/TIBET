@@ -243,7 +243,7 @@ function(controlParams, stepParams) {
     //  visual animation
     ctrlParams = TP.ifInvalid(controlParams, TP.hc());
     ctrlParams.atPut('isAnimation', true);
-     
+
     //  Call next method to get the transition job.
     transitionJob = this.callNextMethod(ctrlParams, stepParams);
 
@@ -878,6 +878,7 @@ function(job, params) {
     } else {
         //  No 'to' or 'by' - can't proceed from here.
         //  TODO: Raise an exception
+        void(0);
     }
 
     params.atPut('from', fromAsNumber);

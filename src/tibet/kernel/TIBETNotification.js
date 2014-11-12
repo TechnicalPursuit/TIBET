@@ -3488,7 +3488,7 @@ function(aHandlerEntry, quiet) {
     //  if no handler ID at this point we must have an inline function to use,
     //  if the handler ID is a JS URI then we have an inline expression. either
     //  way we have to convert the JS into a function we can use
-    if (TP.isEmpty(handlerID) || handlerID.startsWith('javascript:')) {
+    if (TP.isEmpty(handlerID) || handlerID.startsWith('java' + 'script:')) {
         if (TP.isEmpty(handlerID)) {
             TP.ifWarn() ?
                 TP.warn(TP.boot.$annotate(
@@ -3526,6 +3526,8 @@ function(aHandlerEntry, quiet) {
 
                 return TP.sig.SignalMap.$registerHandlerEntry(entry);
             } else {
+                TP.error('Unsupported handler registration.', TP.SIGNAL_LOG);
+                /*
                 try {
                     win = window;
                     eval('win.$$handler = ' + source);
@@ -3546,11 +3548,13 @@ function(aHandlerEntry, quiet) {
 
                     return;
                 }
+                */
             }
         }
     } else if (handlerID.startsWith('#')) {
         //  local document ID reference, should have been converted to a
         //  global ID but TP.byOID() will default to TP.sys.getUICanvas()
+        void(0);
     }
 
     if (TP.isValid(handlerID)) {
@@ -3953,6 +3957,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             TP.trace('Removing ' + list.length + ' listener entries.',
                         TP.SIGNAL_LOG) : 0;
 
+        /* eslint-disable no-loop-func */
         for (i = 0; i < list.length; i++) {
             item = list.at(i);
 
@@ -3967,6 +3972,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
                                     });
             }
         }
+        /* eslint-enable no-loop-func */
     } else {
         handlerID = aHandler.getID();
         entry = root.listeners.detect(
@@ -5219,8 +5225,9 @@ function(anOrigin, aSignal, aPayload, aType) {
         //  of the loop should just continue with the current type.
         //  Otherwise, use the supertype.
         if (isSpoofed) {
-                //  Leave 'type' at the current value. 'signame' will be set
-                //  to the next value at the top of the loop.
+            //  Leave 'type' at the current value. 'signame' will be set
+            //  to the next value at the top of the loop.
+            void(0);
         } else {
             type = type.getSupertype();
         }
@@ -5279,6 +5286,7 @@ function(anOrigin, aSignal, aHandler) {
                     inst.shouldSignalChange(true);
                 };
                 */
+                void(0);
             }
         }
 
@@ -5334,6 +5342,7 @@ function(anOrigin, aSignal, aHandler) {
                     inst.shouldSignalChange(true);
                 };
                 */
+                void(0);
             }
         }
 

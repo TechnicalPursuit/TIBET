@@ -704,7 +704,7 @@ function(aFilterName, aLevel) {
      */
 
     var supertypeName,
-    
+
         str,
         lvl;
 
@@ -1122,7 +1122,7 @@ function() {
         keys,
         len,
         i,
-    
+
         joinStr;
 
     //  If this flag is set to true, that means that we're already trying to
@@ -1178,7 +1178,7 @@ function() {
         keys,
         len,
         i,
-    
+
         joinStr;
 
     //  If this flag is set to true, that means that we're already trying to
@@ -1237,7 +1237,7 @@ function() {
         keys,
         len,
         i,
-    
+
         joinStr;
 
     //  If this flag is set to true, that means that we're already trying to
@@ -1296,7 +1296,7 @@ function() {
         keys,
         len,
         i,
-    
+
         joinStr;
 
     //  If this flag is set to true, that means that we're already trying to
@@ -1360,7 +1360,7 @@ function() {
         keys,
         len,
         i,
-    
+
         joinStr;
 
     //  If this flag is set to true, that means that we're already trying to

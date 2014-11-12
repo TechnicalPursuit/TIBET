@@ -171,6 +171,7 @@ function(aRequest) {
 
         //  TODO:
         //  clear it before we 'return' from errors etc.
+        void(0);
     }
 
     //  target URI is the key piece of data, without that we can't run since
@@ -346,9 +347,8 @@ function(aFaultCode, aFaultString, aFaultStack) {
     //  called when all processing has completed
     subrequest.defineMethod('handleRequestCompleted',
 function() {
-
-            alert('tsh:service completed');
-
+            // TODO: real work?
+            //window.alert('tsh:service completed');
             return;
 });
 
@@ -357,8 +357,8 @@ function() {
     subrequest.defineMethod('handleRequestFailed',
 function() {
 
-            alert('tsh:service failed');
-
+            // TODO: real work?
+            //window.alert('tsh:service failed');
             return;
 });
 
@@ -367,7 +367,7 @@ function() {
     subrequest.defineMethod('handleRequestSucceeded',
 function(aRequest) {
 
-            alert('tsh:service succeeded');
+            //window.alert('tsh:service succeeded');
             TP.ifInfo() ?
                 TP.info('The results are: ' + TP.str(aRequest.getResult()),
                         TP.LOG) : 0;

@@ -58,7 +58,7 @@ function() {
      * @synopsis Returns the message type, one of a number of values which map
      *     directly to CSS entries and node templates used to provided
      *     theme-able output.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var val;

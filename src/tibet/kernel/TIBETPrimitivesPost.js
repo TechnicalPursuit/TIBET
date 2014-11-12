@@ -2087,7 +2087,8 @@ function(anObject, assignIfAbsent) {
         if (assign) {
             obj.$$globalID = globalID;
             if (TP.isDocument(doc = obj.document) &&
-                TP.isElement(root = doc.documentElement)) {
+                    TP.isElement(root = doc.documentElement)) {
+                void(0);
             }
         }
 

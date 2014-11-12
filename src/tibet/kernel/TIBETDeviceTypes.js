@@ -1002,6 +1002,7 @@ function(singletonName, normalizedEvent, aSignal) {
 
                 matchedShortcutSegment = true;
 
+                /* eslint-disable no-loop-func */
                 TP.core.Keyboard.$set('shortcutsTimer',
                     setTimeout(
                         function() {
@@ -1016,6 +1017,7 @@ function(singletonName, normalizedEvent, aSignal) {
                             this.set('shortcutIndex', this.get('shortcuts'));
                         }.bind(this),
                             TP.sys.cfg('keyboard.shortcut_cancel_delay')));
+                /* eslint-enable no-loop-func */
 
                 //  If we're not at the end of the sequence migrate our hash
                 //  reference "down" to the next level and mark the fact that we
@@ -2288,16 +2290,16 @@ TP.core.Mouse.Type.defineAttribute(
 
             func = function() {
 
-                        var lastMove,
+                        var priorMove,
                             doc,
                             obs;
 
-                        lastMove = TP.core.Mouse.$get('lastMove');
+                        priorMove = TP.core.Mouse.$get('lastMove');
 
                         //  If there was no 'last move' native event that we can
                         //  leverage, then we can't do much so we exit here and
                         //  don't reschedule the timer.
-                        if (lastMove === null) {
+                        if (priorMove === null) {
                             return;
                         }
 
@@ -2315,7 +2317,7 @@ TP.core.Mouse.Type.defineAttribute(
                         //  this window isn't in focus to the user, which means
                         //  hover events don't mean much. So we exit here and
                         //  don't reschedule the timer.
-                        doc = TP.eventGetWindow(lastMove).document;
+                        doc = TP.eventGetWindow(priorMove).document;
                         if (!doc.hasFocus() || !doc.activeElement) {
                             return;
                         }
@@ -2323,18 +2325,18 @@ TP.core.Mouse.Type.defineAttribute(
                         //  If we're in a dragging state, then send invoke
                         //  observers for 'draghover', otherwise invoke the ones
                         //  for 'mousehover'.
-                        if (TP.core.Mouse.$$isDragging(lastMove)) {
-                            TP.eventSetType(lastMove, 'draghover');
+                        if (TP.core.Mouse.$$isDragging(priorMove)) {
+                            TP.eventSetType(priorMove, 'draghover');
 
                             TP.core.Mouse.invokeObservers(
                                     'draghover',
-                                    lastMove);
+                                    priorMove);
                         } else {
-                            TP.eventSetType(lastMove, 'mousehover');
+                            TP.eventSetType(priorMove, 'mousehover');
 
                             TP.core.Mouse.invokeObservers(
                                     'mousehover',
-                                    lastMove);
+                                    priorMove);
                         }
 
                         //  reschedule the repeat timer

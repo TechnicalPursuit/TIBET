@@ -126,7 +126,7 @@ function(includesGroups) {
 
     var lid,
         selExpr,
-    
+
         results;
 
     //  Query for any elements under the context element that have an

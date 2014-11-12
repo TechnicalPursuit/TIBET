@@ -3348,6 +3348,7 @@ function (onFulfilled, onRejected) {
 
                 //  We must run this when the stack has completely unwound,
                 //  according to the Promises/A+ specification.
+                /* eslint-disable no-wrap-func */
                 (function () {
                     try {
                         //  Go ahead and run the onFulfilled
@@ -3374,6 +3375,7 @@ function (onFulfilled, onRejected) {
                                     TP.sc('Promise failure: ') + TP.str(e));
                     }
                 }).afterUnwind();
+                /* eslint-enable no-wrap-func */
             } else {
                 //  No onFulfilled handler - complete the new request, passing
                 //  along the result of this response.
@@ -3393,6 +3395,7 @@ function (onFulfilled, onRejected) {
 
                 //  We must run this when the stack has completely unwound,
                 //  according to the Promises/A+ specification.
+                /* eslint-disable no-wrap-func */
                 (function () {
                     try {
                         //  Go ahead and run the onRejected
@@ -3427,6 +3430,7 @@ function (onFulfilled, onRejected) {
                                     TP.sc('Promise failure: ') + TP.str(e));
                     }
                 }).afterUnwind();
+                /* eslint-enable no-wrap-func */
             } else {
                 //  No onRejected handler - fail the new request, passing along
                 //  the fault code and fault text of this response.

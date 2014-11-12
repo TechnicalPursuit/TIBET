@@ -4872,7 +4872,7 @@ function(aRequest, filterResult) {
         async,
         thisref,
         response,
-        result;
+        resource;
 
     TP.stop('break.uri_resource');
 
@@ -4959,10 +4959,10 @@ function(aRequest, filterResult) {
         //  request mode on us.
         async = this.rewriteRequestMode(subrequest);
     } else {
-        result = this.$get('resource');
+        resource = this.$get('resource');
 
         // Fake completion of the subrequest and related request.
-        subrequest.complete(result);
+        subrequest.complete(resource);
     }
 
     if (async) {
@@ -5580,8 +5580,10 @@ function(schemeSpecificString) {
     //  should change that so the parsing is local to this type. Here, we
     //  invoke the parser directly because of the ambiguities with the style
     //  string parser.
+    /* eslint-disable new-cap */
     return TP.lang.Hash.URI_STRING_PARSER('chrome-extension:' +
         schemeSpecificString);
+    /* eslint-enable new-cap */
 });
 
 //  ========================================================================
@@ -5714,7 +5716,9 @@ function(schemeSpecificString) {
     //  string parser.
 
     //  TODO: Also, what about 'https:' URLs here - we're ASSuming 'http:'
+    /* eslint-disable new-cap */
     return TP.lang.Hash.URI_STRING_PARSER('http:' + schemeSpecificString);
+    /* eslint-enable new-cap */
 });
 
 //  ------------------------------------------------------------------------
@@ -5955,7 +5959,9 @@ function(schemeSpecificString) {
     //  should change that so the parsing is local to this type. Here, we
     //  invoke the parser directly because of the ambiguities with the style
     //  string parser.
+    /* eslint-disable new-cap */
     return TP.lang.Hash.URI_STRING_PARSER('file:' + schemeSpecificString);
+    /* eslint-enable new-cap */
 });
 
 //  ------------------------------------------------------------------------
@@ -6004,7 +6010,9 @@ TP.core.URI.defineSubtype('JSURI');
 //  Type Constants
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-script-url */
 TP.core.JSURI.Type.defineConstant('JSURI_REGEX', TP.rc('javascript:\\s*'));
+/* eslint-enable no-script-url */
 
 TP.core.JSURI.Type.defineConstant('SCHEME', 'javascript');
 
@@ -6073,25 +6081,16 @@ function(aString) {
 
     /**
      * @name validate
-     * @synopsis Returns true if the string parameter is valid JavaScript. NOTE
-     *     that this method functions by using eval() which means it has the
-     *     side-effect of running the code string.
+     * @synopsis Returns true if the string parameter is valid JavaScript. For
+     *     security reasons this method currently defaults to true rather than
+     *     actually executing the string.
      * @param {String} aString A string to test.
      * @returns {Boolean} Whether or not JavaScript code could be successfully
      *     evaluated from the supplied String.
      */
 
-    try {
-        //  TODO:   parse/tokenize first looking for nasty security issues?
-
-        //  TODO:   ?eval in separate context...of course that might create
-        //          issues if there were dependencies on TIBET etc.
-        eval(aString);
-
-        return true;
-    } catch (e) {
-        return false;
-    }
+    //  TODO:   parse/tokenize looking for nasty security issues?
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -6181,9 +6180,12 @@ function(aRequest, filterResult) {
     //  get rid of leading javascript: portion so we can eval the rest
     str = this.get('jsSource');
     try {
-        //  TODO:   security check
+        throw new Error('SecurityViolation');
+        //  TODO: security check
+        /*
         eval('$$result = ' + str);
         result = $$result;
+        */
     } catch (e) {
         msg = TP.sc('Error acquiring resource via: ') + str;
         request.fail(TP.FAILURE, msg);
@@ -6454,7 +6456,9 @@ function(schemeSpecificString) {
     //  should change that so the parsing is local to this type. Here, we
     //  invoke the parser directly because of the ambiguities with the style
     //  string parser.
+    /* eslint-disable new-cap */
     return TP.lang.Hash.URI_STRING_PARSER('ws:' + schemeSpecificString);
+    /* eslint-enable new-cap */
 });
 
 //  ========================================================================
@@ -6579,7 +6583,7 @@ function(schemeSpecificString) {
  *     tibet:///javascript:[uicanvasref].TP
  *
  *     Note that by pushing the canvas specification onto the front of any text,
- *     eval()ing the remaining portion will access the context of the named
+ *     evaluating the remaining portion will access the context of the named
  *     canvas as its root.
  *
  *     VISUAL vs. NON-VISUAL DOM REFERENCES
@@ -8106,6 +8110,7 @@ function(aSignal) {
     if (TP.isNode(dat = aSignal.getPayload().at('body'))) {
         //  remove content wrapper by grabbing first child
         //dat = TP.nodeCloneNode(dat.firstChild, true);
+        void(0);
     }
 
     TP.ifTrace() ?
@@ -8550,6 +8555,7 @@ function(aURI, aRequest) {
 
             //  fall through past outer IF/ELSE so we can process the map
             //  in one place regardless of how it was acquired/built
+            void(0);
         }
     }
     else    //  map not found -- first time for this URI/profile pair

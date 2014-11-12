@@ -339,7 +339,7 @@ function(attributeName) {
      *     globals on their content window if a value for the attribute cannot
      *     be found on the receiver itself.
      * @param {String} attributeName The name/key of the attribute to return.
-     * @returns {Object} 
+     * @returns {Object}
      */
 
     var val,

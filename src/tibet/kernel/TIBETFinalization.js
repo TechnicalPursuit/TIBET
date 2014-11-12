@@ -441,6 +441,7 @@ function() {
         //  TP.sig.AppStart for the system once the app
         //  tag awakens.Note how we fork the call so that all child
         //  awaken processing has occurred first.
+        /* eslint-disable no-wrap-func */
         (function() {
 
                 var didStartHandler;
@@ -480,6 +481,7 @@ function() {
                     TP.hc('ApplicationType', appType,
                             'ApplicationElement', elem));
             }).afterUnwind();
+        /* eslint-enable no-wrap-func */
     });
 
     request.atPut('failFunc', function(req) {

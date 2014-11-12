@@ -17,8 +17,8 @@ basic support required for encapsulation.
 
 /* JSHint checking */
 
-/* jshint evil:true
-*/
+/* jshint evil:true */
+/* eslint no-new-func:0, no-new-wrappers:0, no-new-object:0 */
 
 //  ------------------------------------------------------------------------
 //  FUNCTION EXTRAS
@@ -63,9 +63,7 @@ function() {
         re.lastIndex = 0;
         results = this.toString().match(re);
 
-        results.perform(
-            function(item, index) {
-
+        results.perform(function(item) {
                 arr.push(item.strip('this.'));
             });
 
@@ -387,7 +385,9 @@ function(attributeName, attributeValue, shouldSignal) {
         //  for 'change' testing we demand equivalent types
         if (typeof(oldVal) === typeof(newVal)) {
             /* jshint eqeqeq:false */
+            /* eslint-disable eqeqeq */
             if (oldVal == newVal) {
+            /* eslint-enable eqeqeq */
             /* jshint eqeqeq:true */
                 return this;
             }
@@ -464,7 +464,9 @@ function(attributeName, attributeValue, shouldSignal) {
         if (TP.isDefined(oldVal)) {
             if (typeof(oldVal) === typeof(newVal)) {
                 /* jshint eqeqeq:false */
+                /* eslint-disable eqeqeq */
                 if (oldVal == newVal) {
+                /* eslint-enable eqeqeq */
                 /* jshint eqeqeq:true */
                     return this;
                 }
@@ -708,7 +710,9 @@ function(anIndex, varargs, aValue) {
         this[index] = varargs;
 
         /* jshint eqeqeq:false */
+        /* eslint-disable eqeqeq */
         if (val != varargs) {
+        /* eslint-enable eqeqeq */
         /* jshint eqeqeq:true */
             op = (val === undefined) ? TP.CREATE : TP.UPDATE;
 
@@ -760,7 +764,9 @@ function(anIndex, varargs, aValue) {
     }
 
     /* jshint eqeqeq:false */
+    /* eslint-disable eqeqeq */
     if (val != aValue) {
+    /* eslint-enable eqeqeq */
     /* jshint eqeqeq:true */
         //  Since we changed multiple slots, some or all of which might have
         //  already existed, we just send 'TP.UPDATE' here with an aspect of
@@ -1223,8 +1229,8 @@ function() {
             break;
         default:
             //  shouldn't get here, Date() takes up to 7 arguments...
-            eval('$$newinst = new Date(' +
-                    TP.sys.$buildArgString(0, arguments.length) + ');');
+            //eval('$$newinst = new Date(' +
+             //       TP.sys.$buildArgString(0, arguments.length) + ');');
             break;
     }
 
@@ -1314,8 +1320,8 @@ function() {
             default:
                 //  might get here, but the function has to take 8 arguments
                 //  plus a function body to cause this to run
-                eval('$$newinst = new Function(' +
-                        TP.sys.$buildArgString(0, arguments.length) + ');');
+                //eval('$$newinst = new Function(' +
+                 //       TP.sys.$buildArgString(0, arguments.length) + ');');
                 break;
         }
     } catch (e) {
@@ -1363,11 +1369,11 @@ function(anObject) {
     kallee = Number.construct;
 
     //  if we've got a string and a full kernel we can try to localize
-    if (TP.isString(arguments[0]) && TP.sys.hasKernel()) {
+    if (TP.isString(anObject) && TP.sys.hasKernel()) {
         //  any 'construct' that calls a 'from' needs a recursion trap
         if (TP.notTrue(kallee.$$onStack)) {
             kallee.$$onStack = true;
-            val = Number.fromString(arguments[0]);
+            val = Number.fromString(anObject);
             kallee.$$onStack = false;
 
             return val;
@@ -1378,7 +1384,7 @@ function(anObject) {
 
     /* jshint -W053 */
     //  number only takes one argument so we can invoke directly
-    return new Number(arguments[0]);
+    return new Number(anObject);
     /* jshint +W053 */
 });
 
@@ -1423,6 +1429,7 @@ function() {
         } else {
             //  TP.raise(newinst, 'TP.sig.DuplicateKey',
             //              arguments[i]);
+            void(0);
         }
     }
 
@@ -1448,9 +1455,7 @@ function(pattern, flags) {
     var restr,
         attrs,
         newinst,
-        msg,
-
-        err;
+        msg;
 
     if (TP.isRegExp(pattern)) {
         return pattern;
@@ -1458,8 +1463,6 @@ function(pattern, flags) {
 
     restr = TP.ifInvalid(pattern, '');
     attrs = TP.ifInvalid(flags, '');
-
-    err = null;
 
     try {
         newinst = new RegExp(restr, attrs);
@@ -1698,4 +1701,3 @@ function(aType) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

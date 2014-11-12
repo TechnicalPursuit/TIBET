@@ -48,7 +48,7 @@ function() {
      *     request. Requestors can leverage this to get a handle to the actual
      *     output cell without having direct knowledge of the console used to
      *     perform the output itself.
-     * @returns {Node} 
+     * @returns {Node}
      */
 
     return this.$get('outputNode');
@@ -57,4 +57,3 @@ function() {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

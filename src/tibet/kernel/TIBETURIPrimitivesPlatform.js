@@ -35,6 +35,8 @@ Platform-specific functionality related to file access operations.
           netscape:false
 */
 
+/* eslint-disable new-cap */
+
 //  ------------------------------------------------------------------------
 //  UTILITY METHODS
 //  ------------------------------------------------------------------------
@@ -198,7 +200,7 @@ TP.hc(
                 var fname,
                     FP,
                     file,
-                    msg;
+                    message;
 
                 //  following operation uses local name, not web format
                 fname = TP.uriInLocalFormat(path);
@@ -214,15 +216,15 @@ TP.hc(
                     //  pass false to avoid recursive delete
                     file.remove(false);
                 } catch (e) {
-                    msg = TP.sc('Unable to delete ', fname);
+                    message = TP.sc('Unable to delete ', fname);
                     if (report) {
                         TP.raise(this,
                                     'TP.sig.URIException',
-                                    TP.ec(e, msg));
+                                    TP.ec(e, message));
                     }
 
                     retVal = false;
-                    request.fail(TP.FAILURE, msg);
+                    request.fail(TP.FAILURE, message);
 
                     return;
                 }
@@ -840,7 +842,7 @@ TP.hc(
 
             //  make sure that any spaces or other escaped characters in the
             //  file name get unescaped properly.
-            fname = unescape(fname);
+            fname = window.unescape(fname);
 
             //  now for the fun part, files and channels and streams, oh my!
             try {
@@ -1342,7 +1344,9 @@ TP.hc(
         //  it if the paramsHash is empty (or not defined) or if there is no
         //  entry for permissions in the paramsHash. We default it to the
         //  standard Unix file permissions of 0644.
+        /* eslint-disable no-octal */
         permissions = TP.ifKeyInvalid(request, 'permissions', 0644);
+        /* eslint-enable no-octal */
 
         retVal = false;
 
@@ -1820,7 +1824,7 @@ TP.hc(
                 var flags,
                     cmd,
                     args,
-                    msg,
+                    message,
 
                     cmdline,
                     cmdext,
@@ -2015,9 +2019,11 @@ TP.hc(
                 }
 
                 //  write out our batch file content
+                /* eslint-disable no-octal */
                 TP.$fileSave(TP.uriInWebFormat(cmdFile),
                                 TP.hc('body', cmdText, 'permissions', 0755,
                                     'backup', false));
+                /* eslint-enable no-octal */
 
                 //  having built a batch file that contains our command line
                 //  the batch file name now becomes our command line
@@ -2092,16 +2098,16 @@ TP.hc(
                             TP.uriInLocalFormat(
                                 TP.sys.cfg('os.comspec_path')));
                 } catch (e) {
-                    msg = TP.sc('Unable to init shell file: ',
+                    message = TP.sc('Unable to init shell file: ',
                                     TP.uriInLocalFormat(
                                         TP.sys.cfg('os.comspec_path')));
 
                     TP.raise(this, 'InvalidShell',
-                                TP.ec(e, msg));
+                                TP.ec(e, message));
 
-                    request.fail(TP.FAILURE, msg);
+                    request.fail(TP.FAILURE, message);
 
-                    retVal = TP.ac(TP.FAILURE, null, msg);
+                    retVal = TP.ac(TP.FAILURE, null, message);
 
                     return retVal;
                 }
@@ -2114,14 +2120,14 @@ TP.hc(
                     process = Components.classes[cls].createInstance(svc);
                     process.init(file);
                 } catch (e) {
-                    msg = TP.sc('Unable to init process for: ',
+                    message = TP.sc('Unable to init process for: ',
                                 TP.uriInLocalFormat(
                                     TP.sys.cfg('os.comspec_path')));
 
                     TP.raise(this, 'ProcessException',
-                                TP.ec(e, msg));
+                                TP.ec(e, message));
 
-                    retVal = TP.ac(TP.FAILURE, null, msg);
+                    retVal = TP.ac(TP.FAILURE, null, message);
 
                     return retVal;
                 }
@@ -2218,13 +2224,13 @@ TP.hc(
                         errors = TP.$fileLoad(loadFile);
                     }
                 } catch (e) {
-                    msg = TP.str(e);
+                    message = TP.str(e);
                     TP.raise(this, 'ExecutionException',
                                 TP.ec(e));
 
-                    request.fail(TP.FAILURE, msg);
+                    request.fail(TP.FAILURE, message);
 
-                    retVal = TP.ac(TP.FAILURE, null, msg);
+                    retVal = TP.ac(TP.FAILURE, null, message);
                 } finally {
                     if (TP.notTrue(async)) {
                         retVal = TP.ac(result, output, errors);

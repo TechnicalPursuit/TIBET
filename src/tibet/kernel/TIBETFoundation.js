@@ -19,11 +19,7 @@ TIBET platform.
 
 /* JSHint checking */
 
-/* global $STATUS:true
-*/
-
-/* jshint evil:true
-*/
+/* jshint evil:true */
 
 //  ------------------------------------------------------------------------
 //  GLOBAL DISCOVERY
@@ -1842,7 +1838,13 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         TP.sys.$launchDebugger(arguments);
     }
 
-    $STATUS = TP.FAILURE;
+    // NOTE we use this construct because declaring this as a global causes
+    // ESLint to freak out about an unused variable on line 28 even if we
+    // encapsulate it in no-unused-vars directives.
+
+    /* eslint-disable no-undef */
+    $STATUS = TP.FAILURE;       // jshint ignore:line
+    /* eslint-enable no-undef */
 
     return TP.sys.shouldCaptureErrors();
 };
@@ -2252,9 +2254,11 @@ function(aHandlerName, aHandler, aPolicy) {
 
             // TODO: replace false here with a state check. current app state
             // must match for the handler to be invoked.
+            /* eslint-disable no-constant-condition */
             if (false) {
                 return;
             }
+            /* eslint-enable no-constant-condition */
             aHandler.apply(this, arguments);
         }.bind(this);
     } else {
@@ -2702,9 +2706,10 @@ function(aFilter) {
         key,
         it,
 
-        propScope,
+        propScope;
 
-        proto;
+        // TODO: why don't we use this value?
+        //proto;
 
     TP.stop('break.interface');
 
@@ -2755,11 +2760,16 @@ function(aFilter) {
     }
 
     //  set up a proto object for filtering methods
+    /*
+     * TODO: figure out why we never ended up using the prototype object later.
+     */
+    /*
     if (TP.isType(this) || TP.isPrototype(this)) {
         proto = this.getPrototype();
     } else {
         proto = this.getInstPrototype();
     }
+    */
 
     keys = TP.ac();
 
@@ -3663,15 +3673,12 @@ function(aSelectFunction) {
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('getPairs',
-function(aSelectFunction) {
+function() {
 
     /**
      * @name getPairs
      * @description For a String this is an invalid operation and an
      *     TP.sig.InvalidPairRequest exception will be raised.
-     * @param {Function} aSelectFunction A function used to select items that
-     *     will be returned. Each item is passed to this function and if the
-     *     function returns true the item is included in the result.
      * @raises TP.sig.InvalidPairRequest
      * @asbstract Returns an array of ordered pairs generated from the receiver.
      * @todo
@@ -3804,7 +3811,9 @@ function() {
     }
 
     /* jshint -W009 */
+    /* eslint-disable no-array-constructor */
     arr = new Array();
+    /* eslint-enable no-array-constructor */
     /* jshint +W009 */
 
     try {
@@ -3930,7 +3939,9 @@ function() {
     }
 
     /* jshint -W009 */
+    /* eslint-disable no-array-constructor */
     arr = new Array();
+    /* eslint-enable no-array-constructor */
     /* jshint +W009 */
 
     try {
@@ -3980,7 +3991,8 @@ function() {
 //  ------------------------------------------------------------------------
 
 //  Grab the old inspect string function that was installed as a meta method
-var oldInspectString = TP.FunctionProto.asInspectString;
+TP.$asInspectString = TP.FunctionProto.asInspectString;
+
 TP.FunctionProto.defineMethod('asInspectString',
 function() {
 
@@ -3993,7 +4005,7 @@ function() {
      */
 
     if (TP.isType(this)) {
-        this.asInspectString = oldInspectString;
+        this.asInspectString = TP.$asInspectString;
 
         return this.asInspectString();
     }
@@ -4013,10 +4025,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-var func;
-
-TP.defineMetaInstMethod('$changed',
-func = function(anAspect, anAction, aDescription) {
+TP.$changed = function(anAspect, anAction, aDescription) {
 
     /**
      * @name $changed
@@ -4106,15 +4115,14 @@ func = function(anAspect, anAction, aDescription) {
     TP.signal(this, sig, desc, TP.INHERITANCE_FIRING, 'TP.sig.ValueChange');
 
     return this;
-});
+};
 
-TP.$changed = func;
-TP.sys.$changed = func;
+TP.defineMetaInstMethod('$changed', TP.$changed);
+TP.sys.$changed = TP.$changed;
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('changed',
-func = function(anAspect, anAction, aDescription) {
+TP.changed = function(anAspect, anAction, aDescription) {
 
     /**
      * @name changed
@@ -4149,10 +4157,10 @@ func = function(anAspect, anAction, aDescription) {
      */
 
     return this.$changed(anAspect, anAction, aDescription);
-});
+};
 
-TP.changed = func;
-TP.sys.changed = func;
+TP.defineMetaInstMethod('changed', TP.changed);
+TP.sys.changed = TP.changed;
 
 //  ------------------------------------------------------------------------
 
@@ -4471,8 +4479,7 @@ function(aHash, aLevel) {
         return this.toString();
     }
 
-    nullTransform = function(it, aLevel) {
-
+    nullTransform = function(it) {
                                 return it;
                             };
 
@@ -4502,7 +4509,7 @@ function(aHash, aLevel) {
     }
 
     //  note this is here to allow it to close around nullValue
-    sourceTransform = function(it, aLevel) {
+    sourceTransform = function(it) {
 
                                 if (TP.notDefined(it)) {
                                     return 'null';
@@ -5133,7 +5140,9 @@ function(that) {
                         TP.src(that);
 
     /* jshint eqeqeq:false */
+    /* eslint-disable eqeqeq */
     return a == b;
+    /* eslint-enable eqeqeq */
     /* jshint eqeqeq:true */
 });
 
@@ -5324,7 +5333,9 @@ function(that) {
 
     //  NOTE that we're testing identity values for equality, not identity
     /* jshint eqeqeq:false */
+    /* eslint-disable eqeqeq */
     return a == b;
+    /* eslint-enable eqeqeq */
     /* jshint eqeqeq:true */
 });
 
@@ -5403,7 +5414,9 @@ function(objectA, objectB, aType) {
     return TP.js2json(objectA) === TP.js2json(objectB);
 
     /* jshint eqeqeq:false */
+    /* eslint-disable eqeqeq */
     //return objectA == objectB;
+    /* eslint-enable eqeqeq */
     /* jshint eqeqeq:true */
 });
 
@@ -5633,7 +5646,9 @@ function(aSelector, anObject) {
         return anObject.equalTo(aSelector);
     } else {
         /* jshint eqeqeq:false */
+        /* eslint-disable eqeqeq */
         return aSelector == anObject;
+        /* eslint-enable eqeqeq */
         /* jshint eqeqeq:true */
     }
 });
@@ -5780,6 +5795,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 TP.defineMetaInstMethod('getAccessPathAliases',
 function(aPath) {
 
@@ -5797,6 +5813,7 @@ function(aPath) {
     //  TP.lang.RootObject for a real implementation of this method.
     return null;
 });
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -5860,6 +5877,7 @@ function(attributeName, facetName) {
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 TP.defineMetaInstMethod('getDescriptorFor',
 function(attributeName, includeSupertypes) {
 
@@ -5881,9 +5899,11 @@ function(attributeName, includeSupertypes) {
     //  TP.lang.RootObject for a real implementation of this method.
     return null;
 });
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 TP.defineMetaInstMethod('getInstDescriptorFor',
 function(attributeName, includeSupertypes) {
 
@@ -5905,6 +5925,7 @@ function(attributeName, includeSupertypes) {
     //  TP.lang.RootObject for a real implementation of this method.
     return null;
 });
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -6567,6 +6588,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-unused-vars */
 TP.sys.defineMethod('runDebugger',
 function(callingContext) {
 
@@ -6579,6 +6601,7 @@ function(callingContext) {
 
     return;
 });
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -6606,7 +6629,9 @@ function(callingContext) {
         //  installed and open. but it's a bit flakey.
         try {
             /* jshint -W087 */
+            /* eslint-disable no-debugger */
             debugger;
+            /* eslint-enable no-debugger */
             /* jshint +W087 */
         } catch (e) {
         }
@@ -6789,7 +6814,9 @@ function() {
     source = '$$funcCopy = ' +
                 realFunc.toString().replace(/function (.*?)\(/,
                     'function $1_' + count + '(');
+    /* eslint-disable no-eval */
     eval(source);
+    /* eslint-enable no-eval */
     $$funcCopy.$realFunc = realFunc;
 
     return $$funcCopy;
@@ -7172,7 +7199,7 @@ function(propertyName) {
      */
 
     return this.collect(
-        function(item, index) {
+        function(item) {
 
             if (TP.canInvoke(item, 'get')) {
                 return item.get(propertyName);
@@ -7210,7 +7237,7 @@ function(aMethodName) {
     args = TP.args(arguments, 1);
 
     return this.collect(
-        function(item, index) {
+        function(item) {
 
             if (TP.canInvoke(item, aMethodName)) {
                 return item[aMethodName].apply(item, args);
@@ -7281,7 +7308,7 @@ function(aMethodName) {
     args = TP.args(arguments, 1);
 
     this.perform(
-        function(item, index) {
+        function(item) {
 
             if (TP.canInvoke(item, aMethodName)) {
                 retval = item[aMethodName].apply(item, args);
@@ -7711,7 +7738,7 @@ function(aMethodName) {
     args = TP.args(arguments, 1);
 
     return this.perform(
-        function(item, index) {
+        function(item) {
 
             if (TP.canInvoke(item, aMethodName)) {
                 return item[aMethodName].apply(item, args);
@@ -7770,7 +7797,7 @@ function(attributeName, attributeValue) {
      */
 
     this.perform(
-        function(item, index) {
+        function(item) {
 
             if (TP.canInvoke(item, 'set')) {
                 item.set(attributeName, attributeValue);
@@ -7993,7 +8020,7 @@ function() {
     args = TP.args(arguments);
 
     this.perform(
-        function(item, index) {
+        function(item) {
 
             try {
                 retval = item.apply(item, args);
@@ -8188,7 +8215,7 @@ function(aMethodName) {
     args = TP.args(arguments, 1);
 
     this.perform(
-        function(item, index) {
+        function(item) {
 
             if (TP.canInvoke(item, aMethodName)) {
                 retval = item[aMethodName].apply(item, args);
@@ -8386,8 +8413,8 @@ function(aFunction, anObject) {
      */
 
     var str,
-        thisref,
-        len;
+        thisref;
+        //len;
 
     str = TP.str(anObject);
     thisref = this;
@@ -8397,7 +8424,7 @@ function(aFunction, anObject) {
 
     //  only going to find one match if we're not global...but if we're
     //  global then we'd have to run it to see how many matches we get
-    len = this.global ? NaN : 1;
+    //len = this.global ? NaN : 1;
 
     //  the replace call is what drives the actual iteration so we don't
     //  have to construct a loop here. what we do have to do is create a
@@ -8445,10 +8472,8 @@ function(aFunction) {
      * @returns {String} A String containing the converted characters.
      */
 
-    var thisref,
-        arr;
+    var arr;
 
-    thisref = this;
     arr = TP.ac();
 
     this.perform(
@@ -8540,7 +8565,7 @@ function(aValue, aTest) {
     var it;
 
     it = this.detect(
-        function(item, index) {
+        function(item) {
 
             switch (aTest) {
                 case TP.IDENTITY:
@@ -8628,7 +8653,7 @@ function(aValue, aTest) {
     }
 
     it = this.detect(
-        function(item, index) {
+        function(item) {
 
             switch (aTest) {
                 case TP.IDENTITY:

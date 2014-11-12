@@ -139,7 +139,9 @@ function(aNode, aSelector, autoCollapse) {
                 });
 
     try {
+        /* eslint-disable new-cap */
         matchResults = TP.extern.Sizzle(aSelector, theNode);
+        /* eslint-enable new-cap */
     } catch (e) {
         return TP.isTrue(autoCollapse) ? null : TP.ac();
     }

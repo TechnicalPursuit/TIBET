@@ -470,11 +470,13 @@ function(aType) {
         }
 
         /* jshint eqeqeq:false */
+        /* eslint-disable eqeqeq */
         if (value != testval) {
-        /* jshint eqeqeq:true */
             retval = false;
             return TP.BREAK;
         }
+        /* eslint-enable eqeqeq */
+        /* jshint eqeqeq:true */
     }
 
     return retval;

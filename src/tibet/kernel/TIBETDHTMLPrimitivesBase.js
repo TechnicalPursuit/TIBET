@@ -1644,11 +1644,11 @@ function(anElement, transformationMatrix) {
     );
 
     return {
-                left:   Math.min.apply(Math, points[0]),
-                top:    Math.min.apply(Math, points[1]),
-                right:  Math.max.apply(Math, points[0]),
-                bottom: Math.max.apply(Math, points[1])
-            };
+        left: Math.min.apply(Math, points[0]),
+        top: Math.min.apply(Math, points[1]),
+        right: Math.max.apply(Math, points[0]),
+        bottom: Math.max.apply(Math, points[1])
+    };
 });
 
 //  ------------------------------------------------------------------------
@@ -1671,7 +1671,6 @@ function(anElement, aContent) {
      */
 
     var elementName,
-
         start,
         end;
 
@@ -1915,6 +1914,7 @@ function(aWindow, objectName) {
     //  we start by using the built-in constructor for any arguments so
     //  behavior is consistent with native JS, and then we try parsing on
     //  our own
+    /* eslint-disable new-cap */
     switch (arguments.length) {
         case    2:
             $$newinst = new constructorObj();
@@ -1950,10 +1950,14 @@ function(aWindow, objectName) {
                                             arguments[8]);
             break;
         default:
+            // TODO: reevaluate when this would be used.
+            /* eslint-disable no-eval */
             eval('$$newinst = new constructorObj(' +
                 TP.sys.$buildArgString(2, arguments.length) + ');');
+            /* eslint-enable no-eval */
             break;
     }
+    /* eslint-enable new-cap */
 
     return $$newinst;
 });
