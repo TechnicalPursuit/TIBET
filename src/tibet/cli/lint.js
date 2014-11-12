@@ -334,10 +334,12 @@ Cmd.prototype.executeForEach = function(list) {
     try {
         list.forEach(function(item) {
             var src,
-                ext,
+                ext;
+                /*
                 args,
                 engine,
                 result;
+                */
 
             if (cmd.options.nodes) {
                 if (item.getAttribute('no-lint') === 'true') {
@@ -433,6 +435,21 @@ Cmd.prototype.finalizePackageOptions = function() {
     // the unwrapping ourselves so we have complete access to all
     // metadata and/or child node content.
     this.pkgOpts.nodes = true;
+
+    // Force the most comprehensive package#config we can given our context.
+    if (CLI.inProject()) {
+        if (CLI.notValid(this.pkgOpts.package)) {
+            this.pkgOpts.package = '~app_cfg/standard.xml';
+        }
+    } else if (CLI.inLibrary()) {
+        if (CLI.notValid(this.pkgOpts.package)) {
+            this.pkgOpts.package = '~lib_cfg/TIBET.xml';
+        }
+    }
+
+    if (CLI.notValid(this.pkgOpts.config)) {
+        this.pkgOpts.config = 'test';
+    }
 
     this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);
 };
