@@ -1847,6 +1847,34 @@ TP.core.ComplexTIBETPath.Inst.defineAttribute('$createdStructure');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.ComplexTIBETPath.Inst.defineMethod('checkValueEquality',
+function(objectA, objectB) {
+
+    /**
+     * @name checkValueEquality.
+     * @synopsis Checks to see if the two supplied parameters 'lead to' equal
+     *     values. This is used when trying to determine whether or not to
+     *     proceed with a 'set' operation (and broadcast changes).
+     * @description This method takes into account the kind of data that this
+     *     path manages when doing it's comparison.
+     * @param {objectA} Object The first object to compare.
+     * @param {objectB} Object The second object to compare.
+     * @returns {Boolean} Whether or not the two values are equal.
+     */
+
+    if (TP.isArray(objectA) && objectA.getSize() === 1) {
+        return TP.equal(objectA.first(), objectB);
+    }
+
+    if (TP.isArray(objectB) && objectB.getSize() === 1) {
+        return TP.equal(objectA, objectB.first());
+    }
+
+    return TP.equal(objectA, objectB);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ComplexTIBETPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
@@ -1981,8 +2009,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  If the old value is equal to the value that we're setting, then
         //  there is nothing to do here and we exit. This is important to avoid
         //  endless recursion when doing a 'two-ended bind' to data referenced
-        //  by this path.
-        if (TP.equal(oldVal, attributeValue)) {
+        //  by this path and to avoid a lot of unnecessary signaling.
+        if (this.checkValueEquality(oldVal, attributeValue)) {
+
             //  We need to restore the change path data structures before
             //  exiting.
             this.postSetAccess(targetObj);
@@ -3049,6 +3078,42 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XMLPath.Inst.defineMethod('checkValueEquality',
+function(objectA, objectB) {
+
+    /**
+     * @name checkValueEquality.
+     * @synopsis Checks to see if the two supplied parameters 'lead to' equal
+     *     values. This is used when trying to determine whether or not to
+     *     proceed with a 'set' operation (and broadcast changes).
+     * @description This method takes into account the kind of data that this
+     *     path manages when doing it's comparison.
+     * @param {objectA} Object The first object to compare.
+     * @param {objectB} Object The second object to compare.
+     * @returns {Boolean} Whether or not the two values are equal.
+     */
+
+    if (TP.isArray(objectA) && objectA.getSize() === 1) {
+        return TP.equal(objectA.first(), objectB);
+    }
+
+    if (TP.isArray(objectB) && objectB.getSize() === 1) {
+        return TP.equal(objectA, objectB.first());
+    }
+
+    if (TP.isNode(objectA) && !TP.isReferenceType(objectB)) {
+        return TP.nodeGetTextContent(objectA) === TP.str(objectB);
+    }
+
+    if (!TP.isReferenceType(objectA) && TP.isNode(objectB)) {
+        return TP.str(objectA) === TP.nodeGetTextContent(objectB);
+    }
+
+    return TP.equal(objectA, objectB);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XMLPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 
@@ -3205,7 +3270,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      * @returns {TP.core.XPathPath} The receiver.
      */
 
-    var natTargetObj,
+    var oldVal,
+
+        natTargetObj,
         targetDoc,
         targetTPDoc,
 
@@ -3249,14 +3316,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return this.raise('TP.sig.InvalidPath');
     }
 
-    var oldVal;
-
     oldVal = this.executeGet(targetObj);
 
     //  If the old value is equal to the value that we're setting, then there is
     //  nothing to do here and we exit. This is important to avoid endless
-    //  recursion when doing a 'two-ended bind' to data referenced by this path.
-    if (TP.equal(oldVal, attributeValue)) {
+    //  recursion when doing a 'two-ended bind' to data referenced by this path
+    //  and to avoid a lot of unnecessary signaling.
+    if (this.checkValueEquality(oldVal, attributeValue)) {
         return oldVal;
     }
 
