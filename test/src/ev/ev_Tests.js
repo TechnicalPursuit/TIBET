@@ -60,9 +60,7 @@ function() {
                                             'control_specifies_handler');
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -127,9 +125,7 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -188,9 +184,7 @@ function() {
                         perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -208,9 +202,7 @@ function() {
                         perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -228,9 +220,7 @@ function() {
                         perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -297,9 +287,7 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -324,9 +312,7 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -403,9 +389,7 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -425,9 +409,7 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -490,9 +472,7 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -515,9 +495,7 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -542,9 +520,7 @@ function() {
                 seq.perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -636,9 +612,7 @@ function() {
                         perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -665,9 +639,7 @@ function() {
                         perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -694,9 +666,7 @@ function() {
                         perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -771,9 +741,7 @@ function() {
                         perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -795,9 +763,7 @@ function() {
                         perform();
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(

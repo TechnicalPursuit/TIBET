@@ -79,9 +79,7 @@ function() {
                 test.assert.didSignal(TP.byId('fooButton'), 'TP.sig.DOMClick');
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
@@ -145,9 +143,7 @@ function() {
                 test.assert.didSignal(TP.byId('dispatchButton'), 'TP.sig.DOMClick');
             },
             function(error) {
-                TP.sys.logTest(
-                    'Event sequence error: ' + TP.str(error), TP.ERROR);
-                test.fail();
+                test.fail(error, TP.sc('Event sequence error'));
             });
 
         this.then(
