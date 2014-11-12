@@ -184,7 +184,8 @@ function(typeName, customType) {
 
     TP.sys.getMetadata('types').atPut(
             typeName,
-            {'typeObj': customType,
+            {
+                    'typeObj': customType,
                     'sname': customType.getSupertypeName(),
                     'lpath': TP.objectGetLoadPath(customType),
                     'spath': TP.objectGetSourcePath(customType)

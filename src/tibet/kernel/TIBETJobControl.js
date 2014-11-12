@@ -1356,6 +1356,7 @@ function(anObjectArray, aMethodArray, aParamArray) {
         function() {
 
             var target,
+                idx,
                 result;
 
             //  If the methodIndex has reached the size of the method array,
@@ -1371,8 +1372,9 @@ function(anObjectArray, aMethodArray, aParamArray) {
             //  Attempt to invoke the method against the object, supplying
             //  the params Array in an apply invocation.
             try {
-                result = target[
-                    invokerFunc.methodArray.at(invokerFunc.methodIndex)].apply(
+                idx = invokerFunc.methodIndex;
+
+                result = target[invokerFunc.methodArray.at(idx)].apply(
                             target, invokerFunc.paramArray);
 
                 TP.ifInfo() ? TP.info(result, TP.LOG) : 0;

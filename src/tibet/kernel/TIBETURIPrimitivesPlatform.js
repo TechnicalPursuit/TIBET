@@ -820,8 +820,8 @@ TP.hc(
                             '@mozilla.org/file/local;1',
                             'nsILocalFile', 'initWithPath');
 
-                IOS = Components.classes[
-                            '@mozilla.org/network/io-service;1'].getService(
+                IOS = Components.
+                        classes['@mozilla.org/network/io-service;1'].getService(
                             Components.interfaces.nsIIOService);
 
                 IS = new Components.Constructor(

@@ -590,8 +590,8 @@ TP.hc(
 
                 //  DOM Inspector-specific components
                 try {
-                    queryObj = Components.classes[
-                        '@mozilla.org/inspector/dom-utils;1'].getService(
+                    queryObj = Components.
+                    classes['@mozilla.org/inspector/dom-utils;1'].getService(
                                 Components.interfaces.nsIDOMUtils);
                 } catch (e) {
                     TP.raise(this, 'TP.sig.DOMComponentException', TP.ec(e));
@@ -782,8 +782,8 @@ TP.hc(
 
                 //  DOM Inspector-specific components
                 try {
-                    queryObj = Components.classes[
-                        '@mozilla.org/inspector/dom-utils;1'].getService(
+                    queryObj = Components.
+                    classes['@mozilla.org/inspector/dom-utils;1'].getService(
                                 Components.interfaces.nsIDOMUtils);
                 } catch (e) {
                     return TP.raise(this,

@@ -702,15 +702,17 @@ TP.META_TYPE_OWNER.getName = function () {return 'MetaType';};
 
 TP.META_TYPE_OWNER.meta_methods = {};
 
-TP.META_TYPE_TARGETS = [
-        Array,
-        Boolean,
-        Date,
-        Function,
-        Number,
-        Object,
-        RegExp,
-        String];
+TP.META_TYPE_TARGETS =
+            [
+                Array,
+                Boolean,
+                Date,
+                Function,
+                Number,
+                Object,
+                RegExp,
+                String
+            ];
 
 TP.META_INST_OWNER = {};
 TP.META_INST_OWNER[TP.ID] = 'MetaInst';
@@ -722,14 +724,16 @@ TP.META_INST_OWNER.meta_methods = {};
 TP.META_INST_OWNER.common_methods = {};
 
 //  NB: We leave TP.ObjectProto out of this list on purpose.
-TP.META_INST_TARGETS = [
-        TP.ArrayProto,
-        TP.BooleanProto,
-        TP.DateProto,
-        TP.FunctionProto,
-        TP.NumberProto,
-        TP.RegExpProto,
-        TP.StringProto];
+TP.META_INST_TARGETS =
+            [
+                TP.ArrayProto,
+                TP.BooleanProto,
+                TP.DateProto,
+                TP.FunctionProto,
+                TP.NumberProto,
+                TP.RegExpProto,
+                TP.StringProto
+            ];
 
 //  attribute name prefixes
 TP.PUBLIC = '';

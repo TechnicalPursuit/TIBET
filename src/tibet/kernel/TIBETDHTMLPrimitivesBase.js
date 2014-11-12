@@ -626,8 +626,8 @@ function(aDocument) {
 
     //  The selected element will be the child node of the selection's
     //  anchor node which is at the anchor's offset in the selection.
-    selectedElement = theSelection.anchorNode.childNodes[
-                                            theSelection.anchorOffset];
+    selectedElement = theSelection.anchorNode.
+                                        childNodes[theSelection.anchorOffset];
 
     if (TP.isElement(selectedElement)) {
         return selectedElement;
