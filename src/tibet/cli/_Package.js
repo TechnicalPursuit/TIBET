@@ -373,7 +373,8 @@ Package.prototype.tibet = null;
  * @param {Element} targetElem The target element to copy to.
  * @param {Boolean} overwrite Whether to overwrite matching attributes [false].
  */
-Package.prototype.copyAttributes = function (sourceElem, targetElem, overwrite) {
+Package.prototype.copyAttributes = function(
+        sourceElem, targetElem, overwrite) {
     var attrs;
 
     attrs = Array.prototype.slice.call(sourceElem.attributes, 0);
@@ -519,8 +520,8 @@ Package.prototype.expandConfig = function(anElement, expandAll) {
 
     pkg = this;
 
-    this.verbose('Expanding: ' +
-        this.getCurrentPackage() + '#' + anElement.getAttribute('id'));
+    this.debug('Expanding: ' +
+        this.getCurrentPackage() + '#' + anElement.getAttribute('id'), true);
 
     list = Array.prototype.slice.call(anElement.childNodes, 0);
     list.forEach(function(child) {
@@ -556,7 +557,8 @@ Package.prototype.expandConfig = function(anElement, expandAll) {
 
                     key = pkg.getCurrentPackage() + '#' + ref;
                     if (pkg.configs.indexOf(key) !== -1) {
-                        pkg.verbose('Ignoring duplicate reference to: ' + key);
+                        pkg.debug('Ignoring duplicate reference to: ' + key,
+                            true);
                         break;
                     }
 
@@ -639,7 +641,8 @@ Package.prototype.expandConfig = function(anElement, expandAll) {
 
                     key = src + '#' + config; // may be undefined, that's ok.
                     if (pkg.configs.indexOf(key) !== -1) {
-                        pkg.verbose('Ignoring duplicate reference to: ' + key);
+                        pkg.debug('Ignoring duplicate reference to: ' + key,
+                            true);
                         break;
                     }
 
@@ -823,7 +826,8 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
 
         if (isEmpty(aConfig)) {
             if (notValid(this.config)) {
-                this.config = this.getcfg('config') || this.getDefaultConfig(doc);
+                this.config = this.getcfg('config') ||
+                    this.getDefaultConfig(doc);
             }
             config = this.config;
         } else {
@@ -1795,7 +1799,8 @@ Package.prototype.listConfigAssets = function(anElement, aList, listAll) {
 
                     key = pkg.getCurrentPackage() + '#' + ref;
                     if (pkg.configs.indexOf(key) !== -1) {
-                        pkg.verbose('Ignoring duplicate reference to: ' + key);
+                        pkg.debug('Ignoring duplicate reference to: ' + key,
+                            true);
                         break;
                     }
 
@@ -1823,7 +1828,8 @@ Package.prototype.listConfigAssets = function(anElement, aList, listAll) {
 
                     key = src + '#' + config; // may be undefined, that's ok.
                     if (pkg.configs.indexOf(key) !== -1) {
-                        pkg.verbose('Ignoring duplicate reference to: ' + key);
+                        pkg.debug('Ignoring duplicate reference to: ' + key,
+                            true);
                         break;
                     }
 
@@ -1870,7 +1876,7 @@ Package.prototype.listConfigAssets = function(anElement, aList, listAll) {
                                 result.push(src);
                             }
                         } else {
-                            pkg.verbose('Skipping duplicate asset: ' + src);
+                            pkg.debug('Skipping duplicate asset: ' + src, true);
                         }
                     } else {
                         if (nodes) {
@@ -2007,7 +2013,7 @@ Package.prototype.popPackage = function() {
         this.configs.length = 0;
     }
 
-    this.verbose('Popping package: ' + path);
+    this.debug('Popping package: ' + path, true);
 
     return path;
 };
@@ -2019,7 +2025,7 @@ Package.prototype.popPackage = function() {
  */
 Package.prototype.pushPackage = function(aPath) {
 
-    this.verbose('Pushing package: ' + aPath);
+    this.debug('Pushing package: ' + aPath, true);
 
     this.packageStack.unshift(aPath);
 };
@@ -2208,9 +2214,9 @@ Package.prototype.setRuntimeOptions = function() {
  *  info: 'white',
  *  warn: 'yellow',
  *  error: 'red',
- *  debug: 'magenta',
- *  verbose: 'cyan',
- *  system: 'green'
+ *  debug: 'green',
+ *  verbose: 'grey',
+ *  system: 'cyan'
  */
 
 Package.prototype.log = function(msg) {
@@ -2271,7 +2277,7 @@ Package.prototype.debug = function(msg, verbose) {
         if (this.getcfg('color') === false) {
             return console.log(msg);
         }
-        console.log(chalk.magenta(msg));
+        console.log(chalk.green(msg));
     }
 };
 
@@ -2284,7 +2290,7 @@ Package.prototype.verbose = function(msg) {
         if (this.getcfg('color') === false) {
             return console.log(msg);
         }
-        console.log(chalk.cyan(msg));
+        console.log(chalk.grey(msg));
     }
 };
 
@@ -2296,7 +2302,7 @@ Package.prototype.system = function(msg) {
     if (this.getcfg('color') === false) {
         return console.log(msg);
     }
-    console.log(chalk.green(msg));
+    console.log(chalk.cyan(msg));
 };
 
 //  ---

@@ -293,7 +293,7 @@ Cmd.prototype.executeForEach = function(list) {
  * internal Package instance. Intended to be overridden but custom subcommands.
  */
 Cmd.prototype.finalizePackageOptions = function() {
-    this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+    this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);
 };
 
 
