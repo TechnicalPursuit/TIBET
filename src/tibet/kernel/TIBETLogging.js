@@ -3391,8 +3391,8 @@ function(anEntry) {
 //  ----------------------------------------------------------------------------
 
 (function() {
-    var logger;
-    var appender;
+    var logger,
+        appender;
 
     logger = TP.log.Manager.getLogger(TP.CHANGE_LOG);
     appender = TP.log.ChangeLogAppender.construct();
@@ -3536,8 +3536,8 @@ function(anEntry) {
 //  ----------------------------------------------------------------------------
 
 (function() {
-    var logger;
-    var appender;
+    var logger,
+        appender;
 
     logger = TP.log.Manager.getLogger(TP.TEST_LOG);
 

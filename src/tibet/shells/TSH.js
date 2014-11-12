@@ -2746,8 +2746,8 @@ function(aRequest) {
     /**
      */
 
-    var methods;
-    var shell;
+    var methods,
+        shell;
 
     methods = this.getInterface('methods');
     methods = methods.filter(function(method) {
@@ -2757,9 +2757,9 @@ function(aRequest) {
     shell = this;
 
     methods = methods.map(function(method) {
-        var func;
-        var name;
-        var str;
+        var func,
+            name,
+            str;
 
         func = shell[method];
 
@@ -2958,8 +2958,8 @@ function(aRequest) {
 
     args = this.getArguments(aRequest);
     args.perform(function(arg) {
-        var key;
-        var value;
+        var key,
+            value;
 
         key = arg.first();
         value = arg.last();
@@ -3236,8 +3236,8 @@ function(command, abstract, usage, description) {
      * is output by the :help command.
      */
 
-    var name;
-    var method;
+    var name,
+        method;
 
     name = 'execute' + command.slice(1).asTitleCase();
 

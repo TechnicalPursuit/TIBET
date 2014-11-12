@@ -149,7 +149,9 @@ function(aRequest) {
         value,
         params,
 
-        subrequest;
+        subrequest,
+
+        finalURL;
 
     TP.stop('break.tsh_service');
 
@@ -293,8 +295,6 @@ function(aRequest) {
                 break;
         }
     }
-
-    var finalURL;
 
     finalURL = url.asString().transform(dict);
 

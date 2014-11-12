@@ -3161,10 +3161,10 @@ function(aFlag, shouldSignal) {
 //  track.
 
 /* jshint -W054 */
-/* eslint-disable no-new-func */
+/* eslint-disable no-new-func,one-var */
 var NativeTypeStub = new Function();
 NativeTypeStub.prototype = {};
-/* eslint-enable no-new-func */
+/* eslint-enable no-new-func,one-var */
 /* jshint +W054 */
 
 //  ---
@@ -3435,10 +3435,10 @@ Window.Type[TP.OWNER] = Window;
 //  ---
 
 /* jshint -W054 */
-/* eslint-disable no-new-func */
+/* eslint-disable no-new-func,one-var */
 var NativeInstStub = new Function();
 NativeInstStub.prototype = {};
-/* eslint-enable no-new-func */
+/* eslint-enable no-new-func,one-var */
 /* jshint +W054 */
 
 //  ---
@@ -11313,9 +11313,9 @@ function(release, meta) {
      * @returns {String} The version string identifier.
      */
 
-    var str;
-    var data;
-    var semver;
+    var str,
+        data,
+        semver;
 
     // Return cached value if possible.
     if (TP.isEmpty(release)) {

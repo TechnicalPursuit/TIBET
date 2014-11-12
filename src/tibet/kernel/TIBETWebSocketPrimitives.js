@@ -320,7 +320,8 @@ function(targetUrl, openCallback) {
 
             var type,
                 sig,
-                id;
+                id,
+                request;
 
             TP.ifInfo() ?
                 TP.info('The socket for: ' + targetUrl + ' had an error',
@@ -335,7 +336,7 @@ function(targetUrl, openCallback) {
 
             //  TODO: This needs to be made real. The reason that we have this
             //  'var' statement is purely to avoid the jshint warning message.
-            var request = null;
+            request = null;
 
             //  we must do this to avoid having multiple requests which
             //  share the same WebSocket object also sharing the same status
