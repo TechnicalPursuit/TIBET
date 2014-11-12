@@ -5796,7 +5796,6 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 TP.defineMetaInstMethod('getAccessPathAliases',
 function(aPath) {
 
@@ -5814,7 +5813,6 @@ function(aPath) {
     //  TP.lang.RootObject for a real implementation of this method.
     return null;
 });
-/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -5878,7 +5876,6 @@ function(attributeName, facetName) {
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 TP.defineMetaInstMethod('getDescriptorFor',
 function(attributeName, includeSupertypes) {
 
@@ -5900,11 +5897,9 @@ function(attributeName, includeSupertypes) {
     //  TP.lang.RootObject for a real implementation of this method.
     return null;
 });
-/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 TP.defineMetaInstMethod('getInstDescriptorFor',
 function(attributeName, includeSupertypes) {
 
@@ -5926,7 +5921,6 @@ function(attributeName, includeSupertypes) {
     //  TP.lang.RootObject for a real implementation of this method.
     return null;
 });
-/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -6589,7 +6583,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 TP.sys.defineMethod('runDebugger',
 function(callingContext) {
 
@@ -6602,7 +6595,6 @@ function(callingContext) {
 
     return;
 });
-/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 

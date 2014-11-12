@@ -561,7 +561,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 TP.lang.RootObject.Type.defineMethod('constructForSignal',
 function(aSignal) {
 
@@ -578,7 +577,6 @@ function(aSignal) {
 
     return this.construct();
 });
-/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -765,7 +763,6 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 TP.lang.RootObject.Type.defineMethod('fromObject',
 function(anObj) {
 
@@ -780,7 +777,6 @@ function(anObj) {
 
     return this.construct.apply(this, arguments);
 });
-/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -1386,7 +1382,6 @@ function(aDate, transformParams) {
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 String.Inst.defineMethod('transformNumber',
 function(aNumber, transformParams) {
 
@@ -1413,7 +1408,6 @@ function(aNumber, transformParams) {
     //  return bad format string, not data, for debugging
     return str;
 });
-/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -1785,7 +1779,6 @@ to leverage the functions here.
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 Window.Inst.defineMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
@@ -1807,11 +1800,9 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     //  default is to let main routines handle it
     return false;
 });
-/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
-/* eslint-disable no-unused-vars */
 TP.defineMetaInstMethod('canResolveDNU',
 function(anOrigin, aMethodName, anArgArray, callingContext) {
 
@@ -1834,7 +1825,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     //  resolve it by loading that node
     return TP.canInvoke(anOrigin, aMethodName);
 });
-/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 

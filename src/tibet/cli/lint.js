@@ -373,6 +373,7 @@ Cmd.prototype.executeForEach = function(list) {
             } else if (cmd.options.nodes) {
                 // Nodes, but no src attribute. Inline source.
                 cmd.verbose('skipping inline source...');
+                cmd.debug(item.textContent.trim(), true);
 
                 /*
                  * It's possible to feed source to eslint now but it's not
@@ -461,12 +462,13 @@ Cmd.prototype.processEslintResult = function(result) {
 
     results.forEach(function(result) {
         var messages,
-            file,
-            prefix;
+            file;
 
+        file = result.filePath;
         messages = result.messages;
 
         if (messages.length === 0) {
+            cmd.verbose(chalk.underline(file));
             return;
         }
 
@@ -481,6 +483,7 @@ Cmd.prototype.processEslintResult = function(result) {
             // If we're only doing output when an error exists we're done if no
             // errors were found.
             if (errors === 0) {
+                cmd.verbose(chalk.underline(file));
                 return;
             }
         } else {
@@ -489,8 +492,6 @@ Cmd.prototype.processEslintResult = function(result) {
             messages = result.messages;
         }
 
-        prefix = cmd.options.list ? '' : '\n';
-        file = result.filePath;
         if (errors > 0) {
             cmd.error(chalk.underline(file));
         } else {

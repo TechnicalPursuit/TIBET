@@ -58,9 +58,9 @@ var Package;
  *  info: 'white',
  *  warn: 'yellow',
  *  error: 'red',
- *  debug: 'magenta',
- *  verbose: 'cyan'
- *  system: 'green'
+ *  debug: 'green',
+ *  verbose: 'grey'
+ *  system: 'cyan'
  */
 
 
@@ -244,7 +244,7 @@ CLI.debug = function(msg, verbose) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.magenta(msg));
+    console.log(chalk.green(msg));
 };
 
 CLI.verbose = function(msg) {
@@ -255,14 +255,14 @@ CLI.verbose = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.cyan(msg));
+    console.log(chalk.grey(msg));
 };
 
 CLI.system = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.info(msg);
     }
-    console.info(chalk.green(msg));
+    console.info(chalk.cyan(msg));
 };
 
 
