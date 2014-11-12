@@ -538,7 +538,7 @@ Cmd.prototype.summarize = function(results) {
     if (!this.options.list) {
         msg = '' + results.errors + ' errors, ' +
             results.warnings + ' warnings in ' +
-            results.dirty + ' of ' +
+            results.checked + ' of ' +
             results.files + ' files.';
 
         if (results.errors !== 0) {
@@ -604,7 +604,7 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
     csslint = require( 'csslint' ).CSSLint;
 
     cmd = this;
-    results = results || { dirty: 0, errors: 0, warnings: 0, files: 0 };
+    results = results || { checked: 0, errors: 0, warnings: 0, files: 0 };
 
     files = Array.isArray(files) ? files : [files];
     results.files += files.length;
@@ -635,10 +635,10 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
         var result;
 
         cmd.verbose(chalk.underline(file));
+        results.checked += 1;
 
         text = sh.cat(file);
         if (!text) {
-            results.dirty += 1;
             results.errors += 1;
             cmd.error('Unable to read ' + file);
         } else {
@@ -651,14 +651,12 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
                     str = formatter(message);
                     switch (message.type.toLowerCase()) {
                         case 'error':
-                            results.dirty += 1;
                             results.errors += 1;
                             if (!cmd.options.list) {
                                 cmd.error(str);
                             }
                             break;
                         case 'warning':
-                            results.dirty += 1;
                             results.warnings += 1;
                             if (!cmd.options.list && !cmd.options.quiet) {
                                 cmd.warn(str);
@@ -698,7 +696,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
     var cmd;
 
     cmd = this;
-    results = results || { dirty: 0, errors: 0, warnings: 0, files: 0 };
+    results = results || { checked: 0, errors: 0, warnings: 0, files: 0 };
 
     files = Array.isArray(files) ? files : [files];
     results.files += files.length;
@@ -707,17 +705,16 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         var text;
 
         cmd.verbose(chalk.underline(file));
+        results.checked += 1;
 
         text = sh.cat(file);
         if (!text) {
-            results.dirty += 1;
             results.errors += 1;
             cmd.error('Unable to read ' + file);
         } else {
             try {
                 JSON.parse(text);
             } catch (e) {
-                results.dirty += 1;
                 results.errors += 1;
                 cmd.log(file);
                 cmd.error(e);
@@ -753,7 +750,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
     args = this.configureEslintOptions();
     engine = new eslint.CLIEngine(args);
 
-    results = results || { dirty: 0, errors: 0, warnings: 0, files: 0 };
+    results = results || { checked: 0, errors: 0, warnings: 0, files: 0 };
 
     files = Array.isArray(files) ? files : [files];
     results.files += files.length;
@@ -764,15 +761,13 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
             var summary;
 
             result = engine.executeOnFiles([file]);
+            results.checked += 1;
 
             // Rely on a common output routine. This is shared with output for
             // inline source done during executeForEach.
             summary = cmd.processEslintResult(result);
             results.errors = results.errors + summary.errors;
             results.warnings = results.warnings + summary.warnings;
-            if (summary.errors > 0 || summary.warnings > 0) {
-                results.dirty += 1;
-            }
 
             // True will end the loop but we only do that if we're doing
             // stop-on-first processing.
@@ -808,7 +803,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
     var current;
 
     cmd = this;
-    results = results || { dirty: 0, errors: 0, warnings: 0, files: 0 };
+    results = results || { checked: 0, errors: 0, warnings: 0, files: 0 };
 
     files = Array.isArray(files) ? files : [files];
     results.files += files.length;
@@ -836,11 +831,11 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
 
         current = file;
         cmd.verbose(chalk.underline(file));
+        results.checked += 1;
 
         text = sh.cat(file);
         if (!text) {
             cmd.error('Unable to read ' + file);
-            results.dirty += 1;
             results.errors += 1;
         }
 
@@ -848,13 +843,11 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
             doc = parser.parseFromString(text);
             if (!doc) {
                 cmd.error(file);
-                results.dirty += 1;
                 results.errors += 1;
             }
         } catch (e) {
             cmd.error(file);
             cmd.error(e.message);
-            results.dirty += 1;
             results.errors += 1;
         }
 
