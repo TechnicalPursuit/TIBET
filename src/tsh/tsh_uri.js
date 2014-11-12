@@ -179,7 +179,7 @@ function(aRequest) {
                 params.atPut('refresh', TP.bc(value));
                 break;
             case 'tsh:timeout':
-                if (TP.isNumber(resolvedValue = parseInt(value))) {
+                if (TP.isNumber(resolvedValue = parseInt(value, 10))) {
                     resolvedValue = resolvedValue.asDuration();
                 }
                 params.atPut('timeout',
