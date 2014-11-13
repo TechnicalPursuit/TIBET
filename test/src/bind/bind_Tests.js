@@ -1700,7 +1700,7 @@ function() {
                                             loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-});
+}).timeout(20000);
 
 //  ========================================================================
 //  Run those babies!
