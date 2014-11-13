@@ -1344,7 +1344,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
     if (targetAttributeName === 'checked' ||
         targetAttributeName === '@checked') {
 
-        //  Get all of elements that are part of our 'group'
+        //  Get all of elements that are part of our 'group', including ourself.
         groupTPElems = TP.wrap(this.getElementArray());
 
         if (TP.isString(resourceOrURI)) {
@@ -1353,9 +1353,20 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             resource = resourceOrURI;
         }
 
-        //  TODO: Filter to all of the elements that don't already have a
-        //  binding for this property *AND* aren't ourself (because we're
-        //  processing the one for ourself).
+        //  Filter to all of the elements that don't already have a 'bind:io'
+        //  for the 'checked' attribute, including ourself.
+        groupTPElems = groupTPElems.select(
+            function(aTPElem) {
+                var bindInfo;
+
+                if (aTPElem.isBoundElement() &&
+                    TP.notEmpty(bindInfo = aTPElem.getBindingInfoFrom('io')) &&
+                    bindInfo.hasKey('checked')) {
+                       return false;
+                }
+
+                return true;
+            });
 
         groupTPElems.perform(
             function(aTPElem) {
@@ -1437,7 +1448,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
     if (targetAttributeName === 'checked' ||
         targetAttributeName === '@checked') {
 
-        //  Get all of elements that are part of our 'group'
+        //  Get all of elements that are part of our 'group', including ourself.
         groupTPElems = TP.wrap(this.getElementArray());
 
         if (TP.isString(resourceOrURI)) {
@@ -1446,9 +1457,20 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             resource = resourceOrURI;
         }
 
-        //  TODO: Filter to all of the elements that don't already have a
-        //  binding for this property *AND* aren't ourself (because we're
-        //  processing the one for ourself).
+        //  Filter to all of the elements that don't already have a 'bind:io'
+        //  for the 'checked' attribute, including ourself.
+        groupTPElems = groupTPElems.select(
+            function(aTPElem) {
+                var bindInfo;
+
+                if (aTPElem.isBoundElement() &&
+                    TP.notEmpty(bindInfo = aTPElem.getBindingInfoFrom('io')) &&
+                    bindInfo.hasKey('checked')) {
+                       return false;
+                }
+
+                return true;
+            });
 
         groupTPElems.perform(
             function(aTPElem) {
