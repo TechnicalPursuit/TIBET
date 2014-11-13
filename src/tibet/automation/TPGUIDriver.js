@@ -58,6 +58,12 @@ function() {
         keyCode,
         val;
 
+    //  If Syn isn't loaded, then don't try to manipulate it's keymap. Just
+    //  return.
+    if (TP.notValid(TP.extern.syn)) {
+        return;
+    }
+
     //  The 'Syn' library that we use has a hard-coded key configuration
     //  suitable for US ASCII 101 keyboards. We want a more flexible approach,
     //  driven by the W3C-defined keyboard values in our key map.
@@ -460,6 +466,12 @@ function() {
      * @synopsis Returns a new GUI sequence used to script actions.
      * @return {TP.gui.Sequence} A new GUI sequence.
      */
+
+    //  If Syn isn't loaded, then throw a TP.sig.UnsupportedOperation exception.
+    //  We can't emulate events in that case.
+    if (TP.notValid(TP.extern.syn)) {
+        return this.raise('TP.sig.UnsupportedOperation');
+    }
 
     return TP.gui.Sequence.construct(this);
 });
