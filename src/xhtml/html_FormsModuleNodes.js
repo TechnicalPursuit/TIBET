@@ -678,6 +678,8 @@ TP.html.Focused.defineSubtype('input');
 //  can't construct concrete instances of this
 TP.html.input.isAbstract(true);
 
+TP.html.input.Type.set('bidiAttrs', TP.ac('value'));
+
 TP.html.input.Type.set('booleanAttrs',
         TP.ac('autofocus', 'defaultChecked', 'checked', 'disabled',
                 'formNoValidate', 'indeterminate', 'multiple',
@@ -1114,6 +1116,8 @@ TP.html.inputClickable.defineSubtype('inputCheckable');
 //  can't construct concrete instances of this
 TP.html.inputCheckable.isAbstract(true);
 
+TP.html.inputCheckable.Type.set('bidiAttrs', TP.ac('checked'));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1317,6 +1321,60 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('defineBinding',
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
+
+    /**
+     * @name defineBinding
+     * @synopsis Adds a binding to the instance receiver.
+     * @param {String} targetAttributeName The target attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
+     * @returns {Object} The receiver.
+     * @todo
+     */
+
+    var groupTPElems,
+        resource;
+
+    if (targetAttributeName === 'checked' ||
+        targetAttributeName === '@checked') {
+
+        //  Get all of elements that are part of our 'group'
+        groupTPElems = TP.wrap(this.getElementArray());
+
+        if (TP.isString(resourceOrURI)) {
+            resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
+        } else {
+            resource = resourceOrURI;
+        }
+
+        //  TODO: Filter to all of the elements that don't already have a
+        //  binding for this property *AND* aren't ourself (because we're
+        //  processing the one for ourself).
+
+        groupTPElems.perform(
+            function(aTPElem) {
+                aTPElem.defineBinding(
+                            'value', resource, sourceAttributeName);
+
+                resource.defineBinding(
+                            sourceAttributeName, aTPElem, 'value');
+            });
+    } else {
+        this.callNextMethod(targetAttributeName, resourceOrURI,
+                            sourceAttributeName, sourceFacetName);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('deselectAll',
 function() {
 
@@ -1349,6 +1407,60 @@ function() {
 
     if (dirty) {
         this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('destroyBinding',
+function(targetAttributeName, resourceOrURI, sourceAttributeName,
+            sourceFacetName) {
+
+    /**
+     * @name destroyBinding
+     * @synopsis Removes a binding from the instance receiver.
+     * @param {String} targetAttributeName The target attribute name.
+     * @param {Object} resourceOrURI The resource specification.
+     * @param {String} sourceAttributeName The source attribute name. If not
+     *     specified, this will default to targetAttributeName.
+     * @param {String} sourceFacetName The source facet name. If not specified,
+     *     this will default to 'value'.
+     * @returns {Object} The receiver.
+     * @todo
+     */
+
+    var groupTPElems,
+        resource;
+
+    if (targetAttributeName === 'checked' ||
+        targetAttributeName === '@checked') {
+
+        //  Get all of elements that are part of our 'group'
+        groupTPElems = TP.wrap(this.getElementArray());
+
+        if (TP.isString(resourceOrURI)) {
+            resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
+        } else {
+            resource = resourceOrURI;
+        }
+
+        //  TODO: Filter to all of the elements that don't already have a
+        //  binding for this property *AND* aren't ourself (because we're
+        //  processing the one for ourself).
+
+        groupTPElems.perform(
+            function(aTPElem) {
+                aTPElem.destroyBinding(
+                            'value', resource, sourceAttributeName);
+
+                resource.destroyBinding(
+                            sourceAttributeName, aTPElem, 'value');
+            });
+    } else {
+        this.callNextMethod(targetAttributeName, resourceOrURI,
+                            sourceAttributeName, sourceFacetName);
     }
 
     return this;
@@ -3289,6 +3401,8 @@ TP.html.Focused.defineSubtype('select');
 TP.html.select.Type.set('booleanAttrs',
         TP.ac('autofocus', 'disabled', 'multiple', 'required', 'willValidate'));
 
+TP.html.select.Type.set('bidiAttrs', TP.ac('value'));
+
 TP.backstop(TP.ac('add', 'remove'), TP.html.select.getInstPrototype());
 
 //  ------------------------------------------------------------------------
@@ -4367,6 +4481,8 @@ function(aValue, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.html.Focused.defineSubtype('textarea');
+
+TP.html.textarea.Type.set('bidiAttrs', TP.ac('value'));
 
 TP.html.textarea.Type.set('booleanAttrs',
         TP.ac('autofocus', 'disabled', 'readOnly', 'required', 'willValidate'));
