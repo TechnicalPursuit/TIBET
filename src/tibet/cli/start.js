@@ -60,7 +60,7 @@ Cmd.prototype.HELP =
 
 'When a local server.js file is used it can be augmented with code\n' +
 'for TIBET Development Server (TDS) functionality. Use require()\n' +
-'with a path of \'tibet/etc/tds-middleware\' to load that module.\n\n' +
+'with the path \'tibet/etc/tds/tds-middleware\' to load that module.\n\n' +
 
 'If your server includes TDS features you can optionally add\n' +
 'command-line parameters to provide the various modules of the TDS\n' +

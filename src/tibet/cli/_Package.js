@@ -13,9 +13,8 @@
  */
 //  ========================================================================
 
-/*eslint camelcase:0, no-extra-semi:0*/
 
-;(function(root) {
+(function(root) {
 
 var fs = require('fs'),
     path = require('path'),
@@ -23,7 +22,9 @@ var fs = require('fs'),
     sh = require('shelljs'),
     dom = require('xmldom');
 
-var parser = new dom.DOMParser(),
+/* eslint-disable one-var */
+var Package,
+    parser = new dom.DOMParser(),
     serializer = new dom.XMLSerializer(),
 
     isEmpty = function(aReference) {
@@ -40,6 +41,8 @@ var parser = new dom.DOMParser(),
     notValid = function(aReference) {
         return aReference === null || aReference === undefined;
     };
+
+/* eslint-enable one-var */
 
 //  ---
 //  Require Utilities
@@ -85,7 +88,7 @@ require.searchCache = function (moduleName, callback) {
             // Call the specified callback providing the
             // found module
             callback(mod);
-        })(mod);
+        }(mod));
     }
 };
 
@@ -93,7 +96,7 @@ require.searchCache = function (moduleName, callback) {
 //  Type Construction
 //  ---
 
-var Package = function(options) {
+Package = function(options) {
     var pkg;
 
     this.packageStack = [];
@@ -417,13 +420,13 @@ Package.prototype.dump = function(anObject) {
  */
 Package.prototype.expandAll = function(aPath) {
 
-    var expanded;   // The expanded path equivalent.
-    var doc;        // The xml DOM document object after parse.
-    var xml;        // The xml string read from the top-level manifest.
-    var package;    // The package node from the XML doc.
-    var configs;    // The ultimate config ID being used.
-    var pkg;        //
-    var msg;
+    var expanded,   // The expanded path equivalent.
+        doc,        // The xml DOM document object after parse.
+        xml,        // The xml string read from the top-level manifest.
+        package,    // The package node from the XML doc.
+        configs,    // The ultimate config ID being used.
+        pkg,        //
+        msg;
 
     expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
         this.getcfg('boot.package') ||
@@ -759,13 +762,13 @@ Package.prototype.expandOptions = function() {
  */
 Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
 
-    var expanded;   // The expanded path equivalent.
-    var xml;        // The xml string read from the top-level manifest.
-    var doc;        // The xml DOM document object after parse.
-    var config;     // The ultimate config ID being used.
-    var node;       // Result of searching for our config by ID.
-    var package;    // The package node from the XML doc.
-    var msg;        // Error message construction variable.
+    var expanded,   // The expanded path equivalent.
+        xml,        // The xml string read from the top-level manifest.
+        doc,        // The xml DOM document object after parse.
+        config,     // The ultimate config ID being used.
+        node,       // Result of searching for our config by ID.
+        package,    // The package node from the XML doc.
+        msg;        // Error message construction variable.
 
     expanded = notEmpty(aPath) ? aPath : (this.getcfg('package') ||
         this.getcfg('boot.package') ||
@@ -968,13 +971,13 @@ Package.prototype.expandReference = function(aRef) {
  * @return {String} The application's 'head' location.
  */
 Package.prototype.getAppHead = function() {
-    var cwd;
-    var checks;
-    var len;
-    var i;
-    var check;
-    var dir;
-    var file;
+    var cwd,
+        checks,
+        len,
+        i,
+        check,
+        dir,
+        file;
 
     if (this.app_head) {
         this.debug('getAppHead via cache: ' + this.app_head, true);
@@ -988,7 +991,7 @@ Package.prototype.getAppHead = function() {
     cwd = process.cwd();
     checks = [
         [cwd, Package.NPM_FILE],
-        [cwd, Package.PROJECT_FILE],
+        [cwd, Package.PROJECT_FILE]
     ];
 
     len = checks.length;
@@ -1213,11 +1216,11 @@ Package.prototype.getArgumentPrimitive = function(value) {
  * @return {Object} The property value.
  */
 Package.prototype.getcfg = function(property) {
-    var name;
-    var value;
-    var keys;
-    var cfg;
-    var pkg;
+    var name,
+        value,
+        keys,
+        cfg,
+        pkg;
 
     if (!property) {
         return this.cfg;
@@ -1528,9 +1531,9 @@ Package.prototype.ifUnlessPassed = function(anElement) {
  * @return {Boolean} True if the current context is inside the TIBET library.
  */
 Package.prototype.inLibrary = function() {
-    var dir;
-    var file;
-    var found;
+    var dir,
+        file,
+        found;
 
     // Since the CLI can be invoked from anywhere we need to be explicit here
     // relative to the cwd. If we find a project file, and it's 'tibet' we're
@@ -1559,9 +1562,9 @@ Package.prototype.inLibrary = function() {
  * @return {Boolean} True if the current context is inside a TIBET project.
  */
 Package.prototype.inProject = function(silent) {
-    var cwd;        // Where are we being run?
-    var file;       // What file are we looking for?
-    var fullpath;   // What full path are we checking?
+    var cwd,        // Where are we being run?
+        file,       // What file are we looking for?
+        fullpath;   // What full path are we checking?
 
     cwd = process.cwd();
     file = Package.PROJECT_FILE;
@@ -2056,10 +2059,10 @@ Package.prototype.quote = function(value) {
  */
 Package.prototype.setProjectOptions = function() {
 
-    var pkg;
-    var msg;
-    var root;
-    var fullpath;
+    var pkg,
+        msg,
+        root,
+        fullpath;
 
     // We need app root to load tibet.json, which hopefully has additional
     // configuration information we can leverage such as the lib_root path.
@@ -2074,13 +2077,13 @@ Package.prototype.setProjectOptions = function() {
         return;
     }
 
-    fullpath =  path.join(root, Package.PROJECT_FILE);
+    fullpath = path.join(root, Package.PROJECT_FILE);
     if (sh.test('-f', fullpath)) {
         try {
             // Load project file, or default to an object we can test to see
             // that we are not in a project (see inProject).
             // TODO: this key should be a constant somewhere.
-            this.tibet = require(fullpath) || { tibet_project: false };
+            this.tibet = require(fullpath) || {tibet_project: false};
         } catch (e) {
             msg = 'Error loading project file: ' + e.message;
             if (this.options.stack === true) {
@@ -2090,7 +2093,7 @@ Package.prototype.setProjectOptions = function() {
         }
     }
 
-    fullpath =  path.join(root, Package.NPM_FILE);
+    fullpath = path.join(root, Package.NPM_FILE);
     if (sh.test('-f', fullpath)) {
         try {
             this.npm = require(fullpath) || {};

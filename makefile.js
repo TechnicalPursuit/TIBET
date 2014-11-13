@@ -13,10 +13,10 @@
 
 'use strict';
 
-var sh = require('shelljs');
-var path = require('path');
-var nodecli = require('shelljs-nodecli');
-var helpers = require('./src/tibet/cli/_make_helpers');
+var sh = require('shelljs'),
+    path = require('path'),
+    nodecli = require('shelljs-nodecli'),
+    helpers = require('./src/tibet/cli/_make_helpers');
 
 //  ---
 //  targets
