@@ -65,10 +65,10 @@ targets.build_all = function(make) {
         targets.build_deps).then(
         targets.build_tibet).then(
         function() {
-            targets.build.resolve();
+            targets.build_all.resolve();
         },
         function() {
-            targets.build.reject();
+            targets.build_all.reject();
         });
 };
 
@@ -109,22 +109,6 @@ targets.clean = function(make) {
     targets.clean.resolve();
 };
 
-/**
- */
-targets.changes = function(make) {
-    make.log('building CHANGES file...');
-
-    targets.changes.resolve();
-};
-
-/**
- */
-targets.docs = function(make) {
-    make.log('generating docs...');
-
-    targets.docs.resolve();
-};
-
 // ---
 // Externals
 // ---
@@ -132,12 +116,28 @@ targets.docs = function(make) {
 /**
  */
 targets.build_deps = function(make) {
+    var result;
+
     make.log('building dependency packages...');
 
     if (!sh.test('-d', './lib/src')) {
         sh.mkdir('./lib/src');
     }
 
+    if (!sh.which('grunt')) {
+        make.error('Building dependencies requires npm install -g grunt-cli.');
+        targets.build_deps.reject();
+        return;
+    }
+/*
+    // This should ensure we pull the latest fork code and/or npm packages into
+    // place before we attempt any rollups of those packages.
+    result = sh.exec('npm update');
+    if (result.code !== 0) {
+        targets.build_deps.reject();
+        return;
+    }
+*/
     targets.rollup_codemirror().then(
         targets.rollup_d3).then(
         targets.rollup_diff).then(
