@@ -53,7 +53,7 @@ var http,           // Web server baseline.
     TDS,            // TIBET middleware addons.
 
     argv,           // The argument list.
-    app_root,       // Computed TIBET application root.
+    appRoot,        // Computed TIBET application root.
     app,            // Express application instance.
     port;           // Port to listen on.
 
@@ -77,10 +77,10 @@ argv = minimist(process.argv.slice(2)) || {_: []};
 
 // Since server.js typically sits in the project root directory we can work with
 // __dirname here as a default.
-app_root = argv.app_root || __dirname;
+appRoot = argv.app_root || __dirname;
 
 // Ensure the TDS loads configuration data from our computed root.
-argv.app_root = app_root;
+argv.app_root = appRoot;
 TDS.initPackage(argv);
 
 // Lots of options for where to get a port number but try to leverage TDS first.
@@ -157,7 +157,7 @@ if (argv.webdav !== false) {
 
 //  By default we assume the entire site is accessible statically. That's a
 //  side-effect of TIBET not making any assumptions about server-side logic.
-app.use(serveStatic(app_root));
+app.use(serveStatic(appRoot));
 
 //  Express gzip compression. Send data compressed if possible.
 app.use(compression());
