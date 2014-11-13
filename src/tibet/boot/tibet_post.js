@@ -5783,6 +5783,7 @@ TP.boot.$phantomReporter = function(entry, options) {
 
     // Ignore attempts to log the entry to the console more than once.
     if (entry && entry.usedConsole) {
+        console.log('');    // force a flush of the console.
         return;
     }
 
