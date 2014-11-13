@@ -619,7 +619,7 @@ function() {
         var inputVal,
             correctResults;
 
-        inputVal = ':testCmd "function() {}" "function(x) {window.alert(x)}" "function() {window.alert({{x}})}" foo="function() {}" bar="function(x) {window.alert(x)}" baz="function() {window.alert({{x}})}"';
+        inputVal = ':testCmd "function() {}" "function(x) {window.alert(x);}" "function() {window.alert({{x}});}" foo="function() {}" bar="function(x) {window.alert(x);}" baz="function() {window.alert({{x}});}"';
         correctResults =
             TP.hc(
                 'foo',
@@ -631,16 +631,16 @@ function() {
                         'Resolved value', function () {}),
                 'bar',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function(x) {window.alert(x)}"',
+                        'Original value', '"function(x) {window.alert(x);}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function(x) {window.alert(x)}',
+                        'Expanded value', 'function(x) {window.alert(x);}',
                         'Resolved value tname', 'Function',
                         'Resolved value', function(x) {window.alert(x);}),
                 'baz',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function() {window.alert({{x}})}"',
+                        'Original value', '"function() {window.alert({{x}});}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function() {window.alert(2)}',
+                        'Expanded value', 'function() {window.alert(2);}',
                         'Resolved value tname', 'Function',
                         'Resolved value', function() {window.alert(2);}),
                 'ARG0',
@@ -652,16 +652,16 @@ function() {
                         'Resolved value', function () {}),
                 'ARG1',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function(x) {window.alert(x)}"',
+                        'Original value', '"function(x) {window.alert(x);}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function(x) {window.alert(x)}',
+                        'Expanded value', 'function(x) {window.alert(x);}',
                         'Resolved value tname', 'Function',
                         'Resolved value', function(x) {window.alert(x);}),
                 'ARG2',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function() {window.alert({{x}})}"',
+                        'Original value', '"function() {window.alert({{x}});}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function() {window.alert(2)}',
+                        'Expanded value', 'function() {window.alert(2);}',
                         'Resolved value tname', 'Function',
                         'Resolved value', function() {window.alert(2);})
             );
