@@ -2122,9 +2122,7 @@ function() {
     /**
      * @name getElementArray
      * @synopsis Returns the Array of native elements. In the case of a form
-     *     object this is the elements[] "array". Beware, however. The so-called
-     *     elements array isn't a fully functional array in all browsers so
-     *     TIBET array methods may not apply.
+     *     object this is the elements[] Array.
      * @returns {Array} The array of native items.
      * @raise TP.sig.InvalidNode
      * @todo
@@ -3714,9 +3712,7 @@ function() {
     /**
      * @name getElementArray
      * @synopsis Returns the Array of native elements. In the case of a select
-     *     list this is the options[] "array". Beware, however. The so-called
-     *     options array isn't a fully functional array in all browsers so TIBET
-     *     array methods may not apply.
+     *     list this is the options[] Array.
      * @returns {Array} The array of native items.
      * @raise TP.sig.InvalidNode
      * @todo
