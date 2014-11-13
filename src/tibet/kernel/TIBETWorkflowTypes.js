@@ -5735,7 +5735,7 @@ function(aSignal) {
     // Do any final steps to ensure the UI is ready for operation.
     this.finalizeGUI();
 
-    if (TP.isElement(elem = aSignal.at('ApplicationElement'))) {
+    if (TP.isElement(elem = aSignal.at('ApplicationTag'))) {
         //  Grab the UI root window and focus it.
         if (TP.isWindow(rootWin = TP.nodeGetWindow(elem))) {
             rootWin.focus();

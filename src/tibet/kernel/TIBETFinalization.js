@@ -479,7 +479,7 @@ function() {
                     TP.sys,
                     'TP.sig.AppStart',
                     TP.hc('ApplicationType', appType,
-                            'ApplicationElement', elem));
+                            'ApplicationTag', elem));
             }).afterUnwind();
         /* eslint-enable no-wrap-func */
     });

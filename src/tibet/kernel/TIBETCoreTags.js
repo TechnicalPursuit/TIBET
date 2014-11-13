@@ -12,24 +12,24 @@
  */
 
 //  ========================================================================
-//  TP.core.ApplicationElement
+//  TP.core.ApplicationTag
 //  ========================================================================
 
 /**
- * @type {TP.core.ApplicationElement}
- * @synopsis TP.core.ApplicationElement is the common supertype of the
+ * @type {TP.core.ApplicationTag}
+ * @synopsis TP.core.ApplicationTag is the common supertype of the
  *     TP.tibet.app and TP.tibet.sherpa tag types.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('ApplicationElement');
+TP.core.ElementNode.defineSubtype('ApplicationTag');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ApplicationElement.Inst.defineMethod('getApplicationType',
+TP.core.ApplicationTag.Inst.defineMethod('getApplicationType',
 function() {
 
     /**
@@ -76,7 +76,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ApplicationElement.defineSubtype('tibet:app');
+TP.core.ApplicationTag.defineSubtype('tibet:app');
 
 //  ------------------------------------------------------------------------
 
@@ -239,11 +239,11 @@ function(aRequest) {
 //  TP.core.TemplatedApplication
 //  ========================================================================
 
-TP.core.ApplicationElement.defineSubtype('TP.core.TemplatedApplication');
+TP.core.ApplicationTag.defineSubtype('TP.core.TemplatedApplicationTag');
 
-TP.core.TemplatedApplication.addTraitsFrom(TP.core.TemplatedNode);
+TP.core.TemplatedApplicationTag.addTraitsFrom(TP.core.TemplatedNode);
 
-TP.core.TemplatedApplication.executeTraitResolution();
+TP.core.TemplatedApplicationTag.executeTraitResolution();
 
 //  ------------------------------------------------------------------------
 //  end
