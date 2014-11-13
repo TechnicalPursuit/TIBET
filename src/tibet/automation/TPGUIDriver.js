@@ -245,10 +245,6 @@ function() {
             '[Num9]':'[num9]',
         };
 
-    //  OMG... don't ask... let's just say this is needed for Syn to properly
-    //  handle shift/ctrl/alt/meta key flags.
-    TP.extern.syn.support.ready = 2;
-
     return;
 });
 
