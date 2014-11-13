@@ -12,6 +12,8 @@
           AssertionFailed:true
 */
 
+/* eslint-disable new-cap */
+
 /**
  * Sample tests built specifically to exercise all the different ways a test
  * could pass, fail, or error out. A rough version of tests for the

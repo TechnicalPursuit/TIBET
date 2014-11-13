@@ -104,13 +104,14 @@ function() {
 
     this.observe(this.get('resultsList'), 'TP.sig.DOMClick');
 
+    /* eslint-disable no-wrap-func */
     (function () {
 
         this.set('searchMode', false);
         this.toggle('hidden');
 
-        }).bind(this).observe(
-            TP.core.Keyboard, 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+    }).bind(this).observe(TP.core.Keyboard,
+        'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
     (function () {
 
@@ -135,9 +136,10 @@ function() {
         this.set('searchMode', true);
         this.toggle('hidden');
 
-        }).bind(this).observe(
-            TP.core.Keyboard,
-            'TP.sig.DOM_QuestionMark_Up__TP.sig.DOM_QuestionMark_Up');
+    }).bind(this).observe(TP.core.Keyboard,
+        'TP.sig.DOM_QuestionMark_Up__TP.sig.DOM_QuestionMark_Up');
+
+    /* eslint-enable no-wrap-func */
 
     return this;
 });

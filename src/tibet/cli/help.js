@@ -16,18 +16,25 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var path = require('path');
-var sh = require('shelljs');
+var CLI,
+    path,
+    sh,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
+path = require('path');
+sh = require('shelljs');
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -119,9 +126,9 @@ Cmd.prototype.usage = function() {
  */
 Cmd.prototype.execute = function() {
 
-    var command;
-    var cmds;
-    var intro;
+    var command,
+        cmds,
+        intro;
 
     // If specific command was given delegate to the command type.
     command = this.options._ && this.options._[1];
@@ -211,9 +218,9 @@ Cmd.prototype.execute = function() {
  * @return {Number} A return code.
  */
 Cmd.prototype.executeForCommand = function(command) {
-    var file;
-    var CmdType;
-    var cmd;
+    var file,
+        CmdType,
+        cmd;
 
     if (command.charAt(0) === '_') {
         this.error('Help not available for private commands.');
@@ -246,8 +253,8 @@ Cmd.prototype.executeForCommand = function(command) {
  * @return {Array.<string>} The list of commands.
  */
 Cmd.prototype.getCommands = function(aPath) {
-    var files;
-    var cmds;
+    var files,
+        cmds;
 
     cmds = [];
 
@@ -272,8 +279,8 @@ Cmd.prototype.getCommands = function(aPath) {
  * @return {Array.<string>} The list of targets.
  */
 Cmd.prototype.getMakeTargets = function() {
-    var targets;
-    var cmds;
+    var targets,
+        cmds;
 
     cmds = [];
 

@@ -15,17 +15,23 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var Q = require('q');
+var CLI,
+    Q,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
+Q = require('q');
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -86,10 +92,10 @@ Cmd.prototype.USAGE = 'tibet make [<target>] [--list] [--timeout <ms>]';
  */
 Cmd.prototype.execute = function() {
 
-    var targets;
-    var command;
-    var cmd;
-    var start;
+    var targets,
+        command,
+        cmd,
+        start;
 
     if (CLI.inProject() && !CLI.isInitialized()) {
         CLI.notInitialized();
@@ -228,8 +234,8 @@ Cmd.prototype.getProjectName = function() {
  * @param {Object} targets An object whose functions serve as make targets.
  */
 Cmd.prototype.prepTargets = function(targets) {
-    var cmd;
-    var timeout;
+    var cmd,
+        timeout;
 
     // For control purposes we want to wrap individual make target functions if
     // they're not already wrapped.
@@ -269,6 +275,7 @@ Cmd.prototype.prepTargets = function(targets) {
                         targets[name].$$active = true;
                     }
 
+                    /* eslint-disable new-cap */
                     promise = Q.Promise(function(resolver, rejector) {
                         var timer;
 
@@ -314,6 +321,7 @@ Cmd.prototype.prepTargets = function(targets) {
                             targets[name].reject(e);
                         }
                     });
+                    /* eslint-enable new-cap */
 
                     return promise;
                 }.bind(targets, cmd);   // ensure 'this' and 'make' exist.

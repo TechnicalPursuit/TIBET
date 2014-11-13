@@ -15,16 +15,21 @@
 
 'use strict';
 
-var CLI = require('./_cli');
+var CLI,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -94,17 +99,17 @@ Cmd.prototype.USAGE = 'tibet start [--port <port>] [<tds options>]';
  */
 Cmd.prototype.execute = function() {
 
-    var sh;     // The shelljs module.
-    var child;  // The child_process module.
+    var sh,     // The shelljs module.
+        child,  // The child_process module.
 
-    var server; // Spawned child process for the server.
-    var cmd;    // Closure'd var providing access to the command object.
-    var port;   // The port number to start up on.
-    var inuse;  // Flag to trap EADDRINUSE exceptions.
-    var msg;    // Shared message content.
-    var url;    // Url for file-based launch messaging.
-    var indexpage;  // Config parameter for index page.
-    var index;  // URL to the index page.
+        server, // Spawned child process for the server.
+        cmd,    // Closure'd var providing access to the command object.
+        port,   // The port number to start up on.
+        inuse,  // Flag to trap EADDRINUSE exceptions.
+        msg,    // Shared message content.
+        url,    // Url for file-based launch messaging.
+        indexpage,  // Config parameter for index page.
+        index;  // URL to the index page.
 
     cmd = this;
 

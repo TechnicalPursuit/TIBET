@@ -5,4 +5,3 @@
 var APPNAME = '{{appname}}';
 
 console.log('Loaded ' + APPNAME);
-

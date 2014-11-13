@@ -14,17 +14,26 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var fs = require('fs');
-var sh = require('shelljs');
-var path = require('path');
-var Q = require('q');
-var zlib = require('zlib');
+var CLI,
+    fs,
+    sh,
+    path,
+    Q,
+    zlib,
+    helpers;
+
+
+CLI = require('./_cli');
+fs = require('fs');
+sh = require('shelljs');
+path = require('path');
+Q = require('q');
+zlib = require('zlib');
 
 /**
  * Canonical `helper` object for internal utility functions.
  */
-var helpers = {};
+helpers = {};
 
 
 /**
@@ -44,18 +53,18 @@ var helpers = {};
  */
 helpers.rollup = function(make, options) {
 
-    var result;
-    var cmd;
-    var ext;
-    var file;
-    var pkg;
-    var config;
-    var dir;
-    var prefix;
-    var root;
-    var headers;
-    var minify;
-    var deferred;
+    var result,
+        cmd,
+        ext,
+        file,
+        pkg,
+        config,
+        dir,
+        prefix,
+        root,
+        headers,
+        minify,
+        deferred;
 
     if (CLI.notValid(options)) {
         throw new Error('InvalidOptions');

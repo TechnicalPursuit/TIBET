@@ -15,8 +15,12 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var minimist = require('minimist');
+var CLI,
+    minimist,
+    Cmd;
+
+CLI = require('./_cli');
+minimist = require('minimist');
 
 //  ---
 //  Type Construction
@@ -25,7 +29,7 @@ var minimist = require('minimist');
 /**
  * Command supertype. All individual commands inherit from this type.
  */
-var Cmd = function(){};
+Cmd = function() {};
 
 
 /**
@@ -118,8 +122,8 @@ Cmd.prototype.help = function() {
  * @return {Object} An object in minimist argument format.
  */
 Cmd.prototype.parse = function(options) {
-    var command;
-    var cmd;
+    var command,
+        cmd;
 
     // Note we use the command's own version of PARSE_OPTIONS here.
     this.options = minimist(process.argv.slice(2), this.PARSE_OPTIONS || {});
@@ -239,8 +243,10 @@ Cmd.prototype.run = function(options) {
  */
 Cmd.prototype.shexec = function(cmd) {
 
-    var result;
-    var sh = require('shelljs');
+    var result,
+        sh;
+
+    sh = require('shelljs');
 
     result = sh.exec(cmd, {
         silent: (CLI.options.silent !== true)

@@ -12,7 +12,7 @@
 
 //  ----------------------------------------------------------------------------
 
-;(function(root) {
+(function(root) {
 
 //  Check for global TIBET symbols.
 if (root.TP != null || root.APP != null) {
@@ -78,7 +78,9 @@ if (Object.defineProperty) {
 //  Turn off the JSHint warning - we know we're invoking the 'Function'
 //  constructor without 'new'... that's part of the trick.
 /* jshint ignore:start */
+/* eslint-disable new-cap */
 TP.global = Function('return this')() || (42, eval)('this');
+/* eslint-enable new-cap */
 /* jshint ignore:end */
 
 if (!TP.sys.$nativeglobals) {
@@ -113,7 +115,7 @@ if (!TP.sys.$nativeglobals) {
 
         //  Get all of the unique property names from TP.global.
         TP.sys.$nativeglobals = uniqueProps(getProps(TP.global).sort());
-    })();
+    }());
 }
 
 //  define the tracking collection for TIBET's global symbols so any
@@ -496,36 +498,36 @@ TP.boot.$$styles = {};
 
 TP.boot.$$styles.browser = {
     //styles
-    'bold'      : ['<b>',  '</b>'],
-    'italic'    : ['<i>',  '</i>'],
-    'underline' : ['<u>',  '</u>'],
-    'inverse'   : ['<span style="background-color:black;color:white;">',
+    'bold': ['<b>', '</b>'],
+    'italic': ['<i>', '</i>'],
+    'underline': ['<u>', '</u>'],
+    'inverse': ['<span style="background-color:black;color:white;">',
       '</span>'],
-    'strikethrough' : ['<del>',  '</del>'],
+    'strikethrough': ['<del>', '</del>'],
     //text colors
     //grayscale
-    'white'     : ['<span style="color:white;">',   '</span>'],
-    'grey'      : ['<span style="color:#aaa;">',    '</span>'],
-    'black'     : ['<span style="color:black;">',   '</span>'],
+    'white': ['<span style="color:white;">', '</span>'],
+    'grey': ['<span style="color:#aaa;">', '</span>'],
+    'black': ['<span style="color:black;">', '</span>'],
     //colors
-    'blue'      : ['<span style="color:blue;">',    '</span>'],
-    'cyan'      : ['<span style="color:cyan;">',    '</span>'],
-    'green'     : ['<span style="color:green;">',   '</span>'],
-    'magenta'   : ['<span style="color:magenta;">', '</span>'],
-    'red'       : ['<span style="color:red;">',     '</span>'],
-    'yellow'    : ['<span style="color:yellow;">',  '</span>'],
+    'blue': ['<span style="color:blue;">', '</span>'],
+    'cyan': ['<span style="color:cyan;">', '</span>'],
+    'green': ['<span style="color:green;">', '</span>'],
+    'magenta': ['<span style="color:magenta;">', '</span>'],
+    'red': ['<span style="color:red;">', '</span>'],
+    'yellow': ['<span style="color:yellow;">', '</span>'],
     //background colors
     //grayscale
-    'whiteBG'     : ['<span style="background-color:white;">',   '</span>'],
-    'greyBG'      : ['<span style="background-color:#aaa;">',    '</span>'],
-    'blackBG'     : ['<span style="background-color:black;">',   '</span>'],
+    'whiteBG': ['<span style="background-color:white;">', '</span>'],
+    'greyBG': ['<span style="background-color:#aaa;">', '</span>'],
+    'blackBG': ['<span style="background-color:black;">', '</span>'],
     //colors
-    'blueBG'      : ['<span style="background-color:blue;">',    '</span>'],
-    'cyanBG'      : ['<span style="background-color:cyan;">',    '</span>'],
-    'greenBG'     : ['<span style="background-color:green;">',   '</span>'],
-    'magentaBG'   : ['<span style="background-color:magenta;">', '</span>'],
-    'redBG'       : ['<span style="background-color:red;">',     '</span>'],
-    'yellowBG'    : ['<span style="background-color:yellow;">',  '</span>']
+    'blueBG': ['<span style="background-color:blue;">', '</span>'],
+    'cyanBG': ['<span style="background-color:cyan;">', '</span>'],
+    'greenBG': ['<span style="background-color:green;">', '</span>'],
+    'magentaBG': ['<span style="background-color:magenta;">', '</span>'],
+    'redBG': ['<span style="background-color:red;">', '</span>'],
+    'yellowBG': ['<span style="background-color:yellow;">', '</span>']
 };
 
 // Generate one for output to the browser console that avoids injecting markup
@@ -546,35 +548,35 @@ TP.boot.$$styles.console = (function() {
 
 TP.boot.$$styles.terminal = {
     //styles
-    'bold'      : ['\x1B[1m',  '\x1B[22m'],
-    'italic'    : ['\x1B[3m',  '\x1B[23m'],
-    'underline' : ['\x1B[4m',  '\x1B[24m'],
-    'inverse'   : ['\x1B[7m',  '\x1B[27m'],
-    'strikethrough' : ['\x1B[9m',  '\x1B[29m'],
+    'bold': ['\x1B[1m', '\x1B[22m'],
+    'italic': ['\x1B[3m', '\x1B[23m'],
+    'underline': ['\x1B[4m', '\x1B[24m'],
+    'inverse': ['\x1B[7m', '\x1B[27m'],
+    'strikethrough': ['\x1B[9m', '\x1B[29m'],
     //text colors
     //grayscale
-    'white'     : ['\x1B[37m', '\x1B[39m'],
-    'grey'      : ['\x1B[90m', '\x1B[39m'],
-    'black'     : ['\x1B[30m', '\x1B[39m'],
+    'white': ['\x1B[37m', '\x1B[39m'],
+    'grey': ['\x1B[90m', '\x1B[39m'],
+    'black': ['\x1B[30m', '\x1B[39m'],
     //colors
-    'blue'      : ['\x1B[34m', '\x1B[39m'],
-    'cyan'      : ['\x1B[36m', '\x1B[39m'],
-    'green'     : ['\x1B[32m', '\x1B[39m'],
-    'magenta'   : ['\x1B[35m', '\x1B[39m'],
-    'red'       : ['\x1B[31m', '\x1B[39m'],
-    'yellow'    : ['\x1B[33m', '\x1B[39m'],
+    'blue': ['\x1B[34m', '\x1B[39m'],
+    'cyan': ['\x1B[36m', '\x1B[39m'],
+    'green': ['\x1B[32m', '\x1B[39m'],
+    'magenta': ['\x1B[35m', '\x1B[39m'],
+    'red': ['\x1B[31m', '\x1B[39m'],
+    'yellow': ['\x1B[33m', '\x1B[39m'],
     //background colors
     //grayscale
-    'whiteBG'     : ['\x1B[47m', '\x1B[49m'],
-    'greyBG'      : ['\x1B[49;5;8m', '\x1B[49m'],
-    'blackBG'     : ['\x1B[40m', '\x1B[49m'],
+    'whiteBG': ['\x1B[47m', '\x1B[49m'],
+    'greyBG': ['\x1B[49;5;8m', '\x1B[49m'],
+    'blackBG': ['\x1B[40m', '\x1B[49m'],
     //colors
-    'blueBG'      : ['\x1B[44m', '\x1B[49m'],
-    'cyanBG'      : ['\x1B[46m', '\x1B[49m'],
-    'greenBG'     : ['\x1B[42m', '\x1B[49m'],
-    'magentaBG'   : ['\x1B[45m', '\x1B[49m'],
-    'redBG'       : ['\x1B[41m', '\x1B[49m'],
-    'yellowBG'    : ['\x1B[43m', '\x1B[49m']
+    'blueBG': ['\x1B[44m', '\x1B[49m'],
+    'cyanBG': ['\x1B[46m', '\x1B[49m'],
+    'greenBG': ['\x1B[42m', '\x1B[49m'],
+    'magentaBG': ['\x1B[45m', '\x1B[49m'],
+    'redBG': ['\x1B[41m', '\x1B[49m'],
+    'yellowBG': ['\x1B[43m', '\x1B[49m']
 };
 
 //  ---
@@ -744,7 +746,7 @@ TP.boot.$$stageorder = [];
             return 1;
         }
     });
-})();
+}());
 
 //  ---
 //  URI schemes
@@ -756,77 +758,77 @@ TP.SCHEMES = ['http', 'file', 'tibet', 'https', 'chrome-extension'];
 //  Considered 'built-in' by TIBET, but other schemes are added when
 //  registered.
 TP.boot.$uriSchemes = {
-    'tibet':'tibet',    // common
-    'urn':'urn',        // common
-    'http':'http',      // common
-    'https':'https',    // common
-    'file':'file',      // common
-    'xmpp':'xmpp',      // common
-    'about':'about',    // common
-    'mailto':'mailto',  // common
-    'tel':'tel',        // common
-    'news':'news',      // common
-    'nntp':'nntp',      // common
-    'ftp':'ftp',        // common
-    'ws':'ws',          // common
-    'wss':'wss',        // common
+    'tibet': 'tibet',    // common
+    'urn': 'urn',        // common
+    'http': 'http',      // common
+    'https': 'https',    // common
+    'file': 'file',      // common
+    'xmpp': 'xmpp',      // common
+    'about': 'about',    // common
+    'mailto': 'mailto',  // common
+    'tel': 'tel',        // common
+    'news': 'news',      // common
+    'nntp': 'nntp',      // common
+    'ftp': 'ftp',        // common
+    'ws': 'ws',          // common
+    'wss': 'wss',        // common
 
-    'aaa':'aaa',
-    'aaas':'aaas',
-    'acap':'acap',
-    'cap':'cap',
-    'cid':'cid',
-    'crid':'crid',
-    'data':'data',
-    'dav':'dav',
-    'dict':'dict',
-    'dns':'dns',
-    'fax':'fax',
-    'go':'go',
-    'gopher':'gopher',
-    'h323':'h323',
-    'icap':'icap',
-    'im':'im',
-    'imap':'imap',
-    'info':'info',
-    'ipp':'ipp',
-    'iris':'iris',
-    'iris.beep':'iris.beep',
-    'iris.xpc':'iris.xpc',
-    'iris.xpcs':'iris.xpcs',
-    'iris.lws':'iris.lws',
-    'ldap':'ldap',
-    'lsid':'lsid',
-    'mid':'mid',
-    'modem':'modem',
-    'msrp':'msrp',
-    'msrps':'msrps',
-    'mtqp':'mtqp',
-    'mupdate':'mupdate',
-    'nfs':'nfs',
-    'opaquelocktoken':'opaquelocktoken',
-    'pop':'pop',
-    'pres':'pres',
-    'prospero':'prospero',
-    'rtsp':'rtsp',
-    'service':'service',
-    'shttp':'shttp',
-    'sip':'sip',
-    'sips':'sips',
-    'snmp':'snmp',
-    'soap.beep':'soap.beep',
-    'soap.beeps':'soap.beeps',
-    'tag':'tag',
-    'telnet':'telnet',
-    'tftp':'tftp',
-    'thismessage':'thismessage',
-    'tip':'tip',
-    'tv':'tv',
-    'vemmi':'vemmi',
-    'wais':'wais',
-    'xmlrpc.beep':'xmlrpc.beep',
-    'z39.50r':'z39.50r',
-    'z39.50s':'z39.50s'
+    'aaa': 'aaa',
+    'aaas': 'aaas',
+    'acap': 'acap',
+    'cap': 'cap',
+    'cid': 'cid',
+    'crid': 'crid',
+    'data': 'data',
+    'dav': 'dav',
+    'dict': 'dict',
+    'dns': 'dns',
+    'fax': 'fax',
+    'go': 'go',
+    'gopher': 'gopher',
+    'h323': 'h323',
+    'icap': 'icap',
+    'im': 'im',
+    'imap': 'imap',
+    'info': 'info',
+    'ipp': 'ipp',
+    'iris': 'iris',
+    'iris.beep': 'iris.beep',
+    'iris.xpc': 'iris.xpc',
+    'iris.xpcs': 'iris.xpcs',
+    'iris.lws': 'iris.lws',
+    'ldap': 'ldap',
+    'lsid': 'lsid',
+    'mid': 'mid',
+    'modem': 'modem',
+    'msrp': 'msrp',
+    'msrps': 'msrps',
+    'mtqp': 'mtqp',
+    'mupdate': 'mupdate',
+    'nfs': 'nfs',
+    'opaquelocktoken': 'opaquelocktoken',
+    'pop': 'pop',
+    'pres': 'pres',
+    'prospero': 'prospero',
+    'rtsp': 'rtsp',
+    'service': 'service',
+    'shttp': 'shttp',
+    'sip': 'sip',
+    'sips': 'sips',
+    'snmp': 'snmp',
+    'soap.beep': 'soap.beep',
+    'soap.beeps': 'soap.beeps',
+    'tag': 'tag',
+    'telnet': 'telnet',
+    'tftp': 'tftp',
+    'thismessage': 'thismessage',
+    'tip': 'tip',
+    'tv': 'tv',
+    'vemmi': 'vemmi',
+    'wais': 'wais',
+    'xmlrpc.beep': 'xmlrpc.beep',
+    'z39.50r': 'z39.50r',
+    'z39.50s': 'z39.50s'
 };
 
 //  ----------------------------------------------------------------------------

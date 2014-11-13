@@ -33,22 +33,19 @@
 
 'use strict';
 
-/*
- * Required modules we'll bring in once.
- */
-var path = require('path');
-var sh = require('shelljs');
-var chalk = require('chalk');
-var minimist = require('minimist');
-var prompt = require('readline-sync');
+var path,
+    sh,
+    chalk,
+    minimist,
+    prompt,
+    Package,
+    CLI;
 
-
-/**
- * The TIBET Package object used for path resolution and package-related asset
- * listing support.
- * @type {Package}
- */
-var Package;
+path = require('path');
+sh = require('shelljs');
+chalk = require('chalk');
+minimist = require('minimist');
+prompt = require('readline-sync');
 
 
 /*
@@ -76,7 +73,7 @@ var Package;
  * is made to invoke a task of that name using grunt or gulp as a fallback tool.
  * @type {Object}
  */
-var CLI = {};
+CLI = {};
 
 
 //  ---
@@ -146,9 +143,9 @@ CLI.NPM_FILE = 'package.json';
  * @type {Object}
  */
 CLI.PARSE_OPTIONS = {
-    boolean: ['color', 'help', 'usage', 'debug', 'stack', 'verbose'],
-    string: ['app_root', 'lib_root'],
-    default: {
+    'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose'],
+    'string': ['app_root', 'lib_root'],
+    'default': {
         color: true
     }
 };
@@ -489,11 +486,11 @@ CLI.getcfg = function(property) {
  */
 CLI.getCommandPath = function(command) {
 
-    var roots;      // The directory roots we'll search.
-    var i;
-    var len;
-    var base;
-    var file;
+    var roots,      // The directory roots we'll search.
+        i,
+        len,
+        base,
+        file;
 
     // First check is for "built-in" commands. If it's one of those we'll use
     // that without troubling ourselves with trying to load Package etc.
@@ -607,8 +604,8 @@ CLI.ifUndefined = function(suspectValue, defaultValue) {
  */
 CLI.inGruntProject = function() {
 
-    var cwd;        // Where are we being run?
-    var file;       // What file are we looking for?
+    var cwd,        // Where are we being run?
+        file;       // What file are we looking for?
 
     cwd = process.cwd();
     file = this.GRUNT_FILE;
@@ -625,8 +622,8 @@ CLI.inGruntProject = function() {
  */
 CLI.inGulpProject = function() {
 
-    var cwd;        // Where are we being run?
-    var file;       // What file are we looking for?
+    var cwd,        // Where are we being run?
+        file;       // What file are we looking for?
 
     cwd = process.cwd();
     file = this.GULP_FILE;
@@ -704,10 +701,10 @@ CLI.isInitialized = function() {
  */
 CLI.logItems = function(aList) {
 
-    var limit = this.CHARS_PER_LINE;
-    var buffer;
-    var line;
-    var cmd;
+    var limit = this.CHARS_PER_LINE,
+        buffer,
+        line,
+        cmd;
 
     buffer = '';
     if (aList && aList.length > 0) {
@@ -838,8 +835,8 @@ CLI.handleError = function(e, phase, command) {
  */
 CLI.run = function(config) {
 
-    var command;        // the first non-option argument, the command name.
-    var cmdPath;        // the command path (for use with require())
+    var command,        // the first non-option argument, the command name.
+        cmdPath;        // the command path (for use with require())
 
     // Typically contains npm config data under a 'npm' key and a slot for TIBET
     // config data (normally read in by _cmd) under a 'tibet' key.
@@ -851,7 +848,8 @@ CLI.run = function(config) {
 
     // Slice 2 here to remove 'node tibet' from the front. Also ensure that our
     // binary (boolean) flags are identified as such to avoid parsing glitches.
-    this.options = minimist(process.argv.slice(2), this.PARSE_OPTIONS) || {_:[]};
+    this.options = minimist(process.argv.slice(2),
+        this.PARSE_OPTIONS) || {_: []};
 
     command = this.options._[0];
     if (!command) {
@@ -897,9 +895,9 @@ CLI.run = function(config) {
  */
 CLI.runCommand = function(command, cmdPath) {
 
-    var CmdType;
-    var cmd;
-    var msg;
+    var CmdType,
+        cmd,
+        msg;
 
     // Load the command type
     try {
@@ -1001,9 +999,9 @@ CLI.runFallback = function(command) {
  */
 CLI.runViaGrunt = function(command) {
 
-    var cmd;        // Binding reference.
-    var str;        // Command string we'll be executing via grunt.
-    var child;      // spawned child process for grunt execution.
+    var cmd,        // Binding reference.
+        str,        // Command string we'll be executing via grunt.
+        child;      // spawned child process for grunt execution.
 
     cmd = this;
 
@@ -1012,7 +1010,7 @@ CLI.runViaGrunt = function(command) {
 
     child = require('child_process').spawn('./node_modules/.bin/grunt',
         process.argv.slice(2),
-        { cwd: this.getAppRoot() }
+        {cwd: this.getAppRoot()}
     );
 
     child.stdout.on('data', function(data) {
@@ -1044,9 +1042,9 @@ CLI.runViaGrunt = function(command) {
  */
 CLI.runViaGulp = function(command) {
 
-    var cmd;        // Binding reference.
-    var str;        // Command string we'll be executing via gulp.
-    var child;      // spawned child process for gulp execution.
+    var cmd,        // Binding reference.
+        str,        // Command string we'll be executing via gulp.
+        child;      // spawned child process for gulp execution.
 
     cmd = this;
 
@@ -1055,7 +1053,7 @@ CLI.runViaGulp = function(command) {
 
     child = require('child_process').spawn('./node_modules/.bin/gulp',
         process.argv.slice(2),
-        { cwd: cmd.getAppRoot() }
+        {cwd: cmd.getAppRoot()}
     );
 
     child.stdout.on('data', function(data) {

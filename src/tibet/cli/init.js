@@ -15,15 +15,20 @@
 
 'use strict';
 
-var CLI = require('./_cli');
+var CLI,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -48,8 +53,8 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['link'],
-        default: {
+        'boolean': ['link'],
+        'default': {
             link: false
         }
     },
@@ -95,11 +100,11 @@ Cmd.prototype.USAGE = 'tibet init [--link]';
  */
 Cmd.prototype.execute = function() {
 
-    var sh;     // The shelljs module.
-    var child;  // The child_process module.
-    var cmd;    // Closure'd var providing access to the command object.
-    var dna;
-    var err;
+    var sh,     // The shelljs module.
+        child,  // The child_process module.
+        cmd,    // Closure'd var providing access to the command object.
+        dna,
+        err;
 
     cmd = this;
 

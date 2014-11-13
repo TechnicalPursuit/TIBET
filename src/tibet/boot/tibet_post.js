@@ -27,11 +27,13 @@
           $STATUS:true
 */
 
+/* eslint-disable new-cap, no-alert */
+
 //  ----------------------------------------------------------------------------
 
 //  We don't rely on require() but using a closure helps avoid unintended
 //  leakage into any enclosing scope.
-;(function(root) {
+(function(root) {
 
 //  ============================================================================
 //  Core Globals / Roots
@@ -51,18 +53,18 @@ APP = root.APP;
 TP.boot.$$theme = {
     trace: TP.sys.cfg('log.color.trace'),
     info: TP.sys.cfg('log.color.info'),
-    warn:  TP.sys.cfg('log.color.warn'),
-    error:  TP.sys.cfg('log.color.error'),
-    fatal:  TP.sys.cfg('log.color.fatal'),
-    severe:  TP.sys.cfg('log.color.severe'),
-    system:  TP.sys.cfg('log.color.system'),
+    warn: TP.sys.cfg('log.color.warn'),
+    error: TP.sys.cfg('log.color.error'),
+    fatal: TP.sys.cfg('log.color.fatal'),
+    severe: TP.sys.cfg('log.color.severe'),
+    system: TP.sys.cfg('log.color.system'),
 
     time: TP.sys.cfg('log.color.time'),
     delta: TP.sys.cfg('log.color.delta'),
     slow: TP.sys.cfg('log.color.slow'),
 
-    debug:  TP.sys.cfg('log.color.debug'),
-    verbose:  TP.sys.cfg('log.color.verbose')
+    debug: TP.sys.cfg('log.color.debug'),
+    verbose: TP.sys.cfg('log.color.verbose')
 };
 
 //  ============================================================================
@@ -255,10 +257,11 @@ TP.sys.hasPackage = function(aPackageFile, aConfig) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$alert = alert;
-TP.boot.$prompt = prompt;
-TP.boot.$confirm = confirm;
+TP.boot.$alert = window.alert;
+TP.boot.$prompt = window.prompt;
+TP.boot.$confirm = window.confirm;
 TP.boot.$notify = TP.boot.$alert;
+
 
 //  ---
 //  STDERR
@@ -295,7 +298,9 @@ TP.boot.STDERR_BREAK = function(msg, obj, level) {
      */
 
     TP.boot.STDERR_LOG(msg, obj, level);
+    /* eslint-disable no-debugger */
     debugger;
+    /* eslint-enable no-debugger */
     return;
 };
 
@@ -416,7 +421,7 @@ TP.boot.STDIN_CONFIRM = function(msg) {
 
     var input;
 
-    input = confirm(msg == null ? '?' : msg);
+    input = window.confirm(msg == null ? '?' : msg);
     if (TP.boot.$notValid(input) || input === '') {
         return null;
     } else {
@@ -437,7 +442,7 @@ TP.boot.STDIN_PROMPT = function(msg, def) {
 
     var input;
 
-    input = prompt(msg == null ? '?' : msg, (def == null ? '' : def));
+    input = window.prompt(msg == null ? '?' : msg, (def == null ? '' : def));
     if (input == null || input === '') {
         return null;
     } else {
@@ -574,8 +579,8 @@ TP.boot.$$log = function(argList, aLogLevel) {
      * @todo
      */
 
-    var level;
-    var message;
+    var level,
+        message;
 
     // Get level in numeric form so we can test leveling below.
     level = TP.ifInvalid(aLogLevel, TP.INFO);
@@ -770,18 +775,14 @@ if (TP.$agent.indexOf('windows nt') !== -1) {
         TP.$platform = 'winxp';
     } else if (TP.$agent.indexOf('nt 5.2') !== -1) {
         TP.$platform = 'winxps';
-    } else if (TP.$agent.indexOf('nt 6.0' !== -1)) {
+    } else if (TP.$agent.indexOf('nt 6.0') !== -1) {
         TP.$platform = 'vista';
     } else {
         TP.$platform = 'winnt';
     }
-}
-else if (TP.$agent.indexOf('win') !== -1)
-{
+} else if (TP.$agent.indexOf('win') !== -1) {
     TP.$platform = 'win';
-}
-else if (TP.$agent.indexOf('mac') !== -1)
-{
+} else if (TP.$agent.indexOf('mac') !== -1) {
     TP.$platform = 'mac';
 
     if (TP.$agent.indexOf('68k') !== -1 || TP.$agent.indexOf('68000') !== -1) {
@@ -794,8 +795,7 @@ else if (TP.$agent.indexOf('mac') !== -1)
     if (TP.$agent.indexOf(' os x') !== -1) {
         TP.$platform = 'macosx';
     }
-}
-else if (TP.$agent.indexOf('sunos') !== -1 ||
+} else if (TP.$agent.indexOf('sunos') !== -1 ||
         TP.$agent.indexOf('irix') !== -1 ||
         TP.$agent.indexOf('hp-ux') !== -1 ||
         TP.$agent.indexOf('aix') !== -1 ||
@@ -805,8 +805,7 @@ else if (TP.$agent.indexOf('sunos') !== -1 ||
         TP.$agent.indexOf('reliantunix') !== -1 ||
         TP.$agent.indexOf('sinix') !== -1 ||
         TP.$agent.indexOf('freebsd') !== -1 ||
-        TP.$agent.indexOf('bsd') !== -1)
-{
+        TP.$agent.indexOf('bsd') !== -1) {
     TP.$platform = '*nix';
 }
 
@@ -856,14 +855,12 @@ if (TP.$agent.indexOf('chrome/') !== -1) {
 
     //  See: http://code.google.com/p/chromium/issues/detail?id=20071
     TP.$language = TP.$language.replace('_', '-');
-}
-else if (TP.$agent.indexOf('safari/') !== -1 ||
-            TP.$agent.indexOf('mobile/') !== -1)    //  only reports
+} else if (TP.$agent.indexOf('safari/') !== -1 ||
+            TP.$agent.indexOf('mobile/') !== -1) {  //  only reports
                                                     //  'mobile' when
                                                     //  iPhone/iPad is
                                                     //  running TIBET in
                                                     //  'non-chrome' mode.
-{
     //  safari can lie completely, but typically identifies itself. the
     //  bigger problem is that a few others are clones for the Mac that we
     //  don't want to try to support.
@@ -890,11 +887,9 @@ else if (TP.$agent.indexOf('safari/') !== -1 ||
             TP.$$assignBrowserUI(TP.$$match[1]);
         }
     }
-}
-else if (TP.$agent.indexOf('firefox/') !== -1 ||
+} else if (TP.$agent.indexOf('firefox/') !== -1 ||
             TP.$agent.indexOf('minefield/') !== -1 ||
-            TP.$agent.indexOf('mozilladeveloperpreview/' !== -1))
-{
+            TP.$agent.indexOf('mozilladeveloperpreview/') !== -1) {
     //  firefox has a number of clones we want to watch out for
     if (TP.$agent.indexOf('camino') !== -1 ||
         TP.$agent.indexOf('epiphany') !== -1 ||
@@ -924,9 +919,7 @@ else if (TP.$agent.indexOf('firefox/') !== -1 ||
             TP.$$assignBrowserUI(TP.$$match[1]);
         }
     }
-}
-else if (TP.$agent.indexOf('msie') !== -1)
-{
+} else if (TP.$agent.indexOf('msie') !== -1) {
     //  some browsers may lie, but they won't have ActiveXObject support
     if (TP.global.ActiveXObject != null) {
         TP.$browser = 'ie';
@@ -1270,7 +1263,7 @@ if (TP.sys.isUA('IE')) {
                 }
             }
         }
-    })();
+    }());
 }
 
 //  ----------------------------------------------------------------------------
@@ -2676,7 +2669,7 @@ TP.boot.$uriLastModifiedIEFile = function(targetUrl) {
 
     //  make sure that any spaces or other escaped characters in the file
     //  name get unescaped properly.
-    fname = unescape(fname);
+    fname = window.unescape(fname);
 
     try {
         fso = new ActiveXObject('Scripting.FileSystemObject');
@@ -3071,8 +3064,7 @@ system or the net and produce XML documents which can be manipulated.
 //  ----------------------------------------------------------------------------
 
 TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
-                            isPackage)
-{
+        isPackage) {
     /**
      * @name $uriLoad
      * @summary Loads the content of a targetUrl, returning that content as
@@ -3393,9 +3385,11 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
                     '@mozilla.org/file/local;1',
                     'nsILocalFile', 'initWithPath');
 
+        /* eslint-disable space-in-brackets */
         IOS = Components.classes[
-                    '@mozilla.org/network/io-service;1'].getService(
+            '@mozilla.org/network/io-service;1'].getService(
                     Components.interfaces.nsIIOService);
+        /* eslint-enable space-in-brackets */
 
         IS = new Components.Constructor(
                     '@mozilla.org/scriptableinputstream;1',
@@ -3413,7 +3407,7 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
 
     //  make sure that any spaces or other escaped characters in the file
     //  name get unescaped properly.
-    fname = unescape(fname);
+    fname = window.unescape(fname);
 
     //  now for the fun part, files and channels and streams, oh my!
     try {
@@ -3441,8 +3435,7 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
-                                        isCacheable, isPackage)
-{
+                                        isCacheable, isPackage) {
     /**
      * @name $uriLoadCommonHttp
      * @summary Loads (reads and produces an XML document for) targetUrl.
@@ -3824,7 +3817,7 @@ TP.boot.$uriSaveIEFile = function(targetUrl, fileContent, fileMode) {
 
     //  make sure that any spaces or other escaped characters in the file
     //  name get unescaped properly.
-    fname = unescape(fname);
+    fname = window.unescape(fname);
 
     try {
         fso = new ActiveXObject('Scripting.FileSystemObject');
@@ -3918,9 +3911,11 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
                     '@mozilla.org/file/local;1',
                     'nsILocalFile', 'initWithPath');
 
+        /* eslint-disable space-in-brackets */
         stream = Components.classes[
             '@mozilla.org/network/file-output-stream;1'].createInstance(
                     Components.interfaces.nsIFileOutputStream);
+        /* eslint-enable space-in-brackets */
     } catch (e) {
         TP.boot.$stderr('FileComponentError: ' + targetUrl,
                         TP.boot.$ec(e));
@@ -3934,13 +3929,15 @@ TP.boot.$uriSaveMozFile = function(targetUrl, fileContent, fileMode) {
 
     //  make sure that any spaces or other escaped characters in the file
     //  name get unescaped properly.
-    fname = unescape(fname);
+    fname = window.unescape(fname);
 
     /* jshint bitwise:false */
 
     //  now for the fun part, files and transports and streams, oh my!
     try {
+        /* eslint-disable no-octal */
         permissions = 0644;                 //  unix-style file mask
+        /* eslint-enable no-octal */
         file = new FP(fname);
         if (fileMode === 'w') {
             flags = TP.MOZ_FILE_CREATE |
@@ -4171,7 +4168,7 @@ TP.boot.$documentCreateIE = function(versionNumber) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$documentGetElementById = function(xmldoc, id) {
-    return xmldoc.evaluate('//*[@id="'+ id +'"]', xmldoc,
+    return xmldoc.evaluate('//*[@id="' + id + '"]', xmldoc,
         function () {
             return 'http://www.w3.org/XML/1998/namespace';
         },
@@ -5248,6 +5245,7 @@ TP.boot.$trim = function(aString) {
     i = str.length;
 
     while (ws.test(str.charAt(--i))) {
+        void(0);
     }
 
     return str.slice(0, i + 1);
@@ -5651,7 +5649,7 @@ TP.boot.$consoleReporter = function(entry, options) {
 
     TP.sys.setcfg('log.color.mode', 'console');
     msg = TP.boot.$$logReporter(entry,
-        { separator: '\n', escape: false, console: true });
+        {separator: '\n', escape: false, console: true});
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5716,7 +5714,7 @@ TP.boot.$bootuiReporter = function(entry, options) {
 
     TP.sys.setcfg('log.color.mode', 'browser');
     msg = TP.boot.$$logReporter(entry,
-        { separator: '<br/>', escape: true, console: false });
+        {separator: '<br/>', escape: true, console: false});
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5790,7 +5788,7 @@ TP.boot.$phantomReporter = function(entry, options) {
 
     TP.sys.setcfg('log.color.mode', 'terminal');
     msg = TP.boot.$$logReporter(entry,
-        { separator: '\n', escape: false, console: true });
+        {separator: '\n', escape: false, console: true});
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5943,7 +5941,7 @@ TP.boot.Log.canLogLevel = function(aLevel) {
 
     var level;
 
-    level  = TP.boot.$isValid(aLevel) ? aLevel : TP.WARN;
+    level = TP.boot.$isValid(aLevel) ? aLevel : TP.WARN;
     level = typeof level === 'string' ? TP.boot[level] : level;
 
     return TP.boot.$$loglevel <= level;
@@ -6026,8 +6024,8 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
      * @returns {Boolean} True if the given pairing is considered fatal.
      */
 
-    var info;
-    var level;
+    var info,
+        level;
 
     // Non-errors are never fatal.
     if (!TP.boot.Log.isErrorLevel(aLevel)) {
@@ -6237,8 +6235,7 @@ TP.boot.Log.prototype.last = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel)
-{
+TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
     /**
      * @name log
      * @summary Creates a new log entry. The entry will include a timestamp as
@@ -6703,7 +6700,7 @@ TP.boot.$computeLogBufferSize = function(force) {
             return size;
         }
 
-        size = parseInt(TP.sys.cfg('log.buffersize'));
+        size = parseInt(TP.sys.cfg('log.buffersize'), 10);
         size = isNaN(size) ? 1 : size;
 
         level = TP.boot.$$loglevel;
@@ -6960,7 +6957,7 @@ TP.boot.hideUIBoot = function() {
         if (TP.boot.$isValid(elem.frameElement)) {
             elem.frameElement.style.visibility = 'hidden';
         } else {
-            elem.style.visibility='hidden';
+            elem.style.visibility = 'hidden';
         }
     }
 };
@@ -6978,7 +6975,7 @@ TP.boot.hideUIRoot = function() {
         if (TP.boot.$isValid(elem.frameElement)) {
             elem.frameElement.style.visibility = 'hidden';
         } else {
-            elem.style.visibility='hidden';
+            elem.style.visibility = 'hidden';
         }
     }
 };
@@ -7039,7 +7036,7 @@ TP.boot.showUIBoot = function() {
         if (TP.boot.$isValid(elem.frameElement)) {
             elem.frameElement.style.visibility = 'visible';
         } else {
-            elem.style.visibility='visible';
+            elem.style.visibility = 'visible';
         }
     }
 };
@@ -7065,7 +7062,7 @@ TP.boot.showUIRoot = function() {
         if (TP.boot.$isValid(elem.frameElement)) {
             elem.frameElement.style.visibility = 'visible';
         } else {
-            elem.style.visibility='visible';
+            elem.style.visibility = 'visible';
         }
     }
 
@@ -8214,7 +8211,7 @@ TP.boot.$configurePackage = function() {
         TP.boot.$$bootfile = file;
     } else {
 
-        err = 'Boot package \'' + package + '\' not found in: ' + file,
+        err = 'Boot package \'' + package + '\' not found in: ' + file;
         TP.boot.$stderr(err, TP.FATAL);
 
         throw new Error(err);
@@ -8877,17 +8874,17 @@ TP.boot.$updateDependentVars = function() {
     TP.boot.$$theme = {
         trace: TP.sys.cfg('log.color.trace'),
         info: TP.sys.cfg('log.color.info'),
-        warn:  TP.sys.cfg('log.color.warn'),
-        error:  TP.sys.cfg('log.color.error'),
-        fatal:  TP.sys.cfg('log.color.fatal'),
-        severe:  TP.sys.cfg('log.color.severe'),
-        system:  TP.sys.cfg('log.color.system'),
+        warn: TP.sys.cfg('log.color.warn'),
+        error: TP.sys.cfg('log.color.error'),
+        fatal: TP.sys.cfg('log.color.fatal'),
+        severe: TP.sys.cfg('log.color.severe'),
+        system: TP.sys.cfg('log.color.system'),
 
         time: TP.sys.cfg('log.color.time'),
         delta: TP.sys.cfg('log.color.delta'),
         slow: TP.sys.cfg('log.color.slow'),
-        debug:  TP.sys.cfg('log.color.debug'),
-        verbose:  TP.sys.cfg('log.color.verbose')
+        debug: TP.sys.cfg('log.color.debug'),
+        verbose: TP.sys.cfg('log.color.verbose')
     };
 };
 
@@ -9072,9 +9069,7 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
                                         src), TP.DEBUG);
                             }
                         }
-                    }
-                    else    //  null/empty means should have cdata
-                    {
+                    } else {   //  null/empty means should have cdata
                         arr.push(node);
                     }
 
@@ -9239,8 +9234,7 @@ TP.boot.$setupDOMStorage = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
-                                    shouldThrow)
-{
+                                    shouldThrow) {
     /**
      * @name $sourceImport
      * @summary Imports a script text which loads and integrates JS. This
@@ -9513,6 +9507,7 @@ TP.boot.$$importComplete = function() {
                         }
                     } else {
                         //debugger;
+                        void(0);
                     }
 
                     //  if we didn't find a phase two page waiting for us
@@ -9687,9 +9682,7 @@ TP.boot.$importComponents = function(loadSync) {
 
                 return;
             }
-        }
-        else    //  tibet:script with inline code
-        {
+        } else {   //  tibet:script with inline code
             //  update the script setting so we know who's current
             TP.boot.$$script = 'inline';
 
@@ -9874,6 +9867,7 @@ TP.boot.$importComponents = function(loadSync) {
 
     } else {
         //  unsupported tag name, for now we'll just ignore it
+        void(0);
     }
 
     //  reset the script setting
@@ -10044,7 +10038,7 @@ TP.boot.$config = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$expand = function( ) {
+TP.boot.$expand = function() {
 
     var file,
         config;

@@ -16,23 +16,34 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var beautify = require('js-beautify').js_beautify;
-var sh = require('shelljs');
-var fs = require('fs');
+var CLI,
+    beautify,
+    sh,
+    fs,
+    esprima,
+    esmangle,
+    escodegen,
+    Parent,
+    Cmd;
 
-var esprima = require('esprima');
-var esmangle = require('esmangle');
-var escodegen = require('escodegen');
+
+CLI = require('./_cli');
+beautify = require('js-beautify').js_beautify;
+sh = require('shelljs');
+fs = require('fs');
+
+esprima = require('esprima');
+esmangle = require('esmangle');
+escodegen = require('escodegen');
 
 //  ---
 //  Type Construction
 //  ---
 
 // NOTE we don't inherit from _cmd, but from package.
-var Parent = require('./package');
+Parent = require('./package');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -75,14 +86,13 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['all', 'scripts', 'styles', 'images', 'nodes', 'headers',
-            'minify'
-        ],
-        string: ['package', 'config', 'include', 'exclude', 'phase'],
-        default: {
+        'boolean': ['all', 'scripts', 'styles', 'images', 'nodes', 'headers',
+            'minify'],
+        'string': ['package', 'config', 'include', 'exclude', 'phase'],
+        'default': {
             color: false,
             headers: true,
-            package: 'standard',
+            'package': 'standard',
             config: 'base'
         }
     },
@@ -110,9 +120,9 @@ Cmd.prototype.USAGE = 'tibet rollup [package-opts] [--headers] [--minify]';
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeForEach = function(list) {
-    var pkg;
-    var cmd;
-    var minifyOpts; // Options for minify
+    var pkg,
+        cmd,
+        minifyOpts; // Options for minify
 
     cmd = this;
     pkg = this.package;
@@ -124,11 +134,11 @@ Cmd.prototype.executeForEach = function(list) {
     minifyOpts = CLI.ifUndefined(this.config.tibet.escodegen, {});
 
     list.forEach(function(item) {
-        var ast;
-        var mangled;
-        var src;
-        var code;
-        var virtual;
+        var ast,
+            mangled,
+            src,
+            code,
+            virtual;
 
         // If this doesn't work it's a problem for any 'script' output.
         src = item.getAttribute('src') || item.getAttribute('href');

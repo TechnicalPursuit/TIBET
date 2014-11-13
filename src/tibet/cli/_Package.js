@@ -16,31 +16,45 @@
 
 (function(root) {
 
-var fs = require('fs'),
-    path = require('path'),
-    chalk = require('chalk'),
-    sh = require('shelljs'),
-    dom = require('xmldom');
+var fs,
+    path,
+    chalk,
+    sh,
+    dom,
+    Package,
+    parser,
+    serializer,
+    isEmpty,
+    isValid,
+    notEmpty,
+    notValid;
 
-/* eslint-disable one-var */
-var Package,
-    parser = new dom.DOMParser(),
-    serializer = new dom.XMLSerializer(),
+fs = require('fs');
+path = require('path');
+chalk = require('chalk');
+sh = require('shelljs');
+dom = require('xmldom');
 
-    isEmpty = function(aReference) {
-        return aReference === null || aReference === undefined ||
-            aReference.length === 0;
-    },
-    isValid = function(aReference) {
-        return aReference !== null && aReference !== undefined;
-    },
-    notEmpty = function(aReference) {
-        return aReference !== null && aReference !== undefined &&
-            aReference.length !== 0;
-    },
-    notValid = function(aReference) {
-        return aReference === null || aReference === undefined;
-    };
+parser = new dom.DOMParser();
+serializer = new dom.XMLSerializer();
+
+isEmpty = function(aReference) {
+    return aReference === null || aReference === undefined ||
+        aReference.length === 0;
+};
+
+isValid = function(aReference) {
+    return aReference !== null && aReference !== undefined;
+};
+
+notEmpty = function(aReference) {
+    return aReference !== null && aReference !== undefined &&
+        aReference.length !== 0;
+};
+
+notValid = function(aReference) {
+    return aReference === null || aReference === undefined;
+};
 
 /* eslint-enable one-var */
 

@@ -30,7 +30,7 @@
           XMLDocument:false
 */
 
-;(function(root) {
+(function(root) {
 
 //  ------------------------------------------------------------------------
 //  PRIVATE GLOBALS
@@ -447,7 +447,9 @@ used only at the boot level for the hook file.
 
 //  For Safari only...
 if (!self.Window) {
+    /* eslint-disable no-undef */
     Window = self.constructor; /* jshint ignore:line */
+    /* eslint-enable no-undef */
 }
 
 //  ------------------------------------------------------------------------
@@ -507,55 +509,53 @@ if (TP.boot.$notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
     //  you change things here you'll want to keep the other version in
     //  sync
     TP.DOM_SIGNAL_TYPE_MAP = {
-        'abort' : 'TP.sig.DOMAbort',
-        'blur' : 'TP.sig.DOMBlur',
-        'change' : 'TP.sig.DOMChange',
-        'click' : 'TP.sig.DOMClick',
-        'copy' : 'TP.sig.DOMCopy',
-        'contextmenu' : 'TP.sig.DOMContextMenu',
-        'cut' : 'TP.sig.DOMCut',
-        'dblclick' : 'TP.sig.DOMDblClick',
-        'error' : 'TP.sig.DOMError',
-        'focus' : 'TP.sig.DOMFocus',
-        'keydown' : 'TP.sig.DOMKeyDown',
-        'keypress' : 'TP.sig.DOMKeyPress',
-        'keyup' : 'TP.sig.DOMKeyUp',
-        'load' : 'TP.sig.DOMLoad',
-        'mousedown' : 'TP.sig.DOMMouseDown',
-        'mouseenter' : 'TP.sig.DOMMouseEnter',
+        'abort': 'TP.sig.DOMAbort',
+        'blur': 'TP.sig.DOMBlur',
+        'change': 'TP.sig.DOMChange',
+        'click': 'TP.sig.DOMClick',
+        'copy': 'TP.sig.DOMCopy',
+        'contextmenu': 'TP.sig.DOMContextMenu',
+        'cut': 'TP.sig.DOMCut',
+        'dblclick': 'TP.sig.DOMDblClick',
+        'error': 'TP.sig.DOMError',
+        'focus': 'TP.sig.DOMFocus',
+        'keydown': 'TP.sig.DOMKeyDown',
+        'keypress': 'TP.sig.DOMKeyPress',
+        'keyup': 'TP.sig.DOMKeyUp',
+        'load': 'TP.sig.DOMLoad',
+        'mousedown': 'TP.sig.DOMMouseDown',
+        'mouseenter': 'TP.sig.DOMMouseEnter',
         //  a synthetic TIBET event
-        'mousehover' : 'TP.sig.DOMMouseHover',
-        'mouseleave' : 'TP.sig.DOMMouseLeave',
-        'mousemove' : 'TP.sig.DOMMouseMove',
-        'mouseout' : 'TP.sig.DOMMouseOut',
-        'mouseover' : 'TP.sig.DOMMouseOver',
-        'mouseup' : 'TP.sig.DOMMouseUp',
+        'mousehover': 'TP.sig.DOMMouseHover',
+        'mouseleave': 'TP.sig.DOMMouseLeave',
+        'mousemove': 'TP.sig.DOMMouseMove',
+        'mouseout': 'TP.sig.DOMMouseOut',
+        'mouseover': 'TP.sig.DOMMouseOver',
+        'mouseup': 'TP.sig.DOMMouseUp',
         //  a synthetic TIBET event
-        'dragdown' : 'TP.sig.DOMDragDown',
+        'dragdown': 'TP.sig.DOMDragDown',
         //  a synthetic TIBET event
-        'draghover' : 'TP.sig.DOMDragHover',
+        'draghover': 'TP.sig.DOMDragHover',
         //  a synthetic TIBET event
-        'dragmove' : 'TP.sig.DOMDragMove',
+        'dragmove': 'TP.sig.DOMDragMove',
         //  a synthetic TIBET event
-        'dragout' : 'TP.sig.DOMDragOut',
+        'dragout': 'TP.sig.DOMDragOut',
         //  a synthetic TIBET event
-        'dragover' : 'TP.sig.DOMDragOver',
+        'dragover': 'TP.sig.DOMDragOver',
         //  a synthetic TIBET event
-        'dragup' : 'TP.sig.DOMDragUp',
-        'move' : 'TP.sig.DOMMove',
-        'paste' : 'TP.sig.DOMPaste',
-        'reset' : 'TP.sig.DOMReset',
-        'resize' : 'TP.sig.DOMResize',
-        'submit' : 'TP.sig.DOMSubmit',
-        'unload' : 'TP.sig.DOMUnload'
+        'dragup': 'TP.sig.DOMDragUp',
+        'move': 'TP.sig.DOMMove',
+        'paste': 'TP.sig.DOMPaste',
+        'reset': 'TP.sig.DOMReset',
+        'resize': 'TP.sig.DOMResize',
+        'submit': 'TP.sig.DOMSubmit',
+        'unload': 'TP.sig.DOMUnload'
     };
 
     if (TP.boot.$$isIE() || TP.boot.$$isWebkit()) {
         //  IE, safari, chrome, ...
         TP.DOM_SIGNAL_TYPE_MAP.mousewheel = 'TP.sig.DOMMouseWheel';
-    }
-    else    //  firefox
-    {
+    } else {    //  firefox
         TP.DOM_SIGNAL_TYPE_MAP.DOMMouseScroll = 'TP.sig.DOMMouseWheel';
     }
 
@@ -693,8 +693,7 @@ if (window.onerror.failedlaunch !== true &&
     //  ------------------------------------------------------------------------
 
     TP.boot.setCookie = function(aName, aValue, expiresAt, aPath, aDomain,
-                                    wantsSecurity)
-    {
+                                    wantsSecurity) {
         /**
          * @name setCookie
          * @synopsis Sets the value of the named cookie with associated params.
@@ -967,7 +966,9 @@ if (window.onerror.failedlaunch !== true &&
         if (tWin && tWin.TP.sys && tWin.main) {
             tWin.main();
         } else {
-            alert('Unable to find main().');
+            /* eslint-disable no-alert */
+            window.alert('Unable to find main().');
+            /* eslint-enable no-alert */
         }
 
         return;
@@ -1141,8 +1142,10 @@ if (window.onerror.failedlaunch !== true &&
             //  Need to tell our machinery that NaN's *constructor* name is
             //  'Number'
             /* jshint ignore:start */
+            /* eslint-disable no-proto */
             NaN.__proto__.$$nonFunctionConstructorConstructorName =
                                         'Number';
+            /* eslint-enable no-proto */
             /* jshint ignore:end */
         }
 
@@ -1162,7 +1165,9 @@ if (window.onerror.failedlaunch !== true &&
             //  Need to tell our machinery that NaN's *constructor* name is
             //  'Number'
             /* jshint ignore:start */
-            NaN.__proto__.$$nonFunctionConstructorConstructorName =                                                     'Number';
+            /* eslint-disable no-proto */
+            NaN.__proto__.$$nonFunctionConstructorConstructorName = 'Number';
+            /* eslint-enable no-proto */
             /* jshint ignore:end */
         }
 
@@ -1455,9 +1460,7 @@ if (window.onerror.failedlaunch !== true &&
 
                     return resolvedTarget;
                 });
-        }
-        else if (TP.boot.$$isIE())
-        {
+        } else if (TP.boot.$$isIE()) {
             //  IE
 
             Object.defineProperty(
@@ -2288,7 +2291,8 @@ if (window.onerror.failedlaunch !== true &&
                         //  things get a little out of sync with load/unload and
                         //  we don't want to make assumptions here
                         if (document.body) {
-                        //  document.body.style.visibility = 'hidden';
+                            //  document.body.style.visibility = 'hidden';
+                            void(0);
                         }
                     }
                 });
@@ -2326,6 +2330,7 @@ if (window.onerror.failedlaunch !== true &&
                         //  Hide the body so that we can do style processing
                         //  without having it flicker around.
                         //  document.body.style.visibility = 'hidden';
+                            void(0);
                         }
 
                         //  We don't do this on Mozilla in lieu of the logic in
@@ -2810,9 +2815,7 @@ if (window.onerror.failedlaunch !== true &&
                     //  handlers that got installed on it.
                     TP.boot.$$documentTeardown(this.document);
                 });
-        }
-        else    //  firefox, safari, chrome, ...
-        {
+        } else {    //  firefox, safari, chrome, ...
             //  Mozilla 1.9+ will not fire onload for iframes that are being
             //  document.written (sigh...), but DOMContentLoaded is good enough
             //  since this script will be loaded last.
@@ -2894,9 +2897,7 @@ if (window.onerror.failedlaunch !== true &&
         //  we're in a page containing tibet_hook.js, but we can't find TIBET,
         //  which means it hasn't booted yet...so let's try to fix that :)
         TP.boot.autoBoot();
-    }
-    else if (window.$$tibet == null)
-    {
+    } else if (window.$$tibet == null) {
         //  if the previous call didn't set up the proper tibet reference we
         //  still won't be able to function, so we try again via "reboot"
         TP.boot.autoBoot();
@@ -2919,10 +2920,8 @@ if (window.onerror.failedlaunch !== true &&
 
         if (TP.boot.getURLBookmark()) {
             TP.boot.bootFromBookmark();
-        }
-        else if (TP.sys.hasLoaded() === false &&
-                    TP.sys.cfg('boot.twophase') === true)
-        {
+        } else if (TP.sys.hasLoaded() === false &&
+                    TP.sys.cfg('boot.twophase') === true) {
             //  found and mapped over the tibet window reference and it doesn't
             //  look like the system has finished booting phase two...
 
@@ -2988,9 +2987,7 @@ if (window.onerror.failedlaunch !== true &&
                 //  as well initialize.
                 TP.boot.initializeCanvas(window);
             }
-        }
-        else    //  single phase or post-boot
-        {
+        } else {    //  single phase or post-boot
             //  when booting in single-phase mode every page can potentially be
             //  initialized (although they may be removed once the home page for
             //  the application loads)
@@ -3009,5 +3006,3 @@ if (window.onerror.failedlaunch !== true &&
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-
-

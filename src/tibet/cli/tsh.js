@@ -16,17 +16,23 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var sh = require('shelljs');
+var CLI,
+    sh,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
+sh = require('shelljs');
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -103,11 +109,11 @@ Cmd.prototype.USAGE = 'tibet tsh <script> [<phantomtsh_args>]';
  */
 Cmd.prototype.execute = function() {
 
-    var proc;       // The child_process module.
-    var child;      // The spawned child process.
-    var tshpath;    // Path to the TIBET Shell runner script.
-    var cmd;        // Local binding variable.
-    var arglist;    // The argument list to pass to phantomjs.
+    var proc,       // The child_process module.
+        child,      // The spawned child process.
+        tshpath,    // Path to the TIBET Shell runner script.
+        cmd,        // Local binding variable.
+        arglist;    // The argument list to pass to phantomjs.
 
     proc = require('child_process');
 
@@ -172,7 +178,9 @@ Cmd.prototype.execute = function() {
         if (code !== 0) {
             cmd.error('Execution stopped with status: ' + code);
         }
+        /* eslint-disable no-process-exit */
         process.exit(code);
+        /* eslint-enable no-process-exit */
     });
 };
 
@@ -197,9 +205,9 @@ Cmd.prototype.finalizePhantomArglist = function(arglist) {
  */
 Cmd.prototype.getPhantomArglist = function() {
 
-    var script;     // The script to run.
-    var arglist;    // Array of parameters to spawn.
-    var cmd;
+    var script,     // The script to run.
+        arglist,    // Array of parameters to spawn.
+        cmd;
 
     cmd = this;
 

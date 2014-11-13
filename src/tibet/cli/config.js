@@ -15,17 +15,23 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var beautify = require('js-beautify').js_beautify;
+var CLI,
+    beautify,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
+beautify = require('js-beautify').js_beautify;
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -92,10 +98,10 @@ Cmd.prototype.USAGE = 'tibet config [property[=value]]';
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    var cfg;
-    var option;
-    var parts;
-    var str;
+    var cfg,
+        option,
+        parts,
+        str;
 
     if (this.options._.length > 1) {
         option = this.options._[1];
@@ -153,10 +159,10 @@ Cmd.prototype.execute = function() {
  */
 Cmd.prototype.setConfig = function(path, value) {
 
-    var json;
-    var parts;
-    var root;
-    var key;
+    var json,
+        parts,
+        root,
+        key;
 
     json = require('tibet.json');
     if (!json) {

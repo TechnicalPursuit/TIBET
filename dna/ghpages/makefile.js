@@ -8,8 +8,12 @@
 
 'use strict';
 
-var sh = require('shelljs');
-var helpers = require('tibet/src/tibet/cli/_make_helpers');
+var sh,
+    helpers,
+    targets;
+
+sh = require('shelljs');
+helpers = require('tibet/src/tibet/cli/_make_helpers');
 
 // Uncomment to run node_modules-based utilities via shelljs.
 // var nodeCLI = require('shelljs-nodecli');
@@ -17,7 +21,7 @@ var helpers = require('tibet/src/tibet/cli/_make_helpers');
 /**
  * Canonical `targets` object for exporting the various target functions.
  */
-var targets = {};
+targets = {};
 
 /**
  */
