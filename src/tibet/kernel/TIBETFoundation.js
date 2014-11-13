@@ -84,6 +84,7 @@ function(params, windowContext) {
     }
 
     /* jshint forin:true */
+    /* eslint-disable guard-for-in */
     for (key in context) {
         try {
             //  true globals (window slots, etc. aren't included)
@@ -145,8 +146,10 @@ function(params, windowContext) {
             //  Passed all of our tests, so add it.
             arr.push(key);
         } catch (e) {
+            void(0);
         }
     }
+    /* eslint-enable guard-for-in */
     /* jshint forin:false */
 
     return arr;
@@ -610,6 +613,7 @@ function(aFlag) {
         try {
             end = func.caller.$end;
         } catch (e) {
+            void(0);
         }
     }
 
@@ -656,6 +660,7 @@ function(aFlag) {
         try {
             start = func.caller.$start;
         } catch (e) {
+            void(0);
         }
     }
 
@@ -1555,6 +1560,7 @@ function(anObject, aType) {
             return true;
         }
     } catch (e) {
+        void(0);
     }
 
     //  check for spoofing hook and use it if found
@@ -3807,8 +3813,8 @@ function() {
     //  (i.e. XHR objects) don't like to have slots placed on them.
     try {
         this.$$format_asDumpString = true;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     /* jshint -W009 */
@@ -3833,8 +3839,8 @@ function() {
     //  We're done - we can remove the recursion flag.
     try {
         delete this.$$format_asDumpString;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     return str;
@@ -3935,8 +3941,8 @@ function() {
     //  (i.e. XHR objects) don't like to have slots placed on them.
     try {
         this.$$format_asPrettyString = true;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     /* jshint -W009 */
@@ -3965,8 +3971,8 @@ function() {
     //  We're done - we can remove the recursion flag.
     try {
         delete this.$$format_asPrettyString;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     return str;
@@ -4659,8 +4665,8 @@ function() {
     //  (i.e. XHR objects) don't like to have slots placed on them.
     try {
         this.$$format_asJSONSource = true;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     str = TP.js2json(this);
@@ -4668,8 +4674,8 @@ function() {
     //  We're done - we can remove the recursion flag.
     try {
         delete this.$$format_asJSONSource;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     return str;
@@ -4716,8 +4722,8 @@ function(aFilterName) {
     //  (i.e. XHR objects) don't like to have slots placed on them.
     try {
         this.$$format_asSource = true;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     keys = this.getKeys(aFilterName);
@@ -4738,8 +4744,8 @@ function(aFilterName) {
     //  We're done - we can remove the recursion flag.
     try {
         delete this.$$format_asSource;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     return TP.join('{', arr.join(', '), '}');
@@ -6627,6 +6633,7 @@ function(callingContext) {
             /* eslint-enable no-debugger */
             /* jshint +W087 */
         } catch (e) {
+            void(0);
         }
     }
 
@@ -7800,6 +7807,7 @@ function(attributeName, attributeValue) {
                     item[attributeName] = attributeValue;
                     return item[attributeName];
                 } catch (e) {
+                    void(0);
                 }
             }
         });

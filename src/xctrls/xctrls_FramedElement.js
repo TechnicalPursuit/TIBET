@@ -256,6 +256,7 @@ function(stubURI) {
         natIFrameWin.location = stubURI.getLocation();
     } else {
         //  TODO: Log an error.
+        void(0);
     }
 
     return this;

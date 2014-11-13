@@ -137,7 +137,7 @@ function(aStanza) {
      *     asterisk is replaced by the error condition tag string, for example:
      *     'TP.sig.XMPPInvalidXmlErrorInput'.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -179,7 +179,7 @@ function() {
      * @name isError
      * @synopsis Returns true since this element type is, by definition, an
      *     error.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return true;

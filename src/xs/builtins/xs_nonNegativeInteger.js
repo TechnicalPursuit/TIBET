@@ -29,7 +29,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided is a number greater than or
      *     equal to zero.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var n;
@@ -52,4 +52,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

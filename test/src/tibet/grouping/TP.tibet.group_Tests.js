@@ -40,7 +40,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
 
                 groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -48,7 +48,7 @@ function() {
                         TP.ac('foo'));
 
                 groupMembers = TP.byOID('gooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -89,7 +89,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
                 groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -133,7 +133,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'nestedGooGroup');
 
                 groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -141,7 +141,7 @@ function() {
                         TP.ac('foo', 'bar'));
 
                 groupMembers = TP.byOID('gooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -149,7 +149,7 @@ function() {
                         TP.ac('gar', 'gaz', 'element(gooStuff/3)'));
 
                 groupMembers = TP.byOID('nestedGooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -202,7 +202,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
 
                 groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -210,7 +210,7 @@ function() {
                         TP.ac('foo', 'bar'));
 
                 groupMembers = TP.byOID('gooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -218,7 +218,7 @@ function() {
                         TP.ac('gaz'));
 
                 groupMembers = TP.byOID('mooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -266,7 +266,7 @@ function() {
                 test.assert.isBlank(tpElem.getGroupName());
 
                 groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(
@@ -274,7 +274,7 @@ function() {
                         TP.ac('onlyThing'));
 
                 groupMembers = TP.byOID('gooGroup').getMembers().collect(
-                                    function(elem){
+                                    function(elem) {
                                         return TP.lid(elem);
                                     });
                 test.assert.isEqualTo(

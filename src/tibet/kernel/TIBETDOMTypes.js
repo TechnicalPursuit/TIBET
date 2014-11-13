@@ -13830,8 +13830,7 @@ function() {
     retVal = this.detectSibling(
                 function(aNode) {
                     if (TP.isElement(aNode) &&
-                        TP.elementGetLocalName(aNode) === 'cmd')
-                        {
+                        TP.elementGetLocalName(aNode) === 'cmd') {
                             return true;
                         }
 
@@ -13860,8 +13859,7 @@ function() {
     retVal = this.detectSibling(
                 function(aNode) {
                     if (TP.isElement(aNode) &&
-                        TP.elementGetLocalName(aNode) === 'cmd')
-                        {
+                        TP.elementGetLocalName(aNode) === 'cmd') {
                             return true;
                         }
 

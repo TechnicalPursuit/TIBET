@@ -40,7 +40,7 @@ function(aStanza) {
      * @synopsis Returns the signal name to use when signaling arrival of
      *     packets of this type.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return 'TP.sig.XMPPPubsubEventInput';

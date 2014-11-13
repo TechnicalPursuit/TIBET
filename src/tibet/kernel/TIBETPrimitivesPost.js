@@ -1961,11 +1961,11 @@ function(anObject, assignIfAbsent) {
                     loc = id;
 
                     if (TP.regex.URI_FRAGMENT.test(loc)) {
-                        //  had a # fragment identifier so we won't need #document
+                        //  had a # fragment identifier so won't need #document
                         loc = encodeURI(prefix + loc);
                     } else {
                         //  NOTE we add the '#document' element reference as our
-                        //  barename when no specific sub-element is the document
+                        //  barename when no specific subelement is the document
                         loc = encodeURI(prefix + loc + '#document');
                     }
 
@@ -2037,11 +2037,14 @@ function(anObject, assignIfAbsent) {
             //  applicable to Attribute nodes
             return globalID;
         } else if (TP.isTextNode(obj)) {
-            globalID = 'xpath1(./text()[contains(.,\'' + TP.nodeGetTextContent(obj) + '\')])';
+            globalID = 'xpath1(./text()[contains(.,\'' +
+                TP.nodeGetTextContent(obj) + '\')])';
         } else if (TP.isCDATASectionNode(obj)) {
-            globalID = 'xpath1(./text()[contains(.,\'' + TP.nodeGetTextContent(obj) + '\')])';
+            globalID = 'xpath1(./text()[contains(.,\'' +
+                TP.nodeGetTextContent(obj) + '\')])';
         } else if (TP.isPINode(obj)) {
-            globalID = 'xpath1(./processing-instruction(\'' + TP.name(obj) + '\'))';
+            globalID = 'xpath1(./processing-instruction(\'' +
+                TP.name(obj) + '\'))';
         } else if (TP.isCommentNode(obj)) {
             globalID = 'xpath1(./comment()[1])';
         } else if (TP.isFragment(obj)) {
@@ -2314,11 +2317,14 @@ function(anObject, assignIfAbsent) {
             //  applicable to Attribute nodes
             return localID;
         } else if (TP.isTextNode(obj)) {
-            localID = 'xpath1(./text()[contains(.,\'' + TP.nodeGetTextContent(obj) + '\')])';
+            localID = 'xpath1(./text()[contains(.,\'' +
+                TP.nodeGetTextContent(obj) + '\')])';
         } else if (TP.isCDATASectionNode(obj)) {
-            localID = 'xpath1(./text()[contains(.,\'' + TP.nodeGetTextContent(obj) + '\')])';
+            localID = 'xpath1(./text()[contains(.,\'' +
+                TP.nodeGetTextContent(obj) + '\')])';
         } else if (TP.isPINode(obj)) {
-            localID = 'xpath1(./processing-instruction(\'' + TP.name(obj) + '\'))';
+            localID = 'xpath1(./processing-instruction(\'' +
+                TP.name(obj) + '\'))';
         } else if (TP.isCommentNode(obj)) {
             localID = 'xpath1(./comment()[1])';
         } else if (TP.isFragment(obj)) {
@@ -2990,7 +2996,8 @@ function(anObject) {
 
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
-        return '<span class="CSSStyleDeclaration">' + anObject.cssText + '<\/span>';
+        return '<span class="CSSStyleDeclaration">' +
+            anObject.cssText + '<\/span>';
     }
 
     //  we're usually calling this with a standard object so we can leverage
@@ -3262,8 +3269,8 @@ function(aType, aString, aLocale) {
      * @name parse
      * @synopsis Attempts to produce an instance of aType by parsing the string
      *     provided.
-     * @param {TP.FunctionProto|TP.lang.RootObject} aType A specific target type to
-     *     produce.
+     * @param {TP.FunctionProto|TP.lang.RootObject} aType A specific target type
+     *     to produce.
      * @param {String} aString The incoming data to parse.
      * @param {TP.core.Locale|String} aLocale A string of the proper xml:lang
      *     format such as en, en:us, de, etc. or a valid TP.core.Locale subtype.
@@ -5245,9 +5252,9 @@ function(aPath) {
             return 'xpointer';
         case TP.BARENAME_PATH_TYPE:
             return '';
+        default:
+            return '';
     }
-
-    return '';
 });
 
 //  ------------------------------------------------------------------------

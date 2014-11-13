@@ -252,6 +252,8 @@ function(targetURI, aRequest) {
         //  Adding content - grab the 'last added content' that should be on our
         //  URI
 
+        void(0);
+
         //  TODO: Figure this out.
         //  content = targetURI.get('$lastAdded');
     } else {

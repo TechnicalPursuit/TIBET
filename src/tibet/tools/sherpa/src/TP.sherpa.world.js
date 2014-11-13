@@ -256,7 +256,12 @@ function(screenRowNum, screenColNum) {
         translateY,
 
         width,
-        height;
+        height,
+
+        hud,
+        hudHorizOffset,
+        hudVertOffset;
+
 
     screenWidth = this.get('screenWidth');
     screenHeight = this.get('screenHeight');
@@ -271,10 +276,6 @@ function(screenRowNum, screenColNum) {
 
     width = screenWidth + (gapWidth * 2);
     height = screenHeight + (gapHeight * 2);
-
-    var hud,
-        hudHorizOffset,
-        hudVertOffset;
 
     hudHorizOffset = (30 + 5);
     hudVertOffset = (50 + 5);

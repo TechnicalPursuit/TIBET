@@ -23,7 +23,7 @@
 </config>
 
 <config id="parsers">
-    <script src="~lib_deps/xpath-tpi.js"/>
+    <script src="~lib_deps/xpath-tpi.js" no-lint="true"/>
     <script>
         <![CDATA[
         TP.extern.XPathParser = XPathParser;

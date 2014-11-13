@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.svg.font}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -29,7 +29,7 @@ TP.svg.font.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.font_face}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -49,7 +49,7 @@ TP.svg.font_face.set('localName', 'font-face');
 
 /**
  * @type {TP.svg.glyph}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -64,7 +64,7 @@ TP.svg.glyph.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.missing_glyph}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -83,7 +83,7 @@ TP.svg.missing_glyph.set('localName', 'missing-glyph');
 
 /**
  * @type {TP.svg.hkern}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -98,7 +98,7 @@ TP.svg.hkern.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.vkern}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -113,7 +113,7 @@ TP.svg.vkern.addTraitsFrom(TP.svg.Element);
 
 /**
  * @type {TP.svg.font_face_src}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -132,7 +132,7 @@ TP.svg.font_face_src.set('localName', 'font-face-src');
 
 /**
  * @type {TP.svg.font_face_uri}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -151,7 +151,7 @@ TP.svg.font_face_uri.set('localName', 'font-face-uri');
 
 /**
  * @type {TP.svg.font_face_format}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -170,7 +170,7 @@ TP.svg.font_face_format.set('localName', 'font-face-format');
 
 /**
  * @type {TP.svg.font_face_name}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -189,7 +189,7 @@ TP.svg.font_face_name.set('localName', 'font-face-name');
 
 /**
  * @type {TP.svg.definition_src}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------

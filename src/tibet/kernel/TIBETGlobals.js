@@ -312,11 +312,9 @@ TP.sys.getGlobals[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
  */
 TP.sys.release = function(data) {
     // Only set this once.
-    if (TP.sys.$version) {
-        return;
+    if (!TP.sys.$version) {
+        TP.sys.$version = data;
     }
-
-    TP.sys.$version = data;
 };
 
 TP.sys.release[TP.NAME] = 'release';
@@ -1416,7 +1414,7 @@ NOTE: the collection is sparse and relies on default values of:
 TP.SLOT_FILTERS =
     {
         //  Visibility
-        public:
+        'public':
             {'methods': true, 'scope': TP.ALL},
         hidden:
             {'methods': true, 'hidden': true, 'scope': TP.ALL},
@@ -1543,7 +1541,8 @@ TP.SLOT_FILTERS =
         known_unique:
             {'methods': true, 'hidden': true, 'public': true},
         known_local:
-            {'methods': true, 'hidden': true, 'scope': TP.LOCAL, 'public': true},
+            {'methods': true, 'hidden': true, 'scope': TP.LOCAL,
+                'public': true},
         known_introduced:
             {'methods': true, 'hidden': true, 'scope': TP.INTRODUCED,
                 'public': true},
@@ -1608,7 +1607,7 @@ TP.TEST_SETUP_NAME = 'Test_SetUp';      //  the method name of object-level test
                                         //  set up methods
 TP.TEST_TEARDOWN_NAME = 'Test_TearDown';//  the method name of object-level test
                                         //  tear down methods
-TP.TEST_NAME_PREFIX = 'test ';          //  prefixed onto all test function names
+TP.TEST_NAME_PREFIX = 'test ';          //  prefixed on all test function names
 
 TP.PERFORM = 'Perform';
 TP.SKIP = 'Skip';
@@ -2238,8 +2237,8 @@ TP.regex.HAS_TIMEZONE = /[Z\+\-]/;
 
 TP.regex.CSS_CLIP_RECT = /rect\s*\((\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*\)/;
 
-//  The URL of the rule can be found in group 2.
-TP.regex.CSS_IMPORT_RULE = /@import\s*(url\()?['"]?(.*?)['"]?(\))?;/g; // needs reset
+//  The URL of the rule can be found in group 2. (needs reset)
+TP.regex.CSS_IMPORT_RULE = /@import\s*(url\()?['"]?(.*?)['"]?(\))?;/g;
 
 TP.regex.PIXELS = /px/;
 TP.regex.QUANTIFIERS = /[\$\.\?\+\(\)]/g;                   //  needs reset
@@ -2295,8 +2294,10 @@ TP.regex.MOUSE_EVENT = /^mouse|DOMMouse|DOMClick|DOMDblClick/;
 
 TP.regex.HANDLER_NAME = /^handle([-_a-zA-Z0-9]+)$/;
 
+/* eslint-disable max-len */
 TP.regex.ON_HANDLER_NAME =
     /^on([A-Z0-9][a-zA-Z0-9_]*?)(Of([A-Z][a-zA-Z0-9_]*?))*?(When([A-Z][a-zA-Z0-9_]*?))*?$/;
+/* eslint-enable max-len */
 
 //  ---
 //  file paths
@@ -2325,8 +2326,8 @@ TP.regex.HAS_ACP = /\{\{.*\}\}/;
 
 TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 
-//  0-n non-'\' characters followed by 0-n whitespace, followed by '%%', followed
-//  by 0-n whitespace, followed by 1-n any characters
+//  0-n non-'\' characters followed by 0-n whitespace, followed by '%%',
+//  followed by 0-n whitespace, followed by 1-n any characters
 TP.regex.ACP_FORMAT = /([^\\]*)\s*%%\s*(.+)/;
 
 TP.regex.TSH_VARSUB = /\$\{?([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)\}?/;
@@ -2356,7 +2357,9 @@ TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 TP.regex.ANY_NUMBER = /^-?\d+$/i;
 TP.regex.PERCENTAGE = /^-?\d+%$/i;
 
-TP.regex.NON_UTF8_CHARS = /[\xC2-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}|[\xF0-\xF4][\x80-\xBF]{3}/g; // needs reset
+// needs reset
+TP.regex.NON_UTF8_CHARS =
+/[\xC2-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}|[\xF0-\xF4][\x80-\xBF]{3}/g;
 
 //  ---
 //  testing
@@ -2391,7 +2394,7 @@ TP.regex.HAS_ELEMENT = /<\/|\/>/;
 TP.regex.HAS_PI = /<\?|\?>/;
 TP.regex.HAS_ENTITY = /&#/;
 
-TP.regex.INVALID_ID_CHARS = /[ !"#$%&'()*+,/:;<=>?@[\]^`{|}~]+/g;   // needs reset
+TP.regex.INVALID_ID_CHARS = /[ !"#$%&'()*+,/:;<=>?@[\]^`{|}~]+/g; // needs reset
 
 TP.regex.EMPTY_TAG_END = /\/>/;
 
@@ -2410,11 +2413,14 @@ TP.regex.ALL_ELEM_MARKUP = new RegExp(
 
 //  A RegExp that matches tags that are empty in XHTML 1.0 (with IE-specific
 //  additions - bgsound, embed, wbr).
+/* eslint-disable max-len */
 TP.regex.XHTML_10_EMPTY_ELEMENTS = /^(area|base|basefont|bgsound|br|col|embed|hr|img|input|isindex|link|meta|param|wbr)$/;
+/* eslint-enable max-len */
 
-//  Same as above, except it contains markup brackets for stripping
-//  purposes.
+//  Same as above, except it contains markup brackets for stripping purposes.
+/* eslint-disable max-len */
 TP.regex.XHTML_10_EMPTY_ELEMENTS_STRIP = /<\/(area|base|basefont|bgsound|br|col|embed|hr|img|input|isindex|link|meta|param|wbr)>/g; // needs reset
+/* eslint-enable max-len */
 
 //  A RegExp that matches XML comments.
 
@@ -2439,11 +2445,15 @@ TP.regex.XML_CDATA_WHOLE = new RegExp('^<!\\[CDATA\\[(.+?)\\]\\]>$');
 
 //  The content of the PI can be found in group 1 - including the trailing '?>'
 //  which may need to be sliced off
+/* eslint-disable max-len */
 TP.XML_PI_DEF =
     '<\\?(([A-Za-z_:]|[^\\x00-\\x7F])([A-Za-z0-9_:.-]|[^\\x00-\\x7F])*(\\?>|[\\n\\r\\t ][^?]*\\?+([^>?][^?]*\\?+)*>)?)?';
+/* eslint-enable max-len */
+
 TP.regex.XML_PI = new RegExp(TP.XML_PI_DEF, 'g'); // needs reset
 
-//  A RegExp that matches an XML processing instrction that must be the whole content
+//  A RegExp that matches an XML processing instrction that must be the whole
+//  content
 TP.regex.XML_PI_WHOLE = new RegExp('^<\\?(.+?)\\?>$');
 
 //  A RegExp that matches any kind of markup
@@ -2474,7 +2484,8 @@ TP.regex.XML_ATTR_NULL = /\s*([\w:]+)=['"]null['"]/g;   //  needs reset
 //  A RegExp that matches XML attribute expressions that contain the word
 //  'null' as a value (NB: this is grouped in a particular way for easy
 //  replacement - '$1"$2$3"')
-TP.regex.XML_ATTR_CONTAINING_NULL = /(\s*[\w:]+=)['"]([^'"]*?)null([^'"]*?)['"]/g;  //  needs reset
+TP.regex.XML_ATTR_CONTAINING_NULL =
+    /(\s*[\w:]+=)['"]([^'"]*?)null([^'"]*?)['"]/g;  //  needs reset
 
 //  A RegExp that matches various HTML tags.
 TP.regex.HTML_HTML_ELEM =
@@ -2487,11 +2498,15 @@ TP.regex.HTML_BODY_ELEM =
 TP.regex.HTML_SCRIPT_ELEM =
         /<script((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/script)>/gi;   // needs reset
 
+/* eslint-disable max-len */
+// needs reset
 TP.regex.HTML_CSS_LINK_ELEM =
-        /<link((.*)?( rel="stylesheet"| type="text\/css")+([^\/>]*)?)(\/|>([^<]*)?<\/link)>/gi; // needs reset
+/<link((.*)?( rel="stylesheet"| type="text\/css")+([^\/>]*)?)(\/|>([^<]*)?<\/link)>/gi;
+/* eslint-enable max-len */
 
+//  needs reset
 TP.regex.HTML_CSS_STYLE_ELEM =
-        /<style((.*)?( type="text\/css")+([^\/>]*)?)(\/|>([^<]*)?<\/style)>/gi; //  needs reset
+/<style((.*)?( type="text\/css")+([^\/>]*)?)(\/|>([^<]*)?<\/style)>/gi;
 
 TP.regex.HTML_IMG_ELEM =
         /<img((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/img)>/gi; //  needs reset
@@ -2605,13 +2620,18 @@ TP.regex.TIBET_SCHEME = /^tibet:/;
 
 //  !!!NOTE: This regexp gets rewritten as schemes are added to the system. If
 //  this is changed here, it *must* be updated in the scheme addition code.
-TP.regex.URI_LIKELY = /^~|^\/|^\.\/|^\.\.\/|^urn:|^tibet:|^javascript:|^(?:\w+):(?:.*)\//;
+TP.regex.URI_LIKELY =
+    /^~|^\/|^\.\/|^\.\.\/|^urn:|^tibet:|^javascript:|^(?:\w+):(?:.*)\//;
 
 TP.regex.URI_FRAGMENT = /#/;
 
+/* eslint-disable max-len */
 TP.regex.URI_STRICT = /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/;
+/* eslint-enable max-len */
 
+/* eslint-disable max-len */
 TP.regex.URI_LOOSE = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*):?([^:@]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
+/* eslint-enable max-len */
 
 //  A RegExp that matches the URI queries, where the separator is either a
 //  '&' or ';' (for XML compliance)
@@ -2652,8 +2672,9 @@ TP.regex.NS_QUALIFIED = /(.*):(.*)/;
 
 //  A RegExp that will strip the 'XML namespace' (as MSXML already defines
 //  it and doesn't like it at all when you try to redefine it).
+// needs reset
 TP.regex.XML_XMLNS_STRIP =
-    /xmlns:xml=(['"])http:\/\/www.w3.org\/XML\/1998\/namespace(\1)/g; // needs reset
+    /xmlns:xml=(['"])http:\/\/www.w3.org\/XML\/1998\/namespace(\1)/g;
 
 TP.regex.XMLNS_STRIP = /\s+xmlns([:\w]*?)=['"](.*?)['"]/g;  // needs reset
 TP.regex.XMLNS_ATTR = /xmlns[:=]/;
@@ -2692,7 +2713,8 @@ TP.regex.TIBET_POINTER = /tibet\((.+)\)/;
 //  Forms of TIBETan access paths can include words separated by periods ('.'),
 //  brackets ('[]') with either string or numeric indexes and brackets with
 //  numeric ranges (or just a colon ':' signifying the whole range).
-TP.regex.TIBET_PATH = /^(\$|_)?\w+[\.]{1}\w+|\[\w+(,\w+)+\]|\[-?\d*:-?\d*(:-?\d*)?\]/;
+TP.regex.TIBET_PATH =
+    /^(\$|_)?\w+[\.]{1}\w+|\[\w+(,\w+)+\]|\[-?\d*:-?\d*(:-?\d*)?\]/;
 
 TP.regex.TIBET_PATH_CHAR = /[\.:,]+/;
 TP.regex.TIBET_PATH_TEMPLATE = /(^|\s+)(\w[\w\.:,]*)(\s+|$)/g; //  needs reset
@@ -2734,7 +2756,10 @@ TP.regex.XPATH_HAS_ID = /id\((.+)\)/;
 
 //  /, @, . followed by . or /, x( where x isn't . (all from start of line) OR
 //  a 'full axis name' followed by a double colon ('::')
+/* eslint-disable max-len */
 TP.regex.XPATH_PATH = /^(\/|@|\.[\/\.]|[^\\.]\((.*)\))|(ancestor|ancestor-or-self|attribute|child|descendant|descendant-or-self|following|following-sibling|namespace|parent|preceding|preceding-sibling|self)::/;
+/* eslint-enable max-len */
+
 TP.regex.XPATH_POINTER = /(xpointer|xpath1)\((.+)\)/;
 
 TP.regex.XPATH_DEFAULTNS = new RegExp(

@@ -246,8 +246,7 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 len = list.getSize();
                 for (i = 0; i < len; i++) {
                     el = list.at(i);
-                    if (TP.notEmpty(el))    //  empty node means no children
-                    {
+                    if (TP.notEmpty(el)) {    //  empty node means no children
                         if (TP.notEmpty(val = TP.nodeGetTextContent(el))) {
                             arr.push(TP.join(TP.elementGetLocalName(el),
                                             '=',
@@ -308,8 +307,7 @@ function(aPayload, aMIMEType, aSeparator, aMediatype, anEncoding) {
                 len = list.getSize();
                 for (i = 0; i < len; i++) {
                     el = list.at(i);
-                    if (TP.notEmpty(el))    //  empty node means no children
-                    {
+                    if (TP.notEmpty(el)) {    //  empty node means no children
                         if (TP.notEmpty(val = TP.nodeGetTextContent(el))) {
                             arr.push(
                                 '<input type="hidden" name="',

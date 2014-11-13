@@ -150,7 +150,9 @@ function(aSignal) {
                 if (TP.notEmpty(val = textInput.getDisplayValue())) {
 val = 'TP.tibet.helloworld.defineMethod(\'tshCompile\',' + val + ');';
 
+                    /* eslint-disable no-eval */
                     eval(val);  /* jshint ignore:line */
+                    /* eslint-enable no-eval */
 
                     replacement = TP.unwrap(TP.process('<tibet:helloworld/>'));
                     //TP.$$currentFocus.setContent('<tibet:helloworld/>');
@@ -220,9 +222,9 @@ function(categoryElem, itemElem) {
 
     str = '';
 
-    switch(categoryText) {
+    switch (categoryText) {
         case 'Special':
-            switch(itemName) {
+            switch (itemName) {
                 case 'Generator':
                     if (targetType.ownsMethod('tshCompile')) {
                         textInput.setEditorMode('javascript');

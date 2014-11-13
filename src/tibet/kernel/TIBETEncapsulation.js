@@ -1241,9 +1241,8 @@ function() {
     //  have to watch out for "valid" data that's really saying the Date
     //  parameters didn't produce a valid date.
     if (TP.notValid($$newinst) ||
-        ($$newinst.toString() === 'Invalid Date') || //  mozilla
-        ($$newinst.toString() === 'NaN'))            //  IE
-    {
+            ($$newinst.toString() === 'Invalid Date') || //  mozilla
+            ($$newinst.toString() === 'NaN')) {            //  IE
         //  any 'construct' that calls a 'from' needs a recursion trap
         if (TP.notTrue(kallee.$$onStack)) {
             kallee.$$onStack = true;

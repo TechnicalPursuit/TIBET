@@ -67,7 +67,7 @@ function(anObject) {
      * @name validate
      * @synopsis Returns true if the object provided is a string matching the
      *     NMTOKEN construction rules for XML 1.0 Second Edition.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isString(anObject)) {
@@ -80,4 +80,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

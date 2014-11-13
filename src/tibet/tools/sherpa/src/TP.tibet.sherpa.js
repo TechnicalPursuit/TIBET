@@ -46,7 +46,7 @@ function(aRequest) {
     }
 
     blankURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
-    sherpaURI  = TP.uc('~ide_root/xhtml/sherpa_framing.xhtml');
+    sherpaURI = TP.uc('~ide_root/xhtml/sherpa_framing.xhtml');
 
     //  Build an iframe element to contain our custom element.
     frameElem = TP.elem(

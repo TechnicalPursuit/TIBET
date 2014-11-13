@@ -31,7 +31,7 @@ function(anObject) {
      *     Schema format. Acceptable values are the strings true, false, 0, and
      *     1.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var str;
@@ -51,4 +51,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

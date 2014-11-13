@@ -61,7 +61,7 @@ function(anObject) {
      *     normalized whitespace, i.e. whitespace which has been converted to
      *     spaces rather than tabs, newlines, etc.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     //  same test as our supertype, has to be a string to start out with
@@ -77,4 +77,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

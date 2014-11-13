@@ -57,9 +57,8 @@ TP.test.SimpleJSONType.Inst.defineAttribute(
         'lastName',
         {
             'value': TP.apc('data.lastName'),
-            'valid':
-            {
-                'dataType': String,
+            'valid': {
+                'dataType': String
             }
         });
 
@@ -67,9 +66,8 @@ TP.test.SimpleJSONType.Inst.defineAttribute(
         'firstName',
         {
             'value': TP.apc('data.firstName'),
-            'valid':
-            {
-                'dataType': String,
+            'valid': {
+                'dataType': String
             }
         });
 
@@ -77,9 +75,8 @@ TP.test.SimpleJSONType.Inst.defineAttribute(
         'age',
         {
             'value': TP.apc('data.age'),
-            'valid':
-            {
-                'dataType': Number,
+            'valid': {
+                'dataType': Number
             }
         });
 
@@ -87,9 +84,8 @@ TP.test.SimpleJSONType.Inst.defineAttribute(
         'SSN',
         {
             'value': TP.apc('data.SSN'),
-            'valid':
-            {
-                'dataType': 'TP.test.SSN',
+            'valid': {
+                'dataType': 'TP.test.SSN'
             },
             'required': true
         });
@@ -281,9 +277,8 @@ TP.test.Employee.Inst.defineAttribute(
         'SSN',
         {
             'value': undefined,
-            'valid':
-            {
-                'dataType': 'TP.test.SSN',
+            'valid': {
+                'dataType': 'TP.test.SSN'
             },
             'required': true
         });

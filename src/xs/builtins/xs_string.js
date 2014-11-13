@@ -65,7 +65,7 @@ function(anObject) {
      *     since XML Schema defines string as simply any sequence of characters
      *     we choose to validate only true JavaScript string objects here.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return TP.isString(anObject);
@@ -82,7 +82,7 @@ function(aValue, aFacet) {
      *     length, as length is computed for the receiving type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -112,7 +112,7 @@ function(aValue, aFacet) {
      *     specified length, as computed for the receiving type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -142,7 +142,7 @@ function(aValue, aFacet) {
      *     specified length, as computed for the receiving type.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -164,4 +164,3 @@ function(aValue, aFacet) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

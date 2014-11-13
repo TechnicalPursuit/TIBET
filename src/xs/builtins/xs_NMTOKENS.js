@@ -81,7 +81,7 @@ function(anObject) {
      * @name validate
      * @synopsis Returns true if the object provided contains valid
      *     TP.xs.NMTOKEN entries separated by spaces.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var parts,
@@ -109,4 +109,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

@@ -18,7 +18,7 @@
  *     using request/response pairs, a 'default' instance of this service will
  *     be instantiated and registered to handle all
  *     TP.goog.GoogleContactsRequests.
- *     
+ *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'TP.goog.GoogleContactsServiceDefault'. It should
  *     have a vCard entry in the currently executing project (with an 'FN' of
@@ -26,31 +26,31 @@
  *     the user will be prompted to enter the information about the default
  *     server. If only part of the information is found the user can be prompted
  *     to enter the missing information.
- *     
+ *
  *     It is possible, however, to manually set up a server. To do so, simply
  *     instantiate a server:
- *     
+ *
  *     contactsService = TP.goog.GoogleContactsService.construct(
  *     'GoogleContactsTestServer');
- *     
+ *
  *     Or have a vCard entry where the 'FN' entry matches the resource ID that
  *     is passed to the 'construct' call as detailed here:
- *     
+ *
  *     E.g.
- *     
+ *
  *     Parameter vCard entry ----------- ----------- resourceID
  *     <FN>GoogleContactsTestServer</FN>
- *     
+ *
  *     and then construct it using:
- *     
+ *
  *     contactsService = TP.goog.GoogleContactsService.construct(
  *     'GoogleContactsTestServer');
- *     
+ *
  *     You will then need to register your service instance so that it services
  *     TP.goog.GoogleContactsRequests (otherwise, the TIBET machinery will
  *     instantiate the 'default' instance of TP.goog.GoogleContactsService as
  *     described above and register it to service these kinds of requests):
- *     
+ *
  *     contactsService.register();
  * @todo
  */

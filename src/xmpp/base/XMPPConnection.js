@@ -1035,6 +1035,7 @@ function(aSignal) {
                 //  returned anArray, then we queue a signal for each origin
                 //  in this Array
                 if (TP.isArray(origin)) {
+                    /* eslint-disable no-loop-func */
                     origin.perform(
                         function(anOrigin) {
 
@@ -1044,6 +1045,7 @@ function(aSignal) {
                                         payload,
                                         TP.INHERITANCE_FIRING);
                         });
+                    /* eslint-enable no-loop-func */
 
                     //  Start back at the top of the loop
                     continue;

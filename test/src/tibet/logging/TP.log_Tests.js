@@ -40,9 +40,12 @@ function() {
     });
 
     this.it('can remove (unregister) loggers', function(test, options) {
-        var logger = TP.log.Logger.construct('foofy');
+        var logger,
+            logger2;
+
+        logger = TP.log.Logger.construct('foofy');
         TP.log.Manager.removeLogger(logger);
-        var logger2 = TP.log.Logger.construct('foofy');
+        logger2 = TP.log.Logger.construct('foofy');
 
         this.refute.isIdenticalTo(logger, logger2);
     });
@@ -130,9 +133,13 @@ function() {
     });
 
     this.it('uniques loggers by lower-case name', function(test, options) {
-        var logger1 = TP.log.Manager.getLogger('foofy');
-        var logger2 = TP.log.Manager.getLogger('Foofy');
-        var logger3 = TP.log.Manager.getLogger('FOOFY');
+        var logger1,
+            logger2,
+            logger3;
+
+        logger1 = TP.log.Manager.getLogger('foofy');
+        logger2 = TP.log.Manager.getLogger('Foofy');
+        logger3 = TP.log.Manager.getLogger('FOOFY');
 
         this.assert.isIdenticalTo(logger1, logger2);
         this.assert.isIdenticalTo(logger1, logger3);
@@ -151,20 +158,28 @@ function() {
     });
 
     this.it('singly-nested loggers get proper parent', function(test, options) {
-        var logger = TP.log.Manager.getLogger('foofy.nested');
-        var primary = TP.log.Manager.getLogger('foofy');
-        var parent = logger.getParent();
+        var logger,
+            primary,
+            parent;
+
+        logger = TP.log.Manager.getLogger('foofy.nested');
+        primary = TP.log.Manager.getLogger('foofy');
+        parent = logger.getParent();
 
         this.assert.isIdenticalTo(parent, primary);
     });
 
     this.it('multiply-nested loggers get proper parent',
-            function(test, options) {
-        var logger = TP.log.Manager.getLogger('foofy.nested.some.more');
-        var primary = TP.log.Manager.getLogger('foofy.nested.some');
-        var parent = logger.getParent();
+        function(test, options) {
+            var logger,
+                primary,
+                parent;
 
-        this.assert.isIdenticalTo(parent, primary);
+            logger = TP.log.Manager.getLogger('foofy.nested.some.more');
+            primary = TP.log.Manager.getLogger('foofy.nested.some');
+            parent = logger.getParent();
+
+            this.assert.isIdenticalTo(parent, primary);
     });
 });
 
@@ -218,31 +233,34 @@ function() {
     });
 
     this.it('primary loggers inherit parent/root level',
-            function(test, options) {
-        var logger = TP.log.Manager.getLogger('foofy');
+        function(test, options) {
+            var logger = TP.log.Manager.getLogger('foofy');
 
-        this.assert.isIdenticalTo(root.getLevel(), logger.getLevel());
+            this.assert.isIdenticalTo(root.getLevel(), logger.getLevel());
     });
 
     this.it('multiply-nested loggers inherit ancestor level',
-            function(test, options) {
-        var logger = TP.log.Manager.getLogger('foofy');
-        var nested = TP.log.Manager.getLogger('foofy.nested.some');
+        function(test, options) {
+            var logger,
+                nested;
 
-        logger.setLevel(TP.log.TRACE);
+            logger = TP.log.Manager.getLogger('foofy');
+            nested = TP.log.Manager.getLogger('foofy.nested.some');
 
-        this.assert.isIdenticalTo(logger.getLevel(), nested.getLevel());
-        this.refute.isIdenticalTo(root.getLevel(), nested.getLevel());
+            logger.setLevel(TP.log.TRACE);
+
+            this.assert.isIdenticalTo(logger.getLevel(), nested.getLevel());
+            this.refute.isIdenticalTo(root.getLevel(), nested.getLevel());
     });
 
     this.it('computes whether logging is enabled properly',
-            function(test, options) {
-        var logger = TP.log.Manager.getLogger('foofy');
+        function(test, options) {
+            var logger = TP.log.Manager.getLogger('foofy');
 
-        this.assert.isTrue(logger.isEnabled(TP.log.ALL), 'All');
-        this.assert.isTrue(logger.isEnabled(TP.log.INFO), 'Info');
-        this.refute.isTrue(logger.isEnabled(TP.log.TRACE), 'Trace');
-        this.refute.isTrue(logger.isEnabled(TP.log.OFF), 'Off');
+            this.assert.isTrue(logger.isEnabled(TP.log.ALL), 'All');
+            this.assert.isTrue(logger.isEnabled(TP.log.INFO), 'Info');
+            this.refute.isTrue(logger.isEnabled(TP.log.TRACE), 'Trace');
+            this.refute.isTrue(logger.isEnabled(TP.log.OFF), 'Off');
     });
 });
 
@@ -251,8 +269,8 @@ function() {
 TP.log.Manager.describe('logger appenders',
 function() {
 
-    var root;
-    var logger;
+    var root,
+        logger;
 
     this.beforeEach(function() {
         root = TP.log.Manager.getRootLogger();
@@ -310,8 +328,8 @@ function() {
 TP.log.Manager.describe('logger filters',
 function() {
 
-    var root;
-    var logger;
+    var root,
+        logger;
 
     this.beforeEach(function() {
         root = TP.log.Manager.getRootLogger();

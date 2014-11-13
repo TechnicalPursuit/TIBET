@@ -78,7 +78,7 @@ function() {
 
     xml = TP.core.Keyboard.getCurrentKeyboard().get('mapxml');
     entries = TP.nodeEvaluateXPath(xml, '//*[local-name() = "key"]');
-    for (i = 0; i< entries.getSize(); i++) {
+    for (i = 0; i < entries.getSize(); i++) {
         entry = entries.at(i);
 
         //  Make sure that the entry has a key
@@ -193,56 +193,56 @@ function() {
     //  provide a translation table for some special keys when using them in key
     //  sequence strings.
     TP.extern.syn.tibetSpecialKeyMap = {
-            '[Shift]':'[shift]',
-            '[Shift-Up]':'[shift-up]',
-            '[Control]':'[ctrl]',
-            '[Control-Up]':'[ctrl-up]',
-            '[Alt]':'[alt]',
-            '[Alt-Up]':'[alt-up]',
-            '[Meta]':'[meta]',
-            '[Meta-Up]':'[meta-up]',
-            '[CapsLock]':'[caps]',
-            '[CapsLock-Up]':'[caps-up]',
+            '[Shift]': '[shift]',
+            '[Shift-Up]': '[shift-up]',
+            '[Control]': '[ctrl]',
+            '[Control-Up]': '[ctrl-up]',
+            '[Alt]': '[alt]',
+            '[Alt-Up]': '[alt-up]',
+            '[Meta]': '[meta]',
+            '[Meta-Up]': '[meta-up]',
+            '[CapsLock]': '[caps]',
+            '[CapsLock-Up]': '[caps-up]',
 
-            '[Home]':'[home]',
-            '[End]':'[end]',
-            '[PageUp]':'[page-up]',
-            '[PageDown]':'[page-down]',
+            '[Home]': '[home]',
+            '[End]': '[end]',
+            '[PageUp]': '[page-up]',
+            '[PageDown]': '[page-down]',
 
-            '[Left]':'[left]',
-            '[Right]':'[right]',
-            '[Up]':'[up]',
-            '[Down]':'[down]',
+            '[Left]': '[left]',
+            '[Right]': '[right]',
+            '[Up]': '[up]',
+            '[Down]': '[down]',
 
-            '[Backspace]':'\b',
-            '[Insert]':'[insert]',
-            '[Del]':'[delete]',
-            '[Enter]':'\r',
-            '[Tab]':'\t',
+            '[Backspace]': '\b',
+            '[Insert]': '[insert]',
+            '[Del]': '[delete]',
+            '[Enter]': '\r',
+            '[Tab]': '\t',
 
-            '[F1]':'[f1]',
-            '[F2]':'[f2]',
-            '[F3]':'[f3]',
-            '[F4]':'[f4]',
-            '[F5]':'[f5]',
-            '[F6]':'[f6]',
-            '[F7]':'[f6]',
-            '[F8]':'[f8]',
-            '[F9]':'[f9]',
-            '[F10]':'[f10]',
-            '[F11]':'[f11]',
-            '[F12]':'[f12]',
+            '[F1]': '[f1]',
+            '[F2]': '[f2]',
+            '[F3]': '[f3]',
+            '[F4]': '[f4]',
+            '[F5]': '[f5]',
+            '[F6]': '[f6]',
+            '[F7]': '[f6]',
+            '[F8]': '[f8]',
+            '[F9]': '[f9]',
+            '[F10]': '[f10]',
+            '[F11]': '[f11]',
+            '[F12]': '[f12]',
 
-            '[Num0]':'[num0]',
-            '[Num1]':'[num1]',
-            '[Num2]':'[num2]',
-            '[Num3]':'[num3]',
-            '[Num4]':'[num4]',
-            '[Num5]':'[num5]',
-            '[Num6]':'[num6]',
-            '[Num7]':'[num6]',
-            '[Num8]':'[num8]',
-            '[Num9]':'[num9]',
+            '[Num0]': '[num0]',
+            '[Num1]': '[num1]',
+            '[Num2]': '[num2]',
+            '[Num3]': '[num3]',
+            '[Num4]': '[num4]',
+            '[Num5]': '[num5]',
+            '[Num6]': '[num6]',
+            '[Num7]': '[num6]',
+            '[Num8]': '[num8]',
+            '[Num9]': '[num9]'
         };
 
     //  OMG... don't ask... let's just say this is needed for Syn to properly
@@ -846,6 +846,7 @@ function(entries) {
 
         if (TP.isNode(targets)) {
             //  The target is already a Node
+            void(0);
         } else if (TP.isKindOf(targets, TP.core.Node)) {
             targets = TP.unwrap(targets);
         } else if (targets.isAccessPath()) {
@@ -853,10 +854,12 @@ function(entries) {
         }
 
         if (TP.isArray(targets)) {
+            /* eslint-disable no-loop-func */
             targets.perform(
                 function(aTarget) {
                     newEntries.push(TP.ac(entry.at(0), aTarget, entry.at(2)));
                 });
+            /* eslint-enable no-loop-func */
         } else {
             newEntries.push(TP.ac(entry.at(0), targets, entry.at(2)));
         }
@@ -1194,6 +1197,7 @@ function() {
     len = sequenceEntries.getSize();
     for (i = 0; i < len; i++) {
 
+        /* eslint-disable no-loop-func */
         (function() {
             var func;
 
@@ -1203,6 +1207,7 @@ function() {
 
                 seqEntry = sequenceEntries.at(func.index);
 
+                /* eslint-disable new-cap */
                 promise = Q.Promise(
                     function(resolver, rejector) {
                         var currentElement;
@@ -1222,6 +1227,7 @@ function() {
                                     resolver,
                                     currentElement);
                     });
+                /* eslint-enable new-cap */
 
                 return promise;
             };
@@ -1229,7 +1235,8 @@ function() {
             func.index = i;
 
             driver.get('promiseProvider').then(func);
-        })();
+        }());
+        /* eslint-enable no-loop-func */
     }
 
     return this;
@@ -1326,7 +1333,7 @@ function(target, type, args, callback, currentElement) {
     //  Invoke the Syn handler. If we're the last in the
     //  sequence, then hand in the event callback we generated
     //  above (and wrapped in the Promise).
-    switch(type) {
+    switch (type) {
         case 'click':
 
             args = populateSynArgs(args, finalTarget);

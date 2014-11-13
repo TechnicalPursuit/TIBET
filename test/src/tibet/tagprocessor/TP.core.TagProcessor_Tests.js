@@ -212,7 +212,7 @@ function() {
 TP.core.TagProcessor.Type.defineMethod('getTestFixture',
 function(options) {
 
-    switch(options) {
+    switch (options) {
         case    'allNodes':
             return TP.core.TagProcessorFixtureBuilder.buildAllNodesProcessor();
         default:

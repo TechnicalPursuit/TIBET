@@ -61,7 +61,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided is a valid TP.xs.dateTime
      *     string.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var str,
@@ -109,7 +109,7 @@ function(aValue, aFacet) {
      *     found in the facet provided.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -134,7 +134,7 @@ function(aValue, aFacet) {
      *     value provided in the facet specification.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -158,7 +158,7 @@ function(aValue, aFacet) {
      *     the value specified in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -182,7 +182,7 @@ function(aValue, aFacet) {
      *     minimum value provided in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -206,7 +206,7 @@ function(aValue, aFacet) {
      *     value provided in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -222,4 +222,3 @@ function(aValue, aFacet) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

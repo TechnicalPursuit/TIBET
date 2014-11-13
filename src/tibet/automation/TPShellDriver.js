@@ -11,7 +11,7 @@
 /**
 */
 
-//	------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
 TP.lang.Object.defineSubtype('tsh.Driver');
 
@@ -27,15 +27,14 @@ TP.lang.Object.defineSubtype('tsh.Driver');
  */
 TP.tsh.Driver.Inst.defineAttribute('promiseProvider');
 
-//	------------------------------------------------------------------------
-//	Instance Methods
-//	------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 TP.tsh.Driver.Inst.defineMethod('execShellTest',
-function(test, shellInput, valueTestFunction)
-{
-	/**
-	*/
+function(test, shellInput, valueTestFunction) {
+    /**
+    */
 
     this.get('promiseProvider').thenPromise(
         function(resolver, rejector) {
@@ -101,16 +100,15 @@ function(test, shellInput, valueTestFunction)
                 });
         });
 
-	return;
+    return;
 });
 
-//	------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
 TP.tsh.Driver.Inst.defineMethod('execOutputTest',
-function(test, inputVal, correctResults)
-{
-	/**
-	*/
+function(test, inputVal, correctResults) {
+    /**
+    */
 
     this.execShellTest(
         test,
@@ -221,9 +219,9 @@ function(test, inputVal, correctResults)
             test.fail(TP.FAILED, reason);
         });
 
-	return;
+    return;
 });
 
-//	------------------------------------------------------------------------
-//	end
-//	========================================================================
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================

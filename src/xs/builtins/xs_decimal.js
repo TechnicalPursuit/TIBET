@@ -77,7 +77,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided either is a decimal string,
      *     or a number with a valid decimal string representation.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var s;
@@ -110,7 +110,7 @@ function(aValue, aFacet) {
      *     found in the facet provided.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -134,7 +134,7 @@ function(aValue, aFacet) {
      *     specified number of fractional digits.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -166,7 +166,7 @@ function(aValue, aFacet) {
      *     value provided in the facet specification.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -195,7 +195,7 @@ function(aValue, aFacet) {
      *     the value specified in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -224,7 +224,7 @@ function(aValue, aFacet) {
      *     minimum value provided in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -253,7 +253,7 @@ function(aValue, aFacet) {
      *     value provided in the facet node.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -282,7 +282,7 @@ function(aValue, aFacet) {
      *     number of decimal digits specified in the facet.
      * @param {Object} aValue The object to test.
      * @param {Element} aFacet The facet node being tested.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -307,4 +307,3 @@ function(aValue, aFacet) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

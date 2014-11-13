@@ -1737,8 +1737,7 @@ function(normalizedEvent) {
 
     key = TP.eventGetKeyCode(normalizedEvent);
 
-    if (key)    //  not null and not 0
-    {
+    if (key) {    //  not null and not 0
         if (TP.notValid(xml = TP.core.Keyboard.get('mapxml'))) {
             //  if no keymap is found we've got a real problem. our only
             //  potential option is to hope the key is a character code

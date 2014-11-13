@@ -197,7 +197,9 @@ function(line, ch) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    /* eslint-disable new-cap */
     return this.$getEditorConstructor().Pos(line, ch);
+    /* eslint-enable new-cap */
 });
 
 //  ------------------------------------------------------------------------
@@ -342,7 +344,7 @@ function(aText) {
     var editor;
 
     editor = this.$getEditorInstance();
-    
+
     editor.setSelection(editor.getCursor(), editor.getCursor());
     editor.replaceSelection(aText);
 
@@ -533,7 +535,7 @@ function(aHandlerFunc) {
     editor.on('keypress', cmHandlerFunc);
 
     this.set('$currentKeyHandler', cmHandlerFunc);
-    
+
     return this;
 });
 
@@ -595,7 +597,7 @@ function() {
     editor.off('keypress', cmHandlerFunc);
 
     this.set('$currentKeyHandler', null);
-    
+
     return this;
 });
 
@@ -721,7 +723,7 @@ function(toStart) {
         first = selection.head;
         last = selection.anchor;
     }
-    
+
     if (toStart) {
         editor.setSelection(first, last);
     } else {

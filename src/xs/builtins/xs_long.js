@@ -29,7 +29,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided is between
      *     -9223372036854775808 and 9223372036854775807 inclusive.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var n,
@@ -59,4 +59,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

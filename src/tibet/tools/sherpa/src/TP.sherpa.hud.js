@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sherpa.hud}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -64,11 +64,11 @@ function() {
 
     TP.nodeAppendChild(TP.documentGetBody(doc), triggerElement);
 
+    /* eslint-disable no-wrap-func */
     (function(aSignal) {
-
             this.toggle('hidden');
-
-        }).bind(this).observe(TP.wrap(triggerElement), 'TP.sig.DOMClick');
+    }).bind(this).observe(TP.wrap(triggerElement), 'TP.sig.DOMClick');
+    /* eslint-enable no-wrap-func */
 
     return this;
 });
@@ -96,7 +96,7 @@ function(beHidden) {
         this.getNativeWindow().focus();
     } else {
         this.showAllHUDDrawers();
-    
+
         TP.byOID('SherpaConsole', this.getNativeWindow()).focusInput();
     }
 

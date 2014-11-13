@@ -14,7 +14,7 @@
  *     multiple child items, such as a listbox or tabbox.
  * @description This type uses 3 different 'getters' that it expects the type
  *     that it is being mixed into to provide:
- *     
+ *
  *     'body' -> The element that new items will be inserted into.
  *     'firstTransform' -> The first 'tsh:transform' that is defined to
  *     transform data into items that will be added. This will have the same

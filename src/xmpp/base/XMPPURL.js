@@ -718,7 +718,7 @@ function(aResponse) {
 
 TP.xmpp.URL.Inst.defineMethod('signalObservers',
 function(anOrigin, aSignal, aPayload, aPolicy, aType,
-isCancelable, isBubbling        ) {
+    isCancelable, isBubbling) {
 
     /**
      * @name signalObservers

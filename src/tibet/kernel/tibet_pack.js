@@ -649,8 +649,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
             if (c === 'x' || c === 'X') {
                 str += c;
                 i += 1;
-                for (;;)
-                {
+                for (;;) {
                     c = src.charAt(i);
                     if (!hexDigit.test(c)) {
                         break;
@@ -932,8 +931,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                                     ', '));
                             break;
                         } else if (c === '*') {
-                            if (src.charAt(i + 1) === '/')
-                            {
+                            if (src.charAt(i + 1) === '/') {
                                 str += '*/';
                                 i += 2;
                                 c = src.charAt(i);
@@ -1181,8 +1179,7 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
 
     for (i = 0; i < len; i++) {
         token = arr[i];
-        switch (token.name)
-        {
+        switch (token.name) {
             case 'comment':
 
                 //  we remove comments unless they start with /*** so we can
@@ -1206,9 +1203,7 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
 
                     result.push(tokens ? token : token.value);
                     last = token;
-                }
-                else
-                {
+                } else {
                     //  although not common in TIBET code (due to our
                     //  coding standard) it's common for people to overlook
                     //  that assigning functions to variables requires a

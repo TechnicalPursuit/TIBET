@@ -40,7 +40,7 @@ function() {
      *     response for subscribe and unsubscribe messages. Other presence
      *     packets have no valid response so this method returns null in those
      *     cases.
-     * @returns {TP.xmpp.Stanza} 
+     * @returns {TP.xmpp.Stanza}
      * @todo
      */
 
@@ -77,7 +77,7 @@ function() {
     /**
      * @name getDefaultType
      * @synopsis Returns the default stanza type for the receiver.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -92,7 +92,7 @@ function() {
     /**
      * @name getPriority
      * @synopsis Returns the packet priority of the receiver.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getChildTextContent('priority');
@@ -106,7 +106,7 @@ function() {
     /**
      * @name getShow
      * @synopsis Returns the text value of the receiver's show attribute.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getChildTextContent('show');
@@ -142,7 +142,7 @@ function() {
     /**
      * @name getStatus
      * @synopsis Returns the text status of the receiver.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getChildTextContent('status');
