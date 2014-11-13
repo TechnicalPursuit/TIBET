@@ -5,6 +5,7 @@
 
 <config id="standard">
     <config ref="acl"/>
+    <config ref="bind"/>
     <config ref="ev"/>
     <config ref="html"/>
     <config ref="sig"/>
@@ -29,6 +30,10 @@
 <config id="acl">
     <script src="acl/acl_.js"/>
     <script src="acl/acl_info.js"/>
+</config>
+
+<config id="bind">
+    <script src="bind/bind_.js"/>
 </config>
 
 <config id="ev">
