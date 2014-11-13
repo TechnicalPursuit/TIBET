@@ -1644,11 +1644,13 @@ function(aNodeOrList, eventNames, aHandler, aPolicy, nodeContext) {
     target = TP.ifInvalid(aNodeOrList, TP.ANY);
     context = TP.context(nodeContext);
 
+    /* eslint-disable no-nested-ternary */
     signals = / /.test(eventNames) ?
                 eventNames.split(' ') :
                 TP.isArray(eventNames) ?
                     eventNames :
                     TP.ac(eventNames);
+    /* eslint-enable no-nested-ternary */
 
     len = signals.getSize();
     for (i = 0; i < len; i++) {
@@ -1770,11 +1772,13 @@ function(aNodeOrList, eventNames, aHandler, nodeContext) {
     target = TP.ifInvalid(aNodeOrList, TP.ANY);
     context = TP.context(nodeContext);
 
+    /* eslint-disable no-nested-ternary */
     signals = / /.test(eventNames) ?
                 eventNames.split(' ') :
                 TP.isArray(eventNames) ?
                     eventNames :
                     TP.ac(eventNames);
+    /* eslint-enable no-nested-ternary */
 
     len = signals.getSize();
     for (i = 0; i < len; i++) {

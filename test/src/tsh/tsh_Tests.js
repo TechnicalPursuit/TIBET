@@ -11,6 +11,8 @@
 /* global Q:true
 */
 
+/* eslint-disable no-alert */
+
 //	------------------------------------------------------------------------
 
 TP.core.TSH.Type.describe('Shell options expansion',
@@ -351,7 +353,7 @@ function() {
 
         //  ---
 
-        inputVal = 'new Function(\'alert("hi")\')';
+        inputVal = 'new Function(\'window.alert("hi")\')';
         correctResult = 'Function';
 
         shellDriver.execShellTest(
@@ -368,7 +370,7 @@ function() {
 
         //  ---
 
-        inputVal = 'function () {alert("hi")}';
+        inputVal = 'function () {window.alert("hi")}';
         correctResult = 'Function';
 
         shellDriver.execShellTest(
@@ -525,14 +527,14 @@ function() {
                         'Expanded value tname', 'String',
                         'Expanded value', '[1,2,3]',
                         'Resolved value tname', 'Array',
-                        'Resolved value', [1,2,3]),
+                        'Resolved value', [1, 2, 3]),
                 'baz',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"[1,2,{{x}}]"',
                         'Expanded value tname', 'String',
                         'Expanded value', '[1,2,2]',
                         'Resolved value tname', 'Array',
-                        'Resolved value', [1,2,2]),
+                        'Resolved value', [1, 2, 2]),
                 'ARG0',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"[]"',
@@ -546,14 +548,14 @@ function() {
                         'Expanded value tname', 'String',
                         'Expanded value', '[1,2,3]',
                         'Resolved value tname', 'Array',
-                        'Resolved value', [1,2,3]),
+                        'Resolved value', [1, 2, 3]),
                 'ARG2',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"[1,2,{{x}}]"',
                         'Expanded value tname', 'String',
                         'Expanded value', '[1,2,2]',
                         'Resolved value tname', 'Array',
-                        'Resolved value', [1,2,2])
+                        'Resolved value', [1, 2, 2])
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResults);
@@ -579,14 +581,14 @@ function() {
                         'Expanded value tname', 'String',
                         'Expanded value', '{foo:\'bar\'}',
                         'Resolved value tname', 'Object',
-                        'Resolved value', {foo:'bar'}),
+                        'Resolved value', {foo: 'bar'}),
                 'baz',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"{foo:{{x}}}"',
                         'Expanded value tname', 'String',
                         'Expanded value', '{foo:2}',
                         'Resolved value tname', 'Object',
-                        'Resolved value', {foo:2}),
+                        'Resolved value', {foo: 2}),
                 'ARG0',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"{}"',
@@ -600,14 +602,14 @@ function() {
                         'Expanded value tname', 'String',
                         'Expanded value', '{foo:\'bar\'}',
                         'Resolved value tname', 'Object',
-                        'Resolved value', {foo:'bar'}),
+                        'Resolved value', {foo: 'bar'}),
                 'ARG2',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"{foo:{{x}}}"',
                         'Expanded value tname', 'String',
                         'Expanded value', '{foo:2}',
                         'Resolved value tname', 'Object',
-                        'Resolved value', {foo:2})
+                        'Resolved value', {foo: 2})
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResults);
@@ -617,7 +619,7 @@ function() {
         var inputVal,
             correctResults;
 
-        inputVal = ':testCmd "function() {}" "function(x) {alert(x)}" "function() {alert({{x}})}" foo="function() {}" bar="function(x) {alert(x)}" baz="function() {alert({{x}})}"';
+        inputVal = ':testCmd "function() {}" "function(x) {window.alert(x)}" "function() {window.alert({{x}})}" foo="function() {}" bar="function(x) {window.alert(x)}" baz="function() {window.alert({{x}})}"';
         correctResults =
             TP.hc(
                 'foo',
@@ -629,18 +631,18 @@ function() {
                         'Resolved value', function () {}),
                 'bar',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function(x) {alert(x)}"',
+                        'Original value', '"function(x) {window.alert(x)}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function(x) {alert(x)}',
+                        'Expanded value', 'function(x) {window.alert(x)}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function(x) {alert(x);}),
+                        'Resolved value', function(x) {window.alert(x);}),
                 'baz',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function() {alert({{x}})}"',
+                        'Original value', '"function() {window.alert({{x}})}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function() {alert(2)}',
+                        'Expanded value', 'function() {window.alert(2)}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function() {alert(2);}),
+                        'Resolved value', function() {window.alert(2);}),
                 'ARG0',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"function() {}"',
@@ -650,18 +652,18 @@ function() {
                         'Resolved value', function () {}),
                 'ARG1',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function(x) {alert(x)}"',
+                        'Original value', '"function(x) {window.alert(x)}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function(x) {alert(x)}',
+                        'Expanded value', 'function(x) {window.alert(x)}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function(x) {alert(x);}),
+                        'Resolved value', function(x) {window.alert(x);}),
                 'ARG2',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function() {alert({{x}})}"',
+                        'Original value', '"function() {window.alert({{x}})}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'function() {alert(2)}',
+                        'Expanded value', 'function() {window.alert(2)}',
                         'Resolved value tname', 'Function',
-                        'Resolved value', function() {alert(2);})
+                        'Resolved value', function() {window.alert(2);})
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResults);
@@ -762,14 +764,14 @@ function() {
                         'Expanded value tname', 'String',
                         'Expanded value', '{\'foo\':\'bar\'}',
                         'Resolved value tname', 'Object',
-                        'Resolved value', {foo:'bar'}),
+                        'Resolved value', {foo: 'bar'}),
                 'ARG7',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"[1,2,3]"',
                         'Expanded value tname', 'String',
                         'Expanded value', '[1,2,3]',
                         'Resolved value tname', 'Array',
-                        'Resolved value', [1,2,3])
+                        'Resolved value', [1, 2, 3])
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResults);
@@ -830,14 +832,14 @@ function() {
                         'Expanded value tname', 'String',
                         'Expanded value', '{\'foo\':\'bar\'}',
                         'Resolved value tname', 'Object',
-                        'Resolved value', {'foo':'bar'}),
+                        'Resolved value', {'foo': 'bar'}),
                 'eighth',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"[1,2,3]"',
                         'Expanded value tname', 'String',
                         'Expanded value', '[1,2,3]',
                         'Resolved value tname', 'Array',
-                        'Resolved value', [1,2,3])
+                        'Resolved value', [1, 2, 3])
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResults);
@@ -4015,7 +4017,9 @@ function() {
         var inputVal,
             correctResult;
 
+        /* eslint-disable no-script-url */
         inputVal = 'javascript:TP';
+        /* eslint-enable no-script-url */
         correctResult = TP;
 
         shellDriver.execShellTest(
@@ -4057,7 +4061,9 @@ function() {
         var inputVal,
             correctResult;
 
+        /* eslint-disable no-script-url */
         inputVal = 'javascript:top.UIROOT.$$globalID';
+        /* eslint-enable no-script-url */
         correctResult = TP.$$topWindowName + '.UIROOT';
 
         shellDriver.execShellTest(
@@ -4747,9 +4753,9 @@ function() {
             [
                 200,
                 {
-                    'Content-Type': TP.XML_ENCODED,
+                    'Content-Type': TP.XML_ENCODED
                 },
-                resultElem.asString(),
+                resultElem.asString()
             ]);
 
         //  Note here how we use '-refresh' at the end of the URL to make sure
@@ -4790,7 +4796,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from PUT');
             });
@@ -4833,7 +4839,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from POST');
             });
@@ -4876,7 +4882,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from POST');
             });
@@ -4922,7 +4928,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from FORM POST');
             });
@@ -4968,7 +4974,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from MULTIPART FORM XML POST');
             });
@@ -5018,7 +5024,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from MULTIPART RELATED MIXED POST');
             });
@@ -5063,7 +5069,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from DELETE');
             });
@@ -5160,17 +5166,17 @@ function() {
 
         storageStr = TP.js2json(
                 {
-                    'local_test' :
+                    'local_test':
                         {
-                            'author_info' :
+                            'author_info':
                                 {
-                                    '_id' : 'author_info',
-                                    '_date_created' : TP.dc(),
-                                    '_date_modified' : TP.dc(),
-                                    '_body' :
+                                    '_id': 'author_info',
+                                    '_date_created': TP.dc(),
+                                    '_date_modified': TP.dc(),
+                                    '_body':
                                         {
-                                            'firstName' : 'Bill',
-                                            'lastName' : 'Edney'
+                                            'firstName': 'Bill',
+                                            'lastName': 'Edney'
                                         }
                                 }
                         }
@@ -5502,13 +5508,13 @@ function() {
 
                 pouchPromise = testDb.put(
                     {
-                        '_id' : 'author_info',
-                        'date_created' : now,
-                        'date_modified' : now,
-                        'body' :
+                        '_id': 'author_info',
+                        'date_created': now,
+                        'date_modified': now,
+                        'body':
                             {
-                                'firstName' : 'Bill',
-                                'lastName' : 'Edney'
+                                'firstName': 'Bill',
+                                'lastName': 'Edney'
                             }
                     });
 

@@ -55,7 +55,7 @@ function(anObject) {
      * @name validate
      * @synopsis Returns true if the object provided is a valid non-colonized
      *     name.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     //  this ensures it's a string of the valid format (but might have
@@ -71,4 +71,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

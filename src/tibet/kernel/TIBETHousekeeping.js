@@ -343,13 +343,9 @@ TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesBase.js');
 
 if (TP.sys.isUA('GECKO')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesGecko.js');
-}
-else if (TP.sys.isUA('IE'))
-{
+} else if (TP.sys.isUA('IE')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesIE.js');
-}
-else if (TP.sys.isUA('WEBKIT'))
-{
+} else if (TP.sys.isUA('WEBKIT')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETPrimitivesWebkit.js');
 }
 
@@ -385,13 +381,9 @@ TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesBase.js');
 
 if (TP.sys.isUA('GECKO')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesGecko.js');
-}
-else if (TP.sys.isUA('IE'))
-{
+} else if (TP.sys.isUA('IE')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesIE.js');
-}
-else if (TP.sys.isUA('WEBKIT'))
-{
+} else if (TP.sys.isUA('WEBKIT')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDOMPrimitivesWebkit.js');
 }
 
@@ -419,13 +411,9 @@ TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesBase.js');
 
 if (TP.sys.isUA('GECKO')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesGecko.js');
-}
-else if (TP.sys.isUA('IE'))
-{
+} else if (TP.sys.isUA('IE')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesIE.js');
-}
-else if (TP.sys.isUA('WEBKIT'))
-{
+} else if (TP.sys.isUA('WEBKIT')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDevicePrimitivesWebkit.js');
 }
 
@@ -453,13 +441,9 @@ TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesBase.js');
 
 if (TP.sys.isUA('GECKO')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesGecko.js');
-}
-else if (TP.sys.isUA('IE'))
-{
+} else if (TP.sys.isUA('IE')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesIE.js');
-}
-else if (TP.sys.isUA('WEBKIT'))
-{
+} else if (TP.sys.isUA('WEBKIT')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETDHTMLPrimitivesWebkit.js');
 }
 
@@ -525,13 +509,9 @@ TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesBase.js');
 
 if (TP.sys.isUA('GECKO')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesGecko.js');
-}
-else if (TP.sys.isUA('IE', 8, TP.UP))
-{
+} else if (TP.sys.isUA('IE', 8, TP.UP)) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesIE.js');
-}
-else if (TP.sys.isUA('WEBKIT'))
-{
+} else if (TP.sys.isUA('WEBKIT')) {
     TP.boot[TP.LOAD_NODE] = TP.uriGetLoadNode('TIBETCSSPrimitivesWebkit.js');
 }
 

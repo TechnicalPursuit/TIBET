@@ -13,6 +13,8 @@
  * @synopsis
  */
 
+/* eslint-disable new-cap */
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.map.defineSubtype('yahoomap');

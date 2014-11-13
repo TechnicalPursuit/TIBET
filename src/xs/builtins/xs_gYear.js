@@ -44,7 +44,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided represents a valid year
      *     with optional timezone data.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -82,4 +82,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

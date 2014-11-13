@@ -525,7 +525,7 @@ Cmd.prototype.processEslintResult = function(result) {
                 prefix;
 
             prefix = cmd.lpad(message.line, 5) + ':' +
-                cmd.rpad(message.column, 5);
+                cmd.rpad(message.column || '', 5);
 
             if (message.fatal || message.severity === 2) {
                 prefix += chalk.red('error   ');
@@ -533,7 +533,7 @@ Cmd.prototype.processEslintResult = function(result) {
                 prefix += chalk.yellow('warn    ');
             }
 
-            str = prefix + cmd.rpad(message.message.trim(), 65) + ' ' +
+            str = prefix + cmd.rpad(message.message.trim(), 62) + ' ' +
                 chalk.grey(message.ruleId);
 
             cmd.log(str);

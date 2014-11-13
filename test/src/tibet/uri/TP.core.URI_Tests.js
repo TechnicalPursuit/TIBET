@@ -11,6 +11,8 @@
 /* global Q:true
 */
 
+/* eslint-disable no-script-url */
+
 //  ========================================================================
 //  URI
 //  ========================================================================
@@ -1176,9 +1178,9 @@ function() {
             [
                 200,
                 {
-                    'Content-Type': TP.XML_ENCODED,
+                    'Content-Type': TP.XML_ENCODED
                 },
-                resultElem.asString(),
+                resultElem.asString()
             ]);
 
         url = TP.uc(locStr);
@@ -1189,8 +1191,7 @@ function() {
 
         request = TP.request(params);
         request.defineMethod('completeJob',
-            function(aResult)
-            {
+            function(aResult) {
                 test.assert.isEqualTo(
                         aResult.get('html|body').at(0),
                         resultElem.get('html|body').at(0));
@@ -1249,8 +1250,7 @@ function() {
 
         request = TP.request(params);
         request.defineMethod('completeJob',
-            function(aResult)
-            {
+            function(aResult) {
                 test.assert.isValid(
                     aResult,
                     TP.sc('Expected valid result but got none.'));
@@ -1283,17 +1283,14 @@ function() {
 
             storageStr = TP.js2json(
                     {
-                        'local_test' :
-                            {
-                                'author_info' :
-                                    {
-                                        '_id' : 'author_info',
-                                        '_date_created' : TP.dc(),
-                                        '_date_modified' : TP.dc(),
-                                        '_body' :
-                                            {
-                                                'firstName' : 'Bill',
-                                                'lastName' : 'Edney'
+                        'local_test': {
+                                'author_info': {
+                                        '_id': 'author_info',
+                                        '_date_created': TP.dc(),
+                                        '_date_modified': TP.dc(),
+                                        '_body': {
+                                                'firstName': 'Bill',
+                                                'lastName': 'Edney'
                                             }
                                     }
                             }
@@ -1445,13 +1442,13 @@ function() {
 
                     pouchPromise = testDb.put(
                         {
-                            '_id' : 'author_info',
-                            'date_created' : now,
-                            'date_modified' : now,
-                            'body' :
+                            '_id': 'author_info',
+                            'date_created': now,
+                            'date_modified': now,
+                            'body':
                                 {
-                                    'firstName' : 'Bill',
-                                    'lastName' : 'Edney'
+                                    'firstName': 'Bill',
+                                    'lastName': 'Edney'
                                 }
                         });
 
@@ -1788,7 +1785,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from PUT');
             });
@@ -1843,7 +1840,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from POST');
             });
@@ -1896,7 +1893,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from FORM POST');
             });
@@ -1952,7 +1949,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from MULTIPART FORM TEXT POST');
             });
@@ -2009,7 +2006,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from MULTIPART FORM XML POST');
             });
@@ -2070,7 +2067,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from MULTIPART RELATED MIXED POST');
             });
@@ -2122,7 +2119,7 @@ function() {
                 req.respond(
                     200,
                     {
-                        'Content-Type': TP.PLAIN_TEXT_ENCODED,
+                        'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
                     'OK from DELETE');
             });
@@ -2356,13 +2353,13 @@ function() {
 
                     pouchPromise = testDb.put(
                         {
-                            '_id' : 'author_info',
-                            'date_created' : now,
-                            'date_modified' : now,
-                            'body' :
+                            '_id': 'author_info',
+                            'date_created': now,
+                            'date_modified': now,
+                            'body':
                                 {
-                                    'firstName' : 'Bill',
-                                    'lastName' : 'Edney'
+                                    'firstName': 'Bill',
+                                    'lastName': 'Edney'
                                 }
                         });
 

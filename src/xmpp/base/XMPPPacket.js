@@ -39,7 +39,7 @@ function() {
     /**
      * @name getConnection
      * @synopsis Returns the connection instance which owns the receiver.
-     * @returns {TP.xmpp.Connection} 
+     * @returns {TP.xmpp.Connection}
      */
 
     return this.get('conn');

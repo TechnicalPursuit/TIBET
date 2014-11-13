@@ -23,7 +23,7 @@ function(anObject) {
      *     this type's value space but to support usage for type validation we
      *     define it to exclude null and undefined.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var type;
@@ -38,4 +38,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

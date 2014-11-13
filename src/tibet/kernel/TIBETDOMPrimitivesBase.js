@@ -356,6 +356,7 @@ function(aNode, otherNode, aPosition) {
     //  documents.
 
     //  NB: This function originally from John Resig, under an MIT license.
+    /* eslint-disable no-nested-ternary */
     position =
         aNode.compareDocumentPosition ?
             aNode.compareDocumentPosition(otherNode) :
@@ -367,6 +368,7 @@ function(aNode, otherNode, aPosition) {
                     (aNode.sourceIndex > otherNode.sourceIndex && 2) :
                     1) + 0 :
                     0;
+    /* eslint-enable no-nested-ternary */
 
     /* jshint bitwise:false */
     return !!(position & aPosition);

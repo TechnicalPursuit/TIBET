@@ -964,7 +964,7 @@ function(aRange) {
             'endStyle': 'bordered-input-right',
             'atomic': false,
             'inclusiveLeft': true,
-            'inclusiveRight': true,
+            'inclusiveRight': true
         }
     );
 
@@ -1566,8 +1566,7 @@ function(direction, endPoint) {
 
     if (direction === TP.DOWN) {
 
-        if (endPoint === TP.HEAD) {
-        } else {
+        if (endPoint !== TP.HEAD) {
             if (cimRange.anchor.line === cimRange.head.line) {
                 return this;
             }
@@ -1827,7 +1826,7 @@ function(range) {
             'endStyle': 'bordered-eval-right',
             'atomic': true,
             'inclusiveLeft': false,
-            'inclusiveRight': false,
+            'inclusiveRight': false
         }
     );
 

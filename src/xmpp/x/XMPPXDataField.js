@@ -179,7 +179,7 @@ function(aType) {
      * @synopsis Sets the field type of the data packet.
      * @param {String} aType The field type of the data field. This should be
      *     one of the following constant values:.
-     *     
+     *
      *     TP.xmpp.XDataField.BOOLEAN TP.xmpp.XDataField.FIXED
      *     TP.xmpp.XDataField.HIDDEN TP.xmpp.XDataField.JID-MULTI
      *     TP.xmpp.XDataField.JID-SINGLE TP.xmpp.XDataField.LIST-MULTI

@@ -105,7 +105,7 @@ function(targetURI, aRequest) {
                     'toJID', targetURI.get('path'),
                     'cmd_action', uriparams.atIfInvalid(
                                 'action', queryDict.at('action')),
-                    'node', unescape(uriparams.atIfInvalid(
+                    'node', window.unescape(uriparams.atIfInvalid(
                                 'node', queryDict.at('node'))));
 
         break;
@@ -157,9 +157,9 @@ function(targetURI, aRequest) {
 
             requestParams.add(
                     'toJID', targetURI.get('path'),
-                    'subject', unescape(uriparams.atIfInvalid(
+                    'subject', window.unescape(uriparams.atIfInvalid(
                                 'subject', queryDict.at('subject'))),
-                    'body', unescape(uriparams.atIfInvalid(
+                    'body', window.unescape(uriparams.atIfInvalid(
                                 'body', queryDict.at('body'))),
                     'thread', uriparams.atIfInvalid(
                                 'thread', queryDict.at('thread')),
@@ -357,7 +357,7 @@ function(targetURI, aRequest) {
             requestParams.add(
                     'show', uriparams.atIfInvalid(
                             'show', queryDict.at('show')),
-                    'status', unescape(uriparams.atIfInvalid(
+                    'status', window.unescape(uriparams.atIfInvalid(
                             'status', queryDict.at('status'))));
 
         break;

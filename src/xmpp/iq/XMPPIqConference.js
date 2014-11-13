@@ -36,7 +36,7 @@ function() {
     /**
      * @name getConferenceID
      * @synopsis Returns the ID of the conference.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getChildTextContent('id');

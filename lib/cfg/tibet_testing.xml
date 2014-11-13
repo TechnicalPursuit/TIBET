@@ -24,7 +24,7 @@
 </config>
 
 <config id="sinon" depends="">
-    <script src="~lib_deps/sinon-tpi.js"/>
+    <script src="~lib_deps/sinon-tpi.js" no-lint="true"/>
 
     <script>
         <![CDATA[

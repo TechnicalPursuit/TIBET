@@ -10,7 +10,7 @@
 
 /**
  * @type {TP.sherpa.logview}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -72,7 +72,7 @@ function(dataRecord) {
     var cssClass,
         content;
 
-    cssClass = TP.ifInvalid(dataRecord.at('cssClass'), ''); 
+    cssClass = TP.ifInvalid(dataRecord.at('cssClass'), '');
 
     content = '<li><span class="' + cssClass + '">' +
                 dataRecord.at('output') +

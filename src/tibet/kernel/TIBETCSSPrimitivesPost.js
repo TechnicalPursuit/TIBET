@@ -2616,8 +2616,7 @@ function(strSelectorText, strictPseudos) {
                     //  Push it onto the pre-built 'classes array'
                     classArr.push(lastMatch);
                 }
-            } else if (currentToken === TP.SELECTOR_ATTR_START) // Attrib
-            {
+            } else if (currentToken === TP.SELECTOR_ATTR_START) { // attrib
                 //  Parse an 'attribute' portion, if there was one.
 
                 //  Consume any whitespace occurring immediately after the

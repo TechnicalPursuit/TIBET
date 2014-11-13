@@ -36,7 +36,7 @@ function() {
     /**
      * @name getEventMsgID
      * @synopsis Returns the message ID this event is bound to.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getChildTextContent('id');

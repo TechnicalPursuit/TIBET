@@ -47,7 +47,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided is a valid TP.xs.NOTATION.
      *     This check is currently unimplemented and always returns false.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     return false;
@@ -71,4 +71,3 @@ TP.xs.NOTATION.Type.defineMethod('validateFacetMinLength',
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

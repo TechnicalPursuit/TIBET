@@ -57,7 +57,7 @@ function(aStanza) {
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalName() calls as the stanza.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -77,7 +77,7 @@ function() {
      * @name isSignal
      * @synopsis Returns true if the receiver represents a TIBET Signal in
      *     encoded form.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var query;

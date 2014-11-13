@@ -65,7 +65,7 @@ function(anObject) {
      *     spaces rather than tabs, newlines, etc. and condensed into
      *     single-space elements only.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isString(anObject)) {
@@ -80,4 +80,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

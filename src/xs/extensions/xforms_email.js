@@ -61,7 +61,7 @@ function(anObject) {
      *     valid email address string as defined by the XForms 1.1 draft
      *     specification's XML Schema for the Email data type.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isString(anObject)) {
@@ -75,4 +75,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

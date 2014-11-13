@@ -80,7 +80,7 @@ function(anObject) {
      * @name validate
      * @synopsis Returns true if the object provided contains a valid Name in
      *     conformance to the XML 1.0 Second Edition spec.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isString(anObject)) {
@@ -93,4 +93,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

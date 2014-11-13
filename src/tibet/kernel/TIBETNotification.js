@@ -3295,9 +3295,7 @@ function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserv
                         continue;
                     }
                 }
-            }
-            else    //  NOT XML EVENTS
-            {
+            } else {    //  NOT XML EVENTS
                 entry = TP.constructOrphanObject();
                 entry.target = origin;
             }
@@ -5143,9 +5141,7 @@ function(anOrigin, aSignal, aPayload, aType) {
                     TP.SIGNAL_LOG) : 0;
 
             aSig = aSignal[0];
-        }
-        else    //  oops, empty array
-        {
+        } else {    //  oops, empty array
             TP.ifError() ?
                 TP.error(
                     'Invalid Signal For Firing Policy. Terminating.',

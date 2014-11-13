@@ -68,7 +68,7 @@ function(anObject) {
      *     checks are currently done to confirm that the value exists as a
      *     registered language code.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isString(anObject)) {
@@ -83,4 +83,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

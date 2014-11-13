@@ -65,12 +65,11 @@ function(info) {
     this.setupConsole();
 
     //  set up keyboard toggle to show/hide us
+    /* eslint-disable no-wrap-func */
     (function () {
-
-            this.toggle();
-
-        }).bind(this).observe(
-            TP.core.Keyboard, 'TP.sig.' + info.at('triggerKey'));
+        this.toggle();
+    }).bind(this).observe(TP.core.Keyboard, 'TP.sig.' + info.at('triggerKey'));
+    /* eslint-enable no-wrap-func */
 
     /*
     (function () {

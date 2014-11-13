@@ -89,7 +89,7 @@ function() {
      * @synopsis Returns the response content in JavaScript object form. If the
      *     receiver represents a failed request then the content of the fault
      *     object is returned.
-     * @returns {Object} 
+     * @returns {Object}
      */
 
     var res,

@@ -147,8 +147,7 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
         //  output as 'value' tokens
         try {
             tokens = TP.$templateParser.parse(str);
-        }
-        catch (e) {
+        } catch (e) {
             return this.raise(
                     'TP.sig.TemplateTokenizationFailed',
                     TP.ec(e,

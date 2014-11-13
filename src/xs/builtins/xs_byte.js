@@ -29,7 +29,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided is in the range between
      *     -128 and 127.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var n;
@@ -52,4 +52,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

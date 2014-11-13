@@ -35,7 +35,7 @@ function(aHalo) {
      * @name getHaloParent
      * @abstract
      * @param
-     * @returns {TP.core.ElementNode} 
+     * @returns {TP.core.ElementNode}
      */
 
     return TP.wrap(this.getNativeNode().parentNode);
@@ -48,7 +48,7 @@ function(aHalo) {
 
     /**
      * @name getHaloParent
-     * @returns {TP.core.ElementNode} 
+     * @returns {TP.core.ElementNode}
      * @abstract
      * @todo
      */
@@ -57,7 +57,7 @@ function(aHalo) {
         ourWin,
 
         ourRect;
-    
+
     haloWin = aHalo.getNativeWindow();
     ourWin = this.getNativeWindow();
 
@@ -90,7 +90,7 @@ function(aHalo, aSignal) {
     /**
      * @name getNextHaloChild
      * @param {TP.sig.Signal} aSignal
-     * @returns {TP.core.ElementNode} 
+     * @returns {TP.core.ElementNode}
      * @abstract
      * @todo
      */
@@ -132,7 +132,7 @@ function() {
     /**
      * @name getUIEditorType
      * @synopsis Returns the UIEditor subtype used to edit any UI elements.
-     * @returns {Type} 
+     * @returns {Type}
      */
 
     return TP.core.UIElementNodeEditor;
@@ -147,7 +147,7 @@ function(aHalo, aSignal) {
     var evtWin,
         targetWin,
         haloWin,
-    
+
         sigTarget;
 
     evtWin = aSignal.getWindow();
@@ -195,8 +195,8 @@ function(anElement) {
     /**
      * @name getUIEditorType
      * @synopsis Returns the UIEditor subtype used to edit 'body' elements.
-     * @param {HTMLElement} anElement 
-     * @returns {Type} 
+     * @param {HTMLElement} anElement
+     * @returns {Type}
      */
 
     return TP.sys.require('TPUIHTMLBodyElementNodeEditor');
@@ -210,8 +210,8 @@ function(anElement) {
     /**
      * @name getUIEditorType
      * @synopsis Returns the UIEditor subtype used to edit 'head' elements.
-     * @param {HTMLElement} anElement 
-     * @returns {Type} 
+     * @param {HTMLElement} anElement
+     * @returns {Type}
      */
 
     return TP.sys.require('TPUIHTMLHeadElementNodeEditor');
@@ -225,8 +225,8 @@ function(anElement) {
     /**
      * @name getUIEditorType
      * @synopsis Returns the UIEditor subtype used to edit 'html' elements.
-     * @param {HTMLElement} anElement 
-     * @returns {Type} 
+     * @param {HTMLElement} anElement
+     * @returns {Type}
      */
 
     return TP.sys.require('TPUIHTMLHtmlElementNodeEditor');
@@ -243,7 +243,7 @@ function(aHalo) {
      * @name getHaloParent
      * @abstract
      * @param
-     * @returns {TP.core.ElementNode} 
+     * @returns {TP.core.ElementNode}
      */
 
     return this;
@@ -264,7 +264,7 @@ function(targetTPElement, cornerTPElement) {
      * @name getUIEditorType
      * @synopsis Returns the UIEditor subtype used to edit 'html' elements.
      * @param {} targetTPElement
-     * @returns {Type} 
+     * @returns {Type}
      */
 
     var theTile,
@@ -281,11 +281,13 @@ function(targetTPElement, cornerTPElement) {
 
         input = theTile.get('textInput');
 
+        /* eslint-disable no-wrap-func */
         (function () {
             theTile.setHeader(targetTPElement.getID());
             theTile.focusOn(targetTPElement);
             theTile.set('hidden', false);
         }).observe(input, 'TP.sig.DOMReady');
+        /* eslint-enable no-wrap-func */
 
     } else {
         if (TP.isTrue(theTile.get('hidden'))) {

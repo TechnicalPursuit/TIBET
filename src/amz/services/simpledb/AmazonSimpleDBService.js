@@ -18,7 +18,7 @@
  *     using request/response pairs, a 'default' instance of this service will
  *     be instantiated and registered to handle all
  *     TP.sig.AmazonSimpleDBRequests.
- *     
+ *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'AmazonSimpleDBServiceDefault'. It should have a
  *     vCard entry in the currently executing project. If this vCard cannot be
@@ -26,33 +26,33 @@
  *     server. If only part of the information can be found (i.e. the URL, but
  *     not the KEY or SECRET-KEY), the user will be prompted to enter the
  *     missing information.
- *     
+ *
  *     It is possible, however, to manually set up a server. To do so, either
  *     supply the 'key' and 'secretkey' to the service:
- *     
+ *
  *     simpleDBService = TP.amz.AmazonSimpleDBService.construct(
  *                  'myAmazonSimpleDBServer',
  *                  TP.hc('uri', 'http://sdb.amazonaws.com',
  *                          'key', '<developer key from Amazon>',
  *                          'secretkey', '<developer secret key from Amazon>'));
- *     
+ *
  *     Or have a vCard entry where the 'FN' entry matches the resource ID that
  *     is passed to the 'construct' call as detailed here:
- *     
+ *
  *     E.g.
- *     
+ *
  *     <FN>myAmazonSimpleDBServer</FN>
  *     <URI>http://sdb.amazonaws.com<URI>
  *     <KEY><developer key from Amazon></KEY>
  *     <X-SECRET-KEY><developer secret key from Amazon></X-SECRET-KEY>
- *     
+ *
  *     NB: Please note the security implications of encoding the Amazon secret
  *     key into a configuration file. If you want to leverage TP.core.User's
  *     secure credentials database, use a value of {USER} for this field in the
  *     vCard:
  *
  *          <X-SECRET-KEY>{USER}</X-SECRET-KEY>
- *     
+ *
  *     To prompt the user the first time the service is accessed (per session)
  *     to provide the value for this field, use a value of {PROMPT} for this
  *     field in the vCard:
@@ -62,12 +62,12 @@
  *     As with the service default type, if these parameters aren't supplied
  *     using any of these mechanisms, the user will be prompted to supply them
  *     at runtime (the same as forcing this behavior with the {PROMPT} value).
- *     
+ *
  *     You will then need to register your service instance so that it services
  *     TP.sig.AmazonSimpleDBRequests (otherwise, the TIBET machinery will
  *     instantiate the 'default' instance of TP.amz.AmazonSimpleDBService and
  *     register it to service these kinds of requests):
- *     
+ *
  *     simpleDBService.register();
  * @todo
  */

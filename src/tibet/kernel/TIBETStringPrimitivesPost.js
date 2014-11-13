@@ -236,7 +236,7 @@ TP.definePrimitive('btoa',
         out = '';
         end = 0;
 
-        /* eslint-disable no-constant-condition */
+        /* eslint-disable no-constant-condition, no-nested-ternary */
         while (end === 0) {
             c = TP.isDefined(arr[++ndx]) ? arr[ndx].charCodeAt(0) :
                                         ((end = 1) ? 0 : 0);
@@ -253,13 +253,13 @@ TP.definePrimitive('btoa',
             if (end === 2) { w = '='; }
             if (end < 3) { out += u + v + w + x; }
         }
-        /* eslint-enable no-constant-condition */
+        /* eslint-enable no-constant-condition, no-nested-ternary */
 
         //  Don't do 76 step as a) Mozilla doesn't and b) the XML Schema
         //  spec doesn't allow for it... just return 'out'.
 
         //  format to 76 char width per RFC
-        //return out.splitToWidth(76).join('\n');
+        // return out.splitToWidth(76).join('\n');
 
         return out;
     },

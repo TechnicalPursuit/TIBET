@@ -72,7 +72,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided contains a string matching
      *     the restricted character set of a base64 encoded string.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isString(anObject)) {
@@ -104,4 +104,3 @@ TP.xs.base64Binary.Type.defineMethod(
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

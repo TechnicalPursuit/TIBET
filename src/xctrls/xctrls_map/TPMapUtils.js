@@ -43,8 +43,8 @@ function(lat, lng) {
     /**
      * @name init
      * @synopsis Returns a newly initialized TP.core.LatLong object.
-     * @param {Number} lat 
-     * @param {Number} lng 
+     * @param {Number} lat
+     * @param {Number} lng
      * @returns {TP.core.LatLong} A new instance.
      * @todo
      */
@@ -91,7 +91,7 @@ function(aLatLong) {
 
     /**
      * @name distance
-     * @returns {Number} 
+     * @returns {Number}
      * @abstract
      * @todo
      */
@@ -112,7 +112,7 @@ function(aLatLong) {
 
 /**
  * @type {TP.core.MapBounds}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -136,10 +136,10 @@ function(swlat, swlong, nelat, nelong) {
     /**
      * @name init
      * @synopsis Returns a newly initialized TP.core.MapBounds object.
-     * @param {Number} swlat 
-     * @param {Number} swlong 
-     * @param {Number} nelat 
-     * @param {Number} nelong 
+     * @param {Number} swlat
+     * @param {Number} swlong
+     * @param {Number} nelat
+     * @param {Number} nelong
      * @returns {TP.core.MapBounds} A new instance.
      * @todo
      */
@@ -156,7 +156,7 @@ function(swlat, swlong, nelat, nelong) {
 
 /**
  * @type {TP.core.MapMarker}
- * @synopsis 
+ * @synopsis
  */
 
 //  ------------------------------------------------------------------------
@@ -184,7 +184,7 @@ function(aLatLong) {
     /**
      * @name init
      * @synopsis Returns a newly initialized TP.core.LatLong object.
-     * @param {TP.core.LatLong} aLatLong 
+     * @param {TP.core.LatLong} aLatLong
      * @returns {TPMarker} A new instance.
      */
 

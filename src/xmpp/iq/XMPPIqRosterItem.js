@@ -38,7 +38,7 @@ function() {
     /**
      * @name getGroupNames
      * @synopsis Returns an Array of group names this item belongs to.
-     * @returns {Array} 
+     * @returns {Array}
      */
 
     var arr;
@@ -60,7 +60,7 @@ function() {
     /**
      * @name getJid
      * @synopsis Returns the TP.xmpp.JID instance associated with this item.
-     * @returns {TP.xmpp.JID} 
+     * @returns {TP.xmpp.JID}
      */
 
     return TP.xmpp.JID.construct(this.getAttribute('jid'));
@@ -74,7 +74,7 @@ function() {
     /**
      * @name getNickname
      * @synopsis Returns the item's nickname, if any.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getAttribute('name');
@@ -89,7 +89,7 @@ function() {
      * @name getSubscription
      * @synopsis Returns the subscription form (none, both, from, to) for the
      *     item.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getAttribute('subscription');
@@ -103,7 +103,7 @@ function() {
     /**
      * @name isPending
      * @synopsis Returns true if the item's subscription is pending.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var ask;

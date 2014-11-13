@@ -30,7 +30,7 @@ function(anObject) {
      *     valid TP.xs.float, a number defined in optional scientific notation
      *     representing a 32-bit floating point number.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      * @todo
      */
 
@@ -107,4 +107,3 @@ TP.xs.float.Type.defineMethod(
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

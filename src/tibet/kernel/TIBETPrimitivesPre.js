@@ -912,8 +912,7 @@ TP.PHash = function() {
     //  has a number of additional input formats
     if (arguments.length === 1) {
         obj = arguments[0];
-        for (i in obj)          //  one of the few places we do this
-        {
+        for (i in obj) {    //  one of the few places we do this
             if (TP.regex.INTERNAL_SLOT.test(i) &&
                 TP.owns(obj, i)) {
                 this.$$hash[i] = obj[i];
@@ -2084,7 +2083,8 @@ TP.defineSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 
 //  ------------------------------------------------------------------------
 
-TP.defineMethodSlot = function(target, name, value, track, desc, display, owner) {
+TP.defineMethodSlot =
+function(target, name, value, track, desc, display, owner) {
 
     /**
      * @name defineMethodSlot
@@ -3022,7 +3022,8 @@ function () {
      * @name genUUID
      * @synopsis Generates an RFC4122 version 4 UUID.
      * @description This solution courtesy of 'broofa' at:
-     *      http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+     *      http://stackoverflow.com/questions/105034/
+     *          how-to-create-a-guid-uuid-in-javascript
      * @returns {String} An RFC4122 version 4 compliant UUID
      */
 
@@ -3030,8 +3031,9 @@ function () {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
             /[xy]/g,
             function(c) {
-                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                    return v.toString(16);
+                var r = Math.random() * 16 | 0, v = c === 'x' ?
+                    r : (r & 0x3 | 0x8);
+                return v.toString(16);
             });
     /* jshint bitwise:true */
 }, false, 'TP.genUUID');
@@ -7470,7 +7472,7 @@ function(anObj, includeScannedGlobals) {
      *     1) It is an instance of Boolean or Number. 2) It is a String that is
      *     the name of an object installed on the 'global' (i.e. Window) object
      *     that is not deemed to be a "natural property" of a Window. 3) It is a
-     *     Function that has been registered using TIBET's 'defineGlobal' method.
+     *     Function that's been registered using TIBET's 'defineGlobal' method.
      *     4) It is a type object - either one of the 8 built-ins, or a subtype
      *     that has been added through the '.defineSubtype' mechanism.
      * @param {Object|String} anObj An object, or name to test.
@@ -7854,7 +7856,8 @@ function(anObj) {
      *     fragment.
      */
 
-    return (TP.isValid(anObj) && anObj.nodeType === Node.DOCUMENT_FRAGMENT_NODE);
+    return (TP.isValid(anObj) &&
+        anObj.nodeType === Node.DOCUMENT_FRAGMENT_NODE);
 });
 
 //  ------------------------------------------------------------------------
@@ -8143,7 +8146,8 @@ function(anObj) {
      * @param {Object} anObj The Object to test.
      * @example Test what's a style rule object and what's not:
      *     <code>
-     *          TP.isStyleRule(TP.styleSheetGetStyleRules(document.styleSheets[0])[0]);
+     *          TP.isStyleRule(TP.styleSheetGetStyleRules(
+     *              document.styleSheets[0])[0]);
      *          <samp>true</samp>
      *          TP.isStyleRule(TP.documentGetBody(document).style);
      *          <samp>false</samp>
@@ -9022,8 +9026,8 @@ function(verbose) {
     //  (i.e. XHR objects) don't like to have slots placed on them.
     try {
         this.$$format_asString = true;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     /* jshint -W009 */
@@ -9048,8 +9052,8 @@ function(verbose) {
     //  We're done - we can remove the recursion flag.
     try {
         delete this.$$format_asString;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     return str;
@@ -9460,12 +9464,12 @@ function () {
          * @name shouldSignalChange
          * @synopsis Defines whether the receiver should actively signal change
          *     notifications.
-         * @description In general objects do not signal changes when no observers
-         *     exist. This flag is triggered by observe where the signal being
-         *     observed is a form of Change signal to "arm" the object for change
-         *     notification. You can also manipulate it during multi-step
-         *     manipulations to signal only when a series of changes has been
-         *     completed.
+         * @description In general objects do not signal changes when no
+         *     observers exist. This flag is triggered by observe where the
+         *     signal being observed is a form of Change signal to "arm" the
+         *     object for change notification. You can also manipulate it during
+         *     multi-step manipulations to signal only when a series of changes
+         *     has been completed.
          * @param {Boolean} aFlag true/false signaling status.
          * @example Signal changes from an object, even though there are no
          *     listeners:
@@ -9476,7 +9480,7 @@ function () {
          *          <samp>1, 2, 3</samp>
          *          // If change signal logging is on, you'll also see
          *          // something like:
-         *          <var>TP.sig.ValueChange @ Array_1119524bba7cc3127febfb45</var>
+         *          <var>TP.sig.ValueChange@Array_1119524bba7cc3127febfb45</var>
          *     </code>
          * @returns {Boolean} The current status.
          * @todo
@@ -11000,7 +11004,7 @@ function(aFlag, shouldSignal) {
     /**
      * @name shouldUniqueTypes
      * @synopsis Controls and returns the state of TIBET's type uniquing flag.
-     * @description When true, TIBET will not recreate types in the defineSubtype
+     * @description When true TIBET will not recreate types in the defineSubtype
      *     call. The default is true, meaning that when a type is ':source'd in
      *     using the TAP/TDC the original type is not replaced. This can help
      *     with maintaining type attribute state across iterative reloads if the
@@ -12047,6 +12051,7 @@ TP.PLUGIN_INFO.atPut(
 
 //  ---
 
+/* eslint-disable max-len */
 TP.PLUGIN_INFO.atPut(
     TP.DIRECTOR_PLUGIN,
     TP.hc('classID',
@@ -12069,9 +12074,11 @@ TP.PLUGIN_INFO.atPut(
                         'SWCtl.SWCtl.5',
                         'SWCtl.SWCtl.4')
         ));
+/* eslint-enable max-len */
 
 //  ---
 
+/* eslint-disable max-len */
 TP.PLUGIN_INFO.atPut(
     TP.FLASH_PLUGIN,
     TP.hc('classID',
@@ -12095,6 +12102,7 @@ TP.PLUGIN_INFO.atPut(
                         'ShockwaveFlash.ShockwaveFlash.5',
                         'ShockwaveFlash.ShockwaveFlash.4')
         ));
+/* eslint-enable max-len */
 
 //  ---
 
@@ -12133,6 +12141,7 @@ TP.PLUGIN_INFO.atPut(
 
 //  ---
 
+/* eslint-disable max-len */
 TP.PLUGIN_INFO.atPut(
     TP.WINDOWS_MEDIA_PLUGIN,
     TP.hc('classID',
@@ -12159,6 +12168,7 @@ TP.PLUGIN_INFO.atPut(
         'progIDs', TP.ac('WMPlayer.OCX',
                         'MediaPlayer.MediaPlayer.1')
         ));
+/* eslint-enable max-len */
 
 //  ---
 

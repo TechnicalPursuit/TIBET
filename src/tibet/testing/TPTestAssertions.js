@@ -3760,6 +3760,7 @@ function(errorConstructor, errMsg, comment) {
     }
 
     if (!retVal && TP.isEmpty(faultStr)) {
+        /* eslint-disable no-nested-ternary */
         faultStr = TP.sc(
                     'Expected ', TP.id(testObj),
                     ' to throw ',
@@ -3768,6 +3769,7 @@ function(errorConstructor, errMsg, comment) {
                         'an error',
                     ' instead of ',
                     TP.str(thrownError));
+        /* eslint-enable no-nested-ternary */
     }
 
     this.set('result', retVal);

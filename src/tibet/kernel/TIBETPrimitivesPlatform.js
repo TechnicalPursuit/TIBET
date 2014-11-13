@@ -407,12 +407,16 @@ TP.hc(
 //  COMMON UTILITY ROUTINES
 //  ------------------------------------------------------------------------
 
+/* eslint-disable max-len */
+
 TP.definePrimitive('executePrivileged',
 TP.hc(
     'test',
     TP.sys.getBrowserUI,
     'gecko',
-    function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged, privilegedFunction) {
+    function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged,
+        privilegedFunction) {
+
         /**
          * @name executePrivileged
          * @synopsis Execute a function that requires some sort of special
@@ -489,25 +493,23 @@ TP.hc(
             //  we're going to try to configure the privilege and including
             //  the reasonMsg.
             TP.alert(
-                TP.sc('This application would like to request the following privileges:', '\n\n',
+                TP.sc('This application would like to request the following ' +
+                    'privileges:', '\n\n',
                 TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
                 'because:', '\n\n',
                 reasonMsg, '\n\n',
+                /* eslint-disable max-len */
                 'Therefore, you may see a dialog asking for permission to activate these privileges.\n\nNote that if you deny this permission and click the \'Remember this decision\' checkbox, you may have to manually edit your browser\'s configuration in the future to allow this application to be fully functional.'));
+                /* eslint-enable max-len */
         } else {
             switch (TP.PRIVILEGE_FLAGS.at(privilegedOp)) {
-                case    'ENABLE':
-
+                case 'ENABLE':
                     //  No 'pre-prompt' here, since this privilege was
                     //  previously configured with TIBET as 'ENABLE'.
-
-                break;
-
-                case    'DISABLE':
-
+                    break;
+                case 'DISABLE':
                     //  No 'pre-prompt' here, since this privilege was
                     //  previously configured with TIBET as 'DISABLE'.
-
                     TP.raise(this,
                             'TP.sig.PrivilegeViolation',
                             TP.sc('Unable to obtain privileges for: '),
@@ -515,20 +517,21 @@ TP.hc(
 
                     //  Exit here, having failed to obtain permission.
                     return false;
-
-                case    'PROMPT':
-
+                case 'PROMPT':
                     //  Privilege was configured as 'PROMPT' with TIBET.
                     //  TP.alert() saying that we're going to try to
                     //  configure the privilege and including the reasonMsg.
                     TP.alert(
-                        TP.sc('This application would like to request the following privileges:', '\n\n',
+                        TP.sc('This application would like to request the ' +
+                            'following privileges:', '\n\n',
                         TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
                         'because:', '\n\n',
                         reasonMsg, '\n\n',
-                        'Therefore, you may see a dialog asking for permission to activate these privileges.'));
-
-                break;
+                        'Therefore, you may see a dialog asking for ' +
+                            'permission to activate these privileges.'));
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -576,13 +579,14 @@ TP.hc(
                     //  privilege but we're not sure whether the user
                     //  checked the 'Remember this decision' dialog box,
                     //  TIBET should continue to prompt the user.
-
+                    /* eslint-disable max-len */
                     stopPrompting = TP.confirm(
                         TP.sc('You have approved enhanced permissions.', '\n\n',
                         'You may have also checked the \'Remember this decision\' checkbox. Would you like your TIBET-based application to also remember this decision?', '\n\n',
                         'If you did not check the \'Remember this decision\' checkbox, you may still want your TIBET-based application to remember this decision so that you will only see browser dialogs from now on.', '\n\n',
                         'Click \'OK\' for your TIBET-based application to remember this decision or \'Cancel\' to not have it remember this decision.')
                         );
+                    /* eslint-enable max-len */
 
                     if (stopPrompting) {
                         //  Set the privilege status to 'ENABLE'
@@ -679,7 +683,9 @@ TP.hc(
         return false;
     },
     'trident',
-    function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged, privilegedFunction) {
+    function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged,
+            privilegedFunction) {
+
         /**
          * @name executePrivileged
          * @synopsis Execute a function that requires some sort of special
@@ -752,25 +758,22 @@ TP.hc(
             //  we're going to try to configure the privilege and including
             //  the reasonMsg.
             TP.alert(
-                TP.sc('This application would like to request the following privileges:', '\n\n',
+                TP.sc('This application would like to request the ' +
+                    'following privileges:', '\n\n',
                 TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
                 'because:', '\n\n',
                 reasonMsg, '\n\n',
-                'Therefore, you may see a dialog asking for permission to activate these privileges.'));
+                'Therefore, you may see a dialog asking for permission ' +
+                    'to activate these privileges.'));
         } else {
             switch (TP.PRIVILEGE_FLAGS.at(privilegedOp)) {
-                case    'ENABLE':
-
+                case 'ENABLE':
                     //  No 'pre-prompt' here, since this privilege was
                     //  previously configured with TIBET as 'ENABLE'.
-
-                break;
-
-                case    'DISABLE':
-
+                    break;
+                case 'DISABLE':
                     //  No 'pre-prompt' here, since this privilege was
                     //  previously configured with TIBET as 'DISABLE'.
-
                     TP.raise(this,
                             'TP.sig.PrivilegeViolation',
                             TP.sc('Unable to obtain privileges for: '),
@@ -778,20 +781,21 @@ TP.hc(
 
                     //  Exit here, having failed to obtain permission.
                     return false;
-
-                case    'PROMPT':
-
+                case 'PROMPT':
                     //  Privilege was configured as 'PROMPT' with TIBET.
                     //  TP.alert() saying that we're going to try to
                     //  configure the privilege and including the reasonMsg.
                     TP.alert(
-                        TP.sc('This application would like to request the following privileges:', '\n\n',
+                        TP.sc('This application would like to request the ' +
+                            'following privileges:', '\n\n',
                         TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
                         'because:', '\n\n',
                         reasonMsg, '\n\n',
-                        'Therefore, you may see a dialog asking for permission to activate these privileges.'));
-
-                break;
+                        'Therefore, you may see a dialog asking for ' +
+                            'permission to activate these privileges.'));
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -862,11 +866,14 @@ TP.hc(
                     TP.alert(TP.sc('Permission was denied to this application to perform the operation.\n\nThis means that the permission to do so has been set to \'Disable\' in the Security Preferences panel.\n\nContact your system administrator to rectify this situation.\n\nThis panel will NOT be shown again during this application session.'));
                 } else {
                     TP.alert(
-                        TP.sc('Because you denied this application the following privileges:\n\n',
+                        TP.sc('Because you denied this application the ' +
+                            'following privileges:\n\n',
                         TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
-                        'the consequences are that:', '\n\n',
+                        'the consequences are:', '\n\n',
                         failureMsg, '\n\n',
-                        'You cannot attempt to perform this operation again.  You must quit this application, restart it and try again.', '\n\n'));
+                        'You cannot attempt to perform this operation ' +
+                            'again. You must quit this application, restart ' +
+                            'it and try again.', '\n\n'));
                 }
 
                 //  Set the privilege status to 'DISABLE'
@@ -883,7 +890,9 @@ TP.hc(
         return permissionObtained;
     },
     'webkit',
-    function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged, privilegedFunction) {
+    function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged,
+        privilegedFunction) {
+
         /**
          * @name executePrivileged
          * @synopsis Execute a function that requires some sort of special
@@ -910,6 +919,8 @@ TP.hc(
         return false;
     }
 ));
+
+/* eslint-enable max-len */
 
 //  ------------------------------------------------------------------------
 //  COMMON UTILITY ROUTINES
@@ -1293,8 +1304,8 @@ TP.hc(
 
         //  Reading and writing preferences actually requires capabilities
         //  that we don't ask for.
-        //TP.PRIVILEGE_FLAGS.atPut(TP.READ_PREFERENCE, setting);
-        //TP.PRIVILEGE_FLAGS.atPut(TP.WRITE_PREFERENCE, setting);
+        // TP.PRIVILEGE_FLAGS.atPut(TP.READ_PREFERENCE, setting);
+        // TP.PRIVILEGE_FLAGS.atPut(TP.WRITE_PREFERENCE, setting);
 
         TP.PRIVILEGE_FLAGS.atPut(TP.MANIPULATE_WINDOW, setting);
         TP.PRIVILEGE_FLAGS.atPut(TP.READ_EXECUTION_STACK, setting);

@@ -103,8 +103,8 @@ function() {
     //  (i.e. XHR objects) don't like to have slots placed on them.
     try {
         this.$$format_asHTMLString = true;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     //  perform a simple conversion based on filtering rule if any
@@ -128,8 +128,8 @@ function() {
     //  We're done - we can remove the recursion flag.
     try {
         delete this.$$format_asHTMLString;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     return arr.join('');
@@ -241,8 +241,8 @@ function(aFilterName) {
     //  (i.e. XHR objects) don't like to have slots placed on them.
     try {
         this.$$format_asXMLString = true;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     //  perform a simple conversion based on filtering rule if any
@@ -260,8 +260,8 @@ function(aFilterName) {
     //  We're done - we can remove the recursion flag.
     try {
         delete this.$$format_asXMLString;
-    }
-    catch (e) {
+    } catch (e) {
+        void(0);
     }
 
     return arr.join('');

@@ -387,7 +387,11 @@ function() {
 
         //  ---
 
-        testRep = (function (object, formatParams) {return 'Your name is: ' + object.at('firstName');}).transform(TP.hc('firstName', 'Bill'));
+        /* eslint-disable no-wrap-func */
+        testRep = (function (object, formatParams) {
+            return 'Your name is: ' + object.at('firstName');
+        }).transform(TP.hc('firstName', 'Bill'));
+        /* eslint-enable no-wrap-func */
 
         correctRep = 'Your name is: Bill';
 
@@ -432,8 +436,7 @@ function() {
         dayOnlyDateFormatter = TP.lang.Object.construct();
         dayOnlyDateFormatter.defineMethod(
                 'transformDate',
-                function (aDate, formatParams)
-                {
+                function (aDate, formatParams) {
                     return aDate.getDate();
                 });
 
@@ -468,8 +471,7 @@ function() {
         newObj.set('firstName', 'Scott');
 
         newObj.defineMethod('getFirstName',
-                                function ()
-                                {
+                                function () {
                                     return 'Rob';
                                 });
 

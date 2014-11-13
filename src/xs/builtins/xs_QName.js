@@ -79,7 +79,7 @@ function(anObject) {
      *     TIBET-speak) containing a valid TP.xs.anyURI and a valid
      *     TP.xs.NCName.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var str,
@@ -136,4 +136,3 @@ TP.xs.QName.Type.defineMethod('validateFacetMinLength',
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

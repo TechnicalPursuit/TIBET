@@ -37,7 +37,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided contains a string matching
      *     the restricted character set of a hexBinary encoded string.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     if (!TP.isString(anObject)) {
@@ -69,4 +69,3 @@ TP.xs.hexBinary.Type.defineMethod(
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

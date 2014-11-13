@@ -42,7 +42,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided represents a valid XML
      *     Schema month specification.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var str,
@@ -79,4 +79,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

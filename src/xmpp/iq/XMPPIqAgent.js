@@ -38,7 +38,7 @@ function() {
     /**
      * @name getJID
      * @synopsis Returns the string value of the receiver's jid attribute.
-     * @returns {String} 
+     * @returns {String}
      */
 
     return this.getAttribute('jid');

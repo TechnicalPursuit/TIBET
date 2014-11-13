@@ -8565,9 +8565,7 @@ function(aURI, aRequest) {
             //  in one place regardless of how it was acquired/built
             void(0);
         }
-    }
-    else    //  map not found -- first time for this URI/profile pair
-    {
+    } else {    //  map not found -- first time for this URI/profile pair
         map = TP.ifInvalid(TP.core.URI.$getURIMapForKey(url, entry, key),
                             TP.hc());
     }

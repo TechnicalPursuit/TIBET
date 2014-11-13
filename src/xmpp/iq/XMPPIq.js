@@ -65,7 +65,7 @@ function() {
      * @synopsis Creates an appropriate response object based on the current
      *     packet. For IQ packets the namespace of the current packet is
      *     leveraged to construct a new instance with proper type.
-     * @returns {TP.xmpp.Stanza} 
+     * @returns {TP.xmpp.Stanza}
      */
 
     var inst,
@@ -95,7 +95,7 @@ function() {
     /**
      * @name getDefaultType
      * @synopsis Returns the default stanza type for the receiver.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 
@@ -117,7 +117,7 @@ function(aStanza) {
      *     be null. This method should 'pass along' the receiver to any nested
      *     getSignalName() calls as the stanza.
      * @param {TP.xmpp.Stanza} aStanza The stanza that 'owns' this element.
-     * @returns {String} 
+     * @returns {String}
      * @todo
      */
 

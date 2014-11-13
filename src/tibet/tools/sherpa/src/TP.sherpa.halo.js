@@ -64,8 +64,8 @@ function() {
      * @name setup
      */
 
+    /* eslint-disable no-wrap-func */
     (function (aSignal) {
-
         if (aSignal.getShiftKey()) {
             //  Make sure to prevent default to avoid having the context menu
             //  pop up.
@@ -73,26 +73,20 @@ function() {
             aSignal.stopPropagation();
 
             this.changeHaloFocus(aSignal);
-
             return;
         }
-
-        }).bind(this).observe(
-            TP.core.Mouse, 'TP.sig.DOMContextMenu');
+    }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
 
     (function (aSignal) {
-
         if (aSignal.getShiftKey() && TP.notTrue(this.get('hidden'))) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
             this.changeHaloFocus(aSignal);
-
             return;
         }
-
-        }).bind(this).observe(
-            TP.core.Mouse, 'TP.sig.DOMClick');
+    }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMClick');
+    /* eslint-disable no-wrap-func */
 
     return this;
 });
@@ -174,6 +168,7 @@ function(target) {
         this.blur();
     } else {
         //  No existing target
+        void(0);
     }
 
     this.signal('TP.sig.HaloDidFocus');

@@ -29,7 +29,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided falls between 0 and 65535
      *     inclusive.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var n;
@@ -52,4 +52,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

@@ -562,6 +562,8 @@ function(target, options) {
     shouldThrowSetting = TP.sys.shouldThrowExceptions();
     TP.sys.shouldThrowExceptions(true);
 
+    /* eslint-disable handle-callback-err */
+
     //  Use reduce to convert our suite array into a chain of promises. We
     //  prime the list with a resolved promise to ensure 'current' receives all
     //  the suites during iteration while 'chain' is the last promise in the
@@ -577,6 +579,7 @@ function(target, options) {
                         //  the chain remains unbroken...unless we're doing an
                         //  early exit etc.
                         //  TODO: early exit?
+                        void(0);
                     });
             }, Q.Promise.resolve());
 
@@ -590,6 +593,7 @@ function(target, options) {
         TP.sys.shouldThrowExceptions(shouldThrowSetting);
         summarize();
     });
+    /* eslint-enable handle-callback-err */
 });
 
 //  ------------------------------------------------------------------------
@@ -1098,7 +1102,7 @@ function(options) {
         caseList.perform(
                 function(item) {
                     var status = item.getStatusCode();
-                    switch(status) {
+                    switch (status) {
                         case TP.ERRORED:
                             errored += 1;
                             break;
@@ -1214,7 +1218,7 @@ function(options) {
         suite,
         maybe,
         params,
-
+        nextPromise,
         firstPromise;
 
     //  Output a small 'suite header'
@@ -1284,8 +1288,6 @@ function(options) {
     //  If a Promise was also *returned* from executing 'before', then chain it
     //  on the first Promise and reset the '$internalPromise' reference.
     if (TP.canInvoke(maybe, 'then')) {
-        var nextPromise;
-
         nextPromise = firstPromise.then(
                             function() {
                                 return maybe;
@@ -1682,8 +1684,10 @@ function(aFunction) {
         lastPromise = internalPromise;
     }
 
+    /* eslint-disable new-cap */
     //  Execute the supplied Function and wrap a Promise around the result.
     subPromise = Q.Promise(aFunction);
+    /* eslint-enable new-cap */
 
     //  'then' onto our last promise, chaining on the promise we just
     //  allocated.
@@ -2044,7 +2048,9 @@ function() {
 
     if (!this.$resolver) {
         /* jshint -W087 */
+        /* eslint-disable no-debugger */
         debugger;
+        /* eslint-enable no-debugger */
         /* jshint +W087 */
     }
 
@@ -2132,6 +2138,7 @@ function(options) {
     //  Binding variable for closures below.
     testcase = this;
 
+   /* eslint-disable new-cap */
     promise = Q.Promise(function(resolver, rejector) {
         var internalPromise,
             maybe;
@@ -2253,6 +2260,7 @@ function(options) {
             }
         }
     }).timeout(timeout);
+   /* eslint-enable new-cap */
 
     return promise.then(
         function(obj) {
@@ -2477,7 +2485,9 @@ function(aFunction) {
     }
 
     //  Execute the supplied Function and wrap a Promise around the result.
+    /* eslint-disable new-cap */
     subPromise = Q.Promise(aFunction);
+    /* eslint-enable new-cap */
 
     //  'then' onto our last promise, chaining on the promise we just
     //  allocated.
@@ -2658,6 +2668,7 @@ function(stepNames, endName) {
     //  traversal chain.
     endMethod = proto[endName];
 
+    /* eslint-disable no-loop-func */
     for (i = 0; i < stepNames.getSize(); i++) {
 
         //  The first step is to install a getter on the instance prototype that
@@ -2697,7 +2708,7 @@ function(stepNames, endName) {
                     {
                         get: startGetter
                     });
-        })();
+        }());
 
         //  The second step is to install a getter on the Function object itself
         //  (and which is the method on the initial receiving object) which will
@@ -2747,8 +2758,9 @@ function(stepNames, endName) {
                     {
                         get: stepGetter
                     });
-        })();
+        }());
     }
+    /* eslint-enable no-loop-func */
 
     return this;
 });
@@ -2788,6 +2800,8 @@ function(methodInfoDict) {
 
     endNames = methodInfoDict.getKeys();
 
+    /* eslint-disable no-loop-func */
+
     //  Loop over the end names and install a getter method 'around' the method
     //  that will clear the '$realThis' slot from the method Function object (to
     //  avoid endless recursions) and invoke the 'original method' using the
@@ -2826,6 +2840,7 @@ function(methodInfoDict) {
             thisArg.Inst.defineMethod(endName, endMethod);
         }());
     }
+    /* eslint-enable no-loop-func */
 
     //  Now that the wrapper methods have been installed, go ahead and set up
     //  the method chain for each end name. **NOTE** We *have* to do this in a
@@ -2833,9 +2848,7 @@ function(methodInfoDict) {
     //  the *original* end methods above and not the *wrapper* end methods that
     //  we install. So *THESE TWO LOOPS CANNOT BE COMBINED*.
     for (i = 0; i < endNames.getSize(); i++) {
-
         endName = endNames.at(i);
-
         this.$installMethodChain(methodInfoDict.at(endName), endName);
     }
 

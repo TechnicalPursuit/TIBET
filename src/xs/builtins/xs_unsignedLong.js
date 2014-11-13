@@ -29,7 +29,7 @@ function(anObject) {
      * @synopsis Returns true if the object provided is an unsigned 64-bit value
      *     between 0 and 18446744073709551615 inclusive.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var n;
@@ -52,4 +52,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

@@ -35,7 +35,7 @@ function() {
     /**
      * @name getReleaseDescription
      * @synopsis Returns the description of the release specified by this node.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var tpRelElem;
@@ -57,7 +57,7 @@ function() {
      * @name getReleasePriority
      * @synopsis Returns the priority assigned to the release described by this
      *     node.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var tpRelElem;
@@ -78,7 +78,7 @@ function() {
     /**
      * @name getReleaseURL
      * @synopsis Returns the URL of the release specified by this node.
-     * @returns {TP.core.URL} 
+     * @returns {TP.core.URL}
      */
 
     var tpRelElem;
@@ -99,7 +99,7 @@ function() {
     /**
      * @name getReleaseVersion
      * @synopsis Returns the version of the release specified by this node.
-     * @returns {String} 
+     * @returns {String}
      */
 
     var tpRelElem;

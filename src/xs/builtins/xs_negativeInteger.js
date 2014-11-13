@@ -28,7 +28,7 @@ function(anObject) {
      * @name validate
      * @synopsis Returns true if the object provided is a number less than 0.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean} 
+     * @returns {Boolean}
      */
 
     var n;
@@ -51,4 +51,3 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

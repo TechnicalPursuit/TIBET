@@ -1312,9 +1312,7 @@ function(aRootPath, aRelativePath, filePath) {
     if (TP.isEmpty(aRelativePath)) {
         if (TP.isEmpty(aRootPath)) {
             return decodeURI(window.location.toString());
-        }
-        else    //  root path only, most common case
-        {
+        } else {    //  root path only, most common case
             first = TP.str(aRootPath);
 
             //  when the first path was a ~ or scheme-based path we can
@@ -1352,9 +1350,7 @@ function(aRootPath, aRelativePath, filePath) {
             //  presuming things are relative to the app root
             return TP.uriJoinPaths(TP.sys.getAppRoot(), first);
         }
-    }
-    else    //  second path not empty
-    {
+    } else {    //  second path not empty
         //  next test is whether the second path is absolute and if it is
         //  we can simply return it (but we prepend tibet:/// to normalize
         //  tibet refs). Note that TIBET URIs prefixed with ~ are considered
@@ -1941,6 +1937,7 @@ function(targetUrl, filePrefix, fileSuffix) {
 
         name = TP.uriJoinPaths(root, TP.join(TP.genID(prefix), '.', suffix));
     } catch (e) {
+        void(0);
     } finally {
         TP.OID_PREFIX = origPrefix;
     }
