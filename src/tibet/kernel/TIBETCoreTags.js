@@ -236,13 +236,24 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.core.TemplatedApplication
+//  TP.core.TemplatedApplicationTag
 //  ========================================================================
+
+/**
+ * @type {TP.core.TemplatedApplicationTag}
+ * @synopsis TP.core.TemplatedApplicationTag is the common supertype for
+ *     applications whose root tag uses a template to render. This is the
+ *     type used by most TIBET dna by default.
+ */
+
+//  ------------------------------------------------------------------------
 
 TP.core.ApplicationTag.defineSubtype('TP.core.TemplatedApplicationTag');
 
+/* Mix in templating behavior */
 TP.core.TemplatedApplicationTag.addTraitsFrom(TP.core.TemplatedNode);
 
+/* Resolve the traits since they're available without instance creation. */
 TP.core.TemplatedApplicationTag.executeTraitResolution();
 
 //  ------------------------------------------------------------------------
