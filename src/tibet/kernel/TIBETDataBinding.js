@@ -772,7 +772,6 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     //  aspect.
     handler.$aspectMap.atPut(aspectKey, targetAttributeName);
 
-    //  Observe the target.
     target.observe(resource, signalName);
 
     return target;
@@ -1037,6 +1036,374 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
     return TP.destroyBinding(
             this, targetAttributeName, resourceOrURI,
             sourceAttributeName, sourceFacetName);
+});
+
+//  ------------------------------------------------------------------------
+//  TP.core.ElementNode
+//  ------------------------------------------------------------------------
+
+//  The attributes for this element type that are considered to 'bidi
+//  attributes' that can not only be bound to data source but be bound *back* to
+//  the data source so that when they are changed by the user, they update the
+//  data source.
+TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
+function(attributeName) {
+
+    /**
+     * @name getBindingInfoFrom
+     * @synopsis Gets binding information from the attribute named by the
+     *     supplied attribute name on the receiver.
+     * @param {String} attributeName The *local* name of the attribute to obtain
+     *     the binding information from.
+     * @returns {TP.lang.Hash} A hash of binding information keyed by the
+     *     binding target name.
+     */
+
+    var elem,
+
+        infoHash,
+
+        attrNodes,
+        bindEntries,
+
+        localScopeNode,
+
+        scopeVals;
+
+    elem = this.getNativeNode();
+
+    infoHash = TP.hc();
+
+    //  If there are no attributes on the receiver that belong to the
+    //  TP.w3.Xmlns.BIND namespace, then just return an empty hash here - there
+    //  is no reason to compute a bind scope chain for an element that doesn't
+    //  have any binding.
+
+    if (TP.isEmpty(attrNodes = TP.elementGetAttributeNodesInNS(
+                        elem, '*:' + attributeName, TP.w3.Xmlns.BIND))) {
+        return infoHash;
+    } else {
+        //  Otherwise, grab the value and split it along ';' (and stripping
+        //  surrounding whitespace)
+        bindEntries = attrNodes[0].value.split(/\s*;\s*/);
+    }
+
+    scopeVals = TP.ac();
+
+    //  Check to see if there is a local 'scope' attribute on the element
+    //  itself. It will be used to qualify any expressions on itself.
+    if (TP.notEmpty(localScopeNode = TP.elementGetAttributeNodesInNS(
+                                    elem, '*:scope', TP.w3.Xmlns.BIND))) {
+        scopeVals.push(localScopeNode[0].value);
+    }
+
+    //  Gather the 'bind:scope' setting up the chain.
+    TP.nodeAncestorsPerform(
+        elem,
+        function(aNode) {
+
+            var scopeAttrNodes;
+
+            //  Have to check to make sure we're not at the #document node.
+            if (TP.isElement(aNode)) {
+
+                //  Get any 'scope' attributes belonging to the TP.w3.Xmlns.BIND
+                //  namespace.
+                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
+                                    aNode, '*:scope', TP.w3.Xmlns.BIND);
+
+                //  If we found one, add it's value onto the end of the scope
+                //  values array.
+                if (TP.notEmpty(scopeAttrNodes)) {
+                    scopeVals.push(scopeAttrNodes[0].value);
+                }
+            }
+        });
+
+    //  Make sure to reverse the scope values, since we want the 'most
+    //  significant' to be first.
+    scopeVals.reverse();
+
+    //  Iterate over all of the binding entries and qualify them with the values
+    //  from the scope values array.
+    bindEntries.perform(
+        function(bindEntry) {
+
+            var parts,
+
+                bindName,
+                bindVal,
+
+                allVals,
+                fullyExpandedVal;
+
+            //  Each entry will have a 'name: value' pair. We split them all out
+            //  by semicolon above - now we have to split each one into name and
+            //  value.
+            parts = bindEntry.match(/(\w+)\:\s*([^;]+)/);
+            bindName = parts.at(1);
+            bindVal = parts.at(2);
+
+            if (TP.notEmpty(scopeVals)) {
+                //  Concatenate the binding value onto the scope values array
+                //  (thereby creating a new Array) and use it to join all of the
+                //  values together.
+                allVals = scopeVals.concat(bindVal);
+                fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
+
+                if (!TP.isURI(fullyExpandedVal)) {
+                    this.raise('TP.sig.InvalidURI');
+                    return TP.BREAK;
+                }
+
+                infoHash.atPut(bindName, fullyExpandedVal);
+            } else {
+                //  Scope values is empty - this is (hopefully) a fully
+                //  qualified binding expression.
+                infoHash.atPut(bindName, bindVal);
+            }
+        });
+
+    return infoHash;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('isBoundElement',
+function() {
+
+    /**
+     * @name isBoundElement
+     * @synopsis Whether or not the receiver is a bound element.
+     * @returns {Boolean} Whether or not the receiver is bound.
+     */
+
+    var bindAttrNodes;
+
+    //  We look for either 'in', 'out', or 'io' here to determine if the
+    //  receiver is bound. The 'scope' attribute doesn't indicate that it is
+    //  bound.
+    bindAttrNodes = TP.elementGetAttributeNodesInNS(
+                        this.getNativeNode(), /in|out|io/, TP.w3.Xmlns.BIND);
+
+    return TP.notEmpty(bindAttrNodes);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('rebuild',
+function(aSignalOrHash) {
+
+    /**
+     * @name rebuild
+     * @synopsis Rebuilds any bindings for the receiver.
+     * @param {TP.sig.DOMRebuild|TP.lang.Hash} aSignalOrHash An optional signal
+     *     which triggered this action or hash supplied by the caller. This
+     *     object should include the following keys:
+     *          'deep'          ->      a value of true causes all descendant
+     *                                  nodes to rebuild their bindings. If this
+     *                                  value isn't supplied, this method
+     *                                  defaults this setting to true.
+     *          'shouldDefine'  ->      a value of true causes this method to
+     *                                  define bindings when rebuilding them. If
+     *                                  this value isn't supplied, this method
+     *                                  defaults this setting to true.
+     *          'shouldDestroy' ->      a value of true causes this method to
+     *                                  destroy bindings when rebuilding them.
+     *                                  If this value isn't supplied, this
+     *                                  method defaults this setting to true.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var shouldDefine,
+        shouldDestroy,
+
+        bindingInfos,
+        bindingInfo;
+
+    shouldDefine = aSignalOrHash.atIfInvalid('shouldDefine', true);
+    shouldDestroy = aSignalOrHash.atIfInvalid('shouldDestroy', true);
+
+    //  If there isn't an overall 'binding information' dictionary defined on
+    //  the receiver, then define one.
+    if (TP.notValid(bindingInfos = this.get('bindInfos'))) {
+        bindingInfos = TP.hc();
+        this.set('bindInfos', bindingInfos);
+    }
+
+    //  If the caller wants us to destroy bindings, then we do so here.
+    if (shouldDestroy) {
+
+        //  bind:in
+
+        //  Read the binding information from any 'bind:in' attribute.
+        if (TP.notEmpty(bindingInfo = bindingInfos.at('in'))) {
+
+            bindingInfo.perform(
+                function(kvPair) {
+                    var attrName,
+                        obsURI;
+
+                    attrName = kvPair.first();
+                    obsURI = TP.uc(kvPair.last());
+
+                    //  Destroy the binding using the attribute name and 'value'
+                    //  as the source attribute name (any URI that we're
+                    //  observing - whether a URI pointing to a primary resource
+                    //  or one pointing to a subresource will have been sending
+                    //  a 'TP.sig.ValueChange').
+                    this.destroyBinding('@' + attrName, obsURI, 'value');
+                }.bind(this));
+        }
+
+        //  bind:io
+
+        //  Read the binding information from any 'bind:io' attribute.
+        if (TP.notEmpty(bindingInfo = bindingInfos.at('io'))) {
+
+            bindingInfo.perform(
+                function(kvPair) {
+                    var attrName,
+                        obsURI;
+
+                    attrName = kvPair.first();
+                    obsURI = TP.uc(kvPair.last());
+
+                    //  Destroy the binding using the attribute name and 'value'
+                    //  as the source attribute name (any URI that we're
+                    //  observing - whether a URI pointing to a primary resource
+                    //  or one pointing to a subresource will have been sending
+                    //  a 'TP.sig.ValueChange').
+                    this.destroyBinding('@' + attrName, obsURI, 'value');
+
+                    //  Since we're binding for 'io', we check to see if we can
+                    //  remove the binding in the other direction by asking the
+                    //  receiver. If so, remove it.
+
+                    if (this.getType().get('bidiAttrs').contains(attrName)) {
+
+                        //  Remove any binding from the control to the URI
+                        obsURI.destroyBinding('value', this, 'value');
+                    }
+
+                }.bind(this));
+        }
+
+        //  bind:out
+
+        //  Read the binding information from any 'bind:out' attribute.
+        if (TP.notEmpty(bindingInfo = bindingInfos.at('out'))) {
+
+            bindingInfo.perform(
+                function(kvPair) {
+                    var attrName,
+                        obsURI;
+
+                    attrName = kvPair.first();
+                    obsURI = TP.uc(kvPair.last());
+
+                    //  Remove any binding from the control to the URI
+                    obsURI.destroyBinding('value', this, 'value');
+
+                }.bind(this));
+        }
+    }
+
+    //  Empty out all of the stored binding information - we will repopulate
+    //  below.
+    bindingInfos.empty();
+
+    //  If the caller wants us to define bindings.
+    if (shouldDefine) {
+
+        //  bind:in
+
+        //  Read the binding information from any 'bind:in' attribute.
+        if (TP.notEmpty(bindingInfo = this.getBindingInfoFrom('in'))) {
+
+            bindingInfo.perform(
+                function(kvPair) {
+                    var attrName,
+                        obsURI;
+
+                    attrName = kvPair.first();
+                    obsURI = TP.uc(kvPair.last());
+
+                    //  Define the binding using the attribute name and 'value'
+                    //  as the source attribute name (any URI that we're
+                    //  observing - whether a URI pointing to a primary resource
+                    //  or one pointing to a subresource will send a
+                    //  'TP.sig.ValueChange').
+                    this.defineBinding('@' + attrName, obsURI, 'value');
+                }.bind(this));
+
+            bindingInfos.atPut('in', bindingInfo);
+        }
+
+        //  bind:io
+
+        //  Read the binding information from any 'bind:io' attribute.
+        if (TP.notEmpty(bindingInfo = this.getBindingInfoFrom('io'))) {
+
+            bindingInfo.perform(
+                function(kvPair) {
+                    var attrName,
+                        obsURI;
+
+                    attrName = kvPair.first();
+                    obsURI = TP.uc(kvPair.last());
+
+                    //  Define the binding using the attribute name and 'value'
+                    //  as the source attribute name (any URI that we're
+                    //  observing - whether a URI pointing to a primary resource
+                    //  or one pointing to a subresource will send a
+                    //  'TP.sig.ValueChange').
+                    this.defineBinding('@' + attrName, obsURI, 'value');
+
+                    //  Since we're binding for 'io', we check to see if we can
+                    //  add another binding in the other direction by asking the
+                    //  receiver. If so, establish one.
+
+                    if (this.getType().get('bidiAttrs').contains(attrName)) {
+                        //  Establish the binding from the control to the URI
+                        obsURI.defineBinding('value', this, 'value');
+                    }
+
+                }.bind(this));
+
+            bindingInfos.atPut('io', bindingInfo);
+        }
+
+        //  bind:out
+
+        //  Read the binding information from any 'bind:out' attribute.
+        if (TP.notEmpty(bindingInfo = this.getBindingInfoFrom('out'))) {
+
+            bindingInfo.perform(
+                function(kvPair) {
+                    var attrName,
+                        obsURI;
+
+                    attrName = kvPair.first();
+                    obsURI = TP.uc(kvPair.last());
+
+                        //  Establish the binding from the control to the URI
+                    obsURI.defineBinding('value', this, 'value');
+
+                }.bind(this));
+
+            bindingInfos.atPut('out', bindingInfo);
+        }
+    }
+
+    //  TODO: Send 'rebuild' to *shallow children* elements with 'bind:'
+    //  attributes if the 'deep' flag is specified.
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
