@@ -235,6 +235,16 @@ function(aRequest) {
     return newElem;
 });
 
+//  ========================================================================
+//  TP.core.TemplatedApplication
+//  ========================================================================
+
+TP.core.ApplicationElement.defineSubtype('TP.core.TemplatedApplication');
+
+TP.core.TemplatedApplication.addTraitsFrom(TP.core.TemplatedNode);
+
+TP.core.TemplatedApplication.executeTraitResolution();
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

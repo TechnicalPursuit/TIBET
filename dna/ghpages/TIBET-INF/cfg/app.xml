@@ -19,7 +19,6 @@
 
 <config id="app_img">
     <script src="~app_src/tags/APP.{{appname}}.app.js" />
-    <script src="~app_src/main.js" />
 </config>
 
 <config id="test" if="boot.phasetwo">
