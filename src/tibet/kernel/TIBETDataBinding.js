@@ -1070,8 +1070,6 @@ function(attributeName) {
         attrNodes,
         bindEntries,
 
-        localScopeNode,
-
         scopeVals;
 
     elem = this.getNativeNode();
@@ -1092,41 +1090,7 @@ function(attributeName) {
         bindEntries = attrNodes[0].value.split(/\s*;\s*/);
     }
 
-    scopeVals = TP.ac();
-
-    //  Check to see if there is a local 'scope' attribute on the element
-    //  itself. It will be used to qualify any expressions on itself.
-    if (TP.notEmpty(localScopeNode = TP.elementGetAttributeNodesInNS(
-                                    elem, '*:scope', TP.w3.Xmlns.BIND))) {
-        scopeVals.push(localScopeNode[0].value);
-    }
-
-    //  Gather the 'bind:scope' setting up the chain.
-    TP.nodeAncestorsPerform(
-        elem,
-        function(aNode) {
-
-            var scopeAttrNodes;
-
-            //  Have to check to make sure we're not at the #document node.
-            if (TP.isElement(aNode)) {
-
-                //  Get any 'scope' attributes belonging to the TP.w3.Xmlns.BIND
-                //  namespace.
-                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
-                                    aNode, '*:scope', TP.w3.Xmlns.BIND);
-
-                //  If we found one, add it's value onto the end of the scope
-                //  values array.
-                if (TP.notEmpty(scopeAttrNodes)) {
-                    scopeVals.push(scopeAttrNodes[0].value);
-                }
-            }
-        });
-
-    //  Make sure to reverse the scope values, since we want the 'most
-    //  significant' to be first.
-    scopeVals.reverse();
+    scopeVals = this.getBindingScopeValues();
 
     //  Iterate over all of the binding entries and qualify them with the values
     //  from the scope values array.
@@ -1169,6 +1133,67 @@ function(attributeName) {
         });
 
     return infoHash;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getBindingScopeValues',
+function() {
+
+    /**
+     * @name getBindingScopeValues
+     * @synopsis Returns the binding scope values by starting at the receiver
+     *      and traversing the DOM tree up to the #document node, gathering
+     *      'bind:scope' attribute values along the way. This will be used to
+     *      qualify binding expressions on the receiver.
+     * @returns {Array} An Array of binding scope values.
+     */
+
+    var elem,
+
+        localScopeNode,
+
+        scopeVals;
+
+    elem = this.getNativeNode();
+
+    scopeVals = TP.ac();
+
+    //  Check to see if there is a local 'scope' attribute on the element
+    //  itself. It will be used to qualify any expressions on itself.
+    if (TP.notEmpty(localScopeNode = TP.elementGetAttributeNodesInNS(
+                                    elem, '*:scope', TP.w3.Xmlns.BIND))) {
+        scopeVals.push(localScopeNode[0].value);
+    }
+
+    //  Gather the 'bind:scope' setting up the chain.
+    TP.nodeAncestorsPerform(
+        elem,
+        function(aNode) {
+
+            var scopeAttrNodes;
+
+            //  Have to check to make sure we're not at the #document node.
+            if (TP.isElement(aNode)) {
+
+                //  Get any 'scope' attributes belonging to the TP.w3.Xmlns.BIND
+                //  namespace.
+                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
+                                    aNode, '*:scope', TP.w3.Xmlns.BIND);
+
+                //  If we found one, add it's value onto the end of the scope
+                //  values array.
+                if (TP.notEmpty(scopeAttrNodes)) {
+                    scopeVals.push(scopeAttrNodes[0].value);
+                }
+            }
+        });
+
+    //  Make sure to reverse the scope values, since we want the 'most
+    //  significant' to be first.
+    scopeVals.reverse();
+
+    return scopeVals;
 });
 
 //  ------------------------------------------------------------------------
