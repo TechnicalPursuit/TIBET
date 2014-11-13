@@ -17,17 +17,23 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var beautify = require('js-beautify').js_beautify;
+var CLI,
+    beautify,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
+beautify = require('js-beautify').js_beautify;
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -89,9 +95,9 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['minify', 'raw', 'all'],
-        string: ['tibet'],
-        default: {
+        'boolean': ['minify', 'raw', 'all'],
+        'string': ['tibet'],
+        'default': {
             all: false,
             minify: true,
             raw: false,
@@ -118,20 +124,20 @@ Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw
  */
 Cmd.prototype.execute = function() {
 
-    var path;
-    var sh;
+    var path,
+        sh,
 
-    var cmd;
-    var err;
-    var app_inf;
-    var app_npm;
-    var infroot;
-    var libbase;
-    var srcroot;
+        cmd,
+        err,
+        app_inf,
+        app_npm,
+        infroot,
+        libbase,
+        srcroot,
 
-    var json;
-    var list;
-    var bundle;
+        json,
+        list,
+        bundle;
 
     path = require('path');
     sh = require('shelljs');

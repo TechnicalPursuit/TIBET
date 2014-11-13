@@ -119,10 +119,10 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['major', 'minor', 'patch', 'build', 'check', 'local',
+        'boolean': ['major', 'minor', 'patch', 'build', 'check', 'local',
             'dry-run'],
-        string: ['suffix', 'version'],
-        default: {
+        'string': ['suffix', 'version'],
+        'default': {
             major: false,
             minor: false,
             patch: false,

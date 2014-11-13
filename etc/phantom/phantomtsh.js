@@ -396,9 +396,11 @@
             msg,
             color;
 
+        /* eslint-disable no-nested-ternary */
         status = PhantomTSH.status === null ?
             (code === undefined ? 0 : code) :
             PhantomTSH.status;
+        /* eslint-enable no-nested-ternary */
 
         if (status === 0) {
             color = 'white';

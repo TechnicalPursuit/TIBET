@@ -16,17 +16,23 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var beautify = require('js-beautify').js_beautify;
+var CLI,
+    beautify,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
+beautify = require('js-beautify').js_beautify;
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 

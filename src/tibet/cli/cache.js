@@ -14,20 +14,28 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var sh = require('shelljs');
-var dom = require('xmldom');
-var parser = new dom.DOMParser();
-var serializer = new dom.XMLSerializer();
+var CLI,
+    sh,
+    dom,
+    parser,
+    serializer,
+    Parent,
+    Cmd;
+
+CLI = require('./_cli');
+sh = require('shelljs');
+dom = require('xmldom');
+parser = new dom.DOMParser();
+serializer = new dom.XMLSerializer();
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -95,9 +103,9 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['disable', 'enable', 'missing', 'rebuild'],
-        string: ['file'],
-        default: {
+        'boolean': ['disable', 'enable', 'missing', 'rebuild'],
+        'string': ['file'],
+        'default': {
             disable: false,
             enable: false,
             missing: false,
@@ -124,8 +132,8 @@ Cmd.prototype.USAGE =
  */
 Cmd.prototype.execute = function() {
 
-    var cachefile;
-    var appname;
+    var cachefile,
+        appname;
 
     if (!this.options.enable && !this.options.disable &&
         !this.options.missing && !this.options.rebuild) {
@@ -184,27 +192,27 @@ Cmd.prototype.execute = function() {
  */
 Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
-    var text;
-    var lines;
-    var cwd;
+    var text,
+        lines,
+        cwd,
 
-    var i;
-    var len;
-    var start;
-    var end;
-    var line;
+        i,
+        len,
+        start,
+        end,
+        line,
 
-    var dir;
+        dir,
 
-    var libBuilt;
-    var libFiles;
-    var libMissing;
+        libBuilt,
+        libFiles,
+        libMissing,
 
-    var appBuilt;
-    var appFiles;
-    var appMissing;
+        appBuilt,
+        appFiles,
+        appMissing,
 
-    var newLines;
+        newLines;
 
     this.log('checking application cache content...');
 
@@ -356,12 +364,12 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
  */
 Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
-    var text;
-    var doc;
-    var html;
-    var value;
-    var novalue;
-    var operation;
+    var text,
+        doc,
+        html,
+        value,
+        novalue,
+        operation;
 
     this.log('checking application cache status...');
 

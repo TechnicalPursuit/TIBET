@@ -39,20 +39,29 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var path = require('path');
-var dom = require('xmldom');
-var serializer = new dom.XMLSerializer();
-var beautify = require('js-beautify').js_beautify;
+var CLI,
+    path,
+    dom,
+    serializer,
+    beautify,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
+path = require('path');
+dom = require('xmldom');
+serializer = new dom.XMLSerializer();
+beautify = require('js-beautify').js_beautify;
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -104,8 +113,8 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['all', 'scripts', 'styles', 'images', 'nodes', 'missing'],
-        string: ['package', 'config', 'include', 'exclude', 'phase']
+        'boolean': ['all', 'scripts', 'styles', 'images', 'nodes', 'missing'],
+        'string': ['package', 'config', 'include', 'exclude', 'phase']
     },
     Parent.prototype.PARSE_OPTIONS);
 
@@ -224,12 +233,12 @@ Cmd.prototype.execute = function() {
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executeForEach = function(list) {
-    var cmd;
-    var sh;
-    var buildDir;
-    var dirs;
-    var files;
-    var count;
+    var cmd,
+        sh,
+        buildDir,
+        dirs,
+        files,
+        count;
 
     cmd = this;
 
@@ -305,8 +314,8 @@ Cmd.prototype.finalizePackageOptions = function() {
  */
 Cmd.prototype.getPackageAssetList = function() {
 
-    var Package;    // The _Package.js export.
-    var list;       // The result list of asset references.
+    var Package,    // The _Package.js export.
+        list;       // The result list of asset references.
 
     Package = require(path.join(__dirname, '_Package.js'));
     this.package = new Package(this.pkgOpts);

@@ -15,17 +15,21 @@
 
 'use strict';
 
-var CLI = require('./_cli');
+var CLI,
+    Parent,
+    Cmd;
 
+
+CLI = require('./_cli');
 
 //  ---
 //  Type Construction
 //  ---
 
 // NOTE this is a subtype of the 'tsh' command focused on running :test.
-var Parent = require('./tsh');
+Parent = require('./tsh');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -86,9 +90,9 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['selftest'],
-        string: ['target', 'suite'],
-        default: {}
+        'boolean': ['selftest'],
+        'string': ['target', 'suite'],
+        'default': {}
     },
     Parent.prototype.PARSE_OPTIONS);
 
@@ -152,8 +156,8 @@ Cmd.prototype.getProfile = function() {
  */
 Cmd.prototype.getScript = function() {
 
-    var target;
-    var prefix;
+    var target,
+        prefix;
 
     if (CLI.notEmpty(this.options.target)) {
         target = this.options.target;

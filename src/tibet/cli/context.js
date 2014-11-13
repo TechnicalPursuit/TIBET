@@ -14,19 +14,27 @@
 
 'use strict';
 
-var CLI = require('./_cli');
-var sh = require('shelljs');
-var dom = require('xmldom');
-var beautify = require('js-beautify').js_beautify;
+var CLI,
+    sh,
+    dom,
+    beautify,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
+sh = require('shelljs');
+dom = require('xmldom');
+beautify = require('js-beautify').js_beautify;
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 
@@ -69,11 +77,11 @@ Cmd.prototype.USAGE = 'tibet context';
  * @return {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    var context;
-    var text;
-    var doc;
-    var parser;
-    var configs;
+    var context,
+        text,
+        doc,
+        parser,
+        configs;
 
     parser = new dom.DOMParser();
 

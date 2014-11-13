@@ -13,16 +13,21 @@
 
 'use strict';
 
-var CLI = require('./_cli');
+var CLI,
+    Parent,
+    Cmd;
+
+
+CLI = require('./_cli');
 
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 

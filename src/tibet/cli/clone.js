@@ -16,15 +16,19 @@
 
 'use strict';
 
-var CLI = require('./_cli');
+var CLI,
+    Parent,
+    Cmd;
+
+CLI = require('./_cli');
 
 //  ---
 //  Type Construction
 //  ---
 
-var Parent = require('./_cmd');
+Parent = require('./_cmd');
 
-var Cmd = function(){};
+Cmd = function() {};
 Cmd.prototype = new Parent();
 
 //  ---
@@ -86,9 +90,9 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        boolean: ['force', 'list'],
-        string: ['dna', 'name'],
-        default: {}
+        'boolean': ['force', 'list'],
+        'string': ['dna', 'name'],
+        'default': {}
     },
     Parent.prototype.PARSE_OPTIONS);
 
@@ -111,25 +115,25 @@ Cmd.prototype.USAGE =
  */
 Cmd.prototype.execute = function() {
 
-    var fs;         // The file system module.
-    var hb;         // The handlebars module. Used to inject data in dna files.
-    var find;       // The findit module. Used to traverse and process files.
-    var path;       // The path utilities module.
-    var sh;         // The shelljs module. Used for cloning dna etc.
+    var fs,         // The file system module.
+        hb,         // The handlebars module. Used to inject data in dna files.
+        find,       // The findit module. Used to traverse and process files.
+        path,       // The path utilities module.
+        sh,         // The shelljs module. Used for cloning dna etc.
+        cmd,        // Closure'd variable for this references.
+        dirname,    // The directory we're cloning the template into.
+        appname,    // The application name we're creating via clone.
+        options,    // The hash of options after parsing.
+        code,       // Result code. Set if an error occurs in nested callbacks.
+        dna,        // The dna template we're using.
+        err,        // Error string returned by shelljs.error() test function.
+        ignore,     // List of extensions we'll ignore when templating.
+        finder,     // The find event emitter we'll handle find events on.
+        target,     // The target directory name (based on appname).
+        params,     // Parameter data for template processing.
+        list;       // List of files in a directory.
 
-    var dirname;    // The directory we're cloning the template into.
-    var appname;    // The application name we're creating via clone.
-    var options;    // The hash of options after parsing.
-    var code;       // Result code. Set if an error occurs in nested callbacks.
-    var dna;        // The dna template we're using.
-    var err;        // Error string returned by shelljs.error() test function.
-    var ignore;     // List of extensions we'll ignore when templating.
-    var finder;     // The find event emitter we'll handle find events on.
-    var target;     // The target directory name (based on appname).
-    var params;     // Parameter data for template processing.
-    var list;       // List of files in a directory.
-
-    var cmd = this; // Closure'd var for getting back to this command object.
+    cmd = this;
 
     ignore = ['.png', '.gif', '.jpg', '.ico', 'jpeg'];
 
@@ -307,9 +311,9 @@ Cmd.prototype.execute = function() {
 
     finder.on('file', function(file) {
 
-        var content;  // File content after template injection.
-        var data;     // File data.
-        var template; // The compiled template content.
+        var content,  // File content after template injection.
+            data,     // File data.
+            template; // The compiled template content.
 
         if (ignore.indexOf(path.extname(file)) === -1) {
 

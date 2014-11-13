@@ -353,6 +353,7 @@ function(aResourceID, aRequest) {
         key = 'TP.sig.' + key;
     }
 
+    /* eslint-disable no-wrap-func */
     //  set up keyboard toggle to show/hide us
     (function () {
             this.toggleConsole();
@@ -361,7 +362,8 @@ function(aResourceID, aRequest) {
                TP.boot.$flushLog(true);
             }).fork(2000);
 
-        }.bind(this)).observe(TP.core.Keyboard, key);
+    }.bind(this)).observe(TP.core.Keyboard, key);
+    /* eslint-enable no-wrap-func */
 
     return this;
 });
@@ -2122,6 +2124,7 @@ function(aPrompt, aCSSClass) {
 
     } else {
         //  TODO:   what do we want to do here?
+        void(0);
     }
 
     //  Set the left of the cmdline's input div to the width of the prompt div
@@ -2581,6 +2584,7 @@ function() {
 
     this.set('consoleDisplayed', true);
 
+    /* eslint-disable no-wrap-func */
     (function() {
         //  We set the prompt here to reset the left position of the div
         //  wrapping the textarea, which won't get set when the console is first
@@ -2590,6 +2594,7 @@ function() {
         this.focusInputCell();
         this.setCursorToEnd();
     }).bind(this).afterUnwind();
+    /* eslint-enable no-wrap-func */
 
     return this;
 });
