@@ -28,7 +28,7 @@ function(options) {
 //  Test Suite
 //  ========================================================================
 
-TP.gui.Driver.Inst.describe('TP.gui.Driver Inst suite',
+TP.gui.Driver.Inst.describe('Syn test suite',
 function() {
 
     this.it('focus and sendKeys sequence', function(test, options) {
@@ -65,7 +65,7 @@ function() {
 
         //driver.startSequence().sendKeys('[Shift]abcd[Shift-up]').perform();
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!

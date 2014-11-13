@@ -1032,8 +1032,12 @@ function(target, suiteName, suiteFunc) {
     this.$set('refuter',
         TP.test.TestMethodCollection.construct().set('isRefuter', true));
 
-    this.$set('drivers',
-                TP.hc('gui', TP.gui.Driver.construct(TP.sys.getUICanvas())));
+    this.$set('drivers', TP.hc());
+
+    if (TP.sys.getTypeByName('TP.gui.Driver')) {
+        this.$get('drivers').atPut(
+                'gui', TP.gui.Driver.construct(TP.sys.getUICanvas()));
+    }
 
     return this;
 });

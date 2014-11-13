@@ -9,7 +9,7 @@
     name="tibet_automation" default="base" basedir="~tibet_src/">
 
 <config id="base" depends="">
-    <config ref="driver"/>
+    <config ref="gui"/>
 </config>
 
 <config id="full" depends="base">
@@ -18,7 +18,11 @@
 </config>
 
 <config id="gui" depends="">
+    <config ref="syn"/>
     <script src="automation/TPGUIDriver.js" />
+</config>
+
+<config id="syn" depends="" unless="boot.context=phantomjs">
 
     <script>
         <![CDATA[
