@@ -16,11 +16,13 @@
 var CLI,
     Parent,
     Cmd,
-    chalk;
+    chalk,
+    beautify;
 
 
 CLI = require('./_cli');
 chalk = require('chalk');
+beautify = require('js-beautify');
 
 
 //  ---
@@ -93,6 +95,9 @@ Cmd.prototype.execute = function() {
         http,
         options,
         url,
+        host,
+        port,
+        path,
         str,
         req;
 
@@ -109,13 +114,21 @@ Cmd.prototype.execute = function() {
 
         http = require('http');
 
-        options = {
-            //hostname: 'www.technicalpursuit.com',
-            //port: 80,
-            hostname: 'localhost',
-            port: 1234,
-            path: '/tibet/latest.js'
-        };
+        url = CLI.getcfg('path.lib_version_file');
+        if (url.indexOf('http://') !== -1) {
+            url = url.slice(7);
+        }
+        path = url.slice(url.indexOf('/'));
+        host = url.slice(0, url.indexOf('/'));
+        if (host.indexOf(':') !== -1) {
+            port = host.slice(host.indexOf(':') + 1);
+            port = parseInt(port, 10);
+            host = host.slice(0, host.indexOf(':'));
+        }
+
+        options = {hostname: host, port: port, path: path};
+        this.debug('checking version at: ' +
+            beautify(JSON.stringify(options)));
 
         str = '';
 
