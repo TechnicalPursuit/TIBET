@@ -117,7 +117,7 @@ targets.clean = function(make) {
 /**
  */
 targets.build_deps = function(make) {
-    var result;
+    //var result;
 
     make.log('building dependency packages...');
 

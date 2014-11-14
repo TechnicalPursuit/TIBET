@@ -6,10 +6,14 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
+
+/* eslint-disable */
+
 (function() {
-    var release = TP.sys.release;
+    var release = TP.sys.release;   // jshint ignore:line
 
     //  --- latest.js start ---
+    /* jshint ignore:start */
     /* eslint-disable */
     release({
         "describe": "{{describe}}",
@@ -24,6 +28,7 @@
         "time": "{{time}}",
         "semver": "{{semver}}"
     });
-    //  --- end latest.js ---
+    /* jshint ignore:end */
+    //  --- latest.js end ---
 
 }());
