@@ -702,7 +702,12 @@ function(aPath, aFragment) {
 
             case 'xpath1':
             case 'xpointer':
-                joinChar = '/';
+                if (expr.charAt(0) === '[') {
+                    joinChar = '';
+                } else {
+                    joinChar = '/';
+                }
+
                 break;
 
             default:
