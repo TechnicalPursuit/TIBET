@@ -693,10 +693,12 @@ function(aTargetElem, nodesRemoved) {
 
     var processor,
 
-        focusStackCheckNodes,
+        focusStackCheckElems,
 
         len,
-        i;
+        i,
+
+        node;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -706,33 +708,38 @@ function(aTargetElem, nodesRemoved) {
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.DETACH_PHASES);
 
-    focusStackCheckNodes = TP.ac();
+    focusStackCheckElems = TP.ac();
 
     //  Now, process each *root* that we have gotten as a removed node
     len = nodesRemoved.getSize();
     for (i = 0; i < len; i++) {
-        processor.processTree(nodesRemoved.at(i));
+        node = nodesRemoved.at(i);
 
-        focusStackCheckNodes.push(nodesRemoved.at(i));
+        processor.processTree(node);
 
-        focusStackCheckNodes = focusStackCheckNodes.concat(
-                                TP.nodeGetDescendantElements(
-                                    nodesRemoved.at(i), '*'));
+        if (TP.isElement(node)) {
+            focusStackCheckElems.push(node);
+
+            focusStackCheckElems = focusStackCheckElems.concat(
+                                TP.nodeGetDescendantElements(node, '*'));
+        }
     }
 
     //  Filter any elements that are in the document of the nodes we are
     //  removing out of the $focus_stack.
 
-    $focus_stack = $focus_stack.reject(
-                    function(aTPElem) {
-                        if (focusStackCheckNodes.contains(
-                                aTPElem.getNativeNode(),
-                                TP.IDENTITY)) {
-                            return true;
-                        }
+    if (TP.notEmpty(focusStackCheckElems)) {
+        $focus_stack = $focus_stack.reject(
+                        function(aTPElem) {
+                            if (focusStackCheckElems.contains(
+                                    aTPElem.getNativeNode(),
+                                    TP.IDENTITY)) {
+                                return true;
+                            }
 
-                        return false;
-                    });
+                            return false;
+                        });
+    }
 
     return this;
 });
