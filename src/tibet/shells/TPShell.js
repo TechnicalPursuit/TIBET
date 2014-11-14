@@ -396,9 +396,6 @@ TP.core.Shell.Inst.defineAttribute('pathStack');
 //  the announcement used when a shell of this type starts up
 TP.core.Shell.Inst.defineAttribute('announcement', null);
 
-//  the announcement used when a shell of this type logs out
-TP.core.Shell.Inst.defineAttribute('goodbye', null);
-
 //  additional information presented when a shell of this type starts up
 TP.core.Shell.Inst.defineAttribute('introduction', null);
 

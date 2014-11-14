@@ -310,24 +310,6 @@ TP.core.TSH.register();
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @name initialize
-     * @synopsis Prepares the type for operation by initializing any data
-     *     structures or other components.
-     */
-
-    //  the announcement used when a shell of this type logs out
-    TP.core.TSH.Inst.defineAttribute('goodbye',
-        'logged out at ' + TP.dc().toLocaleString());
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.TSH.Type.defineMethod('handleActivationKeyUp',
 function(aSignal) {
 
@@ -375,10 +357,6 @@ TP.core.TSH.Inst.defineAttribute('testOk', true);
 
 //  should the test been run in verbose mode?
 TP.core.TSH.Inst.defineAttribute('testVerbose', false);
-
-//  the announcement used when a shell of this type starts up
-TP.core.TSH.Inst.defineAttribute('announcement',
-    TP.join('TIBET Shell (TSH) ', TP.sys.getLibVersion()));
 
 //  additional information presented when a shell of this type starts up
 TP.core.TSH.Inst.defineAttribute('introduction', null);
@@ -1904,7 +1882,6 @@ function(aRequest) {
 
     this.logout();
 
-    //  output any startup announcement for the shell
     req = TP.sig.UserOutputRequest.construct(
                 TP.hc('output', 'Logging out user ' + this.get('username'),
                         'cssClass', 'inbound_announce',
@@ -3143,6 +3120,27 @@ function(aRequest) {
     aRequest.stdout('File system change monitoring ended.');
 
     return aRequest.complete();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('getAnnouncement',
+function() {
+
+    /**
+     * Returns the announcement string to use for the receiver.
+     * @return {String} The announcement string.
+     */
+
+    var str;
+
+    str = this.$get('announcement');
+    if (TP.isEmpty(str)) {
+        str = TP.join('TIBET Web Shell (TSH) ', TP.sys.getLibVersion());
+        this.$set('announcement', str);
+    }
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------

@@ -56,17 +56,6 @@ TP.core.YAK.Inst.defineAttribute('targetJID');
 //  the last user JID we used when logging in
 TP.core.YAK.Inst.defineAttribute('userJID');
 
-
-
-
-//  this shell's initial announcement text
-TP.core.YAK.Inst.defineAttribute('announcement',
-    TP.join('TIBET&#8482; Instant Messaging Shell (TP.core.YAK&#8482;) ',
-            TP.sys.getLibVersion(), '<br/>',
-            'Copyright (C) 1999, Technical Pursuit Inc, ',
-            'All Rights Reserved. Patents Pending.<br/>',
-            'Agent: ', navigator.userAgent, '<br/><br/>'));
-
 //  additional information presented when a shell of this type starts up
 TP.core.YAK.Inst.defineAttribute('introduction',
     TP.join('Shift-Return to send. Shift-Up/Down for history. ',
@@ -192,6 +181,28 @@ function(aMessage) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.YAK.Inst.defineMethod('getAnnouncement',
+function() {
+
+    /**
+     * Returns the announcement string to use for the receiver.
+     * @return {String} The announcement string.
+     */
+
+    var str;
+
+    str = this.$get('announcement');
+    if (TP.isEmpty(str)) {
+        str = TP.join('TIBET Messaging Shell (YAK) ',
+            TP.sys.getLibVersion());
+        this.$set('announcement', str);
+    }
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
