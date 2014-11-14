@@ -71,6 +71,7 @@ targets.build_all = function(make) {
             targets.build_all.reject();
         });
 };
+targets.build_all.timeout = 60000;  // Task-specific timout.
 
 /**
  * Run lint and test commands to verify the code is in good shape.

@@ -243,15 +243,6 @@ Cmd.prototype.prepTargets = function(targets) {
         return;
     }
 
-    if (CLI.notEmpty(this.options.timeout)) {
-        timeout = parseInt(this.options.timeout, 10);
-        if (isNaN(timeout)) {
-            throw new Error('Invalid timeout: ' + this.options.timeout);
-        }
-    } else {
-        timeout = Cmd.TIMEOUT;
-    }
-
     // Binding reference.
     cmd = this;
 
@@ -259,7 +250,20 @@ Cmd.prototype.prepTargets = function(targets) {
 
         if (typeof targets[key] === 'function') {
 
-            (function(name, func) {
+            // If the user put one on the command line that wins, followed by
+            // anything task-specific, followed by our default timeout value.
+            if (CLI.notEmpty(cmd.options.timeout)) {
+                timeout = parseInt(cmd.options.timeout, 10);
+                if (isNaN(timeout)) {
+                    throw new Error('Invalid timeout: ' + cmd.options.timeout);
+                }
+            } else if (CLI.isValid(targets[key].timeout)) {
+                    timeout = targets[key].timeout;
+            } else {
+                timeout = Cmd.TIMEOUT;
+            }
+
+            (function(name, func, time) {
 
                 // Replace original with a function returning a Promise.
                 targets[name] = function(make) {
@@ -283,7 +287,7 @@ Cmd.prototype.prepTargets = function(targets) {
                         timer = setTimeout(function() {
                             cmd.error('Task ' + name + ' timed out.');
                             rejector('timeout');
-                        }, timeout);
+                        }, time);
 
                         // Hold on to timer to make it easier to clear.
                         targets[name].timer = timer;
@@ -329,7 +333,7 @@ Cmd.prototype.prepTargets = function(targets) {
                 targets[name].displayName = name;
                 targets[name].$$original = func;
 
-            }(key, targets[key]));
+            }(key, targets[key], timeout));
 
             return;
         }
