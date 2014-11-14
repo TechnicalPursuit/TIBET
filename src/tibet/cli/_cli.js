@@ -805,25 +805,29 @@ CLI.prompt = prompt;
 CLI.handleError = function(e, phase, command) {
     var msg;
 
-    msg = e.message || '';
+    try {
 
-    // Some downstream throw calls are empty so they can do their own
-    // messaging but still convey they failed. Skip messaging in those cases
-    // unless we're also asked to dump the stack.
-    if (this.options.stack) {
-        msg += ' ' + e.stack;
-    } else if (!msg) {
-        return 1;
+        msg = e.message || '';
+
+        // Some downstream throw calls are empty so they can do their own
+        // messaging but still convey they failed. Skip messaging in those cases
+        // unless we're also asked to dump the stack.
+        if (this.options.stack) {
+            msg += ' ' + e.stack;
+        } else if (!msg) {
+            return 1;
+        }
+
+        // Try to avoid Error... Error... messages being built up.
+        if (!/^Error/.test(msg)) {
+            msg = 'Error ' + phase + ' ' + command + ': ' + msg;
+        }
+
+        this.error(msg);
+
+    } finally {
+        process.exit(1);
     }
-
-    // Try to avoid Error... Error... messages being built up.
-    if (!/^Error/.test(msg)) {
-        msg = 'Error ' + phase + ' ' + command + ': ' + msg;
-    }
-
-    this.error(msg);
-
-    process.exit(1);
 };
 
 
