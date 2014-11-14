@@ -2708,7 +2708,8 @@ function() {
         }
     }
 
-    aspect = this.getAspect();
+    //  If the payload has 'path', use that - otherwise use the aspect.
+    aspect = this.at('path') || this.getAspect();
     if (TP.isEmpty(aspect)) {
         return;
     }

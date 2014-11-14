@@ -48,11 +48,13 @@ function() {
         test.assert.isEqualTo(result, 'urn:tibet:foo#tibet(foo.bar)');
 
         //  Partially formed URI - has scheme but no path, pointer without any
-        //  scheme, therefore derived scheme and path scheme will differ.
-        uri = 'urn:tibet:foo#foo()';
+        //  scheme, therefore fragment will take scheme from path (the 'foo'
+        //  scheme doesn't have a default separator character, which is why the
+        //  result will be 'barbar')
+        uri = 'urn:tibet:foo#foo(bar)';
         pointerOrPath1 = 'bar';
         result = TP.uriJoinFragments(uri, pointerOrPath1);
-        test.assert.isEqualTo(result, 'urn:tibet:foo#foo()');
+        test.assert.isEqualTo(result, 'urn:tibet:foo#foo(barbar)');
 
         //  Partially formed URI - has scheme but no path, pointer with scheme,
         //  but differing schemes.
@@ -113,7 +115,7 @@ function() {
         pointerOrPath1 = 'bar';
         pointerOrPath2 = './/baz';
         result = TP.uriJoinFragments(uri, pointerOrPath1, pointerOrPath2);
-        test.assert.isEqualTo(result, 'urn:tibet:foo#tibet(bar)');
+        test.assert.isEqualTo(result, 'urn:tibet:foo#tibet(bar.//baz)');
 
         //  Fully formed URI with existing fragment, pointers with scheme, but
         //  differing schemes (raises TP.sig.InvalidPath).
@@ -199,8 +201,8 @@ function() {
         test.assert.isEqualTo(result, 'urn:tibet:foo#tibet(bar)');
 
         //  Partially formed URI - has scheme but no path, pointer without any
-        //  scheme, but derived scheme will be 'tibet' and path scheme is
-        //  'tibet', this will succeed.
+        //  scheme, but the fragment scheme will pick up the scheme from the
+        //  path.
         uri = 'urn:tibet:foo#tibet()';
         pointerOrPath1 = 'bar';
         result = TP.uriJoinFragments(uri, pointerOrPath1);
@@ -229,7 +231,8 @@ function() {
         test.assert.isEqualTo(result, 'urn:tibet:foo#tibet(foo.bar.baz)');
 
         //  Partially formed URI - has scheme but no path, pointers without any
-        //  scheme.
+        //  scheme, but the fragment schemes will pick up the scheme from the
+        //  path.
         uri = 'urn:tibet:foo#tibet()';
         pointerOrPath1 = 'bar';
         pointerOrPath2 = 'baz';
@@ -283,6 +286,14 @@ function() {
         result = TP.uriJoinFragments(uri, pointerOrPath1);
         test.assert.isEqualTo(result, 'urn:tibet:foo#xpath1(./bar)');
 
+        //  Partially formed URI - has scheme but no path, pointer without any
+        //  scheme, but the fragment scheme will pick up the scheme from the
+        //  path.
+        uri = 'urn:tibet:foo#xpath1()';
+        pointerOrPath1 = 'bar';
+        result = TP.uriJoinFragments(uri, pointerOrPath1);
+        test.assert.isEqualTo(result, 'urn:tibet:foo#xpath1(bar)');
+
         //  URI without any fragment, both pointers with scheme.
         uri = 'urn:tibet:foo';
         pointerOrPath1 = '#xpath1(bar)';
@@ -312,6 +323,15 @@ function() {
         pointerOrPath2 = '/baz';
         result = TP.uriJoinFragments(uri, pointerOrPath1, pointerOrPath2);
         test.assert.isEqualTo(result, 'urn:tibet:foo#xpath1(./bar/baz)');
+
+        //  Partially formed URI - has scheme but no path, pointers without any
+        //  scheme, but the fragment schemes will pick up the scheme from the
+        //  path.
+        uri = 'urn:tibet:foo#xpath1()';
+        pointerOrPath1 = 'bar';
+        pointerOrPath2 = 'baz';
+        result = TP.uriJoinFragments(uri, pointerOrPath1, pointerOrPath2);
+        test.assert.isEqualTo(result, 'urn:tibet:foo#xpath1(bar/baz)');
 
         //  Partially formed URI - has scheme but no path, pointer with scheme.
         uri = 'urn:tibet:foo#xpath1()';

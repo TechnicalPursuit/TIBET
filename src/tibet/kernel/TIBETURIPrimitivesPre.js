@@ -625,7 +625,7 @@ function(aPath, aFragment) {
     }
 
     if (!TP.isString(aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidURI');
+        return TP.raise(this, 'TP.sig.InvalidString');
     }
 
     if (TP.isEmpty(aFragment)) {
@@ -666,8 +666,6 @@ function(aPath, aFragment) {
         fragmentScheme = results.at(1);
         expr = results.at(2);
     } else {
-        //  Otherwise, guess the pointer scheme based on the path type.
-        fragmentScheme = TP.getPointerScheme(aFragment);
         expr = aFragment;
     }
 
@@ -675,6 +673,11 @@ function(aPath, aFragment) {
     //  a scheme, then set the fragment's scheme to the path's scheme.
     if (TP.isEmpty(fragmentScheme) && TP.notEmpty(pathScheme)) {
         fragmentScheme = pathScheme;
+    }
+
+    //  If the fragment still doesn't have a scheme, try to guess it.
+    if (TP.isEmpty(fragmentScheme)) {
+        fragmentScheme = TP.getPointerScheme(aFragment);
     }
 
     //  If we now have both a path scheme and a fragment scheme but they're not
@@ -699,7 +702,12 @@ function(aPath, aFragment) {
 
             case 'xpath1':
             case 'xpointer':
-                joinChar = '/';
+                if (expr.charAt(0) === '[') {
+                    joinChar = '';
+                } else {
+                    joinChar = '/';
+                }
+
                 break;
 
             default:
