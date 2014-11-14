@@ -4505,14 +4505,11 @@ function(aResource, aRequest) {
                     'facet', 'value',
                     'target', aResource,
 
-                    //  Given that the target is the 'whole' new value, each sub
-                    //  URI needs to know it's old and new value by directly
-                    //  querying the respective object with the fragment text
-                    //  (which represents the query).
-                    TP.OLDVAL, TP.isValid(resource) ?
-                                resource.get(fragText) :
-                                undefined,
-                    TP.NEWVAL, aResource.get(fragText));
+                    //  NB: We supply the old resource and the fragment text
+                    //  here for ease of obtaining values.
+                    'oldTarget', resource,
+                    'path', fragText
+                    );
 
             subURIs.at(i).signal(
                     'TP.sig.StructureChange',
