@@ -2016,7 +2016,7 @@ function(anElement, attributeName, stripPrefixes) {
     dict = TP.hc();
 
     //  filter by name as needed
-    if (TP.isString(attributeName)) {
+    if (TP.isString(attributeName) || TP.isRegExp(attributeName)) {
         attrs = TP.elementGetAttributeNodes(anElement, attributeName);
     } else {
         attrs = anElement.attributes;
@@ -2244,7 +2244,7 @@ function(anElement, attributeName, stripPrefixes) {
 
     dict = TP.hc();
 
-    if (TP.isString(attributeName)) {
+    if (TP.isString(attributeName) || TP.isRegExp(attributeName)) {
         attrs = TP.elementGetAttributeNodes(anElement, attributeName);
     } else {
         attrs = anElement.attributes;
@@ -2511,7 +2511,7 @@ function(anElement, attributeName, attrNS) {
 
     arr = TP.ac();
 
-    if (TP.isString(attributeName)) {
+    if (TP.isString(attributeName) || TP.isRegExp(attributeName)) {
         attrs = TP.elementGetAttributeNodes(anElement, attributeName);
     } else {
         attrs = anElement.attributes;
