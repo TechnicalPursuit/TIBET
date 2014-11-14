@@ -17,10 +17,12 @@
 
 var CLI,
     minimist,
+    beautify,
     Cmd;
 
 CLI = require('./_cli');
 minimist = require('minimist');
+beautify = require('js-beautify').js_beautify;
 
 //  ---
 //  Type Construction
@@ -217,6 +219,8 @@ Cmd.prototype.run = function(options) {
 
     // Re-parse the command line with any localized parser options.
     this.options = this.parse(options);
+
+    this.debug(beautify(JSON.stringify(this.config.tibet)), true);
 
     if (this.options.usage) {
         return this.usage();
