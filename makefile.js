@@ -117,7 +117,6 @@ targets.clean = function(make) {
 /**
  */
 targets.build_deps = function(make) {
-    //var result;
 
     make.log('building dependency packages...');
 
@@ -130,15 +129,7 @@ targets.build_deps = function(make) {
         targets.build_deps.reject();
         return;
     }
-/*
-    // This should ensure we pull the latest fork code and/or npm packages into
-    // place before we attempt any rollups of those packages.
-    result = sh.exec('npm update');
-    if (result.code !== 0) {
-        targets.build_deps.reject();
-        return;
-    }
-*/
+
     targets.rollup_codemirror().then(
         targets.rollup_d3).then(
         targets.rollup_diff).then(
@@ -161,6 +152,8 @@ targets.build_deps = function(make) {
  */
 targets.rollup_codemirror = function(make) {
     var npmdir;
+
+    sh.exec('npm update codemirror');
 
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'codemirror'));
@@ -187,6 +180,8 @@ targets.rollup_codemirror = function(make) {
 targets.rollup_d3 = function(make) {
     var npmdir;
 
+    sh.exec('npm update d3');
+
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'd3'));
     sh.exec('npm install -d');
@@ -202,6 +197,8 @@ targets.rollup_d3 = function(make) {
 targets.rollup_diff = function(make) {
     var npmdir;
 
+    sh.exec('npm update diff');
+
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'diff'));
     sh.exec('cp -f diff.js  ../../deps/diff-tpi.js');
@@ -213,6 +210,8 @@ targets.rollup_diff = function(make) {
  */
 targets.rollup_forge = function(make) {
     var npmdir;
+
+    sh.exec('npm update forge');
 
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'node-forge'));
@@ -228,6 +227,8 @@ targets.rollup_forge = function(make) {
 targets.rollup_jquery = function(make) {
     var npmdir;
 
+    sh.exec('npm update jquery');
+
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'jquery'));
 
@@ -240,6 +241,8 @@ targets.rollup_jquery = function(make) {
  */
 targets.rollup_pouchdb = function(make) {
     var npmdir;
+
+    sh.exec('npm update pouchdb');
 
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'pouchdb'));
@@ -255,6 +258,8 @@ targets.rollup_pouchdb = function(make) {
 targets.rollup_q = function(make) {
     var npmdir;
 
+    sh.exec('npm update q');
+
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'q'));
     sh.exec('npm install -d');
@@ -268,6 +273,8 @@ targets.rollup_q = function(make) {
  */
 targets.rollup_sinon = function(make) {
     var npmdir;
+
+    sh.exec('npm update sinon');
 
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'sinon'));
@@ -283,6 +290,8 @@ targets.rollup_sinon = function(make) {
 targets.rollup_syn = function(make) {
     var npmdir;
 
+    sh.exec('npm update syn');
+
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'syn'));
     sh.exec('npm install -d');
@@ -297,6 +306,8 @@ targets.rollup_syn = function(make) {
  */
 targets.rollup_xpath = function(make) {
     var npmdir;
+
+    sh.exec('npm update xpath');
 
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'xpath'));
