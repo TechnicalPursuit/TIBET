@@ -204,7 +204,8 @@ Cmd.prototype.execute = function() {
     this.info('\nConfigure default parameters via tibet.json');
 
     try {
-        this.info('\n' + CLI.config.npm.name + '@' + CLI.config.npm.version +
+        this.info('\n' + CLI.config.npm.name + '@' +
+            CLI.config.npm.version.split('+')[0] +
             ' ' + sh.which('tibet'));
     } catch (e) {
     }

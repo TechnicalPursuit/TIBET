@@ -15,10 +15,12 @@
 
 var CLI,
     Parent,
-    Cmd;
+    Cmd,
+    chalk;
 
 
 CLI = require('./_cli');
+chalk = require('chalk');
 
 
 //  ---
@@ -130,25 +132,30 @@ Cmd.prototype.execute = function() {
                 obj = JSON.parse(json);
                 if (!obj) {
                     console.error('Unable to parse version data: ' + json);
+                    throw new Error();
                 }
 
                 if (obj.semver === current) {
-                    console.log('Current version ' + obj.semver +
-                        ' is latest.');
+                    console.log(chalk.green(
+                        'Your current version ' + current.split('+')[0] +
+                        ' is the latest.'));
                 } else {
-                    console.log('Newer version ' + obj.semver +
-                        ' is available.');
+                    console.log(chalk.yellow(
+                        'Version ' + obj.semver.split('+')[0] +
+                        ' is available. You have ' +
+                        current.split('+')[0]));
                 }
             });
         });
 
         req.on('error', function(e) {
-          console.error('Unable to determine latest version: ' + e.message);
+            console.error('Unable to determine latest version: ' + e.message);
+            throw new Error();
         });
 
         req.end();
     } else {
-        this.info(current);
+        this.info(current.split('+')[0]);
     }
 };
 
