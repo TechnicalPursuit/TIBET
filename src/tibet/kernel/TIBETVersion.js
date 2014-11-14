@@ -8,9 +8,9 @@
  */
 (function() {
     var release = TP.sys.release;
-    /* eslint-disable */
 
     //  --- latest.js start ---
+    /* eslint-disable */
     release({
         "describe": "3.0.0-116-g52240583fc-dirty",
         "major": "5",

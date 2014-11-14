@@ -8,9 +8,9 @@
  */
 (function() {
     var release = TP.sys.release;
-    /* eslint-disable */
 
     //  --- latest.js start ---
+    /* eslint-disable */
     release({
         "describe": "{{describe}}",
         "major": "{{major}}",
