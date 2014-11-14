@@ -52,14 +52,28 @@ Cmd.CONTEXT = CLI.CONTEXTS.ANY;
  */
 Cmd.prototype.HELP =
 'Displays the current version of TIBET. Also available as the\n' +
-'--version flag on the \'tibet\' command (tibet --version).\n';
+'--version flag on the \'tibet\' command (tibet --version).\n\n' +
+'Use --check to request this command to check whether a newer\n' +
+'version of TIBET has been published.\n';
 
+/**
+ * Command argument parsing options.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
+    {
+        'boolean': ['check'],
+        'default': {
+            check: false
+        }
+    },
+    Parent.prototype.PARSE_OPTIONS);
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet version';
+Cmd.prototype.USAGE = 'tibet version [--check]';
 
 
 //  ---
@@ -72,15 +86,69 @@ Cmd.prototype.USAGE = 'tibet version';
  */
 Cmd.prototype.execute = function() {
 
-    var msg;
-
-// TODO: output both app and lib when possible, and prefix with name.
+    var msg,
+        current,
+        http,
+        options,
+        url,
+        str,
+        req;
 
     msg = 'Unable to determine TIBET version.';
     try {
-        this.info(CLI.getcfg('npm.version') || msg);
+        current = CLI.getcfg('npm.version') || msg;
     } catch (e) {
-        this.error(msg);
+        this.error(msg + ' ' + e.message);
+    }
+
+    // Attempt to load the latest.js file from the TPI web site and process that
+    // for information.
+    if (this.options.check) {
+
+        http = require('http');
+
+        options = {
+            //hostname: 'www.technicalpursuit.com',
+            //port: 80,
+            hostname: 'localhost',
+            port: 1234,
+            path: '/tibet/latest.js'
+        };
+
+        str = '';
+
+        req = http.request(options, function(res) {
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                str += chunk;
+            });
+            res.on('end', function() {
+                var json,
+                    obj;
+
+                json = str.trim().slice(str.indexOf('release(') + 8, -2);
+                obj = JSON.parse(json);
+                if (!obj) {
+                    console.error('Unable to parse version data: ' + json);
+                }
+
+                if (obj.semver === current) {
+                    console.log('Current version ' + obj.semver +
+                        ' is latest.');
+                } else {
+                    console.log('Newer version ' + obj.semver +
+                        ' is available.');
+                }
+            });
+        });
+
+        req.on('error', function(e) {
+          console.error('Unable to determine latest version: ' + e.message);
+        });
+
+        req.end();
+    } else {
+        this.info(current);
     }
 };
 
