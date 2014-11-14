@@ -114,6 +114,7 @@ function(aRequest) {
 
     var elem,
         name,
+        tag,
         newElem;
 
     //  Make sure that we have an element to work from.
@@ -126,14 +127,32 @@ function(aRequest) {
     }
 
     name = TP.sys.cfg('project.name');
+    tag = TP.sys.cfg('tibet.apptag') || 'APP.' + name + ':app';
 
     newElem = TP.xhtmlnode(
-        '<div tibet:sourcetag="tibet:app">' +
-            '<h1 class="tag-defaulted">' +
-                'Application type for: ' + name + ' not found. ' +
-                '&lt;tibet:root/&gt; defaulted to &lt;tibet:app/&gt;' +
-            '</h1>' +
-        '</div>');
+    '<div tibet:sourcetag="tibet:app" class="tag-defaulted">' +
+        '<h1 class="tag-defaulted">' +
+            'Application tag for ' + name + ' failed to render. ' +
+            'Defaulted to &lt;tibet:app/&gt;' +
+        '</h1>' +
+
+        '<p>' +
+        'If you are seeing this error message it usually means either:<br/><br/>' +
+        '- The tag specified for your application (' + tag + ') is missing; or<br/>' +
+        '- <b>The specified tag type has a syntax error or failed to load.</b>' +
+        '</p>' +
+
+        '<p>Source for that tag would typically be found in:</p>' +
+
+        '<p><code>src/tags/' + tag.replace(/:/g, '.') + '.js</code></p>' +
+
+        '<p>' +
+        'Check that file for syntax errors if it is the right file, or check' +
+        ' your tibet.apptag settings to ensure the right tag type is being' +
+        ' specified along with your ~app_cfg/app.xml package to ensure you' +
+        ' are loading it.' +
+        '</p>' +
+    '</div>');
 
     TP.elementReplaceWith(elem, newElem);
 

@@ -407,9 +407,17 @@ a.image-link:hover img {
     font-size: 85%;
 }
 
-div h1.tag-defaulted {
-    margin: 48px;
+div.tag-defaulted h1 {
+    font-size: 123%;
+    margin: 100px 48px 48px 48px;
     text-align: center;
+}
+
+div.tag-defaulted p {
+    font-size: 116%;
+    max-width: 500px;
+    margin: auto;
+    margin-bottom: 1em;
 }
 
 div h1.next-step {
