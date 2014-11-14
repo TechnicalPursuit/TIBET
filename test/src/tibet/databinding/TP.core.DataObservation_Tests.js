@@ -75,7 +75,7 @@ function() {
 
     this.it('change along a branching path', function(test, options) {
 
-        jsonPath3 = TP.apc('foo.3.[bar,moo,too].roo');
+        jsonPath3 = TP.apc('foo.3[bar,moo,too].roo');
         jsonPath3.set('shouldMake', true);
 
         jsonPath3.executeSet(modelObj, TP.ac(), true);

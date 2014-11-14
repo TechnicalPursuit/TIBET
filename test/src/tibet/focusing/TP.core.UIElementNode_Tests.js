@@ -2087,16 +2087,34 @@ function() {
 TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focus stack',
 function() {
 
-    var initialElem;
+    var initialElem,
+        focusStackPreTest;
+
+    //  ---
+
+    this.before(
+        function() {
+            //  This is used in the first test below (if it's not null).
+            initialElem = $focus_stack.last();
+
+            focusStackPreTest = $focus_stack.copy();
+
+            if (TP.isValid(initialElem)) {
+                $focus_stack = TP.ac(initialElem);
+            } else {
+                $focus_stack = TP.ac();
+            }
+        });
+
+    this.after(
+        function() {
+            $focus_stack = focusStackPreTest;
+        });
 
     //  ---
 
     this.beforeEach(
         function() {
-
-            //  This is used in the first test below.
-            initialElem = $focus_stack.last();
-
             this.getSuite().startTrackingSignals();
         });
 
@@ -2176,6 +2194,10 @@ function() {
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
+                        if ($focus_stack.getSize() !== 1) {
+                            console.log('it was: ' + TP.str($focus_stack));
+                        }
+
                         test.assert.isSizeOf($focus_stack, 1);
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem1));
@@ -2183,15 +2205,17 @@ function() {
                         //  TP.sig.UIFocusNext      -   bodyElem
                         test.assert.didSignal(bodyElem, 'TP.sig.UIFocusNext');
 
-                        //  TP.sig.UIBlur           -   initialElem
-                        test.assert.didSignal(initialElem, 'TP.sig.UIBlur');
+                        if (TP.isValid(initialElem)) {
+                            //  TP.sig.UIBlur           -   initialElem
+                            test.assert.didSignal(initialElem, 'TP.sig.UIBlur');
 
-                        //  TP.sig.UIDidPopFocus    -   initialElem
-                        test.assert.didSignal(initialElem,
-                                                'TP.sig.UIDidPopFocus');
+                            //  TP.sig.UIDidPopFocus    -   initialElem
+                            test.assert.didSignal(initialElem,
+                                                    'TP.sig.UIDidPopFocus');
 
-                        //  TP.sig.DOMBlur          -   window/initialElem
-                        test.assert.didSignal(initialElem, 'TP.sig.DOMBlur');
+                            //  TP.sig.DOMBlur          -   window/initialElem
+                            test.assert.didSignal(initialElem, 'TP.sig.DOMBlur');
+                        }
 
                         //  TP.sig.UIFocus          -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIFocus');
@@ -2202,8 +2226,10 @@ function() {
                         //  TP.sig.DOMFocus         -   window/elem1
                         test.assert.didSignal(elem1, 'TP.sig.DOMFocus');
 
-                        //  TP.sig.UIDidBlur        -   initialElem
-                        test.assert.didSignal(initialElem, 'TP.sig.UIDidBlur');
+                        if (TP.isValid(initialElem)) {
+                            //  TP.sig.UIDidBlur        -   initialElem
+                            test.assert.didSignal(initialElem, 'TP.sig.UIDidBlur');
+                        }
 
                         //  TP.sig.UIDidFocus       -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidFocus');

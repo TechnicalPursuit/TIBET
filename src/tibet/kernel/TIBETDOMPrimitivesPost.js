@@ -23,6 +23,11 @@
                 constructed.
 */
 
+/* JSHint checking */
+
+/* global $focus_stack:true
+*/
+
 //  ------------------------------------------------------------------------
 //  CONSTANTS
 //  ------------------------------------------------------------------------
@@ -525,6 +530,18 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  Note how this is dispatched from the 'defaultView' (i.e. the window)
     //  as per standard browser behavior.
     if (hasWindow) {
+
+        //  Filter any elements that are in the document of the window we are
+        //  unloading out of the $focus_stack.
+        $focus_stack = $focus_stack.reject(
+                        function(aTPElem) {
+                            if (aTPElem.getNativeDocument() === aDocument) {
+                                return true;
+                            }
+
+                            return false;
+                        });
+
         newEvent = aDocument.createEvent('HTMLEvents');
         newEvent.initEvent('unload', true, true);
         aDocument.defaultView.dispatchEvent(newEvent);
@@ -538,7 +555,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  Manually invoke the mutation removal event machinery. This won't happen
     //  automatically, since by emptying the content of the document above, we
     //  blew away the Mutation Observer registration.
-    if (TP.isElement(docElem)) {
+    if (TP.isElement(docElem) && hasWindow) {
         TP.core.MutationSignalSource.handleMutationEvent(
                 {
                     type: 'childList',

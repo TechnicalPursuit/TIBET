@@ -2096,11 +2096,11 @@ function(targetObj) {
      *     object using the receiver.
      */
 
-    var attrName,
+    var path,
 
-        dotIndex,
-
-        query,
+        parts,
+        head,
+        tail,
 
         thisType,
 
@@ -2111,30 +2111,27 @@ function(targetObj) {
         val,
         retVal;
 
-    attrName = this.get('$transformedPath');
+    path = this.get('$transformedPath');
 
-    //  See if we need to traverse down via a period ('.') or if this is
-    //  completely a range that we handle here.
-    if ((dotIndex = attrName.indexOf('.')) !== -1) {
-        query = attrName.slice(0, dotIndex);
-        attrName = attrName.slice(dotIndex + 1);
-    } else {
-        query = attrName;
-        attrName = null;
-    }
+    //  See if we need to traverse down via a period ('.') or if this is a
+    //  a complete range that we handle here.
+
+    parts = this.$extractPathHeadAndTail(path);
+    head = parts.at(0);
+    tail = parts.at(1);
 
     thisType = this.getType();
 
-    if (/[,:]/.test(query)) {
+    if (/[,:]/.test(head)) {
         val = TP.ac();
 
-        if (TP.regex.HAS_COLON.test(query)) {
+        if (TP.regex.HAS_COLON.test(head)) {
 
-            //  If there is no attrName, that means that there was nothing left
-            //  after consuming our own query. In that case, we just return an
+            //  If there is no tail, that means that there was nothing left
+            //  after consuming our own head. In that case, we just return an
             //  Array with our items.
-            if (TP.notValid(attrName)) {
-                targetObj.vslice(query).perform(
+            if (TP.notValid(tail)) {
+                targetObj.vslice(head).perform(
                         function(index) {
 
                             thisType.startObservedAddress(index);
@@ -2146,23 +2143,23 @@ function(targetObj) {
             } else {
                 //  Otherwise, we take each one of our items and capture the
                 //  return value of its 'get'.
-                targetObj.vslice(query).perform(
+                targetObj.vslice(head).perform(
                         function(index) {
 
                             thisType.startObservedAddress(index);
 
-                            val.push(targetObj.at(index).get(TP.apc(attrName)));
+                            val.push(targetObj.at(index).get(TP.apc(tail)));
 
                             thisType.endObservedAddress();
                         });
             }
         } else {
             //  Make sure to strip off the leading '[' and trailing ']'
-            query = query.slice(1, query.getSize() - 1);
+            head = head.slice(1, head.getSize() - 1);
 
             hadNaN = false;
 
-            queryParts = query.split(',').convert(
+            queryParts = head.split(',').convert(
                                 function(item) {
 
                                     var itemVal;
@@ -2179,10 +2176,10 @@ function(targetObj) {
                 return undefined;
             }
 
-            //  If there is no attrName, that means that there was nothing left
-            //  after consuming our own query. In that case, we just return an
+            //  If there is no tail, that means that there was nothing left
+            //  after consuming our own head. In that case, we just return an
             //  Array with our items.
-            if (TP.notValid(attrName)) {
+            if (TP.notValid(tail)) {
                 targetObj.performOver(
                         function(item, key) {
 
@@ -2201,7 +2198,7 @@ function(targetObj) {
                             thisType.startObservedAddress(key);
 
                             if (TP.isValid(item)) {
-                                val.push(item.get(TP.apc(attrName)));
+                                val.push(item.get(TP.apc(tail)));
                             } else {
                                 val.push(item);
                             }
@@ -2215,16 +2212,16 @@ function(targetObj) {
     }
 
     //  call back in with first part of access path
-    if (TP.notValid(val = targetObj.get(query))) {
+    if (TP.notValid(val = targetObj.get(head))) {
         return val;
     }
 
-    //  only continue if the attrName is valid and the result object can
+    //  only continue if the tail is valid and the result object can
     //  stay with the program :)
-    if (TP.isString(attrName) && TP.canInvoke(val, 'get')) {
-        thisType.startObservedAddress(query);
+    if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
+        thisType.startObservedAddress(head);
 
-        retVal = val.get(TP.apc(attrName));
+        retVal = val.get(TP.apc(tail));
 
         thisType.endObservedAddress();
 
@@ -2252,11 +2249,11 @@ function(targetObj) {
      *     object using the receiver.
      */
 
-    var attrName,
+    var path,
 
-        dotIndex,
-
-        query,
+        parts,
+        head,
+        tail,
 
         thisType,
 
@@ -2265,32 +2262,26 @@ function(targetObj) {
         val,
         retVal;
 
-    attrName = this.get('$transformedPath');
+    path = this.get('$transformedPath');
 
-    //  See if we need to traverse down via a period ('.') or if this is
-    //  completely a range that we handle here.
-    if ((dotIndex = attrName.indexOf('.')) !== -1) {
-        query = attrName.slice(0, dotIndex);
-        attrName = attrName.slice(dotIndex + 1);
-    } else {
-        query = attrName;
-        attrName = null;
-    }
+    parts = this.$extractPathHeadAndTail(path);
+    head = parts.at(0);
+    tail = parts.at(1);
 
     thisType = this.getType();
 
-    if (/,/.test(query)) {
+    if (/,/.test(head)) {
         //  Make sure to strip off the leading '[' and trailing ']'
-        query = query.slice(1, query.getSize() - 1);
+        head = head.slice(1, head.getSize() - 1);
 
-        queryParts = query.split(',');
+        queryParts = head.split(',');
 
         val = TP.ac();
 
-        //  If there is no attrName, that means that there was nothing left
-        //  after consuming our own query. In that case, we just return an Array
+        //  If there is no tail, that means that there was nothing left
+        //  after consuming our own head. In that case, we just return an Array
         //  with our items.
-        if (TP.notValid(attrName)) {
+        if (TP.notValid(tail)) {
             targetObj.performOver(
                     function(item, key) {
 
@@ -2309,7 +2300,7 @@ function(targetObj) {
                         thisType.startObservedAddress(key);
 
                         if (TP.isValid(item)) {
-                            val.push(item.get(TP.apc(attrName)));
+                            val.push(item.get(TP.apc(tail)));
                         } else {
                             val.push(item);
                         }
@@ -2323,20 +2314,20 @@ function(targetObj) {
     }
 
     //  call back in with first part of access path
-    if (query !== attrName) {
+    if (head !== tail) {
 
-        if (TP.notValid(val = targetObj.get(query))) {
+        if (TP.notValid(val = targetObj.get(head))) {
             //  could be a hash key instead...
-            return targetObj.getProperty(attrName);
+            return targetObj.getProperty(tail);
         }
     }
 
-    //  only continue if the attrName is valid and the result object can stay
+    //  only continue if the tail is valid and the result object can stay
     //  with the program :)
-    if (TP.isString(attrName) && TP.canInvoke(val, 'get')) {
-        thisType.startObservedAddress(query);
+    if (TP.isString(tail) && TP.canInvoke(val, 'get')) {
+        thisType.startObservedAddress(head);
 
-        retVal = val.get(TP.apc(attrName));
+        retVal = val.get(TP.apc(tail));
 
         thisType.endObservedAddress();
 
@@ -2364,45 +2355,40 @@ function(targetObj) {
      *     object using the receiver.
      */
 
-    var attrName,
+    var path,
 
-        dotIndex,
+        parts,
+        head,
+        tail,
 
         val,
 
-        query,
         hadNaN,
         queryParts;
 
-    attrName = this.get('$transformedPath');
+    path = this.get('$transformedPath');
 
-    //  See if we need to traverse down via a period ('.') or if this is
-    //  completely a range that we handle here.
-    if ((dotIndex = attrName.indexOf('.')) !== -1) {
-        query = attrName.slice(0, dotIndex);
-        attrName = attrName.slice(dotIndex + 1);
-    } else {
-        query = attrName;
-        attrName = null;
-    }
+    parts = this.$extractPathHeadAndTail(path);
+    head = parts.at(0);
+    tail = parts.at(1);
 
-    if (/[,:]/.test(attrName)) {
+    if (/[,:]/.test(tail)) {
         val = TP.ac();
 
-        if (TP.regex.HAS_COLON.test(attrName)) {
+        if (TP.regex.HAS_COLON.test(tail)) {
 
-            targetObj.asArray().vslice(attrName).perform(
+            targetObj.asArray().vslice(tail).perform(
                     function(index) {
 
                         val.push(targetObj.at(index));
                     });
         } else {
             //  Make sure to strip off the leading '[' and trailing ']'
-            query = query.slice(1, query.getSize() - 1);
+            head = head.slice(1, head.getSize() - 1);
 
             hadNaN = false;
 
-            queryParts = query.split(',').convert(
+            queryParts = head.split(',').convert(
                         function(item) {
 
                             var itemVal;
@@ -2428,13 +2414,13 @@ function(targetObj) {
         return val.join('');
     }
 
-    if (TP.notValid(attrName)) {
+    if (TP.notValid(tail)) {
         return undefined;
     }
 
     //  Had an access character, but it must be one that Strings don't support -
     //  let standard method do the work
-    return targetObj.get(attrName);
+    return targetObj.get(tail);
 });
 
 //  ------------------------------------------------------------------------
@@ -2457,10 +2443,11 @@ function(targetObj, attributeValue, shouldSignal) {
      * @returns {Array|null} The targetObj or null.
      */
 
-    var attrName,
+    var path,
 
-        dotIndex,
-        query,
+        parts,
+        head,
+        tail,
 
         thisType,
         shouldMake,
@@ -2472,30 +2459,24 @@ function(targetObj, attributeValue, shouldSignal) {
         attrIsNumber,
         firstSimplePath;
 
-    attrName = this.get('$transformedPath');
+    path = this.get('$transformedPath');
 
-    //  See if we need to traverse down via a period ('.') or if this is
-    //  completely a range that we handle here.
-    if ((dotIndex = attrName.indexOf('.')) !== -1) {
-        query = attrName.slice(0, dotIndex);
-        attrName = attrName.slice(dotIndex + 1);
-    } else {
-        query = attrName;
-        attrName = null;
-    }
+    parts = this.$extractPathHeadAndTail(path);
+    head = parts.at(0);
+    tail = parts.at(1);
 
     thisType = this.getType();
 
     shouldMake = this.get('shouldMake');
 
-    if (/[,:]/.test(query)) {
+    if (/[,:]/.test(head)) {
 
-        if (TP.regex.HAS_COLON.test(query)) {
-            //  If there is no attrName, that means that there was nothing left
-            //  after consuming our own query. In that case, we just set our own
+        if (TP.regex.HAS_COLON.test(head)) {
+            //  If there is no tail, that means that there was nothing left
+            //  after consuming our own head. In that case, we just set our own
             //  items using the supplied attribute value.
-            if (TP.notValid(attrName)) {
-                targetObj.vslice(query).perform(
+            if (TP.notValid(tail)) {
+                targetObj.vslice(head).perform(
                         function(index, count) {
 
                             var op;
@@ -2523,12 +2504,12 @@ function(targetObj, attributeValue, shouldSignal) {
                 //  Otherwise, we take each one of our items and send it a 'set'
                 //  message with the attribute value.
 
-                firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+                firstSimplePath = TP.apc(tail).getFirstSimplePath();
                 attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
                 //  If an Array was not supplied, then we use the supplied value
                 //  in a repeating fashion.
-                targetObj.vslice(query).perform(
+                targetObj.vslice(head).perform(
                     function(index, count) {
 
                         var val,
@@ -2582,27 +2563,27 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.apc(attrName).set('shouldMake', shouldMake),
+                        val.set(TP.apc(tail).set('shouldMake', shouldMake),
                                 attributeValue,
                                 false);
 
                         thisType.endChangedAddress();
                     }.bind(this));
             }
-        } else if (/,/.test(query)) {
+        } else if (/,/.test(head)) {
             //  Make sure to strip off the leading '[' and trailing ']'
-            query = query.slice(1, query.getSize() - 1);
+            head = head.slice(1, head.getSize() - 1);
 
-            queryParts = query.split(',').convert(
+            queryParts = head.split(',').convert(
                                 function(item) {
 
                                     return item.asNumber();
                                 });
 
-            //  If there is no attrName, that means that there was nothing left
-            //  after consuming our own query. In that case, we just set our own
+            //  If there is no tail, that means that there was nothing left
+            //  after consuming our own head. In that case, we just set our own
             //  items using the supplied attribute value.
-            if (TP.notValid(attrName)) {
+            if (TP.notValid(tail)) {
                 targetObj.performOver(
                         function(item, index, count) {
 
@@ -2631,7 +2612,7 @@ function(targetObj, attributeValue, shouldSignal) {
                 //  Otherwise, we take each one of our items and send it a 'set'
                 //  message with the attribute value.
 
-                firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+                firstSimplePath = TP.apc(tail).getFirstSimplePath();
                 attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
                 targetObj.performOver(
@@ -2688,7 +2669,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                         //  This 'set' call will take care of registering the
                         //  changed address.
-                        val.set(TP.apc(attrName).set('shouldMake', shouldMake),
+                        val.set(TP.apc(tail).set('shouldMake', shouldMake),
                                 attributeValue,
                                 false);
 
@@ -2702,14 +2683,14 @@ function(targetObj, attributeValue, shouldSignal) {
 
     //  Retrieve what's at the first part of access path in targetObj
 
-    val = targetObj.get(query);
+    val = targetObj.get(head);
 
     //  If we should create structural data and targetObj either doesn't have a
     //  value or doesn't have a reference type value at the place pointed to by
-    //  'query', then we create a reference type (either an Object or an Array)
+    //  'head', then we create a reference type (either an Object or an Array)
     //  and set it into place.
     if (shouldMake && (TP.notValid(val) || !TP.isReferenceType(val))) {
-        firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+        firstSimplePath = TP.apc(tail).getFirstSimplePath();
         if (TP.isNumber(firstSimplePath.asNumber())) {
             val = TP.ac();
         } else {
@@ -2717,7 +2698,7 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.apc(query).set('shouldMake', shouldMake),
+        targetObj.set(TP.apc(head).set('shouldMake', shouldMake),
                          val,
                          false);
     }
@@ -2729,11 +2710,11 @@ function(targetObj, attributeValue, shouldSignal) {
     }
 
     //  only continue if the result object can stay with the program :)
-    if (TP.isString(attrName) && TP.canInvoke(val, 'set')) {
-        thisType.startChangedAddress(query);
+    if (TP.isString(tail) && TP.canInvoke(val, 'set')) {
+        thisType.startChangedAddress(head);
 
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.apc(attrName).set('shouldMake', shouldMake),
+        val.set(TP.apc(tail).set('shouldMake', shouldMake),
                 attributeValue,
                 false);
 
@@ -2765,10 +2746,11 @@ function(targetObj, attributeValue, shouldSignal) {
      * @returns {Object|null} The targetObj or null.
      */
 
-    var attrName,
+    var path,
 
-        dotIndex,
-        query,
+        parts,
+        head,
+        tail,
 
         thisType,
         shouldMake,
@@ -2780,32 +2762,26 @@ function(targetObj, attributeValue, shouldSignal) {
         attrIsNumber,
         firstSimplePath;
 
-    attrName = this.get('$transformedPath');
+    path = this.get('$transformedPath');
 
-    //  See if we need to traverse down via a period ('.') or if this is
-    //  completely a range that we handle here.
-    if ((dotIndex = attrName.indexOf('.')) !== -1) {
-        query = attrName.slice(0, dotIndex);
-        attrName = attrName.slice(dotIndex + 1);
-    } else {
-        query = attrName;
-        attrName = null;
-    }
+    parts = this.$extractPathHeadAndTail(path);
+    head = parts.at(0);
+    tail = parts.at(1);
 
     thisType = this.getType();
 
     shouldMake = this.get('shouldMake');
 
-    if (/,/.test(query)) {
+    if (/,/.test(head)) {
         //  Make sure to strip off the leading '[' and trailing ']'
-        query = query.slice(1, query.getSize() - 1);
+        head = head.slice(1, head.getSize() - 1);
 
-        queryParts = query.split(',');
+        queryParts = head.split(',');
 
-        //  If there is no attrName, that means that there was nothing left
-        //  after consuming our own query. In that case, we just set our own
+        //  If there is no tail, that means that there was nothing left
+        //  after consuming our own head. In that case, we just set our own
         //  items using the supplied attribute value.
-        if (TP.notValid(attrName)) {
+        if (TP.notValid(tail)) {
             targetObj.performOver(
                     function(item, index, count) {
 
@@ -2832,7 +2808,7 @@ function(targetObj, attributeValue, shouldSignal) {
             //  Otherwise, we take each one of our items and send it a 'set'
             //  message with the attribute value.
 
-            firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+            firstSimplePath = TP.apc(tail).getFirstSimplePath();
             attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
             targetObj.performOver(
@@ -2889,7 +2865,7 @@ function(targetObj, attributeValue, shouldSignal) {
 
                     //  This 'set' call will take care of registering the
                     //  changed address.
-                    val.set(TP.apc(attrName).set('shouldMake', shouldMake),
+                    val.set(TP.apc(tail).set('shouldMake', shouldMake),
                             attributeValue,
                             false);
 
@@ -2902,14 +2878,14 @@ function(targetObj, attributeValue, shouldSignal) {
 
     //  Retrieve what's at the first part of access path in targetObj
 
-    val = targetObj.get(query);
+    val = targetObj.get(head);
 
     //  If we should create structural data and targetObj either doesn't have a
     //  value or doesn't have a reference type value at the place pointed to by
-    //  'query', then we create a reference type (either an Object or an Array)
+    //  'head', then we create a reference type (either an Object or an Array)
     //  and set it into place.
     if (shouldMake && (TP.notValid(val) || !TP.isReferenceType(val))) {
-        firstSimplePath = TP.apc(attrName).getFirstSimplePath();
+        firstSimplePath = TP.apc(tail).getFirstSimplePath();
         if (TP.isNumber(firstSimplePath.asNumber())) {
             val = TP.ac();
         } else {
@@ -2917,7 +2893,7 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.apc(query).set('shouldMake', shouldMake),
+        targetObj.set(TP.apc(head).set('shouldMake', shouldMake),
                          val,
                          false);
     }
@@ -2929,11 +2905,11 @@ function(targetObj, attributeValue, shouldSignal) {
     }
 
     //  only continue if the result object can stay with the program :)
-    if (TP.isString(attrName) && TP.canInvoke(val, 'set')) {
-        thisType.startChangedAddress(query);
+    if (TP.isString(tail) && TP.canInvoke(val, 'set')) {
+        thisType.startChangedAddress(head);
 
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.apc(attrName).set('shouldMake', shouldMake),
+        val.set(TP.apc(tail).set('shouldMake', shouldMake),
                 attributeValue,
                 false);
 
@@ -2945,6 +2921,50 @@ function(targetObj, attributeValue, shouldSignal) {
 
     //  Had an access character, but we can't compute the path.
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ComplexTIBETPath.Inst.defineMethod('$extractPathHeadAndTail',
+function(aPath) {
+
+    /**
+     * @name $extractPathHeadAndTail
+     * @synopsis Returns the head and tail of the supplied path.
+     * @param {String} aPath The path to extract the head and tail from.
+     * @returns {Array} A pair of the [head, tail].
+     */
+
+    var dottedPath,
+
+        parts,
+
+        head,
+        tail;
+
+    //  Split along '[', if there are some, and add a leading '.' (unless that
+    //  bracket already has a leading '.')
+    dottedPath = aPath.replace(/([^\.])\[/, '$1.[');
+    parts = dottedPath.split('.');
+
+    //  If the first item was empty, then slice it off.
+    if (dottedPath.at(0) === '') {
+        parts = parts.slice(1);
+    }
+
+    //  The head will always be the first item
+    head = parts.at(0);
+
+    //  If we ended up with more than 2 parts, slice off the first one and join
+    //  the rest together with a '.'
+    if (parts.getSize() > 2) {
+        tail = parts.slice(1).join('.');
+    } else {
+        //  Otherwise, the tail is just the second item.
+        tail = parts.at(1);
+    }
+
+    return TP.ac(head, tail);
 });
 
 //  ------------------------------------------------------------------------

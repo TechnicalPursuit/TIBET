@@ -132,7 +132,7 @@ function() {
 
         //  ---
 
-        templateStr = 'The second item is: {{data.1}} and the other two are: {{data.[0,2]}}';
+        templateStr = 'The second item is: {{data.1}} and the other two are: {{data[0,2]}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -152,7 +152,7 @@ function() {
                ],
                [
                   'value',
-                  'data.[0,2]'
+                  'data[0,2]'
                ]
             ];
 

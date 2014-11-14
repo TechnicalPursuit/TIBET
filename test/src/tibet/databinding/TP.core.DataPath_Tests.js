@@ -35,13 +35,13 @@ function() {
         path = TP.apc('2.1.2');
         this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
-        path = TP.apc('foo.hi.[boo,moo]');
+        path = TP.apc('foo.hi[boo,moo]');
         this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
-        path = TP.apc('foo.hi.[boo,moo].gar');
+        path = TP.apc('foo.hi[boo,moo].gar');
         this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
-        path = TP.apc('2.[1,2]');
+        path = TP.apc('2[1,2]');
         this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
         path = TP.apc('[0:2]');
@@ -71,13 +71,13 @@ function() {
         path = TP.apc('[0,2].fname');
         this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
-        path = TP.apc('0.aliases.[1:2]');
+        path = TP.apc('0.aliases[1:2]');
         this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
-        path = TP.apc('0.aliases.[:-1]');
+        path = TP.apc('0.aliases[:-1]');
         this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
 
-        path = TP.apc('3.1.[1:4]');
+        path = TP.apc('3.1[1:4]');
         this.assert.isKindOf(path, TP.core.ComplexTIBETPath);
     });
 });
@@ -562,11 +562,11 @@ function() {
     this.before(function() {
         tailResultsModel = TP.json2js(
             '{"foo":{"hi":{"boo":"goo","moo":"too"}}}');
-        tailResultsPath = TP.apc('foo.hi.[boo,moo]');
+        tailResultsPath = TP.apc('foo.hi[boo,moo]');
 
         middleResultsModel = TP.json2js(
             '{"foo":{"hi":{"boo":{"gar":"bar"},"moo":{"gar":"tar"}}}}');
-        middleResultsPath = TP.apc('foo.hi.[boo,moo].gar');
+        middleResultsPath = TP.apc('foo.hi[boo,moo].gar');
     });
 
     this.it('tail results get', function(test, options) {
@@ -632,10 +632,10 @@ function() {
     this.before(function() {
         tailResultsModel = TP.json2js(
             '["one", "two", ["a", ["6", "7", "8"], "c"]]');
-        tailResultsPath = TP.apc('2.[1,2]');
+        tailResultsPath = TP.apc('2[1,2]');
 
         middleResultsModel = tailResultsModel;
-        middleResultsPath = TP.apc('2.[1,2].2');
+        middleResultsPath = TP.apc('2[1,2].2');
     });
 
     this.it('tail results get', function(test, options) {
@@ -864,8 +864,8 @@ function() {
 
         path1 = TP.apc('0.fname');
         path2 = TP.apc('[0,2].fname');
-        path3 = TP.apc('0.aliases.[1:2]');
-        path4 = TP.apc('0.aliases.[:-1]');
+        path3 = TP.apc('0.aliases[1:2]');
+        path4 = TP.apc('0.aliases[:-1]');
     });
 
     this.it('tail results get', function(test, options) {
@@ -985,7 +985,7 @@ function() {
     this.before(function() {
         model1 = TP.json2js('{"foo":{"hi":"there"}}');
         path1 = TP.apc('bar.moo');
-        path2 = TP.apc('bar.[moo,too].noo');
+        path2 = TP.apc('bar[moo,too].noo');
     });
 
     this.it('single level set without creation', function(test, options) {
@@ -1072,8 +1072,8 @@ function() {
     this.before(function() {
         model1 = TP.json2js('["one", "two", ["a", "b", "c"]]');
         path1 = TP.apc('3.1');
-        path2 = TP.apc('3.1.[0,4]');
-        path3 = TP.apc('3.1.[1:4]');
+        path2 = TP.apc('3.1[0,4]');
+        path3 = TP.apc('3.1[1:4]');
     });
 
     this.it('single level set without creation', function(test, options) {
@@ -1197,7 +1197,7 @@ function() {
     this.before(function() {
         model1 = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
         path1 = TP.apc('foo.3.bar');
-        path2 = TP.apc('foo.3.[bar,moo,too].roo');
+        path2 = TP.apc('foo.3[bar,moo,too].roo');
     });
 
     this.it('single level set without creation', function(test, options) {
@@ -1294,9 +1294,9 @@ function() {
         model1 = TP.json2js(
             '{"foo":["1st","2nd","3rd","4th",["A","B","C"],["X","Y","Z"]]}');
         path1 = TP.apc('foo.{{0}}');
-        path2 = TP.apc('foo.[{{0}}:{{1}}]');
+        path2 = TP.apc('foo[{{0}}:{{1}}]');
         path3 = TP.apc('foo.{{0}}.{{1}}');
-        path4 = TP.apc('foo.[{{0}}:{{1}}].{{2}}');
+        path4 = TP.apc('foo[{{0}}:{{1}}].{{2}}');
     });
 
     this.it('single level get', function(test, options) {

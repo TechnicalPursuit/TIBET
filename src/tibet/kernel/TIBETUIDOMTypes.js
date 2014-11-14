@@ -693,8 +693,12 @@ function(aTargetElem, nodesRemoved) {
 
     var processor,
 
+        focusStackCheckElems,
+
         len,
-        i;
+        i,
+
+        node;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -704,10 +708,37 @@ function(aTargetElem, nodesRemoved) {
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.DETACH_PHASES);
 
+    focusStackCheckElems = TP.ac();
+
     //  Now, process each *root* that we have gotten as a removed node
     len = nodesRemoved.getSize();
     for (i = 0; i < len; i++) {
-        processor.processTree(nodesRemoved.at(i));
+        node = nodesRemoved.at(i);
+
+        processor.processTree(node);
+
+        if (TP.isElement(node)) {
+            focusStackCheckElems.push(node);
+
+            focusStackCheckElems = focusStackCheckElems.concat(
+                                TP.nodeGetDescendantElements(node, '*'));
+        }
+    }
+
+    //  Filter any elements that are in the document of the nodes we are
+    //  removing out of the $focus_stack.
+
+    if (TP.notEmpty(focusStackCheckElems)) {
+        $focus_stack = $focus_stack.reject(
+                        function(aTPElem) {
+                            if (focusStackCheckElems.contains(
+                                    aTPElem.getNativeNode(),
+                                    TP.IDENTITY)) {
+                                return true;
+                            }
+
+                            return false;
+                        });
     }
 
     return this;
