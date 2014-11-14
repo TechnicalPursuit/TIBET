@@ -17,6 +17,7 @@
         "minor": "{{minor}}",
         "patch": "{{patch}}",
         "suffix": "{{suffix}}",
+        "increment": "{{increment}}",
         "ptag": "{{ptag}}",
         "commits": "{{commits}}",
         "phash": "{{phash}}",

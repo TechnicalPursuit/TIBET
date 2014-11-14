@@ -88,10 +88,10 @@ Cmd.prototype.HELP =
 
 'IFF all the prior checks pass:\n\n' +
 
-'Run `tibet build all` to build distro. [--no-build]\n' +
+'Run `tibet build_all` to build distro. [--no-build]\n' +
 'Run the version update template.\n' +
 'Update TIBET\'s package.json file.\n\n' +
-'Run `tibet check` to lint/test. [--no-check]\n' +
+'Run `tibet checkup` to lint/test. [--no-check]\n' +
 
 'IFF all that runs and passes testing it:\n\n' +
 
@@ -119,13 +119,15 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['major', 'minor', 'patch', 'build', 'check', 'local',
-            'dry-run'],
+        'boolean': ['major', 'minor', 'patch', 'build', 'check',
+            'local', 'dry-run'],
         'string': ['suffix', 'version'],
+        'number': ['increment'],
         'default': {
             major: false,
             minor: false,
             patch: false,
+            incremental: true,
             local: false,
             dirty: false,
             build: true,
@@ -198,10 +200,10 @@ Cmd.prototype.getLibVersion = function(data) {
         str += '-';
         str += data.suffix;
 
-        // When there's any kind of "pre-release" suffix be it 'beta' or 'dev'
-        // etc. we add the commit count as the numerical increment.
+        // Incremental builds will always update the increment for any suffix so
+        // we get something increasing without being a major.minor.patch value.
         str += '.';
-        str += data.commits;
+        str += data.increment;
     }
 
     if (CLI.notEmpty(data.phash)) {
@@ -209,8 +211,17 @@ Cmd.prototype.getLibVersion = function(data) {
         str += data.phash;
     }
 
-    if (CLI.notEmpty(data.time)) {
+    if (CLI.notEmpty(data.commits)) {
         if (CLI.notEmpty(data.phash)) {
+            str += '.';
+        } else {
+            str += '+';
+        }
+        str += data.commits;
+    }
+
+    if (CLI.notEmpty(data.time)) {
+        if (CLI.notEmpty(data.phash) || CLI.notEmpty(data.commits)) {
             str += '.';
         } else {
             str += '+';
@@ -275,6 +286,7 @@ Cmd.prototype.phaseOne = function() {
         major,
         minor,
         patch,
+        increment,
         suffix,
         sh,
         release;
@@ -379,11 +391,27 @@ Cmd.prototype.phaseOne = function() {
         patch = 0;
     } else if (this.options.patch) {
         patch = parseInt(patch, 10) + 1;
+    } else {
+        // Incremental. We need to compute an increment that works if one isn't
+        // provided.
+        if (this.options.increment) {
+            increment = this.options.increment;
+        } else {
+            match = version.match(/(v)*(\d)+\.(\d)+\.(\d)+\-([a-z]*)+\.(\d)+(.*)/);
+            if (CLI.notEmpty(match)) {
+                increment = match[6];
+                increment = parseInt(increment, 10) + 1;
+            } else {
+                increment = 0;
+            }
+        }
     }
 
     source.major = major;
     source.minor = minor;
     source.patch = patch;
+
+    source.increment = increment;
 
     //  ---
     //  Make sure we should continue. From here on out it's "real work".
@@ -428,7 +456,7 @@ Cmd.prototype.phaseOne = function() {
  * Performs the second phase of release processing. This phase involves editing
  * the kernel's version file and the npm package.json file to update them with
  * the proposed build identification data. Once all edits are complete a full
- * 'tibet check' command is run to lint and test the content before any commit.
+ * 'tibet checkup' is run to lint and test the content before any commit.
  * If the asynchronous check process passes phaseThree is invoked.
  */
 Cmd.prototype.phaseTwo = function(source) {
@@ -529,12 +557,12 @@ Cmd.prototype.phaseTwo = function(source) {
     }
 
     //  ---
-    //  Run 'tibet check' to lint and test the resulting package.
+    //  Run 'tibet checkup' to lint and test the resulting package.
     //  ---
 
     if (this.options.check && !this.options['dry-run']) {
         sh = require('shelljs');
-        cmd = 'tibet check';
+        cmd = 'tibet checkup';
 
         release = this;
 
@@ -548,7 +576,7 @@ Cmd.prototype.phaseTwo = function(source) {
         });
     } else {
         if (this.options['dry-run']) {
-            this.warn('dry-run. bypassing \'tibet check\'');
+            this.warn('dry-run. bypassing \'tibet checkup\'');
         }
         this.phaseThree({content: content, source: source});
     }
