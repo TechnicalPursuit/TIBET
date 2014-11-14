@@ -22,7 +22,7 @@ var CLI,
 
 CLI = require('./_cli');
 chalk = require('chalk');
-beautify = require('js-beautify');
+beautify = require('js-beautify').js_beautify;
 
 
 //  ---
