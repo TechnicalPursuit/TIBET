@@ -14,6 +14,11 @@ These cover features like animation, drag-and-drop, on-the-fly css, runtime
 DOM manipulation, etc.
 */
 
+/* JSHint checking */
+
+/* global $focus_stack:true
+*/
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('computeCommonSizes',
@@ -8265,6 +8270,17 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
 
         return;
     }
+
+    //  Filter any elements that are in the document of the window we are
+    //  unloading out of the $focus_stack.
+    $focus_stack = $focus_stack.reject(
+                    function(aTPElem) {
+                        if (aTPElem.getNativeDocument() === aWindow.document) {
+                            return true;
+                        }
+
+                        return false;
+                    });
 
     //  clear the 'backhack' slots from the window info. This means that if
     //  we load new content into the same window, these will be starting

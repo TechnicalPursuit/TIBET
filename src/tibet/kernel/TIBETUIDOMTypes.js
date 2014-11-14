@@ -693,6 +693,8 @@ function(aTargetElem, nodesRemoved) {
 
     var processor,
 
+        focusStackCheckNodes,
+
         len,
         i;
 
@@ -704,11 +706,33 @@ function(aTargetElem, nodesRemoved) {
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.DETACH_PHASES);
 
+    focusStackCheckNodes = TP.ac();
+
     //  Now, process each *root* that we have gotten as a removed node
     len = nodesRemoved.getSize();
     for (i = 0; i < len; i++) {
         processor.processTree(nodesRemoved.at(i));
+
+        focusStackCheckNodes.push(nodesRemoved.at(i));
+
+        focusStackCheckNodes = focusStackCheckNodes.concat(
+                                TP.nodeGetDescendantElements(
+                                    nodesRemoved.at(i), '*'));
     }
+
+    //  Filter any elements that are in the document of the nodes we are
+    //  removing out of the $focus_stack.
+
+    $focus_stack = $focus_stack.reject(
+                    function(aTPElem) {
+                        if (focusStackCheckNodes.contains(
+                                aTPElem.getNativeNode(),
+                                TP.IDENTITY)) {
+                            return true;
+                        }
+
+                        return false;
+                    });
 
     return this;
 });
