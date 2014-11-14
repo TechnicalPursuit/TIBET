@@ -12,7 +12,7 @@
 //  bind:
 //  ========================================================================
 
-TP.bind.XMLNS.Type.describe('bind: simple binds',
+TP.bind.XMLNS.Type.describe('bind: one to one binds',
 function() {
 
     this.beforeEach(
