@@ -316,7 +316,11 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    return this.summarize(result);
+    this.summarize(result);
+
+    if (result.errors > 0) {
+        throw new Error();
+    }
 };
 
 
@@ -577,8 +581,6 @@ Cmd.prototype.summarize = function(results) {
             this.log(msg);
         }
     }
-
-    return results.errors;
 };
 
 
