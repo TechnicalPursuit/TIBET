@@ -11220,8 +11220,9 @@ function() {
      *          "minor": "{{minor}}",
      *          "patch": "{{patch}}",
      *          "suffix": "{{suffix}}",
-     *          "commits": "{{commits}}",
+     *          "increment": "{{increment}}",
      *          "ptag": "{{ptag}}",
+     *          "commits": "{{commits}}",
      *          "phash": "{{phash}}",
      *          "time": "{{time}}",
      *          "semver": "{{semver}}"
@@ -11345,7 +11346,7 @@ function(release, meta) {
         str += data.at('suffix');
 
         str += '.';
-        str += data.at('commits');
+        str += data.at('increment');
     }
 
     if (TP.isTrue(meta)) {
@@ -11356,8 +11357,18 @@ function(release, meta) {
             str += data.at('phash');
         }
 
-        if (TP.notEmpty(data.at('time'))) {
+        if (TP.notEmpty(data.at('commits'))) {
             if (TP.notEmpty(data.at('phash'))) {
+                str += '.';
+            } else {
+                str += '+';
+            }
+            str += data.at('time');
+        }
+
+        if (TP.notEmpty(data.at('time'))) {
+            if (TP.notEmpty(data.at('phash')) ||
+                    TP.notEmpty(data.at('commits'))) {
                 str += '.';
             } else {
                 str += '+';

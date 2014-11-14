@@ -6,23 +6,29 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
+
+/* eslint-disable */
+
 (function() {
-    var release = TP.sys.release;
+    var release = TP.sys.release;   // jshint ignore:line
 
     //  --- latest.js start ---
+    /* jshint ignore:start */
     /* eslint-disable */
     release({
-        "describe": "3.0.0-116-g52240583fc-dirty",
+        "describe": "3.0.0-1211-g1bc74d52d2-dirty",
         "major": "5",
         "minor": "0",
         "patch": "0",
         "suffix": "dev",
+        "increment": "7",
         "ptag": "3.0.0",
-        "commits": "116",
-        "phash": "52240583fc",
-        "time": "1405184580500",
-        "semver": "v5.0.0-dev.116+g52240583fc.1405184580500"
+        "commits": "1211",
+        "phash": "1bc74d52d2",
+        "time": "1415983971567",
+        "semver": "v5.0.0-dev.7+g1bc74d52d2.1211.1415983971567"
     });
-    //  --- end latest.js ---
+    /* jshint ignore:end */
+    //  --- latest.js end ---
 
 }());

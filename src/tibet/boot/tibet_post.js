@@ -6956,9 +6956,9 @@ TP.boot.hideUIBoot = function() {
     elem = TP.boot.$getUIElement(id);
     if (TP.boot.$isValid(elem)) {
         if (TP.boot.$isValid(elem.frameElement)) {
-            elem.frameElement.style.visibility = 'hidden';
+            elem.frameElement.style.display = 'none';
         } else {
-            elem.style.visibility = 'hidden';
+            elem.style.display = 'none';
         }
     }
 };
@@ -7035,9 +7035,9 @@ TP.boot.showUIBoot = function() {
 
     if (TP.boot.$isValid(elem)) {
         if (TP.boot.$isValid(elem.frameElement)) {
-            elem.frameElement.style.visibility = 'visible';
+            elem.frameElement.style.display = 'block';
         } else {
-            elem.style.visibility = 'visible';
+            elem.style.display = 'block';
         }
     }
 };

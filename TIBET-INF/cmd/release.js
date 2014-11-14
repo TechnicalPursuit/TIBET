@@ -120,7 +120,7 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['major', 'minor', 'patch', 'build', 'check',
-            'local', 'dry-run'],
+            'local', 'dry-run', 'quick'],
         'string': ['suffix', 'version'],
         'number': ['increment'],
         'default': {
@@ -129,6 +129,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             patch: false,
             incremental: true,
             local: false,
+            quick: false,
             dirty: false,
             build: true,
             check: true,
@@ -266,6 +267,28 @@ Cmd.prototype.getSuffix = function(suffix) {
     }
 
     throw new Error('Non-compliant semver release suffix: ' + suffix);
+};
+
+
+/**
+ * Computes and returns the content to be used for the 'latest.js' file we keep
+ * on the TPI web site for version update checks.
+ * @param {Object} meta Data including latest.js 'content' and 'source' data.
+ * @return {String} The latest.js file content string.
+ */
+Cmd.prototype.latest = function(meta) {
+
+    var start,
+        finish,
+        latest;
+
+    //  Writes out a latest.js file to be used @ technicalpursuit.com
+    start = '//  --- latest.js start ---';
+    finish = '//  --- latest.js end ---';
+    latest = meta.content.slice(meta.content.indexOf(start) + start.length,
+       meta.content.indexOf(finish));
+
+    return latest;
 };
 
 
@@ -429,7 +452,7 @@ Cmd.prototype.phaseOne = function() {
     //  Run 'tibet build_all' to create latest content for ~lib_src
     //  ---
 
-    if (this.options.build && !this.options['dry-run']) {
+    if (this.options.build && !this.options['dry-run'] && !this.options.quick) {
         sh = require('shelljs');
 
         cmd = 'tibet build_all';
@@ -560,7 +583,7 @@ Cmd.prototype.phaseTwo = function(source) {
     //  Run 'tibet checkup' to lint and test the resulting package.
     //  ---
 
-    if (this.options.check && !this.options['dry-run']) {
+    if (this.options.check && !this.options['dry-run'] && !this.options.quick) {
         sh = require('shelljs');
         cmd = 'tibet checkup';
 
@@ -597,8 +620,7 @@ Cmd.prototype.phaseThree = function(meta) {
         result,
         devtag,
         mastertag,
-        commands,
-        latest;
+        commands;
 
     // Build the proposed release tag so we can verify with user...
     mastertag = meta.source.semver.split('+')[0];
@@ -640,6 +662,7 @@ Cmd.prototype.phaseThree = function(meta) {
         } else {
             release.log('executing ' + cmd);
 // TODO: uncomment when ready to release/debug.
+            release.warn('did not really do that. commented out.');
 //        result = release.shexec(cmd);
         }
 
@@ -682,6 +705,7 @@ Cmd.prototype.phaseThree = function(meta) {
         } else {
             release.log('executing ' + cmd);
 // TODO: uncomment when ready to release/debug.
+            release.warn('did not really do that. commented out.');
 //        result = release.shexec(cmd);
         }
 
@@ -689,6 +713,7 @@ Cmd.prototype.phaseThree = function(meta) {
             release.info(result.output);
         }
     });
+
 
    /*
     * At this point the develop branch is updated, tagged, and pushed and the
@@ -698,14 +723,10 @@ Cmd.prototype.phaseThree = function(meta) {
     * There are basically two steps left: pack/publish to npm, update latest.js.
     */
 
-    //  'Writes out a latest.js file to be used @ technicalpursuit.com\n' +
-    latest = meta.content.slice(meta.content.indexOf('release({'),
-       meta.content.indexOf('});') + 3);
-    this.info('Update technicalpursuit.com\'s latest.js file with:');
-    this.log(latest);
-
-    //  'Writes out instructions on the final manual steps to do to TIBET\n';
     this.info('Read https://gist.github.com/coolaj86/1318304 and npm publish.');
+
+    this.info('Update technicalpursuit.com\'s latest.js file with:');
+    this.log(this.latest(meta));
 };
 
 
