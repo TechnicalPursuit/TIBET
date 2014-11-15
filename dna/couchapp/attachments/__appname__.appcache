@@ -1,50 +1,114 @@
 CACHE MANIFEST
 
-tibet.json
+# ---
+# !!! TIBET-managed appcache. Do not remove comment blocks of this form.
+# ---
 
-html/console.xhtml
-html/splash.xhtml
+## You can have comments ignored by prefixing ala: # !!!, # ---, or ##.
+## It is recommended that you not alter the section headings or # !!!
+## comments since those help guide the 'tibet cache' command operation.
+
+
+CACHE:
+# !!! lib
+
+node_modules/tibet/lib/xhtml/tp_blank.xhtml
+html/UIBOOT.xhtml
+node_modules/tibet/lib/css/tibet_boot.css
+node_modules/tibet/lib/img/boot/tpi_logo.png
+node_modules/tibet/lib/img/boot/no_js.png
 
 css/master.css
+node_modules/tibet/lib/css/tibet_reset.css
+node_modules/tibet/lib/css/tibet_content.css
+node_modules/tibet/lib/css/normalize.css
+node_modules/tibet/lib/css/tibet_normalize.css
 
-build/app_base.min.js
+node_modules/tibet/lib/img/boot/dark_fiber.png
+node_modules/tibet/lib/img/boot/white_fiber.png
 
-TIBET-INF/cfg/app.xml
+tibet.json
+
+TIBET-INF/cfg/standard.xml
 TIBET-INF/cfg/tibet.xml
-TIBET-INF/cfg/production.xml
+node_modules/tibet/lib/cfg/TIBET.xml
+node_modules/tibet/lib/cfg/tibet_kernel.xml
+node_modules/tibet/lib/cfg/tibet_extensions.xml
+node_modules/tibet/lib/cfg/lib_namespaces.xml
 
-TIBET-INF/tibet/lib/src/tibet_base.min.js
-TIBET-INF/tibet/lib/src/tibet_full.min.js
-TIBET-INF/tibet/lib/src/tibet_init.min.js
-TIBET-INF/tibet/lib/src/tibet_hook.min.js
+node_modules/tibet/lib/img/boot/tibet_logo.png
 
-TIBET-INF/tibet/lib/img/boot/tpi_logo.png
-TIBET-INF/tibet/lib/img/boot/tibet_logo.png
-TIBET-INF/tibet/lib/img/boot/nojs.png
-TIBET-INF/tibet/lib/img/boot/dark_fiber.png
-TIBET-INF/tibet/lib/img/boot/white_fiber.png
+node_modules/tibet/lib/dat/keyrings.xml
+node_modules/tibet/lib/dat/uris.xml
+node_modules/tibet/lib/dat/vcards.xml
+node_modules/tibet/lib/dat/uris_delegated.xml
+node_modules/tibet/lib/dat/uris_next.xml
+node_modules/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
 
-TIBET-INF/tibet/lib/css/tibet_boot.css
-TIBET-INF/tibet/lib/css/tibet_content.css
-TIBET-INF/tibet/lib/css/tibet_reset.css
-TIBET-INF/tibet/lib/css/tibet_normalize.css
-TIBET-INF/tibet/lib/css/normalize.css
+html/UIROOT.xhtml
 
-TIBET-INF/tibet/lib/json/html401_strict.json
+node_modules/tibet/lib/json/html401_strict.json
+node_modules/tibet/lib/dat/UIElementNode_keybindings.xml
 
-TIBET-INF/tibet/lib/dat/keyrings.xml
-TIBET-INF/tibet/lib/dat/uris.xml
-TIBET-INF/tibet/lib/dat/uris_next.xml
-TIBET-INF/tibet/lib/dat/uris_delegated.xml
-TIBET-INF/tibet/lib/dat/vcards.xml
-TIBET-INF/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
+node_modules/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
+node_modules/tibet/src/tibet/tools/tdc/css/TP.tsh.console.css
+node_modules/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
 
-TIBET-INF/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
-TIBET-INF/tibet/src/tibet/tools/tdc/css/TP.tsh.console.css
-TIBET-INF/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
+html/console.xhtml
+
+# --- don't cache multiple copies of TIBET, only the desired one(s)
+
+## node_modules/tibet/lib/src/tibet_init.js
+## node_modules/tibet/lib/src/tibet_hook.js
+## node_modules/tibet/lib/src/tibet_base.js
+## node_modules/tibet/lib/src/tibet_full.js
+## node_modules/tibet/lib/src/tibet_developer.js
+
+## node_modules/tibet/lib/src/tibet_init.js.gz
+## node_modules/tibet/lib/src/tibet_hook.js.gz
+## node_modules/tibet/lib/src/tibet_base.js.gz
+## node_modules/tibet/lib/src/tibet_full.js.gz
+## node_modules/tibet/lib/src/tibet_developer.js.gz
+
+node_modules/tibet/lib/src/tibet_init.min.js
+node_modules/tibet/lib/src/tibet_hook.min.js
+node_modules/tibet/lib/src/tibet_base.min.js
+node_modules/tibet/lib/src/tibet_full.min.js
+node_modules/tibet/lib/src/tibet_developer.min.js
+
+## node_modules/tibet/lib/src/tibet_init.min.js.gz
+## node_modules/tibet/lib/src/tibet_hook.min.js.gz
+## node_modules/tibet/lib/src/tibet_base.min.js.gz
+## node_modules/tibet/lib/src/tibet_full.min.js.gz
+## node_modules/tibet/lib/src/tibet_developer.min.js.gz
+
+
+CACHE:
+# !!! app
+
+css/app.css
+TIBET-INF/cfg/app.xml
+# src/tags/APP.{{appname}}.app.js
+
+html/splash.xhtml
+
+# --- don't cache multiple copies of APP, only the desired one(s)
+
+# --- NOTE - do NOT uncomment until you have at least one build.
+# --- The application cache cannot have 404's or it won't be used.
+
+## build/app_base.js
+## build/app_base.min.js
+## build/app_base.js.gz
+## build/app_base.min.js.gz
+
 
 NETWORK:
 *
 
+
 FALLBACK:
 
+# ---
+# !!! ID: 1416014660744
+# ---
