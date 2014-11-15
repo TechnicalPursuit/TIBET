@@ -16,7 +16,7 @@ node_modules/tibet/lib/xhtml/tp_blank.xhtml
 html/UIBOOT.xhtml
 node_modules/tibet/lib/css/tibet_boot.css
 node_modules/tibet/lib/img/boot/tpi_logo.png
-node_modules/tibet/lib/img/boot/no_js.png
+node_modules/tibet/lib/img/boot/nojs.png
 
 css/master.css
 node_modules/tibet/lib/css/tibet_reset.css
@@ -48,13 +48,11 @@ node_modules/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
 html/UIROOT.xhtml
 
 node_modules/tibet/lib/json/html401_strict.json
-node_modules/tibet/lib/dat/UIElementNode_keybindings.xml
+node_modules/tibet/lib/dat/TP.core.UIElementNode_keybindings.xml
 
 node_modules/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
 node_modules/tibet/src/tibet/tools/tdc/css/TP.tsh.console.css
 node_modules/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
-
-html/console.xhtml
 
 # --- don't cache multiple copies of TIBET, only the desired one(s)
 
@@ -90,12 +88,10 @@ css/app.css
 TIBET-INF/cfg/app.xml
 # src/tags/APP.{{appname}}.app.js
 
-html/splash.xhtml
-
 # --- don't cache multiple copies of APP, only the desired one(s)
 
-# --- NOTE - do NOT uncomment until you have at least one build.
-# --- The application cache cannot have 404's or it won't be used.
+# --- NOTE: do not uncomment until after a build. If there are any
+# --- 404 result codes the appcache is NOT used.
 
 ## build/app_base.js
 ## build/app_base.min.js
@@ -110,5 +106,5 @@ NETWORK:
 FALLBACK:
 
 # ---
-# !!! ID: 1416014660744
+# !!! ID: 0000000000000
 # ---
