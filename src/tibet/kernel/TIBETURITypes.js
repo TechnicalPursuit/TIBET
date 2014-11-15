@@ -1949,6 +1949,82 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('$changed',
+function(anAspect, anAction, aDescription) {
+
+    /**
+     * @name $changed
+     * @synopsis Notifies observers that some aspect of the receiver has
+     *     changed. The fundamental data-driven dependency method.
+     * @description See the supertype method for more information.
+     * @param {String} anAspect The aspect of the receiver that changed. This is
+     *     usually an attribute name.
+     * @param {String} anAction The action which caused the change. This usually
+     *     'add', 'remove', etc.
+     * @param {TP.lang.Hash} aDescription A hash describing details of the
+     *     change.
+     * @returns {TP.core.URI} The receiver.
+     * @signals Change
+     */
+
+    var desc,
+        resource,
+
+        subURIs,
+        subDesc,
+
+        i;
+
+    //  If this isn't a primary URI, then it's a sub URI and we'll just let all
+    //  of the parameters default in the supertype call, except we do provide
+    //  the 'path' and 'target' here. Note how we set the target to the *primary
+    //  URI's* resource. This is the target that the path query will be executed
+    //  against to obtain any value.
+    if (!this.isPrimaryURI()) {
+        desc = TP.isValid(aDescription) ? aDescription : TP.hc();
+        desc.atPutIfAbsent('path', this.getFragmentText());
+        desc.atPutIfAbsent('target', this.getPrimaryURI().getResource());
+
+        return this.callNextMethod(anAspect, anAction, desc);
+    } else {
+
+        //  Otherwise, this is a primary URI and we need to send change
+        //  notifications from all of it's subURIs, if it has any.
+        resource = this.getResource();
+
+        subURIs = this.getSubURIs();
+
+        if (TP.notEmpty(subURIs)) {
+            for (i = 0; i < subURIs.getSize(); i++) {
+                subDesc = TP.hc('action', anAction,
+                                'aspect', 'value',
+                                'facet', 'value',
+                                'target', resource,
+                                'path', subURIs.at(i).getFragmentText()
+                                );
+
+                //  Note here how we signal TP.sig.StructureChange. This is
+                //  because the whole value of the primary URI has changed so,
+                //  as far as the subURIs are concerned, the whole structure has
+                //  changed.
+                subURIs.at(i).signal(
+                        'TP.sig.StructureChange',
+                        subDesc);
+            }
+        }
+
+        //  Now that we're done signaling the sub URIs, it's time to signal a
+        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
+        desc = TP.isValid(aDescription) ? aDescription : TP.hc();
+
+        this.signal('TP.sig.ValueChange', desc);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('clearCaches',
 function() {
 
