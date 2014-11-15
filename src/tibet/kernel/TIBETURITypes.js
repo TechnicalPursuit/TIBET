@@ -4593,18 +4593,25 @@ function(aResource, aRequest) {
         }
 
         //  Now that we're done signaling the sub URIs, it's time to signal a
-        //  TP.sig.StructureChange from ourself. Note how we reset the old and
-        //  new values to the 'whole' old and new values.
+        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
+        //  Note how we reset the old and new values to the 'whole' old and new
+        //  values.
         description.atPut(TP.OLDVAL, resource);
         description.atPut(TP.NEWVAL, aResource);
 
         this.signal(
-            'TP.sig.StructureChange',
+            'TP.sig.ValueChange',
             description);
     } else {
         //  If we don't have subURIs, we invoke the standard 'changed' mechanism
-        //  (which signals 'TP.sig.ValueChange' from ourself).
-        this.changed('value', TP.UPDATE, TP.hc('target', aResource));
+        //  (which signals 'TP.sig.ValueChange' from ourself). Note here that we
+        //  invoke '$changed()' since, by default, we do *not* signal change (we
+        //  don't signal change for our 'properties' since we don't want
+        //  observers to get notified about all of that).
+        this.$changed('value',
+                        TP.UPDATE,
+                        TP.hc('target', aResource, 'oldTarget', resource,
+                                TP.OLDVAL, resource, TP.NEWVAL, aResource));
     }
 
     return this;
