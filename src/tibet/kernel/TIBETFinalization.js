@@ -503,6 +503,9 @@ function() {
     });
 
     if (TP.notValid(TP.sys.getTypeByName('TP.core.ConsoleService'))) {
+
+        TP.boot.initializeCanvas(TP.win('UIBOOT'));
+
         //  Configure a toggle so we can always get back to the boot UI as
         //  needed.
         toggleKey = TP.sys.cfg('tdc.toggle_on');
