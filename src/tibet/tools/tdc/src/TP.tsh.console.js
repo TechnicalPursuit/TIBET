@@ -46,6 +46,8 @@ function(aRequest) {
 
     if (TP.isEmpty(triggerKey = TP.elementGetAttribute(elem, 'tdc:toggle'))) {
         triggerKey = TP.sys.cfg('tdc.toggle_on');
+    } else {
+        TP.sys.setcfg('tdc.toggle_on', triggerKey);
     }
 
     //  When the UIROOT is done loading, we grab the UIBOOT and prep it to load
@@ -452,6 +454,19 @@ function() {
     //  is all the pixels that can't be attributed to showing one line
     cell.$perimeter = outerWrapper.$minHeight - (rowHeight + offset);
 
+    styleVals = TP.elementGetStyleValuesInPixels(
+        outerWrapper,
+        TP.ac('borderTopWidth', 'borderBottomWidth',
+                'paddingTop', 'paddingBottom'));
+
+    offset = styleVals.at('borderTopWidth') +
+                styleVals.at('borderBottomWidth') +
+                styleVals.at('paddingTop') +
+                styleVals.at('paddingBottom');
+
+    outerWrapper.$perimeter = offset;
+    outerWrapper.$minHeight -= offset;
+
     //  start off by making sure width/height are properly configured
     this.adjustInputCellSize();
 
@@ -736,7 +751,7 @@ function() {
     height = TP.elementGetHeight(cell);
 
     //  Add the surrounding 'chrome' height.
-    height = height + cell.$perimeter;
+    height = height - outerWrapper.$perimeter + cell.$perimeter;
 
     //  don't set outerWrapper height smaller than its initial height
     if (height > outerWrapper.$minHeight) {
@@ -1169,11 +1184,13 @@ function(aSignal) {
 
         this.setInputContent('*'.times(
                 this.$get('concealedInput').getSize()));
-    }
+    } else {
+        keyname = TP.domkeysigname(evt);
 
-    //  if we're here then we want to adjust the height, but not focus or
-    //  otherwise alter where the cursor might be
-    this.adjustInputCellSize();
+        if (keyname === 'DOM_Enter_Up' || keyname === 'DOM_Backspace_Up') {
+            this.adjustInputCellSize();
+        }
+    }
 
     return;
 });
@@ -2132,6 +2149,7 @@ function(aPrompt, aCSSClass) {
     elem.style.left = contentWidth + 'px';
 
     promptRightMargin = this.getType().PROMPT_RIGHT_MARGIN;
+
     TP.byId('tdc_cmdline_input', this.get('vWin')).style.left =
         (contentWidth + promptRightMargin) + 'px';
 
