@@ -358,7 +358,8 @@ function() {
         rootURI,
         rootName,
         rootWindow,
-        request;
+        request,
+        toggleKey;
 
     rootLoc = TP.uriJoinPaths('~app_html', TP.sys.cfg('project.rootpage'));
 
@@ -500,6 +501,23 @@ function() {
         // is pretty limited in terms of details.
         TP.boot.$stderr(msg, TP.FATAL);
     });
+
+    if (TP.notValid(TP.sys.getTypeByName('TP.core.ConsoleService'))) {
+        //  Configure a toggle so we can always get back to the boot UI as
+        //  needed.
+        toggleKey = TP.sys.cfg('tdc.toggle_on');
+
+        if (!toggleKey.startsWith('TP.sig.')) {
+            toggleKey = 'TP.sig.' + toggleKey;
+        }
+
+        /* eslint-disable no-wrap-func */
+        //  set up keyboard toggle to show/hide the boot UI
+        (function () {
+                TP.boot.toggleUI();
+        }).observe(TP.core.Keyboard, toggleKey);
+        /* eslint-enable no-wrap-func */
+    }
 
     //  Set the location of the window (wrapping it to be a TP.core.Window)
     //  but make sure to pass in 'false' to *not* create a TIBET history
