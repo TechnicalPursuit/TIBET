@@ -414,11 +414,17 @@ div.tag-defaulted h1 {
 }
 
 div.tag-defaulted p {
-    font-size: 116%;
+    font-size: 108%;
     max-width: 500px;
     margin: auto;
     margin-bottom: 1em;
 }
+
+div.tag-defaulted p.hint {
+    margin-top: 48px;
+    font-size: 100%;
+}
+
 
 div h1.next-step {
     margin: 48px;

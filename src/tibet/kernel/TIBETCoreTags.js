@@ -152,6 +152,10 @@ function(aRequest) {
         ' specified along with your ~app_cfg/app.xml package to ensure you' +
         ' are loading it.' +
         '</p>' +
+
+        '<p class="hint">' +
+        'Hint: You can use Alt-Up to toggle the boot log/console.' +
+        '</p>' +
     '</div>');
 
     TP.elementReplaceWith(elem, newElem);
