@@ -21,6 +21,12 @@
     font-size: 108%;
 }
 
+.startup p.hint {
+    margin-top: 50px;
+    font-size: 100%;
+    text-align: center;
+}
+
 .startup a {
   color: #369;
   text-decoration: underline;
