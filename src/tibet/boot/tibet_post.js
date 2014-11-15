@@ -7099,7 +7099,9 @@ TP.boot.toggleUI = function() {
 
         if (elem.style.visibility === 'visible') {
             TP.boot.showUIBoot();
+            TP.boot.hideUIRoot();
         } else {
+            TP.boot.showUIRoot();
             TP.boot.hideUIBoot();
         }
     }
