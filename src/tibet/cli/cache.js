@@ -166,9 +166,9 @@ Cmd.prototype.execute = function() {
     var cachefile,
         appname;
 
-    if (this.options.enable && !this.options.disable &&
+    if (!this.options.enable && !this.options.disable &&
             !this.options.missing && !this.options.rebuild &&
-            !this.options.touch && !this.options.develop) {
+            !this.options.touch) {
         return this.usage();
     }
 
@@ -176,9 +176,7 @@ Cmd.prototype.execute = function() {
     // focus on the index.html file or we're doing missing/rebuild which focus
     // on the cache file itself.
     if ((this.options.enable || this.options.disable) &&
-            (this.options.develop ||
-             this.options.missing ||
-            this.options.rebuild)) {
+        (this.options.missing || this.options.rebuild)) {
         this.error('Incompatible command flags.');
         throw new Error();
     }
