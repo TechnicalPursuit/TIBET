@@ -4076,13 +4076,6 @@ TP.$changed = function(anAspect, anAction, aDescription) {
         return;
     }
 
-    //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
-    //  We don't normally do this in TIBET, but this method is used heavily and
-    //  is a hotspot.
-    if (!this.shouldSignalChange()) {
-        return;
-    }
-
     //  Keep this after the test above to keep overhead down.
     TP.stop('break.change');
 
@@ -4162,6 +4155,13 @@ TP.changed = function(anAspect, anAction, aDescription) {
      * @signals Change
      * @todo
      */
+
+    //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
+    //  We don't normally do this in TIBET, but this method is used heavily and
+    //  is a hotspot.
+    if (!this.shouldSignalChange()) {
+        return;
+    }
 
     return this.$changed(anAspect, anAction, aDescription);
 };
