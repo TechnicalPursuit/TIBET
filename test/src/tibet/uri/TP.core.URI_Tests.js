@@ -2760,12 +2760,12 @@ function() {
         //  Set everything under 'foo' to a new data structure
         jsonURI1.setResource(TP.json2js('["A","B","C","D"]'));
 
-        //  In this case, we only get an aspect of 'value' in both the value
-        //  path results and structure path results. The individual fragment
-        //  URIs will have been told of a 'value' change to their individual
-        //  values.
+        //  In this case, we only get an aspect of 'value' in only the value
+        //  path results, not the structure path results. The individual
+        //  fragment URIs will have been told of a 'structure' change to their
+        //  individual values.
         this.assert.contains(valuePathResults, 'value');
-        this.assert.contains(structurePathResults, 'value');
+        this.refute.contains(structurePathResults, 'value');
 
         jsonURI1.setResource(modelObj);
 
@@ -3079,12 +3079,12 @@ function() {
         //  Set everything under 'foo' to a new data structure
         xmlURI1.setResource(TP.tpdoc('<emp><salary>10000</salary></emp>'));
 
-        //  In this case, we only get an aspect of 'value' in both the value
-        //  path results and structure path results. The individual fragment
-        //  URIs will have been told of a 'value' change to their individual
-        //  values.
+        //  In this case, we only get an aspect of 'value' in only the value
+        //  path results, not the structure path results. The individual
+        //  fragment URIs will have been told of a 'structure' change to their
+        //  individual values.
         this.assert.contains(valuePathResults, 'value');
-        this.assert.contains(structurePathResults, 'value');
+        this.refute.contains(structurePathResults, 'value');
 
         xmlURI1.setResource(modelObj);
 
