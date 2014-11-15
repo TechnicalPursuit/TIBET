@@ -103,10 +103,28 @@ Cmd.prototype.HELP =
 'should have the effect of causing your browser to refresh the cache.\n\n';
 
 /**
- * The string used for locating the line updated via --touch.
- * @type {String}
+ * The pattern used for locating the section specific to app files.
+ * @type {RegExp}
  */
-Cmd.prototype.ID_REGEX = / ID: (\d)+/;
+Cmd.prototype.APP_START_REGEX = /# !!! app/;
+
+/**
+ * The pattern used for locating the section specific to TIBET lib files.
+ * @type {RegExp}
+ */
+Cmd.prototype.LIB_START_REGEX = /# !!! lib/;
+
+/**
+ * The pattern used to test for comments that should not be toggled.
+ * @type {RegExp}
+ */
+Cmd.prototype.OFFLIMITS_REGEX = /# (!!!|---)/;
+
+/**
+ * The pattern used for locating the line updated via --touch.
+ * @type {RegExp}
+ */
+Cmd.prototype.TOUCH_ID_REGEX = /# !!! ID: (\d)+/;
 
 /**
  * Command argument parsing options.
@@ -158,7 +176,9 @@ Cmd.prototype.execute = function() {
     // focus on the index.html file or we're doing missing/rebuild which focus
     // on the cache file itself.
     if ((this.options.enable || this.options.disable) &&
-        (this.options.missing || this.options.rebuild)) {
+            (this.options.develop ||
+             this.options.missing ||
+            this.options.rebuild)) {
         this.error('Incompatible command flags.');
         throw new Error();
     }
@@ -217,9 +237,16 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
         i,
         len,
-        start,
-        end,
         line,
+        copy,
+
+        inapp,
+        inlib,
+
+        appEnd,
+        appStart,
+        libEnd,
+        libStart,
 
         dir,
 
@@ -233,13 +260,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
         newLines;
 
-    this.log('checking application cache content...');
-
-    text = sh.cat(cachefile);
-    if (!text) {
-        this.error('Unable to read cache file: ' + cachefile);
-        throw new Error();
-    }
+    text = this.validateCacheFile(cachefile);
 
     // Sadly the spec crowd thought a pure text file was a good idea so we
     // have to parse/split/slice/dice/etc. to determine the current content
@@ -247,59 +268,96 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
     lines = text.split('\n');
     len = lines.length;
 
-    // Has to start with CACHE MANIFEST or it's not valid.
-    if (!lines[0].trim().match(/^CACHE MANIFEST$/)) {
-        this.warn('Cache file not a valid HTML5 manifest.');
-        throw new Error();
-    }
-
-    // If there's a CACHE: line it will define the start of the cache
-    // entries, but it's optional.
-    if (text.match(/CACHE:/)) {
-        // Adjust our starting line to the line just beyond CACHE:
-        start = 1;
-        for (i = 1; i < len; i++) {
-            line = lines[i].trim();
-            if (line.match(/^CACHE:$/)) {
-                start = i + 1;
-                break;
-            }
-            start = i;
-        }
-
-        if (!start) {
-            this.error('Unable to locate CACHE: start.');
-            throw new Error();
-        }
-
-    } else {
-        // Our starting index is the first line after CACHE MANIFEST
-        start = 1;
-    }
-
     appFiles = [];
     libFiles = [];
 
-    end = len;
-    for (i = start; i < len; i++) {
+    inapp = false;
+    inlib = false;
+
+    for (i = 0; i < len; i++) {
         line = lines[i].trim();
 
-        // If the line is blank, or a comment, ignore it.
-        if (!line || line.match(/^#/)) {
+        // If the line is blank ignore it.
+        if (!line) {
             continue;
         }
 
-        // Once we hit another section we're done with the cache entries.
-        if (line.match(/FALLBACK:/) || line.match(/NETWORK:/)) {
-            end = i;
-            break;
+        if (line.match(this.APP_START_REGEX)) {
+            inapp = true;
+            appStart = i;
+            continue;
+        } else if (line.match(this.LIB_START_REGEX)) {
+            inlib = true;
+            libStart = i;
+            continue;
+        } else if (line.match(this.OFFLIMITS_REGEX)) {
+            continue;
         }
 
-        if (line.match(/TIBET-INF\/tibet/) || line.match(/node_modules\/tibet/)) {
-            // Library content
+        // Once we hit another section we're done with the current section.
+        if (line.match(/CACHE:/) ||
+                line.match(/FALLBACK:/) ||
+                line.match(/NETWORK:/)) {
+            if (inapp) {
+                inapp = false;
+                appEnd = i;
+            }
+            if (inlib) {
+                inlib = false;
+                libEnd = i;
+            }
+        }
+
+        if (inlib) {
+
+            // Library content. We don't adjust these since the assumption is
+            // the library isn't changing and won't need toggling on/off.
+            while (line.indexOf('#') === 0) {
+                // Remove comment for missing/rebuild file check...but don't
+                // update the actual line, we don't adjust lib section content.
+                line = line.slice(1).trim();
+            }
             libFiles.push(line);
-        } else {
-            // Application content
+
+        } else if (inapp) {
+
+            // Application content. We alter these lines based on the state of
+            // the --develop flag. During development app files are not cached
+            // so we comment them out. Otherwise we uncomment them.
+
+            if (this.options.develop) {
+
+                if (line.indexOf('#') === 0) {
+                    // Capture actual file name for missing/rebuild.
+                    while (line.indexOf('#') === 0) {
+                        line = line.slice(1).trim();
+                    }
+                } else {
+                    // Update to be commented in place. File name is already
+                    // uncommented for missing/rebuild checks.
+                    lines[i] = '# ' + line;
+                }
+
+            } else {
+
+                // All lines should be uncommented if they currently are
+                // commented (but not masked), and we need to capture the proper
+                // name in either case.
+                if (line.indexOf('#') === 0) {
+                    copy = line;
+                    // Find the real name for use in missing checks...
+                    while (line.indexOf('#') === 0) {
+                        line = line.slice(1).trim();
+                    }
+
+                    // If the original wasn't masked then we can uncomment in
+                    // the actual file location.
+                    if (copy.indexOf('##') !== 0) {
+                        lines[i] = line;
+                    }
+                }
+            }
+
             appFiles.push(line);
         }
     }
@@ -346,6 +404,14 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         return appFiles.indexOf(file) === -1;
     });
 
+    // If we're in develop mode any new files we add should be added in
+    // commented out form.
+    if (this.options.develop) {
+        appMissing = appMissing.map(function(file) {
+            return '# ' + file;
+        });
+    }
+
     if (this.options.missing) {
         if (!libMissing.length && !appMissing.length) {
             this.info('No build files missing from cache.');
@@ -360,16 +426,27 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
             this.warn('Missing app files:\n' + appMissing.join('\n'));
         }
         return;
+
+    } else if (this.options.rebuild) {
+
+        // If we're here we're rebuilding using information from the missing
+        // file lists to update the cache content.
+        newLines = lines;
+
+        if (appStart && appEnd && appMissing.length) {
+            appMissing.push('');        // blank line before next section.
+            newLines = lines.slice(0, appEnd).concat(
+                appMissing).concat(lines.slice(appEnd));
+        }
+
+        if (libStart && libEnd && libMissing.length) {
+            libMissing.push('');        // blank line before next section.
+            newLines = lines.slice(0, libEnd).concat(
+                libMissing).concat(lines.slice(libEnd));
+        }
+
+        newLines.join('\n').to(cachefile);
     }
-
-    // If we're here we're rebuilding using information from the missing file
-    // lists to update the cache content.
-    newLines = lines.slice(0, end).concat(
-        libMissing).concat(
-        appMissing).concat(
-        lines.slice(end));
-
-    newLines.join('\n').to(cachefile);
 
     this.info('application cache update complete.');
 };
@@ -445,6 +522,8 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
         html.setAttribute('manifest', cachefile);
     }
 
+    this.log('updating cache status...');
+
     // Write it back out...
     text = serializer.serializeToString(doc);
     if (!text) {
@@ -471,6 +550,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 /**
  * Updates the ID: value of the cache file, ensuring that it will refresh when
  * it is next checked.
+ * @param {String} cachefile The name of the cache file being configured.
  */
 Cmd.prototype.executeTouch = function(cachefile) {
     var text,
@@ -481,13 +561,9 @@ Cmd.prototype.executeTouch = function(cachefile) {
         match,
         id;
 
-    this.log('updating cache ID value...');
+    text = this.validateCacheFile(cachefile);
 
-    text = sh.cat(cachefile);
-    if (!text) {
-        this.error('Unable to read cache file: ' + cachefile);
-        throw new Error();
-    }
+    this.log('updating cache ID value...');
 
     // Sadly the spec crowd thought a pure text file was a good idea so we
     // have to parse/split/slice/dice/etc. to determine the current content
@@ -495,16 +571,10 @@ Cmd.prototype.executeTouch = function(cachefile) {
     lines = text.split('\n');
     len = lines.length;
 
-    // Has to start with CACHE MANIFEST or it's not valid.
-    if (!lines[0].trim().match(/^CACHE MANIFEST$/)) {
-        this.warn('Cache file not a valid HTML5 manifest.');
-        throw new Error();
-    }
-
     for (i = 0; i < len; i++) {
         line = lines[i].trim();
 
-        match = line.match(this.ID_REGEX);
+        match = line.match(this.TOUCH_ID_REGEX);
         if (CLI.isValid(match)) {
             id = Date.now();
             lines[i] = '# ID: ' + id;
@@ -514,6 +584,43 @@ Cmd.prototype.executeTouch = function(cachefile) {
     lines.join('\n').to(cachefile);
 
     this.info('Application cache stamped with ID: ' + id);
+};
+
+
+/**
+ * Ensures the content of the cache file matches the requirements of a valid
+ * cache file that TIBET can manage. If the tests are successful the text of the
+ * cache is returned for further processing.
+ * @param {String} cachefile The name of the cache file being configured.
+ * @return {String} The file content.
+ */
+Cmd.prototype.validateCacheFile = function(cachefile) {
+
+    var text;
+
+    this.log('checking application cache content...');
+
+    text = sh.cat(cachefile);
+    if (!text) {
+        throw new Error('Unable to read cache file: ' + cachefile);
+    }
+
+    if (!text) {
+        throw new Error('Cache file not a valid HTML5 manifest.');
+    }
+
+    // Has to start with CACHE MANIFEST or it's not valid.
+    if (!/^CACHE MANIFEST\n/.test(text)) {
+        throw new Error('Cache file not a valid HTML5 manifest.');
+    }
+
+    // We rely on specific comment blocks so verify we can find them...
+    if (!text.match(this.APP_START_REGEX) ||
+        !text.match(this.LIB_START_REGEX)) {
+        throw new Error('Cache file not a TIBET-managed manifest.');
+    }
+
+    return text;
 };
 
 
