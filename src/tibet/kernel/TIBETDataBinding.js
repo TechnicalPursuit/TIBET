@@ -731,7 +731,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                                 TP.JOIN +
                                 TP.str(aspect) +
                                 TP.JOIN +
-                                facetName;
+                                facet;
 
                 //  If we found a target attribute registration under the key,
                 //  then perform the set()
