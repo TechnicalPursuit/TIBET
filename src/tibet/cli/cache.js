@@ -62,11 +62,8 @@ Cmd.prototype.HELP =
 'Provides control over HTML5 application manifests and their activation.\n\n' +
 
 'TIBET projects include a manifest file named {appname}.appcache which is\n' +
-'disabled by default, but which can easily be activated or expanded upon.\n\n' +
-
-'For simplicity this command expects only one CACHE: section, or none. The\n' +
-'use of multiple CACHE: headers is not supported. The default template is\n' +
-'populated with a single section header for cache, network, and fallback.\n\n' +
+'managed by this command by taking advantage of specific comment blocks\n' +
+'which help delimit the content of the cache file for easier processing.\n\n' +
 
 'Content checks are done against the files in ~app_build and ~lib_build.\n' +
 'If your application should cache files outside of those directories you\n' +
@@ -85,17 +82,31 @@ Cmd.prototype.HELP =
 'attribute name effectively will disable the cache (although if the cache\n' +
 'was ever activated you must clear your browser\'s cache content as well).\n\n' +
 
+'Use --develop to update the cache such that application file content is\n' +
+'commented out so it will load dynamically via the network. Invert the flag\n' +
+'via --no-develop to uncomment application section content to test your\n' +
+'application running from the cache. Note --develop is on by default.\n\n' +
+
 'Use --missing to list files in the application not in the manifest. This\n' +
 'is a relatively simple scan looking for css, image, and other non-source\n' +
 'files which might be useful to cache. For JavaScript the system presumes\n' +
 'that only source files in ~app_build should be part of the cache.\n\n' +
 
-'Use --rebuild to replace the app and lib sections of the manifest. This is\n' +
-'the only flag which edits the content of the appcache file itself. If the\n' +
+'Use --rebuild to refresh the app and lib sections of the manifest. This is\n' +
+'the only flag which edits the file content of the appcache itself. If the\n' +
 'comment delimiters for app and lib sections are not present this operation\n' +
 'will fail and output an appropriate error message. Use this option with a\n' +
-'degree of caution since it will alter the content of your cache.\n\n';
+'degree of caution since it will alter the content of your cache.\n\n' +
 
+'Use --touch to update the embedded ID: {timestamp} value provided by the\n' +
+'default cache template. This effectively changes the cache content which\n' +
+'should have the effect of causing your browser to refresh the cache.\n\n';
+
+/**
+ * The string used for locating the line updated via --touch.
+ * @type {String}
+ */
+Cmd.prototype.ID_REGEX = / ID: (\d)+/;
 
 /**
  * Command argument parsing options.
@@ -103,13 +114,15 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['disable', 'enable', 'missing', 'rebuild'],
+        'boolean': ['develop', 'disable', 'enable', 'missing', 'rebuild', 'touch'],
         'string': ['file'],
         'default': {
+            develop: true,
             disable: false,
             enable: false,
             missing: false,
-            rebuild: false
+            rebuild: false,
+            touch: false
         }
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -119,7 +132,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet cache [--file <cachefile>] [--enable] [--disable] [--missing] [--rebuild]';
+    'tibet cache [--file <cachefile>] [--enable] [--disable] [--develop] [--missing] [--rebuild] [--touch]';
 
 
 //  ---
@@ -135,8 +148,9 @@ Cmd.prototype.execute = function() {
     var cachefile,
         appname;
 
-    if (!this.options.enable && !this.options.disable &&
-        !this.options.missing && !this.options.rebuild) {
+    if (this.options.enable && !this.options.disable &&
+            !this.options.missing && !this.options.rebuild &&
+            !this.options.touch && !this.options.develop) {
         return this.usage();
     }
 
@@ -146,17 +160,17 @@ Cmd.prototype.execute = function() {
     if ((this.options.enable || this.options.disable) &&
         (this.options.missing || this.options.rebuild)) {
         this.error('Incompatible command flags.');
-        return 1;
+        throw new Error();
     }
 
     if (this.options.enable && this.options.disable) {
         this.error('Incompatible command flags.');
-        return 1;
+        throw new Error();
     }
 
     if (this.options.missing && this.options.rebuild) {
         this.error('Incompatible command flags.');
-        return 1;
+        throw new Error();
     }
 
     // Verify existence of the specified or default cache file. Even with
@@ -170,7 +184,12 @@ Cmd.prototype.execute = function() {
 
     if (!sh.test('-e', cachefile)) {
         this.error('Cannot find cache file: ' + cachefile);
-        return 1;
+        throw new Error();
+    }
+
+    // If we're doing a touch operation that's all we'll do.
+    if (this.options.touch) {
+        return this.executeTouch(cachefile);
     }
 
     // If we're enabling or disabling we need to find and check the index.html
@@ -219,7 +238,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
     text = sh.cat(cachefile);
     if (!text) {
         this.error('Unable to read cache file: ' + cachefile);
-        return 1;
+        throw new Error();
     }
 
     // Sadly the spec crowd thought a pure text file was a good idea so we
@@ -231,7 +250,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
     // Has to start with CACHE MANIFEST or it's not valid.
     if (!lines[0].trim().match(/^CACHE MANIFEST$/)) {
         this.warn('Cache file not a valid HTML5 manifest.');
-        return 1;
+        throw new Error();
     }
 
     // If there's a CACHE: line it will define the start of the cache
@@ -250,7 +269,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
         if (!start) {
             this.error('Unable to locate CACHE: start.');
-            return 1;
+            throw new Error();
         }
 
     } else {
@@ -375,25 +394,25 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
     if (!sh.test('-e', 'index.html')) {
         this.error('Cannot find index.html');
-        return 1;
+        throw new Error();
     }
 
     text = sh.cat('index.html');
     if (!text) {
         this.error('Unable to read index.html content.');
-        return 1;
+        throw new Error();
     }
 
     doc = parser.parseFromString(text);
     if (!doc) {
         this.error('Error parsing index.html. Not well-formed?');
-        return 1;
+        throw new Error();
     }
 
     html = doc.getElementsByTagName('html')[0];
     if (!html) {
         this.error('Unable to locate html element.');
-        return 1;
+        throw new Error();
     }
 
     value = html.getAttribute('manifest');
@@ -430,7 +449,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     text = serializer.serializeToString(doc);
     if (!text) {
         this.error('Error serializing index.html.');
-        return 1;
+        throw new Error();
     }
 
     // Serializer has a habit of not placing a newline after the DOCTYPE.
@@ -446,6 +465,55 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     }
 
     this.info('Application cache ' + operation + '.');
+};
+
+
+/**
+ * Updates the ID: value of the cache file, ensuring that it will refresh when
+ * it is next checked.
+ */
+Cmd.prototype.executeTouch = function(cachefile) {
+    var text,
+        lines,
+        len,
+        i,
+        line,
+        match,
+        id;
+
+    this.log('updating cache ID value...');
+
+    text = sh.cat(cachefile);
+    if (!text) {
+        this.error('Unable to read cache file: ' + cachefile);
+        throw new Error();
+    }
+
+    // Sadly the spec crowd thought a pure text file was a good idea so we
+    // have to parse/split/slice/dice/etc. to determine the current content
+    // of the various cache sections.
+    lines = text.split('\n');
+    len = lines.length;
+
+    // Has to start with CACHE MANIFEST or it's not valid.
+    if (!lines[0].trim().match(/^CACHE MANIFEST$/)) {
+        this.warn('Cache file not a valid HTML5 manifest.');
+        throw new Error();
+    }
+
+    for (i = 0; i < len; i++) {
+        line = lines[i].trim();
+
+        match = line.match(this.ID_REGEX);
+        if (CLI.isValid(match)) {
+            id = Date.now();
+            lines[i] = '# ID: ' + id;
+        }
+    }
+
+    lines.join('\n').to(cachefile);
+
+    this.info('Application cache stamped with ID: ' + id);
 };
 
 
