@@ -1814,7 +1814,8 @@ function(anElement, attributeName, checkAttrNSURI) {
         //  second common case is that we can just find the attribute, and
         //  since it's not NS qualified if we don't find the attribute node
         //  then we're not gonna find it through any means
-        if (TP.isAttributeNode(attr = anElement.getAttributeNode(attributeName))) {
+        if (TP.isAttributeNode(
+                    attr = anElement.getAttributeNode(attributeName))) {
             return TP.ifInvalid(attr.value, '');
         }
 
@@ -1831,7 +1832,8 @@ function(anElement, attributeName, checkAttrNSURI) {
                                                     attributeName,
                                                     checkAttrNSURI);
     } else {
-        if (TP.isAttributeNode(attr = anElement.getAttributeNode(attributeName))) {
+        if (TP.isAttributeNode(
+                    attr = anElement.getAttributeNode(attributeName))) {
             return TP.ifInvalid(attr.value, '');
         }
 
@@ -2016,7 +2018,7 @@ function(anElement, attributeName, stripPrefixes) {
     dict = TP.hc();
 
     //  filter by name as needed
-    if (TP.isString(attributeName)) {
+    if (TP.isString(attributeName) || TP.isRegExp(attributeName)) {
         attrs = TP.elementGetAttributeNodes(anElement, attributeName);
     } else {
         attrs = anElement.attributes;
@@ -2244,7 +2246,7 @@ function(anElement, attributeName, stripPrefixes) {
 
     dict = TP.hc();
 
-    if (TP.isString(attributeName)) {
+    if (TP.isString(attributeName) || TP.isRegExp(attributeName)) {
         attrs = TP.elementGetAttributeNodes(anElement, attributeName);
     } else {
         attrs = anElement.attributes;
@@ -2511,7 +2513,7 @@ function(anElement, attributeName, attrNS) {
 
     arr = TP.ac();
 
-    if (TP.isString(attributeName)) {
+    if (TP.isString(attributeName) || TP.isRegExp(attributeName)) {
         attrs = TP.elementGetAttributeNodes(anElement, attributeName);
     } else {
         attrs = anElement.attributes;
@@ -2959,7 +2961,8 @@ function(anElement, attributeName, checkAttrNSURI) {
         }
 
         if (prefixToUse === prefix) {
-            if (TP.isAttributeNode(attrNode = anElement.getAttributeNode(lname))) {
+            if (TP.isAttributeNode(
+                        attrNode = anElement.getAttributeNode(lname))) {
                 return attrNode;
             }
         }
