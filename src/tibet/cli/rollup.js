@@ -132,6 +132,7 @@ Cmd.prototype.executeForEach = function(list) {
     }
 
     minifyOpts = CLI.ifUndefined(this.config.tibet.escodegen, {});
+    this.verbose('minifyOpts: ' + beautify(JSON.stringify(minifyOpts)));
 
     list.forEach(function(item) {
         var ast,

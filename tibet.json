@@ -3,10 +3,14 @@
     "boot": {
         "package": "~lib_cfg/TIBET.xml"
     },
-    "//": "tibet rollup uses escodegen to process/minify code.",
     "escodegen": {
         "format": {
-            "compact": true
+            "indent": {
+                "style": "",
+                "base": 0
+            },
+            "newline": "",
+            "space": ""
         }
     },
     "tds": {

@@ -108,6 +108,10 @@ helpers.rollup = function(make, options) {
     cmd = path.join(module.filename, '..', '..', '..', '..', 'bin', 'tibet') +
         ' rollup --package \'' + pkg +
         '\' --config ' + config +
+        (CLI.options.debug ? ' --debug' : '') +
+        (CLI.options.verbose ? ' --verbose' : '') +
+        (CLI.options.color ? '' : ' --no-color') +
+        (CLI.options.silent ? '' : ' --no-silent') +
         (headers ? '' : ' --no-headers') +
         (minify ? ' --minify' : '');
 
