@@ -4311,10 +4311,25 @@ function(attributeName, attributeValue) {
      * @todo
      */
 
-    var funcName;
+    var attrName,
+        parts,
+
+        funcName;
 
     //  try attribute manipulation naming convention first
-    funcName = 'setAttr' + attributeName.asStartUpper();
+
+    //  if the attribute is namespace qualified, we 'start upper' each piece.
+    //  e.g. 'foo:bar' -> 'FooBar'
+    if (/:/.test(attrName = attributeName)) {
+        parts = attrName.split(/:/);
+        attrName = parts.first().asStartUpper() + parts.last().asStartUpper();
+    } else {
+        //  Otherwise, we just 'start upper' the whole piece
+        //  'foo' -> 'Foo'
+        attrName = attrName.asStartUpper();
+    }
+
+    funcName = 'setAttr' + attrName;
     if (TP.canInvoke(this, funcName)) {
         return this[funcName](attributeValue);
     }
