@@ -182,10 +182,11 @@
     PhantomTSH.PARSE_OPTIONS = {
         'boolean': ['color', 'errimg', 'help', 'usage', 'debug', 'tap',
             'system', 'quiet'],
-        'string': ['script', 'url', 'profile', 'params'],
+        'string': ['script', 'url', 'profile', 'params', 'level'],
         'number': ['timeout'],
         'default': {
-            color: true
+            color: true,
+            system: false
         }
     };
 
@@ -224,7 +225,7 @@
      * Buffer for managing console output more effectively.
      * @type {Array}
      */
-    PhantomTSH.buffer = null;
+    PhantomTSH.buffer = [];
 
     /**
      * A date stamp for the last activity (logging typically) which was observed
@@ -366,9 +367,11 @@
             }
 
             try {
-                // TODO: callPhantom seems to have issues with too much data at
-                // once. Maybe buffer here rather than sending a giant string.
-                window.callPhantom(str);
+                if (window.callPhantom) {
+                    window.callPhantom(str);
+                } else {
+                    top.console.log(str);
+                }
             } catch (e) {
                 top.console.log('ERROR ' + e.message);
                 return;
@@ -478,11 +481,9 @@
         } else if (/^FATAL/i.test(msg)) {
             level = 7;
         } else if (/^SYSTEM/i.test(msg)) {
-
             if (!PhantomTSH.argv.system) {
                 return;
             }
-
             level = 8;
         }
 
@@ -519,13 +520,9 @@
             }
         }
 
-        if (!PhantomTSH.buffer) {
-            PhantomTSH.buffer = [];
-        }
-
         PhantomTSH.buffer.push(msg);
 
-        if (PhantomTSH.buffer.length > 10) {
+        if (PhantomTSH.buffer.length > 5) {
             console.log(PhantomTSH.buffer.join('\n'));
             PhantomTSH.buffer.length = 0;
         }
@@ -546,7 +543,7 @@
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
 
-        if (!PhantomTSH.argv.quiet) {
+        if (!PhantomTSH.argv.quiet && PhantomTSH.argv.debug) {
             PhantomTSH.log('Starting PhantomJS ' +
                     phantom.version.major + '.' +
                     phantom.version.minor + '.' +
@@ -651,7 +648,7 @@
             PhantomTSH.usage();
         }
 
-        if (argv.level) {
+        if (argv.level !== void(0)) {
             level = PhantomTSH.LEVELS[argv.level.toUpperCase()];
             if (level !== void(0)) {
                 PhantomTSH.level = level;
@@ -686,39 +683,71 @@
      * @param {String} msg The TAP-formatted message to process.
      */
     PhantomTSH.tap = function(msg) {
+        var str,
+            level;
+
         if (/^#/.test(msg)) {
             // comment
             if (/^# PASS:/.test(msg)) {
-                console.log(PhantomTSH.color(msg, 'green'));
+                str = PhantomTSH.color(msg, 'green');
             } else if (/^# FAIL:/.test(msg)) {
-                console.log(PhantomTSH.color(msg, 'red'));
+                str = PhantomTSH.color(msg, 'red');
             } else {
-                console.log(PhantomTSH.color(msg, 'gray'));
+                str = PhantomTSH.color(msg, 'gray');
             }
         } else if (/^not ok/.test(msg)) {
             // bad, but might be todo item...
             if (/# TODO/.test(msg)) {
                 // warning but basically ignored
-                console.log(PhantomTSH.color('not ok', 'yellow') +
-                    msg.slice(6));
+                str = PhantomTSH.color('not ok', 'yellow') + msg.slice(6);
             } else {
                 // true error
-                console.log(PhantomTSH.color('not ok', 'red') + msg.slice(6));
+                str = PhantomTSH.color('not ok', 'red') + msg.slice(6);
                 PhantomTSH.status = -1;
             }
         } else if (/^ok/.test(msg)) {
             // passed
-            console.log(PhantomTSH.color('ok', 'green') + msg.slice(2));
+            str = PhantomTSH.color('ok', 'green') + msg.slice(2);
         } else if (/^bail out!/i.test(msg)) {
             // termination signal
-            console.log(PhantomTSH.color('Bail out!', 'red') + msg.slice(8));
+            str = PhantomTSH.color('Bail out!', 'red') + msg.slice(8);
             PhantomTSH.status = -1;
         } else if (/^\d{1}\.\.\d+$/.test(msg)) {
-            // the plan
-            console.log(msg);
+            str = msg;
         } else {
-            // TODO: what about "leftovers" ?
-            void(0);
+            if (/^TRACE/i.test(msg)) {
+                level = 1;
+            } else if (/^DEBUG/i.test(msg)) {
+                level = 2;
+            } else if (/^INFO/i.test(msg)) {
+                level = 3;
+            } else if (/^WARN/i.test(msg)) {
+                level = 4;
+            } else if (/^ERROR/i.test(msg)) {
+                level = 5;
+            } else if (/^SEVERE/i.test(msg)) {
+                level = 6;
+            } else if (/^FATAL/i.test(msg)) {
+                level = 7;
+            } else if (/^SYSTEM/i.test(msg)) {
+                if (!PhantomTSH.argv.system) {
+                    return;
+                }
+                level = 8;
+            }
+
+            // If we have a level verify we should continue processing it.
+            if (level !== void(0) && PhantomTSH.level > level) {
+                return;
+            }
+            str = msg;
+        }
+
+        PhantomTSH.buffer.push(str);
+
+        if (PhantomTSH.buffer.length > 5) {
+            console.log(PhantomTSH.buffer.join('\n'));
+            PhantomTSH.buffer.length = 0;
         }
     };
 
@@ -916,6 +945,11 @@
             trace.forEach(function(item) {
                 str += '\t' + item.file + ':' + item.line + '\n';
             });
+        }
+
+        if (PhantomTSH.buffer.length > 0) {
+            console.log(PhantomTSH.buffer.join('\n'));
+            PhantomTSH.buffer.length = 0;
         }
 
         PhantomTSH.exit(str, PhantomTSH.ERROR);
