@@ -226,17 +226,28 @@ TP.backstop(
 //  ------------------------------------------------------------------------
 
 TP.html.tbody.Inst.defineMethod('refresh',
-function(aSignal) {
+function(aSignalOrHash) {
 
     /**
      * @name refresh
      * @synopsis Updates the receiver to reflect the current value of any data
-     *     binding it may have. If the signal argument's payload specified a
-     *     'deep' refresh then descendant elements are also updated.
-     * @param {DOMRefresh} aSignal An optional signal which triggered this
-     *     action. This signal should include a key of 'deep' and a value of
-     *     true to cause a deep refresh that updates all nodes.
-     * @todo
+     *     binding it may have. If the signal or hash payload specifies a
+     *     'deep' refresh then descendant elements that are bound are also
+     *     updated.
+     * @description For bound elements there are really two "values", the
+     *     element's internal value such as its text value (what we call its
+     *     "display" value) and the element's bound value which is the value
+     *     found by evaluating its binding aspect against its source. This
+     *     method is used to update the former from the latter, typically in
+     *     response to a Change notification from the underlying bound content.
+     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     *     which triggered this action or a hash. If this is a signal, this
+     *     method will try first to use 'getValue()' to get the value from the
+     *     binding. If there is no value there, or this is a hash, this method
+     *     will look under a key of TP.NEWVAL.
+     *     This signal or hash should include a key of 'deep' and a value
+     *     of true to cause a deep refresh that updates all nodes.
+     * @returns {TP.html.tbody} The receiver.
      */
 
     return this;
