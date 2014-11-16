@@ -8,7 +8,8 @@
 
 <config id="phantom">
     <config ref="properties"/>
-    <package src="~app_cfg/standard.xml" config="test"/>
+    <script src="~lib_build/tibet_developer.min.js" if="boot.phaseone"/>
+    <package src="~app_cfg/app.xml" config="test"/>
 </config>
 
 </package>
