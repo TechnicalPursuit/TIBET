@@ -182,10 +182,11 @@
     PhantomTSH.PARSE_OPTIONS = {
         'boolean': ['color', 'errimg', 'help', 'usage', 'debug', 'tap',
             'system', 'quiet'],
-        'string': ['script', 'url', 'profile', 'params'],
+        'string': ['script', 'url', 'profile', 'params', 'level'],
         'number': ['timeout'],
         'default': {
-            color: true
+            color: true,
+            system: false
         }
     };
 
@@ -480,11 +481,9 @@
         } else if (/^FATAL/i.test(msg)) {
             level = 7;
         } else if (/^SYSTEM/i.test(msg)) {
-
             if (!PhantomTSH.argv.system) {
                 return;
             }
-
             level = 8;
         }
 
@@ -645,11 +644,13 @@
             PhantomTSH.help();
         }
 
+        console.log('system.args: ' + system.args);
+
         if (argv.usage || !argv.script) {
             PhantomTSH.usage();
         }
 
-        if (argv.level) {
+        if (argv.level !== void(0)) {
             level = PhantomTSH.LEVELS[argv.level.toUpperCase()];
             if (level !== void(0)) {
                 PhantomTSH.level = level;
@@ -684,8 +685,8 @@
      * @param {String} msg The TAP-formatted message to process.
      */
     PhantomTSH.tap = function(msg) {
-
-        var str;
+        var str,
+            level;
 
         if (/^#/.test(msg)) {
             // comment
@@ -716,7 +717,32 @@
         } else if (/^\d{1}\.\.\d+$/.test(msg)) {
             str = msg;
         } else {
-            str = PhantomTSH.color(msg, 'magenta');
+            if (/^TRACE/i.test(msg)) {
+                level = 1;
+            } else if (/^DEBUG/i.test(msg)) {
+                level = 2;
+            } else if (/^INFO/i.test(msg)) {
+                level = 3;
+            } else if (/^WARN/i.test(msg)) {
+                level = 4;
+            } else if (/^ERROR/i.test(msg)) {
+                level = 5;
+            } else if (/^SEVERE/i.test(msg)) {
+                level = 6;
+            } else if (/^FATAL/i.test(msg)) {
+                level = 7;
+            } else if (/^SYSTEM/i.test(msg)) {
+                if (!PhantomTSH.argv.system) {
+                    return;
+                }
+                level = 8;
+            }
+
+            // If we have a level verify we should continue processing it.
+            if (level !== void(0) && PhantomTSH.level > level) {
+                return;
+            }
+            str = msg;
         }
 
         PhantomTSH.buffer.push(str);

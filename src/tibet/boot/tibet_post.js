@@ -8883,7 +8883,7 @@ TP.boot.$updateDependentVars = function() {
         level = TP.boot.WARN;
     }
 
-    if (level < TP.boot.TRACE || level > TP.boot.SYSTEM) {
+    if (level < TP.boot.ALL || level > TP.boot.OFF) {
         // Reset and warn.
         TP.sys.setcfg('boot.level', TP.WARN, false, true);
         TP.boot.$$loglevel = TP.boot.WARN;
