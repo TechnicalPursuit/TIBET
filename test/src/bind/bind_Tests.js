@@ -124,7 +124,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind1_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind1_person#xpath1(/person/firstname)'),
@@ -199,7 +199,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind2_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind2_person#xpath1(/person/firstname)'),
@@ -381,7 +381,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind3_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind3_person#xpath1(/person/firstname)'),
@@ -563,7 +563,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind4_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind4_person#xpath1(/person/firstname)'),
@@ -745,7 +745,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind5_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind5_person#xpath1(/person/firstname)'),
@@ -922,7 +922,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind6_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind6_person#tibet(person.firstname)'),
@@ -997,7 +997,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind7_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind7_person#tibet(person.firstname)'),
@@ -1179,7 +1179,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind8_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind8_person#tibet(person.firstname)'),
@@ -1361,7 +1361,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind9_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind9_person#tibet(person.firstname)'),
@@ -1543,7 +1543,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind10_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind10_person#tibet(person.firstname)'),
