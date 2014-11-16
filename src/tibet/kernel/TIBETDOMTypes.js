@@ -13293,13 +13293,13 @@ function(aRequest) {
             //  Output with asIs false will echo the tag for display.
             aRequest.stdout(str,
                         TP.hc('cmdBox', false, 'cmdAsIs', false,
-                        'cmdAppend', true, 'echoRequest', true));
+                        'cmdAppend', true, 'cmdEcho', true));
 
             //  Have to output the action to get it into the DOM for
             //  awakening etc, otherwise it can't register/run.
             aRequest.stdout(str,
                         TP.hc('cmdBox', false, 'cmdAsIs', true,
-                            'echoRequest', true));
+                            'cmdEcho', true));
 
             aRequest.set('result', str);
             aRequest.complete();
@@ -14087,13 +14087,13 @@ function(aRequest) {
             //  Output with asIs false will echo the tag for display.
             aRequest.stdout(str,
                             TP.hc('cmdBox', false, 'cmdAsIs', false,
-                                'cmdAppend', true, 'echoRequest', true));
+                                'cmdAppend', true, 'cmdEcho', true));
 
             //  Have to output the action to get it into the DOM for
             //  awakening etc, otherwise it can't register/run.
             aRequest.stdout(str,
                             TP.hc('cmdBox', false, 'cmdAsIs', true,
-                                'echoRequest', true));
+                                'cmdEcho', true));
 
             aRequest.set('result', str);
             aRequest.complete();

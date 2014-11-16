@@ -891,7 +891,7 @@ function(aRequest) {
         //  awakening etc, otherwise it can't register/run/display.
         aRequest.stdout(str, TP.hc('cmdBox', false,
                                     'cmdAsIs', true,
-                                    'echoRequest', true));
+                                    'cmdEcho', true));
 
         aRequest.set('result', str);
         aRequest.complete();

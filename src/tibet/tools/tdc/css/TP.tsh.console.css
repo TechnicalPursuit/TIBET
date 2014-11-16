@@ -1,80 +1,77 @@
 /*
-	------------------------------------------------------------------------
-	Input frame and cell
-	------------------------------------------------------------------------
+    ------------------------------------------------------------------------
+    Input frame and cell
+    ------------------------------------------------------------------------
 */
 
 /* The div wrapper for the entire input construct */
 .cmdline_wrapper
 {
-	position: absolute;
+    position: absolute;
 
-	top: 0px;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 
-	padding: 2px 0px 2px 0px;
+    padding: 2px 0 2px 0;
 }
 
 /* The cell holding the input cell's prompt */
 .cmdline_prompt
 {
-	font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
-	font-weight: bold;
-	font-size: 12px;
+    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 12px;
 
-	line-height: 12px;
-	text-align: right;
+    line-height: 12px;
+    text-align: right;
 
     padding-top: 2px;
+    width: 36px;
 
-	width: 36px;
-
-	white-space: nowrap;
-
-	color: white;
+    white-space: nowrap;
+    color: orange;
 }
 
 /* The cell holding the input cell's frame */
 .cmdline_input
 {
-	position: absolute;
+    position: absolute;
 
-	top: 0px;
-	right: 7px;
-	bottom: 0px;
-	left: 40px;
+    top: 0;
+    right: 7px;
+    bottom: 0;
+    left: 40px;
 
-	font-weight: normal;
-	color: #000000;
+    font-weight: normal;
+    color: #000000;
 }
 
 .cmdline_textarea
 {
-	border: 1px inset #CCC;
+    border: 1px inset #CCC;
     border-radius: 6px;
 
-	position: relative;
+    position: relative;
 
-	top: 1px;
-	left: 0px;
-	width: 100%;
+    top: 1px;
+    left: 0;
+    width: 100%;
 
-	padding: 2px;
+    padding: 2px;
 
-	overflow: hidden;
+    overflow: hidden;
     resize: none;
 
-	font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
-	font-size: 11px;
-	font-weight: normal;
-	line-height: 12px;
+    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+    font-size: 11px;
+    font-weight: normal;
+    line-height: 12px;
 
-	background-color: rgba(0, 0, 0, .5);
-	color: #FFF;
+    background-color: rgba(0, 0, 0, .5);
+    color: #FFF;
 
-	white-space: pre-wrap;
+    white-space: pre-wrap;
 }
 
 .inputcell
@@ -122,19 +119,19 @@
 }
 
 /*
-	------------------------------------------------------------------------
-	tsh:pp formatting
-	------------------------------------------------------------------------
+    ------------------------------------------------------------------------
+    tsh:pp formatting
+    ------------------------------------------------------------------------
 */
 
 .tsh_pp > span
 {
     display: table;
 
-	border-collapse: collapse;
+    border-collapse: collapse;
 
-	border-width: 1px;
-	border-style: dotted;
+    border-width: 1px;
+    border-style: dotted;
 }
 
 .tsh_pp > span span[data-name]
@@ -142,36 +139,36 @@
     display: table-row;
     text-align: left;
 
-	border-width: 1px;
-	border-style: solid;
+    border-width: 1px;
+    border-style: solid;
 
-	padding: 3px;
+    padding: 3px;
 
-	white-space: pre-wrap;
+    white-space: pre-wrap;
 }
 
 .tsh_pp > span span[data-name]:before
 {
     content: attr(data-name) " ";
 
-	vertical-align: top;
+    vertical-align: top;
 
     display: table-cell;
     text-align: left;
 
-	white-space: pre-wrap;
+    white-space: pre-wrap;
 }
 
 .tsh_pp > span.Array span,
 .tsh_pp > span.Object span,
 .tsh_pp > span.TP_lang_Hash span
 {
-	border-color: white;
+    border-color: white;
 }
 
 .tsh_pp > span.Object span[data-name]:before,
 .tsh_pp > span.TP_lang_Hash span[data-name]:before
 {
-	vertical-align: top;
+    vertical-align: top;
 }
 

@@ -23,7 +23,8 @@
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('shell',
-function(cmdSrc, echoRequest, createHistory, echoOutput, shellID, successHandler, failureHandler) {
+function(aRequest) {
+
 
     /**
      * @name shell
@@ -33,80 +34,107 @@ function(cmdSrc, echoRequest, createHistory, echoOutput, shellID, successHandler
      *     command makes use of the current TP.core.User instance to provide
      *     profile information, if any. This ties the TP.shell() command into
      *     TIBET's user-interface permission machinery.
-     * @param {String|Node} cmdSrc The shell input content, either the sugared
-     *     source text or a desugared XML node, ready to execute.
-     * @param {Boolean} echoRequest Should the input be sent to any UI attached
-     *     to the shell. [false].
-     * @param {Boolean} createHistory Should the input generate a history entry?
-     *     [false].
-     * @param {Boolean} echoOutput Should shell output be sent to any UI
-     *     attached to the shell? [false].
-     * @param {String} shellID The ID or typename of the shell to target. When a
-     *     typename is given the ultimate target is that type's default
-     *     instance. [TSH].
-     * @param {Function} successHandler The Function that should run if the
-     *     shell command successfully completes.
-     * @param {Function} failureHandler The Function that should run if the
-     *     shell command does not successfully complete.
-     * @example Run a shell script that formats a number. Note that we use
-     *          backticked single quotes in the script portion specifically
-     *          because double quotes mean something different to the shell.
-     *     <code>
-     *          TP.shell('x = 1; x .| \'The number is: {{value}}\'',
-     *                      false, false, false, null,
-     *                      function (aSignal) {
-     *                          alert('It succeeded: ' + aSignal.getResult());
-     *                      },
-     *                      function (aSignal) {
-     *                          alert('It failed: ' + aSignal.getResult());
-     *                      }
-     *                  );
-     *     </code>
+     * @param {TP.sig.Request|TP.lang.Hash} aRequest The request containing
+     *     proper shell parameters. Those include:
+     *
+     *          {String|Node} cmdSrc The shell input content, either the sugared
+     *          source text or a desugared XML node, ready to execute.
+     *
+     *          {Boolean} cmdEcho Should the input be sent to any UI attached
+     *          to the shell. [false].
+     *
+     *          {Boolean} cmdHistory Should the input generate a history entry?
+     *          [false].
+     *
+     *          {Object} cmdStdio The object type or ID to use for handling
+     *          any stdio for the request. This object should implement notify,
+     *          stdin, stdout, and stderr calls.
+     *
+     *          {Boolean} cmdSilent Should shell output be reserved only for
+     *          the reponse (and not sent to any Logger) [true].
+     *
+     *          {String} shellID The ID or typename of the shell to target.
+     *          When a typename is given the ultimate target is that type's
+     *          default instance. [TSH].
+     *
+     *          {Function} success The Function that should run if the
+     *          shell command successfully completes.
+     *
+     *          {Function} failure The Function that should run if the
+     *          shell command does not successfully complete.
+     *
      * @returns {TP.sig.ShellRequest} The request instance used.
      * @todo
      */
 
     var shell,
+        params,
 
-        shouldEchoOutput,
+        cmdSrc,
+        shellID,
+        silent,
+        stdio,
 
         request,
 
         stdioProvider,
         stdioResults,
 
-        newSuccessHandler,
-        newFailureHandler;
+        handler,
+        success,
+        failure,
+        successHandler,
+        failureHandler;
+
+    params = TP.ifInvalid(aRequest, TP.hc());
+
+    cmdSrc = params.at('cmdSrc');
+    if (TP.isEmpty(cmdSrc)) {
+        TP.raise(this, 'InvalidInput');
+        return;
+    }
 
     //  Compute a shell to run the supplied command against.
+    shellID = params.at('shellID');
     if (TP.isEmpty(shellID)) {
 
         //  By default, we run stuff against the TSH.
         shell = TP.core.TSH.getDefaultInstance();
+
     } else if (TP.isString(shellID)) {
 
         shell = TP.core.Resource.getResourceById(shellID);
         if (!TP.isKindOf(shell, 'TP.core.Shell')) {
             TP.raise(this, 'TP.sig.InvalidParameter',
-                        'Shell ID must be a valid string or shell.');
-
+                'Shell ID must be a valid string or shell instance.');
             return;
         }
+
     } else if (TP.isKindOf(shellID, 'TP.core.Shell')) {
         shell = shellID;
     } else {
         TP.raise(this, 'TP.sig.InvalidParameter',
-                    'Shell ID must be a valid string or shell.');
-
+                    'Shell ID must be a valid string or shell instance.');
         return;
     }
 
-    shouldEchoOutput = TP.ifInvalid(echoOutput, false);
+    // Configure the STDIO handler to be used for the request.
+    stdio = TP.ifInvalid(params.at('cmdStdio'), '');
+    if (TP.isString(stdio)) {
+        stdio = TP.core.Resource.getResourceById(stdio);
+    } else if (TP.canInvoke(stdio, ['notify', 'stdin', 'stdout', 'stderr'])) {
+        void(0);
+    }
+
+    silent = TP.ifInvalid(params.at('cmdSilent'), false);
 
     request = TP.sig.ShellRequest.construct(
                     TP.hc(
                             //  Execute this command
                             'cmd', cmdSrc,
+
+                            //  The STDIO provider to use.
+                            'cmdStdio', stdio,
 
                             //  Don't format any stdout/stderr
                             'cmdAsIs', true,
@@ -138,90 +166,101 @@ function(cmdSrc, echoRequest, createHistory, echoOutput, shellID, successHandler
                             'cmdShell', shell,
 
                             //  Whether or not we should silence shell output.
-                            'cmdSilent', !shouldEchoOutput
+                            'cmdSilent', silent
                     ));
 
     //  Whether or not to create history for this command
-    (createHistory === true) ? request.atPut('cmdHistory', true) : 0;
+    request.atPut('cmdHistory', params.at('cmdHistory') === true);
 
-    //  Whether or not to echo the request information (however an attached GUI
-    //  wants to do that).
-    (echoRequest === true) ? request.atPut('echoRequest', true) : 0;
+    //  Whether or not to echo the request information
+    request.atPut('cmdEcho', params.at('cmdEcho') === true);
 
     //  Build a hash that will hold stdio results for various commands.
-    stdioResults = TP.hc(
-                        'notify', TP.ac(),
-                        'stdin', TP.ac(),
-                        'stdout', TP.ac(),
-                        'stderr', TP.ac()
-                        );
+    stdioResults = TP.ac();
 
     //  Configure STDIO on the shell to capture it for providing to the handler
-    //  functions.
+    //  functions. Note that we push entries in the order they occur so callers
+    //  get a time-ordered collection of all output from the request.
     stdioProvider = TP.lang.Object.construct();
     stdioProvider.defineMethod('notify',
                     function (anObject, aRequest) {
-                        stdioResults.at('notify').push(anObject);
+                        stdioResults.push({meta: 'notify', data: anObject});
                     });
     stdioProvider.defineMethod('stdin',
                     function (anObject, aDefault, aRequest) {
-                        stdioResults.at('stdin').push(anObject);
+                        stdioResults.push({meta: 'stdin', data: anObject});
                     });
     stdioProvider.defineMethod('stdout',
                     function (anObject, aRequest) {
-                        stdioResults.at('stdout').push(anObject);
+                        stdioResults.push({meta: 'stdout', data: anObject});
                     });
     stdioProvider.defineMethod('stderr',
                     function (anObject, aRequest) {
-                        stdioResults.at('stderr').push(anObject);
+                        stdioResults.push({meta: 'stderr', data: anObject});
                     });
+
+     stdioProvider.defineMethod('report',
+         function(aSignal, stdioResults) {
+            stdioResults.forEach(function(item) {
+                if (TP.notValid(item)) {
+                    return;
+                }
+
+                switch (item.meta) {
+                    case 'notify':
+                        top.console.info(TP.str(item.data));
+                        break;
+                    case 'stdin':
+                        top.console.log(TP.str(item.data));
+                        break;
+                    case 'stdout':
+                        top.console.log(TP.str(item.data));
+                        break;
+                    case 'stderr':
+                        top.console.error(TP.str(item.data));
+                        break;
+                    default:
+                        break;
+                }
+            });
+        });
 
     //  Install our object as the STDIO provider
     shell.attachSTDIO(stdioProvider);
 
-    //  If we were supplied a callable 'success handler', then register a
-    //  'request succeeded' with a function that will call this handler
-    if (TP.isCallable(successHandler)) {
-        newSuccessHandler =
-            function (aSignal) {
-                //  Uninstall our object as the STDIO provider
-                shell.detachSTDIO();
-
-                newSuccessHandler.ignore(
-                        request, 'TP.sig.ShellRequestSucceeded');
-
-                //  For some reason, when 'cmdInteractive' is false (like
-                //  above), if there has been no stdout output, running tests
-                //  using this call under PhantomJS will hang. So we push an
-                //  empty String onto 'stdout' stdio results.
-                if (TP.isEmpty(stdioResults.at('stdout'))) {
-                    stdioResults.at('stdout').push('');
-                }
-
-                successHandler(aSignal, stdioResults);
-            };
-
-            newSuccessHandler.observe(
-                    request, 'TP.sig.ShellRequestSucceeded');
+    //  Configure the success handler, or a default one to report any output.
+    success = params.at('success');
+    if (TP.notValid(success)) {
+        if (request.at('cmdSilent') !== true) {
+            success = stdioProvider.report;
+        } else {
+            success = function() {};
+        }
     }
+    successHandler = function (aSignal) {
+        shell.detachSTDIO();
+        successHandler.ignore(request, 'TP.sig.ShellRequestSucceeded');
+        success(aSignal, stdioResults);
+    };
+    successHandler.observe(request, 'TP.sig.ShellRequestSucceeded');
 
-    //  If we were supplied a callable 'failed handler', then register a
-    //  'request failed' with a function that will call this handler
-    if (TP.isCallable(failureHandler)) {
-        newFailureHandler =
-            function (aSignal) {
-                //  Uninstall our object as the STDIO provider
-                shell.detachSTDIO();
 
-                newFailureHandler.ignore(
-                        request, 'TP.sig.ShellRequestFailed');
-
-                failureHandler(aSignal, stdioResults);
-            };
-
-            newFailureHandler.observe(
-                    request, 'TP.sig.ShellRequestFailed');
+    //  Configure the failure handler, or a default one to report any output.
+    failure = params.at('failure');
+    if (TP.notValid(failure)) {
+        if (request.at('cmdSilent') !== true) {
+            failure = stdioProvider.report;
+        } else {
+            failure = function() {};
+        }
     }
+    failureHandler = function (aSignal) {
+        shell.detachSTDIO();
+        failureHandler.ignore(request, 'TP.sig.ShellRequestFailed');
+        failure(aSignal, stdioResults);
+    };
+    failureHandler.observe(request, 'TP.sig.ShellRequestFailed');
+
 
     //  Go ahead and tell the shell to handle the shell request.
     shell.handleShellRequest(request);
@@ -331,7 +370,7 @@ function(aSignal) {
 
                 req = TP.sig.UserOutputRequest.construct(
                         TP.hc('cmdTitle', 'Version Update',
-                                'echoRequest', true,
+                                'cmdEcho', true,
                                 'output',
                                 TP.elem(
                                     TP.join(
@@ -580,7 +619,7 @@ function(aRequest) {
     //  output any startup announcement for the shell
     req = TP.sig.UserOutputRequest.construct(
                     TP.hc('cmdTitle', '',
-                            'echoRequest', true,
+                            'cmdEcho', true,
                             'output', str,
                             'cssClass', 'inbound_announce',
                             'cmdAsIs', true,
@@ -1327,7 +1366,7 @@ function(aRequest) {
                     TP.hc('cmd', cmd,
                             'cmdID', aRequest.at('cmdID'),
                             'cmdConstruct', true,
-                            'echoRequest', true);
+                            'cmdEcho', true);
 
             //  It's ok to pass a null here, since the console should be in
             //  'construct out UI' mode, given our 'cmdConstruct' flag
