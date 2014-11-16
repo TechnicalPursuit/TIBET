@@ -1252,7 +1252,7 @@ function(rawInput) {
                     'cmdInteractive', true,
                     'cmdLogin', true,
                     'cmdPhases', 'nocache',
-                    'echoRequest', true
+                    'cmdEcho', true
             ));
 
         req.set('requestor', this);
@@ -1643,7 +1643,7 @@ function(aRequest) {
 
     request = TP.request(aRequest);
 
-    if (TP.isTrue(request.at('echoRequest'))) {
+    if (TP.isTrue(request.at('cmdEcho'))) {
 
         //  update the command title bar based on the latest output from
         //  the particular cmdID this request represents.

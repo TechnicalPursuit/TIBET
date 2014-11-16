@@ -502,7 +502,10 @@ function() {
         TP.boot.$stderr(msg, TP.FATAL);
     });
 
-    if (TP.notValid(TP.sys.getTypeByName('TP.core.ConsoleService'))) {
+    // If we're not running with a UI (not phantom), and we don't have a console
+    // loaded, then ensure we can toggle the boot UI properly.
+    if ((TP.sys.cfg('boot.context') !== 'phantomjs') &&
+        TP.notValid(TP.sys.getTypeByName('TP.core.ConsoleService'))) {
 
         TP.boot.initializeCanvas(TP.win('UIBOOT'));
 

@@ -2310,7 +2310,7 @@ function(argList, aLogLevel) {
         stdioDict.atPut('cmdAsIs', true);
         stdioDict.atPut('cmdBox', false);
 
-        stdioDict.atPut('echoRequest', true);
+        stdioDict.atPut('cmdEcho', true);
 
         if (iserr) {
             //  if we're still booting then announce it in the bootlog

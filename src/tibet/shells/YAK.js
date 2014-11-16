@@ -1051,7 +1051,7 @@ function(aRequest) {
         return aRequest;
     }
 
-    if (TP.notTrue(aRequest.at('echoRequest'))) {
+    if (TP.notTrue(aRequest.at('cmdEcho'))) {
         return aRequest;
     }
 

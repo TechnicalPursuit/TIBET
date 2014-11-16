@@ -2323,9 +2323,10 @@ function(anObject, aMessage, aTitle, aCommand) {
     //  Generate the link which drives the shell command invocation.
     str = TP.join(
         '<a href="#" ', 'title=', title, ' ',
-            'onclick="TP.shell(',
+            'onclick="TP.shell(TP.hc(\'cmdSrc\',',
             '\'', aCommand || ':edit ', uri.getLocation(), '\'',
-            ', false, false, false, null); return false;">',
+            ', \'cmdEcho\', false, \'cmdHistory\', false, \'cmdSilent\', false,',
+            ')); return false;">',
             msg,
         '</a>');
 

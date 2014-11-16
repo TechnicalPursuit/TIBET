@@ -341,51 +341,47 @@
      * @param {String} tshInput The TSH command line to execute.
      */
     PhantomTSH.exec = function(tshInput) {
-        var fallback,
-            handler;
-
-        fallback = TP.hc(
-            'notify', TP.ac(),
-            'stdin', TP.ac(),
-            'stdout', TP.ac(),
-            'stderr', TP.ac());
+        var handler,
+            result;
 
         handler = function(aSignal, stdioResults) {
-            var results,
-                str;
+            var str;
 
-            if (TP.isValid(stdioResults)) {
-                results = stdioResults.copy();
-            } else {
-                results = fallback;
+            if (TP.canInvoke(stdioResults, 'push')) {
+                if (TP.isValid(aSignal)) {
+                    stdioResults.push(aSignal.getResult());
+                }
             }
 
-            results.atPut('result', aSignal.getResult());
+            if (TP.notEmpty(stdioResults)) {
+                try {
+                    str = JSON.stringify(stdioResults);
+                } catch (e) {
+                    str = TP.str(stdioResults);
+                }
 
-            try {
-                str = TP.json(results);
-            } catch (e) {
-                // Probably a circular reference of some kind in the output data
-                // which stringify can't handle.
-                str = TP.str(results);
+                if (TP.isEmpty(str)) {
+                    str = TP.boot.$dump(stdioResults);
+                }
             }
 
             try {
+                // TODO: callPhantom seems to have issues with too much data at
+                // once. Maybe buffer here rather than sending a giant string.
                 window.callPhantom(str);
             } catch (e) {
-                PhantomTSH.log(e.message, 'red');
-                phantom.exit(1);
+                top.console.log('ERROR ' + e.message);
+                return;
             }
         };
 
-        TP.shell(
-            tshInput,       // the TSH input to run
-            false,          // don't echo the request
-            false,          // don't create a history entry
-            true,           // do echo any output (so we can capture it)
-            null,           // no specific shell ID in this case.
-            handler,        // success handler (same handler)
-            handler);       // failure handler (same handler)
+        TP.shell(TP.hc(
+            'cmdSrc', tshInput,         // the TSH input to run
+            'cmdEcho', false,           // don't echo the request
+            'cmdHistory', false,        // don't create a history entry
+            'cmdSilent', false,         // report output so we can capture it
+            'success', handler,         // success handler (same handler)
+            'failure', handler));       // failure handler (same handler)
 
         return;
     };
@@ -834,7 +830,7 @@
      */
     PhantomTSH.page.onCallback = function(data) {
         var results,
-            output;
+            code;
 
         PhantomTSH.lastActivity = new Date().getTime();
 
@@ -851,18 +847,32 @@
             PhantomTSH.exit(data, PhantomTSH.FAILURE);
         }
 
-        if (results.stderr.length > 0) {
-            output = results.stderr.length > 1 ? results.stderr.join('\n') :
-                results.stderr[0];
-            PhantomTSH.exit(PhantomTSH.color('Failed: ', 'yellow') +
-                output && output.trim ? output.trim() : '',
-                PhantomTSH.FAILURE);
-        } else if (results.stdout.length > 0) {
-            output = results.stdout.length > 1 ? results.stdout.join('\n') :
-                results.stdout[0];
-            PhantomTSH.exit(output && output.trim ? output.trim() : '',
-                PhantomTSH.SUCCESS);
-        }
+        code = PhantomTSH.SUCCESS;
+
+        results.forEach(function(item) {
+            if (!item) {
+                return;
+            }
+            switch (item.meta) {
+                case 'notify':
+                    PhantomTSH.log(PhantomTSH.color(item.data), 'yellow');
+                    break;
+                case 'stdin':
+                    PhantomTSH.log(PhantomTSH.color(item.data), 'magenta');
+                    break;
+                case 'stdout':
+                    PhantomTSH.log(PhantomTSH.color(item.data), 'white');
+                    break;
+                case 'stderr':
+                    PhantomTSH.log(PhantomTSH.color(item.data), 'red');
+                    code = PhantomTSH.FAILURE;
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        PhantomTSH.exit('', code);
     };
 
 

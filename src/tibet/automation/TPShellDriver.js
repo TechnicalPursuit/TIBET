@@ -46,20 +46,27 @@ function(test, shellInput, valueTestFunction) {
             //  for undefined values here.
             TP.sys.setcfg('tsh.ignore_eval_errors', true);
 
-            TP.shell(
-                shellInput,
-                false, false, true, null,
-                function (aSignal, stdioResults) {
+            TP.shell(TP.hc(
+                'cmdSrc', shellInput,
+                'cmdEcho', false,
+                'cmdHistory', false,
+                'cmdSilent', false,
+                'success', function (aSignal, stdioResults) {
                     var testResult;
 
                     //  The shell request itself succeeded. See if it returned
                     //  the correct value.
 
                     try {
-
                         //  The correct value should be in the stdout that is
                         //  made available to this method.
-                        testResult = stdioResults.at('stdout').first();
+                        testResult = stdioResults.detect(function(item) {
+                            return TP.isValid(item) &&
+                                item.meta === 'stdout';
+                        });
+                        if (TP.isValid(testResult)) {
+                            testResult = testResult.data;
+                        }
 
                         //  Execute the supplied value test function.
                         if (TP.isCallable(valueTestFunction)) {
@@ -80,7 +87,7 @@ function(test, shellInput, valueTestFunction) {
                     //  ignore eval() errors.
                     TP.sys.setcfg('tsh.ignore_eval_errors', false);
                 },
-                function (aSignal, stdioResults) {
+                'failure', function (aSignal, stdioResults) {
                     var errMsg;
 
                     //  Make sure to put the flag back that caused the TSH to
@@ -91,13 +98,19 @@ function(test, shellInput, valueTestFunction) {
                     //  rejector with the content of whatever was placed into
                     //  stderr.
 
-                    errMsg = stdioResults.at('stderr').join('\n');
+                    errMsg = stdioResults.select(function(item) {
+                        return TP.isValid(item) &&
+                            item.meta === 'stderr';
+                    });
+                    errMsg = errMsg.collect(function(item) {
+                        return item.data;
+                    }).join('\n');
 
                     rejector(errMsg);
 
                     //  Set the faultText to that content as well.
                     test.set('faultText', (errMsg || ''));
-                });
+                }));
         });
 
     return;

@@ -368,6 +368,22 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.pp.Type.defineMethod('fromTP_sig_ShellRequest',
+function(anObject, optFormat) {
+
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="tsh_pp">' +
+            TP.str(anObject.getResult()) +
+            '<\/span>';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.pp.Type.defineMethod('fromTP_core_Window',
 function(anObject, optFormat) {
 

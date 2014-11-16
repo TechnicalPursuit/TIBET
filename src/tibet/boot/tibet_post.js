@@ -5783,6 +5783,9 @@ TP.boot.$phantomReporter = function(entry, options) {
 
     // Ignore attempts to log the entry to the console more than once.
     if (entry && entry.usedConsole) {
+        // TODO: this may not be needed. Found a "flush" issue in the code
+        // specific to the TP.shell() command's failure hook that may fix it
+        // in which case we can remove this line.
         console.log('');    // force a flush of the console.
         return;
     }
@@ -6840,7 +6843,8 @@ TP.boot.$displayMessage = function(aString, flush) {
                 '<div xmlns="http://www.w3.org/1999/xhtml"><div><pre>' +
                 TP.boot.$htmlEscape(message) + '</pre></div></div>');
             if (!msgNode) {
-                top.console.log('Unable to create log message element.');
+                top.console.error('Unable to create log message element for...');
+                top.console.log(message);
             } else {
                 msgNode = msgNode.firstChild.firstChild;
             }

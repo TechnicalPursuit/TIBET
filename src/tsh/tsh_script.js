@@ -2061,7 +2061,7 @@ function(aRequest) {
                             'cmdShell', shell,
                             'cmdSilent', aRequest.at('cmdSilent'),
 
-                            'echoRequest', aRequest.at('echoRequest'),
+                            'cmdEcho', aRequest.at('cmdEcho'),
                             'execContext', aRequest.at('execContext'),
                             'execInstance', aRequest.at('execInstance'),
                             'rootRequest', rootRequest));
@@ -2159,7 +2159,7 @@ function(aRequest) {
                             'cmdShell', shell,
                             'cmdSilent', cmdRequest.at('cmdSilent'),
 
-                            'echoRequest', cmdRequest.at('echoRequest'),
+                            'cmdEcho', cmdRequest.at('cmdEcho'),
                             'execContext', aRequest.at('execContext'),
                             'execInstance', aRequest.at('execInstance'),
                             'rootRequest', rootRequest
@@ -2265,7 +2265,7 @@ function(aRequest) {
                         'cmdShell', shell,
                         'cmdSilent', cmdRequest.at('cmdSilent'),
 
-                        'echoRequest', cmdRequest.at('echoRequest'),
+                        'cmdEcho', cmdRequest.at('cmdEcho'),
                         'execContext', aRequest.at('execContext'),
                         'execInstance', aRequest.at('execInstance'),
                         'rootRequest', rootRequest

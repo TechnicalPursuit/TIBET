@@ -10,7 +10,8 @@
 
 /**
  * @type {TP.tsh.console}
- * @synopsis
+ * @synopsis The tsh:console tag used to inject a TSH console into an
+ *     application context.
  */
 
 //  ----------------------------------------------------------------------------
@@ -26,61 +27,61 @@ function(aRequest) {
 
     /**
      * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @synopsis Sets up the console tag's backing functionality once the tag
+     *     has been attached.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
 
     var elem,
-
         handlerFunc,
-
         triggerKey;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
+        return this.raise('InvalidElement');
     }
 
-    //  Set up the trigger key
-
+    // Capture the console toggle key off the element or cfg flag. Be sure to
+    // update the flag value if we're working with a tag-supplied one.
     if (TP.isEmpty(triggerKey = TP.elementGetAttribute(elem, 'tdc:toggle'))) {
         triggerKey = TP.sys.cfg('tdc.toggle_on');
     } else {
         TP.sys.setcfg('tdc.toggle_on', triggerKey);
     }
 
-    //  When the UIROOT is done loading, we grab the UIBOOT and prep it to load
-    //  ourself into it.
+    // Observe DocumentLoaded so we can augment the page with hook file and CSS.
     this.observe(
             'window_0.UIROOT',
             'TP.sig.DocumentLoaded',
             handlerFunc = function (aSignal) {
                 var win,
                     doc,
-
                     elem,
                     head;
 
+                // Only do this once, so stop listening.
                 handlerFunc.ignore(aSignal.getOrigin(),
-                                    aSignal.getSignalName());
+                    aSignal.getSignalName());
 
                 win = TP.win('UIBOOT');
                 doc = TP.doc(win);
 
-                elem = TP.documentCreateScriptElement(
-                    doc,
+                // Inject the hook file into the page so it has all the
+                // necessary TIBET page elements.
+                elem = TP.documentCreateScriptElement(doc,
                     TP.uc('~lib_build/tibet_hook.min.js').getLocation());
-
                 head = TP.documentEnsureHeadElement(doc);
-
                 TP.nodeAppendChild(head, elem, false);
 
+                // Force an initialize to run to get event handlers etc. set up.
                 TP.boot.initializeCanvas(win);
 
+                // Add our console-specific styles to the document.
                 TP.tsh.console.addStylesheetTo(doc);
             });
 
+    // Observe AppStart so we can create our default instance and be ready for
+    // console activation.
     this.observe(
             null,
             'TP.sig.AppDidStart',
@@ -94,26 +95,28 @@ function(aRequest) {
                         tsh,
                         console;
 
-                    if (TP.sys.hasStarted()) {
-                        uiBoot = TP.win('UIBOOT');
-
-                        tsh = TP.core.TSH.getDefaultInstance();
-
-                        console = TP.core.ConsoleService.construct(
-                            'SystemConsole',
-                            TP.hc('consoleWindow', uiBoot,
-                                    'consoleModel', tsh,
-                                    'triggerKey', triggerKey
-                            ));
-
-                        TP.byId('UIROOT', top).focus();
-
-                    } else if (count < 10) {
+                    // Retry up to 10 times at 50ms per try (a half-second)
+                    // to see if we can get the console set up.
+                    if (!TP.sys.hasStarted() && count < 10) {
                         count++;
                         handler.fork(50);
+                        return;
                     }
+
+
+                    uiBoot = TP.win('UIBOOT');
+                    tsh = TP.core.TSH.getDefaultInstance();
+                    console = TP.core.ConsoleService.construct(
+                        'SystemConsole',
+                        TP.hc('consoleWindow', uiBoot,
+                                'consoleModel', tsh,
+                                'triggerKey', triggerKey
+                        ));
+
+                    TP.byId('UIROOT', top).focus();
                 };
 
+                // Initiate the startup/config sequence.
                 handler.fork(50);
             });
 
@@ -130,31 +133,29 @@ function(aRequest) {
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
+     *     input for the shell process.
      * @returns {Element} The new element.
      */
 
     var elem,
-
         inputElemURI,
         inputElem,
-
         newElem;
 
-    //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+        return this.raise('InvalidElement');
     }
 
-    //  Set up the input
-
+    // Configure the query we'll use in URI form to get the input element.
     if (!TP.isString(inputElemURI = TP.elementGetAttribute(elem, 'stdin_ui'))) {
-        inputElemURI =
-            'tibet://top.UIBOOT#css(\'#BOOT-PROGRESS #BOOT-PERCENT\')';
+        inputElemURI = 'tibet://top.UIBOOT#css(\'#BOOT-PROGRESS #BOOT-PERCENT\')';
     }
 
-    if (TP.isElement(inputElem =
-                        TP.unwrap(TP.uc(inputElemURI).getResource()))) {
+    // Access the input element we're being tasked with converting.
+    inputElem = TP.unwrap(TP.uc(inputElemURI).getResource());
+
+    // Generate new content for the tag and replace the original.
+    if (TP.isElement(inputElem)) {
 
         newElem = TP.xhtmlnode(
         '<div id="tdc_cmdline_wrapper" class="cmdline_wrapper">' +
@@ -178,7 +179,8 @@ function(aRequest) {
 
 /**
  * @type {TP.core.ConsoleService}
- * @synopsis
+ * @synopsis The service which handles console requests, typically originating
+ *     from a tsh:console-attached shell instance.
  */
 
 //  ----------------------------------------------------------------------------
@@ -342,7 +344,8 @@ function(aResourceID, aRequest) {
     //  Note that we do *not* focus the input cell here because there is further
     //  setup to do and we don't want the browser to think that the cell has
     //  already been focused.
-    //this.focusInputCell();
+    //  -- do not uncomment :)
+    //  this.focusInputCell();
 
     //  TODO:   add TP.sig.DocumentUnloaded logout hook observation/method
 
@@ -350,6 +353,7 @@ function(aResourceID, aRequest) {
     //  observes get set up.
     this.shouldSignalChange(true);
 
+    // Make sure we're using a properly specified signal name.
     key = request.at('triggerKey');
     if (!key.startsWith('TP.sig.')) {
         key = 'TP.sig.' + key;
@@ -382,20 +386,16 @@ function() {
      * @todo
      */
 
-    //  configure the input cell
+    // Get the input area ready for user input.
     this.configureInputCell();
 
-    //  set up this object to manage stdin, stdout and stderr
+    // Connect our IO functions.
     this.configureSTDIO();
 
-    //  now that we have a viable input cell, configure the event handlers
+    // Set up our keyboard handler observations.
     this.configureHandlers();
 
-    //  register so we'll receiver UserIO signals
-    //this.register();
-
-    //  get started by scrolling to the end (causes the scroller to
-    //  resize/reposition)
+    // Move to the end of any console data.
     this.scrollToEnd();
 
     return this;
@@ -454,6 +454,8 @@ function() {
     //  is all the pixels that can't be attributed to showing one line
     cell.$perimeter = outerWrapper.$minHeight - (rowHeight + offset);
 
+    //  for later height adjustment we need to know the offsets for the overall
+    //  input wrapper so we don't make the wrapper too tall.
     styleVals = TP.elementGetStyleValuesInPixels(
         outerWrapper,
         TP.ac('borderTopWidth', 'borderBottomWidth',
@@ -483,8 +485,6 @@ function() {
      * @synopsis Configures the receiver so it is ready for operation.
      * @returns {TP.core.ConsoleService} The receiver.
      */
-
-    //  set up root keyboard observations
 
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
@@ -517,7 +517,7 @@ function() {
     var model,
         tibetWin;
 
-    //  configure the shell's output to pipe to us...
+    //  configure the shell's stdio routines to forward to us...
     if (TP.isValid(model = this.get('model'))) {
         model.attachSTDIO(this);
     }
@@ -644,47 +644,6 @@ function(aSignal) {
     }
 
     return str;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ConsoleService.Inst.defineMethod('scrollContent',
-function() {
-
-    /**
-     * @name scrollContent
-     * @returns {TP.core.ConsoleService} The receiver.
-     * @abstract
-     * @todo
-     */
-
-    TP.info('fix TP.core.ConsoleService::scrollContent', TP.LOG);
-
-    return this;
-/*
-    var contentDiv,
-        scrollGrip,
-        scrollBar,
-        scrollFactor;
-
-    contentDiv = this.$get('contentDiv');
-
-    if (contentDiv.scrollHeight === contentDiv.offsetHeight) {
-        //  Nothing to do.
-        return this;
-    }
-
-    //  Get the console scroll bar
-    scrollGrip = this.$get('scrollGrip');
-    scrollBar = TP.elementGetOffsetParent(scrollGrip);
-
-    scrollFactor = (contentDiv.scrollHeight - contentDiv.offsetHeight) /
-        (TP.elementGetHeight(scrollBar) - TP.elementGetHeight(scrollGrip));
-
-    contentDiv.scrollTop = scrollGrip.offsetTop * scrollFactor;
-
-    return this;
-*/
 });
 
 //  ------------------------------------------------------------------------
@@ -1952,7 +1911,7 @@ function(rawInput) {
                     'cmdInteractive', true,
                     'cmdLogin', true,
                     'cmdPhases', 'nocache',
-                    'echoRequest', true
+                    'cmdEcho', true
             ));
 
         req.set('requestor', this);
@@ -2231,6 +2190,7 @@ function(anError, aRequest) {
         outputStr;
 
     TP.stop('break.tdc_stderr');
+    TP.stop('break.tdc_stdio');
 
     if (TP.isValid(aRequest)) {
         aRequest.atPutIfAbsent('messageType', 'failure');
@@ -2274,6 +2234,7 @@ function(anObject, aDefault, aRequest) {
      */
 
     TP.stop('break.tdc_stdin');
+    TP.stop('break.tdc_stdio');
 
     this.setPrompt(anObject, 'cmdline_prompt');
     this.setInputContent(aDefault);
@@ -2307,6 +2268,7 @@ function(anObject, aRequest) {
         append;
 
     TP.stop('break.tdc_stdout');
+    TP.stop('break.tdc_stdio');
 
     //  We should see multiple output calls, at least one of which is the
     //  cmdConstruct notifier which tells us to build our output cell.
@@ -2405,7 +2367,7 @@ function(aRequest) {
 
     request = TP.request(aRequest);
 
-    if (TP.isTrue(request.at('echoRequest'))) {
+    if (TP.isTrue(request.at('cmdEcho'))) {
 
         //  update the command title bar based on the latest output from
         //  the particular cmdID this request represents.
