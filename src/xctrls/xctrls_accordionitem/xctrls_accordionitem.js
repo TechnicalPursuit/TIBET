@@ -17,13 +17,13 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:accordionitem');
 
-TP.xctrls.accordionitem.addTraitsFrom(TP.xctrls.Element,
+TP.xctrls.accordionitem.addTraits(TP.xctrls.Element,
                                         TP.core.TemplatedNode);
 TP.xctrls.accordionitem.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.accordionitem.executeTraitResolution();
+TP.xctrls.accordionitem.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end

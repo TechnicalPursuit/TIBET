@@ -17,13 +17,13 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:textinput');
 
-TP.xctrls.textinput.addTraitsFrom(TP.xctrls.Element,
+TP.xctrls.textinput.addTraits(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
 TP.xctrls.textinput.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.textinput.executeTraitResolution();
+TP.xctrls.textinput.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

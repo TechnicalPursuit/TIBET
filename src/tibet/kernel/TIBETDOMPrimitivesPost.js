@@ -1190,15 +1190,15 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
         }
     }
 
-    //  If the hash didn't supply a 'tibet:sourcetag' we compute one here.
+    //  If the hash didn't supply a 'tibet:tag' we compute one here.
     if (TP.notValid(attrHash) ||
-        TP.notValid(attrHash.at('tibet:sourcetag'))) {
+        TP.notValid(attrHash.at('tibet:tag'))) {
         if (TP.isEmpty(anElement.prefix)) {
-            sourceTagStr = ' tibet:sourcetag="' +
+            sourceTagStr = ' tibet:tag="' +
                             TP.canonical(anElement) +
                             '"';
         } else {
-            sourceTagStr = ' tibet:sourcetag="' +
+            sourceTagStr = ' tibet:tag="' +
                             TP.qname(anElement) +
                             '"';
         }
@@ -2552,7 +2552,7 @@ function(anElement, ignoreSourcetag) {
      *     distinction is important to the TIBET engine.
      * @param {Element} anElement The element to get the canonical name of.
      * @param {Boolean} ignoreSourcetag When true the element will ignore
-     *     'tibet:sourcetag' data and work purely from the node name and
+     *     'tibet:tag' data and work purely from the node name and
      *     namespace URI data. Defaults to false.
      * @example Obtain the canonical name for an HTML element whose name doesn't
      *     have a prefix:
@@ -2591,9 +2591,9 @@ function(anElement, ignoreSourcetag) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  sourcetag is fastest if it exists and we're allowed to use it
+    //  tag is fastest if it exists and we're allowed to use it
     if ((!ignoreSourcetag) &&
-        TP.notEmpty(tag = anElement.getAttribute('tibet:sourcetag'))) {
+        TP.notEmpty(tag = anElement.getAttribute('tibet:tag'))) {
         return tag;
     }
 
@@ -2725,7 +2725,7 @@ function(anElement, ignoreSourcetag) {
      *     won't.
      * @param {Element} anElement The element to get the full name of.
      * @param {Boolean} ignoreSourcetag When true the element will ignore
-     *     tibet:sourcetag data and work purely from the node name and namespace
+     *     tibet:tag data and work purely from the node name and namespace
      *     URI data.
      * @example Obtain the full name for an HTML element whose name doesn't have
      *     a prefix:
@@ -2764,9 +2764,9 @@ function(anElement, ignoreSourcetag) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  sourcetag is fastest if it exists
+    //  tag is fastest if it exists
     if ((!ignoreSourcetag) &&
-        TP.notEmpty(tag = anElement.getAttribute('tibet:sourcetag'))) {
+        TP.notEmpty(tag = anElement.getAttribute('tibet:tag'))) {
         return tag;
     }
 
@@ -4826,13 +4826,13 @@ function(aNode) {
      */
 
     if (TP.isElement(aNode) &&
-        (TP.elementHasAttribute(aNode, 'tibet:sourcetag', true) ||
-            TP.elementHasAttribute(aNode, 'tibet:nodetype', true))) {
+        (TP.elementHasAttribute(aNode, 'tibet:tag', true) ||
+            TP.elementHasAttribute(aNode, 'tibet:ctrl', true))) {
         return aNode;
     }
 
     return TP.nodeGetFirstElementAncestorByAttribute(
-                            aNode, 'tibet:sourcetag tibet:nodetype');
+                            aNode, 'tibet:tag tibet:ctrl');
 });
 
 //  ------------------------------------------------------------------------
@@ -11876,12 +11876,12 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
     }
 
     //  See if the element has a phase. If not, but it has a
-    //  'tibet:sourcetag' attribute, then set its 'tibet:phase' to
+    //  'tibet:tag' attribute, then set its 'tibet:phase' to
     //  'Compile'. We do this before we traverse the ancestor chain so that
     //  we can support tags that recursively replace themselves.
     currentPhase = TP.elementGetAttribute(elem, 'tibet:phase', true);
     if (TP.isEmpty(currentPhase)) {
-        if (TP.elementHasAttribute(elem, 'tibet:sourcetag', true)) {
+        if (TP.elementHasAttribute(elem, 'tibet:tag', true)) {
             TP.elementSetAttribute(elem, 'tibet:phase', 'Compile', true);
         }
     }
@@ -11911,7 +11911,7 @@ function(aNode, targetPhase, targetPhaseList, nodeOnly) {
     //  When no target phase is specified any evidence of conversion from
     //  non-HTML to HTML is enough.
     if (TP.isEmpty(targetPhase)) {
-        return TP.elementHasAttribute(elem, 'tibet:sourcetag', true);
+        return TP.elementHasAttribute(elem, 'tibet:tag', true);
     }
 
     currentPhase = TP.elementGetAttribute(elem, 'tibet:phase', true);

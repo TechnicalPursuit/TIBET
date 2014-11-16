@@ -16,7 +16,7 @@
 
 TP.core.ActionElementNode.defineSubtype('tsh:service');
 
-TP.tsh.service.addTraitsFrom(TP.tsh.Element);
+TP.tsh.service.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

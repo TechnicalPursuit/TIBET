@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:foreignObject');
 
-TP.svg.foreignObject.addTraitsFrom(TP.svg.Element);
+TP.svg.foreignObject.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 //  end

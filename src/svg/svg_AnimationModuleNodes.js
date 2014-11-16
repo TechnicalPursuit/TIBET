@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:animate');
 
-TP.svg.animate.addTraitsFrom(TP.svg.Element);
+TP.svg.animate.addTraits(TP.svg.Element);
 
 TP.svg.animate.Type.set('uriAttrs', TP.ac('xlink:href'));
 
@@ -38,7 +38,7 @@ TP.svg.animate.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 TP.core.UIElementNode.defineSubtype('svg:set');
 
-TP.svg.set.addTraitsFrom(TP.svg.Element);
+TP.svg.set.addTraits(TP.svg.Element);
 
 TP.svg.set.Type.set('uriAttrs', TP.ac('xlink:href'));
 
@@ -55,7 +55,7 @@ TP.svg.set.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 TP.core.UIElementNode.defineSubtype('svg:animateMotion');
 
-TP.svg.animateMotion.addTraitsFrom(TP.svg.Element);
+TP.svg.animateMotion.addTraits(TP.svg.Element);
 
 TP.svg.animateMotion.Type.set('uriAttrs', TP.ac('xlink:href'));
 
@@ -72,7 +72,7 @@ TP.svg.animateMotion.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 TP.core.UIElementNode.defineSubtype('svg:animateTransform');
 
-TP.svg.animateTransform.addTraitsFrom(TP.svg.Element);
+TP.svg.animateTransform.addTraits(TP.svg.Element);
 
 TP.svg.animateTransform.Type.set('uriAttrs', TP.ac('xlink:href'));
 
@@ -89,7 +89,7 @@ TP.svg.animateTransform.Type.set('uriAttrs', TP.ac('xlink:href'));
 
 TP.core.UIElementNode.defineSubtype('svg:animateColor');
 
-TP.svg.animateColor.addTraitsFrom(TP.svg.Element);
+TP.svg.animateColor.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.mpath
@@ -104,7 +104,7 @@ TP.svg.animateColor.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:mpath');
 
-TP.svg.mpath.addTraitsFrom(TP.svg.Element);
+TP.svg.mpath.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 //  end

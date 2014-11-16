@@ -3,11 +3,11 @@
         xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
         xmlns:pclass="urn:tibet:pseudoclass">
 
-    <div id="nochange" tibet:sourcetag="test:nochange">An unchanging tag</div>
-    <div id="attrchange" tibet:sourcetag="test:attrchange">A tag that gets a new attribute</div>
-    <div id="moreattrchange" tibet:sourcetag="test:moreattrchange">A tag that gets a new attribute (that needs further transformation)</div>
-    <div id="contentchange" tibet:sourcetag="test:contentchange">A tag that gets new child content (that doesn't need further transformation)</div>
-    <div id="morecontentchange" tibet:sourcetag="test:morecontentchange">A tag that gets new child content (that needs further transformation)</div>
+    <div id="nochange" tibet:tag="test:nochange">An unchanging tag</div>
+    <div id="attrchange" tibet:tag="test:attrchange">A tag that gets a new attribute</div>
+    <div id="moreattrchange" tibet:tag="test:moreattrchange">A tag that gets a new attribute (that needs further transformation)</div>
+    <div id="contentchange" tibet:tag="test:contentchange">A tag that gets new child content (that doesn't need further transformation)</div>
+    <div id="morecontentchange" tibet:tag="test:morecontentchange">A tag that gets new child content (that needs further transformation)</div>
 
 </div>
 

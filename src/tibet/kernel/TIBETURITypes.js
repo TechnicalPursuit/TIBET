@@ -123,11 +123,11 @@ TP.lang.Object.defineSubtype('core:URI');
 TP.core.URI.isAbstract(true);
 
 //  Add support methods for sync vs. async mode and request rewriting.
-TP.core.URI.addTraitsFrom(TP.core.SyncAsync);
+TP.core.URI.addTraits(TP.core.SyncAsync);
 
 //  Resolve the traits right away as subtypes of this type are used during the
 //  booting process.
-TP.core.URI.executeTraitResolution();
+TP.core.URI.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Type Constants

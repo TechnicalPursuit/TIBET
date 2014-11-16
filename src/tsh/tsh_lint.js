@@ -18,7 +18,7 @@
 
 TP.core.ActionElementNode.defineSubtype('tsh:lint');
 
-TP.tsh.lint.addTraitsFrom(TP.tsh.Element);
+TP.tsh.lint.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

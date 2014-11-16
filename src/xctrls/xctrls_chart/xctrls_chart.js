@@ -68,7 +68,7 @@ function(aRequest) {
      * @name getCompilationAttrs
      * @synopsis Returns a TP.lang.Hash of any attributes to be added to what is
      *     produced by this type when it is compiled.
-     * @description This type produces custom values for the 'tibet:nodetype'
+     * @description This type produces custom values for the 'tibet:ctrl'
      *     attribute (matching the type of the map based on the 'type'
      *     attribute), thereby allowing instances of subtypes of this type to be
      *     created.
@@ -88,7 +88,7 @@ function(aRequest) {
 
     chartType = TP.ifEmpty(TP.elementGetAttribute(elem, 'type'), 'bar');
 
-    return TP.hc('tibet:nodetype', 'xctrls:' + chartType + 'chart');
+    return TP.hc('tibet:ctrl', 'xctrls:' + chartType + 'chart');
 });
 
 //  ------------------------------------------------------------------------

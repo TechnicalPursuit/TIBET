@@ -795,8 +795,8 @@ function(aRequest) {
      *     markup DOM.
      * @description This method operates differently depending on a variety of
      *     factors:
-     *          - If the current node has a 'tibet:nodetype', but not a
-     *              'tibet:sourcetag', and its operating in a native namespace,
+     *          - If the current node has a 'tibet:ctrl', but not a
+     *              'tibet:tag', and its operating in a native namespace,
      *              this method returns with no transformation occurring and no
      *              child content being processed.
      *          - If the request contains a command target document and that
@@ -822,17 +822,17 @@ function(aRequest) {
     }
 
     //  We may have gotten here because the tag processing system was able
-    //  to obtain a 'concrete type' for this node using the 'tibet:nodetype'
+    //  to obtain a 'concrete type' for this node using the 'tibet:ctrl'
     //  attribute (which is really just defining a controller type) not a
-    //  'tibet:sourcetag' attribute.
+    //  'tibet:tag' attribute.
 
     //  Therefore, we want to check the namespace URI of the element and if
     //  its a 'native namespace' (i.e. this element is supported natively on
-    //  the platform) and we don't have a 'tibet:sourcetag' attribute we
+    //  the platform) and we don't have a 'tibet:tag' attribute we
     //  don't want to transform the tag, so we just exit here.
     if (TP.notEmpty(ns = elem.namespaceURI) &&
         TP.w3.Xmlns.isNative(ns) &&
-        !TP.elementHasAttribute(elem, 'tibet:sourcetag', true)) {
+        !TP.elementHasAttribute(elem, 'tibet:tag', true)) {
         return;
     }
 
@@ -2032,8 +2032,8 @@ function(aSignal, isCapturing) {
      * @synopsis Returns the next responder as computed by the receiver.
      * @description The default implementation of this method is to get the
      *     receiver's 'next closest ancestor control element' (i.e. not itself,
-     *     but its closest ancestor that has either a 'tibet:sourcetag' or
-     *     'tibet:nodetype' attribute) and TP.wrap() it.
+     *     but its closest ancestor that has either a 'tibet:tag' or
+     *     'tibet:ctrl' attribute) and TP.wrap() it.
      * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
      *     receiver is an appropriate responder.
      * @param {Boolean} isCapturing Whether or not the responder computation

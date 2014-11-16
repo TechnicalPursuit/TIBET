@@ -374,7 +374,7 @@ TP.lang.Object.defineSubtype('core:Window');
 
 //  Trait in UI canvas behavior, then any methods we define will override the
 //  defaults (this would be true in any case unless we force overrides)
-TP.core.Window.addTraitsFrom(TP.core.UICanvas);
+TP.core.Window.addTraits(TP.core.UICanvas);
 
 TP.core.Window.Inst.resolveTraits(TP.ac('canResolveDNU', 'resolveDNU'),
                                     TP.core.UICanvas);

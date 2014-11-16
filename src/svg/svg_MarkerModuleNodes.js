@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:marker');
 
-TP.svg.marker.addTraitsFrom(TP.svg.Element);
+TP.svg.marker.addTraits(TP.svg.Element);
 
 TP.svg.marker.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask'));

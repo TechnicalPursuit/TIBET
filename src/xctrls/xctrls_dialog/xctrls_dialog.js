@@ -17,13 +17,13 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:dialog');
 
-TP.xctrls.dialog.addTraitsFrom(TP.xctrls.Element,
+TP.xctrls.dialog.addTraits(TP.xctrls.Element,
                                 TP.core.TemplatedNode);
 TP.xctrls.dialog.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.dialog.executeTraitResolution();
+TP.xctrls.dialog.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

@@ -2648,11 +2648,11 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaTypeMethod('executeTraitResolution',
+TP.defineMetaTypeMethod('finalizeTraits',
 function() {
 
     /**
-     * @name executeTraitResolution
+     * @name finalizeTraits
      * @synopsis Executes traits resolution machinery if the traits for the
            receiver have not yet been resolved. For these objects, this method
            is a no-op.
@@ -3316,11 +3316,11 @@ TP.lang.RootObject.Type.defineAttribute('$traitsInstResolutions');
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('addTraitsFrom',
+TP.lang.RootObject.Type.defineMethod('addTraits',
 function(varargs) {
 
     /**
-     * @name addTraitsFrom
+     * @name addTraits
      * @synopsis Adds trait types in the arguments list to the receiver.
      * @param {Array} varargs A variable list of 0 to N TIBET types that
      *     represent 'traits' to add to the receiving type.
@@ -3353,11 +3353,11 @@ function(varargs) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('executeTraitResolution',
+TP.lang.RootObject.Type.defineMethod('finalizeTraits',
 function() {
 
     /**
-     * @name executeTraitResolution
+     * @name finalizeTraits
      * @synopsis Executes traits resolution machinery if the traits for the
            receiver have not yet been resolved.
      * @returns {TP.lang.RootObject} The receiver.
@@ -3366,7 +3366,7 @@ function() {
     if (!this.get('$traitsResolved')) {
 
         //  Make sure that the supertype has resolved it's traits
-        this.getSupertype().executeTraitResolution();
+        this.getSupertype().finalizeTraits();
 
         //  Now that the supertype (and all of its supertypes - up the chain)
         //  have resolved their traits, if we have traits we can resolve them.
@@ -6802,7 +6802,7 @@ function() {
     //  have properly resolved any traits they might have.
     if (!this.get('$traitsResolved')) {
 
-        this.executeTraitResolution();
+        this.finalizeTraits();
 
         //  If they remain unresolved then that's an error - throw one. We can't
         //  create instances of types that have unresolved traits.

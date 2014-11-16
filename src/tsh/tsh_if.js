@@ -18,7 +18,7 @@
 
 TP.core.ActionElementNode.defineSubtype('tsh:if');
 
-TP.tsh.if.addTraitsFrom(TP.tsh.Element);
+TP.tsh.if.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

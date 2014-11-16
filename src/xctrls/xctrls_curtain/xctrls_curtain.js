@@ -17,13 +17,13 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:curtain');
 
-TP.xctrls.curtain.addTraitsFrom(TP.xctrls.Element,
+TP.xctrls.curtain.addTraits(TP.xctrls.Element,
                                 TP.core.TemplatedNode);
 TP.xctrls.curtain.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  This is necessary to avoid a warning when we set() the traited-in attribute
 //  below - we need it to be defined.
-TP.xctrls.curtain.executeTraitResolution();
+TP.xctrls.curtain.finalizeTraits();
 
 //  xctrls:curtain controls are initially hidden, so we ensure that here.
 TP.xctrls.curtain.set('requiredAttrs', TP.hc('pclass:hidden', true));

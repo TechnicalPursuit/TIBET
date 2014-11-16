@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:svg');
 
-TP.svg.svg.addTraitsFrom(TP.svg.Element);
+TP.svg.svg.addTraits(TP.svg.Element);
 
 TP.svg.svg.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
@@ -38,7 +38,7 @@ TP.svg.svg.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 TP.core.UIElementNode.defineSubtype('svg:g');
 
-TP.svg.g.addTraitsFrom(TP.svg.Element);
+TP.svg.g.addTraits(TP.svg.Element);
 
 TP.svg.g.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
@@ -55,7 +55,7 @@ TP.svg.g.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
 TP.core.UIElementNode.defineSubtype('svg:defs');
 
-TP.svg.defs.addTraitsFrom(TP.svg.Element);
+TP.svg.defs.addTraits(TP.svg.Element);
 
 TP.svg.defs.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
@@ -72,7 +72,7 @@ TP.svg.defs.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'))
 
 TP.core.UIElementNode.defineSubtype('svg:desc');
 
-TP.svg.desc.addTraitsFrom(TP.svg.Element);
+TP.svg.desc.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.title
@@ -87,7 +87,7 @@ TP.svg.desc.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:title');
 
-TP.svg.title.addTraitsFrom(TP.svg.Element);
+TP.svg.title.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.metadata
@@ -102,7 +102,7 @@ TP.svg.title.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:metadata');
 
-TP.svg.metadata.addTraitsFrom(TP.svg.Element);
+TP.svg.metadata.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.symbol
@@ -117,7 +117,7 @@ TP.svg.metadata.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:symbol');
 
-TP.svg.symbol.addTraitsFrom(TP.svg.Element);
+TP.svg.symbol.addTraits(TP.svg.Element);
 
 TP.svg.symbol.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 
@@ -134,7 +134,7 @@ TP.svg.symbol.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'
 
 TP.core.UIElementNode.defineSubtype('svg:use');
 
-TP.svg.use.addTraitsFrom(TP.svg.Element);
+TP.svg.use.addTraits(TP.svg.Element);
 
 TP.svg.use.Type.set('uriAttrs', TP.ac('clip-path', 'cursor', 'filter', 'mask'));
 

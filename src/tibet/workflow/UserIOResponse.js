@@ -17,7 +17,7 @@
 
 TP.sig.IOResponse.defineSubtype('UserIOResponse');
 
-TP.sig.UserIOResponse.addTraitsFrom(TP.sig.UserIOSignal);
+TP.sig.UserIOResponse.addTraits(TP.sig.UserIOSignal);
 
 TP.sig.UserIOResponse.Type.resolveTraits(
         TP.ac('shouldLog', 'getSignalName'),

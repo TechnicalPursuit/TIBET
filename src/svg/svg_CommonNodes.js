@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:Shape');
 
-TP.svg.Shape.addTraitsFrom(TP.svg.Element);
+TP.svg.Shape.addTraits(TP.svg.Element);
 
 TP.svg.Shape.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask', 'fill', 'stroke'));

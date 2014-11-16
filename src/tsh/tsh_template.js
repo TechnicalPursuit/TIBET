@@ -20,7 +20,7 @@
 
 TP.core.ActionElementNode.defineSubtype('tsh:template');
 
-TP.tsh.template.addTraitsFrom(TP.tsh.Element);
+TP.tsh.template.addTraits(TP.tsh.Element);
 
 TP.tsh.template.Type.set('uriAttrs', TP.ac('src'));
 

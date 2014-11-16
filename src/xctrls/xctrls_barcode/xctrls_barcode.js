@@ -16,11 +16,11 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:barcode');
 
-TP.xctrls.barcode.addTraitsFrom(TP.core.PipeSegmentElementNode);
+TP.xctrls.barcode.addTraits(TP.core.PipeSegmentElementNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.barcode.executeTraitResolution();
+TP.xctrls.barcode.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Type Methods

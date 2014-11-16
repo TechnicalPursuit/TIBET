@@ -18,7 +18,7 @@
 		 original element but add some attributes. -->
 	<xsl:template match="tsh:template">
 		<xctrls:tabbox>
-			<xsl:attribute name="tibet:nodetype">xctrls:tabbox</xsl:attribute>
+			<xsl:attribute name="tibet:ctrl">xctrls:tabbox</xsl:attribute>
 			<xsl:attribute name="ev:event">ValueChange</xsl:attribute>
 			<xsl:attribute name="ev:observer">
 				<xsl:value-of select="string(./xctrls:tabbar/@id)"/>
@@ -26,7 +26,7 @@
 			<xsl:apply-templates select="@*|node()"/>
 		</xctrls:tabbox>
 	</xsl:template>
-	
+
 	<xsl:template match="xctrls:body">
 		<xctrls:body>
 			<div>

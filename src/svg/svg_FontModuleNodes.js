@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:font');
 
-TP.svg.font.addTraitsFrom(TP.svg.Element);
+TP.svg.font.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.font_face
@@ -36,7 +36,7 @@ TP.svg.font.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:font_face');
 
-TP.svg.font_face.addTraitsFrom(TP.svg.Element);
+TP.svg.font_face.addTraits(TP.svg.Element);
 
 
 //  For markup generation purposes, this type's 'localName' uses a dash
@@ -56,7 +56,7 @@ TP.svg.font_face.set('localName', 'font-face');
 
 TP.core.UIElementNode.defineSubtype('svg:glyph');
 
-TP.svg.glyph.addTraitsFrom(TP.svg.Element);
+TP.svg.glyph.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.missing_glyph
@@ -71,7 +71,7 @@ TP.svg.glyph.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:missing_glyph');
 
-TP.svg.missing_glyph.addTraitsFrom(TP.svg.Element);
+TP.svg.missing_glyph.addTraits(TP.svg.Element);
 
 //  For markup generation purposes, this type's 'localName' uses a dash
 //  ('-'), not an underscore ('_') like we had to use for the type name.
@@ -90,7 +90,7 @@ TP.svg.missing_glyph.set('localName', 'missing-glyph');
 
 TP.core.UIElementNode.defineSubtype('svg:hkern');
 
-TP.svg.hkern.addTraitsFrom(TP.svg.Element);
+TP.svg.hkern.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.vkern
@@ -105,7 +105,7 @@ TP.svg.hkern.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:vkern');
 
-TP.svg.vkern.addTraitsFrom(TP.svg.Element);
+TP.svg.vkern.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.font_face_src
@@ -120,7 +120,7 @@ TP.svg.vkern.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:font_face_src');
 
-TP.svg.font_face_src.addTraitsFrom(TP.svg.Element);
+TP.svg.font_face_src.addTraits(TP.svg.Element);
 
 //  For markup generation purposes, this type's 'localName' uses a dash
 //  ('-'), not an underscore ('_') like we had to use for the type name.
@@ -139,7 +139,7 @@ TP.svg.font_face_src.set('localName', 'font-face-src');
 
 TP.core.UIElementNode.defineSubtype('svg:font_face_uri');
 
-TP.svg.font_face_uri.addTraitsFrom(TP.svg.Element);
+TP.svg.font_face_uri.addTraits(TP.svg.Element);
 
 //  For markup generation purposes, this type's 'localName' uses a dash
 //  ('-'), not an underscore ('_') like we had to use for the type name.
@@ -158,7 +158,7 @@ TP.svg.font_face_uri.set('localName', 'font-face-uri');
 
 TP.core.UIElementNode.defineSubtype('svg:font_face_format');
 
-TP.svg.font_face_format.addTraitsFrom(TP.svg.Element);
+TP.svg.font_face_format.addTraits(TP.svg.Element);
 
 //  For markup generation purposes, this type's 'localName' uses a dash
 //  ('-'), not an underscore ('_') like we had to use for the type name.
@@ -177,7 +177,7 @@ TP.svg.font_face_format.set('localName', 'font-face-format');
 
 TP.core.UIElementNode.defineSubtype('svg:font_face_name');
 
-TP.svg.font_face_name.addTraitsFrom(TP.svg.Element);
+TP.svg.font_face_name.addTraits(TP.svg.Element);
 
 //  For markup generation purposes, this type's 'localName' uses a dash
 //  ('-'), not an underscore ('_') like we had to use for the type name.
@@ -196,7 +196,7 @@ TP.svg.font_face_name.set('localName', 'font-face-name');
 
 TP.core.UIElementNode.defineSubtype('svg:definition_src');
 
-TP.svg.definition_src.addTraitsFrom(TP.svg.Element);
+TP.svg.definition_src.addTraits(TP.svg.Element);
 
 //  For markup generation purposes, this type's 'localName' uses a dash
 //  ('-'), not an underscore ('_') like we had to use for the type name.

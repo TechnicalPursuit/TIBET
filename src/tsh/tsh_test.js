@@ -18,7 +18,7 @@
 
 TP.core.ActionElementNode.defineSubtype('tsh:test');
 
-TP.tsh.test.addTraitsFrom(TP.tsh.Element);
+TP.tsh.test.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

@@ -17,11 +17,11 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:Element');
 
-TP.xctrls.Element.addTraitsFrom(TP.core.NonNativeUIElementNode);
+TP.xctrls.Element.addTraits(TP.core.NonNativeUIElementNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.Element.executeTraitResolution();
+TP.xctrls.Element.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -53,9 +53,9 @@ function(aRequest) {
 
     elem = aRequest.at('node');
 
-    //  Make sure that the element gets stamped with a 'tibet:nodetype' of
+    //  Make sure that the element gets stamped with a 'tibet:ctrl' of
     //  its tag's QName
-    TP.elementSetAttribute(elem, 'tibet:nodetype', TP.qname(elem), true);
+    TP.elementSetAttribute(elem, 'tibet:ctrl', TP.qname(elem), true);
 
     //  If the type (but not inherited - just at the individual type level)
     //  has specified 'required attributes' that need to be populated on all

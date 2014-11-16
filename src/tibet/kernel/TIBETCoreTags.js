@@ -130,7 +130,7 @@ function(aRequest) {
     tag = TP.sys.cfg('tibet.apptag') || 'APP.' + name + ':app';
 
     newElem = TP.xhtmlnode(
-    '<div tibet:sourcetag="tibet:app" class="tag-defaulted">' +
+    '<div tibet:tag="tibet:app" class="tag-defaulted">' +
         '<h1 class="tag-defaulted">' +
             'Application tag for ' + name + ' failed to render. ' +
             'Defaulted to &lt;tibet:app/&gt;' +
@@ -252,8 +252,8 @@ function(aRequest) {
     newElem = TP.elementBecome(elem, name);
 
     //  We're changing out the tag entirely, so remove any evidence via the
-    //  tibet:sourcetag reference.
-    TP.elementRemoveAttribute(newElem, 'tibet:sourcetag', true);
+    //  tibet:tag reference.
+    TP.elementRemoveAttribute(newElem, 'tibet:tag', true);
 
     return newElem;
 });
@@ -274,10 +274,10 @@ function(aRequest) {
 TP.core.ApplicationTag.defineSubtype('TP.core.TemplatedApplicationTag');
 
 /* Mix in templating behavior */
-TP.core.TemplatedApplicationTag.addTraitsFrom(TP.core.TemplatedNode);
+TP.core.TemplatedApplicationTag.addTraits(TP.core.TemplatedNode);
 
 /* Resolve the traits since they're available without instance creation. */
-TP.core.TemplatedApplicationTag.executeTraitResolution();
+TP.core.TemplatedApplicationTag.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end

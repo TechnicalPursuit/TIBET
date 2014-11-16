@@ -29,7 +29,7 @@
 
 TP.core.ActionElementNode.defineSubtype('tsh:history');
 
-TP.tsh.history.addTraitsFrom(TP.tsh.Element);
+TP.tsh.history.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:color_profile');
 
-TP.svg.color_profile.addTraitsFrom(TP.svg.Element);
+TP.svg.color_profile.addTraits(TP.svg.Element);
 
 TP.svg.color_profile.Type.set('uriAttrs', TP.ac('xlink:href'));
 

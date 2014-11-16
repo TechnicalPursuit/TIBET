@@ -382,14 +382,14 @@ function(aNodeOrId) {
 
 TP.html.Attrs.defineSubtype('param');
 
-TP.html.param.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.param.addTraits(TP.core.EmptyElementNode);
 TP.html.param.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.html.param.executeTraitResolution();
+TP.html.param.finalizeTraits();
 
 //  ========================================================================
 //  TP.html.source (HTML 5)
