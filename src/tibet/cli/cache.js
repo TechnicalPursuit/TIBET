@@ -79,8 +79,9 @@ Cmd.prototype.HELP =
 'have a no-manifest attribute (which effectively turns off caching).\n\n' +
 
 'Use --disable to update index.html to have a no-manifest attribute. This\n' +
-'attribute name effectively will disable the cache (although if the cache\n' +
-'was ever activated you must clear your browser\'s cache content as well).\n\n' +
+'attribute name effectively will disable the cache. NOTE that if the cache\n' +
+'was ever activated you must clear your browser\'s cache content and any\n' +
+'browser-specific appcache (chrome://appcache-internals/) to fully disable.\n\n' +
 
 'Use --develop to update the cache such that application file content is\n' +
 'commented out so it will load dynamically via the network. Invert the flag\n' +
@@ -121,6 +122,13 @@ Cmd.prototype.LIB_START_REGEX = /# !!! lib/;
 Cmd.prototype.OFFLIMITS_REGEX = /# (!!!|---)/;
 
 /**
+ * The pattern used to ensure we get at least one viable command flag.
+ * @type {RegExp}
+ */
+Cmd.prototype.REQUIRED_PARAMS_REGEX =
+    /--(no-)*(develop|disable|enable|missing|rebuild|touch)($| )/;
+
+/**
  * The pattern used for locating the line updated via --touch.
  * @type {RegExp}
  */
@@ -135,7 +143,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'boolean': ['develop', 'disable', 'enable', 'missing', 'rebuild', 'touch'],
         'string': ['file'],
         'default': {
-            develop: true,
+            develop: false,
             disable: false,
             enable: false,
             missing: false,
@@ -166,9 +174,7 @@ Cmd.prototype.execute = function() {
     var cachefile,
         appname;
 
-    if (!this.options.enable && !this.options.disable &&
-            !this.options.missing && !this.options.rebuild &&
-            !this.options.touch) {
+    if (!process.argv.slice(2).join(' ').match(this.REQUIRED_PARAMS_REGEX)) {
         return this.usage();
     }
 
@@ -238,6 +244,10 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         line,
         copy,
 
+        match,
+        id,
+        changed,
+
         inapp,
         inlib,
 
@@ -272,6 +282,8 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
     inapp = false;
     inlib = false;
 
+    changed = 0;
+
     for (i = 0; i < len; i++) {
         line = lines[i].trim();
 
@@ -280,7 +292,11 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
             continue;
         }
 
-        if (line.match(this.APP_START_REGEX)) {
+        if (line.match(this.TOUCH_ID_REGEX)) {
+            id = Date.now();
+            lines[i] = '# !!! ID: ' + id;
+            changed++;
+        } else if (line.match(this.APP_START_REGEX)) {
             inapp = true;
             appStart = i;
             continue;
@@ -291,6 +307,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         } else if (line.match(this.OFFLIMITS_REGEX)) {
             continue;
         }
+
 
         // Once we hit another section we're done with the current section.
         if (line.match(/CACHE:/) ||
@@ -334,6 +351,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                     // Update to be commented in place. File name is already
                     // uncommented for missing/rebuild checks.
                     lines[i] = '# ' + line;
+                    changed++;
                 }
 
             } else {
@@ -352,6 +370,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                     // the actual file location.
                     if (copy.indexOf('##') !== 0) {
                         lines[i] = line;
+                        changed++;
                     }
                 }
             }
@@ -444,9 +463,20 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         }
 
         newLines.join('\n').to(cachefile);
+
+    } else if (changed > 1) {
+
+        this.info('saving ' + (changed - 1) + ' appcache changes...');
+
+        // If we changed more than just the ID (for touch purposes) save the
+        // output, we toggled some comments for develop/non-develop mode.
+        lines.join('\n').to(cachefile);
+
+        this.info('application cache update complete.');
+    } else {
+        this.info('application cache did not require update.');
     }
 
-    this.info('application cache update complete.');
 };
 
 
@@ -575,7 +605,7 @@ Cmd.prototype.executeTouch = function(cachefile) {
         match = line.match(this.TOUCH_ID_REGEX);
         if (CLI.isValid(match)) {
             id = Date.now();
-            lines[i] = '# ID: ' + id;
+            lines[i] = '# !!! ID: ' + id;
         }
     }
 

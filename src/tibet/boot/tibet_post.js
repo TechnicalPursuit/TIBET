@@ -6956,11 +6956,14 @@ TP.boot.hideUIBoot = function() {
     elem = TP.boot.$getUIElement(id);
     if (TP.boot.$isValid(elem)) {
         if (TP.boot.$isValid(elem.frameElement)) {
-            elem.frameElement.style.display = 'none';
-        } else {
-            elem.style.display = 'none';
+            elem = elem.frameElement;
         }
+        // NOTE we use display: none here so that devtools etc. will properly
+        // find elements when using inspect element.
+        elem.style.display = 'none';
     }
+
+    TP.byId('UIROOT', top).focus();
 };
 
 //  ----------------------------------------------------------------------------
@@ -6974,10 +6977,9 @@ TP.boot.hideUIRoot = function() {
 
     if (TP.boot.$isValid(elem)) {
         if (TP.boot.$isValid(elem.frameElement)) {
-            elem.frameElement.style.visibility = 'hidden';
-        } else {
-            elem.style.visibility = 'hidden';
+            elem = elem.frameElement;
         }
+        elem.style.visibility = 'hidden';
     }
 };
 
@@ -7035,11 +7037,12 @@ TP.boot.showUIBoot = function() {
 
     if (TP.boot.$isValid(elem)) {
         if (TP.boot.$isValid(elem.frameElement)) {
-            elem.frameElement.style.display = 'block';
-        } else {
-            elem.style.display = 'block';
+            elem = elem.frameElement;
         }
+        elem.style.display = 'block';
     }
+
+    elem.focus();
 };
 
 //  ------------------------------------------------------------------------
@@ -7061,13 +7064,47 @@ TP.boot.showUIRoot = function() {
 
     if (TP.boot.$isValid(elem)) {
         if (TP.boot.$isValid(elem.frameElement)) {
-            elem.frameElement.style.visibility = 'visible';
-        } else {
-            elem.style.visibility = 'visible';
+            elem = elem.frameElement;
         }
+        elem.style.visibility = 'visible';
     }
 
     TP.boot.hideUIBoot();
+
+    elem.focus();
+
+    return;
+};
+
+//  ------------------------------------------------------------------------
+
+TP.boot.toggleUI = function() {
+
+    /**
+     * @name toggleUI
+     * @synopsis Toggles the UI between UIRoot and UIBoot.
+     * @return {null}
+     */
+
+    var elem,
+        id;
+
+    id = TP.sys.cfg('tibet.uiroot');
+    elem = TP.boot.$getUIElement(id);
+
+    if (TP.boot.$isValid(elem)) {
+        if (TP.boot.$isValid(elem.frameElement)) {
+            elem = elem.frameElement;
+        }
+
+        if (elem.style.visibility === 'visible') {
+            TP.boot.showUIBoot();
+            TP.boot.hideUIRoot();
+        } else {
+            TP.boot.showUIRoot();
+            TP.boot.hideUIBoot();
+        }
+    }
 
     return;
 };

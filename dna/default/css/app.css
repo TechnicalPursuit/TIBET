@@ -26,3 +26,8 @@
   text-decoration: underline;
 }
 
+p.hint {
+    margin-top: 50px;
+    font-size: 100%;
+    text-align: center;
+}

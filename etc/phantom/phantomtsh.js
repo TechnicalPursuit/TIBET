@@ -221,6 +221,12 @@
     PhantomTSH.argv = null;
 
     /**
+     * Buffer for managing console output more effectively.
+     * @type {Array}
+     */
+    PhantomTSH.buffer = null;
+
+    /**
      * A date stamp for the last activity (logging typically) which was observed
      * from the loaded content. Used to drive activity-based timeout processing.
      * @type {Date}
@@ -396,6 +402,11 @@
             msg,
             color;
 
+        if (PhantomTSH.buffer.length > 0) {
+            console.log(PhantomTSH.buffer.join('\n'));
+            PhantomTSH.buffer.length = 0;
+        }
+
         /* eslint-disable no-nested-ternary */
         status = PhantomTSH.status === null ?
             (code === undefined ? 0 : code) :
@@ -451,24 +462,26 @@
         var level,
             msg;
 
+        msg = '' + message;
+
         // Determine the level of the message, if any. The parse here depends on
         // TIBET sending a level as a part of the message output, which is
         // normally only done by the phantomReporter in the TIBET boot code.
-        if (/^TRACE/i.test(message)) {
+        if (/^TRACE/i.test(msg)) {
             level = 1;
-        } else if (/^DEBUG/i.test(message)) {
+        } else if (/^DEBUG/i.test(msg)) {
             level = 2;
-        } else if (/^INFO/i.test(message)) {
+        } else if (/^INFO/i.test(msg)) {
             level = 3;
-        } else if (/^WARN/i.test(message)) {
+        } else if (/^WARN/i.test(msg)) {
             level = 4;
-        } else if (/^ERROR/i.test(message)) {
+        } else if (/^ERROR/i.test(msg)) {
             level = 5;
-        } else if (/^SEVERE/i.test(message)) {
+        } else if (/^SEVERE/i.test(msg)) {
             level = 6;
-        } else if (/^FATAL/i.test(message)) {
+        } else if (/^FATAL/i.test(msg)) {
             level = 7;
-        } else if (/^SYSTEM/i.test(message)) {
+        } else if (/^SYSTEM/i.test(msg)) {
 
             if (!PhantomTSH.argv.system) {
                 return;
@@ -483,9 +496,7 @@
         }
 
         if (PhantomTSH.argv.tap) {
-            msg = PhantomTSH.TAP_PREFIX + message;
-        } else {
-            msg = '' + message;
+            msg = PhantomTSH.TAP_PREFIX + msg;
         }
 
         // If color is explicit we go with that, otherwise we check the content
@@ -512,7 +523,16 @@
             }
         }
 
-        console.log(msg);
+        if (!PhantomTSH.buffer) {
+            PhantomTSH.buffer = [];
+        }
+
+        PhantomTSH.buffer.push(msg);
+
+        if (PhantomTSH.buffer.length > 10) {
+            console.log(PhantomTSH.buffer.join('\n'));
+            PhantomTSH.buffer.length = 0;
+        }
     };
 
 
@@ -853,15 +873,15 @@
      */
     PhantomTSH.page.onConsoleMessage = function(msg) {
 
-        PhantomTSH.lastMessage = msg;
+        PhantomTSH.lastMessage = '' + msg;
 
         PhantomTSH.lastActivity = new Date().getTime();
 
         // If we're doing TAP-complaint processing then redirect.
         if (PhantomTSH.argv.tap) {
-            PhantomTSH.tap(msg);
+            PhantomTSH.tap('' + msg);
         } else {
-            PhantomTSH.log(msg);
+            PhantomTSH.log('' + msg);
         }
     };
 
