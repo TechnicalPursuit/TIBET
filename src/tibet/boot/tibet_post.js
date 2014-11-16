@@ -7588,8 +7588,8 @@ TP.boot.$setStage = function(aStage, aReason) {
                 TP.boot.$getStageTime('paused')) +
             'ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
 
-        TP.boot.$stdout('', TP.SYSTEM);
-        TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+        //TP.boot.$stdout('', TP.SYSTEM);
+        //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
 
     } else if (TP.boot.$$stage === 'stopped') {
 
