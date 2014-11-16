@@ -1065,6 +1065,11 @@ function(aNode, aProcessor, aRequest) {
     for (i = 0; i < len; i++) {
         node = nodes.at(i);
 
+        //  If one of the phases detached this node, then just continue on.
+        if (TP.nodeIsDetached(node)) {
+            continue;
+        }
+
         processingRequest.atPut('node', node);
 
         //  If the considered node is an element, see if there are entries for
