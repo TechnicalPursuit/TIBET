@@ -644,8 +644,6 @@
             PhantomTSH.help();
         }
 
-        console.log('system.args: ' + system.args);
-
         if (argv.usage || !argv.script) {
             PhantomTSH.usage();
         }
