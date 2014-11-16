@@ -1425,11 +1425,11 @@ function() {
 
     var bindAttrNodes;
 
-    //  We look for either 'in', 'out', or 'io' here to determine if the
-    //  receiver is bound. The 'scope' attribute doesn't indicate that it is
+    //  We look for either 'in', 'out', 'io' or 'target' here to determine if
+    //  the receiver is bound. The 'scope' attribute doesn't indicate that it is
     //  bound.
     bindAttrNodes = TP.elementGetAttributeNodesInNS(
-                    this.getNativeNode(), /.*:(in|out|io)/, TP.w3.Xmlns.BIND);
+            this.getNativeNode(), /.*:(in|out|io|repeat)/, TP.w3.Xmlns.BIND);
 
     return TP.notEmpty(bindAttrNodes);
 });
@@ -1484,6 +1484,8 @@ function(aSignalOrHash) {
 
     var repeatAttrs,
 
+        info,
+
         goDeep,
 
         shouldDefine,
@@ -1504,9 +1506,11 @@ function(aSignalOrHash) {
         return this;
     }
 
-    goDeep = aSignalOrHash.atIfInvalid('deep', true);
-    shouldDefine = aSignalOrHash.atIfInvalid('shouldDefine', true);
-    shouldDestroy = aSignalOrHash.atIfInvalid('shouldDestroy', true);
+    info = TP.isValid(aSignalOrHash) ? aSignalOrHash : TP.hc();
+
+    goDeep = info.atIfInvalid('deep', true);
+    shouldDefine = info.atIfInvalid('shouldDefine', true);
+    shouldDestroy = info.atIfInvalid('shouldDestroy', true);
 
     //  If there isn't an overall 'binding information' dictionary defined on
     //  the receiver, then define one.
@@ -1696,7 +1700,7 @@ function(aSignalOrHash) {
         }
     }
 
-    if (TP.isTrue(aSignalOrHash.at('deep'))) {
+    if (TP.isTrue(info.at('deep'))) {
         //  TODO: Send 'rebuild' to *shallow children* elements with 'bind:'
         //  attributes if the 'deep' flag is specified.
     }
@@ -1725,7 +1729,8 @@ function() {
         allVals,
         fullyExpandedVal,
 
-        obsURI;
+        obsURI,
+        oldObsURI;
 
     //  If there is no children content already captured, then capture it.
     if (TP.notValid(childrenFragment = this.get('repeatContent'))) {
@@ -1767,24 +1772,33 @@ function() {
         return this;
     }
 
+    if (TP.notEmpty(oldObsURI = this.getAttribute('oldObsURI'))) {
+        this.destroyBinding('repeatValue', TP.uc(oldObsURI), 'value');
+    }
+
     //  Now, define a binding that binds that URI's 'value' to our 'repeatValue'
     //  aspect. When that collection changes, we will get notified by the
     //  binding machinery calling 'set("repeatValue", ...)' on us, thereby
     //  invoking our 'setRepeatValue()' method below.
     this.defineBinding('repeatValue', obsURI, 'value');
 
+    this.setAttribute('oldObsURI', obsURI.asString());
+
     //  If we're a nested repeat, then we need to manually refresh whenever we
     //  rebuild.
+    //  TODO: Yuck
     if (TP.isElement(
-                TP.nodeDetectAncestor(
-                    this.getNativeNode(),
-                    function(anElem) {
-                        return TP.notEmpty(
-                            TP.elementGetAttributeNodesInNS(
-                                anElem, '*:repeat', TP.w3.Xmlns.BIND));
-                            }))) {
+        TP.nodeDetectAncestor(
+            this.getNativeNode(),
+            function(anElem) {
+                return TP.notEmpty(
+                    TP.elementGetAttributeNodesInNS(
+                        anElem, '*:repeat', TP.w3.Xmlns.BIND));
+                    }))) {
 
-        this.setRepeatValue(obsURI.getResource());
+        this.refreshRepeat(obsURI.getResource());
+    } else if (TP.notEmpty(oldObsURI)) {
+        this.refreshRepeat(obsURI.getResource());
     }
 
     return this;
@@ -1814,7 +1828,16 @@ function(aResource) {
         elemChildElements,
         repeatChildElements,
 
+        startIndex,
+        repeatSize,
+        endIndex,
+        totalDisplaySize,
+        scopeNum,
+        groupSize,
+        boundCount,
+
         i,
+        childTPElem,
         newNode,
         index,
         elemsWithIds,
@@ -1823,12 +1846,16 @@ function(aResource) {
         j,
         bindAttrNodes;
 
-    if (TP.notValid(aResource)) {
+    if (TP.notValid(repeatResource = aResource)) {
+        repeatResource = TP.uc(this.getAttribute('bind:repeat')).getResource();
+    }
+
+    if (TP.notValid(repeatResource)) {
         return this.raise('TP.sig.InvalidParameter', 'Invalid resource.');
     }
 
     //  Make sure the resource is a collection - if it isn't, make it one.
-    if (!TP.isCollection(repeatResource = aResource)) {
+    if (!TP.isCollection(repeatResource)) {
         repeatResource = TP.ac(repeatResource);
     }
     resourceLength = repeatResource.getSize();
@@ -1847,17 +1874,92 @@ function(aResource) {
     //  Grab the child *Elements* in the repeat content.
     repeatChildElements = TP.nodeGetChildElements(repeatContent);
 
-    //  If we're already built all of the repeating elements, we can exit here.
-    if (elemChildElements.getSize() ===
-        repeatChildElements.getSize() * resourceLength) {
+    //  If we have a 'bind:repeatindex', then we can compute a starting index
+    //  from it.
+    if (this.hasAttribute('bind:repeatindex')) {
+        if (TP.isNumber(startIndex =
+                        this.getAttribute('bind:repeatindex').asNumber())) {
 
-        //  TODO: What happens if the data has changed, but it's the same size.
+            //  This is so that we can treat everything from here down as
+            //  0-based for simplicity.
+            if (isXMLResource) {
+                startIndex = startIndex - 1;
+            }
+        }
+
+        //  If we have a 'bind:repeatsize', then we can compute an ending index
+        //  from that and the startIndex
+        if (TP.isNumber(repeatSize =
+                        this.getAttribute('bind:repeatsize').asNumber())) {
+            endIndex = startIndex + repeatSize;
+        } else {
+            endIndex = resourceLength - startIndex;
+        }
+    }
+
+    //  If we don't have a startIndex, then we don't have either - default them
+    //  to 0 and the size of the resource.
+    if (!TP.isNumber(startIndex)) {
+        startIndex = 0;
+        endIndex = resourceLength;
+    }
+
+    totalDisplaySize = endIndex - startIndex;
+
+    //  If we've already built all of the repeating elements, we can just rebind
+    //  the individual elements here.
+    if (elemChildElements.getSize() ===
+        repeatChildElements.getSize() * totalDisplaySize) {
+
+        //  We subtract 1 from the startIndex because the first time through the
+        //  loop below, when the mod succeeds, it will kick it by 1.
+        scopeNum = startIndex - 1;
+
+        //  The grouping size is the number of *bound* elements we have divided
+        //  by the totalDisplaySize.
+        groupSize =
+            TP.nodeGetDescendantElementsByAttribute(
+                    this.getNativeNode(), 'bind:scope').getSize() /
+            totalDisplaySize;
+
+        boundCount = 0;
+
+        for (i = 0; i < elemChildElements.getSize(); i++) {
+            childTPElem = TP.wrap(elemChildElements.at(i));
+
+            //  Obviously, only rebind if the child is a bound element.
+            if (childTPElem.isBoundElement()) {
+
+                //  If we've reached our group size, kick the scope number once.
+                if ((boundCount % groupSize) === 0) {
+                    scopeNum++;
+                }
+
+                //  Have to adjust for the fact that XPaths are 1-based.
+                if (isXMLResource) {
+                    childTPElem.setAttribute(
+                                    'bind:scope', '[' + (scopeNum + 1) + ']');
+                } else {
+                    childTPElem.setAttribute(
+                                    'bind:scope', '[' + scopeNum + ']');
+                }
+
+                //  Have the child rebuild it's bindings.
+                childTPElem.rebuild();
+
+                boundCount++;
+            }
+        }
+
         return this;
     }
 
+    //  Empty out whatever content we used to have.
+    this.empty();
+
     //  Iterate over the resource and build out a chunk of markup for each item
     //  in the resource.
-    for (i = 0; i < resourceLength; i++) {
+    for (i = startIndex; i < endIndex; i++) {
 
         //  Make sure to clone the content.
         newNode = TP.nodeCloneNode(repeatContent);
@@ -1967,6 +2069,46 @@ function(aSignalOrHash) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setAttrBindRepeatindex',
+function(index) {
+
+    /**
+     * @name setAttrBindRepeatindex
+     * @synopsis Sets the repeat index that the receiver will use to start
+     *     repeating from.
+     * @param {Number} index The index to start repeating from.
+     */
+
+    this.$setAttribute('bind:repeatindex', index);
+
+    this.refreshRepeat();
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setAttrBindRepeatsize',
+function(size) {
+
+    /**
+     * @name setAttrBindRepeatsize
+     * @synopsis Sets the repeat size that the receiver will use to display
+     *     'pages' of repeating data.
+     * @param {Number} size The size of the data 'page'.
+     */
+
+    this.$setAttribute('bind:repeatsize', size);
+
+    this.refreshRepeat();
+
+    //  setting an attribute returns void according to the spec
+    return;
 });
 
 //  ------------------------------------------------------------------------
