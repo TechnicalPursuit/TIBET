@@ -69,8 +69,8 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['methods'],
-        'string': ['target'],
+        'boolean': ['types', 'methods'],
+        'string': ['match'],
         'default': {}
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -79,7 +79,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet reflect [target] [--target <target>]';
+Cmd.prototype.USAGE = 'tibet reflect [target] [--match <pattern>] [--types] [--methods]';
 
 //  ---
 //  Instance Methods
