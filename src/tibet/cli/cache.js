@@ -28,7 +28,6 @@ dom = require('xmldom');
 parser = new dom.DOMParser();
 serializer = new dom.XMLSerializer();
 
-
 //  ---
 //  Type Construction
 //  ---
@@ -126,7 +125,7 @@ Cmd.prototype.OFFLIMITS_REGEX = /# (!!!|---)/;
  * @type {RegExp}
  */
 Cmd.prototype.REQUIRED_PARAMS_REGEX =
-    /--(no-)*(develop|disable|enable|missing|rebuild|touch)($| )/;
+    /--(no-)*(develop|disable|enable|status||missing|rebuild|touch)($| )/;
 
 /**
  * The pattern used for locating the line updated via --touch.
@@ -140,7 +139,8 @@ Cmd.prototype.TOUCH_ID_REGEX = /# !!! ID: (\d)+/;
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['develop', 'disable', 'enable', 'missing', 'rebuild', 'touch'],
+        'boolean': ['develop', 'disable', 'enable', 'missing', 'rebuild',
+            'status', 'touch'],
         'string': ['file'],
         'default': {
             develop: false,
@@ -158,7 +158,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet cache [--file <cachefile>] [--enable] [--disable] [--develop] [--missing] [--rebuild] [--touch]';
+    'tibet cache [--file <cachefile>] [--enable] [--disable] [--status] [--missing] [--develop] [--rebuild] [--touch]';
 
 
 //  ---
@@ -181,13 +181,14 @@ Cmd.prototype.execute = function() {
     // Verify our flags make sense. We're either doing enable/disable which
     // focus on the index.html file or we're doing missing/rebuild which focus
     // on the cache file itself.
-    if ((this.options.enable || this.options.disable) &&
+    if ((this.options.enable || this.options.disable || this.options.status) &&
         (this.options.missing || this.options.rebuild)) {
         this.error('Incompatible command flags.');
         throw new Error();
     }
 
-    if (this.options.enable && this.options.disable) {
+    if ((this.options.enable && this.options.disable) ||
+        ((this.options.enable || this.options.disable) && this.options.status)) {
         this.error('Incompatible command flags.');
         throw new Error();
     }
@@ -219,7 +220,7 @@ Cmd.prototype.execute = function() {
     // If we're enabling or disabling we need to find and check the index.html
     // file. We want to confirm that the cache being referenced matches and that
     // the attribute isn't already configured as desired.
-    if (this.options.enable || this.options.disable) {
+    if (this.options.enable || this.options.disable || this.options.status) {
         return this.executeIndexUpdate(cachefile);
     } else {
         return this.executeCacheUpdate(cachefile);
@@ -258,6 +259,8 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
         dir,
 
+        obsolete,
+
         libBuilt,
         libFiles,
         libMissing,
@@ -269,6 +272,10 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         newLines;
 
     text = this.validateCacheFile(cachefile);
+
+    if (this.options.missing) {
+        this.log('missing check only. no changes will be saved...');
+    }
 
     // Sadly the spec crowd thought a pure text file was a good idea so we
     // have to parse/split/slice/dice/etc. to determine the current content
@@ -283,6 +290,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
     inlib = false;
 
     changed = 0;
+    obsolete = [];
 
     for (i = 0; i < len; i++) {
         line = lines[i].trim();
@@ -324,6 +332,9 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         }
 
         if (inlib) {
+            if (line.indexOf('#') === 0) {
+                copy = line;
+            }
 
             // Library content. We don't adjust these since the assumption is
             // the library isn't changing and won't need toggling on/off.
@@ -333,6 +344,13 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                 line = line.slice(1).trim();
             }
             libFiles.push(line);
+
+            // No copy means the file was uncommented.
+            if (CLI.notValid(copy)) {
+                if (!sh.test('-e', line)) {
+                    obsolete.push(line);
+                }
+            }
 
         } else if (inapp) {
 
@@ -347,11 +365,21 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                     while (line.indexOf('#') === 0) {
                         line = line.slice(1).trim();
                     }
+
                 } else {
                     // Update to be commented in place. File name is already
                     // uncommented for missing/rebuild checks.
                     lines[i] = '# ' + line;
                     changed++;
+
+                    // If just doing a missing check we won't be saving any
+                    // changes, meaning the line won't be updated to be
+                    // commented out. Make sure it exists.
+                    if (this.options.missing) {
+                        if (!sh.test('-e', line)) {
+                            obsolete.push(line);
+                        }
+                    }
                 }
 
             } else {
@@ -360,7 +388,9 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                 // commented (but not masked), and we need to capture the proper
                 // name in either case.
                 if (line.indexOf('#') === 0) {
+
                     copy = line;
+
                     // Find the real name for use in missing checks...
                     while (line.indexOf('#') === 0) {
                         line = line.slice(1).trim();
@@ -369,8 +399,19 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                     // If the original wasn't masked then we can uncomment in
                     // the actual file location.
                     if (copy.indexOf('##') !== 0) {
+
+                        // Verify all uncommented files can be found.
+                        if (!sh.test('-e', line)) {
+                            obsolete.push(line);
+                        }
+
                         lines[i] = line;
                         changed++;
+                    }
+                } else {
+                    // Verify all uncommented files can be found.
+                    if (!sh.test('-e', line)) {
+                        obsolete.push(line);
                     }
                 }
             }
@@ -389,7 +430,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
             return !sh.test('-d', file);
         });
     } else {
-        this.warn('~lib_build not found. Incomplete data for full check.');
+        this.warn('~lib_build not found. Unable to compare lib files fully.');
         libBuilt = [];
     }
 
@@ -409,7 +450,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
             return !sh.test('-d', file);
         });
     } else {
-        this.warn('~app_build not found. Incomplete data for full check.');
+        this.warn('~app_build not found. Unable to compare app files fully.');
         appBuilt = [];
     }
 
@@ -430,8 +471,8 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
     }
 
     if (this.options.missing) {
-        if (!libMissing.length && !appMissing.length) {
-            this.info('No build files missing from cache.');
+        if (!libMissing.length && !appMissing.length && !obsolete.length) {
+            this.success('No build files missing, no obsolete files.');
             return;
         }
 
@@ -442,6 +483,11 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         if (appMissing.length) {
             this.warn('Missing app files:\n' + appMissing.join('\n'));
         }
+
+        if (obsolete.length) {
+            this.warn('Obsolete/misspelled files:\n' + obsolete.join('\n'));
+        }
+
         return;
 
     } else if (this.options.rebuild) {
@@ -472,9 +518,9 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         // output, we toggled some comments for develop/non-develop mode.
         lines.join('\n').to(cachefile);
 
-        this.info('application cache update complete.');
+        this.success('application cache update complete.');
     } else {
-        this.info('application cache did not require update.');
+        this.success('application cache did not require update.');
     }
 
 };
@@ -524,8 +570,8 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     novalue = html.getAttribute('no-manifest');
 
     if (value && value === cachefile) {
-        if (this.options.enable) {
-            this.log('Application cache already enabled.');
+        if (this.options.enable || this.options.status) {
+            this.success('Application cache explicitly enabled.');
             return;
         }
 
@@ -533,8 +579,8 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
         html.setAttribute('no-manifest', cachefile);
 
     } else if (novalue && novalue === cachefile) {
-        if (this.options.disable) {
-            this.log('Application cache already disabled.');
+        if (this.options.disable || this.options.status) {
+            this.success('Application cache explicitly disabled.');
             return;
         }
 
@@ -542,8 +588,8 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
         html.setAttribute('manifest', cachefile);
     } else {
         // Neither attribute found, implicitly disabled.
-        if (this.options.disable) {
-            this.log('Application cache implicitly disabled.');
+        if (this.options.disable || this.options.status) {
+            this.success('Application cache implicitly disabled.');
             return;
         }
 
@@ -571,7 +617,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
         this.warn('Clear chrome://appcache-internals/ etc. to fully disable.');
     }
 
-    this.info('Application cache ' + operation + '.');
+    this.success('Application cache ' + operation + '.');
 };
 
 
