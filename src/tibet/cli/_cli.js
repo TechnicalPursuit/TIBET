@@ -55,9 +55,11 @@ prompt = require('readline-sync');
  *  info: 'white',
  *  warn: 'yellow',
  *  error: 'red',
- *  debug: 'green',
- *  verbose: 'grey'
- *  system: 'cyan'
+ *  debug: 'magenta',
+ *  verbose: 'grey',
+ *  system: 'cyan',
+ *
+ *  success: 'green'
  */
 
 
@@ -241,7 +243,7 @@ CLI.debug = function(msg, verbose) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.green(msg));
+    console.log(chalk.magenta(msg));
 };
 
 CLI.verbose = function(msg) {
@@ -260,6 +262,13 @@ CLI.system = function(msg) {
         return console.info(msg);
     }
     console.info(chalk.cyan(msg));
+};
+
+CLI.success = function(msg) {
+    if (this.isFalse(this.options.color)) {
+        return console.info(msg);
+    }
+    console.info(chalk.green(msg));
 };
 
 

@@ -285,6 +285,8 @@ Cmd.prototype.debug = CLI.debug.bind(CLI);
 Cmd.prototype.verbose = CLI.verbose.bind(CLI);
 Cmd.prototype.system = CLI.system.bind(CLI);
 
+Cmd.prototype.success = CLI.success.bind(CLI);
+
 Cmd.prototype.lpad = CLI.lpad.bind(CLI);
 Cmd.prototype.rpad = CLI.rpad.bind(CLI);
 
