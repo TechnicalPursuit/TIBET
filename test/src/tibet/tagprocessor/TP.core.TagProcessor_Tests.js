@@ -141,7 +141,7 @@ function() {
                                                 'div',
                                                 TP.w3.Xmlns.XHTML);
                         TP.elementSetAttribute(
-                                newElem, 'tibet:sourcetag',
+                                newElem, 'tibet:tag',
                                 'test:morecontentchange', 'true');
                         TP.elementSetAttribute(
                                 newElem, 'donttransform', 'true');

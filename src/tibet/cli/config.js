@@ -101,6 +101,8 @@ Cmd.prototype.execute = function() {
     var cfg,
         option,
         parts,
+        keys,
+        newcfg,
         str;
 
     if (this.options._.length > 1) {
@@ -118,6 +120,22 @@ Cmd.prototype.execute = function() {
         cfg = CLI.getLibRoot();
     } else if (option && option.charAt(0) === '~') {
         cfg = CLI.getcfg('path.' + option.slice(1));
+    } else if (option && option.indexOf('.') !== -1) {
+        // longer key...might be a partial path or a full path
+        cfg = CLI.getcfg(option);
+        if (CLI.notValid(cfg)) {
+            cfg = CLI.getcfg();
+            keys = Object.keys(cfg).filter(function(key) {
+                return key.indexOf(option.replace(/\./g, '_')) === 0;
+            });
+            newcfg = {};
+            keys.forEach(function(key) {
+                if (CLI.isValid(cfg[key])) {
+                    newcfg[key] = cfg[key];
+                }
+            });
+            cfg = newcfg;
+        }
     } else {
         cfg = CLI.getcfg(option);
     }

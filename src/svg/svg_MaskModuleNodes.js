@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:mask');
 
-TP.svg.mask.addTraitsFrom(TP.svg.Element);
+TP.svg.mask.addTraits(TP.svg.Element);
 
 TP.svg.mask.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask'));

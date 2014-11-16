@@ -17,13 +17,13 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:button');
 
-//TP.xctrls.button.addTraitsFrom(TP.xctrls.Element, TP.core.TemplatedNode);
-TP.xctrls.button.addTraitsFrom(TP.xctrls.Element);
+//TP.xctrls.button.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+TP.xctrls.button.addTraits(TP.xctrls.Element);
 //TP.xctrls.button.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.button.executeTraitResolution();
+TP.xctrls.button.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end

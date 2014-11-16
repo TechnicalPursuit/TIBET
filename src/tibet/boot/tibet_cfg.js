@@ -301,7 +301,7 @@ TP.sys.setcfg('boot.uichunked',
 TP.sys.setcfg('log.color.trace', 'grey');
 TP.sys.setcfg('log.color.info', 'white');
 TP.sys.setcfg('log.color.warn', 'yellow');
-TP.sys.setcfg('log.color.error', 'magenta');
+TP.sys.setcfg('log.color.error', 'red');
 TP.sys.setcfg('log.color.severe', 'red');
 TP.sys.setcfg('log.color.fatal', 'red');
 TP.sys.setcfg('log.color.system', 'cyan');
@@ -309,7 +309,7 @@ TP.sys.setcfg('log.color.system', 'cyan');
 TP.sys.setcfg('log.color.time', 'grey');
 TP.sys.setcfg('log.color.delta', 'grey');
 TP.sys.setcfg('log.color.slow', 'yellow');
-TP.sys.setcfg('log.color.debug', 'green');
+TP.sys.setcfg('log.color.debug', 'magenta');
 TP.sys.setcfg('log.color.verbose', 'grey');
 
 // Inadequate, but sufficient to help determine if we're in node, Phantom,

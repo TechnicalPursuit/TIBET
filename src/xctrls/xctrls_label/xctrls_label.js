@@ -17,11 +17,11 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:label');
 
-TP.xctrls.label.addTraitsFrom(TP.xctrls.Element);
+TP.xctrls.label.addTraits(TP.xctrls.Element);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.label.executeTraitResolution();
+TP.xctrls.label.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end

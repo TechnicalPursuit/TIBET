@@ -18,7 +18,7 @@
 
 TP.core.ActionElementNode.defineSubtype('tsh:testCmd');
 
-TP.tsh.testCmd.addTraitsFrom(TP.tsh.Element);
+TP.tsh.testCmd.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

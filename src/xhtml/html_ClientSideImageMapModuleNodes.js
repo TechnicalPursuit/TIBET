@@ -25,14 +25,14 @@ TP.html.area.Type.set('booleanAttrs', TP.ac('noHref'));
 
 TP.html.area.Type.set('uriAttrs', TP.ac('href'));
 
-TP.html.area.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.area.addTraits(TP.core.EmptyElementNode);
 TP.html.area.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.html.area.executeTraitResolution();
+TP.html.area.finalizeTraits();
 
 //  ========================================================================
 //  TP.html.map

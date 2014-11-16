@@ -213,11 +213,11 @@ application manifest for different user role/unit affiliations.
 TP.lang.Object.defineSubtype('core:Resource');
 
 //  add sync and async mode support along with necessary constants.
-TP.core.Resource.addTraitsFrom(TP.core.SyncAsync);
+TP.core.Resource.addTraits(TP.core.SyncAsync);
 
 //  Resolve the traits right away as subtypes of this type are used during the
 //  booting process.
-TP.core.Resource.executeTraitResolution();
+TP.core.Resource.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -1072,7 +1072,7 @@ TP.sig.Signal.defineSubtype('WorkflowSignal');
 
 //  add job status behavior to the receiver so we can track progress. this
 //  adds methods such as fail, complete, etc.
-TP.sig.WorkflowSignal.addTraitsFrom(TP.core.JobStatus);
+TP.sig.WorkflowSignal.addTraits(TP.core.JobStatus);
 TP.sig.WorkflowSignal.Type.resolveTrait('getSignalName', TP.sig.WorkflowSignal);
 TP.sig.WorkflowSignal.Inst.resolveTraits(
         TP.ac('resume', 'asSource', 'asDumpString', 'asHTMLString',
@@ -1083,7 +1083,7 @@ TP.sig.WorkflowSignal.Inst.resolveTraits(
 
 //  Resolve the traits right away as subtypes of this type are used during the
 //  booting process.
-TP.sig.WorkflowSignal.executeTraitResolution();
+TP.sig.WorkflowSignal.finalizeTraits();
 
 TP.sig.WorkflowSignal.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
 

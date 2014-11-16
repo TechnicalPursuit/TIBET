@@ -7543,9 +7543,9 @@ TP.boot.$setStage = function(aStage, aReason) {
     }
 
     TP.boot.$stdout('', TP.SYSTEM);
-    TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
-    TP.boot.$stdout(info.log, TP.SYSTEM);
-    TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
+    //TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
+    TP.boot.$stdout('--- ' + info.log, TP.SYSTEM);
+    //TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
     TP.boot.$stdout('', TP.SYSTEM);
 
     // Capture the time we reached this stage. this is key for reporting the
@@ -7588,8 +7588,8 @@ TP.boot.$setStage = function(aStage, aReason) {
                 TP.boot.$getStageTime('paused')) +
             'ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
 
-        TP.boot.$stdout('', TP.SYSTEM);
-        TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+        //TP.boot.$stdout('', TP.SYSTEM);
+        //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
 
     } else if (TP.boot.$$stage === 'stopped') {
 
@@ -10894,10 +10894,10 @@ TP.boot.launch = function(options) {
         TP.boot.$updateDependentVars();
     }
 
-    TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+    //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
     TP.boot.$stdout('TIBET Boot System (TBS) v' + TP.boot.$bootversion,
                     TP.SYSTEM);
-    TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+    //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
 
     try {
         //  set the initial stage. this will also capture a start time.

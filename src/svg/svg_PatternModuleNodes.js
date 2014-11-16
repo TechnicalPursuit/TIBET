@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:pattern');
 
-TP.svg.pattern.addTraitsFrom(TP.svg.Element);
+TP.svg.pattern.addTraits(TP.svg.Element);
 
 TP.svg.pattern.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask', 'xlink:href'));

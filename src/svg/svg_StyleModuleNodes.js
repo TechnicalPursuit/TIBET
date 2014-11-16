@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:style');
 
-TP.svg.style.addTraitsFrom(TP.svg.Element);
+TP.svg.style.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 //  end

@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:text');
 
-TP.svg.text.addTraitsFrom(TP.svg.Element);
+TP.svg.text.addTraits(TP.svg.Element);
 
 TP.svg.text.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask', 'fill', 'stroke'));
@@ -39,7 +39,7 @@ TP.svg.text.Type.set('uriAttrs',
 
 TP.core.UIElementNode.defineSubtype('svg:tspan');
 
-TP.svg.tspan.addTraitsFrom(TP.svg.Element);
+TP.svg.tspan.addTraits(TP.svg.Element);
 
 TP.svg.tspan.Type.set('uriAttrs', TP.ac('fill', 'stroke'));
 
@@ -56,7 +56,7 @@ TP.svg.tspan.Type.set('uriAttrs', TP.ac('fill', 'stroke'));
 
 TP.core.UIElementNode.defineSubtype('svg:tref');
 
-TP.svg.tref.addTraitsFrom(TP.svg.Element);
+TP.svg.tref.addTraits(TP.svg.Element);
 
 TP.svg.tref.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
@@ -73,7 +73,7 @@ TP.svg.tref.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 TP.core.UIElementNode.defineSubtype('svg:textpath');
 
-TP.svg.textpath.addTraitsFrom(TP.svg.Element);
+TP.svg.textpath.addTraits(TP.svg.Element);
 
 TP.svg.textpath.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
@@ -90,7 +90,7 @@ TP.svg.textpath.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 TP.core.UIElementNode.defineSubtype('svg:altGlyph');
 
-TP.svg.altGlyph.addTraitsFrom(TP.svg.Element);
+TP.svg.altGlyph.addTraits(TP.svg.Element);
 
 TP.svg.altGlyph.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
@@ -107,7 +107,7 @@ TP.svg.altGlyph.Type.set('uriAttrs', TP.ac('fill', 'stroke', 'xlink:href'));
 
 TP.core.UIElementNode.defineSubtype('svg:altGlyphDef');
 
-TP.svg.altGlyphDef.addTraitsFrom(TP.svg.Element);
+TP.svg.altGlyphDef.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.altGlyphItem
@@ -122,7 +122,7 @@ TP.svg.altGlyphDef.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:altGlyphItem');
 
-TP.svg.altGlyphItem.addTraitsFrom(TP.svg.Element);
+TP.svg.altGlyphItem.addTraits(TP.svg.Element);
 
 //  ========================================================================
 //  TP.svg.glyphRef
@@ -137,7 +137,7 @@ TP.svg.altGlyphItem.addTraitsFrom(TP.svg.Element);
 
 TP.core.UIElementNode.defineSubtype('svg:glyphRef');
 
-TP.svg.glyphRef.addTraitsFrom(TP.svg.Element);
+TP.svg.glyphRef.addTraits(TP.svg.Element);
 
 //  ------------------------------------------------------------------------
 //  end

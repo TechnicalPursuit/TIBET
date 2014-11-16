@@ -1488,7 +1488,7 @@ function(aRequest) {
                 //  question we don't want to work on it again. This can
                 //  occur when a template or similar compilation returns
                 //  compiled elements which refer to concrete types via
-                //  tibet:sourcetag.
+                //  tibet:tag.
                 if (TP.nodeHasReachedPhase(child, phase, phases)) {
                     TP.ifTrace() &&
                             TP.$VERBOSE &&
@@ -1533,7 +1533,7 @@ function(aRequest) {
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_nodes') ?
                             TP.trace(Date.now() + ' TP.core.TSH ' + phase +
-                                        ' nodetype: ' + TP.name(type) +
+                                        ' ctrl: ' + TP.name(type) +
                                         ' ' +
                                         TP.nodeAsString(child, false, true),
                                     TP.LOG) : 0;
@@ -1711,7 +1711,7 @@ function(aRequest) {
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_nodes') ?
                             TP.trace(Date.now() + ' TP.core.TSH ' + phase +
-                                            ' nodetype: ' + TP.name(type) +
+                                            ' ctrl: ' + TP.name(type) +
                                             ' ' +
                                             TP.nodeAsString(child,
                                                             false,
@@ -2188,12 +2188,30 @@ function(aRequest) {
     /**
      */
 
-    var arg,
+    var argv,
+        arg0,
+        types,
         obj,
         result;
 
-    arg = this.getArgument(aRequest, 'ARG0');
-    if (TP.notValid(arg)) {
+    if (!this.hasArguments(aRequest)) {
+        aRequest.stdout('usage: ' + 'reflect [reference] [--types]');
+        aRequest.complete();
+        return;
+    }
+
+    arg0 = this.getArgument(aRequest, 'ARG0');
+    if (TP.isValid(arg0)) {
+        obj = this.resolveObjectReference(arg0, aRequest);
+        if (TP.notValid(obj)) {
+            aRequest.stderr('Unable to resolve object reference: ' + arg0);
+            aRequest.fail();
+            return;
+        }
+    }
+
+    types = this.getArgument(aRequest, 'tsh:types', false, true);
+    if (TP.isTrue(types)) {
         // No arguments means reflect the type list.
         result = TP.sys.getTypes().getValues().collect(function(type) {
             return TP.name(type);
@@ -2205,18 +2223,10 @@ function(aRequest) {
         result.sort();
 
         result.forEach(function(item) {
-            console.log(item);
+            aRequest.stdout(item);
         });
 
         return aRequest.complete();
-    }
-
-
-
-    obj = this.resolveObjectReference(arg, aRequest);
-
-    if (TP.notValid(obj)) {
-        aRequest.fail();
     }
 
 
@@ -3167,7 +3177,9 @@ function(command, abstract, usage, description) {
         method.$$usage = usage;
         method.$$description = description;
     } else {
-        TP.warn('Defining help for non-existent shell command: ' + command);
+        // TODO: turn this on once we finish up all the commands.
+        //TP.warn('Defining help for non-existent shell command: ' + command);
+        void(0);
     }
 
     return method;

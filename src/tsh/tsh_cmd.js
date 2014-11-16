@@ -28,7 +28,7 @@
 
 TP.core.ActionElementNode.defineSubtype('tsh:cmd');
 
-TP.tsh.cmd.addTraitsFrom(TP.tsh.Element);
+TP.tsh.cmd.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

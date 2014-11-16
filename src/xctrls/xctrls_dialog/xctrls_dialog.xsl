@@ -19,7 +19,7 @@
 	<!-- Match the root 'tsh:template' element. -->
 	<xsl:template match="tsh:template">
 		<xctrls:dialog>
-			<xsl:attribute name="tibet:nodetype">xctrls:dialog</xsl:attribute>
+			<xsl:attribute name="tibet:ctrl">xctrls:dialog</xsl:attribute>
 			<div tibet:pelem="header" drag:mover="true" drag:item="..">
 				<xsl:apply-templates select="xctrls:title/node()"/>
 			</div>
@@ -29,10 +29,10 @@
 			<div tibet:pelem="footer" drag:resizer="true" drag:item=".."/>
 		</xctrls:dialog>
 	</xsl:template>
-	
+
 	<xsl:template match="tsh:template[@modal='true']">
 		<xctrls:dialog>
-			<xsl:attribute name="tibet:nodetype">xctrls:dialog</xsl:attribute>
+			<xsl:attribute name="tibet:ctrl">xctrls:dialog</xsl:attribute>
 			<xsl:attribute name="pclass:closed">true</xsl:attribute>
 			<!-- TODO: Need to grab the value of 'class' here -->
 			<xsl:attribute name="class">xctrls-dialog ALERT_TIER</xsl:attribute>
@@ -42,7 +42,7 @@
 			</div>
 		</xctrls:dialog>
 	</xsl:template>
-	
+
 	<xsl:template match="body">
 		<xctrls:curtain/>
 		<xsl:apply-templates select="@*|node()"/>

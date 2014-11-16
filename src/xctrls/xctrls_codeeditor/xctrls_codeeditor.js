@@ -34,7 +34,7 @@ TP.xctrls.codeeditor.Type.defineConstant('JS_MODE', 'javascript');
 TP.xctrls.codeeditor.set('frameFileURI',
     TP.uc('~lib_src/xctrls/xctrls_codeeditor/xctrls_codeeditor_stub.html'));
 
-TP.xctrls.codeeditor.addTraitsFrom(TP.html.textUtilities);
+TP.xctrls.codeeditor.addTraits(TP.html.textUtilities);
 
 TP.xctrls.codeeditor.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
@@ -49,7 +49,7 @@ TP.xctrls.codeeditor.Inst.resolveTraits(
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.codeeditor.executeTraitResolution();
+TP.xctrls.codeeditor.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  TSH Execution Support

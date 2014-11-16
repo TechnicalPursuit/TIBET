@@ -9798,10 +9798,10 @@ function(aNode) {
      * @synopsis Returns the subtype to use for the node provided.
      * @description This method determines the 'TP wrapper' type for the
      *     supplied node by using the following logic cascade. 1. Checks for the
-     *     'tibet:nodetype' attribute on the node and attempts to obtain a type
-     *     matching that name. 2. Checks for the 'tibet:sourcetag' attribute on
+     *     'tibet:ctrl' attribute on the node and attempts to obtain a type
+     *     matching that name. 2. Checks for the 'tibet:tag' attribute on
      *     the node and attempts to obtain a type matching that name. 3. If
-     *     there is a 'tibet:sourcetag' attribute and its exact type cannot be
+     *     there is a 'tibet:tag' attribute and its exact type cannot be
      *     found, it computes a name using that name and the suffix ':Element'
      *     and attempts to obtain a type matching that name. 4. Obtains the
      *     node's 'full name' (i.e. the name that the author used in the source
@@ -9841,11 +9841,11 @@ function(aNode) {
         return type;
     }
 
-    //  nodetype is how we override the standard controller for a node even
-    //  when the sourcetag points to a particular type. this allows us to
+    //  ctrl is how we override the standard controller for a node even
+    //  when the tag points to a particular type. this allows us to
     //  provide custom controllers on individual tags
     if (TP.notEmpty(name = TP.elementGetAttribute(aNode,
-                                                    'tibet:nodetype',
+                                                    'tibet:ctrl',
                                                     true))) {
         last = name;
         if (TP.isType(type = TP.sys.require(name))) {
@@ -9856,10 +9856,10 @@ function(aNode) {
         }
     }
 
-    //  sourcetag is how we can override the natural tag's lookup model
+    //  tag is how we can override the natural tag's lookup model
     if (TP.notEmpty(
             name = TP.elementGetAttribute(aNode,
-                                            'tibet:sourcetag',
+                                            'tibet:tag',
                                             true)) &&
         (name !== last)) {
         last = name;
@@ -9871,7 +9871,7 @@ function(aNode) {
             return type;
         }
 
-        //  namespace qualified sourcetags have two more tests to see if
+        //  namespace qualified tags have two more tests to see if
         //  a) to see if there is a type named '<prefix>:Element' or
         //  b) the namespace has a default type we should use
         if (TP.regex.NS_QUALIFIED.test(name)) {
@@ -9906,12 +9906,12 @@ function(aNode) {
             }
         }
 
-        //  TODO:   log a warning? no wrapper type but a sourcetag?
+        //  TODO:   log a warning? no wrapper type but a tag?
     }
 
     //  We next try to find a type based on the 'full name'. This will be
     //  the name that the author gave in the source markup.
-    //  Note how we pass 'true' to ignore any tibet:sourcetag value (which
+    //  Note how we pass 'true' to ignore any tibet:tag value (which
     //  shouldn't exist anyway)
     last = name;
     name = TP.elementGetFullName(aNode, true);
@@ -9926,7 +9926,7 @@ function(aNode) {
     //  be different from the name that the author gave in the source
     //  markup, since it uses the 'canonical prefix' for the node (if the
     //  node has a namespace).
-    //  Note how we pass 'true' to ignore any tibet:sourcetag value (which
+    //  Note how we pass 'true' to ignore any tibet:tag value (which
     //  shouldn't exist anyway)
     last = name;
     name = TP.elementGetCanonicalName(aNode, true);
@@ -9937,7 +9937,7 @@ function(aNode) {
         return type;
     }
 
-    //  couldn't find either a tibet:nodetype, a tibet:sourcetag or a type
+    //  couldn't find either a tibet:ctrl, a tibet:tag or a type
     //  that matches either the 'full name' given in the source or the
     //  'canonical name' that is computed using the node's namespace's
     //  'canonicalprefix', so we try is to see if the node has a native
@@ -13987,7 +13987,7 @@ function() {
      */
 
     var node,
-        sourcetag;
+        tag;
 
     node = this.getNativeNode();
 
@@ -13995,8 +13995,8 @@ function() {
     //  us then we're outermost and should not defer model updating
     while (TP.isElement(node = node.parentNode) &&
             TP.isCallable(node.getAttribute)) {
-        sourcetag = TP.elementGetAttribute(node, 'tibet:sourcetag', true);
-        if ((sourcetag === 'xctrls:action') || (sourcetag === 'ev:listener')) {
+        tag = TP.elementGetAttribute(node, 'tibet:tag', true);
+        if ((tag === 'xctrls:action') || (tag === 'ev:listener')) {
             return false;
         }
     }

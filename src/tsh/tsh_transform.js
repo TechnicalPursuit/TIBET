@@ -19,8 +19,8 @@
 
 TP.core.ActionElementNode.defineSubtype('tsh:transform');
 
-TP.tsh.transform.addTraitsFrom(TP.core.PipeSegmentElementNode);
-TP.tsh.transform.addTraitsFrom(TP.tsh.Element);
+TP.tsh.transform.addTraits(TP.core.PipeSegmentElementNode);
+TP.tsh.transform.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

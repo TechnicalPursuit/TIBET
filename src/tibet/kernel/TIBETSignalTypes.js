@@ -38,7 +38,7 @@
 
 TP.lang.Object.defineSubtype('core:Monitor');
 
-TP.core.Monitor.addTraitsFrom(TP.core.JobStatus);
+TP.core.Monitor.addTraits(TP.core.JobStatus);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

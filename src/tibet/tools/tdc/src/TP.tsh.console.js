@@ -466,7 +466,7 @@ function() {
                 styleVals.at('paddingTop') +
                 styleVals.at('paddingBottom');
 
-    outerWrapper.$perimeter = offset;
+    outerWrapper.$perimeter = offset - 1;
     outerWrapper.$minHeight -= offset;
 
     //  start off by making sure width/height are properly configured

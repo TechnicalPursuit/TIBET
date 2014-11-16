@@ -17,14 +17,14 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:listbox');
 
-TP.xctrls.listbox.addTraitsFrom(TP.xctrls.Element,
+TP.xctrls.listbox.addTraits(TP.xctrls.Element,
                                 TP.xctrls.MultiItemElement,
                                 TP.core.TemplatedNode);
 TP.xctrls.listbox.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.listbox.executeTraitResolution();
+TP.xctrls.listbox.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

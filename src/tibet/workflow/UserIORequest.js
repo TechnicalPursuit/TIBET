@@ -19,7 +19,7 @@
 
 TP.sig.IORequest.defineSubtype('UserIORequest');
 
-TP.sig.UserIORequest.addTraitsFrom(TP.sig.UserIOSignal);
+TP.sig.UserIORequest.addTraits(TP.sig.UserIOSignal);
 TP.sig.UserIORequest.Type.resolveTraits(
     TP.ac('shouldLog', 'getSignalName'),
     TP.sig.UserIORequest);
@@ -32,7 +32,7 @@ TP.sig.UserIORequest.Inst.resolveTraits(
 
 //  Resolve the traits right away as subtypes of this type are used during the
 //  booting process.
-TP.sig.UserIORequest.executeTraitResolution();
+TP.sig.UserIORequest.finalizeTraits();
 
 TP.sig.UserIORequest.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
 

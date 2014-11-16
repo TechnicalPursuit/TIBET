@@ -288,7 +288,7 @@ TP.core.Shell.Type.defineConstant('MIN_USERNAME_LEN', 2);
 TP.core.Shell.Type.defineConstant('MIN_PASSWORD_LEN', 2);
 
 TP.core.Shell.Type.defineConstant('INVALID_ARGUMENT_MATCHER',
-    TP.rc('(xmlns|xmlns:\\w+|class|tibet:sourcetag|sourcetag|tsh:argv|argv)'));
+    TP.rc('(xmlns|xmlns:\\w+|class|tibet:tag|tag|tsh:argv|argv)'));
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -2794,6 +2794,50 @@ function(aRequest, allForms) {
     aRequest.set('ARGUMENTS', dict);
 
     return dict;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Shell.Inst.defineMethod('hasTrueArgument',
+function(aRequest, anArgument) {
+
+    /**
+     * Returns true if the incoming request has a value for the argument which
+     * shows that argument as "true" in a TIBET sense (i.e. TIBET's boolean
+     * checks would say the value represents true if it's a string) or the
+     * value is consistent with markup-based existence attributes such as
+     * --checked="checked".
+     * @param {TP.sig.ShellRequest} aRequest The request to query.
+     * @param {String} The argument name to check.
+     * @return {Boolean} True if the argument exists.
+     */
+
+    var arg;
+
+    arg = this.getArguments(aRequest, anArgument);
+
+
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Shell.Inst.defineMethod('hasArguments',
+function(aRequest) {
+
+    /**
+     * Returns true if the incoming request has at least one usable argument.
+     * @param {TP.sig.ShellRequest} aRequest The request to query.
+     * @return {Boolean} True for non-zero argument lists.
+     */
+
+    var args = this.getArguments(aRequest);
+
+    if (args.getSize() > 1) {
+        return true;
+    }
+
+    return TP.notEmpty(args.at('ARGV'));
 });
 
 //  ------------------------------------------------------------------------

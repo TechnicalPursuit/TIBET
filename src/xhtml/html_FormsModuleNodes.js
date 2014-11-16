@@ -125,7 +125,7 @@ function(aSignalOrHash) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.defineSubtype('html:textUtilities');
-TP.html.textUtilities.addTraitsFrom(TP.html.Element);
+TP.html.textUtilities.addTraits(TP.html.Element);
 
 TP.html.textUtilities.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
@@ -698,14 +698,14 @@ TP.html.input.Type.set('booleanAttrs',
 
 TP.html.input.Type.set('uriAttrs', TP.ac('src', 'usemap'));
 
-TP.html.input.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.input.addTraits(TP.core.EmptyElementNode);
 TP.html.input.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.html.input.executeTraitResolution();
+TP.html.input.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -2562,7 +2562,7 @@ function() {
 
 TP.html.inputSelectable.defineSubtype('inputEmail');
 
-TP.html.inputEmail.addTraitsFrom(TP.html.textUtilities);
+TP.html.inputEmail.addTraits(TP.html.textUtilities);
 
 TP.html.inputEmail.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
@@ -2661,7 +2661,7 @@ TP.html.input.defineSubtype('inputHidden');
 
 TP.html.inputSelectable.defineSubtype('inputNumber');
 
-TP.html.inputNumber.addTraitsFrom(TP.html.textUtilities);
+TP.html.inputNumber.addTraits(TP.html.textUtilities);
 
 TP.html.inputNumber.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
@@ -2747,7 +2747,7 @@ TP.html.input.defineSubtype('inputImage');
 
 TP.html.inputSelectable.defineSubtype('inputPassword');
 
-TP.html.inputPassword.addTraitsFrom(TP.html.textUtilities);
+TP.html.inputPassword.addTraits(TP.html.textUtilities);
 
 TP.html.inputPassword.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
@@ -2820,7 +2820,7 @@ function(aValue) {
 
 TP.html.inputSelectable.defineSubtype('inputSearch');
 
-TP.html.inputSearch.addTraitsFrom(TP.html.textUtilities);
+TP.html.inputSearch.addTraits(TP.html.textUtilities);
 
 TP.html.inputSearch.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
@@ -2952,7 +2952,7 @@ TP.html.inputClickable.defineSubtype('inputSubmit');
 
 TP.html.inputSelectable.defineSubtype('inputTel');
 
-TP.html.inputTel.addTraitsFrom(TP.html.textUtilities);
+TP.html.inputTel.addTraits(TP.html.textUtilities);
 
 TP.html.inputTel.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
@@ -3025,7 +3025,7 @@ function(aValue) {
 
 TP.html.inputSelectable.defineSubtype('inputText');
 
-TP.html.inputText.addTraitsFrom(TP.html.textUtilities);
+TP.html.inputText.addTraits(TP.html.textUtilities);
 
 TP.html.inputText.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
@@ -3124,7 +3124,7 @@ TP.html.inputClickable.defineSubtype('inputWeek');
 
 TP.html.inputSelectable.defineSubtype('inputUrl');
 
-TP.html.inputUrl.addTraitsFrom(TP.html.textUtilities);
+TP.html.inputUrl.addTraits(TP.html.textUtilities);
 
 TP.html.inputUrl.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
@@ -3917,7 +3917,7 @@ function(aSignal, anItemset) {
      * @synopsis Updates the receiver's option list by processing the itemset
      *     provided (or one found in the receiver's content model). NOTE that
      *     this requires the select to have an option below it with a
-     *     tibet:sourcetag="xctrls:itemset" value.
+     *     tibet:tag="xctrls:itemset" value.
      * @description The itemset tag is an XForms tag intended for use with truly
      *     dynamic list content. It's not the best choice for a set of data that
      *     won't change actively while the page is visible so it's not really
@@ -3926,12 +3926,12 @@ function(aSignal, anItemset) {
      *     to operate properly it has to be encoded (after page/tag processing)
      *     to appear as follows:
      *
-     *     <option tibet:prototype="true" tibet:sourcetag="xctrls:itemset"
+     *     <option tibet:prototype="true" tibet:tag="xctrls:itemset"
      *     bind:info="aBindID" xctrls:label="./foo" xctrls:value="./bar">
      *     </option>
      *
      *     The tibet:prototype ensures the option isn't visible, the
-     *     tibet:sourcetag tells us it's an itemset, and the remaining items are
+     *     tibet:tag tells us it's an itemset, and the remaining items are
      *     the encoded label and value content from the original <xforms:label>
      *     and <xforms:value> elements. The bind:info points to the binding for
      *     the itemset, which defines the data specific to the option list.
@@ -4520,7 +4520,7 @@ TP.html.textarea.Type.set('bidiAttrs', TP.ac('value'));
 TP.html.textarea.Type.set('booleanAttrs',
         TP.ac('autofocus', 'disabled', 'readOnly', 'required', 'willValidate'));
 
-TP.html.textarea.addTraitsFrom(TP.html.textUtilities);
+TP.html.textarea.addTraits(TP.html.textUtilities);
 
 TP.html.textarea.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',

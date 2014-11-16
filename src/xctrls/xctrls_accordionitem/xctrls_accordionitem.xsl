@@ -17,11 +17,11 @@
 		 original element but add an attribute. -->
 	<xsl:template match="tsh:template">
 		<xctrls:accordionitem class="{concat('item ', @class)}">
-			<xsl:attribute name="tibet:nodetype">xctrls:accordionitem</xsl:attribute>
+			<xsl:attribute name="tibet:ctrl">xctrls:accordionitem</xsl:attribute>
 			<xsl:apply-templates select="@*|node()"/>
 		</xctrls:accordionitem>
 	</xsl:template>
-	
+
 	<xsl:template match="xctrls:label">
 		<xctrls:label>
 			<div>
@@ -29,7 +29,7 @@
 			</div>
 		</xctrls:label>
 	</xsl:template>
-	
+
 	<xsl:template match="xctrls:body">
 		<xctrls:body>
 			<div>

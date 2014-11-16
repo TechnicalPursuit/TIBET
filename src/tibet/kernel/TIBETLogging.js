@@ -8,32 +8,6 @@
  */
 //  ============================================================================
 
-/* TODO
- *
- * TP.stderr - clean this up and make it solid
- *
- * TP.stdout - clean this up and make it solid
- *
- * Remove $ec and replace with varargs processing.
- *
- * Remove $annotate/Annotation and replace with varargs processing.
- *
- * Remove functionality from TP.boot.Log if it isn't called.
- *
- * Rebuild showBootLog functionality to use ConsoleAppender or TDCAppender.
- *
- * Log entry persistence. this may be worth doing at the root level and allowing
- * filtering by entry/marker content that includes the log name of the entry.
- *
- * Log buffering. We should be able to to output/flush in chunks to keep
- * overhead down during rendering etc depending on the appender in question.
- *
- * Log coalescing. Some appenders might be able to produce counts for duplicate
- * entries...so they'd basically keep their last entry and flush only when a new
- * entry comes in that's different, or when forced to flush.
-*/
-
-
 /*
  * Loosely based on log4j 2.0 but adjusted to fit TIBET's unique requirements.
  *
@@ -624,8 +598,8 @@ TP.log.Nestable.defineSubtype('log.Logger');
 
 //  ----------------------------------------------------------------------------
 
-TP.log.Logger.addTraitsFrom(TP.log.Leveled);
-TP.log.Logger.addTraitsFrom(TP.log.Filtered);
+TP.log.Logger.addTraits(TP.log.Leveled);
+TP.log.Logger.addTraits(TP.log.Filtered);
 
 // Logger's inherit from their ancestor chain so we need to preserve getters.
 TP.log.Logger.Inst.resolveTraits(
@@ -633,7 +607,7 @@ TP.log.Logger.Inst.resolveTraits(
     TP.log.Logger);
 
 //  Resolve traits now that definition is complete.
-TP.log.Logger.executeTraitResolution();
+TP.log.Logger.finalizeTraits();
 
 //  ----------------------------------------------------------------------------
 
@@ -1258,11 +1232,11 @@ TP.lang.Object.defineSubtype('log.Appender');
 //  ----------------------------------------------------------------------------
 
 // Appenders are leveled and filtered based on both level and filter content.
-TP.log.Appender.addTraitsFrom(TP.log.Leveled);
-TP.log.Appender.addTraitsFrom(TP.log.Filtered);
+TP.log.Appender.addTraits(TP.log.Leveled);
+TP.log.Appender.addTraits(TP.log.Filtered);
 
 //  Resolve traits now that definition is complete.
-TP.log.Appender.executeTraitResolution();
+TP.log.Appender.finalizeTraits();
 
 //  ----------------------------------------------------------------------------
 

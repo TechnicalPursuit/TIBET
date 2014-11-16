@@ -1703,6 +1703,7 @@ function(aSignalOrHash) {
     if (TP.isTrue(info.at('deep'))) {
         //  TODO: Send 'rebuild' to *shallow children* elements with 'bind:'
         //  attributes if the 'deep' flag is specified.
+        void(0);
     }
 
     return this;
@@ -1976,6 +1977,7 @@ function(aResource) {
         //  have 'ids', we need to adjust them.
         //  TODO: We might not want to do this - it's presumptuous.
         elemsWithIds = TP.nodeGetDescendantElementsByAttribute(newNode, 'id');
+        /* eslint-disable no-loop-func */
         elemsWithIds.perform(
                 function(anElem) {
                     TP.elementSetAttribute(
@@ -1983,6 +1985,7 @@ function(aResource) {
                                 'id',
                                 TP.elementGetAttribute(anElem, 'id') + index);
                 });
+        /* eslint-enable no-loop-func */
 
         //  Grab the child *Elements* in the new content (the cloned repeat
         //  content).
@@ -2066,6 +2069,7 @@ function(aSignalOrHash) {
 
     if (TP.isTrue(aSignalOrHash.at('deep'))) {
         //this.$refreshBoundRoots(aSignalOrHash);
+        void(0);
     }
 
     return this;

@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:image');
 
-TP.svg.image.addTraitsFrom(TP.svg.Element);
+TP.svg.image.addTraits(TP.svg.Element);
 
 TP.svg.image.Type.set('uriAttrs',
         TP.ac('clip-path', 'cursor', 'filter', 'mask', 'xlink:href'));

@@ -54,14 +54,14 @@ TP.html.Aligned.defineSubtype('caption');
 
 TP.html.tcolumn.defineSubtype('col');
 
-TP.html.col.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.col.addTraits(TP.core.EmptyElementNode);
 TP.html.col.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.html.col.executeTraitResolution();
+TP.html.col.finalizeTraits();
 
 //  ========================================================================
 //  TP.html.colgroup

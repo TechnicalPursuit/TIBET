@@ -17,13 +17,13 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:checkitem');
 
-TP.xctrls.checkitem.addTraitsFrom(TP.xctrls.Element,
+TP.xctrls.checkitem.addTraits(TP.xctrls.Element,
                                     TP.core.TemplatedNode);
 TP.xctrls.checkitem.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.xctrls.checkitem.executeTraitResolution();
+TP.xctrls.checkitem.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

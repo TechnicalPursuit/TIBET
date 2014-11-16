@@ -28,7 +28,7 @@ TP.core.UIElementNode.defineSubtype('html:CoreAttrs');
 
 //  A subtype of TP.core.UIElement that has 4 common attributes:
 //  id, class, style, title
-TP.html.CoreAttrs.addTraitsFrom(TP.html.Element);
+TP.html.CoreAttrs.addTraits(TP.html.Element);
 TP.html.CoreAttrs.isAbstract(true);
 
 TP.html.CoreAttrs.Type.resolveTraits(
@@ -41,7 +41,7 @@ TP.html.CoreAttrs.Inst.resolveTraits(
         TP.html.Element);
 
 TP.core.UIElementNode.defineSubtype('html:Attrs');
-TP.html.Attrs.addTraitsFrom(TP.html.Element);
+TP.html.Attrs.addTraits(TP.html.Element);
 TP.html.Attrs.isAbstract(true);
 
 TP.html.Attrs.Type.resolveTraits(

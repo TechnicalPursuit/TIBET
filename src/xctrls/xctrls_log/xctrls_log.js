@@ -1,30 +1,30 @@
-//  ========================================================================
-/**
- * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
- *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
- *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
- *     for your rights and responsibilities. Contact TPI to purchase optional
- *     privacy waivers if you must keep your TIBET-based source code private.
- */
-//  ------------------------------------------------------------------------
+    //  ========================================================================
+    /**
+     * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+     *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+     *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+     *     for your rights and responsibilities. Contact TPI to purchase optional
+     *     privacy waivers if you must keep your TIBET-based source code private.
+     */
+    //  ------------------------------------------------------------------------
 
-/**
- * @type {TP.xctrls.log}
- * @synopsis Manages log XControls.
- */
+    /**
+     * @type {TP.xctrls.log}
+     * @synopsis Manages log XControls.
+     */
 
-//  ------------------------------------------------------------------------
+    //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:log');
+    TP.core.UIElementNode.defineSubtype('xctrls:log');
 
-TP.xctrls.log.addTraitsFrom(TP.xctrls.Element,
-                            TP.xctrls.MultiItemElement,
-                            TP.core.TemplatedNode);
-TP.xctrls.log.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+    TP.xctrls.log.addTraits(TP.xctrls.Element,
+                                TP.xctrls.MultiItemElement,
+                                TP.core.TemplatedNode);
+    TP.xctrls.log.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.xctrls.log.executeTraitResolution();
+    //  Resolve the traits right away as type methods of this type are called during
+    //  content processing when we only have type methods involved.
+    TP.xctrls.log.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

@@ -135,7 +135,7 @@ TP.html.CoreAttrs.defineSubtype('iframe');
 TP.html.iframe.Type.set('booleanAttrs', TP.ac('seamless', 'allowFullscreen'));
 
 //  IFRAME elements are also UI canvases just like windows
-TP.html.iframe.addTraitsFrom(TP.core.UICanvas);
+TP.html.iframe.addTraits(TP.core.UICanvas);
 
 TP.html.iframe.Type.resolveTraits(
     TP.ac('cmdGetContent', 'cmdSetContent', 'constructContentObject',

@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:script');
 
-TP.svg.script.addTraitsFrom(TP.svg.Element);
+TP.svg.script.addTraits(TP.svg.Element);
 
 TP.svg.script.Type.set('uriAttrs', TP.ac('xlink:href'));
 

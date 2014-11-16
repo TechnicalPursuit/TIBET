@@ -21,7 +21,7 @@
 
 TP.core.UIElementNode.defineSubtype('svg:a');
 
-TP.svg.a.addTraitsFrom(TP.svg.Element);
+TP.svg.a.addTraits(TP.svg.Element);
 
 
 TP.svg.a.Type.set('uriAttrs',

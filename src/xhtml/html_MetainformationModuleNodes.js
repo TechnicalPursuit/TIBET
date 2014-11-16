@@ -21,14 +21,14 @@
 
 TP.html.Attrs.defineSubtype('meta');
 
-TP.html.meta.addTraitsFrom(TP.core.EmptyElementNode);
+TP.html.meta.addTraits(TP.core.EmptyElementNode);
 TP.html.meta.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
-TP.html.meta.executeTraitResolution();
+TP.html.meta.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end
