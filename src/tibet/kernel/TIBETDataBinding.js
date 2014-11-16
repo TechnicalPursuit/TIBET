@@ -712,49 +712,39 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  Define a handler function
         handler = function(aSignal) {
 
-            var newVal,
-                aspect,
+            var aspect,
                 facet,
 
                 mapKey,
 
-                targetAttr;
+                targetAttr,
+
+                newVal;
 
             TP.stop('break.bind_change');
 
             try {
-                newVal = aSignal.getValue();
                 aspect = aSignal.at('aspect');
                 facet = aSignal.at('facet');
 
+                //  Compute a map key in the same way we did above when we made
+                //  the registration and see if the map has it.
                 mapKey = TP.gid(aSignal.getOrigin()) +
                                 TP.JOIN +
                                 TP.str(aspect) +
                                 TP.JOIN +
-                                facetName;
+                                facet;
 
                 //  If we found a target attribute registration under the key,
                 //  then perform the set()
-                if (TP.notEmpty(targetAttr = handler.$aspectMap.at(mapKey))) {
+                if (TP.notEmpty(targetAttr =
+                                handler.$observationsMap.at(mapKey))) {
 
-                    //  If this is a URI, and it's not a primary URI (i.e. it
-                    //  has a fragment pointing to a subresource), then we want
-                    //  to get the primary URI and perform a 'set' against it's
-                    //  resource using the path from the fragment.
-                    //  Otherwise, if it's a primary URI, then just set using
-                    //  the registered target attribute.
-                    if (TP.isURI(this)) {
-                        if (!this.isPrimaryURI()) {
-                            this.getPrimaryURI().getResource().set(
-                                            this.getFragmentText(), newVal);
-                        } else {
-                            this.getResource().set(targetAttr, newVal);
-                        }
-                    } else {
-                        //  Otherwise, it's not a URI - just do the set with the
-                        //  registered target attribute.
-                        this.set(targetAttr, newVal);
-                    }
+                    newVal = aSignal.getValue();
+
+                    this.refresh(
+                            TP.hc(TP.NEWVAL, newVal,
+                                    'aspect', targetAttr));
                 }
             } catch (e) {
                 this.raise('TP.sig.InvalidBinding');
@@ -764,14 +754,15 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  Allocate an aspect map that various aspects will register themselves
         //  with. This allows a set of source aspects to share a single change
         //  handler function.
-        handler.$aspectMap = TP.hc();
+        handler.$observationsMap = TP.hc();
         target.defineMethod(methodName, handler);
     }
 
     //  Add an entry to make a mapping between a source aspect and a target
     //  aspect.
-    handler.$aspectMap.atPut(aspectKey, targetAttributeName);
+    handler.$observationsMap.atPut(aspectKey, targetAttributeName);
 
+    //  Go ahead and make the observation.
     target.observe(resource, signalName);
 
     return target;
@@ -953,11 +944,11 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     methodName = 'handle' + TP.escapeTypeName(signalName);
 
     if (TP.isValid(handler = target.getMethod(methodName)) &&
-        TP.isValid(handler.$aspectMap)) {
+        TP.isValid(handler.$observationsMap)) {
 
         //  There was a valid handler and a valid key map - remove our source
         //  aspect from it.
-        handler.$aspectMap.removeKey(aspectKey);
+        handler.$observationsMap.removeKey(aspectKey);
     }
 
     //  Ignore the target.
@@ -1039,6 +1030,171 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 });
 
 //  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('refresh',
+function(aSignalOrHash) {
+
+    /**
+     * @name refresh
+     * @synopsis Updates the receiver to reflect the current value of any data
+     *     binding it may have.
+     * @param {TP.sig.Signal|TP.lang.Hash} aSignalOrHash An optional signal
+     *     which triggered this action or a hash. If this is a signal, this
+     *     method will try first to use 'getValue()' to get the value from the
+     *     binding. If there is no value there, or this is a hash, this method
+     *     will look under a key of TP.NEWVAL.
+     * @returns {Object} The receiver.
+     */
+
+    var aspect,
+
+        newVal;
+
+    //  We definitely need to have an aspect to proceed further.
+    if (TP.isEmpty(aspect = aSignalOrHash.at('aspect'))) {
+        return this;
+    }
+
+    //  If this is a TP.sig.Signal, the best thing to try to obtain a value is
+    //  the 'getValue()' call.
+    if (TP.isKindOf(aSignalOrHash, TP.sig.Signal)) {
+        newVal = aSignalOrHash.getValue();
+    }
+
+    //  If we couldn't get a value (even null), or it's a hash, then try
+    //  whatever is under TP.NEWVAL.
+    if (TP.notDefined(newVal)) {
+        newVal = aSignalOrHash.at(TP.NEWVAL);
+    }
+
+    //  If we still couldn't get a value (even null), then no sense in doing the
+    //  'set'.
+    if (TP.notDefined(newVal)) {
+        return this;
+    }
+
+    this.set(aspect, newVal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  TP.core.URI
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('refresh',
+function(aSignalOrHash) {
+
+    /**
+     * @name refresh
+     * @synopsis Updates the receiver to reflect the current value of any data
+     *     binding it may have.
+     * @param {TP.sig.Signal|TP.lang.Hash} aSignalOrHash An optional signal
+     *     which triggered this action or a hash. If this is a signal, this
+     *     method will try first to use 'getValue()' to get the value from the
+     *     binding. If there is no value there, or this is a hash, this method
+     *     will look under a key of TP.NEWVAL.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    var newVal,
+        aspect;
+
+    //  If this is a TP.sig.Signal, the best thing to try to obtain a value is
+    //  the 'getValue()' call.
+    if (TP.isKindOf(aSignalOrHash, TP.sig.Signal)) {
+        newVal = aSignalOrHash.getValue();
+    }
+
+    //  If we couldn't get a value (even null), or it's a hash, then try
+    //  whatever is under TP.NEWVAL.
+    if (TP.notDefined(newVal)) {
+        newVal = aSignalOrHash.at(TP.NEWVAL);
+    }
+
+    //  If we still couldn't get a value (even null), then no sense in doing the
+    //  'set'.
+    if (TP.notDefined(newVal)) {
+        return this;
+    }
+
+    //  If this isn't a primary URI, then we won't use any supplied aspect, but
+    //  we'll use the fragment text instead.
+    if (!this.isPrimaryURI()) {
+        this.getPrimaryURI().getResource().set(
+                    this.getFragmentText(), newVal);
+    } else {
+
+        //  We definitely need to have an aspect to proceed further.
+        if (TP.notEmpty(aspect = aSignalOrHash.at('aspect'))) {
+            this.getResource().set(aspect, newVal);
+        }
+    }
+
+    return this;
+});
+
+//  ========================================================================
+//  MARKUP BINDING
+//  ========================================================================
+
+//  ------------------------------------------------------------------------
+//  TP.core.DocumentNode
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineMethod('handleDOMRefresh',
+function(aSignal) {
+
+    /**
+     * @name handleDOMRefresh
+     * @synopsis Refreshes the receiver's bound data.
+     * @param {TP.sig.DOMRefresh} aSignal The signal instance which triggered
+     *     this handler.
+     */
+
+    this.refresh(aSignal);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineMethod('refresh',
+function(aSignalOrHash) {
+
+    /**
+     * @name refresh
+     * @synopsis Updates the receiver's content by refreshing all bound elements
+     *     in the document. For an HTML document this will refresh content under
+     *     the body, while in an XML document all elements including the
+     *     documentElement are refreshed.
+     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     *     which triggered this action or a hash. If this is a signal, this
+     *     method will try first to use 'getValue()' to get the value from the
+     *     binding. If there is no value there, or this is a hash, this method
+     *     will look under a key of TP.NEWVAL.
+     *     This signal or hash should include a key of 'deep' and a value
+     *     of true to cause a deep refresh that updates all nodes.
+     * @returns {TP.core.DocumentNode} The receiver.
+     */
+
+    var node,
+        body;
+
+    TP.debug('break.bind_refresh');
+
+    node = this.getNativeNode();
+
+    if (TP.isHTMLDocument(node) || TP.isXHTMLDocument(node)) {
+        if (TP.isElement(body = TP.documentGetBody(node))) {
+            return TP.tpnode(body).refresh(aSignalOrHash);
+        }
+    } else {
+        return TP.tpnode(node.documentElement).refresh(aSignalOrHash);
+    }
+});
+
+//  ------------------------------------------------------------------------
 //  TP.core.ElementNode
 //  ------------------------------------------------------------------------
 
@@ -1047,6 +1203,40 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 //  the data source so that when they are changed by the user, they update the
 //  data source.
 TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('handleDOMRebuild',
+function(aSignal) {
+
+    /**
+     * @name handleDOMRebuild
+     * @synopsis Rebuilds the receiver's binding expressions.
+     * @param {TP.sig.DOMRebuild} aSignal The signal instance which triggered
+     *     this handler.
+     */
+
+    this.rebuild(aSignal);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('handleDOMRefresh',
+function(aSignal) {
+
+    /**
+     * @name handleDOMRefresh
+     * @synopsis Refreshes the receiver's bound data.
+     * @param {TP.sig.DOMRefresh} aSignal The signal instance which triggered
+     *     this handler.
+     */
+
+    this.refresh(aSignal);
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1087,9 +1277,11 @@ function(attributeName) {
     } else {
         //  Otherwise, grab the value and split it along ';' (and stripping
         //  surrounding whitespace)
+        //  TODO: This needs to be much more sophisticated.
         bindEntries = attrNodes[0].value.split(/\s*;\s*/);
     }
 
+    //  Obtain the binding scope values by walking the DOM tree.
     scopeVals = this.getBindingScopeValues();
 
     //  Iterate over all of the binding entries and qualify them with the values
@@ -1108,6 +1300,7 @@ function(attributeName) {
             //  Each entry will have a 'name: value' pair. We split them all out
             //  by semicolon above - now we have to split each one into name and
             //  value.
+            //  TODO: This needs to be much more sophisticated.
             parts = bindEntry.match(/(\w+)\:\s*([^;]+)/);
             bindName = parts.at(1);
             bindVal = parts.at(2);
@@ -1119,8 +1312,11 @@ function(attributeName) {
                 allVals = scopeVals.concat(bindVal);
                 fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
 
+                //  If we weren't able to compute a real URI from the fully
+                //  expanded URI value, then raise an exception and return here.
                 if (!TP.isURI(fullyExpandedVal)) {
                     this.raise('TP.sig.InvalidURI');
+
                     return TP.BREAK;
                 }
 
@@ -1128,9 +1324,18 @@ function(attributeName) {
             } else {
                 //  Scope values is empty - this is (hopefully) a fully
                 //  qualified binding expression.
+
+                //  If we weren't able to compute a real URI from the fully
+                //  expanded URI value, then raise an exception and return here.
+                if (!TP.isURI(bindVal)) {
+                    this.raise('TP.sig.InvalidURI');
+
+                    return TP.BREAK;
+                }
+
                 infoHash.atPut(bindName, bindVal);
             }
-        });
+        }.bind(this));
 
     return infoHash;
 });
@@ -1160,9 +1365,10 @@ function() {
     scopeVals = TP.ac();
 
     //  Check to see if there is a local 'scope' attribute on the element
-    //  itself. It will be used to qualify any expressions on itself.
+    //  itself. This will be used to qualify any expressions on the element
+    //  itself.
     if (TP.notEmpty(localScopeNode = TP.elementGetAttributeNodesInNS(
-                                    elem, '*:scope', TP.w3.Xmlns.BIND))) {
+                            elem, '*:scope', TP.w3.Xmlns.BIND))) {
         scopeVals.push(localScopeNode[0].value);
     }
 
@@ -1178,11 +1384,21 @@ function() {
 
                 //  Get any 'scope' attributes belonging to the TP.w3.Xmlns.BIND
                 //  namespace.
-                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
-                                    aNode, '*:scope', TP.w3.Xmlns.BIND);
 
-                //  If we found one, add it's value onto the end of the scope
-                //  values array.
+                //  First, check to see if there's a 'bind:repeat' attribute. If
+                //  so, we want to use it's value first.
+                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
+                                aNode, 'repeat', TP.w3.Xmlns.BIND);
+
+                if (TP.notEmpty(scopeAttrNodes)) {
+                    scopeVals.push(scopeAttrNodes[0].value);
+                }
+
+                //  Then, check to see if there's a 'bind:scope' attribute. If
+                //  so, we want to use it's value next.
+                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
+                                aNode, 'scope', TP.w3.Xmlns.BIND);
+
                 if (TP.notEmpty(scopeAttrNodes)) {
                     scopeVals.push(scopeAttrNodes[0].value);
                 }
@@ -1213,7 +1429,29 @@ function() {
     //  receiver is bound. The 'scope' attribute doesn't indicate that it is
     //  bound.
     bindAttrNodes = TP.elementGetAttributeNodesInNS(
-                        this.getNativeNode(), /in|out|io/, TP.w3.Xmlns.BIND);
+                    this.getNativeNode(), /.*:(in|out|io)/, TP.w3.Xmlns.BIND);
+
+    return TP.notEmpty(bindAttrNodes);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('isRepeatElement',
+function() {
+
+    /**
+     * @name isRepeatElement
+     * @synopsis Whether or not the receiver is a repeat element for binding.
+     * @returns {Boolean} Whether or not the receiver is a repeat element
+     */
+
+    var bindAttrNodes;
+
+    //  We look for either 'in', 'out', or 'io' here to determine if the
+    //  receiver is bound. The 'scope' attribute doesn't indicate that it is
+    //  bound.
+    bindAttrNodes = TP.elementGetAttributeNodesInNS(
+                    this.getNativeNode(), '*:repeat', TP.w3.Xmlns.BIND);
 
     return TP.notEmpty(bindAttrNodes);
 });
@@ -1244,12 +1482,29 @@ function(aSignalOrHash) {
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    var shouldDefine,
+    var repeatAttrs,
+
+        goDeep,
+
+        shouldDefine,
         shouldDestroy,
 
         bindingInfos,
         bindingInfo;
 
+    //  First, check to see if this is a repeat element. If it is, we handle
+    //  rebuilding it quite differently.
+    repeatAttrs = TP.elementGetAttributeNodesInNS(
+                        this.getNativeNode(), '*:repeat', TP.w3.Xmlns.BIND);
+
+    if (TP.notEmpty(repeatAttrs)) {
+        //  It's a repeat - rebuild it's dependencies and return.
+        this.rebuildRepeat();
+
+        return this;
+    }
+
+    goDeep = aSignalOrHash.atIfInvalid('deep', true);
     shouldDefine = aSignalOrHash.atIfInvalid('shouldDefine', true);
     shouldDestroy = aSignalOrHash.atIfInvalid('shouldDestroy', true);
 
@@ -1364,6 +1619,13 @@ function(aSignalOrHash) {
                     //  or one pointing to a subresource will send a
                     //  'TP.sig.ValueChange').
                     this.defineBinding('@' + attrName, obsURI, 'value');
+
+                    //  Manually refresh the binding. This is necessary because
+                    //  the binding has just been established and the resource
+                    //  won't know that it has to signal change.
+                    this.refresh(TP.hc(TP.NEWVAL, obsURI.getResource(),
+                                        'aspect', 'value'));
+
                 }.bind(this));
 
             bindingInfos.atPut('in', bindingInfo);
@@ -1398,6 +1660,12 @@ function(aSignalOrHash) {
                         obsURI.defineBinding('value', this, 'value');
                     }
 
+                    //  Manually refresh the binding. This is necessary because
+                    //  the binding has just been established and the resource
+                    //  won't know that it has to signal change.
+                    this.refresh(TP.hc(TP.NEWVAL, obsURI.getResource(),
+                                        'aspect', 'value'));
+
                 }.bind(this));
 
             bindingInfos.atPut('io', bindingInfo);
@@ -1419,14 +1687,305 @@ function(aSignalOrHash) {
                         //  Establish the binding from the control to the URI
                     obsURI.defineBinding('value', this, 'value');
 
+                    //  Note that manual binding refresh aren't necessary here
+                    //  since the UI doesn't need to be updated because it's
+                    //  pushing to the model, not being refreshed from it.
                 }.bind(this));
 
             bindingInfos.atPut('out', bindingInfo);
         }
     }
 
-    //  TODO: Send 'rebuild' to *shallow children* elements with 'bind:'
-    //  attributes if the 'deep' flag is specified.
+    if (TP.isTrue(aSignalOrHash.at('deep'))) {
+        //  TODO: Send 'rebuild' to *shallow children* elements with 'bind:'
+        //  attributes if the 'deep' flag is specified.
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('rebuildRepeat',
+function() {
+
+    /**
+     * @name rebuildRepeat
+     * @synopsis Rebuilds any bindings for the receiver's descendant content
+     *     that is bound.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var childrenFragment,
+
+        repeatAttrs,
+
+        scopeVals,
+        repeatVal,
+        allVals,
+        fullyExpandedVal,
+
+        obsURI;
+
+    //  If there is no children content already captured, then capture it.
+    if (TP.notValid(childrenFragment = this.get('repeatContent'))) {
+
+        //  Grab the childNodes of the receiver as a DocumentFragment. NOTE:
+        //  This *removes* these child nodes from the receiver.
+        childrenFragment = TP.nodeListAsFragment(
+                                this.getNativeNode().childNodes);
+
+        //  Make sure to define the attribute or TIBET will warn ;-).
+        this.defineAttribute('repeatContent');
+
+        //  Store our repeat content away for use later.
+        this.set('repeatContent', childrenFragment);
+    }
+
+    repeatAttrs = TP.elementGetAttributeNodesInNS(
+                        this.getNativeNode(), '*:repeat', TP.w3.Xmlns.BIND);
+
+    //  Obtain the binding scope values by walking the DOM tree.
+    scopeVals = this.getBindingScopeValues();
+
+    //  Start with the value of our 'bind:repeat' attribute, concatenate that
+    //  onto the Array of scope values and expand them. This should produce a
+    //  valid URI that represents the collection of data that we, as a repeat,
+    //  represent.
+    repeatVal = repeatAttrs[0].value;
+    allVals = scopeVals.concat(repeatVal);
+    fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
+
+    //  Create a URI from that fully expanded value.
+    obsURI = TP.uc(fullyExpandedVal);
+
+    //  If we weren't able to compute a real URI from the fully expanded URI
+    //  value, then raise an exception and return here.
+    if (!TP.isURI(fullyExpandedVal)) {
+        this.raise('TP.sig.InvalidURI');
+
+        return this;
+    }
+
+    //  Now, define a binding that binds that URI's 'value' to our 'repeatValue'
+    //  aspect. When that collection changes, we will get notified by the
+    //  binding machinery calling 'set("repeatValue", ...)' on us, thereby
+    //  invoking our 'setRepeatValue()' method below.
+    this.defineBinding('repeatValue', obsURI, 'value');
+
+    //  If we're a nested repeat, then we need to manually refresh whenever we
+    //  rebuild.
+    if (TP.isElement(
+                TP.nodeDetectAncestor(
+                    this.getNativeNode(),
+                    function(anElem) {
+                        return TP.notEmpty(
+                            TP.elementGetAttributeNodesInNS(
+                                anElem, '*:repeat', TP.w3.Xmlns.BIND));
+                            }))) {
+
+        this.setRepeatValue(obsURI.getResource());
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('refreshRepeat',
+function(aResource) {
+
+    /**
+     * @name refreshRepeat
+     * @synopsis Refreshes the repeat and it's children content from the
+     *     supplied resource.
+     * @param {Object} aResource The object that will be used as the repeat
+     *     value. This object should be a collection.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+
+        repeatResource,
+        resourceLength,
+        isXMLResource,
+
+        repeatContent,
+        elemChildElements,
+        repeatChildElements,
+
+        i,
+        newNode,
+        index,
+        elemsWithIds,
+        newChildElements,
+
+        j,
+        bindAttrNodes;
+
+    if (TP.notValid(aResource)) {
+        return this.raise('TP.sig.InvalidParameter', 'Invalid resource.');
+    }
+
+    //  Make sure the resource is a collection - if it isn't, make it one.
+    if (!TP.isCollection(repeatResource = aResource)) {
+        repeatResource = TP.ac(repeatResource);
+    }
+    resourceLength = repeatResource.getSize();
+    isXMLResource = TP.isXMLNode(TP.unwrap(repeatResource.first()));
+
+    elem = this.getNativeNode();
+
+    //  This will be a DocumentFragment that we stuffed away when the receiver
+    //  was rebuilt.
+    repeatContent = this.get('repeatContent');
+
+    //  Grab the child *Elements* under the receiver - there might already be
+    //  some drawn by a previous refresh of this element.
+    elemChildElements = TP.nodeGetChildElements(elem);
+
+    //  Grab the child *Elements* in the repeat content.
+    repeatChildElements = TP.nodeGetChildElements(repeatContent);
+
+    //  If we're already built all of the repeating elements, we can exit here.
+    if (elemChildElements.getSize() ===
+        repeatChildElements.getSize() * resourceLength) {
+
+        //  TODO: What happens if the data has changed, but it's the same size.
+        return this;
+    }
+
+    //  Iterate over the resource and build out a chunk of markup for each item
+    //  in the resource.
+    for (i = 0; i < resourceLength; i++) {
+
+        //  Make sure to clone the content.
+        newNode = TP.nodeCloneNode(repeatContent);
+
+        //  If the resource is XML, then we need to adjust the index (XPaths are
+        //  1-based).
+        if (isXMLResource) {
+            index = i + 1;
+        } else {
+            index = i;
+        }
+
+        //  If there are elements inside of the new chunk we're building that
+        //  have 'ids', we need to adjust them.
+        //  TODO: We might not want to do this - it's presumptuous.
+        elemsWithIds = TP.nodeGetDescendantElementsByAttribute(newNode, 'id');
+        elemsWithIds.perform(
+                function(anElem) {
+                    TP.elementSetAttribute(
+                                anElem,
+                                'id',
+                                TP.elementGetAttribute(anElem, 'id') + index);
+                });
+
+        //  Grab the child *Elements* in the new content (the cloned repeat
+        //  content).
+        newChildElements = TP.nodeGetChildElements(newNode);
+
+        //  Iterate over them and, if they're bound, then add a 'bind:scope' to
+        //  them.
+        for (j = 0; j < newChildElements.getSize(); j++) {
+
+            bindAttrNodes = TP.elementGetAttributeNodesInNS(
+                                newChildElements.at(j),
+                                /.*:(in|out|io|repeat)/,
+                                TP.w3.Xmlns.BIND);
+
+            if (TP.notEmpty(bindAttrNodes)) {
+
+                //  Make sure the element doesn't already have 'bind:scope' on
+                //  it.
+                if (!TP.elementHasAttribute(
+                            newChildElements.at(j), 'bind:scope', true)) {
+                    TP.elementSetAttributeInNS(
+                                    newChildElements.at(j),
+                                    'bind:scope',
+                                    '[' + index + ']',
+                                    TP.w3.Xmlns.BIND);
+                }
+            }
+        }
+
+        //  Finally, append this new chunk of markup under the receiver element
+        //  and then loop to the top to do it again.
+        TP.nodeAppendChild(elem, newNode, false);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('refresh',
+function(aSignalOrHash) {
+
+    /**
+     * @name refresh
+     * @synopsis Updates the receiver to reflect the current value of any data
+     *     binding it may have. If the signal or hash payload specifies a
+     *     'deep' refresh then descendant elements that are bound are also
+     *     updated.
+     * @description For bound elements there are really two "values", the
+     *     element's internal value such as its text value (what we call its
+     *     "display" value) and the element's bound value which is the value
+     *     found by evaluating its binding aspect against its source. This
+     *     method is used to update the former from the latter, typically in
+     *     response to a Change notification from the underlying bound content.
+     * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     *     which triggered this action or a hash. If this is a signal, this
+     *     method will try first to use 'getValue()' to get the value from the
+     *     binding. If there is no value there, or this is a hash, this method
+     *     will look under a key of TP.NEWVAL.
+     *     This signal or hash should include a key of 'deep' and a value
+     *     of true to cause a deep refresh that updates all nodes.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var newVal,
+        aspect;
+
+    if (TP.isKindOf(aSignalOrHash, TP.sig.Signal)) {
+        newVal = aSignalOrHash.getValue();
+    } else {
+        newVal = aSignalOrHash.at(TP.NEWVAL);
+    }
+
+    if (TP.notValid(newVal)) {
+        return this;
+    }
+
+    if (TP.notEmpty(aspect = aSignalOrHash.at('aspect'))) {
+        this.set(aspect, newVal, false);
+    }
+
+    if (TP.isTrue(aSignalOrHash.at('deep'))) {
+        //this.$refreshBoundRoots(aSignalOrHash);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setRepeatValue',
+function(aResource) {
+
+    /**
+     * @name setRepeatValue
+     * @synopsis Sets the repeat value (the collection) for the receiver (if
+     *     it's an element that has a 'bind:repeat' on it).
+     * @param {Object} aResource The object that will be used as the repeat
+     *     value. This object should be a collection.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    if (this.isRepeatElement()) {
+        this.refreshRepeat(aResource);
+    }
 
     return this;
 });

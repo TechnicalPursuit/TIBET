@@ -423,13 +423,15 @@ function(aPath) {
 
     //  If there is no 'path punctuation' (only word characters), that means
     //  it's all alphanumeric characters, which means it's a 'simple path'.
-    if (TP.regex.ONLY_WORD.test(path)) {
+    //  TODO: This is hacky - figure out how to combine them into one RegExp.
+    if (TP.regex.ONLY_WORD.test(path) || /^\[\d+\]$/.test(path)) {
         return TP.core.SimpleTIBETPath;
     }
 
     //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
     //  path to deal with it.
-    if (TP.regex.TIBET_PATH.test(path)) {
+    //  TODO: This is hacky - figure out how to combine them into one RegExp.
+    if (TP.regex.TIBET_PATH.test(path) || /\.\[|\]\./.test(path)) {
         return TP.core.ComplexTIBETPath;
     }
 
@@ -1555,6 +1557,12 @@ function(targetObj, varargs) {
     //  NB: We use the original source path to register with the address change
     //  notification mechanism
     this.getType().startObservedAddress(this.get('srcPath'));
+
+    //  If the path is something like '[0]', then slice off the brackets to just
+    //  produce '0'.
+    if (/^\[\d+\]$/.test(path)) {
+        path = path.slice(1, -1);
+    }
 
     retVal = targetObj.get(path);
 

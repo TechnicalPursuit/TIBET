@@ -206,6 +206,11 @@ function(aRequest) {
             /* jshint +W061 */
             win[funcID] = win.$$handler;
         } catch (e) {
+            //  First we log an error.
+            TP.ifError() ?
+                TP.error(TP.ec(e, 'TP.ev.script creation error.'),
+                    TP.LOG) : 0;
+
             return aRequest.fail(
                 TP.FAILURE,
                 TP.join('Error creating TP.ev.script function: ',

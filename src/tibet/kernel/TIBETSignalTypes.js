@@ -734,9 +734,10 @@ TP.sig.ResponderInteractionSignal.defineSubtype('UIAlert');
 TP.sig.ResponderInteractionSignal.defineSubtype('UIHelp');     //  XForms
 TP.sig.ResponderInteractionSignal.defineSubtype('UIHint');     //  XForms
 
-/*
 TP.sig.ResponderInteractionSignal.defineSubtype('DOMRebuild'); //  XForms
 TP.sig.ResponderInteractionSignal.defineSubtype('DOMRefresh'); //  XForms
+
+/*
 TP.sig.ResponderInteractionSignal.defineSubtype('DOMRevalidate');  //  XForms
 TP.sig.ResponderInteractionSignal.defineSubtype('DOMRecalculate');//   XForms
 

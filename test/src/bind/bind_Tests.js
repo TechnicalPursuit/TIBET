@@ -12,20 +12,8 @@
 //  bind:
 //  ========================================================================
 
-TP.bind.XMLNS.Type.describe('bind: one to one binds',
+TP.bind.XMLNS.Type.describe('bind: parsing binds',
 function() {
-
-    this.beforeEach(
-        function() {
-            this.getSuite().startTrackingSignals();
-        });
-
-    this.afterEach(
-        function() {
-            this.getSuite().stopTrackingSignals();
-        });
-
-    //  ---
 
     this.it('binding attribute parsing tests', function(test, options) {
         var testMarkup,
@@ -104,6 +92,22 @@ function() {
         test.assert.hasKey(info, 'bar');
         test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(foo.bar)');
     });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: simple binds',
+function() {
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
 
     //  ---
 
@@ -124,7 +128,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind1_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind1_person#xpath1(/person/firstname)'),
@@ -173,7 +177,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -199,7 +203,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind2_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind2_person#xpath1(/person/firstname)'),
@@ -355,7 +359,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -381,7 +385,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind3_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind3_person#xpath1(/person/firstname)'),
@@ -537,7 +541,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -563,7 +567,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind4_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind4_person#xpath1(/person/firstname)'),
@@ -719,7 +723,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    }).timeout(5000);
 
     //  ---
 
@@ -745,7 +749,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind5_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind5_person#xpath1(/person/firstname)'),
@@ -901,7 +905,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    }).timeout(5000);
 
     //  ---
 
@@ -922,7 +926,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind6_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind6_person#tibet(person.firstname)'),
@@ -971,7 +975,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -997,7 +1001,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind7_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind7_person#tibet(person.firstname)'),
@@ -1153,7 +1157,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1179,7 +1183,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind8_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind8_person#tibet(person.firstname)'),
@@ -1335,7 +1339,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1361,7 +1365,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind9_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind9_person#tibet(person.firstname)'),
@@ -1517,7 +1521,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1543,7 +1547,7 @@ function() {
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind10_person'),
-                        'TP.sig.StructureChange');
+                        'TP.sig.ValueChange');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind10_person#tibet(person.firstname)'),
@@ -1699,8 +1703,11 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-}).timeout(20000);
+
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs').timeout(30000);
+
 
 //  ========================================================================
 //  Run those babies!

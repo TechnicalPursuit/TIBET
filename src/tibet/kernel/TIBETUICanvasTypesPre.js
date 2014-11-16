@@ -2359,21 +2359,26 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Window.Inst.defineMethod('refresh',
-function(aSignal) {
+function(aSignalOrHash) {
 
     /**
      * @name refresh
      * @synopsis Updates the receiver's content by refreshing all bound elements
      *     in the window's document.
-     * @param {DOMRefresh} aSignal An optional signal which triggered this
-     *     action.
+    * @param {TP.sig.DOMRefresh|TP.lang.Hash} aSignalOrHash An optional signal
+     *     which triggered this action or a hash. If this is a signal, this
+     *     method will try first to use 'getValue()' to get the value from the
+     *     binding. If there is no value there, or this is a hash, this method
+     *     will look under a key of TP.NEWVAL.
+     *     This signal or hash should include a key of 'deep' and a value
+     *     of true to cause a deep refresh that updates all nodes.
      * @returns {TP.core.Window} The receiver.
      * @todo
      */
 
     TP.stop('break.bind_refresh');
 
-    this.getContentDocument().refresh(aSignal);
+    this.getContentDocument().refresh(aSignalOrHash);
 
     return;
 });
