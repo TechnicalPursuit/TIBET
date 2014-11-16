@@ -409,6 +409,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                         changed++;
                     }
                 } else {
+
                     // Verify all uncommented files can be found.
                     if (!sh.test('-e', line)) {
                         obsolete.push(line);
@@ -508,9 +509,21 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                 libMissing).concat(lines.slice(libEnd));
         }
 
+        if (obsolete.length) {
+            this.warn('Obsolete/misspelled files:\n' + obsolete.join('\n'));
+        }
+
+        this.info('saving ' +
+            ((changed - 1) + appMissing.length + libMissing.length) +
+            ' appcache changes...');
+
         newLines.join('\n').to(cachefile);
 
     } else if (changed > 1) {
+
+        if (obsolete.length) {
+            this.warn('Obsolete/misspelled files:\n' + obsolete.join('\n'));
+        }
 
         this.info('saving ' + (changed - 1) + ' appcache changes...');
 
