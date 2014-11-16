@@ -12,20 +12,8 @@
 //  bind:
 //  ========================================================================
 
-TP.bind.XMLNS.Type.describe('bind: one to one binds',
+TP.bind.XMLNS.Type.describe('bind: parsing binds',
 function() {
-
-    this.beforeEach(
-        function() {
-            this.getSuite().startTrackingSignals();
-        });
-
-    this.afterEach(
-        function() {
-            this.getSuite().stopTrackingSignals();
-        });
-
-    //  ---
 
     this.it('binding attribute parsing tests', function(test, options) {
         var testMarkup,
@@ -104,6 +92,22 @@ function() {
         test.assert.hasKey(info, 'bar');
         test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(foo.bar)');
     });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: simple binds',
+function() {
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
 
     //  ---
 
@@ -173,7 +177,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -355,7 +359,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -537,7 +541,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -719,7 +723,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    }).timeout(5000);
 
     //  ---
 
@@ -901,7 +905,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    }).timeout(5000);
 
     //  ---
 
@@ -971,7 +975,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1153,7 +1157,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1335,7 +1339,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1517,7 +1521,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1699,8 +1703,11 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-}).timeout(20000);
+
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs').timeout(30000);
+
 
 //  ========================================================================
 //  Run those babies!
