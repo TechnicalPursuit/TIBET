@@ -1785,20 +1785,12 @@ function() {
 
     this.setAttribute('oldObsURI', obsURI.asString());
 
-    //  If we're a nested repeat, then we need to manually refresh whenever we
-    //  rebuild.
-    //  TODO: Yuck
-    if (TP.isElement(
-        TP.nodeDetectAncestor(
-            this.getNativeNode(),
-            function(anElem) {
-                return TP.notEmpty(
-                    TP.elementGetAttributeNodesInNS(
-                        anElem, '*:repeat', TP.w3.Xmlns.BIND));
-                    }))) {
+    //  If we have real resource data and either had an old URI or we're not a
+    //  primary URI, then we won't have gotten notified from the main URI since
+    //  it didn't change, but we did, so we need to manually call refresh.
+    if (TP.notEmpty(obsURI.getResource()) &&
+        (TP.notEmpty(oldObsURI) || !obsURI.isPrimaryURI())) {
 
-        this.refreshRepeat(obsURI.getResource());
-    } else if (TP.notEmpty(oldObsURI)) {
         this.refreshRepeat(obsURI.getResource());
     }
 
