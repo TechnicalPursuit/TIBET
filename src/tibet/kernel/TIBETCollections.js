@@ -5419,6 +5419,27 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.Hash.Inst.defineMethod('getContent',
+function() {
+
+    /**
+     * @name getContent
+     * @synopsis Overrides from supertype to check to see if our internal
+     *     content has a slot named 'content'. If so, that is returned.
+     *     Otherwise, a standard 'getValue()' is performed.
+     * @returns The value of our 'content' slot if we have one.
+     */
+
+    if (this.hasKey('content')) {
+        return this.at('content');
+    }
+
+    //  This is what our supertype does.
+    return this.getValue();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Hash.Inst.defineMethod('getParameters',
 function() {
 
