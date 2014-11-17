@@ -1785,20 +1785,12 @@ function() {
 
     this.setAttribute('oldObsURI', obsURI.asString());
 
-    //  If we're a nested repeat, then we need to manually refresh whenever we
-    //  rebuild.
-    //  TODO: Yuck
-    if (TP.isElement(
-        TP.nodeDetectAncestor(
-            this.getNativeNode(),
-            function(anElem) {
-                return TP.notEmpty(
-                    TP.elementGetAttributeNodesInNS(
-                        anElem, '*:repeat', TP.w3.Xmlns.BIND));
-                    }))) {
+    //  If we have real resource data and either had an old URI or we're not a
+    //  primary URI, then we won't have gotten notified from the main URI since
+    //  it didn't change, but we did, so we need to manually call refresh.
+    if (TP.notEmpty(obsURI.getResource()) &&
+        (TP.notEmpty(oldObsURI) || !obsURI.isPrimaryURI())) {
 
-        this.refreshRepeat(obsURI.getResource());
-    } else if (TP.notEmpty(oldObsURI)) {
         this.refreshRepeat(obsURI.getResource());
     }
 
@@ -1834,6 +1826,7 @@ function(aResource) {
         endIndex,
         totalDisplaySize,
         scopeNum,
+        scopedDescendants,
         groupSize,
         boundCount,
 
@@ -1916,12 +1909,17 @@ function(aResource) {
         //  loop below, when the mod succeeds, it will kick it by 1.
         scopeNum = startIndex - 1;
 
-        //  The grouping size is the number of *bound* elements we have divided
-        //  by the totalDisplaySize.
-        groupSize =
-            TP.nodeGetDescendantElementsByAttribute(
-                    this.getNativeNode(), 'bind:scope').getSize() /
-            totalDisplaySize;
+        //  This expression gets all of the child descendants that have a
+        //  'bind:scope' attribute on them, but *not* if they're under an
+        //  element that has a 'bind:repeat' - we're only interested in our
+        //  descendants, not any nested repeat's descendants.
+        scopedDescendants = TP.byCSS(
+            '> *[bind|scope], *:not(*[bind|repeat]) *[bind|scope]',
+            this.getNativeNode());
+
+        //  The grouping size is the number of *scoped* descendants we have
+        //  divided by the totalDisplaySize.
+        groupSize = scopedDescendants.getSize() / totalDisplaySize;
 
         boundCount = 0;
 

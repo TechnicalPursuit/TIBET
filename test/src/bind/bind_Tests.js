@@ -1708,6 +1708,291 @@ function() {
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs').timeout(30000);
 
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: numerically indexed binds',
+function() {
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
+
+    //  ---
+
+    this.it('simple numeric indexed binds - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind11.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('simple numeric indexed binds with scoping - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind12.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('simple numeric indexed binds - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind13.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('simple numeric indexed binds with scoping - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind14.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: bind repeats',
+function() {
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
+
+    //  ---
+
+    this.it('repeat binding with text fields - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind15.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('nested repeat binding with text fields - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind16.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('repeat binding with text fields - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind17.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('nested repeat binding with text fields - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind18.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('repeat binding with text fields and paging - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind19.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('nested repeat binding with text fields and paging - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind20.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('repeat binding with text fields and paging - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind21.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('nested repeat binding with text fields and paging - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind22.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                //  TODO: Write real tests
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
