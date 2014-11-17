@@ -2323,6 +2323,7 @@ TP.regex.SUBSTITUTION_STRING = /[#%@]\{|`.+`/;
 //  Templating delimiters
 TP.regex.STARTS_ACP = /^\{\{/;
 TP.regex.HAS_ACP = /\{\{.*\}\}/;
+TP.regex.EXTRACT_ACP = /\{\{(.+?)\}\}/;
 
 TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 
