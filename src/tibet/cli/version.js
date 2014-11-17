@@ -99,13 +99,17 @@ Cmd.prototype.execute = function() {
         port,
         path,
         str,
-        req;
+        req,
+        code;
+
+    code = 0;
 
     msg = 'Unable to determine TIBET version.';
     try {
         current = CLI.getcfg('npm.version') || msg;
     } catch (e) {
         this.error(msg + ' ' + e.message);
+        throw new Error();
     }
 
     // Attempt to load the latest.js file from the TPI web site and process that
@@ -133,19 +137,32 @@ Cmd.prototype.execute = function() {
         str = '';
 
         req = http.request(options, function(res) {
+
             res.setEncoding('utf8');
+
             res.on('data', function (chunk) {
                 str += chunk;
             });
+
             res.on('end', function() {
                 var json,
                     obj;
 
+                if (str.match(/Cannot GET/)) {
+                    console.error(
+                        chalk.yellow('Unable to determine latest version: ' +
+                            str));
+                    code = 1;
+                    return;
+                }
+
                 json = str.trim().slice(str.indexOf('release(') + 8, -2);
                 obj = JSON.parse(json);
                 if (!obj) {
-                    console.error('Unable to parse version data: ' + json);
-                    throw new Error();
+                    console.error(
+                        chalk.yellow('Unable to parse version data: ' + json));
+                    code = 1;
+                    return;
                 }
 
                 if (obj.semver === current) {
@@ -163,7 +180,7 @@ Cmd.prototype.execute = function() {
 
         req.on('error', function(e) {
             console.error('Unable to determine latest version: ' + e.message);
-            throw new Error();
+            code = 1;
         });
 
         req.end();
