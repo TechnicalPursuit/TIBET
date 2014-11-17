@@ -2406,8 +2406,10 @@ function(aRequest) {
             flag = TP.sys.shouldLogCodeChanges();
             TP.sys.shouldLogCodeChanges(false);
 
+            /*
             root.stdout('tsh:import loading source from ' + file,
                             aRequest);
+            */
 
             url = TP.uc(file);
             if (TP.notValid(url)) {
@@ -2546,8 +2548,10 @@ function(aRequest) {
                 flag = TP.sys.shouldLogCodeChanges();
                 TP.sys.shouldLogCodeChanges(false);
 
+                /*
                 root.stdout('tsh:source loading source from ' + file,
                     aRequest);
+                */
 
                 url = TP.uc(file);
                 if (TP.notValid(url)) {
