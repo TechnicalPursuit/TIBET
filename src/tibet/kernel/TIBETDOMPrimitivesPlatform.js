@@ -1665,7 +1665,8 @@ TP.hc(
         //  TP.getAttributeNode() returns a valid attribute node or not. If
         //  it doesn't, then the attribute is definitely not there.
 
-        if (TP.isAttributeNode(attrNode = anElement.getAttributeNode(theAttrName))) {
+        if (TP.isAttributeNode(
+                    attrNode = anElement.getAttributeNode(theAttrName))) {
             //  If its a user-defined / expando attribute and we got here,
             //  that means its got a real value which means its really
             //  there.

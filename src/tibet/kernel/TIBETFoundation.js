@@ -4953,8 +4953,7 @@ function() {
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
-    //  Make sure to toString() ourself so that we don't get an Array of
-    //  characters ('new' for Firefox 2.0).
+    //  Make sure to force the conversion to a primitive string.
     return this.toString().quoted();
 });
 
@@ -6344,7 +6343,8 @@ function() {
      * @returns {String} The value of the receiver.
      */
 
-    return this;
+    //  Make sure to force the conversion to a primitive string.
+    return this.toString();
 });
 
 //  ------------------------------------------------------------------------
