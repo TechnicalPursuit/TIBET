@@ -136,6 +136,7 @@
     <script src="tibet/xmlns/tibet_.js"/>
 
     <script src="tibet/xmlns/tibet_group.js"/>
+    <script src="tibet/xmlns/tibet_data.js"/>
 </config>
 
 <config id="tsh">
