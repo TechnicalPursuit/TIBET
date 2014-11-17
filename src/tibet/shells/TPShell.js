@@ -2630,6 +2630,7 @@ function(aRequest, allForms) {
 
                 argv,
                 parts,
+                part,
 
                 val,
                 expandedVal,
@@ -2646,11 +2647,22 @@ function(aRequest, allForms) {
             if (first === 'tsh:argv') {
                 argv = TP.ac();
 
-                //  Note here how we pass 'true' as the sixth argument, telling
-                //  the tokenize routine that we're parsing for shell arguments.
-                parts = TP.$tokenize(last,
+                // Watch for dot-separated identifiers like TP.sys.* etc. and
+                // skip the tokenizer in those cases.
+                parts = last.split('.');
+                if (parts.detect(function(part) {
+                    return !part.isJSIdentifier();
+                })) {
+                    //  Note here how we pass 'true' as the sixth argument, telling
+                    //  the tokenize routine that we're parsing for shell arguments.
+                    parts = TP.$tokenize(last,
                                         TP.tsh.script.$tshOperators,
                                         true, false, false, true);
+                } else {
+                    dict.atPut('ARG0', item);
+                    argv.push(item);
+                    return;
+                }
 
                 //  throw away spaces and tabs
                 parts = parts.select(
