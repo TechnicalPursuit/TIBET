@@ -19,6 +19,8 @@
 
 <config id="app_img">
     <script src="~app_src/tags/APP.{{appname}}.app.js" />
+    <script src="~app_src/tags/APP.{{appname}}.compiled.js" />
+    <script src="~app_src/tags/APP.{{appname}}.templated.js" />
 </config>
 
 <config id="test" if="boot.phasetwo">

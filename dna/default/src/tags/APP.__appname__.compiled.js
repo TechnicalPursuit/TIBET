@@ -3,14 +3,14 @@
  * @synopsis A common supertype for compiled UI tags in the {{appname}} app.
  */
 
-TP.core.UIElementNode.defineSubtype('APP.{{appname}}:compiled');
+TP.core.ElementNode.defineSubtype('APP.{{appname}}:compiled');
 
-APP.demo.tag.Type.defineMethod('tagCompile',
+APP.{{appname}}.compiled.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
      * @name tagCompile
-     * @synopsis Convert instances of demo:tag into their HTML representation.
+     * @synopsis Convert instances of the tag into their HTML representation.
      * @param {TP.sig.ShellRequest} aRequest The request containing parameters.
      */
 
@@ -22,7 +22,7 @@ function(aRequest) {
     }
 
     newElem = TP.xhtmlnode(
-        '<h1 class="hello" tibet:tag="demo:compiled">Hello World!</h1>');
+        '<h1 tibet:tag="{{appname}}:compiled">Compiled Tag!</h1>');
 
     TP.elementReplaceWith(elem, newElem);
 

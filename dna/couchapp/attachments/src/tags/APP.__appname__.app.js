@@ -7,6 +7,8 @@
 
 TP.core.TemplatedApplicationTag.defineSubtype('APP.{{appname}}:app');
 
+TP.w3.Xmlns.registerNSInfo('urn:app:{{appname}}', TP.hc('prefix', '{{appname}}'));
+
 /*
  * For information on how to expand the functionality in this type visit:
  *

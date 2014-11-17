@@ -3,10 +3,11 @@
  * @synopsis A common supertype for templated UI tags in the {{appname}} app.
  */
 
-TP.core.UIElementNode.defineSubtype('APP.{{appname}}:templated');
+TP.core.ElementNode.defineSubtype('APP.{{appname}}:templated');
 
-// Mix in templating behavior.
+// Mix in templating behavior, resolving compile in favor of templating.
 APP.{{appname}}.templated.addTraits(TP.core.TemplatedNode);
+APP.{{appname}}.templated.resolveTrait('tagCompile', TP.core.TemplatedNode);
 APP.{{appname}}.templated.finalizeTraits();
 
 /*
