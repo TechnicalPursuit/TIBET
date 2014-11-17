@@ -267,6 +267,21 @@ function(data) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('asJSONSource',
+function() {
+
+    /**
+     * @name asJSONSource
+     * @synopsis Returns a JSON string representation of the receiver.
+     * @returns {String} A JSON-formatted string.
+     */
+
+    //  Callers will be interested in our data, not the 'data' structure itself.
+    return TP.json(this.get('data'));
+});
+
 //  ========================================================================
 //  TP.core.AccessPath
 //  ========================================================================
