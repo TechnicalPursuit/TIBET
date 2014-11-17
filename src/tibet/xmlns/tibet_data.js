@@ -314,10 +314,13 @@ function() {
             //  Grab the result from the response.
             result = aResponse.getResult();
 
-            //  Obtain a result type for the result and construct an instance
-            //  from it.
-            resultType = this.getResultType(result, remoteURI);
-            result = resultType.construct(result);
+            //  If the result is a String, try to turn it into more
+            if (TP.isString(result)) {
+                //  Obtain a result type for the result and construct an
+                //  instance from it.
+                resultType = this.getResultType(result, remoteURI);
+                result = resultType.construct(result);
+            }
 
             //  Set the resource of the local URI to that. This will cause any
             //  observers of the URI to get notified of a change.
