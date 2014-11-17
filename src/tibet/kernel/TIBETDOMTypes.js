@@ -9153,6 +9153,12 @@ function(mimeType) {
                         return TP.BREAK;
                     }
                 }.bind(this));
+
+        //  If we couldn't compute a URI, default it to XHTML in the receiver's
+        //  load location (assuming js and xhtml are in the same directory);
+        if (!TP.isURI(uri)) {
+            uri = TP.uc(TP.objectGetLoadCollectionPath(this) + '/' + this.getName() + '.xhtml');
+        }
     } else {
         uri = this.getResourceURI(mime);
     }
