@@ -231,6 +231,7 @@ function() {
 
     var remoteHref,
         parts,
+        val,
         hrefSrc,
         remoteURI,
 
@@ -255,9 +256,13 @@ function() {
             //  sources.
             parts = TP.regex.EXTRACT_ACP.exec(remoteHref);
             if (TP.isURI(hrefSrc = TP.uc(parts.at(1)))) {
-                remoteHref = remoteHref.replace(
-                                parts.at(0),
-                                hrefSrc.getResource().getValue());
+                val = hrefSrc.getResource().getValue();
+                if (TP.isEmpty(val)) {
+                    //  Raise an exception
+                    return this.raise('TP.sig.InvalidQuery');
+                }
+
+                remoteHref = remoteHref.replace(parts.at(0), val);
             }
         }
 
