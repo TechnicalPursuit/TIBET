@@ -80,7 +80,6 @@ function(aRequest) {
         stdioProvider,
         stdioResults,
 
-        handler,
         success,
         failure,
         successHandler,
