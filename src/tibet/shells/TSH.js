@@ -2188,8 +2188,7 @@ function(aRequest) {
     /**
      */
 
-    var argv,
-        arg0,
+    var arg0,
         types,
         obj,
         result;

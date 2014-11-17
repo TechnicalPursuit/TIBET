@@ -2186,12 +2186,7 @@ function(anError, aRequest) {
      */
 
     var request,
-        err,
-
-        cssClass,
-
-        outputData,
-        outputStr;
+        err;
 
     TP.stop('break.tdc_stderr');
     TP.stop('break.tdc_stdio');
@@ -2205,16 +2200,7 @@ function(anError, aRequest) {
     request.atPutIfAbsent('messageLevel', TP.ERROR);
 
     err = TP.isError(anError) ? TP.str(anError) : anError;
-/*
-    cssClass = '';
-    outputData = TP.hc('output', err, 'outputclass', cssClass);
 
-    outputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
-                        '#xpath1(//*[@name="outputText"])').transform(
-                            outputData);
-
-    TP.boot.$displayMessage(outputStr, true);
-*/
     try {
 
         //  Write input content if we haven't already written it.
@@ -2494,6 +2480,7 @@ function(anObject, aRequest) {
                 anObject,
                 TP.sys.cfg('tdc.default_format', 'tsh:pp').asType(),
                 request);
+
     } else {
         //  Otherwise it's 'as is' - take it as it is.
 
@@ -2520,6 +2507,7 @@ function(anObject, aRequest) {
 
     outputData = TP.hc('output', data,
                         'outputclass', cssClass,
+                        'empty', '',
                         'stats',
                             TP.ifInvalid(this.getInputStats(request), ''),
                         'resulttype',
@@ -2527,6 +2515,10 @@ function(anObject, aRequest) {
 
     if (outputData.at('stats').match(/0 | 0 | 0/)) {
         outputData.atPut('stats', '');
+    }
+
+    if (TP.isEmpty(outputData.at('stats')) && TP.isEmpty(outputData.at('resulttype'))) {
+        outputData.atPut('empty', 'empty');
     }
 
     outputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +

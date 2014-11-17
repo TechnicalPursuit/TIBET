@@ -245,7 +245,6 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         line,
         copy,
 
-        match,
         id,
         changed,
 

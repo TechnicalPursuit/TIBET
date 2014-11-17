@@ -92,6 +92,29 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.pp.Type.defineMethod('fromFunction',
+function(anObject, optFormat) {
+
+    var str;
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    str = TP.str(anObject);
+
+    // NOTE the CDATA blocks here combined with <pre> to hold on to remaining
+    // whitespace while ensuring we ignore any embedded < or > symbols etc.
+    return '<span class="tsh_pp Function"><pre><![CDATA[' + str +
+        ']]></pre><\/span>';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.pp.Type.defineMethod('fromNamedNodeMap',
 function(anObject, optFormat) {
 
@@ -189,11 +212,11 @@ function(anObject, optFormat) {
 
     if (anObject === TP || anObject === TP.sys) {
         return '<span class="tsh_pp">' +
-                TP.htmlstr(TP.keys(anObject).sort()) +
+                TP.xhtmlstr(TP.keys(anObject).sort()) +
                 '<\/span>';
     }
 
-    return '<span class="tsh_pp">' + TP.htmlstr(anObject) + '<\/span>';
+    return '<span class="tsh_pp">' + TP.xhtmlstr(anObject) + '<\/span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -218,7 +241,7 @@ function(anObject, optFormat) {
 
     obj = anObject.asEscapedXML();
 
-    return '<span class="tsh_pp">' + TP.htmlstr(obj) + '<\/span>';
+    return '<span class="tsh_pp">' + TP.xhtmlstr(obj) + '<\/span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -240,10 +263,10 @@ function(anObject, optFormat) {
     return '<span class="tsh_pp">' +
                 '<span class="TP_boot_Annotation">' +
                     '<span data-name="object">' +
-                        TP.htmlstr(anObject.object) +
+                        TP.xhtmlstr(anObject.object) +
                     '<\/span>' +
                     '<span data-name="message">' +
-                        TP.htmlstr(anObject.message) +
+                        TP.xhtmlstr(anObject.message) +
                     '<\/span>' +
                 '<\/span>' +
             '<\/span>';
@@ -429,10 +452,10 @@ function(anObject, optFormat) {
 
         try {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(nativeWin[keys[i]]), '<\/span>');
+                        TP.xhtmlstr(nativeWin[keys[i]]), '<\/span>');
         } catch (e) {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(undefined), '<\/span>');
+                        TP.xhtmlstr(undefined), '<\/span>');
         }
     }
 
@@ -480,10 +503,10 @@ function(anObject, optFormat) {
 
         try {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(anObject[keys[i]]), '<\/span>');
+                        TP.xhtmlstr(anObject[keys[i]]), '<\/span>');
         } catch (e) {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(undefined), '<\/span>');
+                        TP.xhtmlstr(undefined), '<\/span>');
         }
     }
 
@@ -521,7 +544,7 @@ function(anObject, optFormat) {
         }
     }
 
-    return '<span class="tsh_pp">' + TP.htmlstr(anObject) + '<\/span>';
+    return '<span class="tsh_pp">' + TP.xhtmlstr(anObject) + '<\/span>';
 });
 
 //  ------------------------------------------------------------------------

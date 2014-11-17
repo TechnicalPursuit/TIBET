@@ -834,7 +834,11 @@ if (TP.$agent.indexOf('chrome/') !== -1) {
 
     //  TODO:   check for spoofing via object-testing for V8 etc?
 
-    TP.$browser = 'chrome';
+    if (TP.$agent.indexOf('opr/') !== -1) {
+        TP.$browser = 'opera';
+    } else {
+        TP.$browser = 'chrome';
+    }
     TP.$browserUI = 'webkit';
     TP.$browserSuffix = 'Webkit';
 
@@ -855,6 +859,8 @@ if (TP.$agent.indexOf('chrome/') !== -1) {
 
     //  See: http://code.google.com/p/chromium/issues/detail?id=20071
     TP.$language = TP.$language.replace('_', '-');
+} else if (TP.$agent.indexOf('opera/') !== -1) {
+        TP.$browser = 'opera';
 } else if (TP.$agent.indexOf('safari/') !== -1 ||
             TP.$agent.indexOf('mobile/') !== -1) {  //  only reports
                                                     //  'mobile' when
@@ -1327,8 +1333,11 @@ TP.sys.isSupported = function() {
      *     executing browser.
      */
 
-    //  check for a few more advanced options re: HTML5
-    if (window.WebSocket && window.Worker) {
+    //  We're actively porting to IE and Opera but they're not ready just yet
+    //  so turn them off explicitly for now. Otherwise just check for a few more
+    //  advanced options re: HTML5 to filter older versions of the rest.
+    if (window.WebSocket && window.Worker &&
+            !TP.sys.isUA('IE') && !TP.sys.isUA('OPERA')) {
         return true;
     }
 
@@ -10972,8 +10981,8 @@ TP.boot.launch = function(options) {
 
     //  warn about unsupported platforms but don't halt the boot process
     if (!TP.sys.isSupported()) {
-        TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent +
-        '. You may experience problems.');
+        TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent, TP.FATAL);
+        return;
     }
 
     // configure the UI root. Once this is confirmed (which may require async

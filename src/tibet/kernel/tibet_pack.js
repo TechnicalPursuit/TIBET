@@ -511,6 +511,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                         if (identBody.test(c) !== true) {
                             // Allow for identifiers to be dot-separated.
                             if (tsh && c === '.' && identBody.test(src.charAt(i + 1))) {
+                                break;
                                 void(0);
                             } else {
                                 break;

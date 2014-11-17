@@ -1,6 +1,6 @@
 {
     "name": "tibet",
-    "version": "v5.0.0-dev.7+g1bc74d52d2.1211.1415983971567",
+    "version": "v5.0.0-dev.7",
     "description": "The TIBET Environment.",
     "keywords": ["CLI", "IDE", "JavaScript", "Environment", "Platform", "Framework", "TIBET"],
     "homepage": "http://www.technicalpursuit.com",

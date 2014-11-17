@@ -342,8 +342,7 @@
      * @param {String} tshInput The TSH command line to execute.
      */
     PhantomTSH.exec = function(tshInput) {
-        var handler,
-            result;
+        var handler;
 
         handler = function(aSignal, stdioResults) {
             var str;
