@@ -859,7 +859,7 @@ function() {
                 '{"fname":"bill", "lname":"edney", "aliases":["billy", "willy", "eds"]},' +
                 '{"fname":"scott", "lname":"shattuck"},' +
                 '{"fname":"jim", "lname":"bowery"},' +
-                '{"fname":"sylvia", "lname":"hacker"}' +
+                '{"fname":"another", "lname":"hacker"}' +
             ']');
 
         path1 = TP.apc('0.fname');

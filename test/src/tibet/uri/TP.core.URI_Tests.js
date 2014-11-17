@@ -2228,7 +2228,7 @@ function() {
         //  are synchronous and configure their request to 'refresh'
         //  automatically.
 
-        url.setResource(TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker'));
+        url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
         saveResult = url.save().get('result');
 
         this.assert.isValid(
@@ -2247,8 +2247,8 @@ function() {
 
         this.assert.isEqualTo(
                 obj.at('firstName'),
-                'Sylvia',
-                TP.sc('Expected: ', '"Sylvia"',
+                'Another',
+                TP.sc('Expected: ', '"Another"',
                         ' and got instead: ', obj.at('firstName'), '.'));
 
         this.assert.isTrue(
@@ -2415,7 +2415,7 @@ function() {
             //  pouchdb:// URLs are asynchronous
             pouchRequest = TP.request(TP.hc('uri', url, 'verb', TP.HTTP_POST));
 
-            url.setResource(TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker'));
+            url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
 
             pouchRequest.defineMethod('handleRequestSucceeded',
                 function (aResponse) {

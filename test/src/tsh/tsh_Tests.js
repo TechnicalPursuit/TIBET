@@ -5370,7 +5370,7 @@ function() {
         //  auto-generated ID
         locStr = 'localdb://local_test/';
 
-        testBody = TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker');
+        testBody = TP.hc('firstName', 'Another', 'lastName', 'Hacker');
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'.
@@ -5405,8 +5405,8 @@ function() {
 
                         test.assert.isEqualTo(
                                 obj.at('firstName'),
-                                'Sylvia',
-                                TP.sc('Expected: ', '"Sylvia"',
+                                'Another',
+                                TP.sc('Expected: ', '"Another"',
                                         ' and got instead: ', obj.at('firstName'), '.'));
 
                         test.assert.isTrue(
@@ -5709,7 +5709,7 @@ function() {
         //  auto-generated ID
         locStr = 'pouchdb://pouch_test/';
 
-        testBody = TP.hc('firstName', 'Sylvia', 'lastName', 'Hacker');
+        testBody = TP.hc('firstName', 'Another', 'lastName', 'Hacker');
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'.
@@ -5740,8 +5740,8 @@ function() {
 
                         test.assert.isEqualTo(
                                 testResult.at('firstName'),
-                                'Sylvia',
-                                TP.sc('Expected: ', '"Sylvia"',
+                                'Another',
+                                TP.sc('Expected: ', '"Another"',
                                         ' and got instead: ', testResult.at('firstName'), '.'));
 
                         test.assert.isTrue(
