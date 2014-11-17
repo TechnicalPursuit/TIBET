@@ -1811,7 +1811,9 @@ function(aResource) {
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    var elem,
+    var repeatAttrVal,
+
+        elem,
 
         repeatResource,
         resourceLength,
@@ -1830,6 +1832,9 @@ function(aResource) {
         groupSize,
         boundCount,
 
+        scopeVals,
+        vals,
+
         i,
         childTPElem,
         newNode,
@@ -1840,8 +1845,10 @@ function(aResource) {
         j,
         bindAttrNodes;
 
+    repeatAttrVal = this.getAttribute('bind:repeat');
+
     if (TP.notValid(repeatResource = aResource)) {
-        repeatResource = TP.uc(this.getAttribute('bind:repeat')).getResource();
+        repeatResource = TP.uc(repeatAttrVal).getResource();
     }
 
     if (TP.notValid(repeatResource)) {
@@ -1900,6 +1907,8 @@ function(aResource) {
 
     totalDisplaySize = endIndex - startIndex;
 
+    scopeVals = this.getBindingScopeValues();
+
     //  If we've already built all of the repeating elements, we can just rebind
     //  the individual elements here.
     if (elemChildElements.getSize() ===
@@ -1950,6 +1959,17 @@ function(aResource) {
             }
         }
 
+        for (i = 0; i < resourceLength; i++) {
+            vals = scopeVals.concat(
+                        repeatAttrVal,
+                        '[' + (i + startIndex) + ']');
+
+            this.$refreshRepeatingTextNodes(
+                    elemChildElements.at(i),
+                    repeatResource.at(i),
+                    vals);
+        }
+
         return this;
     }
 
@@ -1971,51 +1991,155 @@ function(aResource) {
             index = i;
         }
 
-        //  If there are elements inside of the new chunk we're building that
-        //  have 'ids', we need to adjust them.
-        //  TODO: We might not want to do this - it's presumptuous.
-        elemsWithIds = TP.nodeGetDescendantElementsByAttribute(newNode, 'id');
-        /* eslint-disable no-loop-func */
-        elemsWithIds.perform(
-                function(anElem) {
-                    TP.elementSetAttribute(
-                                anElem,
-                                'id',
-                                TP.elementGetAttribute(anElem, 'id') + index);
-                });
-        /* eslint-enable no-loop-func */
+        if (TP.notEmpty(TP.byCSS('*[bind|*]', newNode))) {
 
-        //  Grab the child *Elements* in the new content (the cloned repeat
-        //  content).
-        newChildElements = TP.nodeGetChildElements(newNode);
+            //  If there are elements inside of the new chunk we're building that
+            //  have 'ids', we need to adjust them.
+            //  TODO: We might not want to do this - it's presumptuous.
+            elemsWithIds = TP.nodeGetDescendantElementsByAttribute(newNode, 'id');
+            /* eslint-disable no-loop-func */
+            elemsWithIds.perform(
+                    function(anElem) {
+                        TP.elementSetAttribute(
+                                    anElem,
+                                    'id',
+                                    TP.elementGetAttribute(anElem, 'id') + index);
+                    });
+            /* eslint-enable no-loop-func */
 
-        //  Iterate over them and, if they're bound, then add a 'bind:scope' to
-        //  them.
-        for (j = 0; j < newChildElements.getSize(); j++) {
+            //  Grab the child *Elements* in the new content (the cloned repeat
+            //  content).
+            newChildElements = TP.nodeGetChildElements(newNode);
 
-            bindAttrNodes = TP.elementGetAttributeNodesInNS(
-                                newChildElements.at(j),
-                                /.*:(in|out|io|repeat)/,
-                                TP.w3.Xmlns.BIND);
+            //  Iterate over them and, if they're bound, then add a 'bind:scope' to
+            //  them.
+            for (j = 0; j < newChildElements.getSize(); j++) {
 
-            if (TP.notEmpty(bindAttrNodes)) {
-
-                //  Make sure the element doesn't already have 'bind:scope' on
-                //  it.
-                if (!TP.elementHasAttribute(
-                            newChildElements.at(j), 'bind:scope', true)) {
-                    TP.elementSetAttributeInNS(
+                bindAttrNodes = TP.elementGetAttributeNodesInNS(
                                     newChildElements.at(j),
-                                    'bind:scope',
-                                    '[' + index + ']',
+                                    /.*:(in|out|io|repeat)/,
                                     TP.w3.Xmlns.BIND);
+
+                if (TP.notEmpty(bindAttrNodes)) {
+
+                    //  Make sure the element doesn't already have 'bind:scope' on
+                    //  it.
+                    if (!TP.elementHasAttribute(
+                                newChildElements.at(j), 'bind:scope', true)) {
+                        TP.elementSetAttributeInNS(
+                                        newChildElements.at(j),
+                                        'bind:scope',
+                                        '[' + index + ']',
+                                        TP.w3.Xmlns.BIND);
+                    }
                 }
             }
         }
 
+        vals = scopeVals.concat(
+                    this.getAttribute('bind:repeat'),
+                    '[' + index + ']');
+
+        this.$refreshRepeatingTextNodes(
+                newNode,
+                repeatResource.at(index),
+                vals);
+
         //  Finally, append this new chunk of markup under the receiver element
         //  and then loop to the top to do it again.
         TP.nodeAppendChild(elem, newNode, false);
+    }
+
+    //  TODO: This is a hack - needs cleanup
+
+    this.getNativeNode().ondblclick = function(evt) {
+        var tnContainer,
+            textNode,
+            template,
+            updatePath,
+            editor;
+
+        tnContainer = evt.target;
+        textNode = tnContainer.firstChild;
+        template = textNode.template;
+        updatePath = textNode.updatePath;
+
+        editor = TP.nodeReplaceTextWithEditor(textNode);
+        editor.style.width = '100%';
+        editor.style.height = '100%';
+        editor.onchange = function() {
+            var newText,
+                newTN;
+
+            newText = editor.value;
+            newTN = editor.ownerDocument.createTextNode(newText);
+            newTN.template = template;
+            newTN.updatePath = updatePath;
+
+            TP.nodeReplaceChild(editor.parentNode, newTN, editor, false);
+
+            TP.uc(updatePath).setResource(newText);
+        };
+    };
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$refreshRepeatingTextNodes',
+function(aNode, aResource, pathValues) {
+
+    /**
+     * @name $refreshRepeatingTextNodes
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var allTextNodes,
+
+        j,
+
+        textNode,
+        text,
+
+        template,
+
+        localName,
+        vals,
+        path,
+
+        value;
+
+    allTextNodes = TP.nodeGetDescendantsByType(aNode, Node.TEXT_NODE);
+
+    for (j = 0; j < allTextNodes.length; j++) {
+        textNode = allTextNodes[j];
+        if (!TP.isTextNode(textNode)) {
+            continue;
+        }
+
+        text = TP.nodeGetTextContent(textNode);
+
+        if (TP.regex.HAS_ACP.test(text)) {
+            template = text;
+            textNode.template = template;
+
+            localName = /\{\{([^%]+).*\}\}/.exec(template)[1].trim();
+            vals = pathValues.concat(localName);
+            path = TP.uriJoinFragments.apply(TP, vals);
+            textNode.updatePath = path;
+
+            value = template.transform(aResource);
+            TP.nodeSetTextContent(
+                    textNode,
+                    value);
+
+        } else if (TP.isString(template = textNode.template)) {
+            value = template.transform(aResource);
+            TP.nodeSetTextContent(
+                    textNode,
+                    value);
+        }
     }
 
     return this;
