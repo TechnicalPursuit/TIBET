@@ -751,10 +751,13 @@ TP.hc(
                                 request);
         }
 
-        //  On Webkit, if we launched over HTTP, we can *only* query against
-        //  the domain we launched from. If we launched from the file
-        //  system, we can query any URL.
-        if (TP.sys.isHTTPBased() && TP.uriNeedsPrivileges(targetUrl)) {
+        //  On Webkit, if we launched over HTTP and do *not* have CORS support,
+        //  we can *only* query against the domain we launched from. If we
+        //  launched from the file system, we can (try to) query any URL.
+        if (TP.sys.isHTTPBased() &&
+            TP.uriNeedsPrivileges(targetUrl) &&
+            !('withCredentials' in new XMLHttpRequest())) {
+
             request.atPut('message', 'Permission not available to ' +
                                         'make cross-domain HTTP call');
 
