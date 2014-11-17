@@ -4407,8 +4407,7 @@ function(aTail) {
         return this.slice(0, 0 - aTail.getSize());
     }
 
-    //  Make sure to 'toString()' ourself, so that we don't get an Array
-    //  of characters ('new' for Firefox 2.0).
+    //  Make sure to force the conversion to a primitive string.
     return this.toString();
 });
 
@@ -4597,8 +4596,7 @@ function() {
      * @returns {String}
      */
 
-    //  Make sure to 'toString()' ourself, so that we don't get an Array of
-    //  characters ('new' for Firefox 2.0).
+    //  Make sure to force the conversion to a primitive string.
     return this.toString();
 });
 
@@ -4614,8 +4612,7 @@ function() {
      * @returns {String}
      */
 
-    //  Make sure to 'toString()' ourself, so that we don't get an Array of
-    //  characters ('new' for Firefox 2.0).
+    //  Make sure to force the conversion to a primitive string.
     return this.toString();
 });
 
@@ -4686,8 +4683,7 @@ function(aHash) {
 
     var str;
 
-    //  Make sure to 'toString()' ourself, so that we don't get an Array of
-    //  characters ('new' for Firefox 2.0).
+    //  Make sure to force the conversion to a primitive string.
     str = this.toString();
 
     TP.keys(aHash).perform(
@@ -4732,8 +4728,7 @@ function(aSource, aChar) {
 
     ch = TP.ifInvalid(aChar, '@');
 
-    //  Make sure to 'toString()' ourself, so that we don't get an Array of
-    //  characters ('new' for Firefox 2.0).
+    //  Make sure to force the conversion to a primitive string.
     thePattern = this.toString();
 
     counter = 0;
@@ -5248,8 +5243,7 @@ function(aQuoteChar) {
     if ((this.first() === quote) &&
         (this.last() === quote) &&
         (this.length > 1)) {
-        //  Make sure to 'toString()' ourself, so that we don't get an Array
-        //  of characters ('new' for Firefox 2.0).
+        //  Make sure to force the conversion to a primitive string.
         return this.toString();
     }
 
@@ -5397,8 +5391,7 @@ function(aString) {
         this.$set('delimiter', str);
     }
 
-    //  Make sure to 'toString()' ourself, so that we don't get an Array
-    //  of characters ('new' for Firefox 2.0).
+    //  Make sure to force the conversion to a primitive string.
     return this.toString();
 });
 
@@ -6436,8 +6429,7 @@ function(aSize, aTail) {
     tail = TP.ifInvalid(aTail, '...');
 
     if (this.getSize() <= aSize) {
-        //  Make sure to 'toString()' ourself, so that we don't get an Array
-        //  of characters ('new' for Firefox 2.0).
+        //  Make sure to force the conversion to a primitive string.
         return this.toString();
     }
 
@@ -6517,8 +6509,7 @@ function(aQuoteChar) {
         return str.replace(/\\'/g, '\'');
     }
 
-    //  Make sure to 'toString()' ourself, so that we don't get an Array
-    //  of characters ('new' for Firefox 2.0).
+    //  Make sure to force the conversion to a primitive string.
     return this.toString();
 });
 

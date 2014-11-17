@@ -9128,8 +9128,7 @@ function(aSize, aChar, aSide) {
     theSize = Math.max(0, theSize);
 
     if (this.length >= theSize) {
-        //  Make sure to 'toString()' ourself, so that we don't get an Array
-        //  of characters ('new' for Firefox 2.0).
+        //  Make sure to force the conversion to a primitive string.
         return this.toString();
     }
 
@@ -9143,8 +9142,7 @@ function(aSize, aChar, aSide) {
         arr[i] = theChar;
     }
 
-    //  Make sure to 'toString()' ourself, so that we don't get an Array
-    //  of characters ('new' for Firefox 2.0).
+    //  Make sure to force the conversion to a primitive string.
     return (theSide === TP.LEFT) ?
                 arr.join('') + this.toString() :
                 this.toString() + arr.join('');
