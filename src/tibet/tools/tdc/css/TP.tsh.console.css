@@ -138,6 +138,10 @@
     white-space: pre-line;
 }
 
+.outputcell .empty {
+    display:none;
+}
+
 .outputcell.trace {
     color: #aaa;
 }
