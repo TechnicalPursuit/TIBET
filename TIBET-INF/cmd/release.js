@@ -564,7 +564,8 @@ Cmd.prototype.phaseTwo = function(source) {
     //  Update the package.json file version number.
     //  ---
 
-    CLI.config.npm.version = this.getLibVersion(source);
+    // Don't include metadata in the npm version string.
+    CLI.config.npm.version = this.getLibVersion(source).split('+')[0];
 
     file = CLI.expandPath(Cmd.NPM_FILE);
     if (this.options['dry-run']) {
