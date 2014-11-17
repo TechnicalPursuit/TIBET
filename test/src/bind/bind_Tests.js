@@ -1991,6 +1991,52 @@ function() {
                                             loadURI.getLocation()));
             });
     });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: static tables',
+function() {
+
+    //  ---
+
+    this.it('Simple table - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind23.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('Simple table - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind24.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
