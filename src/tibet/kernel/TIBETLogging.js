@@ -3493,13 +3493,13 @@ function(anEntry) {
     // Format the little critter...
     layout = this.getLayout();
     content = layout.layout(anEntry);
-
+/*
     try {
         top.console[writer](content);
     } catch (e) {
         top.console.log(content);
     }
-
+*/
     TP[stdio](content);
 
     return this;

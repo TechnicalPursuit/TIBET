@@ -95,28 +95,76 @@
 .inputcell .content
 {
     position: relative;
-    right: 50px;
-    left: 10px;
     display: inline-block;
 
+    color: #ccc;
+
     white-space: pre-line;
 }
 
-.inputcell .typeinfo
-{
-    color: yellow;
 
-    float: left;
+.outputcell {
+    padding: 2px 0;
+}
+
+.outputcell .result
+{
+    position: relative;
     display: inline-block;
-    margin: 8px 8px 8px 0;
+    width: 100%;
 
     white-space: pre-line;
 }
 
-.outputcell > span
+.outputcell .stats
 {
+    float: right;
+    margin: -24px 8px;
+    display: inline-block;
+
+    color: grey;
+
     white-space: pre-line;
 }
+
+.outputcell .typeinfo
+{
+    float: right;
+    display: inline-block;
+    margin: -24px 8px;
+
+    color: orange;
+
+    white-space: pre-line;
+}
+
+.outputcell.trace {
+    color: #aaa;
+}
+.outputcell.debug {
+    color: magenta;
+}
+.outputcell.info {
+    color: white;
+}
+.outputcell.warn {
+    color: orange;
+}
+.outputcell.error {
+    color: red;
+}
+.outputcell.severe {
+    color: red;
+}
+.outputcell .fatal {
+    color: red;
+}
+.outputcell .system {
+    color: cyan;
+}
+
+
+
 
 /*
     ------------------------------------------------------------------------
@@ -127,22 +175,22 @@
 .tsh_pp > span
 {
     display: table;
-
+    width: 100%;
     border-collapse: collapse;
-
+    /*
     border-width: 1px;
-    border-style: dotted;
+    border-color: grey;
+    border-style: dashed;
+    */
 }
 
 .tsh_pp > span span[data-name]
 {
     display: table-row;
     text-align: left;
+    width: 100%;
 
-    border-width: 1px;
-    border-style: solid;
-
-    padding: 3px;
+    line-height: 1.5em;
 
     white-space: pre-wrap;
 }
@@ -163,7 +211,9 @@
 .tsh_pp > span.Object span,
 .tsh_pp > span.TP_lang_Hash span
 {
-    border-color: white;
+    display: table-row;
+    line-height: 1.5em;
+    margin-left: 5px;
 }
 
 .tsh_pp > span.Object span[data-name]:before,

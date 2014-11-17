@@ -1915,6 +1915,10 @@ function(rawInput) {
             ));
 
         req.set('requestor', this);
+
+        // Trigger commmand echo prior to starting execution.
+        //this.stdout(req);
+
         TP.handle(model, req);
     } else {
         //  input request owns the response data...ask it to handle the
@@ -2181,7 +2185,7 @@ function(anError, aRequest) {
      * @todo
      */
 
-    var req,
+    var request,
         err,
 
         cssClass,
@@ -2194,14 +2198,14 @@ function(anError, aRequest) {
 
     if (TP.isValid(aRequest)) {
         aRequest.atPutIfAbsent('messageType', 'failure');
-        req = aRequest;
+        request = aRequest;
     } else {
-        req = TP.hc('messageType', 'failure');
+        request = TP.hc('messageType', 'failure');
     }
-    req.atPutIfAbsent('messageLevel', TP.ERROR);
+    request.atPutIfAbsent('messageLevel', TP.ERROR);
 
     err = TP.isError(anError) ? TP.str(anError) : anError;
-
+/*
     cssClass = '';
     outputData = TP.hc('output', err, 'outputclass', cssClass);
 
@@ -2210,8 +2214,36 @@ function(anError, aRequest) {
                             outputData);
 
     TP.boot.$displayMessage(outputStr, true);
+*/
+    try {
 
-    return;
+        //  Write input content if we haven't already written it.
+        if (TP.notTrue(request.at('inputWritten'))) {
+            this.writeInputContent(request);
+        }
+
+        //  Make sure to mark the request as having had it's 'input content'
+        //  written once - we only do this once.
+        request.atPut('inputWritten', true);
+
+        //  Write output content
+        this.writeOutputContent(err, request);
+
+    } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(
+                        e,
+                        TP.join('TP.core.ConsoleService.stderr(',
+                                TP.str(err), ') generated error.')
+                     ),
+                TP.LOG) : 0;
+    }
+
+    this.scrollToEnd();
+
+    this.get('$multiResults').empty();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2389,20 +2421,26 @@ function(aRequest) {
         str = TP.xmlLiteralsToEntities(str);
     }
 
+    if (TP.isEmpty(str)) {
+        return;
+    }
+
     if (TP.isValid(request.at('messageLevel'))) {
         cssClass = request.at('messageLevel').getName().toLowerCase();
-        cssClass = TP.ifInvalid(cssClass, 'trace');
     }
+    cssClass = TP.ifInvalid(cssClass, 'info');
 
     inputData = TP.hc('hid', hidstr,
                         'cmdtext', str,
-                        'inputclass', cssClass,
-                        'stats', this.getInputStats(request),
-                        'resulttype', this.getInputTypeInfo(request));
+                        'inputclass', cssClass);
 
     inputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
                         '#xpath1(//*[@name="inputText"])').transform(
                             inputData);
+
+    if (/\{\{/.test(inputStr)) {
+        return;
+    }
 
     TP.boot.$displayMessage(inputStr, true);
 
@@ -2477,12 +2515,19 @@ function(anObject, aRequest) {
 
     if (TP.isValid(request.at('messageLevel'))) {
         cssClass = request.at('messageLevel').getName().toLowerCase();
-        cssClass = TP.ifInvalid(cssClass, 'trace');
     }
+    cssClass = TP.ifInvalid(cssClass, 'info');
 
-    cssClass = TP.ifInvalid(cssClass, '');
+    outputData = TP.hc('output', data,
+                        'outputclass', cssClass,
+                        'stats',
+                            TP.ifInvalid(this.getInputStats(request), ''),
+                        'resulttype',
+                            TP.ifInvalid(this.getInputTypeInfo(request), ''));
 
-    outputData = TP.hc('output', data, 'outputclass', cssClass);
+    if (outputData.at('stats').match(/0 | 0 | 0/)) {
+        outputData.atPut('stats', '');
+    }
 
     outputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
                         '#xpath1(//*[@name="outputText"])').transform(

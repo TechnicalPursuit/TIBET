@@ -6162,6 +6162,8 @@ TP.boot.Log.prototype.asXMLString = function() {
 
 TP.boot.Log.prototype.flush = function() {
 
+    // TODO: send report the list of nodes so it can optimize by using a single
+    // fragment for the injection.
     while (this.index < this.messages.length) {
         this.report(this.messages[this.index]);
     }
@@ -6858,12 +6860,15 @@ TP.boot.$displayMessage = function(aString, flush) {
         TP.boot.$nodeAppendChild(buffer, msgNode);
     }
 
+    // TODO: verify if we need to keep the flush flag. Without it content shows
+    // up in the boot UI which may not flush properly.
+
     // If asked, flush the brand new message, even if it's now the only one in
     // the buffer. (This is true for errors/system output by default).
-    if (flush) {
+    //if (flush) {
         TP.boot.$flushUIBuffer(true);
         TP.boot.$scrollUIBuffer();
-    }
+    //}
 };
 
 //  ----------------------------------------------------------------------------

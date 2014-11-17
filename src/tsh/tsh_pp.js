@@ -371,15 +371,22 @@ function(anObject, optFormat) {
 TP.tsh.pp.Type.defineMethod('fromTP_sig_ShellRequest',
 function(anObject, optFormat) {
 
+    var data;
+
     if (TP.isValid(optFormat)) {
         optFormat.atPut('cmdBox', false);
         optFormat.atPut('cmdAsIs', true);
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="tsh_pp">' +
-            TP.str(anObject.getResult()) +
-            '<\/span>';
+    // Requests that are not yet processed should format their command.
+    if (anObject.isCompleted()) {
+        data = anObject.getResult();
+    } else {
+        data = anObject.at('cmd');
+    }
+
+    return '<span class="tsh_pp">' + data + '<\/span>';
 });
 
 //  ------------------------------------------------------------------------
