@@ -4673,53 +4673,51 @@ function(anElement, oldClassName, newClassName) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementReplaceTextWithEditor',
-function(anElement) {
+TP.definePrimitive('nodeReplaceTextWithEditor',
+function(aNode) {
 
     /**
-     * @name elementReplaceTextWithEditor
+     * @name nodeReplaceTextWithEditor
      * @synopsis Replaces the child text content of the supplied element with an
      *     'editor' (that is, an XHTML 'input' field).
-     * @param {Element} anElement The element to remove the attribute value
-     *     from.
-     * @raises TP.sig.InvalidElement
-     * @returns {Element} The element.
+     * @param {Node} aNode The node to replace with the editor.
+     * @raises TP.sig.InvalidNode
+     * @returns {Element} The newly-inserted input field element.
      */
 
-    var elementDoc,
+    var nodeDoc,
         currentValue,
         textInputElement;
 
-    if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement');
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
-    elementDoc = TP.nodeGetDocument(anElement);
+    nodeDoc = TP.nodeGetDocument(aNode);
 
-    //  Now, try to get the text value of the element. This will normalize
-    //  any Node.TEXT_NODE nodes under anElement and hand us back the first
-    //  one.
-    currentValue = TP.nodeGetTextContent(anElement);
+    //  Now, try to get the text value of the element. This will normalize any
+    //  Node.TEXT_NODE nodes under aNode and hand us back the first one.
+    currentValue = TP.nodeGetTextContent(aNode);
 
     //  Create the 'input' field.
-    textInputElement = TP.documentCreateElement(elementDoc,
+    textInputElement = TP.documentCreateElement(nodeDoc,
                                                 'input',
                                                 TP.w3.Xmlns.XHTML);
 
-    //  Empty out the underlying child content and append the 'input' field.
-    TP.nodeEmptyContent(anElement);
+    //  Replace the node with the text input. Note here how we pass false to
+    //  avoid awakening this content.
+    textInputElement = TP.nodeReplaceChild(
+                            aNode.parentNode,
+                            textInputElement,
+                            aNode,
+                            false);
 
-    //  We don't have to worry about reassignment of textInputElement to the
-    //  return value of this method since we know we created it in
-    //  elementDoc.
-    TP.nodeAppendChild(anElement, textInputElement, false);
-
-    //  Set the value of the input field to the text value obtained earlier
-    //  and 'select' the input field so that the text is selected.
+    //  Set the value of the input field to the text value obtained earlier and
+    //  'select' the input field so that the text is selected.
     textInputElement.value = currentValue;
     textInputElement.select();
 
-    return anElement;
+    return textInputElement;
 });
 
 //  ------------------------------------------------------------------------
