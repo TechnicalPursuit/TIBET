@@ -203,7 +203,7 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    srcroot = path.join(infroot, 'lib/src');
+    srcroot = path.join(infroot, 'lib', 'src');
 
     list = sh.ls('-A', srcroot);
     err = sh.error();
@@ -246,16 +246,26 @@ Cmd.prototype.execute = function() {
     }
 
     this.log('freezing runtime library resources...');
-    sh.cp('-R', path.join(app_npm, 'tibet/etc'), infroot);
+    sh.cp('-R', path.join(app_npm, 'tibet', 'etc'), infroot);
     err = sh.error();
     if (err) {
         this.error('Error cloning tibet/etc: ' + err);
         return 1;
     }
 
+    this.log('freezing developer tool resources...');
+    sh.mkdir('-p', path.join(infroot, 'src', 'tibet', 'tools'));
+    sh.cp('-R', path.join(app_npm, 'tibet', 'src', 'tibet', 'tools'),
+        path.join(infroot, 'src', 'tibet'));
+    err = sh.error();
+    if (err) {
+        this.error('Error cloning tibet tools: ' + err);
+        return 1;
+    }
+
     if (this.options.raw) {
         this.log('freezing raw library source...');
-        sh.cp('-R', path.join(app_npm, 'tibet/src'), infroot);
+        sh.cp('-R', path.join(app_npm, 'tibet', 'src'), infroot);
         err = sh.error();
         if (err) {
             this.error('Error cloning tibet/src: ' + err);
@@ -263,7 +273,7 @@ Cmd.prototype.execute = function() {
         }
 
         this.log('freezing library dependencies...');
-        sh.cp('-R', path.join(app_npm, 'tibet/deps'), infroot);
+        sh.cp('-R', path.join(app_npm, 'tibet', 'deps'), infroot);
         err = sh.error();
         if (err) {
             this.error('Error cloning tibet/deps: ' + err);
