@@ -6205,6 +6205,13 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     if (TP.notValid(type)) {
         if (TP.regex.KEY_EVENT.test(signame)) {
             type = TP.sys.require('TP.sig.DOMKeySignal');
+        /*
+         * TODO: Test this - it should be correct.
+        } else {
+            type = TP.isType(aType) ?
+                            aType :
+                            TP.sys.getTypeByName(aType);
+        */
         }
     }
 
