@@ -1719,7 +1719,7 @@ function() {
     var focusContextTPElem;
 
     if (TP.isValid(focusContextTPElem =
-            this.getFirstElementAncestorByAttribute('tibet:focuscontext'))) {
+            this.getFirstAncestorByAttribute('tibet:focuscontext'))) {
         return focusContextTPElem;
     } else {
         return this.getDocument().getBody();

@@ -1165,7 +1165,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
               //  Next, try to get an ancestor that declared it
               if (!TP.isElement(
                           elemWithNS =
-                              TP.nodeGetFirstElementAncestorByAttribute(
+                              TP.nodeGetFirstAncestorByAttribute(
                                           anElement, 'xmlns:' + prefix))) {
                   //  Couldn't find one - use TIBET's meta information
                   toXMLNS = TP.w3.Xmlns.getPrefixURI(prefix);
@@ -4831,7 +4831,7 @@ function(aNode) {
         return aNode;
     }
 
-    return TP.nodeGetFirstElementAncestorByAttribute(
+    return TP.nodeGetFirstAncestorByAttribute(
                             aNode, 'tibet:tag tibet:ctrl');
 });
 
@@ -7394,11 +7394,11 @@ function(aNode, aTagName, aNamespaceURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('nodeGetFirstElementAncestorByAttribute',
+TP.definePrimitive('nodeGetFirstAncestorByAttribute',
 function(aNode, attrName, attrValue) {
 
     /**
-     * @name nodeGetFirstElementAncestorByAttribute
+     * @name nodeGetFirstAncestorByAttribute
      * @synopsis Returns the first element ancestor of aNode which has an
      *     attribute matching attrName and whose value matches the optional
      *     attrValue provided.
@@ -7430,42 +7430,37 @@ function(aNode, attrName, attrValue) {
                     len,
                     i;
 
-                //  We put try...catch around this because IE will sometimes
-                //  throw exceptions...
-                try {
-                    if (TP.regex.IS_NAMEXP.test(attrName)) {
-                        re = TP.getQNameRegex(attrName);
+                if (TP.regex.IS_NAMEXP.test(attrName)) {
+                    re = TP.getQNameRegex(attrName);
 
-                        attrs = elem.attributes;
-                        len = attrs.length;
+                    attrs = elem.attributes;
+                    len = attrs.length;
 
-                        for (i = 0; i < len; i++) {
-                            //  find the name
-                            if (re.test(attrs[i].name)) {
-                                //  check the value as needed
-                                if (TP.isValid(attrValue)) {
-                                    if (!TP.match(attrValue, attrs[i].value)) {
-                                        continue;
-                                    }
+                    for (i = 0; i < len; i++) {
+                        //  find the name
+                        if (re.test(attrs[i].name)) {
+                            //  check the value as needed
+                            if (TP.isValid(attrValue)) {
+                                if (!TP.match(attrValue, attrs[i].value)) {
+                                    continue;
                                 }
+                            }
 
-                                return true;
-                            }
-                        }
-                    } else {
-                        //  without a value we can go by existence alone
-                        //  which should be a little faster
-                        if (TP.notValid(attrValue)) {
-                            if (TP.elementHasAttribute(elem, attrName)) {
-                                return true;
-                            }
-                        } else if (TP.match(
-                                    attrValue,
-                                    TP.elementGetAttribute(elem, attrName))) {
                             return true;
                         }
                     }
-                } catch (e) {
+                } else {
+                    //  without a value we can go by existence alone
+                    //  which should be a little faster
+                    if (TP.notValid(attrValue)) {
+                        if (TP.elementHasAttribute(elem, attrName)) {
+                            return true;
+                        }
+                    } else if (TP.match(
+                                attrValue,
+                                TP.elementGetAttribute(elem, attrName))) {
+                        return true;
+                    }
                 }
 
                 return false;
@@ -7474,11 +7469,11 @@ function(aNode, attrName, attrValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('nodeGetFirstElementAncestorByTagName',
+TP.definePrimitive('nodeGetFirstAncestorByTagName',
 function(aNode, aTagName, aNamespaceURI) {
 
     /**
-     * @name nodeGetFirstElementAncestorByTagName
+     * @name nodeGetFirstAncestorByTagName
      * @synopsis Returns the first element ancestor of aNode which matches the
      *     name and optional namespace URI provided.
      * @description This is a commonly used method in widget construction where

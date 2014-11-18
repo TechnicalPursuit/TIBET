@@ -2258,8 +2258,7 @@ function(anObject, assignIfAbsent) {
                 //  for the node i.e. element([id_or_position/pos/pos/...)
                 //  where the positions are 1-indexed child locations.
                 if (TP.isEmpty(localID)) {
-                    ancestor = TP.nodeGetFirstElementAncestorByAttribute(
-                                                            obj, 'id');
+                    ancestor = TP.nodeGetFirstAncestorByAttribute(obj, 'id');
                     if (TP.notValid(ancestor)) {
                         ancestor = TP.nodeGetDocument(obj).documentElement;
                         if (TP.notValid(ancestor)) {

@@ -94,7 +94,7 @@ function(anElement, idValue, gradientTagName) {
         return gradElem;
     }
 
-    svgElem = TP.nodeGetFirstElementAncestorByTagName(anElement, 'svg');
+    svgElem = TP.nodeGetFirstAncestorByTagName(anElement, 'svg');
 
     //  See if there's a 'defs' element under the 'svg' element. This is
     //  where we need to place the gradient element.
@@ -512,7 +512,7 @@ function(anElement, idValue) {
     //  Grab the element's document and its 'closest' enclosing 'svg'
     //  element (the element named 'svg').
     nativeDoc = TP.nodeGetDocument(anElement);
-    svgElem = TP.nodeGetFirstElementAncestorByTagName(anElement, 'svg');
+    svgElem = TP.nodeGetFirstAncestorByTagName(anElement, 'svg');
 
     //  See if there's a 'defs' element under the 'svg' element. This is
     //  where we need to place the pattern element.

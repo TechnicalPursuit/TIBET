@@ -5777,11 +5777,11 @@ function(aString, aName, aNamespaceURI) {
 //  ANCESTOR SEARCH
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstElementAncestorByAttribute',
+TP.core.CollectionNode.Inst.defineMethod('getFirstAncestorByAttribute',
 function(attrName, attrValue) {
 
     /**
-     * @name getFirstElementAncestorByAttribute
+     * @name getFirstAncestorByAttribute
      * @synopsis Returns the first element ancestor of the receiver which has an
      *     attribute matching attrName and whose value matches the optional
      *     attrValue provided.
@@ -5798,7 +5798,7 @@ function(attrName, attrValue) {
      * @todo
      */
 
-    return TP.wrap(TP.nodeGetFirstElementAncestorByAttribute(
+    return TP.wrap(TP.nodeGetFirstAncestorByAttribute(
                                 this.getNativeNode(),
                                 attrName,
                                 attrValue));
@@ -5806,11 +5806,11 @@ function(attrName, attrValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getFirstElementAncestorByTagName',
+TP.core.CollectionNode.Inst.defineMethod('getFirstAncestorByTagName',
 function(aTagName, aNamespaceURI) {
 
     /**
-     * @name getFirstElementAncestorByTagName
+     * @name getFirstAncestorByTagName
      * @synopsis Returns the first element ancestor of the receiver which
      *     matches the name and optional namespace URI provided.
      * @description This is a commonly used method in widget construction where
@@ -5825,7 +5825,7 @@ function(aTagName, aNamespaceURI) {
      * @todo
      */
 
-    return TP.wrap(TP.nodeGetFirstElementAncestorByTagName(
+    return TP.wrap(TP.nodeGetFirstAncestorByTagName(
                                 this.getNativeNode(),
                                 aTagName,
                                 aNamespaceURI));
