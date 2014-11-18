@@ -30,6 +30,8 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 @import "tibet_reset.css";
 
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
 /*
     ========================================================================
   UIROOT PAGE STYLES
@@ -664,6 +666,16 @@ div[busyFor] > span {
   width: 100%;
 
   text-align: center;
+}
+
+/*
+  ========================================================================
+  'Built-in' 'tibet:' elements
+  ========================================================================
+*/
+
+tibet|data {
+    display: none;
 }
 
 /*
