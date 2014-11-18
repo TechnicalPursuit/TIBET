@@ -9132,6 +9132,10 @@ function(mimeType) {
         uri,
         src,
 
+        str,
+        openingTag,
+        updatedOpeningTag,
+
         doc,
         elem,
 
@@ -9157,7 +9161,10 @@ function(mimeType) {
         //  If we couldn't compute a URI, default it to XHTML in the receiver's
         //  load location (assuming js and xhtml are in the same directory);
         if (!TP.isURI(uri)) {
-            uri = TP.uc(TP.objectGetLoadCollectionPath(this) + '/' + this.getName() + '.xhtml');
+            uri = TP.uc(TP.objectGetLoadCollectionPath(this) +
+                        '/' +
+                        this.getName() +
+                        '.xhtml');
         }
     } else {
         uri = this.getResourceURI(mime);
@@ -9167,7 +9174,29 @@ function(mimeType) {
 
     //  Grab the receiver's content registered under the supplied MIME type.
     //  Note how this is done synchronously.
-    doc = uri.getResourceNode(TP.hc('async', false));
+    //  Also note how we get a *String* as opposed to a DOM node. This is done
+    //  so that we can check the markup and add a default namespace as a
+    //  convenience for markup authors.
+
+    str = uri.getResourceText(TP.hc('async', false));
+
+    //  If the markup author didn't provide a default namespace, we'll try to
+    //  default it here by rewriting the opening tag.
+
+    //  TODO: This should not be hardcoded to assume the default namespace is
+    //  XHTML - we should at least be trying to look it up based on the file
+    //  extension.
+
+    if (TP.notEmpty(openingTag = TP.regex.OPENING_TAG.exec(str).at(0))) {
+        if (!/xmlns=/.test(openingTag)) {
+            updatedOpeningTag =
+                        TP.regex.OPENING_TAG.exec(str).at(0).slice(0,-1) +
+                        ' xmlns="' + TP.w3.Xmlns.XHTML + '">';
+            str = str.replace(openingTag, updatedOpeningTag);
+        }
+    }
+
+    doc = TP.documentFromString(str, null, true);
 
     //  Make sure that the resource had real markup that could be built as such.
     if (!TP.isDocument(doc) || !TP.isElement(elem = doc.documentElement)) {
