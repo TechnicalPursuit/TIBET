@@ -285,6 +285,12 @@ Cmd.prototype.getProfile = function() {
         profile = this.options.profile;
     }
 
+    if (CLI.inProject()) {
+        profile = profile || '~app_cfg/phantom';
+    } else {
+        profile = profile || '~lib_etc/phantom/phantom';
+    }
+
     return profile;
 };
 
