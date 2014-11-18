@@ -1002,9 +1002,9 @@ function(REQUEST$$) {
         }
 
         //  Function literals
-        //  Note that this RegExp is normally used for extracting the name,
-        //  but works well here to just detect Function literals...
-        if (Function.$$getNameRegex.test($SCRIPT)) {
+        //  To keep things simpler for the regex we run the test on the script
+        //  with newlines removed.
+        if (TP.regex.FUNCTION_LITERAL.test($SCRIPT.replace(/\n/g, ' '))) {
             $SCRIPT = '(' + $SCRIPT + ')';
         }
 
@@ -1417,9 +1417,9 @@ function(REQUEST$$, CMDTYPE$$) {
         }
 
         //  Function literals
-        //  Note that this RegExp is normally used for extracting the name,
-        //  but works well here to just detect Function literals...
-        if (Function.$$getNameRegex.test($SCRIPT)) {
+        //  To keep things simpler for the regex we run the test on the script
+        //  with newlines removed.
+        if (TP.regex.FUNCTION_LITERAL.test($SCRIPT.replace(/\n/g, ' '))) {
             $SCRIPT = '(' + $SCRIPT + ')';
         }
 
@@ -1878,9 +1878,9 @@ function(aString, aShell, aRequest) {
             }
 
             //  Function literals
-            //  Note that this RegExp is normally used for extracting the name,
-            //  but works well here to just detect Function literals...
-            if (Function.$$getNameRegex.test($SCRIPT)) {
+            //  To keep things simpler for the regex we run the test on the
+            //  script with newlines removed.
+            if (TP.regex.FUNCTION_LITERAL.test($SCRIPT.replace(/\n/g, ' '))) {
                 $SCRIPT = '(' + $SCRIPT + ')';
             }
 
