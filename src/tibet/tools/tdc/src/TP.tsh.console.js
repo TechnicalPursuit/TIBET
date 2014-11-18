@@ -490,6 +490,11 @@ function() {
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
 
+    this.observe(this.get('$inputCell'), 'TP.sig.DOMCut');
+    this.observe(this.get('$inputCell'), 'TP.sig.DOMPaste');
+
+    this.observe(this.get('$inputCell'), 'TP.sig.DOMUndo');
+
     this.observe(TP.core.Keyboard, TP.sys.cfg('tdc.toggle_off'),
                     function(evt) {
                         evt.preventDefault();
@@ -1103,7 +1108,6 @@ function(aSignal) {
      * @synopsis Handles notifications of keyup events. If the key is one we
      *     care about then we forward the event to the shell for processing.
      * @param {DOMKeyUp} aSignal The TIBET signal which triggered this handler.
-     * @returns {null.}
      */
 
     var evt,
@@ -1150,6 +1154,64 @@ function(aSignal) {
             this.adjustInputCellSize();
         }
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ConsoleService.Inst.defineMethod('handleDOMUndo',
+function(aSignal) {
+
+    /**
+     * @name handleDOMUndo
+     * @synopsis Handles notifications of undo signals (a synthetic TIBET
+     * event).
+     * @param {DOMUndo} aSignal The TIBET signal which triggered this handler.
+     */
+
+    //  Invoked by fork()ing because of browser reflow...
+    (function() {
+        this.adjustInputCellSize();
+    }).bind(this).fork();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ConsoleService.Inst.defineMethod('handleDOMCut',
+function(aSignal) {
+
+    /**
+     * @name handleDOMCut
+     * @synopsis Handles notifications of cut signals.
+     * @param {DOMCut} aSignal The TIBET signal which triggered this handler.
+     */
+
+    //  Invoked by fork()ing because of browser reflow...
+    (function() {
+        this.adjustInputCellSize();
+    }).bind(this).fork();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ConsoleService.Inst.defineMethod('handleDOMPaste',
+function(aSignal) {
+
+    /**
+     * @name handleDOMUndo
+     * @synopsis Handles notifications of paste signals.
+     * @param {DOMPaste} aSignal The TIBET signal which triggered this handler.
+     */
+
+    //  Invoked by fork()ing because of browser reflow...
+    (function() {
+        this.adjustInputCellSize();
+    }).bind(this).fork();
 
     return;
 });
