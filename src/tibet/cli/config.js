@@ -178,11 +178,13 @@ Cmd.prototype.execute = function() {
 Cmd.prototype.setConfig = function(path, value) {
 
     var json,
+        file,
         parts,
         root,
         key;
 
-    json = require('tibet.json');
+    file = CLI.expandPath('~/tibet.json');
+    json = require(file);
     if (!json) {
         this.error('Unable to load tibet.json.');
         return 1;
@@ -221,7 +223,7 @@ Cmd.prototype.setConfig = function(path, value) {
         root[parts[0]] = value;
     }
 
-    beautify(JSON.stringify(json)).to('tibet.json');
+    beautify(JSON.stringify(json)).to(file);
 };
 
 
