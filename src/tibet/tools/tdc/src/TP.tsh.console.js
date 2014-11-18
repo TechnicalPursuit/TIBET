@@ -428,7 +428,7 @@ function() {
     outerWrapper = TP.byCSS('#BOOT-PROGRESS', TP.win('UIBOOT'), true);
     this.set('$outerWrapper', outerWrapper);
 
-    outerWrapper.$minHeight = TP.elementGetHeight(outerWrapper, TP.CONTENT_BOX);
+    outerWrapper.$minHeight = TP.elementGetHeight(outerWrapper, TP.BORDER_BOX);
 
     fieldStyle = TP.elementGetComputedStyleObj(cell);
 
