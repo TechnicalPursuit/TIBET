@@ -14,6 +14,14 @@
   that type is fired, with the currently focused element as its target.
   -->
 
+  <!-- Entries that map Ctrl-Z/Meta-Z into an 'Undo' event -->
+  <!-- PC -->
+  <key id="DOM_Ctrl_Z_Down" signal="TP.sig.DOMUndo" />
+
+  <!-- Mac -->
+  <key id="DOM_Meta_Z_Down" signal="TP.sig.DOMUndo" />
+
+
   <!-- Focus the first field in the overall document -->
   <key id="DOM_Home_Down" signal="TP.sig.UIFocusFirst" />
 
