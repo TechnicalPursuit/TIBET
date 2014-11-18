@@ -471,15 +471,12 @@ function(aTargetElem, anEvent) {
 
                     sigName = TP.elementGetAttribute(bindingEntry, 'signal');
 
-                    //  If the signal name is a real TIBET type, then go ahead
-                    //  and signal using the name, using the target
-                    //  TP.core.Element as the 'target' of this signal.
-                    if (TP.isType(TP.sys.require(sigName))) {
+                    evtTargetTPElem.signal(sigName,
+                                            null,
+                                            TP.DOM_FIRING,
+                                            'TP.sig.' + keyname);
 
-                        evtTargetTPElem.signal(sigName);
-
-                        return this;
-                    }
+                    return this;
                 }
             }
         }
