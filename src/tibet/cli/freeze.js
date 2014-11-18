@@ -135,6 +135,7 @@ Cmd.prototype.execute = function() {
         libbase,
         srcroot,
 
+        file,
         json,
         list,
         bundle;
@@ -277,7 +278,8 @@ Cmd.prototype.execute = function() {
 
     this.log('updating tibet.json lib_root setting...');
 
-    json = require('tibet.json');
+    file = CLI.expandPath('~/tibet.json');
+    json = require(file);
     if (!json) {
         this.error('Unable to update lib_root in tibet.json.');
         return 1;
@@ -286,7 +288,7 @@ Cmd.prototype.execute = function() {
         json.path = {};
     }
     json.path.lib_root = '~/TIBET-INF/tibet';
-    beautify(JSON.stringify(json)).to('tibet.json');
+    beautify(JSON.stringify(json)).to(file);
 
     this.info('Application frozen. TIBET now boots from ' + infroot + '.');
 };

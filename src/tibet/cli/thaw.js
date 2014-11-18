@@ -94,6 +94,7 @@ Cmd.prototype.execute = function() {
         app_inf,
         infroot,
 
+        file,
         json,
         list;
 
@@ -140,7 +141,8 @@ Cmd.prototype.execute = function() {
 
     this.log('updating tibet.json lib_root setting...');
 
-    json = require('tibet.json');
+    file = CLI.expandPath('~/tibet.json');
+    json = require(file);
     if (!json) {
         this.error('Unable to update lib_root in tibet.json.');
         return 1;
@@ -149,7 +151,7 @@ Cmd.prototype.execute = function() {
         json.path = {};
     }
     json.path.lib_root = '~/node_modules/tibet';
-    beautify(JSON.stringify(json)).to('tibet.json');
+    beautify(JSON.stringify(json)).to(file);
 
     this.info('Application thawed. TIBET now boots from node_modules.');
 };
