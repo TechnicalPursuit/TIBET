@@ -1431,41 +1431,52 @@ function(normalizedEvent, keyName, shift) {
      * @returns {String} The 'full' key event DOM signal name.
      */
 
-    var signame;
+    var sigkey,
+        signame;
+
+    //  Make sure that any key name that is *only* a lowercase alpha character
+    //  ([a-z]) is uppercased. So that, instead of returning 'DOM_Meta_z_Down',
+    //  this method will return 'DOM_Meta_Z_Down' (which is how TIBET normalizes
+    //  this situation - if the caller wants uppercase, they should specify
+    //  'Shift_' somewhere in the signal name).
+    sigkey = keyName;
+    if (/^[a-z]{1}$/.test(sigkey)) {
+        sigkey = keyName.toUpperCase();
+    }
 
     //  All key events get a suffix suitable to that event
     switch (TP.eventGetType(normalizedEvent)) {
         case 'keyup':
 
-            signame = keyName + '_Up';
+            signame = sigkey + '_Up';
             break;
 
         case 'keydown':
 
-            signame = keyName + '_Down';
+            signame = sigkey + '_Down';
             break;
 
         case 'keypress':
 
-            signame = keyName + '_Press';
+            signame = sigkey + '_Press';
             break;
     }
 
     //  Modifier keys are prefixes which effectively start with optional
     //  Ctrl, Alt, or Meta followed by optional Shift state.
-    if (shift && (keyName !== 'Shift')) {
+    if (shift && (sigkey !== 'Shift')) {
         signame = 'Shift_' + signame;
     }
 
-    if (TP.eventGetAltKey(normalizedEvent) && (keyName !== 'Alt')) {
+    if (TP.eventGetAltKey(normalizedEvent) && (sigkey !== 'Alt')) {
         signame = 'Alt_' + signame;
     }
 
-    if (TP.eventGetCtrlKey(normalizedEvent) && (keyName !== 'Control')) {
+    if (TP.eventGetCtrlKey(normalizedEvent) && (sigkey !== 'Control')) {
         signame = 'Ctrl_' + signame;
     }
 
-    if (TP.eventGetMetaKey(normalizedEvent) && (keyName !== 'Meta')) {
+    if (TP.eventGetMetaKey(normalizedEvent) && (sigkey !== 'Meta')) {
         signame = 'Meta_' + signame;
     }
 
