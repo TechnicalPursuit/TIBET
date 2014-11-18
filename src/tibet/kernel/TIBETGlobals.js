@@ -2174,6 +2174,8 @@ TP.regex.NUMBER_CONSTRUCTOR = /function Number\(\)/;
 TP.regex.REGEXP_CONSTRUCTOR = /function RegExp\(\)/;
 TP.regex.STRING_CONSTRUCTOR = /function String\(\)/;
 
+TP.regex.FUNCTION_LITERAL = /^function (.*) \((.*)\) \{.*\}\$/;
+
 TP.regex.ATTRIBUTE_NAME = /^[_$][a-zA-Z0-9_$]*$|^[A-Z]/;
 
 TP.regex.PUBLIC_SLOT = /^_/;
