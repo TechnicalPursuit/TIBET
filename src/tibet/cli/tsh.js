@@ -113,6 +113,7 @@ Cmd.prototype.execute = function() {
         child,      // The spawned child process.
         tshpath,    // Path to the TIBET Shell runner script.
         cmd,        // Local binding variable.
+        debug,      // Flag for debug passed to phantomjs.
         arglist;    // The argument list to pass to phantomjs.
 
     proc = require('child_process');
@@ -142,6 +143,12 @@ Cmd.prototype.execute = function() {
     // complete.
     arglist.unshift(tshpath);
 
+    // Push an additional debug flag specific to phantom if set.
+    if (this.options.debug) {
+        arglist.unshift(true);
+        arglist.unshift('--debug');
+    }
+
     this.debug('phantomjs ' + arglist.join(' '));
 
     // Run the script via phantomjs which should load/execute in a TIBET client
@@ -149,14 +156,24 @@ Cmd.prototype.execute = function() {
     child = proc.spawn('phantomjs', arglist);
 
     child.stdout.on('data', function(data) {
-        // Copy and remove newline.
-        var msg = data.slice(0, -1).toString('utf-8');
-        cmd.log(msg);
+
+        if (CLI.isValid(data)) {
+            // Copy and remove newline.
+            var msg = data.slice(0, -1).toString('utf-8');
+
+            cmd.log(msg);
+        }
     });
 
     child.stderr.on('data', function(data) {
-        // Copy and remove newline.
-        var msg = data.slice(0, -1).toString('utf-8');
+        var msg;
+
+        if (CLI.notValid(data)) {
+            msg = 'Unspecified error occurred.';
+        } else {
+            // Copy and remove newline.
+            msg = data.slice(0, -1).toString('utf-8');
+        }
 
         // Some leveraged module likes to write error output with empty lines.
         // Remove those so we can control the output form better.
