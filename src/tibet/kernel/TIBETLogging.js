@@ -3493,14 +3493,17 @@ function(anEntry) {
     // Format the little critter...
     layout = this.getLayout();
     content = layout.layout(anEntry);
-/*
-    try {
-        top.console[writer](content);
-    } catch (e) {
-        top.console.log(content);
+
+    // If we don't use the console (but rely on stdio) PhantomJS won't be happy.
+    if (TP.sys.cfg('boot.context', 'phantomjs')) {
+        try {
+            top.console[writer](content);
+        } catch (e) {
+            top.console.log(content);
+        }
+    } else {
+        TP[stdio](content);
     }
-*/
-    TP[stdio](content);
 
     return this;
 });
