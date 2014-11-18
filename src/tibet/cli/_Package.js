@@ -39,8 +39,11 @@ parser = new dom.DOMParser();
 serializer = new dom.XMLSerializer();
 
 isEmpty = function(aReference) {
-    return aReference === null || aReference === undefined ||
-        aReference.length === 0;
+    return aReference === null ||
+        aReference === undefined ||
+        aReference.length === 0 ||
+        (typeof aReference === 'object' &&
+        Object.keys(aReference).length === 0);
 };
 
 isValid = function(aReference) {
@@ -1644,9 +1647,9 @@ Package.prototype.isInitialized = function() {
     }
 
     return sh.test('-e',
-            path.join(this.getAppHead(), 'node_modules/tibet')) ||
+            path.join(this.getAppRoot(), 'node_modules/tibet')) ||
         sh.test('-e',
-            path.join(this.getAppHead(), 'TIBET-INF/tibet'));
+            path.join(this.getAppRoot(), 'TIBET-INF/tibet'));
 };
 
 
