@@ -205,7 +205,8 @@ targets.pushdb = function(make) {
       return;
     }
 
-    make.log('push complete.');
+    make.log('push complete. Open ' + db_url + '/' + db_name +
+            '/_design/app/index.html to launch.');
     targets.pushdb.resolve();
 };
 

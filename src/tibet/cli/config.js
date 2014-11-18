@@ -63,8 +63,9 @@ Cmd.prototype.HELP =
 
 'You can view the entire configuration list by leaving off any specific\n' +
 'value. You can view all values for a particular prefix by listing just\n' +
-'the prefix. You can view a specific value by naming that value directly.\n' +
-'You can dump virtual paths by quoting them. \'~\' will show them all.\n\n' +
+'the prefix. You can view a specific value by naming that value directly.\n\n' +
+
+'You can dump virtual paths by quoting them as in: \'~app\' or \'~lib\'.\n\n' +
 
 'Configuration data can also be updated by adding an \'=\' and value to\n' +
 'a properly defined property name.\n\n' +
@@ -140,15 +141,15 @@ Cmd.prototype.execute = function() {
         cfg = CLI.getcfg(option);
     }
 
-    if (typeof cfg === 'undefined')  {
+    if (CLI.isEmpty(cfg)) {
         this.info('Config value not found: ' + option);
         return;
     }
 
-    str = '{\n';
-
     // Object.keys will throw for anything other than Object/Array...
     try {
+        str = '{\n';
+
         if (CLI.isEmpty(option) || option.indexOf('path') === 0) {
             str += '\t"~": "' + CLI.getAppHead() + '",\n';
             str += '\t"~app": "' + CLI.getAppRoot() + '",\n';
@@ -158,7 +159,10 @@ Cmd.prototype.execute = function() {
             str += '\t"' + key.replace(/_/g, '.') + '": "' + cfg[key] + '",\n';
         });
         str = str.slice(0, -2);
-        str += '\n}';
+
+        if (str) {
+            str += '\n}';
+        }
     } catch (e) {
         str = '' + cfg;
     }

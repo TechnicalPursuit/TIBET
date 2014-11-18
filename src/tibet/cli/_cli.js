@@ -277,8 +277,11 @@ CLI.success = function(msg) {
 //  ---
 
 CLI.isEmpty = function(aReference) {
-    return aReference === null || aReference === undefined ||
-        aReference.length === 0;
+    return aReference === null ||
+        aReference === undefined ||
+        aReference.length === 0 ||
+        (typeof aReference === 'object' &&
+        Object.keys(aReference).length === 0);
 };
 
 CLI.isFalse = function(aReference) {

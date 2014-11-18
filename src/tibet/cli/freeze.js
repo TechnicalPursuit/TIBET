@@ -245,6 +245,14 @@ Cmd.prototype.execute = function() {
         });
     }
 
+    this.log('freezing runtime library resources...');
+    sh.cp('-R', path.join(app_npm, 'tibet/etc'), infroot);
+    err = sh.error();
+    if (err) {
+        this.error('Error cloning tibet/etc: ' + err);
+        return 1;
+    }
+
     if (this.options.raw) {
         this.log('freezing raw library source...');
         sh.cp('-R', path.join(app_npm, 'tibet/src'), infroot);
@@ -287,7 +295,7 @@ Cmd.prototype.execute = function() {
     if (!json.path) {
         json.path = {};
     }
-    json.path.lib_root = '~/TIBET-INF/tibet';
+    json.path.lib_root = '~app/TIBET-INF/tibet';
     beautify(JSON.stringify(json)).to(file);
 
     this.info('Application frozen. TIBET now boots from ' + infroot + '.');
