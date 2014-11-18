@@ -2611,21 +2611,26 @@ TP.hc(
                 if (TP.notEmpty(prefix)) {
                     xmlnsAttrName = 'xmlns:' + prefix;
 
-                    //  We need to make sure that we're not putting a
-                    //  namespace definition on an element that already has
-                    //  one.
-                    attrs = anElement.attributes;
-                    for (i = 0; i < attrs.length; i++) {
-                        if (attrs[i].name === xmlnsAttrName) {
-                            break;
-                        }
-                    }
+                    if (!TP.isElement(
+                              TP.nodeGetFirstAncestorByAttribute(
+                                          anElement, xmlnsAttrName))) {
 
-                    //  NOTE: We cannot use elementAddNamespace() here since
-                    //  that call uses this call :-).
-                    anElement.setAttributeNS(TP.w3.Xmlns.XMLNS,
-                                                xmlnsAttrName,
-                                                attrNS);
+                        //  We need to make sure that we're not putting a
+                        //  namespace definition on an element that already has
+                        //  one.
+                        attrs = anElement.attributes;
+                        for (i = 0; i < attrs.length; i++) {
+                            if (attrs[i].name === xmlnsAttrName) {
+                                break;
+                            }
+                        }
+
+                        //  NOTE: We cannot use elementAddNamespace() here since
+                        //  that call uses this call :-).
+                        anElement.setAttributeNS(TP.w3.Xmlns.XMLNS,
+                                                    xmlnsAttrName,
+                                                    attrNS);
+                    }
                 }
             }
 
