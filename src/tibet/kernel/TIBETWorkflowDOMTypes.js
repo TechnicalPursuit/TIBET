@@ -1098,6 +1098,12 @@ function(aNode, aProcessor, aRequest) {
             continue;
         }
 
+        //  To reduce markup clutter, try to propagate namespaces as high up as
+        //  possible.
+        if (TP.isElement(result)) {
+            TP.elementBubbleXMLNSAttributes(result);
+        }
+
         //  If either a singular Node or Array of Nodes was returned, then push
         //  them onto our list of 'produced nodes'.
         if (TP.isNode(result)) {
