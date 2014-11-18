@@ -674,16 +674,16 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         }
     }
 
-    TP.elementAddNamespace(aDocument.documentElement,
-                            'pclass',
-                            TP.w3.Xmlns.PCLASS);
-
     //  Go to every element in the document and try to bubble its namespaces
     if (TP.notEmpty(allElems = aDocument.getElementsByTagName('*'))) {
         for (i = 0; i < allElems.length; i++) {
             TP.elementBubbleXMLNSAttributes(allElems[i]);
         }
     }
+
+    //  Add common namespaces to the document element to further reduce
+    //  namespace clutter.
+    TP.w3.Xmlns.addCommonNamespacesTo(aDocument.documentElement);
 
     //  If we didn't find at least one script element with a 'src', then
     //  manually invoke the 'all content is loaded' function.

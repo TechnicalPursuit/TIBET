@@ -1355,6 +1355,9 @@ TP.w3.Xmlns.Type.defineAttribute('prefixes', TP.hc());
 
 TP.w3.Xmlns.Type.defineAttribute('info', TP.hc());
 
+//  A list of commonly-used namespaces that get installed on new documents, etc.
+TP.w3.Xmlns.Type.defineAttribute('commonNamespaces');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -1587,6 +1590,46 @@ function() {
             this.get('prefixes').atPut(item.at('prefix'), item.at('uri'));
         }.bind(this));
 
+    this.set('commonNamespaces',
+                TP.ac(
+                    TP.w3.Xmlns.ACL,
+                    TP.w3.Xmlns.BIND,
+                    TP.w3.Xmlns.PCLASS,
+                    TP.w3.Xmlns.TIBET,
+                    TP.w3.Xmlns.TSH,
+                    TP.w3.Xmlns.XHTML
+                    )
+                );
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.w3.Xmlns.Type.defineMethod('addCommonNamespacesTo',
+function(anElement) {
+
+    /**
+     * @name addCommonNamespacesTo
+     * @synopsis Adds commonly used namespaces (the list is defined on this
+     *     type) to the element.
+     * @param {Element} anElement The element to install the namespaces on.
+     * @raises TP.sig.InvalidElement
+     */
+
+    var namespaces,
+        i;
+
+    if (TP.notValid(anElement)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    namespaces = this.get('commonNamespaces');
+
+    for (i = 0; i < namespaces.getSize(); i++) {
+        this.addNamespaceTo(namespaces.at(i), anElement);
+    }
+
     return;
 });
 
@@ -1608,7 +1651,6 @@ function(anNSURI, anElement) {
      *     node via TP.nodeGetNSURI().
      * @param {Element} anElement The element to install the namespace on.
      * @raises TP.sig.InvalidElement,TP.sig.InvalidURI
-     * @todo
      */
 
     var prefix;
