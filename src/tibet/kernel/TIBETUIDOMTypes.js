@@ -439,12 +439,12 @@ function(aTargetElem, anEvent) {
             }
 
             return this;
+        } else if (keyname === 'DOM_Tab_Down') {
+            //  We're going to handle this key down to move the focus ourselves,
+            //  so we don't want the browser's natural 'tabbing' code to do
+            //  anything. To prevent this, we preventDefault() on the event.
+            anEvent.preventDefault();
         }
-
-        //  We're going to handle this key down to move the focus ourselves,
-        //  so we don't want the browser's natural 'tabbing' code to do
-        //  anything. To prevent this, we preventDefault() on the event.
-        anEvent.preventDefault();
 
         sigName = null;
 
