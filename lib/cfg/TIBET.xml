@@ -41,8 +41,6 @@ build file content, one of the benefits of TIBET's boot system.
     <package src="tibet_kernel.xml" config="standard"/>
     <package src="tibet_extensions.xml" config="standard"/>
     <package src="tibet_graphics.xml" config="standard"/>
-    <package src="tibet_presentation.xml" config="standard"/>
-    <package src="tibet_css.xml" config="standard"/>
 </config>
 
 <!--    the code 80-90% of all projects actually use -->
