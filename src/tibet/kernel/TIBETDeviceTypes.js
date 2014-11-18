@@ -923,7 +923,7 @@ function(singletonName, normalizedEvent, aSignal) {
                 'meta: ', normalizedEvent.metaKey,
 
                 'keyname: ', this.getEventVirtualKey(normalizedEvent),
-                'signame: ', signame,
+                'signame: ', this.getDOMSignalName(normalizedEvent),
                 'special: ', TP.isValid(normalizedEvent.$special) ?
                                     normalizedEvent.$special : false
                 );
