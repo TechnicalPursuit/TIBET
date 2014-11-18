@@ -34,6 +34,7 @@
         "man": "./man"
     },
     "dependencies": {
+        "body-parser": "*",
         "browserify": "*",
         "chalk": "*",
         "chai": "*",
@@ -48,6 +49,10 @@
         "esprima": "*",
         "escodegen": "*",
         "esmangle": "*",
+        "express": "*",
+        "express-session": "*",
+        "compression": "1.0.6",
+        "csurf": "*",
         "findit": "*",
         "handlebars": "*",
         "js-beautify": "*",
@@ -61,6 +66,7 @@
         "pouchdb": "TechnicalPursuit/pouchdb#3.0.5",
         "q": "TechnicalPursuit/q#v1",
         "readline-sync": "*",
+        "serve-static": "*",
         "shelljs": "TechnicalPursuit/shelljs",
         "shelljs-nodecli": "*",
         "sinon": "TechnicalPursuit/Sinon.JS",
