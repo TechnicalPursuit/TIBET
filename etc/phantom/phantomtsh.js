@@ -541,7 +541,6 @@
 
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
-
         if (!PhantomTSH.argv.quiet && PhantomTSH.argv.debug) {
             PhantomTSH.log('Starting PhantomJS ' +
                     phantom.version.major + '.' +
@@ -589,8 +588,7 @@
 
                     tibetStarted = PhantomTSH.page.evaluate(
                         function() {
-                            // Provide a way to detect boot failures and avoid
-                            // simply waiting for a timeout.
+                            // PhantomTSH.wait check...
                             if (TP &&
                                 TP.boot &&
                                 TP.boot.$$stop) {
