@@ -76,7 +76,6 @@
         "xmldom": "*"
     },
     "devDependencies": {
-        "grunt": "*"
     },
     "engines": {
         "node": ">=0.8",

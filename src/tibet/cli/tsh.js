@@ -113,7 +113,6 @@ Cmd.prototype.execute = function() {
         child,      // The spawned child process.
         tshpath,    // Path to the TIBET Shell runner script.
         cmd,        // Local binding variable.
-        debug,      // Flag for debug passed to phantomjs.
         arglist;    // The argument list to pass to phantomjs.
 
     proc = require('child_process');
@@ -156,10 +155,11 @@ Cmd.prototype.execute = function() {
     child = proc.spawn('phantomjs', arglist);
 
     child.stdout.on('data', function(data) {
+        var msg;
 
         if (CLI.isValid(data)) {
             // Copy and remove newline.
-            var msg = data.slice(0, -1).toString('utf-8');
+            msg = data.slice(0, -1).toString('utf-8');
 
             cmd.log(msg);
         }

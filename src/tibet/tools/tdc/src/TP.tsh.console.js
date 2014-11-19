@@ -1181,9 +1181,11 @@ function(aSignal) {
      */
 
     //  Invoked by fork()ing because of browser reflow...
+    /* eslint-disable no-wrap-func */
     (function() {
         this.adjustInputCellSize();
     }).bind(this).fork();
+    /* eslint-enable no-wrap-func */
 
     return;
 });
@@ -1200,9 +1202,11 @@ function(aSignal) {
      */
 
     //  Invoked by fork()ing because of browser reflow...
+    /* eslint-disable no-wrap-func */
     (function() {
         this.adjustInputCellSize();
     }).bind(this).fork();
+    /* eslint-enable no-wrap-func */
 
     return;
 });
@@ -1219,9 +1223,11 @@ function(aSignal) {
      */
 
     //  Invoked by fork()ing because of browser reflow...
+    /* eslint-disable no-wrap-func */
     (function() {
         this.adjustInputCellSize();
     }).bind(this).fork();
+    /* eslint-enable no-wrap-func */
 
     return;
 });
