@@ -2630,7 +2630,6 @@ function(aRequest, allForms) {
 
                 argv,
                 parts,
-                part,
 
                 val,
                 expandedVal,
@@ -2659,8 +2658,8 @@ function(aRequest, allForms) {
                                         TP.tsh.script.$tshOperators,
                                         true, false, false, true);
                 } else {
-                    dict.atPut('ARG0', item);
-                    argv.push(item);
+                    dict.atPut('ARG0', TP.ac(last, last));
+                    argv.push(TP.ac(last, last));
                     return;
                 }
 
