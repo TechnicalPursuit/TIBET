@@ -22,6 +22,87 @@ TP.core.UIElementNode.defineSubtype('tsh:console');
 //  Type Methods
 //  ----------------------------------------------------------------------------
 
+TP.tsh.console.Type.defineMethod('setupConsole',
+function() {
+
+    /**
+     * @name setupConsole
+     * @synopsis Sets up the console.
+     */
+
+    var win,
+        doc,
+        elem,
+        head,
+        handler,
+        count;
+
+    //  The first thing we do is to toggle the UI on. This causes the 'display'
+    //  CSS property to not be set to none, which means that the various
+    //  computations required for sizing the input and output for the console
+    //  can take place.
+    TP.boot.toggleUI();
+
+    //  Now, we let the GUI thread do a reflow, which allows those computations
+    //  to be accurate ;-).
+    (function() {
+
+        win = TP.win('UIBOOT');
+        doc = TP.doc(win);
+
+        //  Inject the hook file into the page so it has all the necessary TIBET
+        //  page elements.
+        elem = TP.documentCreateScriptElement(
+                    doc,
+                    TP.uc('~lib_build/tibet_hook.min.js').getLocation());
+        head = TP.documentEnsureHeadElement(doc);
+        TP.nodeAppendChild(head, elem, false);
+
+        //  Force an initialize to run to get event handlers etc. set up.
+        TP.boot.initializeCanvas(win);
+
+        //  Add our console-specific styles to the document.
+        TP.tsh.console.addStylesheetTo(doc);
+
+        count = 0;
+        handler = function () {
+            var uiBoot,
+                tsh,
+                triggerKey,
+                console;
+
+            uiBoot = TP.win('UIBOOT');
+            tsh = TP.core.TSH.getDefaultInstance();
+
+            //  Grab the trigger key from the pref. This will have been set when
+            //  the tag representing us was attached to the DOM and the
+            //  'tagAttachDOM' method was called.
+            triggerKey = TP.sys.cfg('tdc.toggle_on');
+
+            console = TP.core.ConsoleService.construct(
+                'SystemConsole',
+                TP.hc('consoleWindow', uiBoot,
+                        'consoleModel', tsh,
+                        'triggerKey', triggerKey
+                ));
+
+            TP.byId('UIROOT', top).focus();
+
+            //  Focus the input cell to be nice to the user :-).
+            console.focusInputCell();
+        };
+
+        //  Initiate the startup/config sequence after another 50ms delay. This
+        //  further helps the GUI 'settle down' before trying to compute sizes
+        //  for the input
+        handler.fork(50);
+    }.fork(50));
+
+    return;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.tsh.console.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
@@ -34,93 +115,21 @@ function(aRequest) {
      */
 
     var elem,
-        handlerFunc,
         triggerKey;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
         return this.raise('InvalidElement');
     }
 
-    // Capture the console toggle key off the element or cfg flag. Be sure to
-    // update the flag value if we're working with a tag-supplied one.
+    //  Capture the console toggle key off the element or cfg flag. Be sure to
+    //  update the flag value if we're working with a tag-supplied one.
     if (TP.isEmpty(triggerKey = TP.elementGetAttribute(elem, 'tdc:toggle'))) {
         triggerKey = TP.sys.cfg('tdc.toggle_on');
     } else {
         TP.sys.setcfg('tdc.toggle_on', triggerKey);
     }
 
-    // Observe DocumentLoaded so we can augment the page with hook file and CSS.
-    this.observe(
-            'window_0.UIROOT',
-            'TP.sig.DocumentLoaded',
-            handlerFunc = function (aSignal) {
-                var win,
-                    doc,
-                    elem,
-                    head;
-
-                // Only do this once, so stop listening.
-                handlerFunc.ignore(aSignal.getOrigin(),
-                    aSignal.getSignalName());
-
-                win = TP.win('UIBOOT');
-                doc = TP.doc(win);
-
-                // Inject the hook file into the page so it has all the
-                // necessary TIBET page elements.
-                elem = TP.documentCreateScriptElement(doc,
-                    TP.uc('~lib_build/tibet_hook.min.js').getLocation());
-                head = TP.documentEnsureHeadElement(doc);
-                TP.nodeAppendChild(head, elem, false);
-
-                // Force an initialize to run to get event handlers etc. set up.
-                TP.boot.initializeCanvas(win);
-
-                // Add our console-specific styles to the document.
-                TP.tsh.console.addStylesheetTo(doc);
-            });
-
-    // Observe AppStart so we can create our default instance and be ready for
-    // console activation.
-    this.observe(
-            null,
-            'TP.sig.AppDidStart',
-            function (aSignal) {
-                var handler,
-                    count;
-
-                count = 0;
-                handler = function () {
-                    var uiBoot,
-                        tsh,
-                        console;
-
-                    // Retry up to 10 times at 50ms per try (a half-second)
-                    // to see if we can get the console set up.
-                    if (!TP.sys.hasStarted() && count < 10) {
-                        count++;
-                        handler.fork(50);
-                        return;
-                    }
-
-
-                    uiBoot = TP.win('UIBOOT');
-                    tsh = TP.core.TSH.getDefaultInstance();
-                    console = TP.core.ConsoleService.construct(
-                        'SystemConsole',
-                        TP.hc('consoleWindow', uiBoot,
-                                'consoleModel', tsh,
-                                'triggerKey', triggerKey
-                        ));
-
-                    TP.byId('UIROOT', top).focus();
-                };
-
-                // Initiate the startup/config sequence.
-                handler.fork(50);
-            });
-
-    return this.callNextMethod();
+    return;
 });
 
 //  ----------------------------------------------------------------------------
@@ -146,15 +155,16 @@ function(aRequest) {
         return this.raise('InvalidElement');
     }
 
-    // Configure the query we'll use in URI form to get the input element.
+    //  Configure the query we'll use in URI form to get the input element.
     if (!TP.isString(inputElemURI = TP.elementGetAttribute(elem, 'stdin_ui'))) {
-        inputElemURI = 'tibet://top.UIBOOT#css(\'#BOOT-PROGRESS #BOOT-PERCENT\')';
+        inputElemURI =
+            'tibet://top.UIBOOT#css(\'#BOOT-PROGRESS #BOOT-PERCENT\')';
     }
 
-    // Access the input element we're being tasked with converting.
+    //  Access the input element we're being tasked with converting.
     inputElem = TP.unwrap(TP.uc(inputElemURI).getResource());
 
-    // Generate new content for the tag and replace the original.
+    //  Generate new content for the tag and replace the original.
     if (TP.isElement(inputElem)) {
 
         newElem = TP.xhtmlnode(
@@ -353,7 +363,7 @@ function(aResourceID, aRequest) {
     //  observes get set up.
     this.shouldSignalChange(true);
 
-    // Make sure we're using a properly specified signal name.
+    //  Make sure we're using a properly specified signal name.
     key = request.at('triggerKey');
     if (!key.startsWith('TP.sig.')) {
         key = 'TP.sig.' + key;

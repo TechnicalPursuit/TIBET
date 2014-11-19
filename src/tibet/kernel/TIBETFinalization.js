@@ -463,6 +463,10 @@ function() {
 
                     //  Queue to allow any pending processing to clear.
                     (function() {
+                        var hasConsoleCode,
+                            consoleHasStarted,
+                            consoleSetupFunc;
+
                         try {
                             TP.boot.$setStage('liftoff');
                         } finally {
@@ -470,6 +474,50 @@ function() {
                             //  pieces of logic can switch to their "started"
                             //  states (ie. no more boot log usage etc.)
                             TP.sys.hasStarted(true);
+                        }
+
+                        //  So here we set up the trigger to load the console.
+                        //  First we check to see if a) the console code is
+                        //  available and b) whether the console has already
+                        //  loaded.
+                        hasConsoleCode = TP.isValid(
+                            TP.sys.getTypeByName('TP.core.ConsoleService'));
+
+                        consoleHasStarted = TP.isValid(
+                            TP.core.Resource.getResourceById('SystemConsole'));
+
+                        //  If the console code is available but hasn't yet been
+                        //  started, then we grab the 'console trigger key' from
+                        //  the preferences. This preference will have been
+                        //  configured by the console code when it loaded. We
+                        //  then set up a handler to listen for those kinds of
+                        //  key events from TP.core.Keyboard.
+                        if (hasConsoleCode && !consoleHasStarted) {
+                            toggleKey = TP.sys.cfg('tdc.toggle_on');
+
+                            if (!toggleKey.startsWith('TP.sig.')) {
+                                toggleKey = 'TP.sig.' + toggleKey;
+                            }
+
+                            //  Set up the handler.
+
+                            /* eslint-disable no-wrap-func */
+                            //  set up keyboard toggle to show/hide the boot UI
+                            (consoleSetupFunc = function () {
+
+                                //  The first thing to do is to tell
+                                //  TP.core.Keyboard to *ignore* this handler
+                                //  Function. This is because, once we set up
+                                //  the console, it will install it's own
+                                //  handler for the trigger key and take over
+                                //  that responsibility.
+                                consoleSetupFunc.ignore(TP.core.Keyboard,
+                                                        toggleKey);
+
+                                //  Do the deed.
+                                TP.tsh.console.setupConsole();
+                            }).observe(TP.core.Keyboard, toggleKey);
+                            /* eslint-enable no-wrap-func */
                         }
                     }).afterUnwind();
                 };
@@ -502,8 +550,8 @@ function() {
         TP.boot.$stderr(msg, TP.FATAL);
     });
 
-    // If we're not running with a UI (not phantom), and we don't have a console
-    // loaded, then ensure we can toggle the boot UI properly.
+    //  If we're not running with a UI (not phantom), and we don't have a console
+    //  loaded, then ensure we can toggle the boot UI properly.
     if ((TP.sys.cfg('boot.context') !== 'phantomjs') &&
         TP.notValid(TP.sys.getTypeByName('TP.core.ConsoleService'))) {
 
@@ -520,7 +568,7 @@ function() {
         /* eslint-disable no-wrap-func */
         //  set up keyboard toggle to show/hide the boot UI
         (function () {
-                TP.boot.toggleUI();
+            TP.boot.toggleUI();
         }).observe(TP.core.Keyboard, toggleKey);
         /* eslint-enable no-wrap-func */
     }
