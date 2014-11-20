@@ -124,8 +124,6 @@ function() {
                 var modelObj,
                     lastNameField;
 
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
-
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind1_person'),
                         'TP.sig.ValueChange');
@@ -198,8 +196,6 @@ function() {
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
-
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind2_person'),
@@ -381,8 +377,6 @@ function() {
                     petRadio3,
                     colorCheckbox1;
 
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
-
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind3_person'),
                         'TP.sig.ValueChange');
@@ -562,8 +556,6 @@ function() {
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
-
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind4_person'),
@@ -745,8 +737,6 @@ function() {
                     petRadio3,
                     colorCheckbox1;
 
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
-
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind5_person'),
                         'TP.sig.ValueChange');
@@ -922,8 +912,6 @@ function() {
                 var modelObj,
                     lastNameField;
 
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
-
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind6_person'),
                         'TP.sig.ValueChange');
@@ -996,8 +984,6 @@ function() {
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
-
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind7_person'),
@@ -1179,8 +1165,6 @@ function() {
                     petRadio3,
                     colorCheckbox1;
 
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
-
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind8_person'),
                         'TP.sig.ValueChange');
@@ -1360,8 +1344,6 @@ function() {
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
-
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind9_person'),
@@ -1543,8 +1525,6 @@ function() {
                     petRadio3,
                     colorCheckbox1;
 
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
-
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind10_person'),
                         'TP.sig.ValueChange');
@@ -1703,10 +1683,8 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-
     });
-
-}).skip();
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 

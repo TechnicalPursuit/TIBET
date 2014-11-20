@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:tsh="http://www.technicalpursuit.com/1999/tshell">
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
 <head>
 
@@ -20,13 +20,12 @@
 
 	<h2>Bind Test #3</h2><br/>
 	<br/>
+    <br/>
+    This test sets up a 'simple binding' between the various XHTML controls and an empty piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document.
+    <br/>
 	<br/>
-	This test sets up a 'simple binding' between various XHTML controls and an empty piece of XML data, set up by the event handler embedded in this document. This test also uses a 'pure URI' as a top-level binding scope to avoid having to repeat the full qualifications for the bind scope on each bind.<br/>
-	<br/>
-	<br/>
-
-	<br/>
-	Enter data into the text fields and textarea, choose from the select pull down and check the checkboxes and radio buttons to set data into the model and watch the model output below to see the resultant XML.
+    <br/>
+    This test also uses a 'pure URI' as a top-level binding scope to avoid having to repeat the full qualifications for the bind scope on each bind.<br/>
 	<br/>
 	<br/>
 
@@ -66,38 +65,16 @@
 
     </span>
 
-    <!-- Any aspect changing -->
-    <ev:script type="text/javascript" event="TP.sig.Change" observer="urn:tibet:Bind3_person">
-        <![CDATA[
-        TP.byOID('modelOutput').setProcessedContent(
-                    '<span>' +
-                    TP.str(triggerSignal.getSignalOrigin().getResource()).asEscapedHTML() +
-                    '</span>');
-        ]]>
-    </ev:script>
-
-    <br/>
-    Current data model:<br/><br/><span id="modelOutput"/>
-    <br/>
-
-	<!-- Data model construction handler -->
-	<ev:script type="text/javascript" event="TP.sig.DOMContentLoaded" observer="#document">
-        <![CDATA[
-		var newInst;
-		newInst = TP.tpdoc(
-					TP.join(
-					'<person xmlns="">',
-						'<lastname>Jones</lastname>',
-						'<firstname>Jane</firstname>',
-						'<description>Ms. Jones is a great lady</description>',
-                        '<gender>f</gender>',
-						'<pet>cat</pet>',
-						'<color>blue</color>',
-					'</person>'
-					));
-		TP.uc('urn:tibet:Bind3_person').setResource(newInst);
-		]]>
-	</ev:script>
+    <tibet:data local="urn:tibet:Bind3_person">
+        <person xmlns="">
+            <lastname>Jones</lastname>
+            <firstname>Jane</firstname>
+            <description>Ms. Jones is a great lady</description>
+            <gender>f</gender>
+            <pet>cat</pet>
+            <color>blue</color>
+        </person>
+    </tibet:data>
 
 </body>
 </html>
