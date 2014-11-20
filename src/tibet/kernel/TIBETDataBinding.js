@@ -1248,11 +1248,198 @@ function(aSignalOrHash) {
 //  TP.core.ElementNode
 //  ------------------------------------------------------------------------
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 //  The attributes for this element type that are considered to 'bidi
 //  attributes' that can not only be bound to data source but be bound *back* to
 //  the data source so that when they are changed by the user, they update the
 //  data source.
 TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineAttribute('sugaredExprs');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('defineSugaredBindings',
+function() {
+
+    /**
+     * @name defineSugaredBindings
+     * @synopsis Defines any bindings coming from the receivers's 'sugared
+     *     binding' expressions. These are normally registered by the 'bind:'
+     *     namespace when it processes the markup.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var scopeVals;
+
+    //  Obtain the binding scope values by walking the DOM tree.
+    scopeVals = this.getBindingScopeValues();
+
+    //  Loop over the sugared expressions and process them.
+    this.get('sugaredExprs').perform(
+        function(kvPair) {
+
+            var name,
+                value,
+
+                expandedExpr,
+
+                exprParts,
+                exprWithBrackets,
+                exprWithoutBrackets,
+
+                allVals,
+                fullyExpandedVal,
+
+                uris,
+                i;
+
+            //  The name will be used as the 'target attribute name' of the
+            //  binding.
+            name = kvPair.first();
+            value = kvPair.last();
+
+            //  Grab the 'expanded expression here' - we'll expand it further
+            //  below.
+            expandedExpr = value;
+
+            uris = TP.ac();
+
+            //  While we can still extract binding expressions from the value,
+            //  keep looping. This allows us to have multiple expressions in a
+            //  single value (i.e. 'foo [[bar]] is called: [[baz]]')
+            while (TP.isValid(exprParts =
+                    TP.regex.INLINE_BINDING_EXTRACT.exec(value))) {
+
+                //  We want the expression both with and without the surrounding
+                //  brackets ([[...]])
+                exprWithBrackets = exprParts.first();
+                exprWithoutBrackets = exprParts.last();
+
+                //  Concatenate the expression without the brackets onto the
+                //  scope values array (thereby creating a new Array) and use it
+                //  to join all of the values together.
+                allVals = scopeVals.concat(exprWithoutBrackets);
+                fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
+
+                //  Replace the expression with the brackets with the expression
+                //  without the brackets surrounded by ACP brackets.
+                expandedExpr = expandedExpr.replace(
+                                exprWithBrackets,
+                                '{{' + fullyExpandedVal + '}}');
+
+                //  Make sure to trim off any format before pushing this into
+                //  the URI list that we set bindings up from.
+                fullyExpandedVal = fullyExpandedVal.slice(
+                                    0, fullyExpandedVal.indexOf('%%')).trim();
+
+                //  Add that value to the list of URIs to bind to this
+                //  expression.
+                uris.push(fullyExpandedVal);
+            }
+
+            //  Loop over the URIs that this expression wants to be bound to and
+            //  define the bindings.
+            for (i = 0; i < uris.getSize(); i++) {
+                this.defineBinding(
+                        name, TP.uc(uris.at(i)), 'value', 'value',
+                        function() {
+                            return expandedExpr.transform();
+                        });
+            }
+    }.bind(this));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('destroySugaredBindings',
+function() {
+
+    /**
+     * @name destroySugaredBindings
+     * @synopsis Destroys any bindings coming from the receivers's 'sugared
+     *     binding' expressions. These are normally registered by the 'bind:'
+     *     namespace when it processes the markup.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var scopeVals;
+
+    //  Obtain the binding scope values by walking the DOM tree.
+    scopeVals = this.getBindingScopeValues();
+
+    //  Loop over the sugared expressions and process them.
+    this.get('sugaredExprs').perform(
+        function(kvPair) {
+
+            var name,
+                value,
+
+                exprParts,
+                exprWithoutBrackets,
+
+                allVals,
+                fullyExpandedVal,
+
+                uris,
+                i;
+
+            //  The name will be used as the 'target attribute name' of the
+            //  binding.
+            name = kvPair.first();
+            value = kvPair.last();
+
+            //  Grab the 'expanded expression here' - we'll expand it further
+            //  below.
+            uris = TP.ac();
+
+            //  While we can still extract binding expressions from the value,
+            //  keep looping. This allows us to have multiple expressions in a
+            //  single value (i.e. 'foo [[bar]] is called: [[baz]]')
+            while (TP.isValid(exprParts =
+                    TP.regex.INLINE_BINDING_EXTRACT.exec(value))) {
+
+                //  We're only interested in the expression without the
+                //  surrounding brackets ([[...]])
+                exprWithoutBrackets = exprParts.last();
+
+                //  Concatenate the expression without the brackets onto the
+                //  scope values array (thereby creating a new Array) and use it
+                //  to join all of the values together.
+                allVals = scopeVals.concat(exprWithoutBrackets);
+                fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
+
+                //  Make sure to trim off any format before pushing this into
+                //  the URI list that we set bindings up from.
+                fullyExpandedVal = fullyExpandedVal.slice(
+                                    0, fullyExpandedVal.indexOf('%%')).trim();
+
+                //  Add that value to the list of URIs to remove the binding for
+                //  this expression.
+                uris.push(fullyExpandedVal);
+            }
+
+            //  Loop over the URIs that this expression wants to be bound to and
+            //  destroy the bindings.
+            for (i = 0; i < uris.getSize(); i++) {
+                this.destroyBinding(
+                        name, TP.uc(uris.at(i)), 'value', 'value');
+            }
+    }.bind(this));
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1645,6 +1832,12 @@ function(aSignalOrHash) {
 
                 }.bind(this));
         }
+
+        //  'Inline expression' sugar
+
+        if (TP.notEmpty(this.get('sugaredExprs'))) {
+           this.destroySugaredBindings();
+        }
     }
 
     //  Empty out all of the stored binding information - we will repopulate
@@ -1747,6 +1940,12 @@ function(aSignalOrHash) {
                 }.bind(this));
 
             bindingInfos.atPut('out', bindingInfo);
+        }
+
+        //  'Inline expression' sugar
+
+        if (TP.notEmpty(this.get('sugaredExprs'))) {
+           this.defineSugaredBindings();
         }
     }
 
@@ -2243,6 +2442,33 @@ function(aSignalOrHash) {
         //this.$refreshBoundRoots(aSignalOrHash);
         void(0);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('registerSugaredExpression',
+function(aName, aValue) {
+
+    /**
+     * @name registerSugaredExpression
+     * @synopsis Registers a 'sugared binding expression' for processing by the
+     *     binding engine.
+     * @param {String} aName The name to register the expression under. This
+     *     should be the name of the aspect that will be set on the target
+     *     object when the source(s) of the expression change.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var sugaredExprs;
+
+    if (!TP.isValid(sugaredExprs = this.get('sugaredExprs'))) {
+        sugaredExprs = TP.hc();
+        this.set('sugaredExprs', sugaredExprs);
+    }
+
+    sugaredExprs.atPut(aName, aValue);
 
     return this;
 });

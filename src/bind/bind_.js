@@ -44,8 +44,8 @@ function(anElement) {
     tpElem = TP.wrap(anElement);
 
     for (i = 0; i < attrNodes.getSize(); i++) {
-        tpElem.populateInlineExpression(attrNodes.at(i).name,
-                                        attrNodes.at(i).value);
+        tpElem.registerSugaredExpression(attrNodes.at(i).name,
+                                            attrNodes.at(i).value);
     }
 
     tpElem.rebuild(TP.hc('shouldDefine', true, 'shouldDestroy', false));

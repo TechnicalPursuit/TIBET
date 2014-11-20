@@ -2333,6 +2333,8 @@ TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 //  followed by 0-n whitespace, followed by 1-n any characters
 TP.regex.ACP_FORMAT = /([^\\]*)\s*%%\s*(.+)/;
 
+TP.regex.INLINE_BINDING_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
+
 TP.regex.TSH_VARSUB = /\$\{?([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)\}?/;
 //  A global version of TP.regex.TSH_VARSUB
 TP.regex.TSH_VARSUB_EXTRACT = /\$\{?([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)\}?/g;
