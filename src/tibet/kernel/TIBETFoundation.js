@@ -4200,6 +4200,13 @@ function(anAspect, anAction, aDescription) {
      * @todo
      */
 
+    //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
+    //  We don't normally do this in TIBET, but this method is used heavily and
+    //  is a hotspot.
+    if (!this.shouldSignalChange()) {
+        return;
+    }
+
     //  might need to sort on next get()
     this.$needsSort = true;
 
@@ -4234,6 +4241,13 @@ function(anAspect, anAction, aDescription) {
 
     //  If this method is invoked before signaling is ready then exit.
     if (!TP.sys.hasInitialized()) {
+        return;
+    }
+
+    //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
+    //  We don't normally do this in TIBET, but this method is used heavily and
+    //  is a hotspot.
+    if (!this.shouldSignalChange()) {
         return;
     }
 
