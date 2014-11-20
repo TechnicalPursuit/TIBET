@@ -34,7 +34,7 @@
 
 	<ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.salary)">
         <![CDATA[
-        TP.byOID('salaryField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.get('aspect'))));
+        TP.byOID('salaryField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
 		]]>
 	</ev:script>
 
@@ -53,7 +53,7 @@
 
 	<ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.SSN)">
         <![CDATA[
-        TP.byOID('ssnField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.get('aspect'))));
+        TP.byOID('ssnField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
 		]]>
     </ev:script>
 
