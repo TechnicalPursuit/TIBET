@@ -1354,7 +1354,7 @@ function() {
             for (i = 0; i < uris.getSize(); i++) {
                 /* eslint-disable no-loop-func */
                 this.defineBinding(
-                        name, TP.uc(uris.at(i)), 'value', 'value',
+                        '@' + name, TP.uc(uris.at(i)), 'value', 'value',
                         function() {
                             return expandedExpr.transform();
                         });
@@ -1441,7 +1441,7 @@ function() {
             for (i = 0; i < uris.getSize(); i++) {
                 /* eslint-disable no-loop-func */
                 this.destroyBinding(
-                        name, TP.uc(uris.at(i)), 'value', 'value');
+                        '@' + name, TP.uc(uris.at(i)), 'value', 'value');
                 /* eslint-enable no-loop-func */
             }
     }.bind(this));
