@@ -1350,11 +1350,13 @@ function() {
             //  Loop over the URIs that this expression wants to be bound to and
             //  define the bindings.
             for (i = 0; i < uris.getSize(); i++) {
+                /* eslint-disable no-loop-func */
                 this.defineBinding(
                         name, TP.uc(uris.at(i)), 'value', 'value',
                         function() {
                             return expandedExpr.transform();
                         });
+                /* eslint-enable no-loop-func */
             }
     }.bind(this));
 
@@ -1433,8 +1435,10 @@ function() {
             //  Loop over the URIs that this expression wants to be bound to and
             //  destroy the bindings.
             for (i = 0; i < uris.getSize(); i++) {
+                /* eslint-disable no-loop-func */
                 this.destroyBinding(
                         name, TP.uc(uris.at(i)), 'value', 'value');
+                /* eslint-enable no-loop-func */
             }
     }.bind(this));
 
