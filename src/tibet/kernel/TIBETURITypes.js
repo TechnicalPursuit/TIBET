@@ -7078,14 +7078,26 @@ function(forceRefresh) {
      * @returns {TP.core.URI} A concrete URI if the receiver resolves to one.
      */
 
-    var url,
+    var resource,
+        url,
         parts,
         path;
 
     //  When there's a canvas reference the receiver is a pointer to a DOM
     //  element and not an indirect reference to some other concrete URI. In
-    //  that case we don't consider ourselves to have a nested URI.
+    //  that case we will grab the resource, get it's global ID and then compute
+    //  a new URL from that.
     if (TP.notEmpty(this.getCanvasName())) {
+        if (TP.isValid(resource = this.getResource())) {
+            //  If it's a Window, hand back a TIBET URI, but pointing to the
+            //  'more concrete' URI that includes the Window's global ID.
+            if (TP.isKindOf(resource, TP.core.Window)) {
+                return TP.uc('tibet://' + TP.gid(resource));
+            } else {
+                return TP.uc(TP.gid(resource));
+            }
+        }
+
         return;
     }
 
