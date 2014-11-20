@@ -631,6 +631,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
+    } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
+        resource = resourceOrURI.getNestedURI();
     } else {
         resource = resourceOrURI;
     }
@@ -875,6 +877,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
+    } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
+        resource = resourceOrURI.getNestedURI();
     } else {
         resource = resourceOrURI;
     }
