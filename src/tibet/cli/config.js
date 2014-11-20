@@ -75,7 +75,7 @@ Cmd.prototype.HELP =
 'tibet config -> list all configuration values.\n' +
 'tibet config \'~\' -> list all path values.\n' +
 'tibet config boot -> list all boot.* values.\n' +
-'tibet config boot.bootstrap -> list a single value.\n' +
+'tibet config boot.level -> list a single value.\n' +
 'tibet config foo.bar=true -> set foo.bar to true.\n\n' +
 
 'NOTE that if you use this command to set values it will rewrite tibet.json\n' +

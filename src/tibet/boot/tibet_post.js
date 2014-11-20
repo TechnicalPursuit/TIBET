@@ -8295,17 +8295,17 @@ TP.boot.$configureBootstrap = function() {
     // Launch parameters can be provided directly to the launch command such
     // that the bootstrap file isn't needed. If that's the case we can skip
     // loading the file and cut out one more HTTP call.
-    if (TP.sys.cfg('boot.nobootstrap')) {
+    if (!TP.sys.cfg('boot.tibet_file')) {
         return;
     }
 
-    file = TP.boot.$uriJoinPaths('~app', TP.sys.cfg('boot.bootstrap'));
+    file = TP.boot.$uriJoinPaths('~app', TP.sys.cfg('path.tibet_file'));
     logpath = TP.boot.$uriInTIBETFormat(file);
 
     file = TP.boot.$uriExpandPath(file);
 
     try {
-        TP.boot.$stdout('Loading bootstrap: ' + logpath, TP.DEBUG);
+        TP.boot.$stdout('Loading TIBET project file: ' + logpath, TP.DEBUG);
         str = TP.boot.$uriLoad(file, TP.TEXT, 'source');
         if (!str) {
             TP.boot.$stderr('Failed to load: ' + file, TP.FATAL);
@@ -8317,7 +8317,7 @@ TP.boot.$configureBootstrap = function() {
         return;
     }
 
-    // Process the values in the bootstrap file to push them into the system
+    // Process the values in the tibet_file to push them into the system
     // configuration.
     TP.boot.$configureOptions(obj);
 
@@ -10037,7 +10037,7 @@ TP.boot.$config = function() {
 
     TP.boot.$setStage('configuring');
 
-    //  loads the bootstrap file which typically contains profile and lib_root
+    //  loads the tibet.json file which typically contains profile and lib_root
     //  data. with those two values the system can find the primary package and
     //  configuration that will ultimately drive what we load.
     TP.boot.$configureBootstrap();

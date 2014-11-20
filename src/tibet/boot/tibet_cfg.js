@@ -89,11 +89,11 @@ TP.sys.setcfg('boot.uselogin', false);
 //  tibet code (phase one) in parallel or do we wait until login succeeds?
 TP.sys.setcfg('boot.parallel', true);
 
-//  should we skip loading a bootstrap file? default is false to load the
+//  should we skip loading path.tibet_file? default is false to load the
 //  boot.boostrap JSON file (tibet.json by default). turning this off means all
 //  parameters critical to booting must be given in the launch() call or on the
 //  URL.
-TP.sys.setcfg('boot.nobootstrap', false);
+TP.sys.setcfg('boot.tibet_file', true);
 
 //  should we allow url-level overrides of setcfg parameters. by default this is
 //  set to true, but it can be configured to off during launch() invocation.
@@ -191,11 +191,6 @@ TP.sys.setcfg('boot.initoffset', '../../..');
 //  ---
 //  package/config setup
 //  ---
-
-//  What is the name of the bootstrap project file? This file is loaded to
-//  provide bootstrap parameter values if 'boot.nobootstrap' isn't set  You can
-//  set bootstrap values in the call to TP.boot.launch as an alternative.
-TP.sys.setcfg('boot.bootstrap', 'tibet.json');
 
 //  What profile should we be loading? The setting here can directly impact
 //  which package file we use as a starting point for booting.
@@ -499,12 +494,16 @@ TP.sys.setcfg('boot.moz_xpcom', false);
 TP.sys.setcfg('path.npm_dir', 'node_modules');
 TP.sys.setcfg('path.npm_file', 'package.json');
 
+TP.sys.setcfg('path.tibet_dir', 'TIBET-INF');
+TP.sys.setcfg('path.tibet_file', 'tibet.json');
+TP.sys.setcfg('path.tibet_lib', 'tibet');   // npm install name here.
+
 TP.sys.setcfg('path.app', '~app_root');
 TP.sys.setcfg('path.lib', '~lib_root');
 TP.sys.setcfg('path.tibet', '~lib_root');
 
-TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('boot.tibetinf'));
-TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('boot.tibetinf'));
+TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_dir'));
+TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_dir'));
 
 //  common virtual paths
 TP.sys.setcfg('path.app_bin', '~app/bin');
@@ -546,7 +545,7 @@ TP.sys.setcfg('path.lib_img', '~lib_lib/img');
 TP.sys.setcfg('path.app_lib', '~app/lib');
 TP.sys.setcfg('path.lib_lib', '~lib/lib');
 
-TP.sys.setcfg('path.app_npm', '~app/node_modules');
+TP.sys.setcfg('path.app_npm', '~/node_modules');
 TP.sys.setcfg('path.lib_npm', '~lib/node_modules');
 
 TP.sys.setcfg('path.app_src', '~app/src');
@@ -1258,7 +1257,7 @@ TP.sys.setcfg('tds.patch_root', '~app_src');
 TP.sys.setcfg('tds.patch_uri', '/tds/patch');
 
 TP.sys.setcfg('tds.port', 1407);
-TP.sys.setcfg('tds.secret', 'change this in your tibet.json file');
+TP.sys.setcfg('tds.secret', 'change this in your TIBET config');
 
 TP.sys.setcfg('tds.404', 'NotFound');
 TP.sys.setcfg('tds.500', 'ServerError');
