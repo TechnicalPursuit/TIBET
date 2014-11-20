@@ -201,7 +201,7 @@ function(aNode) {
         item = items[i];
 
         if (TP.notEmpty(attr = TP.elementGetAttribute(item, 'name'))) {
-            if (TP.regex.TIBET_URI.test(attr)) {
+            if (TP.regex.TIBET_URL.test(attr)) {
                 TP.elementSetAttribute(item,
                                         'name',
                                         TP.uriExpandPath(attr),
@@ -210,7 +210,7 @@ function(aNode) {
         }
 
         if (TP.notEmpty(attr = TP.elementGetAttribute(item, 'uri'))) {
-            if (TP.regex.TIBET_URI.test(attr)) {
+            if (TP.regex.TIBET_URL.test(attr)) {
                 TP.elementSetAttribute(item,
                                         'uri',
                                         TP.uriExpandPath(attr),
@@ -220,7 +220,7 @@ function(aNode) {
 
         if (TP.notEmpty(attr = TP.elementGetAttribute(
                                             item, 'tibet:localuri', true))) {
-            if (TP.regex.TIBET_URI.test(attr)) {
+            if (TP.regex.TIBET_URL.test(attr)) {
                 TP.elementSetAttribute(item,
                                         'tibet:localuri',
                                         TP.uriExpandPath(attr),
@@ -229,7 +229,7 @@ function(aNode) {
         }
 
         if (TP.notEmpty(attr = TP.elementGetAttribute(item, 'catalog'))) {
-            if (TP.regex.TIBET_URI.test(attr)) {
+            if (TP.regex.TIBET_URL.test(attr)) {
                 TP.elementSetAttribute(item,
                                         'catalog',
                                         TP.uriExpandPath(attr),

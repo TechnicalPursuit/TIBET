@@ -248,7 +248,7 @@ function(aURI, $$vetted) {
 
     try {
         //  TIBET URLs are the most common so we try to optimize for them
-        if (TP.regex.TIBET_URI.test(url)) {
+        if (TP.regex.TIBET_URL.test(url)) {
             //  if it starts with ~ or tibet: then we need to check for the
             //  fully expanded form as a registered instance
             expanded = TP.uriResolveVirtualPath(url);
@@ -3123,6 +3123,13 @@ function(aSignal) {
             //  to see if any of the subURIs have that path as their fragment.
             path = aSignal.at('aspect');
 
+            //  Note that we change the 'aspect' here to 'value' - because the
+            //  'entire value' of the subURI itself has changed. We also include
+            //  a 'path' for convenience, so that observers can use that against
+            //  the primary URI to obtain this URI's value, if they wish.
+            aSignal.atPut('aspect', 'value');
+            aSignal.atPut('path', path);
+
             for (i = 0; i < subURIs.getSize(); i++) {
 
                 fragText = subURIs.at(i).getFragmentText();
@@ -3137,6 +3144,11 @@ function(aSignal) {
                             aSignal.getPayload());
                 }
             }
+
+            //  Put the signal back to what it was before we mucked with it
+            //  above.
+            aSignal.removeKey('path');
+            aSignal.atPut('aspect', path);
         }
 
         //  Now that any of the appropriate subURIs have signaled from
@@ -4573,6 +4585,10 @@ function(aResource, aRequest) {
             //  changed. This very well may mean structural changes occurred and
             //  the resource that the subURI pointed to doesn't even exist
             //  anymore.
+            //  The 'aspect' here is 'value' - because the 'entire value' of the
+            //  subURI itself has changed. We also include a 'path' for
+            //  convenience, so that observers can use that against the primary
+            //  URI to obtain this URI's value, if they wish.
             //  The 'target' here is computed by running the fragment against
             //  the resource.
             description = TP.hc(
@@ -4594,10 +4610,18 @@ function(aResource, aRequest) {
 
         //  Now that we're done signaling the sub URIs, it's time to signal a
         //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
-        //  Note how we reset the old and new values to the 'whole' old and new
-        //  values.
-        description.atPut(TP.OLDVAL, resource);
-        description.atPut(TP.NEWVAL, aResource);
+        description = TP.hc(
+                'action', TP.DELETE,
+                'aspect', 'value',
+                'facet', 'value',
+
+                //  NB: We supply these values here for consistency with the 'no
+                //  subURIs logic' below.
+                'target', aResource,
+                'oldTarget', resource,
+                TP.OLDVAL, resource,
+                TP.NEWVAL, aResource
+                );
 
         this.signal(
             'TP.sig.ValueChange',
@@ -6781,7 +6805,7 @@ function(aURIString) {
 
     //  make sure we come in with tibet: scheme or that we add it
     if (TP.regex.TIBET_SCHEME.test(aURIString) &&
-        TP.regex.TIBET_URI_SPLITTER.test(aURIString)) {
+        TP.regex.TIBET_URL_SPLITTER.test(aURIString)) {
         this.callNextMethod();
     } else if (TP.regex.VIRTUAL_URI_PREFIX.test(aURIString)) {
         //  URIs starting with ~ don't resolve to a canvas.
@@ -7054,14 +7078,26 @@ function(forceRefresh) {
      * @returns {TP.core.URI} A concrete URI if the receiver resolves to one.
      */
 
-    var url,
+    var resource,
+        url,
         parts,
         path;
 
     //  When there's a canvas reference the receiver is a pointer to a DOM
     //  element and not an indirect reference to some other concrete URI. In
-    //  that case we don't consider ourselves to have a nested URI.
+    //  that case we will grab the resource, get it's global ID and then compute
+    //  a new URL from that.
     if (TP.notEmpty(this.getCanvasName())) {
+        if (TP.isValid(resource = this.getResource())) {
+            //  If it's a Window, hand back a TIBET URI, but pointing to the
+            //  'more concrete' URI that includes the Window's global ID.
+            if (TP.isKindOf(resource, TP.core.Window)) {
+                return TP.uc('tibet://' + TP.gid(resource));
+            } else {
+                return TP.uc(TP.gid(resource));
+            }
+        }
+
         return;
     }
 
@@ -7079,7 +7115,7 @@ function(forceRefresh) {
     parts = this.$get('uriParts');
     if (TP.isEmpty(parts)) {
         path = TP.uriResolveVirtualPath(this.$get('uri'), true);
-        parts = path.match(TP.regex.TIBET_URI_SPLITTER);
+        parts = path.match(TP.regex.TIBET_URL_SPLITTER);
     }
 
     path = parts.at(TP.core.TIBETURL.URL_INDEX);
@@ -7148,12 +7184,12 @@ function() {
     url = this.$get('uri');
 
     //  first check is a regex that should work on all valid TIBET URLs
-    if (!TP.regex.TIBET_URI_SPLITTER.test(url)) {
+    if (!TP.regex.TIBET_URL_SPLITTER.test(url)) {
         return TP.raise(url, 'TP.sig.InvalidURI', url);
     }
 
     //  keep the parts around in split form for faster processing elsewhere
-    this.$set('uriParts', url.match(TP.regex.TIBET_URI_SPLITTER));
+    this.$set('uriParts', url.match(TP.regex.TIBET_URL_SPLITTER));
     parts = this.$get('uriParts');
 
     //  with parts in place we can ask for the canvas name

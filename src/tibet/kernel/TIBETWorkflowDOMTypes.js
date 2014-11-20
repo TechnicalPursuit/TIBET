@@ -1824,14 +1824,15 @@ function(aNode) {
     }
 
     //  We're only interested in elements that either are in the 'bind:'
-    //  namespace or have attributes in the 'bind:' namespace
+    //  namespace or have attributes in the 'bind:' namespace (or have the
+    //  '[[...]]' sugar).
     query = 'descendant-or-self::*' +
             '[' +
             'namespace-uri() = "' + TP.w3.Xmlns.BIND + '"' +
             ' or ' +
             '@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '"]' +
             ' or ' +
-            '@*[starts-with(., "[[")]' +
+            '@*[contains(., "[[")]' +
             ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);

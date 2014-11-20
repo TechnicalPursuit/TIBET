@@ -1488,7 +1488,7 @@ function(aPath, resourceOnly) {
     url = aPath;
 
     //  has to start with tibet: or ~ to be resolvable
-    if (!TP.regex.TIBET_URI.test(aPath)) {
+    if (!TP.regex.TIBET_URL.test(aPath)) {
         return aPath;
     }
 
@@ -1496,7 +1496,7 @@ function(aPath, resourceOnly) {
 
     //  for scheme-based paths we can split to get the parts
     if (url.indexOf('tibet:') === 0) {
-        parts = url.match(TP.regex.TIBET_URI_SPLITTER);
+        parts = url.match(TP.regex.TIBET_URL_SPLITTER);
         if (TP.isArray(parts)) {
             //  whole, jid, resource, canvas, uri, path, pointer
             path = parts.at(5);
@@ -1601,7 +1601,7 @@ function(aPath, resourceOnly) {
     //  but all other cases where a canvas is defined we must preserve
 
     if (TP.notTrue(resourceOnly) && (url.indexOf('tibet:') === 0)) {
-        parts = url.match(TP.regex.TIBET_URI_SPLITTER);
+        parts = url.match(TP.regex.TIBET_URL_SPLITTER);
         if (TP.isArray(parts) && TP.notEmpty(parts.at(3))) {
             return 'tibet:' + parts.at(1) + '/' + parts.at(2) + '/' +
                         parts.at(3) + '/' + path + pointer;

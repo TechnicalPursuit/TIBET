@@ -3,8 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:tsh="http://www.technicalpursuit.com/1999/tshell"
-		xmlns:ev="http://www.w3.org/2001/xml-events">
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
 <head>
 
@@ -22,12 +21,7 @@
 	<h2>Bind Test #1</h2><br/>
 	<br/>
 	<br/>
-	This test sets up a 'simple binding' between the fields and an empty piece of XML data, set up by the event handler embedded in this document.<br/>
-	<br/>
-	<br/>
-
-	<br/>
-	Enter data into the 2 text fields and watch the model output below to see the resultant XML.
+	This test sets up a 'simple binding' between the fields and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document.<br/>
 	<br/>
 	<br/>
 
@@ -37,34 +31,12 @@
 	<label for="lastNameField">Last name: </label>
     <input type="text" id="lastNameField" bind:io="value: urn:tibet:Bind1_person#xpath1(/person/lastname)" tabindex="0"/><br/>
 
-    <!-- Any aspect changing -->
-    <ev:script type="text/javascript" event="TP.sig.Change" observer="urn:tibet:Bind1_person">
-        <![CDATA[
-        TP.byOID('modelOutput').setProcessedContent(
-                    '<span>' +
-                    TP.str(triggerSignal.getSignalOrigin().getResource()).asEscapedHTML() +
-                    '</span>');
-        ]]>
-    </ev:script>
-
-    <br/>
-    Current data model:<br/><br/><span id="modelOutput"/>
-    <br/>
-
-	<!-- Data model construction handler -->
-	<ev:script type="text/javascript" event="TP.sig.DOMContentLoaded" observer="#document">
-        <![CDATA[
-		var newInst;
-		newInst = TP.tpdoc(
-					TP.join(
-					'<person xmlns="">',
-						'<lastname>Smith</lastname>',
-						'<firstname>Joe</firstname>',
-					'</person>'
-					));
-		TP.uc('urn:tibet:Bind1_person').setResource(newInst);
-		]]>
-	</ev:script>
+    <tibet:data local="urn:tibet:Bind1_person">
+        <person xmlns="">
+            <lastname>Smith</lastname>
+            <firstname>Joe</firstname>
+        </person>
+    </tibet:data>
 
 </body>
 </html>

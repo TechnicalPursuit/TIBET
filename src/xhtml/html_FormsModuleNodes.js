@@ -1293,7 +1293,7 @@ function(aValue) {
 
 TP.html.inputCheckable.Inst.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+            sourceFacetName, transformationFunc) {
 
     /**
      * @name defineBinding
@@ -1304,6 +1304,10 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      *     specified, this will default to targetAttributeName.
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
      * @returns {Object} The receiver.
      * @todo
      */
@@ -1347,8 +1351,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
                             sourceAttributeName, aTPElem, 'value');
             });
     } else {
-        this.callNextMethod(targetAttributeName, resourceOrURI,
-                            sourceAttributeName, sourceFacetName);
+        this.callNextMethod();
     }
 
     return this;

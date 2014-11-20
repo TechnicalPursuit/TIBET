@@ -1757,6 +1757,41 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Signal.Inst.defineMethod('removeKey',
+function(aKey) {
+
+    /**
+     * @name removeKey
+     * @synopsis Removes a key (and it's attendant value) from the receiver's
+     *     payload, provided that the payload can handle a removeKey operation.
+     * @description Note that this method does not signal 'Change', even if it's
+     *     'shouldSignalChange' attribute is true. Observe the payload for
+     *     change notification.
+     * @param {String} aKey The key for the parameter.
+     * @returns {TP.sig.Signal} The receiver.
+     */
+
+    var payload;
+
+    payload = this.getPayload();
+    if (TP.notValid(payload)) {
+        return this;
+    }
+
+    if (TP.canInvoke(payload, 'removeKey')) {
+        payload.removeKey(aKey);
+
+        return this;
+    }
+
+    this.raise('TP.sig.InvalidPayload',
+                    'Unable to remove payload key: ' + aKey);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Signal.Inst.defineMethod('renewHandler',
 function(aHandler) {
 
@@ -4266,7 +4301,7 @@ aSigEntry, checkTarget) {
             //  if we're using strict XMLEvent or DOM firing then
             //  we have to check to see if the signal's target matches
             //  the specified dom_target if there is one
-            if (TP.isTrue(checkTarget)) {
+            if (checkTarget) {
                 xml_target = item.xml_target;
                 observer = item.observer;
 

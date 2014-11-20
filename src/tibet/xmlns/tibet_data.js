@@ -43,6 +43,7 @@ function(aRequest) {
 
         childNodes,
         children,
+        cdatas,
 
         resourceStr,
 
@@ -69,14 +70,21 @@ function(aRequest) {
             }
         }
 
-        //  If the first child is a CDATA section, then we grab it's text value.
-        if (TP.isCDATASectionNode(childNodes[0])) {
-            resourceStr = TP.nodeGetTextContent(childNodes[0]);
+        //  Normalize the node to try to get the best representation
+        elem.normalize();
+
+        cdatas = TP.nodeGetDescendantsByType(elem, Node.CDATA_SECTION_NODE);
+
+        //  If there is a CDATA section, then we grab it's text value.
+        if (TP.notEmpty(cdatas)) {
+            resourceStr = TP.nodeGetTextContent(cdatas.first());
 
             //  If we can determine that it's JSON data, then we make JavaScript
             //  data from it and set that as the local URI's resource.
             if (TP.isJSONString(resourceStr)) {
                 localURI.setResource(TP.json2js(resourceStr));
+            } else {
+                localURI.setResource(resourceStr);
             }
         } else {
             //  Otherwise, if the first child element is an XML element
@@ -117,8 +125,6 @@ function(aRequest) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
         }
-
-        TP.wrap(elem).load();
     }
 
     return;
@@ -230,9 +236,6 @@ function() {
      */
 
     var remoteHref,
-        parts,
-        val,
-        hrefSrc,
         remoteURI,
 
         localHref,
@@ -247,25 +250,6 @@ function() {
     //  Make sure that a 'remote' href is available and a URI can be created
     //  from it.
     if (TP.notEmpty(remoteHref = this.getAttribute('remote'))) {
-
-        //  We allow ACP'ed expressions in this attribute. If it's there, we
-        //  obtain it, try to obtain a URI reference from it and replace that
-        //  place in the template with the value of that resource.
-        if (TP.regex.HAS_ACP.test(remoteHref)) {
-            //  TODO: Hacky because templating doesn't support URIs as data
-            //  sources.
-            parts = TP.regex.EXTRACT_ACP.exec(remoteHref);
-            if (TP.isURI(hrefSrc = TP.uc(parts.at(1)))) {
-                val = hrefSrc.getResource().getValue();
-                if (TP.isEmpty(val)) {
-                    //  Raise an exception
-                    return this.raise('TP.sig.InvalidQuery');
-                }
-
-                remoteHref = remoteHref.replace(parts.at(0), val);
-            }
-        }
-
         if (!TP.isURI(remoteURI = TP.uc(remoteHref))) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');

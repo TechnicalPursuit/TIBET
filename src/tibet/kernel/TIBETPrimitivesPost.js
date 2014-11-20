@@ -1954,7 +1954,7 @@ function(anObject, assignIfAbsent) {
                 //  It doesn't start with our current prefix
                 if (!id.startsWith(prefix)) {
                     //  If it starts with another prefix, slice that off
-                    if (TP.regex.TIBET_URI.test(id)) {
+                    if (TP.regex.TIBET_URL.test(id)) {
                         id = id.slice(id.indexOf('/', 8) + 1);
                     }
 
@@ -1977,10 +1977,13 @@ function(anObject, assignIfAbsent) {
                     //  Remove all of the 'tibet:globalID' attributes from any
                     //  elements in the document that have them - this will
                     //  cause them to reset
-                    TP.nodeEvaluateCSS(obj, '*[tibet|globalID]').forEach(
+                    TP.nodeEvaluateCSS(obj,
+                            '*[' +
+                            TP.GLOBAL_ID_ATTR.replace(':', '|') +
+                            ']').forEach(
                             function(anElem) {
                                 TP.elementRemoveAttribute(
-                                    anElem, 'tibet:globalID', true);
+                                    anElem, TP.GLOBAL_ID_ATTR, true);
                             });
                     TP.ac(obj.getElementsByTagName('*')).forEach(
                             function(anElem) {
@@ -3787,6 +3790,12 @@ function(anObject, anAspect, autoCollapse) {
     }
 
     val = null;
+
+    //  if the object is empty but the aspect is a URI, try to get the value of
+    //  the URI's resource.
+    if (TP.isEmpty(anObject) && TP.isURI(anAspect)) {
+        val = TP.val(TP.uc(anAspect).getResource());
+    }
 
     //  some native objects may not have been TIBET-enabled, so for those
     //  we try to get a wrapper and ask it

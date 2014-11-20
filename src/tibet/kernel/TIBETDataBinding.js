@@ -598,7 +598,7 @@ output TIBET lets you adjust your page in almost any form necessary.
 
 TP.definePrimitive('defineBinding',
 function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+            sourceFacetName, transformationFunc) {
 
     /**
      * @name defineBinding
@@ -610,6 +610,11 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
      *     specified, this will default to targetAttributeName.
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
+     * @param {Function} transformationFunc
      * @returns {Object} The target object.
      */
 
@@ -622,7 +627,9 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
         methodName,
 
-        handler;
+        handler,
+
+        resourceValue;
 
     if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter',
@@ -631,6 +638,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
+    } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
+        resource = resourceOrURI.getNestedURI();
     } else {
         resource = resourceOrURI;
     }
@@ -712,24 +721,31 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  Define a handler function
         handler = function(aSignal) {
 
-            var aspect,
+            var origin,
+
+                aspect,
                 facet,
 
                 mapKey,
 
+                entry,
                 targetAttr,
+                transform,
 
                 newVal;
 
             TP.stop('break.bind_change');
 
             try {
+                origin = aSignal.getOrigin();
+
                 aspect = aSignal.at('aspect');
+
                 facet = aSignal.at('facet');
 
                 //  Compute a map key in the same way we did above when we made
                 //  the registration and see if the map has it.
-                mapKey = TP.gid(aSignal.getOrigin()) +
+                mapKey = TP.gid(origin) +
                                 TP.JOIN +
                                 TP.str(aspect) +
                                 TP.JOIN +
@@ -737,10 +753,21 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
                 //  If we found a target attribute registration under the key,
                 //  then perform the set()
-                if (TP.notEmpty(targetAttr =
+                if (TP.notEmpty(entry =
                                 handler.$observationsMap.at(mapKey))) {
 
+                    //  The target attribute is the first item in the entry pair
+                    //  and any (optional) transformation Function is the last.
+                    targetAttr = entry.first();
+                    transform = entry.last();
+
                     newVal = aSignal.getValue();
+
+                    //  If there was a transformation Function registered, then
+                    //  execute it.
+                    if (TP.isCallable(transform)) {
+                        newVal = transform(newVal);
+                    }
 
                     this.refresh(
                             TP.hc(TP.NEWVAL, newVal,
@@ -760,7 +787,16 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     //  Add an entry to make a mapping between a source aspect and a target
     //  aspect.
-    handler.$observationsMap.atPut(aspectKey, targetAttributeName);
+    handler.$observationsMap.atPut(aspectKey,
+                                    TP.ac(targetAttributeName,
+                                            transformationFunc));
+
+    //  If the resource is a URI and we can obtain the resource value of it,
+    //  make sure that it is configured to signal Change notifications.
+    if (TP.isURI(resource) &&
+        TP.isValid(resourceValue = resource.getResource())) {
+        resourceValue.shouldSignalChange(true);
+    }
 
     //  Go ahead and make the observation.
     target.observe(resource, signalName);
@@ -772,7 +808,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.defineMetaInstMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+            sourceFacetName, transformationFunc) {
 
     /**
      * @name defineBinding
@@ -783,19 +819,23 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      *     specified, this will default to targetAttributeName.
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
      * @returns {Object} The receiver.
      */
 
     return TP.defineBinding(
             this, targetAttributeName, resourceOrURI,
-            sourceAttributeName, sourceFacetName);
+            sourceAttributeName, sourceFacetName, transformationFunc);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+            sourceFacetName, transformationFunc) {
 
     /**
      * @name defineBinding
@@ -806,19 +846,23 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      *     specified, this will default to targetAttributeName.
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
      * @returns {Object} The receiver.
      */
 
     return TP.defineBinding(
             this, targetAttributeName, resourceOrURI,
-            sourceAttributeName, sourceFacetName);
+            sourceAttributeName, sourceFacetName, transformationFunc);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+            sourceFacetName, transformationFunc) {
 
     /**
      * @name defineBinding
@@ -829,13 +873,17 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      *     specified, this will default to targetAttributeName.
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
      * @returns {Object} The receiver.
      * @todo
      */
 
     return TP.defineBinding(
             this, targetAttributeName, resourceOrURI,
-            sourceAttributeName, sourceFacetName);
+            sourceAttributeName, sourceFacetName, transformationFunc);
 });
 
 //  ------------------------------------------------------------------------
@@ -875,6 +923,8 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
+    } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
+        resource = resourceOrURI.getNestedURI();
     } else {
         resource = resourceOrURI;
     }
@@ -1198,11 +1248,206 @@ function(aSignalOrHash) {
 //  TP.core.ElementNode
 //  ------------------------------------------------------------------------
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 //  The attributes for this element type that are considered to 'bidi
 //  attributes' that can not only be bound to data source but be bound *back* to
 //  the data source so that when they are changed by the user, they update the
 //  data source.
 TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineAttribute('sugaredExprs');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('defineSugaredBindings',
+function() {
+
+    /**
+     * @name defineSugaredBindings
+     * @synopsis Defines any bindings coming from the receivers's 'sugared
+     *     binding' expressions. These are normally registered by the 'bind:'
+     *     namespace when it processes the markup.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var scopeVals;
+
+    //  Obtain the binding scope values by walking the DOM tree.
+    scopeVals = this.getBindingScopeValues();
+
+    //  Loop over the sugared expressions and process them.
+    this.get('sugaredExprs').perform(
+        function(kvPair) {
+
+            var name,
+                value,
+
+                expandedExpr,
+
+                exprParts,
+                exprWithBrackets,
+                exprWithoutBrackets,
+
+                allVals,
+                fullyExpandedVal,
+
+                uris,
+                i;
+
+            //  The name will be used as the 'target attribute name' of the
+            //  binding.
+            name = kvPair.first();
+            value = kvPair.last();
+
+            //  Grab the 'expanded expression here' - we'll expand it further
+            //  below.
+            expandedExpr = value;
+
+            uris = TP.ac();
+
+            //  While we can still extract binding expressions from the value,
+            //  keep looping. This allows us to have multiple expressions in a
+            //  single value (i.e. 'foo [[bar]] is called: [[baz]]')
+            while (TP.isValid(exprParts =
+                    TP.regex.INLINE_BINDING_EXTRACT.exec(value))) {
+
+                //  We want the expression both with and without the surrounding
+                //  brackets ([[...]])
+                exprWithBrackets = exprParts.first();
+                exprWithoutBrackets = exprParts.last();
+
+                //  Concatenate the expression without the brackets onto the
+                //  scope values array (thereby creating a new Array) and use it
+                //  to join all of the values together.
+                allVals = scopeVals.concat(exprWithoutBrackets);
+                fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
+
+                //  Replace the expression with the brackets with the expression
+                //  without the brackets surrounded by ACP brackets.
+                expandedExpr = expandedExpr.replace(
+                                exprWithBrackets,
+                                '{{' + fullyExpandedVal + '}}');
+
+                //  Make sure to trim off any format before pushing this into
+                //  the URI list that we set bindings up from.
+                if (TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
+                    fullyExpandedVal = fullyExpandedVal.slice(
+                                    0, fullyExpandedVal.indexOf('%%')).trim();
+                }
+
+                //  Add that value to the list of URIs to bind to this
+                //  expression.
+                uris.push(fullyExpandedVal);
+            }
+
+            //  Loop over the URIs that this expression wants to be bound to and
+            //  define the bindings.
+            for (i = 0; i < uris.getSize(); i++) {
+                /* eslint-disable no-loop-func */
+                this.defineBinding(
+                        '@' + name, TP.uc(uris.at(i)), 'value', 'value',
+                        function() {
+                            return expandedExpr.transform();
+                        });
+                /* eslint-enable no-loop-func */
+            }
+    }.bind(this));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('destroySugaredBindings',
+function() {
+
+    /**
+     * @name destroySugaredBindings
+     * @synopsis Destroys any bindings coming from the receivers's 'sugared
+     *     binding' expressions. These are normally registered by the 'bind:'
+     *     namespace when it processes the markup.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var scopeVals;
+
+    //  Obtain the binding scope values by walking the DOM tree.
+    scopeVals = this.getBindingScopeValues();
+
+    //  Loop over the sugared expressions and process them.
+    this.get('sugaredExprs').perform(
+        function(kvPair) {
+
+            var name,
+                value,
+
+                exprParts,
+                exprWithoutBrackets,
+
+                allVals,
+                fullyExpandedVal,
+
+                uris,
+                i;
+
+            //  The name will be used as the 'target attribute name' of the
+            //  binding.
+            name = kvPair.first();
+            value = kvPair.last();
+
+            //  Grab the 'expanded expression here' - we'll expand it further
+            //  below.
+            uris = TP.ac();
+
+            //  While we can still extract binding expressions from the value,
+            //  keep looping. This allows us to have multiple expressions in a
+            //  single value (i.e. 'foo [[bar]] is called: [[baz]]')
+            while (TP.isValid(exprParts =
+                    TP.regex.INLINE_BINDING_EXTRACT.exec(value))) {
+
+                //  We're only interested in the expression without the
+                //  surrounding brackets ([[...]])
+                exprWithoutBrackets = exprParts.last();
+
+                //  Concatenate the expression without the brackets onto the
+                //  scope values array (thereby creating a new Array) and use it
+                //  to join all of the values together.
+                allVals = scopeVals.concat(exprWithoutBrackets);
+                fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
+
+                //  Make sure to trim off any format before pushing this into
+                //  the URI list that we set bindings up from.
+                if (TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
+                    fullyExpandedVal = fullyExpandedVal.slice(
+                                    0, fullyExpandedVal.indexOf('%%')).trim();
+                }
+
+                //  Add that value to the list of URIs to remove the binding for
+                //  this expression.
+                uris.push(fullyExpandedVal);
+            }
+
+            //  Loop over the URIs that this expression wants to be bound to and
+            //  destroy the bindings.
+            for (i = 0; i < uris.getSize(); i++) {
+                /* eslint-disable no-loop-func */
+                this.destroyBinding(
+                        '@' + name, TP.uc(uris.at(i)), 'value', 'value');
+                /* eslint-enable no-loop-func */
+            }
+    }.bind(this));
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1595,6 +1840,12 @@ function(aSignalOrHash) {
 
                 }.bind(this));
         }
+
+        //  'Inline expression' sugar
+
+        if (TP.notEmpty(this.get('sugaredExprs'))) {
+           this.destroySugaredBindings();
+        }
     }
 
     //  Empty out all of the stored binding information - we will repopulate
@@ -1697,6 +1948,12 @@ function(aSignalOrHash) {
                 }.bind(this));
 
             bindingInfos.atPut('out', bindingInfo);
+        }
+
+        //  'Inline expression' sugar
+
+        if (TP.notEmpty(this.get('sugaredExprs'))) {
+           this.defineSugaredBindings();
         }
     }
 
@@ -2193,6 +2450,33 @@ function(aSignalOrHash) {
         //this.$refreshBoundRoots(aSignalOrHash);
         void(0);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('registerSugaredExpression',
+function(aName, aValue) {
+
+    /**
+     * @name registerSugaredExpression
+     * @synopsis Registers a 'sugared binding expression' for processing by the
+     *     binding engine.
+     * @param {String} aName The name to register the expression under. This
+     *     should be the name of the aspect that will be set on the target
+     *     object when the source(s) of the expression change.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var sugaredExprs;
+
+    if (!TP.isValid(sugaredExprs = this.get('sugaredExprs'))) {
+        sugaredExprs = TP.hc();
+        this.set('sugaredExprs', sugaredExprs);
+    }
+
+    sugaredExprs.atPut(aName, aValue);
 
     return this;
 });

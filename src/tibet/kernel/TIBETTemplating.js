@@ -814,7 +814,9 @@ function(aDataSource, transformParams) {
      * @todo
      */
 
-    var params,
+    var dataSource,
+
+        params,
 
         retVal,
 
@@ -833,13 +835,11 @@ function(aDataSource, transformParams) {
 
     TP.stop('break.content_transform');
 
-    if (TP.notValid(aDataSource)) {
-        try {
-            return this();
-        } catch (e) {
-            return this.raise('TP.sig.TransformFailed',
-                                TP.ec(e, 'Transform failed'));
-        }
+    //  NOTE!!! We do *not* change for validity of the data source. Some
+    //  templating expressions can be executed without a data source. If no data
+    //  source was supplied, we just use an empty TP.lang.Hash.
+    if (TP.notValid(dataSource = aDataSource)) {
+        dataSource = TP.hc();
     }
 
     if (TP.isValid(transformParams)) {
@@ -852,18 +852,18 @@ function(aDataSource, transformParams) {
         params = TP.hc();
     }
 
-    params.atPut('$INPUT', aDataSource);
+    params.atPut('$INPUT', dataSource);
 
     //  It's not a collection OR it is a collection, but the caller has not
     //  specified to repeat, we run ourself and return the results.
-    if (!TP.isCollection(aDataSource) || TP.notTrue(params.at('repeat'))) {
+    if (!TP.isCollection(dataSource) || TP.notTrue(params.at('repeat'))) {
         try {
 
-            retVal = this(aDataSource, params);
+            retVal = this(dataSource, params);
 
             //  In case any nested templates messed with the $INPUT, restore it
             //  to the value we set before template execution.
-            params.atPut('$INPUT', aDataSource);
+            params.atPut('$INPUT', dataSource);
 
             //  Make sure to return the primitive String
             return retVal + '';
@@ -880,11 +880,11 @@ function(aDataSource, transformParams) {
     //  want to repeat or not.
     params.removeKey('repeat');
 
-    isOrdered = TP.isArray(aDataSource) || TP.isNodeList(aDataSource);
+    isOrdered = TP.isArray(dataSource) || TP.isNodeList(dataSource);
     if (isOrdered) {
-        source = aDataSource;
-    } else if (TP.canInvoke(aDataSource, 'getItems')) {
-        source = aDataSource.getItems();
+        source = dataSource;
+    } else if (TP.canInvoke(dataSource, 'getItems')) {
+        source = dataSource.getItems();
     } else {
         return this.raise('TP.sig.InvalidParameter',
             'Argument must be a valid collection or object with items.');
@@ -922,7 +922,7 @@ function(aDataSource, transformParams) {
 
     //  In case any nested templates messed with the $INPUT, restore it to the
     //  value we set before template execution.
-    params.atPut('$INPUT', aDataSource);
+    params.atPut('$INPUT', dataSource);
 
     return arr.join('');
 });
