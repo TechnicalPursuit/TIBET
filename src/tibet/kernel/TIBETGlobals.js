@@ -2579,9 +2579,9 @@ TP.regex.REGEX_LITERAL_STRING = /^\/(.+)\/[gimy]*$/;
 //  tibet uris
 //  ---
 
-TP.regex.TIBET_URI = /^[tibet:|~]/;
+TP.regex.TIBET_URL = /^[tibet:|~]/;
 //  node@domain:port, resource, canvas, path, and pointer
-TP.regex.TIBET_URI_SPLITTER =
+TP.regex.TIBET_URL_SPLITTER =
                 /tibet:([^\/]*?)\/([^\/]*?)\/([^\/#]*)\/?(([^#]*)(.*))/;
 
 TP.regex.TIBET_URN = /urn:tibet:/;

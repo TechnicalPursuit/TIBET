@@ -248,7 +248,7 @@ function(aURI, $$vetted) {
 
     try {
         //  TIBET URLs are the most common so we try to optimize for them
-        if (TP.regex.TIBET_URI.test(url)) {
+        if (TP.regex.TIBET_URL.test(url)) {
             //  if it starts with ~ or tibet: then we need to check for the
             //  fully expanded form as a registered instance
             expanded = TP.uriResolveVirtualPath(url);
@@ -6805,7 +6805,7 @@ function(aURIString) {
 
     //  make sure we come in with tibet: scheme or that we add it
     if (TP.regex.TIBET_SCHEME.test(aURIString) &&
-        TP.regex.TIBET_URI_SPLITTER.test(aURIString)) {
+        TP.regex.TIBET_URL_SPLITTER.test(aURIString)) {
         this.callNextMethod();
     } else if (TP.regex.VIRTUAL_URI_PREFIX.test(aURIString)) {
         //  URIs starting with ~ don't resolve to a canvas.
@@ -7115,7 +7115,7 @@ function(forceRefresh) {
     parts = this.$get('uriParts');
     if (TP.isEmpty(parts)) {
         path = TP.uriResolveVirtualPath(this.$get('uri'), true);
-        parts = path.match(TP.regex.TIBET_URI_SPLITTER);
+        parts = path.match(TP.regex.TIBET_URL_SPLITTER);
     }
 
     path = parts.at(TP.core.TIBETURL.URL_INDEX);
@@ -7184,12 +7184,12 @@ function() {
     url = this.$get('uri');
 
     //  first check is a regex that should work on all valid TIBET URLs
-    if (!TP.regex.TIBET_URI_SPLITTER.test(url)) {
+    if (!TP.regex.TIBET_URL_SPLITTER.test(url)) {
         return TP.raise(url, 'TP.sig.InvalidURI', url);
     }
 
     //  keep the parts around in split form for faster processing elsewhere
-    this.$set('uriParts', url.match(TP.regex.TIBET_URI_SPLITTER));
+    this.$set('uriParts', url.match(TP.regex.TIBET_URL_SPLITTER));
     parts = this.$get('uriParts');
 
     //  with parts in place we can ask for the canvas name

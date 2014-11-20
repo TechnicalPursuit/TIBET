@@ -1954,7 +1954,7 @@ function(anObject, assignIfAbsent) {
                 //  It doesn't start with our current prefix
                 if (!id.startsWith(prefix)) {
                     //  If it starts with another prefix, slice that off
-                    if (TP.regex.TIBET_URI.test(id)) {
+                    if (TP.regex.TIBET_URL.test(id)) {
                         id = id.slice(id.indexOf('/', 8) + 1);
                     }
 
