@@ -20,7 +20,7 @@
  * as the script being run is actively outputting to the console or invoking the
  * phantomjs callback handler it will keep running without timing out. The
  * default timeout is 5 seconds. A separate boot timeout is typically set to
- * the default timeout * 3 or 15 seconds by default.
+ * the default timeout * 2 or 10 seconds by default.
  */
 
 /*eslint no-eval:0*/
@@ -109,6 +109,12 @@
      * @type {Number}
      */
     PhantomTSH.FAILURE = 2;
+
+    /**
+     * How many rows go into the log buffer before we flush the console?
+     * @type {Number}
+     */
+    PhantomTSH.FLUSH_LIMIT = 10;
 
     /**
      * The command help string.
@@ -248,6 +254,14 @@
     PhantomTSH.level = null;
 
     /**
+     * Tracks whether TIBET has loaded. This flag is used primarily to decide if
+     * a resource error should terminate the phantom process or not. If an error
+     * occurs prior to TIBET being loaded successfully the answer is true.
+     * @type {Boolean}
+     */
+    PhantomTSH.loaded = false;
+
+    /**
      * The PhantomJS page object used to manage the PhantomJS interface.
      * @type {Page}
      */
@@ -281,11 +295,11 @@
 
     /**
      * Number of milliseconds allowed before the initial startup sequence times
-     * out. The default is 3 times the DEFAULT_TIMEOUT or 15 seconds, which
+     * out. The default is 2 times the DEFAULT_TIMEOUT or 10 seconds, which
      * should be adequate even for a script-by-script developer load sequence.
      * @type {Number}
      */
-    PhantomTSH.startup = PhantomTSH.DEFAULT_TIMEOUT * 3;
+    PhantomTSH.startup = PhantomTSH.DEFAULT_TIMEOUT * 2;
 
     /**
      * General timer for ensuring we eventually time out if there are issues
@@ -400,10 +414,8 @@
             msg,
             color;
 
-        if (PhantomTSH.buffer.length > 0) {
-            console.log(PhantomTSH.buffer.join('\n'));
-            PhantomTSH.buffer.length = 0;
-        }
+        console.log(PhantomTSH.buffer.join('\n'));
+        PhantomTSH.buffer.length = 0;
 
         /* eslint-disable no-nested-ternary */
         status = PhantomTSH.status === null ?
@@ -418,7 +430,7 @@
         }
 
         if (reason && reason.length) {
-            PhantomTSH.log(reason, color);
+            PhantomTSH.log(reason, color, true);
         }
 
         if (!PhantomTSH.argv.quiet) {
@@ -429,7 +441,7 @@
                 ' w/TSH exec time of ' +
                 (PhantomTSH.startExec ? (now - PhantomTSH.startExec) : 0) + ' ms.';
 
-            PhantomTSH.log(msg, 'gray');
+            PhantomTSH.log(msg, 'gray', true);
         }
 
         phantom.exit(status);
@@ -456,7 +468,7 @@
      * @param {String} message The string to output.
      * @param {String} color The name of a color to use for output.
      */
-    PhantomTSH.log = function(message, color) {
+    PhantomTSH.log = function(message, color, flush) {
         var level,
             msg;
 
@@ -521,7 +533,7 @@
 
         PhantomTSH.buffer.push(msg);
 
-        if (PhantomTSH.buffer.length > 5) {
+        if (PhantomTSH.buffer.length > PhantomTSH.FLUSH_LIMIT || flush) {
             console.log(PhantomTSH.buffer.join('\n'));
             PhantomTSH.buffer.length = 0;
         }
@@ -541,13 +553,13 @@
 
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
-        if (!PhantomTSH.argv.quiet && PhantomTSH.argv.debug) {
-            PhantomTSH.log('Starting PhantomJS ' +
+        if (!PhantomTSH.argv.quiet) {
+            PhantomTSH.log('Loading TIBET via PhantomJS ' +
                     phantom.version.major + '.' +
                     phantom.version.minor + '.' +
                     phantom.version.patch +
                     ' at ' + (new Date()).toLocaleString(),
-                'gray');
+                'gray', true);
 
             if (PhantomTSH.argv.debug) {
                 index = PhantomTSH.url.indexOf('#');
@@ -584,9 +596,7 @@
             // Wait for TIBET to be available
             PhantomTSH.wait(
                 function() {
-                    var tibetStarted;
-
-                    tibetStarted = PhantomTSH.page.evaluate(
+                    return PhantomTSH.page.evaluate(
                         function() {
                             // PhantomTSH.wait check...
                             if (TP &&
@@ -603,19 +613,17 @@
 
                             return false;
                         });
-
-                    if (typeof tibetStarted === 'string') {
-                        throw new Error('Stopped: ' + tibetStarted);
-                    }
-                    return tibetStarted;
                 },
                 function() {
+
+                    PhantomTSH.loaded = true;
+
                     PhantomTSH.startExec = new Date().getTime();
 
                     if (!PhantomTSH.argv.quiet) {
-                        PhantomTSH.log('TIBET loaded. Starting execution at ' +
-                            (PhantomTSH.startExec - PhantomTSH.start) + ' ms.',
-                            'gray');
+                        PhantomTSH.log('TIBET loaded in ' +
+                            (PhantomTSH.startExec - PhantomTSH.start) + ' ms.' +
+                            ' Starting execution.', 'gray', true);
                     }
 
                     //  It is important for somewhere in the 'tsh' function to
@@ -742,7 +750,7 @@
 
         PhantomTSH.buffer.push(str);
 
-        if (PhantomTSH.buffer.length > 5) {
+        if (PhantomTSH.buffer.length > PhantomTSH.FLUSH_LIMIT) {
             console.log(PhantomTSH.buffer.join('\n'));
             PhantomTSH.buffer.length = 0;
         }
@@ -784,10 +792,12 @@
 
     /**
      * Cleansed version of waitFor() function from PhantomJS web site. This
-     * function is used to test for load completion. If the testFunction returns
-     * true the wait will end and the onReady function will be invoked. If the
-     * amount of time specified by timeOutMillis expires before the testFunction
-     * returns true the entire process will time out.
+     * function is used to test for load completion. If the isReady function
+     * returns true the wait will end and the onReady function will be invoked.
+     * If the isReady function returns a string that string is treated as an
+     * error message and PhantomTSH.exit is invoked. If the amount of time
+     * specified by timeOutMillis expires before the isReady returns true
+     * the entire process will time out.
      * @param {Function} isReady A function returning true when ready.
      * @param {Function} onReady A function to run when ready.
      * @param {Number} timeOutMillis A millisecond timeout duration.
@@ -807,6 +817,11 @@
             if ((now - start < timeout) && !ready) {
                 try {
                     ready = isReady();
+                    if (typeof ready === 'string') {
+                        PhantomTSH.exit(
+                            PhantomTSH.color(ready, 'red'),
+                            PhantomTSH.ERROR);
+                    }
                 } catch (e) {
                     if (/Stopped/.test(e.message)) {
                         PhantomTSH.exit(
@@ -841,13 +856,25 @@
                 }
             }
 
-        }, 100);
+        }, 200);
     };
 
 
     //  ---
     //  PhantomTSH.page Methods
     //  ---
+
+    /**
+     * Handle notification of an alert() call within PhantomJS and redirect it
+     * to the Node.js console.
+     * @param {String} msg The alert message.
+     */
+    PhantomTSH.page.onAlert = function(msg) {
+        PhantomTSH.log('alert(' + msg + ');', 'yellow');
+
+        return;
+    };
+
 
     /**
      * Handle notification that a window.callPhantom call has been made. This is
@@ -861,7 +888,7 @@
         PhantomTSH.lastActivity = new Date().getTime();
 
         if (!data) {
-            PhantomTSH.exit(PhantomTSH.color('Failed: ', 'yellow') +
+            PhantomTSH.exit(PhantomTSH.color('Failed: ', 'red') +
                 'No result data.', PhantomTSH.FAILURE);
         }
 
@@ -903,6 +930,25 @@
 
 
     /**
+     * Responds to confirm() calls in the client. This implementation returns
+     * true (OK) if the message includes the word "please" in any form.
+     * @param {String} msg The confirmation message.
+     * @return {Boolean} True if you ask nicely.
+     */
+    PhantomTSH.page.onConfirm = function(msg) {
+        PhantomTSH.log('confirm(' + msg + ');', 'yellow');
+
+        // Returning true => "OK", false => "Cancel". We return a value based on
+        // whether the question includes the word please, so ask nicely :).
+        if (msg && /please/i.test(msg)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+
+    /**
      * Handle notification of console output within PhantomJS and redirect it to
      * the Node.js console.
      * @param {String} msg The output message.
@@ -932,7 +978,8 @@
         var str;
 
         if (PhantomTSH.argv.errimg) {
-            PhantomTSH.page.render('PhantomError_' + (new Date().getTime()) + '.png');
+            PhantomTSH.page.render('PhantomError_' +
+                (new Date().getTime()) + '.png');
         }
 
         // Only log errors if the application didn't just do it for us. Usually
@@ -944,12 +991,78 @@
             });
         }
 
-        if (PhantomTSH.buffer.length > 0) {
-            console.log(PhantomTSH.buffer.join('\n'));
-            PhantomTSH.buffer.length = 0;
-        }
-
         PhantomTSH.exit(str, PhantomTSH.ERROR);
+    };
+
+
+    /**
+     * Responds to file picker requests from the client by returning whatever is
+     * passed in oldFile.
+     * @param {String} oldFile The original file provided to the file picker.
+     * @return {String} oldFile.
+     */
+    PhantomTSH.page.onFilePicker = function(oldFile) {
+        PhantomTSH.log('onFilePicker(' + oldFile + ');', 'yellow');
+
+        return oldFile;
+    };
+
+
+    /**
+     * Responds to prompt() calls in the client. This implementation returns
+     * a random string.
+     * @param {String} msg The prompt message.
+     * @return {String} A random string.
+     */
+    PhantomTSH.page.onPrompt = function(msg) {
+        PhantomTSH.log('prompt(' + msg + ');', 'yellow');
+
+        return 'I have ' + Date.now() + ' answers.';
+    };
+
+
+    /**
+     * Respond to notifications that a resource has failed to load. This is a
+     * critical handler in many ways since resource load occurs before any
+     * potential invocation of the open() callback. If a resource fails to load
+     * we need to exit immediately or we'll end up waiting until we time out.
+     * @param {Object} resourceError A phantom resource object containing:
+     *    id : the number of the request
+     *    url : the resource url
+     *    errorCode : the error code
+     *    errorString : the error description
+     */
+    PhantomTSH.page.onResourceError = function(resourceError) {
+        var str;
+
+        str = 'Unable to load ' + resourceError.url +
+            ' (id: ' + resourceError.id +
+            ', code: ' + resourceError.errorCode + ').';
+
+        if (PhantomTSH.loaded) {
+            PhantomTSH.log(PhantomTSH.color(str, 'yellow'), true);
+        } else {
+            PhantomTSH.log(PhantomTSH.color(str, 'red'), true);
+            phantom.exit(PhantomTSH.ERROR);
+        }
+    };
+
+
+    /**
+     * Respond to notifications that a resource request timed out. The timeout
+     * setting is based on 'settings.resourceTimeout' for phantom.
+     * @param {Object} request A phantom request object containing:
+     *     id: the number of the requested resource
+     *     method: http method
+     *     url: the URL of the requested resource
+     *     time: Date object containing the date of the request
+     *     headers: list of http headers
+     *     errorCode: the error code of the error
+     *     errorString: text message of the error
+     */
+    PhantomTSH.page.onResourceTimeout = function(request) {
+        PhantomTSH.log('Request #' + request.id + ': ' +
+            JSON.stringify(request), 'red');
     };
 
 

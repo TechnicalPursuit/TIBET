@@ -89,7 +89,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     'string': ['script', 'url', 'profile', 'params', 'level'],
     'number': ['timeout'],
     'default': {
-        color: true
+        color: true,
+        quiet: true
     }
 },
 Parent.prototype.PARSE_OPTIONS);
@@ -143,7 +144,7 @@ Cmd.prototype.execute = function() {
     arglist.unshift(tshpath);
 
     // Push an additional debug flag specific to phantom if set.
-    if (this.options.debug) {
+    if (this.options.debug && this.options.verbose) {
         arglist.unshift(true);
         arglist.unshift('--debug');
     }
@@ -160,6 +161,15 @@ Cmd.prototype.execute = function() {
         if (CLI.isValid(data)) {
             // Copy and remove newline.
             msg = data.slice(0, -1).toString('utf-8');
+
+            if (/SyntaxError: Parse error/.test(msg)) {
+                // Bug in phantom script itself most likely.
+                cmd.error(msg + ' in ' + tshpath);
+
+                /* eslint-disable no-process-exit */
+                process.exit(1);
+                /* eslint-enable no-process-exit */
+            }
 
             cmd.log(msg);
         }
@@ -192,8 +202,14 @@ Cmd.prototype.execute = function() {
     });
 
     child.on('close', function(code) {
+        var msg;
+
         if (code !== 0) {
-            cmd.error('Execution stopped with status: ' + code);
+            msg = ('Execution stopped with status: ' + code);
+            if (!cmd.options.debug || !cmd.options.verbose) {
+                msg += ' Retry with --debug --verbose for more information.';
+            }
+            cmd.error(msg);
         }
         /* eslint-disable no-process-exit */
         process.exit(code);
