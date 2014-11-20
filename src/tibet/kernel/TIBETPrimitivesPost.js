@@ -3788,6 +3788,12 @@ function(anObject, anAspect, autoCollapse) {
 
     val = null;
 
+    //  if the object is empty but the aspect is a URI, try to get the value of
+    //  the URI's resource.
+    if (TP.isEmpty(anObject) && TP.isURI(anAspect)) {
+        val = TP.val(TP.uc(anAspect).getResource());
+    }
+
     //  some native objects may not have been TIBET-enabled, so for those
     //  we try to get a wrapper and ask it
     if (TP.isNode(anObject)) {
