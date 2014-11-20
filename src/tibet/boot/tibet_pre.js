@@ -632,50 +632,36 @@ expanding: {
     sub: 'Processing boot manifest...',
     image: '~lib_img/boot/tpi_logo.png'
 },
-importing: {
-    order: 3,
-    log: 'Importing',
-    head: 'Importing',
-    sub: 'Importing manifest assets...',
-    image: '~lib_img/boot/tpi_logo.png'
-},
 import_phase_one: {
-    order: 4,
+    order: 3,
     log: 'Import Phase One',
     head: 'Import Phase One',
     sub: 'Importing phase-one (static/library) components...',
     image: '~lib_img/boot/tibet_logo.png'
 },
 import_paused: {
-    order: 5,
+    order: 4,
     log: 'Import Pause',
     head: 'Import Paused',
     sub: 'Waiting to start phase-two import...',
     image: '~lib_img/boot/playpause.png'
 },
 import_phase_two: {
-    order: 6,
+    order: 5,
     log: 'Import Phase Two',
     head: 'Import Phase Two',
     sub: 'Importing phase-two (dynamic/application) components...',
     image: '~lib_img/boot/tpi_logo.png'
 },
-import_complete: {
-    order: 7,
-    log: 'Import Complete',
-    head: 'Import Complete',
-    sub: 'Components loaded.',
-    image: '~lib_img/boot/tpi_logo.png'
-},
 paused: {
-    order: 8,
+    order: 6,
     log: 'Paused',
     head: 'Paused',
     sub: 'Proceed when ready.',
     image: '~lib_img/boot/playpause.png'
 },
 activating: {
-    order: 9,
+    order: 7,
     log: 'Activating',
     head: 'Activating',
     sub: 'Activating application...',
@@ -683,7 +669,7 @@ activating: {
     fatal: true
 },
 initializing: {
-    order: 10,
+    order: 8,
     log: 'Initialization',
     head: 'Initializing',
     sub: 'Initializing loaded components...',
@@ -691,7 +677,7 @@ initializing: {
     fatal: true
 },
 rendering: {
-    order: 11,
+    order: 9,
     log: 'Rendering',
     head: 'Rendering',
     sub: 'Rendering application UI...',
@@ -699,7 +685,7 @@ rendering: {
     fatal: true
 },
 liftoff: {
-    order: 12,
+    order: 10,
     log: 'Started',
     head: 'Started',
     sub: 'Application running.',
@@ -714,7 +700,7 @@ liftoff: {
     }
 },
 stopped: {
-    order: 13,
+    order: 11,
     log: 'Stopped',
     head: 'Stopped',
     sub: 'Boot halted.',

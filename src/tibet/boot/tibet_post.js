@@ -7461,7 +7461,7 @@ TP.system = function(varargs) {
 
 TP.boot.$getBootStats = function() {
 
-    return '' + TP.boot.$$totalwork + ' imports, ' +
+    return '' + Object.keys(TP.boot.$$scripts).length + ' unique imports, ' +
         TP.boot.$$errors + ' errors, ' +
         TP.boot.$$warnings + ' warnings, ' +
         TP.boot.$$bottlenecks + ' bottlenecks.';
@@ -7553,7 +7553,7 @@ TP.boot.$setStage = function(aStage, aReason) {
         } else {
             prefix = 'Completed in ';
         }
-        TP.boot.$stdout(prefix + stagetime + 'ms', TP.SYSTEM);
+        TP.boot.$stdout(prefix + stagetime + ' ms.', TP.SYSTEM);
     }
 
     TP.boot.$stdout('', TP.SYSTEM);
@@ -7597,10 +7597,10 @@ TP.boot.$setStage = function(aStage, aReason) {
 
     if (TP.boot.$$stage === 'liftoff') {
 
-        TP.boot.$stdout('Launched in ' +
+        TP.boot.$stdout('' +
             (TP.boot.$getStageTime('started', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
-            'ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
+            ' ms: ' + TP.boot.$getBootStats(), TP.SYSTEM);
 
         //TP.boot.$stdout('', TP.SYSTEM);
         //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
@@ -7612,7 +7612,7 @@ TP.boot.$setStage = function(aStage, aReason) {
         TP.boot.$stdout('Stopped after ' +
             (TP.boot.$getStageTime('stopped', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
-            'ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
+            ' ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
         TP.boot.$stdout('', TP.SYSTEM);
         TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
     }
@@ -9482,8 +9482,6 @@ TP.boot.$importApplication = function() {
      * @return {null}
      */
 
-    TP.boot.$setStage('importing');
-
     TP.boot.$$importPhaseOne();
 
     return;
@@ -9521,18 +9519,14 @@ TP.boot.$$importComplete = function() {
                 //  the UI frame and queue a monitor to observe the boot
                 if (TP.sys.cfg('boot.phasetwo') === true) {
 
-                    //  if we had been processing phase two then we're
-                    //  done and can trigger application startup
-                    TP.boot.$stdout(
-                            'Phase-two component loading complete.');
+                    TP.boot.$stdout('', TP.SYSTEM);
 
                     TP.sys.hasLoaded(true);
-                    TP.boot.$setStage('import_complete');
 
                     return TP.boot.main();
                 } else {
-                    TP.boot.$stdout(
-                            'Phase-one component loading complete.');
+
+                    TP.boot.$stdout('', TP.SYSTEM);
 
                     //  NOTE that this is a possible cul-de-sac since if
                     //  no phase two page ever loads we'll just sit.
@@ -9577,7 +9571,6 @@ TP.boot.$$importComplete = function() {
                 //  done since all nodes are computed at one time. the
                 //  next thing is to trigger the main function and get
                 //  the application logic started
-                TP.boot.$setStage('import_complete');
 
                 return TP.boot.main();
             }
@@ -9587,7 +9580,6 @@ TP.boot.$$importComplete = function() {
             //  is effectively an "add-on"...
             TP.boot.$stdout('Loading add-on components complete.');
 
-            TP.boot.$setStage('import_complete');
         }
 
         //  turn off reporting to bootlog via TP.boot.$stderr.
@@ -10834,8 +10826,6 @@ TP.boot.$pushPackage = function(aPath) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$import = function() {
-
-    TP.boot.$setStage('importing');
 
     // Clear script dictionary. This will be used to unique across all imports.
     TP.boot.$$scripts = {};
