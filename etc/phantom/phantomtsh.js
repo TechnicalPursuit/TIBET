@@ -1042,7 +1042,7 @@
         if (PhantomTSH.loaded) {
             PhantomTSH.log(PhantomTSH.color(str, 'yellow'), true);
         } else {
-            PhantomTSH.log(PhantomTSH.color(str, 'red'), true);
+            console.log(PhantomTSH.color(str, 'red'));
             phantom.exit(PhantomTSH.ERROR);
         }
     };
