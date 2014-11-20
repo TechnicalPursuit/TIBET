@@ -13,12 +13,10 @@ CACHE:
 # !!! lib
 
 node_modules/tibet/lib/xhtml/tp_blank.xhtml
-html/UIBOOT.xhtml
 node_modules/tibet/lib/css/tibet_boot.css
 node_modules/tibet/lib/img/boot/tpi_logo.png
 node_modules/tibet/lib/img/boot/nojs.png
 
-css/master.css
 node_modules/tibet/lib/css/tibet_reset.css
 node_modules/tibet/lib/css/tibet_content.css
 node_modules/tibet/lib/css/normalize.css
@@ -27,10 +25,6 @@ node_modules/tibet/lib/css/tibet_normalize.css
 node_modules/tibet/lib/img/boot/dark_fiber.png
 node_modules/tibet/lib/img/boot/white_fiber.png
 
-tibet.json
-
-TIBET-INF/cfg/standard.xml
-TIBET-INF/cfg/tibet.xml
 node_modules/tibet/lib/cfg/TIBET.xml
 node_modules/tibet/lib/cfg/tibet_kernel.xml
 node_modules/tibet/lib/cfg/tibet_extensions.xml
@@ -44,8 +38,6 @@ node_modules/tibet/lib/dat/vcards.xml
 node_modules/tibet/lib/dat/uris_delegated.xml
 node_modules/tibet/lib/dat/uris_next.xml
 node_modules/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
-
-html/UIROOT.xhtml
 
 node_modules/tibet/lib/json/html401_strict.json
 node_modules/tibet/lib/dat/TP.core.UIElementNode_keybindings.xml
@@ -84,8 +76,21 @@ node_modules/tibet/lib/src/tibet_developer.min.js
 CACHE:
 # !!! app
 
+tibet.json
+
+html/UIROOT.xhtml
+html/UIBOOT.xhtml
+
 css/app.css
+css/master.css
+
 TIBET-INF/cfg/app.xml
+TIBET-INF/cfg/development.xml
+TIBET-INF/cfg/phantom.xml
+TIBET-INF/cfg/production.xml
+TIBET-INF/cfg/standard.xml
+TIBET-INF/cfg/tibet.xml
+
 # src/tags/APP.{{appname}}.app.js
 
 # --- don't cache multiple copies of APP, only the desired one(s)
