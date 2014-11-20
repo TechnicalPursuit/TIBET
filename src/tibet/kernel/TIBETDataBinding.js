@@ -1339,8 +1339,10 @@ function() {
 
                 //  Make sure to trim off any format before pushing this into
                 //  the URI list that we set bindings up from.
-                fullyExpandedVal = fullyExpandedVal.slice(
+                if (TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
+                    fullyExpandedVal = fullyExpandedVal.slice(
                                     0, fullyExpandedVal.indexOf('%%')).trim();
+                }
 
                 //  Add that value to the list of URIs to bind to this
                 //  expression.
@@ -1424,8 +1426,10 @@ function() {
 
                 //  Make sure to trim off any format before pushing this into
                 //  the URI list that we set bindings up from.
-                fullyExpandedVal = fullyExpandedVal.slice(
+                if (TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
+                    fullyExpandedVal = fullyExpandedVal.slice(
                                     0, fullyExpandedVal.indexOf('%%')).trim();
+                }
 
                 //  Add that value to the list of URIs to remove the binding for
                 //  this expression.
