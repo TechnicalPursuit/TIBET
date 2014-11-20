@@ -230,9 +230,6 @@ function() {
      */
 
     var remoteHref,
-        parts,
-        val,
-        hrefSrc,
         remoteURI,
 
         localHref,
@@ -247,25 +244,6 @@ function() {
     //  Make sure that a 'remote' href is available and a URI can be created
     //  from it.
     if (TP.notEmpty(remoteHref = this.getAttribute('remote'))) {
-
-        //  We allow ACP'ed expressions in this attribute. If it's there, we
-        //  obtain it, try to obtain a URI reference from it and replace that
-        //  place in the template with the value of that resource.
-        if (TP.regex.HAS_ACP.test(remoteHref)) {
-            //  TODO: Hacky because templating doesn't support URIs as data
-            //  sources.
-            parts = TP.regex.EXTRACT_ACP.exec(remoteHref);
-            if (TP.isURI(hrefSrc = TP.uc(parts.at(1)))) {
-                val = hrefSrc.getResource().getValue();
-                if (TP.isEmpty(val)) {
-                    //  Raise an exception
-                    return this.raise('TP.sig.InvalidQuery');
-                }
-
-                remoteHref = remoteHref.replace(parts.at(0), val);
-            }
-        }
-
         if (!TP.isURI(remoteURI = TP.uc(remoteHref))) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
