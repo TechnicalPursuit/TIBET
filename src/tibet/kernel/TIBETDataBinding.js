@@ -627,7 +627,9 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
         methodName,
 
-        handler;
+        handler,
+
+        resourceValue;
 
     if (TP.isEmpty(targetAttributeName)) {
         return this.raise('TP.sig.InvalidParameter',
@@ -719,24 +721,31 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  Define a handler function
         handler = function(aSignal) {
 
-            var aspect,
+            var origin,
+
+                aspect,
                 facet,
 
                 mapKey,
 
+                entry,
                 targetAttr,
+                transform,
 
                 newVal;
 
             TP.stop('break.bind_change');
 
             try {
+                origin = aSignal.getOrigin();
+
                 aspect = aSignal.at('aspect');
+
                 facet = aSignal.at('facet');
 
                 //  Compute a map key in the same way we did above when we made
                 //  the registration and see if the map has it.
-                mapKey = TP.gid(aSignal.getOrigin()) +
+                mapKey = TP.gid(origin) +
                                 TP.JOIN +
                                 TP.str(aspect) +
                                 TP.JOIN +
@@ -744,10 +753,21 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
                 //  If we found a target attribute registration under the key,
                 //  then perform the set()
-                if (TP.notEmpty(targetAttr =
+                if (TP.notEmpty(entry =
                                 handler.$observationsMap.at(mapKey))) {
 
+                    //  The target attribute is the first item in the entry pair
+                    //  and any (optional) transformation Function is the last.
+                    targetAttr = entry.first();
+                    transform = entry.last();
+
                     newVal = aSignal.getValue();
+
+                    //  If there was a transformation Function registered, then
+                    //  execute it.
+                    if (TP.isCallable(transform)) {
+                        newVal = transform(newVal);
+                    }
 
                     this.refresh(
                             TP.hc(TP.NEWVAL, newVal,
@@ -767,7 +787,16 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     //  Add an entry to make a mapping between a source aspect and a target
     //  aspect.
-    handler.$observationsMap.atPut(aspectKey, targetAttributeName);
+    handler.$observationsMap.atPut(aspectKey,
+                                    TP.ac(targetAttributeName,
+                                            transformationFunc));
+
+    //  If the resource is a URI and we can obtain the resource value of it,
+    //  make sure that it is configured to signal Change notifications.
+    if (TP.isURI(resource) &&
+        TP.isValid(resourceValue = resource.getResource())) {
+        resourceValue.shouldSignalChange(true);
+    }
 
     //  Go ahead and make the observation.
     target.observe(resource, signalName);
