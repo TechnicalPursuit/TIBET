@@ -1,3 +1,4 @@
 node_modules/*
 deps/**
 lib/src/*
+**/*.__appname__.*.js
