@@ -1977,10 +1977,13 @@ function(anObject, assignIfAbsent) {
                     //  Remove all of the 'tibet:globalID' attributes from any
                     //  elements in the document that have them - this will
                     //  cause them to reset
-                    TP.nodeEvaluateCSS(obj, '*[tibet|globalID]').forEach(
+                    TP.nodeEvaluateCSS(obj,
+                            '*[' +
+                            TP.GLOBAL_ID_ATTR.replace(':', '|') +
+                            ']').forEach(
                             function(anElem) {
                                 TP.elementRemoveAttribute(
-                                    anElem, 'tibet:globalID', true);
+                                    anElem, TP.GLOBAL_ID_ATTR, true);
                             });
                     TP.ac(obj.getElementsByTagName('*')).forEach(
                             function(anElem) {
