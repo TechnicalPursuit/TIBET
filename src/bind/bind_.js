@@ -33,22 +33,20 @@ function(anElement) {
      * @returns {null}
      */
 
-    var tpElem;
+    var tpElem,
+        attrNodes,
 
-/*
-    var attrNodes;
-
-    //  TODO: Look up the tree for 'bind:context' attributes
+        i;
 
     attrNodes = TP.nodeEvaluateXPath(
-                    anElement, '@*[starts-with(., "[[")]', TP.NODESET);
-
-    //  TODO:
-    //  If there is a 'composite' attribute (i.e. 'class' where it's part
-    //  static, part dynamic) then handle that
-*/
+                    anElement, '@*[contains(., "[[")]', TP.NODESET);
 
     tpElem = TP.wrap(anElement);
+
+    for (i = 0; i < attrNodes.getSize(); i++) {
+        tpElem.populateInlineExpression(attrNodes.at(i).name,
+                                        attrNodes.at(i).value);
+    }
 
     tpElem.rebuild(TP.hc('shouldDefine', true, 'shouldDestroy', false));
 
