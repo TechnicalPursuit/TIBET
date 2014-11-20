@@ -43,6 +43,7 @@ function(aRequest) {
 
         childNodes,
         children,
+        cdatas,
 
         resourceStr,
 
@@ -69,14 +70,21 @@ function(aRequest) {
             }
         }
 
-        //  If the first child is a CDATA section, then we grab it's text value.
-        if (TP.isCDATASectionNode(childNodes[0])) {
-            resourceStr = TP.nodeGetTextContent(childNodes[0]);
+        //  Normalize the node to try to get the best representation
+        elem.normalize();
+
+        cdatas = TP.nodeGetDescendantsByType(elem, Node.CDATA_SECTION_NODE);
+
+        //  If there is a CDATA section, then we grab it's text value.
+        if (TP.notEmpty(cdatas)) {
+            resourceStr = TP.nodeGetTextContent(cdatas.first());
 
             //  If we can determine that it's JSON data, then we make JavaScript
             //  data from it and set that as the local URI's resource.
             if (TP.isJSONString(resourceStr)) {
                 localURI.setResource(TP.json2js(resourceStr));
+            } else {
+                localURI.setResource(resourceStr);
             }
         } else {
             //  Otherwise, if the first child element is an XML element
