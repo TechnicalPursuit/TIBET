@@ -3123,6 +3123,13 @@ function(aSignal) {
             //  to see if any of the subURIs have that path as their fragment.
             path = aSignal.at('aspect');
 
+            //  Note that we change the 'aspect' here to 'value' - because the
+            //  'entire value' of the subURI itself has changed. We also include
+            //  a 'path' for convenience, so that observers can use that against
+            //  the primary URI to obtain this URI's value, if they wish.
+            aSignal.atPut('aspect', 'value');
+            aSignal.atPut('path', path);
+
             for (i = 0; i < subURIs.getSize(); i++) {
 
                 fragText = subURIs.at(i).getFragmentText();
@@ -3137,6 +3144,11 @@ function(aSignal) {
                             aSignal.getPayload());
                 }
             }
+
+            //  Put the signal back to what it was before we mucked with it
+            //  above.
+            aSignal.removeKey('path');
+            aSignal.atPut('aspect', path);
         }
 
         //  Now that any of the appropriate subURIs have signaled from
@@ -4573,6 +4585,10 @@ function(aResource, aRequest) {
             //  changed. This very well may mean structural changes occurred and
             //  the resource that the subURI pointed to doesn't even exist
             //  anymore.
+            //  The 'aspect' here is 'value' - because the 'entire value' of the
+            //  subURI itself has changed. We also include a 'path' for
+            //  convenience, so that observers can use that against the primary
+            //  URI to obtain this URI's value, if they wish.
             //  The 'target' here is computed by running the fragment against
             //  the resource.
             description = TP.hc(
@@ -4594,10 +4610,18 @@ function(aResource, aRequest) {
 
         //  Now that we're done signaling the sub URIs, it's time to signal a
         //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
-        //  Note how we reset the old and new values to the 'whole' old and new
-        //  values.
-        description.atPut(TP.OLDVAL, resource);
-        description.atPut(TP.NEWVAL, aResource);
+        description = TP.hc(
+                'action', TP.DELETE,
+                'aspect', 'value',
+                'facet', 'value',
+
+                //  NB: We supply these values here for consistency with the 'no
+                //  subURIs logic' below.
+                'target', aResource,
+                'oldTarget', resource,
+                TP.OLDVAL, resource,
+                TP.NEWVAL, aResource
+                );
 
         this.signal(
             'TP.sig.ValueChange',
