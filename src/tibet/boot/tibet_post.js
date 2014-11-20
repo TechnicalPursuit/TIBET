@@ -7461,7 +7461,7 @@ TP.system = function(varargs) {
 
 TP.boot.$getBootStats = function() {
 
-    return '' + Object.keys(TP.boot.$$scripts).length + ' unique imports, ' +
+    return '' + TP.boot.$$totalwork + ' unique imports, ' +
         TP.boot.$$errors + ' errors, ' +
         TP.boot.$$warnings + ' warnings, ' +
         TP.boot.$$bottlenecks + ' bottlenecks.';
@@ -9959,6 +9959,8 @@ TP.boot.$$importPhase = function() {
 
     TP.boot.$$workload = nodelist.length;
 
+    TP.boot.$$totalwork += nodelist.length;
+
     //  TODO: this should happen based on a return value being provided.
     window.$$phasetwo = true;
 
@@ -10829,6 +10831,8 @@ TP.boot.$import = function() {
 
     // Clear script dictionary. This will be used to unique across all imports.
     TP.boot.$$scripts = {};
+
+    TP.boot.$$totalwork = 0;
 
     TP.boot.$$importPhaseOne();
 
