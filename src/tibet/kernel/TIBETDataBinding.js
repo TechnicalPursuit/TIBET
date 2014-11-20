@@ -598,7 +598,7 @@ output TIBET lets you adjust your page in almost any form necessary.
 
 TP.definePrimitive('defineBinding',
 function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+            sourceFacetName, transformationFunc) {
 
     /**
      * @name defineBinding
@@ -610,6 +610,11 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
      *     specified, this will default to targetAttributeName.
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
+     * @param {Function} transformationFunc
      * @returns {Object} The target object.
      */
 
@@ -774,7 +779,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.defineMetaInstMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+            sourceFacetName, transformationFunc) {
 
     /**
      * @name defineBinding
@@ -785,19 +790,23 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      *     specified, this will default to targetAttributeName.
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
      * @returns {Object} The receiver.
      */
 
     return TP.defineBinding(
             this, targetAttributeName, resourceOrURI,
-            sourceAttributeName, sourceFacetName);
+            sourceAttributeName, sourceFacetName, transformationFunc);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+            sourceFacetName, transformationFunc) {
 
     /**
      * @name defineBinding
@@ -808,19 +817,23 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      *     specified, this will default to targetAttributeName.
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
      * @returns {Object} The receiver.
      */
 
     return TP.defineBinding(
             this, targetAttributeName, resourceOrURI,
-            sourceAttributeName, sourceFacetName);
+            sourceAttributeName, sourceFacetName, transformationFunc);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+            sourceFacetName, transformationFunc) {
 
     /**
      * @name defineBinding
@@ -831,13 +844,17 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
      *     specified, this will default to targetAttributeName.
      * @param {String} sourceFacetName The source facet name. If not specified,
      *     this will default to 'value'.
+     * @param {Function} transformationFunc A Function to transform the value
+     *     before it is supplied to the observer of the binding. It takes one
+     *     parameter, the new value from the model and returns the
+     *     transformation parameter. This parameter is optional.
      * @returns {Object} The receiver.
      * @todo
      */
 
     return TP.defineBinding(
             this, targetAttributeName, resourceOrURI,
-            sourceAttributeName, sourceFacetName);
+            sourceAttributeName, sourceFacetName, transformationFunc);
 });
 
 //  ------------------------------------------------------------------------
