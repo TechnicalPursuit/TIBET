@@ -189,7 +189,7 @@ Cmd.prototype.execute = function() {
     }
 
     // Make sure we can find the bundled TIBET source packages.
-    libbase = path.join(app_npm, 'tibet/lib');
+    libbase = path.join(app_npm, 'tibet', 'lib');
     if (!sh.test('-e', libbase)) {
         this.error('Cannot find library source: ' + libbase);
         return;
