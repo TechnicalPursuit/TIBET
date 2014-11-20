@@ -117,8 +117,6 @@ function(aRequest) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
         }
-
-        TP.wrap(elem).load();
     }
 
     return;
