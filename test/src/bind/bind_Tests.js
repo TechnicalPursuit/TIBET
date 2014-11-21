@@ -1714,7 +1714,92 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var modelObj,
+                    lastNameField1,
+                    lastNameField2;
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind11_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind11_person#xpath1(/people/person[1]/firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind11_person#xpath1(/people/person[1]/lastname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind11_person#xpath1(/people/person[2]/firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind11_person#xpath1(/people/person[2]/lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:Bind11_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[1]/lastname')),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField2').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[2]/lastname')),
+                    'Jones');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField1 = TP.byOID('lastNameField1');
+
+                lastNameField1.clearValue();
+
+                test.getDriver().startSequence().
+                    sendKeys('Lyon', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField1.get('value'),
+                            'Lyon');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[1]/lastname')),
+                            'Lyon');
+                    });
+
+                lastNameField2 = TP.byOID('lastNameField2');
+
+                lastNameField2.clearValue();
+
+                test.getDriver().startSequence().
+                    sendKeys('Weber', lastNameField2).
+                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField2.get('value'),
+                            'Weber');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[2]/lastname')),
+                            'Weber');
+                    });
+
+                //  firstNameField1 and firstNamedField2 are just other text
+                //  fields - same logic should work
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1735,7 +1820,92 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var modelObj,
+                    lastNameField1,
+                    lastNameField2;
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind12_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind12_person#xpath1(/people/person[1]/firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind12_person#xpath1(/people/person[1]/lastname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind12_person#xpath1(/people/person[2]/firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind12_person#xpath1(/people/person[2]/lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:Bind12_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[1]/lastname')),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField2').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[2]/lastname')),
+                    'Jones');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField1 = TP.byOID('lastNameField1');
+
+                lastNameField1.clearValue();
+
+                test.getDriver().startSequence().
+                    sendKeys('Lyon', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField1.get('value'),
+                            'Lyon');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[1]/lastname')),
+                            'Lyon');
+                    });
+
+                lastNameField2 = TP.byOID('lastNameField2');
+
+                lastNameField2.clearValue();
+
+                test.getDriver().startSequence().
+                    sendKeys('Weber', lastNameField2).
+                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField2.get('value'),
+                            'Weber');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[2]/lastname')),
+                            'Weber');
+                    });
+
+                //  firstNameField1 and firstNamedField2 are just other text
+                //  fields - same logic should work
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1756,7 +1926,92 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var modelObj,
+                    lastNameField1,
+                    lastNameField2;
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind13_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind13_person#tibet(people[0].firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind13_person#tibet(people[0].lastname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind13_person#tibet(people[1].firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind13_person#tibet(people[1].lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:Bind13_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[0].lastname')),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField2').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[1].lastname')),
+                    'Jones');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField1 = TP.byOID('lastNameField1');
+
+                lastNameField1.clearValue();
+
+                test.getDriver().startSequence().
+                    sendKeys('Lyon', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField1.get('value'),
+                            'Lyon');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[0].lastname')),
+                            'Lyon');
+                    });
+
+                lastNameField2 = TP.byOID('lastNameField2');
+
+                lastNameField2.clearValue();
+
+                test.getDriver().startSequence().
+                    sendKeys('Weber', lastNameField2).
+                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField2.get('value'),
+                            'Weber');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[1].lastname')),
+                            'Weber');
+                    });
+
+                //  firstNameField1 and firstNamedField2 are just other text
+                //  fields - same logic should work
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1777,15 +2032,99 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var modelObj,
+                    lastNameField1,
+                    lastNameField2;
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind14_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind14_person#tibet(people[0].firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind14_person#tibet(people[0].lastname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind14_person#tibet(people[1].firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:Bind14_person#tibet(people[1].lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:Bind14_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[0].lastname')),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField2').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[1].lastname')),
+                    'Jones');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField1 = TP.byOID('lastNameField1');
+
+                lastNameField1.clearValue();
+
+                test.getDriver().startSequence().
+                    sendKeys('Lyon', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField1.get('value'),
+                            'Lyon');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[0].lastname')),
+                            'Lyon');
+                    });
+
+                lastNameField2 = TP.byOID('lastNameField2');
+
+                lastNameField2.clearValue();
+
+                test.getDriver().startSequence().
+                    sendKeys('Weber', lastNameField2).
+                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField2.get('value'),
+                            'Weber');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[1].lastname')),
+                            'Weber');
+                    });
+
+                //  firstNameField1 and firstNamedField2 are just other text
+                //  fields - same logic should work
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
     });
-
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
