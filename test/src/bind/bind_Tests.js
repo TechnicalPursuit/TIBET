@@ -3440,6 +3440,39 @@ function() {
         this.then(
             function() {
 
+                var dataRows,
+                    dataCells;
+
+                dataRows = TP.byCSS('tr', TP.byId('people'));
+                test.assert.isEqualTo(dataRows.getSize(), 4);
+
+                dataCells = TP.byCSS('td', TP.byId('people'));
+                test.assert.isEqualTo(dataCells.getSize(), 8);
+
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(0)),
+                    'Joe');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(1)),
+                    'Smith');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(2)),
+                    'John');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(3)),
+                    'Jones');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(4)),
+                    'Billy');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(5)),
+                    'Homemaker');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(6)),
+                    'Pamela');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(7)),
+                    'Professional');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3459,14 +3492,46 @@ function() {
 
         this.then(
             function() {
+                var dataRows,
+                    dataCells;
 
+                dataRows = TP.byCSS('tr', TP.byId('people'));
+                test.assert.isEqualTo(dataRows.getSize(), 4);
+
+                dataCells = TP.byCSS('td', TP.byId('people'));
+                test.assert.isEqualTo(dataCells.getSize(), 8);
+
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(0)),
+                    'Joe');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(1)),
+                    'Smith');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(2)),
+                    'John');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(3)),
+                    'Jones');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(4)),
+                    'Billy');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(5)),
+                    'Homemaker');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(6)),
+                    'Pamela');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(7)),
+                    'Professional');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
     });
-
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 }).skip();
 
 //  ========================================================================
