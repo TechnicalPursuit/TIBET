@@ -210,6 +210,11 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
+    return '<span class="tsh_pp">' +
+        TP.str(anObject).asEscapedXML() +
+    '<\/span>';
+
+    /*
     if (anObject === TP || anObject === TP.sys) {
         return '<span class="tsh_pp">' +
                 TP.xhtmlstr(TP.keys(anObject).sort()) +
@@ -217,6 +222,7 @@ function(anObject, optFormat) {
     }
 
     return '<span class="tsh_pp">' + TP.xhtmlstr(anObject) + '<\/span>';
+    */
 });
 
 //  ------------------------------------------------------------------------
