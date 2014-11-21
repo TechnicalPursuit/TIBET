@@ -2726,7 +2726,134 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var repeatIndexField,
+                    repeatSizeField;
+
+                repeatIndexField = TP.byOID('repeatIndexField');
+                repeatSizeField = TP.byOID('repeatSizeField');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatIndexField').get('value'),
+                    '1');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatSizeField').get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(TP.byId('firstNameField1'));
+                test.assert.isDisplayed(TP.byId('lastNameField1'));
+                test.assert.isDisplayed(TP.byId('firstNameField2'));
+                test.assert.isDisplayed(TP.byId('lastNameField2'));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField1').get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField2').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField2').get('value'),
+                    'John');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField3'));
+                        test.assert.isDisplayed(TP.byId('lastNameField3'));
+                        test.assert.isDisplayed(TP.byId('firstNameField4'));
+                        test.assert.isDisplayed(TP.byId('lastNameField4'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField3').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField3').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField4').get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField4').get('value'),
+                            'Pamela');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('2', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '2');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField1'));
+                        test.assert.isDisplayed(TP.byId('lastNameField1'));
+                        test.assert.isDisplayed(TP.byId('firstNameField2'));
+                        test.assert.isDisplayed(TP.byId('lastNameField2'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField1').get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField1').get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField2').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField2').get('value'),
+                            'Billy');
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2747,7 +2874,192 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var repeatIndexField,
+                    repeatSizeField;
+
+                repeatIndexField = TP.byOID('repeatIndexField');
+                repeatSizeField = TP.byOID('repeatSizeField');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatIndexField').get('value'),
+                    '1');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatSizeField').get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(TP.byId('firstNameField1'));
+                test.assert.isDisplayed(TP.byId('lastNameField1'));
+                test.assert.isDisplayed(TP.byId('firstNameField2'));
+                test.assert.isDisplayed(TP.byId('lastNameField2'));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField1').get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressStreetField11').get('value'),
+                    '111 Main St.');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressStreetField12').get('value'),
+                    '222 State St.');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField2').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField2').get('value'),
+                    'John');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressCityField21').get('value'),
+                    'Yet Another Town');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressCityField22').get('value'),
+                    'One More Town');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField3'));
+                        test.assert.isDisplayed(TP.byId('lastNameField3'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField31'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField32'));
+
+                        test.assert.isDisplayed(TP.byId('firstNameField4'));
+                        test.assert.isDisplayed(TP.byId('lastNameField4'));
+                        test.assert.isDisplayed(TP.byId('addressCityField41'));
+                        test.assert.isDisplayed(TP.byId('addressCityField42'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField3').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField3').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField31').get('value'),
+                            '#27 Ritz Ave. Apt A.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField32').get('value'),
+                            '#4 Country Rd.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField4').get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField4').get('value'),
+                            'Pamela');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField41').get('value'),
+                            'High Power Place');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField42').get('value'),
+                            'Middle Of Nowhere');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('2', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '2');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField1'));
+                        test.assert.isDisplayed(TP.byId('lastNameField1'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField11'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField12'));
+
+                        test.assert.isDisplayed(TP.byId('firstNameField2'));
+                        test.assert.isDisplayed(TP.byId('lastNameField2'));
+                        test.assert.isDisplayed(TP.byId('addressCityField21'));
+                        test.assert.isDisplayed(TP.byId('addressCityField22'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField1').get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField1').get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField11').get('value'),
+                            '333 1st Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField12').get('value'),
+                            '444 2nd Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField2').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField2').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField21').get('value'),
+                            'In Your Town');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField22').get('value'),
+                            'Middle Of Nowhere');
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2768,7 +3080,134 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var repeatIndexField,
+                    repeatSizeField;
+
+                repeatIndexField = TP.byOID('repeatIndexField');
+                repeatSizeField = TP.byOID('repeatSizeField');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatIndexField').get('value'),
+                    '0');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatSizeField').get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(TP.byId('firstNameField0'));
+                test.assert.isDisplayed(TP.byId('lastNameField0'));
+                test.assert.isDisplayed(TP.byId('firstNameField1'));
+                test.assert.isDisplayed(TP.byId('lastNameField1'));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField0').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField0').get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField1').get('value'),
+                    'John');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField2'));
+                        test.assert.isDisplayed(TP.byId('lastNameField2'));
+                        test.assert.isDisplayed(TP.byId('firstNameField3'));
+                        test.assert.isDisplayed(TP.byId('lastNameField3'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField2').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField2').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField3').get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField3').get('value'),
+                            'Pamela');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('1', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '1');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField0'));
+                        test.assert.isDisplayed(TP.byId('lastNameField0'));
+                        test.assert.isDisplayed(TP.byId('firstNameField1'));
+                        test.assert.isDisplayed(TP.byId('lastNameField1'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField0').get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField0').get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField1').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField1').get('value'),
+                            'Billy');
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2789,7 +3228,192 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var repeatIndexField,
+                    repeatSizeField;
+
+                repeatIndexField = TP.byOID('repeatIndexField');
+                repeatSizeField = TP.byOID('repeatSizeField');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatIndexField').get('value'),
+                    '0');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatSizeField').get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(TP.byId('firstNameField0'));
+                test.assert.isDisplayed(TP.byId('lastNameField0'));
+                test.assert.isDisplayed(TP.byId('firstNameField1'));
+                test.assert.isDisplayed(TP.byId('lastNameField1'));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField0').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField0').get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressStreetField00').get('value'),
+                    '111 Main St.');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressStreetField01').get('value'),
+                    '222 State St.');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField1').get('value'),
+                    'John');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressCityField10').get('value'),
+                    'Yet Another Town');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressCityField11').get('value'),
+                    'One More Town');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField2'));
+                        test.assert.isDisplayed(TP.byId('lastNameField2'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField20'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField21'));
+
+                        test.assert.isDisplayed(TP.byId('firstNameField3'));
+                        test.assert.isDisplayed(TP.byId('lastNameField3'));
+                        test.assert.isDisplayed(TP.byId('addressCityField30'));
+                        test.assert.isDisplayed(TP.byId('addressCityField31'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField2').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField2').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField20').get('value'),
+                            '#27 Ritz Ave. Apt A.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField21').get('value'),
+                            '#4 Country Rd.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField3').get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField3').get('value'),
+                            'Pamela');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField30').get('value'),
+                            'High Power Place');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField31').get('value'),
+                            'Middle Of Nowhere');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('1', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '1');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField0'));
+                        test.assert.isDisplayed(TP.byId('lastNameField0'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField00'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField01'));
+
+                        test.assert.isDisplayed(TP.byId('firstNameField1'));
+                        test.assert.isDisplayed(TP.byId('lastNameField1'));
+                        test.assert.isDisplayed(TP.byId('addressCityField10'));
+                        test.assert.isDisplayed(TP.byId('addressCityField11'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField0').get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField0').get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField00').get('value'),
+                            '333 1st Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField01').get('value'),
+                            '444 2nd Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField1').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField1').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField10').get('value'),
+                            'In Your Town');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField11').get('value'),
+                            'Middle Of Nowhere');
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
