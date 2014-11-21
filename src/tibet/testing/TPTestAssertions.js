@@ -2074,6 +2074,26 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.TestMethodCollection.defineAssertion('isDisplayed',
+function(anObject, aComment) {
+
+    this.assertMinArguments(arguments, 1);
+
+    this.assert(
+        TP.isElement(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be an Element.'));
+
+    this.assert(
+        TP.elementIsDisplayed(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be displayed.'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.TestMethodCollection.defineAssertion('isEnabled',
 function(anObject, aComment) {
 
