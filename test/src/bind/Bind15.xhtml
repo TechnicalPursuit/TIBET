@@ -3,8 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:tsh="http://www.technicalpursuit.com/1999/tshell"
-		xmlns:ev="http://www.w3.org/2001/xml-events">
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
 <head>
 
@@ -22,10 +21,7 @@
 	<h2>Bind Test #15</h2><br/>
 	<br/>
 	<br/>
-	<br/>
-	<br/>
-
-	<br/>
+    This test sets up a 'repeat' binding between the group of fields and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document. The repeating fields and bindings are automatically generated from the data, which is a collection.
 	<br/>
 	<br/>
 
@@ -37,42 +33,18 @@
         <input type="text" id="lastNameField" bind:io="value: lastname" tabindex="0"/><br/>
     </span>
 
-    <br/>
-
-    <!-- Any aspect changing -->
-    <ev:script type="text/javascript" event="TP.sig.Change" observer="urn:tibet:Bind15_person">
-        <![CDATA[
-        TP.byOID('modelOutput').setProcessedContent(
-                    '<span>' +
-                    TP.str(triggerSignal.getSignalOrigin().getResource()).asEscapedHTML() +
-                    '</span>');
-        ]]>
-    </ev:script>
-
-    <br/>
-    Current data model:<br/><br/><span id="modelOutput"/>
-    <br/>
-
-	<!-- Data model construction handler -->
-	<ev:script type="text/javascript" event="TP.sig.DOMContentLoaded" observer="#document">
-        <![CDATA[
-		var newInst;
-		newInst = TP.tpdoc(
-            TP.join(
-                '<people xmlns="">',
-					'<person>',
-						'<lastname>Smith</lastname>',
-						'<firstname>Joe</firstname>',
-					'</person>',
-					'<person>',
-						'<lastname>Jones</lastname>',
-						'<firstname>John</firstname>',
-					'</person>',
-                '</people>'
-					));
-		TP.uc('urn:tibet:Bind15_person').setResource(newInst);
-		]]>
-	</ev:script>
+    <tibet:data local="urn:tibet:Bind15_person">
+        <people xmlns="">,
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+            </person>
+        </people>
+    </tibet:data>
 
 </body>
 </html>
