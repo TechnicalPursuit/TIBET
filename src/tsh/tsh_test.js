@@ -38,7 +38,7 @@ function(aRequest) {
 
     var shell,
         target,
-        suite,
+        runner,
         ignore_only,
         ignore_skip,
         options,
@@ -47,8 +47,8 @@ function(aRequest) {
 
     TP.stop('break.tsh_test');
 
-    suite = TP.sys.getTypeByName('TP.test.Suite');
-    if (TP.notValid(suite)) {
+    runner = TP.sys.getTypeByName('TP.test.Suite');
+    if (TP.notValid(runner)) {
         aRequest.fail(TP.FAILURE, 'Unable to find TP.test.Suite.');
         return;
     }
@@ -58,9 +58,15 @@ function(aRequest) {
     ignore_only = shell.getArgument(aRequest, 'tsh:ignore_only', false);
     ignore_skip = shell.getArgument(aRequest, 'tsh:ignore_skip', false);
 
+    target = shell.getArgument(aRequest, 'ARG0');
+
     suiteName = shell.getArgument(aRequest, 'tsh:suite',
         shell.getArgument(aRequest, 'ARG1'));
-    if (TP.notEmpty(suiteName)) {
+
+    if (suiteName === true) {
+        // Only a single dash...syntax glitch...
+        suiteName = '';
+    } else if (TP.notEmpty(suiteName)) {
         suiteName = suiteName.unquoted();
     }
 
@@ -68,32 +74,33 @@ function(aRequest) {
         'ignore_skip', ignore_skip,
         'suite', suiteName);
 
-    target = shell.getArgument(aRequest, 'ARG0');
-
     if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 
-        TP.stdout('Usage - :test <target> [-local_only] [-ignore_only] [-ignore_skip]');
+        if (shell.getArgument(aRequest, 'tsh:all', false)) {
 
-        aRequest.complete();
-        return;
+            aRequest.stdout('Running all loaded tests...');
 
-        /*
-         * Commented out for the moment. We need to track down a memory leak
-         * before we run these all at once client-side.
-         *
-        suite.runTargetSuites(null, options).then(
-            function(result) {
-                aRequest.complete();
-            },
-            function(error) {
-                aRequest.fail(error);
-            }
-        );
-        */
+            runner.runTargetSuites(null, options).then(
+                function(result) {
+                    aRequest.complete();
+                },
+                function(error) {
+                    aRequest.fail(error);
+                }
+            );
+
+        } else {
+
+            aRequest.stdout('Usage - :test <target> [-local_only] [-ignore_only] [-ignore_skip]');
+            aRequest.complete();
+            return;
+        }
 
     } else if (TP.notEmpty(suiteName)) {
 
-        suite.runTargetSuites(null, options).then(
+        aRequest.stdout('');
+
+        runner.runTargetSuites(null, options).then(
             function(result) {
                 // TODO: should we pass non-null results?
                 aRequest.complete();
@@ -122,12 +129,12 @@ function(aRequest) {
         if (TP.isType(obj)) {
             if (!shell.getArgument(aRequest, 'tsh:local_only', false)) {
 
-                TP.stdout('Running Type tests...');
+                aRequest.stdout('Running Type tests...');
                 obj.Type.runTestSuites(options).then(function() {
-                        TP.stdout('Running Inst tests...');
+                        aRequest.stdout('Running Inst tests...');
                         obj.Inst.runTestSuites(options);
                     }).then(function() {
-                        TP.stdout('Running local tests...');
+                        aRequest.stdout('Running local tests...');
                         obj.runTestSuites(options);
                     }).then(
                     function(result) {
@@ -138,10 +145,11 @@ function(aRequest) {
                         aRequest.fail(error);
                     }
                 );
-
                 return;
             }
         }
+
+        aRequest.stdout('');
 
         obj.runTestSuites(options).then(
             function(result) {
