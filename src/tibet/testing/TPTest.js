@@ -352,7 +352,9 @@ function(target, options) {
 
     var suites,
         suite,
-        id;
+        id,
+        params,
+        name;
 
     suites = TP.test.Suite.$get('suites');
 
@@ -373,18 +375,21 @@ function(target, options) {
         return suites;
     }
 
+    params = TP.hc(options);
+
     // TODO: if options includes things like inherited etc. we need to collect
     // more suites rather than assuming a single slice.
 
-    if (TP.notEmpty(options.suite)) {
+    name = params.at('suite');
+    if (TP.notEmpty(name)) {
         suite = suites.getValues().filter(function(item) {
-            return item.getKeys().contains(options.suite);
+            return item.getKeys().contains(name);
         }).collect(function(item) {
-            return item.at(options.suite);
+            return item.at(name);
         }).first();
 
         if (TP.isValid(suite)) {
-            return TP.hc(id || options.suite, TP.hc(options.suite, suite));
+            return TP.hc(id || name, TP.hc(name, suite));
         } else {
             return;
         }
