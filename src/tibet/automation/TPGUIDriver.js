@@ -815,6 +815,25 @@ function(mouseLocation, mouseButton) {
 
 //  ------------------------------------------------------------------------
 
+TP.gui.Sequence.Inst.defineMethod('exec',
+function(aFunction) {
+
+    /**
+     * @name exec
+     * @synopsis Executes the supplied Function as a step in the sequence.
+     * @param {Function} aFunction The Function to execute.
+     * @return {TP.gui.Sequence} The receiver.
+     */
+
+    if (TP.isCallable(aFunction)) {
+        this.get('sequenceEntries').add(TP.ac('exec', aFunction));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.gui.Sequence.Inst.defineMethod('$expandSequenceEntries',
 function(entries) {
 
@@ -1220,20 +1239,29 @@ function() {
                     function(resolver, rejector) {
                         var currentElement;
 
-                        //  If we can't determine a focused element, call the
-                        //  error callback and exit.
-                        if (!TP.isElement(
-                                currentElement = driver.getFocusedElement())) {
-                            return rejector(
-                                    'No current Element for the GUI Driver.');
-                        }
+                        //  If it's an 'exec', then we're just executing a
+                        //  Function. Execute it and then make sure to call the
+                        //  resolver.
+                        if (seqEntry.at(0) === 'exec') {
+                            seqEntry.at(1)();
+                            resolver();
+                        } else {
 
-                        thisArg.$performSequenceStep(
-                                    seqEntry.at(1),
-                                    seqEntry.at(0),
-                                    seqEntry.at(2),
-                                    resolver,
-                                    currentElement);
+                            //  If we can't determine a focused element, call
+                            //  the error callback and exit.
+                            if (!TP.isElement(
+                                currentElement = driver.getFocusedElement())) {
+                                return rejector(
+                                    'No current Element for the GUI Driver.');
+                            }
+
+                            thisArg.$performGUISequenceStep(
+                                        seqEntry.at(1),
+                                        seqEntry.at(0),
+                                        seqEntry.at(2),
+                                        resolver,
+                                        currentElement);
+                        }
                     });
                 /* eslint-enable new-cap */
 
@@ -1252,11 +1280,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Sequence.Inst.defineMethod('$performSequenceStep',
+TP.gui.Sequence.Inst.defineMethod('$performGUISequenceStep',
 function(target, type, args, callback, currentElement) {
 
     /**
-     * @name $performSequenceStep
+     * @name $performGUISequenceStep
      * @synopsis Actually performs the sequence step, firing an event at the
      *     supplied target element.
      * @param {Element} target The element to target the event at.
