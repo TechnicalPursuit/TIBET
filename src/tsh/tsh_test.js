@@ -70,7 +70,7 @@ function(aRequest) {
 
     target = shell.getArgument(aRequest, 'ARG0');
 
-    if (TP.isEmpty(target)) {
+    if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 
         TP.stdout('Usage - :test <target> [-local_only] [-ignore_only] [-ignore_skip]');
 
@@ -90,6 +90,18 @@ function(aRequest) {
             }
         );
         */
+
+    } else if (TP.notEmpty(suiteName)) {
+
+        suite.runTargetSuites(null, options).then(
+            function(result) {
+                // TODO: should we pass non-null results?
+                aRequest.complete();
+            },
+            function(error) {
+                aRequest.fail(error);
+            }
+        );
 
     } else {
 
