@@ -72,6 +72,15 @@ function(aRequest) {
 
     if (TP.isEmpty(target)) {
 
+        TP.stdout('Usage - :test <target> [-local_only] [-ignore_only] [-ignore_skip]');
+
+        aRequest.complete();
+        return;
+
+        /*
+         * Commented out for the moment. We need to track down a memory leak
+         * before we run these all at once client-side.
+         *
         suite.runTargetSuites(null, options).then(
             function(result) {
                 aRequest.complete();
@@ -80,6 +89,7 @@ function(aRequest) {
                 aRequest.fail(error);
             }
         );
+        */
 
     } else {
 
@@ -92,6 +102,33 @@ function(aRequest) {
         if (!TP.canInvoke(obj, 'runTestSuites')) {
             aRequest.fail(TP.FAILURE, 'Object cannot run tests: ' + TP.id(obj));
             return;
+        }
+
+        // One sugar here is that if the receiver is a type object we can ask
+        // for it to run both Type and Inst tests by essentially running each of
+        // the likely targets.
+        if (TP.isType(obj)) {
+            if (!shell.getArgument(aRequest, 'tsh:local_only', false)) {
+
+                TP.stdout('Running Type tests...');
+                obj.Type.runTestSuites(options).then(function() {
+                        TP.stdout('Running Inst tests...');
+                        obj.Inst.runTestSuites(options);
+                    }).then(function() {
+                        TP.stdout('Running local tests...');
+                        obj.runTestSuites(options);
+                    }).then(
+                    function(result) {
+                        // TODO: should we pass non-null results?
+                        aRequest.complete();
+                    },
+                    function(error) {
+                        aRequest.fail(error);
+                    }
+                );
+
+                return;
+            }
         }
 
         obj.runTestSuites(options).then(
