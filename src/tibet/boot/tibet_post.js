@@ -6835,7 +6835,16 @@ TP.boot.$displayMessage = function(aString, flush) {
         msgNode = TP.boot.$documentFromString(
             '<div xmlns="http://www.w3.org/1999/xhtml"><div></div></div>');
         if (!msgNode) {
-            top.console.log('Unable to create log message template.');
+            top.console.error('Unable to create log message template.');
+
+            buffer = TP.boot.$flushUIBuffer(TP.boot.shouldStop());
+
+            msgNode = elem.ownerDocument.createTextNode(
+                'Unable to create log message template.');
+            TP.boot.$nodeAppendChild(buffer, msgNode);
+
+            TP.boot.$scrollUIBuffer();
+            return;
         }
         TP.boot.$$msgTemplate = msgNode.firstChild.firstChild;
     }
@@ -6846,19 +6855,34 @@ TP.boot.$displayMessage = function(aString, flush) {
     try {
         msgNode.insertAdjacentHTML('beforeEnd', message);
     } catch (e) {
+
         msgNode = TP.boot.$documentFromString(
             '<div xmlns="http://www.w3.org/1999/xhtml"><div><pre>' +
             message + '</pre></div></div>');
+
         if (!msgNode) {
+
             msgNode = TP.boot.$documentFromString(
                 '<div xmlns="http://www.w3.org/1999/xhtml"><div><pre>' +
                 TP.boot.$htmlEscape(message) + '</pre></div></div>');
+
             if (!msgNode) {
-                top.console.error('Unable to create log message element for...');
-                top.console.log(message);
+                top.console.error('Unable to create log message element.');
+                top.console.error(message);
+
+                buffer = TP.boot.$flushUIBuffer(TP.boot.shouldStop());
+                msgNode = elem.ownerDocument.createTextNode(
+                    'Unable to create log message element. ' +
+                    'See JavaScript console.');
+                TP.boot.$nodeAppendChild(buffer, msgNode);
+
+                TP.boot.$scrollUIBuffer();
+                return;
+
             } else {
                 msgNode = msgNode.firstChild.firstChild;
             }
+
         } else {
             msgNode = msgNode.firstChild.firstChild;
         }
