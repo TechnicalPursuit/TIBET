@@ -2301,6 +2301,17 @@ function(aResource) {
                 newNode,
                 repeatResource.at(index),
                 vals);
+        if (isXMLResource) {
+            this.$refreshRepeatingTextNodes(
+                    newNode,
+                    repeatResource.at(index - 1),
+                    vals);
+        } else {
+            this.$refreshRepeatingTextNodes(
+                    newNode,
+                    repeatResource.at(index),
+                    vals);
+        }
 
         //  Finally, append this new chunk of markup under the receiver element
         //  and then loop to the top to do it again.
@@ -2353,6 +2364,7 @@ function(aNode, aResource, pathValues) {
      */
 
     var allTextNodes,
+        isXMLResource,
 
         j,
 
@@ -2369,6 +2381,8 @@ function(aNode, aResource, pathValues) {
 
     allTextNodes = TP.nodeGetDescendantsByType(aNode, Node.TEXT_NODE);
 
+    isXMLResource = TP.isXMLNode(TP.unwrap(aResource));
+
     for (j = 0; j < allTextNodes.length; j++) {
         textNode = allTextNodes[j];
         if (!TP.isTextNode(textNode)) {
@@ -2379,6 +2393,10 @@ function(aNode, aResource, pathValues) {
 
         if (TP.regex.HAS_ACP.test(text)) {
             template = text;
+
+            if (isXMLResource && !template.startsWith('{{./')) {
+                template = '{{./' + template.slice(2, -2) + '/text()}}';
+            }
             textNode.template = template;
 
             localName = /\{\{([^%]+).*\}\}/.exec(template)[1].trim();
