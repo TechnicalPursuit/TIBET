@@ -429,7 +429,7 @@ function(target, options) {
     if (TP.notValid(suites)) {
         TP.sys.logTest('0..0');
         TP.sys.logTest('# PASS: 0 pass, 0 fail, 0 skip, 0 todo, 0 errors.');
-        return;
+        return Q.Promise.resolve();
     }
 
     keys = suites.getKeys();
