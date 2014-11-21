@@ -3102,6 +3102,13 @@ function(anAspect, anAction, aDescription) {
      * @todo
      */
 
+    //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
+    //  We don't normally do this in TIBET, but this method is used heavily and
+    //  is a hotspot.
+    if (!this.shouldSignalChange()) {
+        return;
+    }
+
     //  when a change has happened we need to adjust to the current index so
     //  things like a combination of a back() and a set() will throw away
     //  the nodes after the current node, but when the aspect is current
