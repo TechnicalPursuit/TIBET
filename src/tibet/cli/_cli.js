@@ -450,7 +450,7 @@ CLI.getAppRoot = function() {
 
 /**
  * Returns the application launch root also referred to as the 'app head'. This
- * is the location where the * tibet.json and/or package.json files are found
+ * is the location where the tibet.json and/or package.json files are found
  * for the current context. This value is always computed and never set via
  * property values. The virtual path for this root is '~' or '~/'. The search
  * for this location works upward from the current directory to attempt to find

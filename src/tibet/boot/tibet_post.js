@@ -8295,11 +8295,11 @@ TP.boot.$configureBootstrap = function() {
     // Launch parameters can be provided directly to the launch command such
     // that the bootstrap file isn't needed. If that's the case we can skip
     // loading the file and cut out one more HTTP call.
-    if (!TP.sys.cfg('boot.tibet_file')) {
+    if (TP.sys.cfg('boot.notibetfile')) {
         return;
     }
 
-    file = TP.boot.$uriJoinPaths('~app', TP.sys.cfg('path.tibet_file'));
+    file = TP.boot.$uriJoinPaths('~app', TP.sys.cfg('boot.tibetfile'));
     logpath = TP.boot.$uriInTIBETFormat(file);
 
     file = TP.boot.$uriExpandPath(file);

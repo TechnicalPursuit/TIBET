@@ -1124,7 +1124,11 @@ Package.prototype.getLibRoot = function() {
         tibetdir = this.options.tibetdir;
     } else if (this.tibet.boot && this.tibet.boot.tibetdir) {
         tibetdir = this.tibet.boot.tibetdir;
+    } else if (this.tibet.path && this.tibet.path.npm_dir) {
+        tibetdir = this.tibet.path.npm_dir;
     } else {
+        // Hard-coded fallback, but we don't have a choice if no other setting
+        // is provided.
         tibetdir = 'node_modules';
     }
 
@@ -1132,7 +1136,11 @@ Package.prototype.getLibRoot = function() {
         tibetinf = this.options.tibetinf;
     } else if (this.tibet.boot && this.tibet.boot.tibetinf) {
         tibetinf = this.tibet.boot.tibetinf;
+    } else if (this.tibet.path && this.tibet.path.tibet_inf) {
+        tibetinf = this.tibet.path.tibet_inf;
     } else {
+        // Hard-coded fallback, but we don't have a choice if no other setting
+        // is provided.
         tibetinf = 'TIBET-INF';
     }
 
@@ -1140,6 +1148,8 @@ Package.prototype.getLibRoot = function() {
         tibetlib = this.options.tibetlib;
     } else if (this.tibet.boot && this.tibet.boot.tibetlib) {
         tibetlib = this.tibet.boot.tibetlib;
+    } else if (this.tibet.path && this.tibet.path.tibet_lib) {
+        tibetlib = this.tibet.path.tibet_lib;
     } else {
         tibetlib = 'tibet';     // lowercase due to npm being default install
     }
@@ -1154,7 +1164,13 @@ Package.prototype.getLibRoot = function() {
 
     if (app_root) {
         checks.unshift([app_root, path.join(tibetinf, tibetlib)]);
-        checks.unshift([app_root, path.join(tibetdir, tibetlib)]);
+        // NOTE node_modules does not float with app_root, it's always found at
+        // the application head.
+        if (tibetdir === 'node_modules') {
+            checks.unshift([this.getAppHead(), path.join(tibetdir, tibetlib)]);
+        } else {
+            checks.unshift([app_root, path.join(tibetdir, tibetlib)]);
+        }
     }
 
     len = checks.length;
@@ -1651,9 +1667,13 @@ Package.prototype.isInitialized = function() {
     // whether the app is frozen or not (or a couchdb template with an
     // attachments directory or similar "substructure).
     return sh.test('-e',
-            path.join(this.getAppHead(), 'node_modules/tibet')) ||
+            path.join(this.getAppHead(),
+                this.getcfg('path.npm_dir'),
+                this.getcfg('path.tibet_lib'))) ||
         sh.test('-e',
-            path.join(this.getAppRoot(), 'TIBET-INF/tibet'));
+            path.join(this.getAppRoot(),
+                this.getcfg('path.tibet_inf'),
+                this.getcfg('path.tibet_lib')));
 };
 
 

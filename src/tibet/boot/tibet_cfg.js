@@ -93,7 +93,7 @@ TP.sys.setcfg('boot.parallel', true);
 //  boot.boostrap JSON file (tibet.json by default). turning this off means all
 //  parameters critical to booting must be given in the launch() call or on the
 //  URL.
-TP.sys.setcfg('boot.tibet_file', true);
+TP.sys.setcfg('boot.notibetfile', false);
 
 //  should we allow url-level overrides of setcfg parameters. by default this is
 //  set to true, but it can be configured to off during launch() invocation.
@@ -175,11 +175,15 @@ TP.sys.setcfg('boot.level', 'INFO');
 //  will default to boot.tibetlib.
 TP.sys.setcfg('boot.libcomp', 'script');
 
-//  these three values provide search data for the getAppHead routine, which is
+//  these values provide search data for the getAppHead routine, which is
 //  leveraged by both app root and lib root computations.
 TP.sys.setcfg('boot.tibetdir', 'node_modules');
+TP.sys.setcfg('boot.tibetlib', 'tibet');
 TP.sys.setcfg('boot.tibetinf', 'TIBET-INF');
-TP.sys.setcfg('boot.tibetlib', 'TIBET');
+
+//  The file here is used as our source for project configuration data. If you
+//  don't want this loaded set boot.notibetfile to true.
+TP.sys.setcfg('boot.tibetfile', 'tibet.json');
 
 //  text pattern matching the init file used to check script tags during lib
 //  root computation if no other method is specified.
@@ -494,16 +498,16 @@ TP.sys.setcfg('boot.moz_xpcom', false);
 TP.sys.setcfg('path.npm_dir', 'node_modules');
 TP.sys.setcfg('path.npm_file', 'package.json');
 
-TP.sys.setcfg('path.tibet_dir', 'TIBET-INF');
-TP.sys.setcfg('path.tibet_file', 'tibet.json');
 TP.sys.setcfg('path.tibet_lib', 'tibet');   // npm install name here.
+TP.sys.setcfg('path.tibet_file', 'tibet.json');
+TP.sys.setcfg('path.tibet_inf', 'TIBET-INF');
 
 TP.sys.setcfg('path.app', '~app_root');
 TP.sys.setcfg('path.lib', '~lib_root');
 TP.sys.setcfg('path.tibet', '~lib_root');
 
-TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_dir'));
-TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_dir'));
+TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_inf'));
+TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_inf'));
 
 //  common virtual paths
 TP.sys.setcfg('path.app_bin', '~app/bin');
@@ -545,8 +549,8 @@ TP.sys.setcfg('path.lib_img', '~lib_lib/img');
 TP.sys.setcfg('path.app_lib', '~app/lib');
 TP.sys.setcfg('path.lib_lib', '~lib/lib');
 
-TP.sys.setcfg('path.app_npm', '~/node_modules');
-TP.sys.setcfg('path.lib_npm', '~lib/node_modules');
+TP.sys.setcfg('path.app_npm', '~/' + TP.sys.cfg('path.npm_dir'));
+TP.sys.setcfg('path.lib_npm', '~lib/' + TP.sys.cfg('path.npm_dir'));
 
 TP.sys.setcfg('path.app_src', '~app/src');
 TP.sys.setcfg('path.lib_src', '~lib/src');

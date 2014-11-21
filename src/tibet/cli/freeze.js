@@ -78,6 +78,10 @@ Cmd.prototype.HELP =
 'and is used in conjunction with the --tibet flag to filter bundles.\n' +
 'The default value is true, so only minified code is frozen by default.\n\n' +
 
+'The --zipped flag controls whether zipped copies are preserved or\n' +
+'pruned. This flag works after any minify processing so if you set both\n' +
+'minify and zipped you will retain .min.js.gz files.\n\n' +
+
 'The --all flag overrides any filtering of bundle content and preserves\n' +
 'all bundles of TIBET source found in the ~lib_build directory.\n\n' +
 
@@ -95,11 +99,12 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['minify', 'raw', 'all'],
+        'boolean': ['minify', 'raw', 'all', 'zipped'],
         'string': ['tibet'],
         'default': {
             all: false,
             minify: true,
+            zipped: false,
             raw: false,
             tibet: 'base'
         }
@@ -111,7 +116,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw]';
+Cmd.prototype.USAGE = 'tibet freeze [--tibet <bundle>] [--minify] [--all] [--raw] [--zipped]';
 
 
 //  ---
@@ -195,6 +200,10 @@ Cmd.prototype.execute = function() {
         return;
     }
 
+    //  ---
+    //  freeze (aka copy)
+    //  ---
+
     this.log('freezing packaged library resources...');
     sh.cp('-R', libbase, infroot);
     err = sh.error();
@@ -212,54 +221,11 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    this.log('pruning unnecessary source rollups...');
-
-    bundle = this.options.tibet;
-
-    if (!this.options.all) {
-        list.forEach(function(file) {
-
-            // Remove any minified/unminified copies we don't want.
-            if (cmd.options.minify) {
-                if (/\.min\./.test(file) !== true) {
-                    sh.rm('-f', path.join(srcroot, file));
-                }
-            } else {
-                if (/\.min\./.test(file) === true) {
-                    sh.rm('-f', path.join(srcroot, file));
-                }
-            }
-
-            // Never prune any remaining hook or init file.
-            if (/_hook\./.test(file) || /_init\./.test(file)) {
-                return;
-            }
-
-            // Note that when raw is specified no copies of bundled code are kept,
-            // only the hook and init files which are always pulled from bundles.
-            if (cmd.options.raw) {
-                sh.rm('-f', path.join(srcroot, file));
-            } else if (file.indexOf('tibet_' + bundle + '.') === -1) {
-                sh.rm('-f', path.join(srcroot, file));
-            }
-        });
-    }
-
     this.log('freezing runtime library resources...');
     sh.cp('-R', path.join(app_npm, 'tibet', 'etc'), infroot);
     err = sh.error();
     if (err) {
         this.error('Error cloning tibet/etc: ' + err);
-        return 1;
-    }
-
-    this.log('freezing developer tool resources...');
-    sh.mkdir('-p', path.join(infroot, 'src', 'tibet', 'tools'));
-    sh.cp('-R', path.join(app_npm, 'tibet', 'src', 'tibet', 'tools'),
-        path.join(infroot, 'src', 'tibet'));
-    err = sh.error();
-    if (err) {
-        this.error('Error cloning tibet tools: ' + err);
         return 1;
     }
 
@@ -279,7 +245,81 @@ Cmd.prototype.execute = function() {
             this.error('Error cloning tibet/deps: ' + err);
             return 1;
         }
+    } else {
+        this.log('freezing developer tool resources...');
+        sh.mkdir('-p', path.join(infroot, 'src', 'tibet', 'tools'));
+        sh.cp('-R', path.join(app_npm, 'tibet', 'src', 'tibet', 'tools'),
+            path.join(infroot, 'src', 'tibet'));
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet tools: ' + err);
+            return 1;
+        }
     }
+
+    //  ---
+    //  prune unwanted/unused files
+    //  ---
+
+    if (!this.options.all) {
+
+        this.log('pruning unnecessary source rollups...');
+
+        bundle = this.options.tibet;
+
+        list.forEach(function(file) {
+
+            // TODO: come up with a better solution. For now the one file we
+            // don't want to remove by default is tibet_developer.min.js since
+            // the various phantomjs commands use that one.
+            if (/tibet_developer\.min\.js/.test(file)) {
+                if (/\.gz$/.test(file)) {
+                    sh.rm('-f', path.join(srcroot, file));
+                }
+                return;
+            }
+
+            // Remove any minified/unminified copies we don't want.
+            if (cmd.options.minify) {
+                if (/\.min\./.test(file) !== true) {
+                    sh.rm('-f', path.join(srcroot, file));
+                }
+            } else {
+                if (/\.min\./.test(file) === true) {
+                    sh.rm('-f', path.join(srcroot, file));
+                }
+            }
+
+            // Remove any zipped/unzipped copies we don't want.
+            if (cmd.options.zipped) {
+                if (/\.gz$/.test(file) !== true) {
+                    sh.rm('-f', path.join(srcroot, file));
+                }
+            } else {
+                if (/\.gz$/.test(file) === true) {
+                    sh.rm('-f', path.join(srcroot, file));
+                }
+            }
+
+            // Never prune any remaining hook or init file.
+            if (/_hook\./.test(file) || /_init\./.test(file)) {
+                return;
+            }
+
+            // Note that when raw is specified no copies of bundled code are
+            // kept, only the hook and init files which are always pulled from
+            // bundles. (NOTE phantom-based commands retain tibet_developer).
+            if (cmd.options.raw) {
+                sh.rm('-f', path.join(srcroot, file));
+            } else if (file.indexOf('tibet_' + bundle + '.') === -1) {
+                sh.rm('-f', path.join(srcroot, file));
+            }
+        });
+    }
+
+    //  ---
+    //  update lib_root
+    //  ---
 
     this.log('updating embedded lib_root references...');
 
@@ -294,12 +334,12 @@ Cmd.prototype.execute = function() {
         }
     });
 
-    this.log('updating tibet.json lib_root setting...');
+    this.log('updating project lib_root setting...');
 
-    file = CLI.expandPath('~/tibet.json');
+    file = CLI.expandPath('~tibet_file');
     json = require(file);
     if (!json) {
-        this.error('Unable to update lib_root in tibet.json.');
+        this.error('Unable to update lib_root in: ' + file);
         return 1;
     }
     if (!json.path) {
@@ -307,6 +347,7 @@ Cmd.prototype.execute = function() {
     }
     json.path.lib_root = '~app/TIBET-INF/tibet';
     beautify(JSON.stringify(json)).to(file);
+
 
     this.info('Application frozen. TIBET now boots from ' + infroot + '.');
 };

@@ -201,7 +201,7 @@ Cmd.prototype.execute = function() {
     this.info('\t--debug        turn on debugging output [false]');
     this.info('\t--stack        display stack with error [false]');
 
-    this.info('\nConfigure default parameters via tibet.json');
+    this.info('\nConfigure default parameters via \'tibet config\'.');
 
     try {
         this.info('\n' + CLI.config.npm.name + '@' +

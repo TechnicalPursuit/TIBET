@@ -139,12 +139,12 @@ Cmd.prototype.execute = function() {
         }
     });
 
-    this.log('updating tibet.json lib_root setting...');
+    this.log('updating project lib_root setting...');
 
-    file = CLI.expandPath('~/tibet.json');
+    file = CLI.expandPath('~tibet_file');
     json = require(file);
     if (!json) {
-        this.error('Unable to update lib_root in tibet.json.');
+        this.error('Unable to update lib_root in: ' + file);
         return 1;
     }
     if (!json.path) {

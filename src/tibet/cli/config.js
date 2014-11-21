@@ -187,10 +187,10 @@ Cmd.prototype.setConfig = function(path, value) {
         root,
         key;
 
-    file = CLI.expandPath('~/tibet.json');
+    file = CLI.expandPath('~tibet_file');
     json = require(file);
     if (!json) {
-        this.error('Unable to load tibet.json.');
+        this.error('Unable to load: ' + file);
         return 1;
     }
 

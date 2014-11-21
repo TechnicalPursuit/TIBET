@@ -302,6 +302,12 @@ Cmd.prototype.executeForEach = function(list) {
  * internal Package instance. Intended to be overridden but custom subcommands.
  */
 Cmd.prototype.finalizePackageOptions = function() {
+
+    if (!this.pkgOpts.package) {
+        this.pkgOpts.package = CLI.getcfg('boot.package') ||
+        '~app_cfg/standard.xml';    // NOTE the default here must be in sync
+                                    // with default value from the boot system.
+    }
     this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);
 };
 
