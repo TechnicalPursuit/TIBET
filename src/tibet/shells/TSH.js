@@ -2237,6 +2237,24 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TSH.Inst.defineMethod('executeFull',
+function(aRequest) {
+
+    /**
+     * Expands the console into a more "full window" mode so you have as much
+     * real-estate as possible.
+     */
+
+    var bootframe;
+
+    bootframe = TP.wrap(TP.byId('UIBOOT', top));
+    bootframe.getContentDocument().getBody().addClass('full_console');
+
+    return aRequest.complete();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TSH.Inst.defineMethod('executeEntity',
 function(aRequest) {
 
