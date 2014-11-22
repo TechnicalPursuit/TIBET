@@ -6821,6 +6821,14 @@ TP.boot.$displayImage = function(aUrl) {
 
 TP.boot.$displayMessage = function(aString, flush) {
 
+    /**
+     * Adds aString to the current boot log display, if available. This method
+     * is the low-level method responsible for adding to the boot UI output.
+     * @param {String} aString The string of content to be added.
+     * @param {Boolean} flush True to flush the log prior to output.
+     * @return {Node} The node appended to the UI.
+     */
+
     var elem,
         buffer,
         message,
@@ -6841,10 +6849,11 @@ TP.boot.$displayMessage = function(aString, flush) {
 
             msgNode = elem.ownerDocument.createTextNode(
                 'Unable to create log message template.');
-            TP.boot.$nodeAppendChild(buffer, msgNode);
+            msgNode = TP.boot.$nodeAppendChild(buffer, msgNode);
 
             TP.boot.$scrollUIBuffer();
-            return;
+
+            return msgNode;
         }
         TP.boot.$$msgTemplate = msgNode.firstChild.firstChild;
     }
@@ -6874,10 +6883,11 @@ TP.boot.$displayMessage = function(aString, flush) {
                 msgNode = elem.ownerDocument.createTextNode(
                     'Unable to create log message element. ' +
                     'See JavaScript console.');
-                TP.boot.$nodeAppendChild(buffer, msgNode);
+                msgNode = TP.boot.$nodeAppendChild(buffer, msgNode);
 
                 TP.boot.$scrollUIBuffer();
-                return;
+
+                return msgNode;
 
             } else {
                 msgNode = msgNode.firstChild.firstChild;
@@ -6890,7 +6900,7 @@ TP.boot.$displayMessage = function(aString, flush) {
 
     if (msgNode) {
         buffer = TP.boot.$flushUIBuffer(TP.boot.shouldStop());
-        TP.boot.$nodeAppendChild(buffer, msgNode);
+        msgNode = TP.boot.$nodeAppendChild(buffer, msgNode);
     }
 
     // TODO: verify if we need to keep the flush flag. Without it content shows
@@ -6902,6 +6912,8 @@ TP.boot.$displayMessage = function(aString, flush) {
         TP.boot.$flushUIBuffer(true);
         TP.boot.$scrollUIBuffer();
     //}
+
+    return msgNode;
 };
 
 //  ----------------------------------------------------------------------------
