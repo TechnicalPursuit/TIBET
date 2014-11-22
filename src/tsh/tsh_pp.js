@@ -210,6 +210,11 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
+    if (TP.notValid(anObject)) {
+        // 'null' or 'undefined', as you'd expect.
+        return '<span class="tsh_pp">' + anObject + '<\/span>';
+    }
+
     return '<span class="tsh_pp">' +
         TP.str(anObject).asEscapedXML() +
     '<\/span>';
@@ -542,7 +547,11 @@ function(anObject, optFormat) {
     //  a Window that wasn't instrumented with TIBET. We try to redispatch
     //  against a matching from*() method on ourself that would do the job.
 
-    //  We only try this if we were not 'null' or 'undefined'.
+    if (TP.notValid(anObject)) {
+        // 'null' or 'undefined', as you'd expect.
+        return '<span class="tsh_pp">' + anObject + '<\/span>';
+    }
+
     if (TP.isValid(anObject)) {
         if (TP.notEmpty(methodName =
                         this.getBestMethodName(arguments, anObject, 'from'))) {
