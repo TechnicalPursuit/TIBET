@@ -550,7 +550,7 @@ function() {
 //  Display Primitives
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('getInputStats',
+TP.core.ConsoleService.Inst.defineMethod('getOutputStats',
 function(aSignal) {
 
     /**
@@ -587,7 +587,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('getInputTypeInfo',
+TP.core.ConsoleService.Inst.defineMethod('getResultTypeInfo',
 function(aSignal) {
 
     /**
@@ -615,12 +615,11 @@ function(aSignal) {
         val = aSignal.getResult();
     }
 
-    if (TP.notValid(val)) {
-        return '';
+    if (aSignal.isFailing() || aSignal.didFail()) {
+        return 'undefined';
     }
 
     if (TP.isValid(val)) {
-
         str = '' + TP.tname(val);
 
         if (TP.isCollection(val) && TP.sys.cfg('tdc.type_collections', true)) {
@@ -2286,10 +2285,6 @@ function(anError, aRequest) {
             this.writeInputContent(request);
         }
 
-        //  Make sure to mark the request as having had it's 'input content'
-        //  written once - we only do this once.
-        request.atPut('inputWritten', true);
-
         //  Write output content
         this.writeOutputContent(err, request);
 
@@ -2413,10 +2408,6 @@ function(anObject, aRequest) {
             this.writeInputContent(request);
         }
 
-        //  Make sure to mark the request as having had it's 'input content'
-        //  written once - we only do this once.
-        request.atPut('inputWritten', true);
-
         //  Write output content
         this.writeOutputContent(outObject, request);
 
@@ -2463,6 +2454,13 @@ function(aRequest) {
 
     request = TP.request(aRequest);
 
+    // Don't do this twice...
+    if (TP.isTrue(request.at('inputWritten'))) {
+        return;
+    }
+
+    request.atPut('inputWritten', true);
+
     if (TP.isTrue(request.at('cmdEcho'))) {
 
         //  update the command title bar based on the latest output from
@@ -2496,7 +2494,10 @@ function(aRequest) {
 
     inputData = TP.hc('hid', hidstr,
                         'cmdtext', str,
-                        'inputclass', cssClass);
+                        'inputclass', cssClass,
+                        'empty', '',
+                        'stats', '_ | _ | _',
+                        'resulttype', '');
 
     inputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
                         '#xpath1(//*[@name="inputText"])').transform(
@@ -2506,7 +2507,7 @@ function(aRequest) {
         return;
     }
 
-    TP.boot.$displayMessage(inputStr, true);
+    request.atPut('cmdInputNode', TP.boot.$displayMessage(inputStr, true));
 
     return this;
 });
@@ -2530,6 +2531,7 @@ function(anObject, aRequest) {
         data,
         asIs,
 
+        inputNode,
         cssClass,
         outputData,
         outputStr;
@@ -2587,23 +2589,26 @@ function(anObject, aRequest) {
                         'outputclass', cssClass,
                         'empty', '',
                         'stats',
-                            TP.ifInvalid(this.getInputStats(request), ''),
-                        'resulttype',
-                            TP.ifInvalid(this.getInputTypeInfo(request), ''));
-
-    if (outputData.at('stats').match(/0 | 0 | 0/)) {
-        outputData.atPut('stats', '');
-    }
+                            TP.ifInvalid(this.getOutputStats(request), ''),
+                        'resulttype', this.getResultTypeInfo(request));
 
     if (TP.isEmpty(outputData.at('stats')) && TP.isEmpty(outputData.at('resulttype'))) {
         outputData.atPut('empty', 'empty');
+    }
+
+    if (!outputData.at('empty')) {
+        inputNode = request.at('cmdInputNode');
+        if (TP.isValid(inputNode)) {
+            TP.$('.stats', inputNode).setContent(outputData.at('stats'));
+            TP.$('.typeinfo', inputNode).setContent(outputData.at('resulttype'));
+        }
     }
 
     outputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
                         '#xpath1(//*[@name="outputText"])').transform(
                             outputData);
 
-    TP.boot.$displayMessage(outputStr, true);
+    request.atPut('cmdOutputNode', TP.boot.$displayMessage(outputStr, true));
 
     return this;
 });

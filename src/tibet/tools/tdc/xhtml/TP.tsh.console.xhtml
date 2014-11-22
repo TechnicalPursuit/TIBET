@@ -4,11 +4,11 @@
     <div class="inputcell {{inputclass}}" name="inputText">
         <span class="hid"><a href="javascript: void(0)" onclick="TP.core.Resource.getResourceById('SystemConsole').execRawInput('{{hid}}')">{{hid}}</a></span>
         <span class="content">{{cmdtext}}</span>
+        <span class="typeinfo {{empty}}">{{resulttype}}</span>
+        <span class="stats {{empty}}">{{stats}}</span>
     </div>
 
     <div class="outputcell {{outputclass}}" name="outputText">
-        <span class="typeinfo {{empty}}">{{resulttype}}</span>
-        <span class="stats {{empty}}">{{stats}}</span>
         <span class="result">{{output}}</span>
     </div>
 

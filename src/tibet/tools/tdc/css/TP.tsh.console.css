@@ -103,6 +103,8 @@ body.full_console #BOOT-CONSOLE {
 .inputcell .hid
 {
     text-decoration: none;
+    display: inline-block;
+    min-width: 32px;
 }
 
 .inputcell .hid:hover
@@ -116,6 +118,28 @@ body.full_console #BOOT-CONSOLE {
     display: inline-block;
 
     color: #ccc;
+
+    white-space: pre-line;
+}
+
+.inputcell .stats
+{
+    float: right;
+    margin: 0 8px;
+    display: inline-block;
+
+    color: grey;
+
+    white-space: pre-line;
+}
+
+.inputcell .typeinfo
+{
+    float: right;
+    display: inline-block;
+    margin: 0 8px;
+
+    color: orange;
 
     white-space: pre-line;
 }
@@ -219,7 +243,7 @@ body.full_console #BOOT-CONSOLE {
 
 .tsh_pp > span span[data-name]:before
 {
-    content: attr(data-name) " ";
+    content: attr(data-name) " => ";
 
     vertical-align: top;
 
@@ -227,6 +251,7 @@ body.full_console #BOOT-CONSOLE {
     text-align: left;
 
     white-space: pre-wrap;
+    width: 48px;
 }
 
 .tsh_pp > span.Array span,
