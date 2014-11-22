@@ -616,9 +616,17 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                             result.push(new_token('uri', str));
                         }
                     } else {
-                        //  for identifiers we do a lookup to refine the type
-                        //  here
-                        result.push(new_token(identifier_type(str), str));
+                        // Actually a couple of options here, and one is that
+                        // we're looking at the start of an object literal...
+                        if (/^\{[$_a-zA-Z]+/.test(str)) {
+                            result.push(new_token('operator', '{'));
+                            result.push(new_token(identifier_type(str.slice(1)),
+                                str.slice(1)));
+                        } else {
+                            //  for identifiers we do a lookup to refine the
+                            //  type here
+                            result.push(new_token(identifier_type(str), str));
+                        }
                     }
                 } else {
                     if (identHead.test(str)) {
