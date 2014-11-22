@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+	<title></title>
+
+	<script type="text/javascript" src="~lib_lib/src/tibet_hook.min.js">
+	</script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_lib/css/tibet.css"/>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+	<h2>Bind Test #31</h2><br/>
+	<br/>
+	<br/>
+    This test sets up a 'simple binding' between a textfield that is using an 'embedded expression' (which is whole attribute expression), a span that is using an 'embedded expression that is a partial expression and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document.
+    <br/>
+	<br/>
+    <br/>
+    This test also uses a URL with a 'top-level' fragment as a top-level binding scope to avoid having to repeat the full qualifications for the bind scope on each bind.
+	<br/>
+	<br/>
+
+    <!-- Set up a span to define the binding scope -->
+    <span bind:scope="urn:tibet:Bind31_person#xpath1(/people/person[3])">
+
+        <label for="colorField">Color: </label>
+        Billy's Favorite Color: <input type="text" id="colorField" value="[[color]]" tabindex="0"/><br/>
+
+        <span id="colorSpan" style="background-color: [[color]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
+
+    </span>
+
+    <tibet:data local="urn:tibet:Bind31_person">
+        <people xmlns="">
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+                <color>red</color>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+                <color>green</color>
+            </person>
+            <person>
+                <lastname>Homemaker</lastname>
+                <firstname>Billy</firstname>
+                <color>blue</color>
+            </person>
+            <person>
+                <lastname>Professional</lastname>
+                <firstname>Pamela</firstname>
+                <color>yellow</color>
+            </person>
+        </people>
+    </tibet:data>
+
+</body>
+</html>

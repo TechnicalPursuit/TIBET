@@ -18,43 +18,47 @@
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
 
-	<h2>Bind Test #23</h2><br/>
+	<h2>Bind Test #34</h2><br/>
 	<br/>
 	<br/>
-    This test sets up a 'repeat' binding between the static Active Client Pages templating expressions in the page and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document. The repeating data rows and cells are automatically generated from the data, which is a collection.
+    This test sets up a 'simple binding' between a textfield that is using an 'embedded expression' (which is the whole attribute expression) and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document.
+    <br/>
+	<br/>
+    <br/>
+    This test also uses a 'pure URI' as a top-level binding scope to avoid having to repeat the full qualifications for the bind scope on each bind.
 	<br/>
 	<br/>
 
-    <table>
-        <thead>
-            <tr>
-                <th>First Name</th><th>Last Name</th>
-            </tr>
-        </thead>
-        <tbody id="people" bind:repeat="urn:tibet:Bind23_person#xpath1(/people/person)">
-            <tr>
-                <td>{{firstname}}</td><td>{{lastname}}</td>
-            </tr>
-        </tbody>
-    </table>
+    <label for="colorField">Color: </label>
 
-    <tibet:data local="urn:tibet:Bind23_person">
+    <!-- Set up a span to define the binding scope -->
+    <span bind:scope="urn:tibet:Bind26_person">
+
+        John's Favorite Color: <input type="text" id="colorField" value="[[#xpath1(/people/person[2]/color)]]" tabindex="0"/><br/>
+
+    </span>
+
+    <tibet:data local="urn:tibet:Bind26_person">
         <people xmlns="">
             <person>
                 <lastname>Smith</lastname>
                 <firstname>Joe</firstname>
+                <color>red</color>
             </person>
             <person>
                 <lastname>Jones</lastname>
                 <firstname>John</firstname>
+                <color>green</color>
             </person>
             <person>
                 <lastname>Homemaker</lastname>
                 <firstname>Billy</firstname>
+                <color>blue</color>
             </person>
             <person>
                 <lastname>Professional</lastname>
                 <firstname>Pamela</firstname>
+                <color>yellow</color>
             </person>
         </people>
     </tibet:data>

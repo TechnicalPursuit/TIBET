@@ -150,9 +150,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -258,9 +259,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -281,9 +283,10 @@ function() {
 
                 descriptionField = TP.byOID('descriptionField');
 
-                descriptionField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -438,9 +441,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -461,9 +465,10 @@ function() {
 
                 descriptionField = TP.byOID('descriptionField');
 
-                descriptionField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -618,9 +623,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -641,9 +647,10 @@ function() {
 
                 descriptionField = TP.byOID('descriptionField');
 
-                descriptionField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -798,9 +805,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -821,9 +829,10 @@ function() {
 
                 descriptionField = TP.byOID('descriptionField');
 
-                descriptionField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -938,9 +947,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1046,9 +1056,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1069,9 +1080,10 @@ function() {
 
                 descriptionField = TP.byOID('descriptionField');
 
-                descriptionField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1226,9 +1238,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1249,9 +1262,10 @@ function() {
 
                 descriptionField = TP.byOID('descriptionField');
 
-                descriptionField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1406,9 +1420,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1429,9 +1444,10 @@ function() {
 
                 descriptionField = TP.byOID('descriptionField');
 
-                descriptionField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1586,9 +1602,10 @@ function() {
 
                 lastNameField = TP.byOID('lastNameField');
 
-                lastNameField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1609,9 +1626,10 @@ function() {
 
                 descriptionField = TP.byOID('descriptionField');
 
-                descriptionField.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1760,9 +1778,10 @@ function() {
 
                 lastNameField1 = TP.byOID('lastNameField1');
 
-                lastNameField1.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -1780,9 +1799,10 @@ function() {
 
                 lastNameField2 = TP.byOID('lastNameField2');
 
-                lastNameField2.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -1866,9 +1886,10 @@ function() {
 
                 lastNameField1 = TP.byOID('lastNameField1');
 
-                lastNameField1.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -1886,9 +1907,10 @@ function() {
 
                 lastNameField2 = TP.byOID('lastNameField2');
 
-                lastNameField2.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -1972,9 +1994,10 @@ function() {
 
                 lastNameField1 = TP.byOID('lastNameField1');
 
-                lastNameField1.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -1992,9 +2015,10 @@ function() {
 
                 lastNameField2 = TP.byOID('lastNameField2');
 
-                lastNameField2.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -2078,9 +2102,10 @@ function() {
 
                 lastNameField1 = TP.byOID('lastNameField1');
 
-                lastNameField1.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -2098,9 +2123,10 @@ function() {
 
                 lastNameField2 = TP.byOID('lastNameField2');
 
-                lastNameField2.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -2188,9 +2214,10 @@ function() {
 
                 lastNameField1 = TP.byOID('lastNameField1');
 
-                lastNameField1.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -2208,9 +2235,10 @@ function() {
 
                 lastNameField2 = TP.byOID('lastNameField2');
 
-                lastNameField2.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -2320,9 +2348,10 @@ function() {
 
                 lastNameField1 = TP.byOID('lastNameField1');
 
-                lastNameField1.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -2340,9 +2369,10 @@ function() {
 
                 lastNameField2 = TP.byOID('lastNameField2');
 
-                lastNameField2.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -2360,9 +2390,10 @@ function() {
 
                 addressStreetField11 = TP.byOID('addressStreetField11');
 
-                addressStreetField11.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                addressStreetField11.clearValue();
+                            }).
                     sendKeys('555 3rd Av', addressStreetField11).
                     sendEvent(TP.hc('type', 'change'), addressStreetField11).
                     perform();
@@ -2380,9 +2411,10 @@ function() {
 
                 addressCityField22 = TP.byOID('addressCityField22');
 
-                addressCityField22.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                addressCityField22.clearValue();
+                            }).
                     sendKeys('The Main Town', addressCityField22).
                     sendEvent(TP.hc('type', 'change'), addressCityField22).
                     perform();
@@ -2457,6 +2489,9 @@ function() {
                 lastNameField1.clearValue();
 
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -2474,9 +2509,10 @@ function() {
 
                 lastNameField2 = TP.byOID('lastNameField1');
 
-                lastNameField2.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -2586,9 +2622,10 @@ function() {
 
                 lastNameField1 = TP.byOID('lastNameField0');
 
-                lastNameField1.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -2606,9 +2643,10 @@ function() {
 
                 lastNameField2 = TP.byOID('lastNameField1');
 
-                lastNameField2.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -2626,9 +2664,10 @@ function() {
 
                 addressStreetField00 = TP.byOID('addressStreetField00');
 
-                addressStreetField00.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                addressStreetField00.clearValue();
+                            }).
                     sendKeys('555 3rd Av', addressStreetField00).
                     sendEvent(TP.hc('type', 'change'), addressStreetField00).
                     perform();
@@ -2646,9 +2685,10 @@ function() {
 
                 addressCityField11 = TP.byOID('addressCityField11');
 
-                addressCityField11.clearValue();
-
                 test.getDriver().startSequence().
+                    exec(function() {
+                                addressCityField11.clearValue();
+                            }).
                     sendKeys('The Main Town', addressCityField11).
                     sendEvent(TP.hc('type', 'change'), addressCityField11).
                     perform();
@@ -2686,7 +2726,134 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var repeatIndexField,
+                    repeatSizeField;
+
+                repeatIndexField = TP.byOID('repeatIndexField');
+                repeatSizeField = TP.byOID('repeatSizeField');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatIndexField').get('value'),
+                    '1');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatSizeField').get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(TP.byId('firstNameField1'));
+                test.assert.isDisplayed(TP.byId('lastNameField1'));
+                test.assert.isDisplayed(TP.byId('firstNameField2'));
+                test.assert.isDisplayed(TP.byId('lastNameField2'));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField1').get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField2').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField2').get('value'),
+                    'John');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField3'));
+                        test.assert.isDisplayed(TP.byId('lastNameField3'));
+                        test.assert.isDisplayed(TP.byId('firstNameField4'));
+                        test.assert.isDisplayed(TP.byId('lastNameField4'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField3').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField3').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField4').get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField4').get('value'),
+                            'Pamela');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('2', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '2');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField1'));
+                        test.assert.isDisplayed(TP.byId('lastNameField1'));
+                        test.assert.isDisplayed(TP.byId('firstNameField2'));
+                        test.assert.isDisplayed(TP.byId('lastNameField2'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField1').get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField1').get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField2').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField2').get('value'),
+                            'Billy');
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2707,7 +2874,192 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var repeatIndexField,
+                    repeatSizeField;
+
+                repeatIndexField = TP.byOID('repeatIndexField');
+                repeatSizeField = TP.byOID('repeatSizeField');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatIndexField').get('value'),
+                    '1');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatSizeField').get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(TP.byId('firstNameField1'));
+                test.assert.isDisplayed(TP.byId('lastNameField1'));
+                test.assert.isDisplayed(TP.byId('firstNameField2'));
+                test.assert.isDisplayed(TP.byId('lastNameField2'));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField1').get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressStreetField11').get('value'),
+                    '111 Main St.');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressStreetField12').get('value'),
+                    '222 State St.');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField2').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField2').get('value'),
+                    'John');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressCityField21').get('value'),
+                    'Yet Another Town');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressCityField22').get('value'),
+                    'One More Town');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField3'));
+                        test.assert.isDisplayed(TP.byId('lastNameField3'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField31'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField32'));
+
+                        test.assert.isDisplayed(TP.byId('firstNameField4'));
+                        test.assert.isDisplayed(TP.byId('lastNameField4'));
+                        test.assert.isDisplayed(TP.byId('addressCityField41'));
+                        test.assert.isDisplayed(TP.byId('addressCityField42'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField3').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField3').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField31').get('value'),
+                            '#27 Ritz Ave. Apt A.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField32').get('value'),
+                            '#4 Country Rd.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField4').get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField4').get('value'),
+                            'Pamela');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField41').get('value'),
+                            'High Power Place');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField42').get('value'),
+                            'Middle Of Nowhere');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('2', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '2');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField1'));
+                        test.assert.isDisplayed(TP.byId('lastNameField1'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField11'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField12'));
+
+                        test.assert.isDisplayed(TP.byId('firstNameField2'));
+                        test.assert.isDisplayed(TP.byId('lastNameField2'));
+                        test.assert.isDisplayed(TP.byId('addressCityField21'));
+                        test.assert.isDisplayed(TP.byId('addressCityField22'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField1').get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField1').get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField11').get('value'),
+                            '333 1st Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField12').get('value'),
+                            '444 2nd Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField2').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField2').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField21').get('value'),
+                            'In Your Town');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField22').get('value'),
+                            'Middle Of Nowhere');
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2728,7 +3080,134 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var repeatIndexField,
+                    repeatSizeField;
+
+                repeatIndexField = TP.byOID('repeatIndexField');
+                repeatSizeField = TP.byOID('repeatSizeField');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatIndexField').get('value'),
+                    '0');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatSizeField').get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(TP.byId('firstNameField0'));
+                test.assert.isDisplayed(TP.byId('lastNameField0'));
+                test.assert.isDisplayed(TP.byId('firstNameField1'));
+                test.assert.isDisplayed(TP.byId('lastNameField1'));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField0').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField0').get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField1').get('value'),
+                    'John');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField2'));
+                        test.assert.isDisplayed(TP.byId('lastNameField2'));
+                        test.assert.isDisplayed(TP.byId('firstNameField3'));
+                        test.assert.isDisplayed(TP.byId('lastNameField3'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField2').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField2').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField3').get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField3').get('value'),
+                            'Pamela');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('1', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '1');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField0'));
+                        test.assert.isDisplayed(TP.byId('lastNameField0'));
+                        test.assert.isDisplayed(TP.byId('firstNameField1'));
+                        test.assert.isDisplayed(TP.byId('lastNameField1'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField0').get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField0').get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField1').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField1').get('value'),
+                            'Billy');
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2749,7 +3228,192 @@ function() {
         this.then(
             function() {
 
-                //  TODO: Write real tests
+                var repeatIndexField,
+                    repeatSizeField;
+
+                repeatIndexField = TP.byOID('repeatIndexField');
+                repeatSizeField = TP.byOID('repeatSizeField');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatIndexField').get('value'),
+                    '0');
+
+                test.assert.isEqualTo(
+                    TP.byOID('repeatSizeField').get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(TP.byId('firstNameField0'));
+                test.assert.isDisplayed(TP.byId('lastNameField0'));
+                test.assert.isDisplayed(TP.byId('firstNameField1'));
+                test.assert.isDisplayed(TP.byId('lastNameField1'));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField0').get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField0').get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressStreetField00').get('value'),
+                    '111 Main St.');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressStreetField01').get('value'),
+                    '222 State St.');
+
+                test.assert.isEqualTo(
+                    TP.byOID('lastNameField1').get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byOID('firstNameField1').get('value'),
+                    'John');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressCityField10').get('value'),
+                    'Yet Another Town');
+
+                test.assert.isEqualTo(
+                    TP.byOID('addressCityField11').get('value'),
+                    'One More Town');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField2'));
+                        test.assert.isDisplayed(TP.byId('lastNameField2'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField20'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField21'));
+
+                        test.assert.isDisplayed(TP.byId('firstNameField3'));
+                        test.assert.isDisplayed(TP.byId('lastNameField3'));
+                        test.assert.isDisplayed(TP.byId('addressCityField30'));
+                        test.assert.isDisplayed(TP.byId('addressCityField31'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField2').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField2').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField20').get('value'),
+                            '#27 Ritz Ave. Apt A.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField21').get('value'),
+                            '#4 Country Rd.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField3').get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField3').get('value'),
+                            'Pamela');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField30').get('value'),
+                            'High Power Place');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField31').get('value'),
+                            'Middle Of Nowhere');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('1', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '1');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(TP.byId('firstNameField0'));
+                        test.assert.isDisplayed(TP.byId('lastNameField0'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField00'));
+                        test.assert.isDisplayed(TP.byId('addressStreetField01'));
+
+                        test.assert.isDisplayed(TP.byId('firstNameField1'));
+                        test.assert.isDisplayed(TP.byId('lastNameField1'));
+                        test.assert.isDisplayed(TP.byId('addressCityField10'));
+                        test.assert.isDisplayed(TP.byId('addressCityField11'));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField0').get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField0').get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField00').get('value'),
+                            '333 1st Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressStreetField01').get('value'),
+                            '444 2nd Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('lastNameField1').get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('firstNameField1').get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField10').get('value'),
+                            'In Your Town');
+
+                        test.assert.isEqualTo(
+                            TP.byOID('addressCityField11').get('value'),
+                            'Middle Of Nowhere');
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2776,6 +3440,39 @@ function() {
         this.then(
             function() {
 
+                var dataRows,
+                    dataCells;
+
+                dataRows = TP.byCSS('tr', TP.byId('people'));
+                test.assert.isEqualTo(dataRows.getSize(), 4);
+
+                dataCells = TP.byCSS('td', TP.byId('people'));
+                test.assert.isEqualTo(dataCells.getSize(), 8);
+
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(0)),
+                    'Joe');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(1)),
+                    'Smith');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(2)),
+                    'John');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(3)),
+                    'Jones');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(4)),
+                    'Billy');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(5)),
+                    'Homemaker');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(6)),
+                    'Pamela');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(7)),
+                    'Professional');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2795,7 +3492,98 @@ function() {
 
         this.then(
             function() {
+                var dataRows,
+                    dataCells;
 
+                dataRows = TP.byCSS('tr', TP.byId('people'));
+                test.assert.isEqualTo(dataRows.getSize(), 4);
+
+                dataCells = TP.byCSS('td', TP.byId('people'));
+                test.assert.isEqualTo(dataCells.getSize(), 8);
+
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(0)),
+                    'Joe');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(1)),
+                    'Smith');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(2)),
+                    'John');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(3)),
+                    'Jones');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(4)),
+                    'Billy');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(5)),
+                    'Homemaker');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(6)),
+                    'Pamela');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(7)),
+                    'Professional');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: inline bind expressions',
+function() {
+
+    //  ---
+
+    this.it('whole attribute expression - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind25.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind25_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[1]/color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[1]/color')),
+                            'purple');
+                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2803,7 +3591,932 @@ function() {
             });
     });
 
-}).skip();
+    //  ---
+
+    this.it('whole attribute expression, no fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind26.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind26_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[2]/color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[2]/color')),
+                            'yellow');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, single-level fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind27.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind27_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[3]/color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[3]/color')),
+                            'orange');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, multi-level fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind28.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind28_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[4]/color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[4]/color')),
+                            'blue');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind29.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind29_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('red'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[1]/color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('purple'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[1]/color')),
+                            'purple');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, no fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind30.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind30_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    //  For some reason, green isn't green...
+                    TP.core.Color.fromString('rgb(0, 128, 0)'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[2]/color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('yellow'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[2]/color')),
+                            'yellow');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, single-level fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind31.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind31_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('blue'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[3]/color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('orange'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[3]/color')),
+                            'orange');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, multi-level fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind32.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind32_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('yellow'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[4]/color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('blue'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[4]/color')),
+                            'blue');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind33.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind33_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[0].color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[0].color')),
+                            'purple');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind34.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind34_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[1].color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[1].color')),
+                            'yellow');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind35.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind35_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[2].color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[2].color')),
+                            'orange');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind36.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind36_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[3].color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[3].color')),
+                            'blue');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind37.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind37_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('red'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[0].color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('purple'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[0].color')),
+                            'purple');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind38.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind38_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    //  For some reason, green isn't green...
+                    TP.core.Color.fromString('rgb(0, 128, 0)'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[1].color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('yellow'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[1].color')),
+                            'yellow');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind39.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind39_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('blue'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[2].color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('orange'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[2].color')),
+                            'orange');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind40.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind40_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('yellow'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[3].color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('blue'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[3].color')),
+                            'blue');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!

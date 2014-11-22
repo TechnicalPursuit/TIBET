@@ -1069,7 +1069,7 @@ function(anObject, aValue, aType, aComment) {
     this.assertMinArguments(arguments, 3);
 
     this.assert(
-        TP.ac(anObject, aValue).equalAs(aType),
+        TP.sc(anObject, aValue).equalAs(aType),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' and ', TP.id(aValue),
                 ' to be equal as ', TP.name(aType), 's.'));
@@ -1652,7 +1652,7 @@ function(anObject, aComment) {
     this.assert(
         TP.isXMLDocument(anObject),
         aComment,
-        TP.ac('Expected ', TP.id(anObject), ' to be an XML document.'));
+        TP.sc('Expected ', TP.id(anObject), ' to be an XML document.'));
 
     return;
 });
@@ -1667,7 +1667,7 @@ function(anObject, aComment) {
     this.assert(
         TP.isXMLNode(anObject),
         aComment,
-        TP.ac('Expected ', TP.id(anObject), ' to be an XML node.'));
+        TP.sc('Expected ', TP.id(anObject), ' to be an XML node.'));
 
     return;
 });
@@ -2068,6 +2068,26 @@ function(anObject, aComment) {
     //  'Expected ' + TP.id(anObject) + ' to be disabled.');
 
     TP.todo();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.TestMethodCollection.defineAssertion('isDisplayed',
+function(anObject, aComment) {
+
+    this.assertMinArguments(arguments, 1);
+
+    this.assert(
+        TP.isElement(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be an Element.'));
+
+    this.assert(
+        TP.elementIsDisplayed(anObject),
+        aComment,
+        TP.sc('Expected ', TP.id(anObject), ' to be displayed.'));
 
     return;
 });
