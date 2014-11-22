@@ -3532,7 +3532,991 @@ function() {
             });
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-}).skip();
+
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: inline bind expressions',
+function() {
+
+    //  ---
+
+    this.it('whole attribute expression - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind25.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind25_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[1]/color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[1]/color')),
+                            'purple');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, no fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind26.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind26_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[2]/color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[2]/color')),
+                            'yellow');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, single-level fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind27.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind27_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[3]/color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[3]/color')),
+                            'orange');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, multi-level fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind28.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind28_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[4]/color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[4]/color')),
+                            'blue');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind29.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind29_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('red'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[1]/color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('purple'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[1]/color')),
+                            'purple');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, no fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind30.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind30_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    //  For some reason, green isn't green...
+                    TP.core.Color.fromString('rgb(0, 128, 0)'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[2]/color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('yellow'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[2]/color')),
+                            'yellow');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, single-level fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind31.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind31_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('blue'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[3]/color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('orange'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[3]/color')),
+                            'orange');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, multi-level fragment, qualified binding - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind32.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind32_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('yellow'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('/people/person[4]/color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('blue'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('/people/person[4]/color')),
+                            'blue');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind33.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind33_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[0].color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[0].color')),
+                            'purple');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind34.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind34_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[1].color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[1].color')),
+                            'yellow');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind35.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind35_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[2].color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[2].color')),
+                            'orange');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind36.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField;
+
+                modelObj = TP.uc('urn:tibet:Bind36_person').getResource();
+
+                colorField = TP.byOID('colorField');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[3].color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[3].color')),
+                            'blue');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind37.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind37_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('red'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[0].color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('purple'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[0].color')),
+                            'purple');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind38.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind38_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    //  For some reason, green isn't green...
+                    TP.core.Color.fromString('rgb(0, 128, 0)'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[1].color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('yellow'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[1].color')),
+                            'yellow');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind39.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind39_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('blue'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[2].color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('orange'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[2].color')),
+                            'orange');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/Bind40.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        this.then(
+            function() {
+
+                var modelObj,
+                    colorField,
+                    colorSpan;
+
+                modelObj = TP.uc('urn:tibet:Bind40_person').getResource();
+
+                colorField = TP.byOID('colorField');
+                colorSpan = TP.byOID('colorSpan');
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('yellow'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('people[3].color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('blue'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('people[3].color')),
+                            'blue');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
