@@ -3003,7 +3003,7 @@ function(aRequest) {
 
     str = TP.ifInvalid(this.get('announcement'), '');
     str += TP.ifInvalid(this.get('introduction'), '');
-
+/*
     //  output any startup announcement for the shell
     req = TP.sig.UserOutputRequest.construct(
                 TP.hc('output', str,
@@ -3014,6 +3014,7 @@ function(aRequest) {
                         'cmdID', aRequest.at('cmdID')));
 
     req.fire(this);
+*/
 
     return aRequest.complete(str);
 });
