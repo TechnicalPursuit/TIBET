@@ -1309,10 +1309,14 @@ function(anObject, aValue, aComment) {
 TP.test.TestMethodCollection.defineAssertion('hasAttribute',
 function(anObject, anAttributeName, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 2);
 
+    //  Just in case we got handed a TP.core.ElementNode.
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.elementHasAttribute(anObject, anAttributeName),
+        TP.elementHasAttribute(obj, anAttributeName),
         aComment,
         TP.sc('Expected ', TP.id(anObject),
                 ' to have an attribute of: ' + anAttributeName));
@@ -1325,10 +1329,14 @@ function(anObject, anAttributeName, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isAttributeNode',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.AttributeNode.
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isAttributeNode(anObject),
+        TP.isAttributeNode(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an attribute node.'));
 
@@ -1340,10 +1348,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isCommentNode',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.CommentNode.
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isCommentNode(anObject),
+        TP.isCommentNode(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be a Comment node.'));
 
@@ -1355,10 +1367,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isCDATASectionNode',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.CDATASectionNode.
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isCDATASectionNode(anObject),
+        TP.isCDATASectionNode(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be a CDATASection node.'));
 
@@ -1370,10 +1386,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isCollectionNode',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.* (CollectionNode of some sort)
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isCollectionNode(anObject),
+        TP.isCollectionNode(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be a collection node.'));
 
@@ -1385,10 +1405,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isDocument',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.DocumentNode
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isDocument(anObject),
+        TP.isDocument(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be a Document.'));
 
@@ -1400,10 +1424,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isElement',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.ElementNode.
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isElement(anObject),
+        TP.isElement(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an Element.'));
 
@@ -1415,10 +1443,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isFragment',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.DocumentFragmentNode.
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isFragment(anObject),
+        TP.isFragment(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be a document fragment.'));
 
@@ -1440,10 +1472,14 @@ function() {
 TP.test.TestMethodCollection.defineAssertion('isHTMLDocument',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.HTMLDocumentNode
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isHTMLDocument(anObject),
+        TP.isHTMLDocument(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an HTML document.'));
 
@@ -1455,10 +1491,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isHTMLNode',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.* (HTML Node of some sort)
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isHTMLNode(anObject),
+        TP.isHTMLNode(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an HTML node.'));
 
@@ -1487,6 +1527,8 @@ function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
 
+    //  Strict test - we don't unwrap here.
+
     this.assert(
         TP.isNode(anObject),
         aComment,
@@ -1501,6 +1543,8 @@ TP.test.TestMethodCollection.defineAssertion('isNamedNodeMap',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
+
+    //  Strict test - we don't unwrap here.
 
     this.assert(
         TP.isNamedNodeMap(anObject),
@@ -1517,6 +1561,8 @@ function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
 
+    //  Strict test - we don't unwrap here.
+
     this.assert(
         TP.isNodeList(anObject),
         aComment,
@@ -1531,6 +1577,8 @@ TP.test.TestMethodCollection.defineAssertion('isNodeType',
 function(anObject, aNodeType, aComment) {
 
     this.assertMinArguments(arguments, 2);
+
+    //  Strict test - we don't unwrap here.
 
     this.assert(
         TP.isNode(anObject),
@@ -1553,6 +1601,8 @@ function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
 
+    //  Strict test - we don't unwrap here.
+
     this.assert(
         TP.isPINode(anObject),
         aComment,
@@ -1569,6 +1619,8 @@ function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
 
+    //  Strict test - we don't unwrap here.
+
     this.assert(
         TP.isSVGNode(anObject),
         aComment,
@@ -1583,6 +1635,8 @@ TP.test.TestMethodCollection.defineAssertion('isTextNode',
 function(anObject, aComment) {
 
     this.assertMinArguments(arguments, 1);
+
+    //  Strict test - we don't unwrap here.
 
     this.assert(
         TP.isTextNode(anObject),
@@ -1607,10 +1661,14 @@ function() {
 TP.test.TestMethodCollection.defineAssertion('isXHTMLDocument',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.XMLDocumentNode
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isXHTMLDocument(anObject),
+        TP.isXHTMLDocument(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an XHTML document.'));
 
@@ -1622,10 +1680,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isXHTMLNode',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.* (HTML Node of some sort)
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isXHTMLNode(anObject),
+        TP.isXHTMLNode(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an XHTML node.'));
 
@@ -1647,10 +1709,14 @@ function() {
 TP.test.TestMethodCollection.defineAssertion('isXMLDocument',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.HTMLDocumentNode
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isXMLDocument(anObject),
+        TP.isXMLDocument(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an XML document.'));
 
@@ -1662,10 +1728,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isXMLNode',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.* (HTML Node of some sort)
+    obj = TP.unwrap(anObject);
     this.assert(
-        TP.isXMLNode(anObject),
+        TP.isXMLNode(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an XML node.'));
 
@@ -2077,15 +2147,20 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isDisplayed',
 function(anObject, aComment) {
 
+    var obj;
+
     this.assertMinArguments(arguments, 1);
 
+    //  Just in case we got handed a TP.core.ElementNode.
+    obj = TP.unwrap(anObject);
+
     this.assert(
-        TP.isElement(anObject),
+        TP.isElement(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be an Element.'));
 
     this.assert(
-        TP.elementIsDisplayed(anObject),
+        TP.elementIsDisplayed(obj),
         aComment,
         TP.sc('Expected ', TP.id(anObject), ' to be displayed.'));
 
@@ -2289,11 +2364,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('hasComputedStyleProperty',
 function(anObject, aProperty, aValue, aComment) {
 
-    var val;
+    var obj,
+        val;
 
     this.assertMinArguments(arguments, 3);
 
-    val = TP.elementGetComputedStyleProperty(anObject, aProperty);
+    //  Just in case we got handed a TP.core.ElementNode.
+    obj = TP.unwrap(anObject);
+    val = TP.elementGetComputedStyleProperty(obj, aProperty);
 
     this.assert(
         TP.equal(val, aValue),
