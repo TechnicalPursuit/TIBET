@@ -465,7 +465,8 @@ function() {
                     (function() {
                         var hasConsoleCode,
                             consoleHasStarted,
-                            consoleSetupFunc;
+                            consoleSetupFunc,
+                            bootframe;
 
                         try {
                             TP.boot.$setStage('liftoff');
@@ -498,6 +499,11 @@ function() {
                             if (!toggleKey.startsWith('TP.sig.')) {
                                 toggleKey = 'TP.sig.' + toggleKey;
                             }
+
+                            //  Prep the UI for full console mode.
+                            bootframe = TP.wrap(TP.byId('UIBOOT', top));
+                            bootframe.getContentDocument().getBody().addClass(
+                                    'full_console');
 
                             //  Set up the handler.
 
