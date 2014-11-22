@@ -8814,11 +8814,6 @@ function() {
 //  DNU CONSTRUCTION
 //  ------------------------------------------------------------------------
 
-TP.sys.$$NSMString =
-    'TP.raise(this, "TP.sig.NoSuchMethod"); return;';
-
-//  ------------------------------------------------------------------------
-
 TP.FunctionProto.defineMethod('asDNU',
 function() {
 
@@ -8897,49 +8892,6 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-Function.Type.defineMethod('constructDelegator',
-function(aName) {
-
-    /**
-     * @name constructDelegator
-     * @synopsis Returns a "delegator" wrapper function which servers as a
-     *     router to the receiver's delegate for a particular method. The return
-     *     value of this function is typically used as part of the TP.delegate()
-     *     function.
-     * @param {String} aName The name of the function this delegator should
-     *     invoke.
-     * @returns {Function} An appropriate wrapper function.
-     */
-
-    var delFunc,
-        delStr;
-
-    if (TP.isEmpty(aName)) {
-        this.raise('TP.sig.InvalidParameter');
-    }
-
-    delStr = TP.join(
-            'var del;',
-            'var func;',
-            'del = this.getDelegate();',
-            'if (TP.notValid(del)) return;',
-            'func = del["', aName, '"];',
-            'if (TP.isCallable(func)) return func.apply(del, arguments);',
-            'return;');
-
-    delFunc = TP.fc(delStr);
-    if (!TP.isFunction(delFunc)) {
-        //  problem with aName, not a valid function name
-        TP.ifWarn() ?
-            TP.warn('Unable to construct delegator for ' + aName,
-                    TP.LOG) : 0;
-    }
-
-    return delFunc;
-});
-
-//  ------------------------------------------------------------------------
-
 Function.Type.defineMethod('constructNSM',
 function(aName) {
 
@@ -8958,7 +8910,10 @@ function(aName) {
         this.raise('TP.sig.InvalidParameter');
     }
 
-    nsmFunc = TP.fc(TP.sys.$$NSMString);
+    nsmFunc = function() {
+        TP.raise(this, 'TP.sig.NoSuchMethod'); return;
+    };
+
     nsmFunc[TP.NAME] = aName;
     nsmFunc[TP.OWNER] = TP.NONE;
     nsmFunc[TP.TRACK] = TP.NONE;

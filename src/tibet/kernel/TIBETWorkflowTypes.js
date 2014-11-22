@@ -1334,27 +1334,6 @@ TP.sig.Request.Inst.defineAttribute('parentJoins');
 TP.sig.Request.Inst.defineAttribute('peerJoins');
 
 //  ------------------------------------------------------------------------
-//  Delegated Methods
-//  ------------------------------------------------------------------------
-
-/**
- * @NOTE NOTE NOTE delegations should always come before the concrete method
- *     definitions if possible to help avoid issues and to allow later concrete
- *     method implementations to overwrite as expected.
- * @todo
- */
-
-//  ------------------------------------------------------------------------
-
-//  result acquisition defers to the response object
-TP.delegate(TP.ac('getResult',
-                    'getResultNode',
-                    'getResultObject',
-                    'getResultText'),
-            TP.sig.Request.getInstPrototype(),
-            true);
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -1612,7 +1591,7 @@ function() {
     /**
      * @name getDelegate
      * @synopsis Returns the receiver's delegate, the object used by the
-     *     TP.delegate() utility function when constructing delegation methods.
+     *     TP.delegate utility function when constructing delegation methods.
      *     For TP.sig.Request this is the request's response.
      * @returns {Object} The receiver's delegation object.
      */
@@ -1770,6 +1749,92 @@ function() {
     }
 
     return type;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Request.Inst.defineMethod('getResult',
+function() {
+
+    /**
+     * @name getResult
+     * @synopsis Returns the request result, the object returned as a result of
+     *     processing the receiver's request.
+     * @returns {Object}
+     */
+
+    var response;
+
+    response = this.get('response');
+    if (TP.canInvoke(response, 'getResult')) {
+        return response.getResult();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Request.Inst.defineMethod('getResultNode',
+function() {
+
+    /**
+     * @name getResultNode
+     * @synopsis Returns the receiver's result in TP.core.Node form if possible.
+     *     When the result isn't valid XML this method returns null.
+     * @returns {Node} A valid Node instance.
+     */
+
+    var response;
+
+    response = this.get('response');
+    if (TP.canInvoke(response, 'getResultNode')) {
+        return response.getResultNode();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Request.Inst.defineMethod('getResultObject',
+function() {
+
+    /**
+     * @name getResultObject
+     * @synopsis Returns the receiver's result in object form.
+     * @returns {Object}
+     */
+
+    var response;
+
+    response = this.get('response');
+    if (TP.canInvoke(response, 'getResultObject')) {
+        return response.getResultObject();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Request.Inst.defineMethod('getResultText',
+function() {
+
+    /**
+     * @name getResultText
+     * @synopsis Returns the receiver's content in text (String) form.
+     * @returns {String}
+     */
+
+    var response;
+
+    response = this.get('response');
+    if (TP.canInvoke(response, 'getResultText')) {
+        return response.getResultText();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -3021,27 +3086,6 @@ TP.sig.Response.Inst.defineAttribute('request');
 TP.sig.Response.Inst.defineAttribute('result');
 
 //  ------------------------------------------------------------------------
-//  Delegated Methods
-//  ------------------------------------------------------------------------
-
-/**
- * @NOTE NOTE NOTE delegations should always come before the concrete method
- *     definitions if possible to help avoid issues and to allow later concrete
- *     method implementations to overwrite as expected.
- * @todo
- */
-
-//  ------------------------------------------------------------------------
-
-//  basic job control defers to the request, as does the request ID
-TP.delegate(TP.ac('failJob', 'cancelJob', 'completeJob',
-                'getFaultCode', 'getFaultText',
-                'getStatusCode', 'getStatusText',
-                'getRequestID'),
-            TP.sig.Response.getInstPrototype(),
-            true);
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -3076,6 +3120,92 @@ function(aRequest, aResult) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.Inst.defineMethod('cancelJob',
+function(aFaultCode, aFaultString) {
+
+    /**
+     * @name cancelJob
+     * @synopsis Tells the receiver to "cancel", meaning whatever work is needed
+     *     to get to a TP.CANCELLED state.
+     * @param {Object} aFaultCode An optional object to set as the fault code.
+     *     Usually a String or Number instance.
+     * @param {String} aFaultString A string description of the fault.
+     * @returns {TP.sig.Response} The receiver.
+     * @todo
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'cancelJob')) {
+        return request.cancelJob(aFaultCode, aFaultString);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.Inst.defineMethod('completeJob',
+function(aResult) {
+
+    /**
+     * @name completeJob
+     * @synopsis Tells the receiver to "complete", meaning whatever work is
+     *     needed to get to a proper TP.SUCCEEDED state.
+     * @param {Object} aResult An optional object to set as the result of the
+     *     request.
+     * @returns {TP.sig.Response} The receiver.
+     * @todo
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'completeJob')) {
+        // Don't make the called routine thing we're setting 'undefined' as a
+        // result by accident.
+        if (arguments.length > 0) {
+            return request.completeJob(aResult);
+        } else {
+            return request.completeJob();
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.Inst.defineMethod('failJob',
+function(aFaultCode, aFaultString, aFaultStack) {
+
+    /**
+     * @name failJob
+     * @synopsis Tells the receiver to "fail", meaning whatever work is needed
+     *     to get to a TP.FAILED state.
+     * @param {Object} aFaultCode An optional object to set as the fault code.
+     *     Usually a String or Number instance.
+     * @param {String} aFaultString A string description of the fault.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
+     * @returns {TP.sig.Response} The receiver.
+     * @todo
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'failJob')) {
+        return request.failJob(aFaultCode, aFaultString, aFaultStack);
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -3163,12 +3293,54 @@ function() {
     /**
      * @name getDelegate
      * @synopsis Returns the receiver's delegate, the object used by the
-     *     TP.delegate() utility function when constructing delegation methods.
+     *     TP.delegate utility function when constructing delegation methods.
      *     For TP.sig.Response this is the request object.
      * @returns {Object} The receiver's delegation object.
      */
 
     return this.getRequest();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.Inst.defineMethod('getFaultCode',
+function() {
+
+    /**
+     * @name getFaultCode
+     * @synopsis Returns the fault code of the receiver.
+     * @returns {Number} A TIBET fault code constant.
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'getFaultCode')) {
+        return request.getFaultCode();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.Inst.defineMethod('getFaultText',
+function() {
+
+    /**
+     * @name getFaultText
+     * @synopsis Returns the fault string (description) of the receiver.
+     * @returns {String} A text description of the fault.
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'getFaultText')) {
+        return request.getFaultText();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -3206,6 +3378,32 @@ function() {
      */
 
     return this.$get('request');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.Inst.defineMethod('getRequestID',
+function() {
+
+    /**
+     * @name getRequestID
+     * @synopsis Returns the request ID for this request. The request ID may be
+     *     a standard OID, a URL, or whatever is appropriate for the type of
+     *     request. The default is an OID. The important thing about a request
+     *     ID is that they serve as origins for any response signals which are
+     *     generated so they should be reasonably unique.
+     * @returns {String} A request ID which can take any form.
+     * @todo
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'getRequestID')) {
+        return request.getRequestID();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -3264,6 +3462,48 @@ function() {
      */
 
     return TP.str(this.getResult());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.Inst.defineMethod('getStatusCode',
+function() {
+
+    /**
+     * @name getStatusCode
+     * @synopsis Returns the job status code of the receiver.
+     * @returns {Number} A TIBET status code constant.
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'getStatusCode')) {
+        return request.getStatusCode();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Response.Inst.defineMethod('getStatusText',
+function() {
+
+    /**
+     * @name getStatusText
+     * @synopsis Returns the job status of the receiver in text form.
+     * @returns {String} The current status in text form.
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'getStatusText')) {
+        return request.getStatusText();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -5208,12 +5448,59 @@ function() {
 TP.sig.IOResponse.defineSubtype('URIResponse');
 
 //  ------------------------------------------------------------------------
-//  Delegated Methods
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.delegate(TP.ac('getFinalURI', 'getRequestURI'),
-            TP.sig.URIResponse.getInstPrototype(),
-            true);
+TP.sig.URIResponse.Inst.defineMethod('getFinalURI',
+function() {
+
+    /**
+     * @name getFinalURI
+     * @synopsis Returns the final URI associated with this request.
+     * @description There are effectively two URIs that are related to a
+     *     request, the original "request URI" and the "final URI" which is the
+     *     request URI with any uriparams expanded and applied to the URI query
+     *     portion. This method returns the latter, the URI actually sent to the
+     *     service during IO.
+     * @returns {TP.core.URI} The final request URI.
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'getFinalURI')) {
+        return request.getFinalURI();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.URIResponse.Inst.defineMethod('getRequestURI',
+function() {
+
+    /**
+     * @name getRequestURI
+     * @synopsis Returns the target URI associated with this request.
+     * @description There are effectively two URIs that are related to a
+     *     request, the original "request URI" and the "final URI" which is the
+     *     request URI with any uriparams expanded and applied to the URI query
+     *     portion. This method returns the former, the URI used as the "root"
+     *     of the request.
+     * @returns {TP.core.URI} The original request URI.
+     */
+
+    var request;
+
+    request = this.get('request');
+    if (TP.canInvoke(request, 'getRequestURI')) {
+        return request.getRequestURI();
+    }
+
+    return;
+});
+
 
 //  ========================================================================
 //  TP.core.URIService
