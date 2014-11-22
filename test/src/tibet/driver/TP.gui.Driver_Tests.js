@@ -40,7 +40,7 @@ function() {
         uri = TP.uc('~lib_tst/src/tibet/driver/testmarkup.xml');
         this.getDriver().setBodyContent(uri);
 
-        this.then(
+        test.then(
             function() {
                 driver = TP.gui.Driver.getTestFixture(
                                         TP.hc('testCase', test));

@@ -1153,7 +1153,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1191,7 +1191,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1236,7 +1236,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1281,7 +1281,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1336,7 +1336,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1397,7 +1397,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1459,7 +1459,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1501,7 +1501,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1548,7 +1548,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1596,7 +1596,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1659,7 +1659,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1728,7 +1728,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1798,7 +1798,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1840,7 +1840,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1888,7 +1888,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1936,7 +1936,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -1998,7 +1998,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,
@@ -2066,7 +2066,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function() {
 
                 var modelObj,

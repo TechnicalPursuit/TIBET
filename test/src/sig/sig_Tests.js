@@ -37,7 +37,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -51,7 +51,7 @@ function() {
                                             loadURI.getLocation()));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 var firedFirstDateVal,
                     firedSecondDateVal;
@@ -82,7 +82,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -95,7 +95,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -117,7 +117,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -131,7 +131,7 @@ function() {
                                             loadURI.getLocation()));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'goofy_typemethod');
@@ -146,7 +146,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -159,7 +159,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 

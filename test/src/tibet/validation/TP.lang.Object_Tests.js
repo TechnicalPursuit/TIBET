@@ -274,6 +274,38 @@ TP.lang.Object.defineSubtype('test.Employee');
 //  ------------------------------------------------------------------------
 
 TP.test.Employee.Inst.defineAttribute(
+        'lastname',
+        {
+            'value': undefined,
+            'valid': {
+                'dataType': 'tibet:alpha'
+            },
+            'required': true
+        },
+        'firstname',
+        {
+            'value': undefined,
+            'valid': {
+                'dataType': 'tibet:alpha'
+            },
+            'required': true
+        },
+        'age',
+        {
+            'value': undefined,
+            'valid': {
+                'dataType': 'xs:decimal'
+            },
+            'required': true
+        },
+        'gender',
+        {
+            'value': 'f',
+            'valid': {
+                'enumeration': TP.ac('m','f')
+            },
+            'required': true
+        },
         'SSN',
         {
             'value': undefined,

@@ -37,7 +37,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -52,7 +52,7 @@ function() {
                                             loadURI.getLocation()));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'handler_specifies_control');
@@ -63,7 +63,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -79,7 +79,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -104,7 +104,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'document_contentloaded_fired');
@@ -115,7 +115,7 @@ function() {
                                             loadURI.getLocation()));
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -128,14 +128,14 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'element_contentloaded_fired');
                 test.assert.didSignal(TP.byId('testDiv'), 'TP.sig.DOMContentLoaded');
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -151,7 +151,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -176,7 +176,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.getDriver().startSequence().
@@ -187,14 +187,14 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'alphakey_fired');
                 test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_A_Up');
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.getDriver().startSequence().
@@ -205,14 +205,14 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'unicodekey_fired');
                 test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_U0062_Up');
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.getDriver().startSequence().
@@ -223,14 +223,14 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'fnkey_fired');
                 test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_F2_Up');
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -249,7 +249,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -277,7 +277,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -290,7 +290,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'multisignal_singleorigin');
@@ -302,7 +302,7 @@ function() {
                                             true);
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -315,14 +315,14 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'multisignal_singleorigin');
                 test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMDblClick');
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -346,7 +346,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -379,7 +379,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -392,14 +392,14 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'anysignal_singleorigin');
                 test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -412,14 +412,14 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'singlesignal_anyorigin');
                 test.assert.didSignal(TP.byId('bazDiv'), 'TP.sig.DOMDblClick');
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -435,7 +435,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -460,7 +460,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -475,7 +475,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 //  Default was being prevented - the field shouldn't have any
                 //  content.
@@ -483,7 +483,7 @@ function() {
                 test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMKeyPress');
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -498,7 +498,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 test.assert.hasAttribute(TP.byId('testResults'),
                                             'barfield_keypress');
@@ -508,7 +508,7 @@ function() {
                 test.assert.didSignal(TP.byId('barField'), 'TP.sig.DOMKeyPress');
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -523,7 +523,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
                 var firedFirstDateVal,
                     firedSecondDateVal;
@@ -551,7 +551,7 @@ function() {
                 test.assert.didSignal(TP.byId('bazField'), 'TP.sig.DOMKeyPress');
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -573,7 +573,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -604,7 +604,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.getDriver().startSequence().
@@ -615,7 +615,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var testVal;
@@ -631,7 +631,7 @@ function() {
                 test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_X_Up');
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.getDriver().startSequence().
@@ -642,7 +642,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var testVal;
@@ -658,7 +658,7 @@ function() {
                 test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_Y_Up');
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.getDriver().startSequence().
@@ -669,7 +669,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var testVal;
@@ -685,7 +685,7 @@ function() {
                 test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_Z_Up');
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -704,7 +704,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -732,7 +732,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.getDriver().startSequence().
@@ -744,7 +744,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.assert.hasAttribute(TP.byId('testResults'),
@@ -754,7 +754,7 @@ function() {
                                         'TP.sig.DOM_A_Up__TP.sig.DOM_S_Up');
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.getDriver().startSequence().
@@ -766,7 +766,7 @@ function() {
                 test.fail(error, TP.sc('Event sequence error'));
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 test.assert.hasAttribute(TP.byId('testResults'),
@@ -776,7 +776,7 @@ function() {
                                         'TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -789,7 +789,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -811,7 +811,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -825,7 +825,7 @@ function() {
                                             loadURI.getLocation()));
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var testVal;
@@ -851,7 +851,7 @@ function() {
                         'TP.sig.ValueChange');
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var seq;
@@ -865,7 +865,7 @@ function() {
                                             loadURI.getLocation()));
             });
 
-        this.then(
+        test.then(
             function(result) {
 
                 var testVal;
@@ -891,7 +891,7 @@ function() {
                         'TP.sig.ValueChange');
             });
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 
@@ -913,7 +913,7 @@ function() {
 
         this.getDriver().setLocation(unloadURI);
 
-        this.then(
+        test.then(
             function() {
                 var interestMapKeys;
 

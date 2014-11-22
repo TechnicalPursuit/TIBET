@@ -152,7 +152,7 @@ function() {
     this.it('ordering check 1', function(test, options) {
         TP.sys.logTest('This should have an index of 3: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 5: ' + (++count),
                             TP.DEBUG);
         });
@@ -198,7 +198,7 @@ function() {
     this.it('ordering check 1', function(test, options) {
         TP.sys.logTest('This should have an index of 3: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 5: ' + (++count),
                             TP.DEBUG);
         });
@@ -209,7 +209,7 @@ function() {
     this.it('ordering check 2', function(test, options) {
         TP.sys.logTest('This should have an index of 8: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 10: ' + (++count),
                             TP.DEBUG);
         });
@@ -240,6 +240,8 @@ function() {
     this.before(function(suite, options) {
         TP.sys.logTest('This should have an index of 1: ' + (++count),
                         TP.DEBUG);
+
+        //  'this' refers to the suite here.
         this.then(function() {
             TP.sys.logTest('This should have an index of 2: ' + (++count),
                             TP.DEBUG);
@@ -249,7 +251,7 @@ function() {
     this.beforeEach(function(test, options) {
         TP.sys.logTest('This should have an index of 3: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 4: ' + (++count),
                             TP.DEBUG);
         });
@@ -263,7 +265,7 @@ function() {
     this.afterEach(function(test, options) {
         TP.sys.logTest('This should have an index of 6: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 7: ' + (++count),
                             TP.DEBUG);
         });
@@ -272,6 +274,8 @@ function() {
     this.after(function(suite, options) {
         TP.sys.logTest('This should have an index of 8: ' + (++count),
                         TP.DEBUG);
+
+        //  'this' refers to the suite here.
         this.then(function() {
             TP.sys.logTest('This should have an index of 9: ' + (++count),
                             TP.DEBUG);
@@ -291,6 +295,8 @@ function() {
     this.before(function(suite, options) {
         TP.sys.logTest('This should have an index of 1: ' + (++count),
                         TP.DEBUG);
+
+        //  'this' refers to the suite here.
         this.then(function() {
             TP.sys.logTest('This should have an index of 2: ' + (++count),
                             TP.DEBUG);
@@ -300,7 +306,7 @@ function() {
     this.beforeEach(function(test, options) {
         TP.sys.logTest('This should have an index of 3: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 4: ' + (++count),
                             TP.DEBUG);
         });
@@ -309,7 +315,7 @@ function() {
     this.it('ordering check', function(test, options) {
         TP.sys.logTest('This should have an index of 5: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 6: ' + (++count),
                             TP.DEBUG);
         });
@@ -318,7 +324,7 @@ function() {
     this.afterEach(function(test, options) {
         TP.sys.logTest('This should have an index of 7: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 8: ' + (++count),
                             TP.DEBUG);
         });
@@ -327,6 +333,8 @@ function() {
     this.after(function(suite, options) {
         TP.sys.logTest('This should have an index of 9: ' + (++count),
                         TP.DEBUG);
+
+        //  'this' refers to the suite here.
         this.then(function() {
             TP.sys.logTest('This should have an index of 10: ' + (++count),
                             TP.DEBUG);
@@ -346,6 +354,8 @@ function() {
     this.before(function(suite, options) {
         TP.sys.logTest('This should have an index of 1: ' + (++count),
                         TP.DEBUG);
+
+        //  'this' refers to the suite here.
         this.then(function() {
             TP.sys.logTest('This should have an index of 2: ' + (++count),
                             TP.DEBUG);
@@ -355,7 +365,7 @@ function() {
     this.beforeEach(function(test, options) {
         TP.sys.logTest('This should have an index of 3 or 9: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 5 or 11: ' + (++count),
                             TP.DEBUG);
         });
@@ -364,7 +374,7 @@ function() {
     this.it('ordering check', function(test, options) {
         TP.sys.logTest('This should have an index of 4: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 6: ' + (++count),
                             TP.DEBUG);
         });
@@ -373,7 +383,7 @@ function() {
     this.it('ordering check 2', function(test, options) {
         TP.sys.logTest('This should have an index of 10: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 12: ' + (++count),
                             TP.DEBUG);
         });
@@ -382,7 +392,7 @@ function() {
     this.afterEach(function(test, options) {
         TP.sys.logTest('This should have an index of 7 or 13: ' + (++count),
                         TP.DEBUG);
-        this.then(function() {
+        test.then(function() {
             TP.sys.logTest('This should have an index of 8 or 14: ' + (++count),
                             TP.DEBUG);
         });
@@ -391,6 +401,8 @@ function() {
     this.after(function(suite, options) {
         TP.sys.logTest('This should have an index of 15: ' + (++count),
                         TP.DEBUG);
+
+        //  'this' refers to the suite here.
         this.then(function() {
             TP.sys.logTest('This should have an index of 16: ' + (++count),
                             TP.DEBUG);
@@ -491,12 +503,12 @@ function() {
 
         TP.sys.logTest('This should have an index of 13');
 
-        this.then(
+        test.then(
             function() {
                 TP.sys.logTest('This should have an index of 15');
             });
 
-        this.then(
+        test.then(
             function() {
                 TP.sys.logTest('This should have an index of 16');
 
@@ -537,7 +549,7 @@ function() {
                     });
             });
 
-        this.then(
+        test.then(
             function() {
 
                 var newPromise;

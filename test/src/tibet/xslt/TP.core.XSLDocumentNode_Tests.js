@@ -23,7 +23,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.WRAP);
 
-        this.then(
+        test.then(
             function(tpXSLTDoc) {
 
                 var data,
@@ -71,7 +71,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.WRAP);
 
-        this.then(
+        test.then(
             function(tpXSLTDoc) {
 
                 var data,
@@ -115,7 +115,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.WRAP);
 
-        this.then(
+        test.then(
             function(tpXSLTDoc) {
 
                 var data,
@@ -165,7 +165,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.WRAP);
 
-        this.then(
+        test.then(
             function(tpXSLTDoc) {
 
                 var data,

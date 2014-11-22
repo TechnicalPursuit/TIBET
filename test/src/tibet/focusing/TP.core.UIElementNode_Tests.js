@@ -32,7 +32,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var bodyElem,
 
@@ -170,7 +170,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var bodyElem,
 
@@ -314,7 +314,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var bodyElem,
 
@@ -529,7 +529,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var bodyElem,
 
@@ -751,7 +751,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var bodyElem,
 
@@ -980,7 +980,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var bodyElem,
 
@@ -1301,7 +1301,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var bodyElem,
 
@@ -1634,7 +1634,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var bodyElem,
 
@@ -1975,7 +1975,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var docOrderResults,
                     tabOrderResults;
@@ -2136,7 +2136,7 @@ function() {
         driver = this.getDriver();
         driver.setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var bodyElem,
 
