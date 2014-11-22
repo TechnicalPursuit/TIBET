@@ -1358,6 +1358,13 @@ function() {
                         function() {
                             return expandedExpr.transform();
                         });
+
+                //  Because sugared expressions act as 'bind:io' (two sided
+                //  binds), we have to establish a bind back the other way (if
+                //  the receiver allows bidi bindings on that attribute).
+                if (this.getType().get('bidiAttrs').contains(name)) {
+                    TP.uc(uris.at(i)).defineBinding('value', this, 'value');
+                }
                 /* eslint-enable no-loop-func */
             }
     }.bind(this));
@@ -1442,6 +1449,14 @@ function() {
                 /* eslint-disable no-loop-func */
                 this.destroyBinding(
                         '@' + name, TP.uc(uris.at(i)), 'value', 'value');
+
+                //  Because sugared expressions act as 'bind:io' (two sided
+                //  binds), we will have established a bind back the other way
+                //  (if the receiver allows bidi bindings on that attribute). We
+                //  need to remove it.
+                if (this.getType().get('bidiAttrs').contains(name)) {
+                    TP.uc(uris.at(i)).destroyBinding('value', this, 'value');
+                }
                 /* eslint-enable no-loop-func */
             }
     }.bind(this));
