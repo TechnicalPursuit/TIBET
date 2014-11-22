@@ -1037,12 +1037,12 @@ function(aRequest) {
 
     if ((dups === 'prev') && (list.getSize() > 0)) {
         if (list.last().at('cmd') === cmd) {
-            return;
+            return list.getSize() - 1;
         }
     } else if (dups === 'all') {
         for (i = list.getSize() - 1; i >= 0; i--) {
             if (list.at(i).at('cmd') === cmd) {
-                return;
+                return i;
             }
         }
     }
