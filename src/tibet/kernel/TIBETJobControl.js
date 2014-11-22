@@ -130,6 +130,7 @@ function() {
         case TP.CANCELLED:
         case TP.ERRORED:
         case TP.FAILED:
+        case TP.TIMED_OUT:
         case TP.SUCCEEDED:
         case TP.COMPLETED:
             return true;
