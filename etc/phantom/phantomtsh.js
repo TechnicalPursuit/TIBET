@@ -711,8 +711,12 @@
                 PhantomTSH.status = -1;
             }
         } else if (/^ok/.test(msg)) {
-            // passed
-            str = PhantomTSH.color('ok', 'green') + msg.slice(2);
+            // passed or skipped
+            if (/# SKIP/.test(msg)) {
+                str = PhantomTSH.color('ok', 'grey') + msg.slice(2);
+            } else {
+                str = PhantomTSH.color('ok', 'green') + msg.slice(2);
+            }
         } else if (/^bail out!/i.test(msg)) {
             // termination signal
             str = PhantomTSH.color('Bail out!', 'red') + msg.slice(8);
