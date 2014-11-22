@@ -653,7 +653,7 @@ TP.test.Suite.Inst.defineAttribute('drivers');
  * timing out. Defaults to 15 seconds for a test suite.
  * @type {Number}
  */
-TP.test.Suite.Inst.defineAttribute('mslimit', 15000);
+TP.test.Suite.Inst.defineAttribute('mslimit', 30000);
 
 /**
  * The object that holds all of the test methods as a 'refuter'.
