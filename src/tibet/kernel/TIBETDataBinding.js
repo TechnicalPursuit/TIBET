@@ -2109,6 +2109,7 @@ function(aResource) {
 
         i,
         childTPElem,
+        bodyFragment,
         newNode,
         index,
         elemsWithIds,
@@ -2248,6 +2249,8 @@ function(aResource) {
     //  Empty out whatever content we used to have.
     this.empty();
 
+    bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
+
     //  Iterate over the resource and build out a chunk of markup for each item
     //  in the resource.
     for (i = startIndex; i < endIndex; i++) {
@@ -2263,47 +2266,44 @@ function(aResource) {
             index = i;
         }
 
-        if (TP.notEmpty(TP.byCSS('*[bind|*]', newNode))) {
+        //  If there are elements inside of the new chunk we're building that
+        //  have 'ids', we need to adjust them.
+        //  TODO: We might not want to do this - it's presumptuous.
+        elemsWithIds = TP.nodeGetDescendantElementsByAttribute(newNode, 'id');
+        /* eslint-disable no-loop-func */
+        elemsWithIds.perform(
+                function(anElem) {
+                    TP.elementSetAttribute(
+                                anElem,
+                                'id',
+                                TP.elementGetAttribute(anElem, 'id') + index);
+                });
+        /* eslint-enable no-loop-func */
 
-            //  If there are elements inside of the new chunk we're building that
-            //  have 'ids', we need to adjust them.
-            //  TODO: We might not want to do this - it's presumptuous.
-            elemsWithIds = TP.nodeGetDescendantElementsByAttribute(newNode, 'id');
-            /* eslint-disable no-loop-func */
-            elemsWithIds.perform(
-                    function(anElem) {
-                        TP.elementSetAttribute(
-                                    anElem,
-                                    'id',
-                                    TP.elementGetAttribute(anElem, 'id') + index);
-                    });
-            /* eslint-enable no-loop-func */
+        //  Grab the child *Elements* in the new content (the cloned repeat
+        //  content).
+        newChildElements = TP.nodeGetChildElements(newNode);
 
-            //  Grab the child *Elements* in the new content (the cloned repeat
-            //  content).
-            newChildElements = TP.nodeGetChildElements(newNode);
+        //  Iterate over them and, if they're bound, then add a 'bind:scope' to
+        //  them.
+        for (j = 0; j < newChildElements.getSize(); j++) {
 
-            //  Iterate over them and, if they're bound, then add a 'bind:scope' to
-            //  them.
-            for (j = 0; j < newChildElements.getSize(); j++) {
+            bindAttrNodes = TP.elementGetAttributeNodesInNS(
+                                newChildElements.at(j),
+                                /.*:(in|out|io|repeat)/,
+                                TP.w3.Xmlns.BIND);
 
-                bindAttrNodes = TP.elementGetAttributeNodesInNS(
+            if (TP.notEmpty(bindAttrNodes)) {
+
+                //  Make sure the element doesn't already have 'bind:scope' on
+                //  it.
+                if (!TP.elementHasAttribute(
+                            newChildElements.at(j), 'bind:scope', true)) {
+                    TP.elementSetAttributeInNS(
                                     newChildElements.at(j),
-                                    /.*:(in|out|io|repeat)/,
+                                    'bind:scope',
+                                    '[' + index + ']',
                                     TP.w3.Xmlns.BIND);
-
-                if (TP.notEmpty(bindAttrNodes)) {
-
-                    //  Make sure the element doesn't already have 'bind:scope' on
-                    //  it.
-                    if (!TP.elementHasAttribute(
-                                newChildElements.at(j), 'bind:scope', true)) {
-                        TP.elementSetAttributeInNS(
-                                        newChildElements.at(j),
-                                        'bind:scope',
-                                        '[' + index + ']',
-                                        TP.w3.Xmlns.BIND);
-                    }
                 }
             }
         }
@@ -2312,10 +2312,6 @@ function(aResource) {
                     this.getAttribute('bind:repeat'),
                     '[' + index + ']');
 
-        this.$refreshRepeatingTextNodes(
-                newNode,
-                repeatResource.at(index),
-                vals);
         if (isXMLResource) {
             this.$refreshRepeatingTextNodes(
                     newNode,
@@ -2328,10 +2324,13 @@ function(aResource) {
                     vals);
         }
 
-        //  Finally, append this new chunk of markup under the receiver element
-        //  and then loop to the top to do it again.
-        TP.nodeAppendChild(elem, newNode, false);
+        //  Append this new chunk of markup to the document fragment we're
+        //  building up and then loop to the top to do it again.
+        bodyFragment.appendChild(newNode);
     }
+
+    //  Finally, append the whole fragment under the receiver element
+    TP.nodeAppendChild(elem, bodyFragment, false);
 
     //  TODO: This is a hack - needs cleanup
 
