@@ -182,6 +182,8 @@ Cmd.prototype.getScript = function() {
 
     if (CLI.notEmpty(this.options.suite)) {
         target = target.trim() + ' -suite=\'' + this.options.suite + '\'';
+    } else if (target === prefix) {
+        target += ' --all';
     }
 
     return target;
