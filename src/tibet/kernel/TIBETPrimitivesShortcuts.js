@@ -243,7 +243,7 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$',
-function(anObject, nodeContext) {
+function(anObject, nodeContext, collapse) {
 
     /**
      * @name $
@@ -253,7 +253,7 @@ function(anObject, nodeContext) {
      *     XPath queries and obtaining the content of URI objects.
      * @description The parameters to this method vary greatly depending on what
      *     the caller is trying to do with it: - If anObject is any Object other
-     *     than a String, then it is returned. No operation is performed. - If
+     *     than a String, then it is TP.wrap()'d and returned. - If
      *     anObject is a URI, then a TP.core.URI is constructed from it and that
      *     URI's resource is returned. - If anObject can be determined to be
      *     markup, then an instance of TP.core.ElementNode (or a subtype) is
@@ -270,13 +270,16 @@ function(anObject, nodeContext) {
      *     See the discussion for more information.
      * @param {Object} nodeContext The context in which to resolve the query.
      *     See the discussion for more information.
+     * @param {Object} collapse Should result lists be autocollapsed
+     *     (essentially sugaring for results.first()) or not. Default is true.
      * @raises TP.sig.InvalidParameter
      * @returns {Object} The result as detailed in this function's discussion.
      * @todo
      */
 
     var context,
-        result;
+        result,
+        autocollapse;
 
     if (TP.notValid(anObject)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
@@ -309,20 +312,16 @@ function(anObject, nodeContext) {
     //  always compute Nodes as the context).
     context = TP.context(nodeContext);
 
+    autocollapse = TP.ifInvalid(collapse, true);
+
     //  Note here how we pass 'true' to auto-collapse single-item Arrays
     //  into just the item.
-    if (TP.isEmpty(result =
-                    TP.nodeEvaluatePath(context, anObject, null, true))) {
-        if (TP.XML_IDREF.test(anObject)) {
-            result = TP.nodeGetElementById(TP.nodeGetDocument(context),
-                anObject);
-        }
+    result = TP.nodeEvaluatePath(context, anObject, null, autocollapse);
+    if (TP.isValid(result)) {
+        return TP.wrap(result);
     }
 
-    //  TP.wrap() the result before returning it.
-    result = TP.wrap(result);
-
-    return result;
+    return;
 });
 
 //  ------------------------------------------------------------------------
