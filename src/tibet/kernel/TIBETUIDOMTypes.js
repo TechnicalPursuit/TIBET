@@ -439,7 +439,7 @@ function(aTargetElem, anEvent) {
             }
 
             return this;
-        } else if (keyname === 'DOM_Tab_Down') {
+        } else if (/DOM(.*)_Tab_Down/.test(keyname)) {
             //  We're going to handle this key down to move the focus ourselves,
             //  so we don't want the browser's natural 'tabbing' code to do
             //  anything. To prevent this, we preventDefault() on the event.
@@ -471,12 +471,20 @@ function(aTargetElem, anEvent) {
 
                     sigName = TP.elementGetAttribute(bindingEntry, 'signal');
 
-                    evtTargetTPElem.signal(sigName,
-                                            null,
-                                            TP.DOM_FIRING,
-                                            'TP.sig.' + keyname);
-
-                    return this;
+                    //  If the signal name is a real TIBET type, then go ahead
+                    //  and signal using the name, using the target
+                    //  TP.core.Element as the 'target' of this signal.
+                    if (TP.isType(TP.sys.require(sigName))) {
+                        evtTargetTPElem.signal(sigName);
+                    } else {
+                        //  Otherwise, it should just be sent as a keyboard
+                        //  event. We found a map entry for it, but there was no
+                        //  real type.
+                        evtTargetTPElem.signal(sigName,
+                                                null,
+                                                TP.DOM_FIRING,
+                                                'TP.sig.' + keyname);
+                    }
                 }
             }
         }

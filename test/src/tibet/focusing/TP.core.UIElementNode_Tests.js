@@ -156,7 +156,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -300,7 +300,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -515,7 +515,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -737,7 +737,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -966,7 +966,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1287,7 +1287,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1620,7 +1620,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -1961,7 +1961,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip();  //  TODO: Due to failures in Chrome, 16-NOV-2014.
+    });
 
     //  ---
 
@@ -2080,8 +2080,10 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 });
+
+//  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focus stack',
 function() {
@@ -2802,8 +2804,8 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-});
+    });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
