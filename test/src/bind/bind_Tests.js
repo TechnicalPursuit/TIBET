@@ -722,7 +722,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(5000);
+    });
 
     //  ---
 
@@ -904,7 +904,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(5000);
+    });
 
     //  ---
 

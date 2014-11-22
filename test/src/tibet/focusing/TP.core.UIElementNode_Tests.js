@@ -300,7 +300,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
     //  ---
 
@@ -2081,8 +2081,7 @@ function() {
                                             loadURI.getLocation()));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-
-}).timeout(30000);
+});
 
 TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focus stack',
 function() {
