@@ -1110,24 +1110,35 @@ function(options) {
         caseList = this.getCaseList();
         caseList.perform(
                 function(item) {
-                    var status = item.getStatusCode();
-                    switch (status) {
-                        case TP.ERRORED:
-                            errored += 1;
-                            break;
-                        case TP.FAILED:
-                            if (item.isTodo()) {
-                                ignored += 1;
-                            } else {
-                                failed += 1;
-                            }
-                            break;
-                        case TP.SUCCEEDED:
-                            passed += 1;
-                            break;
-                        default:
-                            skipped += 1;
-                            break;
+                    var status;
+
+                    if (item.didSucceed()) {
+                        passed += 1;
+                    } else {
+                        status = item.getStatusCode();
+                        switch (status) {
+                            case TP.CANCELLED:
+                                errored += 1;
+                                break;
+                            case TP.ERRORED:
+                                errored += 1;
+                                break;
+                            case TP.TIMED_OUT:
+                                errored += 1;
+                                break;
+                            case TP.FAILED:
+                                if (item.isTodo()) {
+                                    ignored += 1;
+                                } else {
+                                    failed += 1;
+                                }
+                                break;
+                            default:
+                                // If no viable status code the job never ran,
+                                // hence we'll consider it skipped.
+                                skipped += 1;
+                                break;
+                        }
                     }
                 });
 
@@ -1173,6 +1184,8 @@ TP.test.Suite.Inst.defineMethod('reset',
 function(options) {
 
     this.callNextMethod();
+
+    this.$set('statistics', null);
 
     this.$set('caseList', null);
 
@@ -2026,7 +2039,7 @@ function() {
      * it didn't fail and didn't error out).
      */
 
-    if (this.didComplete()) {
+    if (this.isCompleting() || this.didComplete()) {
         return;
     }
 
