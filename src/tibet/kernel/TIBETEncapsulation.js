@@ -325,7 +325,7 @@ function(attributeName) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('$set',
-function(attributeName, attributeValue, shouldSignal) {
+function(attributeName, attributeValue, shouldSignal, allowUndef) {
 
     /**
      * @name $set
@@ -336,6 +336,9 @@ function(attributeName, attributeValue, shouldSignal) {
      * @param {Object} attributeValue The value to set in that slot.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
+     * @param {Boolean} allowUndef True to let the slot value be set to
+     *     undefined. This isn't normally done except by certain container
+     *     types, especially response objects.
      * @returns {Object} The receiver.
      * @todo
      */
@@ -347,16 +350,19 @@ function(attributeName, attributeValue, shouldSignal) {
         sigFlag,
         oldFlag;
 
-    newVal = TP.ifInvalid(attributeValue, null);
+    if (allowUndef !== true) {
+        newVal = TP.ifInvalid(attributeValue, null);
+    }
 
     oldVal = this[attributeName];
 
     //  bypass warning for "internal" since we assume these are very
     //  explicit and can often be "demand driven" to avoid exposure
-    if (!TP.isProperty(this, attributeName) &&
+    if (!allowUndef &&
+        !TP.isProperty(this, attributeName) &&
         !TP.regex.INTERNAL_SLOT.test(attributeName)) {
         TP.ifWarn() ?
-            TP.warn(TP.join(TP.sc('Setting undeclared attribute: '),
+            TP.warn(TP.join(TP.sc('Setting undefined attribute: '),
                             TP.name(this), '.', attributeName,
                             ' (', TP.tname(this), ')',
                             TP.tname(this) === 'Window' ?

@@ -2987,8 +2987,14 @@ function(aResult) {
         return;
     }
 
-    if ((arguments.length > 0) && TP.notTrue(this.at('cmdSilent'))) {
-        this.stdout(aResult);
+    if (arguments.length > 0) {
+
+        // Allow undefined to be set as a result.
+        this.$set('result', aResult, null, true);
+
+        if (TP.notTrue(this.at('cmdSilent'))) {
+            this.stdout(aResult);
+        }
     }
 
     return this.callNextMethod();
@@ -3103,7 +3109,7 @@ function(output, request) {
     }
 
     //  last update wins relative to our "result" but we update it here
-    this.set('result', output);
+    this.set('result', output, null, true);
 
     //  if we're buffering into one or more arrays then we don't output to
     //  the shell and/or $stderr function, we've been redirected to buffer
@@ -3337,7 +3343,7 @@ function(output, request) {
     }
 
     //  last update wins relative to our "result" but we update it here
-    this.set('result', output);
+    this.set('result', output, null, true);
 
     //  if we're buffering into one or more arrays then we don't output to
     //  the shell and/or $stderr function, we've been redirected to buffer

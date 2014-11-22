@@ -50,6 +50,37 @@ function() {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sig.ShellResponse.Inst.defineMethod('init',
+function(aRequest, aResult) {
+
+    /**
+     * @name init
+     * @synopsis Initialize a new instance. The request should be the original
+     *     TP.sig.Request instance while the optional result is whatever data
+     *     should be assigned to the request as the result.
+     * @param {TP.sig.Request} aRequest A request object. In the case of
+     *     TP.sig.Response instances the request object provided here must be a
+     *     TP.sig.Request instance, not one of the more loosely typed "request
+     *     hash" types used by other request-oriented methods.
+     * @param {Object} aResult A result object.
+     * @returns {TP.sig.Response} A new instance.
+     * @todo
+     */
+
+    this.$set('result', undefined, false, true);
+
+    switch (arguments.length) {
+        case 0:
+            return this.callNextMethod();
+        case 1:
+            return this.callNextMethod(aRequest);
+        case 2:
+            return this.callNextMethod(aRequest, aResult);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.ShellResponse.Inst.defineMethod('getMessageType',
 function() {
 
