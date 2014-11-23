@@ -21,6 +21,9 @@
  * the default logger for each branch (TP.debug vs. APP.debug for example).
  */
 
+/* global $STATUS:true
+*/
+
 //  ----------------------------------------------------------------------------
 
 /**
@@ -3188,6 +3191,13 @@ function(anEntry) {
         top.console[writer](content);
     } catch (e) {
         top.console.log(content);
+    }
+
+    // Verify one last thing...we didn't just blow the stack did we? For some
+    // reason, possibly a catch block in the wrong place we've yet to find, this
+    // is the only way we can ensure certain code can trap recusion errors.
+    if (/maximum call stack/i.test(content)) {
+        $STATUS = TP.FAILED;
     }
 
     return this;
