@@ -913,7 +913,7 @@ function() {
     for (i = 0; i < len; i++) {
         //  NB: We use primitive property access here since 'methodObj' is
         //  property of a property descriptor
-        result.push(methods.at(methodKeys.at(i)).methodObj[TP.NAME]);
+        result.push(methods.at(methodKeys.at(i))[TP.NAME]);
     }
 
     return result;
@@ -936,6 +936,7 @@ function(aFunction, namesOnly) {
      */
 
     var fname,
+        str,
         arr,
         len,
         i;
@@ -949,10 +950,13 @@ function(aFunction, namesOnly) {
     //  string itself
     fname = aFunction.getName();
 
-    arr = TP.sys.getMetadata('owners').at(fname);
-    if (TP.isEmpty(arr)) {
+    str = TP.sys.getMetadata('owners').at(fname);
+    if (TP.isEmpty(str)) {
         return TP.ac();
     }
+
+    // Split into an array of owner names.
+    arr = str.split(TP.JOIN);
 
     if (TP.isTrue(namesOnly)) {
         return arr;
@@ -984,30 +988,23 @@ function(kind) {
      *     reflection directly to get more information on a specific type or
      *     object.
      * @param {String} kind The subset of metadata to return. Should be one of
-     *     'types', 'attributes', 'methods', or 'owners'.
+     *     'types', 'attributes', 'methods', 'owners', or 'pathinfo'.
      * @returns {TP.lang.Hash} The TIBET metadata hash.
      * @todo
      */
 
     switch (kind) {
         case 'types':
-
             return TP.sys.$$meta_types;
-
         case 'attributes':
-
             return TP.sys.$$meta_attributes;
-
         case 'methods':
-
             return TP.sys.$$meta_methods;
-
         case 'owners':
-
             return TP.sys.$$meta_owners;
-
+        case 'pathinfo':
+            return TP.sys.$$meta_pathinfo;
         default:
-
             return TP.sys.$$metadata;
     }
 });

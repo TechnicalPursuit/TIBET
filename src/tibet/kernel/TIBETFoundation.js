@@ -185,7 +185,8 @@ function(typeName, customType) {
     //  metadata is stored using the same kind of data structure (and also to
     //  avoid booting problems when TP.lang.Hash is only 'half loaded')
 
-    TP.sys.getMetadata('types').atPut(
+    TP.sys.getMetadata('types').atPut(typeName, customType);
+    /*
             typeName,
             {
                     'typeObj': customType,
@@ -193,6 +194,7 @@ function(typeName, customType) {
                     'lpath': TP.objectGetLoadPath(customType),
                     'spath': TP.objectGetSourcePath(customType)
             });
+    */
 });
 
 //  ------------------------------------------------------------------------
@@ -225,9 +227,8 @@ function() {
 
     len = typeKeys.getSize();
     for (i = 0; i < len; i++) {
-        //  NB: We use primitive property access here since 'typeObj' is
-        //  property of a property descriptor
-        result.atPut(typeKeys.at(i), types.at(typeKeys.at(i)).typeObj);
+        //  NB: We use primitive property access here.
+        result.atPut(typeKeys.at(i), types.at(typeKeys.at(i)));
     }
 
     return result;
@@ -316,7 +317,7 @@ function(aName, shouldFault) {
         if (TP.regex.META_TYPENAME.test(tName)) {
             tName = tName.replace(/\.meta\./, '.');
             if (TP.isValid(entry = typeMetadata.at(tName))) {
-                type = entry.typeObj;
+                type = entry; //.typeObj;
             }
 
             if (TP.isType(type)) {
@@ -330,17 +331,17 @@ function(aName, shouldFault) {
             !TP.regex.APP_TYPENAME.test(tName)) {
             //  Type name has no prefix. We'll have to check both.
             if (TP.isValid(entry = typeMetadata.at('TP.' + tName))) {
-                type = entry.typeObj;
+                type = entry; //.typeObj;
             }
 
             if (!type) {
                 if (TP.isValid(entry = typeMetadata.at('APP.' + tName))) {
-                    type = entry.typeObj;
+                    type = entry; //.typeObj;
                 }
             }
         } else {
             if (TP.isValid(entry = typeMetadata.at(tName))) {
-                type = entry.typeObj;
+                type = entry; //.typeObj;
             }
         }
 

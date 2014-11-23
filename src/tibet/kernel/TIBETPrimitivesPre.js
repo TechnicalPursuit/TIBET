@@ -1898,12 +1898,12 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
             //  don't overlay information we've already collected
             if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
-                sname = anItem.getSupertypeName();
-
-                TP.sys.$$meta_types.atPut(
+                TP.sys.$$meta_types.atPut(iname, anItem);
+                /*
                         iname,
                         {'typeObj': anItem, 'sname': sname,
                             'lpath': lpath, 'spath': spath});
+                */
             }
 
             break;
@@ -1918,10 +1918,11 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (TP.notValid(TP.sys.$$meta_methods.at(gname))) {
-                TP.sys.$$meta_methods.atPut(
-                        gname,
+                TP.sys.$$meta_methods.atPut(gname, anItem);
+                        /*
                         {'methodObj': anItem,
                             'lpath': lpath, 'spath': spath});
+                        */
 
                 //  owners are keyed by name and point to a vertical-bar
                 //  separated list of one or more type names. these are
@@ -1929,27 +1930,39 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
                 //  conversion checks regardless of whether the type is part
                 //  of the kernel or not
                 owners = TP.sys.$$meta_owners.at(iname);
+                if (!owners) {
+                    TP.sys.$$meta_owners.atPut(iname, tname);
+                } else {
+                    TP.sys.$$meta_owners.atPut(iname,
+                        owners += TP.JOIN + tname);
+                }
+                /*
                 if (!Array.isArray(owners)) {
                     owners = [];
                     TP.sys.$$meta_owners.atPut(iname, owners);
                 }
-
                 owners.push(tname);
+                */
             }
 
             break;
 
         case TP.ATTRIBUTE:
 
+            anItem[TP.LOAD_PATH] = lpath;
+            anItem[TP.SRC_PATH] = spath;
+
             tname = targetType.getName();
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (TP.notValid(TP.sys.$$meta_attributes.at(gname))) {
-                TP.sys.$$meta_attributes.atPut(
+                TP.sys.$$meta_attributes.atPut(gname, anItem);
+                        /*
                         gname,
                         {'descriptorObj': anItem,
                             'lpath': lpath,
                             'spath': spath});
+                        */
 
                 //  If the item has a 'value' slot and the value there responds
                 //  to 'isAccessPath' and is, in fact, an access path, then we

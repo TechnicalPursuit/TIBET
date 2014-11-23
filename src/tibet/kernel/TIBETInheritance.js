@@ -6253,13 +6253,7 @@ function(attributeName, includeSupertypes) {
                 });
     }
 
-    if (TP.isValid(entry)) {
-        //  NB: We use primitive property access here since 'descriptorObj'
-        //  is property of a property descriptor
-        return entry.descriptorObj;
-    }
-
-    return null;
+    return entry;
 });
 
 //  ------------------------------------------------------------------------
@@ -6304,13 +6298,7 @@ function(attributeName, includeSupertypes) {
                 });
     }
 
-    if (TP.isValid(entry)) {
-        //  NB: We use primitive property access here since 'descriptorObj'
-        //  is property of a property descriptor
-        return entry.descriptorObj;
-    }
-
-    return null;
+    return entry;
 });
 
 //  ------------------------------------------------------------------------
