@@ -180,7 +180,15 @@ function(aRequest) {
             '</div>' +
         '</div>');
 
-        TP.nodeReplaceChild(inputElem.parentNode, newElem, inputElem, false);
+        inputElem.parentNode.style.visibility = 'hidden';
+        newElem = TP.nodeReplaceChild(inputElem.parentNode, newElem, inputElem, false);
+        /* eslint-disable */
+        // Fork this part so we don't see the unstyled input cell during UI
+        // switching to UIROOT etc.
+        (function() {
+            newElem.parentNode.style.visibility = 'visible';
+        }).fork();
+        /* eslint-enable */
     }
 
     return;
