@@ -90,7 +90,7 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['selftest'],
+        'boolean': ['selftest', 'ignore-only', 'ignore-skip'],
         'string': ['target', 'suite'],
         'default': {}
     },
@@ -100,7 +100,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--ignore-only]';
+Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--ignore-only] [--ignore-skip]';
 
 //  ---
 //  Instance Methods
@@ -157,7 +157,8 @@ Cmd.prototype.getProfile = function() {
 Cmd.prototype.getScript = function() {
 
     var target,
-        prefix;
+        prefix,
+        ignore;
 
     if (CLI.notEmpty(this.options.target)) {
         target = this.options.target;
@@ -167,13 +168,9 @@ Cmd.prototype.getScript = function() {
         target = this.options._[1];
     }
 
-    if (CLI.inProject()) {
-        prefix = ':test ';
-    } else {
-        prefix = ':test -ignore_only ';
-    }
-
+    prefix = ':test ';
     target = target || '';
+
     if (target.length > 0 && target.indexOf(prefix) !== 0) {
         target = prefix + '\'' + target + '\'';
     } else {
@@ -184,6 +181,20 @@ Cmd.prototype.getScript = function() {
         target = target.trim() + ' -suite=\'' + this.options.suite + '\'';
     } else if (target === prefix) {
         target += ' --all';
+    }
+
+    if (CLI.isValid(this.options.selftest)) {
+        target += ' --ignore_only';
+    } else {
+        ignore = this.options['ignore-only'];
+        if (ignore === true) {
+            target += ' --ignore_only';
+        }
+
+        ignore = this.options['ignore-skip'];
+        if (ignore === true) {
+            target += ' --ignore_skip';
+        }
     }
 
     return target;
