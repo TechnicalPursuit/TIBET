@@ -322,8 +322,8 @@ function(name) {
 
     //  tell the subtype about its ancestors, but note that we do it in such
     //  a way that the list is from closest ancestor to oldest
-    //realType[TP.ANCESTOR_NAMES] = this.getSupertypeNames().slice(0);
-    //realType[TP.ANCESTOR_NAMES].unshift(this.getName());
+    realType[TP.ANCESTOR_NAMES] = this.getSupertypeNames().slice(0);
+    realType[TP.ANCESTOR_NAMES].unshift(this.getName());
     realType[TP.ANCESTORS] = this.getSupertypes().slice(0);
     realType[TP.ANCESTORS].unshift(this);
 
