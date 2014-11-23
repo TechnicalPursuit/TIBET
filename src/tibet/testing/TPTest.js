@@ -12,7 +12,8 @@
  */
 
 /* global Q:true,
-          AssertionFailed:true
+          AssertionFailed:true,
+          $STATUS:true
 */
 
 //  ========================================================================
@@ -472,7 +473,7 @@ function(target, options) {
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
     if (exclusives === true) {
-        TP.sys.logTest('# filtering for exclusive suite(s).', TP.DEBUG);
+        TP.sys.logTest('# filtering for exclusive suite(s).', TP.WARN);
         suitelist = suitelist.filter(
                         function(suite) {
                             return suite.isExclusive();
@@ -1240,6 +1241,7 @@ function(options) {
         suite,
         maybe,
         params,
+        wantsOnly,
         nextPromise,
         firstPromise;
 
@@ -1272,24 +1274,23 @@ function(options) {
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
     if (!params.at('ignore_only')) {
-        if (caselist.some(
-                function(test) {
-                    return test.isExclusive();
-                })
-                ) {
-                    TP.sys.logTest('# filtering for exclusive test cases.',
-                                    TP.DEBUG);
+        wantsOnly = caselist.some(function(test) {
+            return test.isExclusive();
+        });
+        if (wantsOnly) {
+            TP.sys.logTest('# filtering for exclusive test cases.',
+                            TP.WARN);
 
-                    caselist = caselist.filter(
-                                function(test) {
-                                    return test.isExclusive();
-                                });
+            caselist = caselist.filter(
+                        function(test) {
+                            return test.isExclusive();
+                        });
 
-                    if (caselist.length > 1) {
-                        TP.sys.logTest('# ' + caselist.length +
-                            ' exclusive test cases found.', TP.WARN);
-                    }
-                }
+            if (caselist.length > 1) {
+                TP.sys.logTest('# ' + caselist.length +
+                    ' exclusive test cases found.', TP.WARN);
+            }
+        }
     }
 
     //  Binding attribute for our promise closures below.
@@ -2186,8 +2187,15 @@ function(options) {
 
             //  Note that inside the test method we bind to the Case instance.
             //  Also note that 'maybe' might be a Promise that the test case
-            //  author returned to us.
+            //  author returned to us. Also also note that we check $STATUS here
+            //  in case we hit bottom or had a stack overflow, or for any other
+            //  reason didn't get an Error but failed for some reason.
+            $STATUS = TP.SUCCESS;
             maybe = testcase.$get('caseFunc').call(testcase, testcase, options);
+            if ($STATUS === TP.FAILED) {
+                $STATUS = TP.SUCCESS;
+                throw new Error();
+            }
 
             //  Now, check to see if there is an internal promise.
 
