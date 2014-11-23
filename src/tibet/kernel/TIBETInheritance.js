@@ -3336,10 +3336,8 @@ function() {
      */
 
     var traits,
-
         len,
         i,
-
         traitTraits;
 
     if (TP.notEmpty(traits = this[TP.TRAITS])) {
@@ -3422,7 +3420,7 @@ function() {
     //  Then, loop over each trait, getting all of the known properties of that
     //  *type* object and try to populate entries for them into the 'traits type
     //  resolutions' hash.
-    traits.perform(
+    traits.forEach(
         function(traitType) {
             var traitTypeTarget,
                 traitProps;
@@ -3433,7 +3431,7 @@ function() {
 
             //  Loop over each property and make an entry in the 'resolutions'
             //  hash
-            traitProps.perform(
+            traitProps.forEach(
                 function(propName) {
                     var entry,
                         sources,
@@ -3499,7 +3497,7 @@ function() {
     //  Then, loop over each trait, getting all of the known properties of that
     //  type object's *instance prototype* and try to populate entries for them
     //  into the 'traits instance resolutions' hash.
-    traits.perform(
+    traits.forEach(
         function(traitType) {
             var traitTypeTarget,
                 traitProps;
@@ -3510,7 +3508,7 @@ function() {
 
             //  Loop over each property and make an entry in the 'resolutions'
             //  hash
-            traitProps.perform(
+            traitProps.forEach(
                 function(propName) {
                     var entry,
                         sources,
@@ -3594,10 +3592,9 @@ function() {
 
     var mainType,
         mainTypeTarget,
-
+        keys,
         typeResolutions,
         instResolutions,
-
         unresolvedTraits;
 
     //  Make sure that we actually have traits
@@ -3618,22 +3615,17 @@ function() {
     if (TP.notEmpty(typeResolutions)) {
         unresolvedTraits = TP.hc();
 
-        typeResolutions.perform(
-            function(kvPair) {
-                var propName,
-                    entry,
-
+        keys = typeResolutions.getKeys();
+        keys.forEach(
+            function(propName) {
+                var entry,
                     resolution,
-
                     len,
                     i,
-
                     source,
-
                     traitSources;
 
-                propName = kvPair.first();
-                entry = kvPair.last();
+                entry = typeResolutions.at(propName);
 
                 //  If the trait wasn't manually resolved via 'resolveTrait()',
                 //  then we can resolve it if all but one of the values of
@@ -3685,22 +3677,17 @@ function() {
 
         mainTypeTarget = mainType.getInstPrototype();
 
-        instResolutions.perform(
-            function(kvPair) {
-                var propName,
-                    entry,
-
+        keys = instResolutions.getKeys();
+        keys.forEach(
+            function(propName) {
+                var entry,
                     resolution,
-
                     len,
                     i,
-
                     source,
-
                     traitSources;
 
-                propName = kvPair.first();
-                entry = kvPair.last();
+                entry = instResolutions.at(propName);
 
                 //  If the trait wasn't manually resolved via 'resolveTrait()',
                 //  then we can resolve it if all but one of the values of
@@ -3750,13 +3737,12 @@ function() {
 
     //  Type-side
 
-    typeResolutions.perform(
-        function(kvPair) {
-            var propName,
-                resolution;
+    keys = typeResolutions.getKeys();
+    keys.forEach(
+        function(propName) {
+            var resolution;
 
-            propName = kvPair.first();
-            resolution = kvPair.last().at('resolvesTo');
+            resolution = typeResolutions.at(propName).at('resolvesTo');
 
             //  Note here how we do *not* install a slot if it already
             //  represented on the receiving object (this.Type) unless the
@@ -3772,13 +3758,12 @@ function() {
 
     //  Instance-side
 
-    instResolutions.perform(
-        function(kvPair) {
-            var propName,
-                resolution;
+    keys = instResolutions.getKeys();
+    keys.forEach(
+        function(propName) {
+            var resolution;
 
-            propName = kvPair.first();
-            resolution = kvPair.last().at('resolvesTo');
+            resolution = instResolutions.at(propName).at('resolvesTo');
 
             //  Note here how we do *not* install a slot if it already
             //  represented on the receiving object (this.Inst) unless the
@@ -4102,6 +4087,8 @@ function(propertyNames, resolverObject) {
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
+    var thisref;
+
     //  Because we're executing this in the context of the 'instance prototype',
     //  'this' will be bound to that object. If it's not (i.e. the user is
     //  trying to execute on a real instance of this type), throw an exception
@@ -4122,10 +4109,11 @@ function(propertyNames, resolverObject) {
                 'Not a valid Array of property names for trait resolution.');
     }
 
-    propertyNames.perform(
+    thisref = this;
+    propertyNames.forEach(
             function(propName) {
-                this.resolveTrait(propName, resolverObject);
-            }.bind(this));
+                thisref.resolveTrait(propName, resolverObject);
+            });
 
     return this;
 });
@@ -4253,6 +4241,8 @@ function(propertyNames, resolverObject) {
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
+    var thisref;
+
     //  Because we're executing this in the context of the 'instance prototype',
     //  'this' will be bound to that object. If it's not (i.e. the user is
     //  trying to execute on a real instance of this type), throw an exception
@@ -4273,10 +4263,11 @@ function(propertyNames, resolverObject) {
                 'Not a valid Array of property names for trait resolution.');
     }
 
-    propertyNames.perform(
+    thisref = this;
+    propertyNames.forEach(
             function(propName) {
-                this.resolveTrait(propName, resolverObject);
-            }.bind(this));
+                thisref.resolveTrait(propName, resolverObject);
+            });
 
     return this;
 });
@@ -4629,33 +4620,33 @@ function(anObject) {
 
     var validityInfo,
         setAtLeastOne,
-
+        keys,
         isValid;
 
     //  First, attempt to validate any aspects on the supplied object. This will
     //  return a Hash of validity information.
     validityInfo = this.validateAspects(anObject);
-
     setAtLeastOne = false;
-
     isValid = true;
 
     //  Loop over the validity information hash. There has to be at least one
     //  that returned a non 'TP.NO_RESULT' value in order for us to not just use
     //  the callBestMethod() approach at the bottom.
-    validityInfo.perform(
-        function(kvPair) {
+    keys = validityInfo.getKeys();
+    keys.forEach(
+        function(key) {
 
             var truthVal;
+
+            truthVal = validityInfo.at(key);
 
             //  If there was at least one validity test that returned either
             //  true or false (but not TP.NO_RESULT), then we use that value to
             //  set the facet on the object and to avoid the callBestMethod()
             //  approach below.
-            if ((truthVal = kvPair.last()) !== TP.NO_RESULT) {
+            if (truthVal !== TP.NO_RESULT) {
 
-                anObject.setFacet(kvPair.first(), TP.VALID, truthVal);
-
+                anObject.setFacet(key, TP.VALID, truthVal);
                 setAtLeastOne = true;
 
                 //  If isValid is true, we go ahead and set it to the truth
