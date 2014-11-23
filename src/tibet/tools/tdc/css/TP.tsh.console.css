@@ -22,6 +22,14 @@ body.full_console #BOOT-CONSOLE {
     ------------------------------------------------------------------------
 */
 
+.cmdline_wrapper {
+    display: none;
+}
+
+.live .cmdline_wrapper {
+    display: block;
+}
+
 /* The div wrapper for the entire input construct */
 .cmdline_wrapper
 {
@@ -210,6 +218,21 @@ body.full_console #BOOT-CONSOLE {
 }
 
 
+.outputcell.tap-pass {
+    color: cyan;
+}
+
+.outputcell.tap-fail {
+    color: orange;
+}
+
+.outputcell.tap-comment {
+    color: #aaa;
+}
+
+.outputcell.tap-unknown {
+    color: #fff;
+}
 
 
 /*

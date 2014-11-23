@@ -3512,7 +3512,7 @@ function(anEntry) {
             top.console.log(content);
         }
     } else {
-        TP[stdio](content);
+        TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', true));
     }
 
     return this;

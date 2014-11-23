@@ -18,6 +18,9 @@
 
 TP.core.UIElementNode.defineSubtype('tsh:console');
 
+//  the default prompt separator/string (>>)
+TP.tsh.console.Type.defineConstant('DEFAULT_PROMPT', '&#160;&#187;');
+
 //  ----------------------------------------------------------------------------
 //  Type Methods
 //  ----------------------------------------------------------------------------
@@ -2276,7 +2279,9 @@ function(anError, aRequest) {
     }
     request.atPutIfAbsent('messageLevel', TP.ERROR);
 
-    err = TP.isError(anError) ? TP.str(anError) : anError;
+//    err = TP.isError(anError) ? TP.str(anError) : anError;
+    err = TP.isError(anError) ? anError : new Error(anError);
+    request.set('result', err);
 
     try {
 
@@ -2351,11 +2356,8 @@ function(anObject, aRequest) {
      */
 
     var request,
-
         cmdSequence,
-
         outObject,
-
         append;
 
     TP.stop('break.tdc_stdout');
@@ -2461,7 +2463,7 @@ function(aRequest) {
 
     request.atPut('inputWritten', true);
 
-    if (TP.isTrue(request.at('cmdEcho'))) {
+    if (TP.notFalse(request.at('cmdEcho'))) {
 
         //  update the command title bar based on the latest output from
         //  the particular cmdID this request represents.
@@ -2530,13 +2532,16 @@ function(anObject, aRequest) {
     var request,
         data,
         asIs,
-
+        tap,
         inputNode,
         cssClass,
         outputData,
         outputStr;
 
     request = TP.request(aRequest);
+
+    // If this is TAP output we format it a bit...
+    tap = request.at('cmdTAP');
 
     //  ---
     //  Produce valid XHTML node to test string content, otherwise do our best
@@ -2580,10 +2585,24 @@ function(anObject, aRequest) {
         data = TP.str(data);
     }
 
-    if (TP.isValid(request.at('messageLevel'))) {
-        cssClass = request.at('messageLevel').getName().toLowerCase();
+    if (TP.isTrue(tap)) {
+        if (/^ok /.test(data) || /# PASS/i.test(data)) {
+            cssClass = 'tap-pass';
+        } else if (/^not ok /.test(data) || /# FAIL/i.test(data)) {
+            cssClass = 'tap-fail';
+        } else if (/^#/.test(data)) {
+            cssClass = 'tap-comment';
+        } else {
+            cssClass = 'tap-unknown';
+        }
+    } else {
+        if (TP.isValid(request.at('messageLevel'))) {
+            cssClass = request.at('messageLevel').getName().toLowerCase();
+        }
+        cssClass = TP.ifInvalid(cssClass, 'info');
     }
-    cssClass = TP.ifInvalid(cssClass, 'info');
+
+
 
     outputData = TP.hc('output', data,
                         'outputclass', cssClass,
