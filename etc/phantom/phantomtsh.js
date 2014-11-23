@@ -114,7 +114,7 @@
      * How many rows go into the log buffer before we flush the console?
      * @type {Number}
      */
-    PhantomTSH.FLUSH_LIMIT = 10;
+    PhantomTSH.FLUSH_LIMIT = 1;
 
     /**
      * The command help string.
