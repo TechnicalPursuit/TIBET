@@ -599,9 +599,7 @@ if (window.onerror.failedlaunch !== true &&
     top.TP.isHTMLDocument(document) === true &&
     top.TP.core.Window.$$isDocumentWriting !== true &&
     window.frameElement != null &&
-    window.frameElement.hasAttributeNS(
-        'http://www.technicalpursuit.com/1999/tibet',
-        'tibet:settinglocation') !== true) {
+    window.frameElement.hasAttribute('tibet_settinglocation') !== true) {
     //  if we're here because of a document.write then TIBET is
     //  processing the content already, otherwise we want to effectively
     //  snag the current location and ask TIBET to process that URI and
@@ -779,12 +777,10 @@ if (window.onerror.failedlaunch !== true &&
             //  If TIBET is currently 'setting a location' on the iframe, it
             //  will have tagged the location string on the iframe as an
             //  attribute.
-            if (window.frameElement.hasAttributeNS(
-                                'http://www.technicalpursuit.com/1999/tibet',
-                                'tibet:settinglocation') === true) {
-                return window.frameElement.getAttributeNS(
-                                'http://www.technicalpursuit.com/1999/tibet',
-                                'tibet:settinglocation');
+            if (window.frameElement.hasAttribute(
+                                        'tibet_settinglocation') === true) {
+                return window.frameElement.getAttribute(
+                                        'tibet_settinglocation');
             }
 
             //  On Webkit-based browsers, there is a bug such that if 'content'
@@ -2764,9 +2760,7 @@ if (window.onerror.failedlaunch !== true &&
         //  If this canvas (window) has already been initialized, then we don't
         //  need (or want) to do the rest of this.
         if (TP.boot.$isElement(aWindow.document.body)) {
-            if (aWindow.document.body.hasAttributeNS(
-                                'http://www.technicalpursuit.com/1999/tibet',
-                                'tibet:canvasinitialized')) {
+            if (aWindow.document.body.hasAttribute('tibet_canvasinitialized')) {
                 return;
             }
         }
@@ -2881,10 +2875,8 @@ if (window.onerror.failedlaunch !== true &&
 
         //  Set a flag so that we don't do this again.
         if (TP.boot.$isElement(aWindow.document.body)) {
-            aWindow.document.body.setAttributeNS(
-                                'http://www.technicalpursuit.com/1999/tibet',
-                                'tibet:canvasinitialized',
-                                'true');
+            aWindow.document.body.setAttribute(
+                    'tibet_canvasinitialized', 'true');
         }
 
         return;

@@ -1472,7 +1472,7 @@ function(aURL, wantsHistoryEntry, onloadFunction) {
     doc = this.getNativeDocument();
 
     //  !!!NOTE!!!
-    //  We do *not* set the 'tibet:settinglocation' flag here on purpose,
+    //  We do *not* set the 'tibet_settinglocation' flag here on purpose,
     //  since there may be unprocessed markup in the target location and we
     //  *want* the hook file to redirect back through the
     //  TP.windowResetLocation() call to 'grab the body content and process
