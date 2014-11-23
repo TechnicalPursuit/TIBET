@@ -1276,9 +1276,11 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
             typeof(window.$signal) === 'function') {
             window.$signal(TP.sys, aKey + 'Change', aKey);
         }
+
+        return newval;
     }
 
-    return aHash.at(key);
+    return oldval;
 };
 
 //  ============================================================================
