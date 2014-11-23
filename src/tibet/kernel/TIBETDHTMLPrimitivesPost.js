@@ -8856,7 +8856,9 @@ function(aWindow) {
         //  location that we're trying to use, which the hook file needs on
         //  Webkit-based browsers since a 'document.open()' call will reset
         //  the window location to the top-level window's URL.
-        aWindow.frameElement.setAttribute('tibet_settinglocation', loc);
+        aWindow.frameElement.setAttributeNS(TP.w3.Xmlns.TIBET,
+                                            'tibet:settinglocation',
+                                            loc);
 
         loc = decodeURI(loc);
 
@@ -8879,8 +8881,10 @@ function(aWindow) {
 
                             //  Remove the 'anti-looping' value (described
                             //  above) now that we're done.
-                            aWindow.frameElement.removeAttribute(
-                                        'tibet_settinglocation');
+                    aWindow.frameElement.removeAttributeNS(
+                                            TP.w3.Xmlns.TIBET,
+                                            'tibet:settinglocation',
+                                            loc);
                         }));
     }).afterUnwind();
     /* eslint-enable no-wrap-func */
