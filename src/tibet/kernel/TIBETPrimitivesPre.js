@@ -1868,12 +1868,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         pathinfo,
         itemkey;
 
-    //  all operations will key off item name, so if that's not available we
-    //  can't proceed
-    if (anItem.getName && !TP.isString(iname = anItem.getName())) {
-        return;
-    }
-
+    // Need a name for metadata key.
     if (TP.notValid(iname = anItem[TP.NAME])) {
         return;
     }
@@ -2038,11 +2033,8 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
     //  If we were handed a descriptor, then try to use ECMA5's defineProperty()
     //  call
     if (TP.isValid(desc)) {
-        constant = desc.writable === false;
-        hidden = desc.enumerable === false;
-        fixed = desc.configurable === false;
 
-        if (constant && value !== undefined) {
+        if (desc.writable === false && value !== undefined) {
             //  We send in a different object to make sure that if 'get' or
             //  'set' was defined on the supplied descriptor that it won't be
             //  forwarded. Note here that, since this slot is being configured
@@ -2052,9 +2044,9 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
                     target,
                     name,
                     {
-                        writable: !constant,
-                        enumerable: !hidden,
-                        configurable: !fixed,
+                        writable: desc.writable !== false,
+                        enumerable: desc.enumerable !== false,
+                        configurable: desc.configurable !== false,
                         value: value
                     });
         } else {
@@ -2065,9 +2057,9 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
                     target,
                     name,
                     {
-                        writable: !constant,
-                        enumerable: !hidden,
-                        configurable: !fixed
+                        writable: desc.writable !== false,
+                        enumerable: desc.enumerable !== false,
+                        configurable: desc.configurable !== false
                     });
 
             //  Try to set the value if its real.
@@ -2608,10 +2600,15 @@ function(anObj) {
      *     object.
      */
 
-    var name;
+    var name,
+        browser,
+        list,
+        i,
+        len,
+        item;
 
     if (TP.notValid(anObj)) {
-        return null;
+        return;
     }
 
     //  The object is created by non Function constructors and has an object
@@ -2620,92 +2617,77 @@ function(anObj) {
         return name;
     }
 
-    //  Firefox 28
-    if (TP.sys.getBrowser() === 'firefox') {
-        if (anObj === self.Blob) {
-            return 'Blob';
-        } else if (anObj === self.CameraCapabilities) {
-            return 'CameraCapabilities';
-        } else if (anObj === self.CSSConditionRule) {
-            return 'CSSConditionRule';
-        } else if (anObj === self.CSSGroupingRule) {
-            return 'CSSGroupingRule';
-        } else if (anObj === self.CSSMediaRule) {
-            return 'CSSMediaRule';
-        } else if (anObj === self.CSSPageRule) {
-            return 'CSSPageRule';
-        } else if (anObj === self.CSSRule) {
-            return 'CSSRule';
-        } else if (anObj === self.CSSRuleList) {
-            return 'CSSRuleList';
-        } else if (anObj === self.CSSStyleRule) {
-            return 'CSSStyleRule';
-        } else if (anObj === self.CSSSupportsRule) {
-            return 'CSSSupportsRule';
-        } else if (anObj === self.DataTransfer) {
-            return 'DataTransfer';
-        } else if (anObj === self.DeviceAcceleration) {
-            return 'DeviceAcceleration';
-        } else if (anObj === self.DeviceRotationRate) {
-            return 'DeviceRotationRate';
-        } else if (anObj === self.DOMStringList) {
-            return 'DOMStringList';
-        } else if (anObj === self.File) {
-            return 'File';
-        } else if (anObj === self.Location) {
-            return 'Location';
-        } else if (anObj === self.MozMmsMessage) {
-            return 'MozMmsMessage';
-        } else if (anObj === self.MozMobileMessageManager) {
-            return 'MozMobileMessageManager';
-        } else if (anObj === self.MozMobileMessageThread) {
-            return 'MozMobileMessageThread';
-        } else if (anObj === self.MozSmsFilter) {
-            return 'MozSmsFilter';
-        } else if (anObj === self.MozSmsMessage) {
-            return 'MozSmsMessage';
-        } else if (anObj === self.MozSmsSegmentInfo) {
-            return 'MozSmsSegmentInfo';
-        } else if (anObj === self.StyleSheetList) {
-            return 'StyleSheetList';
-        } else if (anObj === self.SVGLength) {
-            return 'SVGLength';
-        } else if (anObj === self.SVGNumber) {
-            return 'SVGNumber';
-        } else if (anObj === self.Window) {
-            return 'DOMWindow';
+    //  We keep a pre-built list we can scan quickly to cut down on overhead.
+    list = TP.sys.$$nonFunctionConstructors;
+    if (TP.notValid(list)) {
+        list = [];
+        TP.sys.$$nonFunctionConstructors = list;
+
+        browser = TP.sys.getBrowser();
+        switch (browser) {
+            case 'chrome':
+                //  Chrome 33
+                list.push([self.JSON, 'JSON']);
+                list.push([self.Math, 'CSS']);
+                list.push([self.CSS, 'CSS']);
+                list.push([self.Intl, 'Intl']);
+                break;
+
+            case 'firefox':
+                //  Firefox 28
+                list.push([self.Window, 'DOMWindow']);
+                list.push([self.CSSRule, 'CSSRule']);
+                list.push([self.CSSStyleRule, 'CSSStyleRule']);
+                list.push([self.CSSRuleList, 'CSSRuleList']);
+                list.push([self.StyleSheetList, 'StyleSheetList']);
+                list.push([self.CSSConditionRule, 'CSSConditionRule']);
+                list.push([self.CSSGroupingRule, 'CSSGroupingRule']);
+                list.push([self.CSSMediaRule, 'CSSMediaRule']);
+                list.push([self.CSSPageRule, 'CSSPageRule']);
+                list.push([self.CSSSupportsRule, 'CSSSupportsRule']);
+
+                list.push([self.SVGLength, 'SVGLength']);
+                list.push([self.SVGNumber, 'SVGNumber']);
+
+                list.push([self.Blob, 'Blob']);
+                list.push([self.File, 'File']);
+                list.push([self.Location, 'Location']);
+
+                list.push([self.CameraCapabilities, 'CameraCapabilities']);
+                list.push([self.DataTransfer, 'DataTransfer']);
+                list.push([self.DeviceAcceleration, 'DeviceAcceleration']);
+                list.push([self.DeviceRotationRate, 'DeviceRotationRate']);
+                list.push([self.DOMStringList, 'DOMStringList']);
+
+                list.push([self.MozMmsMessage, 'MozMmsMessage']);
+                list.push([self.MozMobileMessageManager,
+                    'MozMobileMessageManager']);
+                list.push([self.MozMobileMessageThread,
+                    'MozMobileMessageThread']);
+
+                list.push([self.MozSmsFilter, 'MozSmsFilter']);
+                list.push([self.MozSmsMessage, 'MozSmsMessage']);
+                list.push([self.MozSmsSegmentInfo, 'MozSmsSegmentInfo']);
+                break;
+
+            case 'safari':
+                //  Safari 7
+                list.push([self.Window, 'DOMWindow']);
+                list.push([self.JSON, 'JSON']);
+                list.push([self.Math, 'Math']);
+                list.push([self.CSS, 'CSS']);
+                list.push([self.Intl, 'Intl']);
+                break;
         }
     }
 
-    //  Chrome 33
-    if (TP.sys.getBrowser() === 'chrome') {
-        if (anObj === self.CSS) {
-            return 'CSS';
-        } else if (anObj === self.Intl) {
-            return 'Intl';
-        } else if (anObj === self.JSON) {
-            return 'JSON';
-        } else if (anObj === self.Math) {
-            return 'Math';
+    for (i = 0; i < len; i++) {
+        item = list[i];
+        if (anObj === item[0]) {
+            return item[1];
         }
     }
 
-    //  Safari 7
-    if (TP.sys.getBrowser() === 'safari') {
-        if (anObj === self.CSS) {
-            return 'CSS';
-        } else if (anObj === self.Intl) {
-            return 'Intl';
-        } else if (anObj === self.JSON) {
-            return 'JSON';
-        } else if (anObj === self.Math) {
-            return 'Math';
-        } else if (anObj === self.Window) {
-            return 'DOMWindow';
-        }
-    }
-
-    return null;
 }, false, 'TP.getNonFunctionConstructorName');
 
 //  ------------------------------------------------------------------------
@@ -9499,7 +9481,7 @@ function () {
          * @todo
          */
 
-        if (TP.isBoolean(aFlag)) {
+        if (arguments.length) {
             this.$$shouldSignal = aFlag;
         }
 
