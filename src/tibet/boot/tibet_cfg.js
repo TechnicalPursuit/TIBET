@@ -498,13 +498,13 @@ TP.sys.setcfg('boot.moz_xpcom', false);
 TP.sys.setcfg('path.npm_dir', 'node_modules');
 TP.sys.setcfg('path.npm_file', 'package.json');
 
-TP.sys.setcfg('path.tibet_lib', 'tibet');   // npm install name here.
-TP.sys.setcfg('path.tibet_file', 'tibet.json');
-TP.sys.setcfg('path.tibet_inf', 'TIBET-INF');
-
 TP.sys.setcfg('path.app', '~app_root');
 TP.sys.setcfg('path.lib', '~lib_root');
 TP.sys.setcfg('path.tibet', '~lib_root');
+
+TP.sys.setcfg('path.tibet_lib', 'tibet');   // npm install name here.
+TP.sys.setcfg('path.tibet_file', '~app/tibet.json');
+TP.sys.setcfg('path.tibet_inf', 'TIBET-INF');
 
 TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_inf'));
 TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_inf'));
