@@ -792,6 +792,131 @@ function(aDocument) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('documentStyleHrefReload',
+function(aDocument, anHref) {
+
+    /**
+     * @name documentStyleHrefReload
+     * @synopsis Reloads any style 'link' element pointing to the supplied
+     *     href, if it can be found in the supplied Document.
+     * @param {Document} aDocument The document to look for 'link' elements
+     *     in.
+     * @param {String} anHref The href to try to find to reload.
+     * @raises TP.sig.InvalidDocument,TP.sig.InvalidString
+     */
+
+    var currentTopLevelLinkElems,
+
+        existingHrefs,
+
+        len,
+        i,
+
+        newHref,
+
+        index;
+
+    if (!TP.isDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    if (TP.isEmpty(anHref)) {
+        return TP.raise(this, 'TP.sig.InvalidString');
+    }
+
+    //  Gather the hrefs of the current 'top-level' 'link' elements in the
+    //  supplied element's document. The reason we do this rather than just
+    //  query for an element's authored 'href=' value is that the '.href'
+    //  property will be the *fully expanded* href value and that's the one(s)
+    //  we'll need for comparison.
+    currentTopLevelLinkElems = TP.byCSS('link[rel="stylesheet"]', aDocument);
+    existingHrefs = currentTopLevelLinkElems.collect(
+                function(anElem) {
+                    var href;
+
+                    //  In case a previous run of this method was the generator
+                    //  of this element, we need to strip out the URL
+                    //  parameters that we added to force the reload in order to
+                    //  do a proper comparison.
+                    if ((href = anElem.href).indexOf('_tibet_nocache') !==
+                                                            TP.NOT_FOUND) {
+
+                        //  If there is a '&', that means there were other
+                        //  parameters on the URL that we don't want to replace.
+                        if (href.indexOf('&') !== TP.NOT_FOUND) {
+                            href = href.replace(
+                                    /&?_tibet_nocache=(\d+)(\?|&)?/, '');
+                        } else {
+                            href = href.replace(
+                                    /\?_tibet_nocache=(\d+)/, '');
+                        }
+                    }
+
+                    return href;
+                });
+
+    //  If the existing hrefs in the document do not contain the href we're
+    //  looking for, then it may be in an @import. Flatten out those @import
+    //  statements (recursively), generating a top level 'link' element for each
+    //  one (in the order they were found to preserve CSS specificity rules).
+    if (!existingHrefs.contains(anHref)) {
+
+        len = currentTopLevelLinkElems.getSize();
+        for (i = 0; i < len; i++) {
+            TP.styleElementFlattenImports(currentTopLevelLinkElems.at(i));
+        }
+
+        //  Re-run the query. This time, there will be a fully realized value
+        //  as the href, so we can use it here.
+        currentTopLevelLinkElems = TP.byCSS(
+                'link[rel="stylesheet"][href="' + anHref + '"]',
+                aDocument);
+
+        if (TP.isEmpty(currentTopLevelLinkElems)) {
+            //  Still couldn't find it even after flattening all of the
+            //  referenced @imports. Exit here.
+            //  TODO: Raise an exception?
+            return;
+        }
+
+        //  Requery for the now existing hrefs (we don't need to worry about
+        //  detecting and stripping any '_tibet_nocache' prefix here because
+        //  these are all new).
+        existingHrefs = currentTopLevelLinkElems.collect(
+                function(anElem) {
+                    return anElem.href;
+                });
+    }
+
+    //  Look for the href in the set of existing hrefs we have. That will be the
+    //  same index as the 'link' element that we found or generated.
+    index = TP.NOT_FOUND;
+
+    len = existingHrefs.getSize();
+    for (i = 0; i < len; i++) {
+        if (existingHrefs.at(i) === anHref) {
+            index = i;
+            break;
+        }
+    }
+
+    //  If we actually found an index, then grab the element at that spot, set
+    //  it's 'href' to the supplied href plus a query that will ensure that it
+    //  reloads from the server.
+    if (index !== TP.NOT_FOUND) {
+
+        newHref = anHref +
+                    (anHref.indexOf('?') >= 0 ? '&' : '?') +
+                    '_tibet_nocache=' + Date.now();
+
+        currentTopLevelLinkElems.at(index).href = newHref;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  ELEMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 
@@ -1201,6 +1326,106 @@ function(anElement, pixelValue, aPropertyName) {
 //  STYLE PRIMITIVES
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleElementFlattenImports',
+function(anElement) {
+
+    /**
+     * @name styleElementFlattenImports
+     * @synopsis 'Flatten's any @import statements in the supplied 'link'
+     *     element's out into 'link' elements in the supplied element's
+     *     document. Note that this method will *not* overwrite any existing
+     *     'link' elements that have the same 'href' as the @import'ed
+     *     stylesheet.
+     * @param {Element} anElement The 'link' element to flatten the CSS @imports
+     *     under.
+     * @raises TP.sig.InvalidElement
+     */
+
+    var doc,
+
+        currentTopLevelLinkElems,
+
+        existingHrefs,
+
+        sheets,
+        startSheet,
+
+        hrefsToAdd,
+
+        len,
+        i,
+
+        sheetHref,
+
+        newLinkElem;
+
+    //  Make sure we were handed a 'link' element.
+    if (!TP.isElement(anElement) ||
+        (TP.elementGetLocalName(anElement).toLowerCase() !== 'link')) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    doc = TP.nodeGetDocument(anElement);
+
+    //  Gather the hrefs of the current 'top-level' 'link' elements in the
+    //  supplied element's document. The reason we do this rather than just
+    //  query for an element's authored 'href=' value is that the '.href'
+    //  property will be the *fully expanded* href value and that's the one(s)
+    //  we'll need for comparison.
+    currentTopLevelLinkElems = TP.byCSS('link[rel="stylesheet"]', doc);
+    existingHrefs = currentTopLevelLinkElems.collect(
+                                                function(anElem) {
+                                                    return anElem.href;
+                                                });
+
+    //  Now, gather the sheets (recursively) for all of the @imports referenced
+    //  by the supplied 'link' element
+    sheets = TP.ac();
+
+    //  Start with the style sheet of the supplied element.
+    startSheet = TP.cssElementGetStyleSheet(anElement);
+    sheets.push(startSheet);
+
+    //  This method will recursively gather the @import sheets (in order, to
+    //  preserve CSS specificity order).
+    sheets = sheets.concat(TP.styleSheetGetImportSheets(startSheet));
+
+    hrefsToAdd = TP.ac();
+
+    //  Iterate over them and, if the href *isn't* in the list of the top-level
+    //  'link' elements above, add it to the list to process.
+    len = sheets.getSize();
+    for (i = 0; i < len; i++) {
+
+        sheetHref = sheets.at(i).href;
+
+        if (!existingHrefs.contains(sheetHref)) {
+            hrefsToAdd.push(sheetHref);
+        }
+    }
+
+    //  If there are hrefs to add, generate a 'link' element for each one.
+    if (TP.notEmpty(hrefsToAdd)) {
+
+        len = hrefsToAdd.getSize();
+        for (i = 0; i < len; i++) {
+
+            newLinkElem = TP.documentAddLinkElement(doc, hrefsToAdd.at(i));
+            TP.elementSetAttribute(newLinkElem, 'tibet:flattened',
+                                    'true', true);
+        }
+
+        //  We added a bunch of hrefs representing the (recursively gathered)
+        //  @import'ed URLs. We should disable the main 'link' element that was
+        //  holding them all.
+        anElement.disabled = true;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleElementGetContent',
 function(anElement) {
 
@@ -1288,6 +1513,69 @@ function(aStyleRule) {
     //  the rule.
 
     return aStyleRule.parentStyleSheet;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('styleSheetGetImportSheets',
+function(aStylesheet, expandImports) {
+
+    /**
+     * @name styleSheetGetImportSheets
+     * @synopsis Retrieves the rules from the supplied stylesheet. Note that
+     *     this function also recursively descends through CSS @import
+     *     statements to retrieve any imported style rules.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the rules
+     *     from.
+     * @param {Boolean} expandImports Whether or not @import statements should
+     *     be recursively 'expanded' and the rules gathered from them from. This
+     *     defaults to true.
+     * @raises TP.sig.InvalidParameter
+     * @returns {Array} A list of CSSStyleRule objects in the supplied
+     *     CSSStyleSheet, including those that may have been imported using an.
+     *     @import statement.
+     * @todo
+     */
+
+    var resultSheets,
+        sheetRules,
+
+        shouldExpand,
+
+        i;
+
+    if (TP.notValid(aStylesheet)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    shouldExpand = TP.ifInvalid(expandImports, true);
+
+    resultSheets = TP.ac();
+
+    //  Grab the rules from the sheet.
+    sheetRules = aStylesheet.cssRules;
+
+    //  Loop over each rule in the sheet and, if the rule is an 'IMPORT_RULE',
+    //  add it to our result Array - and recurse if the shouldExpand parameter
+    //  is true.
+    for (i = 0; i < sheetRules.length; i++) {
+
+        //  If the rule is an '@import' rule, call this function recursively
+        //  on the rule's 'stylesheet' property (which will be the actual
+        //  stylesheet object of the stylesheet being imported) and add all
+        //  of the hrefs found there to our result array.
+        if (sheetRules[i].type === sheetRules[i].IMPORT_RULE) {
+
+            if (shouldExpand) {
+                resultSheets.addAll(
+                    TP.styleSheetGetImportSheets(sheetRules[i].styleSheet));
+            }
+
+            resultSheets.push(sheetRules[i].styleSheet);
+        }
+    }
+
+    return resultSheets;
 });
 
 //  ------------------------------------------------------------------------
