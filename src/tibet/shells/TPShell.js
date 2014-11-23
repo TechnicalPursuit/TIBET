@@ -2998,23 +2998,10 @@ function(aRequest) {
      *     containing parameters.
      */
 
-    var str,
-        req;
+    var str;
 
     str = TP.ifInvalid(this.get('announcement'), '');
     str += TP.ifInvalid(this.get('introduction'), '');
-/*
-    //  output any startup announcement for the shell
-    req = TP.sig.UserOutputRequest.construct(
-                TP.hc('output', str,
-                        'cssClass', 'inbound_announce',
-                        'cmdAsIs', true,
-                        'cmdBox', false,
-                        'cmdRecycle', true,
-                        'cmdID', aRequest.at('cmdID')));
-
-    req.fire(this);
-*/
 
     return aRequest.complete(str);
 });
