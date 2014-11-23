@@ -109,7 +109,7 @@ function() {
 
         //  ---
 
-        templateStr = 'hi: {{foo %% escapedHTML}}';
+        templateStr = 'hi: {{foo .% escapedHTML}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -121,7 +121,7 @@ function() {
                ],
                [
                   'value',
-                  'foo %% escapedHTML'
+                  'foo .% escapedHTML'
                ]
             ];
 
@@ -163,7 +163,7 @@ function() {
 
         //  ---
 
-        templateStr = 'Hi there {{data.firstName}} {{data.lastName}}. Your phone number is {{data.phone %% @{@@@-@@@@}}}.';
+        templateStr = 'Hi there {{data.firstName}} {{data.lastName}}. Your phone number is {{data.phone .% @{@@@-@@@@}}}.';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -191,7 +191,7 @@ function() {
                ],
                [
                   'value',
-                  'data.phone %% @{@@@-@@@@}'
+                  'data.phone .% @{@@@-@@@@}'
                ],
                [
                   'text',
@@ -206,7 +206,7 @@ function() {
 
         //  ---
 
-        templateStr = 'Hi there {{data.firstName}} {{data.lastName}}. Your salary is {{data.salary %% $#{#,###.00}}}.';
+        templateStr = 'Hi there {{data.firstName}} {{data.lastName}}. Your salary is {{data.salary .% $#{#,###.00}}}.';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -234,7 +234,7 @@ function() {
                ],
                [
                   'value',
-                  'data.salary %% $#{#,###.00}'
+                  'data.salary .% $#{#,###.00}'
                ],
                [
                   'text',
@@ -249,7 +249,7 @@ function() {
 
         //  ---
 
-        templateStr = 'The content as XML-RPC is: {{value %% TP.core.XMLRPCNode}}';
+        templateStr = 'The content as XML-RPC is: {{value .% TP.core.XMLRPCNode}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -261,7 +261,7 @@ function() {
                ],
                [
                   'value',
-                  'value %% TP.core.XMLRPCNode'
+                  'value .% TP.core.XMLRPCNode'
                ]
             ];
 
@@ -272,7 +272,7 @@ function() {
 
         //  ---
 
-        templateStr = 'The element with a bar attribute is: {{./*[@bar]%%String}}';
+        templateStr = 'The element with a bar attribute is: {{./*[@bar].%String}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -284,7 +284,7 @@ function() {
                ],
                [
                   'value',
-                  './*[@bar]%%String'
+                  './*[@bar].%String'
                ]
             ];
 
@@ -295,7 +295,7 @@ function() {
 
         //  ---
 
-        templateStr = 'The list is {{value %%* html:ul}}';
+        templateStr = 'The list is {{value .%* html:ul}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -307,7 +307,7 @@ function() {
                ],
                [
                   'value',
-                  'value %%* html:ul'
+                  'value .%* html:ul'
                ]
             ];
 
@@ -355,7 +355,7 @@ function() {
         //  ---
 
         //  Inlined template
-        templateStr = 'The name of the element with a bar attribute is: {{./*[@bar] %% It really is: {{localName %% {{fetchit %% formatit}}}}}}';
+        templateStr = 'The name of the element with a bar attribute is: {{./*[@bar] .% It really is: {{localName .% {{fetchit .% formatit}}}}}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -367,7 +367,7 @@ function() {
                ],
                [
                   'value',
-                  './*[@bar] %% It really is: {{localName %% {{fetchit %% formatit}}}}'
+                  './*[@bar] .% It really is: {{localName .% {{fetchit .% formatit}}}}'
                ]
             ];
 
@@ -641,7 +641,7 @@ function() {
         //  ---
 
         //  Escaped template
-        templateStr = 'The year is: \\{{value %% YYYY\\}}';
+        templateStr = 'The year is: \\{{value .% YYYY\\}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -649,7 +649,7 @@ function() {
             [
                [
                   'text',
-                  'The year is: \\{{value %% YYYY\\}}'
+                  'The year is: \\{{value .% YYYY\\}}'
                ]
             ];
 
@@ -661,7 +661,7 @@ function() {
         //  ---
 
         //  Escaped template with embedded value containing escaped inline template
-        templateStr = 'The year is: \\{{value %% {{\\{{some\\}}}}\\}}';
+        templateStr = 'The year is: \\{{value .% {{\\{{some\\}}}}\\}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -669,7 +669,7 @@ function() {
             [
                [
                   'text',
-                  'The year is: \\{{value %% '
+                  'The year is: \\{{value .% '
                ],
                [
                   'value',

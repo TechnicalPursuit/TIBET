@@ -862,7 +862,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
                     '<label for="field_{{$INDEX}}">',
                     'Field #{{$INDEX}}:',
                     '</label>',
-                    '{{%%TP.html.input}}');
+                    '{{.%TP.html.input}}');
     } else {
         //  Otherwise, the object that will be handed to the iteration
         //  mechanism will be [key,value] pairs, so we can use that fact
@@ -871,7 +871,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
                     '<label for="field_{{$INDEX}}">',
                     '{{0}}:',
                     '</label>',
-                    '{{1%%TP.html.input}}');
+                    '{{1.%TP.html.input}}');
     }
 
     //  Perform the transformation.
@@ -3246,12 +3246,12 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
             if (TP.isArray(anObject)) {
                 template = TP.join('<', tagName,
                                     attrStr, ' value="{{$INDEX}}">',
-                                    '{{%%', itemFormat, '}}',
+                                    '{{.%', itemFormat, '}}',
                                     '</', tagName, '>');
             } else {
                 template = TP.join('<', tagName,
                                     attrStr, ' value="{{0}}">',
-                                    '{{1%%', itemFormat, '}}',
+                                    '{{1.%', itemFormat, '}}',
                                     '</', tagName, '>');
             }
 
@@ -3269,7 +3269,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         //  of the itemFormat for both the key and the value.
         template = TP.join('<', tagName,
                             attrStr, ' value="{{0}}">',
-                            '{{1%%', itemFormat, '}}',
+                            '{{1.%', itemFormat, '}}',
                             '</', tagName, '>');
 
         //  Perform the transformation.

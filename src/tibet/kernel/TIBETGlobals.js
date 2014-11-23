@@ -2340,9 +2340,9 @@ TP.regex.EXTRACT_ACP = /\{\{(.+?)\}\}/;
 
 TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 
-//  0-n non-'\' characters followed by 0-n whitespace, followed by '%%',
+//  0-n non-'\' characters followed by 0-n whitespace, followed by '.%',
 //  followed by 0-n whitespace, followed by 1-n any characters
-TP.regex.ACP_FORMAT = /([^\\]*)\s*%%\s*(.+)/;
+TP.regex.ACP_FORMAT = /([^\\]*)\s*\.%\s*(.+)/;
 
 TP.regex.INLINE_BINDING_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
 

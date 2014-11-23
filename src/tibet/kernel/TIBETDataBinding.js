@@ -1341,7 +1341,7 @@ function() {
                 //  the URI list that we set bindings up from.
                 if (TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
                     fullyExpandedVal = fullyExpandedVal.slice(
-                                    0, fullyExpandedVal.indexOf('%%')).trim();
+                                    0, fullyExpandedVal.indexOf('.%')).trim();
                 }
 
                 //  Add that value to the list of URIs to bind to this
@@ -1435,7 +1435,7 @@ function() {
                 //  the URI list that we set bindings up from.
                 if (TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
                     fullyExpandedVal = fullyExpandedVal.slice(
-                                    0, fullyExpandedVal.indexOf('%%')).trim();
+                                    0, fullyExpandedVal.indexOf('.%')).trim();
                 }
 
                 //  Add that value to the list of URIs to remove the binding for
