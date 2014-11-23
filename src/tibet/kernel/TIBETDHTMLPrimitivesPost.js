@@ -8874,7 +8874,7 @@ function(aWindow) {
 
         TP.tpwin(aWindow).setContent(
             locURI,
-            TP.request('loadFunc',
+            TP.request(TP.ONLOAD,
                         function(aNode) {
 
                             //  Remove the 'anti-looping' value (described
