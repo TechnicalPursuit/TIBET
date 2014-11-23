@@ -6767,10 +6767,6 @@ TP.core.TIBETURL.Inst.defineAttribute('nestedURI');
 //  are empty, which helps keep getResource running faster
 TP.core.TIBETURL.Inst.defineAttribute('uriKey');
 
-//  the URI's original content (prior to any expansion) in split form
-//  whole, jid, resource, canvas, path, pointer
-TP.core.TIBETURL.Inst.defineAttribute('uriParts');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -7032,7 +7028,7 @@ function() {
         name;
 
     //  our original split value is here
-    parts = this.$get('uriParts');
+    parts = this.getURIParts();
 
     //  whole, jid, resource, canvas, path, pointer
     name = parts.at(TP.core.TIBETURL.CANVAS_INDEX);
@@ -7097,7 +7093,7 @@ function(forceRefresh) {
 
     //  work from the path...NOTE NOTE NOTE do not work from ID, that will
     //  recurse since our ID is built in part from the expanded resource URI
-    parts = this.$get('uriParts');
+    parts = this.getURIParts();
     if (TP.isEmpty(parts)) {
         path = TP.uriResolveVirtualPath(this.$get('uri'), true);
         parts = path.match(TP.regex.TIBET_URL_SPLITTER);
@@ -7173,9 +7169,7 @@ function() {
         return TP.raise(url, 'TP.sig.InvalidURI', url);
     }
 
-    //  keep the parts around in split form for faster processing elsewhere
-    this.$set('uriParts', url.match(TP.regex.TIBET_URL_SPLITTER));
-    parts = this.$get('uriParts');
+    parts = this.getURIParts();
 
     //  with parts in place we can ask for the canvas name
     canvas = this.getCanvasName();
@@ -7316,7 +7310,7 @@ function(aRequest, filterResult) {
         //  if we're pointing into a live window we also want to refresh,
         //  content in windows is changing constantly and we don't try to
         //  manage that change back to the uris that reference into it
-        parts = this.$get('uriParts');
+        parts = this.getURIParts();
 
         //  with parts in place we can ask for the canvas name
         canvas = this.getCanvasName();
@@ -7357,7 +7351,7 @@ function(aRequest, filterResult) {
 
     //  the original parts of the URI give us the best view of the real
     //  intent. these typically are split during initialization and cached
-    parts = parts || this.$get('uriParts');
+    parts = parts || this.getURIParts();
 
     //  with parts in place we can ask for the canvas name
     canvas = this.getCanvasName();
@@ -7694,6 +7688,19 @@ function(request, result, async, filter) {
 
         return resource;
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('getURIParts',
+function() {
+
+    /**
+     * Returns the URI in split form.
+     * @return {Array.<String>} The split parts.
+     */
+
+    return this.$get('uri').match(TP.regex.TIBET_URL_SPLITTER);
 });
 
 //  ------------------------------------------------------------------------

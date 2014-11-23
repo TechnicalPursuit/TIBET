@@ -327,7 +327,8 @@ TP.isDNU = function(anObj) {
 
     //  if the dnu slot is defined we can return its value, otherwise the
     //  proper response is false
-    return TP.isFunction(anObj) && anObj.$$dnu === true;
+    //return TP.isFunction(anObj) && anObj.$$dnu === true;
+    return anObj && anObj.$$dnu === true;
 };
 
 //  Manual setup
@@ -450,25 +451,23 @@ TP.owns = function(anObject, aName) {
         return false;
     }
 
-    if (TP.canInvoke(anObject, 'hasOwnProperty')) {
-        try {
-            return anObject.hasOwnProperty(aName) && !TP.isDNU(anObject[aName]);
-        } catch (e) {
-            // Fall through to common test below.
-        }
-    } else {
-        //  Couldn't invoke 'hasOwnProperty' on the object... let's see if we
-        //  can do it the indirect way.
-        try {
-            return TP.FunctionProto.hasOwnProperty.call(anObject, aName);
-        } catch (e) {
-            // Fall through to common test below.
-        }
+    if (TP.isDNU(anObject[aName])) {
+        return false;
     }
 
     try {
-        //  MOZ has a few that like to barf on this call. Unfortunately,
-        //  false isn't always the right answer :(
+        return anObject.hasOwnProperty(aName);
+    } catch (e) {
+        void(0);
+    }
+
+    try {
+        return TP.FunctionProto.hasOwnProperty.call(anObject, aName);
+    } catch (e) {
+        void(0);
+    }
+
+    try {
         return anObject[aName] !== anObject.constructor.prototype[aName];
     } catch (e) {
         return false;
@@ -1171,12 +1170,13 @@ TP.PHash = function() {
          *     against returning any of the receiver's properties/methods.
          * @returns {Object} The item at the index provided or undefined.
          */
-
+/*
         if (TP.owns(this.$$hash, aKey)) {
             return this.$$hash[aKey];
         }
-
-        return;
+*/
+        // Nothing on Object.prototype, this should work.
+        return this.$$hash[aKey];
     };
 
     //  register with TIBET by hand
@@ -1511,7 +1511,8 @@ TP.PHash = function() {
          * @returns {Boolean} True if the key is defined.
          */
 
-        return TP.owns(Object.keys(this.$$hash), aKey);
+        // Nothing on Object.prototype, this should work.
+        return Object.keys(this.$$hash).indexOf(aKey) !== -1;
     };
 
     //  register with TIBET by hand
@@ -1890,24 +1891,6 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
     spath = TP.boot[TP.SRC_PATH] || lpath;
 
     switch (itemClass) {
-        case TP.SUBTYPE:
-
-            anItem[TP.LOAD_NODE] = node;
-            anItem[TP.LOAD_PATH] = lpath;
-            anItem[TP.SRC_PATH] = spath;
-
-            //  don't overlay information we've already collected
-            if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
-                TP.sys.$$meta_types.atPut(iname, anItem);
-                /*
-                        iname,
-                        {'typeObj': anItem, 'sname': sname,
-                            'lpath': lpath, 'spath': spath});
-                */
-            }
-
-            break;
-
         case TP.METHOD:
 
             anItem[TP.LOAD_NODE] = node;
@@ -1993,6 +1976,25 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             }
 
             break;
+
+        case TP.SUBTYPE:
+
+            anItem[TP.LOAD_NODE] = node;
+            anItem[TP.LOAD_PATH] = lpath;
+            anItem[TP.SRC_PATH] = spath;
+
+            //  don't overlay information we've already collected
+            if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
+                TP.sys.$$meta_types.atPut(iname, anItem);
+                /*
+                        iname,
+                        {'typeObj': anItem, 'sname': sname,
+                            'lpath': lpath, 'spath': spath});
+                */
+            }
+
+            break;
+
         default:
             break;
     }

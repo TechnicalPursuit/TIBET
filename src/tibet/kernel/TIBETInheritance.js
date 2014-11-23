@@ -322,9 +322,9 @@ function(name) {
 
     //  tell the subtype about its ancestors, but note that we do it in such
     //  a way that the list is from closest ancestor to oldest
-    realType[TP.ANCESTOR_NAMES] = this.getSupertypeNames().copy();
-    realType[TP.ANCESTOR_NAMES].unshift(this.getName());
-    realType[TP.ANCESTORS] = this.getSupertypes().copy();
+    //realType[TP.ANCESTOR_NAMES] = this.getSupertypeNames().slice(0);
+    //realType[TP.ANCESTOR_NAMES].unshift(this.getName());
+    realType[TP.ANCESTORS] = this.getSupertypes().slice(0);
     realType[TP.ANCESTORS].unshift(this);
 
     //  hold references for quick lookup of namespace prefix and 'local name'
@@ -349,7 +349,7 @@ function(name) {
 
     //  clear/update any deep subtype caches up the supertype chain
     if (TP.sys.$$shouldCacheDeepSubtypes()) {
-        this.getSupertypes().perform(
+        this.getSupertypes().forEach(
             function(sType) {
 
                 var cache;
@@ -374,8 +374,7 @@ function(name) {
         parts = nsName.split('.');
         root = self[root].meta;
 
-        parts.perform(
-            function(part) {
+        parts.forEach(function(part) {
                 root = root[part];
             });
 
@@ -449,7 +448,22 @@ function() {
      * @todo
      */
 
-    return this[TP.ANCESTORS] || TP.ac();
+    var arr,
+        type;
+
+    arr = this[TP.ANCESTORS];
+    if (TP.isValid(arr)) {
+        return arr;
+    }
+
+    arr = TP.ac();
+    type = this;
+    while (type = type[TP.SUPER]) {
+        arr.push(type);
+    }
+
+    this[TP.ANCESTORS] = arr;
+    return arr;
 });
 
 //  ------------------------------------------------------------------------
@@ -3403,7 +3417,7 @@ function() {
 
     //  We need to get all of the *known* properties (that is, public and
     //  hidden) of the receiving *type* object.
-    mainTypeProps = mainTypeTarget.getInterface('known');
+    //mainTypeProps = mainTypeTarget.getInterface('known');
 
     //  Then, loop over each trait, getting all of the known properties of that
     //  *type* object and try to populate entries for them into the 'traits type
@@ -3428,7 +3442,14 @@ function() {
                     //  If the property exists in the main type and it points to
                     //  the *identical* value in the trait type, then there's no
                     //  sense in continuing - move on to the next property.
+                    /*
                     if (mainTypeProps.indexOf(propName) !== TP.NOT_FOUND &&
+                            mainTypeTarget[propName] ===
+                                traitTypeTarget[propName]) {
+                        return;
+                    }
+                    */
+                    if (TP.isProperty(mainTypeTarget, propName) &&
                             mainTypeTarget[propName] ===
                                 traitTypeTarget[propName]) {
                         return;
@@ -3473,7 +3494,7 @@ function() {
 
     //  We need to get all of the *known* properties (that is, public and hidden)
     //  of the receiving type's *instance prototype*.
-    mainInstProps = mainTypeTarget.getInterface('known');
+    //mainInstProps = mainTypeTarget.getInterface('known');
 
     //  Then, loop over each trait, getting all of the known properties of that
     //  type object's *instance prototype* and try to populate entries for them
@@ -3498,7 +3519,14 @@ function() {
                     //  If the property exists in the main type and it points to
                     //  the *identical* value in the trait type, then there's no
                     //  sense in continuing - move on to the next property.
+                    /*
                     if (mainInstProps.indexOf(propName) !== TP.NOT_FOUND &&
+                            mainTypeTarget[propName] ===
+                                traitTypeTarget[propName]) {
+                        return;
+                    }
+                    */
+                    if (TP.isProperty(mainTypeTarget, propName) &&
                             mainTypeTarget[propName] ===
                                 traitTypeTarget[propName]) {
                         return;
@@ -7406,7 +7434,22 @@ function() {
      * @returns {Array}
      */
 
-    return this[TP.ANCESTOR_NAMES] || TP.ac();
+    var arr,
+        type;
+
+    arr = this[TP.ANCESTOR_NAMES];
+    if (TP.isValid(arr)) {
+        return arr;
+    }
+
+    arr = TP.ac();
+    type = this;
+    while (type = type[TP.SUPER]) {
+        arr.push(type.getName());
+    }
+
+    this[TP.ANCESTOR_NAMES] = arr;
+    return arr;
 });
 
 //  ------------------------------------------------------------------------
