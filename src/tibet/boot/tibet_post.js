@@ -1924,6 +1924,11 @@ TP.boot.$uriInLocalFormat = function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
+// Cache for TIBET Formatted URIs. We look these up a lot during booting.
+TP.boot.$$tibetURIS = {};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$uriInTIBETFormat = function(aPath) {
 
     /**
@@ -1942,6 +1947,11 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
       return aPath;
     }
 
+    path = TP.boot.$$tibetURIS[aPath];
+    if (path) {
+        return path;
+    }
+
     // TODO: best to replace with a better list derived from reflection on the
     // sys.cfg path.* properties.
     path = aPath.replace(TP.boot.$uriExpandPath('~app_cfg'), '~app_cfg');
@@ -1952,6 +1962,8 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
     path = path.replace(TP.boot.$uriExpandPath('~lib'), '~lib');
     path = path.replace(TP.boot.$uriExpandPath('~tibet'), '~tibet');
     path = path.replace(TP.boot.$uriExpandPath('~'), '~');
+
+    TP.boot.$$tibetURIS[aPath] = path;
 
     return path;
 };
