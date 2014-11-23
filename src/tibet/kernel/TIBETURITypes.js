@@ -3201,18 +3201,6 @@ function(aProperty, aFlag) {
         return;
     }
 
-    //  Although we won't specifically know if the receiver is clean or
-    //  dirty with respect to a particular fragment we defer to the primary.
-    if ((url = this.getPrimaryURI()) !== this) {
-        fname = 'is' + aProperty.asTitleCase();
-        if (TP.canInvoke(url, fname)) {
-            return url[fname](aFlag);
-        } else {
-            this.raise('TP.sig.InvalidFunction');
-            return;
-        }
-    }
-
     if (TP.isBoolean(aFlag)) {
         this.$set('$' + aProperty, aFlag);
     }
