@@ -1474,15 +1474,6 @@ function(aProvider) {
             'STDIO provider must implement stdin, stdout, and stderr');
     }
 
-    //  make a copy of our original stdio hooks, but don't overwrite it if
-    //  we get attached multiple times to different providers.
-    if (TP.notValid(this.$origStdin)) {
-        this.$origNotify = this.notify;
-        this.$origStdin = this.stdin;
-        this.$origStdout = this.stdout;
-        this.$origStderr = this.stderr;
-    }
-
     this.notify = function(anObject, aRequest) {
 
                         return aProvider.notify(anObject, aRequest);
@@ -1502,6 +1493,16 @@ function(aProvider) {
 
                         return aProvider.stderr(anError, aRequest);
                     };
+
+    // The first thing to attach "wins" in that it will be the one we default to
+    // whenever we detach later.
+    if (TP.notValid(this.$origStdin)) {
+        this.$origNotify = this.notify;
+        this.$origStdin = this.stdin;
+        this.$origStdout = this.stdout;
+        this.$origStderr = this.stderr;
+    }
+
 
     return this;
 });
@@ -1682,7 +1683,7 @@ function(anObject, aRequest) {
     } else if (TP.isKindOf(aRequest, TP.sig.UserIORequest)) {
         req = aRequest;
     } else {
-        //  collection of parameters, not a true request
+        // Need to repackage in the proper subtype for processing.
         req = TP.sig.UserOutputRequest.construct(aRequest);
         req.set('requestor', this);
     }
