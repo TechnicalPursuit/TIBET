@@ -53,6 +53,12 @@ function(aRequest) {
         return;
     }
 
+    // Let the stdout/stderr routines have a hook to help them determine how to
+    // format output.
+    aRequest.atPut('cmdTAP', true);
+
+    aRequest.stdout('');
+
     shell = aRequest.at('cmdShell');
 
     ignore_only = shell.getArgument(aRequest, 'tsh:ignore_only', false);
@@ -77,8 +83,6 @@ function(aRequest) {
     if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 
         if (shell.getArgument(aRequest, 'tsh:all', false)) {
-
-            aRequest.stdout('Running all loaded tests...');
 
             runner.runTargetSuites(null, options).then(
                 function(result) {
@@ -129,12 +133,9 @@ function(aRequest) {
         if (TP.isType(obj)) {
             if (!shell.getArgument(aRequest, 'tsh:local_only', false)) {
 
-                aRequest.stdout('Running Type tests...');
                 obj.Type.runTestSuites(options).then(function() {
-                        aRequest.stdout('Running Inst tests...');
                         obj.Inst.runTestSuites(options);
                     }).then(function() {
-                        aRequest.stdout('Running local tests...');
                         obj.runTestSuites(options);
                     }).then(
                     function(result) {
