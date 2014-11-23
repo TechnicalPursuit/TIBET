@@ -1357,10 +1357,23 @@ function() {
      * @todo
      */
 
-    var type;
+    var arr,
+        type;
 
     if (TP.isType(this)) {
-        return this[TP.ANCESTORS] || TP.ac();
+        arr = this[TP.ANCESTORS];
+        if (TP.isValid(arr)) {
+            return arr;
+        }
+
+        arr = TP.ac();
+        type = this;
+        while (type = type[TP.SUPER]) {
+            arr.push(type);
+        }
+
+        this[TP.ANCESTORS] = arr;
+        return arr;
     }
 
     //  instances work from their type if they can acquire it
@@ -1391,11 +1404,24 @@ function() {
      * @todo
      */
 
-    var type;
+    var type,
+        arr;
 
     //  types keep this list, which is built from defineSubtype calls
     if (TP.isType(this)) {
-        return this[TP.ANCESTOR_NAMES] || TP.ac();
+        arr = this[TP.ANCESTOR_NAMES];
+        if (TP.isValid(arr)) {
+            return arr;
+        }
+
+        arr = TP.ac();
+        type = this;
+        while (type = type[TP.SUPER]) {
+            arr.push(type.getName());
+        }
+
+        this[TP.ANCESTOR_NAMES] = arr;
+        return arr;
     }
 
     //  instances work from their type if they can acquire it
