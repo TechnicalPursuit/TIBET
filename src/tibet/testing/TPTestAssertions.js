@@ -2386,6 +2386,21 @@ function(anObject, aProperty, aValue, aComment) {
 //  TP.test.Expect
 //  ========================================================================
 
+/**
+ * @type {TP.test.Expect}
+ * @synopsis A type that can a 'chain' of test expectation methods.
+ * @description This type works by operating a 'method chain'. Each member of
+ *     the chain is responsible for executing a piece of logic and then setting
+ *     the result of the chain. This result is a Boolean. If any one of the
+ *     members of a chain sets the result to false, that result 'sticks' no
+ *     matter what further members of the chain set it to. When the chain
+ *     finishes executing, this value is check and, if it is false, the entire
+ *     chain will have been considered to have failed and the test case itself
+ *     will be 'fail()'ed.
+ *     Therefore, there are no individual assertions in any of these methods.
+ *     They are to simply set the result of the chain to true or false.
+ */
+
 TP.lang.Object.defineSubtype('test.Expect');
 
 //  ------------------------------------------------------------------------
