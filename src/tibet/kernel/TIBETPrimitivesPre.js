@@ -1861,7 +1861,6 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
         tname,
         gname,
-        sname,
 
         owners,
 
@@ -2025,10 +2024,6 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
      * @returns {Object} The assigned slot value.
      * @todo
      */
-
-    var constant,
-        hidden,
-        fixed;
 
     //  If we were handed a descriptor, then try to use ECMA5's defineProperty()
     //  call

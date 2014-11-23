@@ -458,9 +458,13 @@ function() {
 
     arr = TP.ac();
     type = this;
+    /* jshint boss:true */
+    /* eslint-disable */
     while (type = type[TP.SUPER]) {
         arr.push(type);
     }
+    /* eslint-enable */
+    /* jshint boss:false */
 
     this[TP.ANCESTORS] = arr;
     return arr;
@@ -3384,10 +3388,10 @@ function() {
         resolutions,
 
         mainType,
-        mainTypeTarget,
+        mainTypeTarget;
 
-        mainTypeProps,
-        mainInstProps;
+        //mainTypeProps,
+        //mainInstProps;
 
     //  If we've already resolved traits for this type, then we don't allow any
     //  more composition / resolution to occur.
@@ -7435,9 +7439,13 @@ function() {
 
     arr = TP.ac();
     type = this;
+    /* jshint boss:true */
+    /* eslint-disable */
     while (type = type[TP.SUPER]) {
         arr.push(type.getName());
     }
+    /* eslint-enable */
+    /* jshint boss:false */
 
     this[TP.ANCESTOR_NAMES] = arr;
     return arr;
