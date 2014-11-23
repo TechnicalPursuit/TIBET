@@ -2735,7 +2735,6 @@ function(aFilter) {
         scope,
         public,
         unique,
-
         keys,
         key,
         it,
@@ -2746,6 +2745,20 @@ function(aFilter) {
         //proto;
 
     TP.stop('break.interface');
+
+    keys = TP.ac();
+
+    //  shortcut for using this method to get all keys of any kind.
+    if (aFilter === 'known') {
+        /* jshint forin:true */
+        /* eslint-disable guard-for-in */
+        for (key in this) {
+            keys.push(key);
+        }
+        /* eslint-enable guard-for-in */
+        /* jshint forin:false */
+        return keys;
+    }
 
     //  next question is can we find the requested subset on the list?
     filter = TP.ifInvalid(aFilter, 'unique_attributes');
@@ -2804,8 +2817,6 @@ function(aFilter) {
         proto = this.getInstPrototype();
     }
     */
-
-    keys = TP.ac();
 
     /* jshint forin:true */
     for (key in this) {
@@ -2893,6 +2904,7 @@ function(aFilter) {
     }
     /* jshint forin:false */
 
+
     return keys;
 });
 
@@ -2928,8 +2940,6 @@ function(aFilter) {
     if (TP.isType(this)) {
         inheriteds = this.getTypeInterface(aFilter);
     } else if (TP.isPrototype(this)) {
-        //  This is a prototype object - just return the values from it's local
-        //  interface.
         return this.getLocalInterface(aFilter);
     } else {
         inheriteds = this.getInstInterface(aFilter);
