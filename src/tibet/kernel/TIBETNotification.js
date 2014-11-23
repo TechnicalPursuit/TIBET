@@ -553,6 +553,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Signal.Inst.defineMethod('asRecursionString',
+function() {
+
+    /**
+     * @name asRecursionString
+     * @synopsis Returns a string representation of the receiver which is used
+     *     when the receiver is encountered in a circularly referenced manner
+     *     during the production of some sort of formatted String
+     *     representation.
+     * @returns {String}
+     */
+
+    return 'Recursion of: ' + this.getSignalName() + ' :: ' + this.getID();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Signal.Inst.defineMethod('asString',
 function(verbose) {
 
@@ -2419,9 +2436,7 @@ function(verbose) {
 
     var err,
         msg,
-
         wantsVerbose,
-
         str;
 
     wantsVerbose = TP.ifInvalid(verbose, true);
