@@ -9643,7 +9643,7 @@ function(anObject, aRequest) {
                     theRequest.atPut('$attrStr', '');
                 }
             } else {
-                attrStr = ' {{%%$attrInfo}}';
+                attrStr = ' {{.%$attrInfo}}';
             }
         }
 
@@ -9748,7 +9748,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         //  the itemFormat for each value.
         if (TP.isArray(anObject) || TP.notTrue(theRequest.at('repeat'))) {
             template = TP.join('<', tagName, attrStr, '>',
-                                '{{%%', itemFormat, '}}',
+                                '{{.%', itemFormat, '}}',
                                 '</', tagName, '>');
         } else {
             //  Otherwise, the object that will be handed to the iteration
@@ -9758,10 +9758,10 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
             //  Build a template by joining the tag name with an invocation
             //  of the itemFormat for both the key and the value.
             template = TP.join('<', tagName, attrStr, '>',
-                                '{{0%%', itemFormat, '}}',
+                                '{{0.%', itemFormat, '}}',
                                 '</', tagName, '>',
                                 '<', tagName, attrStr, '>',
-                                '{{1%%', itemFormat, '}}',
+                                '{{1.%', itemFormat, '}}',
                                 '</', tagName, '>');
         }
 

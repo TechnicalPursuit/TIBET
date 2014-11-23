@@ -493,7 +493,7 @@ function() {
 
         //  ---
 
-        testRep = 'Your name title cased is: {{value%%startUpper}}'.transform('bill');
+        testRep = 'Your name title cased is: {{value.%startUpper}}'.transform('bill');
 
         correctRep = 'Your name title cased is: Bill';
 
@@ -504,7 +504,7 @@ function() {
 
         //  ---
 
-        testRep = 'Your name title cased is: {{%%startUpper}}'.transform('bill');
+        testRep = 'Your name title cased is: {{.%startUpper}}'.transform('bill');
 
         correctRep = 'Your name title cased is: Bill';
 
@@ -516,7 +516,7 @@ function() {
         //  ---
 
         //  Spaces on either side of the formatting separator
-        testRep = 'Your name title cased is: {{value %% startUpper}}'.transform('bill');
+        testRep = 'Your name title cased is: {{value .% startUpper}}'.transform('bill');
 
         correctRep = 'Your name title cased is: Bill';
 
@@ -528,7 +528,7 @@ function() {
         //  ---
 
         //  Spaces on the back side of the formatting separator
-        testRep = 'Your name title cased is: {{%% startUpper}}'.transform('bill');
+        testRep = 'Your name title cased is: {{.% startUpper}}'.transform('bill');
 
         correctRep = 'Your name title cased is: Bill';
 
@@ -539,7 +539,7 @@ function() {
 
         //  ---
 
-        testRep = 'Hi there {{firstName}}. Your number is: {{phone%%@{@@@-@@@@}}}'.transform(TP.hc('firstName', 'Bill', 'phone', '4582022'));
+        testRep = 'Hi there {{firstName}}. Your number is: {{phone.%@{@@@-@@@@}}}'.transform(TP.hc('firstName', 'Bill', 'phone', '4582022'));
 
         correctRep = 'Hi there Bill. Your number is: 458-2022';
 
@@ -554,7 +554,7 @@ function() {
 
         //  ---
 
-        'The element with a bar attribute is: {{./*[@bar]%%String}}'.compile('xmlTemplate', true);
+        'The element with a bar attribute is: {{./*[@bar].%String}}'.compile('xmlTemplate', true);
 
         testRep = myElem.as('xmlTemplate');
 
@@ -568,7 +568,7 @@ function() {
         //  ---
 
         //  The 'true' flag here flushes the template cache and forces redefinition
-        'The name of the element with a bar attribute is: {{./*[@bar]%%{{localName}}}}'.compile('xmlTemplate', true);
+        'The name of the element with a bar attribute is: {{./*[@bar].%{{localName}}}}'.compile('xmlTemplate', true);
 
         testRep = myElem.as('xmlTemplate');
 
@@ -581,7 +581,7 @@ function() {
 
         //  ---
 
-        testRep = 'hi: {{foo%%escapedHTML}}'.transform(TP.hc('foo', '<bar/>'));
+        testRep = 'hi: {{foo.%escapedHTML}}'.transform(TP.hc('foo', '<bar/>'));
 
         correctRep = 'hi: &lt;bar/&gt;';
 
@@ -592,7 +592,7 @@ function() {
 
         //  ---
 
-        testRep = 'hi: {{foo%%escapedXML}}'.transform(TP.hc('foo', '<bar/>'));
+        testRep = 'hi: {{foo.%escapedXML}}'.transform(TP.hc('foo', '<bar/>'));
 
         correctRep = 'hi: &lt;bar/&gt;';
 
@@ -603,7 +603,7 @@ function() {
 
         //  ---
 
-        testRep = TP.ac(1, 2, 'that\'s cool').format('The list is {{value%%*html:ul}}');
+        testRep = TP.ac(1, 2, 'that\'s cool').format('The list is {{value.%*html:ul}}');
         correctRep = 'The list is <html:ul><html:li>1</html:li><html:li>2</html:li><html:li>that\'s cool</html:li></html:ul>';
 
         this.assert.isEqualTo(
@@ -614,7 +614,7 @@ function() {
         //  ---
 
         //  Spaces on either side of the formatting separator
-        testRep = TP.ac(1, 2, 'that\'s cool').format('The list is {{value %%* html:ul}}');
+        testRep = TP.ac(1, 2, 'that\'s cool').format('The list is {{value .%* html:ul}}');
         correctRep = 'The list is <html:ul><html:li>1</html:li><html:li>2</html:li><html:li>that\'s cool</html:li></html:ul>';
 
         this.assert.isEqualTo(
@@ -646,9 +646,9 @@ function() {
 
         //  ---
 
-        testRep = 'Hi there {{firstName}}. Your number is: \\{{phone%%@{@@@-@@@@}\\}}'.transform(TP.hc('firstName', 'Bill', 'phone', '4582022'));
+        testRep = 'Hi there {{firstName}}. Your number is: \\{{phone.%@{@@@-@@@@}\\}}'.transform(TP.hc('firstName', 'Bill', 'phone', '4582022'));
 
-        correctRep = 'Hi there Bill. Your number is: {{phone%%@{@@@-@@@@}}}';
+        correctRep = 'Hi there Bill. Your number is: {{phone.%@{@@@-@@@@}}}';
 
         this.assert.isEqualTo(
             testRep,
@@ -662,7 +662,7 @@ function() {
         //  ---
 
         //  The 'true' flag here flushes the template cache and forces redefinition
-        'The name of the element with a bar attribute is: {{./*[@bar]%%\\{{localName\\}}}}'.compile('xmlTemplate', true);
+        'The name of the element with a bar attribute is: {{./*[@bar].%\\{{localName\\}}}}'.compile('xmlTemplate', true);
 
         testRep = myElem.as('xmlTemplate');
 
@@ -675,9 +675,9 @@ function() {
 
         //  ---
 
-        testRep = 'hi: \\{{foo%%escapedHTML\\}}'.transform(TP.hc('foo', '<bar/>'));
+        testRep = 'hi: \\{{foo.%escapedHTML\\}}'.transform(TP.hc('foo', '<bar/>'));
 
-        correctRep = 'hi: {{foo%%escapedHTML}}';
+        correctRep = 'hi: {{foo.%escapedHTML}}';
 
         this.assert.isEqualTo(
             testRep,
@@ -688,7 +688,7 @@ function() {
 
         //  The 'true' flag here flushes the template cache and forces redefinition
         'This is a row value: \\{{value\\}}\n'.compile('rowTemp', true);
-        'Here is some row data {{%%rowTemp}}\n'.compile('tableTemp', true);
+        'Here is some row data {{.%rowTemp}}\n'.compile('tableTemp', true);
 
         testRep = TP.ac(1, 2, 3).as('tableTemp', TP.hc('repeat', true));
 

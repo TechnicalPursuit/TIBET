@@ -69,8 +69,8 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
             //  of the 'TP.html.dt' format for the index and an invocation
             //  of the 'TP.html.dd' format for the value.
             template = TP.join('<', tagName, attrStr, '>',
-                                '{{$INDEX%%TP.html.dt}}',
-                                '{{value%%TP.html.dd}}',
+                                '{{$INDEX.%TP.html.dt}}',
+                                '{{value.%TP.html.dd}}',
                                 '</', tagName, '>');
         } else {
             //  Otherwise, the object that will be handed to the iteration
@@ -80,8 +80,8 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
             //  Build a template by joining the tag name with an invocation
             //  of the itemFormat for both the key and the value.
             template = TP.join('<', tagName, attrStr, '>',
-                                '{{0%%TP.html.dt}}',
-                                '{{1%%TP.html.dd}}',
+                                '{{0.%TP.html.dt}}',
+                                '{{1.%TP.html.dd}}',
                                 '</', tagName, '>');
         }
 
@@ -246,8 +246,8 @@ theRequest) {
         //  Build a template by joining the tag name with an invocation
         //  of the itemFormat for both the key and the value.
         template = TP.join('<', tagName, attrStr, '>',
-                            '{{0%%', itemFormat, '}}',
-                            '{{1%%', itemFormat, '}}',
+                            '{{0.%', itemFormat, '}}',
+                            '{{1.%', itemFormat, '}}',
                             '</', tagName, '>');
 
         //  Perform the transformation.

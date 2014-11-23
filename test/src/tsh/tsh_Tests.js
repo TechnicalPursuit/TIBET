@@ -1023,7 +1023,7 @@ function() {
         //  Use the variable in a formatting expression, but since it's not in
         //  double quotes it won't do the interpolation - it will just return the
         //  value without doing the formatting
-        inputVal = '{{x %% #{##.00}}}';
+        inputVal = '{{x .% #{##.00}}}';
         correctResult = 2;
 
         shellDriver.execShellTest(
@@ -1041,8 +1041,8 @@ function() {
         //  Use the variable in a formatting expression, but since it's in single
         //  quotes, not in double quotes, it won't do the interpolation - it will
         //  just return the literal value of the whole expression
-        inputVal = '\'{{x %% #{##.00}}}\'';
-        correctResult = '{{x %% #{##.00}}}';
+        inputVal = '\'{{x .% #{##.00}}}\'';
+        correctResult = '{{x .% #{##.00}}}';
 
         shellDriver.execShellTest(
             test,
@@ -1058,7 +1058,7 @@ function() {
 
         //  Use the variable in a formatting expression, and since it's in double
         //  quotes it will do the interpolation.
-        inputVal = '"{{x %% #{##.00}}}"';
+        inputVal = '"{{x .% #{##.00}}}"';
         correctResult = '2.00';
 
         shellDriver.execShellTest(
@@ -1076,7 +1076,7 @@ function() {
         //  Use the variable in a formatting expression, and since it's in backtick
         //  quotes it will both do the interpolation and eval the result - which
         //  gives it back the number 2.
-        inputVal = '`{{x %% #{##.00}}}`';
+        inputVal = '`{{x .% #{##.00}}}`';
         correctResult = 2;
 
         shellDriver.execShellTest(
@@ -1799,7 +1799,7 @@ function() {
 
         var inputVal;
 
-        inputVal = ':testCmd {{x %% #{##.00}}}';
+        inputVal = ':testCmd {{x .% #{##.00}}}';
 
         shellDriver.execOutputTest(
             test,
@@ -1807,13 +1807,13 @@ function() {
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '{{x %% #{##.00}}}',
+                        'Original value', '{{x .% #{##.00}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '2.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
 
-        inputVal = ':testCmd \'{{x %% #{##.00}}}\'';
+        inputVal = ':testCmd \'{{x .% #{##.00}}}\'';
 
         shellDriver.execOutputTest(
             test,
@@ -1821,13 +1821,13 @@ function() {
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '\'{{x %% #{##.00}}}\'',
+                        'Original value', '\'{{x .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{x %% #{##.00}}}\'',
+                        'Expanded value', '\'{{x .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
-                        'Resolved value', '{{x %% #{##.00}}}')));
+                        'Resolved value', '{{x .% #{##.00}}}')));
 
-        inputVal = ':testCmd "{{x %% #{##.00}}}"';
+        inputVal = ':testCmd "{{x .% #{##.00}}}"';
 
         shellDriver.execOutputTest(
             test,
@@ -1835,13 +1835,13 @@ function() {
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{x %% #{##.00}}}"',
+                        'Original value', '"{{x .% #{##.00}}}"',
                         'Expanded value tname', 'String',
                         'Expanded value', '2.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
 
-        inputVal = ':testCmd `{{x %% #{##.00}}}`';
+        inputVal = ':testCmd `{{x .% #{##.00}}}`';
 
         shellDriver.execOutputTest(
             test,
@@ -1849,7 +1849,7 @@ function() {
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '`{{x %% #{##.00}}}`',
+                        'Original value', '`{{x .% #{##.00}}}`',
                         'Expanded value tname', 'String',
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
@@ -1860,7 +1860,7 @@ function() {
 
         var inputVal;
 
-        inputVal = ':testCmd stuff={{x %% #{##.00}}}';
+        inputVal = ':testCmd stuff={{x .% #{##.00}}}';
 
         shellDriver.execOutputTest(
             test,
@@ -1868,13 +1868,13 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '{{x %% #{##.00}}}',
+                        'Original value', '{{x .% #{##.00}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '2.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
 
-        inputVal = ':testCmd stuff=\'{{x %% #{##.00}}}\'';
+        inputVal = ':testCmd stuff=\'{{x .% #{##.00}}}\'';
 
         shellDriver.execOutputTest(
             test,
@@ -1882,13 +1882,13 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '\'{{x %% #{##.00}}}\'',
+                        'Original value', '\'{{x .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{x %% #{##.00}}}\'',
+                        'Expanded value', '\'{{x .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
-                        'Resolved value', '{{x %% #{##.00}}}')));
+                        'Resolved value', '{{x .% #{##.00}}}')));
 
-        inputVal = ':testCmd stuff="{{x %% #{##.00}}}"';
+        inputVal = ':testCmd stuff="{{x .% #{##.00}}}"';
 
         shellDriver.execOutputTest(
             test,
@@ -1896,13 +1896,13 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{x %% #{##.00}}}"',
+                        'Original value', '"{{x .% #{##.00}}}"',
                         'Expanded value tname', 'String',
                         'Expanded value', '2.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
 
-        inputVal = ':testCmd stuff=`{{x %% #{##.00}}}`';
+        inputVal = ':testCmd stuff=`{{x .% #{##.00}}}`';
 
         shellDriver.execOutputTest(
             test,
@@ -1910,7 +1910,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '`{{x %% #{##.00}}}`',
+                        'Original value', '`{{x .% #{##.00}}}`',
                         'Expanded value tname', 'String',
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
@@ -2245,7 +2245,7 @@ function() {
         //  value without doing the formatting
 
         //  Simple form
-        inputVal = '{{$Y %% #{##.00}}}';
+        inputVal = '{{$Y .% #{##.00}}}';
         correctResult = 100;
 
         shellDriver.execShellTest(
@@ -2261,7 +2261,7 @@ function() {
             });
 
         //  Extended form
-        inputVal = '{{${Y} %% #{##.00}}}';
+        inputVal = '{{${Y} .% #{##.00}}}';
         correctResult = 100;
 
         shellDriver.execShellTest(
@@ -2281,8 +2281,8 @@ function() {
         //  just return the literal value of the whole expression
 
         //  Simple form
-        inputVal = '\'{{$Y %% #{##.00}}}\'';
-        correctResult = '{{$Y %% #{##.00}}}';
+        inputVal = '\'{{$Y .% #{##.00}}}\'';
+        correctResult = '{{$Y .% #{##.00}}}';
 
         shellDriver.execShellTest(
             test,
@@ -2297,8 +2297,8 @@ function() {
             });
 
         //  Extended form
-        inputVal = '\'{{${Y} %% #{##.00}}}\'';
-        correctResult = '{{${Y} %% #{##.00}}}';
+        inputVal = '\'{{${Y} .% #{##.00}}}\'';
+        correctResult = '{{${Y} .% #{##.00}}}';
 
         shellDriver.execShellTest(
             test,
@@ -2316,7 +2316,7 @@ function() {
         //  quotes it will do the interpolation.
 
         //  Simple form
-        inputVal = '"{{$Y %% #{##.00}}}"';
+        inputVal = '"{{$Y .% #{##.00}}}"';
         correctResult = '100.00';
 
         shellDriver.execShellTest(
@@ -2332,7 +2332,7 @@ function() {
             });
 
         //  Extended form
-        inputVal = '"{{${Y} %% #{##.00}}}"';
+        inputVal = '"{{${Y} .% #{##.00}}}"';
         correctResult = '100.00';
 
         shellDriver.execShellTest(
@@ -2352,7 +2352,7 @@ function() {
         //  gives it back the number 2.
 
         //  Simple form
-        inputVal = '`{{$Y %% #{##.00}}}`';
+        inputVal = '`{{$Y .% #{##.00}}}`';
         correctResult = 100;
 
         shellDriver.execShellTest(
@@ -2368,7 +2368,7 @@ function() {
             });
 
         //  Extended form
-        inputVal = '`{{${Y} %% #{##.00}}}`';
+        inputVal = '`{{${Y} .% #{##.00}}}`';
         correctResult = 100;
 
         shellDriver.execShellTest(
@@ -3041,112 +3041,112 @@ function() {
         var inputVal;
 
         //  Simple form
-        inputVal = ':testCmd {{$Y %% #{##.00}}}';
+        inputVal = ':testCmd {{$Y .% #{##.00}}}';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '{{$Y %% #{##.00}}}',
+                        'Original value', '{{$Y .% #{##.00}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
 
         //  Extended form
-        inputVal = ':testCmd {{${Y} %% #{##.00}}}';
+        inputVal = ':testCmd {{${Y} .% #{##.00}}}';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '{{${Y} %% #{##.00}}}',
+                        'Original value', '{{${Y} .% #{##.00}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
 
         //  Simple form
-        inputVal = ':testCmd \'{{$Y %% #{##.00}}}\'';
+        inputVal = ':testCmd \'{{$Y .% #{##.00}}}\'';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '\'{{$Y %% #{##.00}}}\'',
+                        'Original value', '\'{{$Y .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{$Y %% #{##.00}}}\'',
+                        'Expanded value', '\'{{$Y .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
-                        'Resolved value', '{{$Y %% #{##.00}}}')));
+                        'Resolved value', '{{$Y .% #{##.00}}}')));
 
         //  Extended form
-        inputVal = ':testCmd \'{{${Y} %% #{##.00}}}\'';
+        inputVal = ':testCmd \'{{${Y} .% #{##.00}}}\'';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '\'{{${Y} %% #{##.00}}}\'',
+                        'Original value', '\'{{${Y} .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{${Y} %% #{##.00}}}\'',
+                        'Expanded value', '\'{{${Y} .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
-                        'Resolved value', '{{${Y} %% #{##.00}}}')));
+                        'Resolved value', '{{${Y} .% #{##.00}}}')));
 
         //  Simple form
-        inputVal = ':testCmd "{{$Y %% #{##.00}}}"';
+        inputVal = ':testCmd "{{$Y .% #{##.00}}}"';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{$Y %% #{##.00}}}"',
+                        'Original value', '"{{$Y .% #{##.00}}}"',
                         'Expanded value tname', 'String',
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
 
         //  Extended form
-        inputVal = ':testCmd "{{${Y} %% #{##.00}}}"';
+        inputVal = ':testCmd "{{${Y} .% #{##.00}}}"';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{${Y} %% #{##.00}}}"',
+                        'Original value', '"{{${Y} .% #{##.00}}}"',
                         'Expanded value tname', 'String',
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
 
         //  Simple form
-        inputVal = ':testCmd `{{$Y %% #{##.00}}}`';
+        inputVal = ':testCmd `{{$Y .% #{##.00}}}`';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '`{{$Y %% #{##.00}}}`',
+                        'Original value', '`{{$Y .% #{##.00}}}`',
                         'Expanded value tname', 'String',
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
 
         //  Extended form
-        inputVal = ':testCmd `{{${Y} %% #{##.00}}}`';
+        inputVal = ':testCmd `{{${Y} .% #{##.00}}}`';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '`{{${Y} %% #{##.00}}}`',
+                        'Original value', '`{{${Y} .% #{##.00}}}`',
                         'Expanded value tname', 'String',
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
@@ -3764,53 +3764,53 @@ function() {
     this.it('Shell shell variables: templated command options', function(test, options) {
         var inputVal;
 
-        inputVal = ':testCmd stuff={{$Y %% #{##.00}}}';
+        inputVal = ':testCmd stuff={{$Y .% #{##.00}}}';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '{{$Y %% #{##.00}}}',
+                        'Original value', '{{$Y .% #{##.00}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
 
-        inputVal = ':testCmd stuff=\'{{$Y %% #{##.00}}}\'';
+        inputVal = ':testCmd stuff=\'{{$Y .% #{##.00}}}\'';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '\'{{$Y %% #{##.00}}}\'',
+                        'Original value', '\'{{$Y .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{$Y %% #{##.00}}}\'',
+                        'Expanded value', '\'{{$Y .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
-                        'Resolved value', '{{$Y %% #{##.00}}}')));
+                        'Resolved value', '{{$Y .% #{##.00}}}')));
 
-        inputVal = ':testCmd stuff="{{$Y %% #{##.00}}}"';
+        inputVal = ':testCmd stuff="{{$Y .% #{##.00}}}"';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{$Y %% #{##.00}}}"',
+                        'Original value', '"{{$Y .% #{##.00}}}"',
                         'Expanded value tname', 'String',
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
 
-        inputVal = ':testCmd stuff=`{{$Y %% #{##.00}}}`';
+        inputVal = ':testCmd stuff=`{{$Y .% #{##.00}}}`';
 
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '`{{$Y %% #{##.00}}}`',
+                        'Original value', '`{{$Y .% #{##.00}}}`',
                         'Expanded value tname', 'String',
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
@@ -5873,7 +5873,7 @@ function() {
         var inputVal,
             correctResult;
 
-        inputVal = 'z = 1; z .| \'The number is: {{value %% #{##.00}}}\'';
+        inputVal = 'z = 1; z .| \'The number is: {{value .% #{##.00}}}\'';
         correctResult = 'The number is: 1.00';
 
         shellDriver.execShellTest(

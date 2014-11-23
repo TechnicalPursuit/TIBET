@@ -113,8 +113,8 @@ theRequest) {
         //  Build a template by joining the tag name with an invocation
         //  of the itemFormat for both the key and the value.
         template = TP.join('<', tagName, attrStr, '>',
-                            '{{0%%', itemFormat, '}}',
-                            '{{1%%', itemFormat, '}}',
+                            '{{0.%', itemFormat, '}}',
+                            '{{1.%', itemFormat, '}}',
                             '</', tagName, '>');
 
         //  Perform the transformation.

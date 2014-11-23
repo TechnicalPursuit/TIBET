@@ -157,7 +157,7 @@ function() {
 
         //  ---
 
-        testRep = (200).as('The number is: {{value%%$#{?99,999.00}}}');
+        testRep = (200).as('The number is: {{value.%$#{?99,999.00}}}');
 
         correctRep = 'The number is: $ 200.00';
 
@@ -169,7 +169,7 @@ function() {
         //  ---
 
         testRep = TP.hc('lname', 'edney', 'salary', 10000).as(
-                                'The number is: {{salary%%$#{?99,999.00}}}');
+                                'The number is: {{salary.%$#{?99,999.00}}}');
 
         correctRep = 'The number is: $ 10,000.00';
 
@@ -268,7 +268,7 @@ function() {
 
         dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
 
-        templateStr = 'The element with a bar attribute is: {{./*[@bar]%%String}}';
+        templateStr = 'The element with a bar attribute is: {{./*[@bar].%String}}';
 
         //  The 'true' flag here flushes the template cache and forces
         //  redefinition
@@ -284,7 +284,7 @@ function() {
 
         //  ---
 
-        templateStr = 'The name of the element with a bar attribute is: {{./*[@bar]%%{{localName}}}}';
+        templateStr = 'The name of the element with a bar attribute is: {{./*[@bar].%{{localName}}}}';
 
         //  The 'true' flag here flushes the template cache and forces
         //  redefinition
@@ -305,7 +305,7 @@ function() {
         //  The 'true' flag here flushes the template cache and forces
         //  redefinition
         'This is a row value: {{value}}\n'.compile('rowTemp', true);
-        'Here is some row data {{%%rowTemp}}\n'.compile('tableTemp', true);
+        'Here is some row data {{.%rowTemp}}\n'.compile('tableTemp', true);
 
         testRep = TP.ac(1, 2, 3).as('tableTemp', TP.hc('repeat', true));
 
@@ -360,7 +360,7 @@ function() {
         //  ---
 
         //  Same test, but as a formatting expression.
-        testRep = '{{value %% ~lib_tst/src/tibet/formatting/google_results_template.xml#totalTemplate}}'.transform(googleDogData);
+        testRep = '{{value .% ~lib_tst/src/tibet/formatting/google_results_template.xml#totalTemplate}}'.transform(googleDogData);
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br />[object Object], [object Object], [object Object], [object Object]</span>';
 
@@ -383,7 +383,7 @@ function() {
         //  ---
 
         //  Same test, but as a formatting expression.
-        testRep = '{{value.data.responseData.results.0 %% ~lib_tst/src/tibet/formatting/google_results_template.xml#rowTemplate}}'.transform(googleDogData);
+        testRep = '{{value.data.responseData.results.0 .% ~lib_tst/src/tibet/formatting/google_results_template.xml#rowTemplate}}'.transform(googleDogData);
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="rowTemplate"><tr class="googleResultRow"><td>http://en.wikipedia.org/wiki/Dog</td><td><b>Dog</b> - Wikipedia, the free encyclopedia</td><td>The domestic <b>dog</b> (Canis lupus familiaris) is a subspecies of the gray wolf (Canis lupus), a member of the Canidae family of the mammalian order Carnivora.</td></tr></span>';
 
