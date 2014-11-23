@@ -3193,9 +3193,6 @@ function(aProperty, aFlag) {
      * @todo
      */
 
-    var url,
-        fname;
-
     if (!TP.isString(aProperty)) {
         this.raise('TP.sig.InvalidParameter');
         return;
