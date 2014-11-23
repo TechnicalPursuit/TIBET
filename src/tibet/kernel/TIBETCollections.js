@@ -7898,19 +7898,13 @@ function(anIndex, aValue) {
      */
 
     var hash,
-        keyArr,
-
         shouldSignal,
-
         op,
         val,
-
         changeRecord,
         changeRecordHash;
 
     hash = this.$get('$$hash');
-    keyArr = this.getKeys();
-
     shouldSignal = this.shouldSignalChange();
     op = null;
 
@@ -7928,7 +7922,7 @@ function(anIndex, aValue) {
         //  If we don't know about this value, or its a property but not on
         //  us, then this is an insert and requires a key array update.
         if (TP.notDefined(hash[anIndex]) || !TP.owns(hash, anIndex)) {
-            keyArr.push(anIndex);
+            this.getKeys().push(anIndex);
             hash[anIndex] = aValue;
 
             op = TP.INSERT;
@@ -8057,10 +8051,12 @@ function(aFilterName) {
 
     arr = Object.keys(this.$get('$$hash'));
 
-    //  If we're a sorted TP.lang.Hash, then sort the keys.
-    return (TP.isCallable(func = this.getSortFunction())) ?
-                arr.sort(func) :
-                arr;
+    func = this.getSortFunction();
+    if (!func) {
+        return arr;
+    }
+
+    return arr.sort(func);
 });
 
 //  ------------------------------------------------------------------------
