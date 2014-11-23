@@ -5387,7 +5387,7 @@ function() {
                 saveID = saveResult.at('_id');
             });
 
-        this.then(
+        test.then(
             function() {
                 shellDriver.execShellTest(
                     test,
@@ -5495,6 +5495,7 @@ function() {
         shellDriver = TP.tsh.Driver.construct();
         this.get('drivers').atPut('shell', shellDriver);
 
+        //  'this' refers to the suite here.
         this.then(
             function() {
                 var now,
@@ -5662,7 +5663,7 @@ function() {
                     TP.sc('Expected a result with an \'ok\' property'));
             });
 
-        this.then(
+        test.then(
             function() {
                 shellDriver.execShellTest(
                     test,
@@ -5726,7 +5727,7 @@ function() {
                 saveID = saveResult.at('id');
             });
 
-        this.then(
+        test.then(
             function() {
                 shellDriver.execShellTest(
                     test,
@@ -5813,6 +5814,7 @@ function() {
 
     this.after(function(suite, options) {
 
+        //  'this' refers to the suite here.
         this.then(
             function() {
                 var pouchPromise,

@@ -404,8 +404,8 @@ function(aURI, aWindow) {
                     var request;
 
                     request = TP.request();
-                    request.atPut('loadFunc', resolver);
-                    request.atPut('failFunc', rejector);
+                    request.atPut(TP.ONLOAD, resolver);
+                    request.atPut(TP.ONFAIL, rejector);
 
                     tpDoc.setContent(result, request);
                 });

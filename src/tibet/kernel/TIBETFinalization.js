@@ -406,9 +406,9 @@ function() {
     request = TP.request();
 
     //  TODO: these should be methods, not functions in the payload. fixing this
-    //  requires changing everywhere that expects 'loadFunc' as a key (many DOM
-    //  and DHTML primitives (ack 'loadFunc' for the list).
-    request.atPut('loadFunc', function(aDocument) {
+    //  requires changing everywhere that expects TP.ONLOAD as a key (many DOM
+    //  and DHTML primitives (ack TP.ONLOAD for the list).
+    request.atPut(TP.ONLOAD, function(aDocument) {
         var appType,
             bodyElem,
             elem,
@@ -416,7 +416,7 @@ function() {
 
         //  Don't do this if the boot is stopping.
         if (TP.boot.shouldStop()) {
-            request.at('failFunc')(request);
+            request.at(TP.ONFAIL)(request);
             return;
         }
 
@@ -539,7 +539,7 @@ function() {
         /* eslint-enable no-wrap-func */
     });
 
-    request.atPut('failFunc', function(req) {
+    request.atPut(TP.ONFAIL, function(req) {
 
         var msg,
             txt;

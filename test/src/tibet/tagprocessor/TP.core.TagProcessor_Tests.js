@@ -239,7 +239,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.DOM);
 
-        this.then(
+        test.then(
             function(result) {
                 var processor,
 
@@ -273,7 +273,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.DOM);
 
-        this.then(
+        test.then(
             function(result) {
                 var processor;
 
@@ -298,7 +298,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.DOM);
 
-        this.then(
+        test.then(
             function(result) {
                 var processor;
 
@@ -325,7 +325,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.DOM);
 
-        this.then(
+        test.then(
             function(result) {
                 var processor;
 
@@ -351,7 +351,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.DOM);
 
-        this.then(
+        test.then(
             function(result) {
                 var processor;
 
@@ -390,7 +390,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 //  Note that these paths on these elements aren't real - we're
@@ -432,7 +432,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var elem,
@@ -461,7 +461,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var elem,
@@ -503,7 +503,7 @@ function() {
 
         this.getDriver().fetchResource(loadURI, TP.DOM);
 
-        this.then(
+        test.then(
             function(result) {
 
                 var usingDebugger,
@@ -530,8 +530,8 @@ function() {
                             var request;
 
                             request = TP.request();
-                            request.atPut('loadFunc', resolver);
-                            request.atPut('failFunc', rejector);
+                            request.atPut(TP.ONLOAD, resolver);
+                            request.atPut(TP.ONFAIL, rejector);
 
                             tpDoc.setContent(result, request);
 
@@ -560,7 +560,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
 
                 //  This comes from the first XInclude with a simple XPointer

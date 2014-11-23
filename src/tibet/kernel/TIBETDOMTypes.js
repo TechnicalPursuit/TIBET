@@ -4710,7 +4710,7 @@ function(newContent, aRequest) {
     func = this.getContentPrimitive(TP.APPEND);
     thisref = this;
 
-    if (TP.isCallable(reqLoadFunc = request.at('loadFunc'))) {
+    if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc = function(aNode) {
 
                         reqLoadFunc(aNode);
@@ -4955,7 +4955,7 @@ function(newContent, aPositionOrPath, aRequest) {
     func = this.getContentPrimitive(TP.INSERT);
     thisref = this;
 
-    if (TP.isCallable(reqLoadFunc = request.at('loadFunc'))) {
+    if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc = function(aNode) {
 
                         reqLoadFunc(aNode);
@@ -5215,7 +5215,7 @@ function(newContent, aRequest) {
             }
         };
 
-    if (TP.isCallable(reqLoadFunc = request.at('loadFunc'))) {
+    if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc = function(aNode) {
 
                         reqLoadFunc(aNode);

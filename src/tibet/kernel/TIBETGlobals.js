@@ -990,6 +990,17 @@ TP.AT_TARGET = 'AT_TARGET';
 TP.CAPTURING_PHASE = 'CAPTURING_PHASE';
 TP.BUBBLING_PHASE = 'BUBBLING_PHASE';
 
+//  ---
+//  requests
+//  ---
+
+TP.ONLOAD = 'onload';
+TP.ONFAIL = 'onfail';
+
+//  ---
+//  shell
+//  ---
+
 //  pipe symbol actions
 TP.ADD = 'add';
 TP.GET = 'get';

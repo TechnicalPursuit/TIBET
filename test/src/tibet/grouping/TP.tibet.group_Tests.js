@@ -25,7 +25,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -71,7 +71,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -112,7 +112,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -172,7 +172,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -242,7 +242,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem,
                     groupMembers;
@@ -297,7 +297,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem;
 
@@ -329,7 +329,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem;
 
@@ -367,7 +367,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem;
 
@@ -405,7 +405,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem;
 
@@ -472,7 +472,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var tpElem;
 
@@ -542,7 +542,7 @@ function() {
 
         this.getDriver().setLocation(loadURI);
 
-        this.then(
+        test.then(
             function(result) {
                 var parentTPElem,
                     tpElem;

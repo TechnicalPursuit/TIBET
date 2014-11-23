@@ -2020,13 +2020,13 @@ function(aContentObject, aRequest) {
         retval;
 
     req = TP.request(aRequest);
-    reqLoadFunction = req.at('loadFunc');
+    reqLoadFunction = req.at(TP.ONLOAD);
 
     natWin = this.getNativeWindow();
 
     //  Construct a load function that will install the proper handlers for
     //  'back key' handling and 'focus' handling
-    req.atPut('loadFunc',
+    req.atPut(TP.ONLOAD,
                 function (aNode) {
 
                     //  Set up any 'backspace' key handlers on the window so
@@ -2056,8 +2056,8 @@ function(aContentObject, aRequest) {
     // content may not be found if aContentObject is a URI for example, and that
     // URI ends up failing to load. In that case we need to check req.
     if (req.didFail()) {
-        if (req.at('failFunc')) {
-            req.at('failFunc')(req);
+        if (req.at(TP.ONFAIL)) {
+            req.at(TP.ONFAIL)(req);
         }
     }
 

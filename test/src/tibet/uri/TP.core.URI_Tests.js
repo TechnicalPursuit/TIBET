@@ -1429,6 +1429,7 @@ function() {
     this.before(
         function(suite, options) {
 
+            //  'this' refers to the suite here.
             this.then(
                 function() {
                     var now,
@@ -1471,7 +1472,7 @@ function() {
             //  to reload from the underlying source.
             url.isLoaded(false);
 
-            this.thenPromise(
+            test.thenPromise(
                 function(resolver, rejector) {
                     var pouchRequest;
 
@@ -1531,7 +1532,7 @@ function() {
             //  to reload from the underlying source.
             url.isLoaded(false);
 
-            this.thenPromise(
+            test.thenPromise(
                 function(resolver, rejector) {
                     var pouchRequest;
 
@@ -1580,7 +1581,7 @@ function() {
             //  to reload from the underlying source.
             url.isLoaded(false);
 
-            this.thenPromise(
+            test.thenPromise(
                 function(resolver, rejector) {
                     var pouchRequest;
 
@@ -1624,6 +1625,8 @@ function() {
 
     this.after(
         function(suite, options) {
+
+            //  'this' refers to the suite here.
             this.then(
                 function() {
                     var pouchPromise,
@@ -1792,7 +1795,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        this.thenPromise(
+        test.thenPromise(
             function(resolver, rejector) {
                 var putParams,
                     putRequest;
@@ -1847,7 +1850,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        this.thenPromise(
+        test.thenPromise(
             function(resolver, rejector) {
                 var postRequest;
 
@@ -1900,7 +1903,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        this.thenPromise(
+        test.thenPromise(
             function(resolver, rejector) {
                 var postParams,
                     postRequest;
@@ -1956,7 +1959,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        this.thenPromise(
+        test.thenPromise(
             function(resolver, rejector) {
                 var postParams,
                     postRequest;
@@ -2013,7 +2016,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        this.thenPromise(
+        test.thenPromise(
             function(resolver, rejector) {
                 var postParams,
                     postRequest;
@@ -2074,7 +2077,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        this.thenPromise(
+        test.thenPromise(
             function(resolver, rejector) {
                 var postParams,
                     postRequest;
@@ -2126,7 +2129,7 @@ function() {
 
         url = TP.uc(locStr);
 
-        this.thenPromise(
+        test.thenPromise(
             function(resolver, rejector) {
                 var deleteRequest;
 
@@ -2340,6 +2343,7 @@ function() {
     this.before(
         function(suite, options) {
 
+            //  'this' refers to the suite here.
             this.then(
                 function() {
                     var now,
@@ -2500,6 +2504,8 @@ function() {
 
     this.after(
         function(suite, options) {
+
+            //  'this' refers to the suite here.
             this.then(
                 function() {
                     var pouchPromise,
