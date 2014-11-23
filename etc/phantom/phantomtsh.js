@@ -697,6 +697,8 @@
                 str = PhantomTSH.color(msg, 'green');
             } else if (/^# FAIL:/.test(msg)) {
                 str = PhantomTSH.color(msg, 'red');
+            } else if (/# SKIP/.test(msg)) {
+                str = PhantomTSH.color(msg, 'cyan');
             } else {
                 str = PhantomTSH.color(msg, 'gray');
             }
@@ -713,7 +715,7 @@
         } else if (/^ok/.test(msg)) {
             // passed or skipped
             if (/# SKIP/.test(msg)) {
-                str = PhantomTSH.color('ok', 'grey') + msg.slice(2);
+                str = PhantomTSH.color(msg, 'cyan');
             } else {
                 str = PhantomTSH.color('ok', 'green') + msg.slice(2);
             }
