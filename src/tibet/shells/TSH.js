@@ -361,6 +361,9 @@ TP.core.TSH.Inst.defineAttribute('testVerbose', false);
 //  additional information presented when a shell of this type starts up
 TP.core.TSH.Inst.defineAttribute('introduction', null);
 
+//  whether or not the :sourceFS command should happen automatically
+TP.core.TSH.Inst.defineAttribute('autoReload');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -2975,9 +2978,13 @@ function(aRequest) {
         function(file) {
 
             var flag,
+
                 url,
                 src,
-                debug;
+
+                debug,
+
+                ext;
 
             try {
                 flag = TP.sys.shouldLogCodeChanges();
@@ -2989,24 +2996,66 @@ function(aRequest) {
                 if (TP.notValid(url)) {
 
                     aRequest.fail(TP.FAILURE,
-                        'Source failed to load: ' + file);
-
-                    return;
-                }
-
-                if (TP.notValid(
-                    src = url.getContent(
-                                TP.hc('refresh', true, 'async', false)))) {
-
-                    aRequest.fail(TP.FAILURE,
-                        'Source failed to load: ' + file);
+                                    'Couldn\'t create URL from: ' + file);
 
                     return;
                 }
 
                 debug = TP.sys.shouldUseDebugger();
                 TP.sys.shouldUseDebugger(false);
-                TP.boot.$sourceImport(src, null, file, null, true);
+
+                ext = url.getExtension();
+
+                switch (ext) {
+                    case    'js':
+                        if (TP.notValid(
+                            src = url.getContent(
+                                    TP.hc('refresh', true, 'async', false)))) {
+
+                            aRequest.fail(
+                                    TP.FAILURE,
+                                    'Couldn\'t load source from: ' + file);
+
+                            return;
+                        }
+
+                        TP.boot.$sourceImport(src, null, file, null, true);
+                    break;
+
+                    case    'css':
+
+                        TP.documentStyleHrefReload(TP.sys.uidoc(true),
+                                                    url.getLocation());
+
+                    break;
+
+                    case    'xhtml':
+                    case    'xml':
+
+                        if (TP.notValid(
+                            src = url.getContent(
+                                    TP.hc('refresh', true, 'async', false)))) {
+
+                            aRequest.fail(
+                                    TP.FAILURE,
+                                    'Couldn\'t load source from: ' + file);
+
+                            return;
+                        }
+
+                        TP.windowRefreshContentFrom(
+                                TP.sys.uiwin(true),
+                                file);
+
+                    break;
+
+                    default:
+                        aRequest.fail(
+                            TP.FAILURE,
+                            'No action known for files with extension: ' + ext);
+                    return;
+                }
+
 
                 loaded.push(file);
             } catch (e) {
@@ -3019,8 +3068,8 @@ function(aRequest) {
             }
         });
 
-    // Prune any files we were able to load. Others remain, in theory so they
-    // can be repaired and loaded.
+    //  Prune any files we were able to load. Others remain, in theory so they
+    //  can be repaired and loaded.
     loaded.perform(
             function(file) {
                 dict.removeKey(file);
@@ -3034,7 +3083,9 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeWatchFS',
 function(aRequest) {
     var watcher,
-        url;
+        url,
+
+        autoReload;
 
     if (TP.notValid(watcher = this.get('watcherSSESource'))) {
         url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
@@ -3047,6 +3098,12 @@ function(aRequest) {
     this.observe(watcher, 'TP.sig.FileChangedEvent');
 
     aRequest.stdout('File system change monitoring active.');
+
+    //  If the '--auto' flag was specified, then we're 'auto refreshing'.
+    if (TP.notEmpty(
+            autoReload = this.getArgument(aRequest, 'tsh:auto', null, true))) {
+        this.set('autoReload', true);
+    }
 
     return aRequest.complete();
 });
@@ -3070,6 +3127,9 @@ function(aRequest) {
     this.ignore(watcher, 'TP.sig.FileChangedEvent');
 
     aRequest.stdout('File system change monitoring ended.');
+
+    //  Flip this to false, in case it was on.
+    this.set('autoReload', false);
 
     return aRequest.complete();
 });
@@ -3141,6 +3201,14 @@ function(aSignal) {
         count += 1;
     }
     dict.atPut(name, count);
+
+    //  If autoReload is on, then fire a command to the shell to auto reload
+    if (this.get('autoReload')) {
+        TP.shell(TP.hc('cmdSrc', ':sourceFS',
+                        'cmdEcho', false,
+                        'cmdHistory', false,
+                        'cmdSilent', false));
+    }
 
     return this;
 
