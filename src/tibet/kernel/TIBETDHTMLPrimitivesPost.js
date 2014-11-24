@@ -4469,7 +4469,7 @@ function(anElement, attrName, attrValue) {
      * @param {String} attrName The name of the attribute to remove the value
      *     from.
      * @param {String} attrValue The value to remove from the attribute's value.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidString, i
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidString,
      *     TP.sig.InvalidParameter
      * @returns {Element} The element.
      * @todo
@@ -8805,6 +8805,83 @@ function(aWindow, x, y) {
     }
 
     aWindow.moveTo(x, y);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('windowRefreshContentFrom',
+function(aWindow, anHref) {
+
+    /**
+     * @name windowRefreshContentFrom
+     * @synopsis Looks for content within the supplied Window that is associated
+     *     with the supplied href and refreshes it on the page.
+     * @param {Window} aWindow The window to reset the location of.
+     * @param {String} anHref The href to search in the Window for associated
+     *     content.
+     * @raises TP.sig.InvalidWindow,TP.sig.InvalidURI,TP.sig.InvalidDocument,
+     *     TP.sig.InvalidElement
+     */
+
+    var doc,
+
+        elemsWithSrc,
+        url,
+
+        i,
+
+        elemURI,
+
+        domDoc,
+        domElem,
+
+        tpElem;
+
+    //  might be in a non-tibet frameset, so just ignore here
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    doc = aWindow.document;
+
+    //  See if this file is associated with content currently being displayed in
+    //  the window.
+    elemsWithSrc = TP.byCSS('*[tibet|src]', doc);
+
+    if (!TP.isURI(url = TP.uc(anHref))) {
+        return TP.raise(this, 'TP.sig.InvalidURI');
+    }
+
+    //  Iterate over those and see if any of them match the href.
+    for (i = 0; i < elemsWithSrc.getSize(); i++) {
+
+        elemURI = TP.uc(TP.elementGetAttribute(
+                        elemsWithSrc.at(i),
+                        'tibet:src',
+                        true));
+
+        if (elemURI.equalTo(url)) {
+
+            domDoc = url.getResource(TP.hc('async', false,
+                                            'resultType', TP.DOM));
+
+            if (!TP.isDocument(domDoc)) {
+                return TP.raise(this, 'TP.sig.InvalidDocument');
+            }
+
+            if (!TP.isElement(
+                    domElem = domDoc.documentElement)) {
+                return TP.raise(this, 'TP.sig.InvalidElement');
+            }
+
+            tpElem = TP.wrap(domElem);
+            tpElem.compile();
+
+            TP.xmlElementReplaceWith(elemsWithSrc.at(i), TP.unwrap(tpElem));
+        }
+    }
 
     return;
 });
