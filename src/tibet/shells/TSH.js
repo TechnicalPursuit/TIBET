@@ -1019,7 +1019,7 @@ function(aRequest) {
     }
 
     //  clear the result completely
-    aRequest.set('result', undefined);
+    aRequest.set('result', undefined, null, true);
 
     aRequest.set('$timestart', Date.now());
 
@@ -1380,7 +1380,7 @@ function(aRequest) {
         //  patch over result data for any callers in need of the content
         //  that was processed.
         if (TP.notValid(aRequest.get('result'))) {
-            aRequest.set('result', aRequest.at('cmdRoot'));
+            aRequest.set('result', aRequest.at('cmdRoot'), null, true);
         }
 
         //  NOTE that we don't worry about output of results when not

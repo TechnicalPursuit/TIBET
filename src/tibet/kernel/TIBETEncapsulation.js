@@ -352,6 +352,8 @@ function(attributeName, attributeValue, shouldSignal, allowUndef) {
 
     if (allowUndef !== true) {
         newVal = TP.ifInvalid(attributeValue, null);
+    } else {
+        newVal = attributeValue;
     }
 
     oldVal = this[attributeName];

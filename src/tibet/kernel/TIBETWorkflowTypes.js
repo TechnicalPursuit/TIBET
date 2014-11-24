@@ -1526,7 +1526,7 @@ function(aResult) {
     //  don't allow a request to get more than one instance of response
     if (TP.isValid(response = this.getResponse())) {
         if (TP.isDefined(aResult)) {
-            response.set('result', aResult);
+            response.set('result', aResult, null, true);
         }
 
         return response;
@@ -2342,7 +2342,7 @@ function(aChildRequest, aResult) {
     }
 
     //  propagate child results upward
-    this.set('result', aChildRequest.getResult());
+    this.set('result', aChildRequest.getResult(), null, true);
 
     //  don't push an undefined into the complete call unless it's "real"
     if (arguments.length > 1) {
@@ -3116,7 +3116,7 @@ function(aRequest, aResult) {
 
     //  if we received a value (including null) as a result then set it.
     if (TP.isDefined(aResult)) {
-        this.$set('result', aResult, false);
+        this.$set('result', aResult, false, true);
     }
 
     return this;
@@ -3537,7 +3537,7 @@ function(aResult) {
      * @returns {Object}
      */
 
-    this.$set('result', aResult, false);
+    this.$set('result', aResult, false, true);
 
     return this;
 });
@@ -4917,7 +4917,7 @@ function(aRequest) {
         request.fail(TP.FAILURE, 'Handler not callable');
     } else {
         result = handler.apply(request, TP.ac(request));
-        request.set('result', result);
+        request.set('result', result, null, true);
     }
 
     return this;
