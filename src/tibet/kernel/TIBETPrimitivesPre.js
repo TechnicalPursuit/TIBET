@@ -2111,16 +2111,28 @@ function(target, name, value, track, desc, display, owner) {
         method,
         disp;
 
-    if (!TP.isCallable(value) || !TP.isCallable(value.asMethod)) {
-        TP.ifError() ?
-            TP.error('Invalid method body for ' +
-                        'TP.defineMethodSlot: ' + name,
-                        TP.LOG) : 0;
-        return;
-    }
-
     own = TP.ifInvalid(owner, target);
     trk = TP.ifInvalid(track, TP.LOCAL_TRACK);
+
+    if (!TP.isCallable(value) || !TP.isCallable(value.asMethod)) {
+
+        //  If the value is TP.REQUIRED, then it isn't a method as such, but a
+        //  placeholder to note that this method is required. This is normally
+        //  used during traits multiple-inheritance composition.
+        if (value === TP.REQUIRED) {
+
+            TP.defineSlot(target, name, value, TP.METHOD, trk,
+                    (desc && desc.$$isPDC ? desc : TP.DEFAULT_DESCRIPTOR));
+
+        } else {
+            TP.ifError() ?
+                TP.error('Invalid method body for ' +
+                            'TP.defineMethodSlot: ' + name,
+                            TP.LOG) : 0;
+        }
+
+        return;
+    }
 
     //  Ensure metadata is attached along with owner/track etc.
     value.asMethod(own, name, trk, display);
@@ -2207,7 +2219,7 @@ function(target, name, value, track, desc, display, owner) {
         return method;
     }
 
-    // Don't track metadata for local properties.
+    //  Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
         TP.sys.addMetadata(own, value, TP.METHOD, trk);
     }
