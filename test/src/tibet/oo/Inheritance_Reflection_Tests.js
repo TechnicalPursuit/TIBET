@@ -75,7 +75,9 @@ function() {
 
     //  Introduce instance method
     animalType.Inst.defineMethod('live', function () {
-        this.set('lifeTicks', this.get('lifeTicks') - 1);});
+        this.set('lifeTicks', this.get('lifeTicks') - 1);
+    });
+
     //  Introduce instance method
     animalType.Inst.defineMethod('generateNoise', function () {return '';});
     //  Introduce instance method
@@ -106,7 +108,8 @@ function() {
 
     //  Override instance method
     domesticatedType.Inst.defineMethod('live', function () {
-        this.set('lifeTicks', this.get('lifeTicks') + 1000);});
+        this.set('lifeTicks', this.get('lifeTicks') + 1000);
+    });
 
 
     //  --- Dog object
@@ -364,7 +367,7 @@ function() {
 
         var typeName;
 
-        typeName = (function () {return;}).getTypeName();
+        typeName = function () {return;}.getTypeName();
 
         this.assert.isEqualTo(
             typeName,
@@ -4280,7 +4283,8 @@ function() {
 TP.OOTests.describe('Inheritance - addTraits',
 function() {
 
-    var shouldThrowSetting;
+    var shouldThrowSetting,
+        func;
 
     this.before(
         function() {
@@ -4798,7 +4802,7 @@ function() {
 
     //  ---
 
-    var func = function(aRequest) {
+    func = function(aRequest) {
 
         var obj,
 
