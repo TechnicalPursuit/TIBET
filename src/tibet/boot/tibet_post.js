@@ -5843,7 +5843,7 @@ TP.boot.$bootuiReporter = function(entry, options) {
     if (!TP.boot.$consoleConfigured) {
 
         elem = TP.boot.$getBootLogElement();
-        if (!TP.boot.$isElement(elem)) {
+        if (!TP.boot.$isVisible(elem)) {
             return;
         }
 
@@ -5905,7 +5905,7 @@ TP.boot.$bootuiReporter = function(entry, options) {
     try {
         if (TP.boot.shouldStop()) {
             elem = TP.boot.$getBootLogElement();
-            if (TP.boot.$isElement(elem)) {
+            if (!TP.boot.$isVisible(elem)) {
                 TP.boot.$elementAddClass(elem.parentElement, 'done');
             }
         }
@@ -6883,7 +6883,7 @@ TP.boot.$flushUIBuffer = function(force) {
         bufSize;
 
     elem = TP.boot.$getBootLogElement();
-    if (!TP.boot.$isElement(elem)) {
+    if (!TP.boot.$isVisible(elem)) {
         return;
     }
 
@@ -6911,7 +6911,7 @@ TP.boot.$clearUIBuffer = function() {
     var elem;
 
     elem = TP.boot.$getBootLogElement();
-    if (!TP.boot.$isElement(elem)) {
+    if (!TP.boot.$isVisible(elem)) {
         return;
     }
 
@@ -6926,7 +6926,7 @@ TP.boot.$scrollUIBuffer = function() {
     var elem;
 
     elem = TP.boot.$getBootLogElement();
-    if (!TP.boot.$isElement(elem)) {
+    if (!TP.boot.$isVisible(elem)) {
         return;
     }
 
@@ -6966,7 +6966,7 @@ TP.boot.$displayMessage = function(aString, flush) {
         msgNode;
 
     elem = TP.boot.$getBootLogElement();
-    if (!TP.boot.$isElement(elem)) {
+    if (!TP.boot.$isVisible(elem)) {
         return;
     }
 
@@ -7224,6 +7224,10 @@ TP.boot.showUIBoot = function() {
         if (TP.boot.$isValid(elem.frameElement)) {
             elem = elem.frameElement;
         }
+        // Be sure to activate the log. That's the essential UI for having shown
+        // the boot UI.
+        TP.boot.$elementAddClass(elem.contentDocument.body, 'showlog');
+
         elem.style.display = 'block';
     }
 
@@ -9044,6 +9048,31 @@ TP.boot.$configureTarget = function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$configureUI = function() {
+
+    /**
+     * @name $configureUI
+     * @return {null}
+     */
+
+    var show,
+        elem;
+
+    elem = TP.boot.getUIBoot();
+    if (!TP.boot.$isVisible(elem)) {
+        return;
+    }
+
+    show = TP.sys.cfg('boot.showlog');
+    if (show === true || show === 'true') {
+        TP.boot.$elementAddClass(elem.contentDocument.body, 'showlog');
+    } else {
+        TP.boot.$elementReplaceClass(elem.contentDocument.body, 'showlog', '');
+    }
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$updateDependentVars = function() {
 
     var level;
@@ -10228,6 +10257,8 @@ TP.boot.$config = function() {
 
     //  set project.* properties necessary for final startup of the UI.
     TP.boot.$configureProject();
+
+    TP.boot.$configureUI();
 
     //  log the environment settings.
     if (TP.sys.cfg('log.bootenv')) {
