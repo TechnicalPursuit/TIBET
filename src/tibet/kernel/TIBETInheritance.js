@@ -3565,10 +3565,15 @@ function() {
 
     var mainType,
         mainTypeTarget,
+
         keys,
+
         typeResolutions,
         instResolutions,
-        unresolvedTraits;
+
+        unresolvedTraits,
+
+        errStr;
 
     //  Make sure that we actually have traits
     if (!this.hasTraits()) {
@@ -3596,6 +3601,7 @@ function() {
                     len,
                     i,
                     source,
+                    val,
                     traitSources;
 
                 entry = typeResolutions.at(propName);
@@ -3605,21 +3611,39 @@ function() {
                 //  'propName' on each of the sources is TP.REQUIRED. If more
                 //  than one is "real", then we have a conflict.
                 if (TP.notValid(resolution = entry.at('resolvesTo'))) {
+
                     len = entry.at('sources').getSize();
                     for (i = 0; i < len; i++) {
+
                         source = entry.at('sources').at(i);
-                        if (source.getPrototype()[propName] !==
-                                TP.REQUIRED) {
+
+                        val = source.getPrototype()[propName];
+
+                        if (val !== TP.REQUIRED) {
                             //  If we already had one that wasn't a TP.REQUIRED,
                             //  then we have a conflict.
                             if (TP.isValid(entry.at('resolvesTo'))) {
+
                                 if (TP.notValid(
                                         traitSources =
                                             unresolvedTraits.at(propName))) {
+
                                     traitSources = TP.ac();
+
+                                    //  Push the entry we already found and put
+                                    //  the Array into the 'unresolved traits'
+                                    //  hash.
+                                    traitSources.push(entry.at('resolvesTo'));
+                                    unresolvedTraits.atPut(propName,
+                                                            traitSources);
+
+                                    //  Remove the 'resolvesTo' key - we no
+                                    //  longer can resolve this - we're
+                                    //  conflicted.
+                                    entry.removeKey('resolvesTo');
                                 }
 
-                                traitSources.push(entry.at('resolvesTo'));
+                                traitSources.push(source);
                             } else {
                                 entry.atPut('resolvesTo', source);
                             }
@@ -3628,15 +3652,57 @@ function() {
                 }
 
                 if (TP.notValid(entry.at('resolvesTo'))) {
-                    unresolvedTraits.at(propName).push(TP.UNDEF);
+                    if (TP.notValid(unresolvedTraits.at(propName))) {
+                        unresolvedTraits.atPut(propName, TP.ac());
+                        unresolvedTraits.at(propName).push(TP.REQUIRED);
+                    }
                 }
             });
 
         //  If we have unresolved traits, bail out here.
         if (TP.notEmpty(unresolvedTraits)) {
+            errStr = 'TYPE:' + TP.name(mainType) + ' TYPE-LEVEL: ';
+
+            unresolvedTraits.perform(
+                    function(kvPair) {
+                        var propName,
+                            sources;
+
+                        propName = kvPair.first();
+
+                        errStr += 'CONFLICTED PROPERTY: ' +
+                                    propName +
+                                    ' :: PROBLEM: ';
+
+                        if (TP.isArray(sources = kvPair.last())) {
+                            errStr += 'conflicted between: ' +
+                                sources.collect(
+                                    function(aType) {
+                                        var val;
+
+                                        val = aType.getPrototype()[propName];
+
+                                        if (TP.isMethod(val)) {
+                                            //  Important for reporting purposes
+                                            //  to actually find the owner.
+                                            return TP.name(val[TP.OWNER]);
+                                        }
+
+                                        return TP.name(aType);
+                                    });
+                        } else {
+                            errStr += sources;
+                        }
+
+                        errStr += ' ||| ';
+                    });
+
+            //  NB: Make sure to slice off the last ' ||| '
+            errStr = errStr.slice(0, errStr.length - 5) +
+                        '. Use resolveTrait[s] to repair.';
+
             return this.raise('TP.sig.InvalidInstantiation',
-                                TP.sc('Unresolved type traits: ',
-                                        TP.str(unresolvedTraits)));
+                                TP.sc('Unresolved instance traits: ', errStr));
         }
     }
 
@@ -3658,6 +3724,7 @@ function() {
                     len,
                     i,
                     source,
+                    val,
                     traitSources;
 
                 entry = instResolutions.at(propName);
@@ -3673,18 +3740,35 @@ function() {
 
                         source = entry.at('sources').at(i);
 
-                        if (source.getInstPrototype()[propName] !==
-                                TP.REQUIRED) {
+                        val = source.getInstPrototype()[propName];
+
+                        if (val !== TP.REQUIRED) {
+
                             //  If we already had one that wasn't a TP.REQUIRED,
-                            //  then we have a conflict.
+                            //  then we may have a conflict.
                             if (TP.isValid(entry.at('resolvesTo'))) {
+
                                 if (TP.notValid(
                                         traitSources =
                                             unresolvedTraits.at(propName))) {
+
                                     traitSources = TP.ac();
+
+                                    //  Push the entry we already found and put
+                                    //  the Array into the 'unresolved traits'
+                                    //  hash.
+                                    traitSources.push(entry.at('resolvesTo'));
+                                    unresolvedTraits.atPut(propName,
+                                                            traitSources);
+
+                                    //  Remove the 'resolvesTo' key - we no
+                                    //  longer can resolve this - we're
+                                    //  conflicted.
+                                    entry.removeKey('resolvesTo');
                                 }
 
-                                traitSources.push(entry.at('resolvesTo'));
+                                //  Push the new entry onto the traits sources.
+                                traitSources.push(source);
                             } else {
                                 entry.atPut('resolvesTo', source);
                             }
@@ -3693,15 +3777,57 @@ function() {
                 }
 
                 if (TP.notValid(entry.at('resolvesTo'))) {
-                    unresolvedTraits.at(propName).push(TP.UNDEF);
+                    if (TP.notValid(unresolvedTraits.at(propName))) {
+                        unresolvedTraits.atPut(propName, TP.ac());
+                        unresolvedTraits.at(propName).push(TP.REQUIRED);
+                    }
                 }
             });
 
         //  If we have unresolved traits, bail out here.
         if (TP.notEmpty(unresolvedTraits)) {
+            errStr = 'TYPE:' + TP.name(mainType) + ' INSTANCE-LEVEL: ';
+
+            unresolvedTraits.perform(
+                    function(kvPair) {
+                        var propName,
+                            sources;
+
+                        propName = kvPair.first();
+
+                        errStr += 'CONFLICTED PROPERTY: ' +
+                                    propName +
+                                    ' :: PROBLEM: ';
+
+                        if (TP.isArray(sources = kvPair.last())) {
+                            errStr += 'conflicted between: ' +
+                                sources.collect(
+                                    function(aType) {
+                                        var val;
+
+                                        val = aType.getInstPrototype()[propName];
+
+                                        if (TP.isMethod(val)) {
+                                            //  Important for reporting purposes
+                                            //  to actually find the owner.
+                                            return TP.name(val[TP.OWNER]);
+                                        }
+
+                                        return TP.name(aType);
+                                    });
+                        } else {
+                            errStr += sources;
+                        }
+
+                        errStr += ' ||| ';
+                    });
+
+            //  NB: Make sure to slice off the last ' ||| '
+            errStr = errStr.slice(0, errStr.length - 5) +
+                        '. Use resolveTrait[s] to repair.';
+
             return this.raise('TP.sig.InvalidInstantiation',
-                                TP.sc('Unresolved instance traits: ',
-                                        TP.str(unresolvedTraits)));
+                                TP.sc('Unresolved instance traits: ', errStr));
         }
     }
 
