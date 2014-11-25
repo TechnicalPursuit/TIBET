@@ -905,6 +905,34 @@ TP.boot.$isValid = function(value) {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$isVisible = function(anElement) {
+
+    /**
+     * @name $isVisible
+     * @summary Returns true if the element appears to be visible to the user.
+     * @return {Boolean} True if the element is visible.
+     */
+
+    var elem;
+
+    if (!TP.boot.$isElement(anElement)) {
+        return false;
+    }
+
+    elem = anElement;
+    while (TP.boot.$isElement(elem)) {
+        if (elem.style.display === 'none' ||
+                elem.style.visibility === 'hidden') {
+            return false;
+        }
+        elem = elem.parentElement;
+    }
+
+    return true;
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$notEmpty = function(value) {
 
     /**
