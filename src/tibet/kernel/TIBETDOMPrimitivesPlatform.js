@@ -1,4 +1,4 @@
-//  ========================================================================
+
 /**
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
@@ -908,78 +908,66 @@ TP.hc(
             return;
         }
 
-        try {
-            parser = new DOMParser();
+        parser = new DOMParser();
 
-            //  If the caller has specified a default namespace, use it here.
-            if (TP.isString(defaultNS)) {
-                str = '<root xmlns="' + defaultNS + '"';
-            } else {
-                str = '<root';
-            }
+        //  If the caller has specified a default namespace, use it here.
+        if (TP.isString(defaultNS)) {
+            str = '<root xmlns="' + defaultNS + '"';
+        } else {
+            str = '<root';
+        }
 
-            //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
-            //  'auto-qualification'
-            if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns'))) {
-                str = aString.replace(
-                    TP.regex.ALL_ELEM_MARKUP,
-                    str + ' ' + TP.w3.Xmlns.get('XMLNSDefs') + '>$&</root>');
-            } else {
-                str = aString.replace(
-                    TP.regex.ALL_ELEM_MARKUP,
-                    str + '>$&</root>');
-            }
+        //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
+        //  'auto-qualification'
+        if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns'))) {
+            str = aString.replace(
+                TP.regex.ALL_ELEM_MARKUP,
+                str + ' ' + TP.w3.Xmlns.get('XMLNSDefs') + '>$&</root>');
+        } else {
+            str = aString.replace(
+                TP.regex.ALL_ELEM_MARKUP,
+                str + '>$&</root>');
+        }
 
-            xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
+        xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
 
-            //  If there is an Element named 'parsererror', that is
-            //  Mozilla's way of telling us that a parser error
-            //  occurred ;-).
-            if (xmlDoc.documentElement.nodeName === 'parsererror') {
-                errorElement = xmlDoc.documentElement;
+        //  If there is an Element named 'parsererror', that is
+        //  Mozilla's way of telling us that a parser error
+        //  occurred ;-).
+        if (xmlDoc.documentElement.nodeName === 'parsererror') {
+            errorElement = xmlDoc.documentElement;
 
-                //  Sometimes we don't want to report an error from here
-                //  because we're calling this from the logging itself and
-                //  we would recurse (or we're just 'tasting' the String).
-                if (TP.notFalse(report)) {
-                    //  Sometimes there is more information to go with the
-                    //  parser error. If so, build a record of that
-                    //  information to report with the exception.
-                    if (TP.isNode(errorElement.firstChild)) {
-                        errorMatchResults = TP.regex.GECKO_XML_PARSE.exec(
-                                        errorElement.firstChild.nodeValue);
+            //  Sometimes we don't want to report an error from here
+            //  because we're calling this from the logging itself and
+            //  we would recurse (or we're just 'tasting' the String).
+            if (TP.notFalse(report)) {
+                //  Sometimes there is more information to go with the
+                //  parser error. If so, build a record of that
+                //  information to report with the exception.
+                if (TP.isNode(errorElement.firstChild)) {
+                    errorMatchResults = TP.regex.GECKO_XML_PARSE.exec(
+                                    errorElement.firstChild.nodeValue);
 
-                        errorRecord =
-                                TP.hc('reason', errorMatchResults.at(1),
-                                        'line', errorMatchResults.at(2),
-                                        'linepos', errorMatchResults.at(3));
+                    errorRecord =
+                            TP.hc('reason', errorMatchResults.at(1),
+                                    'line', errorMatchResults.at(2),
+                                    'linepos', errorMatchResults.at(3));
 
-                        list = TP.nodeGetElementsByTagName(
-                                        errorElement, 'sourcetext');
+                    list = TP.nodeGetElementsByTagName(
+                                    errorElement, 'sourcetext');
 
-                        errorRecord.atPut(
-                                    'srcText',
-                                    list.at(0).firstChild.nodeValue);
-                    } else {
-                        errorRecord = TP.hc('reason', 'Unknown',
-                                            'line', 'Unknown',
-                                            'linepos', 'Unknown',
-                                            'srcText', 'Unknown');
-                    }
-
-                    TP.raise(this, 'TP.sig.DOMParseException',
-                                errorRecord);
+                    errorRecord.atPut(
+                                'srcText',
+                                list.at(0).firstChild.nodeValue);
+                } else {
+                    errorRecord = TP.hc('reason', 'Unknown',
+                                        'line', 'Unknown',
+                                        'linepos', 'Unknown',
+                                        'srcText', 'Unknown');
                 }
 
-                return null;
-            }
-        } catch (e) {
-            //  Sometimes we don't want to report an error from here
-            //  because we're calling this from the logging itself and we
-            //  would recurse (or we're just 'tasting' the String).
-            if (TP.notFalse(report)) {
                 TP.raise(this, 'TP.sig.DOMParseException',
-                            TP.ec(e));
+                            errorRecord);
             }
 
             return null;
@@ -1191,68 +1179,56 @@ TP.hc(
             return;
         }
 
-        try {
-            parser = new DOMParser();
+        parser = new DOMParser();
 
-            //  If the caller has specified a default namespace, use it here.
-            if (TP.isString(defaultNS)) {
-                str = '<root xmlns="' + defaultNS + '"';
-            } else {
-                str = '<root';
-            }
+        //  If the caller has specified a default namespace, use it here.
+        if (TP.isString(defaultNS)) {
+            str = '<root xmlns="' + defaultNS + '"';
+        } else {
+            str = '<root';
+        }
 
-            //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
-            //  'auto-qualification'
-            if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns'))) {
-                str = aString.replace(
-                    TP.regex.ALL_ELEM_MARKUP,
-                    str + ' ' + TP.w3.Xmlns.get('XMLNSDefs') + '>$&</root>');
-            } else {
-                str = aString.replace(
-                    TP.regex.ALL_ELEM_MARKUP,
-                    str + '>$&</root>');
-            }
+        //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
+        //  'auto-qualification'
+        if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns'))) {
+            str = aString.replace(
+                TP.regex.ALL_ELEM_MARKUP,
+                str + ' ' + TP.w3.Xmlns.get('XMLNSDefs') + '>$&</root>');
+        } else {
+            str = aString.replace(
+                TP.regex.ALL_ELEM_MARKUP,
+                str + '>$&</root>');
+        }
 
-            xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
+        xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
 
-            //  If there is an Element named 'parsererror', that is Webkit's
-            //  way of telling us that a parser error occurred ;-).
-            if (TP.isElement(errorElement =
-                            xmlDoc.getElementsByTagName('parsererror')[0])) {
-                //  Sometimes we don't want to report an error from here
-                //  because we're calling this from the logging itself and
-                //  we would recurse (or we're just 'tasting' the String).
-                if (TP.notFalse(report)) {
-                    //  Sometimes there is more information to go with the
-                    //  parser error. If so, build a record of that
-                    //  information to report with the exception.
-                    if (TP.isNode(errorElement.firstChild)) {
-                        errorMatchResults = TP.regex.WEBKIT_XML_PARSE.exec(
-                                            TP.nodeAsString(errorElement));
+        //  If there is an Element named 'parsererror', that is Webkit's
+        //  way of telling us that a parser error occurred ;-).
+        if (TP.isElement(errorElement =
+                        xmlDoc.getElementsByTagName('parsererror')[0])) {
+            //  Sometimes we don't want to report an error from here
+            //  because we're calling this from the logging itself and
+            //  we would recurse (or we're just 'tasting' the String).
+            if (TP.notFalse(report)) {
+                //  Sometimes there is more information to go with the
+                //  parser error. If so, build a record of that
+                //  information to report with the exception.
+                if (TP.isNode(errorElement.firstChild)) {
+                    errorMatchResults = TP.regex.WEBKIT_XML_PARSE.exec(
+                                        TP.nodeAsString(errorElement));
 
-                        errorRecord =
-                                TP.hc('reason', errorMatchResults.at(3),
-                                        'line', errorMatchResults.at(1),
-                                        'linepos', errorMatchResults.at(2));
-                    } else {
-                        errorRecord = TP.hc('reason', 'Unknown',
-                                            'line', 'Unknown',
-                                            'linepos', 'Unknown');
-                    }
-
-                    TP.raise(this, 'TP.sig.DOMParseException',
-                                errorRecord);
+                    errorRecord =
+                            TP.hc('reason', errorMatchResults.at(3),
+                                    'line', errorMatchResults.at(1),
+                                    'linepos', errorMatchResults.at(2));
+                } else {
+                    errorRecord = TP.hc('reason', 'Unknown',
+                                        'line', 'Unknown',
+                                        'linepos', 'Unknown');
                 }
 
-                return null;
-            }
-        } catch (e) {
-            //  Sometimes we don't want to report an error from here because
-            //  we're calling this from the logging itself and we would
-            //  recurse (or we're just 'tasting' the String).
-            if (TP.notFalse(report)) {
                 TP.raise(this, 'TP.sig.DOMParseException',
-                            TP.ec(e));
+                            errorRecord);
             }
 
             return null;
