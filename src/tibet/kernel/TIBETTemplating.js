@@ -866,7 +866,7 @@ function(aDataSource, transformParams) {
             params.atPut('$INPUT', dataSource);
 
             //  Make sure to return the primitive String
-            return retVal + '';
+            return '' + retVal;
         } catch (e) {
             return this.raise('TP.sig.TransformFailed',
                                 TP.ec(e, 'Transform failed'));
