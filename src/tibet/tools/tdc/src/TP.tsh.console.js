@@ -2470,8 +2470,7 @@ function(aRequest) {
         cssClass,
 
         inputData,
-        inputStr,
-        node;
+        inputStr;
 
     request = TP.request(aRequest);
 
