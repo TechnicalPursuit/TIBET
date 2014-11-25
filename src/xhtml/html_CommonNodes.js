@@ -28,11 +28,13 @@ TP.core.UIElementNode.defineSubtype('html:CoreAttrs');
 
 //  A subtype of TP.core.UIElement that has 4 common attributes:
 //  id, class, style, title
-TP.html.CoreAttrs.addTraits(TP.html.Element);
+
 TP.html.CoreAttrs.isAbstract(true);
 
+TP.html.CoreAttrs.addTraits(TP.html.Element);
+
 TP.html.CoreAttrs.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('booleanAttrs', 'tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 
@@ -41,11 +43,12 @@ TP.html.CoreAttrs.Inst.resolveTraits(
         TP.html.Element);
 
 TP.core.UIElementNode.defineSubtype('html:Attrs');
-TP.html.Attrs.addTraits(TP.html.Element);
 TP.html.Attrs.isAbstract(true);
 
+TP.html.Attrs.addTraits(TP.html.Element);
+
 TP.html.Attrs.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
+        TP.ac('booleanAttrs', 'tagCompile', 'canConnectFrom', 'canConnectTo',
                 'isValidConnectorDest', 'isValidConnectorSource'),
         TP.html.Element);
 

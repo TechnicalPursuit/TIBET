@@ -658,6 +658,16 @@ TP.html.input.Type.set('booleanAttrs',
 TP.html.input.Type.set('uriAttrs', TP.ac('src', 'usemap'));
 
 TP.html.input.addTraits(TP.core.EmptyElementNode);
+
+TP.html.input.Type.resolveTraits(
+        TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
+        TP.html.input);
+
+TP.html.input.Inst.resolveTraits(
+        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
+                'getNextResponder', 'signal'),
+        TP.html.input);
+
 TP.html.input.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
@@ -4483,6 +4493,10 @@ TP.html.textarea.Type.set('booleanAttrs',
         TP.ac('autofocus', 'disabled', 'readOnly', 'required', 'willValidate'));
 
 TP.html.textarea.addTraits(TP.html.textUtilities);
+
+TP.html.textarea.Type.resolveTraits(
+        TP.ac('bidiAttrs', 'booleanAttrs'),
+        TP.html.textarea);
 
 TP.html.textarea.Type.resolveTraits(
         TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',

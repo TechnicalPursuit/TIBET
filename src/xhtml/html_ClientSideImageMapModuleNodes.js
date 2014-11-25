@@ -26,6 +26,16 @@ TP.html.area.Type.set('booleanAttrs', TP.ac('noHref'));
 TP.html.area.Type.set('uriAttrs', TP.ac('href'));
 
 TP.html.area.addTraits(TP.core.EmptyElementNode);
+
+TP.html.area.Type.resolveTraits(
+        TP.ac('booleanAttrs', 'uriAttrs'),
+        TP.html.area);
+
+TP.html.area.Inst.resolveTraits(
+        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
+                'getNextResponder', 'signal'),
+        TP.html.area);
+
 TP.html.area.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);

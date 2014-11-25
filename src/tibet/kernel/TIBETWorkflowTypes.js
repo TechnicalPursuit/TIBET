@@ -1076,9 +1076,10 @@ TP.sig.WorkflowSignal.addTraits(TP.core.JobStatus);
 TP.sig.WorkflowSignal.Type.resolveTrait('getSignalName', TP.sig.WorkflowSignal);
 TP.sig.WorkflowSignal.Inst.resolveTraits(
         TP.ac('resume', 'asSource', 'asDumpString', 'asHTMLString',
-                'asJSONSource', 'asPrettyString', 'asXMLString', 'asString',
-                'at', 'atPut', 'getSignalName', 'getProperty', 'copy',
-                'shouldLog', 'init', 'isRecyclable', 'recycle'),
+                'asJSONSource', 'asPrettyString', 'asRecursionString',
+                'asString', 'asXMLString', 'at', 'atPut', 'getSignalName',
+                'getProperty', 'copy', 'shouldLog', 'init', 'isRecyclable',
+                'recycle', 'removeKey'),
         TP.sig.WorkflowSignal);
 
 //  Resolve the traits right away as subtypes of this type are used during the

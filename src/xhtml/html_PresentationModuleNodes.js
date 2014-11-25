@@ -80,6 +80,16 @@ TP.html.Aligned.defineSubtype('hr');
 TP.html.hr.Type.set('booleanAttrs', TP.ac('noShade'));
 
 TP.html.hr.addTraits(TP.core.EmptyElementNode);
+
+TP.html.hr.Type.resolveTraits(
+        TP.ac('booleanAttrs', 'uriAttrs'),
+        TP.html.hr);
+
+TP.html.hr.Inst.resolveTraits(
+        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
+                'getNextResponder', 'signal'),
+        TP.html.hr);
+
 TP.html.hr.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);

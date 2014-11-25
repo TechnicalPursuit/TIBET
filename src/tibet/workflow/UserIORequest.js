@@ -25,9 +25,9 @@ TP.sig.UserIORequest.Type.resolveTraits(
     TP.sig.UserIORequest);
 TP.sig.UserIORequest.Inst.resolveTraits(
     TP.ac('asSource', 'asDumpString', 'asHTMLString', 'asJSONSource',
-            'asPrettyString', 'asXMLString', 'asString', 'at', 'atPut',
-            'getSignalName', 'getProperty', 'copy', 'shouldLog', 'init',
-            'handle', 'isRecyclable', 'recycle'),
+            'asPrettyString', 'asRecursionString', 'asString', 'asXMLString',
+            'at', 'atPut', 'getSignalName', 'getProperty', 'copy', 'shouldLog',
+            'init', 'handle', 'isRecyclable', 'recycle', 'removeKey'),
     TP.sig.UserIORequest);
 
 //  Resolve the traits right away as subtypes of this type are used during the

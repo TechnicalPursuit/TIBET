@@ -23,6 +23,11 @@ TP.html.Attrs.defineSubtype('meta');
 
 TP.html.meta.addTraits(TP.core.EmptyElementNode);
 TP.html.meta.Inst.resolveTraits(
+        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
+                'getNextResponder', 'signal'),
+        TP.html.meta);
+
+TP.html.meta.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 

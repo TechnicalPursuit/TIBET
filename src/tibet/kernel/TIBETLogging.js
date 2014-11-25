@@ -606,7 +606,7 @@ TP.log.Logger.addTraits(TP.log.Filtered);
 
 // Logger's inherit from their ancestor chain so we need to preserve getters.
 TP.log.Logger.Inst.resolveTraits(
-    TP.ac('getLevel', 'getFilters', 'getParent'),
+    TP.ac('getFilters', 'getLevel', 'getName', 'getParent', 'init'),
     TP.log.Logger);
 
 //  Resolve traits now that definition is complete.

@@ -39,6 +39,8 @@ TP.lang.Object.defineSubtype('test:Root');
 //  Add support for job control status tracking and querying.
 TP.test.Root.addTraits(TP.core.JobStatus);
 
+TP.test.Root.Inst.resolveTrait('resume', TP.core.JobStatus);
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------

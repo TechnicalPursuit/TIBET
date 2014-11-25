@@ -160,7 +160,8 @@ TP.html.iframe.Inst.resolveTraits(
             'containsKey', 'containsValue', 'contains', 'init',
             'processTP_sig_Request', 'asArray', 'asHTMLNode', 'asXHTMLNode',
             'asXHTMLString', 'asXMLNode', 'collapse', 'asHash', 'removeKey',
-            'removeKeys', 'transform'),
+            'removeKeys', 'transform', 'identicalTo', 'defineBinding',
+            'destroyBinding', 'refresh'),
         TP.html.CoreAttrs);
 
 TP.html.iframe.Type.set('uriAttrs', TP.ac('src', 'longdesc'));

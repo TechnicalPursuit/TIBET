@@ -22,6 +22,12 @@
 TP.html.Attrs.defineSubtype('base');
 
 TP.html.base.addTraits(TP.core.EmptyElementNode);
+
+TP.html.base.Inst.resolveTraits(
+        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
+                'getNextResponder', 'signal'),
+        TP.html.base);
+
 TP.html.base.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);

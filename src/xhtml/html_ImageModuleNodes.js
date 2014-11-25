@@ -26,6 +26,16 @@ TP.html.img.Type.set('uriAttrs', TP.ac('src', 'longdesc', 'usemap'));
 TP.html.img.Type.set('booleanAttrs', TP.ac('isMap', 'complete'));
 
 TP.html.img.addTraits(TP.core.EmptyElementNode);
+
+TP.html.img.Type.resolveTraits(
+        TP.ac('booleanAttrs', 'uriAttrs'),
+        TP.html.img);
+
+TP.html.img.Inst.resolveTraits(
+        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
+                'getNextResponder', 'signal'),
+        TP.html.img);
+
 TP.html.img.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);

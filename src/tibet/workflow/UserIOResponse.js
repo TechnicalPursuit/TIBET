@@ -25,9 +25,10 @@ TP.sig.UserIOResponse.Type.resolveTraits(
 
 TP.sig.UserIOResponse.Inst.resolveTraits(
         TP.ac('asSource', 'asDumpString', 'asHTMLString', 'asJSONSource',
-                'asPrettyString', 'asXMLString', 'asString', 'at', 'atPut',
-                'getSignalName', 'getProperty', 'copy', 'shouldLog', 'init',
-                'isRecyclable', 'recycle'),
+                'asPrettyString', 'asRecursionString', 'asString',
+                'asXMLString', 'at', 'atPut', 'getSignalName', 'getProperty',
+                'copy', 'shouldLog', 'init', 'isRecyclable', 'recycle',
+                'removeKey'),
         TP.sig.UserIOResponse);
 
 //  ========================================================================

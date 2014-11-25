@@ -14854,7 +14854,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:TemplatedNode');
+TP.core.ElementNode.defineSubtype('core:TemplatedNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation.
@@ -15053,7 +15053,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:EmptyElementNode');
+TP.core.ElementNode.defineSubtype('core:EmptyElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation.

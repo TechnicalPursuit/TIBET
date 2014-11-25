@@ -55,6 +55,16 @@ TP.html.Aligned.defineSubtype('caption');
 TP.html.tcolumn.defineSubtype('col');
 
 TP.html.col.addTraits(TP.core.EmptyElementNode);
+
+TP.html.col.Type.resolveTraits(
+        TP.ac('booleanAttrs', 'uriAttrs'),
+        TP.html.col);
+
+TP.html.col.Inst.resolveTraits(
+        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
+                'getNextResponder', 'signal'),
+        TP.html.col);
+
 TP.html.col.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);

@@ -76,6 +76,12 @@ TP.html.blockquote.Type.set('uriAttrs', TP.ac('cite'));
 TP.html.CoreAttrs.defineSubtype('br');
 
 TP.html.br.addTraits(TP.core.EmptyElementNode);
+
+TP.html.br.Inst.resolveTraits(
+        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
+                'getNextResponder', 'signal'),
+        TP.html.br);
+
 TP.html.br.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
