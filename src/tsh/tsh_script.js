@@ -3020,6 +3020,8 @@ function(aFaultCode, aFaultString, anException) {
      * @todo
      */
 
+    var str;
+
     if (this.isCompleting() || this.didComplete()) {
         return;
     }
@@ -3035,7 +3037,15 @@ function(aFaultCode, aFaultString, anException) {
                 this.stderr(aFaultCode);
                 break;
             case 2:
-                this.stderr(aFaultCode + ': ' + aFaultString);
+                if (TP.isError(aFaultString)) {
+                    // Try to keep messaging consistent...
+                    str = aFaultCode + ': ' + aFaultString.message;
+                    aFaultString.message = str;
+                    this.stderr(aFaultString);
+                } else {
+                    str = aFaultCode + ': ' + aFaultString;
+                    this.stderr(str);
+                }
                 break;
             default:
                 break;
