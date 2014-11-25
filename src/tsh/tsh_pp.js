@@ -93,6 +93,38 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.pp.Type.defineMethod('fromBoolean',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="tsh_pp">' + anObject.toString() + '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.pp.Type.defineMethod('fromDate',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="tsh_pp">' + anObject.toISOString() + '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.pp.Type.defineMethod('fromError',
 function(anObject, optFormat) {
 
@@ -223,6 +255,22 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.pp.Type.defineMethod('fromNumber',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="tsh_pp">' + anObject.toString() + '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.pp.Type.defineMethod('fromObject',
 function(anObject, optFormat) {
 
@@ -276,6 +324,22 @@ function(anObject, optFormat) {
 
     return '<span class="tsh_pp">' + TP.xhtmlstr(anObject) + '<\/span>';
     */
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.pp.Type.defineMethod('fromRegExp',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="tsh_pp">' + anObject.toString() + '</span>';
 });
 
 //  ------------------------------------------------------------------------
