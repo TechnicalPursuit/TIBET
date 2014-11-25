@@ -3661,9 +3661,9 @@ function() {
 
         //  If we have unresolved traits, bail out here.
         if (TP.notEmpty(unresolvedTraits)) {
-            errStr = 'TYPE:' + TP.name(mainType) + ' TYPE-LEVEL: ';
+            errStr = 'TYPE: ' + TP.name(mainType) + ' TYPE-LEVEL:\n';
 
-            unresolvedTraits.perform(
+            unresolvedTraits.sort().perform(
                     function(kvPair) {
                         var propName,
                             sources;
@@ -3694,12 +3694,10 @@ function() {
                             errStr += sources;
                         }
 
-                        errStr += ' ||| ';
+                        errStr += ' \n';
                     });
 
-            //  NB: Make sure to slice off the last ' ||| '
-            errStr = errStr.slice(0, errStr.length - 5) +
-                        '. Use resolveTrait[s] to repair.';
+            errStr += '\nUse resolveTrait[s] to repair.';
 
             return this.raise('TP.sig.InvalidInstantiation',
                                 TP.sc('Unresolved instance traits: ', errStr));
@@ -3786,9 +3784,9 @@ function() {
 
         //  If we have unresolved traits, bail out here.
         if (TP.notEmpty(unresolvedTraits)) {
-            errStr = 'TYPE:' + TP.name(mainType) + ' INSTANCE-LEVEL: ';
+            errStr = 'TYPE: ' + TP.name(mainType) + ' INSTANCE-LEVEL\n';
 
-            unresolvedTraits.perform(
+            unresolvedTraits.sort().perform(
                     function(kvPair) {
                         var propName,
                             sources;
@@ -3819,12 +3817,10 @@ function() {
                             errStr += sources;
                         }
 
-                        errStr += ' ||| ';
+                        errStr += ' \n';
                     });
 
-            //  NB: Make sure to slice off the last ' ||| '
-            errStr = errStr.slice(0, errStr.length - 5) +
-                        '. Use resolveTrait[s] to repair.';
+            errStr += '\nUse resolveTrait[s] to repair.';
 
             return this.raise('TP.sig.InvalidInstantiation',
                                 TP.sc('Unresolved instance traits: ', errStr));
