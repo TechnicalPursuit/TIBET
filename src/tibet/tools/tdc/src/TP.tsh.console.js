@@ -637,7 +637,17 @@ function(aSignal) {
             if (TP.isEmpty(val)) {
                 str += '()';
             } else {
-                values = val.getValues();
+                if (TP.canInvoke(val, 'getValues')) {
+                    values = val.getValues();
+                } else {
+                    // Probabaly a native collection like HTMLCollection etc.
+                    values = TP.ac();
+                    len = val.length;
+                    for (i = 1; i < len; i++) {
+                        values.push(val[i]);
+                    }
+                }
+
                 len = values.getSize();
                 startTN = TP.tname(values.at(0));
                 wasSame = true;
@@ -2460,7 +2470,8 @@ function(aRequest) {
         cssClass,
 
         inputData,
-        inputStr;
+        inputStr,
+        node;
 
     request = TP.request(aRequest);
 
@@ -2548,7 +2559,8 @@ function(anObject, aRequest) {
 
     request = TP.request(aRequest);
 
-    // If this is TAP output we format it a bit...
+    // TODO: replace this hack with an update to route to the proper
+    // Logger/Appender so we get the output we want via layout/appender.
     tap = request.at('cmdTAP');
 
     //  ---
@@ -2634,6 +2646,20 @@ function(anObject, aRequest) {
     outputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
                         '#xpath1(//*[@name="outputText"])').transform(
                             outputData);
+
+    if (!TP.isString(outputStr)) {
+        // Something went wrong during templating. The outputData didn't get
+        // converted and now our outputStr is just a reference to outputData.
+
+        // Try reprocessing the output since 99% of the errors will be DOM parse
+        // issues meaning something in the data wasn't properly escaped.
+        outputData.atPut('output',
+                TP.boot.$dump(outputData.at('output'), '', true));
+
+        outputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
+                        '#xpath1(//*[@name="outputText"])').transform(
+                            outputData);
+    }
 
     request.atPut('cmdOutputNode', TP.boot.$displayMessage(outputStr, true));
 
