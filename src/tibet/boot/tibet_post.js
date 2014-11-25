@@ -4964,7 +4964,7 @@ TP.boot.$elementSetInnerContent = function(anElement, theContent) {
 //  DISPLAY HELPERS
 //  ============================================================================
 
-TP.boot.$dump = function(anObject, aSeparator, htmlEscape, depth) {
+TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
 
     /**
      * @name anObject
@@ -4986,10 +4986,14 @@ TP.boot.$dump = function(anObject, aSeparator, htmlEscape, depth) {
         keys,
         key,
         sep,
-        val;
+        val,
+        type;
 
-    // Don't dump primitives, only Object and Array-ish things.
-    switch (typeof anObject) {
+    // Try this, but know that you may get 'object' for things that aren't
+    // primitive values for String, Number, etc.
+    type = typeof(anObject);
+
+    switch (type) {
         case 'string':
 
             // Bit of a hack here, but we don't really want rafts of html
@@ -5004,32 +5008,99 @@ TP.boot.$dump = function(anObject, aSeparator, htmlEscape, depth) {
                 str = anObject;
             }
 
-            if (htmlEscape === true) {
-                return TP.boot.$htmlEscape(str);
+            if (shouldEscape === true) {
+                return TP.boot.$xmlEscape(str);
             } else {
                 return str;
             }
             break;
-        case 'function':
         case 'number':
+            // isNaN lies: isNaN({}) => true. Welcome to JavaScript.
+            if (isNaN(anObject) && anObject.constructor === Number) {
+                return 'NaN';
+            } else {
+                return '' + anObject;
+            }
+            break;
         case 'boolean':
             return anObject;
+        case 'function':
+            str = anObject.toString();
+            if (shouldEscape === true) {
+                return '<pre><![CDATA[' + str +
+                    ']]></pre>';
+            } else {
+                return str;
+            }
+            break;
         default:
             if (anObject === null) {
                 return 'null';
             }
+
             if (anObject === undefined) {
                 return 'undefined';
             }
+
+            if (anObject instanceof String) {
+                return '' + anObject;
+            }
+
+            if (anObject instanceof Boolean) {
+                return '' + anObject;
+            }
+
+            if (anObject instanceof Number) {
+                return '' + anObject;
+            }
+
             if (anObject instanceof Date) {
                 return anObject.toISOString();
             }
+
             if (anObject instanceof RegExp) {
-                return anObject.toString();
+                str = anObject.toString();
+                if (shouldEscape === true) {
+                    return TP.boot.$xmlEscape(str);
+                } else {
+                    return str;
+                }
             }
+
+            if (anObject instanceof Error) {
+                str = anObject.message;
+                if (shouldEscape === true) {
+                    return TP.boot.$xmlEscape(str);
+                } else {
+                    return str;
+                }
+            }
+
+            if (anObject instanceof TP.boot.Annotation) {
+                // TODO: Do we want the object portion here as well?
+                str = anObject.message;
+                if (shouldEscape === true) {
+                    return TP.boot.$xmlEscape(str);
+                } else {
+                    return str;
+                }
+            }
+
             if (TP.boot.$isValid(anObject.nodeType)) {
-                return TP.boot.$htmlEscape(TP.boot.$nodeAsString(anObject));
+                return TP.boot.$xmlEscape(TP.boot.$nodeAsString(anObject));
             }
+
+            // isNaN lies: isNaN({}) => true. Welcome to JavaScript. Oh...but it
+            // gets better. If you run isNaN on the wrong thing it'll throw an
+            // exception about being unable to convert to a primitive.
+            try {
+                if (isNaN(anObject) && anObject.constructor === Number) {
+                    return 'NaN';
+                }
+            } catch (e) {
+                void(0);
+            }
+
             break;
     }
 
@@ -5037,16 +5108,29 @@ TP.boot.$dump = function(anObject, aSeparator, htmlEscape, depth) {
     // respond well to a simple string + obj form so call the root toString if
     // there's an exception ala 'Cannot convert object to primitive value'.
     if (depth && depth > 0) {
+        if (anObject.getName) {
+            return anObject.getName();
+        }
         try {
-            return '' + anObject;
+            str = anObject.asString();
         } catch (e) {
-            return Object.prototype.toString.call(anObject);
+            try {
+                str = Object.prototype.toString.call(anObject);
+            } catch (e2) {
+                return '[object Object]';
+            }
+        }
+
+        if (shouldEscape === true) {
+            return TP.boot.$xmlEscape(str);
+        } else {
+            return str;
         }
     }
 
     sep = ' => ';
-    if (htmlEscape === true) {
-        sep = TP.boot.$htmlEscape(sep);
+    if (shouldEscape === true) {
+        sep = TP.boot.$xmlEscape(sep);
     }
     arr = [];
 
@@ -5055,25 +5139,43 @@ TP.boot.$dump = function(anObject, aSeparator, htmlEscape, depth) {
         // Could use map() here but this works consistently.
         len = anObject.length;
         for (i = 0; i < len; i++) {
-            arr.push(TP.boot.$dump(anObject[i], aSeparator, htmlEscape, 1));
+            arr.push(TP.boot.$dump(anObject[i], aSeparator, shouldEscape, 1));
         }
 
     } else {
-        try {
-            keys = Object.keys(anObject);
-        } catch (e) {
-            // Some objects don't even like Object.keys....sigh...
-            return Object.prototype.toString.call(anObject);
+
+        if (typeof anObject.getKeys === 'function') {
+            keys = anObject.getKeys();
+        } else {
+            try {
+                keys = Object.keys(anObject);
+            } catch (e) {
+                try {
+                    // Some objects don't even like Object.keys....sigh...
+                    return Object.prototype.toString.call(anObject);
+                } catch (e2) {
+                    return '[object Object]';
+                }
+            }
         }
+
         keys.sort();
 
         len = keys.length;
-        for (i = 0; i < len; i++) {
-            key = keys[i];
-            val = anObject[key];
+        if (len === 0) {
+            arr.push('{}');
+        } else {
+            for (i = 0; i < len; i++) {
+                key = keys[i];
+                if (typeof anObject.at === 'function') {
+                    val = anObject.at(key);
+                } else {
+                    val = anObject[key];
+                }
 
-            str = TP.boot.$dump(val, aSeparator, htmlEscape, 1);
-            arr.push(key + sep + str);
+                str = TP.boot.$dump(val, aSeparator, shouldEscape, 1);
+                arr.push(key + sep + str);
+            }
         }
     }
 
@@ -5082,7 +5184,7 @@ TP.boot.$dump = function(anObject, aSeparator, htmlEscape, depth) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$htmlEscape = function(aString) {
+TP.boot.$xmlEscape = function(aString) {
 
     var result;
 
@@ -5102,7 +5204,10 @@ TP.boot.$htmlEscape = function(aString) {
     });
 
     //  Replace all '&' that are *not* part of an entity with '&amp;'
-    result = result.replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+    result = result.replace(/&(?!([a-zA-Z]+|#(x)?[0-9]+);)/g, '&amp;');
+
+    //  Replace &nbsp; with space.
+    result = result.replace(/&nbsp;/g, ' ');
 
     return result;
 };
@@ -5448,6 +5553,20 @@ TP.boot.Annotation.prototype.asSource = function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.Annotation.prototype.asString = function() {
+
+    /**
+     * @name asString
+     * @summary Returns the receiver as a simple string. Just the message is
+     *     used for this.
+     * @return {String} An appropriate form for recreating the receiver.
+     */
+
+    return '' + this.message;
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.Annotation.prototype.asXMLString = function() {
 
     /**
@@ -5619,7 +5738,7 @@ TP.boot.$$logReporter = function(entry, options) {
         }
         str = str || sep + sep + TP.boot.$dump(obj, sep, esc) + sep;
     } else {
-        str = esc ? TP.boot.$htmlEscape(obj) : obj;
+        str = esc ? TP.boot.$xmlEscape(obj) : obj;
     }
 
     // Output format is;
@@ -6885,7 +7004,7 @@ TP.boot.$displayMessage = function(aString, flush) {
 
             msgNode = TP.boot.$documentFromString(
                 '<div xmlns="http://www.w3.org/1999/xhtml"><div><pre>' +
-                TP.boot.$htmlEscape(message) + '</pre></div></div>');
+                TP.boot.$xmlEscape(message) + '</pre></div></div>');
 
             if (!msgNode) {
                 top.console.error('Unable to create log message element.');
