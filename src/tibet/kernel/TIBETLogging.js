@@ -606,11 +606,13 @@ TP.log.Logger.addTraits(TP.log.Filtered);
 
 // Logger's inherit from their ancestor chain so we need to preserve getters.
 TP.log.Logger.Inst.resolveTraits(
-    TP.ac('getFilters', 'getLevel', 'getName', 'getParent', 'init'),
+    TP.ac('getFilters', 'getLevel', 'getParent'),
     TP.log.Logger);
 
-//  Resolve traits now that definition is complete.
-TP.log.Logger.finalizeTraits();
+TP.log.Logger.Inst.resolveTrait('getName', TP.log.Nestable);
+
+//  LOOK AT THE END OF THIS TYPE DEFINITION AFTER THE TYPE IS FULLY DEFINED FOR
+//  TRAIT FINALIZATION
 
 //  ----------------------------------------------------------------------------
 
@@ -1220,6 +1222,11 @@ function(varargs) {
 
     return this.$logArglist(TP.log.SYSTEM, TP.args(arguments));
 });
+
+//  ----------------------------------------------------------------------------
+
+//  Resolve traits now that definition is complete.
+TP.log.Logger.finalizeTraits();
 
 //  ============================================================================
 //  Appender

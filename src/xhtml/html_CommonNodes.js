@@ -33,10 +33,7 @@ TP.html.CoreAttrs.isAbstract(true);
 
 TP.html.CoreAttrs.addTraits(TP.html.Element);
 
-TP.html.CoreAttrs.Type.resolveTraits(
-        TP.ac('booleanAttrs', 'tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
+TP.html.CoreAttrs.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
 TP.html.CoreAttrs.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
@@ -47,10 +44,7 @@ TP.html.Attrs.isAbstract(true);
 
 TP.html.Attrs.addTraits(TP.html.Element);
 
-TP.html.Attrs.Type.resolveTraits(
-        TP.ac('booleanAttrs', 'tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
+TP.html.Attrs.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
 TP.html.Attrs.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),

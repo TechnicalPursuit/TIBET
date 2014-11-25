@@ -1073,18 +1073,18 @@ TP.sig.Signal.defineSubtype('WorkflowSignal');
 //  add job status behavior to the receiver so we can track progress. this
 //  adds methods such as fail, complete, etc.
 TP.sig.WorkflowSignal.addTraits(TP.core.JobStatus);
-TP.sig.WorkflowSignal.Type.resolveTrait('getSignalName', TP.sig.WorkflowSignal);
+
+TP.sig.WorkflowSignal.Type.resolveTrait('getSignalName', TP.sig.Signal);
+
 TP.sig.WorkflowSignal.Inst.resolveTraits(
-        TP.ac('resume', 'asSource', 'asDumpString', 'asHTMLString',
-                'asJSONSource', 'asPrettyString', 'asRecursionString',
-                'asString', 'asXMLString', 'at', 'atPut', 'getSignalName',
-                'getProperty', 'copy', 'shouldLog', 'init', 'isRecyclable',
-                'recycle', 'removeKey'),
+        TP.ac('asDumpString', 'asHTMLString', 'asJSONSource', 'asPrettyString',
+                'asRecursionString', 'asSource', 'asString', 'asXMLString',
+                'at', 'atPut', 'copy', 'getProperty', 'getSignalName', 'init',
+                'isRecyclable', 'recycle', 'removeKey', 'resume'),
         TP.sig.WorkflowSignal);
 
-//  Resolve the traits right away as subtypes of this type are used during the
-//  booting process.
-TP.sig.WorkflowSignal.finalizeTraits();
+//  LOOK AT THE END OF THIS TYPE DEFINITION AFTER THE TYPE IS FULLY DEFINED FOR
+//  TRAIT FINALIZATION
 
 TP.sig.WorkflowSignal.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
 
@@ -1144,6 +1144,12 @@ function(anOrigin, aPayload, aPolicy) {
 
     return this;
 });
+
+//  ------------------------------------------------------------------------
+
+//  Resolve the traits right away as subtypes of this type are used during the
+//  booting process.
+TP.sig.WorkflowSignal.finalizeTraits();
 
 //  ========================================================================
 //  TP.sig.Request

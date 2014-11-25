@@ -20,15 +20,14 @@ TP.sig.IOResponse.defineSubtype('UserIOResponse');
 TP.sig.UserIOResponse.addTraits(TP.sig.UserIOSignal);
 
 TP.sig.UserIOResponse.Type.resolveTraits(
-        TP.ac('shouldLog', 'getSignalName'),
+        TP.ac('getSignalName', 'shouldLog'),
         TP.sig.UserIOResponse);
 
 TP.sig.UserIOResponse.Inst.resolveTraits(
-        TP.ac('asSource', 'asDumpString', 'asHTMLString', 'asJSONSource',
-                'asPrettyString', 'asRecursionString', 'asString',
-                'asXMLString', 'at', 'atPut', 'getSignalName', 'getProperty',
-                'copy', 'shouldLog', 'init', 'isRecyclable', 'recycle',
-                'removeKey'),
+        TP.ac('asDumpString', 'asHTMLString', 'asJSONSource', 'asPrettyString',
+                'asRecursionString', 'asSource', 'asString', 'asXMLString',
+                'at', 'atPut', 'copy', 'getProperty', 'getSignalName', 'init',
+                'isRecyclable', 'recycle', 'removeKey', 'shouldLog'),
         TP.sig.UserIOResponse);
 
 //  ========================================================================

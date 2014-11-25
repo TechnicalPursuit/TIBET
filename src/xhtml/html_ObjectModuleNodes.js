@@ -383,9 +383,10 @@ function(aNodeOrId) {
 TP.html.Attrs.defineSubtype('param');
 
 TP.html.param.addTraits(TP.core.EmptyElementNode);
+
 TP.html.param.Inst.resolveTraits(
-        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
-                'getNextResponder', 'signal'),
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
         TP.html.param);
 
 TP.html.param.Inst.resolveTraits(

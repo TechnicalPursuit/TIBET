@@ -25,9 +25,7 @@ TP.html.link.Type.set('uriAttrs', TP.ac('href'));
 
 TP.html.link.addTraits(TP.core.EmptyElementNode);
 
-TP.html.link.Type.resolveTraits(
-        TP.ac('booleanAttrs', 'uriAttrs'),
-        TP.html.link);
+TP.html.link.Type.resolveTrait('uriAttrs', TP.html.link);
 
 TP.html.link.Inst.resolveTraits(
         TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',

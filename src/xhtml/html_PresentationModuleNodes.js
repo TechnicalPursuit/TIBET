@@ -81,13 +81,11 @@ TP.html.hr.Type.set('booleanAttrs', TP.ac('noShade'));
 
 TP.html.hr.addTraits(TP.core.EmptyElementNode);
 
-TP.html.hr.Type.resolveTraits(
-        TP.ac('booleanAttrs', 'uriAttrs'),
-        TP.html.hr);
+TP.html.hr.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
 TP.html.hr.Inst.resolveTraits(
-        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
-                'getNextResponder', 'signal'),
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
         TP.html.hr);
 
 TP.html.hr.Inst.resolveTraits(

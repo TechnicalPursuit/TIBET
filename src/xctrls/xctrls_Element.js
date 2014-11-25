@@ -19,6 +19,11 @@ TP.core.UIElementNode.defineSubtype('xctrls:Element');
 
 TP.xctrls.Element.addTraits(TP.core.NonNativeUIElementNode);
 
+TP.xctrls.Element.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.core.UIElementNode);
+
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
 TP.xctrls.Element.finalizeTraits();

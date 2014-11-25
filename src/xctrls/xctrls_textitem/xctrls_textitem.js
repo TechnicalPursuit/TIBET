@@ -17,9 +17,15 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:textitem');
 
-TP.xctrls.textitem.addTraits(TP.xctrls.Element,
-                                    TP.core.TemplatedNode);
+TP.xctrls.textitem.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+
+TP.xctrls.textitem.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
 TP.xctrls.textitem.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+
+TP.xctrls.textitem.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.xctrls.Element);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.

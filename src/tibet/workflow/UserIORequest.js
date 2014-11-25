@@ -23,16 +23,16 @@ TP.sig.UserIORequest.addTraits(TP.sig.UserIOSignal);
 TP.sig.UserIORequest.Type.resolveTraits(
     TP.ac('shouldLog', 'getSignalName'),
     TP.sig.UserIORequest);
+
 TP.sig.UserIORequest.Inst.resolveTraits(
-    TP.ac('asSource', 'asDumpString', 'asHTMLString', 'asJSONSource',
-            'asPrettyString', 'asRecursionString', 'asString', 'asXMLString',
-            'at', 'atPut', 'getSignalName', 'getProperty', 'copy', 'shouldLog',
-            'init', 'handle', 'isRecyclable', 'recycle', 'removeKey'),
+    TP.ac('asDumpString', 'asHTMLString', 'asJSONSource', 'asPrettyString',
+            'asRecursionString', 'asSource', 'asString', 'asXMLString', 'at',
+            'atPut', 'copy', 'getProperty', 'getSignalName', 'handle', 'init',
+            'isRecyclable', 'recycle', 'removeKey', 'shouldLog'),
     TP.sig.UserIORequest);
 
-//  Resolve the traits right away as subtypes of this type are used during the
-//  booting process.
-TP.sig.UserIORequest.finalizeTraits();
+//  LOOK AT THE END OF THIS TYPE DEFINITION AFTER THE TYPE IS FULLY DEFINED FOR
+//  TRAIT FINALIZATION
 
 TP.sig.UserIORequest.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
 
@@ -43,6 +43,10 @@ TP.sig.UserIORequest.isSignalingRoot(true);
 //  ------------------------------------------------------------------------
 
 TP.sig.UserIORequest.Type.defineAttribute('responseType', 'TP.sig.UserIOResponse');
+
+//  Resolve the traits right away as subtypes of this type are used during the
+//  booting process.
+TP.sig.UserIORequest.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end

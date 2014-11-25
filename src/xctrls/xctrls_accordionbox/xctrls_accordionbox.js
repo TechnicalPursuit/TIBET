@@ -19,7 +19,15 @@ TP.core.UIElementNode.defineSubtype('xctrls:accordionbox');
 
 TP.xctrls.accordionbox.addTraits(TP.xctrls.Element,
                                         TP.core.TemplatedNode);
-TP.xctrls.accordionbox.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+
+TP.xctrls.accordionbox.Type.resolveTraits(
+        TP.ac('cmdRunContent', 'tagCompile'),
+        TP.xctrls.Element);
+
+TP.xctrls.accordionbox.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.xctrls.Element);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.

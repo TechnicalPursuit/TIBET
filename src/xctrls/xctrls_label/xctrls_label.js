@@ -19,6 +19,15 @@ TP.core.UIElementNode.defineSubtype('xctrls:label');
 
 TP.xctrls.label.addTraits(TP.xctrls.Element);
 
+TP.xctrls.label.Type.resolveTraits(
+        TP.ac('cmdRunContent', 'tagCompile'),
+        TP.xctrls.Element);
+
+TP.xctrls.label.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.xctrls.Element);
+
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
 TP.xctrls.label.finalizeTraits();

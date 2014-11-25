@@ -36,20 +36,17 @@ TP.xctrls.codeeditor.set('frameFileURI',
 
 TP.xctrls.codeeditor.addTraits(TP.html.textUtilities);
 
-TP.xctrls.codeeditor.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.xctrls.FramedElement);
+TP.xctrls.codeeditor.Type.resolveTrait('cmdRunContent', TP.xctrls.FramedElement);
+TP.xctrls.codeeditor.Type.resolveTrait('tagCompile', TP.xctrls.Element);
+TP.xctrls.codeeditor.Type.resolveTrait('booleanAttrs', TP.html.textUtilities);
 
 TP.xctrls.codeeditor.Inst.resolveTraits(
-        TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle',
-                'setAttrHidden'),
+        TP.ac('getDisplayValue', 'setDisplayValue'),
+        TP.xctrls.codeeditor);
+TP.xctrls.codeeditor.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
-
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.xctrls.codeeditor.finalizeTraits();
+TP.xctrls.codeeditor.Inst.resolveTrait('init', TP.xctrls.FramedElement);
 
 //  ------------------------------------------------------------------------
 //  TSH Execution Support
@@ -987,6 +984,12 @@ function(beforeText, afterText) {
 
     return this;
 });
+
+//  ------------------------------------------------------------------------
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.xctrls.codeeditor.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end

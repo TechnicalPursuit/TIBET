@@ -24,13 +24,10 @@ TP.html.Attrs.defineSubtype('base');
 TP.html.base.addTraits(TP.core.EmptyElementNode);
 
 TP.html.base.Inst.resolveTraits(
-        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
-                'getNextResponder', 'signal'),
+        TP.ac('$setAttribute', 'getContent', 'getNextResponder',
+                'isResponderFor', 'removeAttribute', 'select', 'setContent',
+                'signal'),
         TP.html.base);
-
-TP.html.base.Inst.resolveTraits(
-        TP.ac('getContent', 'setContent'),
-        TP.core.EmptyElementNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.

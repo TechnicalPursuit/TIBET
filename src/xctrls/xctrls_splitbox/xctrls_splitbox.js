@@ -17,9 +17,15 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:splitbox');
 
-TP.xctrls.splitbox.addTraits(TP.xctrls.Element,
-                                    TP.core.TemplatedNode);
+TP.xctrls.splitbox.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+
+TP.xctrls.splitbox.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
 TP.xctrls.splitbox.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+
+TP.xctrls.splitbox.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.xctrls.Element);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.

@@ -78,8 +78,8 @@ TP.html.CoreAttrs.defineSubtype('br');
 TP.html.br.addTraits(TP.core.EmptyElementNode);
 
 TP.html.br.Inst.resolveTraits(
-        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
-                'getNextResponder', 'signal'),
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
         TP.html.br);
 
 TP.html.br.Inst.resolveTraits(

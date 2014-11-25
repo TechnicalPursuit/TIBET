@@ -5523,7 +5523,7 @@ isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.NonNativeUIElementNode');
+TP.core.ElementNode.defineSubtype('core.NonNativeUIElementNode');
 
 //  ------------------------------------------------------------------------
 

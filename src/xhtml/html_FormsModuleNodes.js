@@ -86,10 +86,7 @@ TP.html.fieldset.Type.set('booleanAttrs', TP.ac('disabled', 'willValidate'));
 TP.core.UIElementNode.defineSubtype('html:textUtilities');
 TP.html.textUtilities.addTraits(TP.html.Element);
 
-TP.html.textUtilities.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
+TP.html.textUtilities.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
 TP.html.textUtilities.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
@@ -97,6 +94,8 @@ TP.html.textUtilities.Inst.resolveTraits(
 
 //  can't construct concrete instances of this
 TP.html.textUtilities.isAbstract(true);
+
+TP.html.textUtilities.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -664,8 +663,8 @@ TP.html.input.Type.resolveTraits(
         TP.html.input);
 
 TP.html.input.Inst.resolveTraits(
-        TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
-                'getNextResponder', 'signal'),
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
         TP.html.input);
 
 TP.html.input.Inst.resolveTraits(
@@ -2536,16 +2535,6 @@ TP.html.inputSelectable.defineSubtype('inputEmail');
 
 TP.html.inputEmail.addTraits(TP.html.textUtilities);
 
-TP.html.inputEmail.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
-
-TP.html.inputEmail.Inst.resolveTraits(
-        TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
-        TP.html.textUtilities);
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -2635,16 +2624,6 @@ TP.html.inputSelectable.defineSubtype('inputNumber');
 
 TP.html.inputNumber.addTraits(TP.html.textUtilities);
 
-TP.html.inputNumber.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
-
-TP.html.inputNumber.Inst.resolveTraits(
-        TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
-        TP.html.textUtilities);
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -2721,16 +2700,6 @@ TP.html.inputSelectable.defineSubtype('inputPassword');
 
 TP.html.inputPassword.addTraits(TP.html.textUtilities);
 
-TP.html.inputPassword.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
-
-TP.html.inputPassword.Inst.resolveTraits(
-        TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
-        TP.html.textUtilities);
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -2793,16 +2762,6 @@ function(aValue) {
 TP.html.inputSelectable.defineSubtype('inputSearch');
 
 TP.html.inputSearch.addTraits(TP.html.textUtilities);
-
-TP.html.inputSearch.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
-
-TP.html.inputSearch.Inst.resolveTraits(
-        TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
-        TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -2926,16 +2885,6 @@ TP.html.inputSelectable.defineSubtype('inputTel');
 
 TP.html.inputTel.addTraits(TP.html.textUtilities);
 
-TP.html.inputTel.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
-
-TP.html.inputTel.Inst.resolveTraits(
-        TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
-        TP.html.textUtilities);
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -2998,16 +2947,6 @@ function(aValue) {
 TP.html.inputSelectable.defineSubtype('inputText');
 
 TP.html.inputText.addTraits(TP.html.textUtilities);
-
-TP.html.inputText.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
-
-TP.html.inputText.Inst.resolveTraits(
-        TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
-        TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -3097,16 +3036,6 @@ TP.html.inputClickable.defineSubtype('inputWeek');
 TP.html.inputSelectable.defineSubtype('inputUrl');
 
 TP.html.inputUrl.addTraits(TP.html.textUtilities);
-
-TP.html.inputUrl.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
-
-TP.html.inputUrl.Inst.resolveTraits(
-        TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
-        TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -4495,17 +4424,11 @@ TP.html.textarea.Type.set('booleanAttrs',
 TP.html.textarea.addTraits(TP.html.textUtilities);
 
 TP.html.textarea.Type.resolveTraits(
-        TP.ac('bidiAttrs', 'booleanAttrs'),
+        TP.ac('booleanAttrs', 'bidiAttrs'),
         TP.html.textarea);
 
-TP.html.textarea.Type.resolveTraits(
-        TP.ac('tagCompile', 'canConnectFrom', 'canConnectTo',
-                'isValidConnectorDest', 'isValidConnectorSource'),
-        TP.html.Element);
-
 TP.html.textarea.Inst.resolveTraits(
-        TP.ac('getValue', 'setValue', 'addCSSClass', 'getClass', 'getStyle',
-                'removeCSSClass', 'replaceCSSClass', 'setClass', 'setStyle'),
+        TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------

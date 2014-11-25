@@ -18,6 +18,19 @@ TP.core.UIElementNode.defineSubtype('xctrls:barcode');
 
 TP.xctrls.barcode.addTraits(TP.core.PipeSegmentElementNode);
 
+TP.xctrls.barcode.Type.resolveTraits(
+        TP.ac('cmdAddContent', 'cmdGetContent', 'cmdRunContent',
+                'cmdSetContent', 'tagCompile'),
+        TP.core.ActionElementNode);
+
+TP.xctrls.barcode.Type.resolveTrait('tshExecute',
+                                        TP.core.PipeSegmentElementNode);
+
+TP.xctrls.barcode.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'act', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.core.UIElementNode);
+
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
 TP.xctrls.barcode.finalizeTraits();
