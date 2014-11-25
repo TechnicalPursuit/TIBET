@@ -3430,14 +3430,45 @@ function() {
             //  hash
             traitProps.forEach(
                 function(propName) {
-                    var entry,
+                    var checkProp1,
+                        checkProp2,
+
+                        entry,
                         sources,
+                        i,
+                        pastSourceTarget,
+
                         propVal;
 
-                    if (TP.isProperty(mainTypeTarget, propName) &&
-                            mainTypeTarget[propName] ===
-                                traitTypeTarget[propName]) {
-                        return;
+                    //  If the mainTypeTarget has this property, then we need to
+                    //  check whether the trait type has it too - in that case,
+                    //  we just proceed on.
+                    if (TP.isProperty(mainTypeTarget, propName)) {
+
+                        checkProp1 = mainTypeTarget[propName];
+                        checkProp2 = traitTypeTarget[propName];
+
+                        if (checkProp1 === checkProp2) {
+                            return;
+                        }
+
+                        //  If they both really exist, then we need to drill in
+                        //  and see if they have '$resolutionMethod' slots that
+                        //  would match the other's slot (or '$resolutionMethod'
+                        //  slot). This is critical to avoid problems with
+                        //  traits cascading down the inheritance hierarchy.
+                        if (checkProp1 && checkProp2) {
+                            checkProp1 = checkProp1.$resolutionMethod ?
+                                            checkProp1.$resolutionMethod :
+                                            checkProp1;
+                            checkProp2 = checkProp2.$resolutionMethod ?
+                                            checkProp2.$resolutionMethod :
+                                            checkProp2;
+
+                            if (checkProp1 === checkProp2) {
+                                return;
+                            }
+                        }
                     }
 
                     //  If the property already has an entry, then check to see
@@ -3448,6 +3479,34 @@ function() {
                         sources = entry.at('sources');
                         if (sources.indexOf(traitType) !== TP.NOT_FOUND) {
                             return;
+                        }
+
+                        //  Loop over all of the sources that have been
+                        //  resolutions for this slot so far and make the same
+                        //  checks that we made above. Again, critical to avoid
+                        //  problems with traits and the inheritance hierachy.
+                        for (i = 0; i < sources.getSize(); i++) {
+                            pastSourceTarget = sources.at(i).getPrototype();
+
+                            checkProp1 = pastSourceTarget[propName];
+                            checkProp2 = traitTypeTarget[propName];
+
+                            if (checkProp1 === checkProp2) {
+                                return;
+                            }
+
+                            if (checkProp1 && checkProp2) {
+                                checkProp1 = checkProp1.$resolutionMethod ?
+                                                checkProp1.$resolutionMethod :
+                                                checkProp1;
+                                checkProp2 = checkProp2.$resolutionMethod ?
+                                                checkProp2.$resolutionMethod :
+                                                checkProp2;
+
+                                if (checkProp1 === checkProp2) {
+                                    return;
+                                }
+                            }
                         }
 
                         //  Otherwise, there was an entry for this property, but
@@ -3493,30 +3552,45 @@ function() {
             //  hash
             traitProps.forEach(
                 function(propName) {
-                    var entry,
+                    var checkProp1,
+                        checkProp2,
+
+                        entry,
                         sources,
+                        i,
+                        pastSourceTarget,
+
                         propVal;
 
-                    if (TP.isProperty(mainTypeTarget, propName) &&
-                            mainTypeTarget[propName] ===
-                                traitTypeTarget[propName]) {
-                        return;
-                    }
+                    //  If the mainTypeTarget has this property, then we need to
+                    //  check whether the trait type has it too - in that case,
+                    //  we just proceed on.
+                    if (TP.isProperty(mainTypeTarget, propName)) {
+                        checkProp1 = mainTypeTarget[propName];
+                        checkProp2 = traitTypeTarget[propName];
 
-                    /*
-                    //  If the property isn't representing a method on the trait
-                    //  type, then it's an attribute
-                    if (!TP.isMethod(traitTypeTarget[propName])) {
-                        //  If it's not defined on the main type, then define
-                        //  it.
-                        if (TP.notDefined(mainTypeTarget[propName])) {
-                            mainTypeTarget.defineAttribute(propName);
+                        if (checkProp1 === checkProp2) {
+                            return;
                         }
-                        //  If it is defined on the main type target, then we
-                        //  don't redefine it - it may have a value.
-                        //  TODO: Do we raise an exception if it is defined?
+
+                        //  If they both really exist, then we need to drill in
+                        //  and see if they have '$resolutionMethod' slots that
+                        //  would match the other's slot (or '$resolutionMethod'
+                        //  slot). This is critical to avoid problems with
+                        //  traits cascading down the inheritance hierarchy.
+                        if (checkProp1 && checkProp2) {
+                            checkProp1 = checkProp1.$resolutionMethod ?
+                                            checkProp1.$resolutionMethod :
+                                            checkProp1;
+                            checkProp2 = checkProp2.$resolutionMethod ?
+                                            checkProp2.$resolutionMethod :
+                                            checkProp2;
+
+                            if (checkProp1 === checkProp2) {
+                                return;
+                            }
+                        }
                     }
-                    */
 
                     //  If the property already has an entry, then check to see
                     //  if this trait is represented in its list of sources. If
@@ -3524,6 +3598,31 @@ function() {
                     //  represented.
                     if (TP.isValid(entry = resolutions.at(propName))) {
                         sources = entry.at('sources');
+
+                        //  Loop over all of the sources that have been
+                        //  resolutions for this slot so far and make the same
+                        //  checks that we made above. Again, critical to avoid
+                        //  problems with traits and the inheritance hierachy.
+                        for (i = 0; i < sources.getSize(); i++) {
+                            pastSourceTarget = sources.at(i).getInstPrototype();
+
+                            checkProp1 = pastSourceTarget[propName];
+                            checkProp2 = traitTypeTarget[propName];
+
+                            if (checkProp1 && checkProp2) {
+                                checkProp1 = checkProp1.$resolutionMethod ?
+                                                checkProp1.$resolutionMethod :
+                                                checkProp1;
+                                checkProp2 = checkProp2.$resolutionMethod ?
+                                                checkProp2.$resolutionMethod :
+                                                checkProp2;
+
+                                if (checkProp1 === checkProp2) {
+                                    return;
+                                }
+                            }
+                        }
+
                         if (sources.indexOf(traitType) !== TP.NOT_FOUND) {
                             return;
                         }
