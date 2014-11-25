@@ -3065,7 +3065,7 @@ function(aFilter) {
     var type;
 
     if (TP.isType(this)) {
-        return this.getPrototype().$getInterface(aFilter);
+        return this.$getInterface(aFilter);
     } else if (TP.isPrototype(this)) {
         if (/\$\$Type/.test(TP.name(this))) {
             return this.$getInterface(aFilter);
