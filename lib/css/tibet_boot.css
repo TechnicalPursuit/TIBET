@@ -68,7 +68,12 @@
 
 /* ---  boot css --- */
 
+body.showlog #BOOT-CONSOLE {
+    display: block;
+}
+
 #BOOT-CONSOLE {
+    display: none;
     position: absolute;
     top: 148px;
     bottom: 64px;
@@ -150,6 +155,23 @@
 #BOOT-PERCENT.log-fatal {
     background-image: none;
     background-color: red;
+}
+
+body.showlog #BOOT-SPLASH {
+    display: none;
+}
+
+#BOOT-SPLASH {
+    display: block;
+    position: absolute;
+    top: 148px;
+    bottom: 64px;
+    right: 0;
+    left: 0;
+    margin: 0 48px;
+    color: white;
+    overflow: hidden;
+    background: url(../img/boot/tibet_world.gif) center center no-repeat;
 }
 
 #BOOT-VERSION {
