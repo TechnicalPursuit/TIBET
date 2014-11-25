@@ -13,7 +13,18 @@ body.full_console .detail-intro {
 }
 
 body.full_console #BOOT-CONSOLE {
+    background-image: none;
     top: 48px;
+}
+
+body #BOOT-CONSOLE {
+    background-image: none;
+    font-size: 100%;
+    line-height: 1.5em;
+}
+
+body #BOOT-PROGRESS {
+    background-image: none;
 }
 
 /*
@@ -82,7 +93,7 @@ body.full_console #BOOT-CONSOLE {
     resize: none;
 
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: normal;
     line-height: 12px;
 
@@ -233,6 +244,10 @@ body.full_console #BOOT-CONSOLE {
     ------------------------------------------------------------------------
 */
 
+.tsh_pp
+{
+}
+
 .tsh_pp > span
 {
     display: table;
@@ -267,6 +282,7 @@ body.full_console #BOOT-CONSOLE {
 
     white-space: pre-wrap;
     width: 48px;
+    padding: 0 12px 0 0;
 }
 
 .tsh_pp > span.Array span,

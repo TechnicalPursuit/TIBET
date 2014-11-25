@@ -128,6 +128,10 @@ TP.sys.setcfg('boot.pause', false);
 //  in development-stage rc files.
 TP.sys.setcfg('boot.pause_on_error', false);
 
+//  should we show the boot log during startup. normally we don't and we let the
+//  profile (such as developer) turn this on.
+TP.sys.setcfg('boot.showlog', false);
+
 //  should we terminate the boot process when we hit an error? by default we
 //  keep going in an attempt to get more information about the problem
 TP.sys.setcfg('boot.stop_onerror', false);

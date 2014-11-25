@@ -2757,7 +2757,8 @@ function(anObject, aFormat, formatParams) {
         return aFormat.transform(anObject, formatParams);
     }
 
-    return;
+    // Out of options. Return original object.
+    return anObject;
 });
 
 //  ------------------------------------------------------------------------

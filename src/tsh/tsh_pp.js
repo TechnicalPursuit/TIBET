@@ -24,9 +24,10 @@ TP.lang.Object.defineSubtype('tsh:pp');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-//  ------------------------------------------------------------------------
-//  Objects that respond to as()/from()
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  Objects with as() but without an asTP_tsh_pp...
+//  ========================================================================
+
 
 TP.tsh.pp.Type.defineMethod('fromArray',
 function(anObject, optFormat) {
@@ -75,8 +76,8 @@ function(anObject, optFormat) {
             count = 0;
         }
 
-        output.push('<span data-name="', i, '">',
-                    TP.format(anObject.at(i), 'TP.tsh.pp', optFormat),
+        output.push('<span data-name="' + i + '">' +
+            TP.boot.$dump(anObject.at(i), '', true) +
                     '<\/span>');
 
         count++;
@@ -87,7 +88,64 @@ function(anObject, optFormat) {
     //  We're done - we can remove the recursion flag.
     delete anObject.$$format_tsh_pp;
 
-    return output.join('');
+    return output.join('\n');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.pp.Type.defineMethod('fromBoolean',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="tsh_pp">' + anObject.toString() + '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.pp.Type.defineMethod('fromDate',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="tsh_pp">' + anObject.toISOString() + '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.pp.Type.defineMethod('fromError',
+function(anObject, optFormat) {
+
+    var stack;
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    stack = '';
+    if (TP.sys.shouldLogStack()) {
+        stack = '<br/>' + TP.getStackInfo(anObject).join('<br/>');
+    }
+
+    return '<span class="tsh_pp">' +
+        anObject.message.asEscapedXML() +
+    stack + '<\/span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -135,17 +193,16 @@ function(anObject, optFormat) {
     len = anObject.length;
     arr.push('<span class="NamedNodeMap">');
     for (i = 0; i < len; i++) {
-        arr.push(
-                '<span data-name="key">',
-                    TP.name(anObject.item(i)),
-                '<\/span>',
-                '<span data-name="value">',
-                    TP.val(anObject.item(i)),
+        arr.push('<span data-name="key">' +
+                    TP.name(anObject.item(i)) +
+                '<\/span>' + '\n' +
+                '<span data-name="value">' +
+                    TP.val(anObject.item(i)) +
                 '<\/span>');
     }
     arr.push('<\/span>');
 
-    return '<span class="tsh_pp">' + arr.join('') + '<\/span>';
+    return '<span class="tsh_pp">' + arr.join('\n') + '<\/span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -187,20 +244,42 @@ function(anObject, optFormat) {
     len = anObject.length;
     arr.push('<span class="NodeList">');
     for (i = 0; i < len; i++) {
-        arr.push(
-                '<span data-name="', i, '">',
-                    TP.str(anObject[i]).asEscapedXML(),
-                '<\/span>');
+        arr.push('<span data-name="' + i + '">' +
+            TP.str(anObject[i]).asEscapedXML() +
+        '<\/span>');
     }
     arr.push('<\/span>');
 
-    return '<span class="tsh_pp">' + arr.join('') + '<\/span>';
+    return '<span class="tsh_pp">' + arr.join('\n') + '<\/span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.pp.Type.defineMethod('fromNumber',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="tsh_pp">' + anObject.toString() + '</span>';
 });
 
 //  ------------------------------------------------------------------------
 
 TP.tsh.pp.Type.defineMethod('fromObject',
 function(anObject, optFormat) {
+
+    var type,
+        output,
+        i,
+        len,
+        keys,
+        key;
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
@@ -215,10 +294,27 @@ function(anObject, optFormat) {
         return '<span class="tsh_pp">' + anObject + '<\/span>';
     }
 
-    return '<span class="tsh_pp">' +
-        TP.str(anObject).asEscapedXML() +
-    '<\/span>';
+    type = TP.name(TP.type(anObject)).replace(/\./g, '_');
+    output = TP.ac();
 
+    output.push('<span class="tsh_pp"><span class="' + type + '">');
+
+    keys = TP.keys(anObject);
+    keys.sort();
+    keys.compact();
+    len = keys.getSize();
+
+    for (i = 0; i < len; i++) {
+        key = keys.at(i);
+
+        output.push('<span data-name="' + key + '">' +
+            TP.boot.$dump(anObject[keys.at(i)], '\n', true) +
+                    '<\/span>');
+    }
+
+    output.push('<\/span><\/span>');
+
+    return output.join('\n');
     /*
     if (anObject === TP || anObject === TP.sys) {
         return '<span class="tsh_pp">' +
@@ -228,6 +324,22 @@ function(anObject, optFormat) {
 
     return '<span class="tsh_pp">' + TP.xhtmlstr(anObject) + '<\/span>';
     */
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.pp.Type.defineMethod('fromRegExp',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="tsh_pp">' + anObject.toString() + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -331,11 +443,21 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.pp.Type.defineMethod('fromTP_core_URI',
+function(anObject, optFormat) {
+
+    return this.fromObject(anObject);
+
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.pp.Type.defineMethod('fromTP_lang_Hash',
 function(anObject, optFormat) {
 
     var output,
         keys,
+        key,
         len,
         i;
 
@@ -365,13 +487,15 @@ function(anObject, optFormat) {
     output.push('<span class="tsh_pp"><span class="TP_lang_Hash">');
 
     keys = TP.keys(anObject);
+    keys.sort();
+    keys.compact();
     len = keys.getSize();
 
     for (i = 0; i < len; i++) {
-        output.push('<span data-name="', keys.at(i), '">',
-                        TP.format(anObject.at(keys.at(i)),
-                                    'TP.tsh.pp',
-                                    optFormat),
+        key = keys.at(i);
+
+        output.push('<span data-name="' + key + '">' +
+            TP.boot.$dump(anObject.at(keys.at(i)), '\n', true) +
                     '<\/span>');
     }
 
@@ -380,7 +504,7 @@ function(anObject, optFormat) {
     //  We're done - we can remove the recursion flag.
     delete anObject.$$format_tsh_pp;
 
-    return output.join('');
+    return output.join('\n');
 });
 
 //  ------------------------------------------------------------------------
@@ -450,29 +574,29 @@ function(anObject, optFormat) {
     keys = TP.sys.$windowkeys;
     len = keys.length;
 
-    arr.push('<span class="TP_core_Window ',
-                TP.escapeTypeName(TP.tname(nativeWin)), '">',
-                '<span class="Window" gid="', TP.gid(nativeWin), '">');
+    arr.push('<span class="TP_core_Window ' +
+                TP.escapeTypeName(TP.tname(nativeWin)) + '">' +
+                '<span class="Window" gid="' + TP.gid(nativeWin) + '">');
 
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
-            arr.push('<span data-name="', keys[i], '">',
-                        TP.str(nativeWin.document).asEscapedXML(), '<\/span>');
+            arr.push('<span data-name="' + keys[i] + '">' +
+                TP.str(nativeWin.document).asEscapedXML() + '<\/span>');
             continue;
         }
 
         try {
-            arr.push('<span data-name="', keys[i], '">',
-                        TP.xhtmlstr(nativeWin[keys[i]]), '<\/span>');
+            arr.push('<span data-name="' + keys[i] + '">' +
+                TP.xhtmlstr(nativeWin[keys[i]]) + '<\/span>');
         } catch (e) {
-            arr.push('<span data-name="', keys[i], '">',
-                        TP.xhtmlstr(undefined), '<\/span>');
+            arr.push('<span data-name="' + keys[i] + '">' +
+                'undefined' + '<\/span>');
         }
     }
 
     arr.push('<\/span><\/span>');
 
-    return '<span class="tsh_pp">' + arr.join('') + '<\/span>';
+    return '<span class="tsh_pp">' + arr.join('\n') + '<\/span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -503,31 +627,45 @@ function(anObject, optFormat) {
     keys = TP.sys.$windowkeys;
     len = keys.length;
 
-    arr.push('<span class="Window" gid="', TP.gid(anObject), '">');
+    arr.push('<span class="Window" gid="' + TP.gid(anObject) + '">');
 
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
-            arr.push('<span data-name="', keys[i], '">',
-                        TP.str(anObject.document).asEscapedXML(), '<\/span>');
+            arr.push('<span data-name="' + keys[i] + '">' +
+                TP.str(anObject.document).asEscapedXML() + '<\/span>');
             continue;
         }
 
         try {
-            arr.push('<span data-name="', keys[i], '">',
-                        TP.xhtmlstr(anObject[keys[i]]), '<\/span>');
+            arr.push('<span data-name="' + keys[i] + '">' +
+                TP.xhtmlstr(anObject[keys[i]]) + '<\/span>');
         } catch (e) {
-            arr.push('<span data-name="', keys[i], '">',
-                        TP.xhtmlstr(undefined), '<\/span>');
+            arr.push('<span data-name="' + keys[i] + '">' +
+                'undefined' + '<\/span>');
         }
     }
 
     arr.push('<\/span>');
 
-    return '<span class="tsh_pp">' + arr.join('') + '<\/span>';
+    return '<span class="tsh_pp">' + arr.join('\n') + '<\/span>';
 });
 
-//  ------------------------------------------------------------------------
-//  Objects that can't an as()/from() can't be computed from
+//  ========================================================================
+//  Objects with no as() (invalid, Error, etc) attempt this.transform()
+//  ========================================================================
+
+TP.tsh.pp.Type.defineMethod('transformError', function(anObject, optFormat) {
+
+    /**
+     * Format error objects for output. We output stack information if the
+     * system is configured for it and we can access it from the Error.
+     * @param {Error} anObject The error object to format.
+     * @param {Object} optFormat
+     */
+
+    return this.fromError(anObject);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.tsh.pp.Type.defineMethod('transformObject',
@@ -559,7 +697,7 @@ function(anObject, optFormat) {
         }
     }
 
-    return '<span class="tsh_pp">' + TP.xhtmlstr(anObject) + '<\/span>';
+    return this.fromObject(anObject);
 });
 
 //  ------------------------------------------------------------------------

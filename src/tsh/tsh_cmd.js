@@ -151,7 +151,7 @@ function(aString, aShell, aRequest, asTokens) {
                             ' ',
                             TP.ifInvalid(parts.at(3), ''));
 
-                    aRequest.fail(TP.FAILURE, msg);
+                    aRequest.fail(TP.FAILURE, new Error(msg));
 
                     return;
                 }
@@ -212,9 +212,10 @@ function(aString, aShell, aRequest, asTokens) {
                             TP.ifInvalid(
                                     aFaultCode,
                                     TP.FAILURE),
+                            new Error(
                             TP.ifInvalid(
                                     aFaultString,
-                                    TP.sc('History request failed.')));
+                                    TP.sc('History request failed.'))));
                     });
 
                 aShell.handleShellRequest(req);
@@ -222,7 +223,7 @@ function(aString, aShell, aRequest, asTokens) {
                 return;
             } else {
                 msg = TP.sc('No previous command to edit.');
-                aRequest.fail(TP.FAILURE, msg);
+                aRequest.fail(TP.FAILURE, new Error(msg));
 
                 return;
             }
@@ -311,10 +312,11 @@ function(aString, aShell, aRequest, asTokens) {
                                 TP.ifInvalid(
                                     aFaultCode,
                                     TP.FAILURE),
+                                new Error(
                                 TP.ifInvalid(
                                     aFaultString,
                                     'Aliased request failed: ' +
-                                        this.at('cmd')));
+                                        this.at('cmd'))));
                         });
 
                     req.defineMethod(
@@ -1047,7 +1049,7 @@ function(REQUEST$$) {
             //  NOTE we slice off the file reference at the tail
             //  since that's not accurate...we're doing
             //  interactive input here.
-            ERR$$ = TP.str(e);
+            ERR$$ = e.message;
             if (ERR$$.contains(' &#171; ')) {
                 ERR$$ = TP.trim(ERR$$.slice(0, ERR$$.indexOf(' &#171; ')));
             }
@@ -1058,7 +1060,7 @@ function(REQUEST$$) {
                 RESULT$$ = ERR$$.endsWith('.') ? ERR$$ : ERR$$ + '.';
             }
 
-            $REQUEST.fail(TP.FAILURE, RESULT$$);
+            $REQUEST.fail(TP.FAILURE, new Error(RESULT$$));
         }
     }
 
@@ -1278,7 +1280,7 @@ function(REQUEST$$, CMDTYPE$$) {
 
                                 //  problem creating regular expression
                                 //  which should have reported an error
-                                $REQUEST.fail(TP.FAILURE, RESULT$$);
+                                $REQUEST.fail(TP.FAILURE, new Error(RESULT$$));
 
                                 return;
                             }
@@ -1384,7 +1386,8 @@ function(REQUEST$$, CMDTYPE$$) {
             END$$,
             ERR$$,
             TIME$$,
-            SCRIPT$$;
+            SCRIPT$$,
+            FLAG$$;
 
         TP.stop('break.tsh_execute');
 
@@ -1427,6 +1430,9 @@ function(REQUEST$$, CMDTYPE$$) {
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
 
         SCRIPT$$ = 'with ($SCOPE) {' + $SCRIPT + '};';
+
+        FLAG$$ = TP.sys.shouldThrowExceptions();
+        TP.sys.shouldThrowExceptions(true);
 
         /* eslint-disable no-loop-func */
         for (I$$ = 0; I$$ < LEN$$; I$$++) {
@@ -1475,7 +1481,7 @@ function(REQUEST$$, CMDTYPE$$) {
                     //  NOTE we slice off the file reference at the tail
                     //  since that's not accurate...we're doing
                     //  interactive input here.
-                    ERR$$ = TP.str(e);
+                    ERR$$ = e.message;
                     ERR$$ = (ERR$$.indexOf(':: file:') === TP.NOT_FOUND) ?
                         TP.trim(ERR$$) :
                         TP.trim(ERR$$.slice(0, ERR$$.indexOf(':: file:')));
@@ -1491,12 +1497,15 @@ function(REQUEST$$, CMDTYPE$$) {
                         RESULT$$ = ERR$$.endsWith('.') ? ERR$$ : ERR$$ + '.';
                     }
 
-                    $REQUEST.fail(TP.FAILURE, RESULT$$);
+                    $REQUEST.fail(TP.FAILURE, new Error(RESULT$$));
                 }
 
                 return;
             }
         }
+
+        TP.sys.shouldThrowExceptions(FLAG$$);
+
         /* eslint-enable no-loop-func */
     };
 
@@ -1532,12 +1541,14 @@ function(REQUEST$$, CMDTYPE$$) {
                     $REQUEST.atPut('cmdInstance', RESULT$$);
                     RESULT$$ = TYPE$$.cmdAddContent($REQUEST);
                 } else {
-                    $REQUEST.fail(TP.FAILURE, 'Invalid sink.');
+                    $REQUEST.fail(TP.FAILURE,
+                        new Error('Invalid sink.'));
                 }
             } else if (!TP.isMutable(RESULT$$)) {
-                $REQUEST.fail(TP.FAILURE, 'Non-mutable sink.');
+                $REQUEST.fail(TP.FAILURE,
+                    new Error('Non-mutable sink.'));
             } else {
-                $REQUEST.fail(TP.FAILURE, 'Missing sink.');
+                $REQUEST.fail(TP.FAILURE, new Error('Missing sink.'));
             }
 
             break;
@@ -1568,7 +1579,8 @@ function(REQUEST$$, CMDTYPE$$) {
                         $REQUEST.atPut('cmdInstance', RESULT$$);
                         RESULT$$ = TYPE$$.cmdFilterInput($REQUEST);
                     } else {
-                        $REQUEST.fail(TP.FAILURE, 'Invalid pipe.');
+                        $REQUEST.fail(TP.FAILURE,
+                            new Error('Invalid pipe.'));
                     }
                 } else {
                     $REQUEST.complete(RESULT$$);
@@ -1727,7 +1739,7 @@ function(aString, aShell, aRequest) {
         $SCRIPT,
 
         err,
-
+        flag,
         value,
         sourcevars,
 
@@ -1816,10 +1828,11 @@ function(aString, aShell, aRequest) {
             TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdAllowSubs', false))) {
             aRequest.fail(
                 TP.FAILURE,
+                new Error(
                 TP.sc(TP.join(
                         'Security violation. Attempt to use',
                         ' command substitution outside of',
-                        ' interactive mode.')));
+                        ' interactive mode.'))));
 
             return;
         }
@@ -1858,6 +1871,9 @@ function(aString, aShell, aRequest) {
         $CONTEXT.$_ = null;
 
         try {
+            flag = TP.sys.shouldThrowExceptions();
+            TP.sys.shouldThrowExceptions(true);
+
             //  Refresh the context's script reference after any substitutions
             //  and before any with() bracketing so any internal reference to it
             //  will reflect what's being eval'd minus the with() wrapper.
@@ -1901,7 +1917,7 @@ function(aString, aShell, aRequest) {
             } else {
                 //  NOTE we slice off the file reference at the tail since that's
                 //  not accurate...we're doing interactive input here.
-                err = TP.str(e);
+                err = e.message;
                 err = (err.indexOf(':: file:') === TP.NOT_FOUND) ?
                     TP.trim(err) :
                     TP.trim(err.slice(0, err.indexOf(':: file:')));
@@ -1909,12 +1925,16 @@ function(aString, aShell, aRequest) {
 
                 $REQUEST.fail(
                     TP.FAILURE,
+                    new Error(
                     TP.join(
                         TP.sc('Command substitution `'),
                         aString.slice(1, -1),
                         TP.sc('` failed: '),
-                        err));
+                        err)));
             }
+        } finally {
+            // Reset our flags...
+            TP.sys.shouldThrowExceptions(flag);
         }
 
         //  if the catch block failed the request we're done.

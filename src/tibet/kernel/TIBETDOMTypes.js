@@ -4494,12 +4494,12 @@ function(anObject, aParamHash) {
         if (TP.isCallable(templateFunc)) {
             //  Run the transform Function
             resultStr = templateFunc.transform(anObject, aParamHash);
-
+/*
             //  Strip out any 'attr="null"' attributes - existence of null
             //  attributes can cause unintended consequences.
             TP.regex.XML_ATTR_CONTAINING_NULL.lastIndex = 0;
             resultStr = resultStr.strip(TP.regex.XML_ATTR_CONTAINING_NULL);
-
+*/
             //  Now, we need to make sure that any constructs that were
             //  generated into the result that need tag compilation are
             //  processed.
@@ -4546,12 +4546,12 @@ function(anObject, aParamHash) {
     if (TP.isCallable(templateFunc)) {
         //  Run the transform Function
         resultStr = templateFunc.transform(anObject, aParamHash);
-
+/*
         //  Strip out any 'attr="null"' attributes - existence of null
         //  attributes can cause unintended consequences.
         TP.regex.XML_ATTR_CONTAINING_NULL.lastIndex = 0;
         resultStr = resultStr.strip(TP.regex.XML_ATTR_CONTAINING_NULL);
-
+*/
         //  Now, we need to make sure that any constructs that were generated
         //  into the result that need tag compilation are processed.
 

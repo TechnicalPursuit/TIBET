@@ -1139,13 +1139,9 @@ TP.PHash = function() {
          *     receiver.
          */
 
-        var newHash;
-
-        newHash = TP.lang.Hash.construct();
-
-        newHash.$set('$$hash', this.$$hash);
-
-        return newHash;
+        // Pray this doesn't get invoked before we rebuild with the real hash
+        // type (or better yet Map when it arrives).
+        return TP.hc(this.$$hash);
     };
 
     //  register with TIBET by hand
@@ -1721,13 +1717,18 @@ TP.hc = function() {
         len,
         i;
 
+    // If we get invoked on a PHash just return it like a noop.
+    if (arguments[0] instanceof TP.PHash) {
+        return arguments[0];
+    }
+
     dict = new TP.PHash();
     len = arguments.length;
 
     for (i = 0; i < len; i = i + 2) {
-		if (TP.notValid(arguments[i])) {
-			return this.raise('TP.sig.InvalidKey');
-		}
+        if (TP.notValid(arguments[i])) {
+            return this.raise('TP.sig.InvalidKey');
+        }
         dict.atPut(arguments[i], arguments[i + 1]);
     }
 
@@ -8869,9 +8870,9 @@ function(anObject) {
         i,
         key;
 
-	if (TP.notValid(anObject)) {
-		return this.raise('InvalidParameter');
-	}
+    if (TP.notValid(anObject)) {
+        return this.raise('InvalidParameter');
+    }
 
     ownKeys = TP.ac();
 

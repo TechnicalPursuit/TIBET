@@ -6529,9 +6529,7 @@ function(anOrigin, anException, aPayload) {
                 args = '';
             }
 
-            if (TP.isValid(orig) &&
-                TP.isCallable(orig.getTypeName) &&
-                TP.isValid(eType.getSignalName)) {
+            if (TP.isValid(orig) && TP.isValid(eType.getSignalName)) {
                 str = TP.id(orig) + ' raised: ' +
                         eType.getSignalName() +
                         args;
@@ -6651,7 +6649,11 @@ function(anOrigin, anException, aPayload) {
         //  flag so we do a secondary check here
         if (aSignal.getSignalName() !== 'AssertionFailed') {
             $handled = true;
-            throw new Error(aSignal.getSignalName());
+            str = aSignal.asString();
+            if (TP.isValid(aPayload)) {
+                str += ' - ' + TP.str(aPayload);
+            }
+            throw new Error(str);
         }
     }
 
