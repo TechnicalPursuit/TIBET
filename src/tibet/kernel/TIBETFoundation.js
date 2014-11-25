@@ -2761,7 +2761,9 @@ function(aFilter) {
         /* jshint forin:true */
         /* eslint-disable guard-for-in */
         for (key in this) {
-            keys.push(key);
+            if (!TP.regex.INTERNAL_SLOT.test(key)) {
+                keys.push(key);
+            }
         }
         /* eslint-enable guard-for-in */
         /* jshint forin:false */
