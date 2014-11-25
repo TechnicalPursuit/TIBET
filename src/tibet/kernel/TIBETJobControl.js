@@ -492,6 +492,10 @@ function(aResult) {
             this.completeJob();
         }
     } catch (e) {
+        // Make sure we don't think the job succeeded or bury the error.
+        this.set('statusCode', TP.FAILED);
+        this.set('result', e);
+
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
                         TP.LOG) : 0;
