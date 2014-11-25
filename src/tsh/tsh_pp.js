@@ -96,6 +96,8 @@ function(anObject, optFormat) {
 TP.tsh.pp.Type.defineMethod('fromError',
 function(anObject, optFormat) {
 
+    var stack;
+
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
     if (TP.isValid(optFormat)) {
@@ -104,9 +106,14 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="tsh_pp error">' +
-        TP.boot.$dump(anObject, '', true) +
-    '<\/span>';
+    stack = '';
+    if (TP.sys.shouldLogStack()) {
+        stack = '<br/>' + TP.getStackInfo(anObject).join('<br/>');
+    }
+
+    return '<span class="tsh_pp">' +
+        anObject.message.asEscapedXML() +
+    stack + '<\/span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -219,6 +226,13 @@ function(anObject, optFormat) {
 TP.tsh.pp.Type.defineMethod('fromObject',
 function(anObject, optFormat) {
 
+    var type,
+        output,
+        i,
+        len,
+        keys,
+        key;
+
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
     if (TP.isValid(optFormat)) {
@@ -232,10 +246,27 @@ function(anObject, optFormat) {
         return '<span class="tsh_pp">' + anObject + '<\/span>';
     }
 
-    return '<span class="tsh_pp">' +
-        TP.boot.$dump(anObject, '', true) +
-    '<\/span>';
+    type = TP.name(TP.type(anObject)).replace(/\./g, '_');
+    output = TP.ac();
 
+    output.push('<span class="tsh_pp"><span class="' + type + '">');
+
+    keys = TP.keys(anObject);
+    keys.sort();
+    keys.compact();
+    len = keys.getSize();
+
+    for (i = 0; i < len; i++) {
+        key = keys.at(i);
+
+        output.push('<span data-name="' + key + '">' +
+            TP.boot.$dump(anObject[keys.at(i)], '\n', true) +
+                    '<\/span>');
+    }
+
+    output.push('<\/span><\/span>');
+
+    return output.join('\n');
     /*
     if (anObject === TP || anObject === TP.sys) {
         return '<span class="tsh_pp">' +
@@ -348,6 +379,15 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.pp.Type.defineMethod('fromTP_core_URI',
+function(anObject, optFormat) {
+
+    return this.fromObject(anObject);
+
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.pp.Type.defineMethod('fromTP_lang_Hash',
 function(anObject, optFormat) {
 
@@ -382,20 +422,14 @@ function(anObject, optFormat) {
 
     output.push('<span class="tsh_pp"><span class="TP_lang_Hash">');
 
-    // NOTE!!! DO NOT, REPEAT NOT, compact() the key array.
     keys = TP.keys(anObject);
     keys.sort();
+    keys.compact();
     len = keys.getSize();
 
     for (i = 0; i < len; i++) {
         key = keys.at(i);
 
-        // TODO: this is a nasty short-term hack to work around a templating bug
-        // we don't have time to fix right now due to downstream impact. Take
-        // this out once that bug is fixed.
-        if (key === 'null') {
-            key = 'NULL';
-        }
         output.push('<span data-name="' + key + '">' +
             TP.boot.$dump(anObject.at(keys.at(i)), '\n', true) +
                     '<\/span>');
@@ -565,15 +599,7 @@ TP.tsh.pp.Type.defineMethod('transformError', function(anObject, optFormat) {
      * @param {Object} optFormat
      */
 
-    var stack;
-
-    stack = '';
-    if (TP.sys.shouldLogStack()) {
-        stack = '<br/>' + TP.getStackInfo(anObject).join('<br/>');
-    }
-
-    return '<span class="tsh_pp">' + anObject.message.asEscapedXML() +
-        stack + '<\/span>';
+    return this.fromError(anObject);
 });
 
 //  ------------------------------------------------------------------------
@@ -607,9 +633,7 @@ function(anObject, optFormat) {
         }
     }
 
-    return '<span class="tsh_pp">' +
-        TP.boot.$dump(anObject, '', true) +
-    '<\/span>';
+    return this.fromObject(anObject);
 });
 
 //  ------------------------------------------------------------------------
