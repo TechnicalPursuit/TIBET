@@ -3390,9 +3390,6 @@ function() {
         mainType,
         mainTypeTarget;
 
-        //mainTypeProps,
-        //mainInstProps;
-
     //  If we've already resolved traits for this type, then we don't allow any
     //  more composition / resolution to occur.
     if (TP.isTrue(this.get('$traitsResolved'))) {
@@ -3417,10 +3414,6 @@ function() {
 
     mainTypeTarget = this.getPrototype();
 
-    //  We need to get all of the *known* properties (that is, public and
-    //  hidden) of the receiving *type* object.
-    //mainTypeProps = mainTypeTarget.getInterface('known');
-
     //  Then, loop over each trait, getting all of the known properties of that
     //  *type* object and try to populate entries for them into the 'traits type
     //  resolutions' hash.
@@ -3441,16 +3434,6 @@ function() {
                         sources,
                         propVal;
 
-                    //  If the property exists in the main type and it points to
-                    //  the *identical* value in the trait type, then there's no
-                    //  sense in continuing - move on to the next property.
-                    /*
-                    if (mainTypeProps.indexOf(propName) !== TP.NOT_FOUND &&
-                            mainTypeTarget[propName] ===
-                                traitTypeTarget[propName]) {
-                        return;
-                    }
-                    */
                     if (TP.isProperty(mainTypeTarget, propName) &&
                             mainTypeTarget[propName] ===
                                 traitTypeTarget[propName]) {
@@ -3494,10 +3477,6 @@ function() {
 
     mainTypeTarget = this.getInstPrototype();
 
-    //  We need to get all of the *known* properties (that is, public and hidden)
-    //  of the receiving type's *instance prototype*.
-    //mainInstProps = mainTypeTarget.getInterface('known');
-
     //  Then, loop over each trait, getting all of the known properties of that
     //  type object's *instance prototype* and try to populate entries for them
     //  into the 'traits instance resolutions' hash.
@@ -3518,16 +3497,6 @@ function() {
                         sources,
                         propVal;
 
-                    //  If the property exists in the main type and it points to
-                    //  the *identical* value in the trait type, then there's no
-                    //  sense in continuing - move on to the next property.
-                    /*
-                    if (mainInstProps.indexOf(propName) !== TP.NOT_FOUND &&
-                            mainTypeTarget[propName] ===
-                                traitTypeTarget[propName]) {
-                        return;
-                    }
-                    */
                     if (TP.isProperty(mainTypeTarget, propName) &&
                             mainTypeTarget[propName] ===
                                 traitTypeTarget[propName]) {
