@@ -14,7 +14,7 @@ sherpa|world {
 	transform-origin: 0px 0px;
     transition: transform .5s ease-in;
 
-	background-image: url('../../../../../lib/img/tibet_world.gif');
+	background-image: url('../../../../../lib/img/boot/tibet_world.gif');
 	background-position: center center;
 	background-repeat: no-repeat;
 }
