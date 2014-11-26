@@ -665,15 +665,11 @@ TP.html.input.Type.resolveTraits(
 TP.html.input.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
                 'removeAttribute', 'select', 'signal'),
-        TP.html.input);
+        TP.core.UIElementNode);
 
 TP.html.input.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
-
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.html.input.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -1006,6 +1002,12 @@ function() {
 
     return true;
 });
+
+//  ------------------------------------------------------------------------
+
+//  Resolve the traits right away as type methods of this type are called during
+//  content processing when we only have type methods involved.
+TP.html.input.finalizeTraits();
 
 //  ========================================================================
 //  TP.html.inputVisible
@@ -2948,6 +2950,27 @@ TP.html.inputSelectable.defineSubtype('inputText');
 
 TP.html.inputText.addTraits(TP.html.textUtilities);
 
+TP.html.inputText.Type.resolveTraits(
+        TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
+        TP.html.inputText);
+
+TP.html.inputText.Type.resolveTraits(
+        TP.ac('fromBoolean', 'fromDate', 'fromNumber', 'fromString',
+                'generateMarkup', 'getConcreteType', 'shouldAutoWrapItems'),
+        TP.html.input);
+
+TP.html.inputText.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
+
+TP.html.inputText.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
+
+TP.html.inputText.Inst.resolveTraits(
+        TP.ac('isSingleValued', 'isScalarValued'),
+        TP.html.input);
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -3036,6 +3059,27 @@ TP.html.inputClickable.defineSubtype('inputWeek');
 TP.html.inputSelectable.defineSubtype('inputUrl');
 
 TP.html.inputUrl.addTraits(TP.html.textUtilities);
+
+TP.html.inputUrl.Type.resolveTraits(
+        TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
+        TP.html.inputUrl);
+
+TP.html.inputUrl.Type.resolveTraits(
+        TP.ac('fromBoolean', 'fromDate', 'fromNumber', 'fromString',
+                'generateMarkup', 'getConcreteType', 'shouldAutoWrapItems'),
+        TP.html.input);
+
+TP.html.inputUrl.Inst.resolveTraits(
+        TP.ac('getValue', 'setValue'),
+        TP.html.textUtilities);
+
+TP.html.inputUrl.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
+
+TP.html.inputUrl.Inst.resolveTraits(
+        TP.ac('isSingleValued', 'isScalarValued'),
+        TP.html.input);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
