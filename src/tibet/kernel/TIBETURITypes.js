@@ -4816,8 +4816,11 @@ function(aRequest) {
                     result = TP.isValid(aResult) ? TP.node(aResult) : aResult;
 
                     subrequest.set('result', result);
-                    thisref.set('resource', result);
-
+/*
+                    // TODO: verify that updateResourceCache is correct below.
+                    //thisref.set('resource', result);
+                    thisref.updateResourceCache(subrequest);
+*/
                     if (TP.canInvoke(aRequest, 'complete')) {
                         aRequest.complete(result);
                     }
@@ -5024,12 +5027,14 @@ function(aRequest, filterResult) {
                         //  the processed content rather than the inbound
                         //  content.
                         subrequest.set('result', result);
+                    } else {
+                        //  unfiltered results should update our resource cache.
+                        thisref.updateResourceCache(subrequest);
                     }
 
-                    //  Make sure the cache value is updated if the
-                    //  getFilteredResult() call above changed what it was
-                    //  filtering.
-                    thisref.set('resource', result);
+                    //  TODO: if we set to a filtered value here we'll replace
+                    //  the main resource value...commented out for testing.
+                    //thisref.set('resource', result);
 
                     if (TP.canInvoke(aRequest, 'complete')) {
                         aRequest.complete(result);
@@ -5158,13 +5163,20 @@ function(aRequest) {
     //  without replacing the container when possible.
     resource = this.$get('resource');
 
+    result = aRequest.getResult();
+
+    //  In cases of refresh we'll often be called with the data we already have
+    //  as the result.
+    if (resource === result) {
+        return resource;
+    }
+
     //  ---
     //  discriminate the "raw data" of the result
     //  ---
 
     //  capture the raw result data from the request. This is typically
     //  a string, node, or pair based on the original request parameters.
-    result = aRequest.getResult();
     if (TP.isArray(result) && (result.getSize() === 2)) {
         dat = result.first();
         dom = result.last();
