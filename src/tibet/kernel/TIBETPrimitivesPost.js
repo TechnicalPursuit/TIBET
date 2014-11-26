@@ -2473,11 +2473,11 @@ function(anObject, assignIfAbsent) {
      * @todo
      */
 
-    if (TP.notDefined(anObject)) {
+    if (anObject === void(0)) {
         return 'undefined';
     }
 
-    if (TP.isNull(anObject)) {
+    if (anObject === null) {
         return 'null';
     }
 
@@ -2515,11 +2515,11 @@ function(anObject) {
      * @returns {String} A string "name".
      */
 
-    if (TP.notDefined(anObject)) {
+    if (anObject === void(0)) {
         return 'undefined';
     }
 
-    if (TP.isNull(anObject)) {
+    if (anObject === null) {
         return 'null';
     }
 
@@ -2882,10 +2882,22 @@ function(anObject) {
 
         rules;
 
+    if (anObject === void(0)) {
+        return 'undefined';
+    }
+
     if (anObject === null) {
         return 'null';
-    } else if (anObject === undefined) {
-        return 'undefined';
+    }
+
+    //  we're usually calling this with a standard object so we can leverage
+    //  TIBET's method APIs to do a best-fit job
+    if (TP.canInvoke(anObject, 'asHTMLString')) {
+        try {
+            return anObject.asHTMLString();
+        } catch (e) {
+            void(0);
+        }
     }
 
     //  XMLHttpRequest can have permission issues, so check early
@@ -3040,10 +3052,22 @@ function(anObject) {
 
         rules;
 
+    if (anObject === void(0)) {
+        return 'undefined';
+    }
+
     if (anObject === null) {
         return 'null';
-    } else if (anObject === undefined) {
-        return '"undefined"';
+    }
+
+    //  we're usually calling this with a standard object so we can leverage
+    //  TIBET's method APIs to do a best-fit job
+    if (TP.canInvoke(anObject, 'asJSONSource')) {
+        try {
+            return anObject.asJSONSource();
+        } catch (e) {
+            void(0);
+        }
     }
 
     //  XMLHttpRequest can have permission issues, so check early
@@ -3162,12 +3186,6 @@ function(anObject) {
         return '{"type":"Declaration","data":"' + anObject.cssText + '"}';
     }
 
-    //  we're usually calling this with a standard object so we can leverage
-    //  TIBET's method APIs to do a best-fit job
-    if (TP.canInvoke(anObject, 'asJSONSource')) {
-        return anObject.asJSONSource();
-    }
-
     //  other cases should be dealt with by just returning the JSON rep
     return TP.js2json(anObject);
 });
@@ -3194,7 +3212,7 @@ function(anObject) {
 
     //  no valid source object means no work
     if (TP.notValid(anObject)) {
-        return;
+        return [];
     }
 
     if (TP.canInvoke(anObject, 'getKeys')) {
@@ -3579,6 +3597,19 @@ function(anObject, verbose) {
     }
 
     wantsVerbose = TP.ifInvalid(verbose, true);
+
+    if (TP.canInvoke(anObject, 'asString')) {
+        try {
+            str = anObject.asString(wantsVerbose);
+            if (TP.regex.NATIVE_CODE.test(str)) {
+                str = TP.tname(anObject);
+            }
+
+            return str;
+        } catch (e) {
+            void(0);
+        }
+    }
 
     //  XMLHttpRequest can have permission issues, so check early
     if (TP.isXHR(anObject)) {
