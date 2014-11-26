@@ -4026,13 +4026,13 @@ function(stateName) {
      * @returns {Boolean} The value of the piece of state after toggling it.
      */
 
-     if (TP.isTrue(this.get(stateName))) {
-         this.set(stateName, false);
+     if (TP.isTrue(TP.bc(this.getAttribute(stateName)))) {
+         this.setAttribute(stateName, false);
      } else {
-         this.set(stateName, true);
+         this.setAttribute(stateName, true);
      }
 
-    return this.get(stateName);
+    return TP.bc(this.getAttribute(stateName));
 });
 
 //  ------------------------------------------------------------------------

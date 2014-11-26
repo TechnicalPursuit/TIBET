@@ -78,7 +78,7 @@ function() {
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
 
     (function (aSignal) {
-        if (aSignal.getShiftKey() && TP.notTrue(this.get('hidden'))) {
+        if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
@@ -102,7 +102,7 @@ function(beHidden) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    if (this.get('hidden') === beHidden) {
+    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
         return this;
     }
 
@@ -185,7 +185,7 @@ function(aSignal) {
      * @name handleHiddenChange
      */
 
-    this.set('hidden', true);
+    this.setAttribute('hidden', true);
     this.set('haloRect', null);
 
     return this;
@@ -422,12 +422,12 @@ function(aTarget) {
     }
 
     if (TP.notValid(aTarget) && TP.notValid(existingTPTarget)) {
-        this.set('hidden', true);
+        this.setAttribute('hidden', true);
 
         this.set('haloRect', null);
     } else {
         this.setPagePositionAndSize(theRect);
-        this.set('hidden', false);
+        this.setAttribute('hidden', false);
 
         this.set('haloRect', theRect);
     }
@@ -519,7 +519,7 @@ function(aSignal) {
         existingTPTarget.haloCanBlur(this, aSignal)) {
 
             this.blur();
-            this.set('hidden', true);
+            this.setAttribute('hidden', true);
 
     } else if (aSignal.getButton() === TP.RIGHT) {
 
@@ -540,7 +540,7 @@ function(aSignal) {
 
                 //  This will cause the halo to move and size to a new target.
                 this.focusOn(targetTPElem);
-                this.set('hidden', false);
+                this.setAttribute('hidden', false);
             }
         }
     }

@@ -150,7 +150,7 @@ function(aSignal) {
 
     var isHidden;
 
-    isHidden = aSignal.getOrigin().get('hidden');
+    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
 
     /*
     if (isHidden) {
