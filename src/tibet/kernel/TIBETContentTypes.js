@@ -236,6 +236,9 @@ function(anObject) {
 //  The JSON content's JavaScript representation
 TP.core.JSONContent.Inst.defineAttribute('data');
 
+//  The original JSON string value, if there was one.
+TP.core.JSONContent.Inst.defineAttribute('json');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -255,14 +258,22 @@ function(data) {
     this.callNextMethod();
 
     //  If a String was handed in, it's probably JSON - try to convert it.
-
     if (TP.isString(data) && TP.notEmpty(data)) {
         jsonData = TP.json2js(data);
+
+        // TP.json2js will raise for us.
+        if (TP.notValid(jsonData)) {
+            return;
+        }
+
+        // Save the original string responsible for our content data.
+        this.$set('json', data);
+
     } else {
         jsonData = data;
     }
 
-    this.set('data', jsonData);
+    this.$set('data', jsonData);
 
     return this;
 });
@@ -280,6 +291,19 @@ function() {
 
     //  Callers will be interested in our data, not the 'data' structure itself.
     return TP.json(this.get('data'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * Returns the common string representation of the receiver.
+     * @returns {String} The content object in string form.
+     */
+
+    return this.asJSONSource();
 });
 
 //  ========================================================================
