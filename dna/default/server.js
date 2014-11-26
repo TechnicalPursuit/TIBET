@@ -164,14 +164,14 @@ app.use(compression());
 
 // Serve a general 404 if no other handler too care of the request.
 app.use(function(req, res, next) {
-  res.send(404, TDS.getcfg('tds.404'));
+  res.status(404).send(TDS.getcfg('tds.404'));
 });
 
 // Provide simple error handler middleware here.
 app.use(function(err, req, res, next) {
   console.error(err.stack);
 // TODO: dump stack/error back to the client...?
-  res.send(500, TDS.getcfg('tds.500'));
+  res.status(500).send(TDS.getcfg('tds.500'));
 });
 
 
