@@ -30,7 +30,7 @@ TP.html.link.Type.resolveTrait('uriAttrs', TP.html.link);
 TP.html.link.Inst.resolveTraits(
         TP.ac('removeAttribute', '$setAttribute', 'select', 'isResponderFor',
                 'getNextResponder', 'signal'),
-        TP.html.link);
+        TP.core.UIElementNode);
 
 TP.html.link.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),

@@ -1076,12 +1076,14 @@ TP.sig.WorkflowSignal.addTraits(TP.core.JobStatus);
 
 TP.sig.WorkflowSignal.Type.resolveTrait('getSignalName', TP.sig.Signal);
 
+TP.sig.WorkflowSignal.Inst.resolveTrait('resume', TP.core.JobStatus);
+
 TP.sig.WorkflowSignal.Inst.resolveTraits(
         TP.ac('asDumpString', 'asHTMLString', 'asJSONSource', 'asPrettyString',
                 'asRecursionString', 'asSource', 'asString', 'asXMLString',
                 'at', 'atPut', 'copy', 'getProperty', 'getSignalName', 'init',
-                'isRecyclable', 'recycle', 'removeKey', 'resume'),
-        TP.sig.WorkflowSignal);
+                'isRecyclable', 'recycle', 'removeKey'),
+        TP.sig.Signal);
 
 //  LOOK AT THE END OF THIS TYPE DEFINITION AFTER THE TYPE IS FULLY DEFINED FOR
 //  TRAIT FINALIZATION

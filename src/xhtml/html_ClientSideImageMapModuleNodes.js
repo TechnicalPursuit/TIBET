@@ -32,10 +32,13 @@ TP.html.area.Type.resolveTraits(
         TP.html.area);
 
 TP.html.area.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getContent', 'getNextResponder',
-                'isResponderFor', 'removeAttribute', 'select', 'setContent',
-                'signal'),
-        TP.html.area);
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.core.UIElementNode);
+
+TP.html.area.Inst.resolveTraits(
+        TP.ac('getContent', 'setContent'),
+        TP.core.EmptyElementNode);
 
 //  Resolve the traits right away as type methods of this type are called during
 //  content processing when we only have type methods involved.
