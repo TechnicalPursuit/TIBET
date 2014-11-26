@@ -443,6 +443,16 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.pp.Type.defineMethod('fromTP_core_JSONContent',
+function(anObject, optFormat) {
+
+    return '<span class="tsh_pp">' +
+        anObject.asString().asEscapedXML() +
+    '<\/span>';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.pp.Type.defineMethod('fromTP_core_URI',
 function(anObject, optFormat) {
 
