@@ -6,6 +6,13 @@
 <config id="standard">
     <script src="./src/TP.tsh.console.js"/>
 
+    <!--script src="~lib_deps/codemirror/lib/codemirror.js"/>
+    <script>
+        <![CDATA[
+            TP.extern.CodeMirror = CodeMirror;
+        ]]>
+    </script-->
+
     <property name="TP.tsh.console.css_uri" value="~tdc_root/css/TP.tsh.console.css"/>
     <property name="TP.tsh.console.xhtml_uri" value="~tdc_root/xhtml/TP.tsh.console.xhtml"/>
 </config>
