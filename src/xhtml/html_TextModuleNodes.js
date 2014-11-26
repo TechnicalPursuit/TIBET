@@ -80,7 +80,7 @@ TP.html.br.addTraits(TP.core.EmptyElementNode);
 TP.html.br.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
                 'removeAttribute', 'select', 'signal'),
-        TP.html.br);
+        TP.core.UIElementNode);
 
 TP.html.br.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),

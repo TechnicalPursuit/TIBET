@@ -20,16 +20,22 @@
 TP.sig.IORequest.defineSubtype('UserIORequest');
 
 TP.sig.UserIORequest.addTraits(TP.sig.UserIOSignal);
-TP.sig.UserIORequest.Type.resolveTraits(
-    TP.ac('shouldLog', 'getSignalName'),
-    TP.sig.UserIORequest);
+
+TP.sig.UserIORequest.Type.resolveTrait('shouldLog', TP.sig.UserIOSignal);
+TP.sig.UserIORequest.Type.resolveTrait('getSignalName', TP.sig.Signal);
+
+TP.sig.UserIORequest.Inst.resolveTrait('resume', TP.core.JobStatus);
+
+TP.sig.UserIORequest.Inst.resolveTraits(
+    TP.ac('init', 'handle', 'recycle'),
+    TP.sig.Request);
 
 TP.sig.UserIORequest.Inst.resolveTraits(
     TP.ac('asDumpString', 'asHTMLString', 'asJSONSource', 'asPrettyString',
             'asRecursionString', 'asSource', 'asString', 'asXMLString', 'at',
-            'atPut', 'copy', 'getProperty', 'getSignalName', 'handle', 'init',
-            'isRecyclable', 'recycle', 'removeKey', 'shouldLog'),
-    TP.sig.UserIORequest);
+            'atPut', 'copy', 'getProperty', 'getSignalName', 'isRecyclable',
+            'removeKey', 'shouldLog'),
+    TP.sig.Signal);
 
 //  LOOK AT THE END OF THIS TYPE DEFINITION AFTER THE TYPE IS FULLY DEFINED FOR
 //  TRAIT FINALIZATION

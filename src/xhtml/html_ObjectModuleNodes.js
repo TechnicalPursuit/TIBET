@@ -387,7 +387,7 @@ TP.html.param.addTraits(TP.core.EmptyElementNode);
 TP.html.param.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
                 'removeAttribute', 'select', 'signal'),
-        TP.html.param);
+        TP.core.UIElementNode);
 
 TP.html.param.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),

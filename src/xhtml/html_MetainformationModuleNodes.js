@@ -26,7 +26,7 @@ TP.html.meta.addTraits(TP.core.EmptyElementNode);
 TP.html.meta.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
                 'removeAttribute', 'select', 'signal'),
-        TP.html.meta);
+        TP.core.UIElementNode);
 
 TP.html.meta.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
