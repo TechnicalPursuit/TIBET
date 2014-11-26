@@ -2735,7 +2735,9 @@ function(aFilter) {
      * @todo
      */
 
-    var filter,
+    var obj,
+
+        filter,
         params,
         attrs,
         methods,
@@ -2754,21 +2756,29 @@ function(aFilter) {
 
     TP.stop('break.interface');
 
-    keys = TP.ac();
-
     //  shortcut for using this method to get all keys of any kind.
     if (aFilter === 'known') {
-        /* jshint forin:true */
-        /* eslint-disable guard-for-in */
-        for (key in this) {
-            if (!TP.regex.INTERNAL_SLOT.test(key)) {
-                keys.push(key);
-            }
-        }
-        /* eslint-enable guard-for-in */
-        /* jshint forin:false */
+
+        //  NB: This was written to be hyper-efficient, hence the use of native
+        //  JS here.
+        keys = [];
+        obj = this;
+
+        do {
+            keys.push(Object.keys(obj));
+            obj = Object.getPrototypeOf(obj);
+        } while(obj);
+
+        keys = Array.prototype.concat.apply([], keys);
+        keys = keys.filter(
+                        function(aKey) {
+                            return !TP.regex.INTERNAL_SLOT.test(aKey);
+                        });
+
         return keys;
     }
+
+    keys = TP.ac();
 
     //  next question is can we find the requested subset on the list?
     filter = TP.ifInvalid(aFilter, 'unique_attributes');
@@ -2815,18 +2825,6 @@ function(aFilter) {
             TP.warn('Scanning ' + filter + ' on ' + this,
                     TP.LOG) : 0;
     }
-
-    //  set up a proto object for filtering methods
-    /*
-     * TODO: figure out why we never ended up using the prototype object later.
-     */
-    /*
-    if (TP.isType(this) || TP.isPrototype(this)) {
-        proto = this.getPrototype();
-    } else {
-        proto = this.getInstPrototype();
-    }
-    */
 
     /* jshint forin:true */
     for (key in this) {
@@ -2913,7 +2911,6 @@ function(aFilter) {
         keys.push(key);
     }
     /* jshint forin:false */
-
 
     return keys;
 });
