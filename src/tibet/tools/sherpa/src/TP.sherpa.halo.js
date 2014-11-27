@@ -135,10 +135,15 @@ function() {
      * @todo
      */
 
+    var currentTargetTPElem;
+
     this.moveAndSizeToTarget(null);
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
 
     this.set('currentTargetTPElem', null);
 
+    this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem));
 
     return this;
 });
@@ -167,6 +172,7 @@ function(target) {
         void(0);
     }
 
+    this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target));
 
     return this;
 });
@@ -540,6 +546,10 @@ function(aSignal) {
 
             if (targetTPElem !== existingTPTarget &&
                 targetTPElem.haloCanFocus(this, aSignal)) {
+
+                this.signal('TP.sig.HaloDidBlur');
+                this.signal('TP.sig.HaloDidBlur',
+                            TP.hc('haloTarget', targetTPElem));
 
                 this.focusOn(targetTPElem);
 
