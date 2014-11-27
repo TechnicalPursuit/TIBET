@@ -442,6 +442,9 @@ function(aSignal) {
      * @todo
      */
 
+    var existingTPTarget,
+
+        angle,
         corner,
         lastCorner,
         elem;
@@ -450,8 +453,15 @@ function(aSignal) {
         return this;
     }
 
+    existingTPTarget = this.get('currentTargetTPElem');
+
+    if (TP.notValid(existingTPTarget)) {
+        //  No existing target either - bail out.
+        return;
+    }
+
     angle = TP.computeAngleFromEnds(
-        this.get('haloRect').getCenterPoint(),
+        existingTPTarget.getHaloRect(this).getCenterPoint(),
         aSignal.getEvent());
 
     corner = TP.computeCompassCorner(angle, 8);
