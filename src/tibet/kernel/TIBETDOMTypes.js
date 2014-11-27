@@ -9699,6 +9699,35 @@ function(anObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('generateEmptyMarkup',
+function() {
+
+    /**
+     * @name generateEmptyMarkup
+     * @synopsis Generates the 'empty markup' representation of the receiver.
+     *     The empty representation contains no attributes or child node
+     *     content, but does contain the proper 'xmlns' attribute so that the
+     *     receiver can be properly placed in any document that has that
+     *     namespace defined.
+     * @returns {String} The 'empty markup' representation of the receiver.
+     */
+
+    var str;
+
+    str = TP.join('<',
+                this.getNamespacePrefix(),
+                ':',
+                this.getLocalName(),
+                ' xmlns:', this.getNamespacePrefix(),
+                '="',
+                TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
+                '"/>');
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) {
 
