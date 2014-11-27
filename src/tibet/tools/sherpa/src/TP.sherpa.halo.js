@@ -500,6 +500,9 @@ function(aSignal) {
 
     var sigTarget,
         targetWin,
+
+        handledSignal,
+
         existingTPTarget,
         targetTPElem;
 
@@ -511,6 +514,8 @@ function(aSignal) {
     if (TP.isValid(this.get('currentTargetTPElem'))) {
         targetWin = this.get('currentTargetTPElem').getNativeWindow();
     }
+
+    handledSignal = false;
 
     existingTPTarget = this.get('currentTargetTPElem');
 
@@ -525,6 +530,7 @@ function(aSignal) {
             this.blur();
             this.setAttribute('hidden', true);
 
+            handledSignal = true;
     } else if (aSignal.getButton() === TP.RIGHT) {
 
         if (TP.isValid(existingTPTarget) &&
@@ -536,6 +542,8 @@ function(aSignal) {
                 targetTPElem.haloCanFocus(this, aSignal)) {
 
                 this.focusOn(targetTPElem);
+
+                handledSignal = true;
             }
         } else {
             targetTPElem = TP.wrap(sigTarget);
@@ -545,8 +553,15 @@ function(aSignal) {
                 //  This will cause the halo to move and size to a new target.
                 this.focusOn(targetTPElem);
                 this.setAttribute('hidden', false);
+
+                handledSignal = true;
             }
         }
+    }
+
+    if (handledSignal) {
+        TP.documentClearSelection(this.getNativeDocument());
+        aSignal.preventDefault();
     }
 
     return this;
