@@ -201,7 +201,6 @@ function(aRequest) {
         cfg,
         opts,
 
-        profile,
         type,
         name,
 
@@ -225,8 +224,6 @@ function(aRequest) {
     if (TP.notEmpty(cfg)) {
         opts.push(cfg + ':app');
     }
-
-    profile = TP.sys.cfg('boot.profile');
 
     //  If the system is configured to run the sherpa, then push its tag into
     //  the list for consideration.
