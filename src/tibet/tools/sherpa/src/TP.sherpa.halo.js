@@ -137,10 +137,8 @@ function() {
 
     this.moveAndSizeToTarget(null);
 
-    //TP.byOID('SherpaConsoleService', TP.win('UIROOT.SHERPA_FRAME')).get('model').setVariable('HALO', null);
     this.set('currentTargetTPElem', null);
 
-    this.signal('TP.sig.HaloDidBlur');
 
     return this;
 });
@@ -161,8 +159,6 @@ function(target) {
     if (TP.isKindOf(target, TP.core.ElementNode)) {
         this.moveAndSizeToTarget(target);
 
-        //TP.byOID('SherpaConsoleService', TP.win('UIROOT.SHERPA_FRAME')).get('model').setVariable(
-        //                                                'HALO', target);
         this.set('currentTargetTPElem', target);
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();
@@ -171,7 +167,6 @@ function(target) {
         void(0);
     }
 
-    this.signal('TP.sig.HaloDidFocus');
 
     return this;
 });
@@ -447,7 +442,6 @@ function(aSignal) {
      * @todo
      */
 
-    var angle,
         corner,
         lastCorner,
         elem;
