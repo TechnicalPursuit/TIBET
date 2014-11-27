@@ -5462,6 +5462,7 @@ isBubbling) {
     TP.stop('break.signal_dispatch');
 
     return this.dispatch(aSignal,
+                            this.getNativeNode(),
                             aPayload,
                             aPolicy,
                             isCancelable,
