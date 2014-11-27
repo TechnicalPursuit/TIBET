@@ -990,7 +990,9 @@ function(anElement) {
 
         currentElement,
 
-        computedStyle;
+        computedStyle,
+
+        val;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -1014,12 +1016,14 @@ function(anElement) {
             break;
         }
 
-        if (TP.notEmpty(computedStyle.OTransform ||
-                            computedStyle.WebkitTransform ||
-                            computedStyle.msTransform ||
-                            computedStyle.MozTransform ||
-                            computedStyle.transform)) {
-            return true;
+        if (TP.notEmpty((val = computedStyle.OTransform) ||
+                            (val = computedStyle.WebkitTransform) ||
+                            (val = computedStyle.msTransform) ||
+                            (val = computedStyle.MozTransform) ||
+                            (val = computedStyle.transform))) {
+            if (TP.notEmpty(val) && val !== 'none') {
+                return true;
+            }
         }
 
         currentElement = currentElement.parentNode;
