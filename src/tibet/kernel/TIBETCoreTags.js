@@ -181,35 +181,26 @@ TP.core.ElementNode.defineSubtype('tibet:root');
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.root.Type.defineMethod('tagCompile',
-function(aRequest) {
+TP.tibet.root.Type.defineMethod('computeAppTagTypeName',
+function(wantsSherpa) {
 
     /**
-     * @name tagCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
-     *     markup DOM.
-     * @description In this type, this method generates either a 'tibet:app' or
-     *     a 'tibet:sherpa' tag, depending on whether or not the current boot
-     *     environment is set to 'development' or not.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
-     * @returns {Element} The new element.
+     * @name computeAppTagName
+     * @synopsis Computes the current tag type name by using system config
+     *     information to try to find a type and, if that can't found, falling
+     *     back to the 'tibet:sherpa' or 'tibet:app' tag.
+     * @param {Boolean} wantsSherpa Whether or not to include the 'tibet:sherpa'
+     *     tag in the result output. The default is true.
+     * @returns {String} The name of the type to use as the 'app tag'.
      */
 
-    var elem,
-
-        cfg,
+    var cfg,
         opts,
 
+        sherpaOk,
+
         type,
-        name,
-
-        newElem;
-
-    //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
+        name;
 
     //  Build up a list of tag names to check. We'll use the first one we have a
     //  matching type for.
@@ -227,7 +218,8 @@ function(aRequest) {
 
     //  If the system is configured to run the sherpa, then push its tag into
     //  the list for consideration.
-    if (TP.sys.cfg('tibet.sherpa') === true) {
+    sherpaOk = TP.ifInvalid(wantsSherpa, true);
+    if (TP.sys.cfg('tibet.sherpa') === true && sherpaOk) {
         opts.unshift('tibet:sherpa');
     }
 
@@ -241,12 +233,43 @@ function(aRequest) {
         type = TP.sys.getTypeByName(name, false);
     }
 
-    if (TP.notValid(type)) {
+    if (!TP.isType(type)) {
         this.raise('TypeNotFound', 'Expected one of: ' + cfg);
+        return null;
+    }
+
+    return name;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.root.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @name tagCompile
+     * @synopsis Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @description In this type, this method generates either a 'tibet:app' or
+     *     a 'tibet:sherpa' tag, depending on whether or not the current boot
+     *     environment is set to 'development' or not.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input for the shell.
+     * @returns {Element} The new element.
+     */
+
+    var elem,
+        name,
+        newElem;
+
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
-    newElem = TP.elementBecome(elem, name);
+    if (TP.notEmpty(name = this.computeAppTagTypeName())) {
+        newElem = TP.elementBecome(elem, name);
+    }
 
     //  We're changing out the tag entirely, so remove any evidence via the
     //  tibet:tag reference.
