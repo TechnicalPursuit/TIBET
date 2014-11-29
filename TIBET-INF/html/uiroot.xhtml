@@ -2,31 +2,36 @@
 
 <!--
 Normally you don't need to edit this file. Just update the implementation
-for the {{appname}}:app tag and it will replace the tibet:root tag here.
+for the test:app tag and it will replace the tibet:root tag here.
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
 <head>
-<title>{{appname}}</title>
+<title>test</title>
 
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
-<meta http-equiv="X-UA-Compatible" content="chrome=1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=0"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 
 <link rel="stylesheet" type="text/css" href="../css/master.css"/>
 
-<script src="../../lib/src/tibet_hook.min.js"
+<script src="../node_modules/tibet/lib/src/tibet_hook.min.js"
     type="text/javascript"></script>
 
 </head>
 <body>
 
-<!-- This tag renders via {{appname}}:app so change that, not this. -->
+<!-- This tag renders via test:app so change that, not this. -->
 <tibet:root/>
+
+<tsh:console xmlns:tsh="http://www.technicalpursuit.com/1999/tshell"
+    toggle="DOM_Alt_Up_Up"
+    stdin_ui="tibet://top.UIBOOT#css('#BOOT-PROGRESS #BOOT-PERCENT')"
+    stdin_out="tibet://top.UIBOOT#css('#BOOT-CONSOLE')"
+    />
 
 </body>
 </html>
