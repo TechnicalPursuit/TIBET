@@ -84,11 +84,12 @@ function(beHidden) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    if (this.get('hidden') === beHidden) {
+    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
         return this;
     }
 
-    TP.byOID('SherpaConsole', this.getNativeWindow()).set('hidden', beHidden);
+    //TP.byOID('SherpaConsole', this.getNativeWindow()).setAttribute(
+     //                                               'hidden', beHidden);
 
     if (TP.isTrue(beHidden)) {
         this.hideAllHUDDrawers();
@@ -97,7 +98,7 @@ function(beHidden) {
     } else {
         this.showAllHUDDrawers();
 
-        TP.byOID('SherpaConsole', this.getNativeWindow()).focusInput();
+        //TP.byOID('SherpaConsole', this.getNativeWindow()).focusInput();
     }
 
     return this.callNextMethod();

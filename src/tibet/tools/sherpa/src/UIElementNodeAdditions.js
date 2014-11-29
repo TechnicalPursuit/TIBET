@@ -285,17 +285,17 @@ function(targetTPElement, cornerTPElement) {
         (function () {
             theTile.setHeader(targetTPElement.getID());
             theTile.focusOn(targetTPElement);
-            theTile.set('hidden', false);
+            theTile.setAttribute('hidden', false);
         }).observe(input, 'TP.sig.DOMReady');
         /* eslint-enable no-wrap-func */
 
     } else {
-        if (TP.isTrue(theTile.get('hidden'))) {
+        if (TP.isTrue(TP.bc(theTile.getAttribute('hidden')))) {
             theTile.setHeader(targetTPElement.getID());
             theTile.focusOn(targetTPElement);
-            theTile.set('hidden', false);
+            theTile.setAttribute('hidden', false);
         } else {
-            theTile.set('hidden', true);
+            theTile.setAttribute('hidden', true);
         }
     }
 });

@@ -62,7 +62,7 @@ function(info) {
     this.setupHalo();
 
     //  Initialize the console
-    this.setupConsole();
+    //this.setupConsole();
 
     //  set up keyboard toggle to show/hide us
     /* eslint-disable no-wrap-func */

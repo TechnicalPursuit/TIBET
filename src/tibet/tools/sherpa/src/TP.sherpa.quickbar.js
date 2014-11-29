@@ -119,7 +119,7 @@ function() {
             isHidden;
 
         inSearchMode = this.get('searchMode');
-        isHidden = this.get('hidden');
+        isHidden = TP.bc(this.getAttribute('hidden'));
 
         //  Not hiding & but not in search mode
         if (!isHidden && !inSearchMode) {
@@ -295,7 +295,7 @@ function(beHidden) {
 
     var textInput;
 
-    if (this.get('hidden') === beHidden) {
+    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
         return this;
     }
 
@@ -357,7 +357,7 @@ function() {
     }
 
     if (this.hasAttribute('showresults')) {
-        detailTile.set('hidden', false);
+        detailTile.setAttribute('hidden', false);
 
         detailTile.setPagePositionAndSize(
                         this.get('resultDetail').getPageRect());
@@ -365,7 +365,7 @@ function() {
         detailTile.setProcessedContent('<h2>Hi there</h2>');
 
     } else {
-        detailTile.set('hidden', true);
+        detailTile.setAttribute('hidden', true);
     }
     /*
     if (TP.isValid(currentResultItem = this.get('currentResultItem'))) {
@@ -636,7 +636,7 @@ function(anEvent) {
             break;
 
         case 'DOM_Esc_Up':
-            this.set('hidden', true);
+            this.setAttribute('hidden', true);
             break;
 
         default:

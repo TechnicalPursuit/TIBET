@@ -206,7 +206,7 @@ function(beHidden) {
 
     var textInput;
 
-    if (this.get('hidden') === beHidden) {
+    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
         return this;
     }
 

@@ -78,7 +78,7 @@ function() {
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
 
     (function (aSignal) {
-        if (aSignal.getShiftKey() && TP.notTrue(this.get('hidden'))) {
+        if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
@@ -102,7 +102,7 @@ function(beHidden) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    if (this.get('hidden') === beHidden) {
+    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
         return this;
     }
 
@@ -135,12 +135,15 @@ function() {
      * @todo
      */
 
+    var currentTargetTPElem;
+
     this.moveAndSizeToTarget(null);
 
-    //TP.byOID('SherpaConsoleService', TP.win('UIROOT.SHERPA_FRAME')).get('model').setVariable('HALO', null);
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
     this.set('currentTargetTPElem', null);
 
-    this.signal('TP.sig.HaloDidBlur');
+    this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem));
 
     return this;
 });
@@ -161,8 +164,6 @@ function(target) {
     if (TP.isKindOf(target, TP.core.ElementNode)) {
         this.moveAndSizeToTarget(target);
 
-        //TP.byOID('SherpaConsoleService', TP.win('UIROOT.SHERPA_FRAME')).get('model').setVariable(
-        //                                                'HALO', target);
         this.set('currentTargetTPElem', target);
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();
@@ -171,7 +172,7 @@ function(target) {
         void(0);
     }
 
-    this.signal('TP.sig.HaloDidFocus');
+    this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target));
 
     return this;
 });
@@ -185,7 +186,7 @@ function(aSignal) {
      * @name handleHiddenChange
      */
 
-    this.set('hidden', true);
+    this.setAttribute('hidden', true);
     this.set('haloRect', null);
 
     return this;
@@ -422,12 +423,12 @@ function(aTarget) {
     }
 
     if (TP.notValid(aTarget) && TP.notValid(existingTPTarget)) {
-        this.set('hidden', true);
+        this.setAttribute('hidden', true);
 
         this.set('haloRect', null);
     } else {
         this.setPagePositionAndSize(theRect);
-        this.set('hidden', false);
+        this.setAttribute('hidden', false);
 
         this.set('haloRect', theRect);
     }
@@ -447,7 +448,9 @@ function(aSignal) {
      * @todo
      */
 
-    var angle,
+    var existingTPTarget,
+
+        angle,
         corner,
         lastCorner,
         elem;
@@ -456,8 +459,15 @@ function(aSignal) {
         return this;
     }
 
+    existingTPTarget = this.get('currentTargetTPElem');
+
+    if (TP.notValid(existingTPTarget)) {
+        //  No existing target either - bail out.
+        return;
+    }
+
     angle = TP.computeAngleFromEnds(
-        this.get('haloRect').getCenterPoint(),
+        existingTPTarget.getHaloRect(this).getCenterPoint(),
         aSignal.getEvent());
 
     corner = TP.computeCompassCorner(angle, 8);
@@ -496,6 +506,9 @@ function(aSignal) {
 
     var sigTarget,
         targetWin,
+
+        handledSignal,
+
         existingTPTarget,
         targetTPElem;
 
@@ -508,6 +521,8 @@ function(aSignal) {
         targetWin = this.get('currentTargetTPElem').getNativeWindow();
     }
 
+    handledSignal = false;
+
     existingTPTarget = this.get('currentTargetTPElem');
 
     //  If:
@@ -519,8 +534,9 @@ function(aSignal) {
         existingTPTarget.haloCanBlur(this, aSignal)) {
 
             this.blur();
-            this.set('hidden', true);
+            this.setAttribute('hidden', true);
 
+            handledSignal = true;
     } else if (aSignal.getButton() === TP.RIGHT) {
 
         if (TP.isValid(existingTPTarget) &&
@@ -531,7 +547,13 @@ function(aSignal) {
             if (targetTPElem !== existingTPTarget &&
                 targetTPElem.haloCanFocus(this, aSignal)) {
 
+                this.signal('TP.sig.HaloDidBlur');
+                this.signal('TP.sig.HaloDidBlur',
+                            TP.hc('haloTarget', targetTPElem));
+
                 this.focusOn(targetTPElem);
+
+                handledSignal = true;
             }
         } else {
             targetTPElem = TP.wrap(sigTarget);
@@ -540,9 +562,16 @@ function(aSignal) {
 
                 //  This will cause the halo to move and size to a new target.
                 this.focusOn(targetTPElem);
-                this.set('hidden', false);
+                this.setAttribute('hidden', false);
+
+                handledSignal = true;
             }
         }
+    }
+
+    if (handledSignal) {
+        TP.documentClearSelection(this.getNativeDocument());
+        aSignal.preventDefault();
     }
 
     return this;

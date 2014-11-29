@@ -181,6 +181,68 @@ TP.core.ElementNode.defineSubtype('tibet:root');
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.root.Type.defineMethod('computeAppTagTypeName',
+function(wantsSherpa) {
+
+    /**
+     * @name computeAppTagName
+     * @synopsis Computes the current tag type name by using system config
+     *     information to try to find a type and, if that can't found, falling
+     *     back to the 'tibet:sherpa' or 'tibet:app' tag.
+     * @param {Boolean} wantsSherpa Whether or not to include the 'tibet:sherpa'
+     *     tag in the result output. The default is true.
+     * @returns {String} The name of the type to use as the 'app tag'.
+     */
+
+    var cfg,
+        opts,
+
+        sherpaOk,
+
+        type,
+        name;
+
+    //  Build up a list of tag names to check. We'll use the first one we have a
+    //  matching type for.
+    opts = TP.ac();
+
+    cfg = TP.sys.cfg('tibet.apptag');
+    if (TP.notEmpty(cfg)) {
+        opts.push(cfg);
+    }
+
+    cfg = TP.sys.cfg('project.name');
+    if (TP.notEmpty(cfg)) {
+        opts.push(cfg + ':app');
+    }
+
+    //  If the system is configured to run the sherpa, then push its tag into
+    //  the list for consideration.
+    sherpaOk = TP.ifInvalid(wantsSherpa, true);
+    if (TP.sys.cfg('tibet.sherpa') === true && sherpaOk) {
+        opts.unshift('tibet:sherpa');
+    }
+
+    //  When in doubt at least render something :)
+    opts.push('tibet:app');
+
+    //  Keep string for error reporting.
+    cfg = opts.join();
+
+    while (TP.notValid(type) && TP.notEmpty(name = opts.shift())) {
+        type = TP.sys.getTypeByName(name, false);
+    }
+
+    if (!TP.isType(type)) {
+        this.raise('TypeNotFound', 'Expected one of: ' + cfg);
+        return null;
+    }
+
+    return name;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.root.Type.defineMethod('tagCompile',
 function(aRequest) {
 
@@ -197,14 +259,7 @@ function(aRequest) {
      */
 
     var elem,
-
-        cfg,
-        opts,
-
-        profile,
-        type,
         name,
-
         newElem;
 
     //  Make sure that we have an element to work from.
@@ -212,44 +267,9 @@ function(aRequest) {
         return;
     }
 
-    //  Build up a list of tag names to check. We'll use the first one we have a
-    //  matching type for.
-    opts = TP.ac();
-
-    cfg = TP.sys.cfg('tibet.apptag');
-    if (TP.notEmpty(cfg)) {
-        opts.push(cfg);
+    if (TP.notEmpty(name = this.computeAppTagTypeName())) {
+        newElem = TP.elementBecome(elem, name);
     }
-
-    cfg = TP.sys.cfg('project.name');
-    if (TP.notEmpty(cfg)) {
-        opts.push(cfg + ':app');
-    }
-
-    profile = TP.sys.cfg('boot.profile');
-
-    //  If the system is configured to run the sherpa, then push its tag into
-    //  the list for consideration.
-    if (TP.sys.cfg('tibet.sherpa') === true) {
-        opts.unshift('tibet:sherpa');
-    }
-
-    //  When in doubt at least render something :)
-    opts.push('tibet:app');
-
-    //  Keep string for error reporting.
-    cfg = opts.join();
-
-    while (TP.notValid(type) && TP.notEmpty(name = opts.shift())) {
-        type = TP.sys.getTypeByName(name, false);
-    }
-
-    if (TP.notValid(type)) {
-        this.raise('TypeNotFound', 'Expected one of: ' + cfg);
-        return;
-    }
-
-    newElem = TP.elementBecome(elem, name);
 
     //  We're changing out the tag entirely, so remove any evidence via the
     //  tibet:tag reference.
