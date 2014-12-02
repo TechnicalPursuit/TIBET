@@ -2767,7 +2767,7 @@ function(aFilter) {
         do {
             keys.push(Object.keys(obj));
             obj = Object.getPrototypeOf(obj);
-        } while(obj);
+        } while (obj);
 
         keys = Array.prototype.concat.apply([], keys);
         keys = keys.filter(
