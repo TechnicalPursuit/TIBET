@@ -1885,7 +1885,7 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
     // encapsulate it in no-unused-vars directives.
 
     /* eslint-disable no-undef */
-    $STATUS = TP.FAILURE;       // jshint ignore:line
+    $STATUS = TP.FAILED;            // jshint ignore:line
     /* eslint-enable no-undef */
 
     return TP.sys.shouldCaptureErrors();
@@ -2767,7 +2767,7 @@ function(aFilter) {
         do {
             keys.push(Object.keys(obj));
             obj = Object.getPrototypeOf(obj);
-        } while(obj);
+        } while (obj);
 
         keys = Array.prototype.concat.apply([], keys);
         keys = keys.filter(
