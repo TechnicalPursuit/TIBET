@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
 <!--
-Normally you don't need to edit this file. Just update the implementation
-for the {{appname}}:app tag and it will replace the tibet:root tag here.
+Normally you don't need to edit this file. Just update the content in the
+home.xhtml file found in this directory.
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -18,20 +18,16 @@ for the {{appname}}:app tag and it will replace the tibet:root tag here.
 
 <link rel="stylesheet" type="text/css" href="../css/master.css"/>
 
-<script src="../TIBET-INF/tibet/lib/src/tibet_hook.min.js"
+<script src="../node_modules/tibet/lib/src/tibet_hook.min.js"
     type="text/javascript"></script>
 
 </head>
 <body>
 
-<!-- This tag renders via {{appname}}:app so change that, not this. -->
+<!-- This tag causes all of the content in this file to be replaced with the
+     content in home.xhtml (found in this directory) so change that, not this.
+-->
 <tibet:root/>
-
-<tsh:console xmlns:tsh="http://www.technicalpursuit.com/1999/tshell"
-    toggle="DOM_Alt_Up_Up"
-    stdin_ui="tibet://top.UIBOOT#css('#BOOT-PROGRESS #BOOT-PERCENT')"
-    stdin_out="tibet://top.UIBOOT#css('#BOOT-CONSOLE')"
-    />
 
 </body>
 </html>
