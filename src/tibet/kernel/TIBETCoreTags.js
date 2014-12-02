@@ -223,7 +223,7 @@ function(wantsSherpa) {
         opts.unshift('tibet:sherpa');
     }
 
-    //  When in doubt at least render something :)
+    //  When in doubt at least produce something :)
     opts.push('tibet:app');
 
     //  Keep string for error reporting.

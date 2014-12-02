@@ -331,6 +331,17 @@ TP.core.AccessPath.isAbstract(true);
 TP.definePrimitive('apc',
 function(aPath, shouldCollapse) {
 
+    /**
+     * @name apc
+     * @synopsis Returns a newly initialized access path instance.
+     * @param {String} aPath The path as a String.
+     * @param {Boolean} shouldCollapse Whether or not this path should
+     *     'collapse' its results - i.e. if its a collection with only one item,
+     *     it will just return that item. The default is false.
+     * @returns {TP.core.AccessPath} The new instance.
+     * @todo
+     */
+
     return TP.core.AccessPath.construct(aPath, shouldCollapse);
 });
 
