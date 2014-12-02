@@ -14,7 +14,6 @@
 
     <script src="./src/TP.tibet.sherpa.js"/>
 
-    <script src="./src/TP.sherpa.sherpa.js"/>
     <script src="./src/TP.core.sherpa.js"/>
 
     <script src="./src/TP.sherpa.ConsoleService.js"/>
