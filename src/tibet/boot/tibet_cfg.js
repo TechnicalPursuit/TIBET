@@ -70,6 +70,9 @@ TP.sys.setcfg('project.version', null);
 //  the project's default root page. The default value is UIROOT.xhtml.
 TP.sys.setcfg('project.rootpage', null);
 
+//  the project's default home page. The default value is home.xhtml.
+TP.sys.setcfg('project.homepage', null);
+
 
 //  ---
 //  phase control
@@ -136,9 +139,13 @@ TP.sys.setcfg('boot.showlog', false);
 //  keep going in an attempt to get more information about the problem
 TP.sys.setcfg('boot.stop_onerror', false);
 
-//  should we boot to the TDC (TIBET developer console) UI or show the
-//  application's home page? Default is to show the project.rootpage.
-TP.sys.setcfg('boot.tdc', false);
+//  should we show the Sherpa's (TIBET developer tool) UI or show the
+//  application's home page (when the Sherpa is loaded)? by default we show the
+//  home page.
+TP.sys.setcfg('boot.show_ide', false);
+
+//  the toggle key for the boot console
+TP.sys.setcfg('boot.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
 
 //  should we boot in two phases, lib (the 'tibet' config) and then app
 //  (the 'app' config). this should be true in virtually all cases.
@@ -1251,6 +1258,13 @@ TP.sys.setcfg('sherpa.edit_mark_time', 750);
 
 //  the id of the element under the mark holding the prompt
 TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
+
+TP.sys.setcfg('sherpa.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
+
+//  the initial location to load into screen_0 in the Sherpa. Note that this
+//  might be the same as 'project.homepage', but the Sherpa contains machinery
+//  to manually replace 'tibet:root' with the current app's app tag.
+TP.sys.setcfg('sherpa.screen_0_uri', '~app_html/home.xhtml');
 
 //  ---
 //  tds support

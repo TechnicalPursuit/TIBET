@@ -358,8 +358,11 @@ function() {
         rootURI,
         rootName,
         rootWindow,
+
+        wantsSherpa,
         request,
-        toggleKey;
+        toggleKey,
+        bootframe;
 
     rootLoc = TP.uriJoinPaths('~app_html', TP.sys.cfg('project.rootpage'));
 
@@ -383,6 +386,7 @@ function() {
         TP.boot.$stderr('Canvas specification error. Cannot find window: ' +
                             rootName);
         TP.boot.$flushLog(true);
+
         return;
     }
 
@@ -393,12 +397,11 @@ function() {
         TP.boot.hideUIRoot();
     }
 
-    //  To avoid flickering, we set 'display' of the rootWindow's
-    //  frameElement (i.e. '#UIROOT') to 'none' in our index file. We *must*
-    //  turn back on display here, as the CSS layout engine needs to lay out
-    //  on screen components it can compute sizes, etc. Note that the
-    //  'visibility' of this element is still 'hidden' as per the
-    //  hideUIRoot() call above.
+    //  To avoid flickering, we set 'display' of the rootWindow's frameElement
+    //  (i.e. '#UIROOT') to 'none' in our index file. We *must* turn back on
+    //  display here, as the CSS layout engine needs to lay out on screen
+    //  components it can compute sizes, etc. Note that the 'visibility' of this
+    //  element is still 'hidden' as per the hideUIRoot() call above.
     TP.elementDefaultDisplay(rootWindow.frameElement);
 
     //  Build a request we can pass to the setContent routine to handle any
@@ -439,9 +442,9 @@ function() {
         }
 
         //  Signal TP.sig.AppWillStart and then, if not cancelled,
-        //  TP.sig.AppStart for the system once the app
-        //  tag awakens.Note how we fork the call so that all child
-        //  awaken processing has occurred first.
+        //  TP.sig.AppStart for the system once the app tag awakens. Note how we
+        //  fork the call so that all child awaken processing has occurred
+        //  first.
         /* eslint-disable no-wrap-func */
         (function() {
 
@@ -451,23 +454,17 @@ function() {
                     return;
                 }
 
-                //  Set up a handler for 'TP.sig.AppDidStart' that will
-                //  turn on the system-wide 'hasStarted' flag when
-                //  everything, including any application-specific
-                //  startup, has finished.
+                //  Set up a handler for 'TP.sig.AppDidStart' that will turn on
+                //  the system-wide 'hasStarted' flag when everything, including
+                //  any application-specific startup, has finished.
                 didStartHandler = function () {
 
-                    //  Rip out the observation to avoid polluting the
-                    //  signal map.
+                    //  Rip out the observation to avoid polluting the signal
+                    //  map.
                     didStartHandler.ignore(null, 'TP.sig.AppDidStart');
 
                     //  Queue to allow any pending processing to clear.
                     (function() {
-                        var hasConsoleCode,
-                            consoleHasStarted,
-                            consoleSetupFunc,
-                            bootframe;
-
                         try {
                             TP.boot.$setStage('liftoff');
                         } finally {
@@ -475,55 +472,6 @@ function() {
                             //  pieces of logic can switch to their "started"
                             //  states (ie. no more boot log usage etc.)
                             TP.sys.hasStarted(true);
-                        }
-
-                        //  So here we set up the trigger to load the console.
-                        //  First we check to see if a) the console code is
-                        //  available and b) whether the console has already
-                        //  loaded.
-                        hasConsoleCode = TP.isValid(
-                            TP.sys.getTypeByName('TP.core.ConsoleService'));
-
-                        consoleHasStarted = TP.isValid(
-                            TP.core.Resource.getResourceById('SystemConsole'));
-
-                        //  If the console code is available but hasn't yet been
-                        //  started, then we grab the 'console trigger key' from
-                        //  the preferences. This preference will have been
-                        //  configured by the console code when it loaded. We
-                        //  then set up a handler to listen for those kinds of
-                        //  key events from TP.core.Keyboard.
-                        if (hasConsoleCode && !consoleHasStarted) {
-                            toggleKey = TP.sys.cfg('tdc.toggle_on');
-
-                            if (!toggleKey.startsWith('TP.sig.')) {
-                                toggleKey = 'TP.sig.' + toggleKey;
-                            }
-
-                            //  Prep the UI for full console mode.
-                            bootframe = TP.wrap(TP.byId('UIBOOT', top));
-                            bootframe.getContentDocument().getBody().addClass(
-                                    'full_console');
-
-                            //  Set up the handler.
-
-                            /* eslint-disable no-wrap-func */
-                            //  set up keyboard toggle to show/hide the boot UI
-                            (consoleSetupFunc = function () {
-
-                                //  The first thing to do is to tell
-                                //  TP.core.Keyboard to *ignore* this handler
-                                //  Function. This is because, once we set up
-                                //  the console, it will install it's own
-                                //  handler for the trigger key and take over
-                                //  that responsibility.
-                                consoleSetupFunc.ignore(TP.core.Keyboard,
-                                                        toggleKey);
-
-                                //  Do the deed.
-                                TP.tsh.console.setupConsole();
-                            }).observe(TP.core.Keyboard, toggleKey);
-                            /* eslint-enable no-wrap-func */
                         }
                     }).afterUnwind();
                 };
@@ -544,32 +492,37 @@ function() {
         var msg,
             txt;
 
-        // Be certain our boot UI is displayed.
+        //  Be certain our boot UI is displayed.
         TP.boot.showUIBoot();
 
         txt = req.getFaultText();
         msg = TP.sc('UIRoot Initialization Error') +
                 (txt ? ': ' + txt + '.' : '.');
 
-        // TODO: Dig around and figure out what went wrong. getFaultText
-        // is pretty limited in terms of details.
+        //  TODO: Dig around and figure out what went wrong. getFaultText is
+        //  pretty limited in terms of details.
         TP.boot.$stderr(msg, TP.FATAL);
     });
 
-    //  If we're not running with a UI (not phantom), and we don't have a console
-    //  loaded, then ensure we can toggle the boot UI properly.
-    if ((TP.sys.cfg('boot.context') !== 'phantomjs') &&
-        TP.notValid(TP.sys.getTypeByName('TP.core.ConsoleService'))) {
+    //  If we're not running with a UI (not phantom), and we don't have the
+    //  Sherpa configured to start, then ensure we can toggle the boot UI
+    //  properly.
+    wantsSherpa = TP.sys.cfg('tibet.sherpa');
+    if (TP.sys.cfg('boot.context') !== 'phantomjs' && !wantsSherpa) {
 
         TP.boot.initializeCanvas(TP.win('UIBOOT'));
 
         //  Configure a toggle so we can always get back to the boot UI as
         //  needed.
-        toggleKey = TP.sys.cfg('tdc.toggle_on');
+        toggleKey = TP.sys.cfg('boot.toggle_on');
 
         if (!toggleKey.startsWith('TP.sig.')) {
             toggleKey = 'TP.sig.' + toggleKey;
         }
+
+        //  Prep the UI for full console mode.
+        bootframe = TP.wrap(TP.byId('UIBOOT', top));
+        bootframe.getContentDocument().getBody().addClass('full_console');
 
         /* eslint-disable no-wrap-func */
         //  set up keyboard toggle to show/hide the boot UI

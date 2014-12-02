@@ -243,6 +243,55 @@ function(wantsSherpa) {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.root.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @name tagAttachDOM
+     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @description In this type, if the Sherpa is not 'active' this method
+     *     loads the URL pointed to by the 'project.homepage' configuration
+     *     variable into the UIROOT frame. If a value hasn't been configured,
+     *     then the standard system blank page is loaded into that frame.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        elemWin,
+
+        homeURL;
+
+    //  If the Sherpa is configured to be on (and we've actually loaded the
+    //  Sherpa code), then exit here - the Sherpa does some special things to
+    //  the 'tibet:root' tag.
+    if (TP.sys.cfg('tibet.sherpa') === true &&
+        TP.isType(TP.sys.getTypeByName('TP.core.sherpa'))) {
+        return;
+    }
+
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    //  Make sure that we have a Window to draw into.
+    if (!TP.isWindow(elemWin = TP.nodeGetWindow(elem))) {
+        return;
+    }
+
+    //  Grab the URI that corresponds to the project's homepage. If it's not
+    //  present, use the blank page instead.
+    homeURL = TP.uc(TP.ifEmpty(TP.sys.cfg('project.homepage'),
+                                TP.sys.cfg('tibet.blankpage')));
+
+    TP.wrap(elemWin).setContent(homeURL);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.root.Type.defineMethod('tagCompile',
 function(aRequest) {
 
@@ -250,32 +299,38 @@ function(aRequest) {
      * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @description In this type, this method generates either a 'tibet:app' or
-     *     a 'tibet:sherpa' tag, depending on whether or not the current boot
-     *     environment is set to 'development' or not.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
+     * @description In this type, if the Sherpa is 'active' (not just loaded but
+     *     active) this method converts the receiver (a 'tibet:root' tag) into a
+     *     'tibet:sherpa' tag.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      * @returns {Element} The new element.
      */
 
+
     var elem,
-        name,
         newElem;
 
-    //  Make sure that we have an element to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
+    //  If the Sherpa is configured to be on (and we've actually loaded the
+    //  Sherpa code), then turn the receiver into a 'tibet:sherpa' tag.
+    if (TP.sys.cfg('tibet.sherpa') === true &&
+        TP.isType(TP.sys.getTypeByName('TP.core.sherpa'))) {
+
+        //  Make sure that we have an element to work from.
+        if (!TP.isElement(elem = aRequest.at('node'))) {
+            return;
+        }
+
+        newElem = TP.elementBecome(elem, 'tibet:sherpa');
+
+        //  We're changing out the tag entirely, so remove any evidence via the
+        //  tibet:tag reference.
+        TP.elementRemoveAttribute(newElem, 'tibet:tag', true);
+
+        return newElem;
     }
 
-    if (TP.notEmpty(name = this.computeAppTagTypeName())) {
-        newElem = TP.elementBecome(elem, name);
-    }
-
-    //  We're changing out the tag entirely, so remove any evidence via the
-    //  tibet:tag reference.
-    TP.elementRemoveAttribute(newElem, 'tibet:tag', true);
-
-    return newElem;
+    return;
 });
 
 //  ========================================================================

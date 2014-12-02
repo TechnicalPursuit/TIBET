@@ -694,9 +694,7 @@ liftoff: {
         TP.boot.$displayStatus('Application running: ' +
             (TP.boot.$getStageTime('started', 'prelaunch') -
             TP.boot.$getStageTime('paused')) + 'ms.');
-        if (!TP.sys.cfg('boot.tdc')) {
             TP.boot.hideUIBoot();
-        }
     }
 },
 stopped: {
