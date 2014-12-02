@@ -532,10 +532,7 @@ function() {
         /* eslint-enable no-wrap-func */
     }
 
-    //  Set the location of the window (wrapping it to be a TP.core.Window)
-    //  but make sure to pass in 'false' to *not* create a TIBET history
-    //  entry.
-// TODO: the second half of the comment above doesn't appear to be true.
+    //  Set the location of the window (wrapping it to be a TP.core.Window).
     TP.wrap(rootWindow).setContent(rootURI, request);
 
     return;
