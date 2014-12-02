@@ -5409,7 +5409,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
+    awakenContent = TP.ifInvalid(shouldAwake, false);
 
     thePosition = TP.ifEmpty(aPositionOrPath, TP.BEFORE_END);
 
@@ -5829,7 +5829,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
+    awakenContent = TP.ifInvalid(shouldAwake, false);
 
     doc = TP.nodeGetDocument(anElement);
 

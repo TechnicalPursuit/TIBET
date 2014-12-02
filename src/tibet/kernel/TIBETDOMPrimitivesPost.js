@@ -555,7 +555,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  Manually invoke the mutation removal event machinery. This won't happen
     //  automatically, since by emptying the content of the document above, we
     //  blew away the Mutation Observer registration.
-    if (TP.isElement(docElem) && hasWindow) {
+    if (TP.isElement(docElem) && awakenContent) {
         TP.core.MutationSignalSource.handleMutationEvent(
                 {
                     type: 'childList',
@@ -3883,7 +3883,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
+    awakenContent = TP.ifInvalid(shouldAwake, false);
 
     thePosition = TP.ifEmpty(aPositionOrPath, TP.BEFORE_END);
 
@@ -4663,9 +4663,7 @@ function(aNode, newNode, shouldAwake) {
     //  document. as of ff3 and s3 this is required to avoid exceptions
     importedContent = TP.nodeImportNode(targetNode, childContent);
 
-    //  We awaken if the content is an HTML node, otherwise we don't.
-    awakenContent = TP.ifInvalid(shouldAwake,
-        TP.isHTMLNode(importedContent) ? true : false);
+    awakenContent = TP.ifInvalid(shouldAwake, false);
 
     //  Grab the current number of children
     childNodeCount = targetNode.childNodes.length;
@@ -5123,11 +5121,7 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
     //  document. as of ff3 and s3 this is required to avoid exceptions
     importedContent = TP.nodeImportNode(targetNode, childContent);
 
-    //  We awaken if the content is an HTML node, otherwise we don't.
-    awakenContent = TP.ifInvalid(
-                    shouldAwake, TP.isHTMLNode(importedContent) ?
-                                    true :
-                                    false);
+    awakenContent = TP.ifInvalid(shouldAwake, false);
 
     if (awakenContent || TP.isFragment(importedContent)) {
         start = TP.nodeGetChildIndex(targetNode, insertionPointNode);
@@ -5611,8 +5605,7 @@ function(aNode, newNode, oldNode, shouldAwake) {
     importedContent = TP.nodeImportNode(targetNode, childContent);
 
     //  We awaken if the content is an HTML node, otherwise we don't.
-    awakenContent = TP.ifInvalid(shouldAwake,
-        TP.isHTMLNode(importedContent) ? true : false);
+    awakenContent = TP.ifInvalid(shouldAwake, false);
 
     //  If we're awakening, or the new content is a fragment, then we need
     //  to capture the starting point.
