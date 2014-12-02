@@ -126,7 +126,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just added. The default for an 'add' operation is false.
      * @raises TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -183,7 +183,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just inserted. The default for an 'insert' operation is false.
      * @raises TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -305,7 +305,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just set. The default for a 'set' operation is whether aDocument has
+     *     a Window object associated with it or not.
      * @raises TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -385,7 +386,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just added. The default for an 'add' operation is false.
      * @raises TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -423,7 +424,7 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just inserted. The default for an 'insert' operation is false.
      * @raises TP.sig.InvalidDocument
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -460,7 +461,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just set. The default for a 'set' operation is whether aDocument has
+     *     a Window object associated with it or not.
      * @returns {Node} The first node of the content that was just inserted. In
      *     this case, the documentElement.
      * @todo
@@ -1055,7 +1057,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just added. The default for an 'add' operation is false.
      * @raises TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -3049,7 +3051,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just inserted. The default for an 'insert' operation is false.
      * @raises TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -3294,7 +3296,7 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just replaced. The default for this operation is true.
      * @raises TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -3747,7 +3749,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just set. The default for a 'set' operation is whether anElement has
+     *     a Window object associated with it or not.
      * @raises TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -3828,7 +3831,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just added. The default for an 'add' operation is false.
      * @raises TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just added.
      * @todo
@@ -3864,7 +3867,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just inserted. The default for an 'insert' operation is false.
      * @raises TP.sig.InvalidElement
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -4031,7 +4034,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just replaced. The default for this operation is true.
      * @raises TP.sig.InvalidElement
      * @returns {Element|Text} The newly created Node (could be a Text node,
      *     depending on how the replacement happened).
@@ -4078,8 +4081,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     //  later use.
     //elemGID = TP.gid(anElement);
 
-    //  Replace anElement in its parent with the new node (pass in false to
-    //  awaken the content - we don't awaken XML).
+    //  Replace anElement in its parent with the new node.
 
     //  Note the assignment to the returnNode here, since it might have come
     //  from a different document and been imported, etc.
@@ -4141,7 +4143,8 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just set. The default for a 'set' operation is whether anElement has
+     *     a Window object associated with it or not.
      * @raises TP.sig.InvalidElement
      * @returns {Element|Text} The newly created Node (could be a Text node,
      *     depending on how the replacement happened).
@@ -4552,7 +4555,7 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just added. The default for an 'add' operation is false.
      * @returns {Node} The first node of the content that was just added.
      * @todo
      */
@@ -4580,7 +4583,7 @@ function(aNode, newNode, shouldAwake) {
      *     string of markup representing a single root node (with optional
      *     children) to append.
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted. For non-HTML content, this defaults to 'false'.
+     *     just appended. The default for this operation is false.
      * @raises TP.sig.InvalidNode
      * @returns {Node} The new node. This may be a different node than what was
      *     supplied to this routine, as the node might have been imported.
@@ -5018,7 +5021,7 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
      * @param {Node} insertionPointNode The node to use as an insertion point.
      *     The new content will be inserted before this point.
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted. For non-HTML content, this defaults to 'false'.
+     *     just inserted. The default for this operation is false.
      * @raises TP.sig.InvalidNode
      * @returns {Node} The new node. This may be a different node than what was
      *     supplied to this routine, as the node might have been imported.
@@ -5203,7 +5206,7 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted. For non-HTML content, this defaults to 'false'.
+     *     just inserted. The default for this operation is false.
      * @raises TP.sig.InvalidNode
      * @returns {Node} The first node of the content that was just inserted.
      * @todo
@@ -5510,7 +5513,7 @@ function(aNode, newNode, oldNode, shouldAwake) {
      * @param {Node} newNode The node to replace the old node with.
      * @param {Node} oldNode The node to be replaced with newNode.
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted. For non-HTML content, this defaults to 'false'.
+     *     just replaced. The default for this operation is false.
      * @raises TP.sig.InvalidNode
      * @returns {Node} The new node. This may be a different node than what was
      *     supplied to this routine, as the node might have been imported.
@@ -11964,7 +11967,7 @@ function(fromNode, toNode, beforeNode, shouldAwake) {
      * @param {Node} toNode The target node.
      * @param {Node} beforeNode Optional 'insertion point'.
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted. For non-HTML content, this defaults to 'false'.
+     *     just copied. The default for this operation is false.
      * @example Copy all of the children from the source document to a new,
      *     empty document:
      *     <code>
@@ -12065,7 +12068,7 @@ function(fromNode, toNode, beforeNode, shouldAwake) {
      * @param {Node} toNode The target node.
      * @param {Node} beforeNode Optional 'insertion point'.
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted. For non-HTML content, this defaults to 'false'.
+     *     just moved. The default for this operation is false.
      * @example Move all of the children from the source document to a new,
      *     empty document:
      *     <code>
@@ -12174,7 +12177,8 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
      * @param {Function} loadedFunction The Function object to execute when the
      *     content is fully loaded (i.e. when the DOM is fully formed).
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
-     *     just inserted.
+     *     just set. The default for a 'set' operation is whether aNode has a
+     *     Window object associated with it or not.
      * @raises TP.sig.InvalidNode
      * @returns {Node} The first node of the content that was just set, or the
      *     node itself depending on the node type.
