@@ -274,7 +274,7 @@ function(aRequest) {
 
     //  The required serverName isn't in the paramDict? Abort it.
     if (TP.notValid(serverName = paramDict.at('serverName'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             TP.sc('Missing required server name parameter in request'));
 
         return;
@@ -284,7 +284,7 @@ function(aRequest) {
 
     //  The required connectionType isn't in the paramDict? Abort it.
     if (TP.notValid(connectionType = paramDict.at('connectionType'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             TP.sc('Missing required connection type parameter in request'));
 
         return;
@@ -1938,13 +1938,13 @@ function(aRequest) {
         }
 
         //  Couldn't authenticate the connection - fail it.
-        aRequest.fail(TP.FAILURE, 'Can\'t authenticate connection');
+        aRequest.fail('Can\'t authenticate connection');
 
         return false;
     }
 
     //  Couldn't open the connection - fail it.
-    aRequest.fail(TP.FAILURE, 'Can\'t open connection');
+    aRequest.fail('Can\'t open connection');
 
     return false;
 });
@@ -2291,7 +2291,7 @@ function(aRequest) {
 
                 default:
 
-                    aRequest.fail(TP.FAILURE, 'Unrecognized pubsub action');
+                    aRequest.fail('Unrecognized pubsub action');
 
                     return this;
             }
@@ -2348,7 +2348,7 @@ function(aRequest) {
 
         default:
 
-            aRequest.fail(TP.FAILURE, 'Unrecognized action');
+            aRequest.fail('Unrecognized action');
 
             return this;
     }

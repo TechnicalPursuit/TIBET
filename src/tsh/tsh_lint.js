@@ -58,7 +58,7 @@ function(aRequest) {
         // Try to resolve object reference.
         obj = shell.resolveObjectReference(target, aRequest);
         if (TP.notValid(obj)) {
-            aRequest.fail(TP.FAILURE, 'Unable to resolve object: ' + target);
+            aRequest.fail('Unable to resolve object: ' + target);
             return;
         }
         aRequest.stdout('Assembling ' + target + '-only worklist.');

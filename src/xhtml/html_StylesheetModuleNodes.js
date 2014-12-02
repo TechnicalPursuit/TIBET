@@ -58,7 +58,7 @@ function(aRequest) {
     }
 
     if (TP.notValid(node = aRequest.at('node'))) {
-        return aRequest.fail(TP.FAILURE, 'Unable to find command node.');
+        return aRequest.fail('Unable to find command node.');
     }
 
     base = TP.ifInvalid(TP.elementGetAttribute(node, 'src'), '.');
@@ -124,8 +124,8 @@ function(aRequest) {
     if (TP.notValid(newNode)) {
         //  oops, something went wrong, probably badly formed CSS that
         //  wasn't in a CDATA block to keep it from interfering with XML
-        return aRequest.fail(TP.FAILURE,
-        'Unable to create new css:sheet node for inline TP.html.style.');
+        return aRequest.fail(
+            'Unable to create new css:sheet node for inline TP.html.style.');
     }
 
     //  NOTE that we have to capture the return value from the replace

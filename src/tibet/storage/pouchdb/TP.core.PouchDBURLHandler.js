@@ -67,8 +67,7 @@ function(targetURI, aRequest) {
 
     //  GET requests require at least a dbName
     if (TP.notValid(dbName = targetURI.get('dbName'))) {
-        request.fail(TP.FAILURE,
-                        'No db name specified for: ' + TP.str(targetURI));
+        request.fail('No db name specified for: ' + TP.str(targetURI));
 
         return response;
     }
@@ -85,8 +84,7 @@ function(targetURI, aRequest) {
             action = 'retrieveItem';
         }
     } else {
-        request.fail(TP.FAILURE,
-                    'Can\'t compute a load action for: ' + TP.str(targetURI));
+        request.fail('Can\'t compute a load action for: ' + TP.str(targetURI));
 
         return response;
     }
@@ -157,8 +155,7 @@ function(targetURI, aRequest) {
 
     //  DELETE requests require a dbName
     if (TP.notValid(dbName = targetURI.get('dbName'))) {
-        request.fail(TP.FAILURE,
-                        'No db name specified for: ' + TP.str(targetURI));
+        request.fail('No db name specified for: ' + TP.str(targetURI));
 
         return response;
     }
@@ -237,8 +234,7 @@ function(targetURI, aRequest) {
 
     //  PUT and POST requests require at least a dbName
     if (TP.notValid(dbName = targetURI.get('dbName'))) {
-        request.fail(TP.FAILURE,
-                        'No db name specified for: ' + TP.str(targetURI));
+        request.fail('No db name specified for: ' + TP.str(targetURI));
 
         return response;
     }
@@ -267,9 +263,7 @@ function(targetURI, aRequest) {
         //  effectively do a synchronous "cache read".
         if (TP.isEmpty(content = targetURI.getResource(
                                 TP.hc('refresh', false, 'async', false)))) {
-            request.fail(
-                    TP.FAILURE,
-                    'No content to save for: ' + TP.str(targetURI));
+            request.fail('No content to save for: ' + TP.str(targetURI));
 
             return response;
         }
@@ -282,9 +276,7 @@ function(targetURI, aRequest) {
     if (request.at('verb') === TP.HTTP_PUT) {
 
         if (TP.notValid(resourceID)) {
-            request.fail(
-                    TP.FAILURE,
-                    'No resource ID specified for: ' + TP.str(targetURI));
+            request.fail('No resource ID specified for: ' + TP.str(targetURI));
 
             return response;
         }

@@ -49,7 +49,7 @@ function(aRequest) {
 
     runner = TP.sys.getTypeByName('TP.test.Suite');
     if (TP.notValid(runner)) {
-        aRequest.fail(TP.FAILURE, 'Unable to find TP.test.Suite.');
+        aRequest.fail('Unable to find TP.test.Suite.');
         return;
     }
 
@@ -118,12 +118,12 @@ function(aRequest) {
 
         obj = shell.resolveObjectReference(target, aRequest);
         if (TP.notValid(obj)) {
-            aRequest.fail(TP.FAILURE, 'Unable to resolve object: ' + target);
+            aRequest.fail('Unable to resolve object: ' + target);
             return;
         }
 
         if (!TP.canInvoke(obj, 'runTestSuites')) {
-            aRequest.fail(TP.FAILURE, 'Object cannot run tests: ' + TP.id(obj));
+            aRequest.fail('Object cannot run tests: ' + TP.id(obj));
             return;
         }
 

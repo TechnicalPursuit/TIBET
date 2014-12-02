@@ -139,7 +139,7 @@ function(anInput, cmdNode, aRequest) {
     //  compilation.
     rootName = TP.elementGetAttribute(cmdNode, 'tsh:root_template', true);
     if (TP.isEmpty(rootName)) {
-        aRequest.fail(TP.FAILURE, 'Invalid root template name.');
+        aRequest.fail('Invalid root template name.');
 
         return;
     }
@@ -160,8 +160,7 @@ function(anInput, cmdNode, aRequest) {
         //  Try again.
         if (TP.notValid(template =
                     TP.uc(templateName).getResource(TP.hc('async', false)))) {
-            aRequest.fail(TP.FAILURE,
-                            'Unable to find template: ' + templateName);
+            aRequest.fail('Unable to find template: ' + templateName);
 
             return;
         }
@@ -179,7 +178,7 @@ function(anInput, cmdNode, aRequest) {
     if (TP.isValid(result)) {
         return result;
     } else {
-        aRequest.fail(TP.FAILURE, 'Transform failed to produce output.');
+        aRequest.fail('Transform failed to produce output.');
 
         return;
     }

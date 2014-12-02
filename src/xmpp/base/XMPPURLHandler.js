@@ -248,7 +248,7 @@ function(targetURI, aRequest) {
 
                 default:
 
-                    aRequest.fail(TP.FAILURE, 'Unrecognized pubsub action');
+                    aRequest.fail('Unrecognized pubsub action');
 
                     return this;
             }

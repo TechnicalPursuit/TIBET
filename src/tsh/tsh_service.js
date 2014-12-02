@@ -163,7 +163,7 @@ function(aRequest) {
         this.dispatch('tsh-service-error', node,
             TP.hc('error-type', 'request-in-progress'));
 
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             'Service call already in progress for: ' + TP.str(node));
 
         return TP.BREAK;

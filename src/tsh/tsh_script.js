@@ -1748,7 +1748,7 @@ function(aRequest, aMessage) {
         //  outer processing context.
         return TP.BREAK;
     } else {
-        aRequest.fail(TP.FAILURE, msg);
+        aRequest.fail(msg);
     }
 
     return TP.BREAK;
