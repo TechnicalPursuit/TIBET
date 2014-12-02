@@ -4731,7 +4731,7 @@ function(newContent, aRequest) {
     result = func(node,
                     content,
                     loadFunc,
-                    TP.ifKeyInvalid(request, 'awaken', true));
+                    TP.ifKeyInvalid(request, 'awaken', false));
 
     //  If we're flagging changes, go ahead and do that now.
     if (this.shouldFlagChanges()) {
@@ -4981,7 +4981,7 @@ function(newContent, aPositionOrPath, aRequest) {
                     content,
                     aPositionOrPath,
                     loadFunc,
-                    TP.ifKeyInvalid(request, 'awaken', true));
+                    TP.ifKeyInvalid(request, 'awaken', false));
 
     //  If we're flagging changes, go ahead and do that now.
     if (this.shouldFlagChanges()) {
