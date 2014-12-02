@@ -822,7 +822,7 @@ function(aRequest) {
     //  fail the request.
     url = request.at('uri');
     if (TP.notValid(url)) {
-        return request.fail(TP.FAILURE, 'TP.sig.InvalidURI');
+        return request.fail('TP.sig.InvalidURI');
     }
 
     //  rewrite the verb as needed. some services require POST etc.
@@ -886,7 +886,7 @@ function(aRequest) {
     //  Make sure we have a viable URL.
     url = aRequest.at('uri');
     if (TP.notValid(url)) {
-        return aRequest.fail(TP.FAILURE, 'TP.sig.InvalidURI');
+        return aRequest.fail('TP.sig.InvalidURI');
     }
 
     try {
@@ -979,7 +979,7 @@ function(aRequest) {
     //  Make sure we have a viable URL.
     url = aRequest.at('uri');
     if (TP.notValid(url)) {
-        return aRequest.fail(TP.FAILURE, 'TP.sig.InvalidURI');
+        return aRequest.fail('TP.sig.InvalidURI');
     }
 
     //  make sure we provide the request ID in the call headers for

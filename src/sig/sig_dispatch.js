@@ -87,7 +87,7 @@ function(aRequest) {
     if (TP.isEmpty(signalName = TP.elementGetAttribute(node,
                                                         'sig:name',
                                                         true))) {
-        aRequest.fail(TP.FAILURE, 'Missing required "name" attribute.');
+        aRequest.fail('Missing required "name" attribute.');
 
         return TP.BREAK;
     }
@@ -125,7 +125,6 @@ function(aRequest) {
                 if (TP.notValid(signalTargets =
                                 TP.ac(TP.byId(origin, win)))) {
                     aRequest.fail(
-                        TP.FAILURE,
                         'Specified "origin" element not found: ' +
                                     TP.str(node));
 

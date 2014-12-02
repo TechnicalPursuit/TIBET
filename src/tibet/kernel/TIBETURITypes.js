@@ -7391,7 +7391,7 @@ function(aRequest, filterResult) {
 
             TP.ifWarn() ? TP.warn(err, TP.LOG) : 0;
 
-            request.fail(TP.FAILURE, err);
+            request.fail(err);
 
             return this.$getResourceResult(request,
                                             undefined,
@@ -7446,7 +7446,7 @@ function(aRequest, filterResult) {
                         TP.join(TP.sc('URI access produced error for: '),
                                 this.asString()));
                 this.raise('TP.sig.URIException', err);
-                request.fail(TP.FAILURE, err);
+                request.fail(err);
 
                 return this.$getResourceResult(request,
                                                 undefined,
@@ -8155,7 +8155,7 @@ function(targetURI, aRequest) {
             return this.save(targetURI, aRequest);
 
         default:
-            aRequest.fail(TP.FAILURE, 'Unknown service method: ' + method);
+            aRequest.fail('Unknown service method: ' + method);
             break;
     }
 
@@ -9004,7 +9004,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(TP, '$fileLoad')) {
         this.raise('TP.sig.UnsupportedOperation');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Unsupported operation.');
+            aRequest.fail('Unsupported operation.');
         }
         return;
     }
@@ -9012,7 +9012,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Invalid URI: ' + targetURI);
+            aRequest.fail('Invalid URI: ' + targetURI);
         }
 
         return;
@@ -9223,7 +9223,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(TP, '$fileSave')) {
         this.raise('TP.sig.UnsupportedOperation');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Unsupported operation.');
+            aRequest.fail('Unsupported operation.');
         }
 
         return;
@@ -9232,7 +9232,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Invalid URI: ' + targetURI);
+            aRequest.fail('Invalid URI: ' + targetURI);
         }
 
         return;

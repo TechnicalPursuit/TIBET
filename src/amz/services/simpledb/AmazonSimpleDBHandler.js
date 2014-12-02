@@ -144,8 +144,7 @@ function(targetURI, aRequest) {
     //  Saving data to Amazon requires 'data' to save ;-)
     if (TP.isEmpty(content = targetURI.getResource(
             TP.hc('async', false, 'refresh', false)))) {
-        request.fail(TP.FAILURE,
-                'No content to send for: ' + TP.str(targetURI));
+        request.fail('No content to send for: ' + TP.str(targetURI));
 
         return response;
     }
@@ -160,13 +159,13 @@ function(targetURI, aRequest) {
         //  Otherwise, we treat it like an 'action=PutAttributes'
 
         if (TP.isEmpty(domainName = request.at('DomainName'))) {
-            request.fail(TP.FAILURE, 'Missing parameter: DomainName');
+            request.fail('Missing parameter: DomainName');
 
             return response;
         }
 
         if (TP.isEmpty(itemName = request.at('ItemName'))) {
-            request.fail(TP.FAILURE, 'Missing parameter: ItemName');
+            request.fail('Missing parameter: ItemName');
 
             return response;
         }

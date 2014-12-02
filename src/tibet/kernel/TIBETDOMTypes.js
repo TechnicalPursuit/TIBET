@@ -14382,7 +14382,7 @@ function(aRequest, functionName) {
     //  Make sure that we have a node to work from.
     if (!TP.isNode(node = aRequest.at('cmdNode'))) {
         msg = 'No action node.';
-        aRequest.fail(TP.FAILURE, msg);
+        aRequest.fail(msg);
 
         return;
     }
@@ -14391,7 +14391,7 @@ function(aRequest, functionName) {
     if (TP.notValid(input = this.getActionInput(aRequest))) {
         if (this.shouldFailOnEmptyInput()) {
             msg = 'No action input.';
-            aRequest.fail(TP.FAILURE, msg);
+            aRequest.fail(msg);
 
             return;
         } else {
@@ -14451,7 +14451,7 @@ function(aRequest, functionName) {
                     default:
 
                         msg = 'Invalid operation: ' + functionName;
-                        aRequest.fail(TP.FAILURE, msg);
+                        aRequest.fail(msg);
 
                         return;
                 }

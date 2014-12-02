@@ -1026,7 +1026,7 @@ function(aRequest) {
     //  the 'cmd' slot of the request must contain the input to process
     if (TP.notValid(src = aRequest.at('cmd'))) {
         if (TP.notValid(src = aRequest.at('cmdNode'))) {
-            return aRequest.fail(TP.FAILURE, 'Invalid request input.');
+            return aRequest.fail('Invalid request input.');
         }
 
         aRequest.atPut('cmd', TP.nodeAsString(src, false, true));
@@ -1039,7 +1039,7 @@ function(aRequest) {
     //  handleShellRequest should ensure we have a viable response
     //  object to work with. if not then we can't proceed
     if (TP.notValid(response = aRequest.get('response'))) {
-        return aRequest.fail(TP.FAILURE, 'No response object found.');
+        return aRequest.fail('No response object found.');
     }
 
     //  TODO:   tie this back into the shouldComputeCosts call etc.,
@@ -1096,9 +1096,7 @@ function(aRequest) {
 
                 return aRequest.complete();
             } else {
-                return aRequest.fail(
-                            TP.FAILURE,
-                            'Unable to switch to XMLNS ' + src);
+                return aRequest.fail('Unable to switch to XMLNS ' + src);
             }
         }
 
@@ -1113,7 +1111,6 @@ function(aRequest) {
             nstype = TP.sys.require(nstype);
             if (TP.notValid(nstype)) {
                 return aRequest.fail(
-                            TP.FAILURE,
                             'Unable to find XMLNS type: ' +
                                 aRequest.at('cmdXMLNS'));
             }
@@ -1139,7 +1136,6 @@ function(aRequest) {
         if (TP.notValid(tagtype) ||
             !TP.canInvoke(tagtype, '$xmlifyContent')) {
             return aRequest.fail(
-                    TP.FAILURE,
                     'Unable to find tag type: ' + tagname);
         }
 
@@ -1168,13 +1164,12 @@ function(aRequest) {
             //  problem transforming command buffer into XML. Typically
             //  either malformed XML or a missing xmlns declaration.
             return aRequest.fail(
-                        TP.FAILURE,
                         'Unable to create command XML: "' + src + '".');
         }
     } else if (!TP.isNode(node = src)) {
         //  if the content had been a string or node then we can work with
         //  it but otherwise we'll consider it an error
-        return aRequest.fail(TP.FAILURE, 'Invalid command: "' + src + '".');
+        return aRequest.fail('Invalid command: "' + src + '".');
     }
 
     //  all processing has to take place within a viable document, so we
@@ -1187,7 +1182,6 @@ function(aRequest) {
         if (TP.notValid(node)) {
             //  ouch! no content
             return aRequest.fail(
-                        TP.FAILURE,
                         'Unable to process empty document.');
         }
     } else {
@@ -1230,7 +1224,6 @@ function(aRequest) {
         }
     } else if (!TP.isArray(phases)) {
         return aRequest.fail(
-                    TP.FAILURE,
                     'Invalid phase definition: ' + phases + '.');
     }
 
@@ -1277,7 +1270,6 @@ function(aRequest) {
                     //  by processing of some kind and neither was replaced
                     //  in the request with a viable alternative.
                     return aRequest.fail(
-                                TP.FAILURE,
                                 aRequest.at('cmdPhase') +
                                 ' cycle node detached: ' +
                                 TP.str(cmdNode, false));
@@ -1324,7 +1316,7 @@ function(aRequest) {
 
     //  make sure we ended the loop the right way, otherwise warn/exit
     if (TP.notEmpty(phases) && (cycles >= cyclemax)) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'Terminated content processing: content.phase_max exceeded.');
     } else if (aRequest.didComplete()) {
         //  cancelled or failed
@@ -1351,7 +1343,6 @@ function(aRequest) {
                 //  processing of some kind and neither was replaced in the
                 //  request with a viable alternative.
                 return aRequest.fail(
-                            TP.FAILURE,
                             'Execution cycle node detached: ' +
                             TP.str(cmdNode, false));
             }
@@ -1548,7 +1539,7 @@ function(aRequest) {
                       message = 'Error running ' + TP.name(type) + '.' +
                         funcName;
                       TP.error(message + ': ' + e.message);
-                      return aRequest.fail(TP.FAILURE, TP.ec(e, message));
+                      return aRequest.fail(TP.ec(e, message));
                     }
                 }
 
@@ -1656,7 +1647,7 @@ function(aRequest) {
                                     TP.nodeAsString(child, false);
                         TP.error(message);
 
-                        return aRequest.fail(TP.FAILURE, message);
+                        return aRequest.fail(message);
                     }
                 }
             } else {
@@ -1727,7 +1718,7 @@ function(aRequest) {
                 } catch (e) {
                   message = 'Error running ' + TP.name(type) + '.' + funcName;
                   TP.error(message + ': ' + e.message);
-                  return aRequest.fail(TP.FAILURE, TP.ec(e, message));
+                  return aRequest.fail(TP.ec(e, message));
                 }
 
                 if (TP.isArray(result)) {
@@ -1783,7 +1774,7 @@ function(aRequest) {
                                     TP.nodeAsString(child, false);
                         TP.error(message);
 
-                        return aRequest.fail(TP.FAILURE, message);
+                        return aRequest.fail(message);
                     }
                 }
             } else {
@@ -2030,7 +2021,7 @@ function(aRequest) {
 
     //  'input' cannot be empty.
     if (TP.isEmpty(input = aRequest.stdin())) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'Unable to find input for: ' + TP.str(node));
     }
 
@@ -2307,7 +2298,7 @@ function(aRequest) {
     //  specified.
     path = this.getArgument(aRequest, 'tsh:href', null, true);
     if (TP.isEmpty(path)) {
-        return aRequest.fail(TP.FAILURE, 'Unable to determine target url.');
+        return aRequest.fail('Unable to determine target url.');
     }
 
     ext = TP.uriExtension(path);
@@ -2317,14 +2308,14 @@ function(aRequest) {
 
     url = TP.uc(path);
     if (TP.notValid(url)) {
-        return aRequest.fail(TP.FAILURE, 'Invalid target url.');
+        return aRequest.fail('Invalid target url.');
     }
 
     hid = TP.elementGetAttribute(aRequest.at('cmdNode'), 'tsh:hid', true);
     hid = TP.ifEmpty(hid, -2);
     hid = parseInt(hid, 10);
     if (TP.notValid(hid) || TP.isNaN(hid)) {
-        return aRequest.fail(TP.FAILURE, 'Invalid target history.');
+        return aRequest.fail('Invalid target history.');
     }
 
     //  we want the expanded form of the last command, ready for action.
@@ -2397,7 +2388,7 @@ function(aRequest) {
     input = this.getArgument(aRequest, 'tsh:href', null, true);
     if (TP.notValid(input)) {
         if (TP.isEmpty(input = aRequest.stdin())) {
-            return aRequest.fail(TP.FAILURE,
+            return aRequest.fail(
                 'Unable to find reference for ' + TP.str(ref));
         }
     } else {
@@ -2416,7 +2407,7 @@ function(aRequest) {
 
         //  ambiguous...
         if (options.getSize() > 1) {
-            aRequest.fail(TP.FAILURE,
+            aRequest.fail(
                 'Multiple choices: ' + TP.src(options));
 
             continue;
@@ -2434,7 +2425,7 @@ function(aRequest) {
 
             url = TP.uc(file);
             if (TP.notValid(url)) {
-                aRequest.fail(TP.FAILURE,
+                aRequest.fail(
                     'tsh:import failed to load ' + file);
 
                 continue;
@@ -2442,7 +2433,7 @@ function(aRequest) {
 
             if (TP.notValid(src = url.getContent(
                                 TP.hc('refresh', true, 'async', false)))) {
-                aRequest.fail(TP.FAILURE,
+                aRequest.fail(
                     'tsh:import failed to load ' + file);
 
                 continue;
@@ -2474,7 +2465,7 @@ function(aRequest) {
                 }
             }
         } catch (e) {
-            aRequest.fail(TP.FAILURE,
+            aRequest.fail(
                 TP.ec(e, 'tsh:import failed to load ' + file));
 
             continue;
@@ -2540,7 +2531,7 @@ function(aRequest) {
     input = this.getArgument(aRequest, 'tsh:ref', null, true);
     if (TP.notValid(input)) {
         if (TP.isEmpty(input = aRequest.stdin())) {
-            return aRequest.fail(TP.FAILURE,
+            return aRequest.fail(
                 'Unable to find reference for ' + TP.str(input));
         }
     } else {
@@ -2556,7 +2547,6 @@ function(aRequest) {
 
         if (TP.notValid($$inst)) {
             aRequest.fail(
-                TP.FAILURE,
                 'Unable to resolve object reference ' + ref);
 
             continue;
@@ -2576,7 +2566,7 @@ function(aRequest) {
 
                 url = TP.uc(file);
                 if (TP.notValid(url)) {
-                    aRequest.fail(TP.FAILURE,
+                    aRequest.fail(
                         'tsh:source failed to load ' + file);
 
                     continue;
@@ -2585,7 +2575,7 @@ function(aRequest) {
                 if (TP.notValid(
                         src = url.getContent(
                                 TP.hc('refresh', true, 'async', false)))) {
-                    aRequest.fail(TP.FAILURE,
+                    aRequest.fail(
                         'tsh:source failed to load ' + file);
 
                     continue;
@@ -2606,7 +2596,7 @@ function(aRequest) {
                     type.initialize();
                 }
             } catch (e) {
-                aRequest.fail(TP.FAILURE,
+                aRequest.fail(
                     TP.ec(e, 'tsh:source failed to eval ' + file));
 
                 continue;
@@ -2615,7 +2605,7 @@ function(aRequest) {
                 TP.sys.shouldUseDebugger(debug);
             }
         } else {
-            aRequest.fail(TP.FAILURE,
+            aRequest.fail(
                 'Object ' + ref + ' source file not found.');
 
             continue;
@@ -2918,7 +2908,7 @@ function(aRequest) {
 
     url = TP.uc(url);
     if (TP.notValid(url)) {
-        return aRequest.fail(TP.FAILURE, 'Invalid request input.');
+        return aRequest.fail('Invalid request input.');
     }
 
     req = TP.sig.HTTPRequest.construct(TP.hc('uri', url, 'verb', TP.HTTP_POST));
@@ -2995,8 +2985,7 @@ function(aRequest) {
                 url = TP.uc(file);
                 if (TP.notValid(url)) {
 
-                    aRequest.fail(TP.FAILURE,
-                                    'Couldn\'t create URL from: ' + file);
+                    aRequest.fail('Couldn\'t create URL from: ' + file);
 
                     return;
                 }
@@ -3013,7 +3002,6 @@ function(aRequest) {
                                     TP.hc('refresh', true, 'async', false)))) {
 
                             aRequest.fail(
-                                    TP.FAILURE,
                                     'Couldn\'t load source from: ' + file);
 
                             return;
@@ -3037,7 +3025,6 @@ function(aRequest) {
                                     TP.hc('refresh', true, 'async', false)))) {
 
                             aRequest.fail(
-                                    TP.FAILURE,
                                     'Couldn\'t load source from: ' + file);
 
                             return;
@@ -3051,7 +3038,6 @@ function(aRequest) {
 
                     default:
                         aRequest.fail(
-                            TP.FAILURE,
                             'No action known for files with extension: ' + ext);
                     return;
                 }
@@ -3059,7 +3045,7 @@ function(aRequest) {
 
                 loaded.push(file);
             } catch (e) {
-                aRequest.fail(TP.FAILURE,
+                aRequest.fail(
                     TP.ec(e, 'Source failed to exec: ' + file));
                 return;
             } finally {

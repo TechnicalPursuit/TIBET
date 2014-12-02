@@ -92,7 +92,6 @@ function(resourceID, aRequest) {
     //  The required username isn't in the paramDict? Abort it.
     if (TP.notValid(username = paramDict.at('username'))) {
         aRequest.fail(
-            TP.FAILURE,
             TP.sc('Missing required username parameter in request'));
 
         return;
@@ -103,7 +102,6 @@ function(resourceID, aRequest) {
     //  The required password isn't in the paramDict? Abort it.
     if (TP.notValid(password = paramDict.at('password'))) {
         aRequest.fail(
-            TP.FAILURE,
             TP.sc('Missing required password parameter in request'));
 
         return;
@@ -241,7 +239,6 @@ function(aRequest) {
     if (TP.isEmpty(this.get('authToken')) &&
         (aRequest.at('action') !== 'login')) {
         aRequest.cancel(
-            TP.FAILURE,
             TP.sc('No authToken available. Refiring after token fetched.'));
 
         //  Construct the authentication request and set up a success
@@ -351,7 +348,7 @@ function(aRequest) {
 
         default:
 
-            aRequest.fail(TP.FAILURE, 'Unrecognized action');
+            aRequest.fail('Unrecognized action');
 
             //  NOTE the getRequestURI method throws an exception if no URI
             //  can be computed from the service uri or the request payload

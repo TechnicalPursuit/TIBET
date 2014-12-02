@@ -84,7 +84,7 @@ TP.hc(
                     path);
 
             TP.raise(this, 'TP.sig.UnsupportedFeature', msg);
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return false;
         }
@@ -112,7 +112,7 @@ TP.hc(
                     ' msg: Couldn\'t create "Scripting.FileSystemObject"');
 
             TP.raise(this, 'TP.sig.URIException', msg);
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return false;
         }
@@ -178,7 +178,7 @@ TP.hc(
                         path);
 
             TP.raise(this, 'TP.sig.InvalidOperation', msg);
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return false;
         }
@@ -224,7 +224,7 @@ TP.hc(
                     }
 
                     retVal = false;
-                    request.fail(TP.FAILURE, message);
+                    request.fail(message);
 
                     return;
                 }
@@ -280,7 +280,7 @@ TP.hc(
                             path);
 
             TP.raise(this, 'TP.sig.InvalidOperation', msg);
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return false;
         }
@@ -305,7 +305,7 @@ TP.hc(
                     ' msg: Couldn\'t create "Scripting.FileSystemObject"');
 
             TP.raise(this, 'TP.sig.URIException', msg);
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return false;
         }
@@ -337,7 +337,7 @@ TP.hc(
         request = TP.request(aRequest);
 
         TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail(TP.FAILURE, 'Unsupported operation.');
+        request.fail('Unsupported operation.');
 
         return false;
     },
@@ -364,7 +364,7 @@ TP.hc(
         request = TP.request(aRequest);
 
         TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail(TP.FAILURE, 'Unsupported operation.');
+        request.fail('Unsupported operation.');
 
         return false;
     }
@@ -427,7 +427,7 @@ TP.hc(
             httpObj.open(TP.HTTP_GET, path, false);
             httpObj.send(null);
         } catch (e) {
-            request.fail(TP.FAILURE, TP.str(e));
+            request.fail(e);
 
             return false;
         }
@@ -568,14 +568,14 @@ TP.hc(
                     msg = TP.sc('Unable to access: ', fname);
                     TP.raise(this, 'TP.sig.URIException', msg);
 
-                    request.fail(TP.FAILURE, msg);
+                    request.fail(msg);
                 }
             }
         } catch (e) {
             msg = TP.sc('Unable to access: ', fname);
             TP.raise(this, 'TP.sig.URIException', msg);
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
         }
 
         return false;
@@ -618,7 +618,7 @@ TP.hc(
         } catch (e) {
             //  It threw an exception, which means that it definitely didn't
             //  find it so we always return false if we get here.
-            request.fail(TP.FAILURE, TP.str(e));
+            request.fail(e);
 
             return false;
         }
@@ -698,7 +698,7 @@ TP.hc(
         } catch (e) {
             //  It threw an exception, which means that it definitely didn't
             //  find it so we always return false if we get here.
-            request.fail(TP.FAILURE, TP.str(e));
+            request.fail(e);
 
             return false;
         }
@@ -809,7 +809,7 @@ TP.hc(
                 TP.raise(this, 'TP.sig.PrivilegeViolation',
                             TP.ec(e, msg));
 
-                request.fail(TP.FAILURE, msg);
+                request.fail(msg);
 
                 return;
             }
@@ -832,7 +832,7 @@ TP.hc(
                 TP.raise(this, 'TP.sig.IOException',
                             TP.ec(e, msg));
 
-                request.fail(TP.FAILURE, msg);
+                request.fail(msg);
 
                 return;
             }
@@ -860,7 +860,7 @@ TP.hc(
                 TP.raise(this, 'TP.sig.PrivilegeViolation',
                             TP.ec(e, msg));
 
-                request.fail(TP.FAILURE, msg);
+                request.fail(msg);
 
                 return;
             }
@@ -879,7 +879,7 @@ TP.hc(
                 msg = TP.sc('Unable to locate: ', path);
                 TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-                request.fail(TP.FAILURE, msg);
+                request.fail(msg);
 
                 return null;
             }
@@ -980,7 +980,7 @@ TP.hc(
                 msg = TP.sc('Unable to locate: ', path);
                 TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-                request.fail(TP.FAILURE, msg);
+                request.fail(msg);
 
                 return;
             }
@@ -995,7 +995,7 @@ TP.hc(
                 msg = TP.sc('Unable to locate: ', path);
                 TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-                request.fail(TP.FAILURE, msg);
+                request.fail(msg);
 
                 return;
             }
@@ -1028,7 +1028,7 @@ TP.hc(
                             TP.ifInfo() ?
                                 TP.info(msg, TP.LOG) : 0;
 
-                            request.fail(TP.FAILURE, msg);
+                            request.fail(msg);
 
                             return;
                         }
@@ -1040,7 +1040,7 @@ TP.hc(
                     TP.raise(this, 'TP.sig.URIException',
                                 TP.ec(e2, msg));
 
-                    request.fail(TP.FAILURE, msg);
+                    request.fail(msg);
 
                     return;
                 }
@@ -1049,7 +1049,7 @@ TP.hc(
                 TP.raise(this, 'TP.sig.URIException',
                             TP.ec(e, msg));
 
-                request.fail(TP.FAILURE, msg);
+                request.fail(msg);
 
                 return;
             }
@@ -1125,7 +1125,7 @@ TP.hc(
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return;
         }
@@ -1139,7 +1139,7 @@ TP.hc(
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return;
         }
@@ -1149,7 +1149,7 @@ TP.hc(
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return;
         }
@@ -1160,7 +1160,7 @@ TP.hc(
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return;
         }
@@ -1170,7 +1170,7 @@ TP.hc(
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return;
         }
@@ -1245,7 +1245,7 @@ TP.hc(
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return;
         }
@@ -1259,7 +1259,7 @@ TP.hc(
             msg = TP.sc('Unable to locate: ', path);
             TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
             return;
         }
@@ -1387,7 +1387,7 @@ TP.hc(
                                 TP.ec(e, msg));
 
                     retVal = false;
-                    request.fail(TP.FAILURE, msg);
+                    request.fail(msg);
 
                     return retVal;
                 }
@@ -1417,7 +1417,7 @@ TP.hc(
                                         TP.ec(e, msg));
 
                             retVal = false;
-                            request.fail(TP.FAILURE, msg);
+                            request.fail(msg);
 
                             return retVal;
                         }
@@ -1481,13 +1481,13 @@ TP.hc(
                                     ' for ', fname);
                         TP.raise(this, 'InvalidMode', msg);
 
-                        request.fail(TP.FAILURE, msg);
+                        request.fail(msg);
                     }
                 } catch (e) {
                     msg = TP.sc('Unable to access: ', fname);
                     TP.raise(this, 'AccessViolation', TP.ec(e, msg));
 
-                    request.fail(TP.FAILURE, msg);
+                    request.fail(msg);
                 }
 
                 retVal = false;
@@ -1583,7 +1583,7 @@ TP.hc(
                     TP.raise(this, 'TP.sig.URIException',
                                 TP.ec(e, msg));
 
-                    request.fail(TP.FAILURE, msg);
+                    request.fail(msg);
 
                     return false;
                 }
@@ -1623,7 +1623,7 @@ TP.hc(
                 msg = TP.sc('Invalid file save mode ', mode, 'for ', fname);
                 TP.raise(this, 'InvalidMode', msg);
 
-                request.fail(TP.FAILURE, msg);
+                request.fail(msg);
             }
         }
 
@@ -1656,7 +1656,7 @@ TP.hc(
         request = TP.request(aRequest);
 
         TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail(TP.FAILURE, 'Unsupported operation.');
+        request.fail('Unsupported operation.');
 
         return false;
     },
@@ -1687,7 +1687,7 @@ TP.hc(
         request = TP.request(aRequest);
 
         TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail(TP.FAILURE, 'Unsupported operation.');
+        request.fail('Unsupported operation.');
 
         return false;
     }
@@ -2703,7 +2703,7 @@ TP.hc(
         request = TP.request(aRequest);
 
         TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail(TP.FAILURE, 'Unsupported operation.');
+        request.fail('Unsupported operation.');
 
         return false;
     },
@@ -2756,7 +2756,7 @@ TP.hc(
         request = TP.request(aRequest);
 
         TP.raise(this, 'TP.sig.UnsupportedOperation');
-        request.fail(TP.FAILURE, 'Unsupported operation.');
+        request.fail('Unsupported operation.');
 
         return false;
     }
