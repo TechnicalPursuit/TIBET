@@ -289,7 +289,8 @@ function() {
      * @returns {String} A JSON-formatted string.
      */
 
-    //  Callers will be interested in our data, not the 'data' structure itself.
+    //  Callers will be interested in our data, not the 'data' structure
+    //  itself.
     return TP.json(this.get('data'));
 });
 
@@ -336,8 +337,8 @@ function(aPath, shouldCollapse) {
      * @synopsis Returns a newly initialized access path instance.
      * @param {String} aPath The path as a String.
      * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one item,
-     *     it will just return that item. The default is false.
+     *     'collapse' its results - i.e. if its a collection with only one
+     *     item, it will just return that item. The default is false.
      * @returns {TP.core.AccessPath} The new instance.
      * @todo
      */
@@ -368,8 +369,8 @@ function(aPath, shouldCollapse) {
      *     already a path.
      * @param {String} aPath The String to build the instance from.
      * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one item,
-     *     it will just return that item. The default is false.
+     *     'collapse' its results - i.e. if its a collection with only one
+     *     item, it will just return that item. The default is false.
      * @returns {TP.core.AccessPath} A new instance or aPath if it's already a
      *     path.
      */
@@ -415,10 +416,10 @@ function(aPath) {
             return this.raise('TP.sig.InvalidPath');
         }
 
-        //  Now, so as to not change the overall meaning of the path, go back to
-        //  the original path and substitute '0's - remember that we're only
-        //  doing path type detection here, so we're not changing the meaning of
-        //  the path.
+        //  Now, so as to not change the overall meaning of the path, go back
+        //  to the original path and substitute '0's - remember that we're only
+        //  doing path type detection here, so we're not changing the meaning
+        //  of the path.
         TP.regex.ACP_NUMERIC.lastIndex = 0;
         path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
     }
@@ -429,8 +430,8 @@ function(aPath) {
 
         path = TP.regex.TIBET_POINTER.match(path);
 
-        //  If it has 'TIBETan' access path characters, create a 'complex' TIBET
-        //  path to deal with it.
+        //  If it has 'TIBETan' access path characters, create a 'complex'
+        //  TIBET path to deal with it.
         if (TP.regex.TIBET_PATH.test(path.at(1))) {
             return TP.core.ComplexTIBETPath;
         } else {
@@ -460,8 +461,8 @@ function(aPath) {
         }
     }
 
-    //  If we're handed an '#css(...)' or other kind of 'xtension' pointer, then
-    //  we know what kind of path it is (or should be, anyway)
+    //  If we're handed an '#css(...)' or other kind of 'xtension' pointer,
+    //  then we know what kind of path it is (or should be, anyway)
     if (TP.regex.XTENSION_POINTER.test(path)) {
         return TP.core.XTensionPath;
     }
@@ -500,9 +501,9 @@ function() {
 
     /**
      * @name $getExecutedPaths
-     * @synopsis Returns the hash to use to register executed paths. This method
-     *     is supplied to avoid problems with this hash not being initialized
-     *     when TIBET is starting up.
+     * @synopsis Returns the hash to use to register executed paths. This
+     *     method is supplied to avoid problems with this hash not being
+     *     initialized when TIBET is starting up.
      * @returns {TP.lang.Hash} The executed paths hash.
      */
 
@@ -570,8 +571,9 @@ function(anAddress, anAction) {
     /**
      * @name registerChangedAddress
      * @synopsis Registers a 'data address' (i.e. a unique location in the
-     *     source object that is currently being processed by the receiver) as a
-     *     'changed' address (i.e. a location where the data has been changed)
+     *     source object that is currently being processed by the receiver) as
+     *     a 'changed' address (i.e. a location where the data has been
+     *     changed).
      * @param {String} anAddress The data address where the data change took
      *     place.
      * @param {String} anAction The 'action' that was taken by the 'set'
@@ -602,8 +604,8 @@ function(anAddress, sourceObjectID, interestedPath) {
      * @param {String} anAddress The data address where the data retrieval took
      *     place.
      * @param {String} sourceObjectID The unique ID of the source object.
-     * @param {String} interestedPath The String representation of the path that
-     *     is interested in changes at the supplied address.
+     * @param {String} interestedPath The String representation of the path
+     *     that is interested in changes at the supplied address.
      * @returns {Object} The receiver.
      */
 
@@ -677,8 +679,8 @@ function(aPath, shouldCollapse) {
      * @synopsis Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one item,
-     *     it will just return that item. The default is false.
+     *     'collapse' its results - i.e. if its a collection with only one
+     *     item, it will just return that item. The default is false.
      * @returns {TP.core.AccessPath} The receiver.
      */
 
@@ -891,8 +893,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     setting the supplied data into the supplied target object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
-     * @param {attributeValue} Object The object to use as the value to set into
-     *     the target object.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
@@ -936,8 +938,8 @@ function(aReturnValue, targetObj) {
      *          last path step
      *          3.  Packaging any remaining results into a type or by using a
      *          Function
-     *          4.  Using a fallback Function to create a result if one couldn't
-     *          be found (i.e. the value is not valid).
+     *          4.  Using a fallback Function to create a result if one
+     *          couldn't be found (i.e. the value is not valid).
      * @param {Object} aReturnValue The initial return value from this path.
      * @param {targetObj} Object The object to that the receiver has just
      *     executed against.
@@ -1071,8 +1073,8 @@ function(targetObj) {
      * @name updateRegistrationsBeforeSignaling
      * @synopsis Updates any path registrations and their attendant address
      *     information before signaling a change. This method is called to
-     *     mark any paths that match addresses that reference data that might be
-     *     being deleted or whose structure is changing. This information is
+     *     mark any paths that match addresses that reference data that might
+     *     be being deleted or whose structure is changing. This information is
      *     then used after signaling change to 'clean up' these referred to
      *     paths and addresses.
      * @param {targetObj} Object The object to update the path and address
@@ -1205,9 +1207,9 @@ function(targetObj) {
 
     observedAddresses = allAddresses.at(TP.id(targetObj));
 
-    //  If we couldn't find any 'observed' addresses for the target object, then
-    //  we should try to compute them - at least for this path. This is normally
-    //  done by doing a 'get'.
+    //  If we couldn't find any 'observed' addresses for the target object,
+    //  then we should try to compute them - at least for this path. This is
+    //  normally done by doing a 'get'.
 
     if (TP.isEmpty(observedAddresses)) {
         this.executeGet(targetObj);
@@ -1220,8 +1222,8 @@ function(targetObj) {
         }
     } else {
 
-        //  Make sure that this path is registered in 'executed paths' - to make
-        //  sure that at least observers of this path will be notified.
+        //  Make sure that this path is registered in 'executed paths' - to
+        //  make sure that at least observers of this path will be notified.
         executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
                             TP.id(targetObj));
 
@@ -1304,9 +1306,9 @@ function(targetObj) {
 
         pathEntries = changedPaths.at(pathKeys.at(i));
 
-        //  Loop over all of the entries for this particular path. Each one will
-        //  contain the address that changed and the action that changed it
-        //  (TP.CREATE, TP.DELETE or TP.UPDATE)
+        //  Loop over all of the entries for this particular path. Each one
+        //  will contain the address that changed and the action that changed
+        //  it (TP.CREATE, TP.DELETE or TP.UPDATE)
         entriesLen = pathEntries.getSize();
         for (j = 0; j < entriesLen; j++) {
 
@@ -1534,8 +1536,8 @@ function(aPath, shouldCollapse) {
      * @synopsis Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one item,
-     *     it will just return that item. The default is false.
+     *     'collapse' its results - i.e. if its a collection with only one
+     *     item, it will just return that item. The default is false.
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
@@ -1608,8 +1610,8 @@ function(targetObj, varargs) {
     //  notification mechanism
     this.getType().startObservedAddress(this.get('srcPath'));
 
-    //  If the path is something like '[0]', then slice off the brackets to just
-    //  produce '0'.
+    //  If the path is something like '[0]', then slice off the brackets to
+    //  just produce '0'.
     if (/^\[\d+\]$/.test(path)) {
         path = path.slice(1, -1);
     }
@@ -1634,8 +1636,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     setting the supplied data into the supplied target object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
-     * @param {attributeValue} Object The object to use as the value to set into
-     *     the target object.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
@@ -1681,9 +1683,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         op = TP.CREATE;
     }
 
-    //  If the old value is equal to the value that we're setting, then there is
-    //  nothing to do here and we exit. This is important to avoid endless
-    //  recursion when doing a 'two-ended bind' to data referenced by this path.
+    //  If the old value is equal to the value that we're setting, then there
+    //  is nothing to do here and we exit. This is important to avoid endless
+    //  recursion when doing a 'two-ended bind' to data referenced by this
+    //  path.
     if (TP.equal(oldVal, attributeValue)) {
         return oldVal;
     }
@@ -1696,7 +1699,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         srcPath = srcPath.transform(args);
     }
 
-    //  Trigger the actual 'set' mechanism, tracking changed addresses as we go.
+    //  Trigger the actual 'set' mechanism, tracking changed addresses as we
+    //  go.
 
     this.preSetAccess(targetObj);
 
@@ -1798,10 +1802,12 @@ function(targetObj) {
 
     TP.core.SimpleTIBETPath.set(
         '$currentSource',
-        TP.ifInvalid(TP.core.SimpleTIBETPath.get('$currentSource'), targetObj));
+        TP.ifInvalid(
+            TP.core.SimpleTIBETPath.get('$currentSource'), targetObj));
     TP.core.SimpleTIBETPath.set(
         '$currentPath',
-        TP.ifInvalid(TP.core.SimpleTIBETPath.get('$currentPath'), this));
+        TP.ifInvalid(
+            TP.core.SimpleTIBETPath.get('$currentPath'), this));
 
     TP.core.SimpleTIBETPath.set(
         '$traversalLevel',
@@ -1897,12 +1903,12 @@ function(aPath) {
 
     /**
      * @name tpc
-     * @synopsis Returns a newly initialized TIBETSimplePath or TIBETComplexPath
-     *     instance.
+     * @synopsis Returns a newly initialized TIBETSimplePath or
+     *     TIBETComplexPath instance.
      * @param {String} aPath The path as a String.
      * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one item,
-     *     it will just return that item. The default is false.
+     *     'collapse' its results - i.e. if its a collection with only one
+     *     item, it will just return that item. The default is false.
      * @returns {TP.core.SimpleTIBETPath|TP.core.ComplexTIBETPath} The new
      *     instance.
      */
@@ -2042,8 +2048,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     setting the supplied data into the supplied target object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
-     * @param {attributeValue} Object The object to use as the value to set into
-     *     the target object.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
@@ -2086,7 +2092,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
     this.set('$transformedPath', path);
 
-    //  Trigger the actual 'set' mechanism, tracking changed addresses as we go.
+    //  Trigger the actual 'set' mechanism, tracking changed addresses as we
+    //  go.
 
     this.set('$createdStructure', false);
 
@@ -2095,8 +2102,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  If our traversal level is 0, that means we're the top level path and we
     //  can check to see if the end result value is equal to the value we're
     //  setting. If so, we can just bail out here.
-    //  NB: We have to do this *after* the preSetAccess call so that change path
-    //  data structures are set up properly.
+    //  NB: We have to do this *after* the preSetAccess call so that change
+    //  path data structures are set up properly.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
     if (traversalLevel === 0) {
         oldVal = this.executeGet(targetObj);
@@ -2125,12 +2132,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     this.postSetAccess(targetObj);
 
-    //  We're all done - acquire the traversal level again. We have to do this a
-    //  second time, since the pre/post calls manipulate it.
+    //  We're all done - acquire the traversal level again. We have to do this
+    //  a second time, since the pre/post calls manipulate it.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
 
-    //  Only signal change if we're the 'top level' TIBET path - we could've had
-    //  more 'complex paths' buried under us.
+    //  Only signal change if we're the 'top level' TIBET path - we could've
+    //  had more 'complex paths' buried under us.
     if (traversalLevel === 0) {
 
         if (TP.isValid(shouldSignal)) {
@@ -2513,8 +2520,8 @@ function(targetObj) {
         return undefined;
     }
 
-    //  Had an access character, but it must be one that Strings don't support -
-    //  let standard method do the work
+    //  Had an access character, but it must be one that Strings don't support
+    //  - let standard method do the work
     return targetObj.get(tail);
 });
 
@@ -2531,8 +2538,8 @@ function(targetObj, attributeValue, shouldSignal) {
      *     'Array'.
      * @param {targetObj} Array The object to execute the receiver against to
      *     set data.
-     * @param {attributeValue} Object The object to use as the value to set into
-     *     the target object.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
      * @returns {Array|null} The targetObj or null.
@@ -2596,14 +2603,14 @@ function(targetObj, attributeValue, shouldSignal) {
                             thisType.endChangedAddress();
                         });
             } else {
-                //  Otherwise, we take each one of our items and send it a 'set'
-                //  message with the attribute value.
+                //  Otherwise, we take each one of our items and send it a
+                //  'set' message with the attribute value.
 
                 firstSimplePath = TP.apc(tail).getFirstSimplePath();
                 attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
 
-                //  If an Array was not supplied, then we use the supplied value
-                //  in a repeating fashion.
+                //  If an Array was not supplied, then we use the supplied
+                //  value in a repeating fashion.
                 targetObj.vslice(head).perform(
                     function(index, count) {
 
@@ -2639,8 +2646,8 @@ function(targetObj, attributeValue, shouldSignal) {
                             //  And we set it back onto the targetObj
                             targetObj.atPut(index, val);
 
-                            //  Need to register this as a changed address since
-                            //  we altered what was at this slot.
+                            //  Need to register this as a changed address
+                            //  since we altered what was at this slot.
                             thisType.registerChangedAddress(
                                 thisType.getChangedAddress(), op);
 
@@ -2704,8 +2711,8 @@ function(targetObj, attributeValue, shouldSignal) {
                             thisType.endChangedAddress();
                         }, queryParts);
             } else {
-                //  Otherwise, we take each one of our items and send it a 'set'
-                //  message with the attribute value.
+                //  Otherwise, we take each one of our items and send it a
+                //  'set' message with the attribute value.
 
                 firstSimplePath = TP.apc(tail).getFirstSimplePath();
                 attrIsNumber = TP.isNumber(firstSimplePath.asNumber());
@@ -2745,8 +2752,8 @@ function(targetObj, attributeValue, shouldSignal) {
                             //  And we set it back onto the targetObj
                             targetObj.set(index, val, false);
 
-                            //  Need to register this as a changed address since
-                            //  we altered what was at this slot.
+                            //  Need to register this as a changed address
+                            //  since we altered what was at this slot.
                             thisType.registerChangedAddress(
                                 thisType.getChangedAddress(), op);
 
@@ -2834,8 +2841,8 @@ function(targetObj, attributeValue, shouldSignal) {
      *     'Object'.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
-     * @param {attributeValue} Object The object to use as the value to set into
-     *     the target object.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
      * @returns {Object|null} The targetObj or null.
@@ -3321,8 +3328,8 @@ function(targetObj, varargs) {
                         this.getPathType(),
                         false);
         } else {
-            //  Otherwise, reevaluate and just try to capture the Node above the
-            //  result
+            //  Otherwise, reevaluate and just try to capture the Node above
+            //  the result.
             nodes = TP.nodeEvaluatePath(
                         natTargetObj,
                         pathSrc + '/..',
@@ -3375,8 +3382,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     setting the supplied data into the supplied target object.
      * @param {targetObj} Object The object to execute the receiver against to
      *     set data.
-     * @param {attributeValue} Object The object to use as the value to set into
-     *     the target object.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
@@ -3433,8 +3440,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     oldVal = this.executeGet(targetObj);
 
-    //  If the old value is equal to the value that we're setting, then there is
-    //  nothing to do here and we exit. This is important to avoid endless
+    //  If the old value is equal to the value that we're setting, then there
+    //  is nothing to do here and we exit. This is important to avoid endless
     //  recursion when doing a 'two-ended bind' to data referenced by this path
     //  and to avoid a lot of unnecessary signaling.
     if (this.checkValueEquality(oldVal, attributeValue)) {
@@ -3456,10 +3463,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
 
     //  If the target object is flagging changes, then we set both flags to
-    //  true. Otherwise, we set whether we flag changes as to whether we want to
-    //  signal change (in which case we have to, in order to get the proper set
-    //  of addresses) but we don't want to leave those flags around, so we set
-    //  the 'leaveFlaggedChanges' to false to strip them out.
+    //  true. Otherwise, we set whether we flag changes as to whether we want
+    //  to signal change (in which case we have to, in order to get the proper
+    //  set of addresses) but we don't want to leave those flags around, so we
+    //  set the 'leaveFlaggedChanges' to false to strip them out.
     if (TP.wrap(targetObj).shouldFlagChanges()) {
         flagChanges = true;
         leaveFlaggedChanges = true;
@@ -3478,8 +3485,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
     this.set('$transformedPath', path);
 
-    //  First, we have to get the nodes that we can use to set the value - if we
-    //  can't do that, then we're dead in the water...
+    //  First, we have to get the nodes that we can use to set the value - if
+    //  we can't do that, then we're dead in the water...
 
     //  Note here how we pass 'true' to *always* flag changes in any content
     //  that we generate
@@ -3548,8 +3555,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     if (TP.isNode(content)) {
 
-        //  if the attrValue is a Node, clone it so that we don't remove it from
-        //  it's original DOM, etc.
+        //  If the attrValue is a Node, clone it so that we don't remove it
+        //  from it's original DOM, etc.
         if (TP.isNode(value = attrValue)) {
             value = TP.nodeCloneNode(attrValue, true);
         } else {
@@ -3580,8 +3587,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
             }
         } else if (TP.isAttributeNode(content)) {
-            //  If we're gonna signal a change, then add the attribute's address
-            //  to the list of changed addresses.
+            //  If we're gonna signal a change, then add the attribute's
+            //  address to the list of changed addresses.
             if (signalChange) {
                 ownerElem = TP.attributeGetOwnerElement(content);
                 affectedElems.push(ownerElem);
@@ -3607,8 +3614,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         for (i = 0; i < len; i++) {
             contentnode = content.at(i);
 
-            //  if the value is a Node, clone it so that we don't remove it from
-            //  it's original DOM, etc.
+            //  If the value is a Node, clone it so that we don't remove it
+            //  from it's original DOM, etc.
             if (TP.isNode(value = attrValue)) {
                 value = TP.nodeCloneNode(attrValue, true);
             } else {
@@ -3641,8 +3648,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 contentnode, TP.SELF, TP.UPDATE, false);
                     }
                 } else if (TP.isAttributeNode(contentnode)) {
-                    //  If we're gonna signal a change, then add the attribute's
-                    //  address to the list of changed addresses.
+                    //  If we're gonna signal a change, then add the
+                    //  attribute's address to the list of changed addresses.
                     if (signalChange) {
                         ownerElem = TP.attributeGetOwnerElement(contentnode);
                         affectedElems.push(ownerElem);
@@ -3861,7 +3868,7 @@ function(aNode, flagChanges) {
         path = this.get('srcPath');
     }
 
-    //  element schemes are fine as long as they reference an existing object...
+    //  element schemes are fine as long as they reference an existing object.
     //  we can't build new content down an element path
 
     //  Note that TP.nodeEvaluateElementScheme() will only ever return one node
@@ -3988,8 +3995,8 @@ function(aPath, shouldCollapse) {
      * @synopsis Initialize the instance.
      * @param {String} aPath The String to build the instance from.
      * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one item,
-     *     it will just return that item. The default is false.
+     *     'collapse' its results - i.e. if its a collection with only one
+     *     item, it will just return that item. The default is false.
      * @returns {TP.core.BarenamePath} The receiver.
      */
 
@@ -4179,9 +4186,9 @@ function(aPath) {
     /**
      * @name canonicalizePath
      * @synopsis Returns the 'canonical' version of the supplied path. The
-     *     canonical version is one where all shortcuts have been expanded. Note
-     *     that this call will force loading of the non-native XPath parser to
-     *     provide the canonical path expansion.
+     *     canonical version is one where all shortcuts have been expanded.
+     *     Note that this call will force loading of the non-native XPath
+     *     parser to provide the canonical path expansion.
      * @param {String} aPath The path to canonicalize.
      * @returns {String} The canonicalized path.
      */
@@ -4260,8 +4267,8 @@ function() {
 
     /**
      * @name getNSResolver
-     * @synopsis Returns the namespace resolver instance, a single instance used
-     *     by the type to resolve namespace-related XPaths.
+     * @synopsis Returns the namespace resolver instance, a single instance
+     *     used by the type to resolve namespace-related XPaths.
      * @returns {TP.extern.XPathNamespaceResolver} A namespace resolver
      *     instance.
      */
@@ -4421,8 +4428,8 @@ function(aPath, shouldCollapse, forceNative) {
      *     functions are found.
      * @param {String} aPath The XPath as a String.
      * @param {Boolean} shouldCollapse Whether or not this path should
-     *     'collapse' its results - i.e. if its a collection with only one item,
-     *     it will just return that item. The default is false.
+     *     'collapse' its results - i.e. if its a collection with only one
+     *     item, it will just return that item. The default is false.
      * @param {Boolean} forceNative Whether or not the path should be 'forced'
      *     to be a native path, rather than letting this type compute whether
      *     it is either a native or non-native path. See this type's
@@ -4467,10 +4474,11 @@ function(replacementFunction) {
      * @name asReplacedString
      * @synopsis Returns a String representation of the receiver after
      *     substitutions have taken place at each location step.
-     * @description For a non-native path substitutions will be performed by the
-     *     supplied Function which should take a single argument, that of the
-     *     location step that the parser is currently at. For a native path no
-     *     alteration occurs and the path's string value is returned unchanged.
+     * @description For a non-native path substitutions will be performed by
+     *     the supplied Function which should take a single argument, that of
+     *     the location step that the parser is currently at. For a native
+     *     path no alteration occurs and the path's string value is returned
+     *     unchanged.
      * @param {Function} replacementFunction The Function that will perform the
      *     replacement at each location step in the receiver.
      * @returns {String} The replaced String representation of the receiver.
@@ -4553,14 +4561,14 @@ function(aNode, flagChanges) {
 
     /**
      * @name $$createNodesForPath
-     * @synopsis Builds a set of nodes into the receiver's native node using the
-     *     supplied path expression.
+     * @synopsis Builds a set of nodes into the receiver's native node using
+     *     the supplied path expression.
      * @description This method traverses up the given path expression, looking
      *     for matching nodes. If it finds them, it then works back down the
-     *     expression, building out the nodes necessary for the expression to be
-     *     able to work against a real tree.
-     * @param {Node} aNode The node to start building the node tree based on the
-     *     supplied expression.
+     *     expression, building out the nodes necessary for the expression to
+     *     be able to work against a real tree.
+     * @param {Node} aNode The node to start building the node tree based on
+     *     the supplied expression.
      * @param {Boolean} flagChanges True if any newly created nodes should be
      *     flagged.
      * @returns {Array} The array of Nodes that got built.
@@ -4602,8 +4610,8 @@ function(aPath) {
 
     /**
      * @name $createNonNativeParserContext
-     * @synopsis Sets up the context information for the non-native XPath parser
-     *     for the receiver.
+     * @synopsis Sets up the context information for the non-native XPath
+     *     parser for the receiver.
      * @param {String} aPath The XPath as a String. Defaults to the receiver's
      *     current path.
      * @returns {TP.core.XPathPath} The receiver.
@@ -4727,8 +4735,9 @@ function(aNode, resultType, logErrors, flagChanges) {
         return TP.nodeEvaluateXPath(aNode, srcPath, resultType, logErrors);
     }
 
-    //  If we're here its because we're either not a native path, or we're being
-    //  run against an HTML document, or we're being asked to flag changes.
+    //  If we're here its because we're either not a native path, or we're
+    //  being run against an HTML document, or we're being asked to flag
+    //  changes.
     //  Either way we need to process the srcPath using the non-native XPath
     //  processor...
 
@@ -4785,8 +4794,8 @@ function(aTPNode) {
     /**
      * @name execRemove
      * @synopsis Removes all nodes under the receiver which match the XPath
-     *     provided. This method is typically called via remove when an XPath is
-     *     provided as the attributeName.
+     *     provided. This method is typically called via remove when an XPath
+     *     is provided as the attributeName.
      * @param {TP.core.Node} aTPNode The TP.core.Node to execute the receiver
      *     against.
      * @returns {TP.core.XPathPath} The receiver.
@@ -4830,8 +4839,8 @@ function(aTPNode) {
     for (i = 0; i < len; i++) {
         node = results[i];
 
-        //  If what we have is an attribute then we are being asked to remove it
-        //  from it's containing element
+        //  If what we have is an attribute then we are being asked to remove
+        //  it from it's containing element
         if (node.nodeType === Node.ATTRIBUTE_NODE) {
             elem = TP.attributeGetOwnerElement(node);
 
@@ -4854,8 +4863,8 @@ function(aTPNode) {
             elem = node.parentNode;
 
             if (aTPNode.shouldFlagChanges()) {
-                //  if we're flagging rather than 'doing' then we set the change
-                //  flag to TP.DELETE and that's all
+                //  if we're flagging rather than 'doing' then we set the
+                //  change flag to TP.DELETE and that's all
                 TP.elementFlagChange(node, TP.SELF, TP.DELETE);
 
                 TP.ifTrace() && TP.$DEBUG ?
@@ -4907,9 +4916,9 @@ function(aNode, flagChanges) {
     //  We pass 'false' to not log errors here - we may be constructing.
     results = this.execOnNative(aNode, TP.NODESET, false, flagChanges);
 
-    //  If we found content by executing ourself against the target object, then
-    //  most other concerns are moot - we got at least one targeted node (even
-    //  if that's an attribute node) and we can set it's value.
+    //  If we found content by executing ourself against the target object,
+    //  then most other concerns are moot - we got at least one targeted node
+    //  (even if that's an attribute node) and we can set it's value.
 
     //  If we didn't, well we've more work to do.
     if (TP.isEmpty(results)) {
@@ -4931,8 +4940,8 @@ function(aNode, flagChanges) {
         }
 
         //  attribute-targeting paths can make life interesting since we may
-        //  want to access the elements and add the attribute when not found, or
-        //  we may want to only operate on pre-existing attribute nodes.
+        //  want to access the elements and add the attribute when not found,
+        //  or we may want to only operate on pre-existing attribute nodes.
         //  Although standard technologies such as XForms (section 4.2.2)
         //  implies we don't build new attributes when they're missing from
         //  existing instances, we don't think that's particularly practical
@@ -4945,9 +4954,9 @@ function(aNode, flagChanges) {
                 lastSegment = path.slice(ndx + 1);
             }
 
-            //  If the first character of the last segment is a '@', or the last
-            //  segment starts with 'attribute::' then we're dealing with an
-            //  attribute path after all
+            //  If the first character of the last segment is a '@', or the
+            //  last segment starts with 'attribute::' then we're dealing with
+            //  an attribute path after all
             if (lastSegment.charAt(0) === '@') {
                 targetsAttr = true;
                 attrPath = lastSegment.slice(1);
@@ -4957,8 +4966,8 @@ function(aNode, flagChanges) {
             }
 
             //  We have a choice here based on how we want to deal with
-            //  attribute-targeting paths where the nodes don't exist yet. If we
-            //  only want to process those nodes that exist we leave the
+            //  attribute-targeting paths where the nodes don't exist yet. If
+            //  we only want to process those nodes that exist we leave the
             //  attribute portion on the XPath and let it return attribute
             //  nodes. If we want to be able to build those attributes on the
             //  fly when they're missing we need to strip off the attribute
@@ -5020,8 +5029,8 @@ function(aNode) {
 
     /**
      * @name getReferencedNodes
-     * @synopsis Returns an Array of the Nodes that are referenced by this path,
-     *     using aNode as the 'context node' (e.g. starting point).
+     * @synopsis Returns an Array of the Nodes that are referenced by this
+     *     path, using aNode as the 'context node' (e.g. starting point).
      * @param {Node|TP.core.Node} aNode The Node to execute the receiver
      *     against.
      * @returns {Array} The array of TP.core.Nodes referenced by the receiver.
@@ -5204,13 +5213,13 @@ function(shouldMakeStruct) {
     var context;
 
     if (TP.isTrue(shouldMakeStruct)) {
-        //  force creation of a non-native parsing context, and set ourselves to
-        //  be a non-native path (can't do this operation with native paths)
+        //  force creation of a non-native parsing context, and set ourselves
+        //  to be a non-native path (can't do this operation with native paths)
         this.isNativePath(false);
     }
 
-    //  if we've got a context already then update it, but don't create one just
-    //  to say "false"
+    //  If we've got a context already then update it, but don't create one
+    //  just to say "false"
     if (TP.isValid(context = this.$get('$tpContext'))) {
         context.shouldCreateNodes = shouldMakeStruct;
     }
