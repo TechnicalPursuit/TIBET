@@ -4636,6 +4636,10 @@ function(newContent, aRequest, stdinContent) {
     //  For now, anyway, processing the content needs to be synchronous.
     request.atPut('async', false);
 
+    //  Content drawn from here will be awakened when the nodes are placed into
+    //  a visible DOM, so we don't awaken them here.
+    request.atPutIfAbsent('awaken', false);
+
     //  If stdin content was supplied, execute the content as well as
     //  process it.
     if (TP.notEmpty(stdinContent)) {
@@ -4876,6 +4880,10 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
     //  For now, anyway, processing the content needs to be synchronous.
     request.atPut('async', false);
 
+    //  Content drawn from here will be awakened when the nodes are placed into
+    //  a visible DOM, so we don't awaken them here.
+    request.atPutIfAbsent('awaken', false);
+
     //  If stdin content was supplied, execute the content as well as
     //  process it.
     if (TP.notEmpty(stdinContent)) {
@@ -5101,6 +5109,10 @@ function(newContent, aRequest, stdinContent) {
 
     //  For now, anyway, processing the content needs to be synchronous.
     request.atPut('async', false);
+
+    //  Content drawn from here will be awakened when the nodes are placed into
+    //  a visible DOM, so we don't awaken them here.
+    request.atPutIfAbsent('awaken', false);
 
     //  If stdin content was supplied, execute the content as well as
     //  process it.
