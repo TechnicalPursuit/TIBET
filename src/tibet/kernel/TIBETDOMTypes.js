@@ -8669,7 +8669,6 @@ function(aRequest) {
         request,
 
         processor,
-        result,
 
         type;
 
@@ -8686,15 +8685,15 @@ function(aRequest) {
 
     request = TP.request(aRequest);
 
-    //  Make sure to clone our native node before we process it.
-    result = TP.nodeCloneNode(node, true);
+    //  We do *not* clone our native node before we process it - the processing
+    //  system will not process a detached node so we process it in situ.
 
     //  Allocate a tag processor and initialize it with the COMPILE_PHASES
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.COMPILE_PHASES);
 
     //  Process the tree of markup
-    processor.processTree(result, request);
+    processor.processTree(node, request);
 
     //  If the shell request failed then our enclosing request has failed.
     if (request.didFail()) {
@@ -8707,13 +8706,13 @@ function(aRequest) {
     //  update our internal node content. If not we'll need to get a new
     //  wrapper and return that as the result.
 
-    if (!TP.isNode(result)) {
-        return result;
-    } else if ((type = TP.core.Node.getConcreteType(result)) ===
+    if (!TP.isNode(node)) {
+        return node;
+    } else if ((type = TP.core.Node.getConcreteType(node)) ===
                                                         this.getType()) {
-        this.setNativeNode(result);
+        this.setNativeNode(node);
     } else {
-        return type.construct(result);
+        return type.construct(node);
     }
 
     return this;
