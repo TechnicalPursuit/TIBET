@@ -652,7 +652,7 @@ window.onerror = function(msg, url, line, column, errorObj) {
 
     //  set a non-zero status to signify that an error occurred to callers
     //  which won't see a native Error in a catch block
-    $STATUS = TP.FAILURE;
+    $STATUS = TP.FAILED;
 
     return true;
 };
