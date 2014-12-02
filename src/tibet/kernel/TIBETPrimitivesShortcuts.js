@@ -2817,7 +2817,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
 
     if (!TP.canInvoke(anObject, handlerName)) {
         TP.ifWarn() && !ignore && TP.sys.shouldLogSignals() ?
-            TP.warn(TP.boot.$annotate(anObject,
+            TP.warn(TP.annotate(anObject,
                 'Direct ' + handlerName + ' invocation failed.'),
                 TP.SIGNAL_LOG) : 0;
 

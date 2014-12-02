@@ -69,7 +69,7 @@ function(aValue, aNode) {
     }
 
     TP.ifTrace() && TP.$DEBUG ?
-        TP.trace(TP.boot.$annotate(node, 'xs: validating: ' + aValue),
+        TP.trace(TP.annotate(node, 'xs: validating: ' + aValue),
                     TP.LOG) : 0;
 
     //  simple check is whether there's an xsi:type attribute and a type to
@@ -167,7 +167,7 @@ function(aValue, aNode) {
     }
 
     TP.ifTrace() && TP.$DEBUG ?
-        TP.trace(TP.boot.$annotate(schema, 'Schema: '),
+        TP.trace(TP.annotate(schema, 'Schema: '),
                     TP.LOG) : 0;
 
     //  try to find an element-level type definition if we don't have one

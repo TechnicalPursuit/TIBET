@@ -1130,7 +1130,7 @@ function(aSignal) {
     if (this.isBoundElement(TP.STDIN)) {
         //  debugging mode, just log what we find/would do
         TP.ifTrace() && TP.sys.cfg('log.bind_refresh') ?
-            TP.trace(TP.boot.$annotate(this, 'Refreshing bound element.'),
+            TP.trace(TP.annotate(this, 'Refreshing bound element.'),
                 TP.LOG) : 0;
 
         this.$refreshBoundAspect(request);
@@ -1634,7 +1634,7 @@ function(aRequest) {
                         if (TP.qname(model) !== 'xctrls:model') {
                             TP.ifWarn() ?
                                 TP.warn(
-                                    TP.boot.$annotate(
+                                    TP.annotate(
                                         this,
                                         'bind-binding-exception: Unable' +
                                         ' to find model.'),
@@ -1754,7 +1754,7 @@ function(aRequest) {
             //  point
             if (TP.notValid(model)) {
                 TP.ifWarn() ?
-                    TP.warn(TP.boot.$annotate(
+                    TP.warn(TP.annotate(
                                 this,
                                 'bind-binding-exception: Unable to' +
                                 ' find model ' +
@@ -1795,7 +1795,7 @@ function(aRequest) {
 
                 if (TP.qname(model) !== 'xctrls:model') {
                     TP.ifWarn() ?
-                        TP.warn(TP.boot.$annotate(
+                        TP.warn(TP.annotate(
                                     this,
                                     'bind-binding-exception: Unable to' +
                                     ' find model ' +
@@ -1863,7 +1863,7 @@ function(aRequest) {
 
             if (TP.notValid(model)) {
                 TP.ifWarn() ?
-                    TP.warn(TP.boot.$annotate(
+                    TP.warn(TP.annotate(
                                 this,
                                 'bind-binding-exception: Unable to' +
                                 ' find model ' +

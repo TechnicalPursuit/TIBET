@@ -11924,7 +11924,7 @@ function(aRequest) {
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(
+                TP.annotate(
                         node, 'XSLT finalization transform starting.'),
             TP.INFO) : 0;
 
@@ -12016,7 +12016,7 @@ function(aRequest) {
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(TP.str(resultNode),
+                TP.annotate(TP.str(resultNode),
                             'XSLT finalization transform complete.'),
             TP.INFO) : 0;
 
@@ -14652,7 +14652,7 @@ function(aRequest) {
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(TP.str(elem),
+                TP.annotate(TP.str(elem),
                             'XInclude content inclusion starting.'),
             TP.INFO) : 0;
 
@@ -14860,7 +14860,7 @@ function(aRequest) {
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(TP.str(elem),
+                TP.annotate(TP.str(elem),
                             'XInclude content inclusion complete.'),
             TP.INFO) : 0;
 

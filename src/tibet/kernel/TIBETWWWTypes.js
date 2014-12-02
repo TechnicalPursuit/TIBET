@@ -951,7 +951,7 @@ function(aContent, aURI, defaultMIME) {
 
     TP.ifTrace() && TP.$DEBUG ?
         TP.sys.logTransform(
-                TP.boot.$annotate(this,
+                TP.annotate(this,
                             'Guessing MIME type for content ID: ' + aURI),
             TP.DEBUG) : 0;
 
