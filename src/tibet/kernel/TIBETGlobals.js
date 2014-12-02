@@ -939,7 +939,7 @@ TP.ERRORED = 3;                         //  not in BPML spec, reserved here
 TP.FAILED = 4;
 TP.CANCELLED = 5;
 TP.SUCCEEDED = 6;                       //  not in BPML spec, reserved here
-TP.COMPLETED = 7;
+TP.COMPLETED = 7;                       //  DO NOT USE...USE TP.SUCCEEDED.
 
 TP.SKIPPED = 8;                         //  not in BPML spec, reserved here
 TP.TIMED_OUT = 9;                       //  not in BPML spec, reserved here
