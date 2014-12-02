@@ -10368,8 +10368,8 @@ function(aRequest) {
      * @synopsis Unmarshals the receiver's content. This includes resolving XML
      *     Base URIs and virtual URIs that may occur on the receiver's
      *     attributes.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
-     *     containing control parameters.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem,
@@ -11911,8 +11911,8 @@ function(aRequest) {
      *     receiver's content. When you load content via XMLHTTP.sig.Request
      *     these PIs aren't executed so you have to run them through this
      *     transform to see their effect on the document.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
-     *     containing control parameters.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      * @raises TP.sig.InvalidNode
      */
 
@@ -13753,11 +13753,8 @@ function(aRequest) {
      * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
-     * @returns {Array} An array containing the new node and a TSH loop control
-     *     constant, TP.DESCEND by default.
-     * @todo
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem;
@@ -14248,8 +14245,8 @@ function(aRequest) {
      * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem;
@@ -14630,8 +14627,8 @@ function(aRequest) {
      *     the xinclude element, retrieve the (possibly XPointered) content from
      *     the designated URI and replace it in-situ, replacing the xinclude
      *     element.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
-     *     containing control parameters.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      * @returns {Node} The node representing the newly included content, telling
      *     the system to descend into the children of this element (which very
      *     well may be content that was included by this element).
@@ -14917,8 +14914,8 @@ function(aRequest) {
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM. This type replaces the current node with the result of
      *     executing its template content.
-     * @param {TP.sig.Request} aRequest The request containing command input for
-     *     the shell.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      * @returns {Element} The new element.
      */
 

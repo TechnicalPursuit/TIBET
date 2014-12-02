@@ -144,9 +144,8 @@ function(aRequest) {
      * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell process.
-     * @returns {Element} The new element.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem,

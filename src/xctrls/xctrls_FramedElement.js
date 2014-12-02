@@ -92,7 +92,7 @@ function(aRequest) {
     //  Begin the iframe load sequence
     elemTPNode.startIFrameLoad(stubURI);
 
-    return TP.CONTINUE;
+    return;
 });
 
 //  ------------------------------------------------------------------------

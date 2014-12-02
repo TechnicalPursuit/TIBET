@@ -64,8 +64,8 @@ function(aRequest) {
      * @synopsis Unmarshals the receiver's content. This includes resolving XML
      *     Base URIs and virtual URIs that may occur on the receiver's
      *     attributes.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
-     *     containing control parameters.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem,
