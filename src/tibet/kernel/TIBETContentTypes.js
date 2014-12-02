@@ -1890,6 +1890,43 @@ function(targetObj) {
 TP.core.SimpleTIBETPath.defineSubtype('ComplexTIBETPath');
 
 //  ------------------------------------------------------------------------
+
+//  avoid binding and apply issues by creating our alias as a wrapper
+TP.definePrimitive('tpc',
+function(aPath) {
+
+    /**
+     * @name tpc
+     * @synopsis Returns a newly initialized TIBETSimplePath or TIBETComplexPath
+     *     instance.
+     * @param {String} aPath The path as a String.
+     * @param {Boolean} shouldCollapse Whether or not this path should
+     *     'collapse' its results - i.e. if its a collection with only one item,
+     *     it will just return that item. The default is false.
+     * @returns {TP.core.SimpleTIBETPath|TP.core.ComplexTIBETPath} The new
+     *     instance.
+     */
+
+    //  If there is no 'path punctuation' (only word characters), that means
+    //  it's all alphanumeric characters, which means it's a 'simple path'.
+    //  TODO: This is hacky - figure out how to combine them into one RegExp.
+    if (TP.regex.ONLY_WORD.test(aPath) || /^\[\d+\]$/.test(aPath)) {
+        return TP.core.SimpleTIBETPath.construct.apply(
+                        TP.core.SimpleTIBETPath, arguments);
+    }
+
+    //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
+    //  path to deal with it.
+    //  TODO: This is hacky - figure out how to combine them into one RegExp.
+    if (TP.regex.TIBET_PATH.test(aPath) || /\.\[|\]\./.test(aPath)) {
+        return TP.core.ComplexTIBETPath.construct.apply(
+                            TP.core.ComplexTIBETPath, arguments);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
