@@ -2832,7 +2832,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('$wrapupJob',
-function(aSuffix, aState, aResultOrFailureCode, aFaultString) {
+function(aSuffix, aState, aResultOrFault, aFaultCode) {
 
     /**
      * @name $wrapupJob
@@ -2847,12 +2847,11 @@ function(aSuffix, aState, aResultOrFailureCode, aFaultString) {
      *     the common signal suffixes observed.
      * @param {Number} aState The job control state, usually TP.FAILED,
      *     TP.CANCELLED, or TP.SUCCEEDED.
-     * @param {Object} aResultOrFailureCode A valid result object when in a
-     *     non-failure state and a failure code when using a failure state.
-     * @param {String} aFaultString Optional fault string used when in a failure
-     *     state.
+     * @param {Object} aResultOrFault A valid result object when in a
+     *     non-failure state and a fault string when in a failure state.
+     * @param {Object} aFaultCode An optional object to set as the fault code.
+     *     Usually a String or Number instance.
      * @returns {TP.sig.Request} The receiver.
-     * @todo
      */
 
     var start,
@@ -2996,7 +2995,7 @@ function(aSuffix, aState, aResultOrFailureCode, aFaultString) {
             if (join.hasJoined(this)) {
                 //  Patch STDIO
                 if (arglen > 2) {
-                    join.atPut(TP.STDIN, TP.ac(aResultOrFailureCode));
+                    join.atPut(TP.STDIN, TP.ac(aResultOrFault));
                 }
                 joins.at(i).fire();
             }
@@ -3024,12 +3023,11 @@ function(aSuffix, aState, aResultOrFailureCode, aFaultString) {
             if (this.isFailing() || this.didFail()) {
                 switch (arglen) {
                     case 3:
-                        ancestor.$failJoin(this, aResultOrFailureCode);
+                        ancestor.$failJoin(this, aResultOrFault);
                         break;
                     case 4:
-                        ancestor.$failJoin(this,
-                                            aResultOrFailureCode,
-                                            aFaultString);
+                        ancestor.$failJoin(this, aResultOrFault,
+                                                aFaultCode);
                         break;
                     default:
                         ancestor.$failJoin(this);
@@ -3038,12 +3036,11 @@ function(aSuffix, aState, aResultOrFailureCode, aFaultString) {
             } else if (this.isCancelling() || this.didCancel()) {
                 switch (arglen) {
                     case 3:
-                        ancestor.$cancelJoin(this, aResultOrFailureCode);
+                        ancestor.$cancelJoin(this, aResultOrFault);
                         break;
                     case 4:
-                        ancestor.$cancelJoin(this,
-                                                aResultOrFailureCode,
-                                                aFaultString);
+                        ancestor.$cancelJoin(this, aResultOrFault,
+                                                    aFaultCode);
                         break;
                     default:
                         ancestor.$cancelJoin(this);
@@ -3051,7 +3048,7 @@ function(aSuffix, aState, aResultOrFailureCode, aFaultString) {
                 }
             } else if (ancestor.hasJoined(this, true)) {
                 if (arglen > 2) {
-                    ancestor.$completeJoin(this, aResultOrFailureCode);
+                    ancestor.$completeJoin(this, aResultOrFault);
                 } else {
                     ancestor.$completeJoin(this);
                 }
