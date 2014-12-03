@@ -8292,7 +8292,7 @@ function(aSignal) {
                     //  TODO:   adjust for JSON et. al.
                     //  problem since this is XML specific
                     TP.ifError() ?
-                        TP.error(TP.boot.$annotate(
+                        TP.error(TP.annotate(
                                     dat,
                                     'Instance replacement data not XML.'),
                                     TP.IO_LOG) : 0;
@@ -8350,7 +8350,7 @@ function(aSignal) {
                             } else {
                                 //  problem since this is XML specific
                                 TP.ifError() ?
-                                    TP.error(TP.boot.$annotate(
+                                    TP.error(TP.annotate(
                                                 dat,
                                                 'Instance replacement' +
                                                 ' data not XML.'),
