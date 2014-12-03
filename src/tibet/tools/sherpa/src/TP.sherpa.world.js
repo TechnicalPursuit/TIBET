@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa.world');
+TP.core.UIElementNode.defineSubtype('sherpa:world');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -59,15 +59,6 @@ TP.sherpa.world.Inst.defineAttribute('currentFocus');
 TP.sherpa.world.Inst.defineMethod('setup',
 function() {
 
-    /**
-     * @name tshAwakenDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     * @returns {Number} The TP.DESCEND flag, telling the system to descend into
-     *     the children of this element.
-     */
-
     var initialScreenWidth,
         initialScreenHeight,
 
@@ -77,9 +68,9 @@ function() {
         screenWidth,
         screenHeight,
 
-        screen0URI,
-        blankURL,
-        appTagStubMarkup,
+        screen0Loc,
+
+        defaultURL,
         loadedFunc;
 
     //  TODO: This should match the actual width & height of the entry in the
@@ -99,32 +90,48 @@ function() {
 
     allIFrames = TP.byCSS('sherpa|screen > iframe', this.getNativeWindow());
 
+    screen0Loc = TP.ifEmpty(
+                        TP.sys.cfg('sherpa.screen_0_uri'),
+                        TP.sys.cfg('project.homepage'));
+
     //  If a specific URL isn't specified for 'sherpa.screen_0_uri', then load
-    //  a blank into screen_0 and put some markup in there that will render the
-    //  core app tag page.
-    if (TP.notValid(screen0URI = TP.sys.cfg('sherpa.screen_0_uri'))) {
+    //  the project root page into screen_0 and put some markup in there that
+    //  will render the core app tag content.
+    if (TP.notEmpty(screen0Loc)) {
 
-        blankURL = TP.uc(TP.sys.cfg('tibet.blankpage')).getLocation();
-
-        appTagStubMarkup =
-            TP.elem('<sherpatest:app xmlns:sherpatest="urn:sherpatest"/>');
+        defaultURL = TP.uc(screen0Loc).getLocation();
 
         loadedFunc = function(evt) {
-            var win;
+            var win,
+
+                bodyElem,
+                appElem;
 
             this.removeEventListener('load', loadedFunc, false);
 
             win = this.contentWindow;
 
-            TP.wrap(TP.documentGetBody(win.document)).addContent(
-                                                appTagStubMarkup);
+            bodyElem = TP.documentGetBody(win.document);
+
+            appElem = TP.nodeGetElementsByTagName(
+                    bodyElem,
+                    TP.tibet.root.computeAppTagTypeName(false)).first();
+            if (TP.isElement(appElem)) {
+                TP.wrap(appElem).compile();
+            }
         };
 
         allIFrames.first().addEventListener('load', loadedFunc, false);
 
         //  We *MUST* use this technique to load up the iframes - just setting
         //  the '.src' of the iframe won't do what we want (at least on Chrome).
-        allIFrames.first().contentWindow.location = blankURL;
+        allIFrames.first().contentWindow.location = defaultURL;
+
+        //  Hide all of the other iframes (1...N)
+        allIFrames.slice(1).perform(
+                            function(anIFrameElem) {
+                                TP.elementHide(anIFrameElem);
+                            });
     }
 
     /*
@@ -133,8 +140,6 @@ function() {
             this.setView(this.get('viewRect'));
         };
     */
-
-    this.observe(TP.byOID('SherpaHUD', this.getNativeWindow()), 'HiddenChange');
 
     return;
 });
@@ -242,7 +247,8 @@ function(screenRowNum, screenColNum) {
 
     /**
      * @name fitToScreen
-     * @param {Number} screenNum
+     * @param {Number} screenRowNum
+     * @param {Number} screenColNum
      * @returns {TP.sherpa.world} The receiver.
      */
 

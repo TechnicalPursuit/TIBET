@@ -84,9 +84,11 @@ function() {
 
     textInput = this.get('textInput');
 
-    //  Make sure to observe a setup on the text input here, because it won't be
-    //  fully formed when this line is executed.
+    //  Make sure to observe a setup on the text input here, because it won't
+    //  be fully formed when this line is executed.
     textInputStartupComplete = function(aSignal) {
+        var hudTPElem;
+
         textInputStartupComplete.ignore(
                 aSignal.getOrigin(), aSignal.getSignalName());
 
@@ -97,9 +99,14 @@ function() {
 
         //  NB: We need to create the log view *before* we set up the console
         //  service.
-        this.setupLogView();
+        //this.setupLogView();
 
         this.setupConsoleService();
+
+        hudTPElem = TP.byOID('SherpaHUD', this.getNativeWindow());
+        this.observe(hudTPElem, 'HiddenChange');
+
+        this.setAttribute('hidden', TP.bc(hudTPElem.getAttribute('hidden')));
 
     }.bind(this);
 
@@ -190,6 +197,24 @@ function() {
     }
 
     return marker;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('handleSherpaHUDHiddenChange',
+function(aSignal) {
+
+    /**
+     * @name handleHiddenChange
+     */
+
+    var isHidden;
+
+    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+
+    this.setAttribute('hidden', isHidden);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -357,6 +382,7 @@ function(dataRecord) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
+    /*
     var output,
         cssClass;
 
@@ -367,6 +393,7 @@ function(dataRecord) {
             TP.hc('output', output, 'cssClass', cssClass));
 
     //console.log('Echo logged text: ' + outputText);
+    */
 
     return this;
 });
