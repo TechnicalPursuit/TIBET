@@ -53,15 +53,15 @@ TP.core.JobStatus.Inst.defineAttribute('statusText');
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('checkFaultArguments',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name checkFaultArguments
      * @synopsis Checks the arguments and returns a hash containing updated and
      *     properly defaulted fault code and fault string values.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
-     * @param {String} aFaultString A string description of the fault.
      * @return {TP.lang.Hash} A hash containing 'code' and 'text' keys.
      */
 
@@ -387,7 +387,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('cancel',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name cancel
@@ -395,9 +395,9 @@ function(aFaultCode, aFaultString) {
      *     the user or calling process. If the receiver has specific behavior to
      *     implement it should override the cancelJob() method invoked as part
      *     of this method's operation.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
-     * @param {String} aFaultString A string description of the fault.
      * @returns {TP.core.JobStatus} The receiver.
      * @todo
      */
@@ -416,7 +416,7 @@ function(aFaultCode, aFaultString) {
     this.set('result', undefined);
     this.set('statusCode', TP.CANCELLING);
 
-    hash = this.checkFaultArguments(aFaultCode, aFaultString);
+    hash = this.checkFaultArguments(aFaultString, aFaultCode);
     code = hash.at('code');
     text = hash.at('text');
 
@@ -424,7 +424,7 @@ function(aFaultCode, aFaultString) {
     this.set('faultText', text);
 
     try {
-        this.cancelJob(code, text);
+        this.cancelJob(text, code);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
@@ -439,15 +439,15 @@ function(aFaultCode, aFaultString) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('cancelJob',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name cancelJob
      * @synopsis Template method for processing to cancel a job/request.
      *     Override this method to provide custom job cancellation logic.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
-     * @param {String} aFaultString A string description of the fault.
      * @returns {TP.core.JobStatus} The receiver.
      * @todo
      */
@@ -531,14 +531,14 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('error',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name error
      * @synopsis Tells the receiver there was an error in job processing.
+     * @param {String} aFaultString A string description of the error.
      * @param {Object} aFaultCode A code providing additional information on
      *     specific nature of the error. Often an exception or Error object.
-     * @param {String} aFaultString A string description of the error.
      * @returns {TP.core.JobStatus} The receiver.
      * @todo
      */
@@ -557,7 +557,7 @@ function(aFaultCode, aFaultString) {
     this.set('result', undefined);
     this.set('statusCode', TP.ERRORING);
 
-    hash = this.checkFaultArguments(aFaultCode, aFaultString);
+    hash = this.checkFaultArguments(aFaultString, aFaultCode);
 
     code = hash.at('code');
     text = hash.at('text');
@@ -568,7 +568,7 @@ function(aFaultCode, aFaultString) {
     this.set('faultStack', stack);
 
     try {
-        this.errorJob(code, text, stack);
+        this.errorJob(text, code, stack);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
@@ -583,15 +583,15 @@ function(aFaultCode, aFaultString) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('errorJob',
-function(aFaultCode, aFaultString, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
      * @name errorJob
      * @synopsis Template method for job/request error processing. Override
      *     this method to provide custom job error logic.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the error.
-     * @param {String} aFaultString A string description of the fault.
      * @param {Array} aFaultStack An optional parameter that will contain an
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
@@ -605,7 +605,7 @@ function(aFaultCode, aFaultString, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('fail',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name fail
@@ -613,9 +613,9 @@ function(aFaultCode, aFaultString) {
      *     of exception. If the receiver has specific behavior to implement it
      *     should override the failJob() method invoked as part of this method's
      *     operation.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {String} aFaultString A string description of the fault.
      * @returns {TP.core.JobStatus} The receiver.
      * @todo
      */
@@ -634,7 +634,7 @@ function(aFaultCode, aFaultString) {
     this.set('result', undefined);
     this.set('statusCode', TP.FAILING);
 
-    hash = this.checkFaultArguments(aFaultCode, aFaultString);
+    hash = this.checkFaultArguments(aFaultString, aFaultCode);
 
     code = hash.at('code');
     text = hash.at('text');
@@ -656,7 +656,7 @@ function(aFaultCode, aFaultString) {
     this.set('faultStack', stack);
 
     try {
-        this.failJob(code, text, stack);
+        this.failJob(text, code, stack);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
@@ -671,15 +671,15 @@ function(aFaultCode, aFaultString) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('failJob',
-function(aFaultCode, aFaultString, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
      * @name failJob
      * @synopsis Template method for job/request failure processing. Override
      *     this method to provide custom job failure logic.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {String} aFaultString A string description of the fault.
      * @param {Array} aFaultStack An optional parameter that will contain an
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
@@ -3553,7 +3553,7 @@ function(aChild) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobGroup.Inst.defineMethod('cancel',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name cancel
@@ -3563,14 +3563,14 @@ function(aFaultCode, aFaultString) {
      *     override this method, but be sure to set the status to TP.CANCELLING
      *     during any processing and TP.CANCELLED after processing is complete.
      *     The default implementation simply sets the status to TP.CANCELLED.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
-     * @param {String} aFaultString A string description of the fault.
      * @returns {TP.core.JobGroup} The receiver.
      * @todo
      */
 
-    this.$performOverChildren('cancel', aFaultCode, aFaultString);
+    this.$performOverChildren('cancel', aFaultString, aFaultCode);
 
     if (TP.isValid(aFaultCode)) {
         //  note we don't signal change here
@@ -3620,7 +3620,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobGroup.Inst.defineMethod('fail',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name fail
@@ -3630,14 +3630,14 @@ function(aFaultCode, aFaultString) {
      *     TP.FAILING during any processing and TP.FAILED after processing is
      *     complete. The default implementation simply sets the fault code and
      *     updates status to TP.FAILED.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {String} aFaultString A string description of the fault.
      * @returns {TP.core.JobGroup} The receiver.
      * @todo
      */
 
-    this.$performOverChildren('fail', aFaultCode, aFaultString);
+    this.$performOverChildren('fail', aFaultString, aFaultCode);
 
     if (TP.isValid(aFaultCode)) {
         //  note we don't signal change here

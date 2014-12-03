@@ -1025,16 +1025,16 @@ function(aRequest, cmdType) {
     subrequest.atPut('cmdAction', aRequest.at('cmdAction'));
 
     subrequest.defineMethod('cancelJob',
-        function(aFaultCode, aFaultString) {
+        function(aFaultString, aFaultCode) {
 
             switch (arguments.length) {
                 case 1:
-                    this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultCode);
-                    return aRequest.cancel(aFaultCode);
+                    this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultString);
+                    return aRequest.cancel(aFaultString);
                 case 2:
-                    this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultCode,
-                                    aFaultString);
-                    return aRequest.cancel(aFaultCode, aFaultString);
+                    this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultString,
+                                    aFaultCode);
+                    return aRequest.cancel(aFaultString, aFaultCode);
                 default:
                     this.$wrapupJob('Cancelled', TP.CANCELLED);
                     return aRequest.cancel();
@@ -1063,16 +1063,16 @@ function(aRequest, cmdType) {
         });
 
     subrequest.defineMethod('failJob',
-        function(aFaultCode, aFaultString, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultStack) {
 
             switch (arguments.length) {
                 case 1:
-                    this.$wrapupJob('Failed', TP.FAILED, aFaultCode);
-                    return aRequest.fail(aFaultCode);
+                    this.$wrapupJob('Failed', TP.FAILED, aFaultString);
+                    return aRequest.fail(aFaultString);
                 case 2:
-                    this.$wrapupJob('Failed', TP.FAILED, aFaultCode,
-                                    aFaultString);
-                    return aRequest.fail(aFaultCode, aFaultString);
+                    this.$wrapupJob('Failed', TP.FAILED, aFaultString,
+                                    aFaultCode);
+                    return aRequest.fail(aFaultString, aFaultCode);
                 default:
                     this.$wrapupJob('Failed', TP.FAILED);
                     return aRequest.fail();

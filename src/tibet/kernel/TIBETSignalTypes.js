@@ -445,19 +445,19 @@ function(stepParameters) {
 //  ------------------------------------------------------------------------
 
 TP.core.Monitor.Inst.defineMethod('cancel',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name cancel
      * @synopsis Cancels the monitor, stopping all monitoring.
+     * @param {String} aFaultString A string description of the cancellation.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
-     * @param {String} aFaultString A string description of the cancellation.
      * @returns {TP.core.Monitor} The receiver.
      * @todo
      */
 
-    this.getJob().cancel(aFaultCode, aFaultString);
+    this.getJob().cancel(aFaultString, aFaultCode);
 
     return this;
 });
@@ -484,21 +484,21 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.core.Monitor.Inst.defineMethod('fail',
-function(aFaultCode, aFaultString, anException) {
+function(aFaultString, aFaultCode, anException) {
 
     /**
      * @name fail
      * @synopsis Terminates the monitor, stopping all monitoring.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {String} aFaultString A string description of the fault.
      * @param {TP.sig.Exception|String} anException An optional exception to
      *     raise.
      * @returns {TP.core.Monitor} The receiver.
      * @todo
      */
 
-    this.getJob().fail(aFaultCode, aFaultString, anException);
+    this.getJob().fail(aFaultString, aFaultCode, anException);
 
     return this;
 });

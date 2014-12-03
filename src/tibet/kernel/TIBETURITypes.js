@@ -3409,15 +3409,15 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
     });
 
     subrequest.defineMethod('failJob',
-    function(aFaultCode, aFaultString, aFaultStack) {
+    function(aFaultString, aFaultCode, aFaultStack) {
 
             if (TP.canInvoke(thisref, failureFName)) {
-                thisref[failureFName](aFaultCode, aFaultString);
+                thisref[failureFName](aFaultString, aFaultCode);
             }
 
             //  if there was an original request fail it too.
             if (TP.canInvoke(aRequest, 'fail')) {
-                aRequest.fail(aFaultCode, aFaultString);
+                aRequest.fail(aFaultString, aFaultCode);
             }
     });
 
@@ -3865,10 +3865,10 @@ function(aDataSource, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
     });
 
@@ -4828,10 +4828,10 @@ function(aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 
@@ -5043,10 +5043,10 @@ function(aRequest, filterResult) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 
@@ -5425,10 +5425,10 @@ function(aRequest) {
                         result = TP.process(resource, request);
 
                         if (request.didFail()) {
-                            aRequest.fail(request.getFaultCode(),
-                                          request.getFaultText());
-                            subrequest.fail(request.getFaultCode(),
-                                          request.getFaultText());
+                            aRequest.fail(request.getFaultText(),
+                                          request.getFaultCode());
+                            subrequest.fail(request.getFaultText(),
+                                          request.getFaultCode());
                             return;
                         }
 
@@ -5458,11 +5458,11 @@ function(aRequest) {
             });
 
     subrequest.defineMethod('failJob',
-    function(aFaultCode, aFaultString, aFaultStack) {
+    function(aFaultString, aFaultCode, aFaultStack) {
 
             //  Inform any originally inbound request of our status.
             if (TP.canInvoke(aRequest, 'fail')) {
-                aRequest.fail(aFaultCode, aFaultString);
+                aRequest.fail(aFaultString, aFaultCode);
             }
     });
 
@@ -9056,7 +9056,7 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     //  update the target's header and content information, in
                     //  that order so that any content change signaling happens
@@ -9070,7 +9070,7 @@ function(targetURI, aRequest) {
                     targetURI.isDirty(true);
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 
@@ -9156,10 +9156,10 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 
@@ -9270,10 +9270,10 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 

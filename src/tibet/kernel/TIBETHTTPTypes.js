@@ -32,16 +32,16 @@ TP.sig.HTTPRequest.Type.defineAttribute('responseType', 'TP.sig.HTTPResponse');
 //  ------------------------------------------------------------------------
 
 TP.sig.HTTPRequest.Inst.defineMethod('failJob',
-function(aFaultCode, aFaultString, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
      * @name failJob
      * @synopsis Fails the HTTP request, aborting any underlying native
      *     XMLHttpRequest object as well. NOTE that this would have to be an
      *     asynchronous request for this to work effectively.
-     * @param {Object} aFaultCode A reason for the failure.
      * @param {String} aFaultString A text description of the reason for the
      *     failure.
+     * @param {Object} aFaultCode A reason for the failure.
      * @param {Array} aFaultStack An optional parameter that will contain an
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
@@ -89,15 +89,15 @@ function(aFaultCode, aFaultString, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.sig.HTTPRequest.Inst.defineMethod('cancelJob',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name cancelJob
      * @synopsis Cancels an HTTP request, aborting any underlying native
      *     XMLHttpRequest object as well. NOTE that this would have to
-     * @param {Object} aFaultCode A reason for the cancellation.
      * @param {String} aFaultString A text description of the reason for the
      *     cancellation.
+     * @param {Object} aFaultCode A reason for the cancellation.
      * @returns {TP.sig.HTTPRequest}
      * @todo
      */
@@ -242,7 +242,7 @@ function(aSignal) {
         //  need to make additional asynchronous calls to resolve things.
         if (TP.notTrue(defer)) {
             if (TP.isValid(faultCode = this.getFaultCode())) {
-                this.fail(faultCode, this.getFaultText());
+                this.fail(this.getFaultText(), faultCode);
             } else {
                 result = aSignal.getResult();
                 if (TP.isValid(result)) {
@@ -307,7 +307,7 @@ function(aSignal) {
         //  need to make additional asynchronous calls to resolve things.
         if (TP.notTrue(defer)) {
             if (TP.isValid(faultCode = this.getFaultCode())) {
-                this.fail(faultCode, this.getFaultText());
+                this.fail(this.getFaultText(), faultCode);
             } else {
                 result = aSignal.getResult();
                 if (TP.isValid(result)) {

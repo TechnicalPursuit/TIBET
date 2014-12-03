@@ -148,9 +148,9 @@ function(aRequest) {
     origReq.atPut('cmdTitle', str);
 
     req.defineMethod('cancelJob',
-        function(aFaultCode, aFaultString) {
+        function(aFaultString, aFaultCode) {
 
-            return aRequest.cancel(aFaultCode, aFaultString);
+            return aRequest.cancel(aFaultString, aFaultCode);
         });
     req.defineMethod('completeJob',
         function(aResult) {
@@ -158,9 +158,9 @@ function(aRequest) {
             return aRequest.complete(aResult || req.getResult());
         });
     req.defineMethod('failJob',
-        function(aFaultCode, aFaultString, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultStack) {
 
-            return aRequest.fail(aFaultCode, aFaultString);
+            return aRequest.fail(aFaultString, aFaultCode);
         });
 
     //  run that baby!

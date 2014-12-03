@@ -8683,7 +8683,7 @@ function(aRequest) {
 
     //  If the shell request failed then our enclosing request has failed.
     if (request.didFail()) {
-        aRequest.fail(request.getFaultCode(), request.getFaultText());
+        aRequest.fail(request.getFaultText(), request.getFaultCode());
         return;
     }
 
@@ -9040,7 +9040,7 @@ function(aRequest) {
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
-            aRequest.fail(request.getFaultCode(), request.getFaultText());
+            aRequest.fail(request.getFaultText(), request.getFaultCode());
             return;
         }
     }

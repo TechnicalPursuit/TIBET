@@ -182,15 +182,14 @@ function(aString, aShell, aRequest, asTokens) {
 
                 req.defineMethod(
                     'cancel',
-                    function(aFaultCode, aFaultString) {
-
+                    function(aFaultString, aFaultCode) {
                         return aRequest.cancel(
                             TP.ifInvalid(
-                                    aFaultCode,
-                                    TP.FAILURE),
-                            TP.ifInvalid(
                                     aFaultString,
-                                    TP.sc('History request cancelled.')));
+                                    TP.sc('History request cancelled.')),
+                            TP.ifInvalid(
+                                    aFaultCode,
+                                    TP.FAILURE));
                     });
 
                 req.defineMethod(
@@ -206,16 +205,16 @@ function(aString, aShell, aRequest, asTokens) {
 
                 req.defineMethod(
                     'fail',
-                    function(aFaultCode, aFaultString) {
+                    function(aFaultString, aFaultCode) {
 
                         return aRequest.fail(
-                            TP.ifInvalid(
-                                    aFaultCode,
-                                    TP.FAILURE),
                             new Error(
                             TP.ifInvalid(
                                     aFaultString,
-                                    TP.sc('History request failed.'))));
+                                    TP.sc('History request failed.'))),
+                            TP.ifInvalid(
+                                    aFaultCode,
+                                    TP.FAILURE));
                     });
 
                 aShell.handleShellRequest(req);
@@ -282,15 +281,15 @@ function(aString, aShell, aRequest, asTokens) {
 
                     req.defineMethod(
                         'cancel',
-                        function(aFaultCode, aFaultString) {
+                        function(aFaultString, aFaultCode) {
 
                             return aRequest.cancel(
                                 TP.ifInvalid(
-                                    aFaultCode,
-                                    TP.FAILURE),
-                                TP.ifInvalid(
                                     aFaultString,
-                                    TP.sc('Aliased request cancelled.')));
+                                    TP.sc('Aliased request cancelled.')),
+                                TP.ifInvalid(
+                                    aFaultCode,
+                                    TP.FAILURE));
                         });
 
                     req.defineMethod(
@@ -306,17 +305,17 @@ function(aString, aShell, aRequest, asTokens) {
 
                     req.defineMethod(
                         'fail',
-                        function(aFaultCode, aFaultString) {
+                        function(aFaultString, aFaultCode) {
 
                             return aRequest.fail(
-                                TP.ifInvalid(
-                                    aFaultCode,
-                                    TP.FAILURE),
                                 new Error(
                                 TP.ifInvalid(
                                     aFaultString,
                                     'Aliased request failed: ' +
-                                        this.at('cmd'))));
+                                        this.at('cmd'))),
+                                TP.ifInvalid(
+                                    aFaultCode,
+                                    TP.FAILURE));
                         });
 
                     req.defineMethod(
