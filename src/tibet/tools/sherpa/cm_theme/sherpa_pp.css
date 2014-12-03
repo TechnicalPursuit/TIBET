@@ -7,7 +7,7 @@
 .sherpa_pp > span
 {
     display: table;
-
+    width: 100%;
 	border-collapse: collapse;
 }
 
@@ -15,15 +15,16 @@
 {
     display: table-row;
     text-align: left;
+    width: 100%;
 
-	padding: 3px;
+    line-height: 1.5em;
 
 	white-space: pre-wrap;
 }
 
 .sherpa_pp > span span[data-name]:before
 {
-    content: attr(data-name) " ";
+    content: attr(data-name) " => ";
 
 	vertical-align: top;
 
@@ -31,6 +32,17 @@
     text-align: left;
 
 	white-space: pre-wrap;
+    width: 48px;
+    padding 0px 12px 0px 0px;
+}
+
+.sherpa_pp > span.Array span,
+.sherpa_pp > span.Object span,
+.sherpa_pp > span.TP_lang_Hash span
+{
+    display: table-row;
+    line-height: 1.5em;
+    margin-left: 5px;
 }
 
 .sherpa_pp > span.Object span[data-name]:before,

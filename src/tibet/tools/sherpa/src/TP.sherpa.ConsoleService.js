@@ -1456,6 +1456,7 @@ function(anError, aRequest) {
         tileID;
 
     TP.stop('break.tdc_stderr');
+    TP.stop('break.tdc_stdio');
 
     if (TP.isValid(aRequest)) {
         aRequest.atPutIfAbsent('messageType', 'failure');
@@ -1465,7 +1466,8 @@ function(anError, aRequest) {
     }
     request.atPutIfAbsent('messageLevel', TP.ERROR);
 
-    err = TP.isError(anError) ? TP.str(anError) : anError;
+    //err = TP.isError(anError) ? TP.str(anError) : anError;
+    err = TP.isError(anError) ? anError : new Error(anError);
 
     if (TP.isValid(request.at('messageLevel'))) {
         cssClass = request.at('messageLevel').getName().toLowerCase();
@@ -1512,6 +1514,7 @@ function(anObject, aDefault, aRequest) {
      */
 
     TP.stop('break.tdc_stdin');
+    TP.stop('break.tdc_stdio');
 
     this.get('$consoleGUI').setPrompt(anObject);
     this.get('$consoleGUI').setInputContent(aDefault);
@@ -1701,6 +1704,7 @@ function(anObject, aRequest) {
      */
 
     var request,
+        tap,
         data,
         asIs,
 
@@ -1710,6 +1714,10 @@ function(anObject, aRequest) {
         tileID;
 
     request = TP.request(aRequest);
+
+    // TODO: replace this hack with an update to route to the proper
+    // Logger/Appender so we get the output we want via layout/appender.
+    tap = request.at('cmdTAP');
 
     //  ---
     //  Produce valid XHTML node to test string content, otherwise do our best
@@ -1752,9 +1760,21 @@ function(anObject, aRequest) {
         data = TP.str(data);
     }
 
-    if (TP.isValid(request.at('messageLevel'))) {
-        cssClass = request.at('messageLevel').getName().toLowerCase();
-        cssClass = TP.ifInvalid(cssClass, 'trace');
+    if (TP.isTrue(tap)) {
+        if (/^ok /.test(data) || /# PASS/i.test(data)) {
+            cssClass = 'tap-pass';
+        } else if (/^not ok /.test(data) || /# FAIL/i.test(data)) {
+            cssClass = 'tap-fail';
+        } else if (/^#/.test(data)) {
+            cssClass = 'tap-comment';
+        } else {
+            cssClass = 'tap-unknown';
+        }
+    } else {
+        if (TP.isValid(request.at('messageLevel'))) {
+            cssClass = request.at('messageLevel').getName().toLowerCase();
+        }
+        cssClass = TP.ifInvalid(cssClass, 'info');
     }
 
     cssClass = TP.ifInvalid(cssClass, '');

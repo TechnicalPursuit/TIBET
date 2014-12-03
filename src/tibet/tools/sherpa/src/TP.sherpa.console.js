@@ -1080,8 +1080,8 @@ function(aSignal) {
         val = aSignal.getResult();
     }
 
-    if (TP.notValid(val)) {
-        return '';
+    if (aSignal.isFailing() || aSignal.didFail()) {
+        return 'undefined';
     }
 
     if (TP.isValid(val)) {
@@ -1092,7 +1092,18 @@ function(aSignal) {
             if (TP.isEmpty(val)) {
                 str += '()';
             } else {
-                values = val.getValues();
+
+                if (TP.canInvoke(val, 'getValues')) {
+                    values = val.getValues();
+                } else {
+                    // Probably a native collection like HTMLCollection etc.
+                    values = TP.ac();
+                    len = val.length;
+                    for (i = 0; i < len; i++) {
+                        values.push(val[i]);
+                    }
+                }
+
                 len = values.getSize();
                 startTN = TP.tname(values.at(0));
                 wasSame = true;
