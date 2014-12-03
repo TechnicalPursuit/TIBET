@@ -189,7 +189,7 @@ function(aString, aShell, aRequest, asTokens) {
                                     TP.sc('History request cancelled.')),
                             TP.ifInvalid(
                                     aFaultCode,
-                                    TP.FAILURE));
+                                    TP.FAILED));
                     });
 
                 req.defineMethod(
@@ -214,7 +214,7 @@ function(aString, aShell, aRequest, asTokens) {
                                     TP.sc('History request failed.'))),
                             TP.ifInvalid(
                                     aFaultCode,
-                                    TP.FAILURE));
+                                    TP.FAILED));
                     });
 
                 aShell.handleShellRequest(req);
@@ -222,7 +222,7 @@ function(aString, aShell, aRequest, asTokens) {
                 return;
             } else {
                 msg = TP.sc('No previous command to edit.');
-                aRequest.fail(TP.FAILURE, new Error(msg));
+                aRequest.fail(new Error(msg));
 
                 return;
             }
@@ -289,7 +289,7 @@ function(aString, aShell, aRequest, asTokens) {
                                     TP.sc('Aliased request cancelled.')),
                                 TP.ifInvalid(
                                     aFaultCode,
-                                    TP.FAILURE));
+                                    TP.FAILED));
                         });
 
                     req.defineMethod(
@@ -315,7 +315,7 @@ function(aString, aShell, aRequest, asTokens) {
                                         this.at('cmd'))),
                                 TP.ifInvalid(
                                     aFaultCode,
-                                    TP.FAILURE));
+                                    TP.FAILED));
                         });
 
                     req.defineMethod(

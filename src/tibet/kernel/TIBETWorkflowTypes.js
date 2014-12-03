@@ -3617,8 +3617,7 @@ function (onFulfilled, onRejected) {
                     } catch (e) {
                         //  The onFulfilled handler threw an exception - fail
                         //  the new request.
-                        newReq.fail(TP.FAILURE,
-                                    TP.sc('Promise failure: ') + TP.str(e));
+                        newReq.fail(TP.sc('Promise failure: ') + TP.str(e));
                     }
                 }).afterUnwind();
                 /* eslint-enable no-wrap-func */
@@ -3672,8 +3671,7 @@ function (onFulfilled, onRejected) {
                     } catch (e) {
                         //  The onRejected handler threw an exception - fail the
                         //  new request.
-                        newReq.fail(TP.FAILURE,
-                                    TP.sc('Promise failure: ') + TP.str(e));
+                        newReq.fail(TP.sc('Promise failure: ') + TP.str(e));
                     }
                 }).afterUnwind();
                 /* eslint-enable no-wrap-func */
@@ -4920,7 +4918,7 @@ function(aRequest) {
     //  but if it is we apply the Function with the supplied (or created)
     //  request as the only argument.
     if (!TP.isCallable(handler = request.at('handler'))) {
-        request.fail(TP.FAILURE, 'Handler not callable');
+        request.fail('Handler not callable');
     } else {
         result = handler.apply(request, TP.ac(request));
         request.set('result', result, null, true);
@@ -5618,8 +5616,7 @@ function(resourceID, aRequest) {
             //  Still don't have a valid service URI.
             if (TP.isEmpty(serviceURI = paramDict.at('serviceURI'))) {
                     aRequest.fail(
-                    TP.FAILURE,
-                    TP.sc('Missing required URI parameter in request: ') +
+                        TP.sc('Missing required URI parameter in request: ') +
                             'serviceURI');
 
                     return;

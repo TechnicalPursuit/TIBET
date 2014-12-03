@@ -6297,7 +6297,7 @@ function(aRequest, filterResult) {
         result = $$result;
     } catch (e) {
         msg = TP.sc('Error acquiring resource via: ') + str;
-        request.fail(TP.FAILURE, msg);
+        request.fail(msg);
         result = TP.ec(e, msg);
     }
 
@@ -9125,7 +9125,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(TP, '$fileDelete')) {
         this.raise('TP.sig.UnsupportedOperation');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Unsupported operation.');
+            aRequest.fail('Unsupported operation.');
         }
         return;
     }
@@ -9133,7 +9133,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Invalid URI: ' + targetURI);
+            aRequest.fail('Invalid URI: ' + targetURI);
         }
         return;
     }

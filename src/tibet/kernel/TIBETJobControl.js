@@ -3211,7 +3211,7 @@ function() {
         //  bit of a cheat here, but we'll call the private method
         //  and set failed as the status
         this.$clearScheduler();
-        this.fail(TP.FAILED, TP.str(e));
+        this.fail(TP.str(e));
 
         TP.ifError() ?
             TP.error(

@@ -343,7 +343,7 @@ function(targetUrl, openCallback) {
             //  text
             request.getResponse().set('responseData', null);
 
-            request.getResponse().set('statusCode', TP.FAILURE);
+            request.getResponse().set('statusCode', TP.FAILED);
             request.getResponse().set('statusText',
                                         TP.sc(TP.str(errorEvt)));
 
@@ -429,8 +429,8 @@ function(targetUrl, aSignal, aRequest) {
     //  make sure we tuck away the native WebSocket object
     args.atPut('wsObj', wsObj);
 
-    //  set the status of the native WebSocket to TP.FAILURE
-    wsObj.status = TP.FAILURE;
+    //  set the status of the native WebSocket to TP.FAILED
+    wsObj.status = TP.FAILED;
 
     //  rarely null, but just in case
     signal = TP.ifInvalid(aSignal, 'WebSocketException');
@@ -503,8 +503,8 @@ function(targetUrl, aRequest, wsObj) {
     //  make sure the request has access to the native WebSocket object
     request.atPut('wsObj', wsObj);
 
-    //  set the status of the native WebSocket to TP.FAILURE
-    wsObj.status = TP.FAILURE;
+    //  set the status of the native WebSocket to TP.FAILED
+    wsObj.status = TP.FAILED;
 
     //  configure the request's final output parameters to record the error
     request.atPut('direction', TP.RECV);

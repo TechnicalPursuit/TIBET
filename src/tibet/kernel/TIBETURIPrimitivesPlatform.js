@@ -1779,9 +1779,9 @@ TP.hc(
             msg = TP.sc('Must supply a commandName to execute.');
             TP.raise(this, 'TP.sig.InvalidParameter', msg);
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
-            return TP.ac(TP.FAILURE, null, msg);
+            return TP.ac(TP.FAILED, null, msg);
         }
 
         //  when not a real value we'll just default to an empty prefix value
@@ -2105,9 +2105,9 @@ TP.hc(
                     TP.raise(this, 'InvalidShell',
                                 TP.ec(e, message));
 
-                    request.fail(TP.FAILURE, message);
+                    request.fail(message);
 
-                    retVal = TP.ac(TP.FAILURE, null, message);
+                    retVal = TP.ac(TP.FAILED, null, message);
 
                     return retVal;
                 }
@@ -2127,7 +2127,7 @@ TP.hc(
                     TP.raise(this, 'ProcessException',
                                 TP.ec(e, message));
 
-                    retVal = TP.ac(TP.FAILURE, null, message);
+                    retVal = TP.ac(TP.FAILED, null, message);
 
                     return retVal;
                 }
@@ -2228,9 +2228,9 @@ TP.hc(
                     TP.raise(this, 'ExecutionException',
                                 TP.ec(e));
 
-                    request.fail(TP.FAILURE, message);
+                    request.fail(message);
 
-                    retVal = TP.ac(TP.FAILURE, null, message);
+                    retVal = TP.ac(TP.FAILED, null, message);
                 } finally {
                     if (TP.notTrue(async)) {
                         retVal = TP.ac(result, output, errors);
@@ -2353,9 +2353,9 @@ TP.hc(
             msg = TP.sc('Must supply a command to execute.');
             TP.raise(this, 'TP.sig.InvalidParameter', msg);
 
-            request.fail(TP.FAILURE, msg);
+            request.fail(msg);
 
-            return TP.ac(TP.FAILURE, null, msg);
+            return TP.ac(TP.FAILED, null, msg);
         }
 
         //  when not a real value we'll just default to an empty prefix
@@ -2639,9 +2639,9 @@ TP.hc(
                 msg = TP.str(e);
                 TP.raise(this, 'ExecutionException', TP.ec(e));
 
-                request.fail(TP.FAILURE, msg);
+                request.fail(msg);
 
-                retVal = TP.ac(TP.FAILURE, null, msg);
+                retVal = TP.ac(TP.FAILED, null, msg);
             } finally {
                 if (TP.notTrue(async)) {
                     retVal = TP.ac(result, output, errors);

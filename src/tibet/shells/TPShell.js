@@ -3074,7 +3074,6 @@ function(aRequest) {
             //  syntax error
             node = aRequest.at('cmdNode');
             return aRequest.fail(
-                        TP.FAILED,
                         'Too many arguments: ' + TP.str(node));
     }
 

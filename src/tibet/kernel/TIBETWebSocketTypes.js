@@ -526,7 +526,7 @@ function(aRequest) {
     //  fail the request.
     url = request.at('uri');
     if (TP.notValid(url)) {
-        return request.fail(TP.FAILURE, 'TP.sig.InvalidURI');
+        return request.fail('TP.sig.InvalidURI');
     }
 
     //  rewrite/update the request body content
@@ -571,7 +571,7 @@ function(aRequest) {
     //  Make sure we have a viable URL.
     url = TP.uc(aRequest.at('uri'));
     if (TP.notValid(url)) {
-        return aRequest.fail(TP.FAILURE, 'TP.sig.InvalidURI');
+        return aRequest.fail('TP.sig.InvalidURI');
     }
 
     try {
