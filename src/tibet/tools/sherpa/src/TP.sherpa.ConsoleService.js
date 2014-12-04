@@ -453,6 +453,8 @@ function() {
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
 
+    //  set up other keyboard observations
+
     this.observe(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
 
     return this;
@@ -474,6 +476,8 @@ function() {
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+
+    //  set up other keyboard observations
 
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
 
@@ -515,9 +519,10 @@ function(aSignal) {
 
     keyname = TP.domkeysigname(evt);
     if (keyname === 'DOM_Shift_Down') {
-        markingTimer = setTimeout(function() {
-                                        inputCell.setupEvalMark();
-                                    }, TP.sys.cfg('sherp.edit_mark_time', 2000));
+        markingTimer = setTimeout(
+                            function() {
+                                inputCell.setupEvalMark();
+                            }, TP.sys.cfg('sherp.edit_mark_time', 2000));
         this.set('markingTimer', markingTimer);
     }
 
@@ -626,6 +631,8 @@ function(aSignal) {
     return;
 });
 
+//  ------------------------------------------------------------------------
+//  Other Key Handling
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMModifierKeyChange',
