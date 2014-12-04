@@ -166,6 +166,12 @@ function(aResourceID, aRequest) {
     this.observe(TP.byOID('SherpaConsole', TP.win('UIROOT')),
                     'HiddenChange');
 
+    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidFocus');
+
+    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidBlur');
+
     return this;
 });
 
@@ -224,28 +230,6 @@ function(aFlag) {
     }
 
     return (this.$get('awaitingInput') || (TP.notEmpty(inputCell.value)));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('handleSherpaConsoleHiddenChange',
-function(aSignal) {
-
-    /**
-     * @name handleHiddenChange
-     */
-
-    var isHidden;
-
-    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
-
-    if (isHidden) {
-        this.removeHandlers();
-    } else {
-        this.installHandlers();
-    }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -432,6 +416,56 @@ function(anEvent) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleSherpaConsoleHiddenChange',
+function(aSignal) {
+
+    /**
+     * @name handleHiddenChange
+     */
+
+    var isHidden;
+
+    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+
+    if (isHidden) {
+        this.removeHandlers();
+    } else {
+        this.installHandlers();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleTP_sig_HaloDidFocus',
+function(aSignal) {
+
+    //this.show();
+
+    TP.info('got to halo did focus', TP.LOG);
+
+    this.get('model').setVariable('HALO', aSignal.at('haloTarget'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleTP_sig_HaloDidBlur',
+function(aSignal) {
+
+    //this.hide();
+
+    TP.info('got to halo did blur', TP.LOG);
+
+    this.get('model').setVariable('HALO', null);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
