@@ -25,11 +25,11 @@
 }
 
 #background {
-    pointer-events: none;
+/*    pointer-events: none; */
 }
 
 .framing {
-    pointer-events: auto;
+/*    pointer-events: auto; */
 }
 
 .drawerButton {

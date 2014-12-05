@@ -114,8 +114,8 @@ function() {
             bodyElem = TP.documentGetBody(win.document);
 
             appElem = TP.nodeGetElementsByTagName(
-                    bodyElem,
-                    TP.tibet.root.computeAppTagTypeName(false)).first();
+                            bodyElem,
+                            TP.tibet.root.computeAppTagTypeName(false)).first();
             if (TP.isElement(appElem)) {
                 TP.wrap(appElem).compile();
             }
@@ -142,6 +142,29 @@ function() {
     */
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('createScreenElement',
+function(anID, position) {
+
+    /**
+     * @name createScreenElement
+     */
+
+    var newScreenElem;
+
+    newScreenElem = TP.documentCreateElement(this.getNativeDocument(),
+                                            'screen',
+                                            TP.w3.Xmlns.SHERPA);
+    TP.elementSetAttribute(newScreenElem, 'id', anID);
+
+    newScreenElem = TP.nodeInsertBefore(this.getNativeNode(),
+                        newScreenElem,
+                        TP.unwrap(this.getChildElementAt(position)));
+
+    return TP.wrap(newScreenElem);
 });
 
 //  ------------------------------------------------------------------------

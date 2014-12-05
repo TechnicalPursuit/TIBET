@@ -58,8 +58,12 @@ TP.sherpa.console.Inst.defineAttribute('conceal', false);
 TP.sherpa.console.Inst.defineAttribute('concealedInput');
 
 TP.sherpa.console.Inst.defineAttribute(
-        'textInput',
-        {'value': TP.cpc('xctrls|codeeditor', true)});
+        'consoleInput',
+        {'value': TP.cpc('xctrls|codeeditor#SherpaConsoleInput', true)});
+
+TP.sherpa.console.Inst.defineAttribute(
+        'consoleOutput');
+  //      {'value': TP.cpc('xctrls|codeeditor#SherpaConsoleOutput', true)});
 
 TP.sherpa.console.Inst.defineAttribute('currentEvalMarker');
 TP.sherpa.console.Inst.defineAttribute('evalMarkAnchorMatcher');
@@ -79,42 +83,71 @@ function() {
      * @name setup
      */
 
-    var textInput,
-        textInputStartupComplete;
+    var consoleInputTPElem,
+        consoleInputStartupComplete,
 
-    textInput = this.get('textInput');
+        outputScreenElem;
 
-    //  Make sure to observe a setup on the text input here, because it won't
+    consoleInputTPElem = this.get('consoleInput');
+
+    //  Make sure to observe setup on the console input here, because it won't
     //  be fully formed when this line is executed.
-    textInputStartupComplete = function(aSignal) {
-        var hudTPElem;
+    consoleInputStartupComplete = function(aSignal) {
 
-        textInputStartupComplete.ignore(
+        var hudTPElem,
+            consoleOutputTPElem,
+            consoleOutputStartupComplete;
+
+        consoleInputStartupComplete.ignore(
                 aSignal.getOrigin(), aSignal.getSignalName());
 
-        textInput.setEditorEventHandler('viewportChange',
+        consoleInputTPElem.setEditorEventHandler('viewportChange',
                 function () {
-                    this.adjustTextInputSize();
+                    this.adjustInputSize();
                 }.bind(this));
 
         //  NB: We need to create the log view *before* we set up the console
         //  service.
         //this.setupLogView();
 
-        this.setupConsoleService();
+        outputScreenElem =
+            TP.byOID('SherpaWorld').createScreenElement('consoleOut', 0);
 
-        hudTPElem = TP.byOID('SherpaHUD', this.getNativeWindow());
-        this.observe(hudTPElem, 'HiddenChange');
+        //  Set up the consoleOutput element.
+        consoleOutputTPElem = TP.wrap(outputScreenElem).addContent(
+                '<xctrls:codeeditor id="SherpaConsoleOutput"' +
+                ' stubHref="~ide_root/html/sherpa_console_output_stub.html"/>');
+        this.set('consoleOutput', consoleOutputTPElem);
 
-        this.setAttribute('hidden', TP.bc(hudTPElem.getAttribute('hidden')));
+        //  Make sure to observe setup on the console input here, because it
+        //  won't be fully formed when this line is executed.
+        consoleOutputStartupComplete = function(aSignal) {
+            consoleOutputStartupComplete.ignore(
+                    aSignal.getOrigin(), aSignal.getSignalName());
+
+            //  NB: We have to set up the ConsoleService this *after* we put in
+            //  the output view.
+            this.setupConsoleService();
+
+            hudTPElem = TP.byOID('SherpaHUD', this.getNativeWindow());
+            this.observe(hudTPElem, 'HiddenChange');
+
+            this.setAttribute('hidden',
+                                TP.bc(hudTPElem.getAttribute('hidden')));
+        }.bind(this);
+
+        consoleOutputStartupComplete.observe(consoleOutputTPElem,
+                                                'TP.sig.DOMReady');
 
     }.bind(this);
 
-    textInputStartupComplete.observe(textInput, 'TP.sig.DOMReady');
+    consoleInputStartupComplete.observe(consoleInputTPElem, 'TP.sig.DOMReady');
 
     return this;
 });
 
+//  ------------------------------------------------------------------------
+//  Marker retrieval methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('getCurrentEvalMarker',
@@ -200,6 +233,8 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  Handlers for signal from other widgets
+//  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('handleSherpaHUDHiddenChange',
 function(aSignal) {
@@ -218,6 +253,8 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+//  Other instance methods
+//  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
@@ -229,7 +266,7 @@ function(beHidden) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    var textInput;
+    var consoleInput;
 
     if (TP.bc(this.getAttribute('hidden')) === beHidden) {
         return this;
@@ -242,8 +279,8 @@ function(beHidden) {
         //  deactivate the input cell
         this.deactivateInputEditor();
     } else {
-        textInput = this.get('textInput');
-        textInput.focus();
+        consoleInput = this.get('consoleInput');
+        consoleInput.focus();
 
         //  activate the input cell
         this.activateInputEditor();
@@ -302,73 +339,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('activateInputEditor',
-function() {
-
-    /**
-     * @name activateInputEditor
-     * @returns {TP.sherpa.console} The receiver.
-     * @abstract
-     * @todo
-     */
-
-    var textInput;
-
-    textInput = this.get('textInput');
-
-    textInput.setKeyHandler(TP.core.Keyboard.$$handleKeyEvent);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('deactivateInputEditor',
-function() {
-
-    /**
-     * @name deactivateInputEditor
-     * @returns {TP.sherpa.console} The receiver.
-     * @abstract
-     * @todo
-     */
-
-    var textInput;
-
-    textInput = this.get('textInput');
-
-    textInput.unsetCurrentKeyHandler();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('eventIsInInput',
-function(anEvent) {
-
-    /**
-     * @name eventInInput
-     */
-
-    return TP.eventGetWindow(anEvent).document ===
-            this.get('textInput').getNativeContentDocument();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('showingEvalMark',
-function() {
-
-    /**
-     * @name showingEvalMark
-     */
-
-    return TP.isValid(this.get('currentEvalMarker'));
-});
-
-//  ------------------------------------------------------------------------
 //  View Management Methods
 //  ------------------------------------------------------------------------
 
@@ -400,27 +370,6 @@ function(dataRecord) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('adjustTextInputSize',
-function() {
-
-    /**
-     * @name adjustTextInputSize
-     * @synopsis Adjust the height of the input cell based on its contents.
-     */
-
-    var textInput,
-        newHeight;
-
-    textInput = this.get('textInput');
-
-    newHeight = textInput.getEditorHeight();
-    this.setHeight(newHeight);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.console.Inst.defineMethod('clearAllContent',
 function() {
 
@@ -432,7 +381,8 @@ function() {
 
     var marker;
 
-    this.get('textInput').clearValue();
+    //  Clear the input and it's marks
+    this.get('consoleInput').clearValue();
 
     this.teardownInputMark();
     this.teardownEvalMark();
@@ -444,47 +394,10 @@ function() {
 
     this.clearStatus();
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('setCursorToEnd',
-function() {
-
-    /**
-     * @name setCursorToEnd
-     * @synopsis Moves the cursor to the end.
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    this.get('textInput').setCursorToEnd();
+    //  Clear the output
+    this.get('consoleOutput').clearValue();
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('scrollToEnd',
-function() {
-
-    /**
-     * @name scrollToEnd
-     * @synopsis Adjust the height of the input cell based on its contents.
-     */
-
-    var editor,
-        body;
-
-    editor = this.get('textInput').$getEditorInstance();
-    editor.scrollIntoView(null);
-
-    //  When the console is in 'collapsible' mode, this is important to get it
-    //  to scroll to the bottom properly.
-    body = this.get('textInput').getNativeContentDocument().body;
-    body.scrollTop = body.scrollHeight;
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -498,12 +411,12 @@ function() {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var textInput,
+    var consoleInput,
         editorElem;
 
-    textInput = this.get('textInput');
+    consoleInput = this.get('consoleInput');
     editorElem = TP.byCSS('.CodeMirror',
-                            textInput.getNativeContentDocument(),
+                            consoleInput.getNativeContentDocument(),
                             true);
 
     if (this.hasAttribute('maximized')) {
@@ -518,7 +431,7 @@ function() {
 
     (function() {
         this.focusInput();
-        this.scrollToEnd();
+        this.scrollOutputToEnd();
 
     }.bind(this)).afterUnwind();
 
@@ -555,15 +468,15 @@ function(range, cssClass, promptText) {
      * @returns
      */
 
-    var textInput,
+    var consoleInput,
 
         doc,
         elem,
         marker;
 
-    textInput = this.get('textInput');
+    consoleInput = this.get('consoleInput');
 
-    doc = textInput.getNativeContentDocument();
+    doc = consoleInput.getNativeContentDocument();
 
     elem = TP.documentCreateElement(doc, 'span');
     TP.elementSetClass(elem, cssClass);
@@ -571,7 +484,7 @@ function(range, cssClass, promptText) {
 
     TP.htmlElementSetContent(elem, promptText);
 
-    marker = textInput.$getEditorInstance().markText(
+    marker = consoleInput.$getEditorInstance().markText(
         range.from,
         range.to,
         {
@@ -607,7 +520,7 @@ function() {
         cssClass,
         promptStr,
 
-        textInput,
+        consoleInput,
         editor,
 
         cursorRange,
@@ -619,24 +532,24 @@ function() {
     cssClass = TP.elementGetClass(elem);
     promptStr = elem.innerHTML;
 
-    textInput = this.get('textInput');
+    consoleInput = this.get('consoleInput');
 
     //  Clear the marker
     markerRange = marker.find();
     marker.clear();
 
     //  Make sure to remove the space that was used as the text for the marker.
-    editor = this.get('textInput').$getEditorInstance();
+    editor = this.get('consoleInput').$getEditorInstance();
     editor.replaceRange('', markerRange.from, markerRange.to);
 
-    cursorRange = textInput.getCursor();
+    cursorRange = consoleInput.getCursor();
 
     markerRange = {
                 'from': {'line': cursorRange.line, 'ch': cursorRange.ch},
                 'to': {'line': cursorRange.line, 'ch': cursorRange.ch + 1}
             };
 
-    textInput.insertAtCursor(' ');
+    consoleInput.insertAtCursor(' ');
 
     marker = this.generatePromptMarkAt(markerRange, cssClass, promptStr);
     this.set('currentPromptMarker', marker);
@@ -662,7 +575,7 @@ function(aPrompt, aCSSClass) {
     var cssClass,
         promptStr,
 
-        textInput,
+        consoleInput,
 
         doc,
         range,
@@ -679,26 +592,26 @@ function(aPrompt, aCSSClass) {
 
     promptStr = TP.ifInvalid(aPrompt, this.getType().DEFAULT_PROMPT);
 
-    textInput = this.get('textInput');
+    consoleInput = this.get('consoleInput');
 
-    doc = textInput.getNativeContentDocument();
+    doc = consoleInput.getNativeContentDocument();
 
     if (!TP.isElement(
                 elem = TP.byId(TP.sys.cfg('sherpa.console_prompt'), doc))) {
 
-        cursorRange = textInput.getCursor();
+        cursorRange = consoleInput.getCursor();
 
         range = {
                     'from': {'line': cursorRange.line, 'ch': cursorRange.ch},
                     'to': {'line': cursorRange.line, 'ch': cursorRange.ch + 1}
                 };
 
-        textInput.insertAtCursor(' ');
+        consoleInput.insertAtCursor(' ');
 
         marker = this.generatePromptMarkAt(range, cssClass, promptStr);
         this.set('currentPromptMarker', marker);
 
-        editor = this.get('textInput').$getEditorInstance();
+        editor = this.get('consoleInput').$getEditorInstance();
         editor.setCursor(range.to);
     } else {
         TP.elementSetClass(elem, cssClass);
@@ -815,6 +728,48 @@ function(aSignal) {
 //  Input Management Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('activateInputEditor',
+function() {
+
+    /**
+     * @name activateInputEditor
+     * @returns {TP.sherpa.console} The receiver.
+     * @abstract
+     * @todo
+     */
+
+    var consoleInput;
+
+    consoleInput = this.get('consoleInput');
+
+    consoleInput.setKeyHandler(TP.core.Keyboard.$$handleKeyEvent);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('adjustInputSize',
+function() {
+
+    /**
+     * @name adjustInputSize
+     * @synopsis Adjust the height of the input cell based on its contents.
+     */
+
+    var consoleInput,
+        newHeight;
+
+    consoleInput = this.get('consoleInput');
+
+    newHeight = consoleInput.getEditorHeight();
+    this.setHeight(newHeight);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('clearInput',
 function() {
 
@@ -831,7 +786,7 @@ function() {
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
 
-        editor = this.get('textInput').$getEditorInstance();
+        editor = this.get('consoleInput').$getEditorInstance();
         range = marker.find();
 
         editor.setSelection(range.from, range.to);
@@ -841,6 +796,40 @@ function() {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('deactivateInputEditor',
+function() {
+
+    /**
+     * @name deactivateInputEditor
+     * @returns {TP.sherpa.console} The receiver.
+     * @abstract
+     * @todo
+     */
+
+    var consoleInput;
+
+    consoleInput = this.get('consoleInput');
+
+    consoleInput.unsetCurrentKeyHandler();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('eventIsInInput',
+function(anEvent) {
+
+    /**
+     * @name eventInInput
+     */
+
+    return TP.eventGetWindow(anEvent).document ===
+            this.get('consoleInput').getNativeContentDocument();
 });
 
 //  ------------------------------------------------------------------------
@@ -861,12 +850,28 @@ function(select) {
     //  the text field will not focus on startup.
     try {
         if (select) {
-            this.get('textInput').select();
+            this.get('consoleInput').select();
         } else {
-            this.get('textInput').focus();
+            this.get('consoleInput').focus();
         }
     } catch (e) {
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('setInputCursorToEnd',
+function() {
+
+    /**
+     * @name setInputCursorToEnd
+     * @synopsis Moves the cursor to the end.
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    this.get('consoleInput').setInputCursorToEnd();
 
     return this;
 });
@@ -889,7 +894,7 @@ function(anObject, shouldAppend) {
      * @todo
      */
 
-    var textInput,
+    var consoleInput,
 
         val,
 
@@ -906,9 +911,9 @@ function(anObject, shouldAppend) {
         return this;
     }
 
-    textInput = this.get('textInput');
+    consoleInput = this.get('consoleInput');
     if (TP.isTrue(shouldAppend)) {
-        //if (TP.notEmpty(val = textInput.get('value'))) {
+        //if (TP.notEmpty(val = consoleInput.get('value'))) {
         //    val += '.;\n';
         //}
         val = '';
@@ -918,7 +923,7 @@ function(anObject, shouldAppend) {
         val = TP.str(anObject);
     }
 
-    editor = textInput.$getEditorInstance();
+    editor = consoleInput.$getEditorInstance();
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
 
@@ -928,18 +933,18 @@ function(anObject, shouldAppend) {
         editor.setSelection(range.from, range.to);
         editor.replaceSelection(val);
 
-        end = textInput.getCursor();
+        end = consoleInput.getCursor();
 
         this.teardownInputMark();
     }
 
     if (TP.notValid(range)) {
 
-        start = textInput.getCursor();
+        start = consoleInput.getCursor();
 
-        textInput.insertAtCursor(val);
+        consoleInput.insertAtCursor(val);
 
-        end = textInput.getCursor();
+        end = consoleInput.getCursor();
     }
 
     this.set('currentInputMarker',
@@ -947,7 +952,7 @@ function(anObject, shouldAppend) {
 
     (function() {
         this.focusInput();
-        this.setCursorToEnd();
+        this.setInputCursorToEnd();
 
     }.bind(this)).afterUnwind();
 
@@ -982,7 +987,7 @@ function(aRange) {
 
     var marker;
 
-    marker = this.get('textInput').$getEditorInstance().markText(
+    marker = this.get('consoleInput').$getEditorInstance().markText(
         aRange.anchor,
         aRange.head,
         {
@@ -1014,7 +1019,7 @@ function(aFlag) {
 });
 
 //  ------------------------------------------------------------------------
-//  Output marking
+//  Output management methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('getInputStats',
@@ -1150,14 +1155,14 @@ function(uniqueID, dataRecord) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var textInput,
+    var consoleOutput,
 
         doc,
         outElem;
 
-    textInput = this.get('textInput');
+    consoleOutput = this.get('consoleOutput');
 
-    doc = textInput.getNativeContentDocument();
+    doc = consoleOutput.getNativeContentDocument();
 
     if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
         this.createOutputMark(uniqueID, dataRecord);
@@ -1181,13 +1186,14 @@ function(uniqueID, dataRecord) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var textInput,
+    var consoleOutput,
 
         doc,
+        lastLine,
+
         outElem,
 
         marker,
-        range,
         outputRange,
 
         hid,
@@ -1201,35 +1207,26 @@ function(uniqueID, dataRecord) {
 
         statsStr,
 
-        resultTypeStr,
+        resultTypeStr;
 
-        recordStr;
+    consoleOutput = this.get('consoleOutput');
 
-    textInput = this.get('textInput');
-
-    doc = textInput.getNativeContentDocument();
+    doc = consoleOutput.getNativeContentDocument();
 
     if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
-        if (TP.isValid(marker = this.get('currentInputMarker'))) {
-            range = marker.find();
-            outputRange = {
-                'from': {'line': range.to.line, 'ch': range.to.ch},
-                'to': {'line': range.to.line, 'ch': range.to.ch + 1}
-            };
 
-            textInput.insertAtCursor(' ');
-        } else {
-            outputRange = {
-                'from': textInput.getCursor('anchor'),
-                'to': textInput.getCursor('head')
-            };
+        //  Grab the last line of the output
+        lastLine = consoleOutput.$getEditorInstance().lastLine();
 
-            if (outputRange.from.line === outputRange.to.line &&
-                    outputRange.from.ch === outputRange.to.ch) {
-                textInput.insertAtCursor(' ');
-                outputRange.to.ch = outputRange.to.ch + 1;
-            }
-        }
+        //  Append a space to the end of it
+        consoleOutput.appendToLine(' ', TP.LAST);
+
+        //  Compute a range that goes from position 0 to position 1 of the last
+        //  line, encompassing the space.
+        outputRange = {
+            from: {'line': lastLine, 'ch': 0},
+            to: {'line': lastLine, 'ch': 1}
+        };
 
         hid = dataRecord.at('hid');
         hidStr = TP.isEmpty(hid) ? '&#160;&#160;' : '!' + hid;
@@ -1247,15 +1244,26 @@ function(uniqueID, dataRecord) {
             resultTypeStr = '';
         }
 
-        recordStr = hidStr + ' ' +
-                    cmdText + ' ' +
-                    statsStr + ' ' +
-                    resultTypeStr;
+        var inputData = TP.hc(
+                        'hid', hidStr,
+                        'cmdtext', cmdText,
+                        'inputclass', cssClass,
+                        'empty', '',
+                        'stats', '_ | _ | _',
+                        'resulttype', '');
+
+        var inputStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                            '#xpath1(//*[@name="consoleEntry"])').transform(
+                                inputData);
+
+        if (/\{\{/.test(inputStr)) {
+            return;
+        }
 
         marker = this.generateOutputMarkAt(
                         outputRange,
                         uniqueID,
-                        recordStr);
+                        inputStr);
         outElem = marker.widgetNode.firstChild;
 
         TP.elementAddClass(outElem, cssClass);
@@ -1265,21 +1273,19 @@ function(uniqueID, dataRecord) {
         }
     }
 
-    TP.htmlElementSetContent(outElem, '&hellip;');
+    //TP.htmlElementSetContent(outElem, '&hellip;');
 
     if (TP.isValid(outputRange) &&
-        outputRange.to.line === textInput.$getEditorInstance().lastLine()) {
-        textInput.appendToLine('\n', TP.LAST);
+        outputRange.to.line === consoleOutput.$getEditorInstance().lastLine()) {
+        consoleOutput.appendToLine('\n', TP.LAST);
     }
 
     this.teardownInputMark();
 
-    textInput.refreshEditor();
-    this.adjustTextInputSize();
+    consoleOutput.refreshEditor();
+    //this.adjustInputSize();
 
     //console.log('Echo input text: ' + recordStr);
-
-    this.movePromptMarkToCursor();
 
     return this;
 });
@@ -1297,7 +1303,7 @@ function(uniqueID, dataRecord) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var textInput,
+    var consoleOutput,
 
         doc,
         outElem,
@@ -1305,9 +1311,9 @@ function(uniqueID, dataRecord) {
         outputText,
         outputClass;
 
-    textInput = this.get('textInput');
+    consoleOutput = this.get('consoleOutput');
 
-    doc = textInput.getNativeContentDocument();
+    doc = consoleOutput.getNativeContentDocument();
 
     if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
 
@@ -1323,10 +1329,21 @@ function(uniqueID, dataRecord) {
         TP.elementAddClass(outElem, outputClass);
     }
 
-    TP.htmlElementSetContent(outElem, TP.stringAsHTMLString(outputText));
+    //TP.htmlElementSetContent(outElem, TP.stringAsHTMLString(outputText));
+    //outElem.innerHTML += outputText;
 
-    textInput.refreshEditor();
-    this.adjustTextInputSize();
+    var outputData = TP.hc(
+                    'output', outputText);
+
+    var outputStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                        '#xpath1(//*[@name="outputEntry"])').transform(
+                            outputData);
+
+    var resultsElem = TP.byCSS('.output_results', outElem, true);
+    resultsElem.innerHTML = outputStr;
+
+    consoleOutput.refreshEditor();
+    //this.adjustInputSize();
 
     //console.log('Echo output text: ' + outputText);
 
@@ -1348,7 +1365,7 @@ function(uniqueID) {
     var doc,
         elem;
 
-    doc = this.get('textInput').getNativeContentDocument();
+    doc = this.get('consoleOutput').getNativeContentDocument();
 
     elem = TP.documentCreateElement(doc, 'span');
     TP.elementSetClass(elem, 'output');
@@ -1360,7 +1377,7 @@ function(uniqueID) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('generateOutputMarkAt',
-function(range, uniqueID, titleText) {
+function(range, uniqueID, initialMarkup) {
 
     /**
      * @name generateOutputMarkAt
@@ -1376,7 +1393,7 @@ function(range, uniqueID, titleText) {
 
     elem = this.generateOutputElement(uniqueID);
 
-    marker = this.get('textInput').$getEditorInstance().markText(
+    marker = this.get('consoleOutput').$getEditorInstance().markText(
         range.from,
         range.to,
         {
@@ -1389,10 +1406,9 @@ function(range, uniqueID, titleText) {
         }
     );
 
-    TP.elementSetAttribute(elem, 'title', titleText);
-
     //  Wire a reference to the marker back onto our output element
     elem.marker = marker;
+    elem.innerHTML = initialMarkup;
 
     return marker;
 });
@@ -1419,7 +1435,7 @@ function(from, to) {
 
         i;
 
-    editor = this.get('textInput').$getEditorInstance();
+    editor = this.get('consoleOutput').$getEditorInstance();
 
     marks = editor.findMarks(from, to);
     results = TP.ac();
@@ -1432,6 +1448,30 @@ function(from, to) {
     }
 
     return results;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('scrollOutputToEnd',
+function() {
+
+    /**
+     * @name scrollOutputToEnd
+     * @synopsis Adjust the height of the input cell based on its contents.
+     */
+
+    var editor,
+        body;
+
+    editor = this.get('consoleOutput').$getEditorInstance();
+    editor.scrollIntoView(null);
+
+    //  When the console is in 'collapsible' mode, this is important to get it
+    //  to scroll to the bottom properly.
+    body = this.get('consoleOutput').getNativeContentDocument().body;
+    body.scrollTop = body.scrollHeight;
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -1452,7 +1492,7 @@ function() {
 
     //  If the text input is empty, there is no reason to setup anything... exit
     //  here.
-    if (TP.isEmpty(this.get('textInput').getValue())) {
+    if (TP.isEmpty(this.get('consoleInput').getValue())) {
         return this;
     }
 
@@ -1477,6 +1517,18 @@ function() {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('showingEvalMark',
+function() {
+
+    /**
+     * @name showingEvalMark
+     */
+
+    return TP.isValid(this.get('currentEvalMarker'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1506,7 +1558,7 @@ function(direction, endPoint) {
 
     cimRange = currentEvalMarker.find();
 
-    editor = this.get('textInput').$getEditorInstance();
+    editor = this.get('consoleInput').$getEditorInstance();
 
     lastLineInfo = editor.lineInfo(editor.lastLine());
 
@@ -1671,7 +1723,7 @@ function() {
     //  Only compute the text if you get a valid range
     if (TP.isValid(marker = this.get('currentEvalMarker'))) {
         range = marker.find();
-        editor = this.get('textInput').$getEditorInstance();
+        editor = this.get('consoleInput').$getEditorInstance();
         inputText = editor.getRange(range.from, range.to);
     } else {
         this.teardownEvalMark();
@@ -1710,7 +1762,7 @@ function() {
         range = promptMark.find();
         retVal = range.to;
     } else {
-        editor = this.get('textInput').$getEditorInstance();
+        editor = this.get('consoleInput').$getEditorInstance();
 
         //  Look for the following, in this order (at the beginning of a line)
         //      - The current prompt (preceded by zero-or-more whitespace)
@@ -1778,10 +1830,10 @@ function() {
         anchor,
         searchCursor,
         lineInfo,
-        retVal,
-        marks;
+        retVal;
+        //marks;
 
-    editor = this.get('textInput').$getEditorInstance();
+    editor = this.get('consoleInput').$getEditorInstance();
 
     anchor = editor.getCursor();
     searchCursor = editor.getSearchCursor(/^(\s*<|\n)/, anchor);
@@ -1795,6 +1847,7 @@ function() {
         retVal = {'line': lineInfo.line, 'ch': lineInfo.text.length};
     }
 
+    /*
     //  See if there are any output marks between the anchor and head
     marks = this.findOutputMarks(anchor, retVal);
     if (marks.length > 0) {
@@ -1808,6 +1861,7 @@ function() {
         retVal = {'line': Math.max(retVal.line - 1, 0),
                     'ch': lineInfo.text.length};
     }
+    */
 
     return retVal;
 });
@@ -1828,7 +1882,7 @@ function() {
         selection,
         range;
 
-    editor = this.get('textInput').$getEditorInstance();
+    editor = this.get('consoleInput').$getEditorInstance();
 
     //  If there are real selections, then just use the first one
     selection = editor.getSelection();
@@ -1855,7 +1909,7 @@ function(range) {
 
     var marker;
 
-    marker = this.get('textInput').$getEditorInstance().markText(
+    marker = this.get('consoleInput').$getEditorInstance().markText(
         range.anchor,
         range.head,
         {
@@ -1871,6 +1925,8 @@ function(range) {
     return marker;
 });
 
+//  ------------------------------------------------------------------------
+//  Halo focusing methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('haloCanBlur',
