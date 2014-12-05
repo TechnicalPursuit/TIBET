@@ -51,7 +51,8 @@ function(aRequest) {
      * @name tagPrecompile
      * @synopsis Replaces the link element with a css:style element suitable for
      *     compiling or otherwise processing the CSS.
-     * @param {aRequest} TP.sig.Request The request containing parameters.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var node,

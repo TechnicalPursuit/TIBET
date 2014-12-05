@@ -5915,9 +5915,7 @@ function() {
      * @returns {TP.core.Application} The receiver.
      */
 
-    if (!TP.sys.cfg('boot.tdc')) {
-        TP.boot.showUIRoot();
-    }
+    TP.boot.showUIRoot();
 
     return this;
 });

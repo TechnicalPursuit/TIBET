@@ -37,7 +37,7 @@ TP.xctrls.codeeditor.set('frameFileURI',
 TP.xctrls.codeeditor.addTraits(TP.html.textUtilities);
 
 TP.xctrls.codeeditor.Type.resolveTrait('cmdRunContent', TP.xctrls.FramedElement);
-TP.xctrls.codeeditor.Type.resolveTrait('tagCompile', TP.xctrls.Element);
+TP.xctrls.codeeditor.Type.resolveTrait('tagCompile', TP.xctrls.FramedElement);
 TP.xctrls.codeeditor.Type.resolveTrait('booleanAttrs', TP.html.textUtilities);
 
 TP.xctrls.codeeditor.Inst.resolveTraits(

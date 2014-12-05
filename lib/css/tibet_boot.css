@@ -236,3 +236,18 @@ body.showlog #BOOT-SPLASH {
     margin: 24px 48px 0 48px;
     font-size: 123.1%
 }
+
+/* --- Full-window mode --- */
+
+body.full_console #content {
+    max-width: 100%;
+}
+
+body.full_console .detail-intro {
+    display: none;
+}
+
+body.full_console #BOOT-CONSOLE {
+    top: 48px;
+}
+

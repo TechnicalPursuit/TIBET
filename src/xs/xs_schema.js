@@ -32,10 +32,8 @@ function(aRequest) {
      * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
-     * @returns {Constant} TP.CONTINUE which means that all child content of the
-     *     current node will be skipped.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem,
@@ -46,7 +44,7 @@ function(aRequest) {
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
-        return TP.CONTINUE;
+        return;
     }
 
     //  Get a handle to a TP.core.Node representing an instance of this
@@ -63,7 +61,7 @@ function(aRequest) {
 
     elemTPNode.defineTypes(redefine);
 
-    return TP.CONTINUE;
+    return;
 });
 
 //  ------------------------------------------------------------------------

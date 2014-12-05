@@ -1,3 +1,5 @@
+@namespace pclass url(urn:tibet:pseudoclass);
+
 html,body,#background,iframe {
     position: absolute;
 
@@ -306,4 +308,34 @@ div {
     right: 0;
     overflow: auto;
     border: 1px solid #666;
+}
+
+/* Hide drawers */
+
+.north, .south {
+    transition: height .5s;
+}
+
+.east, .west {
+    transition: width .5s;
+}
+
+.north[pclass|hidden] {
+    top: -2px;
+    height: 0px;
+}
+
+.west[pclass|hidden] {
+    left: -2px;
+    width: 0px;
+}
+
+.south[pclass|hidden] {
+    bottom: -2px;
+    height: 0px;
+}
+
+.east[pclass|hidden] {
+    right: -2px;
+    width: 0px;
 }

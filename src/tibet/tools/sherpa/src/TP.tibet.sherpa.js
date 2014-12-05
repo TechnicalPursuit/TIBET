@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.sherpa}
+ * @type {TP.tibet.sherpa}
  * @synopsis
  */
 
@@ -32,39 +32,35 @@ function(aRequest) {
      */
 
     var elem,
+        elemWin,
 
-        blankURI,
         sherpaURI,
 
-        frameElem,
-
-        func;
+        request;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
         return;
     }
+    elemWin = TP.nodeGetWindow(elem);
 
-    blankURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
     sherpaURI = TP.uc('~ide_root/xhtml/sherpa_framing.xhtml');
 
-    //  Build an iframe element to contain our custom element.
-    frameElem = TP.elem(
-        TP.join('<iframe xmlns="', TP.w3.Xmlns.XHTML, '"',
-                ' id="SHERPA_FRAME"',
-                ' style="position: absolute; border: none;',
-                ' top: 0px; left: 0px; width: 100%; height: 100%"',
-                ' src="' + blankURI.getLocation() + '"></iframe>'));
+    request = TP.request();
 
-    frameElem = TP.nodeAppendChild(elem.parentNode, frameElem, false);
+    request.atPut(TP.ONLOAD,
+                function(aDocument) {
+                    var newSherpa;
 
-    frameElem.addEventListener(
-            'load',
-            func = function() {
-                this.removeEventListener('load', func, false);
-                TP.wrap(this).setContent(sherpaURI);
-            },
-            false);
+                    //  This performs some initial setup. The first time the
+                    //  Sherpa is triggered, it will complete its setup
+                    //  sequence.
+                    newSherpa = TP.core.sherpa.construct();
+                    newSherpa.setID('Sherpa');
+                    TP.sys.registerObject(newSherpa);
+                });
+
+    TP.wrap(elemWin).setContent(sherpaURI, request);
 
     return this.callNextMethod();
 });

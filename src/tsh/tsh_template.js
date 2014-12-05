@@ -586,10 +586,10 @@ function(aRequest) {
      * @name tagCompile
      * @synopsis Compiles templates defined with this element into TIBET
      *     representations for use in templating.
-     * @param {TP.sig.Request} aRequest The request containing command input for
-     *     the shell.
-     * @returns {Element|Constant} If the receiver is a 'generator', then the
-     *     result of executing the receiver's template. Otherwise, null.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} If the receiver is a 'generator', then the result of
+     *     executing the receiver's template. Otherwise, null.
      */
 
     var elem,
@@ -691,7 +691,7 @@ function(aRequest) {
                         'Template ' + name + ' produced invalid output: ' +
                         result);
 
-            return TP.CONTINUE;
+            return;
         }
 
         if (!TP.isFragment(result)) {

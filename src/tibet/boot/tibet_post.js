@@ -9030,6 +9030,10 @@ TP.boot.$configureProject = function() {
         TP.sys.setcfg('project.rootpage', '~app_html/UIROOT.xhtml');
     }
 
+    if (TP.boot.$notValid(TP.sys.cfg('project.homepage'))) {
+        TP.sys.setcfg('project.homepage', '~app_html/home.xhtml');
+    }
+
     return;
 };
 

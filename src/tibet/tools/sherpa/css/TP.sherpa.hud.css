@@ -25,11 +25,11 @@
 }
 
 #background {
-    pointer-events: none;
+/*    pointer-events: none; */
 }
 
 .framing {
-    pointer-events: auto;
+/*    pointer-events: auto; */
 }
 
 .drawerButton {
@@ -68,19 +68,11 @@ div#toggleLog {
     background-image: url(../img/log.svg);
 }
 
-.north {
+.north, .south {
     transition: height .5s;
 }
 
-.west {
-    transition: width .5s;
-}
-
-.south {
-    transition: height .5s;
-}
-
-.east {
+.east, .west {
     transition: width .5s;
 }
 

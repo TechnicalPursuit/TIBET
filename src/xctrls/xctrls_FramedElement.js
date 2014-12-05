@@ -34,27 +34,22 @@ TP.xctrls.FramedElement.Type.defineAttribute('frameFileURI');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.xctrls.FramedElement.Type.defineMethod('tagAttachDOM',
+TP.xctrls.FramedElement.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @name tagCompile
+     * @synopsis Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Number} The TP.CONTINUE flag, telling the system to not descend
-     *     into the children of this element.
      */
 
     var elem,
-        elemTPNode,
 
         theID,
 
-        frameElem,
-
-        stubHref,
-        stubURI;
+        frameElem;
 
     //  Make sure to 'call up', since 'xctrls:Element' types do processing
     //  for this step.
@@ -78,9 +73,35 @@ function(aRequest) {
 
     TP.nodeAppendChild(elem, frameElem, false);
 
-    //  Get a handle to a TP.core.Node representing an instance of this
-    //  element type wrapped around elem. Note that this will both ensure a
-    //  unique 'id' for the element and register it.
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.FramedElement.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @name tagAttachDOM
+     * @synopsis Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        elemTPNode,
+
+        stubHref,
+        stubURI;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    //  Get a handle to a TP.core.ElementNode representing an instance of this
+    //  element type wrapped around elem.
     elemTPNode = TP.tpnode(elem);
 
     if (TP.notEmpty(stubHref = TP.elementGetAttribute(elem, 'stubHref'))) {
@@ -92,7 +113,7 @@ function(aRequest) {
     //  Begin the iframe load sequence
     elemTPNode.startIFrameLoad(stubURI);
 
-    return TP.CONTINUE;
+    return;
 });
 
 //  ------------------------------------------------------------------------

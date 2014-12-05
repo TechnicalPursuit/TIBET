@@ -70,6 +70,13 @@ function() {
     }).bind(this).observe(TP.wrap(triggerElement), 'TP.sig.DOMClick');
     /* eslint-enable no-wrap-func */
 
+    //  If this flag was set to not show the IDE, then we have to sync our
+    //  setting to it. Note that we use the lower-level '$isInState' call
+    //  here to avoid triggering our 'setAttrHidden' call.
+    if (!TP.sys.cfg('boot.show_ide')) {
+        this.$isInState('pclass:hidden', true);
+    }
+
     return this;
 });
 

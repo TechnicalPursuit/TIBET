@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.sherpa}
+ * @type {TP.core.sherpa}
  * @synopsis
  */
 
@@ -18,6 +18,102 @@
 //  ============================================================================
 
 TP.lang.Object.defineSubtype('core.sherpa');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ----------------------------------------------------------------------------
+
+TP.core.sherpa.Type.defineMethod('initialize',
+function(aName) {
+
+    /**
+     * @name initialize
+     * @synopsis Performs one-time setup for the type on startup/import.
+     * @return {TP.core.Sherpa} The receiver.
+     */
+
+    var toggleKey,
+        sherpaSetupFunc;
+
+    //  If the Sherpa isn't configured to start, then exit here.
+    if (!TP.sys.cfg('tibet.sherpa')) {
+        return this;
+    }
+
+    //  Register our toggle key handler to finish Sherpa setup.
+
+    toggleKey = TP.sys.cfg('sherpa.toggle_on');
+    if (!toggleKey.startsWith('TP.sig.')) {
+        toggleKey = 'TP.sig.' + toggleKey;
+    }
+
+    //  Set up the handler to finish the setup of the Sherpa when the toggle key
+    //  is pressed.
+
+    /* eslint-disable no-wrap-func */
+    //  set up keyboard toggle to show/hide the boot UI
+    (sherpaSetupFunc = function () {
+
+        var sherpaInst,
+
+            win,
+            drawerElement,
+            func,
+            evtName;
+
+        //  The first thing to do is to tell TP.core.Keyboard to *ignore* this
+        //  handler Function. This is because, once we finish set up of the
+        //  Sherpa, it will install it's own handler for the trigger key and
+        //  take over that responsibility.
+        sherpaSetupFunc.ignore(TP.core.Keyboard, toggleKey);
+
+        if (TP.isValid(sherpaInst = TP.byOID('Sherpa'))) {
+
+            //  If we didn't show the IDE when we first started, the trigger
+            //  has now been fired to show it. Do so after 500ms, to give the
+            if (!TP.sys.cfg('boot.show_ide')) {
+
+                win = TP.win('UIROOT');
+                drawerElement = TP.byCSS('div#west', win, true);
+
+                if (TP.sys.isUA('WEBKIT')) {
+                    evtName = 'webkitTransitionEnd';
+                } else {
+                    evtName = 'transitionend';
+                }
+
+                drawerElement.addEventListener(
+                        evtName,
+                        func = function() {
+
+                            drawerElement.removeEventListener(
+                                            evtName,
+                                            func,
+                                            true);
+
+                            //  The basic Sherpa framing has been set up, but we
+                            //  complete the setup here (after the drawers
+                            //  animate in).
+                            sherpaInst.finishSetup();
+
+                            TP.byOID('SherpaHUD').setAttribute(
+                                                            'hidden', false);
+                        },
+                        true);
+
+                TP.byCSS('.north, .south, .east, .west', win).perform(
+                            function (anElem) {
+                                TP.elementRemoveAttribute(
+                                            anElem, 'pclass:hidden', true);
+                            });
+            } else {
+                sherpaInst.finishSetup();
+            }
+        }
+    }).observe(TP.core.Keyboard, toggleKey);
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -31,44 +127,85 @@ TP.core.sherpa.Inst.defineAttribute('vWin');
 //  ------------------------------------------------------------------------
 
 TP.core.sherpa.Inst.defineMethod('init',
-function(info) {
+function() {
 
     /**
      * @name init
-     * @synopsis Constructor for new instances.
-     * @param {TP.lang.Hash}
-     * @returns {TP.core.ConsoleService} A new instance.
-     * @todo
+     * @synopsis Initialize the instance.
+     * @returns {TP.core.sherpa} The receiver.
      */
 
-    var win,
-        doc,
+    var uiBootIFrameElem,
+        win;
 
-        uiBootIFrameElem;
+    //  Manually 'display: none' the boot iframe. It's already
+    //  'visibility:hidden', but we need to get it out of the way.
+    uiBootIFrameElem = TP.byId('UIBOOT', top);
+    TP.elementHide(uiBootIFrameElem);
 
-    win = info.at('window');
-    doc = TP.doc(win);
+    win = TP.win('UIROOT');
 
     //  set up our window
     this.set('vWin', win);
 
-    //  Initialize the World
+    //  Set up the World
     this.setupWorld();
 
-    //  Initialize the HUD
+    //  Based on the setting of this flag, we show or hide the drawers (the HUD
+    //  isn't real until we finish setup, so we do it manually here).
+    if (TP.sys.cfg('boot.show_ide')) {
+        TP.byCSS('.north, .south, .east, .west', win).perform(
+                    function (anElem) {
+                        TP.elementRemoveAttribute(
+                                    anElem, 'pclass:hidden', true);
+                    });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.sherpa.Inst.defineMethod('finishSetup',
+function() {
+
+    var win,
+        doc,
+
+        worldTPElem,
+
+        toggleKey;
+
+    win = this.get('vWin');
+    doc = TP.doc(win);
+
+    //  Set up the HUD
     this.setupHUD();
 
-    //  Initialize the halo
+    //  The World was set up on initial startup - set up the rest of the
+    //  components. We do set up the World to observe when the HUD shows
+    worldTPElem = TP.byOID('SherpaWorld', this.get('vWin'));
+    worldTPElem.observe(TP.byOID('SherpaHUD', this.get('vWin')),
+                        'HiddenChange');
+
+    //  Set up the halo
     this.setupHalo();
 
-    //  Initialize the console
-    //this.setupConsole();
+    //  Set up the console
+    this.setupConsole();
+
+    //  Configure a toggle so we can always get back to just showing the app.
+    toggleKey = TP.sys.cfg('sherpa.toggle_on');
+
+    if (!toggleKey.startsWith('TP.sig.')) {
+        toggleKey = 'TP.sig.' + toggleKey;
+    }
 
     //  set up keyboard toggle to show/hide us
     /* eslint-disable no-wrap-func */
     (function () {
         this.toggle();
-    }).bind(this).observe(TP.core.Keyboard, 'TP.sig.' + info.at('triggerKey'));
+    }).bind(this).observe(TP.core.Keyboard, toggleKey);
     /* eslint-enable no-wrap-func */
 
     /*
@@ -80,14 +217,6 @@ function(info) {
         }).bind(this).observe(
             TP.core.Keyboard, 'TP.sig.DOM_T_Up__TP.sig.DOM_T_Up');
     */
-
-    //  Manually 'display: none' the boot iframe. It's already
-    //  'visibility:hidden', but we need to get it out of the way.
-    uiBootIFrameElem = TP.byId('UIBOOT', top);
-    TP.elementHide(uiBootIFrameElem);
-
-    this.setID('Sherpa');
-    TP.sys.registerObject(this);
 
     return this;
 });
@@ -138,14 +267,27 @@ function() {
     var sherpaSouthDrawer,
         consoleTPElem;
 
+        //worldTPElem,
+        //consoleOutTPElem;
+
     sherpaSouthDrawer = TP.byCSS('#south > .drawer',
                                     this.get('vWin').document,
                                     true);
 
-    consoleTPElem = TP.wrap(sherpaSouthDrawer).addContent(
-                    TP.sherpa.console.getResourceMarkup(TP.ietf.Mime.XHTML));
+    consoleTPElem =
+            TP.wrap(sherpaSouthDrawer).addContent(
+                TP.sherpa.console.getResourceMarkup(TP.ietf.Mime.XHTML));
 
     consoleTPElem.setup();
+
+    //  NB: The console observes the HUD when it's done loading it's editor,
+    //  etc.
+
+    /*
+    worldTPElem = TP.byOID('SherpaWorld', this.get('vWin'));
+
+    consoleOutTPElem = worldTPElem.createSlotElement('SherpaConsoleSlot');
+    */
 
     return this;
 });
@@ -164,6 +306,8 @@ function() {
                     TP.sherpa.halo.getResourceMarkup(TP.ietf.Mime.XHTML));
 
     haloTPElem.setup();
+    haloTPElem.observe(TP.byOID('SherpaHUD', this.get('vWin')),
+                        'HiddenChange');
 
     return this;
 });
@@ -192,6 +336,7 @@ TP.core.sherpa.Inst.defineMethod('setupWorld',
 function() {
 
     var uiScreensWin,
+        uiDoc,
 
         worldElem,
 
@@ -207,12 +352,18 @@ function() {
         worldTPElem;
 
     uiScreensWin = this.get('vWin');
+    uiDoc = uiScreensWin.document;
 
     //  Create the <sherpa:world> tag
-    worldElem = TP.documentCreateElement(uiScreensWin.document,
-                                            'world',
-                                            TP.w3.Xmlns.SHERPA);
+    worldElem = TP.documentCreateElement(uiDoc, 'world', TP.w3.Xmlns.SHERPA);
     TP.elementSetAttribute(worldElem, 'id', 'SherpaWorld');
+
+    //  Append the <sherpa:world> tag into the loaded Sherpa document.
+    TP.xmlElementInsertContent(
+            TP.byId('center', uiScreensWin),
+            worldElem,
+            TP.AFTER_BEGIN,
+            null);
 
     //  Grab the 1...n 'prebuilt' iframes that are available in the Sherpa
     //  template. Create a <sherpa:screen> tag and wrap them in it and place
@@ -223,7 +374,7 @@ function() {
                 var screenElem;
 
                 //  Wrap each iframe inside of a 'sherpa:screen' element
-                screenElem = TP.documentCreateElement(uiScreensWin.document,
+                screenElem = TP.documentCreateElement(uiDoc,
                                                         'screen',
                                                         TP.w3.Xmlns.SHERPA);
 
@@ -240,10 +391,10 @@ function() {
     //  the user, create more.
     if (configNumIFrames > numIFrames) {
         for (i = 0; i < (configNumIFrames - numIFrames); i++) {
-            screenElem = TP.documentCreateElement(uiScreensWin.document,
+            screenElem = TP.documentCreateElement(uiDoc,
                                                     'screen',
                                                     TP.w3.Xmlns.SHERPA);
-            iFrameElem = TP.documentCreateElement(uiScreensWin.document,
+            iFrameElem = TP.documentCreateElement(uiDoc,
                                                     'iframe',
                                                     TP.w3.Xmlns.XHTML);
 
@@ -251,14 +402,6 @@ function() {
             TP.nodeAppendChild(worldElem, screenElem, false);
         }
     }
-
-    //  Append the <sherpa:world> tag into the loaded Sherpa document.
-    TP.xmlElementInsertContent(
-            TP.byId('center', uiScreensWin),
-            worldElem,
-            TP.AFTER_BEGIN,
-            null,
-            true);
 
     //  Grab the <sherpa:world> tag and set it up.
     worldTPElem = TP.byOID('SherpaWorld', uiScreensWin);

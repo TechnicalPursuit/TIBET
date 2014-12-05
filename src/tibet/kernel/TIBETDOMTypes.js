@@ -4636,6 +4636,10 @@ function(newContent, aRequest, stdinContent) {
     //  For now, anyway, processing the content needs to be synchronous.
     request.atPut('async', false);
 
+    //  Content drawn from here will be awakened when the nodes are placed into
+    //  a visible DOM, so we don't awaken them here.
+    request.atPutIfAbsent('awaken', false);
+
     //  If stdin content was supplied, execute the content as well as
     //  process it.
     if (TP.notEmpty(stdinContent)) {
@@ -4727,7 +4731,7 @@ function(newContent, aRequest) {
     result = func(node,
                     content,
                     loadFunc,
-                    TP.ifKeyInvalid(request, 'awaken', true));
+                    TP.ifKeyInvalid(request, 'awaken', false));
 
     //  If we're flagging changes, go ahead and do that now.
     if (this.shouldFlagChanges()) {
@@ -4876,6 +4880,10 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
     //  For now, anyway, processing the content needs to be synchronous.
     request.atPut('async', false);
 
+    //  Content drawn from here will be awakened when the nodes are placed into
+    //  a visible DOM, so we don't awaken them here.
+    request.atPutIfAbsent('awaken', false);
+
     //  If stdin content was supplied, execute the content as well as
     //  process it.
     if (TP.notEmpty(stdinContent)) {
@@ -4973,7 +4981,7 @@ function(newContent, aPositionOrPath, aRequest) {
                     content,
                     aPositionOrPath,
                     loadFunc,
-                    TP.ifKeyInvalid(request, 'awaken', true));
+                    TP.ifKeyInvalid(request, 'awaken', false));
 
     //  If we're flagging changes, go ahead and do that now.
     if (this.shouldFlagChanges()) {
@@ -5101,6 +5109,13 @@ function(newContent, aRequest, stdinContent) {
 
     //  For now, anyway, processing the content needs to be synchronous.
     request.atPut('async', false);
+
+    //  Unlike the 'addContent()' and 'insertContent()' methods on this type,
+    //  content drawn from here will *not* be awakened when the nodes are placed
+    //  into a visible DOM. We're setting the whole content, so the Mutation
+    //  Observer machinery will not be invoked. Therefore, we manually awaken
+    //  the content from here.
+    request.atPutIfAbsent('awaken', true);
 
     //  If stdin content was supplied, execute the content as well as
     //  process it.
@@ -8654,7 +8669,6 @@ function(aRequest) {
         request,
 
         processor,
-        result,
 
         type;
 
@@ -8671,15 +8685,15 @@ function(aRequest) {
 
     request = TP.request(aRequest);
 
-    //  Make sure to clone our native node before we process it.
-    result = TP.nodeCloneNode(node, true);
+    //  We do *not* clone our native node before we process it - the processing
+    //  system will not process a detached node so we process it in situ.
 
     //  Allocate a tag processor and initialize it with the COMPILE_PHASES
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.COMPILE_PHASES);
 
     //  Process the tree of markup
-    processor.processTree(result, request);
+    processor.processTree(node, request);
 
     //  If the shell request failed then our enclosing request has failed.
     if (request.didFail()) {
@@ -8692,13 +8706,13 @@ function(aRequest) {
     //  update our internal node content. If not we'll need to get a new
     //  wrapper and return that as the result.
 
-    if (!TP.isNode(result)) {
-        return result;
-    } else if ((type = TP.core.Node.getConcreteType(result)) ===
+    if (!TP.isNode(node)) {
+        return node;
+    } else if ((type = TP.core.Node.getConcreteType(node)) ===
                                                         this.getType()) {
-        this.setNativeNode(result);
+        this.setNativeNode(node);
     } else {
-        return type.construct(result);
+        return type.construct(node);
     }
 
     return this;
@@ -10354,8 +10368,8 @@ function(aRequest) {
      * @synopsis Unmarshals the receiver's content. This includes resolving XML
      *     Base URIs and virtual URIs that may occur on the receiver's
      *     attributes.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
-     *     containing control parameters.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem,
@@ -11876,8 +11890,8 @@ function(aRequest) {
      *     receiver's content. When you load content via XMLHTTP.sig.Request
      *     these PIs aren't executed so you have to run them through this
      *     transform to see their effect on the document.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
-     *     containing control parameters.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      * @raises TP.sig.InvalidNode
      */
 
@@ -13718,11 +13732,8 @@ function(aRequest) {
      * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
-     * @returns {Array} An array containing the new node and a TSH loop control
-     *     constant, TP.DESCEND by default.
-     * @todo
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem;
@@ -14213,8 +14224,8 @@ function(aRequest) {
      * @name tagCompile
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem;
@@ -14595,8 +14606,8 @@ function(aRequest) {
      *     the xinclude element, retrieve the (possibly XPointered) content from
      *     the designated URI and replace it in-situ, replacing the xinclude
      *     element.
-     * @param {TP.sig.Request|TP.lang.Hash} aRequest A request or hash
-     *     containing control parameters.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      * @returns {Node} The node representing the newly included content, telling
      *     the system to descend into the children of this element (which very
      *     well may be content that was included by this element).
@@ -14882,8 +14893,8 @@ function(aRequest) {
      * @synopsis Convert the receiver into a format suitable for inclusion in a
      *     markup DOM. This type replaces the current node with the result of
      *     executing its template content.
-     * @param {TP.sig.Request} aRequest The request containing command input for
-     *     the shell.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      * @returns {Element} The new element.
      */
 

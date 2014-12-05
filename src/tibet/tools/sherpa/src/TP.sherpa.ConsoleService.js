@@ -161,9 +161,16 @@ function(aResourceID, aRequest) {
 
     //  get started by scrolling to the end (causes the scroller to
     //  resize/reposition)
-    this.get('$consoleGUI').scrollToEnd();
+    this.get('$consoleGUI').scrollOutputToEnd();
 
-    this.observe(TP.byOID('SherpaConsole', TP.win('UIROOT.SHERPA_FRAME')), 'HiddenChange');
+    this.observe(TP.byOID('SherpaConsole', TP.win('UIROOT')),
+                    'HiddenChange');
+
+    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidFocus');
+
+    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidBlur');
 
     return this;
 });
@@ -214,37 +221,15 @@ function(aFlag) {
      * @returns {Boolean} The current input state.
      */
 
-    var inputCell;
+    var val;
 
-    inputCell = this.get('$consoleGUI');
+    val = this.get('$consoleGUI').getEvalValue();
 
     if (TP.isBoolean(aFlag)) {
         this.$set('awaitingInput', aFlag);
     }
 
-    return (this.$get('awaitingInput') || (TP.notEmpty(inputCell.value)));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('handleSherpaConsoleHiddenChange',
-function(aSignal) {
-
-    /**
-     * @name handleHiddenChange
-     */
-
-    var isHidden;
-
-    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
-
-    if (isHidden) {
-        this.removeHandlers();
-    } else {
-        this.installHandlers();
-    }
-
-    return this;
+    return (this.$get('awaitingInput') || TP.notEmpty(val));
 });
 
 //  ------------------------------------------------------------------------
@@ -352,10 +337,10 @@ function(anEvent) {
      */
 
     var keyname,
-        inputCell;
+        consoleGUI;
 
     keyname = TP.domkeysigname(anEvent);
-    inputCell = this.get('$consoleGUI');
+    consoleGUI = this.get('$consoleGUI');
 
     switch (keyname) {
         case 'DOM_Shift_Enter_Up':
@@ -363,54 +348,54 @@ function(anEvent) {
             break;
 
         case 'DOM_Shift_Down_Up':
-            if (inputCell.showingEvalMark()) {
-                inputCell.shiftEvalMark(TP.DOWN, TP.ANCHOR);
+            if (consoleGUI.showingEvalMark()) {
+                consoleGUI.shiftEvalMark(TP.DOWN, TP.ANCHOR);
             } else {
                 this.handleHistoryNext(anEvent);
             }
             break;
 
         case 'DOM_Shift_Up_Up':
-            if (inputCell.showingEvalMark()) {
-                inputCell.shiftEvalMark(TP.UP, TP.ANCHOR);
+            if (consoleGUI.showingEvalMark()) {
+                consoleGUI.shiftEvalMark(TP.UP, TP.ANCHOR);
             } else {
                 this.handleHistoryPrev(anEvent);
             }
             break;
 
         case 'DOM_Shift_Right_Up':
-            if (inputCell.showingEvalMark()) {
-                inputCell.shiftEvalMark(TP.RIGHT, TP.ANCHOR);
+            if (consoleGUI.showingEvalMark()) {
+                consoleGUI.shiftEvalMark(TP.RIGHT, TP.ANCHOR);
             }
             break;
 
         case 'DOM_Shift_Left_Up':
-            if (inputCell.showingEvalMark()) {
-                inputCell.shiftEvalMark(TP.LEFT, TP.ANCHOR);
+            if (consoleGUI.showingEvalMark()) {
+                consoleGUI.shiftEvalMark(TP.LEFT, TP.ANCHOR);
             }
             break;
 
         case 'DOM_Alt_Shift_Down_Up':
-            if (inputCell.showingEvalMark()) {
-                inputCell.shiftEvalMark(TP.DOWN, TP.HEAD);
+            if (consoleGUI.showingEvalMark()) {
+                consoleGUI.shiftEvalMark(TP.DOWN, TP.HEAD);
             }
             break;
 
         case 'DOM_Alt_Shift_Up_Up':
-            if (inputCell.showingEvalMark()) {
-                inputCell.shiftEvalMark(TP.UP, TP.HEAD);
+            if (consoleGUI.showingEvalMark()) {
+                consoleGUI.shiftEvalMark(TP.UP, TP.HEAD);
             }
             break;
 
         case 'DOM_Alt_Shift_Right_Up':
-            if (inputCell.showingEvalMark()) {
-                inputCell.shiftEvalMark(TP.RIGHT, TP.HEAD);
+            if (consoleGUI.showingEvalMark()) {
+                consoleGUI.shiftEvalMark(TP.RIGHT, TP.HEAD);
             }
             break;
 
         case 'DOM_Alt_Shift_Left_Up':
-            if (inputCell.showingEvalMark()) {
-                inputCell.shiftEvalMark(TP.LEFT, TP.HEAD);
+            if (consoleGUI.showingEvalMark()) {
+                consoleGUI.shiftEvalMark(TP.LEFT, TP.HEAD);
             }
             break;
 
@@ -423,7 +408,7 @@ function(anEvent) {
             break;
 
         case 'DOM_Ctrl_Enter_Up':
-            inputCell.movePromptMarkToCursor();
+            consoleGUI.movePromptMarkToCursor();
             break;
 
         default:
@@ -431,6 +416,56 @@ function(anEvent) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleSherpaConsoleHiddenChange',
+function(aSignal) {
+
+    /**
+     * @name handleHiddenChange
+     */
+
+    var isHidden;
+
+    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+
+    if (isHidden) {
+        this.removeHandlers();
+    } else {
+        this.installHandlers();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleTP_sig_HaloDidFocus',
+function(aSignal) {
+
+    //this.show();
+
+    TP.info('got to halo did focus', TP.LOG);
+
+    this.get('model').setVariable('HALO', aSignal.at('haloTarget'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleTP_sig_HaloDidBlur',
+function(aSignal) {
+
+    //this.hide();
+
+    TP.info('got to halo did blur', TP.LOG);
+
+    this.get('model').setVariable('HALO', null);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -451,6 +486,8 @@ function() {
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
     this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+
+    //  set up other keyboard observations
 
     this.observe(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
 
@@ -474,6 +511,8 @@ function() {
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
 
+    //  set up other keyboard observations
+
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
 
     return this;
@@ -493,17 +532,17 @@ function(aSignal) {
      */
 
     var evt,
-        inputCell,
+        consoleGUI,
 
         keyname,
 
         markingTimer;
 
     evt = aSignal.getEvent();
-    inputCell = this.get('$consoleGUI');
+    consoleGUI = this.get('$consoleGUI');
 
     //  Make sure that the key event happened in our document
-    if (!inputCell.eventIsInInput(evt)) {
+    if (!consoleGUI.eventIsInInput(evt)) {
         return;
     }
 
@@ -514,9 +553,10 @@ function(aSignal) {
 
     keyname = TP.domkeysigname(evt);
     if (keyname === 'DOM_Shift_Down') {
-        markingTimer = setTimeout(function() {
-                                        inputCell.setupEvalMark();
-                                    }, TP.sys.cfg('sherp.edit_mark_time', 2000));
+        markingTimer = setTimeout(
+                            function() {
+                                consoleGUI.setupEvalMark();
+                            }, TP.sys.cfg('sherp.edit_mark_time', 2000));
         this.set('markingTimer', markingTimer);
     }
 
@@ -542,14 +582,12 @@ function(aSignal) {
      * @todo
      */
 
-    var evt,
-        inputCell;
+    var evt;
 
     evt = aSignal.getEvent();
-    inputCell = this.get('$consoleGUI');
 
     //  Make sure that the key event happened in our document
-    if (!inputCell.eventIsInInput(evt)) {
+    if (!this.get('$consoleGUI').eventIsInInput(evt)) {
         return;
     }
 
@@ -574,7 +612,7 @@ function(aSignal) {
      */
 
     var evt,
-        inputCell,
+        consoleGUI,
 
         markingTimer,
 
@@ -583,10 +621,10 @@ function(aSignal) {
         code;
 
     evt = aSignal.getEvent();
-    inputCell = this.get('$consoleGUI');
+    consoleGUI = this.get('$consoleGUI');
 
     //  Make sure that the key event happened in our document
-    if (!inputCell.eventIsInInput(evt)) {
+    if (!consoleGUI.eventIsInInput(evt)) {
         return;
     }
 
@@ -618,13 +656,15 @@ function(aSignal) {
             this.$set('concealedInput', input + String.fromCharCode(code));
         }
 
-        this.get('$consoleGUI').setInputContent(
+        consoleGUI.setInputContent(
                 '*'.times(this.$get('concealedInput').getSize()));
     }
 
     return;
 });
 
+//  ------------------------------------------------------------------------
+//  Other Key Handling
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMModifierKeyChange',
@@ -657,7 +697,8 @@ function(aRequest) {
      * @param {TP.sig.UserInputRequest} aRequest The request to cancel.
      */
 
-    var req;
+    var req,
+        consoleGUI;
 
     //  operate on the request provided, unless we're being asked to default
     //  to the current input request
@@ -682,12 +723,14 @@ function(aRequest) {
     req.cancel();
     this.stdout('Request cancelled.');
 
+    consoleGUI = this.get('$consoleGUI');
+
     //  reset the prompt and input cell
-    this.get('$consoleGUI').clearInput();
+    consoleGUI.clearInput();
 
     //  this will default to the GUI's prompt if the model (TSH) doesn't have
     //  one.
-    this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
+    consoleGUI.setPrompt(this.get('model').getPrompt());
 
     //this.showInputCell();
 
@@ -785,6 +828,7 @@ function(aSignal) {
      */
 
     var id,
+        consoleGUI,
         request;
 
     TP.stop('break.shell_completed');
@@ -794,6 +838,8 @@ function(aSignal) {
     } else {
         id = aSignal.getOrigin();
     }
+
+    consoleGUI = this.get('$consoleGUI');
 
     //  if the request is a registered one then we were the responder
     request = this.getRequestById(id);
@@ -806,13 +852,13 @@ function(aSignal) {
 
         //  this will default to the GUI's prompt if the model (TSH) doesn't
         //  have one.
-        this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
+        consoleGUI.setPrompt(this.get('model').getPrompt());
 
         //  if the registered request was the last input request, then clear it
         //  and reset 'awaiting input' and 'should conceal input'
         if (request === this.get('lastInputRequest')) {
 
-            this.get('$consoleGUI').clearInput();
+            consoleGUI.clearInput();
 
             this.set('lastInputRequest', null);
 
@@ -1003,15 +1049,18 @@ function(aRequest) {
      */
 
     var query,
+        consoleGUI,
         def,
         hide;
 
+    consoleGUI = this.get('$consoleGUI');
+
     if (TP.notEmpty(query = aRequest.at('query'))) {
-        this.get('$consoleGUI').setPrompt(query);
+        consoleGUI.setPrompt(query);
     }
 
     if (TP.notEmpty(def = aRequest.at('default'))) {
-        this.get('$consoleGUI').setInputContent(def);
+        consoleGUI.setInputContent(def);
     }
 
     if (TP.isValid(hide = aRequest.at('hideInput'))) {
@@ -1099,6 +1148,7 @@ function(anEvent) {
      */
 
     var model,
+        consoleGUI,
         cmd;
 
     if (TP.notValid(model = this.get('model'))) {
@@ -1107,11 +1157,13 @@ function(anEvent) {
 
     TP.eventPreventDefault(anEvent);
 
+    consoleGUI = this.get('$consoleGUI');
+
     cmd = model.getHistory(model.incrementHistoryIndex());
     if (TP.isValid(cmd)) {
-        this.get('$consoleGUI').setInputContent(cmd);
+        consoleGUI.setInputContent(cmd);
     } else {
-        this.get('$consoleGUI').clearInput();
+        consoleGUI.clearInput();
     }
 
     return;
@@ -1131,6 +1183,7 @@ function(anEvent) {
      */
 
     var model,
+        consoleGUI,
         cmd;
 
     if (TP.notValid(model = this.get('model'))) {
@@ -1139,11 +1192,13 @@ function(anEvent) {
 
     TP.eventPreventDefault(anEvent);
 
+    consoleGUI = this.get('$consoleGUI');
+
     cmd = model.getHistory(model.decrementHistoryIndex());
     if (TP.isValid(cmd)) {
-        this.get('$consoleGUI').setInputContent(cmd);
+        consoleGUI.setInputContent(cmd);
     } else {
-        this.get('$consoleGUI').clearInput();
+        consoleGUI.clearInput();
     }
 
     return;
@@ -1164,11 +1219,14 @@ function(anEvent) {
      * @param {Event} anEvent A JS/DOM Event object.
      */
 
-    var input;
+    var consoleGUI,
+        input;
+
+    consoleGUI = this.get('$consoleGUI');
 
     //  capture the text content of the input cell. we'll be passing this
     //  along to the responder if it's got any content
-    input = this.get('$consoleGUI').getEvalValue();
+    input = consoleGUI.getEvalValue();
     if (TP.notValid(input)) {
         //  oops, not even an empty string value - the value must not be 'ready'
         return;
@@ -1176,11 +1234,11 @@ function(anEvent) {
 
     //  always clear the cell to provide visual feedback that we've accepted
     //  the input and are working on it
-    //this.get('$consoleGUI').clearInput();
+    consoleGUI.clearInput();
 
     this.execRawInput(input);
 
-    this.get('$consoleGUI').teardownEvalMark();
+    consoleGUI.teardownEvalMark();
 
     return;
 });
@@ -1199,11 +1257,15 @@ function() {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    //  Refocus the input cell and set its cursor to the end.
-    this.get('$consoleGUI').clearAllContent();
+    var consoleGUI;
 
-    this.get('$consoleGUI').focusInput();
-    this.get('$consoleGUI').setCursorToEnd();
+    consoleGUI = this.get('$consoleGUI');
+
+    //  Refocus the input cell and set its cursor to the end.
+    consoleGUI.clearAllContent();
+
+    consoleGUI.focusInput();
+    consoleGUI.setInputCursorToEnd();
 
     return this;
 });
@@ -1451,10 +1513,12 @@ function(anError, aRequest) {
         cssClass,
 
         outputData,
+        consoleGUI,
 
         tileID;
 
     TP.stop('break.tdc_stderr');
+    TP.stop('break.tdc_stdio');
 
     if (TP.isValid(aRequest)) {
         aRequest.atPutIfAbsent('messageType', 'failure');
@@ -1464,7 +1528,8 @@ function(anError, aRequest) {
     }
     request.atPutIfAbsent('messageLevel', TP.ERROR);
 
-    err = TP.isError(anError) ? TP.str(anError) : anError;
+    err = TP.isError(anError) ? anError : new Error(anError);
+    request.set('result', err);
 
     if (TP.isValid(request.at('messageLevel'))) {
         cssClass = request.at('messageLevel').getName().toLowerCase();
@@ -1476,16 +1541,18 @@ function(anError, aRequest) {
     outputData = TP.hc('output', err,
                         'cssClass', cssClass);
 
-    this.get('$consoleGUI').addLoggedValue(outputData);
+    consoleGUI = this.get('$consoleGUI');
+
+    consoleGUI.addLoggedValue(outputData);
 
     tileID = aRequest.at('cmdID');
 
     if (TP.isEmpty(tileID)) {
-        this.get('$consoleGUI').addLoggedValue(TP.hc('output', err));
+        consoleGUI.addLoggedValue(TP.hc('output', err));
     } else {
         tileID = tileID.replace(/\$/g, '_');
 
-        this.get('$consoleGUI').createAndUpdateOutputMark(tileID, outputData);
+        consoleGUI.createAndUpdateOutputMark(tileID, outputData);
     }
 
     return;
@@ -1510,10 +1577,15 @@ function(anObject, aDefault, aRequest) {
      * @todo
      */
 
-    TP.stop('break.tdc_stdin');
+    var consoleGUI;
 
-    this.get('$consoleGUI').setPrompt(anObject);
-    this.get('$consoleGUI').setInputContent(aDefault);
+    TP.stop('break.tdc_stdin');
+    TP.stop('break.tdc_stdio');
+
+    consoleGUI = this.get('$consoleGUI');
+
+    consoleGUI.setPrompt(anObject);
+    consoleGUI.setInputContent(aDefault);
 
     return;
 });
@@ -1544,6 +1616,7 @@ function(anObject, aRequest) {
         append;
 
     TP.stop('break.tdc_stdout');
+    TP.stop('break.tdc_stdio');
 
     //  We should see multiple output calls, at least one of which is the
     //  cmdConstruct notifier which tells us to build our output cell.
@@ -1609,7 +1682,7 @@ function(anObject, aRequest) {
                 TP.LOG) : 0;
     }
 
-    this.get('$consoleGUI').scrollToEnd();
+    this.get('$consoleGUI').scrollOutputToEnd();
 
     this.get('$multiResults').empty();
 
@@ -1639,11 +1712,20 @@ function(aRequest) {
 
         inputData,
 
-        tileID;
+        tileID,
+
+        consoleGUI;
 
     request = TP.request(aRequest);
 
-    if (TP.isTrue(request.at('cmdEcho'))) {
+    //  Don't do this twice
+    if (TP.isTrue(request.at('inputWritten'))) {
+        return;
+    }
+
+    request.atPut('inputWritten', true);
+
+    if (TP.notFalse(request.at('cmdEcho'))) {
 
         //  update the command title bar based on the latest output from
         //  the particular cmdID this request represents.
@@ -1661,10 +1743,14 @@ function(aRequest) {
         }
     }
 
+    if (TP.isEmpty(str)) {
+        return;
+    }
+
     if (TP.isValid(request.at('messageLevel'))) {
         cssClass = request.at('messageLevel').getName().toLowerCase();
-        cssClass = TP.ifInvalid(cssClass, 'trace');
     }
+    cssClass = TP.ifInvalid(cssClass, 'info');
 
     inputData = TP.hc('hid', hid,
                         'cmdtext', str,
@@ -1673,12 +1759,14 @@ function(aRequest) {
 
     tileID = aRequest.at('cmdID');
 
+    consoleGUI = this.get('$consoleGUI');
+
     if (TP.isEmpty(tileID)) {
-        this.get('$consoleGUI').addLoggedValue(TP.hc('output', str));
+        consoleGUI.addLoggedValue(TP.hc('output', str));
     } else {
         tileID = tileID.replace(/\$/g, '_');
 
-        this.get('$consoleGUI').createOutputMark(tileID, inputData);
+        consoleGUI.createOutputMark(tileID, inputData);
     }
 
     return this;
@@ -1694,21 +1782,28 @@ function(anObject, aRequest) {
      * @param {Object} anObject The object to output in string form.
      * @param {TP.sig.Request|TP.lang.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.tdp.Console} The receiver.
+     * @returns {TP.sherpa.Console} The receiver.
      * @abstract
      * @todo
      */
 
     var request,
+        tap,
         data,
         asIs,
 
         cssClass,
         outputData,
 
-        tileID;
+        tileID,
+
+        consoleGUI;
 
     request = TP.request(aRequest);
+
+    // TODO: replace this hack with an update to route to the proper
+    // Logger/Appender so we get the output we want via layout/appender.
+    tap = request.at('cmdTAP');
 
     //  ---
     //  Produce valid XHTML node to test string content, otherwise do our best
@@ -1751,9 +1846,21 @@ function(anObject, aRequest) {
         data = TP.str(data);
     }
 
-    if (TP.isValid(request.at('messageLevel'))) {
-        cssClass = request.at('messageLevel').getName().toLowerCase();
-        cssClass = TP.ifInvalid(cssClass, 'trace');
+    if (TP.isTrue(tap)) {
+        if (/^ok /.test(data) || /# PASS/i.test(data)) {
+            cssClass = 'tap-pass';
+        } else if (/^not ok /.test(data) || /# FAIL/i.test(data)) {
+            cssClass = 'tap-fail';
+        } else if (/^#/.test(data)) {
+            cssClass = 'tap-comment';
+        } else {
+            cssClass = 'tap-unknown';
+        }
+    } else {
+        if (TP.isValid(request.at('messageLevel'))) {
+            cssClass = request.at('messageLevel').getName().toLowerCase();
+        }
+        cssClass = TP.ifInvalid(cssClass, 'info');
     }
 
     cssClass = TP.ifInvalid(cssClass, '');
@@ -1761,15 +1868,19 @@ function(anObject, aRequest) {
     outputData = TP.hc('output', data,
                         'cssClass', cssClass,
                         'rawData', anObject);
+                        //'stats', TP.ifInvalid(this.getOutputStats(request), '',
+                        //'resulttype', this.getResultTypeInfo(request));
 
     tileID = aRequest.at('cmdID');
 
+    consoleGUI = this.get('$consoleGUI');
+
     if (TP.isEmpty(tileID)) {
-        this.get('$consoleGUI').addLoggedValue(TP.hc('output', data));
+        consoleGUI.addLoggedValue(TP.hc('output', data));
     } else {
         tileID = tileID.replace(/\$/g, '_');
 
-        this.get('$consoleGUI').updateOutputMark(tileID, outputData);
+        consoleGUI.updateOutputMark(tileID, outputData);
     }
 
     return this;

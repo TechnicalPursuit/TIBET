@@ -76,7 +76,7 @@ function(anObject, optFormat) {
         }
 
         output.push('<span data-name="', i, '">',
-                    TP.format(anObject.at(i), 'TP.sherpa.pp', optFormat),
+                    TP.boot.$dump(anObject.at(i), '', true),
                     '<\/span>');
 
         count++;
@@ -88,6 +88,86 @@ function(anObject, optFormat) {
     delete anObject.$$format_sherpa_pp;
 
     return output.join('');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('fromBoolean',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="sherpa_pp">' + anObject.toString() + '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('fromDate',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="sherpa_pp">' + anObject.toISOString() + '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('fromError',
+function(anObject, optFormat) {
+
+    var stack;
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    stack = '';
+    if (TP.sys.shouldLogStack()) {
+        stack = '<br/>' + TP.getStackInfo(anObject).join('<br/>');
+    }
+
+    return '<span class="sherpa_pp">' +
+        anObject.message.asEscapedXML() +
+    stack + '<\/span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('fromFunction',
+function(anObject, optFormat) {
+
+    var str;
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    str = TP.str(anObject);
+
+    //  NOTE the CDATA blocks here combined with <pre> to hold on to remaining
+    //  whitespace while ensuring we ignore any embedded < or > symbols etc.
+    return '<span class="sherpa_pp Function"><pre><![CDATA[' + str +
+        ']]></pre><\/span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -176,7 +256,7 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.pp.Type.defineMethod('fromObject',
+TP.sherpa.pp.Type.defineMethod('fromNumber',
 function(anObject, optFormat) {
 
     //  Don't need to box output from our own markup generator, and we want the
@@ -187,6 +267,52 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
+    return '<span class="sherpa_pp">' + anObject.toString() + '</span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('fromObject',
+function(anObject, optFormat) {
+
+    var type,
+        output,
+        i,
+        len,
+        keys,
+        key;
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    type = TP.name(TP.type(anObject)).replace(/\./g, '_');
+    output = TP.ac();
+
+    output.push('<span class="sherpa_pp"><span class="' + type + '">');
+
+    keys = TP.keys(anObject);
+    keys.sort();
+    keys.compact();
+    len = keys.getSize();
+
+    for (i = 0; i < len; i++) {
+        key = keys.at(i);
+
+        output.push('<span data-name="' + key + '">' +
+            TP.boot.$dump(anObject[keys.at(i)], '\n', true) +
+                    '<\/span>');
+    }
+
+    output.push('<\/span><\/span>');
+
+    return output.join('\n');
+
+    /*
     if (anObject === TP || anObject === TP.sys) {
         return '<span class="sherpa_pp">' +
                 TP.htmlstr(TP.keys(anObject).sort()) +
@@ -194,6 +320,23 @@ function(anObject, optFormat) {
     }
 
     return '<span class="sherpa_pp">' + TP.htmlstr(anObject) + '<\/span>';
+    */
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('fromRegExp',
+function(anObject, optFormat) {
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    return '<span class="sherpa_pp">' + anObject.toString() + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -218,7 +361,7 @@ function(anObject, optFormat) {
 
     obj = anObject.asEscapedXML();
 
-    return '<span class="sherpa_pp">' + TP.htmlstr(obj) + '<\/span>';
+    return '<span class="sherpa_pp">' + TP.xhtmlstr(obj) + '<\/span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -297,11 +440,22 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.pp.Type.defineMethod('fromTP_core_JSONContent',
+function(anObject, optFormat) {
+
+    return '<span class="sherpa_pp">' +
+                anObject.asString().asEscapedXML() +
+            '<\/span>';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.pp.Type.defineMethod('fromTP_lang_Hash',
 function(anObject, optFormat) {
 
     var output,
         keys,
+        key,
         len,
         i;
 
@@ -331,13 +485,15 @@ function(anObject, optFormat) {
     output.push('<span class="sherpa_pp"><span class="TP_lang_Hash">');
 
     keys = TP.keys(anObject);
+    keys.sort();
+    keys.compact();
     len = keys.getSize();
 
     for (i = 0; i < len; i++) {
-        output.push('<span data-name="', keys.at(i), '">',
-                        TP.format(anObject.at(keys.at(i)),
-                                    'TP.sherpa.pp',
-                                    optFormat),
+        key = keys.at(i);
+
+        output.push('<span data-name="' + key + '">' +
+            TP.boot.$dump(anObject.at(keys.at(i)), '\n', true) +
                     '<\/span>');
     }
 
@@ -364,6 +520,38 @@ function(anObject, optFormat) {
     return '<span class="sherpa_pp">' +
             TP.str(anObject.getNativeNode()).asEscapedXML() +
             '<\/span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('fromTP_sig_ShellRequest',
+function(anObject, optFormat) {
+
+    var data;
+
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('cmdBox', false);
+        optFormat.atPut('cmdAsIs', true);
+        optFormat.atPut('cmdAwaken', false);
+    }
+
+    // Requests that are not yet processed should format their command.
+    if (anObject.isCompleted()) {
+        data = anObject.getResult();
+    } else {
+        data = anObject.at('cmd');
+    }
+
+    return '<span class="sherpa_pp">' + data + '<\/span>';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('fromTP_core_URI',
+function(anObject, optFormat) {
+
+    return this.fromObject(anObject);
+
 });
 
 //  ------------------------------------------------------------------------
@@ -469,8 +657,22 @@ function(anObject, optFormat) {
     return '<span class="sherpa_pp">' + arr.join('') + '<\/span>';
 });
 
-//  ------------------------------------------------------------------------
-//  Objects that can't an as()/from() can't be computed from
+//  ========================================================================
+//  Objects with no as() (invalid, Error, etc) attempt this.transform()
+//  ========================================================================
+
+TP.sherpa.pp.Type.defineMethod('transformError', function(anObject, optFormat) {
+
+    /**
+     * Format error objects for output. We output stack information if the
+     * system is configured for it and we can access it from the Error.
+     * @param {Error} anObject The error object to format.
+     * @param {Object} optFormat
+     */
+
+    return this.fromError(anObject);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.pp.Type.defineMethod('transformObject',
@@ -490,7 +692,11 @@ function(anObject, optFormat) {
     //  a Window that wasn't instrumented with TIBET. We try to redispatch
     //  against a matching from*() method on ourself that would do the job.
 
-    //  We only try this if we were not 'null' or 'undefined'.
+    if (TP.notValid(anObject)) {
+        // 'null' or 'undefined', as you'd expect.
+        return '<span class="sherpa_pp">' + anObject + '<\/span>';
+    }
+
     if (TP.isValid(anObject)) {
         if (TP.notEmpty(methodName =
                         this.getBestMethodName(arguments, anObject, 'from'))) {
@@ -498,7 +704,7 @@ function(anObject, optFormat) {
         }
     }
 
-    return '<span class="sherpa_pp">' + TP.htmlstr(anObject) + '<\/span>';
+    return this.fromObject(anObject);
 });
 
 //  ------------------------------------------------------------------------

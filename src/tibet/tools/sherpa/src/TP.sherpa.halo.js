@@ -293,7 +293,7 @@ function(aSignal) {
      * @todo
      */
 
-    this.showHaloCorner(aSignal);
+    //this.showHaloCorner(aSignal);
 
     return this;
 });
@@ -311,12 +311,9 @@ function(aSignal) {
      * @todo
      */
 
-    return this;
-/*
-    this.hideHaloCorner();
+    //this.hideHaloCorner();
 
     return this;
-*/
 });
 
 //  ------------------------------------------------------------------------

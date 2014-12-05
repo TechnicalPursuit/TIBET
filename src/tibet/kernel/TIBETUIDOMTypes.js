@@ -809,8 +809,8 @@ function(aRequest) {
      *              remains untransformed but its children are processed.
      *          - Otherwise, the element is transformed into a 'div' or 'span',
      *              depending on the return value of the 'isBlockLevel' method.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      * @returns {Element} The element that this tag has become.
      */
 

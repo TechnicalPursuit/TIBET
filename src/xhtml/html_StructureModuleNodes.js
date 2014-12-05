@@ -113,7 +113,8 @@ function(aRequest) {
      * @name tagTidy
      * @synopsis Coalesce and rewrite head content such as css:sheet nodes to
      *     ensure we have them ready for css:* processing later on.
-     * @param {TP.sig.ShellRequest} aRequest The current shell request.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     TP.ifTrace() && TP.sys.cfg('log.css_processing') ?
@@ -191,9 +192,8 @@ function(aRequest) {
      * @synopsis Updates the document so that it remains valid and ready for
      *     storage. The primary responsibility here is moving any expanded
      *     content from the head to the body so the browser stays happy.
-     * @param {TP.sig.ShellRequest} aRequest The current shell request.
-     * @returns {String} TP.CONTINUE flag telling the system to skip any
-     *     children of this element.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var node,
@@ -247,7 +247,7 @@ function(aRequest) {
         }
     }
 
-    return TP.CONTINUE;
+    return;
 });
 
 //  ========================================================================

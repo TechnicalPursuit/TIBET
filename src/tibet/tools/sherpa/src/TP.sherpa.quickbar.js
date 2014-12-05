@@ -224,8 +224,7 @@ function(inputText) {
 
     TP.xmlElementSetContent(resultsList.getNativeNode(),
                             TP.frag(result),
-                            null,
-                            true);
+                            null);
 
     this.updateResultDetail();
 

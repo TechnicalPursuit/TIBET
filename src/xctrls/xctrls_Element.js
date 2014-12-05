@@ -45,10 +45,10 @@ function(aRequest) {
 
     /**
      * @name tagCompile
-     * @synopsis Compiles templates defined with this element into TIBET
-     *     representations for use in templating.
-     * @param {TP.sig.Request} aRequest The request containing command input for
-     *     the shell.
+     * @synopsis Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem,

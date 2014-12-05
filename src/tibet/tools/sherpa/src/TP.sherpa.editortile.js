@@ -321,8 +321,7 @@ function() {
 
     TP.xmlElementSetContent(propertyList.getNativeNode(),
                             TP.frag(result),
-                            null,
-                            true);
+                            null);
 
     return this;
 });
