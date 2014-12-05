@@ -4469,11 +4469,6 @@ aSigEntry, checkTarget) {
     // the list won't affect our current iteration work.
     items = entry.listeners.slice(0);
 
-    TP.ifTrace() && TP.$$DEBUG && TP.sys.shouldLogSignals() ?
-        TP.trace(TP.join(orgid, ':', signame, ' has ', items.length,
-                            ' listeners.'),
-                    TP.SIGNAL_LOG) : 0;
-
     //  try/finally for signal stack
     try {
         //  make sure the signal stack is up to date by doing a
@@ -4848,8 +4843,7 @@ function(originSet, aSignal, aPayload, aType) {
      *     appropriately for this method.
      * @param {Array|Object} originSet The originator(s) of the signal. The
      *     array should be provided in order from window/document down to the
-     *     target element and must be global String IDs. These are normally
-     *     generated via UI.
+     *     target element.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
@@ -4866,7 +4860,13 @@ function(originSet, aSignal, aPayload, aType) {
         target,
         i,
         entry,
-        orgids,
+        event,
+        eventType,
+        eventTarget,
+        onstar,
+        detector,
+        origins,
+        origin,
         originArray,
         len;
 
@@ -4877,17 +4877,27 @@ function(originSet, aSignal, aPayload, aType) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidDOMSignal');
     }
 
+    // DOMUISignal types can give us their event (and that's what is typically
+    // fired via DOM_FIRING). We leverage the event to support on: remapping.
+    if (TP.canInvoke(aSignal, 'getEvent')) {
+        event = aSignal.getEvent();
+        if (TP.isValid(event)) {
+            eventTarget = aSignal.getTarget();
+            eventType = aSignal.getEventType();
+            onstar = 'on:' + eventType;
+            detector = function(name) {
+                return name === onstar;
+            };
+        }
+    }
+
     map = TP.sig.SignalMap.INTERESTS;
 
     //  one or more origins are required...
     if (!TP.isArray(originSet)) {
-        orgids = TP.ac(TP.id(originSet));
+        origins = TP.ac(originSet);
     } else {
-        orgids = originSet.collect(
-                    function(anOrigin) {
-
-                        return TP.id(anOrigin);
-                    });
+        origins = originSet;
     }
 
     //  get a valid signal instance configured
@@ -4914,38 +4924,39 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  loop down through the list until we reach the target, performing the
     //  lookups and notifying any capturing handlers as we descend
-    len = orgids.getSize();
+    len = origins.getSize();
     for (i = 0; i < len; i++) {
         //  we enter this loop in capturing phase, so we want to do at least
         //  one pass before making any changes to phase etc.
 
-        //  always work with ID's for map entries (GC issues)
-        orgid = orgids.at(i);
+        origin = origins.at(i);
+
+        //  check each one as we pass for any on: remapping. if found we need to
+        //  ensure that element is in our origin list for the bubbling phase.
+        if (TP.isElement(origin)) {
+            if (TP.elementGetAttributeNames(origin).detect(detector)) {
+                // Found an on: mapping for this origin...
+                originArray.push(origin);
+            }
+        }
+
+        //  ---
+        //  global id
+        //  ---
+
+        //  work with ID's for map entries (GC issues)
+        orgid = TP.gid(origin);
 
         //  be sure to update the signal as we rotate orgids
         sig.setOrigin(orgid);
 
-        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-            TP.signal.$suspended = true;
-            TP.sys.logSignal('Checking DOM_FIRING id ' +
-                            orgid + '.' + signame,
-                            TP.DEBUG);
-            TP.signal.$suspended = false;
-        }
-
         //  if there's an entry for this origin/signal pair then we'll check
         //  it again when we do the bubbling pass...
         if (TP.isValid(entry = map[orgid + '.' + signame])) {
-            if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-                TP.signal.$suspended = true;
-                TP.sys.logSignal(TP.join('DOM_FIRING id ',
-                                        orgid, '.', signame,
-                                        ' found, preserving ', orgid),
-                                    TP.DEBUG);
-                TP.signal.$suspended = false;
-            }
 
-            originArray.push(orgid);
+            if (originArray.last() !== origin) {
+                originArray.push(origin);
+            }
 
             //  start with most specific, which is origin and signal
             //  listeners. this also happens to be all the DOM standard
@@ -4956,31 +4967,15 @@ function(originSet, aSignal, aPayload, aType) {
                                             entry, true);
         }
 
-        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-            TP.signal.$suspended = true;
-            TP.sys.logSignal('Checking DOM_FIRING id ' +
-                                orgid + '.' + TP.ANY,
-                                TP.DEBUG);
-            TP.signal.$suspended = false;
-        }
-
         //  as long as we didn't default the signal to "ANY" we'll check
         //  that as well
         if (signame !== TP.ANY) {
             //  if there's an entry for this origin and TP.ANY then we'll
             //  check it again when we do the bubbling pass...
             if (TP.isValid(entry = map[orgid + '.' + TP.ANY])) {
-                if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-                    TP.signal.$suspended = true;
-                    TP.sys.logSignal('DOM_FIRING id ' +
-                                        orgid + '.' + TP.ANY +
-                                        ' found, preserving ' + orgid,
-                                        TP.DEBUG);
-                    TP.signal.$suspended = false;
-                }
 
-                if (originArray.last() !== orgid) {
-                    originArray.push(orgid);
+                if (originArray.last() !== origin) {
+                    originArray.push(origin);
                 }
 
                 //  while we're dropping down we'll check this origin for
@@ -4990,6 +4985,56 @@ function(originSet, aSignal, aPayload, aType) {
                                                 entry, true);
             }
         }
+
+        //  ---
+        //  local id
+        //  ---
+
+        //  work with ID's for map entries (GC issues)
+        orgid = TP.lid(origin);
+
+        //  be sure to update the signal as we rotate orgids
+        sig.setOrigin(orgid);
+
+        //  if there's an entry for this origin/signal pair then we'll check
+        //  it again when we do the bubbling pass...
+        if (TP.isValid(entry = map[orgid + '.' + signame])) {
+
+            if (originArray.last() !== origin) {
+                originArray.push(origin);
+            }
+
+            //  start with most specific, which is origin and signal
+            //  listeners. this also happens to be all the DOM standard
+            //  really supports, they don't have a way to specify any signal
+            //  type from an origin
+            TP.sig.SignalMap.notifyHandlers(orgid, signame, sig,
+                                            false, true,
+                                            entry, true);
+        }
+
+        //  as long as we didn't default the signal to "ANY" we'll check
+        //  that as well
+        if (signame !== TP.ANY) {
+            //  if there's an entry for this origin and TP.ANY then we'll
+            //  check it again when we do the bubbling pass...
+            if (TP.isValid(entry = map[orgid + '.' + TP.ANY])) {
+
+                if (originArray.last() !== origin) {
+                    originArray.push(origin);
+                }
+
+                //  while we're dropping down we'll check this origin for
+                //  any capturing handlers that are blanket signal handlers
+                TP.sig.SignalMap.notifyHandlers(orgid, null, sig,
+                                                false, true,
+                                                entry, true);
+            }
+        }
+
+        //  ---
+        //  propagation
+        //  ---
 
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM
@@ -5009,23 +5054,28 @@ function(originSet, aSignal, aPayload, aType) {
     //  flip the origin array around so we work "bottom up" to bubble
     originArray.reverse();
 
-    if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-        TP.signal.$suspended = true;
-        TP.sys.logSignal(
-            'Bubbling DOM_FIRING through preserved IDs: ' +
-                    originArray.toString(),
-                    TP.DEBUG);
-        TP.signal.$suspended = false;
-    }
-
     //  now loop back through the bubbling list which was populated as we
     //  searched down toward the target. in most cases this list is a lot
-    //  shorter than the downward list since most orgids don't have
+    //  shorter than the downward list since most origins don't have
     //  registrations
     len = originArray.getSize();
     for (i = 0; i < len; i++) {
+
+        origin = originArray.at(i);
+
+        if (TP.isElement(origin)) {
+            if (TP.elementGetAttributeNames(origin).detect(detector)) {
+                // Found an on: mapping for this origin...
+                signame = TP.elementGetAttribute(origin, onstar);
+            }
+        }
+
+        //  ---
+        //  global id
+        //  ---
+
         //  always work with ID's for map entries (GC issues)
-        orgid = originArray.at(i);
+        orgid = TP.gid(origin);
 
         //  be sure to update the signal as we rotate orgids
         sig.setOrigin(orgid);
@@ -5043,6 +5093,34 @@ function(originSet, aSignal, aPayload, aType) {
                                             false, false,
                                             null, true);
         }
+
+        //  ---
+        //  local id
+        //  ---
+
+        //  always work with ID's for map entries (GC issues)
+        orgid = TP.lid(origin);
+
+        //  be sure to update the signal as we rotate orgids
+        sig.setOrigin(orgid);
+
+        //  continue with most specific, which is origin and signal pair.
+        TP.sig.SignalMap.notifyHandlers(orgid, signame, sig,
+                                        false, false,
+                                        null, true);
+
+        //  notifyHandlers will default null to TP.ANY so if we just did
+        //  that one don't do it again
+        if (signame !== TP.ANY) {
+            //  next in bubble is for the origin itself, but any signal...
+            TP.sig.SignalMap.notifyHandlers(orgid, null, sig,
+                                            false, false,
+                                            null, true);
+        }
+
+        //  ---
+        //  propagation
+        //  ---
 
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM

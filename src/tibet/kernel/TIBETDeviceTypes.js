@@ -39,9 +39,10 @@ TP.core.Device.Type.defineConstant('REDIRECTOR',
                             TP.eventGetResolvedTarget(normalizedEvent))) {
             //  NOTE that device events are natively DOM events so we fire
             //  with a DOM_FIRING policy here
-            aSignal.fire(TP.elementGetEventIds(targetElem),
-                            normalizedEvent,
-                            TP.DOM_FIRING);
+            aSignal.fire(
+                TP.elementGetEventOrigins(targetElem, normalizedEvent),
+                normalizedEvent,
+                TP.DOM_FIRING);
         }
     });
 

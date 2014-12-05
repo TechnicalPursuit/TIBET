@@ -11314,27 +11314,6 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getEventIds',
-function() {
-
-    /**
-     * @name getEventIds
-     * @synopsis Returns an array of the event IDs (origin IDs) for the
-     *     receiver, starting with the receiver and working out to the top-most
-     *     parent element.
-     * @description The returned Array is configured as an 'origin set' for use
-     *     by the TIBET notification system.
-     * @returns {Array} An Array containing the event IDs of the receiver.
-     * @todo
-     */
-
-    //  The TP.elementGetEventIds() call's return value has already been
-    //  configured as an 'origin set'.
-    return TP.elementGetEventIds(this.getNativeNode());
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Inst.defineMethod('observe',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 

@@ -6102,9 +6102,8 @@ function() {
     //  (the 'tibet' window) that informs us when the user changes the hash,
     //  either via using the back/forward buttons or by using a bookmark.
     top.onhashchange = function(evt) {
-
-                            this.handleHashChanged(evt);
-                        }.bind(this);
+        this.handleHashChanged(evt);
+    }.bind(this);
 
     //  Prime the pump with the top location, but don't use setLocation()
     //  since we don't want the hash to actually change

@@ -2289,6 +2289,14 @@ function(aHandlerName, aHandler, aPolicy) {
     origin = TP.ifEmpty(match[3], TP.ANY);
     state = TP.ifEmpty(match[5], TP.ANY);
 
+    if (origin !== TP.ANY) {
+        // Origin is in title case in the method name but needs to have that set
+        // to an initial lowercase letter for ID matching during signaling.
+        origin = origin.split('');
+        origin[0] = origin[0].toLowerCase();
+        origin = origin.join('');
+    }
+
     // Standard notification doesn't include state checks, so wrap the intended
     // handler here if state is being constrained and use that as the handler.
     if (state !== TP.ANY) {
