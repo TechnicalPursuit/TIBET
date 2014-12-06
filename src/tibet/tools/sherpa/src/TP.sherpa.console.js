@@ -1339,7 +1339,7 @@ function(uniqueID, dataRecord) {
                         '#xpath1(//*[@name="outputEntry"])').transform(
                             outputData);
 
-    var resultsElem = TP.byCSS('.output_results', outElem, true);
+    var resultsElem = TP.byCSS('.output_results > .output_row', outElem, true);
     resultsElem.innerHTML = outputStr;
 
     consoleOutput.refreshEditor();
