@@ -168,9 +168,14 @@ targets.rollup_codemirror = function(make) {
     sh.exec('cp -f -R mode/css ../../deps/codemirror/mode');
 
     sh.exec('mkdir ../../deps/codemirror/addon');
+
     sh.exec('mkdir ../../deps/codemirror/addon/search');
     sh.exec('cp -f -R addon/search/searchcursor.js ' +
             '../../deps/codemirror/addon/search');
+
+    sh.exec('mkdir ../../deps/codemirror/addon/runmode');
+    sh.exec('cp -f -R addon/runmode/runmode.js ' +
+            '../../deps/codemirror/addon/runmode');
 
     targets.rollup_codemirror.resolve();
 };
