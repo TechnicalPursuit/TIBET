@@ -871,7 +871,7 @@ function() {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    this.get('consoleInput').setInputCursorToEnd();
+    this.get('consoleInput').setCursorToEnd();
 
     return this;
 });
