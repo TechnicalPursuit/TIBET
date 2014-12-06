@@ -443,9 +443,32 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_core_JSONContent',
 function(anObject, optFormat) {
 
-    return '<span class="sherpa_pp">' +
-                anObject.asString().asEscapedXML() +
-            '<\/span>';
+    var str;
+
+    if (TP.isValid(TP.extern.CodeMirror)) {
+        str = '';
+        TP.extern.CodeMirror.runMode(
+                    anObject.asString(),
+                    {
+                        name: 'application/ld+json',
+                        lineWrapping: true
+                    },
+                    function (text, style) {
+                        if (style) {
+                            str += '<span class="cm-' + style + '">' +
+                                     text +
+                                     '<\/span>';
+                        } else {
+                            str += text;
+                        }
+                    });
+        str = str.replace('\n', '<br/>');
+        return str;
+    } else {
+        return '<span class="sherpa_pp">' +
+                    anObject.asString().asEscapedXML() +
+                '<\/span>';
+    }
 });
 
 //  ------------------------------------------------------------------------

@@ -134,6 +134,10 @@ function() {
 
             this.setAttribute('hidden',
                                 TP.bc(hudTPElem.getAttribute('hidden')));
+
+            //  Grab the CodeMirror constructor so that we can use it to run
+            //  modes, etc.
+            TP.extern.CodeMirror = consoleOutputTPElem.$getEditorConstructor();
         }.bind(this);
 
         consoleOutputStartupComplete.observe(consoleOutputTPElem,
