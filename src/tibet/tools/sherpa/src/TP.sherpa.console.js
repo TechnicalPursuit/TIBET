@@ -134,6 +134,10 @@ function() {
 
             this.setAttribute('hidden',
                                 TP.bc(hudTPElem.getAttribute('hidden')));
+
+            //  Grab the CodeMirror constructor so that we can use it to run
+            //  modes, etc.
+            TP.extern.CodeMirror = consoleOutputTPElem.$getEditorConstructor();
         }.bind(this);
 
         consoleOutputStartupComplete.observe(consoleOutputTPElem,
@@ -871,7 +875,7 @@ function() {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    this.get('consoleInput').setInputCursorToEnd();
+    this.get('consoleInput').setCursorToEnd();
 
     return this;
 });
@@ -1339,7 +1343,7 @@ function(uniqueID, dataRecord) {
                         '#xpath1(//*[@name="outputEntry"])').transform(
                             outputData);
 
-    var resultsElem = TP.byCSS('.output_results', outElem, true);
+    var resultsElem = TP.byCSS('.output_results > .output_row', outElem, true);
     resultsElem.innerHTML = outputStr;
 
     consoleOutput.refreshEditor();

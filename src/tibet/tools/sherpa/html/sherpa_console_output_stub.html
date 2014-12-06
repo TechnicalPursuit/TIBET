@@ -8,7 +8,7 @@
 
 <!-- Base CodeMirror JS and CSS -->
 <script type="text/javascript" src="../../../../../deps/codemirror/lib/codemirror.js"></script>
-<!--<script type="text/javascript" src="../../../../../deps/codemirror/lib/runmode.js"></script>-->
+<script type="text/javascript" src="../../../../../deps/codemirror/addon/runmode/runmode.js"></script>
 <script type="text/javascript" src="../../../../../deps/codemirror/addon/search/searchcursor.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../../../../../deps/codemirror/lib/codemirror.css">
@@ -71,10 +71,7 @@ body {
 
     cursor: default;
 
-    margin: 5px;
-    padding: 2px;
-
-    width: 99%;
+    width: 100%;
 
     font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
     background: transparent;
@@ -83,22 +80,30 @@ body {
 
     line-height: 12px;
 
-    overflow: auto;
+    white-space: normal;
 }
 
 .output_box {
-    display: table;
+    display: inline-block;
     width: 100%;
 }
 
 .output_info {
-    display: table-row;
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    width: 100%;
 }
 
 .output_results {
-    display: inline-block;
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 0px;
     width: 100%;
-    position: absolute;
+}
+
+.output_row {
+    display: table-row;
 }
 
 .hid, .content, .typeinfo, .stats, .outputcell {
@@ -120,6 +125,7 @@ body {
 
 .outputcell {
     width: 100%;
+    padding: 5px;
 }
 
 .ERROR {

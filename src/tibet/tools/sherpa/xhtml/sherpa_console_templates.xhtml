@@ -3,12 +3,17 @@
 <span xmlns="http://www.w3.org/1999/xhtml">
     <span class="output_box {{inputclass}}" name="consoleEntry">
         <span class="output_info">
+            <span class="output_row">
             <span class="hid"><a href="javascript: void(0)" onclick="TP.core.Resource.getResourceById('SystemConsole').execRawInput('{{hid}}')">{{hid}}</a></span>
             <span class="content">{{cmdtext}}</span>
             <span class="typeinfo {{empty}}">{{resulttype}}</span>
             <span class="stats {{empty}}">{{stats}}</span>
         </span>
-        <span class="output_results">&#8230;</span>
+        </span>
+        <span class="output_results">
+            <span class="output_row">
+            </span>
+        </span>
     </span>
 
     <!-- This content will go into the '.results' span above -->
