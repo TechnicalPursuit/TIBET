@@ -78,3 +78,8 @@ sherpa|console > xctrls|codeeditor
     height: 100%;
 }
 
+sherpa|screen#consoleOut
+{
+    width: 100%;
+    height: 100%;
+}
