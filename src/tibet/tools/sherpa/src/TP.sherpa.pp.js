@@ -76,7 +76,8 @@ function(anObject, optFormat) {
         }
 
         output.push('<span data-name="', i, '">',
-                    TP.boot.$dump(anObject.at(i), '', true),
+                    //TP.boot.$dump(anObject.at(i), '', true),
+                    TP.format(anObject.at(i), TP.sherpa.pp.Type),
                     '</span>');
 
         count++;
@@ -229,27 +230,16 @@ function(anObject, optFormat) {
 
     len = anObject.length;
     for (i = 0; i < len; i++) {
-        /*
-        content.push(
-                '<span data-name="key">',
-                    TP.name(anObject.item(i)),
-                '<\/span>',
-                '<span data-name="value">',
-                    TP.val(anObject.item(i)),
-                '<\/span>');
-        */
+        item = anObject.item(i);
 
-        for (i = 0; i < len; i++) {
-            item = anObject.item(i);
-
-            content.push('<span data-name="' + TP.name(item) + '">' +
-                            TP.val(item) +
-                            '</span>');
-        }
-
+        content.push('<span data-name="' + TP.name(item) + '">' +
+                        TP.val(item) +
+                        '</span>');
     }
 
-    return '<span class="sherpa_pp NamedNodeMap">' + content.join('') + '</span>';
+    return '<span class="sherpa_pp NamedNodeMap">' +
+            content.join('') +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -623,7 +613,8 @@ function(anObject, optFormat) {
         key = keys.at(i);
 
         output.push('<span data-name="' + key + '">' +
-            TP.boot.$dump(anObject.at(keys.at(i)), '\n', true) +
+                    //TP.boot.$dump(anObject.at(keys.at(i)), '\n', true) +
+                    TP.format(anObject.at(keys.at(i)), TP.sherpa.pp.Type),
                     '</span>');
     }
 
