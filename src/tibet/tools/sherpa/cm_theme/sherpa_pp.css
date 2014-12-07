@@ -4,14 +4,23 @@
 	------------------------------------------------------------------------
 */
 
-.sherpa_pp > span
+.sherpa_pp.Array,
+.sherpa_pp.NamedNodeMap,
+.sherpa_pp.NodeList,
+.sherpa_pp.Object,
+.sherpa_pp.TP_lang_Hash
 {
     display: table;
     width: 100%;
 	border-collapse: collapse;
 }
 
-.sherpa_pp > span span[data-name]
+/* 'Pair' portion of collection */
+.sherpa_pp.Array > span[data-name],
+.sherpa_pp.NamedNodeMap > span[data-name],
+.sherpa_pp.NodeList > span[data-name],
+.sherpa_pp.Object > span[data-name],
+.sherpa_pp.TP_lang_Hash > span[data-name]
 {
     display: table-row;
     text-align: left;
@@ -19,33 +28,39 @@
 
     line-height: 1.5em;
 
-	white-space: pre-wrap;
-}
-
-.sherpa_pp > span span[data-name]:before
-{
-    content: attr(data-name) " => ";
-
-	vertical-align: top;
-
-    display: table-cell;
-    text-align: left;
-
-	white-space: pre-wrap;
-    width: 5em;
-    padding 0px 12px 0px 0px;
-}
-
-.sherpa_pp > span.Array span,
-.sherpa_pp > span.Object span,
-.sherpa_pp > span.TP_lang_Hash span
-{
-    display: table-row;
-    line-height: 1.5em;
     margin-left: 5px;
 }
 
-.sherpa_pp > span.Function span
+/* 'Key' portion of collection */
+.sherpa_pp.Array > span[data-name]:before,
+.sherpa_pp.NamedNodeMap > span[data-name]:before,
+.sherpa_pp.NodeList > span[data-name]:before,
+.sherpa_pp.Object > span[data-name]:before,
+.sherpa_pp.TP_lang_Hash > span[data-name]:before
+{
+    display: table-cell;
+	vertical-align: top;
+
+    content: attr(data-name) "\00A0=>\00A0";
+
+    text-align: left;
+
+	white-space: pre-wrap;
+    padding 0px 12px 0px 0px;
+}
+
+/* 'Value' portion of collection */
+.sherpa_pp.Array > span[data-name] > .sherpa_pp,
+.sherpa_pp.NamedNodeMap > span[data-name] > .sherpa_pp,
+.sherpa_pp.NodeList > span[data-name] > .sherpa_pp,
+.sherpa_pp.Object > span[data-name] > .sherpa_pp,
+.sherpa_pp.TP_lang_Hash > span[data-name] > .sherpa_pp
+{
+    display: table-cell;
+	vertical-align: top;
+}
+
+.sherpa_pp.Function
 {
     white-space: pre;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
@@ -54,14 +69,9 @@
     margin-left: 5px;
 }
 
-.sherpa_pp > span.Object span[data-name]:before,
-.sherpa_pp > span.TP_lang_Hash span[data-name]:before
-{
-	vertical-align: top;
-}
-
-.sherpa_pp > span.TP_core_JSONContent span
+.sherpa_pp.TP_core_JSONContent span
 {
     white-space: pre;
-    font-family: monospace;
+    line-height: 1.5em;
+    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
 }

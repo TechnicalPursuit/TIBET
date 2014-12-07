@@ -2499,8 +2499,11 @@ function(aLogName) {
      * @synopsis Returns true if logging is enabled for TP.log.TRACE level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifTrace() ? TP.trace(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
+     *     <code>
+     *          TP.ifTrace() ? TP.trace(...) : 0;
+     *     </code>
+     *     This idiom can help performance in cases where message construction
+     *     overhead is high.
      * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if trace-level logging is active.
      */
@@ -2523,8 +2526,11 @@ function(aLogName) {
      * @synopsis Returns true if logging is enabled for TP.log.DEBUG level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifDebug() ? TP.debug(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
+     *     <code>
+     *          TP.ifDebug() ? TP.debug(...) : 0;
+     *     </code>
+     *     This idiom can help performance in cases where message construction
+     *     overhead is high.
      * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if debug-level logging is active.
      */
@@ -2547,8 +2553,11 @@ function(aLogName) {
      * @synopsis Returns true if logging is enabled for TP.log.INFO level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifInfo() ? TP.info(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
+     *     <code>
+     *          TP.ifInfo() ? TP.info(...) : 0;
+     *     </code>
+     *     This idiom can help performance in cases where message construction
+     *     overhead is high.
      * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if info-level logging is active.
      */
@@ -2571,8 +2580,11 @@ function(aLogName) {
      * @synopsis Returns true if logging is enabled for TP.log.WARN level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifWarn() ? TP.warn(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
+     *     <code>
+     *          TP.ifWarn() ? TP.warn(...) : 0;
+     *     </code>
+     *     This idiom can help performance in cases where message construction
+     *     overhead is high.
      * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if warn-level logging is active.
      */
@@ -2595,8 +2607,11 @@ function(aLogName) {
      * @synopsis Returns true if logging is enabled for TP.log.ERROR level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifError() ? TP.error(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
+     *     <code>
+     *          TP.ifError() ? TP.error(...) : 0;
+     *     </code>
+     *     This idiom can help performance in cases where message construction
+     *     overhead is high.
      * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if error-level logging is active.
      */
@@ -2620,8 +2635,11 @@ function(aLogName) {
      * @synopsis Returns true if logging is enabled for TP.log.SEVERE level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifSevere() ? TP.severe(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
+     *     <code>
+     *          TP.ifSevere() ? TP.severe(...) : 0;
+     *     </code>
+     *     This idiom can help performance in cases where message construction
+     *     overhead is high.
      * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if severe-level logging is active.
      */
@@ -2644,8 +2662,11 @@ function(aLogName) {
      * @synopsis Returns true if logging is enabled for TP.log.FATAL level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifFatal() ? TP.fatal(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
+     *     <code>
+     *          TP.ifFatal() ? TP.fatal(...) : 0;
+     *     </code>
+     *     This idiom can help performance in cases where message construction
+     *     overhead is high.
      * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if fatal-level logging is active.
      */
@@ -2668,8 +2689,11 @@ function(aLogName) {
      * @synopsis Returns true if logging is enabled for TP.log.SYSTEM level
      *     for the specified log, or the current default log. This function
      *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifSystem() ? TP.system(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
+     *     <code>
+     *          TP.ifSystem() ? TP.system(...) : 0;
+     *     </code>
+     *     This idiom can help performance in cases where message construction
+     *     overhead is high.
      * @param {String} aLogName An optional log name to check for level.
      * @returns {Boolean} True if system-level logging is active.
      */
