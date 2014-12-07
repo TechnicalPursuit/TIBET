@@ -60,18 +60,20 @@
 	vertical-align: top;
 }
 
-.sherpa_pp.Function
+.sherpa_pp.Function,
+.sherpa_pp.Node,
+.sherpa_pp.TP_core_Node
 {
     white-space: pre;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
 
     line-height: 1.5em;
-    margin-left: 5px;
 }
 
 .sherpa_pp.TP_core_JSONContent span
 {
     white-space: pre;
-    line-height: 1.5em;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+
+    line-height: 1.5em;
 }
