@@ -104,8 +104,8 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp Boolean">' +
-            anObject.toString() +
+    return '<span class="sherpa_pp Number">' +
+            this.runJSModeOn(TP.str(anObject)) +
             '</span>';
 });
 
@@ -113,6 +113,8 @@ function(anObject, optFormat) {
 
 TP.sherpa.pp.Type.defineMethod('fromDate',
 function(anObject, optFormat) {
+
+    var obj;
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
@@ -122,8 +124,9 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp Date">' +
-            anObject.toISOString() +
+    obj = anObject.toISOString().asEscapedXML();
+    return '<span class="sherpa_pp Number">' +
+            this.runJSModeOn(obj) +
             '</span>';
 });
 
@@ -173,22 +176,7 @@ function(anObject, optFormat) {
     }
 
     if (TP.isValid(TP.extern.CodeMirror)) {
-        str = '';
-        TP.extern.CodeMirror.runMode(
-            anObject.asString(),
-            {
-                name: 'javascript'
-            },
-            function (text, style) {
-
-                if (style) {
-                    str += '<span class="cm-' + style + '">' +
-                             text.asEscapedXML() +
-                             '</span>';
-                } else {
-                    str += text.asEscapedXML();
-                }
-            });
+        str = this.runJSModeOn(anObject);
 
         str = str.replace(/\n/g, '<br/>');
 
@@ -282,7 +270,7 @@ function(anObject, optFormat) {
     } else {
     return '<span class="sherpa_pp Node">' +
             TP.str(anObject).asEscapedXML() +
-            '<\/span>';
+            '</span>';
     }
 });
 
@@ -311,7 +299,7 @@ function(anObject, optFormat) {
                 '<span data-name="', i, '">',
                     //TP.str(anObject[i]).asEscapedXML(),
                     TP.format(anObject[i], TP.sherpa.pp.Type),
-                '<\/span>');
+                '</span>');
     }
 
     return '<span class="sherpa_pp NodeList">' + arr.join('') + '</span>';
@@ -322,6 +310,8 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromNumber',
 function(anObject, optFormat) {
 
+    var obj;
+
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
     if (TP.isValid(optFormat)) {
@@ -330,7 +320,10 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp Number">' + anObject.toString() + '</span>';
+    obj = anObject.asEscapedXML();
+    return '<span class="sherpa_pp Number">' +
+            this.runJSModeOn(obj) +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -379,23 +372,15 @@ function(anObject, optFormat) {
 
     output.push('</span>');
 
-    return output.join('\n');
-
-    /*
-    if (anObject === TP || anObject === TP.sys) {
-        return '<span class="sherpa_pp">' +
-                TP.htmlstr(TP.keys(anObject).sort()) +
-                '<\/span>';
-    }
-
-    return '<span class="sherpa_pp">' + TP.htmlstr(anObject) + '<\/span>';
-    */
+    return output.join('');
 });
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.pp.Type.defineMethod('fromRegExp',
 function(anObject, optFormat) {
+
+    var obj;
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
@@ -405,7 +390,11 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp RegExp">' + anObject.toString() + '</span>';
+    obj = anObject.asEscapedXML();
+
+    return '<span class="sherpa_pp RegExp">' +
+            this.runJSModeOn(obj) +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -430,7 +419,9 @@ function(anObject, optFormat) {
 
     obj = anObject.asEscapedXML();
 
-    return '<span class="sherpa_pp String">' + TP.xhtmlstr(obj) + '</span>';
+    return '<span class="sherpa_pp String">' +
+            this.runJSModeOn(obj) +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -772,6 +763,33 @@ function(anObject, optFormat) {
             '</span>';
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('runJSModeOn',
+function(anObject) {
+
+    var str;
+
+    str = '';
+    TP.extern.CodeMirror.runMode(
+        TP.str(anObject),
+        {
+            name: 'javascript'
+        },
+        function (text, style) {
+
+            if (style) {
+                str += '<span class="cm-' + style + '">' +
+                         text.asEscapedXML() +
+                         '</span>';
+            } else {
+                str += text.asEscapedXML();
+            }
+        });
+
+    return str;
+});
+
 //  ========================================================================
 //  Objects with no as() (invalid, Error, etc) attempt this.transform()
 //  ========================================================================
@@ -786,6 +804,16 @@ TP.sherpa.pp.Type.defineMethod('transformError', function(anObject, optFormat) {
      */
 
     return this.fromError(anObject);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('transformNull',
+function(anObject, optFormat) {
+
+    return '<span class="sherpa_pp Null">' +
+            this.runJSModeOn(anObject) +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -820,6 +848,16 @@ function(anObject, optFormat) {
     }
 
     return this.fromObject(anObject);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('transformUndefined',
+function(anObject, optFormat) {
+
+    return '<span class="sherpa_pp Undefined">' +
+            this.runJSModeOn(anObject) +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
