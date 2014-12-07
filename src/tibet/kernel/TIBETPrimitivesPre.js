@@ -101,6 +101,32 @@ TP.boot[TP.NAME] = 'TP.boot';
 TP.global[TP.NAME] = 'Self';
 APP[TP.NAME] = 'APP';
 
+//  ------------------------------------------------------------------------
+
+/**
+ * Well-known typename values.
+ */
+
+//  Built-in prototypes
+//  NB: We do *not* place a TP.TNAME slot on TP.ObjectProto in an effort to keep
+//  slots off of there.
+TP.ArrayProto[TP.TNAME] = 'Object';
+TP.BooleanProto[TP.TNAME] = 'Object';
+TP.DateProto[TP.TNAME] = 'Object';
+TP.FunctionProto[TP.TNAME] = 'Object';
+TP.NumberProto[TP.TNAME] = 'Object';
+TP.RegExpProto[TP.TNAME] = 'Object';
+TP.StringProto[TP.TNAME] = 'Object';
+
+Window.prototype[TP.TNAME] = 'Object';
+
+//  Built-in TIBET objects
+TP[TP.TNAME] = 'Object';
+TP.sys[TP.TNAME] = 'Object';
+TP.boot[TP.TNAME] = 'Object';
+TP.global[TP.TNAME] = 'Object';
+APP[TP.TNAME] = 'Object';
+
 //  -----------------------------------------------------------------------
 //  Preliminary bootstrap methods required by TP.defineSlot() and
 //  TP.defineMethodSlot()
@@ -4454,6 +4480,10 @@ function() {
 
     if (TP.isWindow(this)) {
         return 'Window';
+    }
+
+    if (TP.owns(this, TP.TNAME)) {
+        return this[TP.TNAME];
     }
 
     if (TP.isType(type = this.getType())) {
