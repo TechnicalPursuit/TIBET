@@ -443,27 +443,57 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_core_JSONContent',
 function(anObject, optFormat) {
 
-    var str;
+    var str,
+        level,
+        tabSpaces;
 
     if (TP.isValid(TP.extern.CodeMirror)) {
         str = '';
+        level = 0;
+        tabSpaces = 4;
         TP.extern.CodeMirror.runMode(
-                    anObject.asString(),
-                    {
-                        name: 'application/ld+json',
-                        lineWrapping: true
-                    },
-                    function (text, style) {
-                        if (style) {
-                            str += '<span class="cm-' + style + '">' +
-                                     text +
-                                     '<\/span>';
-                        } else {
-                            str += text;
-                        }
-                    });
-        str = str.replace('\n', '<br/>');
-        return str;
+            anObject.asString(),
+            {
+                name: 'application/ld+json'
+            },
+            function (text, style) {
+
+                //  Collapse a brace followed by a comma with a brace coming
+                //  next to a single line
+                if ((text === '{') && str.slice(-7) === '},<br\/>') {
+                    str = str.slice(0, -5) + '&nbsp;';
+                } else if (str.slice(-5) === '<br\/>') {
+                    //  Otherwise, if we're starting a new line, 'tab in' the
+                    //  proper number of spaces.
+                    str += '&nbsp;'.times(level * tabSpaces);
+                }
+
+                if (style) {
+                    str += '<span class="cm-' + style + '">' +
+                             text +
+                             '<\/span>';
+                } else {
+                    if (text === '{' || text === '[') {
+                        level++;
+                        str += text + '<br\/>';
+                    }
+                    if (text === '}' || text === ']') {
+                        level--;
+                        str += '<br\/>' +
+                                '&nbsp;'.times(level * tabSpaces) + text;
+                    }
+                    if (text === ':') {
+                        str += '&nbsp;' + text + '&nbsp;';
+                    }
+                    if (text === ',') {
+                        str += text + '<br\/>';
+                    }
+                }
+            });
+
+        return '<span class="sherpa_pp"><span class="TP_core_JSONContent">' +
+                str +
+                '<\/span><\/span>';
     } else {
         return '<span class="sherpa_pp">' +
                     anObject.asString().asEscapedXML() +

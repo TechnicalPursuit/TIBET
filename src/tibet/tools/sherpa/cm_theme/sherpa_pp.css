@@ -51,3 +51,8 @@
 	vertical-align: top;
 }
 
+.sherpa_pp > span.TP_core_JSONContent span
+{
+    white-space: pre;
+    font-family: monospace;
+}
