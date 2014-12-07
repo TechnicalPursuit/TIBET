@@ -630,7 +630,8 @@ function(anObject, optFormat) {
     }
 
     return '<span class="sherpa_pp TP_core_Node">' +
-            TP.str(anObject.getNativeNode()).asEscapedXML() +
+            //TP.str(anObject.getNativeNode()).asEscapedXML() +
+            TP.format(TP.unwrap(anObject), TP.sherpa.pp.Type) +
             '</span>';
 });
 
