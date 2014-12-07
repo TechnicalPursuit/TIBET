@@ -164,10 +164,37 @@ function(anObject, optFormat) {
 
     str = TP.str(anObject);
 
-    //  NOTE the CDATA blocks here combined with <pre> to hold on to remaining
-    //  whitespace while ensuring we ignore any embedded < or > symbols etc.
-    return '<span class="sherpa_pp Function"><pre><![CDATA[' + str +
-        ']]></pre><\/span>';
+    if (TP.isValid(TP.extern.CodeMirror)) {
+        str = '';
+        TP.extern.CodeMirror.runMode(
+            anObject.asString(),
+            {
+                name: 'javascript'
+            },
+            function (text, style) {
+
+                if (style) {
+                    str += '<span class="cm-' + style + '">' +
+                             text +
+                             '</span>';
+                } else {
+                    str += text;
+                }
+            });
+
+        str = str.replace(/\n/g, '<br/>');
+
+        return '<span class="sherpa_pp"><span class="Function">' +
+                str +
+                '</span></span>';
+    } else {
+        //  NOTE the CDATA blocks here combined with <pre> to hold on to
+        //  remaining whitespace while ensuring we ignore any embedded < or >
+        //  symbols etc.
+        return '<span class="sherpa_pp"><span class="Function">' +
+                    '<pre><![CDATA[' + str + ']]></pre>' +
+                '</span></span>';
+    }
 });
 
 //  ------------------------------------------------------------------------
