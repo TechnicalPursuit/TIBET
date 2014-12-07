@@ -45,9 +45,23 @@
     margin-left: 5px;
 }
 
+.sherpa_pp > span.Function span
+{
+    white-space: pre;
+    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+
+    line-height: 1.5em;
+    margin-left: 5px;
+}
+
 .sherpa_pp > span.Object span[data-name]:before,
 .sherpa_pp > span.TP_lang_Hash span[data-name]:before
 {
 	vertical-align: top;
 }
 
+.sherpa_pp > span.TP_core_JSONContent span
+{
+    white-space: pre;
+    font-family: monospace;
+}

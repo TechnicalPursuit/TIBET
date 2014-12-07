@@ -1665,10 +1665,6 @@ function(anObject, aRequest) {
             this.writeInputContent(request);
         }
 
-        //  Make sure to mark the request as having had it's 'input content'
-        //  written once - we only do this once.
-        request.atPut('inputWritten', true);
-
         //  Write output content
         this.writeOutputContent(outObject, request);
 
