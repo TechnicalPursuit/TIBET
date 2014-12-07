@@ -260,33 +260,16 @@ function(anObject, optFormat) {
     }
 
     if (TP.isValid(TP.extern.CodeMirror)) {
-        str = '';
-        TP.extern.CodeMirror.runMode(
-            TP.str(anObject),
-            {
-                name: 'application/xml'
-            },
-            function (text, style) {
-
-                if (style) {
-                    str += '<span class="cm-' + style + '">' +
-                             text.asEscapedXML() +
-                             '</span>';
-                } else {
-                    str += text.asEscapedXML();
-                }
-            });
-
+        str = this.runXMLModeOn(anObject);
         str = str.replace(/\n/g, '<br/>');
 
-        str = '<span class="sherpa_pp Node">' +
-                str +
-                '</span>';
     } else {
-        str = '<span class="sherpa_pp Node">' +
-                TP.str(anObject).asEscapedXML() +
-                '</span>';
+        str = TP.str(anObject).asEscapedXML();
     }
+
+    str = '<span class="sherpa_pp Node">' +
+            str +
+            '</span>';
 
     //  We're done - we can remove the recursion flag.
     delete anObject.$$format_sherpa_pp;
@@ -443,7 +426,7 @@ function(anObject, optFormat) {
         for (i = 0; i < len; i++) {
             key = keys.at(i);
             value = TP.format(anObject[key], TP.sherpa.pp.Type, optFormat);
-            value = value.asEscapedXML();
+            //value = value.asEscapedXML();
 
             output.push(
                 '<span data-name="' + key + '">', value, '</span>');
@@ -750,8 +733,15 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
+    if (TP.isValid(TP.extern.CodeMirror)) {
+        str = this.runXMLModeOn(TP.unwrap(anObject));
+        str = str.replace(/\n/g, '<br/>');
+    } else {
+        str = TP.str(anObject).asEscapedXML();
+    }
+
     str = '<span class="sherpa_pp TP_core_Node">' +
-            TP.format(TP.unwrap(anObject), TP.sherpa.pp.Type, optFormat) +
+            str +
             '</span>';
 
     //  We're done - we can remove the recursion flag.
@@ -921,6 +911,33 @@ function(anObject) {
         TP.str(anObject),
         {
             name: 'javascript'
+        },
+        function (text, style) {
+
+            if (style) {
+                str += '<span class="cm-' + style + '">' +
+                         text.asEscapedXML() +
+                         '</span>';
+            } else {
+                str += text.asEscapedXML();
+            }
+        });
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('runXMLModeOn',
+function(anObject) {
+
+    var str;
+
+    str = '';
+    TP.extern.CodeMirror.runMode(
+        TP.str(anObject),
+        {
+            name: 'application/xml'
         },
         function (text, style) {
 
