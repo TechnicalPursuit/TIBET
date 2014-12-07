@@ -639,10 +639,10 @@ function(aSignal) {
                 if (TP.canInvoke(val, 'getValues')) {
                     values = val.getValues();
                 } else {
-                    // Probabaly a native collection like HTMLCollection etc.
+                    // Probably a native collection like HTMLCollection etc.
                     values = TP.ac();
                     len = val.length;
-                    for (i = 1; i < len; i++) {
+                    for (i = 0; i < len; i++) {
                         values.push(val[i]);
                     }
                 }
@@ -2296,7 +2296,6 @@ function(anError, aRequest) {
     }
     request.atPutIfAbsent('messageLevel', TP.ERROR);
 
-//    err = TP.isError(anError) ? TP.str(anError) : anError;
     err = TP.isError(anError) ? anError : new Error(anError);
     request.set('result', err);
 
@@ -2620,8 +2619,6 @@ function(anObject, aRequest) {
         cssClass = TP.ifInvalid(cssClass, 'info');
     }
 
-
-
     outputData = TP.hc('output', data,
                         'outputclass', cssClass,
                         'empty', '',
@@ -2629,7 +2626,8 @@ function(anObject, aRequest) {
                             TP.ifInvalid(this.getOutputStats(request), ''),
                         'resulttype', this.getResultTypeInfo(request));
 
-    if (TP.isEmpty(outputData.at('stats')) && TP.isEmpty(outputData.at('resulttype'))) {
+    if (TP.isEmpty(outputData.at('stats')) &&
+        TP.isEmpty(outputData.at('resulttype'))) {
         outputData.atPut('empty', 'empty');
     }
 
