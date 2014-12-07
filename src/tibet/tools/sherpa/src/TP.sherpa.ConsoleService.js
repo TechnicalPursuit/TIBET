@@ -1822,7 +1822,7 @@ function(anObject, aRequest) {
         data = TP.format(
                 anObject,
                 TP.sys.cfg('sherpa.default_format', 'sherpa:pp').asType(),
-                request);
+                TP.hc('level', 1));
     } else {
         //  Otherwise it's 'as is' - take it as it is.
 

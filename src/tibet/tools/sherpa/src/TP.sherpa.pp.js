@@ -31,13 +31,9 @@ TP.lang.Object.defineSubtype('sherpa:pp');
 TP.sherpa.pp.Type.defineMethod('fromArray',
 function(anObject, optFormat) {
 
-    var len,
+    var output,
 
-        output,
-
-        count,
-        colcount,
-
+        len,
         i;
 
     //  If this flag is set to true, that means that we're already trying to
@@ -47,6 +43,19 @@ function(anObject, optFormat) {
     //  'recursion' format of the object.
     if (anObject.$$format_sherpa_pp) {
         return TP.recursion(anObject);
+    }
+
+    //  If an optional format was supplied, then, if it has a level, check the
+    //  level and if we're at that level, then just print the name of the
+    //  object. If we haven't, increment the level and proceed.
+    if (TP.isValid(optFormat)) {
+        if (optFormat.at('currentLevel') >= optFormat.at('level')) {
+            return TP.name(anObject);
+        } else if (TP.notValid(optFormat.at('currentLevel'))) {
+            optFormat.atPut('currentLevel', 1);
+        } else {
+            optFormat.atPut('currentLevel', optFormat.at('currentLevel') + 1);
+        }
     }
 
     //  Set the recursion flag so that we don't endless recurse when
@@ -61,29 +70,22 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    len = anObject.getSize();
-
     output = TP.ac();
-
     output.push('<span class="sherpa_pp Array">');
 
-    count = 0;
-    colcount = 1;
-
+    len = anObject.getSize();
     for (i = 0; i < len; i++) {
-        if (count > (colcount - 1)) {
-            count = 0;
-        }
-
         output.push('<span data-name="', i, '">',
-                    //TP.boot.$dump(anObject.at(i), '', true),
-                    TP.format(anObject.at(i), TP.sherpa.pp.Type),
+                    TP.format(anObject.at(i), TP.sherpa.pp.Type, optFormat),
                     '</span>');
-
-        count++;
     }
 
     output.push('</span>');
+
+    //  Decrement the traversal level
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
+    }
 
     //  We're done - we can remove the recursion flag.
     delete anObject.$$format_sherpa_pp;
@@ -237,6 +239,19 @@ function(anObject, optFormat) {
 
     var str;
 
+    //  If this flag is set to true, that means that we're already trying to
+    //  format this object as part of larger object set and we may have an
+    //  endless recursion problem if there are circular references and we
+    //  let this formatting operation proceed. Therefore, we just return the
+    //  'recursion' format of the object.
+    if (anObject.$$format_sherpa_pp) {
+        return TP.recursion(anObject);
+    }
+
+    //  Set the recursion flag so that we don't endless recurse when
+    //  producing circular representations of this object and its members.
+    anObject.$$format_sherpa_pp = true;
+
     //  Don't need to box output from our own markup generator.
     if (TP.isValid(optFormat)) {
         optFormat.atPut('cmdBox', false);
@@ -264,14 +279,19 @@ function(anObject, optFormat) {
 
         str = str.replace(/\n/g, '<br/>');
 
-        return '<span class="sherpa_pp Node">' +
+        str = '<span class="sherpa_pp Node">' +
                 str +
                 '</span>';
     } else {
-    return '<span class="sherpa_pp Node">' +
-            TP.str(anObject).asEscapedXML() +
-            '</span>';
+        str = '<span class="sherpa_pp Node">' +
+                TP.str(anObject).asEscapedXML() +
+                '</span>';
     }
+
+    //  We're done - we can remove the recursion flag.
+    delete anObject.$$format_sherpa_pp;
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -279,10 +299,23 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromNodeList',
 function(anObject, optFormat) {
 
-    var arr,
+    var content,
 
         len,
         i;
+
+    //  If an optional format was supplied, then, if it has a level, check the
+    //  level and if we're at that level, then just print the name of the
+    //  object. If we haven't, increment the level and proceed.
+    if (TP.isValid(optFormat)) {
+        if (optFormat.at('currentLevel') >= optFormat.at('level')) {
+            return TP.name(anObject);
+        } else if (TP.notValid(optFormat.at('currentLevel'))) {
+            optFormat.atPut('currentLevel', 1);
+        } else {
+            optFormat.atPut('currentLevel', optFormat.at('currentLevel') + 1);
+        }
+    }
 
     //  Don't need to box output from our own markup generator.
     if (TP.isValid(optFormat)) {
@@ -291,18 +324,22 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    arr = TP.ac();
+    content = TP.ac();
 
     len = anObject.length;
     for (i = 0; i < len; i++) {
-        arr.push(
+        content.push(
                 '<span data-name="', i, '">',
-                    //TP.str(anObject[i]).asEscapedXML(),
-                    TP.format(anObject[i], TP.sherpa.pp.Type),
+                    TP.format(anObject[i], TP.sherpa.pp.Type, optFormat),
                 '</span>');
     }
 
-    return '<span class="sherpa_pp NodeList">' + arr.join('') + '</span>';
+    //  Decrement the traversal level
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
+    }
+
+    return '<span class="sherpa_pp NodeList">' + content.join('') + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -331,8 +368,9 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromObject',
 function(anObject, optFormat) {
 
-    var type,
-        output,
+    var output,
+
+        formatInLoop,
 
         keys,
         key,
@@ -340,6 +378,32 @@ function(anObject, optFormat) {
 
         i,
         len;
+
+    //  If this flag is set to true, that means that we're already trying to
+    //  format this object as part of larger object set and we may have an
+    //  endless recursion problem if there are circular references and we
+    //  let this formatting operation proceed. Therefore, we just return the
+    //  'recursion' format of the object.
+    if (anObject.$$format_sherpa_pp) {
+        return TP.recursion(anObject);
+    }
+
+    //  If an optional format was supplied, then, if it has a level, check the
+    //  level and if we're at that level, then just print the name of the
+    //  object. If we haven't, increment the level and proceed.
+    if (TP.isValid(optFormat)) {
+        if (optFormat.at('currentLevel') >= optFormat.at('level')) {
+            return TP.name(anObject);
+        } else if (TP.notValid(optFormat.at('currentLevel'))) {
+            optFormat.atPut('currentLevel', 1);
+        } else {
+            optFormat.atPut('currentLevel', optFormat.at('currentLevel') + 1);
+        }
+    }
+
+    //  Set the recursion flag so that we don't endless recurse when
+    //  producing circular representations of this object and its members.
+    anObject.$$format_sherpa_pp = true;
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
@@ -349,28 +413,52 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    type = TP.name(TP.type(anObject)).replace(/\./g, '_');
     output = TP.ac();
-
     output.push('<span class="sherpa_pp Object">');
 
-    keys = TP.keys(anObject);
-    keys.sort();
-    keys.compact();
-    len = keys.getSize();
+    formatInLoop = true;
+    try {
+        keys = TP.keys(anObject);
+    } catch (e) {
+        formatInLoop = false;
+        try {
+            // Some objects don't even like Object.keys....sigh...
+            output.push('<span data-name="value">',
+                        Object.prototype.toString.call(anObject),
+                        '</span>');
+        } catch (e2)  {
+            //  And some don't even like that... double sigh...
+            output.push('<span data-name="value">',
+                        '[object Object]',
+                        '</span>');
+        }
+    }
 
-    for (i = 0; i < len; i++) {
-        key = keys.at(i);
-        value = anObject[keys.at(i)];
+    if (formatInLoop) {
 
-        output.push(
-                '<span data-name="' + key + '">',
-                //TP.boot.$dump(anObject[keys.at(i)], '\n', true),
-                TP.format(anObject[keys.at(i)], TP.sherpa.pp.Type),
-                '</span>');
+        keys.sort();
+        keys.compact();
+        len = keys.getSize();
+
+        for (i = 0; i < len; i++) {
+            key = keys.at(i);
+            value = TP.format(anObject[key], TP.sherpa.pp.Type, optFormat);
+            value = value.asEscapedXML();
+
+            output.push(
+                '<span data-name="' + key + '">', value, '</span>');
+        }
     }
 
     output.push('</span>');
+
+    //  Decrement the traversal level
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
+    }
+
+    //  We're done - we can remove the recursion flag.
+    delete anObject.$$format_sherpa_pp;
 
     return output.join('');
 });
@@ -579,6 +667,19 @@ function(anObject, optFormat) {
         return TP.recursion(anObject);
     }
 
+    //  If an optional format was supplied, then, if it has a level, check the
+    //  level and if we're at that level, then just print the name of the
+    //  object. If we haven't, increment the level and proceed.
+    if (TP.isValid(optFormat)) {
+        if (optFormat.at('currentLevel') >= optFormat.at('level')) {
+            return TP.name(anObject);
+        } else if (TP.notValid(optFormat.at('currentLevel'))) {
+            optFormat.atPut('currentLevel', 1);
+        } else {
+            optFormat.atPut('currentLevel', optFormat.at('currentLevel') + 1);
+        }
+    }
+
     //  Set the recursion flag so that we don't endless recurse when
     //  producing circular representations of this object and its members.
     anObject.$$format_sherpa_pp = true;
@@ -592,7 +693,6 @@ function(anObject, optFormat) {
     }
 
     output = TP.ac();
-
     output.push('<span class="sherpa_pp TP_lang_Hash">');
 
     keys = TP.keys(anObject);
@@ -604,12 +704,18 @@ function(anObject, optFormat) {
         key = keys.at(i);
 
         output.push('<span data-name="' + key + '">' +
-                    //TP.boot.$dump(anObject.at(keys.at(i)), '\n', true) +
-                    TP.format(anObject.at(keys.at(i)), TP.sherpa.pp.Type),
+                    TP.format(anObject.at(keys.at(i)),
+                                TP.sherpa.pp.Type,
+                                optFormat),
                     '</span>');
     }
 
     output.push('</span>');
+
+    //  Decrement the traversal level
+    if (TP.isValid(optFormat)) {
+        optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
+    }
 
     //  We're done - we can remove the recursion flag.
     delete anObject.$$format_sherpa_pp;
@@ -622,6 +728,21 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_core_Node',
 function(anObject, optFormat) {
 
+    var str;
+
+    //  If this flag is set to true, that means that we're already trying to
+    //  format this object as part of larger object set and we may have an
+    //  endless recursion problem if there are circular references and we
+    //  let this formatting operation proceed. Therefore, we just return the
+    //  'recursion' format of the object.
+    if (anObject.$$format_sherpa_pp) {
+        return TP.recursion(anObject);
+    }
+
+    //  Set the recursion flag so that we don't endless recurse when
+    //  producing circular representations of this object and its members.
+    anObject.$$format_sherpa_pp = true;
+
     //  Don't need to box output from our own markup generator.
     if (TP.isValid(optFormat)) {
         optFormat.atPut('cmdBox', false);
@@ -629,10 +750,14 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp TP_core_Node">' +
-            //TP.str(anObject.getNativeNode()).asEscapedXML() +
-            TP.format(TP.unwrap(anObject), TP.sherpa.pp.Type) +
+    str = '<span class="sherpa_pp TP_core_Node">' +
+            TP.format(TP.unwrap(anObject), TP.sherpa.pp.Type, optFormat) +
             '</span>';
+
+    //  We're done - we can remove the recursion flag.
+    delete anObject.$$format_sherpa_pp;
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -640,7 +765,21 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_sig_ShellRequest',
 function(anObject, optFormat) {
 
-    var data;
+    var data,
+        str;
+
+    //  If this flag is set to true, that means that we're already trying to
+    //  format this object as part of larger object set and we may have an
+    //  endless recursion problem if there are circular references and we
+    //  let this formatting operation proceed. Therefore, we just return the
+    //  'recursion' format of the object.
+    if (anObject.$$format_sherpa_pp) {
+        return TP.recursion(anObject);
+    }
+
+    //  Set the recursion flag so that we don't endless recurse when
+    //  producing circular representations of this object and its members.
+    anObject.$$format_sherpa_pp = true;
 
     if (TP.isValid(optFormat)) {
         optFormat.atPut('cmdBox', false);
@@ -655,7 +794,12 @@ function(anObject, optFormat) {
         data = anObject.at('cmd');
     }
 
-    return '<span class="sherpa_pp">' + data + '</span>';
+    str = '<span class="sherpa_pp">' + data + '</span>';
+
+    //  We're done - we can remove the recursion flag.
+    delete anObject.$$format_sherpa_pp;
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -673,7 +817,8 @@ function(anObject, optFormat) {
 
     var nativeWin,
 
-        arr,
+        content,
+
         keys,
         len,
         i;
@@ -688,30 +833,29 @@ function(anObject, optFormat) {
 
     nativeWin = anObject.getNativeWindow();
 
-    arr = TP.ac();
+    content = TP.ac();
 
     keys = TP.sys.$windowkeys;
     len = keys.length;
-
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
-            arr.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i], '">',
                         TP.str(nativeWin.document).asEscapedXML(), '</span>');
             continue;
         }
 
         try {
-            arr.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i], '">',
                         TP.htmlstr(nativeWin[keys[i]]), '</span>');
         } catch (e) {
-            arr.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i], '">',
                         TP.htmlstr(undefined), '</span>');
         }
     }
 
     return '<span class="sherpa_pp TP_core_Window" gid="' +
                 TP.gid(anObject) + '">' +
-            arr.join('') +
+            content.join('') +
             '</span>';
 });
 
@@ -725,7 +869,8 @@ TP.sherpa.pp.Type.defineMethod('fromTP_sig_Signal', TP.sherpa.pp.fromObject);
 TP.sherpa.pp.Type.defineMethod('fromWindow',
 function(anObject, optFormat) {
 
-    var arr,
+    var content,
+
         keys,
         len,
         i;
@@ -738,29 +883,29 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    arr = TP.ac();
+    content = TP.ac();
 
     keys = TP.sys.$windowkeys;
     len = keys.length;
 
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
-            arr.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i], '">',
                         TP.str(anObject.document).asEscapedXML(), '</span>');
             continue;
         }
 
         try {
-            arr.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i], '">',
                         TP.htmlstr(anObject[keys[i]]), '</span>');
         } catch (e) {
-            arr.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i], '">',
                         TP.htmlstr(undefined), '</span>');
         }
     }
 
     return '<span class="sherpa_pp Window" gid="' + TP.gid(anObject) + '">' +
-            arr.join('') +
+            content.join('') +
             '</span>';
 });
 
