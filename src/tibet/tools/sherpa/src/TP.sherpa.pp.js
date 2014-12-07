@@ -65,7 +65,7 @@ function(anObject, optFormat) {
 
     output = TP.ac();
 
-    output.push('<span class="sherpa_pp"><span class="Array">');
+    output.push('<span class="sherpa_pp Array">');
 
     count = 0;
     colcount = 1;
@@ -77,12 +77,12 @@ function(anObject, optFormat) {
 
         output.push('<span data-name="', i, '">',
                     TP.boot.$dump(anObject.at(i), '', true),
-                    '<\/span>');
+                    '</span>');
 
         count++;
     }
 
-    output.push('<\/span><\/span>');
+    output.push('</span>');
 
     //  We're done - we can remove the recursion flag.
     delete anObject.$$format_sherpa_pp;
@@ -103,7 +103,9 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp">' + anObject.toString() + '</span>';
+    return '<span class="sherpa_pp Boolean">' +
+            anObject.toString() +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -119,7 +121,9 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp">' + anObject.toISOString() + '</span>';
+    return '<span class="sherpa_pp Date">' +
+            anObject.toISOString() +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -139,12 +143,17 @@ function(anObject, optFormat) {
 
     stack = '';
     if (TP.sys.shouldLogStack()) {
-        stack = '<br/>' + TP.getStackInfo(anObject).join('<br/>');
+        stack = '<br/>' +
+                TP.getStackInfo(anObject).collect(
+                    function(infoPiece) {
+                        return infoPiece.asEscapedXML();
+                    }).join('<br/>');
     }
 
-    return '<span class="sherpa_pp">' +
-        anObject.message.asEscapedXML() +
-    stack + '<\/span>';
+    return '<span class="sherpa_pp Error">' +
+            anObject.message.asEscapedXML() +
+            stack +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -162,8 +171,6 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    str = TP.str(anObject);
-
     if (TP.isValid(TP.extern.CodeMirror)) {
         str = '';
         TP.extern.CodeMirror.runMode(
@@ -175,25 +182,27 @@ function(anObject, optFormat) {
 
                 if (style) {
                     str += '<span class="cm-' + style + '">' +
-                             text +
+                             text.asEscapedXML() +
                              '</span>';
                 } else {
-                    str += text;
+                    str += text.asEscapedXML();
                 }
             });
 
         str = str.replace(/\n/g, '<br/>');
 
-        return '<span class="sherpa_pp"><span class="Function">' +
+        return '<span class="sherpa_pp Function">' +
                 str +
-                '</span></span>';
+                '</span>';
     } else {
-        //  NOTE the CDATA blocks here combined with <pre> to hold on to
-        //  remaining whitespace while ensuring we ignore any embedded < or >
-        //  symbols etc.
-        return '<span class="sherpa_pp"><span class="Function">' +
-                    '<pre><![CDATA[' + str + ']]></pre>' +
-                '</span></span>';
+        str = TP.str(anObject);
+
+        //  NOTE the CDATA blocks here combined with <span> of
+        //  'white-space: pre' to hold on to remaining whitespace while
+        //  ensuring we ignore any embedded < or > symbols etc.
+        return '<span class="sherpa_pp Function">' +
+                    '<![CDATA[' + str + ']]>' +
+                '</span>';
     }
 });
 
@@ -202,10 +211,12 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromNamedNodeMap',
 function(anObject, optFormat) {
 
-    var arr,
+    var content,
 
         len,
-        i;
+        i,
+
+        item;
 
     //  Don't need to box output from our own markup generator.
     if (TP.isValid(optFormat)) {
@@ -214,22 +225,31 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    arr = TP.ac();
+    content = TP.ac();
 
     len = anObject.length;
-    arr.push('<span class="NamedNodeMap">');
     for (i = 0; i < len; i++) {
-        arr.push(
+        /*
+        content.push(
                 '<span data-name="key">',
                     TP.name(anObject.item(i)),
                 '<\/span>',
                 '<span data-name="value">',
                     TP.val(anObject.item(i)),
                 '<\/span>');
-    }
-    arr.push('<\/span>');
+        */
 
-    return '<span class="sherpa_pp">' + arr.join('') + '<\/span>';
+        for (i = 0; i < len; i++) {
+            item = anObject.item(i);
+
+            content.push('<span data-name="' + TP.name(item) + '">' +
+                            TP.val(item) +
+                            '</span>');
+        }
+
+    }
+
+    return '<span class="sherpa_pp NamedNodeMap">' + content.join('') + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -237,6 +257,8 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromNode',
 function(anObject, optFormat) {
 
+    var str;
+
     //  Don't need to box output from our own markup generator.
     if (TP.isValid(optFormat)) {
         optFormat.atPut('cmdBox', false);
@@ -244,9 +266,34 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp">' +
+    if (TP.isValid(TP.extern.CodeMirror)) {
+        str = '';
+        TP.extern.CodeMirror.runMode(
+            TP.str(anObject),
+            {
+                name: 'application/xml'
+            },
+            function (text, style) {
+
+                if (style) {
+                    str += '<span class="cm-' + style + '">' +
+                             text.asEscapedXML() +
+                             '</span>';
+                } else {
+                    str += text.asEscapedXML();
+                }
+            });
+
+        str = str.replace(/\n/g, '<br/>');
+
+        return '<span class="sherpa_pp Node">' +
+                str +
+                '</span>';
+    } else {
+    return '<span class="sherpa_pp Node">' +
             TP.str(anObject).asEscapedXML() +
             '<\/span>';
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -269,16 +316,15 @@ function(anObject, optFormat) {
     arr = TP.ac();
 
     len = anObject.length;
-    arr.push('<span class="NodeList">');
     for (i = 0; i < len; i++) {
         arr.push(
                 '<span data-name="', i, '">',
-                    TP.str(anObject[i]).asEscapedXML(),
+                    //TP.str(anObject[i]).asEscapedXML(),
+                    TP.format(anObject[i], TP.sherpa.pp.Type),
                 '<\/span>');
     }
-    arr.push('<\/span>');
 
-    return '<span class="sherpa_pp">' + arr.join('') + '<\/span>';
+    return '<span class="sherpa_pp NodeList">' + arr.join('') + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -294,7 +340,7 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp">' + anObject.toString() + '</span>';
+    return '<span class="sherpa_pp Number">' + anObject.toString() + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -304,10 +350,13 @@ function(anObject, optFormat) {
 
     var type,
         output,
-        i,
-        len,
+
         keys,
-        key;
+        key,
+        value,
+
+        i,
+        len;
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
@@ -320,7 +369,7 @@ function(anObject, optFormat) {
     type = TP.name(TP.type(anObject)).replace(/\./g, '_');
     output = TP.ac();
 
-    output.push('<span class="sherpa_pp"><span class="' + type + '">');
+    output.push('<span class="sherpa_pp Object">');
 
     keys = TP.keys(anObject);
     keys.sort();
@@ -329,13 +378,16 @@ function(anObject, optFormat) {
 
     for (i = 0; i < len; i++) {
         key = keys.at(i);
+        value = anObject[keys.at(i)];
 
-        output.push('<span data-name="' + key + '">' +
-            TP.boot.$dump(anObject[keys.at(i)], '\n', true) +
-                    '<\/span>');
+        output.push(
+                '<span data-name="' + key + '">',
+                //TP.boot.$dump(anObject[keys.at(i)], '\n', true),
+                TP.format(anObject[keys.at(i)], TP.sherpa.pp.Type),
+                '</span>');
     }
 
-    output.push('<\/span><\/span>');
+    output.push('</span>');
 
     return output.join('\n');
 
@@ -363,7 +415,7 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp">' + anObject.toString() + '</span>';
+    return '<span class="sherpa_pp RegExp">' + anObject.toString() + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -388,7 +440,7 @@ function(anObject, optFormat) {
 
     obj = anObject.asEscapedXML();
 
-    return '<span class="sherpa_pp">' + TP.xhtmlstr(obj) + '<\/span>';
+    return '<span class="sherpa_pp String">' + TP.xhtmlstr(obj) + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -407,16 +459,14 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp">' +
-                '<span class="TP_boot_Annotation">' +
-                    '<span data-name="object">' +
-                        TP.htmlstr(anObject.object) +
-                    '<\/span>' +
-                    '<span data-name="message">' +
-                        TP.htmlstr(anObject.message) +
-                    '<\/span>' +
-                '<\/span>' +
-            '<\/span>';
+    return '<span class="sherpa_pp TP_boot_Annotation">' +
+                '<span data-name="object">' +
+                    TP.htmlstr(anObject.object) +
+                '</span>' +
+                '<span data-name="message">' +
+                    TP.htmlstr(anObject.message) +
+                '</span>' +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -445,24 +495,24 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         str += '<span class="Date" data-name="timestamp">' +
                     obj[i][TP.boot.LOG_ENTRY_DATE] +
-                '<\/span>' +
+                '</span>' +
                 '<span class="String" data-name="log-name">' +
                     obj[i][TP.boot.LOG_ENTRY_NAME] +
-                '<\/span>' +
+                '</span>' +
                 '<span class="Number" data-name="log-level">' +
                     obj[i][TP.boot.LOG_ENTRY_LEVEL] +
-                '<\/span>' +
+                '</span>' +
                 '<span class="String" data-name="log-entry">' +
                     obj[i][TP.boot.LOG_ENTRY_PAYLOAD] +
-                '<\/span>' +
+                '</span>' +
                 '<span class="String" data-name="log-delta">' +
                     obj[i][TP.boot.LOG_ENTRY_DELTA] +
-                '<\/span>';
+                '</span>';
     }
 
-    return '<span class="sherpa_pp">' +
+    return '<span class="sherpa_pp TP_boot_Log">' +
             str +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -487,9 +537,9 @@ function(anObject, optFormat) {
 
                 //  Collapse a brace followed by a comma with a brace coming
                 //  next to a single line
-                if ((text === '{') && str.slice(-7) === '},<br\/>') {
+                if ((text === '{') && str.slice(-7) === '},<br/>') {
                     str = str.slice(0, -5) + '&#160;';
-                } else if (str.slice(-5) === '<br\/>') {
+                } else if (str.slice(-5) === '<br/>') {
                     //  Otherwise, if we're starting a new line, 'tab in' the
                     //  proper number of spaces.
                     str += '&#160;'.times(level * tabSpaces);
@@ -498,33 +548,33 @@ function(anObject, optFormat) {
                 if (style) {
                     str += '<span class="cm-' + style + '">' +
                              text +
-                             '<\/span>';
+                             '</span>';
                 } else {
                     if (text === '{' || text === '[') {
                         level++;
-                        str += text + '<br\/>';
+                        str += text + '<br/>';
                     }
                     if (text === '}' || text === ']') {
                         level--;
-                        str += '<br\/>' +
+                        str += '<br/>' +
                                 '&#160;'.times(level * tabSpaces) + text;
                     }
                     if (text === ':') {
                         str += '&#160;' + text + '&#160;';
                     }
                     if (text === ',') {
-                        str += text + '<br\/>';
+                        str += text + '<br/>';
                     }
                 }
             });
 
-        return '<span class="sherpa_pp"><span class="TP_core_JSONContent">' +
+        return '<span class="sherpa_pp TP_core_JSONContent">' +
                 str +
-                '<\/span><\/span>';
+                '</span>';
     } else {
-        return '<span class="sherpa_pp">' +
+        return '<span class="sherpa_pp TP_core_JSONContent">' +
                     anObject.asString().asEscapedXML() +
-                '<\/span>';
+                '</span>';
     }
 });
 
@@ -562,7 +612,7 @@ function(anObject, optFormat) {
 
     output = TP.ac();
 
-    output.push('<span class="sherpa_pp"><span class="TP_lang_Hash">');
+    output.push('<span class="sherpa_pp TP_lang_Hash">');
 
     keys = TP.keys(anObject);
     keys.sort();
@@ -574,10 +624,10 @@ function(anObject, optFormat) {
 
         output.push('<span data-name="' + key + '">' +
             TP.boot.$dump(anObject.at(keys.at(i)), '\n', true) +
-                    '<\/span>');
+                    '</span>');
     }
 
-    output.push('<\/span><\/span>');
+    output.push('</span>');
 
     //  We're done - we can remove the recursion flag.
     delete anObject.$$format_sherpa_pp;
@@ -597,9 +647,9 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    return '<span class="sherpa_pp">' +
+    return '<span class="sherpa_pp TP_core_Node">' +
             TP.str(anObject.getNativeNode()).asEscapedXML() +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -622,7 +672,7 @@ function(anObject, optFormat) {
         data = anObject.at('cmd');
     }
 
-    return '<span class="sherpa_pp">' + data + '<\/span>';
+    return '<span class="sherpa_pp">' + data + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -631,7 +681,6 @@ TP.sherpa.pp.Type.defineMethod('fromTP_core_URI',
 function(anObject, optFormat) {
 
     return this.fromObject(anObject);
-
 });
 
 //  ------------------------------------------------------------------------
@@ -661,29 +710,26 @@ function(anObject, optFormat) {
     keys = TP.sys.$windowkeys;
     len = keys.length;
 
-    arr.push('<span class="TP_core_Window ',
-                TP.escapeTypeName(TP.tname(nativeWin)), '">',
-                '<span class="Window" gid="', TP.gid(nativeWin), '">');
-
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.str(nativeWin.document).asEscapedXML(), '<\/span>');
+                        TP.str(nativeWin.document).asEscapedXML(), '</span>');
             continue;
         }
 
         try {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(nativeWin[keys[i]]), '<\/span>');
+                        TP.htmlstr(nativeWin[keys[i]]), '</span>');
         } catch (e) {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(undefined), '<\/span>');
+                        TP.htmlstr(undefined), '</span>');
         }
     }
 
-    arr.push('<\/span><\/span>');
-
-    return '<span class="sherpa_pp">' + arr.join('') + '<\/span>';
+    return '<span class="sherpa_pp TP_core_Window" gid="' +
+                TP.gid(anObject) + '">' +
+            arr.join('') +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -714,27 +760,25 @@ function(anObject, optFormat) {
     keys = TP.sys.$windowkeys;
     len = keys.length;
 
-    arr.push('<span class="Window" gid="', TP.gid(anObject), '">');
-
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.str(anObject.document).asEscapedXML(), '<\/span>');
+                        TP.str(anObject.document).asEscapedXML(), '</span>');
             continue;
         }
 
         try {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(anObject[keys[i]]), '<\/span>');
+                        TP.htmlstr(anObject[keys[i]]), '</span>');
         } catch (e) {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(undefined), '<\/span>');
+                        TP.htmlstr(undefined), '</span>');
         }
     }
 
-    arr.push('<\/span>');
-
-    return '<span class="sherpa_pp">' + arr.join('') + '<\/span>';
+    return '<span class="sherpa_pp Window" gid="' + TP.gid(anObject) + '">' +
+            arr.join('') +
+            '</span>';
 });
 
 //  ========================================================================
@@ -774,7 +818,7 @@ function(anObject, optFormat) {
 
     if (TP.notValid(anObject)) {
         // 'null' or 'undefined', as you'd expect.
-        return '<span class="sherpa_pp">' + anObject + '<\/span>';
+        return '<span class="sherpa_pp Object">' + anObject + '</span>';
     }
 
     if (TP.isValid(anObject)) {
