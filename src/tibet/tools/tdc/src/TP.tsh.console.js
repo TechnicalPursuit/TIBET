@@ -16,7 +16,7 @@
 
 //  ----------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('tsh:console');
+TP.lang.Object.defineSubtype('tsh:console');
 
 //  the default prompt separator/string (>>)
 TP.tsh.console.Type.defineConstant('DEFAULT_PROMPT', '&#160;&#187;');
