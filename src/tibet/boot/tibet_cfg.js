@@ -1231,7 +1231,6 @@ TP.sys.setcfg('tdc.max_notice', 120);
 TP.sys.setcfg('tdc.silent', false);
 
 TP.sys.setcfg('tdc.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
-TP.sys.setcfg('tdc.toggle_off', 'TP.sig.DOM_Alt_Down_Up');
 
 //  should the TDC output collection value types during status updates?
 TP.sys.setcfg('tdc.type_collections', true);
@@ -1443,6 +1442,9 @@ TP.sys.setcfg('tibet.uirootmulti', false);
 
 //  what tag should be used in place of the default {{appname}}.app tag.
 TP.sys.setcfg('tibet.apptag', null);
+
+//  should the TDC currently be active? default is false.
+TP.sys.setcfg('tibet.tdc', false);
 
 //  should the sherpa currently be active? default is false.
 TP.sys.setcfg('tibet.sherpa', false);
