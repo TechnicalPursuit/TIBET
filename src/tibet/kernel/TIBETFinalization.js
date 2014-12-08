@@ -359,7 +359,7 @@ function() {
         rootName,
         rootWindow,
 
-        wantsSherpa,
+        hasBootToggle,
         request,
         toggleKey,
         bootframe;
@@ -504,11 +504,12 @@ function() {
         TP.boot.$stderr(msg, TP.FATAL);
     });
 
-    //  If we're not running with a UI (not phantom), and we don't have the
-    //  Sherpa configured to start, then ensure we can toggle the boot UI
-    //  properly.
-    wantsSherpa = TP.sys.cfg('tibet.sherpa');
-    if (TP.sys.cfg('boot.context') !== 'phantomjs' && !wantsSherpa) {
+    //  If we're not running with a UI (not phantom), and we have a properly
+    //  configured 'boot toggle' key, then set up an observation that will cause
+    //  that key to toggle between the boot log and the application's user
+    //  interface.
+    hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_on'));
+    if (TP.sys.cfg('boot.context') !== 'phantomjs' && hasBootToggle) {
 
         TP.boot.initializeCanvas(TP.win('UIBOOT'));
 
