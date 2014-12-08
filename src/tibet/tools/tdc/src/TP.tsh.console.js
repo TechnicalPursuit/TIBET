@@ -25,6 +25,55 @@ TP.tsh.console.Type.defineConstant('DEFAULT_PROMPT', '&#160;&#187;');
 //  Type Methods
 //  ----------------------------------------------------------------------------
 
+TP.tsh.console.Type.defineMethod('initialize',
+function(aName) {
+
+    /**
+     * @name initialize
+     * @synopsis Performs one-time setup for the type on startup/import.
+     * @return {TP.core.Sherpa} The receiver.
+     */
+
+    var toggleKey,
+        tdcSetupFunc;
+
+    //  If the TDC isn't configured to start, then exit here.
+    if (!TP.sys.cfg('tibet.tdc')) {
+        return this;
+    }
+
+    //  Otherwise, clear the 'boot.toggle_on' flag. We don't want the boot log
+    //  to be toggled. We'll be handling all of that.
+    TP.sys.setcfg('boot.toggle_on', null);
+
+    //  Register our toggle key handler to finish TDC setup.
+    toggleKey = TP.sys.cfg('tdc.toggle_on');
+    if (!toggleKey.startsWith('TP.sig.')) {
+        toggleKey = 'TP.sig.' + toggleKey;
+    }
+
+    //  Set up the handler to finish the setup of the TDC when the toggle key
+    //  is pressed.
+
+    /* eslint-disable no-wrap-func */
+    //  set up keyboard toggle to show/hide the boot UI
+    (tdcSetupFunc = function () {
+
+        //  The first thing to do is to tell TP.core.Keyboard to *ignore* this
+        //  handler Function. This is because, once we finish set up of the
+        //  TDC, it will install it's own handler for the trigger key and
+        //  take over that responsibility.
+        tdcSetupFunc.ignore(TP.core.Keyboard, toggleKey);
+
+        TP.tsh.console.setupConsole();
+
+    }).observe(TP.core.Keyboard, toggleKey);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.tsh.console.Type.defineMethod('setupConsole',
 function() {
 
