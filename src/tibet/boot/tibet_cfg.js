@@ -1443,6 +1443,9 @@ TP.sys.setcfg('tibet.uirootmulti', false);
 //  what tag should be used in place of the default {{appname}}.app tag.
 TP.sys.setcfg('tibet.apptag', null);
 
+//  should the TDC currently be active? default is false.
+TP.sys.setcfg('tibet.tdc', false);
+
 //  should the sherpa currently be active? default is false.
 TP.sys.setcfg('tibet.sherpa', false);
 
