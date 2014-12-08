@@ -82,13 +82,6 @@ function() {
      * @synopsis Sets up the console.
      */
 
-    var win,
-        doc,
-        elem,
-        head,
-        handler,
-        count;
-
     //  The first thing we do is to toggle the UI on. This causes the 'display'
     //  CSS property to not be set to none, which means that the various
     //  computations required for sizing the input and output for the console
@@ -99,24 +92,12 @@ function() {
     //  to be accurate ;-).
     (function() {
 
-        win = TP.win('UIBOOT');
-        doc = TP.doc(win);
+        var handler;
 
-        //  Inject the hook file into the page so it has all the necessary TIBET
-        //  page elements.
-        elem = TP.documentCreateScriptElement(
-                    doc,
-                    TP.uc('~lib_build/tibet_hook.min.js').getLocation());
-        head = TP.documentEnsureHeadElement(doc);
-        TP.nodeAppendChild(head, elem, false);
+        //  Go ahead and build the GUI for the TDC. This inserts the hook file,
+        //  markup and stylesheets.
+        TP.tsh.console.buildTDCGUI();
 
-        //  Force an initialize to run to get event handlers etc. set up.
-        TP.boot.initializeCanvas(win);
-
-        //  Add our console-specific styles to the document.
-        TP.tsh.console.addStylesheetTo(doc);
-
-        count = 0;
         handler = function () {
             var uiBoot,
                 tsh,
@@ -126,9 +107,7 @@ function() {
             uiBoot = TP.win('UIBOOT');
             tsh = TP.core.TSH.getDefaultInstance();
 
-            //  Grab the trigger key from the pref. This will have been set when
-            //  the tag representing us was attached to the DOM and the
-            //  'tagAttachDOM' method was called.
+            //  Grab the trigger key from the pref.
             triggerKey = TP.sys.cfg('tdc.toggle_on');
 
             console = TP.core.ConsoleService.construct(
@@ -155,81 +134,66 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.tsh.console.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
+TP.tsh.console.Type.defineMethod('buildTDCGUI',
+function() {
 
     /**
-     * @name tagAttachDOM
-     * @synopsis Sets up the console tag's backing functionality once the tag
-     *     has been attached.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
+     * @name buildTDCGUI
+     * @synopsis This builds the TDC GUI 'on top' of the existing boot console
+     *     GUI.
      */
 
-    var elem,
-        triggerKey;
+    var win,
+        doc,
 
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return this.raise('InvalidElement');
-    }
+        elem,
 
-    //  Capture the console toggle key off the element or cfg flag. Be sure to
-    //  update the flag value if we're working with a tag-supplied one.
-    if (TP.isEmpty(triggerKey = TP.elementGetAttribute(elem, 'tdc:toggle'))) {
-        triggerKey = TP.sys.cfg('tdc.toggle_on');
-    } else {
-        TP.sys.setcfg('tdc.toggle_on', triggerKey);
-    }
+        head,
+        stylesheetLoc,
 
-    return;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.tsh.console.Type.defineMethod('tagCompile',
-function(aRequest) {
-
-    /**
-     * @name tagCompile
-     * @synopsis Convert the receiver into a format suitable for inclusion in a
-     *     markup DOM.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
         inputElemURI,
         inputElem,
         newElem;
 
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return this.raise('InvalidElement');
-    }
+    win = TP.win('UIBOOT');
+    doc = TP.doc(win);
 
-    //  Configure the query we'll use in URI form to get the input element.
-    if (!TP.isString(inputElemURI = TP.elementGetAttribute(elem, 'stdin_ui'))) {
-        inputElemURI =
-            'tibet://top.UIBOOT#css(\'#BOOT-PROGRESS #BOOT-PERCENT\')';
-    }
+    //  Inject the hook file into the page so it has all the necessary TIBET
+    //  page elements.
+    elem = TP.documentCreateScriptElement(
+                doc,
+                TP.uc('~lib_build/tibet_hook.min.js').getLocation());
+    head = TP.documentEnsureHeadElement(doc);
+    TP.nodeAppendChild(head, elem, false);
+
+    //  Force an initialize to run to get event handlers etc. set up.
+    TP.boot.initializeCanvas(win);
+
+    //  The location where the GUI element that we're going to 'overlay' the
+    //  input cell.
+    inputElemURI = 'tibet://top.UIBOOT#css(\'#BOOT-PROGRESS #BOOT-PERCENT\')';
 
     //  Access the input element we're being tasked with converting.
     inputElem = TP.unwrap(TP.uc(inputElemURI).getResource());
 
-    //  Generate new content for the tag and replace the original.
+    //  If we got a real Element, then replace it with the following markup.
     if (TP.isElement(inputElem)) {
-
         newElem = TP.xhtmlnode(
-        '<div id="tdc_cmdline_wrapper" class="cmdline_wrapper">' +
-            '<div id="tdc_cmdline_prompt" class="cmdline_prompt">tsh&#160;' +
-            this.DEFAULT_PROMPT +
-            '</div>' +
-            '<div id="tdc_cmdline_input" class="cmdline_input">' +
-                '<textarea id="consoleInput" class="cmdline_textarea" rows="1"></textarea>' +
-            '</div>' +
-        '</div>');
+            '<div id="tdc_cmdline_wrapper" class="cmdline_wrapper">' +
+                '<div id="tdc_cmdline_prompt" class="cmdline_prompt">tsh&#160;' +
+                this.DEFAULT_PROMPT +
+                '</div>' +
+                '<div id="tdc_cmdline_input" class="cmdline_input">' +
+                    '<textarea id="consoleInput" class="cmdline_textarea" rows="1"></textarea>' +
+                '</div>' +
+            '</div>');
 
         inputElem.parentNode.style.visibility = 'hidden';
-        newElem = TP.nodeReplaceChild(inputElem.parentNode, newElem, inputElem, false);
+        newElem = TP.nodeReplaceChild(inputElem.parentNode,
+                                        newElem,
+                                        inputElem,
+                                        false);
+
         /* eslint-disable */
         // Fork this part so we don't see the unstyled input cell during UI
         // switching to UIROOT etc.
@@ -238,6 +202,14 @@ function(aRequest) {
         }).fork();
         /* eslint-enable */
     }
+
+    //  Manually add the stylesheet
+    stylesheetLoc = TP.uc(
+            '~lib_src/tibet/tools/tdc/css/TP.tsh.console.css').getLocation();
+    TP.documentAddLinkElement(doc, stylesheetLoc);
+
+    //  Prep the UI for full console mode.
+    TP.wrap(TP.documentGetBody(doc)).addClass('full_console');
 
     return;
 });
