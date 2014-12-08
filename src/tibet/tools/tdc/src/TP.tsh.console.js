@@ -536,7 +536,7 @@ function() {
 
     this.observe(this.get('$inputCell'), 'TP.sig.DOMUndo');
 
-    this.observe(TP.core.Keyboard, TP.sys.cfg('tdc.toggle_off'),
+    this.observe(TP.core.Keyboard, TP.sys.cfg('tdc.toggle_on'),
                     function(evt) {
                         evt.preventDefault();
                         this.focusInputCell();
