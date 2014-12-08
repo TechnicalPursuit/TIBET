@@ -40,8 +40,11 @@ function(aName) {
         return this;
     }
 
-    //  Register our toggle key handler to finish Sherpa setup.
+    //  Otherwise, clear the 'boot.toggle_on' flag. We don't want the boot log
+    //  to be toggled. We'll be handling all of that.
+    TP.sys.setcfg('boot.toggle_on', null);
 
+    //  Register our toggle key handler to finish Sherpa setup.
     toggleKey = TP.sys.cfg('sherpa.toggle_on');
     if (!toggleKey.startsWith('TP.sig.')) {
         toggleKey = 'TP.sig.' + toggleKey;
@@ -70,7 +73,7 @@ function(aName) {
         if (TP.isValid(sherpaInst = TP.byOID('Sherpa'))) {
 
             //  If we didn't show the IDE when we first started, the trigger
-            //  has now been fired to show it. Do so after 500ms, to give the
+            //  has now been fired to show it.
             if (!TP.sys.cfg('boot.show_ide')) {
 
                 win = TP.win('UIROOT');
