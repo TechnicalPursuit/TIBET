@@ -35,44 +35,6 @@ sherpa|console[pclass|hidden]
     height: 0px;
 }
 
-sherpa|console[maximized]
-{
-    top: 50px;
-    height: auto !important;
-}
-
-sherpa|console > #toggleMaximize
-{
-    position: absolute;
-
-    cursor: pointer;
-
-    top: 2px;
-    right: 2px;
-    width: 10px;
-    height: 10px;
-
-    transform: rotate(90deg);
-
-    background-size: 10px 10px;
-    background-image: url(../img/console_fullscreen_enter.svg);
-}
-
-sherpa|console[maximized] > #toggleMaximize
-{
-    background-image: url(../img/console_fullscreen_exit.svg);
-}
-
-sherpa|console > #toggleMaximize:active
-{
-    transform: rotate(90deg) scale(1.2);
-}
-
-sherpa|console[maximized] > #toggleMaximize:active
-{
-    transform: rotate(90deg) scale(0.8);
-}
-
 sherpa|console > xctrls|codeeditor
 {
     position: static;
@@ -89,8 +51,78 @@ sherpa|console > xctrls|codeeditor > iframe
     border-radius: 5px;
 }
 
-sherpa|screen#consoleOut
+#SherpaConsoleOutputToolbar
 {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+
+    top: 0px;
+    right: 0px;
+    left: 0px;
+
+    height: 20px;
+
+    border-style: solid;
+    border-radius: 5px;
+
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+
+    border-color: transparent;
 }
+
+#SherpaConsoleOutputToolbar:hover
+{
+    border-color: rgb(188, 190, 143);
+    background-color: #3F3F3F;
+}
+
+#SherpaConsoleOutputToolbar div
+{
+    position: absolute;
+
+    visibility: hidden;
+
+    cursor: pointer;
+
+    width: 20px;
+    height: 20px;
+
+    background-size: 20px 20px;
+}
+
+#SherpaConsoleOutputToolbar:hover div
+{
+    visibility: visible;
+}
+
+#toggleHSplitTop
+{
+    right: 5px;
+    background-image: url(../img/h_split_top.svg);
+}
+
+#toggleHSplitBottom
+{
+    right: 30px;
+    background-image: url(../img/h_split_bottom.svg);
+}
+
+#toggleVSplitLeft
+{
+    right: 55px;
+    background-image: url(../img/v_split_left.svg);
+}
+
+#toggleVSplitRight
+{
+    right: 80px;
+    background-image: url(../img/v_split_right.svg);
+}
+
+#toggleFullscreen
+{
+    right: 105px;
+    background-image: url(../img/full_screen.svg);
+}
+

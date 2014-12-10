@@ -5,6 +5,7 @@ sherpa|world {
 
     display: block;
 	position: absolute;
+    box-sizing: border-box;
 
 	top: 0px;
 	left: 0px;
@@ -17,4 +18,48 @@ sherpa|world {
 	background-image: url('../../../../../lib/img/boot/tibet_world.gif');
 	background-position: center center;
 	background-repeat: no-repeat;
+
+    overflow: auto;
 }
+
+/* Vertical splitting */
+
+#center.v-split-left sherpa|world {
+    left: 50%;
+    width: 50%;
+}
+
+#center.v-split-left #content {
+    width: 50%;
+}
+
+#center.v-split-right sherpa|world {
+    width: 50%;
+}
+
+#center.v-split-right #content {
+    left: 50%;
+    width: 50%;
+}
+
+
+/* Horizontal splitting */
+
+#center.h-split-top sherpa|world {
+    top: 50%;
+    height: 50%;
+}
+
+#center.h-split-top #content {
+    height: 50%;
+}
+
+#center.h-split-bottom sherpa|world {
+    height: 50%;
+}
+
+#center.h-split-bottom #content {
+    top: 50%;
+    height: 50%;
+}
+

@@ -97,6 +97,15 @@ function() {
                 ' stubHref="~ide_root/html/sherpa_console_output_stub.html"/>');
         this.set('consoleOutput', consoleOutputTPElem);
 
+        TP.wrap(contentElem).addContent(
+                '<div id="SherpaConsoleOutputToolbar">' +
+                    '<div id="toggleHSplitBottom" mode="h_split_bottom"/>' +
+                    '<div id="toggleHSplitTop" mode="h_split_top"/>' +
+                    '<div id="toggleVSplitLeft" mode="v_split_left"/>' +
+                    '<div id="toggleVSplitRight" mode="v_split_right"/>' +
+                    '<div id="toggleFullscreen" mode="fullscreen"/>' +
+                '</div>');
+
         //  Make sure to observe setup on the console input here, because it
         //  won't be fully formed when this line is executed.
         consoleOutputStartupComplete = function(aSignal) {
@@ -122,6 +131,14 @@ function() {
             //  Grab the CodeMirror constructor so that we can use it to run
             //  modes, etc.
             TP.extern.CodeMirror = consoleOutputTPElem.$getEditorConstructor();
+
+            this.observe(contentElem,
+                            'TP.sig.DOMClick',
+                            function(aSignal) {
+                                this.toggleOutputMode(
+                                    TP.elementGetAttribute(
+                                        aSignal.getTarget(), 'mode'));
+                            }.bind(this));
         }.bind(this);
 
         consoleOutputStartupComplete.observe(consoleOutputTPElem,
@@ -391,38 +408,69 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('toggleMaximized',
-function() {
+TP.sherpa.console.Inst.defineMethod('toggleOutputMode',
+function(aMode) {
 
     /**
-     * @name toggleMaximized
+     * @name toggleOutputMode
      * @synopsis
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var consoleInput,
-        editorElem;
+    var centerElem;
 
-    consoleInput = this.get('consoleInput');
-    editorElem = TP.byCSS('.CodeMirror',
-                            consoleInput.getNativeContentDocument(),
-                            true);
+    centerElem = TP.byId('center');
 
-    if (this.hasAttribute('maximized')) {
-        this.removeAttribute('maximized');
-        TP.elementRemoveAttribute(editorElem, 'maximized');
-    } else {
-        this.setAttribute('maximized', true);
-        TP.elementSetAttribute(editorElem, 'maximized', 'true');
+    switch(aMode) {
+        case 'h_split_bottom':
+
+            TP.elementRemoveClass(centerElem, 'v-split-left');
+            TP.elementRemoveClass(centerElem, 'v-split-right');
+            TP.elementRemoveClass(centerElem, 'h-split-top');
+
+            TP.elementAddClass(centerElem, 'h-split-bottom');
+
+            break;
+
+        case 'h_split_top':
+
+            TP.elementRemoveClass(centerElem, 'v-split-left');
+            TP.elementRemoveClass(centerElem, 'v-split-right');
+            TP.elementRemoveClass(centerElem, 'h-split-bottom');
+
+            TP.elementAddClass(centerElem, 'h-split-top');
+
+            break;
+
+        case 'v_split_left':
+
+            TP.elementRemoveClass(centerElem, 'h-split-top');
+            TP.elementRemoveClass(centerElem, 'h-split-bottom');
+            TP.elementRemoveClass(centerElem, 'v-split-right');
+
+            TP.elementAddClass(centerElem, 'v-split-left');
+
+            break;
+
+        case 'v_split_right':
+
+            TP.elementRemoveClass(centerElem, 'h-split-top');
+            TP.elementRemoveClass(centerElem, 'h-split-bottom');
+            TP.elementRemoveClass(centerElem, 'v-split-left');
+
+            TP.elementAddClass(centerElem, 'v-split-right');
+
+            break;
+
+        case 'fullscreen':
+
+            TP.elementRemoveClass(centerElem, 'v-split-left');
+            TP.elementRemoveClass(centerElem, 'v-split-right');
+            TP.elementRemoveClass(centerElem, 'h-split-top');
+            TP.elementRemoveClass(centerElem, 'h-split-bottom');
+
+            break;
     }
-
-    this.focusInput();
-
-    (function() {
-        this.focusInput();
-        this.scrollOutputToEnd();
-
-    }.bind(this)).afterUnwind();
 
     return this;
 });
