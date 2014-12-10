@@ -122,6 +122,8 @@ function() {
         //  Make sure to observe setup on the console input here, because it
         //  won't be fully formed when this line is executed.
         consoleOutputStartupComplete = function(aSignal) {
+            var isHidden;
+
             consoleOutputStartupComplete.ignore(
                     aSignal.getOrigin(), aSignal.getSignalName());
 
@@ -132,8 +134,10 @@ function() {
             hudTPElem = TP.byOID('SherpaHUD', this.getNativeWindow());
             this.observe(hudTPElem, 'HiddenChange');
 
-            this.setAttribute('hidden',
-                                TP.bc(hudTPElem.getAttribute('hidden')));
+            //  Use the HUD's current value to set whether we are hidden or
+            //  not.
+            isHidden = TP.bc(hudTPElem.getAttribute('hidden'));
+            this.setAttribute('hidden', isHidden);
 
             //  Grab the CodeMirror constructor so that we can use it to run
             //  modes, etc.
