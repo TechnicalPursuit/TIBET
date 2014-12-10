@@ -319,8 +319,16 @@ div {
     transition: height .5s;
 }
 
+.north.no_transition, .south.no_transition {
+    transition: none;
+}
+
 .east, .west {
     transition: width .5s;
+}
+
+.east.no_transition, .west.no_transition {
+    transition: none;
 }
 
 .north[pclass|hidden] {

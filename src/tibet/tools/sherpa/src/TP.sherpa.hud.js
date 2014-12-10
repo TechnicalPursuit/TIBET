@@ -65,21 +65,51 @@ function(beHidden) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
+    var southDrawer,
+
+        evtName,
+        func;
+
     if (TP.bc(this.getAttribute('hidden')) === beHidden) {
         return this;
     }
 
-    //TP.byOID('SherpaConsole', this.getNativeWindow()).setAttribute(
-     //                                               'hidden', beHidden);
+    southDrawer = TP.byId('south', this.getNativeWindow());
 
     if (TP.isTrue(beHidden)) {
+
+        //  We remove our 'south's 'no_transition' class so that it no longer
+        //  'immediately snaps' like it needs to do during user interaction.
+        TP.elementRemoveClass(southDrawer, 'no_transition');
+        //TP.byId('south', this.getNativeWindow()).style.height = '';
+        TP.elementGetStyleObj(southDrawer).height = '';
+
         this.hideAllHUDDrawers();
 
         this.getNativeWindow().focus();
     } else {
         this.showAllHUDDrawers();
 
-        //TP.byOID('SherpaConsole', this.getNativeWindow()).focusInput();
+        if (TP.sys.isUA('WEBKIT')) {
+            evtName = 'webkitTransitionEnd';
+        } else {
+            evtName = 'transitionend';
+        }
+
+        southDrawer.addEventListener(
+            evtName,
+            func = function() {
+
+                southDrawer.removeEventListener(
+                                evtName,
+                                func,
+                                true);
+
+                //  We add our 'south's 'no_transition' class so that during
+                //  user interaction, resizing this drawer will be immediate.
+                TP.elementAddClass(southDrawer, 'no_transition');
+            },
+            true);
     }
 
     return this.callNextMethod();
