@@ -32,6 +32,8 @@ div {
 }
 
 .framing {
+    /* This should match TIBET's HUD_TIER constant */
+    z-index: 15000;
 }
 
 /* -----------------------------*
