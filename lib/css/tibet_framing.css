@@ -1,6 +1,6 @@
 @namespace pclass url(urn:tibet:pseudoclass);
 
-html,body,#background,iframe {
+html, body, #background, iframe {
     position: absolute;
 
     top: 0;
@@ -20,8 +20,7 @@ iframe {
 }
 
 #background {
-    background-image: url(../img/boot/dark_fiber.png);
-    background-color: #444;
+    background-color: #444444;
     overflow: hidden;
 }
 
@@ -310,7 +309,14 @@ div {
     border: 1px solid #666;
 }
 
-/* Hide drawers */
+/* Hide drawers and expand center content */
+
+#center.fullscreen {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
 
 .north, .south {
     transition: height .5s;

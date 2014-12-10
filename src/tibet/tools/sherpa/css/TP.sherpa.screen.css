@@ -16,3 +16,8 @@ sherpa|screen {
 
     float: left;
 }
+
+#center.fullscreen sherpa|world > sherpa|screen {
+    width: 100%;
+    height: 100%;
+}

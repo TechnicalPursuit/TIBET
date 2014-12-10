@@ -104,6 +104,8 @@ function(aName) {
                         },
                         true);
 
+                //  Show the center area and the drawers.
+                TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
                 TP.byCSS('.north, .south, .east, .west', win).perform(
                             function (anElem) {
                                 TP.elementRemoveAttribute(
@@ -154,9 +156,11 @@ function() {
     //  Set up the World
     this.setupWorld();
 
-    //  Based on the setting of this flag, we show or hide the drawers (the HUD
-    //  isn't real until we finish setup, so we do it manually here).
+    //  Based on the setting of this flag, we show or hide the center area and
+    //  the drawers (the HUD isn't real until we finish setup, so we do it
+    //  manually here).
     if (TP.sys.cfg('boot.show_ide')) {
+        TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
         TP.byCSS('.north, .south, .east, .west', win).perform(
                     function (anElem) {
                         TP.elementRemoveAttribute(

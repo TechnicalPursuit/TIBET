@@ -123,14 +123,18 @@ function() {
      * @todo
      */
 
-    var hudDrawers;
+    var win,
+        hudDrawers;
 
-    hudDrawers = TP.wrap(TP.byCSS('.framing', this.getNativeWindow()));
+    win = this.getNativeWindow();
+    hudDrawers = TP.wrap(TP.byCSS('.framing', win));
 
     hudDrawers.perform(
         function(aHUDDrawer) {
             aHUDDrawer.setAttrHidden(true);
         });
+
+    TP.elementAddClass(TP.byId('center', win), 'fullscreen');
 
     return this;
 });
@@ -147,14 +151,18 @@ function() {
      * @todo
      */
 
-    var hudDrawers;
+    var win,
+        hudDrawers;
 
-    hudDrawers = TP.wrap(TP.byCSS('.framing', this.getNativeWindow()));
+    win = this.getNativeWindow();
+    hudDrawers = TP.wrap(TP.byCSS('.framing', win));
 
     hudDrawers.perform(
         function(aHUDDrawer) {
             aHUDDrawer.setAttrHidden(false);
         });
+
+    TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
 
     return this;
 });
