@@ -62,7 +62,9 @@ function(aName) {
             win,
             drawerElement,
             func,
-            evtName;
+            evtName,
+
+            contentElem;
 
         //  The first thing to do is to tell TP.core.Keyboard to *ignore* this
         //  handler Function. This is because, once we finish set up of the
@@ -109,7 +111,22 @@ function(aName) {
                         true);
 
                 //  Show the center area and the drawers.
+
+                //  First, we remove the 'fullscreen' class from the center
+                //  element. This allows the 'content' element below to properly
+                //  size it's 'busy message layer'.
                 TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
+
+                //  Grab the existing 'content' element, which is now unused
+                //  since the world element moved the screens out of it, and use
+                //  it to show the 'loading' element. The console will later
+                //  reuse it for it's output.
+                contentElem = TP.byId('content');
+
+                TP.elementShow(contentElem);
+                TP.elementShowBusyMessage(contentElem, 'Loading...');
+
+                //  Show the drawers.
                 TP.byCSS('.north, .south, .east, .west', win).perform(
                             function (anElem) {
                                 TP.elementRemoveAttribute(
