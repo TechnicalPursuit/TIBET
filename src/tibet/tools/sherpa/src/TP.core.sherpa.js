@@ -99,8 +99,7 @@ function(aName) {
                             //  animate in).
                             sherpaInst.finishSetup();
 
-                            TP.byOID('SherpaHUD').setAttribute(
-                                                            'hidden', false);
+                            TP.byOID('SherpaHUD').setAttribute('hidden', false);
                         },
                         true);
 
