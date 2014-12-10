@@ -88,7 +88,6 @@ function(beHidden) {
 
         this.getNativeWindow().focus();
     } else {
-        this.showAllHUDDrawers();
 
         if (TP.sys.isUA('WEBKIT')) {
             evtName = 'webkitTransitionEnd';
@@ -110,6 +109,8 @@ function(beHidden) {
                 TP.elementAddClass(southDrawer, 'no_transition');
             },
             true);
+
+        this.showAllHUDDrawers();
     }
 
     return this.callNextMethod();

@@ -77,7 +77,7 @@ function(aName) {
             if (!TP.sys.cfg('boot.show_ide')) {
 
                 win = TP.win('UIROOT');
-                drawerElement = TP.byCSS('div#west', win, true);
+                drawerElement = TP.byCSS('div#south', win, true);
 
                 if (TP.sys.isUA('WEBKIT')) {
                     evtName = 'webkitTransitionEnd';
@@ -98,6 +98,11 @@ function(aName) {
                             //  complete the setup here (after the drawers
                             //  animate in).
                             sherpaInst.finishSetup();
+
+                            //  We add our 'south's 'no_transition' class so
+                            //  that during user interaction, resizing this
+                            //  drawer will be immediate.
+                            TP.elementAddClass(drawerElement, 'no_transition');
 
                             TP.byOID('SherpaHUD').setAttribute('hidden', false);
                         },
