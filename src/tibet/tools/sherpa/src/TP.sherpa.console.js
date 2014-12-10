@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:console');
+TP.sherpa.Element.defineSubtype('sherpa:console');
 
 //  ----------------------------------------------------------------------------
 //  Type Constants
@@ -23,29 +23,6 @@ TP.core.UIElementNode.defineSubtype('sherpa:console');
 
 //  the default prompt separator/string (>>)
 TP.sherpa.console.Type.defineConstant('DEFAULT_PROMPT', '&#160;&#187;');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    if (TP.isElement(elem = aRequest.at('node'))) {
-        this.addStylesheetTo(TP.nodeGetDocument(elem));
-    }
-
-    return;
-});
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -1955,24 +1932,6 @@ function(range) {
     );
 
     return marker;
-});
-
-//  ------------------------------------------------------------------------
-//  Halo focusing methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('haloCanBlur',
-function(aHalo, aSignal) {
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('haloCanFocus',
-function(aHalo, aSignal) {
-
-    return false;
 });
 
 //  ========================================================================

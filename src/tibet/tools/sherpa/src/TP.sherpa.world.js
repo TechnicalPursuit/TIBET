@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:world');
+TP.sherpa.Element.defineSubtype('sherpa:world');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -23,31 +23,6 @@ TP.core.UIElementNode.defineSubtype('sherpa:world');
 
 TP.sherpa.world.Inst.defineAttribute('screenWidth');
 TP.sherpa.world.Inst.defineAttribute('screenHeight');
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    if (TP.isElement(elem = aRequest.at('node'))) {
-        this.addStylesheetTo(TP.nodeGetDocument(elem));
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineAttribute('viewRect');
 TP.sherpa.world.Inst.defineAttribute('currentFocus');

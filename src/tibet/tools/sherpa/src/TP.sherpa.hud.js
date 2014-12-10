@@ -15,30 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:hud');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hud.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    if (TP.isElement(elem = aRequest.at('node'))) {
-        this.addStylesheetTo(TP.nodeGetDocument(elem));
-    }
-
-    return;
-});
+TP.sherpa.Element.defineSubtype('sherpa:hud');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -170,22 +147,6 @@ function() {
     TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hud.Inst.defineMethod('haloCanBlur',
-function(aHalo, aSignal) {
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hud.Inst.defineMethod('haloCanFocus',
-function(aHalo, aSignal) {
-
-    return false;
 });
 
 //  ------------------------------------------------------------------------

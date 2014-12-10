@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:tile');
+TP.sherpa.Element.defineSubtype('sherpa:tile');
 
 TP.sherpa.tile.Inst.defineAttribute(
         'header',
@@ -32,29 +32,6 @@ TP.sherpa.tile.Inst.defineAttribute(
 TP.sherpa.tile.Inst.defineAttribute(
         'body',
         {'value': TP.cpc('.body', true)});
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.tile.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    if (TP.isElement(elem = aRequest.at('node'))) {
-        this.addStylesheetTo(TP.nodeGetDocument(elem));
-    }
-
-    return;
-});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
