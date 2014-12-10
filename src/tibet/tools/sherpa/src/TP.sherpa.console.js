@@ -288,6 +288,7 @@ function(beHidden) {
 
         //  activate the input cell
         this.activateInputEditor();
+        this.adjustInputSize();
     }
 
     return this.callNextMethod();
@@ -1287,7 +1288,6 @@ function(uniqueID, dataRecord) {
     this.teardownInputMark();
 
     consoleOutput.refreshEditor();
-    //this.adjustInputSize();
 
     //console.log('Echo input text: ' + recordStr);
 
