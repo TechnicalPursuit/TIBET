@@ -763,13 +763,37 @@ function() {
      */
 
     var consoleInput,
-        newHeight;
+        editorHeight,
+
+        styleVals,
+
+        editorFudgeFactor,
+        innerDrawerBorderTop;
 
     consoleInput = this.get('consoleInput');
+    editorHeight = consoleInput.getEditorHeight();
 
-    newHeight = consoleInput.getEditorHeight();
-    this.setHeight(newHeight);
+    styleVals = TP.elementGetStyleValuesInPixels(
+                    this.getNativeNode(),
+                    TP.ac('borderTopWidth', 'borderBottomWidth',
+                            'paddingTop', 'paddingBottom',
+                            'bottom'));
 
+    editorFudgeFactor = 1;
+    this.setHeight(editorHeight -
+                    (styleVals.at('borderBottomWidth') +
+                     styleVals.at('paddingBottom') +
+                     editorFudgeFactor));
+
+    innerDrawerBorderTop = 1;
+    TP.elementSetHeight(TP.byId('south', this.getNativeWindow()),
+                        editorHeight +
+                        styleVals.at('borderTopWidth') +
+                        styleVals.at('borderBottomWidth') +
+                        styleVals.at('paddingTop') +
+                        styleVals.at('paddingBottom') +
+                        innerDrawerBorderTop +
+                        styleVals.at('bottom'));
     return;
 });
 
