@@ -23,7 +23,7 @@
 <script type="text/javascript" src="../../../../../deps/codemirror/mode/css/css.js"></script>
 
 <!-- Theme CSS -->
-<link rel="stylesheet" type="text/css" href="../cm_theme/base16-dark.css">
+<link rel="stylesheet" type="text/css" href="../cm_theme/zenburn.css">
 <link rel="stylesheet" type="text/css" href="../cm_theme/sherpa_pp.css">
 
 <script type="text/javascript">
@@ -32,7 +32,7 @@ function setup()
 	window.cmEditor = CodeMirror.fromTextArea(
 		document.getElementById('cmEditor'),
 		{
-			theme: 'base16-dark',
+			theme: 'zenburn',
 			mode: 'javascript',
 			tabMode: 'indent',
 			lineNumbers: false,
@@ -84,6 +84,9 @@ body {
 	overflow-x: auto;
 	overflow-y: hidden;
 }
+.CodeMirror-lines {
+    padding-top: 3px;
+}
 
 .CodeMirror[maximized] {
     height: 100%;
@@ -132,10 +135,6 @@ body {
 
 .bordered-eval-right {
     border-right: dashed 1px #D33682;
-}
-
-.cm-s-base16-dark div.CodeMirror-selected {
-    background: #716C62 !important;
 }
 
 </style>
