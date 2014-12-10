@@ -5,15 +5,18 @@
 
 sherpa|console
 {
-    display: none;
-	position: absolute;
+    display: block;
+	position: relative;
 
-    top: auto;
-    right: 5px;
-	left: 5px;
+    top: 3px;
     bottom: 4px;
 
     height: 18px;
+
+    /* Because we're display: relative, we need use margins for left and
+        right */
+    margin-left: 5px;
+    margin-right: 5px;
 
     /*max-height: calc(100% - 100px);*/
 
@@ -27,9 +30,9 @@ sherpa|console
     padding: 1px;
 }
 
-sherpa|console:not([pclass|hidden])
+sherpa|console[pclass|hidden]
 {
-    display: block;
+    height: 0px;
 }
 
 sherpa|console[maximized]
@@ -72,7 +75,7 @@ sherpa|console[maximized] > #toggleMaximize:active
 
 sherpa|console > xctrls|codeeditor
 {
-	position: absolute;
+    position: static;
 
     top: 0px;
     left: 0px;
