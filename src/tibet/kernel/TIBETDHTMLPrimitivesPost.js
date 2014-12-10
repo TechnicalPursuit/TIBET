@@ -2057,7 +2057,6 @@ function(anElement) {
      */
 
     var busyElement,
-        busyBackgroundElement,
         busyControlImageElement,
         busyMessageElement;
 
@@ -2076,20 +2075,6 @@ function(anElement) {
     TP.elementSetAttribute(busyElement,
                             'busyFor',
                             TP.elementGetAttribute(anElement, 'id'));
-
-    //  Create a 'busy background' element. This is a private element that
-    //  provides a common background for the busy element, but is not the
-    //  container of the busy image and message elements. In this way, we
-    //  can apply such things as a translucent background without having
-    //  these settings applied to them.
-    busyBackgroundElement = anElement.ownerDocument.createElement('div');
-    TP.elementSetClass(busyBackgroundElement, 'background');
-    TP.elementSetStyle(
-                    busyBackgroundElement,
-                    'position: absolute; left: 0px; top: 0px;' +
-                    ' width: 100%; height: 100%');
-
-    TP.nodeAppendChild(busyElement, busyBackgroundElement, false);
 
     //  Create a 'busy control' element that will have the busy image set as
     //  its background-image.
@@ -5010,20 +4995,6 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
     //  Set the busy message to the supplied message.
     busyMessageElement.firstChild.nodeValue = aMessage;
 
-    //  Set the top margin of the busy image element to 50% of the busy
-    //  element's height minus the busy control image's height. This will
-    //  place it in the center, minus the height of the busy control image,
-    //  so that it 'floats above' the busy message element, which is
-    //  squarely in the center.
-    TP.elementGetStyleObj(busyControlImageElement).marginTop =
-                (busyHeight * 0.50 - TP.BUSY_HEIGHT) + 'px';
-
-    //  Set the top margin of the busy message element to 50% of the busy
-    //  element's height. This will place it in the center of the busy
-    //  element, just below the control image.
-    TP.elementGetStyleObj(busyMessageElement).marginTop =
-                (busyHeight * 0.50) + 'px';
-
     //  Set up a resize function, so that if the busy is showing when the
     //  user resizes the window, it will resize also. This function is
     //  detached when the busy element is hidden to avoid memory leaks.
@@ -5099,24 +5070,30 @@ function(anElement, aMessage) {
 
     //  Note how the z-index here is set to the TP.POPUP_TIER in the TIBET
     //  kernel.
-    TP.elementSetStyle(busyElement,
-                            TP.join('position: absolute;',
-                            //      ' background-color: white;',
-                                    ' display: none;',
-                                    ' z-index: ', TP.POPUP_TIER, ';'));
+    TP.elementSetStyle(
+            busyElement,
+            TP.join('position: absolute;',
+                    ' background-color: rgba(255, 255, 255, 0.7);',
+                    ' display: none;',
+                    ' z-index: ', TP.POPUP_TIER, ';'));
 
-    controlImageElement = busyElement.getElementsByTagName('div')[1];
+    controlImageElement = busyElement.getElementsByTagName('div')[0];
     controlImageUrl = TP.uriExpandPath(TP.sys.cfg('path.lib_img')) +
-                                                '/tibet_busy.gif';
+                                                '/tibet_logo_black.svg';
 
     TP.elementSetStyle(
             controlImageElement,
-                TP.join('position: absolute;',
+                TP.join('position: relative;',
                         ' left: 50%;',
-                        ' margin-left: -14px;',
-                        ' width: 28px;',
-                        ' height: 28px;',
-                        ' background-image: url(', controlImageUrl, ');'));
+                        ' margin-left: -15%;',
+                        ' margin-top: 15%;',
+                        ' width: 30%;',
+                        ' height: 30%;',
+                        ' background-image: url(', controlImageUrl, ');',
+                        ' background-repeat: no-repeat;',
+                        ' background-position: center center;',
+                        ' background-size: contain;'
+                        ));
 
     busyMessageElement = busyElement.getElementsByTagName('span')[0];
     TP.elementSetStyle(
@@ -5124,7 +5101,7 @@ function(anElement, aMessage) {
             TP.join(
             'position: absolute;',
             ' font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;',
-            ' font-size: small;',
+            ' font-size: large;',
             ' width: 100%;',
             ' text-align: center;'));
 
