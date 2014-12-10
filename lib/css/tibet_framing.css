@@ -20,7 +20,7 @@ iframe {
 }
 
 #background {
-    background-color: #444444;
+    background-color: #444;
     overflow: hidden;
 }
 
@@ -47,7 +47,6 @@ div {
     box-shadow: 0 0 0 1px #eee;
 
     background-color: #eee;
-    background-image: url(../img/boot/white_fiber.png);
 }
 
 .corner:hover {
@@ -73,8 +72,7 @@ div {
     box-shadow: 0 0 0 1px #eee;
     border: 1px solid #aaa;
 
-    background-color: #aaa;
-    background-image: url(../img/boot/white_fiber.png);
+    background-color: #eee;
 }
 
 .h-edge:hover {
@@ -102,8 +100,7 @@ div {
     box-shadow: 0 0 0 1px #eee;
     border: 1px solid #aaa;
 
-    background-color: #aaa;
-    background-image: url(../img/boot/white_fiber.png);
+    background-color: #eee;
 }
 
 .v-edge:hover {
