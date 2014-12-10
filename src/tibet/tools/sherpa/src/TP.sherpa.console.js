@@ -61,9 +61,7 @@ function() {
      */
 
     var consoleInputTPElem,
-        consoleInputStartupComplete,
-
-        outputScreenElem;
+        consoleInputStartupComplete;
 
     consoleInputTPElem = this.get('consoleInput');
 
@@ -71,7 +69,9 @@ function() {
     //  be fully formed when this line is executed.
     consoleInputStartupComplete = function(aSignal) {
 
-        var hudTPElem,
+        var contentElem,
+
+            hudTPElem,
             consoleOutputTPElem,
             consoleOutputStartupComplete;
 
@@ -87,11 +87,12 @@ function() {
         //  service.
         //this.setupLogView();
 
-        outputScreenElem =
-            TP.byOID('SherpaWorld').createScreenElement('consoleOut', 0);
+        //  Set up the consoleOutput element by putting it in the previously
+        //  used 'content' element that is currently displaying a 'busy' panel.
 
-        //  Set up the consoleOutput element.
-        consoleOutputTPElem = TP.wrap(outputScreenElem).addContent(
+        contentElem = TP.byId('content');
+
+        consoleOutputTPElem = TP.wrap(contentElem).addContent(
                 '<xctrls:codeeditor id="SherpaConsoleOutput"' +
                 ' stubHref="~ide_root/html/sherpa_console_output_stub.html"/>');
         this.set('consoleOutput', consoleOutputTPElem);
@@ -115,6 +116,8 @@ function() {
             //  not.
             isHidden = TP.bc(hudTPElem.getAttribute('hidden'));
             this.setAttribute('hidden', isHidden);
+
+            TP.elementHideBusyMessage(contentElem);
 
             //  Grab the CodeMirror constructor so that we can use it to run
             //  modes, etc.
