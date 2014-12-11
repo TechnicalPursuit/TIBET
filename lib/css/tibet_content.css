@@ -3,7 +3,7 @@
  * @overview Styles specific to the various TPI/TIBET content pages.
  */
 
-@import "tibet_reset.css";
+@import url("tibet_reset.css");
 
 a {
   color: #910;
