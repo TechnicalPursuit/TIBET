@@ -20,20 +20,31 @@ iframe {
 }
 
 #background {
+    position: absolute;
+
     background-color: #444;
     overflow: hidden;
 }
 
 div {
-    position: absolute;
     margin: 0;
     padding: 0;
     border: 0;
 }
 
 .framing {
+    position: absolute;
+
     /* This should match TIBET's HUD_TIER constant */
     z-index: 15000;
+}
+
+.drawer {
+    position: absolute;
+}
+
+#home, #center, #content {
+    position: absolute;
 }
 
 /* -----------------------------*
