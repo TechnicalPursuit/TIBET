@@ -3250,7 +3250,7 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @raises TP.sig.InvalidParameter, TP.sig.InvalidPath
+     * @raises TP.sig.InvalidParameter, TP.sig.InvalidNode
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -3279,7 +3279,7 @@ function(targetObj, varargs) {
 
     //  This kind of path only works against XML
     if (!TP.isNode(targetObj) && !TP.isKindOf(targetObj, TP.core.Node)) {
-        return this.raise('TP.sig.InvalidPath');
+        return this.raise('TP.sig.InvalidNode');
     }
 
     pathSrc = this.get('srcPath');

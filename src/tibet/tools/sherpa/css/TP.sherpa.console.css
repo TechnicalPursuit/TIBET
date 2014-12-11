@@ -77,7 +77,7 @@ sherpa|console > xctrls|codeeditor > iframe
     background-color: #3F3F3F;
 }
 
-#SherpaConsoleOutputToolbar div
+#SherpaConsoleOutputToolbar .toolbarButton
 {
     position: absolute;
 
@@ -91,7 +91,7 @@ sherpa|console > xctrls|codeeditor > iframe
     background-size: 20px 20px;
 }
 
-#SherpaConsoleOutputToolbar:hover div
+#SherpaConsoleOutputToolbar:hover .toolbarButton
 {
     visibility: visible;
 }
