@@ -7391,7 +7391,7 @@ function(aNode, aTagName, aNamespaceURI) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetFirstAncestorByAttribute',
-function(aNode, attrName, attrValue) {
+function(aNode, attrName, attrValue, checkAttrNSURI) {
 
     /**
      * @name nodeGetFirstAncestorByAttribute
@@ -7404,6 +7404,10 @@ function(aNode, attrName, attrValue) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The optional attribute value to check.
+     * @param {Boolean} checkAttrNSURI True will cause this method to be more
+     *     rigorous in its checks for prefixed attributes, and will use calls to
+     *     actually check for the attribute in that namespace. Default is false
+     *     (to keep things faster).
      * @example TODO:
      * @returns {Element} An element ancestor of the node.
      * @raise TP.sig.InvalidParameter Raised when a node that isn't of type
@@ -7449,12 +7453,14 @@ function(aNode, attrName, attrValue) {
                     //  without a value we can go by existence alone
                     //  which should be a little faster
                     if (TP.notValid(attrValue)) {
-                        if (TP.elementHasAttribute(elem, attrName)) {
+                        if (TP.elementHasAttribute(
+                                    elem, attrName, checkAttrNSURI)) {
                             return true;
                         }
                     } else if (TP.match(
                                 attrValue,
-                                TP.elementGetAttribute(elem, attrName))) {
+                                TP.elementGetAttribute(
+                                    elem, attrName, checkAttrNSURI))) {
                         return true;
                     }
                 }
