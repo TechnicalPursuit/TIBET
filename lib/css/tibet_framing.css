@@ -303,6 +303,12 @@ div {
 
 #center #content {
     border-radius: 4px;
+
+    max-width: none;
+    min-width: none;
+
+    margin-left: initial;
+    margin-right: initial;
 }
 
 #center iframe {
