@@ -8644,7 +8644,24 @@ function() {
      * @returns {TP.core.Node} The receiver.
      */
 
-    TP.nodeAwakenContent(this.getNativeNode());
+    var node,
+        shouldProcess;
+
+    node = this.getNativeNode();
+
+    //  Initially we're set to process this markup.
+    shouldProcess = true;
+
+    //  But if the node is an Element and it has an attribute of
+    //  'tibet:noawaken', then skip processing it.
+    if (TP.isElement(node) &&
+        TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
+        shouldProcess = false;
+    }
+
+    if (shouldProcess) {
+        TP.nodeAwakenContent(this.getNativeNode());
+    }
 
     return this;
 });
@@ -8666,6 +8683,8 @@ function(aRequest) {
 
     var node,
 
+        shouldProcess,
+
         request,
 
         processor,
@@ -8683,22 +8702,35 @@ function(aRequest) {
         this.addXMLBase(this.get('uri'), null, aRequest);
     }
 
-    request = TP.request(aRequest);
+    //  Initially we're set to process this markup.
+    shouldProcess = true;
 
-    //  We do *not* clone our native node before we process it - the processing
-    //  system will not process a detached node so we process it in situ.
+    //  But if the node is an Element and it has an attribute of
+    //  'tibet:nocompile', then skip processing it.
+    if (TP.isElement(node) &&
+        TP.elementHasAttribute(node, 'tibet:nocompile', true)) {
+        shouldProcess = false;
+    }
 
-    //  Allocate a tag processor and initialize it with the COMPILE_PHASES
-    processor = TP.core.TagProcessor.constructWithPhaseTypes(
-                                    TP.core.TagProcessor.COMPILE_PHASES);
+    if (shouldProcess) {
+        request = TP.request(aRequest);
 
-    //  Process the tree of markup
-    processor.processTree(node, request);
+        //  We do *not* clone our native node before we process it - the
+        //  processing system will not process a detached node so we process it
+        //  in situ.
 
-    //  If the shell request failed then our enclosing request has failed.
-    if (request.didFail()) {
-        aRequest.fail(request.getFaultCode(), request.getFaultText());
-        return;
+        //  Allocate a tag processor and initialize it with the COMPILE_PHASES
+        processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                        TP.core.TagProcessor.COMPILE_PHASES);
+
+        //  Process the tree of markup
+        processor.processTree(node, request);
+
+        //  If the shell request failed then our enclosing request has failed.
+        if (request.didFail()) {
+            aRequest.fail(request.getFaultCode(), request.getFaultText());
+            return;
+        }
     }
 
     //  if our processing produced a new native node of the same type as our
@@ -8708,8 +8740,7 @@ function(aRequest) {
 
     if (!TP.isNode(node)) {
         return node;
-    } else if ((type = TP.core.Node.getConcreteType(node)) ===
-                                                        this.getType()) {
+    } else if ((type = TP.core.Node.getConcreteType(node)) === this.getType()) {
         this.setNativeNode(node);
     } else {
         return type.construct(node);
