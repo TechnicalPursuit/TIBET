@@ -2988,8 +2988,8 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      *     as either a String or as a RegExp.
      * @param {Boolean} checkAttrNSURI True will cause this method to be more
      *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     *     actually check for the attribute in that namespace. Default is false
+     *     (to keep things faster).
      * @returns {Boolean} Whether or not the supplied attribute value matches
      *     the attribute value on the supplied element.
      * @raise TP.sig.InvalidElement Raised when an invalid element is provided
