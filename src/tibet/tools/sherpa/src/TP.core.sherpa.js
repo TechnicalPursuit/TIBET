@@ -124,7 +124,8 @@ function(aName) {
                 contentElem = TP.byId('content');
 
                 TP.elementShow(contentElem);
-                TP.elementShowBusyMessage(contentElem, 'Loading...');
+                TP.elementShowBusyMessage(contentElem,
+                    '...initializing TIBET Sherpa...');
 
                 //  Show the drawers.
                 TP.byCSS('.north, .south, .east, .west', win).perform(
@@ -291,7 +292,6 @@ function(anID) {
 
 TP.core.sherpa.Inst.defineMethod('setupConsole',
 function() {
-
     var sherpaSouthDrawer,
         consoleTPElem;
 

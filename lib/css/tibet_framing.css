@@ -376,3 +376,36 @@ div {
     right: -2px;
     width: 0px;
 }
+
+/* -----------------------------*
+ * Busy layer styling           *
+ * ---------------------------- */
+
+[busyFor] {
+    background-color: #444;
+    opacity: 0.7;
+}
+
+[busyFor=content] {
+    border-radius: 3px;
+}
+
+[busyFor] .busyImage {
+    left: 50%;
+    margin-left: -15%;
+    margin-top: 15%;
+    width: 30%;
+    height: 30%;
+    background-image: url(../img/tibet_logo_black.svg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+}
+
+[busyFor] .busyMessage {
+    text-align: center;
+    font-size: 116%;
+    color: white;
+}
+
+

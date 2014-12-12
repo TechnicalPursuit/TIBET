@@ -2079,12 +2079,13 @@ function(anElement) {
     //  Create a 'busy control' element that will have the busy image set as
     //  its background-image.
     busyControlImageElement = anElement.ownerDocument.createElement('div');
-    TP.elementSetClass(busyControlImageElement, 'controlImage');
+    TP.elementSetClass(busyControlImageElement, 'busyImage');
     TP.nodeAppendChild(busyElement, busyControlImageElement, false);
 
     //  Create a 'busy message' element that will display the busy message
     //  and which can be set during busy operation to other messages.
     busyMessageElement = anElement.ownerDocument.createElement('span');
+    TP.elementSetClass(busyMessageElement, 'busyMessage');
     TP.nodeAppendChild(busyElement, busyMessageElement, false);
 
     //  Append a text node with a single whitespace character to the busy
@@ -5073,37 +5074,22 @@ function(anElement, aMessage) {
     TP.elementSetStyle(
             busyElement,
             TP.join('position: absolute;',
-                    ' background-color: rgba(255, 255, 255, 0.7);',
                     ' display: none;',
                     ' z-index: ', TP.POPUP_TIER, ';'));
 
     controlImageElement = busyElement.getElementsByTagName('div')[0];
-    controlImageUrl = TP.uriExpandPath(TP.sys.cfg('path.lib_img')) +
-                                                '/tibet_logo_black.svg';
-
     TP.elementSetStyle(
-            controlImageElement,
-                TP.join('position: relative;',
-                        ' left: 50%;',
-                        ' margin-left: -15%;',
-                        ' margin-top: 15%;',
-                        ' width: 30%;',
-                        ' height: 30%;',
-                        ' background-image: url(', controlImageUrl, ');',
-                        ' background-repeat: no-repeat;',
-                        ' background-position: center center;',
-                        ' background-size: contain;'
-                        ));
+        controlImageElement,
+            TP.join('position: relative;'));
 
     busyMessageElement = busyElement.getElementsByTagName('span')[0];
     TP.elementSetStyle(
         busyMessageElement,
             TP.join(
             'position: absolute;',
-            ' font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;',
-            ' font-size: large;',
-            ' width: 100%;',
-            ' text-align: center;'));
+            ' left: 0;',
+            ' right: 0;',
+            ' width: auto'));
 
     styleObj = TP.elementGetStyleObj(anElement);
 
