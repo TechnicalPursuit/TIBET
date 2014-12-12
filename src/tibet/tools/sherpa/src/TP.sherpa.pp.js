@@ -522,10 +522,10 @@ function(anObject, optFormat) {
 
     return '<span class="sherpa_pp TP_boot_Annotation">' +
                 '<span data-name="object">' +
-                    TP.htmlstr(anObject.object) +
+                    TP.xhtmlstr(anObject.object) +
                 '</span>' +
                 '<span data-name="message">' +
-                    TP.htmlstr(anObject.message) +
+                    TP.xhtmlstr(anObject.message) +
                 '</span>' +
             '</span>';
 });
