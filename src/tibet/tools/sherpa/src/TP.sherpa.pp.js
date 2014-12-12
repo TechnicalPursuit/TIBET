@@ -535,7 +535,9 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_boot_Log',
 function(anObject, optFormat) {
 
-    var obj,
+    var getLogLevelName,
+
+        obj,
 
         str,
         len,
@@ -548,27 +550,62 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
+    getLogLevelName = function(aLogLevel) {
+
+        switch(aLogLevel) {
+            case TP.boot.TRACE:
+                return 'trace';
+            case TP.boot.DEBUG:
+                return 'debug';
+            case TP.boot.INFO:
+                return 'info';
+            case TP.boot.WARN:
+                return 'warn';
+            case TP.boot.ERROR:
+                return 'error';
+            case TP.boot.SEVERE:
+                return 'severe';
+            case TP.boot.FATAL:
+                return 'fatal';
+            case TP.boot.SYSTEM:
+                return 'system';
+        }
+    };
+
     obj = anObject.getEntries();
 
     str = '';
     len = obj.getSize();
 
     for (i = 0; i < len; i++) {
-        str += '<span class="Date" data-name="timestamp">' +
-                    obj[i][TP.boot.LOG_ENTRY_DATE] +
+        str += '<span>';
+        str += '<span data-name="timestamp">' +
+                    (obj[i][TP.boot.LOG_ENTRY_DATE] ?
+                    obj[i][TP.boot.LOG_ENTRY_DATE].getTime() :
+                    '') +
                 '</span>' +
-                '<span class="String" data-name="log-name">' +
-                    obj[i][TP.boot.LOG_ENTRY_NAME] +
+                '<span data-name="log-name">' +
+                    (obj[i][TP.boot.LOG_ENTRY_NAME] ?
+                    ' ' + obj[i][TP.boot.LOG_ENTRY_NAME] :
+                    '') +
                 '</span>' +
-                '<span class="Number" data-name="log-level">' +
-                    obj[i][TP.boot.LOG_ENTRY_LEVEL] +
+                '<span data-name="log-level">' +
+                    (obj[i][TP.boot.LOG_ENTRY_LEVEL] ?
+                    '- ' + getLogLevelName(obj[i][TP.boot.LOG_ENTRY_LEVEL]) :
+                    '') +
                 '</span>' +
-                '<span class="String" data-name="log-entry">' +
-                    obj[i][TP.boot.LOG_ENTRY_PAYLOAD] +
+                '<span data-name="log-entry">' +
+                    (obj[i][TP.boot.LOG_ENTRY_PAYLOAD] ?
+                    obj[i][TP.boot.LOG_ENTRY_PAYLOAD].asEscapedXML() :
+                    '') +
                 '</span>' +
-                '<span class="String" data-name="log-delta">' +
-                    obj[i][TP.boot.LOG_ENTRY_DELTA] +
+                '<span data-name="log-delta">' +
+                    (obj[i][TP.boot.LOG_ENTRY_DELTA] ?
+                    '' + obj[i][TP.boot.LOG_ENTRY_DELTA].asEscapedXML() :
+                    '') +
                 '</span>';
+
+        str += '</span>';
     }
 
     return '<span class="sherpa_pp TP_boot_Log">' +
