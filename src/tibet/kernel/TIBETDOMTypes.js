@@ -10032,10 +10032,15 @@ function(aNode) {
     last = name;
     name = TP.elementGetFullName(aNode, true);
     if ((name !== last) && TP.isType(type = TP.sys.require(name))) {
-        //  Only set the slot if its an HTML node... see above.
-        TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
 
-        return type;
+        //  Sometime local tag names are also native types in the system - don't
+        //  return those
+        if (!TP.isNativeType(type)) {
+            //  Only set the slot if its an HTML node... see above.
+            TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
+
+            return type;
+        }
     }
 
     //  We next try to find a type based on the 'canonical name'. This may
