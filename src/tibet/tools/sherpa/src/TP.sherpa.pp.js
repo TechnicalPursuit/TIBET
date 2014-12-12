@@ -152,12 +152,12 @@ function(anObject, optFormat) {
         stack = '<br/>' +
                 TP.getStackInfo(anObject).collect(
                     function(infoPiece) {
-                        return infoPiece.asEscapedXML();
+                        return TP.sherpa.pp.fromString(infoPiece);
                     }).join('<br/>');
     }
 
     return '<span class="sherpa_pp Error">' +
-            anObject.message.asEscapedXML() +
+            this.fromString(anObject.message) +
             stack +
             '</span>';
 });
