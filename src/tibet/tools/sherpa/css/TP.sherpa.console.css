@@ -14,7 +14,7 @@ HTML stub file */
 sherpa|console
 {
     display: block;
-	position: relative;
+    position: relative;
 
     top: 3px;
     bottom: 4px;
@@ -23,13 +23,13 @@ sherpa|console
 
     /* Because we're display: relative, we need use margins for left and
         right */
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 3px;
+    margin-right: 3px;
 
     /*max-height: calc(100% - 100px);*/
 
-	/* This should match TIBET's CONSOLE_TIER constant */
-	z-index: 15000;
+    /* This should match TIBET's CONSOLE_TIER constant */
+    z-index: 15000;
 
     box-shadow: 0 0 0 1px #666;
     border: 1px solid #aaa;
@@ -143,6 +143,7 @@ sherpa|console > xctrls|codeeditor > iframe
     right: 0px;
     bottom: 0px;
     left: 0px;
+    padding-left: 5px;
 
     background-color: #3F3F3F;
 

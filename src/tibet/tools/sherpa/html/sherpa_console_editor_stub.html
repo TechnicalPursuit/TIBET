@@ -6,12 +6,14 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+<link rel="stylesheet" type="text/css" href="../../../../../lib/css/tibet_reset.css"/>
+
 <!-- Base CodeMirror JS and CSS -->
 <script type="text/javascript" src="../../../../../deps/codemirror/lib/codemirror.js"></script>
 <script type="text/javascript" src="../../../../../deps/codemirror/addon/runmode/runmode.js"></script>
 <script type="text/javascript" src="../../../../../deps/codemirror/addon/search/searchcursor.js"></script>
 
-<link rel="stylesheet" type="text/css" href="../../../../../deps/codemirror/lib/codemirror.css">
+<link rel="stylesheet" type="text/css" href="../../../../../deps/codemirror/lib/codemirror.css"/>
 
 <!-- XML mode JS -->
 <script type="text/javascript" src="../../../../../deps/codemirror/mode/xml/xml.js"></script>
@@ -23,18 +25,18 @@
 <script type="text/javascript" src="../../../../../deps/codemirror/mode/css/css.js"></script>
 
 <!-- Theme CSS -->
-<link rel="stylesheet" type="text/css" href="../cm_theme/zenburn.css">
+<link rel="stylesheet" type="text/css" href="../cm_theme/zenburn.css"/>
 
 <script type="text/javascript">
 function setup()
 {
-	window.cmEditor = CodeMirror.fromTextArea(
-		document.getElementById('cmEditor'),
-		{
-			theme: 'zenburn',
-			mode: 'javascript',
-			tabMode: 'indent',
-			lineNumbers: false,
+    window.cmEditor = CodeMirror.fromTextArea(
+        document.getElementById('cmEditor'),
+        {
+            theme: 'zenburn',
+            mode: 'javascript',
+            tabMode: 'indent',
+            lineNumbers: false,
             viewportMargin: Infinity,
             electricChars: false,
             extraKeys:
@@ -59,29 +61,29 @@ function setup()
 
                 'Ctrl-Enter': function() {return true}
             }
-		});
+        });
 
-	window.frameElement.frameLoad();
+    window.frameElement.frameLoad();
 };
 </script>
 
 <style type="text/css">
 html, body {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 body {
-	margin: 0px;
-	padding: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 
 .CodeMirror {
     height: auto;
 }
 .CodeMirror-scroll {
-	overflow-x: auto;
-	overflow-y: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 .CodeMirror-lines {
     padding-top: 3px;
@@ -134,6 +136,6 @@ body {
 </head>
 
 <body onload="setup()">
-	<textarea id="cmEditor"></textarea>
+    <textarea id="cmEditor"></textarea>
 </body>
 </html>
