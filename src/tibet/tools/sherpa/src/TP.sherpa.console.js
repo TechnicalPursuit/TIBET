@@ -515,7 +515,8 @@ function(range, cssClass, promptText) {
             'readOnly': true,
             'collapsed': true,
             'replacedWith': elem,
-            'inclusiveLeft': false,
+            'inclusiveLeft': true,      //  do not allow the cursor to be
+                                        //  placed before the prompt mark
             'inclusiveRight': false
         }
     );
