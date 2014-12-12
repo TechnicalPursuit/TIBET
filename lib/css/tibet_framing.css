@@ -302,6 +302,8 @@ div {
     min-width: 600px;
 
     overflow: hidden;
+
+    transition: top .5s, right .5s, bottom .5s, left .5s;
 }
 
 #center #content {
