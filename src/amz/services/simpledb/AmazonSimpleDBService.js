@@ -196,7 +196,7 @@ function(aRequest) {
 
     //  The required serverKey isn't in the paramDict? Abort it.
     if (TP.notValid(serverKey = paramDict.at('key'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             TP.sc('Missing required server key parameter in request'));
 
         return;
@@ -206,7 +206,7 @@ function(aRequest) {
 
     //  The required secretServerKey isn't in the paramDict? Abort it.
     if (TP.notValid(secretServerKey = paramDict.at('secretkey'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             TP.sc('Missing required secret server key parameter in request'));
 
         return;
@@ -272,7 +272,7 @@ function(aRequest) {
     //  No key? Then fail the request and return.
     if (TP.isEmpty(key = this.get('serverKey')) &&
             TP.isEmpty(key = aRequest.at('key'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             'No key in TP.amz.AmazonSimpleDBService::finalizeRequest');
 
         return null;
@@ -281,7 +281,7 @@ function(aRequest) {
     //  No secretKey? Then fail the request and return.
     if (TP.isEmpty(secretKey = this.get('secretServerKey')) &&
             TP.isEmpty(secretKey = aRequest.at('secretkey'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             'No secretKey in TP.amz.AmazonSimpleDBService::finalizeRequest');
 
         return null;
@@ -414,7 +414,7 @@ function(aRequest) {
     //  If 'Names' is empty and we got here, then it must be a
     //  'PutAttributes' - 'Names' is required for that operation.
     if (TP.isEmpty(names)) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             TP.join(TP.sc('Missing "Names" parameter in request for action:'),
                 ' "', anAction, '"'));
         return;
@@ -423,7 +423,7 @@ function(aRequest) {
     //  If 'Values' is empty but 'Names' is not, then we bail out since we
     //  need values for names.
     if (TP.isEmpty(values)) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             TP.join(TP.sc('Missing "Values" parameter in request for action:'),
                 ' "', anAction, '"'));
         return;

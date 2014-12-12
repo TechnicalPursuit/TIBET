@@ -11461,7 +11461,7 @@ function() {
      * @name getSTATUS
      * @synopsis Returns the global $STATUS flag setting. This method provides a
      *     get() accessible interface to that global.
-     * @returns {Number} A status code. Currently TP.SUCCESS/TP.FAILURE.
+     * @returns {Number} A status code, typically from job control status codes.
      */
 
     return $STATUS;

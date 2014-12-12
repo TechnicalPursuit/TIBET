@@ -200,7 +200,7 @@ function(aRequest) {
     //  value very well may be TP.NULL if the user didn't provide a value
     //  above, in which case this statement will not be true.
     if (TP.notValid(serverKey = paramDict.at('key'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             TP.sc('Missing required server key parameter in request'));
 
         return;
@@ -212,7 +212,7 @@ function(aRequest) {
     //  the value very well may be TP.NULL if the user didn't provide a value
     //  above, in which case this statement will not be true.
     if (TP.notValid(secretServerKey = paramDict.at('secretkey'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             TP.sc('Missing required secret server key parameter in request'));
 
         return;
@@ -262,7 +262,7 @@ function(aRequest) {
         case 'putItemInBucket':
             return TP.HTTP_PUT;
         default:
-            aRequest.fail(TP.FAILURE, 'Unrecognized action');
+            aRequest.fail('Unrecognized action');
             return '';
     }
 
@@ -303,7 +303,7 @@ function(aRequest) {
                 '/', aRequest.at('keyName'));
             break;
         default:
-            aRequest.fail(TP.FAILURE, 'Unrecognized action');
+            aRequest.fail('Unrecognized action');
 
             //  NOTE the getRequestURI method throws an exception if no URI
             //  can be computed from the service uri or the request payload
@@ -349,15 +349,15 @@ function(aRequest) {
 
     //  No verb? Then fail the request and return.
     if (TP.isEmpty(verb = aRequest.at('verb'))) {
-        aRequest.fail(TP.FAILURE,
-        'No verb in TP.amz.AmazonS3Service::rewriteRequestHeaders');
+        aRequest.fail(
+            'No verb in TP.amz.AmazonS3Service::rewriteRequestHeaders');
 
         return null;
     }
 
     //  No resource? Then fail the request and return.
     if (TP.isEmpty(resource = aRequest.at('resource'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
         'No resource in TP.amz.AmazonS3Service::rewriteRequestHeaders');
 
         return null;
@@ -366,7 +366,7 @@ function(aRequest) {
     //  No key? Then fail the request and return.
     if (TP.isEmpty(key = this.get('serverKey')) &&
             TP.isEmpty(key = aRequest.at('key'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
         'No key in TP.amz.AmazonS3Service::rewriteRequestHeaders');
 
         return null;
@@ -375,7 +375,7 @@ function(aRequest) {
     //  No secretKey? Then fail the request and return.
     if (TP.isEmpty(secretKey = this.get('secretServerKey')) &&
             TP.isEmpty(secretKey = aRequest.at('secretKey'))) {
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
         'No secretKey in TP.amz.AmazonS3Service::rewriteRequestHeaders');
 
         return null;

@@ -104,12 +104,12 @@ function(aRequest) {
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(val = obj.get('value'))) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     aRequest.complete(val);
@@ -159,12 +159,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     //  stdin is an array...so we just want the first item here
@@ -198,12 +198,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(arr = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     //  stdin is an array...so addAll, not push here
@@ -233,12 +233,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(arr = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     //  truncate to clear first since this is a "set", not an "add"
@@ -279,12 +279,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(re = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     len = input.getSize();
@@ -362,12 +362,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(re = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     //  reset in case this is a global instance before looping
@@ -463,12 +463,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     //  strings are invoked in quoted form due to parsing requirements of
@@ -557,12 +557,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     //  strings are invoked in quoted form due to parsing requirements of
@@ -681,12 +681,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     //  stdin is an array...so we just want the first item here
@@ -717,12 +717,12 @@ function(aRequest) {
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(node = obj.get('content'))) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     aRequest.complete(node);
@@ -750,12 +750,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     //  stdin is always an Array, so we want the first item.
@@ -799,12 +799,12 @@ function(aRequest) {
     //  Check input
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     len = input.getSize();
@@ -871,12 +871,12 @@ function(aRequest) {
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(doc = obj.getContentDocument())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     return aRequest.complete(doc);
@@ -902,12 +902,12 @@ function(aRequest) {
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     //  stdin is always an Array, so we want the first item.
@@ -1007,7 +1007,7 @@ function(aRequest, cmdType) {
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';
-        return aRequest.fail(TP.FAILURE, msg);
+        return aRequest.fail(msg);
     }
 
     href = obj.getLocation();
@@ -1025,16 +1025,16 @@ function(aRequest, cmdType) {
     subrequest.atPut('cmdAction', aRequest.at('cmdAction'));
 
     subrequest.defineMethod('cancelJob',
-        function(aFaultCode, aFaultString) {
+        function(aFaultString, aFaultCode) {
 
             switch (arguments.length) {
                 case 1:
-                    this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultCode);
-                    return aRequest.cancel(aFaultCode);
+                    this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultString);
+                    return aRequest.cancel(aFaultString);
                 case 2:
-                    this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultCode,
-                                    aFaultString);
-                    return aRequest.cancel(aFaultCode, aFaultString);
+                    this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultString,
+                                    aFaultCode);
+                    return aRequest.cancel(aFaultString, aFaultCode);
                 default:
                     this.$wrapupJob('Cancelled', TP.CANCELLED);
                     return aRequest.cancel();
@@ -1063,16 +1063,16 @@ function(aRequest, cmdType) {
         });
 
     subrequest.defineMethod('failJob',
-        function(aFaultCode, aFaultString, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultStack) {
 
             switch (arguments.length) {
                 case 1:
-                    this.$wrapupJob('Failed', TP.FAILED, aFaultCode);
-                    return aRequest.fail(aFaultCode);
+                    this.$wrapupJob('Failed', TP.FAILED, aFaultString);
+                    return aRequest.fail(aFaultString);
                 case 2:
-                    this.$wrapupJob('Failed', TP.FAILED, aFaultCode,
-                                    aFaultString);
-                    return aRequest.fail(aFaultCode, aFaultString);
+                    this.$wrapupJob('Failed', TP.FAILED, aFaultString,
+                                    aFaultCode);
+                    return aRequest.fail(aFaultString, aFaultCode);
                 default:
                     this.$wrapupJob('Failed', TP.FAILED);
                     return aRequest.fail();
@@ -1106,7 +1106,7 @@ function(aRequest, cmdType) {
                     result = aSignal.getResult();
                     if (TP.notValid(result)) {
                         msg = 'Missing pipe resource: ' + href;
-                        aRequest.fail(TP.FAILURE, msg);
+                        aRequest.fail(msg);
 
                         return;
                     } else if (TP.canInvoke(result, fname)) {
@@ -1119,7 +1119,7 @@ function(aRequest, cmdType) {
                         }
                     } else {
                         msg = 'Incapable pipe resource: ' + href;
-                        aRequest.fail(TP.FAILURE, msg);
+                        aRequest.fail(msg);
 
                         return;
                     }
@@ -1183,7 +1183,7 @@ function(aRequest, cmdType) {
                 commitreq.defineMethod('handleRequestFailed',
                     function(aSignal) {
 
-                        aRequest.fail(TP.FAILURE, aSignal.getResult());
+                        aRequest.fail(aSignal.getResult());
 
                         return;
                     });
@@ -1314,7 +1314,7 @@ function(aRequest) {
     var obj;
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
-        return aRequest.fail(TP.FAILURE, 'No command instance');
+        return aRequest.fail('No command instance');
     }
 
     return obj.getDocument().getType().cmdAddContent(aRequest);
@@ -1335,7 +1335,7 @@ function(aRequest) {
     var obj;
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
-        return aRequest.fail(TP.FAILURE, 'No command instance');
+        return aRequest.fail('No command instance');
     }
 
     return obj.getDocument().getType().cmdGetContent(aRequest);
@@ -1357,7 +1357,7 @@ function(aRequest) {
     var obj;
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
-        return aRequest.fail(TP.FAILURE, 'No command instance');
+        return aRequest.fail('No command instance');
     }
 
     return obj.getDocument().getType().cmdSetContent(aRequest);

@@ -2287,7 +2287,7 @@ function() {
         el = 'TP.html.Element'.construct(list[i]);
         if (TP.notValid(el)) {
             TP.ifWarn() ?
-                TP.warn(TP.boot.$annotate(
+                TP.warn(TP.annotate(
                             TP.nodeCloneNode(list[i]),
                             'Unable to acquire wrapper.'),
                         TP.LOG) : 0;
@@ -2337,7 +2337,7 @@ function(aValue) {
         el = 'TP.html.Element'.construct(list[i]);
         if (TP.notValid(el)) {
             TP.ifWarn() ?
-                TP.warn(TP.boot.$annotate(
+                TP.warn(TP.annotate(
                             TP.nodeCloneNode(list[i]),
                             'Unable to acquire wrapper.'),
                         TP.LOG) : 0;
@@ -3947,7 +3947,7 @@ function(aSignal, anItemset) {
 
     if (!TP.canInvoke(content, 'injectInto')) {
         TP.ifWarn() ?
-            TP.warn(TP.boot.$annotate(
+            TP.warn(TP.annotate(
                         this,
                         'Itemset content not a collection.'),
                     TP.LOG) : 0;
@@ -4040,7 +4040,7 @@ function(aSignal) {
 
     if (!TP.canInvoke(content, 'perform')) {
         TP.ifWarn() ?
-            TP.warn(TP.boot.$annotate(
+            TP.warn(TP.annotate(
                         this,
                         'Itemset is not a collection.'),
                     TP.LOG) : 0;

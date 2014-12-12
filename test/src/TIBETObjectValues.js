@@ -149,6 +149,7 @@ function(aRequest) {
         tibetBrowserType,
 
         tpBootAnnotation,
+        tpAnnotation,
         tpBootLog,
 
         objValues;
@@ -311,6 +312,7 @@ function(aRequest) {
     tibetBrowserType = TP.core.Browser;
 
     tpBootAnnotation = TP.boot.$annotate('A String', 'This is a message');
+    tpAnnotation = TP.annotate('A String', 'This is a message');
     tpBootLog = TP.sys.get('$bootlog');
 
     objValues = TP.hc(
@@ -406,7 +408,8 @@ function(aRequest) {
     'TP.core.Job',              tibetJob,               //  TP.core.Job
     'TP.core.Browser_TYPE',     tibetBrowserType,       //  TP.core.Browser type
 
-    'TP.boot.Annotation',       tpBootAnnotation        //  TP.boot.Annotation
+    'TP.boot.Annotation',       tpBootAnnotation,       //  TP.boot.Annotation
+    'TP.core.Annotation',       tpAnnotation            //  TP.core.Annotation
     );
 
     //  In order to get an 'undefined' value into our hash, we have to play some

@@ -1134,7 +1134,7 @@ function(aRequest) {
         yakService;
 
     if (!this.canSend()) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'No active XMPP connection. Please login.');
     }
 
@@ -1173,7 +1173,7 @@ function(aRequest) {
         yakService;
 
     if (!this.canSend()) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'No active XMPP connection. Please login.');
     }
 
@@ -1258,7 +1258,7 @@ function(aRequest) {
     var yakService;
 
     if (!this.canSend()) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'No active XMPP connection. Please login.');
     }
 
@@ -1341,12 +1341,12 @@ function(aRequest) {
         msgContent;
 
     if (!this.canSend()) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'No active XMPP connection. Please login.');
     }
 
     if (TP.notValid(jid = this.get('targetJID'))) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'No active target JID. Use :to to set one.');
     }
 
@@ -1472,7 +1472,7 @@ function(aRequest) {
     }
 
     if (!this.canSend()) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'No active XMPP connection. Please login.');
     }
 
@@ -1530,7 +1530,7 @@ function(aRequest) {
 
     //  if we got here it's because they want to send a one-time message...
     if (!this.canSend()) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'No active XMPP connection. Please login.');
     }
 
@@ -1640,7 +1640,7 @@ function(aRequest) {
     }
 
     if (!this.canSend()) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'No active XMPP connection. Please login.');
     }
 

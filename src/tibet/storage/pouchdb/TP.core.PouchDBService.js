@@ -113,7 +113,6 @@ function(aRequest) {
 
     if (TP.notValid(theDB = new TP.extern.PouchDB(dbName))) {
         request.fail(
-                TP.FAILURE,
                 TP.sc('Cannot open pouchDB database named: ' + dbName));
 
         return this;
@@ -130,7 +129,6 @@ function(aRequest) {
                     //  There was an error - fail the request.
                     if (TP.isValid(error)) {
                         return request.fail(
-                                TP.FAILURE,
                                 TP.sc('Trying to delete database:',
                                         dbName, ' but had an error: ',
                                         TP.str(error)));
@@ -160,7 +158,6 @@ function(aRequest) {
                     //  If the DB had an error, report it.
                     if (TP.isValid(error)) {
                         return request.fail(
-                                TP.FAILURE,
                                 TP.sc('Trying to delete item with id: ', id,
                                         ' from database:',
                                         dbName, ' but had an error: ',
@@ -172,7 +169,6 @@ function(aRequest) {
                     //  update an object that doesn't exist.
                     if (TP.notValid(response) || TP.notValid(response._rev)) {
                         return request.fail(
-                                TP.FAILURE,
                                 TP.sc('There is no existing item with id: ',
                                         id, ' in database:', dbName, '.'));
                     }
@@ -191,7 +187,6 @@ function(aRequest) {
                             //  There was an error - fail the request.
                             if (TP.isValid(error)) {
                                 return request.fail(
-                                    TP.FAILURE,
                                     TP.sc('Trying to delete item with id: ', id,
                                             ' from database:',
                                             dbName, ' but had an error: ',
@@ -211,7 +206,6 @@ function(aRequest) {
             if (TP.isEmpty(id)) {
 
                 return request.fail(
-                    TP.FAILURE,
                     TP.sc('Trying to retrieve an item from the',
                             ' database:', dbName,
                             ' but had missing the unique id.'));
@@ -224,7 +218,6 @@ function(aRequest) {
                     //  There was an error - fail the request.
                     if (TP.isValid(error)) {
                         return request.fail(
-                            TP.FAILURE,
                             TP.sc('Trying to retrieve an item from database:',
                                     dbName, ' but had an error: ',
                                     TP.str(error)));
@@ -240,7 +233,6 @@ function(aRequest) {
             if (TP.isEmpty(id)) {
 
                 return request.fail(
-                    TP.FAILURE,
                     TP.sc('Trying to retrieve item info from the',
                             ' database:', dbName,
                             ' but had missing the unique id.'));
@@ -256,7 +248,6 @@ function(aRequest) {
                     //  There was an error - fail the request.
                     if (TP.isValid(error)) {
                         return request.fail(
-                            TP.FAILURE,
                             TP.sc('Trying to retrieve item info from database:',
                                     dbName, ' but had an error: ',
                                     TP.str(error)));
@@ -282,7 +273,6 @@ function(aRequest) {
                     //  There was an error - fail the request.
                     if (TP.isValid(error)) {
                         return request.fail(
-                            TP.FAILURE,
                             TP.sc('Trying to retrieve information about the',
                                     ' database:', dbName, ' but had an error: ',
                                     TP.str(error)));
@@ -318,7 +308,6 @@ function(aRequest) {
                         //  There was an error - fail the request.
                         if (TP.isValid(error)) {
                             return request.fail(
-                                TP.FAILURE,
                                 TP.sc('Trying to create an item in the',
                                         ' database:', dbName,
                                         ' but had an error: ',
@@ -346,7 +335,6 @@ function(aRequest) {
                         //  we're not interested in), report it.
                         if (TP.isValid(error) && error.status !== 404) {
                             return request.fail(
-                                    TP.FAILURE,
                                     TP.sc('Trying to create an item in the',
                                             ' database:', dbName,
                                             ' but had an error: ',
@@ -357,7 +345,6 @@ function(aRequest) {
                         //  number, then an object under that key already existed.
                         if (TP.isValid(response) && TP.isValid(response._rev)) {
                             return request.fail(
-                                    TP.FAILURE,
                                     TP.sc('Already had item with id: ', id,
                                             ' in database:', dbName, '.'));
                         }
@@ -370,7 +357,6 @@ function(aRequest) {
                                 //  There was an error - fail the request.
                                 if (TP.isValid(error)) {
                                     return request.fail(
-                                        TP.FAILURE,
                                         TP.sc('Trying to create an item in the',
                                                 ' database:', dbName,
                                                 ' but had an error: ',
@@ -391,7 +377,6 @@ function(aRequest) {
             if (TP.isEmpty(id)) {
 
                 return request.fail(
-                    TP.FAILURE,
                     TP.sc('Trying to update an item in the',
                             ' database:', dbName,
                             ' but had missing the unique id.'));
@@ -410,7 +395,6 @@ function(aRequest) {
                         //  If the DB had an error report it.
                         if (TP.isValid(error)) {
                             return request.fail(
-                                    TP.FAILURE,
                                     TP.sc('Trying to update an item in the',
                                             ' database:', dbName,
                                             ' but had an error: ',
@@ -422,7 +406,6 @@ function(aRequest) {
                         //  update an object that doesn't exist.
                         if (TP.notValid(response) || TP.notValid(response._rev)) {
                             return request.fail(
-                                    TP.FAILURE,
                                     TP.sc('There is no existing item with id: ',
                                             id, ' in database:', dbName, '.'));
                         }
@@ -446,7 +429,6 @@ function(aRequest) {
                                 //  There was an error - fail the request.
                                 if (TP.isValid(error)) {
                                     return request.fail(
-                                        TP.FAILURE,
                                         TP.sc('Trying to create an item in the',
                                                 ' database:', dbName,
                                                 ' but had an error: ',

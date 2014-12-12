@@ -503,8 +503,8 @@ function(range, cssClass, promptText) {
 
     elem = TP.documentCreateElement(doc, 'span');
     TP.elementSetClass(elem, cssClass);
+    TP.elementAddClass(elem, 'noselect');
     TP.elementSetAttribute(elem, 'id', TP.sys.cfg('sherpa.console_prompt'));
-
     TP.htmlElementSetContent(elem, promptText);
 
     marker = consoleInput.$getEditorInstance().markText(
@@ -639,6 +639,7 @@ function(aPrompt, aCSSClass) {
         editor.setCursor(range.to);
     } else {
         TP.elementSetClass(elem, cssClass);
+        TP.elementAddClass(elem, 'noselect');
         TP.htmlElementSetContent(elem, promptStr);
     }
 

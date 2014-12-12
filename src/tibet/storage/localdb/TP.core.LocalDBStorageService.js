@@ -131,7 +131,6 @@ function(aRequest) {
 
     if (TP.notValid(storageInstance = TP.core.LocalStorage.construct())) {
         request.fail(
-                TP.FAILURE,
                 TP.sc('Cannot open local DB storage instance.'));
 
         return this;
@@ -147,7 +146,6 @@ function(aRequest) {
     } else {
         if (TP.notValid(allDBs = TP.json2js(allDBsValue))) {
             request.fail(
-                    TP.FAILURE,
                     TP.sc('Local DB storage instance is corrupted.'));
 
             return this;
@@ -181,7 +179,6 @@ function(aRequest) {
 
             if (TP.notValid(allDBs.at(dbName))) {
                 request.fail(
-                        TP.FAILURE,
                         TP.sc(
                         'Can\'t delete non-existent database named: ',
                             dbName, '.'));
@@ -203,7 +200,6 @@ function(aRequest) {
 
             if (TP.notValid(theDB = allDBs.at(dbName))) {
                 request.fail(
-                        TP.FAILURE,
                         TP.sc(
                         'Can\'t delete item in non-existent database named: ',
                             dbName, '.'));
@@ -213,7 +209,6 @@ function(aRequest) {
 
             if (TP.notValid(resultData = theDB.at(id))) {
                 request.fail(
-                        TP.FAILURE,
                         TP.sc('Can\'t find item with id: ', id,
                                 ' in database:', dbName, ' to delete.'));
 
@@ -275,7 +270,6 @@ function(aRequest) {
 
             if (TP.isValid(theDB.at(id))) {
                 request.fail(
-                        TP.FAILURE,
                         TP.sc('Already had item with id: ', id,
                                 ' in database:', dbName, '.'));
 

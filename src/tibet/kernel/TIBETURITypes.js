@@ -3409,15 +3409,15 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
     });
 
     subrequest.defineMethod('failJob',
-    function(aFaultCode, aFaultString, aFaultStack) {
+    function(aFaultString, aFaultCode, aFaultStack) {
 
             if (TP.canInvoke(thisref, failureFName)) {
-                thisref[failureFName](aFaultCode, aFaultString);
+                thisref[failureFName](aFaultString, aFaultCode);
             }
 
             //  if there was an original request fail it too.
             if (TP.canInvoke(aRequest, 'fail')) {
-                aRequest.fail(aFaultCode, aFaultString);
+                aRequest.fail(aFaultString, aFaultCode);
             }
     });
 
@@ -3865,10 +3865,10 @@ function(aDataSource, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
     });
 
@@ -4828,10 +4828,10 @@ function(aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 
@@ -5043,10 +5043,10 @@ function(aRequest, filterResult) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 
@@ -5425,10 +5425,10 @@ function(aRequest) {
                         result = TP.process(resource, request);
 
                         if (request.didFail()) {
-                            aRequest.fail(request.getFaultCode(),
-                                          request.getFaultText());
-                            subrequest.fail(request.getFaultCode(),
-                                          request.getFaultText());
+                            aRequest.fail(request.getFaultText(),
+                                          request.getFaultCode());
+                            subrequest.fail(request.getFaultText(),
+                                          request.getFaultCode());
                             return;
                         }
 
@@ -5458,11 +5458,11 @@ function(aRequest) {
             });
 
     subrequest.defineMethod('failJob',
-    function(aFaultCode, aFaultString, aFaultStack) {
+    function(aFaultString, aFaultCode, aFaultStack) {
 
             //  Inform any originally inbound request of our status.
             if (TP.canInvoke(aRequest, 'fail')) {
-                aRequest.fail(aFaultCode, aFaultString);
+                aRequest.fail(aFaultString, aFaultCode);
             }
     });
 
@@ -6297,7 +6297,7 @@ function(aRequest, filterResult) {
         result = $$result;
     } catch (e) {
         msg = TP.sc('Error acquiring resource via: ') + str;
-        request.fail(TP.FAILURE, msg);
+        request.fail(msg);
         result = TP.ec(e, msg);
     }
 
@@ -7391,7 +7391,7 @@ function(aRequest, filterResult) {
 
             TP.ifWarn() ? TP.warn(err, TP.LOG) : 0;
 
-            request.fail(TP.FAILURE, err);
+            request.fail(err);
 
             return this.$getResourceResult(request,
                                             undefined,
@@ -7446,7 +7446,7 @@ function(aRequest, filterResult) {
                         TP.join(TP.sc('URI access produced error for: '),
                                 this.asString()));
                 this.raise('TP.sig.URIException', err);
-                request.fail(TP.FAILURE, err);
+                request.fail(err);
 
                 return this.$getResourceResult(request,
                                                 undefined,
@@ -8155,7 +8155,7 @@ function(targetURI, aRequest) {
             return this.save(targetURI, aRequest);
 
         default:
-            aRequest.fail(TP.FAILURE, 'Unknown service method: ' + method);
+            aRequest.fail('Unknown service method: ' + method);
             break;
     }
 
@@ -8292,7 +8292,7 @@ function(aSignal) {
                     //  TODO:   adjust for JSON et. al.
                     //  problem since this is XML specific
                     TP.ifError() ?
-                        TP.error(TP.boot.$annotate(
+                        TP.error(TP.annotate(
                                     dat,
                                     'Instance replacement data not XML.'),
                                     TP.IO_LOG) : 0;
@@ -8350,7 +8350,7 @@ function(aSignal) {
                             } else {
                                 //  problem since this is XML specific
                                 TP.ifError() ?
-                                    TP.error(TP.boot.$annotate(
+                                    TP.error(TP.annotate(
                                                 dat,
                                                 'Instance replacement' +
                                                 ' data not XML.'),
@@ -9004,7 +9004,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(TP, '$fileLoad')) {
         this.raise('TP.sig.UnsupportedOperation');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Unsupported operation.');
+            aRequest.fail('Unsupported operation.');
         }
         return;
     }
@@ -9012,7 +9012,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Invalid URI: ' + targetURI);
+            aRequest.fail('Invalid URI: ' + targetURI);
         }
 
         return;
@@ -9056,7 +9056,7 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     //  update the target's header and content information, in
                     //  that order so that any content change signaling happens
@@ -9070,7 +9070,7 @@ function(targetURI, aRequest) {
                     targetURI.isDirty(true);
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 
@@ -9125,7 +9125,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(TP, '$fileDelete')) {
         this.raise('TP.sig.UnsupportedOperation');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Unsupported operation.');
+            aRequest.fail('Unsupported operation.');
         }
         return;
     }
@@ -9133,7 +9133,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Invalid URI: ' + targetURI);
+            aRequest.fail('Invalid URI: ' + targetURI);
         }
         return;
     }
@@ -9156,10 +9156,10 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 
@@ -9223,7 +9223,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(TP, '$fileSave')) {
         this.raise('TP.sig.UnsupportedOperation');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Unsupported operation.');
+            aRequest.fail('Unsupported operation.');
         }
 
         return;
@@ -9232,7 +9232,7 @@ function(targetURI, aRequest) {
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
         if (TP.canInvoke(aRequest, 'fail')) {
-            aRequest.fail(TP.FAILURE, 'Invalid URI: ' + targetURI);
+            aRequest.fail('Invalid URI: ' + targetURI);
         }
 
         return;
@@ -9270,10 +9270,10 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                     if (TP.canInvoke(aRequest, 'fail')) {
-                        aRequest.fail(aFaultCode, aFaultString);
+                        aRequest.fail(aFaultString, aFaultCode);
                     }
             });
 

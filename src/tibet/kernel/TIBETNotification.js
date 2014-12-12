@@ -34,6 +34,213 @@ quickly, see the workflow module for more information.
 */
 
 //  ========================================================================
+//  Annotation
+//  ========================================================================
+
+/*
+ * Annotations are simple objects which bind an object and a message. The
+ * typical object used is an Error but it can be any type. Annotations are
+ * introduced in the boot system as TP.boot.Annotation but use of that type is
+ * restricted to boot code. Once the kernel has started loading we want the rest
+ * of the system to rely on an Annotation which can fully participate in the
+ * inheritance and reflection services provided by the kernel.
+ */
+
+//  ------------------------------------------------------------------------
+//  TP.core.Annotation
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.Annotation');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.Annotation.Inst.defineAttribute('object');
+TP.core.Annotation.Inst.defineAttribute('message');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Annotation.Inst.defineMethod('init', function(anObject, aMessage) {
+
+    /**
+     * Initializes a new instance and returns it.
+     * @param {Object} anObject The object to annotate. Often an Error.
+     * @param {String} aMessage The message to associate with anObject.
+     * @returns {TP.core.Annotation} A new instance.
+     */
+
+    //  can't be null or undefined, or have empty annotation text.
+    if (anObject == null || aMessage == null || aMessage === '') {
+        throw new Error('InvalidParameter');
+    }
+
+    this.callNextMethod();
+
+    this.$set('object', anObject);
+    this.$set('message', aMessage);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Annotation.Inst.defineMethod('as',
+        function(typeOrFormat, formatParams) {
+
+    /**
+     * @name as
+     * @summary Returns the receiver formatted to the type or format provided.
+     * @param {Object} typeOrFormat The type, typename, or format to use.
+     * @param {TP.lang.Hash} formatParams Option parameters for the formatting
+     *     process.
+     * @return {String}
+     */
+
+    var type,
+        args;
+
+    if (TP.notValid(type = TP.sys.require(typeOrFormat))) {
+        return typeOrFormat.transform(this, formatParams);
+    }
+
+    //  if we got here we're either talking to a type that can't tell us
+    //  what its name is (not good) or the receiver doesn't implement a
+    //  decent as() variant for that type. In either case however all we can
+    //  do is hope the type implements from() and we'll try that route.
+    if (TP.canInvoke(type, 'from')) {
+        switch (arguments.length) {
+            case 1:
+                return type.from(this);
+            case 2:
+                return type.from(this, formatParams);
+            default:
+                //  have to build up an argument array that includes the
+                //  receiver as the first argument rather than the type
+                args = TP.args(arguments);
+                args.atPut(0, this);
+                return type.from.apply(type, args);
+        }
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Annotation.Inst.defineMethod('asHTMLString', function() {
+
+    /**
+     * @name asHTMLString
+     * @summary Produces an HTML string representation of the receiver. By
+     *     default this method returns the receiver's string value without
+     *     changes.
+     * @returns {String} The receiver in HTML string format.
+     */
+
+    return TP.join(
+            '<span class="TP_core_Annotation">',
+            '<span data-name="object">',
+                TP.htmlstr(this.$get('object')), '<\/span>',
+            '<span data-name="message">',
+                TP.htmlstr(this.$get('message')), '<\/span>',
+            '<\/span>');
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Annotation.Inst.defineMethod('asJSONSource', function() {
+
+    /**
+     * @name asJSONSource
+     * @summary Returns a JSON string representation of the receiver.
+     * @returns {String} A JSON-formatted string.
+     */
+
+    return '{"type": "TP.core.Annotation",' +
+            '"data": {"object": ' +
+                TP.str(this.$get('object')).quoted('"') + ',' +
+            '"message": ' +
+                TP.str(this.$get('message')).quoted('"') + '}}';
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Annotation.Inst.defineMethod('asString', function() {
+
+    /**
+     * @name asString
+     * @summary Returns the receiver as a simple string. Just the message is
+     *     used for this output.
+     * @return {String} An appropriate form for recreating the receiver.
+     */
+
+    return this.$get('message');
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Annotation.Inst.defineMethod('asXMLString', function() {
+
+    /**
+     * @name asXMLString
+     * @summary Produces an XML string representation of the receiver. By
+     *     default this method returns the receiver's string value without
+     *     changes.
+     * @returns {String} The receiver in XML string format.
+     */
+
+    return TP.join('<instance type="TP.Annotation"',
+                            ' object="', TP.str(this.$get('object')), '"',
+                            ' message="', TP.str(this.$get('message')), '"\/>');
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Annotation.Inst.defineMethod('toString', function() {
+
+    /**
+     * @name toString
+     * @summary Returns a string representation of the receiver.
+     * @return {String}
+     */
+
+    return TP.join(TP.str(this.$get('message')),
+                            ' [', TP.str(this.$get('object')), ']');
+});
+
+//  ----------------------------------------------------------------------------
+//  TP Primitive
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('annotate', function(anObject, aMessage) {
+
+    /**
+     * Initializes a new instance and returns it.
+     * @param {Object} anObject The object to annotate. Often an Error.
+     * @param {String} aMessage The message to associate with anObject.
+     * @returns {TP.core.Annotation} A new instance.
+     */
+
+    return TP.core.Annotation.construct(anObject, aMessage);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('isAnnotation', function(anObject) {
+
+    /**
+     * Returns true if the object provided is an instance of Annotation of
+     * either the boot or core variant.
+     * @param {Object} anObject The object to test.
+     * @returns {Boolean} True if the object is any form of annotation.
+     */
+
+    return (anObject instanceof TP.boot.Annotation) ||
+        TP.isKindOf(anObject, TP.core.Annotation);
+});
+
+//  ========================================================================
 //  SIGNALING
 //  ========================================================================
 
@@ -3540,7 +3747,7 @@ function(aHandlerEntry, quiet) {
     if (TP.isEmpty(handlerID) || handlerID.startsWith('java' + 'script:')) {
         if (TP.isEmpty(handlerID)) {
             TP.ifWarn() ?
-                TP.warn(TP.boot.$annotate(
+                TP.warn(TP.annotate(
                             entry,
                             'Invalid handler in listener.'),
                         TP.SIGNAL_LOG) : 0;
@@ -4262,11 +4469,6 @@ aSigEntry, checkTarget) {
     // the list won't affect our current iteration work.
     items = entry.listeners.slice(0);
 
-    TP.ifTrace() && TP.$$DEBUG && TP.sys.shouldLogSignals() ?
-        TP.trace(TP.join(orgid, ':', signame, ' has ', items.length,
-                            ' listeners.'),
-                    TP.SIGNAL_LOG) : 0;
-
     //  try/finally for signal stack
     try {
         //  make sure the signal stack is up to date by doing a
@@ -4641,8 +4843,7 @@ function(originSet, aSignal, aPayload, aType) {
      *     appropriately for this method.
      * @param {Array|Object} originSet The originator(s) of the signal. The
      *     array should be provided in order from window/document down to the
-     *     target element and must be global String IDs. These are normally
-     *     generated via UI.
+     *     target element.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
@@ -4659,7 +4860,13 @@ function(originSet, aSignal, aPayload, aType) {
         target,
         i,
         entry,
-        orgids,
+        event,
+        eventType,
+        eventTarget,
+        onstar,
+        detector,
+        origins,
+        origin,
         originArray,
         len;
 
@@ -4670,17 +4877,27 @@ function(originSet, aSignal, aPayload, aType) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidDOMSignal');
     }
 
+    // DOMUISignal types can give us their event (and that's what is typically
+    // fired via DOM_FIRING). We leverage the event to support on: remapping.
+    if (TP.canInvoke(aSignal, 'getEvent')) {
+        event = aSignal.getEvent();
+        if (TP.isValid(event)) {
+            eventTarget = aSignal.getTarget();
+            eventType = aSignal.getEventType();
+            onstar = 'on:' + eventType;
+            detector = function(name) {
+                return name === onstar;
+            };
+        }
+    }
+
     map = TP.sig.SignalMap.INTERESTS;
 
     //  one or more origins are required...
     if (!TP.isArray(originSet)) {
-        orgids = TP.ac(TP.id(originSet));
+        origins = TP.ac(originSet);
     } else {
-        orgids = originSet.collect(
-                    function(anOrigin) {
-
-                        return TP.id(anOrigin);
-                    });
+        origins = originSet;
     }
 
     //  get a valid signal instance configured
@@ -4707,38 +4924,39 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  loop down through the list until we reach the target, performing the
     //  lookups and notifying any capturing handlers as we descend
-    len = orgids.getSize();
+    len = origins.getSize();
     for (i = 0; i < len; i++) {
         //  we enter this loop in capturing phase, so we want to do at least
         //  one pass before making any changes to phase etc.
 
-        //  always work with ID's for map entries (GC issues)
-        orgid = orgids.at(i);
+        origin = origins.at(i);
+
+        //  check each one as we pass for any on: remapping. if found we need to
+        //  ensure that element is in our origin list for the bubbling phase.
+        if (TP.isValid(detector) && TP.isElement(origin)) {
+            if (TP.elementGetAttributeNames(origin).detect(detector)) {
+                // Found an on: mapping for this origin...
+                originArray.push(origin);
+            }
+        }
+
+        //  ---
+        //  global id
+        //  ---
+
+        //  work with ID's for map entries (GC issues)
+        orgid = TP.gid(origin);
 
         //  be sure to update the signal as we rotate orgids
         sig.setOrigin(orgid);
 
-        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-            TP.signal.$suspended = true;
-            TP.sys.logSignal('Checking DOM_FIRING id ' +
-                            orgid + '.' + signame,
-                            TP.DEBUG);
-            TP.signal.$suspended = false;
-        }
-
         //  if there's an entry for this origin/signal pair then we'll check
         //  it again when we do the bubbling pass...
         if (TP.isValid(entry = map[orgid + '.' + signame])) {
-            if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-                TP.signal.$suspended = true;
-                TP.sys.logSignal(TP.join('DOM_FIRING id ',
-                                        orgid, '.', signame,
-                                        ' found, preserving ', orgid),
-                                    TP.DEBUG);
-                TP.signal.$suspended = false;
-            }
 
-            originArray.push(orgid);
+            if (originArray.last() !== origin) {
+                originArray.push(origin);
+            }
 
             //  start with most specific, which is origin and signal
             //  listeners. this also happens to be all the DOM standard
@@ -4749,31 +4967,15 @@ function(originSet, aSignal, aPayload, aType) {
                                             entry, true);
         }
 
-        if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-            TP.signal.$suspended = true;
-            TP.sys.logSignal('Checking DOM_FIRING id ' +
-                                orgid + '.' + TP.ANY,
-                                TP.DEBUG);
-            TP.signal.$suspended = false;
-        }
-
         //  as long as we didn't default the signal to "ANY" we'll check
         //  that as well
         if (signame !== TP.ANY) {
             //  if there's an entry for this origin and TP.ANY then we'll
             //  check it again when we do the bubbling pass...
             if (TP.isValid(entry = map[orgid + '.' + TP.ANY])) {
-                if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-                    TP.signal.$suspended = true;
-                    TP.sys.logSignal('DOM_FIRING id ' +
-                                        orgid + '.' + TP.ANY +
-                                        ' found, preserving ' + orgid,
-                                        TP.DEBUG);
-                    TP.signal.$suspended = false;
-                }
 
-                if (originArray.last() !== orgid) {
-                    originArray.push(orgid);
+                if (originArray.last() !== origin) {
+                    originArray.push(origin);
                 }
 
                 //  while we're dropping down we'll check this origin for
@@ -4783,6 +4985,56 @@ function(originSet, aSignal, aPayload, aType) {
                                                 entry, true);
             }
         }
+
+        //  ---
+        //  local id
+        //  ---
+
+        //  work with ID's for map entries (GC issues)
+        orgid = TP.lid(origin);
+
+        //  be sure to update the signal as we rotate orgids
+        sig.setOrigin(orgid);
+
+        //  if there's an entry for this origin/signal pair then we'll check
+        //  it again when we do the bubbling pass...
+        if (TP.isValid(entry = map[orgid + '.' + signame])) {
+
+            if (originArray.last() !== origin) {
+                originArray.push(origin);
+            }
+
+            //  start with most specific, which is origin and signal
+            //  listeners. this also happens to be all the DOM standard
+            //  really supports, they don't have a way to specify any signal
+            //  type from an origin
+            TP.sig.SignalMap.notifyHandlers(orgid, signame, sig,
+                                            false, true,
+                                            entry, true);
+        }
+
+        //  as long as we didn't default the signal to "ANY" we'll check
+        //  that as well
+        if (signame !== TP.ANY) {
+            //  if there's an entry for this origin and TP.ANY then we'll
+            //  check it again when we do the bubbling pass...
+            if (TP.isValid(entry = map[orgid + '.' + TP.ANY])) {
+
+                if (originArray.last() !== origin) {
+                    originArray.push(origin);
+                }
+
+                //  while we're dropping down we'll check this origin for
+                //  any capturing handlers that are blanket signal handlers
+                TP.sig.SignalMap.notifyHandlers(orgid, null, sig,
+                                                false, true,
+                                                entry, true);
+            }
+        }
+
+        //  ---
+        //  propagation
+        //  ---
 
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM
@@ -4802,23 +5054,28 @@ function(originSet, aSignal, aPayload, aType) {
     //  flip the origin array around so we work "bottom up" to bubble
     originArray.reverse();
 
-    if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
-        TP.signal.$suspended = true;
-        TP.sys.logSignal(
-            'Bubbling DOM_FIRING through preserved IDs: ' +
-                    originArray.toString(),
-                    TP.DEBUG);
-        TP.signal.$suspended = false;
-    }
-
     //  now loop back through the bubbling list which was populated as we
     //  searched down toward the target. in most cases this list is a lot
-    //  shorter than the downward list since most orgids don't have
+    //  shorter than the downward list since most origins don't have
     //  registrations
     len = originArray.getSize();
     for (i = 0; i < len; i++) {
+
+        origin = originArray.at(i);
+
+        if (TP.isElement(origin)) {
+            if (TP.elementGetAttributeNames(origin).detect(detector)) {
+                // Found an on: mapping for this origin...
+                signame = TP.elementGetAttribute(origin, onstar);
+            }
+        }
+
+        //  ---
+        //  global id
+        //  ---
+
         //  always work with ID's for map entries (GC issues)
-        orgid = originArray.at(i);
+        orgid = TP.gid(origin);
 
         //  be sure to update the signal as we rotate orgids
         sig.setOrigin(orgid);
@@ -4836,6 +5093,34 @@ function(originSet, aSignal, aPayload, aType) {
                                             false, false,
                                             null, true);
         }
+
+        //  ---
+        //  local id
+        //  ---
+
+        //  always work with ID's for map entries (GC issues)
+        orgid = TP.lid(origin);
+
+        //  be sure to update the signal as we rotate orgids
+        sig.setOrigin(orgid);
+
+        //  continue with most specific, which is origin and signal pair.
+        TP.sig.SignalMap.notifyHandlers(orgid, signame, sig,
+                                        false, false,
+                                        null, true);
+
+        //  notifyHandlers will default null to TP.ANY so if we just did
+        //  that one don't do it again
+        if (signame !== TP.ANY) {
+            //  next in bubble is for the origin itself, but any signal...
+            TP.sig.SignalMap.notifyHandlers(orgid, null, sig,
+                                            false, false,
+                                            null, true);
+        }
+
+        //  ---
+        //  propagation
+        //  ---
 
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM
@@ -6374,7 +6659,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
                         flag = TP.sys.shouldLogStack();
                         TP.sys.shouldLogStack(true);
                         TP.ifTrace() ? TP.sys.logSignal(
-                                            TP.boot.$annotate(aSignal, str),
+                                            TP.annotate(aSignal, str),
                                             TP.DEBUG) : 0;
                     } catch (e) {
                     } finally {
@@ -6382,7 +6667,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
                     }
                 } else {
                     TP.ifTrace() ? TP.sys.logSignal(
-                                            TP.boot.$annotate(aSignal, str),
+                                            TP.annotate(aSignal, str),
                                             TP.DEBUG) : 0;
                 }
             }
@@ -6558,28 +6843,28 @@ function(anOrigin, anException, aPayload) {
                     break;
                 case TP.WARN:
                     TP.isValid(aPayload) ?
-                        TP.warn(TP.boot.$annotate(aPayload, str),
+                        TP.warn(TP.annotate(aPayload, str),
                                 TP.LOG) :
                         TP.warn(str,
                                 TP.LOG);
                     break;
                 case TP.ERROR:
                     TP.isValid(aPayload) ?
-                        TP.error(TP.boot.$annotate(aPayload, str),
+                        TP.error(TP.annotate(aPayload, str),
                                 TP.LOG) :
                         TP.error(str,
                                 TP.LOG);
                     break;
                 case TP.SEVERE:
                     TP.isValid(aPayload) ?
-                        TP.severe(TP.boot.$annotate(aPayload, str),
+                        TP.severe(TP.annotate(aPayload, str),
                                 TP.LOG) :
                         TP.severe(str,
                                 TP.LOG);
                     break;
                 case TP.FATAL:
                     TP.isValid(aPayload) ?
-                        TP.fatal(TP.boot.$annotate(aPayload, str),
+                        TP.fatal(TP.annotate(aPayload, str),
                                 TP.LOG) :
                         TP.fatal(str,
                                 TP.LOG);
@@ -6589,7 +6874,7 @@ function(anOrigin, anException, aPayload) {
                     break;
                 default:
                     TP.isValid(aPayload) ?
-                        TP.error(TP.boot.$annotate(aPayload, str),
+                        TP.error(TP.annotate(aPayload, str),
                                 TP.LOG) :
                         TP.error(str,
                                 TP.LOG);

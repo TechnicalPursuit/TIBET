@@ -95,7 +95,6 @@ function(aRequest) {
     //  if no translation really occurred then we should terminate
     if (str === hid) {
         aRequest.fail(
-            TP.FAILURE,
             TP.sc('History translation failed.'));
 
         return;
@@ -104,7 +103,6 @@ function(aRequest) {
     //  if we got history back we can't process that...
     if (str.indexOf('tsh:history') !== TP.NOT_FOUND) {
         aRequest.fail(
-            TP.FAILURE,
             TP.sc('Recursive history translation unsupported.'));
 
         return;
@@ -150,9 +148,9 @@ function(aRequest) {
     origReq.atPut('cmdTitle', str);
 
     req.defineMethod('cancelJob',
-        function(aFaultCode, aFaultString) {
+        function(aFaultString, aFaultCode) {
 
-            return aRequest.cancel(aFaultCode, aFaultString);
+            return aRequest.cancel(aFaultString, aFaultCode);
         });
     req.defineMethod('completeJob',
         function(aResult) {
@@ -160,9 +158,9 @@ function(aRequest) {
             return aRequest.complete(aResult || req.getResult());
         });
     req.defineMethod('failJob',
-        function(aFaultCode, aFaultString, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultStack) {
 
-            return aRequest.fail(aFaultCode, aFaultString);
+            return aRequest.fail(aFaultString, aFaultCode);
         });
 
     //  run that baby!
@@ -233,7 +231,6 @@ function(aString, aRequest, aShell) {
         token = arr.at(0);
         if (TP.notValid(token) || token.name !== 'regexp') {
             aRequest.fail(
-                TP.FAILURE,
                 TP.sc('Invalid history regex specification'));
 
             return;
@@ -243,7 +240,6 @@ function(aString, aRequest, aShell) {
         re = TP.rc(RegExp.escapeMetachars(parts.at(1)), parts.at(2));
         if (TP.notValid(re)) {
             aRequest.fail(
-                TP.FAILURE,
                 TP.sc('Invalid history regex specification'));
 
             return;
@@ -260,7 +256,6 @@ function(aString, aRequest, aShell) {
         num = index === '0' ? 0 : parseInt(index, 10);
         if (!TP.isNumber(num)) {
             aRequest.fail(
-                TP.FAILURE,
                 TP.sc('Invalid history index.'));
 
             return;
@@ -281,7 +276,6 @@ function(aString, aRequest, aShell) {
     //  if we didn't find a command no point in continuing
     if (TP.isEmpty(cmd)) {
         aRequest.fail(
-            TP.FAILURE,
             TP.sc('Unable to find specified history entry.'));
 
         return;
@@ -345,7 +339,6 @@ function(aString, aRequest, aShell) {
                         rest = ndx.slice(found);
                     } else {
                         aRequest.fail(
-                            TP.FAILURE,
                             TP.sc('Invalid history index.'));
 
                         return;
@@ -357,7 +350,6 @@ function(aString, aRequest, aShell) {
             } else {
                 //  didn't follow +/- with a number...not valid
                 aRequest.fail(
-                    TP.FAILURE,
                     TP.sc('Invalid history index.'));
 
                 return;
@@ -386,7 +378,6 @@ function(aString, aRequest, aShell) {
                     rest = ndx.slice(found);
                 } else {
                     aRequest.fail(
-                        TP.FAILURE,
                         TP.sc('Invalid history index.'));
 
                     return;
@@ -441,7 +432,6 @@ function(aString, aRequest, aShell) {
             rest = tail.slice(found);
         } else {
             aRequest.fail(
-                TP.FAILURE,
                 TP.sc('Invalid history index.'));
 
             return;

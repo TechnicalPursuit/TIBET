@@ -313,7 +313,7 @@ function(aValue, anElem) {
             type = TP.sys.require(typeName);
             if (TP.notValid(type)) {
                 TP.ifWarn() ?
-                    TP.warn(TP.boot.$annotate(
+                    TP.warn(TP.annotate(
                                 list.at(i),
                                 'Unable to require() base type: ' + typeName),
                             TP.LOG) : 0;

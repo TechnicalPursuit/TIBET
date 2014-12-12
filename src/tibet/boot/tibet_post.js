@@ -652,7 +652,7 @@ window.onerror = function(msg, url, line, column, errorObj) {
 
     //  set a non-zero status to signify that an error occurred to callers
     //  which won't see a native Error in a catch block
-    $STATUS = TP.FAILURE;
+    $STATUS = TP.FAILED;
 
     return true;
 };
@@ -5432,34 +5432,6 @@ TP.boot.Annotation.prototype.as = function(typeOrFormat, formatParams) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.Annotation.prototype.getTypeName = function() {
-
-    /**
-     * @name getTypeName
-     * @summary
-     * @return {String}
-     * @todo
-     */
-
-    return 'TP.boot.Annotation';
-};
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.Annotation.prototype.getSupertypes = function() {
-
-    /**
-     * @name getSupertypes
-     * @summary
-     * @return {String}
-     * @todo
-     */
-
-    return [Object];
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.Annotation.prototype.asDumpString = function() {
 
     /**
@@ -5580,6 +5552,47 @@ TP.boot.Annotation.prototype.asXMLString = function() {
     return TP.boot.$join('<instance type="TP.boot.Annotation"',
                             ' object="', TP.boot.$str(this.object), '"',
                             ' message="', TP.boot.$str(this.message), '"\/>');
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.Annotation.prototype.get = function(attributeName) {
+
+    /**
+     * Returns the value of the attribute name provided.
+     * @param {String} attributeName The name of the slot to return.
+     * @return {Object} The value of the slot name.
+     */
+
+    return this[attributeName];
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.Annotation.prototype.getTypeName = function() {
+
+    /**
+     * @name getTypeName
+     * @summary
+     * @return {String}
+     * @todo
+     */
+
+    return 'TP.boot.Annotation';
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.Annotation.prototype.getSupertypes = function() {
+
+    /**
+     * @name getSupertypes
+     * @summary
+     * @return {String}
+     * @todo
+     */
+
+    return [Object];
 };
 
 //  ----------------------------------------------------------------------------

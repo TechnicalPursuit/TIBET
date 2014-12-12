@@ -163,7 +163,7 @@ function(aRequest) {
         this.dispatch('tsh-service-error', node,
             TP.hc('error-type', 'request-in-progress'));
 
-        aRequest.fail(TP.FAILURE,
+        aRequest.fail(
             'Service call already in progress for: ' + TP.str(node));
 
         return TP.BREAK;
@@ -319,12 +319,12 @@ function(aRequest) {
     //  handleRequestFailed and handleRequestSucceeded calls defined later.
 
     subrequest.defineMethod('cancelJob',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
             this.$wrapupJob('Cancelled', TP.CANCELLED,
-                            aFaultCode, aFaultString);
+                            aFaultString, aFaultCode);
 
-            return aRequest.cancel(aFaultCode, aFaultString);
+            return aRequest.cancel(aFaultString, aFaultCode);
 });
     subrequest.defineMethod('completeJob',
 function(aResult) {
@@ -335,12 +335,12 @@ function(aResult) {
             return aRequest.complete(aResult || subrequest.getResult());
 });
     subrequest.defineMethod('failJob',
-function(aFaultCode, aFaultString, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultStack) {
 
             this.$wrapupJob('Failed', TP.FAILED,
-                            aFaultCode, aFaultString);
+                            aFaultString, aFaultCode);
 
-            return aRequest.fail(aFaultCode, aFaultString);
+            return aRequest.fail(aFaultString, aFaultCode);
 });
 
     //  regardless of whether we failed or succeeded this method will be

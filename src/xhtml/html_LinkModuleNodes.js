@@ -71,12 +71,12 @@ function(aRequest) {
     }
 
     if (TP.notValid(node = aRequest.at('node'))) {
-        return aRequest.fail(TP.FAILURE, 'Unable to find command node');
+        return aRequest.fail('Unable to find command node');
     }
 
     href = node.href || TP.elementGetAttribute(node, 'href');
     if (TP.isEmpty(href)) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'TP.html.link must have href attribute.',
             'TP.sig.InvalidElement');
     }
@@ -88,7 +88,7 @@ function(aRequest) {
 
     url = TP.uc(href);
     if (TP.notValid(url)) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'TP.html.link href not a valid URI.',
             'TP.sig.InvalidURI');
     }
@@ -107,7 +107,7 @@ function(aRequest) {
 
     newNode = TP.nodeFromString(str);
     if (TP.notValid(newNode)) {
-        return aRequest.fail(TP.FAILURE,
+        return aRequest.fail(
             'TP.html.link href not a valid URI.',
             'Unable to create new css:sheet node from :' + str,
             'TP.sig.InvalidNode');

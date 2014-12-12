@@ -73,9 +73,9 @@ function(aRequest) {
                 return aRequest.complete(result);
             } catch (e) {
                 return aRequest.fail(
-                        TP.FAILURE,
                         TP.join('Error executing TP.ev.script function: ',
                             this.asString()),
+                        TP.FAILED,
                         'EvalException');
             }
         }
@@ -91,7 +91,6 @@ function(aRequest) {
         //  that URI so we can process it
         if (TP.notValid(url = TP.uc(src))) {
             return aRequest.fail(
-                    TP.FAILURE,
                     'Invalid src attribute value: ' + src);
         }
 
@@ -132,7 +131,7 @@ function(aRequest) {
         shell = aRequest.at('cmdShell');
 
         req.defineMethod('cancelJob',
-            function(aFaultCode, aFaultString) {
+            function(aFaultString, aFaultCode) {
 
                 //  Make sure to unset the variable on the shell that contains
                 //  the signal that fired us.
@@ -140,8 +139,8 @@ function(aRequest) {
                 shell.unsetVariable('TARGET');
 
                 return aRequest.cancel(
-                    TP.ifInvalid(aFaultCode, TP.FAILURE),
-                    TP.ifInvalid(aFaultString, 'TP.ev.script cancelled.'));
+                    TP.ifInvalid(aFaultString, 'TP.ev.script cancelled.'),
+                     TP.ifInvalid(aFaultCode, TP.FAILED));
             });
 
         req.defineMethod('completeJob',
@@ -161,7 +160,7 @@ function(aRequest) {
             });
 
         req.defineMethod('failJob',
-            function(aFaultCode, aFaultString, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultStack) {
 
                 //  Make sure to unset the variable on the shell that contains
                 //  the signal that fired us.
@@ -169,8 +168,8 @@ function(aRequest) {
                 shell.unsetVariable('TARGET');
 
                 return aRequest.fail(
-                        TP.ifInvalid(aFaultCode, TP.FAILURE),
-                        TP.ifInvalid(aFaultString, 'TP.ev.script failed.'));
+                        TP.ifInvalid(aFaultString, 'TP.ev.script failed.'),
+                        TP.ifInvalid(aFaultCode, TP.FAILED));
             });
 
         //  Configure STDIO that any nested command operations will output to
@@ -212,7 +211,6 @@ function(aRequest) {
                     TP.LOG) : 0;
 
             return aRequest.fail(
-                TP.FAILURE,
                 TP.join('Error creating TP.ev.script function: ',
                         source, '. ', TP.str(e)));
         }
@@ -227,15 +225,16 @@ function(aRequest) {
             aRequest.complete(result);
         } catch (e) {
             return aRequest.fail(
-                    TP.FAILURE,
                     TP.join('Error executing TP.ev.script function: ',
                             this.asString()),
-                            'EvalException');
+                    TP.FAILED,
+                    'EvalException');
         }
     } else {
         return aRequest.fail(
-                TP.FAILURE,
-                TP.join('Invalid TP.ev.script source type: ', type));
+                TP.join('Invalid TP.ev.script source type: ',
+                TP.FAILED,
+                type));
     }
 
     return TP.CONTINUE;

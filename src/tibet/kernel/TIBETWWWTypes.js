@@ -951,7 +951,7 @@ function(aContent, aURI, defaultMIME) {
 
     TP.ifTrace() && TP.$DEBUG ?
         TP.sys.logTransform(
-                TP.boot.$annotate(this,
+                TP.annotate(this,
                             'Guessing MIME type for content ID: ' + aURI),
             TP.DEBUG) : 0;
 
@@ -1176,6 +1176,10 @@ TP.w3.Xmlns.Type.defineConstant(
 TP.w3.Xmlns.Type.defineConstant(
         'DND',
         'http://www.technicalpursuit.com/2005/drag-and-drop');
+
+TP.w3.Xmlns.Type.defineConstant(
+        'ON',
+        'http://www.technicalpursuit.com/2014/on');
 
 TP.w3.Xmlns.Type.defineConstant(
         'PCLASS',
@@ -1451,6 +1455,10 @@ function() {
                             'mimetype', TP.ietf.Mime.XML,
                             'prefix', 'mml',
                             'rootElement', 'math'),
+            TP.w3.Xmlns.ON,
+                    TP.hc('uri', TP.w3.Xmlns.ON,
+                            'mimetype', TP.ietf.Mime.XML,
+                            'prefix', 'on'),
             TP.w3.Xmlns.PCLASS,
                     TP.hc('uri', TP.w3.Xmlns.PCLASS,
                             'prefix', 'pclass',
@@ -1594,6 +1602,7 @@ function() {
                 TP.ac(
                     TP.w3.Xmlns.ACL,
                     TP.w3.Xmlns.BIND,
+                    TP.w3.Xmlns.ON,
                     TP.w3.Xmlns.PCLASS,
                     TP.w3.Xmlns.TIBET,
                     TP.w3.Xmlns.TSH,

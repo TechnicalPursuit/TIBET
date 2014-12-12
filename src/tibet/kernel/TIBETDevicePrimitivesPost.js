@@ -995,9 +995,9 @@ isBubbling) {
     //  ensure we tell the notification system to use TP.sig.DOMSignal so we
     //  get proper capture/bubble resolution.
     if ((policy === TP.DOM_FIRING) && TP.isElement(anElement)) {
-        //  The return value of TP.elementGetEventIds() is configured to
+        //  The return value of TP.elementGetEventOrigins() is configured to
         //  return an origin set.
-        origin = TP.elementGetEventIds(anElement);
+        origin = TP.elementGetEventOrigins(anElement, argsOrEvent);
 
         defaultType = 'TP.sig.DOMSignal';
     }
@@ -1203,7 +1203,7 @@ function(nativeEvt) {
                         TP.SIGNAL_LOG) : 0;
 
         //  It is TP.DOM_FIRING, so we send the list of IDs
-        fullTargetArray = TP.elementGetEventIds(sourceElement);
+        fullTargetArray = TP.elementGetEventOrigins(sourceElement, evtInfo);
 
         thrownSignal = TP.signal(fullTargetArray,
                                     eventName,
@@ -1481,6 +1481,112 @@ function(anElement, invalidateIdCache) {
     }
 
     return eventIdArray;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementGetEventOrigins',
+function(anElement, anEvent) {
+
+    /**
+     * @name elementGetEventOrigins
+     * @synopsis Returns the elements which comprise signal origins used to
+     *     signal DOM events for anElement. The origins are computed by walking
+     *     up the DOM tree, appending each element to the list of origins.
+     * @param {Element} anElement The Element node to get the origin list for.
+     * @raises TP.sig.InvalidElement, TP.sig.InvalidEvent
+     * @returns {Array.<Object>} An array of elements and objects.
+     */
+
+    var originArray,
+        theElement,
+        localID,
+        elementDoc,
+        elementWin,
+        eventType;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isEvent(anEvent)) {
+        eventType = TP.eventGetType(anEvent);
+    } else {
+        eventType = 'undefined';
+    }
+
+    originArray = TP.ac();
+
+    //  NB: The first element in the array will be the element itself.
+    theElement = anElement;
+
+    elementDoc = TP.nodeGetDocument(theElement);
+
+    //  Traverse up our parent chain
+    while (TP.isElement(theElement)) {
+
+        //  without an ID we can't have been a target or observer so we
+        //  can't be part of the DOM tree that matters
+        if ((theElement !== elementDoc) &&
+            TP.isEmpty(TP.elementGetAttribute(theElement, 'id')) &&
+            TP.isEmpty(TP.elementGetAttribute(theElement, 'on:' + eventType))) {
+            theElement = theElement.parentNode;
+            continue;
+        }
+
+        localID = TP.lid(theElement);
+
+        //  The local ID must not be null or the empty string, in
+        //  order to be part of a valid event id path for this element.
+        //  A blank name in the array will do us no good.
+        if (TP.notEmpty(localID)) {
+            //  Add the element's ID by registering it's full
+            //  name.
+            originArray.push(theElement);
+        }
+
+        if ((theElement === elementDoc) &&
+            (TP.isWindow(elementWin = TP.nodeGetWindow(elementDoc)))) {
+            //  If the window is an iframe's window, then set theElement
+            //  to be that iframe element, effectively 'jumping out of
+            //  the window', so to speak :-).
+            if (TP.isIFrameWindow(elementWin)) {
+                originArray.push(TP.gid(elementWin));
+                theElement = elementWin.frameElement;
+                elementDoc = TP.nodeGetDocument(theElement);
+
+                //  Continue so that we process the frame element and
+                //  don't skip it below.
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        //  Get the parent node for the element and loop again.
+        theElement = theElement.parentNode;
+   }
+
+    //  The looping will have terminated at a 'document' node - add it's ID.
+    originArray.push(TP.gid(elementDoc));
+
+    //  See if that document has a window and if it does, append
+    //  its global ID to the end of the event ids.
+    elementWin = TP.nodeGetWindow(elementDoc);
+    if (TP.isWindow(elementWin)) {
+        originArray.push(TP.gid(elementWin));
+    }
+
+    //  We built this from the inside-out, but the TP.DOM_FIRING policy
+    //  in the notification system likes to see it from the outside-in
+    //  (because it will process 'capturing' event handlers first), so
+    //  we reverse it here (once, before we cache it).
+    originArray.reverse();
+
+    //  Make sure to configure it as an origin set.
+    originArray.isOriginSet(true);
+
+    return originArray;
 });
 
 //  ------------------------------------------------------------------------

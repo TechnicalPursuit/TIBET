@@ -96,7 +96,7 @@ function(aRequest) {
 
     //  if we don't have a viable URL, we must fail the request.
     if (TP.notValid(url)) {
-        return request.fail(TP.FAILURE, 'TP.sig.InvalidURI');
+        return request.fail('TP.sig.InvalidURI');
     }
 
     //  rewrite the mode, whether we're async or sync. This will only change
@@ -171,7 +171,7 @@ function(aRequest) {
                     url.isLoaded(false);
                     url.isDirty(true);
 
-                    request.fail(TP.FAILURE, resultData);
+                    request.fail(resultData);
                 } else {
                     response.setSignalName('TP.sig.IOSucceeded');
                     response.fire();
@@ -253,7 +253,7 @@ function(aRequest) {
                     callbackFunc(result);
                 }
 
-                this.fail(TP.FAILURE, result);
+                this.fail(result);
             });
 
         TP.httpCall(path, aRequest);

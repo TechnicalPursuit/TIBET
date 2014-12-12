@@ -43,11 +43,11 @@ function(aRequest) {
         output;
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
-        return aRequest.fail(TP.FAILURE, 'No command instance.');
+        return aRequest.fail('No command instance.');
     }
 
     if (TP.notValid(output = obj.getValue())) {
-        return aRequest.fail(TP.FAILURE, 'No content.');
+        return aRequest.fail('No content.');
     } else {
         output = TP.join('<span xmlns="', TP.w3.Xmlns.XHTML, '">',
                             output,
@@ -75,11 +75,11 @@ function(aRequest) {
         content;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        return aRequest.fail(TP.FAILURE, 'No content.');
+        return aRequest.fail('No content.');
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
-        return aRequest.fail(TP.FAILURE, 'No command instance.');
+        return aRequest.fail('No command instance.');
     }
 
     //  stdin is always an Array, so we want the first item.

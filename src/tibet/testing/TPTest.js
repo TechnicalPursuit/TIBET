@@ -1829,13 +1829,13 @@ TP.test.Case.Inst.defineAttribute('$internalExpect');
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('errorJob',
-function(aFaultCode, aFaultString, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
      * Internal method for handling errors thrown by test functions.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {String} aFaultString A string description of the fault.
      * @param {Array} aFaultStack An optional parameter that will contain an
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
@@ -1887,13 +1887,13 @@ function(anObj) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('failJob',
-function(aFaultCode, aFaultString, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
      * Internal method for handling notifications of test failures.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {String} aFaultString A string description of the fault.
      * @param {Array} aFaultStack An optional parameter that will contain an
      *     Array of Arrays of information derived from the JavaScript stack when
      *     the fault occurred.
@@ -2308,9 +2308,9 @@ function(options) {
                 //  to be the computed value for time remaining in the test
                 //  suite.
                 if (timeout !== testcase.getTimeout()) {
-                    testcase.fail(TP.TIMED_OUT, 'Test suite timed out.');
+                    testcase.fail('Test suite timed out.', TP.TIMED_OUT);
                 } else {
-                    testcase.fail(TP.TIMED_OUT, 'Test case timed out.');
+                    testcase.fail('Test case timed out.', TP.TIMED_OUT);
                 }
             } else {
                 testcase.error(err);

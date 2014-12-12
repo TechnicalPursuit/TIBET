@@ -90,7 +90,7 @@ function(aValue, aFacet) {
     }
 
     TP.ifWarn() ?
-        TP.warn(TP.boot.$annotate(
+        TP.warn(TP.annotate(
                     aFacet,
                     'Unable to find facet resolution method'),
                 TP.LOG) : 0;

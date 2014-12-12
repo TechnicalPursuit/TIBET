@@ -117,7 +117,7 @@ TP.sig.ShellRequest.Inst.defineAttribute('$tagtime');
 //  ------------------------------------------------------------------------
 
 TP.sig.ShellRequest.Inst.defineMethod('cancel',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name cancel
@@ -125,9 +125,9 @@ function(aFaultCode, aFaultString) {
      *     the user or calling process. If the receiver has specific behavior to
      *     implement it should override the cancelJob() method invoked as part
      *     of this method's operation.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
-     * @param {String} aFaultString A string description of the fault.
      * @returns {TP.BREAK}
      * @todo
      */
@@ -162,7 +162,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.ShellRequest.Inst.defineMethod('fail',
-function(aFaultCode, aFaultString, anException) {
+function(aFaultString, aFaultCode, anException) {
 
     /**
      * @name fail
@@ -170,9 +170,9 @@ function(aFaultCode, aFaultString, anException) {
      *     of exception. If the receiver has specific behavior to implement it
      *     should override the failJob() method invoked as part of this method's
      *     operation.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {String} aFaultString A string description of the fault.
      * @param {TP.sig.Exception|String} anException An optional exception to
      *     raise.
      * @returns {TP.BREAK}
@@ -184,8 +184,7 @@ function(aFaultCode, aFaultString, anException) {
     }
 
     if (TP.isValid(anException)) {
-        this.raise(anException,
-                    TP.ifInvalid(aFaultString, aFaultCode));
+        this.raise(anException, TP.ifInvalid(aFaultString, aFaultCode));
     }
 
     this.callNextMethod();

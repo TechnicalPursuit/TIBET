@@ -3495,7 +3495,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         //  unable to build nodes...path may not be specific enough
         TP.ifWarn() ?
-            TP.warn(TP.boot.$annotate(
+            TP.warn(TP.annotate(
                         this,
                         'Unable to set value for path: ' + path),
                     TP.LOG) : 0;
@@ -3681,7 +3681,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                     //  that the XPath returned a scalar value, which we can't
                     //  process anyway...
                     TP.ifWarn() ?
-                        TP.warn(TP.boot.$annotate(
+                        TP.warn(TP.annotate(
                                     this,
                                     'Path probably points to scalar value.' +
                                     ' Unable to set value.'),
@@ -3696,7 +3696,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  XPath returned a scalar value, which we can't process anyway...
 
         TP.ifWarn() ?
-            TP.warn(TP.boot.$annotate(
+            TP.warn(TP.annotate(
                         this,
                         'Path probably points to scalar value.' +
                         ' Unable to set value.'),
@@ -3877,7 +3877,7 @@ function(aNode, flagChanges) {
 
     if (!TP.isElement(content)) {
         TP.ifWarn() ?
-            TP.warn(TP.boot.$annotate(
+            TP.warn(TP.annotate(
                         this,
                         'Unable to obtain content to set for path: ' +
                         path),
@@ -3924,7 +3924,7 @@ function(aNode, flagChanges) {
 
     if (TP.notValid(content)) {
         TP.ifWarn() ?
-            TP.warn(TP.boot.$annotate(
+            TP.warn(TP.annotate(
                         this,
                         'Unable to obtain content to set for path: ' +
                         path),
@@ -4043,7 +4043,7 @@ function(aNode, flagChanges) {
 
     if (TP.notValid(content)) {
         TP.ifWarn() ?
-            TP.warn(TP.boot.$annotate(
+            TP.warn(TP.annotate(
                         this,
                         'Unable to obtain content to set for path: ' +
                         path),
@@ -4930,7 +4930,7 @@ function(aNode, flagChanges) {
         //  only support build on demand behavior if the flag is set
         if (TP.notTrue(shouldMake)) {
             TP.ifWarn() ?
-                TP.warn(TP.boot.$annotate(
+                TP.warn(TP.annotate(
                             this,
                             'Unable to obtain content to set for path: ' +
                             path),
@@ -4985,7 +4985,7 @@ function(aNode, flagChanges) {
         if (TP.isEmpty(results)) {
             //  unable to build nodes... path may not be specific enough
             TP.ifWarn() ?
-                TP.warn(TP.boot.$annotate(
+                TP.warn(TP.annotate(
                             this,
                             'Unable to build content for path: ' + path),
                         TP.LOG) : 0;

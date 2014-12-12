@@ -539,7 +539,7 @@ TP.sys.defineGlobal('$signal_stack', null);     //  stack of signal instances
 //  process support variables
 TP.sys.defineGlobal('$handled', true);         //  was last exception handled?
 TP.sys.defineGlobal('$STATUS', 0);             //  last status code (0 is
-                                               //  TP.SUCCESS)
+                                               //  success in some form)
 
 //  Add the common namespaces as tracked globals
 TP.sys.defineGlobal('TP', TP);
@@ -916,13 +916,8 @@ TP.SYNC = 'SYNC';                       //  SYNCHRONOUS processing
 TP.PARALLEL = 'PAR';                    //  PARALLEL processing
 TP.SEQUENTIAL = 'SEQ';                  //  SEQUENTIAL processing
 
-//  operational status codes
-TP.PENDING = null;                      //  standard value for 'no status'
-TP.SUCCESS = 0;                         //  standard value for success
-TP.FAILURE = -1;                        //  standard value for failure
-
 //  workflow process status codes, roughly based on BPML states. positive
-//  codes greater than 1 are leveraged as 'done', while negative numbers
+//  codes greater than 1 are variations of 'done', while negative numbers
 //  imply activity is ongoing. 0 represents 'ready' (not done or active).
 
 //  NOTE that absolute values for the "pending" states match their
@@ -944,7 +939,7 @@ TP.ERRORED = 3;                         //  not in BPML spec, reserved here
 TP.FAILED = 4;
 TP.CANCELLED = 5;
 TP.SUCCEEDED = 6;                       //  not in BPML spec, reserved here
-TP.COMPLETED = 7;
+TP.COMPLETED = 7;                       //  DO NOT USE...USE TP.SUCCEEDED.
 
 TP.SKIPPED = 8;                         //  not in BPML spec, reserved here
 TP.TIMED_OUT = 9;                       //  not in BPML spec, reserved here

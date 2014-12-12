@@ -42,11 +42,11 @@ function(aRequest) {
         content;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        return aRequest.fail(TP.FAILURE, 'No content');
+        return aRequest.fail('No content');
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
-        return aRequest.fail(TP.FAILURE, 'No command instance');
+        return aRequest.fail('No command instance');
     }
 
     //  stdin is always an Array, so we want the first item.

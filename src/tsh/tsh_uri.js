@@ -129,7 +129,7 @@ function(aRequest) {
     //  NB: Note how we supply 'null' as a default value for 'tsh:href'
     href = shell.getArgument(aRequest, 'tsh:href', null, true);
     if (TP.isEmpty(href)) {
-        aRequest.fail(TP.FAILURE, 'Invalid href for URI');
+        aRequest.fail('Invalid href for URI');
 
         return;
     }
@@ -138,7 +138,7 @@ function(aRequest) {
     //  a viable URI instance from it. If not then we've got another error.
     url = TP.uc(href);
     if (TP.notValid(url)) {
-        aRequest.fail(TP.FAILURE, 'Badly formed href for URI');
+        aRequest.fail('Badly formed href for URI');
 
         return;
     }

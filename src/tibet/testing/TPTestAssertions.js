@@ -57,7 +57,6 @@ function(aCondition, aComment, aFaultString) {
         comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
 
         this.get('currentTestCase').fail(
-            TP.FAILURE,
             comment + (aFaultString || ''));
     }
 });
@@ -95,7 +94,6 @@ function(anArgArray, aCount, aComment) {
     comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
 
     this.get('currentTestCase').fail(
-        TP.FAILURE,
         TP.join(comment,
                 TP.sc('Expected ', aCount, ' argument(s).',
                         ' Got ', anArgArray.length, '.')));
@@ -2669,7 +2667,7 @@ function(aValue) {
         if (!this.get('result')) {
 
             faultStr = this.get('faultStr');
-            testCase.fail(TP.FAILURE, (faultStr || ''));
+            testCase.fail(faultStr || '');
         }
     }
 

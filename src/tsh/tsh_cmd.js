@@ -151,7 +151,7 @@ function(aString, aShell, aRequest, asTokens) {
                             ' ',
                             TP.ifInvalid(parts.at(3), ''));
 
-                    aRequest.fail(TP.FAILURE, new Error(msg));
+                    aRequest.fail(new Error(msg));
 
                     return;
                 }
@@ -182,15 +182,14 @@ function(aString, aShell, aRequest, asTokens) {
 
                 req.defineMethod(
                     'cancel',
-                    function(aFaultCode, aFaultString) {
-
+                    function(aFaultString, aFaultCode) {
                         return aRequest.cancel(
                             TP.ifInvalid(
-                                    aFaultCode,
-                                    TP.FAILURE),
-                            TP.ifInvalid(
                                     aFaultString,
-                                    TP.sc('History request cancelled.')));
+                                    TP.sc('History request cancelled.')),
+                            TP.ifInvalid(
+                                    aFaultCode,
+                                    TP.FAILED));
                     });
 
                 req.defineMethod(
@@ -206,16 +205,16 @@ function(aString, aShell, aRequest, asTokens) {
 
                 req.defineMethod(
                     'fail',
-                    function(aFaultCode, aFaultString) {
+                    function(aFaultString, aFaultCode) {
 
                         return aRequest.fail(
-                            TP.ifInvalid(
-                                    aFaultCode,
-                                    TP.FAILURE),
                             new Error(
                             TP.ifInvalid(
                                     aFaultString,
-                                    TP.sc('History request failed.'))));
+                                    TP.sc('History request failed.'))),
+                            TP.ifInvalid(
+                                    aFaultCode,
+                                    TP.FAILED));
                     });
 
                 aShell.handleShellRequest(req);
@@ -223,7 +222,7 @@ function(aString, aShell, aRequest, asTokens) {
                 return;
             } else {
                 msg = TP.sc('No previous command to edit.');
-                aRequest.fail(TP.FAILURE, new Error(msg));
+                aRequest.fail(new Error(msg));
 
                 return;
             }
@@ -282,15 +281,15 @@ function(aString, aShell, aRequest, asTokens) {
 
                     req.defineMethod(
                         'cancel',
-                        function(aFaultCode, aFaultString) {
+                        function(aFaultString, aFaultCode) {
 
                             return aRequest.cancel(
                                 TP.ifInvalid(
-                                    aFaultCode,
-                                    TP.FAILURE),
-                                TP.ifInvalid(
                                     aFaultString,
-                                    TP.sc('Aliased request cancelled.')));
+                                    TP.sc('Aliased request cancelled.')),
+                                TP.ifInvalid(
+                                    aFaultCode,
+                                    TP.FAILED));
                         });
 
                     req.defineMethod(
@@ -306,17 +305,17 @@ function(aString, aShell, aRequest, asTokens) {
 
                     req.defineMethod(
                         'fail',
-                        function(aFaultCode, aFaultString) {
+                        function(aFaultString, aFaultCode) {
 
                             return aRequest.fail(
-                                TP.ifInvalid(
-                                    aFaultCode,
-                                    TP.FAILURE),
                                 new Error(
                                 TP.ifInvalid(
                                     aFaultString,
                                     'Aliased request failed: ' +
-                                        this.at('cmd'))));
+                                        this.at('cmd'))),
+                                TP.ifInvalid(
+                                    aFaultCode,
+                                    TP.FAILED));
                         });
 
                     req.defineMethod(
@@ -1060,7 +1059,7 @@ function(REQUEST$$) {
                 RESULT$$ = ERR$$.endsWith('.') ? ERR$$ : ERR$$ + '.';
             }
 
-            $REQUEST.fail(TP.FAILURE, new Error(RESULT$$));
+            $REQUEST.fail(new Error(RESULT$$));
         }
     }
 
@@ -1280,7 +1279,7 @@ function(REQUEST$$, CMDTYPE$$) {
 
                                 //  problem creating regular expression
                                 //  which should have reported an error
-                                $REQUEST.fail(TP.FAILURE, new Error(RESULT$$));
+                                $REQUEST.fail(new Error(RESULT$$));
 
                                 return;
                             }
@@ -1497,7 +1496,7 @@ function(REQUEST$$, CMDTYPE$$) {
                         RESULT$$ = ERR$$.endsWith('.') ? ERR$$ : ERR$$ + '.';
                     }
 
-                    $REQUEST.fail(TP.FAILURE, new Error(RESULT$$));
+                    $REQUEST.fail(new Error(RESULT$$));
                 }
 
                 return;
@@ -1541,14 +1540,12 @@ function(REQUEST$$, CMDTYPE$$) {
                     $REQUEST.atPut('cmdInstance', RESULT$$);
                     RESULT$$ = TYPE$$.cmdAddContent($REQUEST);
                 } else {
-                    $REQUEST.fail(TP.FAILURE,
-                        new Error('Invalid sink.'));
+                    $REQUEST.fail(new Error('Invalid sink.'));
                 }
             } else if (!TP.isMutable(RESULT$$)) {
-                $REQUEST.fail(TP.FAILURE,
-                    new Error('Non-mutable sink.'));
+                $REQUEST.fail(new Error('Non-mutable sink.'));
             } else {
-                $REQUEST.fail(TP.FAILURE, new Error('Missing sink.'));
+                $REQUEST.fail(new Error('Missing sink.'));
             }
 
             break;
@@ -1579,8 +1576,7 @@ function(REQUEST$$, CMDTYPE$$) {
                         $REQUEST.atPut('cmdInstance', RESULT$$);
                         RESULT$$ = TYPE$$.cmdFilterInput($REQUEST);
                     } else {
-                        $REQUEST.fail(TP.FAILURE,
-                            new Error('Invalid pipe.'));
+                        $REQUEST.fail(new Error('Invalid pipe.'));
                     }
                 } else {
                     $REQUEST.complete(RESULT$$);
@@ -1612,12 +1608,12 @@ function(REQUEST$$, CMDTYPE$$) {
                     $REQUEST.atPut('cmdInstance', RESULT$$);
                     RESULT$$ = TYPE$$.cmdSetContent($REQUEST);
                 } else {
-                    $REQUEST.fail(TP.FAILURE, 'Invalid sink.');
+                    $REQUEST.fail('Invalid sink.');
                 }
             } else if (!TP.isMutable(RESULT$$)) {
-                $REQUEST.fail(TP.FAILURE, 'Non-mutable sink.');
+                $REQUEST.fail('Non-mutable sink.');
             } else {
-                $REQUEST.fail(TP.FAILURE, 'Missing sink.');
+                $REQUEST.fail('Missing sink.');
             }
 
             break;
@@ -1648,7 +1644,7 @@ function(REQUEST$$, CMDTYPE$$) {
                         $REQUEST.atPut('cmdInstance', RESULT$$);
                         RESULT$$ = TYPE$$.cmdTransformInput($REQUEST);
                     } else {
-                        $REQUEST.fail(TP.FAILURE, 'Invalid pipe.');
+                        $REQUEST.fail('Invalid pipe.');
                     }
                 } else {
                     $REQUEST.complete(RESULT$$);
@@ -1827,7 +1823,6 @@ function(aString, aShell, aRequest) {
         if (TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdInteractive', false)) &&
             TP.notTrue(TP.ifKeyInvalid(aRequest, 'cmdAllowSubs', false))) {
             aRequest.fail(
-                TP.FAILURE,
                 new Error(
                 TP.sc(TP.join(
                         'Security violation. Attempt to use',
@@ -1924,7 +1919,6 @@ function(aString, aShell, aRequest) {
                 err = err.endsWith('.') ? err : err + '.';
 
                 $REQUEST.fail(
-                    TP.FAILURE,
                     new Error(
                     TP.join(
                         TP.sc('Command substitution `'),

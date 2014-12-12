@@ -113,7 +113,7 @@ function(aRequest) {
     //  fail the request.
     url = aRequest.at('uri');
     if (TP.notValid(url)) {
-        return aRequest.fail(TP.FAILURE, 'TP.sig.InvalidURI');
+        return aRequest.fail('TP.sig.InvalidURI');
     }
 
     try {
@@ -227,7 +227,7 @@ function(aRequest) {
 
             default:
 
-                aRequest.fail(TP.FAILURE, 'Unrecognized action');
+                aRequest.fail('Unrecognized action');
 
             break;
         }

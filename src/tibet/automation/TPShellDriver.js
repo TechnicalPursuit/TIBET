@@ -229,7 +229,7 @@ function(test, inputVal, correctResults) {
     this.get('promiseProvider').then(
         null,
         function(reason) {
-            test.fail(TP.FAILED, reason);
+            test.fail(reason);
         });
 
     return;

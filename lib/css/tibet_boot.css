@@ -85,6 +85,7 @@ body.showlog #BOOT-CONSOLE {
 }
 #BOOT-CONSOLE .edge {
     overflow: auto;
+    border-radius: 3px;
 }
 #BOOT-CONSOLE .edge.done {
     overflow: auto;

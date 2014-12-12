@@ -1328,7 +1328,7 @@ function(aRequest) {
 
     //  first make sure we can construct a valid response
     if (TP.notValid(response = aRequest.constructResponse())) {
-        aRequest.fail(TP.FAILURE, 'Couldn\'t construct response.');
+        aRequest.fail('Couldn\'t construct response.');
         this.raise(
             'TP.sig.ProcessingException',
             'Couldn\'t construct response.');
@@ -3074,7 +3074,6 @@ function(aRequest) {
             //  syntax error
             node = aRequest.at('cmdNode');
             return aRequest.fail(
-                        TP.FAILED,
                         'Too many arguments: ' + TP.str(node));
     }
 

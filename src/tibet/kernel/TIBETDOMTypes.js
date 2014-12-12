@@ -8728,7 +8728,7 @@ function(aRequest) {
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
-            aRequest.fail(request.getFaultCode(), request.getFaultText());
+            aRequest.fail(request.getFaultText(), request.getFaultCode());
             return;
         }
     }
@@ -9085,7 +9085,7 @@ function(aRequest) {
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
-            aRequest.fail(request.getFaultCode(), request.getFaultText());
+            aRequest.fail(request.getFaultText(), request.getFaultCode());
             return;
         }
     }
@@ -11364,27 +11364,6 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getEventIds',
-function() {
-
-    /**
-     * @name getEventIds
-     * @synopsis Returns an array of the event IDs (origin IDs) for the
-     *     receiver, starting with the receiver and working out to the top-most
-     *     parent element.
-     * @description The returned Array is configured as an 'origin set' for use
-     *     by the TIBET notification system.
-     * @returns {Array} An Array containing the event IDs of the receiver.
-     * @todo
-     */
-
-    //  The TP.elementGetEventIds() call's return value has already been
-    //  configured as an 'origin set'.
-    return TP.elementGetEventIds(this.getNativeNode());
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Inst.defineMethod('observe',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
@@ -11974,7 +11953,7 @@ function(aRequest) {
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(
+                TP.annotate(
                         node, 'XSLT finalization transform starting.'),
             TP.INFO) : 0;
 
@@ -12066,7 +12045,7 @@ function(aRequest) {
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(TP.str(resultNode),
+                TP.annotate(TP.str(resultNode),
                             'XSLT finalization transform complete.'),
             TP.INFO) : 0;
 
@@ -14429,7 +14408,7 @@ function(aRequest, functionName) {
     //  Make sure that we have a node to work from.
     if (!TP.isNode(node = aRequest.at('cmdNode'))) {
         msg = 'No action node.';
-        aRequest.fail(TP.FAILURE, msg);
+        aRequest.fail(msg);
 
         return;
     }
@@ -14438,7 +14417,7 @@ function(aRequest, functionName) {
     if (TP.notValid(input = this.getActionInput(aRequest))) {
         if (this.shouldFailOnEmptyInput()) {
             msg = 'No action input.';
-            aRequest.fail(TP.FAILURE, msg);
+            aRequest.fail(msg);
 
             return;
         } else {
@@ -14498,7 +14477,7 @@ function(aRequest, functionName) {
                     default:
 
                         msg = 'Invalid operation: ' + functionName;
-                        aRequest.fail(TP.FAILURE, msg);
+                        aRequest.fail(msg);
 
                         return;
                 }
@@ -14699,7 +14678,7 @@ function(aRequest) {
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(TP.str(elem),
+                TP.annotate(TP.str(elem),
                             'XInclude content inclusion starting.'),
             TP.INFO) : 0;
 
@@ -14907,7 +14886,7 @@ function(aRequest) {
 
     TP.ifInfo() ?
         TP.sys.logTransform(
-                TP.boot.$annotate(TP.str(elem),
+                TP.annotate(TP.str(elem),
                             'XInclude content inclusion complete.'),
             TP.INFO) : 0;
 

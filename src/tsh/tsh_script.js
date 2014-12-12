@@ -1748,7 +1748,7 @@ function(aRequest, aMessage) {
         //  outer processing context.
         return TP.BREAK;
     } else {
-        aRequest.fail(TP.FAILURE, msg);
+        aRequest.fail(msg);
     }
 
     return TP.BREAK;
@@ -2931,7 +2931,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sig.TSHRunRequest.Inst.defineMethod('cancel',
-function(aFaultCode, aFaultString) {
+function(aFaultString, aFaultCode) {
 
     /**
      * @name cancel
@@ -2939,9 +2939,9 @@ function(aFaultCode, aFaultString) {
      *     the user or calling process. If the receiver has specific behavior to
      *     implement it should override the cancelJob() method invoked as part
      *     of this method's operation.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
-     * @param {String} aFaultString A string description of the fault.
      * @returns {TP.BREAK}
      * @todo
      */
@@ -2953,10 +2953,10 @@ function(aFaultCode, aFaultString) {
     if ((arguments.length > 0) && TP.notTrue(this.at('cmdSilent'))) {
         switch (arguments.length) {
             case 1:
-                this.stderr(aFaultCode);
+                this.stderr(aFaultString);
                 break;
             case 2:
-                this.stderr(aFaultCode, aFaultString);
+                this.stderr(aFaultString, aFaultCode);
                 break;
             default:
                 break;
@@ -3003,7 +3003,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.TSHRunRequest.Inst.defineMethod('fail',
-function(aFaultCode, aFaultString, anException) {
+function(aFaultString, aFaultCode, anException) {
 
     /**
      * @name fail
@@ -3011,9 +3011,9 @@ function(aFaultCode, aFaultString, anException) {
      *     of exception. If the receiver has specific behavior to implement it
      *     should override the failJob() method invoked as part of this method's
      *     operation.
+     * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {String} aFaultString A string description of the fault.
      * @param {TP.sig.Exception|String} anException An optional exception to
      *     raise.
      * @returns {TP.BREAK}
@@ -3027,14 +3027,13 @@ function(aFaultCode, aFaultString, anException) {
     }
 
     if (TP.isValid(anException)) {
-        this.raise(anException,
-                    TP.ifInvalid(aFaultString, aFaultCode));
+        this.raise(anException, TP.ifInvalid(aFaultString, aFaultCode));
     }
 
     if ((arguments.length > 0) && TP.notTrue(this.at('cmdSilent'))) {
         switch (arguments.length) {
             case 1:
-                this.stderr(aFaultCode);
+                this.stderr(aFaultString);
                 break;
             case 2:
                 if (TP.isError(aFaultString)) {

@@ -1885,7 +1885,7 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
     // encapsulate it in no-unused-vars directives.
 
     /* eslint-disable no-undef */
-    $STATUS = TP.FAILURE;       // jshint ignore:line
+    $STATUS = TP.FAILED;            // jshint ignore:line
     /* eslint-enable no-undef */
 
     return TP.sys.shouldCaptureErrors();
@@ -2288,6 +2288,14 @@ function(aHandlerName, aHandler, aPolicy) {
     signal = match[1];
     origin = TP.ifEmpty(match[3], TP.ANY);
     state = TP.ifEmpty(match[5], TP.ANY);
+
+    if (origin !== TP.ANY) {
+        // Origin is in title case in the method name but needs to have that set
+        // to an initial lowercase letter for ID matching during signaling.
+        origin = origin.split('');
+        origin[0] = origin[0].toLowerCase();
+        origin = origin.join('');
+    }
 
     // Standard notification doesn't include state checks, so wrap the intended
     // handler here if state is being constrained and use that as the handler.

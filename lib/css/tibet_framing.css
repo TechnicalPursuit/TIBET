@@ -291,11 +291,14 @@ div {
     width: 25px;
 }
 
+.north[pclass|hidden] .home img {
+    display: none;
+}
+
 #center {
     box-shadow: 0 0 0 1px #eee;
     border: 1px solid #aaa;
     background: #fff;
-    padding: 1px;
     min-width: 600px;
 
     overflow: hidden;
@@ -332,10 +335,10 @@ div {
 /* Hide drawers and expand center content */
 
 #center.fullscreen {
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    top: 2px;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
 }
 
 .north, .south {
