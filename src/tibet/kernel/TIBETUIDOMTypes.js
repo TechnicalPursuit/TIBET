@@ -655,7 +655,9 @@ function(aTargetElem, nodesAdded) {
     var processor,
 
         len,
-        i;
+        i,
+
+        node;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -668,6 +670,22 @@ function(aTargetElem, nodesAdded) {
     //  Now, process each *root* that we have gotten as an added node
     len = nodesAdded.getSize();
     for (i = 0; i < len; i++) {
+        node = nodesAdded.at(i);
+
+        //  If the node is an Element and it has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(node) &&
+            TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
+            continue;
+        }
+
+        //  If the node has an ancestor Element that has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
+                                        node, 'tibet:noawaken', null, true))) {
+            continue;
+        }
+
         processor.processTree(nodesAdded.at(i));
     }
 
@@ -703,6 +721,8 @@ function(aTargetElem, nodesRemoved) {
         len,
         i,
 
+        shouldProcess,
+
         node;
 
     if (!TP.isElement(aTargetElem)) {
@@ -718,9 +738,29 @@ function(aTargetElem, nodesRemoved) {
     //  Now, process each *root* that we have gotten as a removed node
     len = nodesRemoved.getSize();
     for (i = 0; i < len; i++) {
+
         node = nodesRemoved.at(i);
 
-        processor.processTree(node);
+        //  Initially we're set to process this markup.
+        shouldProcess = true;
+
+        //  But if the node is an Element and it has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(node) &&
+            TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
+            shouldProcess = false;
+        }
+
+        //  And if the node has an ancestor Element that has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
+                                        node, 'tibet:noawaken', null, true))) {
+            shouldProcess = false;
+        }
+
+        if (shouldProcess) {
+            processor.processTree(node);
+        }
 
         if (TP.isElement(node)) {
             focusStackCheckElems.push(node);

@@ -8,7 +8,7 @@
 
 <!-- Base CodeMirror JS and CSS -->
 <script type="text/javascript" src="../../../../../deps/codemirror/lib/codemirror.js"></script>
-<!--<script type="text/javascript" src="../../../../../deps/codemirror/lib/runmode.js"></script>-->
+<script type="text/javascript" src="../../../../../deps/codemirror/addon/runmode/runmode.js"></script>
 <script type="text/javascript" src="../../../../../deps/codemirror/addon/search/searchcursor.js"></script>
 
 <link rel="stylesheet" type="text/css" href="../../../../../deps/codemirror/lib/codemirror.css">
@@ -23,8 +23,7 @@
 <script type="text/javascript" src="../../../../../deps/codemirror/mode/css/css.js"></script>
 
 <!-- Theme CSS -->
-<link rel="stylesheet" type="text/css" href="../cm_theme/base16-dark.css">
-<link rel="stylesheet" type="text/css" href="../cm_theme/sherpa_pp.css">
+<link rel="stylesheet" type="text/css" href="../cm_theme/zenburn.css">
 
 <script type="text/javascript">
 function setup()
@@ -32,7 +31,7 @@ function setup()
 	window.cmEditor = CodeMirror.fromTextArea(
 		document.getElementById('cmEditor'),
 		{
-			theme: 'base16-dark',
+			theme: 'zenburn',
 			mode: 'javascript',
 			tabMode: 'indent',
 			lineNumbers: false,
@@ -84,12 +83,8 @@ body {
 	overflow-x: auto;
 	overflow-y: hidden;
 }
-
-.CodeMirror[maximized] {
-    height: 100%;
-}
-.CodeMirror[maximized] .CodeMirror-scroll {
-	overflow-y: auto;
+.CodeMirror-lines {
+    padding-top: 3px;
 }
 
 .console_prompt {
@@ -97,7 +92,7 @@ body {
 
     cursor: default;
 
-    margin-right: 2px;
+    margin-right: 6px;
 
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
     font-size: 12px;
@@ -132,10 +127,6 @@ body {
 
 .bordered-eval-right {
     border-right: dashed 1px #D33682;
-}
-
-.cm-s-base16-dark div.CodeMirror-selected {
-    background: #716C62 !important;
 }
 
 </style>

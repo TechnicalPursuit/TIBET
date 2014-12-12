@@ -577,9 +577,8 @@ function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
      * @param {String} attrName The attribute name value to find, with optional
      *     NS: prefix.
      * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     *     rigorous in its checks for prefixed attributes, looking via URI
+     *     rather than just prefix. Default is false (to keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {String} The attribute value, if found or null if the element
@@ -607,8 +606,8 @@ function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
      *     NS: prefix.
      * @param {Boolean} checkAttrNSURI True will cause this method to be more
      *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     *     actually check for the attribute in that namespace. Default is false
+     *     (to keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Boolean} True if the attribute exists.

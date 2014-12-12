@@ -77,3 +77,31 @@
 
     line-height: 1.5em;
 }
+
+.sherpa_pp.TP_boot_Log
+{
+    display: table;
+}
+
+.sherpa_pp.TP_boot_Log > span
+{
+    display: table-row;
+}
+
+.sherpa_pp.TP_boot_Log span[data-name]
+{
+    display: table-cell;
+    color: cyan;
+    padding-left: 5px;
+}
+
+.sherpa_pp.TP_boot_Log span[data-name="timestamp"]
+{
+    color: #AAA;
+    padding-left: 0px;
+}
+
+.sherpa_pp.TP_boot_Log span[data-name="log-level"]
+{
+    padding-left: 2px;
+}

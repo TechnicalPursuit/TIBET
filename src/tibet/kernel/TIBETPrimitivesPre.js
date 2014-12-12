@@ -473,31 +473,10 @@ TP.owns = function(anObject, aName) {
      * @todo
      */
 
-    if (anObject === null || anObject === undefined) {
-        return false;
-    }
-
-    if (TP.isDNU(anObject[aName])) {
-        return false;
-    }
-
-    try {
-        return anObject.hasOwnProperty(aName);
-    } catch (e) {
-        void(0);
-    }
-
-    try {
-        return TP.FunctionProto.hasOwnProperty.call(anObject, aName);
-    } catch (e) {
-        void(0);
-    }
-
-    try {
-        return anObject[aName] !== anObject.constructor.prototype[aName];
-    } catch (e) {
-        return false;
-    }
+    //  This is the most efficient way to provide this functionality. This is
+    //  VERY HEAVILY used method, so it's best to leave it this way unless bugs
+    //  are found.
+    return TP.ObjectProto.hasOwnProperty.call(anObject, aName);
 };
 
 //  Manual setup

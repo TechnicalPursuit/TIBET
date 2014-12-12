@@ -1,3 +1,11 @@
+@import url("../../../../../lib/css/tibet_content.css");
+
+@import url("sherpa_pp.css");
+
+/* NB: This should match the theme that is used in the console input editor
+HTML stub file */
+@import url("../cm_theme/zenburn.css");
+
 @namespace html url(http://www.w3.org/1999/xhtml);
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
@@ -5,71 +13,39 @@
 
 sherpa|console
 {
-    display: none;
-	position: absolute;
+    display: block;
+	position: relative;
 
-    top: auto;
-    right: 31px;
-	left: 31px;
-    bottom: 3px;
+    top: 3px;
+    bottom: 4px;
 
     height: 18px;
+
+    /* Because we're display: relative, we need use margins for left and
+        right */
+    margin-left: 5px;
+    margin-right: 5px;
 
     /*max-height: calc(100% - 100px);*/
 
 	/* This should match TIBET's CONSOLE_TIER constant */
 	z-index: 15000;
 
-    border: solid 1px rgba(0, 0, 0, 0.1);
-    border-radius: 6px;
+    box-shadow: 0 0 0 1px #666;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    background: #444;
+    padding: 1px;
 }
 
-sherpa|console:not([pclass|hidden])
+sherpa|console[pclass|hidden]
 {
-    display: block;
-}
-
-sherpa|console[maximized]
-{
-    top: 50px;
-    height: auto !important;
-}
-
-sherpa|console > #toggleMaximize
-{
-    position: absolute;
-
-    cursor: pointer;
-
-    top: 2px;
-    right: 2px;
-    width: 10px;
-    height: 10px;
-
-    transform: rotate(90deg);
-
-    background-size: 10px 10px;
-    background-image: url(../img/console_fullscreen_enter.svg);
-}
-
-sherpa|console[maximized] > #toggleMaximize
-{
-    background-image: url(../img/console_fullscreen_exit.svg);
-}
-
-sherpa|console > #toggleMaximize:active
-{
-    transform: rotate(90deg) scale(1.2);
-}
-
-sherpa|console[maximized] > #toggleMaximize:active
-{
-    transform: rotate(90deg) scale(0.8);
+    height: 0px;
 }
 
 sherpa|console > xctrls|codeeditor
 {
-	position: absolute;
+    position: static;
 
     top: 0px;
     left: 0px;
@@ -78,8 +54,258 @@ sherpa|console > xctrls|codeeditor
     height: 100%;
 }
 
-sherpa|screen#consoleOut
+sherpa|console > xctrls|codeeditor > iframe
 {
-    width: 100%;
-    height: 100%;
+    border-radius: 5px;
 }
+
+#SherpaConsoleOutputToolbar
+{
+    position: absolute;
+
+    top: 0px;
+    right: 0px;
+    left: 0px;
+
+    height: 20px;
+
+    border-style: solid;
+    border-radius: 5px;
+
+    border-left-width: 1px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+
+    border-color: transparent;
+}
+
+#SherpaConsoleOutputToolbar:hover
+{
+    border-color: rgb(188, 190, 143);
+    background-color: #3F3F3F;
+}
+
+#SherpaConsoleOutputToolbar .toolbarButton
+{
+    position: absolute;
+
+    visibility: hidden;
+
+    cursor: pointer;
+
+    width: 20px;
+    height: 20px;
+
+    background-size: 20px 20px;
+}
+
+#SherpaConsoleOutputToolbar:hover .toolbarButton
+{
+    visibility: visible;
+}
+
+#toggleHSplitTop
+{
+    right: 5px;
+    background-image: url(../img/h_split_top.svg);
+}
+
+#toggleHSplitBottom
+{
+    right: 30px;
+    background-image: url(../img/h_split_bottom.svg);
+}
+
+#toggleVSplitLeft
+{
+    right: 55px;
+    background-image: url(../img/v_split_left.svg);
+}
+
+#toggleVSplitRight
+{
+    right: 80px;
+    background-image: url(../img/v_split_right.svg);
+}
+
+#toggleFullscreen
+{
+    right: 105px;
+    background-image: url(../img/full_screen.svg);
+}
+
+
+#SherpaConsoleOutput
+{
+    position: absolute;
+
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+
+    background-color: #3F3F3F;
+
+    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
+    font-size: 85%;
+
+    text-align: left;
+
+    color: white;
+    white-space: nowrap;
+
+    line-height: 1.5em;
+
+    overflow: auto;
+}
+
+#SherpaConsoleOutput *
+{
+    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
+}
+
+
+#SherpaConsoleOutput a
+{
+    color: LightSkyBlue;
+}
+
+span[name="inputEntry"]
+{
+    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
+}
+
+.inputcell
+{
+    position: relative;
+
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+.inputcell .hid
+{
+    text-decoration: none;
+    display: inline-block;
+    min-width: 32px;
+}
+
+.inputcell .hid:hover
+{
+    font-weight: bold;
+}
+
+.inputcell .content
+{
+    position: relative;
+    display: inline-block;
+
+    color: #ccc;
+
+    white-space: pre-line;
+}
+
+.inputcell .stats
+{
+    float: right;
+    margin: 0 8px;
+    display: inline-block;
+
+    color: grey;
+
+    white-space: pre-line;
+}
+
+.inputcell .typeinfo
+{
+    float: right;
+    display: inline-block;
+    margin: 0 8px;
+
+    color: orange;
+
+    white-space: pre-line;
+}
+
+
+.outputcell {
+    padding: 2px 0;
+}
+
+.outputcell .result
+{
+    position: relative;
+    display: inline-block;
+    width: 100%;
+
+    white-space: pre-line;
+}
+
+.outputcell .stats
+{
+    float: right;
+    margin: -24px 8px;
+    display: inline-block;
+
+    color: grey;
+
+    white-space: pre-line;
+}
+
+.outputcell .typeinfo
+{
+    float: right;
+    display: inline-block;
+    margin: -24px 8px;
+
+    color: orange;
+
+    white-space: pre-line;
+}
+
+.outputcell .empty {
+    display:none;
+}
+
+.outputcell.trace {
+    color: #aaa;
+}
+.outputcell.debug {
+    color: magenta;
+}
+.outputcell.info {
+    color: white;
+}
+.outputcell.warn {
+    color: orange;
+}
+.outputcell.error {
+    color: red;
+}
+.outputcell.severe {
+    color: red;
+}
+.outputcell .fatal {
+    color: red;
+}
+.outputcell .system {
+    color: cyan;
+}
+
+
+.outputcell.tap-pass {
+    color: cyan;
+}
+
+.outputcell.tap-fail {
+    color: orange;
+}
+
+.outputcell.tap-comment {
+    color: #aaa;
+}
+
+.outputcell.tap-unknown {
+    color: #fff;
+}
+

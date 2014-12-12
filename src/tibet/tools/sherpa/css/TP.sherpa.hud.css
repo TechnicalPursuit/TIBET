@@ -2,28 +2,6 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-#triggerHUD {
-    position: absolute;
-
-    cursor: default;
-
-    bottom: 15px;
-    right: 15px;
-    width: 25px;
-    height: 25px;
-
-    background-size: 25px 25px;
-    background-image: url(../../../../../lib/img/tibet_logo_black.svg);
-}
-
-#triggerHUD:hover {
-    transform: rotateZ(-90deg);
-}
-
-#triggerHUD:active {
-    transform: rotateZ(-90deg) scale(1.2);
-}
-
 #background {
 /*    pointer-events: none; */
 }

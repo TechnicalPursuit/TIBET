@@ -152,12 +152,12 @@ function(anObject, optFormat) {
         stack = '<br/>' +
                 TP.getStackInfo(anObject).collect(
                     function(infoPiece) {
-                        return infoPiece.asEscapedXML();
+                        return TP.sherpa.pp.fromString(infoPiece);
                     }).join('<br/>');
     }
 
     return '<span class="sherpa_pp Error">' +
-            anObject.message.asEscapedXML() +
+            this.fromString(anObject.message) +
             stack +
             '</span>';
 });
@@ -222,8 +222,8 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         item = anObject.item(i);
 
-        content.push('<span data-name="' + TP.name(item) + '">' +
-                        TP.val(item) +
+        content.push('<span data-name="' + TP.name(item).asEscapedXML() + '">',
+                        TP.format(TP.val(item), TP.sherpa.pp.Type, optFormat),
                         '</span>');
     }
 
@@ -312,7 +312,7 @@ function(anObject, optFormat) {
     len = anObject.length;
     for (i = 0; i < len; i++) {
         content.push(
-                '<span data-name="', i, '">',
+                '<span data-name="', TP.str(i).asEscapedXML(), '">',
                     TP.format(anObject[i], TP.sherpa.pp.Type, optFormat),
                 '</span>');
     }
@@ -429,7 +429,9 @@ function(anObject, optFormat) {
             //value = value.asEscapedXML();
 
             output.push(
-                '<span data-name="' + key + '">', value, '</span>');
+                '<span data-name="' + TP.str(key).asEscapedXML() + '">',
+                value,
+                '</span>');
         }
     }
 
@@ -486,13 +488,20 @@ function(anObject, optFormat) {
         if (TP.isValid(optFormat)) {
             optFormat.atPut('cmdAsIs', true);
         }
+
+        obj = TP.str(anObject);
+
+        return '<span class="sherpa_pp String">' +
+                this.runXMLModeOn(obj) +
+                '</span>';
+    } else {
+
+        obj = anObject.asEscapedXML();
+
+        return '<span class="sherpa_pp String">' +
+                this.runJSModeOn(obj) +
+                '</span>';
     }
-
-    obj = anObject.asEscapedXML();
-
-    return '<span class="sherpa_pp String">' +
-            this.runJSModeOn(obj) +
-            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -513,10 +522,10 @@ function(anObject, optFormat) {
 
     return '<span class="sherpa_pp TP_boot_Annotation">' +
                 '<span data-name="object">' +
-                    TP.htmlstr(anObject.object) +
+                    TP.xhtmlstr(anObject.object) +
                 '</span>' +
                 '<span data-name="message">' +
-                    TP.htmlstr(anObject.message) +
+                    TP.xhtmlstr(anObject.message) +
                 '</span>' +
             '</span>';
 });
@@ -526,7 +535,9 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_boot_Log',
 function(anObject, optFormat) {
 
-    var obj,
+    var getLogLevelName,
+
+        obj,
 
         str,
         len,
@@ -539,27 +550,62 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
+    getLogLevelName = function(aLogLevel) {
+
+        switch(aLogLevel) {
+            case TP.boot.TRACE:
+                return 'trace';
+            case TP.boot.DEBUG:
+                return 'debug';
+            case TP.boot.INFO:
+                return 'info';
+            case TP.boot.WARN:
+                return 'warn';
+            case TP.boot.ERROR:
+                return 'error';
+            case TP.boot.SEVERE:
+                return 'severe';
+            case TP.boot.FATAL:
+                return 'fatal';
+            case TP.boot.SYSTEM:
+                return 'system';
+        }
+    };
+
     obj = anObject.getEntries();
 
     str = '';
     len = obj.getSize();
 
     for (i = 0; i < len; i++) {
-        str += '<span class="Date" data-name="timestamp">' +
-                    obj[i][TP.boot.LOG_ENTRY_DATE] +
+        str += '<span>';
+        str += '<span data-name="timestamp">' +
+                    (obj[i][TP.boot.LOG_ENTRY_DATE] ?
+                    obj[i][TP.boot.LOG_ENTRY_DATE].getTime() :
+                    '') +
                 '</span>' +
-                '<span class="String" data-name="log-name">' +
-                    obj[i][TP.boot.LOG_ENTRY_NAME] +
+                '<span data-name="log-name">' +
+                    (obj[i][TP.boot.LOG_ENTRY_NAME] ?
+                    ' ' + obj[i][TP.boot.LOG_ENTRY_NAME] :
+                    '') +
                 '</span>' +
-                '<span class="Number" data-name="log-level">' +
-                    obj[i][TP.boot.LOG_ENTRY_LEVEL] +
+                '<span data-name="log-level">' +
+                    (obj[i][TP.boot.LOG_ENTRY_LEVEL] ?
+                    '- ' + getLogLevelName(obj[i][TP.boot.LOG_ENTRY_LEVEL]) :
+                    '') +
                 '</span>' +
-                '<span class="String" data-name="log-entry">' +
-                    obj[i][TP.boot.LOG_ENTRY_PAYLOAD] +
+                '<span data-name="log-entry">' +
+                    (obj[i][TP.boot.LOG_ENTRY_PAYLOAD] ?
+                    obj[i][TP.boot.LOG_ENTRY_PAYLOAD].asEscapedXML() :
+                    '') +
                 '</span>' +
-                '<span class="String" data-name="log-delta">' +
-                    obj[i][TP.boot.LOG_ENTRY_DELTA] +
+                '<span data-name="log-delta">' +
+                    (obj[i][TP.boot.LOG_ENTRY_DELTA] ?
+                    '' + obj[i][TP.boot.LOG_ENTRY_DELTA].asEscapedXML() :
+                    '') +
                 '</span>';
+
+        str += '</span>';
     }
 
     return '<span class="sherpa_pp TP_boot_Log">' +
@@ -599,7 +645,7 @@ function(anObject, optFormat) {
 
                 if (style) {
                     str += '<span class="cm-' + style + '">' +
-                             text +
+                             text.asEscapedXML() +
                              '</span>';
                 } else {
                     if (text === '{' || text === '[') {
@@ -686,7 +732,7 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         key = keys.at(i);
 
-        output.push('<span data-name="' + key + '">' +
+        output.push('<span data-name="' + TP.str(key).asEscapedXML() + '">' +
                     TP.format(anObject.at(keys.at(i)),
                                 TP.sherpa.pp.Type,
                                 optFormat),
@@ -880,16 +926,16 @@ function(anObject, optFormat) {
 
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
-            content.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i].asEscapedXML(), '">',
                         TP.str(anObject.document).asEscapedXML(), '</span>');
             continue;
         }
 
         try {
-            content.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i].asEscapedXML(), '">',
                         TP.htmlstr(anObject[keys[i]]), '</span>');
         } catch (e) {
-            content.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i].asEscapedXML(), '">',
                         TP.htmlstr(undefined), '</span>');
         }
     }
@@ -1000,6 +1046,12 @@ function(anObject, optFormat) {
 
     if (TP.notValid(anObject)) {
         // 'null' or 'undefined', as you'd expect.
+        if (anObject === null) {
+            return this.transformNull(anObject, optFormat);
+        } else if (anObject === undefined) {
+            return this.transformUndefined(anObject, optFormat);
+        }
+
         return '<span class="sherpa_pp Object">' + anObject + '</span>';
     }
 

@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:logview');
+TP.sherpa.Element.defineSubtype('sherpa:logview');
 
 TP.sherpa.logview.Inst.defineAttribute(
         'body',
@@ -24,29 +24,6 @@ TP.sherpa.logview.Inst.defineAttribute(
 TP.sherpa.logview.Inst.defineAttribute(
         'entryList',
         {'value': TP.cpc('#entryList', true)});
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.logview.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    if (TP.isElement(elem = aRequest.at('node'))) {
-        this.addStylesheetTo(TP.nodeGetDocument(elem));
-    }
-
-    return;
-});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

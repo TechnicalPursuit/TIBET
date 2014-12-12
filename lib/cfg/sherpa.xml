@@ -12,6 +12,8 @@
         ]]>
     </script>
 
+    <script src="./src/sherpa_Element.js"/>
+
     <script src="./src/TP.tibet.sherpa.js"/>
 
     <script src="./src/TP.core.sherpa.js"/>

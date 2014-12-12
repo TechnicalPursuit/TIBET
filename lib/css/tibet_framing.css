@@ -1,6 +1,6 @@
 @namespace pclass url(urn:tibet:pseudoclass);
 
-html,body,#background,iframe {
+html, body, #background, iframe {
     position: absolute;
 
     top: 0;
@@ -20,19 +20,31 @@ iframe {
 }
 
 #background {
-    background-image: url(../img/boot/dark_fiber.png);
+    position: absolute;
+
     background-color: #444;
     overflow: hidden;
 }
 
 div {
-    position: absolute;
     margin: 0;
     padding: 0;
     border: 0;
 }
 
 .framing {
+    position: absolute;
+
+    /* This should match TIBET's HUD_TIER constant */
+    z-index: 15000;
+}
+
+.drawer {
+    position: absolute;
+}
+
+#home, #center, #content {
+    position: absolute;
 }
 
 /* -----------------------------*
@@ -48,7 +60,6 @@ div {
     box-shadow: 0 0 0 1px #eee;
 
     background-color: #eee;
-    background-image: url(../img/boot/white_fiber.png);
 }
 
 .corner:hover {
@@ -74,8 +85,7 @@ div {
     box-shadow: 0 0 0 1px #eee;
     border: 1px solid #aaa;
 
-    background-color: #aaa;
-    background-image: url(../img/boot/white_fiber.png);
+    background-color: #eee;
 }
 
 .h-edge:hover {
@@ -103,8 +113,7 @@ div {
     box-shadow: 0 0 0 1px #eee;
     border: 1px solid #aaa;
 
-    background-color: #aaa;
-    background-image: url(../img/boot/white_fiber.png);
+    background-color: #eee;
 }
 
 .v-edge:hover {
@@ -294,6 +303,12 @@ div {
 
 #center #content {
     border-radius: 4px;
+
+    max-width: none;
+    min-width: none;
+
+    margin-left: initial;
+    margin-right: initial;
 }
 
 #center iframe {
@@ -302,22 +317,41 @@ div {
 }
 
 #content {
+    box-sizing: border-box;
+
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+
     overflow: auto;
+
     border: 1px solid #666;
 }
 
-/* Hide drawers */
+/* Hide drawers and expand center content */
+
+#center.fullscreen {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
 
 .north, .south {
     transition: height .5s;
 }
 
+.north.no_transition, .south.no_transition {
+    transition: none;
+}
+
 .east, .west {
     transition: width .5s;
+}
+
+.east.no_transition, .west.no_transition {
+    transition: none;
 }
 
 .north[pclass|hidden] {

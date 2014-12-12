@@ -15,30 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:hud');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hud.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    if (TP.isElement(elem = aRequest.at('node'))) {
-        this.addStylesheetTo(TP.nodeGetDocument(elem));
-    }
-
-    return;
-});
+TP.sherpa.Element.defineSubtype('sherpa:hud');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -50,32 +27,6 @@ function() {
     /**
      * @name setup
      */
-
-    var doc,
-        triggerElement;
-
-    doc = this.getNativeDocument();
-
-    //  Create and overlay a small version of the TIBET image for access.
-    triggerElement = TP.documentCreateElement(
-                            doc, 'div', TP.w3.Xmlns.XHTML);
-
-    TP.elementSetAttribute(triggerElement, 'id', 'triggerHUD');
-
-    TP.nodeAppendChild(TP.documentGetBody(doc), triggerElement);
-
-    /* eslint-disable no-wrap-func */
-    (function(aSignal) {
-            this.toggle('hidden');
-    }).bind(this).observe(TP.wrap(triggerElement), 'TP.sig.DOMClick');
-    /* eslint-enable no-wrap-func */
-
-    //  If this flag was set to not show the IDE, then we have to sync our
-    //  setting to it. Note that we use the lower-level '$isInState' call
-    //  here to avoid triggering our 'setAttrHidden' call.
-    if (!TP.sys.cfg('boot.show_ide')) {
-        this.$isInState('pclass:hidden', true);
-    }
 
     return this;
 });
@@ -91,21 +42,52 @@ function(beHidden) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
+    var southDrawer,
+
+        evtName,
+        func;
+
     if (TP.bc(this.getAttribute('hidden')) === beHidden) {
         return this;
     }
 
-    //TP.byOID('SherpaConsole', this.getNativeWindow()).setAttribute(
-     //                                               'hidden', beHidden);
+    southDrawer = TP.byId('south', this.getNativeWindow());
 
     if (TP.isTrue(beHidden)) {
+
+        //  We remove our 'south's 'no_transition' class so that it no longer
+        //  'immediately snaps' like it needs to do during user interaction.
+        TP.elementRemoveClass(southDrawer, 'no_transition');
+        //TP.byId('south', this.getNativeWindow()).style.height = '';
+        TP.elementGetStyleObj(southDrawer).height = '';
+
         this.hideAllHUDDrawers();
 
         this.getNativeWindow().focus();
     } else {
-        this.showAllHUDDrawers();
 
-        //TP.byOID('SherpaConsole', this.getNativeWindow()).focusInput();
+        if (TP.sys.isUA('WEBKIT')) {
+            evtName = 'webkitTransitionEnd';
+        } else {
+            evtName = 'transitionend';
+        }
+
+        southDrawer.addEventListener(
+            evtName,
+            func = function() {
+
+                southDrawer.removeEventListener(
+                                evtName,
+                                func,
+                                true);
+
+                //  We add our 'south's 'no_transition' class so that during
+                //  user interaction, resizing this drawer will be immediate.
+                TP.elementAddClass(southDrawer, 'no_transition');
+            },
+            true);
+
+        this.showAllHUDDrawers();
     }
 
     return this.callNextMethod();
@@ -123,14 +105,18 @@ function() {
      * @todo
      */
 
-    var hudDrawers;
+    var win,
+        hudDrawers;
 
-    hudDrawers = TP.wrap(TP.byCSS('.framing', this.getNativeWindow()));
+    win = this.getNativeWindow();
+    hudDrawers = TP.wrap(TP.byCSS('.framing', win));
 
     hudDrawers.perform(
         function(aHUDDrawer) {
             aHUDDrawer.setAttrHidden(true);
         });
+
+    TP.elementAddClass(TP.byId('center', win), 'fullscreen');
 
     return this;
 });
@@ -147,32 +133,20 @@ function() {
      * @todo
      */
 
-    var hudDrawers;
+    var win,
+        hudDrawers;
 
-    hudDrawers = TP.wrap(TP.byCSS('.framing', this.getNativeWindow()));
+    win = this.getNativeWindow();
+    hudDrawers = TP.wrap(TP.byCSS('.framing', win));
 
     hudDrawers.perform(
         function(aHUDDrawer) {
             aHUDDrawer.setAttrHidden(false);
         });
 
+    TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
+
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hud.Inst.defineMethod('haloCanBlur',
-function(aHalo, aSignal) {
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hud.Inst.defineMethod('haloCanFocus',
-function(aHalo, aSignal) {
-
-    return false;
 });
 
 //  ------------------------------------------------------------------------

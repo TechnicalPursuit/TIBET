@@ -1536,9 +1536,9 @@ TP.hc(
          *     the attribute.
          * @param {String} attributeName The name of the attribute to test.
          * @param {Boolean} checkAttrNSURI True will cause this method to be
-         *     more rigorous in its checks for prefixed attributes, looking via
-         *     URI rather than just prefix. Default is false (to keep things
-         *     faster).
+         *     more rigorous in its checks for prefixed attributes, and will
+         *     use calls to actually check for the attribute in that namespace.
+         *     Default is false (to keep things faster).
          * @example Check to see if the supplied element has a particular
          *     attribute:
          *     <code>

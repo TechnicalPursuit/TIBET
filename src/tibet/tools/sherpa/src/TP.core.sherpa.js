@@ -62,7 +62,9 @@ function(aName) {
             win,
             drawerElement,
             func,
-            evtName;
+            evtName,
+
+            contentElem;
 
         //  The first thing to do is to tell TP.core.Keyboard to *ignore* this
         //  handler Function. This is because, once we finish set up of the
@@ -77,7 +79,7 @@ function(aName) {
             if (!TP.sys.cfg('boot.show_ide')) {
 
                 win = TP.win('UIROOT');
-                drawerElement = TP.byCSS('div#west', win, true);
+                drawerElement = TP.byCSS('div#south', win, true);
 
                 if (TP.sys.isUA('WEBKIT')) {
                     evtName = 'webkitTransitionEnd';
@@ -99,11 +101,32 @@ function(aName) {
                             //  animate in).
                             sherpaInst.finishSetup();
 
-                            TP.byOID('SherpaHUD').setAttribute(
-                                                            'hidden', false);
+                            //  We add our 'south's 'no_transition' class so
+                            //  that during user interaction, resizing this
+                            //  drawer will be immediate.
+                            TP.elementAddClass(drawerElement, 'no_transition');
+
+                            TP.byOID('SherpaHUD').setAttribute('hidden', false);
                         },
                         true);
 
+                //  Show the center area and the drawers.
+
+                //  First, we remove the 'fullscreen' class from the center
+                //  element. This allows the 'content' element below to properly
+                //  size it's 'busy message layer'.
+                TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
+
+                //  Grab the existing 'content' element, which is now unused
+                //  since the world element moved the screens out of it, and use
+                //  it to show the 'loading' element. The console will later
+                //  reuse it for it's output.
+                contentElem = TP.byId('content');
+
+                TP.elementShow(contentElem);
+                TP.elementShowBusyMessage(contentElem, 'Loading...');
+
+                //  Show the drawers.
                 TP.byCSS('.north, .south, .east, .west', win).perform(
                             function (anElem) {
                                 TP.elementRemoveAttribute(
@@ -154,9 +177,11 @@ function() {
     //  Set up the World
     this.setupWorld();
 
-    //  Based on the setting of this flag, we show or hide the drawers (the HUD
-    //  isn't real until we finish setup, so we do it manually here).
+    //  Based on the setting of this flag, we show or hide the center area and
+    //  the drawers (the HUD isn't real until we finish setup, so we do it
+    //  manually here).
     if (TP.sys.cfg('boot.show_ide')) {
+        TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
         TP.byCSS('.north, .south, .east, .west', win).perform(
                     function (anElem) {
                         TP.elementRemoveAttribute(

@@ -15,30 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:halo');
-
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @name tagAttachDOM
-     * @synopsis Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    if (TP.isElement(elem = aRequest.at('node'))) {
-        this.addStylesheetTo(TP.nodeGetDocument(elem));
-    }
-
-    return;
-});
+TP.sherpa.Element.defineSubtype('sherpa:halo');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -572,22 +549,6 @@ function(aSignal) {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineMethod('haloCanBlur',
-function(aHalo, aSignal) {
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineMethod('haloCanFocus',
-function(aHalo, aSignal) {
-
-    return false;
 });
 
 //  ------------------------------------------------------------------------
