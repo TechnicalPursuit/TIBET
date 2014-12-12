@@ -69,11 +69,14 @@ function() {
     //  be fully formed when this line is executed.
     consoleInputStartupComplete = function(aSignal) {
 
-        var contentElem,
+        var contentTPElem,
+
+            consoleOutputTPElem,
+            toolbarElem,
 
             hudTPElem,
-            consoleOutputTPElem,
-            consoleOutputStartupComplete;
+
+            isHidden;
 
         consoleInputStartupComplete.ignore(
                 aSignal.getOrigin(), aSignal.getSignalName());
@@ -90,60 +93,43 @@ function() {
         //  Set up the consoleOutput element by putting it in the previously
         //  used 'content' element that is currently displaying a 'busy' panel.
 
-        contentElem = TP.byId('content');
+        contentTPElem = TP.byOID('content');
 
-        consoleOutputTPElem = TP.wrap(contentElem).addContent(
-                '<xctrls:codeeditor id="SherpaConsoleOutput"' +
-                ' stubHref="~ide_root/html/sherpa_console_output_stub.html"/>');
+        consoleOutputTPElem = contentTPElem.addContent(
+                            TP.xhtmlnode('<div id="SherpaConsoleOutput"/>'));
         this.set('consoleOutput', consoleOutputTPElem);
 
-        TP.wrap(contentElem).addContent(
-                '<div id="SherpaConsoleOutputToolbar">' +
-                    '<div id="toggleHSplitBottom" mode="h_split_bottom"/>' +
-                    '<div id="toggleHSplitTop" mode="h_split_top"/>' +
-                    '<div id="toggleVSplitLeft" mode="v_split_left"/>' +
-                    '<div id="toggleVSplitRight" mode="v_split_right"/>' +
-                    '<div id="toggleFullscreen" mode="fullscreen"/>' +
-                '</div>');
+        //  Place a toolbar element into the same 'content' element.
+        toolbarElem = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                            '#SherpaConsoleOutputToolbar').getResourceNode(
+                                TP.hc('async', false));
+        contentTPElem.addContent(toolbarElem);
 
-        //  Make sure to observe setup on the console input here, because it
-        //  won't be fully formed when this line is executed.
-        consoleOutputStartupComplete = function(aSignal) {
-            var isHidden;
+        //  NB: We have to set up the ConsoleService this *after* we put in
+        //  the output view.
+        this.setupConsoleService();
 
-            consoleOutputStartupComplete.ignore(
-                    aSignal.getOrigin(), aSignal.getSignalName());
+        hudTPElem = TP.byOID('SherpaHUD', this.getNativeWindow());
+        this.observe(hudTPElem, 'HiddenChange');
 
-            //  NB: We have to set up the ConsoleService this *after* we put in
-            //  the output view.
-            this.setupConsoleService();
+        //  Use the HUD's current value to set whether we are hidden or
+        //  not.
+        isHidden = TP.bc(hudTPElem.getAttribute('hidden'));
+        this.setAttribute('hidden', isHidden);
 
-            hudTPElem = TP.byOID('SherpaHUD', this.getNativeWindow());
-            this.observe(hudTPElem, 'HiddenChange');
+        TP.elementHideBusyMessage(contentTPElem.getNativeNode());
 
-            //  Use the HUD's current value to set whether we are hidden or
-            //  not.
-            isHidden = TP.bc(hudTPElem.getAttribute('hidden'));
-            this.setAttribute('hidden', isHidden);
+        //  Grab the CodeMirror constructor so that we can use it to run
+        //  modes, etc.
+        TP.extern.CodeMirror = consoleInputTPElem.$getEditorConstructor();
 
-            TP.elementHideBusyMessage(contentElem);
-
-            //  Grab the CodeMirror constructor so that we can use it to run
-            //  modes, etc.
-            TP.extern.CodeMirror = consoleOutputTPElem.$getEditorConstructor();
-
-            this.observe(contentElem,
-                            'TP.sig.DOMClick',
-                            function(aSignal) {
-                                this.toggleOutputMode(
-                                    TP.elementGetAttribute(
-                                        aSignal.getTarget(), 'mode'));
-                            }.bind(this));
-        }.bind(this);
-
-        consoleOutputStartupComplete.observe(consoleOutputTPElem,
-                                                'TP.sig.DOMReady');
-
+        this.observe(contentTPElem,
+                        'TP.sig.DOMClick',
+                        function(aSignal) {
+                            this.toggleOutputMode(
+                                TP.elementGetAttribute(
+                                    aSignal.getTarget(), 'mode'));
+                        }.bind(this));
     }.bind(this);
 
     consoleInputStartupComplete.observe(consoleInputTPElem, 'TP.sig.DOMReady');
@@ -401,7 +387,7 @@ function() {
     this.clearStatus();
 
     //  Clear the output
-    this.get('consoleOutput').clearValue();
+    this.get('consoleOutput').empty();
 
     return this;
 });
@@ -1205,11 +1191,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('createAndUpdateOutputMark',
+TP.sherpa.console.Inst.defineMethod('createOutputEntry',
 function(uniqueID, dataRecord) {
 
     /**
-     * @name createAndUpdateOutputMark
+     * @name createOutputEntry
      * @synopsis
      * @param
      * @param
@@ -1219,144 +1205,72 @@ function(uniqueID, dataRecord) {
     var consoleOutput,
 
         doc,
+
+        hid,
+        hidstr,
+
+        cmdText,
+
+        inputClass,
+
+        inputData,
+        inputStr,
+
         outElem;
 
     consoleOutput = this.get('consoleOutput');
 
-    doc = consoleOutput.getNativeContentDocument();
+    doc = consoleOutput.getNativeDocument();
 
     if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
-        this.createOutputMark(uniqueID, dataRecord);
-    }
-
-    this.updateOutputMark(uniqueID, dataRecord);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('createOutputMark',
-function(uniqueID, dataRecord) {
-
-    /**
-     * @name createOutputMark
-     * @synopsis
-     * @param
-     * @param
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    var consoleOutput,
-
-        doc,
-        lastLine,
-
-        outElem,
-
-        marker,
-        outputRange,
-
-        hid,
-        hidStr,
-
-        cmdText,
-
-        cssClass,
-
-        record,
-
-        statsStr,
-
-        resultTypeStr;
-
-    consoleOutput = this.get('consoleOutput');
-
-    doc = consoleOutput.getNativeContentDocument();
-
-    if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
-
-        //  Grab the last line of the output
-        lastLine = consoleOutput.$getEditorInstance().lastLine();
-
-        //  Append a space to the end of it
-        consoleOutput.appendToLine(' ', TP.LAST);
-
-        //  Compute a range that goes from position 0 to position 1 of the last
-        //  line, encompassing the space.
-        outputRange = {
-            from: {'line': lastLine, 'ch': 0},
-            to: {'line': lastLine, 'ch': 1}
-        };
 
         hid = dataRecord.at('hid');
-        hidStr = TP.isEmpty(hid) ? '&#160;&#160;' : '!' + hid;
+        hidstr = TP.isEmpty(hid) ? '&#160;&#160;' : '!' + hid;
 
         cmdText = TP.ifInvalid(dataRecord.at('cmdtext'), '');
         cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
 
-        cssClass = dataRecord.at('cssClass');
+        inputClass = dataRecord.at('cssClass');
 
-        if (TP.isValid(record = dataRecord.at('request'))) {
-            statsStr = this.getInputStats(record);
-            resultTypeStr = this.getInputTypeInfo(dataRecord.at('request'));
-        } else {
-            statsStr = '';
-            resultTypeStr = '';
-        }
-
-        var inputData = TP.hc(
-                        'hid', hidStr,
+        inputData = TP.hc(
+                        'id', uniqueID,
+                        'inputclass', inputClass,
+                        'hid', hidstr,
                         'cmdtext', cmdText,
-                        'inputclass', cssClass,
                         'empty', '',
-                        'stats', '_ | _ | _',
-                        'resulttype', '');
+                        'resulttype', '',
+                        'stats', '&#8230;');
 
-        var inputStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
-                            '#xpath1(//*[@name="consoleEntry"])').transform(
+        inputStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                            '#xpath1(//*[@name="inputEntry"])').transform(
                                 inputData);
 
         if (/\{\{/.test(inputStr)) {
             return;
         }
 
-        marker = this.generateOutputMarkAt(
-                        outputRange,
-                        uniqueID,
+        outElem = TP.xmlElementAddContent(
+                        this.get('consoleOutput').getNativeNode(),
                         inputStr);
-        outElem = marker.widgetNode.firstChild;
+        TP.elementRemoveAttribute(outElem, 'name');
+        TP.elementSetAttribute(outElem, 'tibet:noawaken', 'true', true);
 
-        TP.elementAddClass(outElem, cssClass);
     } else {
-        if (TP.isValid(marker = outElem.marker)) {
-            outputRange = marker.find();
-        }
-    }
-
-    //TP.htmlElementSetContent(outElem, '&hellip;');
-
-    if (TP.isValid(outputRange) &&
-        outputRange.to.line === consoleOutput.$getEditorInstance().lastLine()) {
-        consoleOutput.appendToLine('\n', TP.LAST);
+        //  Print an error
     }
 
     this.teardownInputMark();
-
-    consoleOutput.refreshEditor();
-
-    //console.log('Echo input text: ' + recordStr);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('updateOutputMark',
+TP.sherpa.console.Inst.defineMethod('updateOutputEntry',
 function(uniqueID, dataRecord) {
 
     /**
-     * @name updateOutputMark
+     * @name updateOutputEntry
      * @synopsis
      * @param
      * @param
@@ -1366,16 +1280,25 @@ function(uniqueID, dataRecord) {
     var consoleOutput,
 
         doc,
-        outElem,
+        entryElem,
 
         outputText,
-        outputClass;
+        outputClass,
+
+        outputData,
+        outputStr,
+
+        outElem,
+
+        request,
+        statsStr,
+        resultTypeStr;
 
     consoleOutput = this.get('consoleOutput');
 
-    doc = consoleOutput.getNativeContentDocument();
+    doc = consoleOutput.getNativeDocument();
 
-    if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
+    if (!TP.isElement(entryElem = doc.getElementById(uniqueID))) {
 
         console.log('Couldn\'t find out cell for: ' + uniqueID);
         return this;
@@ -1383,29 +1306,37 @@ function(uniqueID, dataRecord) {
 
     outputText = dataRecord.at('output');
 
-    outputClass = dataRecord.at('outputclass');
+    outputClass = dataRecord.at('cssClass');
 
-    if (!TP.elementHasClass(outElem, outputClass)) {
-        TP.elementAddClass(outElem, outputClass);
-    }
+    //  Run the output template and fill in the data
+    outputData = TP.hc('output', outputText,
+                        'outputclass', outputClass);
 
-    //TP.htmlElementSetContent(outElem, TP.stringAsHTMLString(outputText));
-    //outElem.innerHTML += outputText;
-
-    var outputData = TP.hc(
-                    'output', outputText);
-
-    var outputStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+    outputStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
                         '#xpath1(//*[@name="outputEntry"])').transform(
                             outputData);
 
-    var resultsElem = TP.byCSS('.output_results > .output_row', outElem, true);
-    resultsElem.innerHTML = outputStr;
+    //  Add the resultant markup to the entry that was added before
+    outElem = TP.xmlElementAddContent(entryElem, outputStr);
+    TP.elementRemoveAttribute(outElem, 'name');
 
-    consoleOutput.refreshEditor();
-    //this.adjustInputSize();
+    //  Now, update statistics and result type data that was part of the entry
+    //  that we inserted before with the input content.
+    if (TP.isValid(request = dataRecord.at('request'))) {
+        statsStr = this.getInputStats(request);
+        resultTypeStr = this.getInputTypeInfo(request);
+    } else {
+        statsStr = '';
+        resultTypeStr = '';
+    }
 
-    //console.log('Echo output text: ' + outputText);
+    TP.xmlElementSetContent(
+            TP.byCSS('.typeinfo', entryElem, true),
+            resultTypeStr);
+
+    TP.xmlElementSetContent(
+            TP.byCSS('.stats', entryElem, true),
+            statsStr);
 
     return this;
 });
@@ -1422,92 +1353,16 @@ function(uniqueID) {
      * @returns
      */
 
-    var doc,
-        elem;
+    var elem;
 
-    doc = this.get('consoleOutput').getNativeContentDocument();
+    elem = TP.xhtmlnode('<div></div>');
 
-    elem = TP.documentCreateElement(doc, 'span');
-    TP.elementSetClass(elem, 'output');
     TP.elementSetAttribute(elem, 'id', uniqueID);
 
+    elem = TP.nodeAppendChild(this.get('consoleOutput').getNativeNode(),
+                                elem);
+
     return elem;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('generateOutputMarkAt',
-function(range, uniqueID, initialMarkup) {
-
-    /**
-     * @name generateOutputMarkAt
-     * @synopsis
-     * @param
-     * @param
-     * @param
-     * @returns
-     */
-
-    var elem,
-        marker;
-
-    elem = this.generateOutputElement(uniqueID);
-
-    marker = this.get('consoleOutput').$getEditorInstance().markText(
-        range.from,
-        range.to,
-        {
-            'atomic': true,
-            'collapsed': true,
-            'replacedWith': elem,
-            'inclusiveLeft': false,
-            'inclusiveRight': false,
-            'clearWhenEmpty': false
-        }
-    );
-
-    //  Wire a reference to the marker back onto our output element
-    elem.marker = marker;
-    elem.innerHTML = initialMarkup;
-
-    return marker;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('findOutputMarks',
-function(from, to) {
-
-    /**
-     * @name findOutputMarks
-     * @synopsis
-     * @param
-     * @param
-     * @returns
-     */
-
-    var editor,
-
-        marks,
-        results,
-
-        elem,
-
-        i;
-
-    editor = this.get('consoleOutput').$getEditorInstance();
-
-    marks = editor.findMarks(from, to);
-    results = TP.ac();
-
-    for (i = 0; i < marks.length; i++) {
-        if (TP.isElement(elem = marks[i].replacedWith) &&
-            TP.elementHasClass(elem, 'output')) {
-            results.push(marks[i]);
-        }
-    }
-
-    return results;
 });
 
 //  ------------------------------------------------------------------------
@@ -1520,16 +1375,10 @@ function() {
      * @synopsis Adjust the height of the input cell based on its contents.
      */
 
-    var editor,
-        body;
+    var consoleOutputElem;
 
-    editor = this.get('consoleOutput').$getEditorInstance();
-    editor.scrollIntoView(null);
-
-    //  When the console is in 'collapsible' mode, this is important to get it
-    //  to scroll to the bottom properly.
-    body = this.get('consoleOutput').getNativeContentDocument().body;
-    body.scrollTop = body.scrollHeight;
+    consoleOutputElem = this.get('consoleOutput').getNativeNode();
+    consoleOutputElem.scrollTop = consoleOutputElem.scrollHeight;
 
     return;
 });

@@ -1,25 +1,30 @@
 <?xml version="1.0"?>
 
-<span xmlns="http://www.w3.org/1999/xhtml">
-    <span class="output_box {{inputclass}}" name="consoleEntry">
-        <span class="output_info">
-            <span class="output_row">
+<span xmlns="http://www.w3.org/1999/xhtml" xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+    <!-- The template used for the 'input' part of a piece of console output -->
+    <div id="{{id}}" name="inputEntry">
+        <div class="inputcell {{inputclass}}">
             <span class="hid"><a href="javascript: void(0)" onclick="TP.core.Resource.getResourceById('SystemConsole').execRawInput('{{hid}}')">{{hid}}</a></span>
             <span class="content">{{cmdtext}}</span>
             <span class="typeinfo {{empty}}">{{resulttype}}</span>
             <span class="stats {{empty}}">{{stats}}</span>
-        </span>
-        </span>
-        <span class="output_results">
-            <span class="output_row">
-            </span>
-        </span>
-    </span>
+        </div>
+        <!-- the output entry will be injected here after it is templated -->
+    </div>
 
-    <!-- This content will go into the '.results' span above -->
-    <span class="output_cell {{outputclass}}" name="outputEntry">
+    <!-- The template used for the 'output' part of a piece of console output -->
+    <div class="outputcell {{outputclass}} cm-s-zenburn" name="outputEntry" tibet:nocompile="true">
         <span class="result">{{output}}</span>
-    </span>
+    </div>
 
+    <!-- The markup used for output toolbar -->
+    <div id="SherpaConsoleOutputToolbar">
+        <div id="toggleHSplitBottom" class="toolbarButton" mode="h_split_bottom"/>
+        <div id="toggleHSplitTop" class="toolbarButton" mode="h_split_top"/>
+        <div id="toggleVSplitLeft" class="toolbarButton" mode="v_split_left"/>
+        <div id="toggleVSplitRight" class="toolbarButton" mode="v_split_right"/>
+        <div id="toggleFullscreen" class="toolbarButton" mode="fullscreen"/>
+    </div>
 </span>
 

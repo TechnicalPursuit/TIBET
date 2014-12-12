@@ -1508,14 +1508,7 @@ function(anError, aRequest) {
      */
 
     var request,
-        err,
-
-        cssClass,
-
-        outputData,
-        consoleGUI,
-
-        tileID;
+        err;
 
     TP.stop('break.tdc_stderr');
     TP.stop('break.tdc_stdio');
@@ -1531,29 +1524,29 @@ function(anError, aRequest) {
     err = TP.isError(anError) ? anError : new Error(anError);
     request.set('result', err);
 
-    if (TP.isValid(request.at('messageLevel'))) {
-        cssClass = request.at('messageLevel').getName().toLowerCase();
-        cssClass = TP.ifInvalid(cssClass, 'trace');
+    try {
+
+        //  Write input content if we haven't already written it.
+        if (TP.notTrue(request.at('inputWritten'))) {
+            this.writeInputContent(request);
+        }
+
+        //  Write output content
+        this.writeOutputContent(err, request);
+
+    } catch (e) {
+        TP.ifError() ?
+            TP.error(TP.ec(
+                        e,
+                        TP.join('TP.sherpa.ConsoleService.stderr(',
+                                TP.str(err), ') generated error.')
+                     ),
+                TP.LOG) : 0;
     }
 
-    cssClass = TP.ifInvalid(cssClass, '');
+    this.get('$consoleGUI').scrollOutputToEnd();
 
-    outputData = TP.hc('output', err,
-                        'cssClass', cssClass);
-
-    consoleGUI = this.get('$consoleGUI');
-
-    consoleGUI.addLoggedValue(outputData);
-
-    tileID = aRequest.at('cmdID');
-
-    if (TP.isEmpty(tileID)) {
-        consoleGUI.addLoggedValue(TP.hc('output', err));
-    } else {
-        tileID = tileID.replace(/\$/g, '_');
-
-        consoleGUI.createAndUpdateOutputMark(tileID, outputData);
-    }
+    this.get('$multiResults').empty();
 
     return;
 });
@@ -1762,7 +1755,7 @@ function(aRequest) {
     } else {
         tileID = tileID.replace(/\$/g, '_');
 
-        consoleGUI.createOutputMark(tileID, inputData);
+        consoleGUI.createOutputEntry(tileID, inputData);
     }
 
     return this;
@@ -1797,8 +1790,8 @@ function(anObject, aRequest) {
 
     request = TP.request(aRequest);
 
-    // TODO: replace this hack with an update to route to the proper
-    // Logger/Appender so we get the output we want via layout/appender.
+    //  TODO: replace this hack with an update to route to the proper
+    //  Logger/Appender so we get the output we want via layout/appender.
     tap = request.at('cmdTAP');
 
     //  ---
@@ -1859,13 +1852,10 @@ function(anObject, aRequest) {
         cssClass = TP.ifInvalid(cssClass, 'info');
     }
 
-    cssClass = TP.ifInvalid(cssClass, '');
-
     outputData = TP.hc('output', data,
                         'cssClass', cssClass,
-                        'rawData', anObject);
-                        //'stats', TP.ifInvalid(this.getOutputStats(request), '',
-                        //'resulttype', this.getResultTypeInfo(request));
+                        'rawData', anObject,
+                        'request', request);
 
     tileID = aRequest.at('cmdID');
 
@@ -1876,7 +1866,7 @@ function(anObject, aRequest) {
     } else {
         tileID = tileID.replace(/\$/g, '_');
 
-        consoleGUI.updateOutputMark(tileID, outputData);
+        consoleGUI.updateOutputEntry(tileID, outputData);
     }
 
     return this;
