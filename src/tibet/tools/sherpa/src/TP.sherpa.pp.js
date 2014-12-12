@@ -222,7 +222,7 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         item = anObject.item(i);
 
-        content.push('<span data-name="' + TP.name(item) + '">',
+        content.push('<span data-name="' + TP.name(item).asEscapedXML() + '">',
                         TP.format(TP.val(item), TP.sherpa.pp.Type, optFormat),
                         '</span>');
     }
@@ -312,7 +312,7 @@ function(anObject, optFormat) {
     len = anObject.length;
     for (i = 0; i < len; i++) {
         content.push(
-                '<span data-name="', i, '">',
+                '<span data-name="', TP.str(i).asEscapedXML(), '">',
                     TP.format(anObject[i], TP.sherpa.pp.Type, optFormat),
                 '</span>');
     }
@@ -429,7 +429,9 @@ function(anObject, optFormat) {
             //value = value.asEscapedXML();
 
             output.push(
-                '<span data-name="' + key + '">', value, '</span>');
+                '<span data-name="' + TP.str(key).asEscapedXML() + '">',
+                value,
+                '</span>');
         }
     }
 
@@ -693,7 +695,7 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         key = keys.at(i);
 
-        output.push('<span data-name="' + key + '">' +
+        output.push('<span data-name="' + TP.str(key).asEscapedXML() + '">' +
                     TP.format(anObject.at(keys.at(i)),
                                 TP.sherpa.pp.Type,
                                 optFormat),
@@ -887,16 +889,16 @@ function(anObject, optFormat) {
 
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
-            content.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i].asEscapedXML(), '">',
                         TP.str(anObject.document).asEscapedXML(), '</span>');
             continue;
         }
 
         try {
-            content.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i].asEscapedXML(), '">',
                         TP.htmlstr(anObject[keys[i]]), '</span>');
         } catch (e) {
-            content.push('<span data-name="', keys[i], '">',
+            content.push('<span data-name="', keys[i].asEscapedXML(), '">',
                         TP.htmlstr(undefined), '</span>');
         }
     }
