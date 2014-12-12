@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 
-<span xmlns="http://www.w3.org/1999/xhtml">
-    <div class="inputcell {{inputclass}}" name="inputText">
+<span xmlns="http://www.w3.org/1999/xhtml" xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+    <div class="inputcell {{inputclass}}" name="inputText" tibet:nocompile="true">
         <span class="hid"><a href="javascript: void(0)" onclick="TP.core.Resource.getResourceById('SystemConsole').execRawInput('{{hid}}')">{{hid}}</a></span>
         <span class="content">{{cmdtext}}</span>
         <span class="typeinfo {{empty}}">{{resulttype}}</span>
         <span class="stats {{empty}}">{{stats}}</span>
     </div>
 
-    <div class="outputcell {{outputclass}}" name="outputText">
+    <div class="outputcell {{outputclass}}" name="outputText" tibet:nocompile="true">
         <span class="result">{{output}}</span>
     </div>
 
