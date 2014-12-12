@@ -1229,6 +1229,7 @@ function(uniqueID, dataRecord) {
 
         cmdText = TP.ifInvalid(dataRecord.at('cmdtext'), '');
         cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
+        cmdText = cmdText.asEscapedXML();
 
         inputClass = dataRecord.at('cssClass');
 
