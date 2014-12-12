@@ -2180,6 +2180,16 @@ TP.core.TSH.Inst.defineMethod('executeReflect',
 function(aRequest) {
 
     /**
+     * Provides reflection data dependent on the object and parameters provided.
+     * There are a lot of variations of output based on the nature of the object
+     * being reflected upon. An empty set of arguments returns the type list. A
+     * namespace without arguments provides types on that namespace. A root (TP
+     * or APP) typically lists namespaces/types found below that root. A type
+     * will normally default to listing type, instance, and local methods. An
+     * instance will typically default to local and instance method listings.
+     * The ultimate goal is to support exploration and filtering across the
+     * metadata from types to methods to method owners.
+     * @param {Request} aRequest The shell request containing command arguments.
      */
 
     var arg0,
@@ -2187,24 +2197,9 @@ function(aRequest) {
         obj,
         result;
 
-    if (!this.hasArguments(aRequest)) {
-        aRequest.stdout('usage: ' + 'reflect [reference] [--types]');
-        aRequest.complete();
-        return;
-    }
-
-    arg0 = this.getArgument(aRequest, 'ARG0');
-    if (TP.isValid(arg0)) {
-        obj = this.resolveObjectReference(arg0, aRequest);
-        if (TP.notValid(obj)) {
-            aRequest.stderr('Unable to resolve object reference: ' + arg0);
-            aRequest.fail();
-            return;
-        }
-    }
-
     types = this.getArgument(aRequest, 'tsh:types', false, true);
-    if (TP.isTrue(types)) {
+
+    if (!this.hasArguments(aRequest) || TP.isTrue(types)) {
         // No arguments means reflect the type list.
         result = TP.sys.getTypes().getValues().collect(function(type) {
             return TP.name(type);
@@ -2222,6 +2217,15 @@ function(aRequest) {
         return aRequest.complete();
     }
 
+    arg0 = this.getArgument(aRequest, 'ARG0');
+    if (TP.notEmpty(arg0)) {
+        obj = this.resolveObjectReference(arg0, aRequest);
+        if (TP.notValid(obj)) {
+            aRequest.stderr('Unable to resolve object reference: ' + arg0);
+            aRequest.fail();
+            return;
+        }
+    }
 
 
     aRequest.complete();
@@ -3253,7 +3257,7 @@ function(command, abstract, usage, description) {
         method.$$description = description;
     } else {
         // TODO: turn this on once we finish up all the commands.
-        //TP.warn('Defining help for non-existent shell command: ' + command);
+        TP.warn('Defining help for non-existent shell command: ' + command);
         void(0);
     }
 
