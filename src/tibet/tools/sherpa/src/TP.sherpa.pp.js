@@ -1000,6 +1000,12 @@ function(anObject, optFormat) {
 
     if (TP.notValid(anObject)) {
         // 'null' or 'undefined', as you'd expect.
+        if (anObject === null) {
+            return this.transformNull(anObject, optFormat);
+        } else if (anObject === undefined) {
+            return this.transformUndefined(anObject, optFormat);
+        }
+
         return '<span class="sherpa_pp Object">' + anObject + '</span>';
     }
 
