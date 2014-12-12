@@ -1815,7 +1815,8 @@ function(anObject, aRequest) {
         data = TP.format(
                 anObject,
                 TP.sys.cfg('sherpa.default_format', 'sherpa:pp').asType(),
-                TP.hc('level', 1));
+                TP.hc('level', 1,
+                        'shouldWrap', false));
     } else {
         //  Otherwise it's 'as is' - take it as it is.
 
