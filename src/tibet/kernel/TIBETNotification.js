@@ -4933,7 +4933,7 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  check each one as we pass for any on: remapping. if found we need to
         //  ensure that element is in our origin list for the bubbling phase.
-        if (TP.isElement(origin)) {
+        if (TP.isValid(detector) && TP.isElement(origin)) {
             if (TP.elementGetAttributeNames(origin).detect(detector)) {
                 // Found an on: mapping for this origin...
                 originArray.push(origin);
