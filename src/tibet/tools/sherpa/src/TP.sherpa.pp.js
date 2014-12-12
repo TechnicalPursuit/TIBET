@@ -222,8 +222,8 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         item = anObject.item(i);
 
-        content.push('<span data-name="' + TP.name(item) + '">' +
-                        TP.val(item) +
+        content.push('<span data-name="' + TP.name(item) + '">',
+                        TP.format(TP.val(item), TP.sherpa.pp.Type, optFormat),
                         '</span>');
     }
 
