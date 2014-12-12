@@ -486,13 +486,20 @@ function(anObject, optFormat) {
         if (TP.isValid(optFormat)) {
             optFormat.atPut('cmdAsIs', true);
         }
+
+        obj = TP.str(anObject);
+
+        return '<span class="sherpa_pp String">' +
+                this.runXMLModeOn(obj) +
+                '</span>';
+    } else {
+
+        obj = anObject.asEscapedXML();
+
+        return '<span class="sherpa_pp String">' +
+                this.runJSModeOn(obj) +
+                '</span>';
     }
-
-    obj = anObject.asEscapedXML();
-
-    return '<span class="sherpa_pp String">' +
-            this.runJSModeOn(obj) +
-            '</span>';
 });
 
 //  ------------------------------------------------------------------------
