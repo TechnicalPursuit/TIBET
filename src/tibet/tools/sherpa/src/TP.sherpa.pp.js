@@ -608,7 +608,7 @@ function(anObject, optFormat) {
 
                 if (style) {
                     str += '<span class="cm-' + style + '">' +
-                             text +
+                             text.asEscapedXML() +
                              '</span>';
                 } else {
                     if (text === '{' || text === '[') {
