@@ -2594,26 +2594,24 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('reflect',
-function(anObject, aSlice, aScope, includeHidden, discriminator) {
+function(anObject, aFilter, aDiscriminator) {
 
     /**
      * @name reflect
      * @synopsis Returns the interface of anObject, optionally filtered by the
      *     scope provided. The default scope is 'every'.
      * @param {Object} anObject The object to reflect upon.
-     * @param {String} aSlice A slicing key, such as 'methods', 'attributes', or
-     *     'properties'.
-     * @param {String} aScope A scoping key, such as TP.LOCAL.
-     * @param {Boolean} includeHidden True to include hidden (private) keys in
-     *     the output.
-     * @param {String|RegExp} discriminator A filtering expression to remove
+     * @param {Object|String} aFilter An object containing filter properties or
+     *     a name of one of the keys registered under TP.SLOT_FILTERS. The
+     *     default is 'unique_methods'.
+     * @param {String|RegExp} aDiscriminator A filtering expression to remove
      *     keys not matching the pattern or string.
      * @returns {Array} An array of filtered property keys.
      * @todo
      */
 
-    var key,
-        arr,
+    var arr,
+        obj,
         i;
 
     if (TP.notValid(anObject)) {
@@ -2621,41 +2619,30 @@ function(anObject, aSlice, aScope, includeHidden, discriminator) {
     }
 
     if (TP.canInvoke(anObject, 'getInterface')) {
-        key = TP.isTrue(includeHidden) ? 'known_' : '';
-        key += TP.isString(aScope) ? aScope + '_' : '';
-        key += aSlice || 'methods';
-
-        arr = anObject.getInterface(key);
+        arr = anObject.getInterface(aFilter);
     } else {
         arr = TP.ac();
+        obj = anObject;
 
-        //  painful, but necessary
-        /* jshint forin:true */
-        for (i in anObject) {
-            if (TP.regex.INTERNAL_SLOT.test(i)) {
-                continue;
-            }
+        do {
+            arr.push(Object.keys(obj));
+            obj = Object.getPrototypeOf(obj);
+        } while (obj);
 
-            if (TP.notTrue(includeHidden) && TP.regex.PRIVATE_SLOT.test(i)) {
-                continue;
-            }
-
-            if (!TP.isGlobal(i, true)) {
-                arr.push(i);
-            }
-        }
-        /* jshint forin:false */
+        arr = Array.prototype.concat.apply([], arr);
+        arr = arr.filter(
+            function(aKey) {
+                return !TP.regex.INTERNAL_SLOT.test(aKey);
+            });
     }
 
-    arr.sort();
-
-    if (TP.isFunction(discriminator)) {
-        return arr.select(discriminator);
-    } else if (TP.isValid(discriminator)) {
-        return arr.grep(discriminator);
+    if (TP.isFunction(aDiscriminator)) {
+        return arr.select(aDiscriminator).sort();
+    } else if (TP.isValid(aDiscriminator)) {
+        return arr.grep(aDiscriminator).sort();
+    } else {
+        return arr.sort();
     }
-
-    return arr;
 });
 
 //  ------------------------------------------------------------------------
