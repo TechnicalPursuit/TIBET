@@ -2738,7 +2738,7 @@ function(aFilter) {
      *     keys.
      * @param {Object|String} aFilter An object containing filter properties or
      *     a name of one of the keys registered under TP.SLOT_FILTERS. The
-     *     default is 'unique_attributes'.
+     *     default is 'unique_methods'.
      * @returns {Array} An array containing matching slots.
      * @todo
      */
@@ -2765,7 +2765,7 @@ function(aFilter) {
     TP.stop('break.interface');
 
     //  shortcut for using this method to get all keys of any kind.
-    if (aFilter === 'known') {
+    if (aFilter === 'known' || aFilter === TP.SLOT_FILTERS.known) {
 
         //  NB: This was written to be hyper-efficient, hence the use of native
         //  JS here.
@@ -2789,7 +2789,7 @@ function(aFilter) {
     keys = TP.ac();
 
     //  next question is can we find the requested subset on the list?
-    filter = TP.ifInvalid(aFilter, 'unique_attributes');
+    filter = TP.ifInvalid(aFilter, 'unique_methods');
 
     if (TP.isString(filter)) {
         filter = filter.toLowerCase();
