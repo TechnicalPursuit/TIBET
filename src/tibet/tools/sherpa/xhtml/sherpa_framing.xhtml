@@ -25,8 +25,7 @@
   <div id="northwest" class="framing corner north west" pclass:hidden="true">
     <div class="drawer">
       <div class="home">
-        <a href="#"
-            onclick="home()"><img src="~lib_lib/img/boot/tpi_logo.png" alt="TPI Logo"/></a>
+        <a href="#"><img src="~lib_lib/img/boot/tpi_logo.png" alt="TPI Logo"/></a>
       </div>
     </div>
   </div>
@@ -69,32 +68,5 @@
 
 </div>
 
-<script type="text/javascript">
-<![CDATA[
-/**
- * The standard location for a home icon is within the framing. The code frame
- * is one level up (in index.html) and the actual page the user likely thinks
- * of as 'home' is downstream in UISCREENS.SCREEN_0. The likely desired behavior
- * is to set UISCREENS.SCREEN_O to its original page content. Before we do that
- * however we give both the APP and TIBET a chance to be more intelligent.
- */
-function home() {
-    var screen0;
-
-    if (self.APP && typeof self.APP.home === 'function') {
-        APP.home();
-    } else if (self.TP && typeof self.TP.home === 'function') {
-        TP.home();
-    } else {
-        try {
-            screen0 = document.getElementById('SCREEN_0');
-            screen0.contentWindow.location = screen0.src;
-        } catch (e) {
-            alert('Sorry. Unable to find home().');
-        }
-    }
-}
-]]>
-</script>
 </body>
 </html>
