@@ -642,7 +642,9 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
 
             //  NOTE that the character which triggered failure of our inner
             //  for-loop will be in c, so we don't need to adjust index/char
-        } else if (digit.test(c)) {
+        } else if (digit.test(c) ||
+                (c === '-' && digit.test(src.charAt(i + 1))) ||
+                (c === '+' && digit.test(src.charAt(i + 1)))) {
             err = false;
 
             //  number: 0xblah for Hex, optional e/E exponent, etc.
