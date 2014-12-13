@@ -1335,6 +1335,20 @@ function(uniqueID, dataRecord) {
                         '#xpath1(//*[@name="outputEntry"])').transform(
                             outputData);
 
+    if (!TP.isString(outputStr)) {
+        //  Something went wrong during templating. The outputData didn't get
+        //  converted and now our outputStr is just a reference to outputData.
+
+        //  Try reprocessing the output since 99% of the errors will be DOM
+        //  parse issues meaning something in the data wasn't properly escaped.
+        outputData.atPut('output',
+                TP.boot.$dump(outputData.at('output'), '', true));
+
+        outputStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                            '#xpath1(//*[@name="outputEntry"])').transform(
+                                outputData);
+    }
+
     //  Add the resultant markup to the entry that was added before
     outElem = TP.xmlElementAddContent(entryElem, outputStr);
     TP.elementRemoveAttribute(outElem, 'name');
