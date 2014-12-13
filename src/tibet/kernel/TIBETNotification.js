@@ -73,7 +73,7 @@ TP.core.Annotation.Inst.defineMethod('init', function(anObject, aMessage) {
      */
 
     //  can't be null or undefined, or have empty annotation text.
-    if (anObject == null || aMessage == null || aMessage === '') {
+    if (anObject === null || anObject === undefined || aMessage === '') {
         throw new Error('InvalidParameter');
     }
 
