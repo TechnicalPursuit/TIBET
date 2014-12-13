@@ -36,6 +36,10 @@ function(anObject, optFormat) {
         len,
         i;
 
+    if (TP.isEmpty(anObject)) {
+        return this.fromString('[]', optFormat);
+    }
+
     //  If this flag is set to true, that means that we're already trying to
     //  format this object as part of larger object set and we may have an
     //  endless recursion problem if there are circular references and we
@@ -362,6 +366,10 @@ function(anObject, optFormat) {
         i,
         len;
 
+    if (TP.isEmpty(TP.keys(anObject))) {
+        return this.fromString('{}', optFormat);
+    }
+
     //  If this flag is set to true, that means that we're already trying to
     //  format this object as part of larger object set and we may have an
     //  endless recursion problem if there are circular references and we
@@ -476,6 +484,10 @@ TP.sherpa.pp.Type.defineMethod('fromString',
 function(anObject, optFormat) {
 
     var obj;
+
+    if (TP.isEmpty(anObject)) {
+        return this.runJSModeOn('\'\'');
+    }
 
     //  Don't need to box output from our own markup generator.
     if (TP.isValid(optFormat)) {
@@ -686,6 +698,10 @@ function(anObject, optFormat) {
         key,
         len,
         i;
+
+    if (TP.isEmpty(anObject)) {
+        return this.fromString('TP.hc()', optFormat);
+    }
 
     //  If this flag is set to true, that means that we're already trying to
     //  format this object as part of larger object set and we may have an
@@ -1003,7 +1019,8 @@ function(anObject) {
 //  Objects with no as() (invalid, Error, etc) attempt this.transform()
 //  ========================================================================
 
-TP.sherpa.pp.Type.defineMethod('transformError', function(anObject, optFormat) {
+TP.sherpa.pp.Type.defineMethod('transformError',
+function(anObject, optFormat) {
 
     /**
      * Format error objects for output. We output stack information if the
