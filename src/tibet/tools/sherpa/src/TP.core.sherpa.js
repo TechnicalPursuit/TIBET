@@ -110,7 +110,7 @@ function(aName) {
                 //  since the world element moved the screens out of it, and use
                 //  it to show the 'loading' element. The console will later
                 //  reuse it for it's output.
-                contentElem = TP.byId('content');
+                contentElem = TP.byId('content', win);
 
                 TP.elementShow(contentElem);
                 TP.elementShowBusyMessage(contentElem,
