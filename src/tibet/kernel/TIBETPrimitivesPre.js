@@ -7424,6 +7424,34 @@ function(anObj) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('isInvalidDate',
+function(anObj) {
+
+    /**
+     * @name isInvalidDate
+     * @synopsis Returns true if the object is a Date object, but has an invalid
+     *     Date value.
+     * @param {Object} anObj The Object to test.
+     * @returns {Boolean}
+     */
+
+    //  all dates report object as their primitive type (but so does null)
+    if (TP.notValid(anObj) || typeof(anObj) !== 'object') {
+        return false;
+    }
+
+    //  The ECMA-402 i18n spec for ECMAScript defines that these objects should
+    //  return 'Invalid Date' (and ECMAScript edition 5 specifies 'NaN' if they
+    //  were created with an invalid number).
+    if (anObj.toString() === 'Invalid Date' || anObj.toString() === 'NaN') {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
 //  Common Type Checking
 //  ------------------------------------------------------------------------
 
