@@ -130,18 +130,6 @@ function() {
                                 TP.elementGetAttribute(
                                     aSignal.getTarget(), 'mode'));
                         }.bind(this));
-
-        /* eslint-disable no-wrap-func */
-        (function () {
-
-            this.focusInput();
-            this.setInputCursorToEnd();
-
-        }).bind(this).observe(
-            TP.core.Keyboard,
-            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
-        /* eslint-enable no-wrap-func */
-
     }.bind(this);
 
     consoleInputStartupComplete.observe(consoleInputTPElem, 'TP.sig.DOMReady');
@@ -236,7 +224,20 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  Handlers for signal from other widgets
+//  Event Handling
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('handleTP_sig_DOM_Shift_Up__TP_sig_DOM_Shift_Up',
+function(aSignal) {
+
+    this.focusInput();
+    this.setInputCursorToEnd();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Handlers for signals from other widgets
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('handleSherpaHUDHiddenChange',
@@ -282,6 +283,11 @@ function(beHidden) {
         //  deactivate the input cell
         this.deactivateInputEditor();
 
+        //  Stop observing the 'double Shift key' for focusing the input cell.
+        this.ignore(
+            TP.core.Keyboard,
+            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+
         TP.byOID('content').hide();
     } else {
         TP.byOID('content').show();
@@ -292,6 +298,11 @@ function(beHidden) {
         //  activate the input cell
         this.activateInputEditor();
         this.adjustInputSize();
+
+        //  Start observing the 'double Shift key' for focusing the input cell.
+        this.observe(
+            TP.core.Keyboard,
+            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
     }
 
     return this.callNextMethod();
