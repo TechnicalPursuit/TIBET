@@ -7325,10 +7325,12 @@ function(anObj) {
         return false;
     }
 
-    //  also watch out for IE/Moz foolishness around 'new Date(blah)'
-    //  returning objects which aren't really dates (instead of null)
-    if ((anObj.toString() === 'Invalid Date') ||
-        (anObj.toString() === 'NaN')) {
+    //  also watch out for foolishness around 'new Date(blah)' returning objects
+    //  which aren't really dates (instead of null). The ECMA-402 i18n spec for
+    //  ECMAScript defines that these objects should return 'Invalid Date' (and
+    //  ECMAScript edition 5 specifies 'NaN' if they were created with an
+    //  invalid number).
+    if (anObj.toString() === 'Invalid Date' || anObj.toString() === 'NaN') {
         return false;
     }
 
