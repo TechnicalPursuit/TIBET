@@ -269,7 +269,11 @@ function(beHidden) {
 
         //  deactivate the input cell
         this.deactivateInputEditor();
+
+        TP.byOID('content').hide();
     } else {
+        TP.byOID('content').show();
+
         consoleInput = this.get('consoleInput');
         consoleInput.focus();
 
