@@ -774,13 +774,18 @@ function(source, shell, sibling, request) {
                                     token = arr[i];
                                 }
                             } else {
-                                //  - or -- without following identifier?
-                                //  that's a syntax error
-                                TP.ifWarn() ?
-                                    TP.warn('Missing flag name in tag' +
-                                                ' input.',
-                                            TP.LOG) : 0;
-                                break;
+                                if (next && token.value === '-') {
+                                    args.push(token.value + next.value);
+                                    i += 2;
+                                } else {
+                                    //  - or -- without following identifier?
+                                    //  that's a syntax error
+                                    TP.ifWarn() ?
+                                        TP.warn('Missing flag name in tag' +
+                                                    ' input.',
+                                                TP.LOG) : 0;
+                                    break;
+                                }
                             }
                         } else if (token.value === '.[[') {
                             //  allow for CDATA block sugaring where we
