@@ -2564,11 +2564,8 @@ function(aRequest, allForms) {
      */
 
     var newDict,
-
         node,
-
         shell,
-
         args,
         dict;
 
@@ -2625,16 +2622,12 @@ function(aRequest, allForms) {
     //  process any interpolations within attribute values
     args.perform(
         function(item) {
-
             var first,
                 last,
-
                 argv,
                 parts,
-
                 val,
                 expandedVal,
-
                 reParts;
 
             first = item.first();
@@ -2730,11 +2723,7 @@ function(aRequest, allForms) {
                                 }
                             }
 
-                            if (allForms) {
-                                return TP.ac(item.value, expandedVal);
-                            } else {
-                                return expandedVal;
-                            }
+                            return TP.ac(item.value, expandedVal);
                         });
 
                 parts.perform(
@@ -2792,9 +2781,7 @@ function(aRequest, allForms) {
                     }
                 }
 
-                dict.atPut(
-                    first,
-                    allForms ? TP.ac(last, expandedVal) : expandedVal);
+                dict.atPut(first, TP.ac(last, expandedVal));
             }
     });
 
@@ -2804,7 +2791,11 @@ function(aRequest, allForms) {
 
     aRequest.set('ARGUMENTS', dict);
 
-    return dict;
+    if (TP.isTrue(allForms)) {
+        return dict;
+    } else {
+        return this.getArguments(aRequest);
+    }
 });
 
 //  ------------------------------------------------------------------------
