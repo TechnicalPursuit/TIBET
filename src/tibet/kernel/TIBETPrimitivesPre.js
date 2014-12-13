@@ -2387,6 +2387,12 @@ function(aValue) {
     /**
      * @name isNaN
      * @synopsis Returns true if the value provided is NaN.
+     * @description The ECMAScript-supplied isNaN lies:
+            isNaN({}) => true.
+            Welcome to JavaScript. Oh...but it gets better. If you run isNaN
+            on the wrong thing it'll throw an exception about being unable to
+            convert to a primitive.
+            Hence, this method.
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is NaN:
      *     <code>
