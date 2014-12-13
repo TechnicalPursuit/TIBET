@@ -61,8 +61,8 @@ function(aName) {
 
             win,
             drawerElement,
-            func,
-            evtName,
+
+            sherpaFinishSetupFunc,
 
             contentElem;
 
@@ -81,34 +81,23 @@ function(aName) {
                 win = TP.win('UIROOT');
                 drawerElement = TP.byCSS('div#south', win, true);
 
-                if (TP.sys.isUA('WEBKIT')) {
-                    evtName = 'webkitTransitionEnd';
-                } else {
-                    evtName = 'transitionend';
-                }
+                (sherpaFinishSetupFunc = function(aSignal) {
+                    sherpaFinishSetupFunc.ignore(
+                        drawerElement, 'TP.sig.DOMTransitionEnd');
 
-                drawerElement.addEventListener(
-                        evtName,
-                        func = function() {
+                        //  The basic Sherpa framing has been set up, but we
+                        //  complete the setup here (after the drawers
+                        //  animate in).
+                        sherpaInst.finishSetup();
 
-                            drawerElement.removeEventListener(
-                                            evtName,
-                                            func,
-                                            true);
+                        //  We add our 'south's 'no_transition' class so
+                        //  that during user interaction, resizing this
+                        //  drawer will be immediate.
+                        TP.elementAddClass(drawerElement, 'no_transition');
 
-                            //  The basic Sherpa framing has been set up, but we
-                            //  complete the setup here (after the drawers
-                            //  animate in).
-                            sherpaInst.finishSetup();
+                        TP.byOID('SherpaHUD').setAttribute('hidden', false);
 
-                            //  We add our 'south's 'no_transition' class so
-                            //  that during user interaction, resizing this
-                            //  drawer will be immediate.
-                            TP.elementAddClass(drawerElement, 'no_transition');
-
-                            TP.byOID('SherpaHUD').setAttribute('hidden', false);
-                        },
-                        true);
+                }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
                 //  Show the center area and the drawers.
 
