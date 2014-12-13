@@ -1548,6 +1548,11 @@ TP.sig.DOMSubmit.Type.defineConstant('NATIVE_NAME', 'submit');
 
 //  ---
 
+TP.sig.DOMUISignal.defineSubtype('DOMTransitionEnd');
+TP.sig.DOMTransitionEnd.Type.defineConstant('NATIVE_NAME', 'transitionend');
+
+//  ---
+
 TP.sig.DOMUISignal.defineSubtype('DOMUnload');
 TP.sig.DOMUnload.Type.defineConstant('NATIVE_NAME', 'unload');
 

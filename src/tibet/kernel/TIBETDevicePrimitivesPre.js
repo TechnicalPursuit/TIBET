@@ -178,6 +178,7 @@ if (TP.notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
         'reset', 'TP.sig.DOMReset',
         'resize', 'TP.sig.DOMResize',
         'submit', 'TP.sig.DOMSubmit',
+        'transitionend', 'TP.sig.DOMTransitionEnd',
         'unload', 'TP.sig.DOMUnload');
 
     if (TP.sys.isUA('GECKO')) {

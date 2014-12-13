@@ -479,6 +479,11 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'attrChange', null));
                 break;
 
+            //  Transition Events
+            case 'transitionend':
+                //  Not currently supported to generate these by most browsers.
+                break;
+
             default:
                 evt = doc.createEvent('Events');
                 evt.initEvent(

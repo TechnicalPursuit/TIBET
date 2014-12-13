@@ -97,6 +97,7 @@ function(anEvent) {
         case 'select':
         case 'submit':
         case 'unload':
+        case 'transitionend':
 
             return TP.DOM_UI_EVENT_PROPERTIES;
 
@@ -1370,6 +1371,22 @@ function(anEvent) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$handleTransitionEnd',
+function(anEvent) {
+
+    /**
+     * @name $$handleTransitionEnd
+     * @synopsis Document-level transitionend handler, installed by tibet_hook
+     *     and leveraged by IE event wrapper code to ensure capture semantics
+     *     are preserved even on IE.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
 });
 
 //  ------------------------------------------------------------------------

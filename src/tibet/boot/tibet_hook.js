@@ -549,6 +549,7 @@ if (TP.boot.$notValid(TP.DOM_SIGNAL_TYPE_MAP)) {
         'reset': 'TP.sig.DOMReset',
         'resize': 'TP.sig.DOMResize',
         'submit': 'TP.sig.DOMSubmit',
+        'transitionend': 'TP.sig.DOMTransitionEnd',
         'unload': 'TP.sig.DOMUnload'
     };
 
@@ -2488,6 +2489,10 @@ if (window.onerror.failedlaunch !== true &&
                                 'change',
                                 TP.$$handleChange);
 
+        TP.boot.$$addUIHandler(aDocument,
+                                'transitionend',
+                                TP.$$handleTransitionEnd);
+
         //  Add a mutation signal source for mutations to this document
         TP.boot.$$addMutationSource(aDocument);
 
@@ -2540,6 +2545,8 @@ if (window.onerror.failedlaunch !== true &&
         TP.boot.$$removeUIHandler(aDocument, 'keypress');
 
         TP.boot.$$removeUIHandler(aDocument, 'change');
+
+        TP.boot.$$removeUIHandler(aDocument, 'transitionend');
 
         //  Remove a mutation signal source for mutations to this document
         TP.boot.$$removeMutationSource(aDocument);
