@@ -130,6 +130,18 @@ function() {
                                 TP.elementGetAttribute(
                                     aSignal.getTarget(), 'mode'));
                         }.bind(this));
+
+        /* eslint-disable no-wrap-func */
+        (function () {
+
+            this.focusInput();
+            this.setInputCursorToEnd();
+
+        }).bind(this).observe(
+            TP.core.Keyboard,
+            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+        /* eslint-enable no-wrap-func */
+
     }.bind(this);
 
     consoleInputStartupComplete.observe(consoleInputTPElem, 'TP.sig.DOMReady');
