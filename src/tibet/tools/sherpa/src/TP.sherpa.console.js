@@ -1134,11 +1134,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('getInputTypeInfo',
+TP.sherpa.console.Inst.defineMethod('getOutputTypeInfo',
 function(aSignal) {
 
     /**
-     * @name getInputTypeInfo
+     * @name getOutputTypeInfo
      * @synopsis
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
@@ -1367,8 +1367,12 @@ function(uniqueID, dataRecord) {
     //  Now, update statistics and result type data that was part of the entry
     //  that we inserted before with the input content.
     if (TP.isValid(request = dataRecord.at('request'))) {
-        statsStr = this.getInputStats(request);
-        resultTypeStr = this.getInputTypeInfo(request);
+        statsStr = TP.isEmpty(dataRecord.at('stats')) ?
+                        this.getInputStats(request) :
+                        dataRecord.at('stats');
+        resultTypeStr = TP.isEmpty(dataRecord.at('typeinfo')) ?
+                        this.getOutputTypeInfo(request) :
+                        dataRecord.at('typeinfo');
     } else {
         statsStr = '';
         resultTypeStr = '';
