@@ -51,13 +51,18 @@ function(aCondition, aComment, aFaultString) {
      * @todo
      */
 
-    var comment;
+    var comment,
+        message;
 
     if (!aCondition) {
         comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
 
-        this.get('currentTestCase').fail(
-            comment + (aFaultString || ''));
+        message = comment;
+        if (TP.notEmpty(aFaultString)) {
+            message += ' ' + aFaultString;
+        }
+
+        this.get('currentTestCase').fail(message);
     }
 });
 
