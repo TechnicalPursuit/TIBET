@@ -8586,20 +8586,22 @@ function(anObj) {
         return anObj.childNodes.length === 0;
     }
 
+    //  If the object responds to 'isEmpty', return that value.
+    //  NB: It's much better to do this before checking size with 'getSize'
+    //  since many non-collection objects will fetch all of their keys as part
+    //  of that operation and return the size of that Array, which is slow.
+    if (TP.canInvoke(anObj, 'isEmpty')) {
+        if (TP.isBoolean(val = anObj.isEmpty())) {
+            return val;
+        }
+    }
+
     //  If something can respond to 'getSize', use it. This includes Arrays,
     //  TP.lang.Hashes and String.
     if (TP.canInvoke(anObj, 'getSize')) {
         try {
             return anObj.getSize() === 0;
         } catch (e) {
-        }
-    }
-
-    //  If the object responds to 'get', see if we can get the value of a
-    //  slot named 'empty'.
-    if (TP.canInvoke(anObj, 'get')) {
-        if (TP.isBoolean(val = anObj.get('empty'))) {
-            return val;
         }
     }
 

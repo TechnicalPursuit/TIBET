@@ -3401,6 +3401,52 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaInstMethod('isEmpty',
+function(aFilterName) {
+
+    /**
+     * @name isEmpty
+     * @synopsis Returns whether or not the receiver is considered 'empty'.
+     * @description At this level, this uses the number of attributes the
+     *     receiver contains unless a different filter is provided and compares
+     *     the size of that to 0.
+     * @param {String} aFilterName A get*Interface() filter.
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    return this.getSize() === 0;
+});
+
+//  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('isEmpty',
+function() {
+
+    /**
+     * @name isEmpty
+     * @synopsis Returns whether or not the receiver is considered 'empty'.
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    return this.length === 0;
+});
+
+//  ------------------------------------------------------------------------
+
+String.Inst.defineMethod('isEmpty',
+function() {
+
+    /**
+     * @name isEmpty
+     * @synopsis Returns whether or not the receiver is considered 'empty'.
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    return this.length === 0;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaInstMethod('overrides',
 function(aName) {
 
