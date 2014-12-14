@@ -90,6 +90,7 @@ function(aFaultString, aFaultCode) {
         }
     } else {
         hash.atPut('code', TP.ifInvalid(aFaultCode, TP.FAILED));
+        hash.atPut('text', aFaultString);
     }
 
     return hash;
@@ -416,7 +417,9 @@ function(aFaultString, aFaultCode) {
     this.set('result', undefined);
     this.set('statusCode', TP.CANCELLING);
 
-    hash = this.checkFaultArguments(aFaultString, aFaultCode);
+    hash = this.checkFaultArguments(aFaultString,
+        TP.ifUndefined(aFaultCode, TP.CANCELLED));
+
     code = hash.at('code');
     text = hash.at('text');
 
@@ -557,7 +560,8 @@ function(aFaultString, aFaultCode) {
     this.set('result', undefined);
     this.set('statusCode', TP.ERRORING);
 
-    hash = this.checkFaultArguments(aFaultString, aFaultCode);
+    hash = this.checkFaultArguments(aFaultString,
+        TP.ifUndefined(aFaultCode, TP.ERRORED));
 
     code = hash.at('code');
     text = hash.at('text');
@@ -634,7 +638,8 @@ function(aFaultString, aFaultCode) {
     this.set('result', undefined);
     this.set('statusCode', TP.FAILING);
 
-    hash = this.checkFaultArguments(aFaultString, aFaultCode);
+    hash = this.checkFaultArguments(aFaultString,
+        TP.ifUndefined(aFaultCode, TP.FAILED));
 
     code = hash.at('code');
     text = hash.at('text');
