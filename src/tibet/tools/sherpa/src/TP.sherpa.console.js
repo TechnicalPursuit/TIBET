@@ -1240,7 +1240,7 @@ function(uniqueID, dataRecord) {
 
         cmdText,
 
-        inputClass,
+        cssClass,
 
         inputData,
         inputStr,
@@ -1254,17 +1254,18 @@ function(uniqueID, dataRecord) {
     if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
 
         hid = dataRecord.at('hid');
-        hidstr = TP.isEmpty(hid) ? '&#160;&#160;' : '!' + hid;
+        hidstr = TP.isEmpty(hid) ? '' : '!' + hid;
+
+        cssClass = dataRecord.at('cssClass');
+        cssClass = TP.isEmpty(cssClass) ? '' : cssClass;
 
         cmdText = TP.ifInvalid(dataRecord.at('cmdtext'), '');
         cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
         cmdText = cmdText.asEscapedXML();
 
-        inputClass = dataRecord.at('cssClass');
-
         inputData = TP.hc(
                         'id', uniqueID,
-                        'inputclass', inputClass,
+                        'inputclass', cssClass,
                         'hid', hidstr,
                         'cmdtext', cmdText,
                         'empty', '',
