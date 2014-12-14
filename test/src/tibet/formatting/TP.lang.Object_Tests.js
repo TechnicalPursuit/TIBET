@@ -409,7 +409,7 @@ function() {
 
         testRep = TP.uc('~lib_xsl/tp_xmlarrs2xhtmltable.xsl').transform(dataDoc);
 
-        correctRep = '<html:table xmlns:html="http://www.w3.org/1999/xhtml" xmlns:tibet="http://www.technicalpursuit.com/1999/tibet" style="border: solid 1px black; border-spacing: 0; border-collapse: collapse"><html:th style="background-color: gray; color: white; border: solid 1px black">1</html:th><html:td style="border: solid 1px black">2</html:td><html:td style="border: solid 1px black">3</html:td><html:td style="border: solid 1px black">4</html:td><html:td style="border: solid 1px black">5</html:td><html:td style="border: solid 1px black">6</html:td></html:table>';
+        correctRep = '<html:table xmlns:html="http://www.w3.org/1999/xhtml" style="border: solid 1px black; border-spacing: 0; border-collapse: collapse"><html:th style="background-color: gray; color: white; border: solid 1px black">1</html:th><html:td style="border: solid 1px black">2</html:td><html:td style="border: solid 1px black">3</html:td><html:td style="border: solid 1px black">4</html:td><html:td style="border: solid 1px black">5</html:td><html:td style="border: solid 1px black">6</html:td></html:table>';
 
         //  Strip non-essential whitespace before comparing
         testRep = testRep.strip(/\n/g).replace(/>\s+</g,'><');
