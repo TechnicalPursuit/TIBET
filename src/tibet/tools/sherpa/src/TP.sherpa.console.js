@@ -361,34 +361,6 @@ function() {
 //  View Management Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('addLoggedValue',
-function(dataRecord) {
-
-    /**
-     * @name addLoggedValue
-     * @synopsis
-     * @param
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    /*
-    var output,
-        cssClass;
-
-    output = dataRecord.at('output');
-    cssClass = dataRecord.at('cssClass');
-
-    TP.byOID('SherpaLogView', TP.win('UIROOT.SHERPA_FRAME')).addLogEntry(
-            TP.hc('output', output, 'cssClass', cssClass));
-
-    //console.log('Echo logged text: ' + outputText);
-    */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.console.Inst.defineMethod('clearAllContent',
 function() {
 
@@ -1336,7 +1308,6 @@ function(uniqueID, dataRecord) {
     }
 
     outputText = dataRecord.at('output');
-
     outputClass = dataRecord.at('cssClass');
 
     //  Run the output template and fill in the data
