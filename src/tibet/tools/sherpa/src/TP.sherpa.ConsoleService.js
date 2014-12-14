@@ -52,6 +52,10 @@ TP.sherpa.ConsoleService.Inst.defineAttribute('systemConsole', false);
 //  key is held down for a particular amount of time
 TP.sherpa.ConsoleService.Inst.defineAttribute('markingTimer');
 
+//  the ID of the last 'non cmd output tile' - usually a logging tile that we
+//  just want to append to.
+TP.sherpa.ConsoleService.Inst.defineAttribute('lastNonCmdTileID');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -1751,7 +1755,7 @@ function(aRequest) {
     consoleGUI = this.get('$consoleGUI');
 
     if (TP.isEmpty(tileID)) {
-        consoleGUI.addLoggedValue(TP.hc('output', str));
+        //  Fail - shouldn't get here
     } else {
         tileID = tileID.replace(/\$/g, '_');
 
@@ -1858,17 +1862,34 @@ function(anObject, aRequest) {
                         'rawData', anObject,
                         'request', request);
 
-    tileID = aRequest.at('cmdID');
-
     consoleGUI = this.get('$consoleGUI');
 
-    if (TP.isEmpty(tileID)) {
-        consoleGUI.addLoggedValue(TP.hc('output', data));
+    //  If the request has no cmdID for us to use as a tile ID, then this was
+    //  probably a call to stdout() that wasn't a direct result of a command
+    //  being issued.
+    if (TP.isEmpty(tileID = aRequest.at('cmdID'))) {
+
+        //  See if there's a current 'non cmd' tile that we're using to write
+        //  this kind of output. If there isn't one, then create one (but don't
+        //  really hand it any data to write out - we'll take care of that
+        //  below).
+        if (TP.isEmpty(tileID = this.get('lastNonCmdTileID'))) {
+            tileID = 'log' + TP.genID().replace('$', '_');
+            consoleGUI.createOutputEntry(tileID, TP.hc());
+            this.set('lastNonCmdTileID', tileID);
+        }
+
+        //  Stub in a blank space for the stats and the word 'Log' for the
+        //  result data type information.
+        outputData.atPut('stats', ' ');
+        outputData.atPut('typeinfo', 'Log');
     } else {
         tileID = tileID.replace(/\$/g, '_');
-
-        consoleGUI.updateOutputEntry(tileID, outputData);
+        this.set('lastNonCmdTileID', null);
     }
+
+    //  Update the output entry tile with the output data.
+    consoleGUI.updateOutputEntry(tileID, outputData);
 
     return this;
 });

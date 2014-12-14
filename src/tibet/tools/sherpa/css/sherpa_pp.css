@@ -41,6 +41,8 @@
     display: table-cell;
 	vertical-align: top;
 
+    width: 20%;
+
     content: attr(data-name) "\00A0=>\00A0";
 
     text-align: left;

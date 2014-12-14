@@ -2387,6 +2387,12 @@ function(aValue) {
     /**
      * @name isNaN
      * @synopsis Returns true if the value provided is NaN.
+     * @description The ECMAScript-supplied isNaN lies:
+            isNaN({}) => true.
+            Welcome to JavaScript. Oh...but it gets better. If you run isNaN
+            on the wrong thing it'll throw an exception about being unable to
+            convert to a primitive.
+            Hence, this method.
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is NaN:
      *     <code>
@@ -7319,10 +7325,12 @@ function(anObj) {
         return false;
     }
 
-    //  also watch out for IE/Moz foolishness around 'new Date(blah)'
-    //  returning objects which aren't really dates (instead of null)
-    if ((anObj.toString() === 'Invalid Date') ||
-        (anObj.toString() === 'NaN')) {
+    //  also watch out for foolishness around 'new Date(blah)' returning objects
+    //  which aren't really dates (instead of null). The ECMA-402 i18n spec for
+    //  ECMAScript defines that these objects should return 'Invalid Date' (and
+    //  ECMAScript edition 5 specifies 'NaN' if they were created with an
+    //  invalid number).
+    if (anObj.toString() === 'Invalid Date' || anObj.toString() === 'NaN') {
         return false;
     }
 
@@ -7413,6 +7421,34 @@ function(anObj) {
     return (TP.isValid(anObj) && ((anObj.constructor === RegExp) ||
                                 TP.regex.REGEXP_CONSTRUCTOR.test(
                                     '' + anObj.constructor)));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('isInvalidDate',
+function(anObj) {
+
+    /**
+     * @name isInvalidDate
+     * @synopsis Returns true if the object is a Date object, but has an invalid
+     *     Date value.
+     * @param {Object} anObj The Object to test.
+     * @returns {Boolean}
+     */
+
+    //  all dates report object as their primitive type (but so does null)
+    if (TP.notValid(anObj) || typeof(anObj) !== 'object') {
+        return false;
+    }
+
+    //  The ECMA-402 i18n spec for ECMAScript defines that these objects should
+    //  return 'Invalid Date' (and ECMAScript edition 5 specifies 'NaN' if they
+    //  were created with an invalid number).
+    if (anObj.toString() === 'Invalid Date' || anObj.toString() === 'NaN') {
+        return true;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -8550,20 +8586,22 @@ function(anObj) {
         return anObj.childNodes.length === 0;
     }
 
+    //  If the object responds to 'isEmpty', return that value.
+    //  NB: It's much better to do this before checking size with 'getSize'
+    //  since many non-collection objects will fetch all of their keys as part
+    //  of that operation and return the size of that Array, which is slow.
+    if (TP.canInvoke(anObj, 'isEmpty')) {
+        if (TP.isBoolean(val = anObj.isEmpty())) {
+            return val;
+        }
+    }
+
     //  If something can respond to 'getSize', use it. This includes Arrays,
     //  TP.lang.Hashes and String.
     if (TP.canInvoke(anObj, 'getSize')) {
         try {
             return anObj.getSize() === 0;
         } catch (e) {
-        }
-    }
-
-    //  If the object responds to 'get', see if we can get the value of a
-    //  slot named 'empty'.
-    if (TP.canInvoke(anObj, 'get')) {
-        if (TP.isBoolean(val = anObj.get('empty'))) {
-            return val;
         }
     }
 

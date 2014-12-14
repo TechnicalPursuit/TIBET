@@ -122,6 +122,14 @@ function(anObject, optFormat) {
 
     var obj;
 
+    //  Believe it or not, objects that are not a Date can make it to this
+    //  routine. They are usually invalid Dates that were created with bad
+    //  syntax. Their type and type name report 'Date', but they're not. We need
+    //  to catch them here before we try to 'toISOString()' them below.
+    if (TP.isInvalidDate(anObject)) {
+        return this.fromString('Invalid Date', optFormat);
+    }
+
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
     if (TP.isValid(optFormat)) {
@@ -335,6 +343,13 @@ TP.sherpa.pp.Type.defineMethod('fromNumber',
 function(anObject, optFormat) {
 
     var obj;
+
+    //  Believe it or not, objects that are NaNs can make it to this routine.
+    //  Their type and type name report 'Number', but they're not. We should
+    //  catch them here.
+    if (TP.isNaN(anObject)) {
+        return this.fromString('NaN', optFormat);
+    }
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.

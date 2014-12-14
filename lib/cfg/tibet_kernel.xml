@@ -29,9 +29,13 @@
 
     <script src="~lib_deps/q-tpi.min.js"
         unless="boot.unminified" no-minify="true" no-lint="true"/>
-
     <script src="~lib_deps/q-tpi.js"
         if="boot.unminified" no-lint="true"/>
+    <script>
+        <![CDATA[
+        (Q.Promise.resolve()).constructor[TP.NAME] = 'Promise';
+        ]]>
+    </script>
 
     <script src="~lib_deps/forge-tpi.min.js" no-minify="true" no-lint="true"/>
     <script>

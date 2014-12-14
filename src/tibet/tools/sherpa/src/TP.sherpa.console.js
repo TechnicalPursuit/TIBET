@@ -361,34 +361,6 @@ function() {
 //  View Management Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('addLoggedValue',
-function(dataRecord) {
-
-    /**
-     * @name addLoggedValue
-     * @synopsis
-     * @param
-     * @returns {TP.sherpa.console} The receiver.
-     */
-
-    /*
-    var output,
-        cssClass;
-
-    output = dataRecord.at('output');
-    cssClass = dataRecord.at('cssClass');
-
-    TP.byOID('SherpaLogView', TP.win('UIROOT.SHERPA_FRAME')).addLogEntry(
-            TP.hc('output', output, 'cssClass', cssClass));
-
-    //console.log('Echo logged text: ' + outputText);
-    */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.console.Inst.defineMethod('clearAllContent',
 function() {
 
@@ -1134,11 +1106,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('getInputTypeInfo',
+TP.sherpa.console.Inst.defineMethod('getOutputTypeInfo',
 function(aSignal) {
 
     /**
-     * @name getInputTypeInfo
+     * @name getOutputTypeInfo
      * @synopsis
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
@@ -1240,7 +1212,7 @@ function(uniqueID, dataRecord) {
 
         cmdText,
 
-        inputClass,
+        cssClass,
 
         inputData,
         inputStr,
@@ -1254,17 +1226,18 @@ function(uniqueID, dataRecord) {
     if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
 
         hid = dataRecord.at('hid');
-        hidstr = TP.isEmpty(hid) ? '&#160;&#160;' : '!' + hid;
+        hidstr = TP.isEmpty(hid) ? '' : '!' + hid;
+
+        cssClass = dataRecord.at('cssClass');
+        cssClass = TP.isEmpty(cssClass) ? '' : cssClass;
 
         cmdText = TP.ifInvalid(dataRecord.at('cmdtext'), '');
         cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
         cmdText = cmdText.asEscapedXML();
 
-        inputClass = dataRecord.at('cssClass');
-
         inputData = TP.hc(
                         'id', uniqueID,
-                        'inputclass', inputClass,
+                        'inputclass', cssClass,
                         'hid', hidstr,
                         'cmdtext', cmdText,
                         'empty', '',
@@ -1335,7 +1308,6 @@ function(uniqueID, dataRecord) {
     }
 
     outputText = dataRecord.at('output');
-
     outputClass = dataRecord.at('cssClass');
 
     //  Run the output template and fill in the data
@@ -1367,8 +1339,12 @@ function(uniqueID, dataRecord) {
     //  Now, update statistics and result type data that was part of the entry
     //  that we inserted before with the input content.
     if (TP.isValid(request = dataRecord.at('request'))) {
-        statsStr = this.getInputStats(request);
-        resultTypeStr = this.getInputTypeInfo(request);
+        statsStr = TP.isEmpty(dataRecord.at('stats')) ?
+                        this.getInputStats(request) :
+                        dataRecord.at('stats');
+        resultTypeStr = TP.isEmpty(dataRecord.at('typeinfo')) ?
+                        this.getOutputTypeInfo(request) :
+                        dataRecord.at('typeinfo');
     } else {
         statsStr = '';
         resultTypeStr = '';

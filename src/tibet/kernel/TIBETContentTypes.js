@@ -861,6 +861,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Inst.defineMethod('isEmpty',
+function() {
+
+    /**
+     * @name isEmpty
+     * @synopsis Returns whether or not the receiver is an 'empty object',
+     *     according to a collection API. This type returns false.
+     * @returns {Boolean} Whether or not the receiver is empty. Always false
+     *     for this type.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AccessPath.Inst.defineMethod('executeGet',
 function(targetObj, varargs) {
 

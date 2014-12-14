@@ -128,6 +128,12 @@
      "  [keyword else]",
      "    [number 3];");
 
+  MT("indent_funarg",
+     "[variable foo]([number 10000],",
+     "    [keyword function]([def a]) {",
+     "  [keyword debugger];",
+     "};");
+
   MT("indent_below_if",
      "[keyword for] (;;)",
      "  [keyword if] ([variable foo])",
@@ -140,6 +146,13 @@
 
   MT("scary_regexp",
      "[string-2 /foo[[/]]bar/];");
+
+  MT("indent_strange_array",
+     "[keyword var] [variable x] [operator =] [[",
+     "  [number 1],,",
+     "  [number 2],",
+     "]];",
+     "[number 10];");
 
   var jsonld_mode = CodeMirror.getMode(
     {indentUnit: 2},
