@@ -488,6 +488,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         oldScript,
         newScript,
 
+        onloadTimer,
+
         allElems;
 
     if (!TP.isXMLDocument(aDocument)) {
@@ -663,7 +665,28 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         //  last), then set its onload to the 'all content is loaded'
         //  function we defined above.
         if (TP.isElement(lastSourcedScript)) {
-            lastSourcedScript.onload = allContentLoadedFunc;
+
+            //  Unfortunately, Mozilla does a poor job in firing the 'onload'
+            //  for the last script element in an XHTML environment, so we have
+            //  to play the setTimeout() game here.
+            if (TP.sys.isUA('GECKO')) {
+                onloadTimer = setTimeout(
+                        function() {
+                            onloadTimer = null;
+                            lastSourcedScript.onload = null;
+                            allContentLoadedFunc();
+                        }, 100);
+                lastSourcedScript.onload =
+                    function() {
+                        if (onloadTimer) {
+                            clearTimeout(onloadTimer);
+                            allContentLoadedFunc();
+                        }
+                    };
+            } else {
+                //  Other environments seem to do this properly.
+                lastSourcedScript.onload = allContentLoadedFunc;
+            }
         }
 
         //  Loop over all of the script elements and replace the old version
