@@ -1812,9 +1812,11 @@ function(aTarget, aSignal) {
                     }
 
                     if (TP.isArray(val)) {
-                        if (val.contains(targetGID)) {
-                            return true;
-                        }
+                        return TP.isValid(
+                                    val.detect(
+                                        function(anItem) {
+                                            return TP.gid(anItem) === targetGID;
+                                        }));
                     }
 
                     return false;
