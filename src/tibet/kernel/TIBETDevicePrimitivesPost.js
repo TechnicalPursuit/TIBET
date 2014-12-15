@@ -1542,31 +1542,33 @@ function(anElement, anEvent) {
     //  Traverse up our parent chain
     while (TP.isElement(theElement)) {
 
-        //  without an ID we can't have been a target or observer so we
-        //  can't be part of the DOM tree that matters
+        //  without an ID we can't have been a target or observer so we can't be
+        //  part of the DOM tree that matters
         if ((theElement !== elementDoc) &&
             TP.isEmpty(TP.elementGetAttribute(theElement, 'id')) &&
             TP.isEmpty(TP.elementGetAttribute(theElement, 'on:' + eventType))) {
+
             theElement = theElement.parentNode;
+
             continue;
         }
 
         localID = TP.lid(theElement);
 
-        //  The local ID must not be null or the empty string, in
-        //  order to be part of a valid event id path for this element.
-        //  A blank name in the array will do us no good.
+        //  The local ID must not be null or the empty string, in order to be
+        //  part of a valid event id path for this element.
+        //  An element with a blank name in the array will do us no good.
         if (TP.notEmpty(localID)) {
-            //  Add the element's ID by registering it's full
-            //  name.
+            //  Add the element by registering the element itself for fast
+            //  retrieval.
             originArray.push(theElement);
         }
 
         if ((theElement === elementDoc) &&
             (TP.isWindow(elementWin = TP.nodeGetWindow(elementDoc)))) {
-            //  If the window is an iframe's window, then set theElement
-            //  to be that iframe element, effectively 'jumping out of
-            //  the window', so to speak :-).
+            //  If the window is an iframe's window, then set the element to be
+            //  that iframe element, effectively 'jumping out of the window',
+            //  so to speak :-).
             if (TP.isIFrameWindow(elementWin)) {
                 originArray.push(TP.gid(elementWin));
                 theElement = elementWin.frameElement;
@@ -1587,8 +1589,8 @@ function(anElement, anEvent) {
     //  The looping will have terminated at a 'document' node - add it's ID.
     originArray.push(TP.gid(elementDoc));
 
-    //  See if that document has a window and if it does, append
-    //  its global ID to the end of the event ids.
+    //  See if that document has a window and if it does, append its global ID
+    //  to the end of the event ids.
     elementWin = TP.nodeGetWindow(elementDoc);
     if (TP.isWindow(elementWin)) {
         originArray.push(TP.gid(elementWin));
