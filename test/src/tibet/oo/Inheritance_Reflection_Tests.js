@@ -3299,7 +3299,10 @@ function() {
 
         //  Some properties are added to objects and are enumerable, but are not
         //  reported via the 'Object.keys()' mechanism.
-        if (Object.observe) {
+        //  NB: Make sure to test to see if this has an owner to distinguish
+        //  from the forthcoming ECMA 'Object.observe'.
+        if (TP.isValid(Object.observe) &&
+            TP.notValid(Object.observe[TP.OWNER])) {
             selfProperties.push('observe');
         }
 
