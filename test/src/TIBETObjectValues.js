@@ -65,6 +65,7 @@ function(aRequest) {
         functionVal,
 
         nanVal,
+        notADate,
 
         nativeTypeVal,
 
@@ -175,6 +176,7 @@ function(aRequest) {
     functionVal = function () {return 'fluffy';};
 
     nanVal = NaN;
+    notADate = new Date('fluffy');
 
     nativeTypeVal = Array;
 
@@ -326,6 +328,7 @@ function(aRequest) {
     'Object',                   objectVal,              //  Object
     'Function',                 functionVal,            //  Function
     'NaN',                      nanVal,                 //  NaN
+    'NotADate',                 notADate,               //  not a Date
 
     'NativeType',               nativeTypeVal,          //  NativeType
 
