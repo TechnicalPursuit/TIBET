@@ -378,9 +378,7 @@ function() {
 TP.core.TagProcessor.Inst.describe('TP.core.TagProcessor Inst core functionality suite',
 function() {
 
-    var testDataLoc;
 
-    testDataLoc = '~lib_tst/src/tibet/tagprocessor/XMLBaseTest1.xml';
 
     this.it('XML Base processing', function(test, options) {
 
