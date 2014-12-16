@@ -458,6 +458,50 @@ function(aURI, aWindow) {
 
 //  ------------------------------------------------------------------------
 
+TP.gui.Driver.Inst.defineMethod('showTestGUI',
+function() {
+
+    /**
+     * @name showTestGUI
+     * @synopsis Shows the 'test GUI'. The process by which it does this is
+     *     environment dependent (i.e. what tool we're running in, etc).
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    if (TP.sys.cfg('tibet.tdc') === true) {
+        TP.elementHide(TP.byId('UIBOOT', top));
+        TP.elementShow(TP.byId('UIROOT', top));
+    } else if (TP.sys.cfg('tibet.sherpa') === true) {
+        //  TODO: Make the appropriate GUI window show for the Sherpa, etc.
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Driver.Inst.defineMethod('showTestLog',
+function() {
+
+    /**
+     * @name showTestLog
+     * @synopsis Shows the 'test log'. The process by which it does this is
+     *     environment dependent (i.e. what tool we're running in, etc).
+     * @return {TP.gui.Driver} The receiver.
+     */
+
+    if (TP.sys.cfg('tibet.tdc') === true) {
+        TP.elementHide(TP.byId('UIROOT', top));
+        TP.elementShow(TP.byId('UIBOOT', top));
+    } else if (TP.sys.cfg('tibet.sherpa') === true) {
+        //  TODO: Make the appropriate log window show for the Sherpa, etc.
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.gui.Driver.Inst.defineMethod('startSequence',
 function() {
 
