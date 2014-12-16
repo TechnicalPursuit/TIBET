@@ -287,6 +287,10 @@ function(beHidden) {
         //  deactivate the input cell
         this.deactivateInputEditor();
 
+        //  blur whatever was the active element. This makes sure that the input
+        //  cell no longer has focus.
+        this.getNativeDocument().activeElement.blur();
+
         //  Stop observing the 'double Shift key' for focusing the input cell.
         this.ignore(
             TP.core.Keyboard,
