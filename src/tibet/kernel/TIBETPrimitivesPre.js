@@ -2700,6 +2700,7 @@ function(anObj) {
         }
     }
 
+    len = list.length;
     for (i = 0; i < len; i++) {
         item = list[i];
         if (anObj === item[0]) {
@@ -2707,6 +2708,7 @@ function(anObj) {
         }
     }
 
+    return;
 }, false, 'TP.getNonFunctionConstructorName');
 
 //  ------------------------------------------------------------------------
