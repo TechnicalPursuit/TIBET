@@ -30,7 +30,7 @@
 
 </head>
 
-<body>
+<body xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
 	<h2>Focus Stack #1</h2><br/>
 	<br/>
@@ -53,7 +53,7 @@
 	Fields #1, #2 and #4 all share the same focusing context (which is the document's 'body' element). Field #3 is wrapped with a span that defines a different focusing context. Therefore, it will be 'push'ed onto the focus stack when navigated to from one of the other elements. If it is then navigated away from (pressing Tab, etc.) the previously focused element will be navigated to.
 	<br/>
 	<br/>
-	
+
 	Focus test field #1: <input type="text" id="focusTestField1" tabindex="0"/>
 	<br/>
 	Focus test field #2: <input type="text" id="focusTestField2" tabindex="0"/>
