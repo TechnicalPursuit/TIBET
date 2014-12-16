@@ -452,40 +452,6 @@ function() {
                     TP.core.Color.fromString('blue'));
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-
-    this.it('TIBET stylesheet PI processing - multi level', function(test, options) {
-
-        var loadURI;
-
-        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL2.xml');
-
-        this.getDriver().setLocation(loadURI);
-
-        test.then(
-            function(result) {
-
-                var elem,
-                    tpElem;
-
-                elem = TP.byId('colorizedSpan');
-                test.assert.isElement(elem);
-
-                tpElem = TP.wrap(elem);
-
-                //  NB: We convert these into TP.core.Color objects to compare
-                //  - depending on platform, getComputedStyleProperty will
-                //  return RGB values, etc.
-                test.assert.isEqualTo(
-                    TP.core.Color.fromString(
-                        tpElem.getComputedStyleProperty('backgroundColor')),
-                    TP.core.Color.fromString('blue'));
-
-                test.assert.isEqualTo(
-                    TP.core.Color.fromString(
-                        tpElem.getComputedStyleProperty('color')),
-                    TP.core.Color.fromString('red'));
-            });
-    }).skip();  //  TODO: Due to failures in Chrome, 16-NOV-2014.
 });
 
 //  ========================================================================
