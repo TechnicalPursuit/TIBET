@@ -99,6 +99,16 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: simple binds',
 function() {
 
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
@@ -1709,6 +1719,16 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: numerically indexed binds',
 function() {
 
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
@@ -2156,6 +2176,16 @@ function() {
 
 TP.bind.XMLNS.Type.describe('bind: bind repeats',
 function() {
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
 
     this.beforeEach(
         function() {
@@ -3427,6 +3457,16 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: static tables',
 function() {
 
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
     //  ---
 
     this.it('Simple table - XML data source', function(test, options) {
@@ -3537,6 +3577,16 @@ function() {
 
 TP.bind.XMLNS.Type.describe('bind: inline bind expressions',
 function() {
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
 
     //  ---
 

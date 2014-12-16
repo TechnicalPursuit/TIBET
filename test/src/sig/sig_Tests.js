@@ -19,6 +19,20 @@ function() {
 
     unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
+    //  ---
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
@@ -28,6 +42,8 @@ function() {
         function() {
             this.getSuite().stopTrackingSignals();
         });
+
+    //  ---
 
     this.it('multiple ev: handlers under a single sig:action', function(test, options) {
 
@@ -41,6 +57,8 @@ function() {
             function(result) {
 
                 var seq;
+
+                TP.sys.uiwin(true).focus();
 
                 seq = test.getDriver().startSequence();
                 seq.click(TP.byId('fooButton'));
@@ -121,6 +139,8 @@ function() {
             function(result) {
 
                 var seq;
+
+                TP.sys.uiwin(true).focus();
 
                 seq = test.getDriver().startSequence();
                 seq.click(TP.byId('dispatchButton'));

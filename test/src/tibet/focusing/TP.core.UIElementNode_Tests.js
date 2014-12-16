@@ -22,6 +22,18 @@ function() {
 
     //  ---
 
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
     this.it('No initially focused element, all tabindexes -1', function(test, options) {
 
         var loadURI,
@@ -42,6 +54,8 @@ function() {
                     elem4,
 
                     focusedElem;
+
+                TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
@@ -180,6 +194,8 @@ function() {
                     elem4,
 
                     focusedElem;
+
+                TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
@@ -324,6 +340,8 @@ function() {
                     elem4,
 
                     focusedElem;
+
+                TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
@@ -539,6 +557,8 @@ function() {
                     elem4,
 
                     focusedElem;
+
+                TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
@@ -761,6 +781,8 @@ function() {
                     elem4,
 
                     focusedElem;
+
+                TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
@@ -994,6 +1016,8 @@ function() {
                     elem8,
 
                     focusedElem;
+
+                TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
@@ -1316,6 +1340,8 @@ function() {
 
                     focusedElem;
 
+                TP.sys.uiwin(true).focus();
+
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
                 elem1 = TP.byId('focusTestField1');
@@ -1343,6 +1369,8 @@ function() {
                 //  Prove that.
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, elem1);
+
+                //  ---
 
                 //  Use a Tab to go to elem2
                 driver.startSequence().
@@ -1648,6 +1676,8 @@ function() {
                     elem8,
 
                     focusedElem;
+
+                TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
@@ -2105,11 +2135,15 @@ function() {
             } else {
                 $focus_stack = TP.ac();
             }
+
+            this.getDriver().showTestGUI();
         });
 
     this.after(
         function() {
             $focus_stack = focusStackPreTest;
+
+            this.getDriver().showTestLog();
         });
 
     //  ---
@@ -2146,6 +2180,8 @@ function() {
                     elem4,
 
                     focusedElem;
+
+                TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 

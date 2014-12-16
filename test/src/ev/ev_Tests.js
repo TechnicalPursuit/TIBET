@@ -19,6 +19,20 @@ function() {
 
     unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
+    //  ---
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
@@ -28,6 +42,8 @@ function() {
         function() {
             this.getSuite().stopTrackingSignals();
         });
+
+    //  ---
 
     this.it('simple registration', function(test, options) {
 
@@ -41,6 +57,8 @@ function() {
             function(result) {
 
                 var seq;
+
+                TP.sys.uiwin(true).focus();
 
                 seq = test.getDriver().startSequence();
                 seq.click(TP.byId('fooButton'));
@@ -120,6 +138,8 @@ function() {
 
                 var seq;
 
+                TP.sys.uiwin(true).focus();
+
                 seq = test.getDriver().startSequence();
                 seq.click(TP.byId('updateElement'));
                 seq.perform();
@@ -178,6 +198,8 @@ function() {
 
         test.then(
             function(result) {
+
+                TP.sys.uiwin(true).focus();
 
                 test.getDriver().startSequence().
                         sendKeys('[Shift]A[Shift-Up]').
@@ -282,6 +304,8 @@ function() {
 
                 var seq;
 
+                TP.sys.uiwin(true).focus();
+
                 seq = test.getDriver().startSequence();
                 seq.click(TP.byId('fooDiv'));
                 seq.perform();
@@ -384,6 +408,8 @@ function() {
 
                 var seq;
 
+                TP.sys.uiwin(true).focus();
+
                 seq = test.getDriver().startSequence();
                 seq.click(TP.byId('fooDiv'));
                 seq.perform();
@@ -464,6 +490,8 @@ function() {
             function(result) {
 
                 var seq;
+
+                TP.sys.uiwin(true).focus();
 
                 seq = test.getDriver().startSequence();
 
@@ -607,6 +635,8 @@ function() {
         test.then(
             function(result) {
 
+                TP.sys.uiwin(true).focus();
+
                 test.getDriver().startSequence().
                         sendKeys('[Shift]X[Shift-Up]').
                         perform();
@@ -735,6 +765,8 @@ function() {
         test.then(
             function(result) {
 
+                TP.sys.uiwin(true).focus();
+
                 test.getDriver().startSequence().
                         sendKeys('[Shift]A[Shift-Up]').
                         sendKeys('[Shift]S[Shift-Up]').
@@ -815,6 +847,8 @@ function() {
             function(result) {
 
                 var seq;
+
+                TP.sys.uiwin(true).focus();
 
                 seq = test.getDriver().startSequence();
                 seq.click(TP.byId('setSalaryButton'));

@@ -378,7 +378,19 @@ function() {
 TP.core.TagProcessor.Inst.describe('TP.core.TagProcessor Inst core functionality suite',
 function() {
 
+    //  ---
 
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
 
     this.it('XML Base processing', function(test, options) {
 
