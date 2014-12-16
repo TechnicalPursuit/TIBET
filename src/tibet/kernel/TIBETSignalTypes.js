@@ -1463,6 +1463,9 @@ TP.sig.DOMAbort.Type.defineConstant('NATIVE_NAME', 'abort');
 TP.sig.DOMUISignal.defineSubtype('DOMBlur');
 TP.sig.DOMBlur.Type.defineConstant('NATIVE_NAME', 'blur');
 
+//  DOMBlur signals are *not* cancelable.
+TP.sig.DOMBlur.Type.defineAttribute('cancelable', false);
+
 TP.sig.DOMBlur.Type.defineMethod('shouldLog',
 function() {
 
@@ -1501,6 +1504,9 @@ TP.sig.DOMError.Type.defineConstant('NATIVE_NAME', 'error');
 
 TP.sig.DOMUISignal.defineSubtype('DOMFocus');
 TP.sig.DOMFocus.Type.defineConstant('NATIVE_NAME', 'focus');
+
+//  DOMFocus signals are *not* cancelable.
+TP.sig.DOMFocus.Type.defineAttribute('cancelable', false);
 
 TP.sig.DOMFocus.Type.defineMethod('shouldLog',
 function() {
@@ -1565,8 +1571,6 @@ TP.sig.DOMUnload.Type.defineConstant('NATIVE_NAME', 'unload');
 //  specc'ed in DOM Level 3.
 TP.sig.DOMUISignal.defineSubtype('DOMFocusIn');
 
-TP.sig.DOMFocusIn.Type.defineAttribute('cancelable', false);
-
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
@@ -1603,9 +1607,6 @@ TP.sig.DOMUISignal.defineSubtype('DOMFocusOut');
 //  ------------------------------------------------------------------------
 
 TP.sig.DOMFocusOut.Type.defineConstant('NATIVE_NAME', 'focusout');
-
-//  DOMFocusOut initialization signals are *not* cancelable.
-TP.sig.DOMFocusOut.Type.defineAttribute('cancelable', false);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

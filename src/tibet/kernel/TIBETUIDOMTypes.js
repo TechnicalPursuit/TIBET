@@ -334,12 +334,11 @@ function(aTargetElem, anEvent) {
     //  machinery will do that if we don't prevent the default behavior
     //  here.
     blurSignal = evtTargetTPElem.signal('TP.sig.UIBlur');
-    if (blurSignal.shouldPrevent()) {
-        //  Since the blur signal was cancelled, we cancel the native event
-        anEvent.preventDefault();
 
-        return this;
-    }
+    //  It doesn't matter if the system cancelled the TIBET signal here - the
+    //  low-level blur signals are not cancelable anyway... although, against
+    //  the spec, Firefox tries. We don't support that here for consistency
+    //  across browsers.
 
     return this;
 });
@@ -376,12 +375,11 @@ function(aTargetElem, anEvent) {
     //  machinery will do that if we don't prevent the default behavior
     //  here.
     focusSignal = evtTargetTPElem.signal('TP.sig.UIFocus');
-    if (focusSignal.shouldPrevent()) {
-        //  Since the focus signal was cancelled, we cancel the native event
-        anEvent.preventDefault();
 
-        return this;
-    }
+    //  It doesn't matter if the system cancelled the TIBET signal here - the
+    //  low-level focus signals are not cancelable anyway... although, against
+    //  the spec, Firefox tries. We don't support that here for consistency
+    //  across browsers.
 
     return this;
 });
