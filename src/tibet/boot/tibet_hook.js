@@ -2749,7 +2749,7 @@ if (window.onerror.failedlaunch !== true &&
                 }
 
                 //  once TP.core.Window is in place do the work
-                TP.boot.initializeCanvas();
+                TP.boot.initializeCanvas(aWindow);
             };
 
             //  invoke our newly constructed initializer
