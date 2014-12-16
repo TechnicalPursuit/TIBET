@@ -1374,7 +1374,7 @@ function(uniqueID, dataRecord) {
 
     coalesceFragment.appendChild(TP.elem(outputStr));
 
-    //updateStats();
+    updateStats();
     this.scrollOutputToEnd();
 
     if (!flushTimer) {
@@ -1382,7 +1382,7 @@ function(uniqueID, dataRecord) {
                 function() {
                     entryElem.appendChild(coalesceFragment);
 
-                    //updateStats();
+                    updateStats();
                     this.scrollOutputToEnd();
 
                     flushTimer = null;
@@ -1393,7 +1393,7 @@ function(uniqueID, dataRecord) {
     if (coalesceFragment.childNodes.length > 50) {
         entryElem.appendChild(coalesceFragment);
 
-        //updateStats();
+        updateStats();
         this.scrollOutputToEnd();
 
         clearTimeout(flushTimer);
@@ -1402,7 +1402,7 @@ function(uniqueID, dataRecord) {
                 function() {
                     entryElem.appendChild(coalesceFragment);
 
-                    //updateStats();
+                    updateStats();
                     this.scrollOutputToEnd();
 
                     flushTimer = null;
