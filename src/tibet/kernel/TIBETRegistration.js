@@ -128,7 +128,11 @@ function(anID, regOnly, nodeContext) {
         }
     }
 
-    if (TP.regex.VALID_WINDOWNAME.test(id)) {
+    //  Note that we only look up Windows if no node context was supplied. If
+    //  one was supplied, then we don't bother looking for windows. In fact, if
+    //  the name we're looking for also matches a Window slot, and that points
+    //  to a Window (i.e. 'content'), that value will be returned.
+    if (TP.regex.VALID_WINDOWNAME.test(id) && TP.notValid(nodeContext)) {
         //  we'll also consider windows to be "registered" objects by
         //  id/name, but we filter with a regex so we don't waste time here
         if ((inst = TP.sys.getWindowById(id))) {
