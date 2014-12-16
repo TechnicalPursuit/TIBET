@@ -1375,8 +1375,6 @@ function(uniqueID, dataRecord) {
 
     coalesceFragment.appendChild(TP.elem(outputStr));
 
-    updateStats();
-
     if (!(flushTimer = this.get('outputCoalesceTimer'))) {
         flushTimer = setTimeout(
                 function() {
@@ -1388,7 +1386,7 @@ function(uniqueID, dataRecord) {
                     flushTimer = null;
                     this.set('outputCoalesceTimer', null);
                 }.bind(this),
-                50);
+                80);
         this.set('outputCoalesceTimer', flushTimer);
     }
 
