@@ -5123,7 +5123,6 @@ function(anElement, aMessage) {
     var busyElement,
 
         controlImageElement,
-        controlImageUrl,
 
         busyMessageElement,
 
