@@ -3958,20 +3958,23 @@ function(anElement) {
      * @returns {Boolean} Whether or not anElement is displayed.
      */
 
-    var compStyleObj,
+    var computedStyle,
+
         elemComputedDisplay,
-        elemComputedVisibility;
+        elemComputedVisibility,
+
+        elementWin;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.notValid(compStyleObj =
+    if (TP.notValid(computedStyle =
                     TP.elementGetComputedStyleObj(anElement))) {
         return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
-    elemComputedDisplay = compStyleObj.display;
+    elemComputedDisplay = computedStyle.display;
 
     //  If the display is computed to be 'none', then we're definitely not
     //  displayed.
@@ -3979,7 +3982,7 @@ function(anElement) {
         return false;
     }
 
-    elemComputedVisibility = compStyleObj.visibility;
+    elemComputedVisibility = computedStyle.visibility;
 
     //  If the display is computed to be 'hidden', then we're definitely not
     //  visible.
@@ -3987,10 +3990,20 @@ function(anElement) {
         return false;
     }
 
-    //  Otherwise, if we don't have a parentNode or our parentNode is the
-    //  document, then we must be displayed, so we return true.
-    if (TP.notValid(anElement.parentNode) ||
-        TP.isDocument(anElement.parentNode)) {
+    //  Otherwise, if we don't have a parentNode, then we can't be displayed
+    if (TP.notValid(anElement.parentNode)) {
+        return false;
+    }
+
+    //  If our parentNode is the document, then see if it's Window is an iframe.
+    //  If so, then we have to 'jump' out and continue. Otherwise, we return
+    //  true.
+    if (TP.isDocument(anElement.parentNode)) {
+        elementWin = TP.nodeGetWindow(anElement.parentNode);
+        if (TP.isIFrameWindow(elementWin)) {
+            return TP.elementIsDisplayed(elementWin.frameElement);
+        }
+
         return true;
     }
 
