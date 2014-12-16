@@ -49,6 +49,9 @@ TP.sherpa.console.Inst.defineAttribute('currentInputMarker');
 
 TP.sherpa.console.Inst.defineAttribute('currentPromptMarker');
 
+TP.sherpa.console.Inst.defineAttribute('outEntryTemplate');
+TP.sherpa.console.Inst.defineAttribute('outputCoalesceFragment');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1291,11 +1294,15 @@ function(uniqueID, dataRecord) {
         outputData,
         outputStr,
 
-        outElem,
+        coalesceFragment,
+        flushTimer,
+        updateStats,
 
         request,
         statsStr,
-        resultTypeStr;
+        resultTypeStr,
+
+        outEntryTemplate;
 
     consoleOutput = this.get('consoleOutput');
 
@@ -1314,9 +1321,14 @@ function(uniqueID, dataRecord) {
     outputData = TP.hc('output', outputText,
                         'outputclass', outputClass);
 
-    outputStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
-                        '#xpath1(//*[@name="outputEntry"])').transform(
-                            outputData);
+    if (TP.notValid(outEntryTemplate = this.get('outEntryTemplate'))) {
+        outEntryTemplate = TP.uc(
+                '~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                        '#xpath1(//*[@name="outputEntry"])').getResource();
+        this.set('outEntryTemplate', outEntryTemplate);
+    }
+
+    outputStr = outEntryTemplate.transform(outputData);
 
     if (!TP.isString(outputStr)) {
         //  Something went wrong during templating. The outputData didn't get
@@ -1327,36 +1339,76 @@ function(uniqueID, dataRecord) {
         outputData.atPut('output',
                 TP.boot.$dump(outputData.at('output'), '', true));
 
-        outputStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
-                            '#xpath1(//*[@name="outputEntry"])').transform(
-                                outputData);
+        outputStr = outEntryTemplate.transform(outputData);
     }
 
-    //  Add the resultant markup to the entry that was added before
-    outElem = TP.xmlElementAddContent(entryElem, outputStr);
-    TP.elementRemoveAttribute(outElem, 'name');
+    updateStats = function() {
 
-    //  Now, update statistics and result type data that was part of the entry
-    //  that we inserted before with the input content.
-    if (TP.isValid(request = dataRecord.at('request'))) {
-        statsStr = TP.isEmpty(dataRecord.at('stats')) ?
-                        this.getInputStats(request) :
-                        dataRecord.at('stats');
-        resultTypeStr = TP.isEmpty(dataRecord.at('typeinfo')) ?
-                        this.getOutputTypeInfo(request) :
-                        dataRecord.at('typeinfo');
-    } else {
-        statsStr = '';
-        resultTypeStr = '';
+        //  Now, update statistics and result type data that was part of the
+        //  entry that we inserted before with the input content.
+        if (TP.isValid(request = dataRecord.at('request'))) {
+            statsStr = TP.isEmpty(dataRecord.at('stats')) ?
+                            this.getInputStats(request) :
+                            dataRecord.at('stats');
+            resultTypeStr = TP.isEmpty(dataRecord.at('typeinfo')) ?
+                            this.getOutputTypeInfo(request) :
+                            dataRecord.at('typeinfo');
+        } else {
+            statsStr = '';
+            resultTypeStr = '';
+        }
+
+        TP.xmlElementSetContent(
+                TP.byCSS('.typeinfo', entryElem, true),
+                resultTypeStr);
+
+        TP.xmlElementSetContent(
+                TP.byCSS('.stats', entryElem, true),
+                statsStr);
+    }.bind(this);
+
+    if (!TP.isNode(coalesceFragment = this.get('outputCoalesceFragment'))) {
+        coalesceFragment = TP.documentCreateFragment(doc);
+        this.set('outputCoalesceFragment', coalesceFragment);
     }
 
-    TP.xmlElementSetContent(
-            TP.byCSS('.typeinfo', entryElem, true),
-            resultTypeStr);
+    coalesceFragment.appendChild(TP.elem(outputStr));
 
-    TP.xmlElementSetContent(
-            TP.byCSS('.stats', entryElem, true),
-            statsStr);
+    //updateStats();
+    this.scrollOutputToEnd();
+
+    if (!flushTimer) {
+        flushTimer = setTimeout(
+                function() {
+                    entryElem.appendChild(coalesceFragment);
+
+                    //updateStats();
+                    this.scrollOutputToEnd();
+
+                    flushTimer = null;
+                }.bind(this),
+                50);
+    }
+
+    if (coalesceFragment.childNodes.length > 50) {
+        entryElem.appendChild(coalesceFragment);
+
+        //updateStats();
+        this.scrollOutputToEnd();
+
+        clearTimeout(flushTimer);
+
+        flushTimer = setTimeout(
+                function() {
+                    entryElem.appendChild(coalesceFragment);
+
+                    //updateStats();
+                    this.scrollOutputToEnd();
+
+                    flushTimer = null;
+                }.bind(this),
+                500);
+    }
 
     return this;
 });
