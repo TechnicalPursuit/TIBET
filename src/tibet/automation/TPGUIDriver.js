@@ -1315,6 +1315,10 @@ function() {
             func.index = i;
 
             driver.get('promiseProvider').then(func);
+
+            //  Based on 'empirical data' (ha), it's best to wait for about 50ms
+            //  to give most browsers a chance to 'settle down' after the event.
+            driver.get('promiseProvider').thenWait(50);
         }());
         /* eslint-enable no-loop-func */
     }
