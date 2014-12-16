@@ -51,6 +51,7 @@ TP.sherpa.console.Inst.defineAttribute('currentPromptMarker');
 
 TP.sherpa.console.Inst.defineAttribute('outEntryTemplate');
 TP.sherpa.console.Inst.defineAttribute('outputCoalesceFragment');
+TP.sherpa.console.Inst.defineAttribute('outputCoalesceTimer');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1375,9 +1376,8 @@ function(uniqueID, dataRecord) {
     coalesceFragment.appendChild(TP.elem(outputStr));
 
     updateStats();
-    this.scrollOutputToEnd();
 
-    if (!flushTimer) {
+    if (!(flushTimer = this.get('outputCoalesceTimer'))) {
         flushTimer = setTimeout(
                 function() {
                     entryElem.appendChild(coalesceFragment);
@@ -1386,28 +1386,10 @@ function(uniqueID, dataRecord) {
                     this.scrollOutputToEnd();
 
                     flushTimer = null;
+                    this.set('outputCoalesceTimer', null);
                 }.bind(this),
                 50);
-    }
-
-    if (coalesceFragment.childNodes.length > 50) {
-        entryElem.appendChild(coalesceFragment);
-
-        updateStats();
-        this.scrollOutputToEnd();
-
-        clearTimeout(flushTimer);
-
-        flushTimer = setTimeout(
-                function() {
-                    entryElem.appendChild(coalesceFragment);
-
-                    updateStats();
-                    this.scrollOutputToEnd();
-
-                    flushTimer = null;
-                }.bind(this),
-                500);
+        this.set('outputCoalesceTimer', flushTimer);
     }
 
     return this;
