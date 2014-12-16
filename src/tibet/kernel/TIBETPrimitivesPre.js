@@ -2591,7 +2591,7 @@ function(anObj) {
      *     constructor. Host environments have constructors that are not
      *     Functions, but are faked by the platform.
      * @param {Object} anObj The Object to test.
-     * @returns {String} Whether or not the supplied object is a non Function
+     * @returns {Boolean} Whether or not the supplied object is a non Function
      *     constructor object.
      */
 
