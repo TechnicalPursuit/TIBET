@@ -321,6 +321,44 @@ function(aURI, resultType) {
 
 //  ------------------------------------------------------------------------
 
+TP.gui.Driver.Inst.defineMethod('getCurrentNativeDocument',
+function() {
+
+    /**
+     * @name getCurrentNativeDocument
+     * @synopsis Returns the native Document object associated with the current
+     *     window context.
+     * @return {Document} The Document of the current window context.
+     */
+
+    var context;
+
+    context = this.get('windowContext');
+
+    return context.getNativeDocument();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.gui.Driver.Inst.defineMethod('getFocusedElement',
+function() {
+
+    /**
+     * @name getFocusedElement
+     * @synopsis Returns the Element that currently has focus in the current
+     *     window context.
+     * @return {Element} The focused Element in the current window context.
+     */
+
+    var context;
+
+    context = this.get('windowContext');
+
+    return TP.documentGetFocusedElement(context.getNativeDocument());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.gui.Driver.Inst.defineMethod('setBodyContent',
 function(aURI, aWindow) {
 
@@ -416,44 +454,6 @@ function(aURI, aWindow) {
         });
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('getCurrentNativeDocument',
-function() {
-
-    /**
-     * @name getCurrentNativeDocument
-     * @synopsis Returns the native Document object associated with the current
-     *     window context.
-     * @return {Document} The Document of the current window context.
-     */
-
-    var context;
-
-    context = this.get('windowContext');
-
-    return context.getNativeDocument();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.gui.Driver.Inst.defineMethod('getFocusedElement',
-function() {
-
-    /**
-     * @name getFocusedElement
-     * @synopsis Returns the Element that currently has focus in the current
-     *     window context.
-     * @return {Element} The focused Element in the current window context.
-     */
-
-    var context;
-
-    context = this.get('windowContext');
-
-    return TP.documentGetFocusedElement(context.getNativeDocument());
 });
 
 //  ------------------------------------------------------------------------
