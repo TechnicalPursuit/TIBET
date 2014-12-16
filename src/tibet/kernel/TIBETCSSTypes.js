@@ -407,6 +407,7 @@ function(job, params) {
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @raises TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      * @todo
@@ -414,6 +415,8 @@ function(job, params) {
 
     var styleProperty,
         element,
+
+        computedStyle,
 
         from,
         to,
@@ -462,7 +465,12 @@ function(job, params) {
     //  need to compute one. This call ensures that the return value is in
     //  pixels.
     if (TP.isEmpty(from = params.at('from'))) {
-        from = TP.elementGetComputedStyleObj(element)[styleProperty];
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(element))) {
+            return this.raise('TP.sig.InvalidStyle');
+        }
+
+        from = computedStyle[styleProperty];
     }
 
     //  Make sure the stepping value prefix and suffix either use the
@@ -623,6 +631,7 @@ function(job, params) {
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @raises TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      * @todo
@@ -630,6 +639,8 @@ function(job, params) {
 
     var styleProperty,
         element,
+
+        computedStyle,
 
         from,
 
@@ -681,7 +692,12 @@ function(job, params) {
     //  need to compute one. This call ensures that the return value is in
     //  pixels.
     if (TP.isEmpty(from = params.at('from'))) {
-        from = TP.elementGetComputedStyleObj(element)[styleProperty];
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(element))) {
+            return this.raise('TP.sig.InvalidStyle');
+        }
+
+        from = computedStyle[styleProperty];
     }
 
     params.atPutIfAbsent('propPrefix',
@@ -762,6 +778,7 @@ function(job, params) {
      * @param {TP.core.Job} job The job object that is currently processing this
      *     configure method.
      * @param {TP.lang.Hash} params The 'step parameters' supplied to the job.
+     * @raises TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not this method configured the transition
      *     successfully.
      * @todo
@@ -774,6 +791,8 @@ function(job, params) {
         from,
         to,
         by,
+
+        computedStyle,
 
         valuesAsNumbers,
         fromAsNumber,
@@ -851,8 +870,13 @@ function(job, params) {
             fromAsNumber = TP.convertColorStringToLongNumber(
                         TP.elementGetEffectiveBackgroundColor(element));
         } else {
+            if (TP.notValid(computedStyle =
+                            TP.elementGetComputedStyleObj(element))) {
+                return this.raise('TP.sig.InvalidStyle');
+            }
+
             fromAsNumber = TP.convertColorStringToLongNumber(
-                        TP.elementGetComputedStyleObj(element)[styleProperty]);
+                                            computedStyle[styleProperty]);
         }
     }
 

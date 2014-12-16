@@ -1830,11 +1830,13 @@ function(anElement) {
      *     includes clearing any specific inline style setting for the CSS
      *     display property.
      * @param {HTMLElement} anElement The element to default the display of.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @todo
      */
 
-    var displayValue,
+    var computedStyle,
+
+        displayValue,
         theTagName;
 
     if (!TP.isElement(anElement)) {
@@ -1848,7 +1850,12 @@ function(anElement) {
 
     TP.elementGetStyleObj(anElement).display = '';
 
-    displayValue = TP.elementGetComputedStyleObj(anElement).display;
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    displayValue = computedStyle.display;
     if (displayValue === 'none') {
         //  The default for XHTML is lower case, so make sure that the
         //  tag name is in that form.
@@ -2151,14 +2158,16 @@ function(anElement) {
      *     is 'auto', a null is placed into that position in the Array.
      * @param {HTMLElement} anElement The element to extract the clipping
      *     rectangle from.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {Array} An Array of Numbers containing the element's clipping
      *     rectangle *expressed in number of pixels*. The numbers are arranged
      *     in the following order: top, right, bottom, left.
      * @todo
      */
 
-    var clipString,
+    var computedStyle,
+
+        clipString,
         clipRectArray,
 
         i,
@@ -2168,7 +2177,12 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    clipString = TP.elementGetComputedStyleObj(anElement).clip;
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    clipString = computedStyle.clip;
 
     clipRectArray = null;
 
@@ -2293,20 +2307,25 @@ function(anElement) {
      *     non-transparent element.
      * @param {HTMLElement} anElement The element to obtain the effective
      *     background color for.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {String} The element's effective background color.
      */
 
-    var elementColor;
+    var computedStyle,
+
+        elementColor;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
     //  First, check to see if our computed color is transparent
-    if ((elementColor =
-            TP.elementGetComputedStyleObj(anElement).backgroundColor) !==
-                                                            'transparent') {
+    if ((elementColor = computedStyle.backgroundColor) !== 'transparent') {
         return elementColor;
     }
 
@@ -2321,7 +2340,10 @@ function(anElement) {
 
             var computedStyle;
 
-            computedStyle = TP.elementGetComputedStyleObj(aParentElement);
+            if (TP.notValid(computedStyle =
+                            TP.elementGetComputedStyleObj(aParentElement))) {
+                return TP.raise(this, 'TP.sig.InvalidStyle');
+            }
 
             //  If we found one that was not transparent, we can stop now.
             if ((elementColor = computedStyle.backgroundColor) !==
@@ -3545,7 +3567,7 @@ function(anElement, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      * @todo
@@ -3572,7 +3594,11 @@ function(anElement, wantsTransformed) {
             break;
         }
 
-        computedStyle = TP.elementGetComputedStyleObj(positionedAncestor);
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(positionedAncestor))) {
+            return TP.raise(this, 'TP.sig.InvalidStyle');
+        }
+
         if ((computedStyle.position === 'absolute') ||
             (computedStyle.position === 'relative')) {
             break;
@@ -4034,17 +4060,23 @@ function(anElement) {
      * @synopsis Makes the supplied element 'absolutely positioned' at its
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make absolute.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
 
-    var pageXY;
+    var computedStyle,
+        pageXY;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
     //  If the element is already absolute, just bail out here.
-    if (TP.elementGetComputedStyleObj(anElement).position === 'absolute') {
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    if (computedStyle.position === 'absolute') {
         return;
     }
 
@@ -4072,15 +4104,21 @@ function(anElement) {
      *     current location in its document. If the element was already
      *     positioned, this method just returns.
      * @param {HTMLElement} anElement The element to make positioned.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
+
+    var computedStyle;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (!/absolute|relative/i.test(
-                        TP.elementGetComputedStyleObj(anElement).position)) {
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    if (!/absolute|relative/i.test(computedStyle.position)) {
         TP.elementMakeRelative(anElement);
     }
 
@@ -4097,10 +4135,12 @@ function(anElement) {
      * @synopsis Makes the supplied element 'relatively positioned' at its
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make relative.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      */
 
-    var styleObj,
+    var computedStyle,
+
+        styleObj,
         leftInPixels,
         topInPixels;
 
@@ -4108,8 +4148,13 @@ function(anElement) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
     //  If the element is already relative, just bail out here.
-    if (TP.elementGetComputedStyleObj(anElement).position === 'relative') {
+    if (computedStyle.position === 'relative') {
         return;
     }
 
@@ -4162,11 +4207,13 @@ function(anElement, deltaX, deltaY) {
      * @param {HTMLElement} anElement The element to move.
      * @param {Number} deltaX The X amount to move the element by.
      * @param {Number} deltaY The Y amount to move the element by.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @todo
      */
 
-    var pageXY,
+    var computedStyle,
+
+        pageXY,
 
         styleObj;
 
@@ -4174,8 +4221,12 @@ function(anElement, deltaX, deltaY) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (!/absolute|relative/i.test(
-                        TP.elementGetComputedStyleObj(anElement).position)) {
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    if (!/absolute|relative/i.test(computedStyle.position)) {
         return;
     }
 
@@ -4239,18 +4290,24 @@ function(anElement, anotherElement) {
      * @synopsis Places the element over the other element.
      * @param {HTMLElement} anElement The element to move 'up' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement over.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @todo
      */
 
-    var otherZ;
+    var computedStyle,
+
+        otherZ;
 
     if (!TP.isElement(anElement) || !TP.isElement(anotherElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    otherZ = parseInt(TP.elementGetComputedStyleObj(anotherElement).zIndex,
-                        10);
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anotherElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    otherZ = parseInt(computedStyle.zIndex, 10);
 
     TP.elementGetStyleObj(anElement).zIndex = otherZ + 1;
 
@@ -4267,18 +4324,23 @@ function(anElement, anotherElement) {
      * @synopsis Places the element under the other element.
      * @param {HTMLElement} anElement The element to move 'down' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement under.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @todo
      */
 
-    var otherZ;
+    var computedStyle,
+        otherZ;
 
     if (!TP.isElement(anElement) || !TP.isElement(anotherElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    otherZ = parseInt(TP.elementGetComputedStyleObj(anotherElement).zIndex,
-                        10);
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anotherElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    otherZ = parseInt(computedStyle.zIndex, 10);
 
     TP.elementGetStyleObj(anElement).zIndex = otherZ - 1;
 

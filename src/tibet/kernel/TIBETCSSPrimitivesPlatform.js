@@ -455,7 +455,7 @@ TP.hc(
          *     has been transformed with a CSS transformation. The default is
          *     false.
          * @raises TP.sig.InvalidElement,TP.sig.InvalidString,
-         *     TP.sig.InvalidParameter
+         *     TP.sig.InvalidParameter,TP.sig.InvalidStyle
          * @returns {Number} The number of pixels that the supplied value will
          *     be in pixels for the supplied Element.
          * @todo
@@ -504,7 +504,10 @@ TP.hc(
         styleObj[targetPropName] = aValue || 0;
 
         //  Grab the computed style for the element.
-        computedStyle = TP.elementGetComputedStyleObj(anElement);
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(anElement))) {
+            return TP.raise(this, 'TP.sig.InvalidStyle');
+        }
 
         //  We wrap this in a try...catch, since sometimes Mozilla throws an
         //  exception when attempting to get the computed value, especially

@@ -1113,7 +1113,7 @@ function(anElement) {
      *     of opacity the element is set to (e.g. it will be '.5' if the element
      *     is set to 50% opacity).
      * @param {HTMLElement} anElement The element to set the opacity of.
-     * @raises TP.sig.InvalidElement
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
      * @returns {Number} The element's opacity level.
      */
 
@@ -1124,7 +1124,9 @@ function(anElement) {
     }
 
     //  Grab the computed style for the element
-    computedStyle = TP.elementGetComputedStyleObj(anElement);
+    if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
 
     //  If there is no 'opacity' property defined on the style for the
     //  element, then just return '1.0', as the element is fully opaque.
@@ -1174,7 +1176,7 @@ function(anElement, styleProperty, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
      * @returns {Number} The supplied property as a pixel value.
      * @todo
      */
@@ -1190,7 +1192,9 @@ function(anElement, styleProperty, wantsTransformed) {
     }
 
     //  Grab the computed style for the element
-    computedStyle = TP.elementGetComputedStyleObj(anElement);
+    if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
 
     return TP.elementGetPixelValue(anElement,
                                     computedStyle[styleProperty],
@@ -1215,7 +1219,7 @@ function(anElement, styleProperties, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
      * @returns {TP.lang.Hash} A TP.lang.Hash of Numbers containing the supplied
      *     properties as a pixel value.
      * @todo
@@ -1237,7 +1241,9 @@ function(anElement, styleProperties, wantsTransformed) {
     }
 
     //  Grab the computed style for the element
-    computedStyle = TP.elementGetComputedStyleObj(anElement);
+    if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
 
     valuesInPixels = TP.hc();
 

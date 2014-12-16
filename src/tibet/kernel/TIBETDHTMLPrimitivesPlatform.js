@@ -1446,7 +1446,7 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Number|Array} The element's border in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's borders. The numbers are
@@ -1466,7 +1466,10 @@ TP.hc(
         }
 
         //  Grab the computed style for the element
-        computedStyle = TP.elementGetComputedStyleObj(anElement);
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(anElement))) {
+            return TP.raise(this, 'TP.sig.InvalidStyle');
+        }
 
         //  Define a reusable helper Function that will avoid repetition below.
         pixelFunc = function(cssName) {
@@ -1646,7 +1649,8 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,
+         *         TP.sig.InvalidStyle
          * @returns {Number|Array} The element's margin in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's margins. The numbers are
@@ -1670,7 +1674,10 @@ TP.hc(
         }
 
         //  Grab the computed style for the element
-        computedStyle = TP.elementGetComputedStyleObj(anElement);
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(anElement))) {
+            return TP.raise(this, 'TP.sig.InvalidStyle');
+        }
 
         //  Define a reusable helper Function that will avoid repetition below.
         pixelFunc = function(cssName) {
@@ -1772,11 +1779,13 @@ TP.hc(
          *     absolute, relative or fixed, but not if it's a statically-placed
          *     element that has scrolled. We compensate for that here.
          * @param {HTMLElement} anElement The element to get the offset parent.
-         * @raises TP.sig.InvalidElement
+         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Element} The element's offset parent.
          */
 
-        var positionVal,
+        var computedStyle,
+
+            positionVal,
             shouldSkip,
             doc,
             ancestor;
@@ -1785,8 +1794,14 @@ TP.hc(
             return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
+        //  Grab the computed style for the element
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(anElement))) {
+            return TP.raise(this, 'TP.sig.InvalidStyle');
+        }
+
         //  Grab the position of the element
-        positionVal = TP.elementGetComputedStyleObj(anElement).position;
+        positionVal = computedStyle.position;
 
         //  We can skip static elements if we're positioned fixed or absolute.
         shouldSkip = /(fixed|absolute)/.test(positionVal);
@@ -1946,7 +1961,8 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter
+         * @raises TP.sig.InvalidElement,TP.sig.InvalidParameter,
+         *         TP.sig.InvalidStyle
          * @returns {Number|Array} The element's padding in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's paddings. The numbers are
@@ -1970,7 +1986,10 @@ TP.hc(
         }
 
         //  Grab the computed style for the element
-        computedStyle = TP.elementGetComputedStyleObj(anElement);
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(anElement))) {
+            return TP.raise(this, 'TP.sig.InvalidStyle');
+        }
 
         //  Define a reusable helper Function that will avoid repetition below.
         pixelFunc = function(cssName) {
@@ -2059,19 +2078,26 @@ TP.hc(
          * @param {Boolean} wants2DMatrix An optional parameter that tells the
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
-         * @raises TP.sig.InvalidElement
+         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
-        var val,
+        var computedStyle,
+
+            val,
             matrix;
 
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
-        if (TP.isValid(val =
-                    TP.elementGetComputedStyleObj(anElement).MozTransform)) {
+        //  Grab the computed style for the element
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(anElement))) {
+            return TP.raise(this, 'TP.sig.InvalidStyle');
+        }
+
+        if (TP.isValid(val = computedStyle.MozTransform)) {
 
             matrix = TP.matrixFromCSSString(val, wants2DMatrix);
         }
@@ -2092,19 +2118,26 @@ TP.hc(
          * @param {Boolean} wants2DMatrix An optional parameter that tells the
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
-         * @raises TP.sig.InvalidElement
+         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
-        var val,
+        var computedStyle,
+
+            val,
             matrix;
 
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
-        if (TP.isValid(val =
-                    TP.elementGetComputedStyleObj(anElement).msTransform)) {
+        //  Grab the computed style for the element
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(anElement))) {
+            return TP.raise(this, 'TP.sig.InvalidStyle');
+        }
+
+        if (TP.isValid(val = computedStyle.msTransform)) {
 
             matrix = TP.matrixFromCSSString(val, wants2DMatrix);
         }
@@ -2125,19 +2158,26 @@ TP.hc(
          * @param {Boolean} wants2DMatrix An optional parameter that tells the
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
-         * @raises TP.sig.InvalidElement
+         * @raises TP.sig.InvalidElement,TP.sig.InvalidStyle
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
-        var val,
+        var computedStyle,
+
+            val,
             matrix;
 
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
-        if (TP.isValid(val =
-                    TP.elementGetComputedStyleObj(anElement).WebkitTransform)) {
+        //  Grab the computed style for the element
+        if (TP.notValid(computedStyle =
+                        TP.elementGetComputedStyleObj(anElement))) {
+            return TP.raise(this, 'TP.sig.InvalidStyle');
+        }
+
+        if (TP.isValid(val = computedStyle.WebkitTransform)) {
 
             matrix = TP.matrixFromCSSString(val, wants2DMatrix);
         }

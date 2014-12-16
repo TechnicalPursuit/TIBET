@@ -3077,14 +3077,21 @@ function() {
      * @name toggleVisibility
      * @synopsis Toggles the 'visibility' of the receiver from 'hidden' to
      *     'visible' or vice-versa, depending on the current visibility state.
+     * @raises TP.sig.InvalidStyle
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var elem;
+    var computedStyle,
+        elem;
 
     elem = this.getNativeNode();
 
-    if (TP.elementGetComputedStyleObj(elem).visibility === 'visible') {
+    //  Grab the computed style for the element
+    if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(elem))) {
+        return this.raise('TP.sig.InvalidStyle');
+    }
+
+    if (computedStyle.visibility === 'visible') {
         elem.style.visibility = 'hidden';
     } else {
         elem.style.visibility = 'visible';
