@@ -2342,12 +2342,12 @@ TP.regex.ACP_FORMAT = /([^\\]*)\s*\.%\s*(.+)/;
 
 TP.regex.INLINE_BINDING_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
 
-TP.regex.TSH_VARSUB = /\$\{?([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)\}?/;
+TP.regex.TSH_VARSUB = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/;
 //  A global version of TP.regex.TSH_VARSUB
-TP.regex.TSH_VARSUB_EXTRACT = /\$\{?([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)\}?/g;
+TP.regex.TSH_VARSUB_EXTRACT = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/g;
 
 //  Only matches the 'extended variable' format
-TP.regex.TSH_VARSUB_EXTENDED = /\$\{([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)\}/g;
+TP.regex.TSH_VARSUB_EXTENDED = /\$\{([A-Z_$]{1}[A-Z0-9_$]*)\}/g;
 
 // pseudo-acp plus format string means potentially transformable string
 TP.regex.TRANSFORMABLE = /[$#%@]\{|`.+`/;

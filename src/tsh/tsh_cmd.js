@@ -1425,6 +1425,12 @@ function(REQUEST$$, CMDTYPE$$) {
             $SCRIPT = '(' + $SCRIPT + ')';
         }
 
+        //  String literals - double quoted
+        if ($SCRIPT.charAt(0) === '"' &&
+                $SCRIPT.charAt($SCRIPT.length - 1) === '"') {
+            $SCRIPT = $SHELL.resolveVariableSubstitutions($SCRIPT);
+        }
+
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
 
@@ -1709,11 +1715,8 @@ function(aString, aShell, aRequest) {
      * @synopsis Expands content contained in the supplied source string using
      *     the provided shell.
      * @description Content expansion consists of expanding any command
-     *     substitutions (content inside of `...` constructs) and executing
-     *     any templates. Note that this does *not* include resolving of
-     *     variable values, either by variable expansion or by object resolution
-     *     However, variables in templates will be expanded to their fully
-     *     realized values.
+     *     substitutions (content inside of `...` constructs), templates, and
+     *     shell variables contained in the content.
      * @param {String} aString The source string to expand content in.
      * @param {TP.core.Shell} aShell The shell instance.
      * @param {TP.sig.Request} aRequest The request containing command input for
@@ -1761,7 +1764,9 @@ function(aString, aShell, aRequest) {
     //  set up our output buffer
     result = TP.ac();
 
+    //  ---
     //  Step 1: Process template substitutions
+    //  ---
 
     value = aString;
 
@@ -1810,11 +1815,15 @@ function(aString, aShell, aRequest) {
         value = value.slice(1, -1);
     }
 
+    //  ---
     //  Step 2: Process variable substitutions
+    //  ---
 
     $SCRIPT = $SHELL.resolveVariableSubstitutions(value);
 
+    //  ---
     //  Step 3: Process command substitutions
+    //  ---
 
     //  command substitution...effectively inlining result data where the
     //  command text is positioned.
@@ -1939,8 +1948,7 @@ function(aString, aShell, aRequest) {
         result.push(RESULT$$);
 
     } else {
-
-        result.push(value);
+        result.push($SCRIPT);
     }
 
     return result.join('');
