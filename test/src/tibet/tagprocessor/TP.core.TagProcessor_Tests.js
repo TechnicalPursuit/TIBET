@@ -386,7 +386,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XMLBaseTest1.xml');
+        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XMLBaseTest1.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -428,7 +428,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL1.xml');
+        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL1.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
