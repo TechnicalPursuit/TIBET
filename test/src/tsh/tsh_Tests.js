@@ -13,20 +13,23 @@
 
 /* eslint-disable no-alert */
 
-//	------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.describe('Shell options expansion',
+TP.core.TSH.Type.describe('Shell command options expansion',
 function() {
 
-    var shellDriver;
+    var inputVal,
+        correctResult,
+        shellDriver;
 
     this.before(function(suite, options) {
+        inputVal = null;
+        correctResult = null;
         shellDriver = TP.tsh.Driver.construct();
         this.get('drivers').atPut('shell', shellDriver);
     });
 
     this.it('data setup', function(test, options) {
-        var inputVal;
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
@@ -36,11 +39,8 @@ function() {
 
     this.it('simple expansion', function(test, options) {
 
-        var inputVal,
-            correctResults;
-
         inputVal = ':testCmd -first --second --third=\'foo\'';
-        correctResults =
+        correctResult =
             TP.hc(
                 'tsh:first',
                 TP.hc('Original value tname', 'String',
@@ -65,24 +65,27 @@ function() {
                         'Resolved value', 'foo')
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 });
 
-//	------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
 TP.core.TSH.Type.describe('Shell JavaScript literals',
 function() {
 
-    var shellDriver;
+    var inputVal,
+        correctResult,
+        shellDriver;
 
     this.before(function(suite, options) {
+        inputVal = null;
+        correctResult = null;
         shellDriver = TP.tsh.Driver.construct();
         this.get('drivers').atPut('shell', shellDriver);
     });
 
     this.it('data setup', function(test, options) {
-        var inputVal;
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
@@ -90,12 +93,7 @@ function() {
         shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('Shell JavaScript literals standalone', function(test, options) {
-
-        var inputVal,
-            correctResult;
-
-        //  ---
+    this.it('new Boolean(true)', function(test, options) {
 
         inputVal = 'new Boolean(true)';
         correctResult = 'Boolean';
@@ -111,8 +109,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('true', function(test, options) {
 
         inputVal = 'true';
         correctResult = 'Boolean';
@@ -128,8 +127,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('new Number(42)', function(test, options) {
 
         inputVal = 'new Number(42)';
         correctResult = 'Number';
@@ -145,8 +145,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('42', function(test, options) {
 
         inputVal = '42';
         correctResult = 'Number';
@@ -162,8 +163,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('new String(\'foo\')', function(test, options) {
 
         inputVal = 'new String(\'foo\')';
         correctResult = 'String';
@@ -179,8 +181,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('\'foo\'', function(test, options) {
 
         inputVal = '\'foo\'';
         correctResult = 'String';
@@ -196,8 +199,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('new Date()', function(test, options) {
 
         inputVal = 'new Date()';
         correctResult = 'Date';
@@ -213,8 +217,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('new Object()', function(test, options) {
 
         inputVal = 'new Object()';
         correctResult = 'Object';
@@ -230,8 +235,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('({})', function(test, options) {
 
         //  NB: The parens are required - a limitation of JS 'eval()'
         inputVal = '({})';
@@ -248,8 +254,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('new Array()', function(test, options) {
 
         inputVal = 'new Array()';
         correctResult = 'Array';
@@ -265,8 +272,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('[]', function(test, options) {
 
         inputVal = '[]';
         correctResult = 'Array';
@@ -282,42 +290,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
-
-        inputVal = 'new RegExp(\'foo(.+)\', \'g\')';
-        correctResult = 'RegExp';
-
-        shellDriver.execShellTest(
-            test,
-            inputVal,
-            function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
-            });
-
-        //  ---
-
-        inputVal = '/foo(.+)/g';
-        correctResult = 'RegExp';
-
-        shellDriver.execShellTest(
-            test,
-            inputVal,
-            function (testResult) {
-                    test.assert.isKindOf(
-                        testResult,
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
-            });
-
-        //  ---
+    this.it('new RegExp(\'foo(.+)\', \'g\')', function(test, options) {
 
         inputVal = 'new RegExp(\'foo(.+)\', \'g\')';
         correctResult = 'RegExp';
@@ -333,8 +308,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('/foo(.+)/g', function(test, options) {
 
         inputVal = '/foo(.+)/g';
         correctResult = 'RegExp';
@@ -350,8 +326,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('new Function(\'window.alert("hi")\')', function(test, options) {
 
         inputVal = 'new Function(\'window.alert("hi")\')';
         correctResult = 'Function';
@@ -367,8 +344,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  ---
+    this.it('function () {window.alert("hi")}', function(test, options) {
 
         inputVal = 'function () {window.alert("hi")}';
         correctResult = 'Function';
@@ -386,12 +364,10 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript Boolean literals command arguments and options', function(test, options) {
-        var inputVal,
-            correctResults;
+    this.it(':testCmd "true" foo="true"', function(test, options) {
 
         inputVal = ':testCmd "true" foo="true"';
-        correctResults =
+        correctResult =
             TP.hc(
                 'foo',
                 TP.hc('Original value tname', 'String',
@@ -409,16 +385,14 @@ function() {
                         'Resolved value', true)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript String literals command arguments and options', function(test, options) {
-
-        var inputVal,
-            correctResults;
+    this.it(':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" foo="\'\'" bar="\'hi\'" baz="\'hi {{x}}\'"',
+            function(test, options) {
 
         inputVal = ':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" foo="\'\'" bar="\'hi\'" baz="\'hi {{x}}\'"';
-        correctResults =
+        correctResult =
             TP.hc(
                 'foo',
                 TP.hc('Original value tname', 'String',
@@ -464,15 +438,14 @@ function() {
                         'Resolved value', 'hi 2')
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript Number literals command arguments and options', function(test, options) {
-        var inputVal,
-            correctResults;
+    this.it(':testCmd "2" "2{{x}}" bar="2" baz="2{{x}}"',
+            function(test, options) {
 
         inputVal = ':testCmd "2" "2{{x}}" bar="2" baz="2{{x}}"';
-        correctResults =
+        correctResult =
             TP.hc(
                 'bar',
                 TP.hc('Original value tname', 'String',
@@ -504,15 +477,14 @@ function() {
                         'Resolved value', 22)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript Array literals command arguments and options', function(test, options) {
-        var inputVal,
-            correctResults;
+    this.it(':testCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"',
+            function(test, options) {
 
         inputVal = ':testCmd "[]" "[1,2,3]" "[1,2,{{x}}]" foo="[]" bar="[1,2,3]" baz="[1,2,{{x}}]"';
-        correctResults =
+        correctResult =
             TP.hc(
                 'foo',
                 TP.hc('Original value tname', 'String',
@@ -558,15 +530,14 @@ function() {
                         'Resolved value', [1, 2, 2])
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript Object literals command arguments and options', function(test, options) {
-        var inputVal,
-            correctResults;
+    this.it(':testCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"',
+            function(test, options) {
 
         inputVal = ':testCmd "{}" "{foo:\'bar\'}" "{foo:{{x}}}" foo="{}" bar="{foo:\'bar\'}" baz="{foo:{{x}}}"';
-        correctResults =
+        correctResult =
             TP.hc(
                 'foo',
                 TP.hc('Original value tname', 'String',
@@ -612,15 +583,14 @@ function() {
                         'Resolved value', {foo: 2})
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript Function literals command arguments and options', function(test, options) {
-        var inputVal,
-            correctResults;
+    this.it(':testCmd "function() {}" "function(x) {window.alert(x);}" "function() {window.alert({{x}});}" foo="function() {}" bar="function(x) {window.alert(x);}" baz="function() {window.alert({{x}});}"',
+            function(test, options) {
 
         inputVal = ':testCmd "function() {}" "function(x) {window.alert(x);}" "function() {window.alert({{x}});}" foo="function() {}" bar="function(x) {window.alert(x);}" baz="function() {window.alert({{x}});}"';
-        correctResults =
+        correctResult =
             TP.hc(
                 'foo',
                 TP.hc('Original value tname', 'String',
@@ -666,15 +636,14 @@ function() {
                         'Resolved value', function() {window.alert(2);})
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript RegExp literals command arguments and options', function(test, options) {
-        var inputVal,
-            correctResults;
+    this.it(':testCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"',
+            function(test, options) {
 
         inputVal = ':testCmd "/fuzzy/" "/fuzz{{x}}y/" bar="/fuzzy/" baz="/fuzz{{x}}y/"';
-        correctResults =
+        correctResult =
             TP.hc(
                 'bar',
                 TP.hc('Original value tname', 'String',
@@ -706,15 +675,14 @@ function() {
                         'Resolved value', /fuzz2y/)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript literals command arguments', function(test, options) {
-        var inputVal,
-            correctResults;
+    this.it(':testCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"',
+            function(test, options) {
 
         inputVal = ':testCmd true \'foo\' 42 /foo(.+)/g "{}" "[]" "{\'foo\':\'bar\'}" "[1,2,3]"';
-        correctResults =
+        correctResult =
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
@@ -774,15 +742,14 @@ function() {
                         'Resolved value', [1, 2, 3])
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript literals command options', function(test, options) {
-        var inputVal,
-            correctResults;
+    this.it(':testCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"',
+            function(test, options) {
 
         inputVal = ':testCmd first=true second=\'foo\' third=42 fourth=/foo(.+)/g fifth="{}" sixth="[]" seventh="{\'foo\':\'bar\'}" eighth="[1,2,3]"';
-        correctResults =
+        correctResult =
             TP.hc(
                 'first',
                 TP.hc('Original value tname', 'String',
@@ -842,34 +809,34 @@ function() {
                         'Resolved value', [1, 2, 3])
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 });
 
-//	------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
 TP.core.TSH.Type.describe('Shell JavaScript variables',
 function() {
 
-    var shellDriver;
+    var inputVal,
+        correctResult,
+        shellDriver;
 
     this.before(function(suite, options) {
+        inputVal = null;
+        correctResult = null;
         shellDriver = TP.tsh.Driver.construct();
         this.get('drivers').atPut('shell', shellDriver);
     });
 
     this.it('data setup', function(test, options) {
-        var inputVal;
-
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
 
         shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('Shell JavaScript variables: standalone', function(test, options) {
-        var inputVal,
-            correctResult;
+    this.it('x',function(test, options) {
 
         //  Use the variable in an expression by itself
         inputVal = 'x';
@@ -886,6 +853,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('{{x}}',function(test, options) {
 
         //  Use the variable in a formatting expression by itself
         inputVal = '{{x}}';
@@ -904,9 +874,7 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript variables: quoted, standalone', function(test, options) {
-        var inputVal,
-            correctResult;
+    this.it('\'x\'', function(test, options) {
 
         //  Use the variable in a single quoted String expression
         inputVal = '\'x\'';
@@ -923,6 +891,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('"x"', function(test, options) {
 
         //  Use the variable in a double quoted String expression
         inputVal = '"x"';
@@ -939,6 +910,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('`x`', function(test, options) {
 
         //  Use the variable in a backtick quoted String expression
         inputVal = '`x`';
@@ -957,10 +931,7 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript variables: quoted, with other content', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('\'This is x\'', function(test, options) {
 
         //  Use the variable with other String content in a single quoted String
         //  expression
@@ -978,6 +949,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('"This is x"', function(test, options) {
 
         //  Use the variable with other String content in a double quoted String
         //  expression
@@ -995,6 +969,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('`This is x`', function(test, options) {
 
         //  Use the variable with other String content in a backtick quoted
         //  String expression
@@ -1015,10 +992,7 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript variables: templated', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('{{x .% #{##.00}}}', function(test, options) {
 
         //  Use the variable in a formatting expression, but since it's not in
         //  double quotes it won't do the interpolation - it will just return the
@@ -1037,6 +1011,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('\'{{x .% #{##.00}}}\'', function(test, options) {
 
         //  Use the variable in a formatting expression, but since it's in single
         //  quotes, not in double quotes, it won't do the interpolation - it will
@@ -1055,6 +1032,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('"{{x .% #{##.00}}}"', function(test, options) {
 
         //  Use the variable in a formatting expression, and since it's in double
         //  quotes it will do the interpolation.
@@ -1072,6 +1052,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('`{{x .% #{##.00}}}`', function(test, options) {
 
         //  Use the variable in a formatting expression, and since it's in backtick
         //  quotes it will both do the interpolation and eval the result - which
@@ -1092,13 +1075,11 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript variables: command arguments', function(test, options) {
-
-        var inputVal,
-            correctResults;
+    this.it(':testCmd foo bar baz',
+            function(test, options) {
 
         inputVal = ':testCmd foo bar baz';
-        correctResults =
+        correctResult =
             TP.hc(
                 'ARG0',
                 TP.hc('Original value tname', 'String',
@@ -1123,15 +1104,14 @@ function() {
                         'Resolved value', 42)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript variables: command options', function(test, options) {
-        var inputVal,
-            correctResults;
+    this.it(':testCmd first=foo second=bar third=baz',
+            function(test, options) {
 
         inputVal = ':testCmd first=foo second=bar third=baz';
-        correctResults =
+        correctResult =
             TP.hc(
                 'first',
                 TP.hc('Original value tname', 'String',
@@ -1156,15 +1136,12 @@ function() {
                         'Resolved value', 42)
             );
 
-        shellDriver.execOutputTest(test, inputVal, correctResults);
+        shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it('Shell JavaScript variables: standalone command arguments', function(test, options) {
-
-        var inputVal;
+    this.it(':testCmd x', function(test, options) {
 
         inputVal = ':testCmd x';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1176,9 +1153,11 @@ function() {
                         'Expanded value', 'x',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd @x', function(test, options) {
 
         inputVal = ':testCmd @x';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1190,9 +1169,11 @@ function() {
                         'Expanded value', '@x',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd {{x}}', function(test, options) {
 
         inputVal = ':testCmd {{x}}';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1204,15 +1185,11 @@ function() {
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
-
     });
 
-    this.it('Shell JavaScript variables: quoted, standalone, command arguments', function(test, options) {
-
-        var inputVal;
+    this.it(':testCmd \'x\'', function(test, options) {
 
         inputVal = ':testCmd \'x\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1224,9 +1201,11 @@ function() {
                         'Expanded value', '\'x\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'x')));
+    });
+
+    this.it(':testCmd "x"', function(test, options) {
 
         inputVal = ':testCmd "x"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1238,9 +1217,11 @@ function() {
                         'Expanded value', 'x',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd `x`', function(test, options) {
 
         inputVal = ':testCmd `x`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1252,11 +1233,11 @@ function() {
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
 
-        //  ---
+    this.it(':testCmd \'@x\'', function(test, options) {
 
         inputVal = ':testCmd \'@x\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1268,9 +1249,11 @@ function() {
                         'Expanded value', '\'@x\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '@x')));
+    });
+
+    this.it(':testCmd "@x"', function(test, options) {
 
         inputVal = ':testCmd "@x"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1282,9 +1265,11 @@ function() {
                         'Expanded value', '@x',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd `@x`', function(test, options) {
 
         inputVal = ':testCmd `@x`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1296,11 +1281,11 @@ function() {
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
 
-        //  ---
+    this.it(':testCmd \'{{x}}\'', function(test, options) {
 
         inputVal = ':testCmd \'{{x}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1312,9 +1297,11 @@ function() {
                         'Expanded value', '\'{{x}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{x}}')));
+    });
+
+    this.it(':testCmd "{{x}}"', function(test, options) {
 
         inputVal = ':testCmd "{{x}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1326,9 +1313,11 @@ function() {
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd `{{x}}`', function(test, options) {
 
         inputVal = ':testCmd `{{x}}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1342,12 +1331,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('Shell JavaScript variables: quoted, with other content, command arguments', function(test, options) {
-
-        var inputVal;
+    this.it(':testCmd \'This is x\'', function(test, options) {
 
         inputVal = ':testCmd \'This is x\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1359,9 +1345,11 @@ function() {
                         'Expanded value', '\'This is x\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is x')));
+    });
+
+    this.it(':testCmd "This is x"', function(test, options) {
 
         inputVal = ':testCmd "This is x"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1373,9 +1361,11 @@ function() {
                         'Expanded value', 'This is x',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
+
+    this.it(':testCmd `This is x`', function(test, options) {
 
         inputVal = ':testCmd `This is x`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1387,11 +1377,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  ---
+    this.it(':testCmd \'This is @x\'', function(test, options) {
 
         inputVal = ':testCmd \'This is @x\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1403,9 +1393,11 @@ function() {
                         'Expanded value', '\'This is @x\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is @x')));
+    });
+
+    this.it(':testCmd "This is @x"', function(test, options) {
 
         inputVal = ':testCmd "This is @x"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1417,9 +1409,11 @@ function() {
                         'Expanded value', 'This is @x',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
+
+    this.it(':testCmd `This is @x`', function(test, options) {
 
         inputVal = ':testCmd `This is @x`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1431,11 +1425,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  ---
+    this.it(':testCmd \'This is {{x}}\'', function(test, options) {
 
         inputVal = ':testCmd \'This is {{x}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1447,9 +1441,11 @@ function() {
                         'Expanded value', '\'This is {{x}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is {{x}}')));
+    });
+
+    this.it(':testCmd "This is {{x}}"', function(test, options) {
 
         inputVal = ':testCmd "This is {{x}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1461,9 +1457,11 @@ function() {
                         'Expanded value', 'This is 2',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
+
+    this.it(':testCmd `This is {{x}}`', function(test, options) {
 
         inputVal = ':testCmd `This is {{x}}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1477,12 +1475,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('Shell JavaScript variables: standalone command options', function(test, options) {
-
-        var inputVal;
+    this.it(':testCmd stuff=x', function(test, options) {
 
         inputVal = ':testCmd stuff=x';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1494,9 +1489,11 @@ function() {
                         'Expanded value', 'x',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd stuff=@x', function(test, options) {
 
         inputVal = ':testCmd stuff=@x';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1508,9 +1505,11 @@ function() {
                         'Expanded value', '@x',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd stuff={{x}}', function(test, options) {
 
         inputVal = ':testCmd stuff={{x}}';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1524,12 +1523,9 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('Shell JavaScript variables: quoted, standalone, command options', function(test, options) {
-
-        var inputVal;
+    this.it(':testCmd stuff=\'x\'', function(test, options) {
 
         inputVal = ':testCmd stuff=\'x\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1541,9 +1537,11 @@ function() {
                         'Expanded value', '\'x\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'x')));
+    });
+
+    this.it(':testCmd stuff="x"', function(test, options) {
 
         inputVal = ':testCmd stuff="x"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1555,9 +1553,11 @@ function() {
                         'Expanded value', 'x',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd stuff=`x`', function(test, options) {
 
         inputVal = ':testCmd stuff=`x`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1569,11 +1569,11 @@ function() {
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
 
-        //  ---
+    this.it(':testCmd stuff=\'@x\'', function(test, options) {
 
         inputVal = ':testCmd stuff=\'@x\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1585,9 +1585,11 @@ function() {
                         'Expanded value', '\'@x\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '@x')));
+    });
+
+    this.it(':testCmd stuff="@x"', function(test, options) {
 
         inputVal = ':testCmd stuff="@x"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1599,9 +1601,11 @@ function() {
                         'Expanded value', '@x',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd stuff=\'@x\'', function(test, options) {
 
         inputVal = ':testCmd stuff=`@x`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1613,11 +1617,11 @@ function() {
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
 
-        //  ---
+    this.it(':testCmd stuff=\'{{x}}\'', function(test, options) {
 
         inputVal = ':testCmd stuff=\'{{x}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1629,9 +1633,11 @@ function() {
                         'Expanded value', '\'{{x}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{x}}')));
+    });
+
+    this.it(':testCmd stuff="{{x}}"', function(test, options) {
 
         inputVal = ':testCmd stuff="{{x}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1643,9 +1649,11 @@ function() {
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd stuff=`{{x}}`', function(test, options) {
 
         inputVal = ':testCmd stuff=`{{x}}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1657,15 +1665,11 @@ function() {
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
-
     });
 
-    this.it('Shell JavaScript variables: quoted, with other content, command options', function(test, options) {
-
-        var inputVal;
+    this.it(':testCmd stuff=\'This is x\'', function(test, options) {
 
         inputVal = ':testCmd stuff=\'This is x\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1677,9 +1681,11 @@ function() {
                         'Expanded value', '\'This is x\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is x')));
+    });
+
+    this.it(':testCmd stuff="This is x"', function(test, options) {
 
         inputVal = ':testCmd stuff="This is x"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1691,9 +1697,11 @@ function() {
                         'Expanded value', 'This is x',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
+
+    this.it(':testCmd stuff=`This is x`', function(test, options) {
 
         inputVal = ':testCmd stuff=`This is x`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1705,11 +1713,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  ---
+    this.it(':testCmd stuff=\'This is @x\'', function(test, options) {
 
         inputVal = ':testCmd stuff=\'This is @x\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1721,9 +1729,11 @@ function() {
                         'Expanded value', '\'This is @x\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is @x')));
+    });
+
+    this.it(':testCmd stuff="This is @x"', function(test, options) {
 
         inputVal = ':testCmd stuff="This is @x"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1735,6 +1745,9 @@ function() {
                         'Expanded value', 'This is @x',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
+
+    this.it(':testCmd stuff=`This is @x`', function(test, options) {
 
         inputVal = ':testCmd stuff=`This is @x`';
 
@@ -1749,11 +1762,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  ---
+    this.it(':testCmd stuff=\'This is {{x}}\'', function(test, options) {
 
         inputVal = ':testCmd stuff=\'This is {{x}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1765,9 +1778,11 @@ function() {
                         'Expanded value', '\'This is {{x}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is {{x}}')));
+    });
+
+    this.it(':testCmd stuff="This is {{x}}"', function(test, options) {
 
         inputVal = ':testCmd stuff="This is {{x}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1779,9 +1794,11 @@ function() {
                         'Expanded value', 'This is 2',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
+
+    this.it(':testCmd stuff=`This is {{x}}`', function(test, options) {
 
         inputVal = ':testCmd stuff=`This is {{x}}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1795,12 +1812,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('Shell JavaScript variables: templated command arguments', function(test, options) {
-
-        var inputVal;
+    this.it(':testCmd {{x .% #{##.00}}}', function(test, options) {
 
         inputVal = ':testCmd {{x .% #{##.00}}}';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1812,9 +1826,12 @@ function() {
                         'Expanded value', '2.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd \'{{x .% #{##.00}}}\'',
+            function(test, options) {
 
         inputVal = ':testCmd \'{{x .% #{##.00}}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1826,9 +1843,12 @@ function() {
                         'Expanded value', '\'{{x .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{x .% #{##.00}}}')));
+    });
+
+    this.it(':testCmd "{{x .% #{##.00}}}"',
+            function(test, options) {
 
         inputVal = ':testCmd "{{x .% #{##.00}}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1840,9 +1860,11 @@ function() {
                         'Expanded value', '2.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
 
+    this.it(':testCmd `{{x .% #{##.00}}}`',
+            function(test, options) {
         inputVal = ':testCmd `{{x .% #{##.00}}}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1856,12 +1878,10 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it('Shell JavaScript variables: templated command options', function(test, options) {
-
-        var inputVal;
+    this.it(':testCmd stuff={{x .% #{##.00}}}',
+            function(test, options) {
 
         inputVal = ':testCmd stuff={{x .% #{##.00}}}';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1873,9 +1893,12 @@ function() {
                         'Expanded value', '2.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
+    });
+
+    this.it(':testCmd stuff=\'{{x .% #{##.00}}}\'',
+            function(test, options) {
 
         inputVal = ':testCmd stuff=\'{{x .% #{##.00}}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1887,9 +1910,12 @@ function() {
                         'Expanded value', '\'{{x .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{x .% #{##.00}}}')));
+    });
+
+    this.it(':testCmd stuff="{{x .% #{##.00}}}"',
+            function(test, options) {
 
         inputVal = ':testCmd stuff="{{x .% #{##.00}}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1902,8 +1928,12 @@ function() {
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
 
-        inputVal = ':testCmd stuff=`{{x .% #{##.00}}}`';
+    });
 
+    this.it(':testCmd stuff=`{{x .% #{##.00}}}`',
+            function(test, options) {
+
+        inputVal = ':testCmd stuff=`{{x .% #{##.00}}}`';
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -1918,20 +1948,23 @@ function() {
     });
 });
 
-//	------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
 TP.core.TSH.Type.describe('Shell variables',
 function() {
 
-    var shellDriver;
+    var inputVal,
+        correctResult,
+        shellDriver;
 
     this.before(function(suite, options) {
+        inputVal = null;
+        correctResult = null;
         shellDriver = TP.tsh.Driver.construct();
         this.get('drivers').atPut('shell', shellDriver);
     });
 
     this.it('data setup', function(test, options) {
-        var inputVal;
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
@@ -1939,10 +1972,7 @@ function() {
         shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('Shell shell variables: standalone', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('$Y', function(test, options) {
 
         //  Use the variable in an expression by itself
 
@@ -1961,6 +1991,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('${Y}', function(test, options) {
 
         //  Extended form
         inputVal = '${Y}';
@@ -1977,6 +2010,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('{{$Y}}', function(test, options) {
 
         //  Use the variable in a formatting expression by itself
 
@@ -1995,6 +2031,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('{{${Y}}}', function(test, options) {
 
         //  Extended form
         inputVal = '{{${Y}}}';
@@ -2011,13 +2050,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
-
     });
 
-    this.it('Shell shell variables: quoted, standalone', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('\'$Y\'', function(test, options) {
 
         //  Use the variable in a single quoted String expression
 
@@ -2036,6 +2071,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('\'${Y}\'', function(test, options) {
 
         //  Extended form
         inputVal = '\'${Y}\'';
@@ -2052,13 +2090,15 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
+    this.it('"$Y"', function(test, options) {
 
         //  Use the variable in a double quoted String expression
 
         //  Simple form
         inputVal = '"$Y"';
-        correctResult = '$Y';
+        correctResult = '100';
 
         shellDriver.execShellTest(
             test,
@@ -2071,10 +2111,13 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('"${Y}"', function(test, options) {
 
         //  Extended form
         inputVal = '"${Y}"';
-        correctResult = '$Y';
+        correctResult = '100';
 
         shellDriver.execShellTest(
             test,
@@ -2087,6 +2130,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('`$Y`', function(test, options) {
 
         //  Use the variable in a backtick quoted String expression
 
@@ -2105,6 +2151,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('`${Y}`', function(test, options) {
 
         //  Extended form
         inputVal = '`${Y}`';
@@ -2121,13 +2170,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
-
     });
 
-    this.it('Shell shell variables: quoted, with other content', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('\'This is $Y\'', function(test, options) {
 
         //  Use the variable with other String content in a single quoted String
         //  expression
@@ -2147,6 +2192,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('\'This is ${Y}\'', function(test, options) {
 
         //  Extended form
         inputVal = '\'This is ${Y}\'';
@@ -2163,13 +2211,15 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('"This is $Y"', function(test, options) {
 
         //  Use the variable with other String content in a double quoted String
         //  expression
 
-        //  Simple form
         inputVal = '"This is $Y"';
-        correctResult = 'This is $Y';
+        correctResult = 'This is 100';
 
         shellDriver.execShellTest(
             test,
@@ -2182,10 +2232,12 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  Extended form
+    this.it('"This is ${Y}"', function(test, options) {
+
         inputVal = '"This is ${Y}"';
-        correctResult = 'This is ${Y}';
+        correctResult = 'This is 100';
 
         shellDriver.execShellTest(
             test,
@@ -2198,11 +2250,12 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('`This is $Y`', function(test, options) {
 
         //  Use the variable with other String content in a backtick quoted
         //  String expression
-
-        //  Simple form
 
         inputVal = '`This is $Y`';
         correctResult = undefined;
@@ -2218,8 +2271,10 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  Extended form
+    this.it('`This is ${Y}`', function(test, options) {
+
         inputVal = '`This is ${Y}`';
         correctResult = undefined;
 
@@ -2236,15 +2291,12 @@ function() {
             });
     });
 
-    this.it('Shell shell variables: templated', function(test, options) {
-        var inputVal,
-            correctResult;
+    this.it('{{$Y .% #{##.00}}}', function(test, options) {
 
         //  Use the variable in a formatting expression, but since it's not in
         //  double quotes it won't do the interpolation - it will just return the
         //  value without doing the formatting
 
-        //  Simple form
         inputVal = '{{$Y .% #{##.00}}}';
         correctResult = 100;
 
@@ -2259,8 +2311,10 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  Extended form
+    this.it('{{${Y} .% #{##.00}}}', function(test, options) {
+
         inputVal = '{{${Y} .% #{##.00}}}';
         correctResult = 100;
 
@@ -2275,12 +2329,14 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('\'{{$Y .% #{##.00}}}\'', function(test, options) {
 
         //  Use the variable in a formatting expression, but since it's in single
         //  quotes, not in double quotes, it won't do the interpolation - it will
         //  just return the literal value of the whole expression
 
-        //  Simple form
         inputVal = '\'{{$Y .% #{##.00}}}\'';
         correctResult = '{{$Y .% #{##.00}}}';
 
@@ -2295,8 +2351,10 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  Extended form
+    this.it('\'{{${Y} .% #{##.00}}}\'', function(test, options) {
+
         inputVal = '\'{{${Y} .% #{##.00}}}\'';
         correctResult = '{{${Y} .% #{##.00}}}';
 
@@ -2311,11 +2369,13 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  Use the variable in a formatting expression, and since it's in double
-        //  quotes it will do the interpolation.
+    this.it('"{{$Y .% #{##.00}}}"', function(test, options) {
 
-        //  Simple form
+        //  Use the variable in a formatting expression, and since it's in
+        //  double quotes it will do the interpolation.
+
         inputVal = '"{{$Y .% #{##.00}}}"';
         correctResult = '100.00';
 
@@ -2330,8 +2390,10 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  Extended form
+    this.it('"{{${Y} .% #{##.00}}}"', function(test, options) {
+
         inputVal = '"{{${Y} .% #{##.00}}}"';
         correctResult = '100.00';
 
@@ -2346,12 +2408,14 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('`{{$Y .% #{##.00}}}`', function(test, options) {
 
         //  Use the variable in a formatting expression, and since it's in backtick
         //  quotes it will both do the interpolation and eval the result - which
         //  gives it back the number 2.
 
-        //  Simple form
         inputVal = '`{{$Y .% #{##.00}}}`';
         correctResult = 100;
 
@@ -2366,8 +2430,10 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  Extended form
+    this.it('`{{${Y} .% #{##.00}}}`', function(test, options) {
+
         inputVal = '`{{${Y} .% #{##.00}}}`';
         correctResult = 100;
 
@@ -2384,12 +2450,9 @@ function() {
             });
     });
 
-    this.it('Shell shell variables: command arguments', function(test, options) {
-        var inputVal;
+    this.it(':testCmd $Y', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd $Y';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2397,14 +2460,15 @@ function() {
                 'ARG0',
                 TP.hc('Original value tname', 'String',
                         'Original value', '$Y',
-                        'Expanded value tname', 'String',
-                        'Expanded value', '$Y',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 100,
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd ${Y}', function(test, options) {
+
         inputVal = ':testCmd ${Y}';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2412,14 +2476,15 @@ function() {
                 'ARG0',
                 TP.hc('Original value tname', 'String',
                         'Original value', '${Y}',
-                        'Expanded value tname', 'String',
-                        'Expanded value', '$Y',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 100,
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd @$Y', function(test, options) {
+
         inputVal = ':testCmd @$Y';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2431,10 +2496,11 @@ function() {
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd @${Y}', function(test, options) {
+
         inputVal = ':testCmd @${Y}';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2446,10 +2512,11 @@ function() {
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd {{$Y}}', function(test, options) {
+
         inputVal = ':testCmd {{$Y}}';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2461,10 +2528,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd {{${Y}}}', function(test, options) {
+
         inputVal = ':testCmd {{${Y}}}';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2478,13 +2546,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('Shell shell variables: quoted, standalone, command arguments', function(test, options) {
+    this.it(':testCmd \'$Y\'', function(test, options) {
 
-        var inputVal;
-
-        //  Simple form
         inputVal = ':testCmd \'$Y\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2496,10 +2560,11 @@ function() {
                         'Expanded value', '\'$Y\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '$Y')));
+    });
 
-        //  Extended form
+    this.it(':testCmd \'${Y}\'', function(test, options) {
+
         inputVal = ':testCmd \'${Y}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2511,10 +2576,11 @@ function() {
                         'Expanded value', '\'${Y}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '${Y}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd "$Y"', function(test, options) {
+
         inputVal = ':testCmd "$Y"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2523,13 +2589,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '"$Y"',
                         'Expanded value tname', 'String',
-                        'Expanded value', '$Y',
+                        'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd "${Y}"', function(test, options) {
+
         inputVal = ':testCmd "${Y}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2538,13 +2605,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '"${Y}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', '$Y',
+                        'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd `$Y`', function(test, options) {
+
         inputVal = ':testCmd `$Y`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2556,10 +2624,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd `${Y}`', function(test, options) {
+
         inputVal = ':testCmd `${Y}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2571,12 +2640,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  ---
+    this.it(':testCmd \'@$Y\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd \'@$Y\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2588,10 +2656,11 @@ function() {
                         'Expanded value', '\'@$Y\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '@$Y')));
+    });
 
-        //  Extended form
+    this.it(':testCmd \'@${Y}\'', function(test, options) {
+
         inputVal = ':testCmd \'@${Y}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2603,10 +2672,11 @@ function() {
                         'Expanded value', '\'@${Y}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '@${Y}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd "@$Y"', function(test, options) {
+
         inputVal = ':testCmd "@$Y"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2618,10 +2688,11 @@ function() {
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd "@${Y}"', function(test, options) {
+
         inputVal = ':testCmd "@${Y}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2633,10 +2704,11 @@ function() {
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd `@$Y`', function(test, options) {
+
         inputVal = ':testCmd `@$Y`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2648,10 +2720,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd `@${Y}`', function(test, options) {
+
         inputVal = ':testCmd `@${Y}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2663,12 +2736,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  ---
+    this.it(':testCmd \'{{$Y}}\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd \'{{$Y}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2680,10 +2752,11 @@ function() {
                         'Expanded value', '\'{{$Y}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{$Y}}')));
+    });
 
-        //  Extended form
+    this.it(':testCmd \'{{${Y}}}\'', function(test, options) {
+
         inputVal = ':testCmd \'{{${Y}}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2695,10 +2768,11 @@ function() {
                         'Expanded value', '\'{{${Y}}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{${Y}}}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd "{{$Y}}"', function(test, options) {
+
         inputVal = ':testCmd "{{$Y}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2710,10 +2784,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd "{{${Y}}}"', function(test, options) {
+
         inputVal = ':testCmd "{{${Y}}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2725,10 +2800,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd `{{$Y}}`', function(test, options) {
+
         inputVal = ':testCmd `{{$Y}}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2740,10 +2816,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd `{{${Y}}}`', function(test, options) {
+
         inputVal = ':testCmd `{{${Y}}}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2757,13 +2834,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('Shell shell variables: quoted, with other content, command arguments', function(test, options) {
+    this.it(':testCmd \'This is $Y\'', function(test, options) {
 
-        var inputVal;
-
-        //  Simple form
         inputVal = ':testCmd \'This is $Y\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2775,10 +2848,11 @@ function() {
                         'Expanded value', '\'This is $Y\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is $Y')));
+    });
 
-        //  Extended form
+    this.it(':testCmd \'This is ${Y}\'', function(test, options) {
+
         inputVal = ':testCmd \'This is ${Y}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2790,10 +2864,11 @@ function() {
                         'Expanded value', '\'This is ${Y}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is ${Y}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd "This is $Y"', function(test, options) {
+
         inputVal = ':testCmd "This is $Y"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2802,13 +2877,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '"This is $Y"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'This is $Y',
+                        'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd "This is ${Y}"', function(test, options) {
+
         inputVal = ':testCmd "This is ${Y}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2817,13 +2893,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '"This is ${Y}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'This is $Y',
+                        'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Simple form
+    this.it(':testCmd `This is $Y`', function(test, options) {
+
         inputVal = ':testCmd `This is $Y`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2835,10 +2912,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd `This is ${Y}`', function(test, options) {
+
         inputVal = ':testCmd `This is ${Y}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2850,12 +2928,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  ---
+    this.it(':testCmd \'This is @$Y\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd \'This is @$Y\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2867,10 +2944,11 @@ function() {
                         'Expanded value', '\'This is @$Y\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is @$Y')));
+    });
 
-        //  Extended form
+    this.it(':testCmd \'This is @$Y\'', function(test, options) {
+
         inputVal = ':testCmd \'This is @${Y}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2882,10 +2960,11 @@ function() {
                         'Expanded value', '\'This is @${Y}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is @${Y}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd "This is @$Y"', function(test, options) {
+
         inputVal = ':testCmd "This is @$Y"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2897,10 +2976,11 @@ function() {
                         'Expanded value', 'This is @$Y',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd "This is @${Y}"', function(test, options) {
+
         inputVal = ':testCmd "This is @${Y}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2912,10 +2992,11 @@ function() {
                         'Expanded value', 'This is @$Y',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Simple form
+    this.it(':testCmd `This is @$Y`', function(test, options) {
+
         inputVal = ':testCmd `This is @$Y`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2927,10 +3008,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd `This is @${Y}`', function(test, options) {
+
         inputVal = ':testCmd `This is @${Y}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2942,12 +3024,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  ---
+    this.it(':testCmd \'This is {{$Y}}\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd \'This is {{$Y}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2959,10 +3040,11 @@ function() {
                         'Expanded value', '\'This is {{$Y}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is {{$Y}}')));
+    });
 
-        //  Extended form
+    this.it(':testCmd \'This is {{${Y}}}\'', function(test, options) {
+
         inputVal = ':testCmd \'This is {{${Y}}}\'';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2974,10 +3056,11 @@ function() {
                         'Expanded value', '\'This is {{${Y}}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is {{${Y}}}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd "This is {{$Y}}"', function(test, options) {
+
         inputVal = ':testCmd "This is {{$Y}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -2989,10 +3072,11 @@ function() {
                         'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd "This is {{${Y}}}"', function(test, options) {
+
         inputVal = ':testCmd "This is {{${Y}}}"';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3004,10 +3088,11 @@ function() {
                         'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Simple form
+    this.it(':testCmd `This is {{$Y}}`', function(test, options) {
+
         inputVal = ':testCmd `This is {{$Y}}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3019,10 +3104,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd `This is {{${Y}}}`', function(test, options) {
+
         inputVal = ':testCmd `This is {{${Y}}}`';
-
         shellDriver.execOutputTest(
             test,
             inputVal,
@@ -3036,13 +3122,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('Shell shell variables: templated command arguments', function(test, options) {
+    this.it(':testCmd {{$Y .% #{##.00}}}', function(test, options) {
 
-        var inputVal;
-
-        //  Simple form
         inputVal = ':testCmd {{$Y .% #{##.00}}}';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3053,10 +3135,11 @@ function() {
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd {{${Y} .% #{##.00}}}', function(test, options) {
+
         inputVal = ':testCmd {{${Y} .% #{##.00}}}';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3067,10 +3150,11 @@ function() {
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd \'{{$Y .% #{##.00}}}\'', function(test, options) {
+
         inputVal = ':testCmd \'{{$Y .% #{##.00}}}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3081,10 +3165,11 @@ function() {
                         'Expanded value', '\'{{$Y .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{$Y .% #{##.00}}}')));
+    });
 
-        //  Extended form
+    this.it(':testCmd \'{{${Y} .% #{##.00}}}\'', function(test, options) {
+
         inputVal = ':testCmd \'{{${Y} .% #{##.00}}}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3095,10 +3180,11 @@ function() {
                         'Expanded value', '\'{{${Y} .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{${Y} .% #{##.00}}}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd "{{$Y .% #{##.00}}}"', function(test, options) {
+
         inputVal = ':testCmd "{{$Y .% #{##.00}}}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3109,10 +3195,11 @@ function() {
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd "{{${Y} .% #{##.00}}}"', function(test, options) {
+
         inputVal = ':testCmd "{{${Y} .% #{##.00}}}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3123,10 +3210,11 @@ function() {
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd `{{$Y .% #{##.00}}}`', function(test, options) {
+
         inputVal = ':testCmd `{{$Y .% #{##.00}}}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3137,10 +3225,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd `{{${Y} .% #{##.00}}}`', function(test, options) {
+
         inputVal = ':testCmd `{{${Y} .% #{##.00}}}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3153,12 +3242,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('Shell shell variables: command options', function(test, options) {
-        var inputVal;
+    this.it(':testCmd stuff=$Y', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd stuff=$Y';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3166,13 +3252,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '$Y',
                         'Expanded value tname', 'String',
-                        'Expanded value', '$Y',
+                        'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=${Y}', function(test, options) {
+
         inputVal = ':testCmd stuff=${Y}';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3180,13 +3267,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '${Y}',
                         'Expanded value tname', 'String',
-                        'Expanded value', '$Y',
+                        'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff=@$Y', function(test, options) {
+
         inputVal = ':testCmd stuff=@$Y';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3197,10 +3285,11 @@ function() {
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=@${Y}', function(test, options) {
+
         inputVal = ':testCmd stuff=@${Y}';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3211,10 +3300,11 @@ function() {
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff={{$Y}}', function(test, options) {
+
         inputVal = ':testCmd stuff={{$Y}}';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3225,10 +3315,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff={{${Y}}}', function(test, options) {
+
         inputVal = ':testCmd stuff={{${Y}}}';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3241,12 +3332,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('Shell shell variables: quoted, standalone, command options', function(test, options) {
-        var inputVal;
+    this.it(':testCmd stuff=\'$Y\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd stuff=\'$Y\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3257,10 +3345,11 @@ function() {
                         'Expanded value', '\'$Y\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '$Y')));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=\'${Y}\'', function(test, options) {
+
         inputVal = ':testCmd stuff=\'${Y}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3271,10 +3360,11 @@ function() {
                         'Expanded value', '\'${Y}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '${Y}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff="$Y"', function(test, options) {
+
         inputVal = ':testCmd stuff="$Y"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3282,13 +3372,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '"$Y"',
                         'Expanded value tname', 'String',
-                        'Expanded value', '$Y',
+                        'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff="${Y}"', function(test, options) {
+
         inputVal = ':testCmd stuff="${Y}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3296,13 +3387,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '"${Y}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', '$Y',
+                        'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff=`$Y`', function(test, options) {
+
         inputVal = ':testCmd stuff=`$Y`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3313,10 +3405,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=`${Y}`', function(test, options) {
+
         inputVal = ':testCmd stuff=`${Y}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3327,12 +3420,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  ---
+    this.it(':testCmd stuff=\'@$Y\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd stuff=\'@$Y\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3343,10 +3435,11 @@ function() {
                         'Expanded value', '\'@$Y\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '@$Y')));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=\'@${Y}\'', function(test, options) {
+
         inputVal = ':testCmd stuff=\'@${Y}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3357,10 +3450,11 @@ function() {
                         'Expanded value', '\'@${Y}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '@${Y}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff="@$Y"', function(test, options) {
+
         inputVal = ':testCmd stuff="@$Y"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3371,10 +3465,11 @@ function() {
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff="@${Y}"', function(test, options) {
+
         inputVal = ':testCmd stuff="@${Y}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3385,10 +3480,11 @@ function() {
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff=`@$Y`', function(test, options) {
+
         inputVal = ':testCmd stuff=`@$Y`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3399,10 +3495,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=`@${Y}`', function(test, options) {
+
         inputVal = ':testCmd stuff=`@${Y}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3413,12 +3510,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  ---
+    this.it(':testCmd stuff=\'{{$Y}}\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd stuff=\'{{$Y}}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3429,10 +3525,11 @@ function() {
                         'Expanded value', '\'{{$Y}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{$Y}}')));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=\'{{${Y}}}\'', function(test, options) {
+
         inputVal = ':testCmd stuff=\'{{${Y}}}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3443,10 +3540,11 @@ function() {
                         'Expanded value', '\'{{${Y}}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{${Y}}}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff="{{$Y}}"', function(test, options) {
+
         inputVal = ':testCmd stuff="{{$Y}}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3457,10 +3555,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff="{{${Y}}}"', function(test, options) {
+
         inputVal = ':testCmd stuff="{{${Y}}}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3471,10 +3570,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff=`{{$Y}}`', function(test, options) {
+
         inputVal = ':testCmd stuff=`{{$Y}}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3485,10 +3585,11 @@ function() {
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=`{{${Y}}}`', function(test, options) {
+
         inputVal = ':testCmd stuff=`{{${Y}}}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3501,12 +3602,9 @@ function() {
                         'Resolved value', 100)));
     });
 
-    this.it('Shell shell variables: quoted, with other content, command options', function(test, options) {
-        var inputVal;
+    this.it(':testCmd stuff=\'This is $Y\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd stuff=\'This is $Y\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3517,10 +3615,11 @@ function() {
                         'Expanded value', '\'This is $Y\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is $Y')));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=\'This is ${Y}\'', function(test, options) {
+
         inputVal = ':testCmd stuff=\'This is ${Y}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3531,10 +3630,11 @@ function() {
                         'Expanded value', '\'This is ${Y}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is ${Y}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff="This is $Y"', function(test, options) {
+
         inputVal = ':testCmd stuff="This is $Y"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3542,13 +3642,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '"This is $Y"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'This is $Y',
+                        'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff="This is ${Y}"', function(test, options) {
+
         inputVal = ':testCmd stuff="This is ${Y}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3556,13 +3657,14 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '"This is ${Y}"',
                         'Expanded value tname', 'String',
-                        'Expanded value', 'This is $Y',
+                        'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff=`This is $Y`', function(test, options) {
+
         inputVal = ':testCmd stuff=`This is $Y`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3573,10 +3675,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=`This is ${Y}`', function(test, options) {
+
         inputVal = ':testCmd stuff=`This is ${Y}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3587,12 +3690,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  ---
+    this.it(':testCmd stuff=\'This is @$Y\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd stuff=\'This is @$Y\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3603,10 +3705,11 @@ function() {
                         'Expanded value', '\'This is @$Y\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is @$Y')));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=\'This is @${Y}\'', function(test, options) {
+
         inputVal = ':testCmd stuff=\'This is @${Y}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3617,10 +3720,11 @@ function() {
                         'Expanded value', '\'This is @${Y}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is @${Y}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff="This is @$Y"', function(test, options) {
+
         inputVal = ':testCmd stuff="This is @$Y"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3631,10 +3735,11 @@ function() {
                         'Expanded value', 'This is @$Y',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff="This is @${Y}"', function(test, options) {
+
         inputVal = ':testCmd stuff="This is @${Y}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3645,10 +3750,11 @@ function() {
                         'Expanded value', 'This is @$Y',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff=`This is @$Y`', function(test, options) {
+
         inputVal = ':testCmd stuff=`This is @$Y`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3659,10 +3765,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=`This is @${Y}`', function(test, options) {
+
         inputVal = ':testCmd stuff=`This is @${Y}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3673,12 +3780,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  ---
+    this.it(':testCmd stuff=\'This is {{$Y}}\'', function(test, options) {
 
-        //  Simple form
         inputVal = ':testCmd stuff=\'This is {{$Y}}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3689,10 +3795,11 @@ function() {
                         'Expanded value', '\'This is {{$Y}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is {{$Y}}')));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=\'This is {{${Y}}}\'', function(test, options) {
+
         inputVal = ':testCmd stuff=\'This is {{${Y}}}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3703,10 +3810,11 @@ function() {
                         'Expanded value', '\'This is {{${Y}}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', 'This is {{${Y}}}')));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff="This is {{$Y}}"', function(test, options) {
+
         inputVal = ':testCmd stuff="This is {{$Y}}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3717,10 +3825,11 @@ function() {
                         'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff="This is {{${Y}}}"', function(test, options) {
+
         inputVal = ':testCmd stuff="This is {{${Y}}}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3731,10 +3840,11 @@ function() {
                         'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Simple form
+    this.it(':testCmd stuff=`This is {{$Y}}`', function(test, options) {
+
         inputVal = ':testCmd stuff=`This is {{$Y}}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3745,10 +3855,11 @@ function() {
                         'Expanded value', TP.UNDEF,
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)));
+    });
 
-        //  Extended form
+    this.it(':testCmd stuff=`This is {{${Y}}}`', function(test, options) {
+
         inputVal = ':testCmd stuff=`This is {{${Y}}}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3761,11 +3872,9 @@ function() {
                         'Resolved value', TP.UNDEF)));
     });
 
-    this.it('Shell shell variables: templated command options', function(test, options) {
-        var inputVal;
+    this.it(':testCmd stuff={{$Y .% #{##.00}}}', function(test, options) {
 
         inputVal = ':testCmd stuff={{$Y .% #{##.00}}}';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3776,9 +3885,11 @@ function() {
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
+
+    this.it(':testCmd stuff=\'{{$Y .% #{##.00}}}\'', function(test, options) {
 
         inputVal = ':testCmd stuff=\'{{$Y .% #{##.00}}}\'';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3789,9 +3900,11 @@ function() {
                         'Expanded value', '\'{{$Y .% #{##.00}}}\'',
                         'Resolved value tname', 'String',
                         'Resolved value', '{{$Y .% #{##.00}}}')));
+    });
+
+    this.it(':testCmd stuff="{{$Y .% #{##.00}}}"', function(test, options) {
 
         inputVal = ':testCmd stuff="{{$Y .% #{##.00}}}"';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3802,9 +3915,11 @@ function() {
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
+    });
+
+    this.it(':testCmd stuff=`{{$Y .% #{##.00}}}`', function(test, options) {
 
         inputVal = ':testCmd stuff=`{{$Y .% #{##.00}}}`';
-
         shellDriver.execOutputTest(
             test, inputVal,
             TP.hc(
@@ -3823,7 +3938,9 @@ function() {
 TP.core.TSH.Type.describe('Shell TIBET URN, JS URI, TIBET URL',
 function() {
 
-    var shellDriver;
+    var inputVal,
+        correctResult,
+        shellDriver;
 
     this.before(function(suite, options) {
         var win,
@@ -3868,18 +3985,13 @@ function() {
     });
 
     this.it('data setup', function(test, options) {
-        var inputVal;
-
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
 
         shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('Shell TIBET URN: Retrieve global object', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('urn:tibet:TP', function(test, options) {
 
         inputVal = 'urn:tibet:TP';
         correctResult = TP;
@@ -3897,10 +4009,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URN embedded in TIBET URL: Retrieve global object', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet:///urn:tibet:TP', function(test, options) {
 
         inputVal = 'tibet:///urn:tibet:TP';
         correctResult = TP;
@@ -3918,10 +4027,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URN: Retrieve type object', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('urn:tibet:TP.sig.Signal', function(test, options) {
 
         inputVal = 'urn:tibet:TP.sig.Signal';
         correctResult = TP.sig.Signal;
@@ -3939,10 +4045,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URN embedded in TIBET URL: Retrieve type object', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet:///urn:tibet:TP.sig.Signal', function(test, options) {
 
         inputVal = 'tibet:///urn:tibet:TP.sig.Signal';
         correctResult = TP.sig.Signal;
@@ -3960,7 +4063,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URN: Retrieve registered object', function(test, options) {
+    this.it('urn:tibet:FOO', function(test, options) {
 
         var foo,
 
@@ -3986,10 +4089,9 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URN embedded in TIBET URL: Retrieve registered object', function(test, options) {
+    this.it('tibet:///urn:tibet:FOO', function(test, options) {
 
         var foo,
-
             inputVal,
             correctResult;
 
@@ -4012,16 +4114,13 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript URL: Retrieve global object', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('javascript:TP', function(test, options) {
 
         /* eslint-disable no-script-url */
         inputVal = 'javascript:TP';
         /* eslint-enable no-script-url */
-        correctResult = TP;
 
+        correctResult = TP;
         shellDriver.execShellTest(
             test,
             inputVal,
@@ -4035,14 +4134,10 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript URL embedded in TIBET URL: Retrieve global object', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet:///javascript:TP', function(test, options) {
 
         inputVal = 'tibet:///javascript:TP';
         correctResult = TP;
-
         shellDriver.execShellTest(
             test,
             inputVal,
@@ -4056,10 +4151,7 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript URL: Retrieve object in nested iframe', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('javascript:top.UIROOT.$$globalID', function(test, options) {
 
         /* eslint-disable no-script-url */
         inputVal = 'javascript:top.UIROOT.$$globalID';
@@ -4079,10 +4171,8 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript URL embedded in TIBET URL: Retrieve object in nested frame', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet:///javascript:top.UIROOT.$$globalID',
+            function(test, options) {
 
         inputVal = 'tibet:///javascript:top.UIROOT.$$globalID';
         correctResult = TP.$$topWindowName + '.UIROOT';
@@ -4100,10 +4190,8 @@ function() {
             });
     });
 
-    this.it('Shell JavaScript URL embedded in TIBET URL: Retrieve object in nested iframe', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://top.UIROOT/javascript:$$globalID',
+            function(test, options) {
 
         inputVal = 'tibet://top.UIROOT/javascript:$$globalID';
         correctResult = TP.$$topWindowName + '.UIROOT';
@@ -4121,10 +4209,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.Window of the current UI canvas', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://uicanvas/', function(test, options) {
 
         inputVal = 'tibet://uicanvas/';
         correctResult = TP.sys.getUICanvas();
@@ -4140,9 +4225,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://uicanvas', function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://uicanvas';
         correctResult = TP.sys.getUICanvas();
 
@@ -4159,10 +4246,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.HTMLDocumentNode of the current UI canvas', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://uicanvas/#document', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#document';
         correctResult = TP.sys.getUICanvas().getDocument();
@@ -4178,9 +4262,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://uicanvas#document', function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://uicanvas#document';
         correctResult = TP.sys.getUICanvas().getDocument();
 
@@ -4195,9 +4281,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('#document', function(test, options) {
 
         //  The 'tibet://uicanvas' should be optional
-
         inputVal = '#document';
         correctResult = TP.sys.getUICanvas().getDocument();
 
@@ -4214,10 +4302,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.Window of named window', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://UIROOT/', function(test, options) {
 
         inputVal = 'tibet://UIROOT/';
         correctResult = TP.core.Window.construct('UIROOT');
@@ -4233,6 +4318,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://UIROOT', function(test, options) {
 
         //  The last slash should be optional
 
@@ -4252,10 +4340,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.HTMLDocumentNode of named window', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://UIROOT/#document', function(test, options) {
 
         inputVal = 'tibet://UIROOT/#document';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
@@ -4271,9 +4356,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://UIROOT#document', function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://UIROOT#document';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
 
@@ -4290,10 +4377,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.HTMLDocumentNode of named window', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://UIROOT/future_path/', function(test, options) {
 
         inputVal = 'tibet://UIROOT/future_path/';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
@@ -4309,9 +4393,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://UIROOT/future_path', function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://UIROOT/future_path';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
 
@@ -4328,10 +4414,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.HTMLDocumentNode of named window', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://UIROOT/future_path/#document', function(test, options) {
 
         inputVal = 'tibet://UIROOT/future_path/#document';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
@@ -4347,9 +4430,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://UIROOT/future_path#document', function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://UIROOT/future_path#document';
         correctResult = TP.core.Window.construct('UIROOT').getDocument();
 
@@ -4366,10 +4451,7 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.Element using XPointer barename', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://uicanvas/#top_background', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#top_background';
         correctResult = TP.byId('top_background');
@@ -4385,9 +4467,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://uicanvas#top_background', function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://uicanvas#top_background';
         correctResult = TP.byId('top_background');
 
@@ -4402,9 +4486,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('#top_background', function(test, options) {
 
         //  The 'tibet://uicanvas' should be optional
-
         inputVal = '#top_background';
         correctResult = TP.byId('top_background');
 
@@ -4419,13 +4505,9 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
-
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.Element using XPointer element() scheme', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://uicanvas/#element(/1/2)', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#element(/1/2)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
@@ -4441,9 +4523,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://uicanvas#element(/1/2)', function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://uicanvas#element(/1/2)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
@@ -4458,9 +4542,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('#element(/1/2)', function(test, options) {
 
         //  The 'tibet://uicanvas' should be optional
-
         inputVal = '#element(/1/2)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
@@ -4477,10 +4563,8 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.Element using XPointer element() scheme with ID', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://uicanvas/#element(top_background/1)',
+            function(test, options) {
 
         inputVal = 'tibet://uicanvas/#element(top_background/1)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
@@ -4496,8 +4580,10 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
 
-        //  The last slash should be optional
+    this.it('tibet://uicanvas#element(top_background/1)',
+            function(test, options) {
 
         inputVal = 'tibet://uicanvas#element(top_background/1)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
@@ -4513,9 +4599,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('#element(top_background/1)', function(test, options) {
 
         //  The 'tibet://uicanvas/' should be optional
-
         inputVal = '#element(top_background/1)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
 
@@ -4532,10 +4620,8 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.Element using XPointer xpath1() scheme', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://uicanvas/#xpath1(/$def:html/$def:body)',
+            function(test, options) {
 
         inputVal = 'tibet://uicanvas/#xpath1(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
@@ -4551,9 +4637,12 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://uicanvas#xpath1(/$def:html/$def:body)',
+            function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://uicanvas#xpath1(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
@@ -4568,9 +4657,12 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('#xpath1(/$def:html/$def:body)',
+            function(test, options) {
 
         //  The 'tibet://uicanvas/' should be optional
-
         inputVal = '#xpath1(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
@@ -4587,10 +4679,8 @@ function() {
             });
     });
 
-    this.it('Shell IBET URL: Retrieve TP.core.Element using XPointer xpointer() scheme', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://uicanvas/#xpointer(/$def:html/$def:body)',
+            function(test, options) {
 
         inputVal = 'tibet://uicanvas/#xpointer(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
@@ -4606,9 +4696,12 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://uicanvas#xpointer(/$def:html/$def:body)',
+            function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://uicanvas#xpointer(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
@@ -4623,9 +4716,11 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('#xpointer(/$def:html/$def:body)', function(test, options) {
 
         //  The 'tibet://uicanvas/' should be optional
-
         inputVal = '#xpointer(/$def:html/$def:body)';
         correctResult = TP.sys.getUICanvas().getNativeDocument().body;
 
@@ -4642,10 +4737,8 @@ function() {
             });
     });
 
-    this.it('Shell TIBET URL: Retrieve TP.core.Element using TIBET-extension XPointer css() scheme', function(test, options) {
-
-        var inputVal,
-            correctResult;
+    this.it('tibet://uicanvas/#css(#top_background > *:first-child)',
+           function(test, options) {
 
         inputVal = 'tibet://uicanvas/#css(#top_background > *:first-child)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
@@ -4661,27 +4754,13 @@ function() {
                                 ' produced: "', testResult, '"',
                                 ' should be: "', correctResult, '".'));
             });
+    });
+
+    this.it('tibet://uicanvas#css(#top_background > *:first-child)',
+           function(test, options) {
 
         //  The last slash should be optional
-
         inputVal = 'tibet://uicanvas#css(#top_background > *:first-child)';
-        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
-
-        shellDriver.execShellTest(
-            test,
-            inputVal,
-            function (testResult) {
-                    test.assert.isIdenticalTo(
-                        testResult.getNativeNode(),
-                        correctResult,
-                        TP.join('"', inputVal, '"',
-                                ' produced: "', testResult, '"',
-                                ' should be: "', correctResult, '".'));
-            });
-
-        //  The 'tibet://uicanvas/' should be optional
-
-        inputVal = '#css(#top_background > *:first-child)';
         correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
 
         shellDriver.execShellTest(
@@ -4697,7 +4776,25 @@ function() {
             });
     });
 
-    //  ---
+    this.it('#css(#top_background > *:first-child)',
+           function(test, options) {
+
+        //  The 'tibet://uicanvas/' should be optional
+        inputVal = '#css(#top_background > *:first-child)';
+        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
+
+        shellDriver.execShellTest(
+            test,
+            inputVal,
+            function (testResult) {
+                    test.assert.isIdenticalTo(
+                        testResult.getNativeNode(),
+                        correctResult,
+                        TP.join('"', inputVal, '"',
+                                ' produced: "', testResult, '"',
+                                ' should be: "', correctResult, '".'));
+            });
+    });
 
     this.after(
         function() {
@@ -5834,10 +5931,13 @@ function() {
 TP.core.TSH.Type.describe('Shell Piping',
 function() {
 
-    var shellDriver;
+    var inputVal,
+        correctResult,
+        shellDriver;
 
     this.before(function(suite, options) {
-
+        inputVal = null;
+        correctResult = null;
         shellDriver = TP.tsh.Driver.construct();
         this.get('drivers').atPut('shell', shellDriver);
     });
@@ -5845,9 +5945,6 @@ function() {
     //  ---
 
     this.it('Shell Piping: number to simple format', function(test, options) {
-
-        var inputVal,
-            correctResult;
 
         inputVal = 'z = 1; z .| \'The number is: {{value}}\'';
         correctResult = 'The number is: 1';
@@ -5869,9 +5966,6 @@ function() {
     //  ---
 
     this.it('Shell Piping: number to templated format', function(test, options) {
-
-        var inputVal,
-            correctResult;
 
         inputVal = 'z = 1; z .| \'The number is: {{value .% #{##.00}}}\'';
         correctResult = 'The number is: 1.00';
@@ -5899,6 +5993,6 @@ function() {
 TP.core.TSH.Type.runTestSuites();
 */
 
-//	------------------------------------------------------------------------
-//	end
-//	========================================================================
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================

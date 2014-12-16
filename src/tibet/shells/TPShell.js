@@ -2280,11 +2280,25 @@ function(aString) {
         return this.getExecutionInstance().at('$_');
     }
 
+    //  Don't expand variables being used as part of a dereferencing operation.
+    if (/\@\$/.test(str)) {
+        return str;
+    }
+
     if (TP.regex.TSH_VARSUB.test(str)) {
         str = str.replace(
                 TP.regex.TSH_VARSUB,
                 function (wholeMatch, varName) {
-                    return this.getExecutionInstance().at('$' + varName);
+                    var value;
+                    value = this.getExecutionInstance().at('$' + varName);
+
+                    // If the variable isn't defined in scope return it so the
+                    // string value "exposes" that variable as being unresolved.
+                    if (TP.notDefined(value)) {
+                        return wholeMatch;
+                    }
+
+                    return value;
                 }.bind(this));
     }
 
@@ -2549,7 +2563,7 @@ function(aRequest, allForms) {
      *     request command node's attribute names and the values are the
      *     attribute values. These represent the named parameters and flags
      *     provided to the command. Positional arguments are named ARG0 through
-     *     ARG[n] within this hash.
+     *     ARG[n] within this hash and the key ARGV contains an array of those.
      * @param {TP.sig.ShellRequest} aRequest The request to query.
      * @param {Boolean} allForms Whether or not to include 'all forms' of the
      *     argument value. If this is true, then this method returns an Array
@@ -2652,15 +2666,23 @@ function(aRequest, allForms) {
                                         TP.tsh.script.$tshOperators,
                                         true, false, false, true);
                 } else {
-                    dict.atPut('ARG0', TP.ac(last, last));
-                    argv.push(TP.ac(last, last));
+                    //  One special case here is any argument which appears to
+                    //  be a valid JS identifier but which is, in fact, a TSH
+                    //  variable value.
+                    expandedVal = shell.getVariable(last);
+                    if (TP.isDefined(expandedVal)) {
+                        dict.atPut('ARG0', TP.ac(last, expandedVal));
+                        argv.push(TP.ac(last, expandedVal));
+                    } else {
+                        dict.atPut('ARG0', TP.ac(last, last));
+                        argv.push(TP.ac(last, last));
+                    }
                     return;
                 }
 
                 //  throw away spaces and tabs
                 parts = parts.select(
                             function(item) {
-
                                 return ((item.name !== 'space') &&
                                         (item.name !== 'tab'));
                             });
@@ -2702,6 +2724,13 @@ function(aRequest, allForms) {
                             } else if ((item.name === 'substitution') ||
                                         (item.name === 'identifier')) {
                                 val = item.value.unquoted();
+                                if (val.startsWith('${') && val.endsWith('}')) {
+                                    // This might not find a value, but if it
+                                    // does we essentially are resolving the
+                                    // identifier.
+                                    expandedVal = shell.getVariable(
+                                        '$' + val.slice(2, -1));
+                                }
                             } else {
                                 expandedVal = item.value;
                             }
@@ -2728,7 +2757,6 @@ function(aRequest, allForms) {
 
                 parts.perform(
                     function(item, index) {
-
                         dict.atPut('ARG' + index, item);
                         argv.push(item);
                     });
