@@ -2609,19 +2609,16 @@ function(anObj) {
      *     environments have constructors that are not Functions, but are faked
      *     by the platform. This function will return an appropriate name for
      *     them.
-     * @description This method has environment-specific checks in it. This is,
-     *     unfortunately, the only way to do this since a) it comes early in
-     *     the boot process and b) there is no way to automatically determine
-     *     which constructors are non-Function (in general, most Host
-     *     constructors are not enumerable on the global in the environment).
      * @param {Object} anObj The Object to return the name for.
      * @returns {String} The name for the supplied non-Function constructor
      *     object.
      */
 
     var name,
-        browser,
+
+        exclusionList,
         list,
+
         i,
         len,
         item;
@@ -2639,67 +2636,53 @@ function(anObj) {
     //  We keep a pre-built list we can scan quickly to cut down on overhead.
     list = TP.sys.$$nonFunctionConstructors;
     if (TP.notValid(list)) {
+
+        //  This must be the first time through - the list isn't built yet.
+
         list = [];
+
+        //  These 4 objects will show up because of the algorithm we use to
+        //  determine non-Function constructors. We filter for them.
+        exclusionList = ['TP', 'APP', 'Infinity', 'NaN'];
+
+        //  Define a silly slot on Function.prototype. This is how we'll test to
+        //  see if a constructor 'Function' is *really* a Function.
+        Function.prototype.fluffycat = 'fluffycat';
+
+        //  Loop over all of the globals that were found in our startup
+        //  sequence.
+        TP.sys.$nativeglobals.forEach(
+                function(aProp) {
+                    var obj;
+
+                    //  If the property name matches what we think should be a
+                    //  'native type name', then test it for being a
+                    //  non-Function constructor.
+                    if (TP.regex.NATIVE_TYPENAME.test(aProp)) {
+                        obj = TP.global[aProp];
+
+                        //  If the slot we defined on Function.prototype isn't
+                        //  there and the property is not in our exclusion list
+                        //  above, then add both the object and the property
+                        //  name to our list. This is how we get both the object
+                        //  reference and the name that goes along with it.
+                        if (!obj.fluffycat &&
+                            exclusionList.indexOf(aProp) === TP.NOT_FOUND) {
+                            list.push([obj, aProp]);
+                        }
+                    }
+                });
+
+        //  Make sure to remove our silly slot ;-).
+        delete Function.prototype.fluffycat;
+
+        //  Cache the list.
         TP.sys.$$nonFunctionConstructors = list;
-
-        browser = TP.sys.getBrowser();
-        switch (browser) {
-            case 'chrome':
-                //  Chrome 33
-                list.push([self.JSON, 'JSON']);
-                list.push([self.Math, 'CSS']);
-                list.push([self.CSS, 'CSS']);
-                list.push([self.Intl, 'Intl']);
-                break;
-
-            case 'firefox':
-                //  Firefox 28
-                list.push([self.Window, 'DOMWindow']);
-                list.push([self.CSSRule, 'CSSRule']);
-                list.push([self.CSSStyleRule, 'CSSStyleRule']);
-                list.push([self.CSSRuleList, 'CSSRuleList']);
-                list.push([self.StyleSheetList, 'StyleSheetList']);
-                list.push([self.CSSConditionRule, 'CSSConditionRule']);
-                list.push([self.CSSGroupingRule, 'CSSGroupingRule']);
-                list.push([self.CSSMediaRule, 'CSSMediaRule']);
-                list.push([self.CSSPageRule, 'CSSPageRule']);
-                list.push([self.CSSSupportsRule, 'CSSSupportsRule']);
-
-                list.push([self.SVGLength, 'SVGLength']);
-                list.push([self.SVGNumber, 'SVGNumber']);
-
-                list.push([self.Blob, 'Blob']);
-                list.push([self.File, 'File']);
-                list.push([self.Location, 'Location']);
-
-                list.push([self.CameraCapabilities, 'CameraCapabilities']);
-                list.push([self.DataTransfer, 'DataTransfer']);
-                list.push([self.DeviceAcceleration, 'DeviceAcceleration']);
-                list.push([self.DeviceRotationRate, 'DeviceRotationRate']);
-                list.push([self.DOMStringList, 'DOMStringList']);
-
-                list.push([self.MozMmsMessage, 'MozMmsMessage']);
-                list.push([self.MozMobileMessageManager,
-                    'MozMobileMessageManager']);
-                list.push([self.MozMobileMessageThread,
-                    'MozMobileMessageThread']);
-
-                list.push([self.MozSmsFilter, 'MozSmsFilter']);
-                list.push([self.MozSmsMessage, 'MozSmsMessage']);
-                list.push([self.MozSmsSegmentInfo, 'MozSmsSegmentInfo']);
-                break;
-
-            case 'safari':
-                //  Safari 7
-                list.push([self.Window, 'DOMWindow']);
-                list.push([self.JSON, 'JSON']);
-                list.push([self.Math, 'Math']);
-                list.push([self.CSS, 'CSS']);
-                list.push([self.Intl, 'Intl']);
-                break;
-        }
     }
 
+    //  Iterate over the list, looking for the name. Note that we can't use a
+    //  key/value hash here since it's the name that we're looking for - we have
+    //  the object reference.
     len = list.length;
     for (i = 0; i < len; i++) {
         item = list[i];
