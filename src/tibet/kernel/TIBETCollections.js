@@ -7508,13 +7508,8 @@ function(anIndex) {
 
     hash = this.$get('$$hash');
 
-    //  Make sure that the supplied key matches a property on our internal hash.
-
-    //  (wje): Use 'hasOwnProperty' here for better performance
-    //  Note how we use 'TP.FunctionProto.hasOwnProperty.call'... this is due
-    //  to the fact that the hash itself is a prototype-less Object and
-    //  therefore 'hasOwnProperty' won't exist.
-    if (!hash || !TP.FunctionProto.hasOwnProperty.call(hash, anIndex)) {
+    //  Make sure that our internal hash is real.
+    if (!hash) {
         return;
     }
 
