@@ -11244,7 +11244,7 @@ function(aFlag) {
             return false;
         } else {
             TP.elementSetAttribute(
-                    natElem, 'tibet:shouldSignalChange', true);
+                    natElem, 'tibet:shouldSignalChange', true, true);
             return true;
         }
     }
