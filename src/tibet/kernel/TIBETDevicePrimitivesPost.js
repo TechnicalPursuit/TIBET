@@ -1906,14 +1906,7 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
                     };
             theHandler.$$wrapper = wrapperHandler;
 
-            if (TP.sys.isUA('IE')) {
-                element.attachEvent('on' + nativeEventName,
-                                    wrapperHandler);
-            } else {
-                element.addEventListener(nativeEventName,
-                                            theHandler,
-                                            false);
-            }
+            element.addEventListener(nativeEventName, theHandler, false);
 
             element.firingPolicy = thePolicy;
         }
@@ -2106,14 +2099,7 @@ function(aWindow, aNode, eventNameArray, aHandler) {
                 theHandler = theHandler.$$wrapper;
             }
 
-            if (TP.sys.isUA('IE')) {
-                element.detachEvent('on' + nativeEventName,
-                                    theHandler);
-            } else {
-                element.removeEventListener(nativeEventName,
-                                            theHandler,
-                                            false);
-            }
+            element.removeEventListener(nativeEventName, theHandler, false);
         }
     }
 

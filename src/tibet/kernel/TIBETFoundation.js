@@ -5814,15 +5814,7 @@ function() {
      *     can't produce a valid key.
      */
 
-    var domName;
-
-    if (TP.sys.isUA('IE')) {
-        domName = 'styleFloat';
-    } else {
-        domName = 'cssFloat';
-    }
-
-    if (this.toString() === domName) {
+    if (this.toString() === 'cssFloat') {
         return 'float';
     }
 
@@ -5845,11 +5837,7 @@ function() {
      */
 
     if (this.toString() === 'float') {
-        if (TP.sys.isUA('IE')) {
-            return 'styleFloat';
-        } else {
-            return 'cssFloat';
-        }
+        return 'cssFloat';
     }
 
     return this.toString().asCamelCase();

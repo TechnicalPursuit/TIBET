@@ -3914,16 +3914,10 @@ function(anElement) {
 
         //  Make sure and detach the resizing event handlers since they'll
         //  be reattached when the busy element is shown.
-        if (TP.sys.isUA('IE')) {
-            anElement.ownerDocument.parentWindow.detachEvent(
-                'onresize',
-                busyElement.busyResizeFunction);
-        } else {
-            anElement.ownerDocument.defaultView.removeEventListener(
-                'resize',
-                busyElement.busyResizeFunction,
-                false);
-        }
+        anElement.ownerDocument.defaultView.removeEventListener(
+            'resize',
+            busyElement.busyResizeFunction,
+            false);
 
         busyElement.busyResizeFunction = null;
     }
@@ -5087,16 +5081,10 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
             busyElemStyleObj.height = busyHeight + 'px';
         };
 
-    if (TP.sys.isUA('IE')) {
-        anElement.ownerDocument.parentWindow.attachEvent(
-            'onresize',
-            busyElement.busyResizeFunction);
-    } else {
-        anElement.ownerDocument.defaultView.addEventListener(
-            'resize',
-            busyElement.busyResizeFunction,
-            false);
-    }
+    anElement.ownerDocument.defaultView.addEventListener(
+        'resize',
+        busyElement.busyResizeFunction,
+        false);
 
     //  Finally, go ahead and show the busy element :-).
     busyElemStyleObj.display = 'block';
@@ -9025,27 +9013,15 @@ function(aWindow) {
     //  Set up key handlers for 'keypress' and 'keydown' (depending on the
     //  browser) aWindow's documentElement (or body) so that backspace
     //  won't cause TIBET to be flushed back to its frameset.
-    if (TP.sys.isUA('GECKO') || TP.sys.isUA('WEBKIT')) {
-        aWindow.document.documentElement.addEventListener(
-            'keypress',
-            function(anEvent) {
+    aWindow.document.documentElement.addEventListener(
+        'keypress',
+        function(anEvent) {
 
-                if ((anEvent.keyCode === TP.BACK_SPACE_KEY) &&
-                    (anEvent.target === this)) {
-                    anEvent.preventDefault();
-                }
-            },false);
-    } else if (TP.sys.isUA('IE')) {
-        TP.documentGetBody(aWindow.document).attachEvent(
-            'onkeydown',
-            function(anEvent) {
-
-                if ((anEvent.keyCode === TP.BACK_SPACE_KEY) &&
-                    (anEvent.srcElement === TP.documentGetBody(aWindow.document))) {
-                    anEvent.returnValue = false;
-                }
-            });
-    }
+            if ((anEvent.keyCode === TP.BACK_SPACE_KEY) &&
+                (anEvent.target === this)) {
+                anEvent.preventDefault();
+            }
+        },false);
 
     return;
 });
@@ -9089,19 +9065,11 @@ function(aWindow) {
                     }
                 },
                 false);
-    } else if (TP.sys.isUA('WEBKIT')) {
+    } else if (TP.sys.isUA('WEBKIT') || TP.sys.isUA('IE')) {
         aWindow.addEventListener('focus',
                 function(anEvent) {
 
                     if (anEvent.target === aWindow) {
-                        TP.sys.getUICanvas(true).focus();
-                    }
-                });
-    } else if (TP.sys.isUA('IE')) {
-        aWindow.attachEvent('onfocus',
-                function(anEvent) {
-
-                    if (anEvent.srcElement === aWindow) {
                         TP.sys.getUICanvas(true).focus();
                     }
                 });

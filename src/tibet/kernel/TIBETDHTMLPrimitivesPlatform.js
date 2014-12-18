@@ -2877,8 +2877,8 @@ TP.hc(
         }
 
         //  Install the onbeforeunload handler.
-        aWindow.attachEvent(
-        'onbeforeunload',
+        aWindow.addEventListener(
+        'beforeunload',
         function() {
 
             //  This hook allows the user to cancel the navigation away from
@@ -2911,7 +2911,8 @@ TP.hc(
                     'You may lose unsaved data if you click OK !');
 
             return;
-        });
+        },
+        false);
     },
     'webkit',
     function(aWindow, aFunction) {
