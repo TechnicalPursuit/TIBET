@@ -2663,11 +2663,14 @@ function(anObj) {
 
                         //  If the slot we defined on Function.prototype isn't
                         //  there and the property is not in our exclusion list
-                        //  above, then add both the object and the property
-                        //  name to our list. This is how we get both the object
-                        //  reference and the name that goes along with it.
+                        //  above, and it's not a slot corresponding to a Window
+                        //  (like iframe Windows are), then add both the object
+                        //  and the property name to our list. This is how we
+                        //  get both the object reference and the name that goes
+                        //  along with it.
                         if (!obj.fluffycat &&
-                            exclusionList.indexOf(aProp) === TP.NOT_FOUND) {
+                            exclusionList.indexOf(aProp) === TP.NOT_FOUND &&
+                            !TP.isWindow(obj)) {
                             list.push([obj, aProp]);
                         }
                     }
