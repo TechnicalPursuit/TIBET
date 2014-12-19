@@ -1360,11 +1360,19 @@ TP.sys.isSupported = function() {
      *     executing browser.
      */
 
-    //  We're actively porting to IE and Opera but they're not ready just yet
-    //  so turn them off explicitly for now. Otherwise just check for a few more
-    //  advanced options re: HTML5 to filter older versions of the rest.
-    if (window.WebSocket && window.Worker &&
-            !TP.sys.isUA('IE') && !TP.sys.isUA('OPERA')) {
+    var version;
+
+    version = parseInt(TP.$browserMajor, 10);
+
+    if (TP.$browser === 'ie' && version >= 11) {
+        return true;
+    }
+
+    if (TP.$browser === 'chrome' && version >= 39) {
+        return true;
+    }
+
+    if (TP.$browser === 'firefox' && version >= 34) {
         return true;
     }
 
