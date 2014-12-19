@@ -4201,12 +4201,7 @@ TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$documentGetElementById = function(xmldoc, id) {
-    return xmldoc.evaluate('//*[@id="' + id + '"]', xmldoc,
-        function () {
-            return 'http://www.w3.org/XML/1998/namespace';
-        },
-        XPathResult.FIRST_ORDERED_NODE_TYPE,
-        null).singleNodeValue;
+    return xmldoc.querySelector('*[id="' + id + '"]');
 };
 
 //  ----------------------------------------------------------------------------
