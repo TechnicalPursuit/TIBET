@@ -3355,8 +3355,8 @@ TP.boot.$uriLoadIEFile = function(targetUrl, resultType) {
     resultType = TP.boot.$uriResultType(targetUrl, resultType);
 
     if (resultType === TP.DOM) {
-        //  leverage DOMDocument's ability to load synchronously
-        doc = TP.boot.$documentCreate();
+        //  leverage IE's ActiveX DOMDocument's ability to load synchronously
+        doc = TP.boot.$activeXDocumentCreateIE();
         doc.load(targetUrl);
 
         if (doc.xml == null || doc.xml === '') {
@@ -3510,7 +3510,6 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
      */
 
     var logpath,
-        doc,
         httpObj,
         result,
         headers,
@@ -3524,20 +3523,6 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
         cnameRegex;
 
     resultType = TP.boot.$uriResultType(targetUrl, resultType);
-
-    //  When accessing XML on IE we can leverage the DOMDocument load
-    //  method for fast synchronous access provided we don't need to be
-    //  leveraging header data for Last-Modified times.
-    if (TP.sys.isUA('IE') && resultType === TP.DOM && !lastModified) {
-        doc = TP.boot.$documentCreate();
-        doc.load(targetUrl);
-
-        if (doc.xml == null || doc.xml === '') {
-            return;
-        }
-
-        return doc;
-    }
 
     try {
         //  if we got a valid lastModified value then we're being asked to
@@ -4127,21 +4112,15 @@ TP.boot.$documentCreate = function(versionNumber) {
      * @return {XMLDocument} A new XML document.
      */
 
-    if (TP.sys.isUA('IE')) {
-        return TP.boot.$documentCreateIE(versionNumber);
-    } else {
-        return document.implementation.createDocument('', '', null);
-    }
-
-    return null;
+    return document.implementation.createDocument('', '', null);
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$documentCreateIE = function(versionNumber) {
+TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
 
     /**
-     * @name $documentCreateIE
+     * @name $activeXDocumentCreateIE
      * @summary Creates a DOM document element for use.
      * @param {Number} versionNumber A specific version number which must be
      *     returned as a minimum version.

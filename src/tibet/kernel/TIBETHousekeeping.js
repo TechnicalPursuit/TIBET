@@ -142,7 +142,8 @@ TP.boot.defineMethod('$initializeLocalStorage',
 TP.boot.defineMethod('$setupDOMStorage', TP.boot.$setupDOMStorage);
 
 TP.boot.defineMethod('$documentCreate', TP.boot.$documentCreate);
-TP.boot.defineMethod('$documentCreateIE', TP.boot.$documentCreateIE);
+TP.boot.defineMethod('$activeXDocumentCreateIE',
+                                        TP.boot.$activeXDocumentCreateIE);
 
 TP.boot.defineMethod('$nodeAppendChild', TP.boot.$nodeAppendChild);
 TP.boot.defineMethod('$nodeInsertBefore', TP.boot.$nodeInsertBefore);
