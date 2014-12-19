@@ -1163,11 +1163,7 @@ if (window.onerror.failedlaunch !== true &&
 
         //  Internet Explorer
 
-        /*
         if (TP.boot.$$isIE()) {
-            Object.defineProperty(Window, '$$name',
-                                {get: function () {return 'DOMWindow';}});
-
             Object.defineProperty(Document, '$$name',
                                 {get: function () {
                                     if (this.xmlVersion) {
@@ -1177,7 +1173,6 @@ if (window.onerror.failedlaunch !== true &&
                                     }
                                 }});
         }
-        */
     };
 
     //  ------------------------------------------------------------------------
@@ -1455,82 +1450,6 @@ if (window.onerror.failedlaunch !== true &&
 
             Object.defineProperty(
                 aWindow.Event.prototype,
-                'target',
-                {
-                    get: function() {
-
-                        return this.srcElement;
-                    }
-                });
-
-            Object.defineProperty(
-                aWindow.Event.prototype,
-                'currentTarget',
-                {
-                    get: function() {
-
-                        //  We can never compute 'currentTarget' for IE in
-                        //  TIBET, since we use document-level event handlers
-                        return null;
-                    }
-                });
-
-            Object.defineProperty(
-                aWindow.Event.prototype,
-                'relatedTarget',
-                {
-                    get: function() {
-
-                        return this.fromElement || this.toElement || null;
-                    }
-                });
-
-            Object.defineProperty(
-                aWindow.Event.prototype,
-                'metaKey',
-                {
-                    get: function() {
-
-                        return false;
-                    }
-                });
-
-            Object.defineProperty(
-                aWindow.Event.prototype,
-                'pageX',
-                {
-                    get: function() {
-
-                        var evtDoc;
-
-                        evtDoc = this.srcElement.document;
-
-                        //  We assume standards mode here, since its been the
-                        //  documentElement holding the scroll left value since
-                        //  standards mode in *IE6*
-                        return this.clientX + evtDoc.documentElement.scrollLeft;
-                    }
-                });
-
-            Object.defineProperty(
-                aWindow.Event.prototype,
-                'pageY',
-                {
-                    get: function() {
-
-                        var evtDoc;
-
-                        evtDoc = this.srcElement.document;
-
-                        //  We assume standards mode here, since its been the
-                        //  documentElement holding the scroll top value since
-                        //  standards mode in *IE6*
-                        return this.clientY + evtDoc.documentElement.scrollTop;
-                    }
-                });
-
-            Object.defineProperty(
-                aWindow.Event.prototype,
                 'resolvedTarget',
                 {
                     get: function() {
@@ -1555,16 +1474,6 @@ if (window.onerror.failedlaunch !== true &&
 
             Object.defineProperty(
                 aWindow.Event.prototype,
-                'view',
-                {
-                    get: function() {
-
-                        return this.srcElement.document.parentWindow;
-                    }
-                });
-
-            Object.defineProperty(
-                aWindow.Event.prototype,
                 'wheelDelta',
                 {
                     get: function() {
@@ -1574,21 +1483,6 @@ if (window.onerror.failedlaunch !== true &&
                         }
                     }
                 });
-
-            //  Add 'stopPropagation' and 'preventDefault' methods
-            aWindow.Event.prototype.stopPropagation = function() {
-
-                this.cancelBubble = true;
-            };
-
-            aWindow.Event.prototype.preventDefault = function() {
-
-                if (this.type === 'mouseover') {
-                    this.returnValue = true;
-                } else {
-                    this.returnValue = false;
-                }
-            };
         }
 
         //  All browsers get 'at()' and 'atPut()' on their Event objects.
@@ -1750,39 +1644,19 @@ if (window.onerror.failedlaunch !== true &&
 
         //  Array's 'getKeys' is in the kernel
 
-        //  We do this for HTML Elements, but the prototype is different between
-        //  W3C browsers and IE...
-        if (TP.boot.$$isIE()) {
-            aWindow.Element.prototype.getKeys = function() {
+        //  Don't want the HTML Element keys to show up on every Element so we
+        //  specifically put them on HTMLElement
+        aWindow.HTMLElement.prototype.getKeys = function() {
 
-                return TP.sys.$htmlelemkeys;
-            };
-        } else {
-            //  Don't want the HTML Element keys to show up on every Element in
-            //  Gecko/Webkit (i.e. XML elements), so we specifically put them on
-            //  HTMLElement
-            aWindow.HTMLElement.prototype.getKeys = function() {
+            return TP.sys.$htmlelemkeys;
+        };
 
-                return TP.sys.$htmlelemkeys;
-            };
-        }
+        //  Don't want the HTML Document keys to show up on every Document
+        //  (i.e. XML documents), so we specifically put them on HTMLDocument
+        aWindow.HTMLDocument.prototype.getKeys = function() {
 
-        //  We do this for HTML Documents, but the prototype is different
-        //  between W3C browsers and IE...
-        if (TP.boot.$$isIE()) {
-            aWindow.Document.prototype.getKeys = function() {
-
-                return TP.sys.$htmldockeys;
-            };
-        } else {
-            //  Don't want the HTML Document keys to show up on every Document in
-            //  Gecko/Webkit (i.e. XML documents), so we specifically put them on
-            //  HTMLDocument
-            aWindow.HTMLDocument.prototype.getKeys = function() {
-
-                return TP.sys.$htmldockeys;
-            };
-        }
+            return TP.sys.$htmldockeys;
+        };
 
         //  We don't do these for XML nodes, documents or elements. Those get
         //  checked in the TP.objectKeys() method.
@@ -2030,14 +1904,9 @@ if (window.onerror.failedlaunch !== true &&
 
         //  stop all events at the first layer/element that has a handler
         if (TP.boot.$isEvent(args)) {
-            if (TP.boot.$$isIE()) {
-                args.cancelBubble = true;
-            } else {
-                //  This seems to cause Mozilla to seize up, so we make it
-                //  Webkit-only.
-                if (TP.boot.$$isWebkit()) {
-                    args.stopPropagation();
-                }
+            //  This seems to cause Mozilla to seize up
+            if (!TP.boot.$$isMoz()) {
+                args.stopPropagation();
             }
         }
 
@@ -2131,41 +2000,15 @@ if (window.onerror.failedlaunch !== true &&
          * @todo
          */
 
-        var theEventName,
-                handlerWrapperFunc;
+        var theEventName;
 
         theEventName = eventName;
 
-        //  If we're on IE, we use 'activate / deactivate' instead of 'focus /
-        //  blur' because 'focus' and 'blur' events don't bubble up to the
-        //  document from the target element which means that if we're
-        //  installing these handlers on the document, we'll never get the
-        //  event.
-
-        if (TP.boot.$$isIE()) {
-            if (eventName === 'focus') {
-                theEventName = 'activate';
-            } else if (eventName === 'blur') {
-                theEventName = 'deactivate';
-            }
-
-            handlerWrapperFunc = function(evt) {
-
-                    //  W3C Event spec says there is a 'timeStamp' property -
-                    //  which we try to set as early as possible.
-                    evt.timeStamp = (new Date()).getTime();
-
-                    return handlerFunc(evt);
-                };
-
-            anObject.attachEvent('on' + theEventName, handlerWrapperFunc);
-        } else {
-            if (TP.boot.$$isMoz() && (eventName === 'mousewheel')) {
-                theEventName = 'DOMMouseScroll';
-            }
-
-            anObject.addEventListener(theEventName, handlerFunc, true);
+        if (TP.boot.$$isMoz() && (eventName === 'mousewheel')) {
+            theEventName = 'DOMMouseScroll';
         }
+
+        anObject.addEventListener(theEventName, handlerFunc, true);
 
         //  Cache the handler function on the TP.boot object using the event
         //  name so that we can use it later when we remove the handler.
@@ -2195,19 +2038,6 @@ if (window.onerror.failedlaunch !== true &&
 
         theEventName = eventName;
 
-        //  If we're on IE, we use 'activate / deactivate' instead of 'focus /
-        //  blur' because 'focus' and 'blur' events don't bubble up to the
-        //  document from the target element which means that if we're
-        //  installing these handlers on the document, we'll never get the
-        //  event.
-        if (TP.boot.$$isIE()) {
-            if (eventName === 'focus') {
-                theEventName = 'activate';
-            } else if (eventName === 'blur') {
-                theEventName = 'deactivate';
-            }
-        }
-
         //  Make sure that we can find a valid 'special UI handler'. This was
         //  cached on a slot on the TP.boot object when we registered the
         //  handler via the TP.boot.$$addUIHandler() function above.
@@ -2217,15 +2047,11 @@ if (window.onerror.failedlaunch !== true &&
             return;
         }
 
-        if (TP.boot.$$isIE()) {
-            anObject.detachEvent('on' + theEventName, handlerFunc);
-        } else {
-            if (TP.boot.$$isMoz() && (eventName === 'mousewheel')) {
-                theEventName = 'DOMMouseScroll';
-            }
-
-            anObject.removeEventListener(theEventName, handlerFunc, true);
+        if (TP.boot.$$isMoz() && (eventName === 'mousewheel')) {
+            theEventName = 'DOMMouseScroll';
         }
+
+        anObject.removeEventListener(theEventName, handlerFunc, true);
 
         //  Clear the slot on the TP.boot object, so that we don't leave little
         //  bits, like unused Functions, around.
@@ -2264,83 +2090,57 @@ if (window.onerror.failedlaunch !== true &&
         var head,
             handlerFunc;
 
-        if (TP.boot.$$isIE()) {
-            //  Attach an onreadystatechange that will hide the document's body
-            //  before it has a chance to be shown.
-            document.attachEvent(
-                'onreadystatechange',
+        //  Add our DOM insertion function as an Event handler for the
+        //  DOMNodeInserted event on the head element. See the
+        //  TP.$eventHandleStyleInsertion function for more information on
+        //  why we do this.
+        head = document.getElementsByTagName('head')[0];
+        if (head) {
+            head.addEventListener(
+                'DOMNodeInserted',
+                TP.$eventHandleStyleInsertion,
+                true);
+
+            //  Add a listener for DOMContentLoaded so that when we know
+            //  when all of the DOM elements have been constructed (even if
+            //  all external resources like images, script, etc. might not
+            //  have loaded yet).
+            document.addEventListener(
+                'DOMContentLoaded',
                 handlerFunc = function() {
 
-                    //  Make sure the browser is done loading the document.
-                    if (document.readyState === 'complete') {
-                        //  rip out this handler
-                        document.detachEvent('onreadystatechange',
-                                                handlerFunc);
+                    var head;
 
-                        //  make sure there's a body to manipulate, sometimes
-                        //  things get a little out of sync with load/unload and
-                        //  we don't want to make assumptions here
-                        if (document.body) {
-                            //  document.body.style.visibility = 'hidden';
-                            void(0);
-                        }
+                    //  clean up so we don't run into issues with recursions
+                    //  or leaks
+                    document.removeEventListener('DOMContentLoaded',
+                                                    handlerFunc,
+                                                    false);
+
+                    if (document.body) {
+                    //  Hide the body so that we can do style processing
+                    //  without having it flicker around.
+                    //  document.body.style.visibility = 'hidden';
+                        void(0);
                     }
-                });
 
-            return;
-        } else {
-            //  Add our DOM insertion function as an Event handler for the
-            //  DOMNodeInserted event on the head element. See the
-            //  TP.$eventHandleStyleInsertion function for more information on
-            //  why we do this.
-            head = document.getElementsByTagName('head')[0];
-            if (head) {
-                head.addEventListener(
-                    'DOMNodeInserted',
-                    TP.$eventHandleStyleInsertion,
-                    true);
+                    //  We don't do this on Mozilla in lieu of the logic in
+                    //  TP.$eventHandleStyleInsertion function due to
+                    //  Mozilla 1.8's CSS validation logic (which causes a
+                    //  lot of spurious errors for us).
+                    //TP.$windowDisableStyleSheets(window);
 
-                //  Add a listener for DOMContentLoaded so that when we know
-                //  when all of the DOM elements have been constructed (even if
-                //  all external resources like images, script, etc. might not
-                //  have loaded yet).
-                document.addEventListener(
-                    'DOMContentLoaded',
-                    handlerFunc = function() {
-
-                        var hd;
-
-                        //  clean up so we don't run into issues with recursions
-                        //  or leaks
-                        document.removeEventListener('DOMContentLoaded',
-                                                        handlerFunc,
-                                                        false);
-
-                        if (document.body) {
-                        //  Hide the body so that we can do style processing
-                        //  without having it flicker around.
-                        //  document.body.style.visibility = 'hidden';
-                            void(0);
-                        }
-
-                        //  We don't do this on Mozilla in lieu of the logic in
-                        //  TP.$eventHandleStyleInsertion function due to
-                        //  Mozilla 1.8's CSS validation logic (which causes a
-                        //  lot of spurious errors for us).
-                        //TP.$windowDisableStyleSheets(window);
-
-                        //  Remove the DOM insertion function from the 'head'
-                        //  element if we can still find it
-                        hd = document.getElementsByTagName('head')[0];
-                        if (hd) {
-                            hd.removeEventListener(
+                    //  Remove the DOM insertion function from the 'head'
+                    //  element if we can still find it
+                    head = document.getElementsByTagName('head')[0];
+                    if (head) {
+                        head.removeEventListener(
                                 'DOMNodeInserted',
                                 TP.$eventHandleStyleInsertion,
                                 true);
-                        }
-                    },
-                    false);
-            }
+                    }
+                },
+                false);
         }
     };
 
@@ -2706,7 +2506,8 @@ if (window.onerror.failedlaunch !== true &&
          * @return {null}
          */
 
-        var handlerFunc;
+        var loadedHandler,
+            unloadedHandler;
 
         //  if we are _in_ the TIBET window (boot and hook together) then we
         //  don't do this step...the codeframe doesn't get this processing
@@ -2786,79 +2587,33 @@ if (window.onerror.failedlaunch !== true &&
         //  install basic TIBET feature set
         TP.core.Window.instrument(aWindow);
 
-        //  Set up a load handler (have to use the add* mechanism here to avoid
-        //  blowing away any 'onload' handler on the document's body)
-        if (TP.boot.$$isIE()) {
-            aWindow.attachEvent('onload',
-                handlerFunc = function() {
+        //  Set up a handler that will call our $$init() function
+        aWindow.document.addEventListener('DOMContentLoaded',
+            loadedHandler = function() {
 
-                    //  First step is to clean up so we don't do this twice
-                    //this.detachEvent('onload', handlerFunc);
+                //  first step is to clean up so we don't do this twice
+                this.removeEventListener('DOMContentLoaded',
+                                          loadedHandler,
+                                          false);
 
-                    //  make sure that any 'page-level' initialization is
-                    //  performed. If the page has an 'init' function, this
-                    //  function will call it.
-                    $$init();
-                });
+                //  make sure that any 'page-level' initialization is
+                //  performed. If the page has an 'init' function, this
+                //  function will call it.
+                $$init();
+            }, false);
 
-            aWindow.attachEvent('onunload',
-                handlerFunc = function() {
+        aWindow.addEventListener('unload',
+            unloadedHandler = function() {
 
-                    //  First step is to clean up so we don't do this twice
-                    //this.detachEvent('onunload', handlerFunc);
+                //  First step is to clean up so we don't do this twice
+                this.removeEventListener('unload',
+                                          unloadedHandler,
+                                          false);
 
-                    //  Second, teardown the document and any special event
-                    //  handlers that got installed on it.
-                    TP.boot.$$documentTeardown(this.document);
-                });
-        } else {    //  firefox, safari, chrome, ...
-            //  Mozilla 1.9+ will not fire onload for iframes that are being
-            //  document.written (sigh...), but DOMContentLoaded is good enough
-            //  since this script will be loaded last.
-            if (TP.boot.$$isMoz()) {
-                aWindow.document.addEventListener('DOMContentLoaded',
-                    handlerFunc = function() {
-
-                        //  first step is to clean up so we don't do this twice
-                        //this.removeEventListener('DOMContentLoaded',
-                        //                          handlerFunc,
-                        //                          false);
-
-                        //  make sure that any 'page-level' initialization is
-                        //  performed. If the page has an 'init' function, this
-                        //  function will call it.
-                        $$init();
-                    }, false);
-            } else {
-                //  We do the same for Webkit-based browsers
-                aWindow.document.addEventListener('DOMContentLoaded',
-                    handlerFunc = function() {
-
-                        //  first step is to clean up so we don't do this twice
-                        //this.removeEventListener('DOMContentLoaded',
-                        //                          handlerFunc,
-                        //                          false);
-
-                        //  make sure that any 'page-level' initialization is
-                        //  performed. If the page has an 'init' function, this
-                        //  function will call it.
-                        $$init();
-                    }, false);
-            }
-
-            aWindow.addEventListener('unload',
-                handlerFunc = function() {
-
-                    //  First step is to clean up so we don't do this twice
-                    //this.removeEventListener('unload',
-                    //                          handlerFunc,
-                    //                          false);
-
-                    //  Second, teardown the document and any special event
-                    //  handlers that got installed on it.
-                    TP.boot.$$documentTeardown(this.document);
-                }, false);
-        }
+                //  Second, teardown the document and any special event
+                //  handlers that got installed on it.
+                TP.boot.$$documentTeardown(this.document);
+            }, false);
 
         //  NOTE: special case here, when processing documents into the ui
         //  frame in particular we want to manage the title
