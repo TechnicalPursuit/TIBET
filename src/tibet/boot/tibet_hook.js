@@ -464,12 +464,7 @@ TP.boot.$$isIE = function() {
      * @return {Boolean}
      */
 
-    //  trivial exclusion rule
-    if (/Gecko|Konqueror|AppleWebKit|KHTML/.test(navigator.userAgent)) {
-        return false;
-    }
-
-    return (/MSIE/).test(navigator.userAgent);
+    return (/Trident/).test(navigator.userAgent);
 };
 
 //  ------------------------------------------------------------------------
@@ -485,7 +480,7 @@ TP.boot.$$isMoz = function() {
 
     //  Firefox at least will always show an rv: and Gecko in the string.
     //  The Gecko portion is cloned a lot, but not the rv: portion.
-    return (/rv:.+?Gecko/).test(navigator.userAgent);
+    return (/rv:.+?Gecko/).test(navigator.userAgent) && !TP.boot.$$isIE();
 };
 
 //  ------------------------------------------------------------------------
