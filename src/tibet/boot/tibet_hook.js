@@ -1117,6 +1117,14 @@ if (window.onerror.failedlaunch !== true &&
                 Object, TP.ac(Object), TP.ac('Object'));
         Window.$$nonFunctionConstructorObjectName = 'DOMWindow';
 
+        //  Need to tell our machinery that NaN's *constructor* name is
+        //  'Number'
+        /* jshint ignore:start */
+        /* eslint-disable no-proto */
+        NaN.__proto__.$$nonFunctionConstructorConstructorName = 'Number';
+        /* eslint-enable no-proto */
+        /* jshint ignore:end */
+
         //  Browser-specific DOM 'types'
 
         //  Webkit
@@ -1137,14 +1145,6 @@ if (window.onerror.failedlaunch !== true &&
                     TP.ac(Object),
                     TP.ac('Object'));
 
-            //  Need to tell our machinery that NaN's *constructor* name is
-            //  'Number'
-            /* jshint ignore:start */
-            /* eslint-disable no-proto */
-            NaN.__proto__.$$nonFunctionConstructorConstructorName =
-                                        'Number';
-            /* eslint-enable no-proto */
-            /* jshint ignore:end */
         }
 
         //  Firefox
@@ -1159,14 +1159,6 @@ if (window.onerror.failedlaunch !== true &&
                     Object,
                     TP.ac(Object),
                     TP.ac('Object'));
-
-            //  Need to tell our machinery that NaN's *constructor* name is
-            //  'Number'
-            /* jshint ignore:start */
-            /* eslint-disable no-proto */
-            NaN.__proto__.$$nonFunctionConstructorConstructorName = 'Number';
-            /* eslint-enable no-proto */
-            /* jshint ignore:end */
         }
 
         //  Internet Explorer
