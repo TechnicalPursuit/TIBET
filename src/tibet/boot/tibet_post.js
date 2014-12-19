@@ -9582,15 +9582,8 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     TP.boot.$$onerrorURL = scriptUrl;
 
     try {
-        if (TP.sys.isUA('IE')) {
-            //  set the 'text' property of the new script element. this
-            //  loads the code synchronously and makes it available to the
-            //  system.
-            elem.text = jsSrc;
-        } else {
-            tn = scriptDoc.createTextNode(jsSrc);
-            TP.boot.$nodeAppendChild(elem, tn);
-        }
+        tn = scriptDoc.createTextNode(jsSrc);
+        TP.boot.$nodeAppendChild(elem, tn);
 
         //  since we're not using the src attribute put the url on the
         //  source attribute, which TIBET uses as an alternative
@@ -10028,17 +10021,7 @@ TP.boot.$importComponents = function(loadSync) {
                     }
                 };
 
-                if (TP.sys.isUA('IE')) {
-                    elem.onreadystatechange = function() {
-
-                        if (elem.readyState === 'loaded' ||
-                            elem.readyState === 'complete') {
-                            callback();
-                        }
-                    };
-                } else {
-                    elem.onload = callback;
-                }
+                elem.onload = callback;
 
                 if (TP.sys.cfg('import.check_404')) {
                     if (!TP.boot.$uriExists(TP.boot.$loadPath)) {
