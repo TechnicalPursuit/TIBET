@@ -4373,13 +4373,7 @@ TP.boot.$documentFromString = function(aString) {
      * @return {Node}
      */
 
-    if (TP.sys.isUA('IE')) {
-        return TP.boot.$documentFromStringIE(aString);
-    } else {
-        return TP.boot.$documentFromStringCommon(aString);
-    }
-
-    return;
+    return TP.boot.$documentFromStringCommon(aString);
 };
 
 //  ----------------------------------------------------------------------------
