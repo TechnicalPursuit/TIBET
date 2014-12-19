@@ -205,8 +205,9 @@ if (self.TP == null) {
     //  Define a slightly more useful error handler.
     //  ---
 
-    //  NOTE: If TP exists it means we're in the init file, not the hook file. In
-    //  which case we want to retain the version of this put on by the boot scripts.
+    //  NOTE: If TP exists it means we're in the init file, not the hook file.
+    //  In which case we want to retain the version of this put on by the boot
+    //  scripts.
     window.onerror = function(msg, url, line, column, errorObj) {
 
         /**
@@ -220,8 +221,8 @@ if (self.TP == null) {
          * @param {String} url The url of the JavaScript script.
          * @param {Number} line The line number in that script.
          * @param {Number} column The column number in that script.
-         * @param {Error} errorObj The error object of the error that caused this
-         *     hook to trigger.
+         * @param {Error} errorObj The error object of the error that caused
+         *     this hook to trigger.
          * @returns {Boolean} TP.sys.shouldCaptureErrors() value.
          * @todo
          */
@@ -247,7 +248,8 @@ if (self.TP == null) {
                 top.console.error(str);
             }
         } catch (e) {
-            // don't let log errors trigger recursion, but don't bury them either.
+            // don't let log errors trigger recursion, but don't bury them
+            // either.
             top.console.error('Error logging onerror: ' + e.message);
             top.console.error(str || msg);
         }
@@ -2945,10 +2947,10 @@ if (window.onerror.failedlaunch !== true &&
             //  particular will define phasetwo as true.
 
             //  the trick is getting the sequencing right. essentially we may
-            //  have placed the phase two page in place before or after the phase
-            //  one components complete their load process. when we get there
-            //  early we have to wait until the boot completes. and if it were
-            //  to fail for any reason we have to eventually terminate our
+            //  have placed the phase two page in place before or after the
+            //  phase one components complete their load process. when we get
+            //  there early we have to wait until the boot completes. and if it
+            //  were to fail for any reason we have to eventually terminate our
             //  observation so that the browser doesn't sit there iterating
             //  until the end of time. if we arrive late then the main boot
             //  logic won't be active any longer and we'll have to "reawaken it"

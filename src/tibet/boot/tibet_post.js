@@ -1384,9 +1384,9 @@ TP.sys.isSupported = function() {
 //  ============================================================================
 
 /*
-It's common to need information about the location from which TIBET was
-loaded. This set of functions provides access to the host, port, protocol,
-and pathname which were used to load TIBET, as well as the 'launch path'.
+It's common to need information about the location from which TIBET was loaded.
+This set of functions provides access to the host, port, protocol, and pathname
+which were used to load TIBET, as well as the 'launch path'.
 */
 
 //  first define whether we were loaded from file url or a web server
@@ -1620,8 +1620,6 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
                 'X-Requested-With', 'XMLHttpRequest');
 
         if (callHeaders != null) {
-            //  NOTE    the use of an array here to avoid issues with TIBET
-            //          adding to Object.prototype during the load process
             len = callHeaders.length;
             for (i = 0; i < len; i = i + 2) {
                 httpObj.setRequestHeader(callHeaders[i],
