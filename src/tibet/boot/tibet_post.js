@@ -6471,8 +6471,7 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
         // Queue to allow any other pending messages to clear.
         setTimeout(function() {
             try {
-            TP.boot.$setStage('stopped',
-                'Boot terminated: ' + msg);
+                TP.boot.$setStage('stopped', 'Boot terminated: ' + msg);
             } catch (e) {
                 // Ignore if we broke that, we're stopping.
             }
