@@ -777,6 +777,12 @@ if (TP.$agent.indexOf('windows nt') !== -1) {
         TP.$platform = 'winxps';
     } else if (TP.$agent.indexOf('nt 6.0') !== -1) {
         TP.$platform = 'vista';
+    } else if (TP.$agent.indexOf('nt 6.1') !== -1) {
+        TP.$platform = 'win7';
+    } else if (TP.$agent.indexOf('nt 6.2') !== -1) {
+        TP.$platform = 'win8';
+    } else if (TP.$agent.indexOf('nt 6.3') !== -1) {
+        TP.$platform = 'win8.1';
     } else {
         TP.$platform = 'winnt';
     }
@@ -926,6 +932,8 @@ if (TP.$agent.indexOf('chrome/') !== -1) {
         }
     }
 } else if (TP.$agent.indexOf('msie') !== -1) {
+    //  This is only for old versions of IE that TIBET doesn't support (IE < 11)
+
     //  some browsers may lie, but they won't have ActiveXObject support
     if (TP.global.ActiveXObject != null) {
         TP.$browser = 'ie';
@@ -947,6 +955,25 @@ if (TP.$agent.indexOf('chrome/') !== -1) {
         }
     } else {
         TP.$browser = 'spoof';
+    }
+} else if (TP.$agent.indexOf('trident') !== -1) {
+
+    //  IE11+ use the 'trident' token in the UA exclusively.
+
+    TP.$browser = 'ie';
+    TP.$browserUI = 'trident';
+    TP.$browserSuffix = 'IE';
+
+    //  version is number (ala 11.0) behind 'rv:'
+    TP.$$match = TP.$agent.match(/rv:([\d.]+)/);
+    if (TP.$$match != null) {
+        TP.$$assignBrowser(TP.$$match[1]);
+    }
+
+    //  Trident numbers aren't accessible from JS, but they map as
+    //  follows:
+    if (TP.$browserMajor === 11) {
+        TP.$$assignBrowserUI('7.0.0.0');
     }
 }
 
