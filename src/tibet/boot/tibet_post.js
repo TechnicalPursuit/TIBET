@@ -5212,8 +5212,8 @@ TP.boot.$xmlEscape = function(aString) {
     //  Replace all '&' that are *not* part of an entity with '&amp;'
     result = result.replace(/&(?!([a-zA-Z]+|#(x)?[0-9]+);)/g, '&amp;');
 
-    //  Replace &nbsp; with space.
-    result = result.replace(/&nbsp;/g, ' ');
+    //  Replace &nbsp; with &#160;.
+    result = result.replace(/&nbsp;/g, '&#160;');
 
     return result;
 };
