@@ -285,7 +285,13 @@ function(aRequest) {
     homeURL = TP.uc(TP.ifEmpty(TP.sys.cfg('project.homepage'),
                                 TP.sys.cfg('tibet.blankpage')));
 
-    TP.wrap(elemWin).setContent(homeURL);
+
+    //  Set the content of this Window to the home URL content, but do so in a
+    //  timeout giving the current attaching process time to finish. Otherwise,
+    //  we end up in race conditions and potential browser crashes.
+    (function() {
+        TP.wrap(elemWin).setContent(homeURL);
+    }).fork(100);
 
     return;
 });

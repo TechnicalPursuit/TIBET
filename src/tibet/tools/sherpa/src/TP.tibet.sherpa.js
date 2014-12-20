@@ -60,7 +60,12 @@ function(aRequest) {
                     TP.sys.registerObject(newSherpa);
                 });
 
-    TP.wrap(elemWin).setContent(sherpaURI, request);
+    //  Set the content of this Window to the Sherpa content, but do so in a
+    //  timeout giving the current attaching process time to finish. Otherwise,
+    //  we end up in race conditions and potential browser crashes.
+    (function() {
+        TP.wrap(elemWin).setContent(sherpaURI, request);
+    }).fork(100);
 
     return this.callNextMethod();
 });
