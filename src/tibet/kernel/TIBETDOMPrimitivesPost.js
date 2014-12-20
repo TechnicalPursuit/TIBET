@@ -568,8 +568,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                 });
     }
 
-    //  Append the new child in (pass in false to awaken the content - we
-    //  don't awaken XML).
+    //  Append the new child in
     TP.nodeAppendChild(aDocument, nodeContent, awakenContent);
 
     //  Since script elements, if we have them and they have a 'src'
