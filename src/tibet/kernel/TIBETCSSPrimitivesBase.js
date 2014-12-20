@@ -13,7 +13,8 @@
 
 /* JSHint checking */
 
-/* global CSSRule:true
+/* global CSSRule:false,
+          CSSPrimitiveValue:false
 */
 
 //  ------------------------------------------------------------------------
@@ -918,6 +919,114 @@ function(aDocument, anHref) {
 
 //  ------------------------------------------------------------------------
 //  ELEMENT PRIMITIVES
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementConvertUnitLengthToPixels',
+function(anElement, aValue, targetProperty, wantsTransformed) {
+
+    /**
+     * @name elementConvertUnitLengthToPixels
+     * @synopsis A routine that computes a number of pixels from the supplied
+     *     CSS unit value.
+     * @description Note that the supplied value here must be a 'CSS unit value'
+     *     (i.e. '3em' or '27%'). It cannot be a CSS value such as 'normal' or
+     *     'inherit'.
+     * @param {HTMLElement} anElement The element to use to compute the pixel
+     *     value from.
+     * @param {String} aValue The size value to convert into pixels.
+     * @param {String} targetProperty The name of the property being converted.
+     *     This isn't strictly required, but is desired to produce the most
+     *     accurate results.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidString,
+     *     TP.sig.InvalidParameter,TP.sig.InvalidStyle
+     * @returns {Number} The number of pixels that the supplied value will be in
+     *     pixels for the supplied Element.
+     * @todo
+     */
+
+    var targetPropName,
+
+        styleObj,
+
+        elementCurrentStyleVal,
+        computedStyle,
+
+        valueInPixels;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isEmpty(aValue)) {
+        return TP.raise(this, 'TP.sig.InvalidString');
+    }
+
+    //  If the value is not expressed using 'unit length' (i.e. it is a keyword
+    //  such as 'inherit', 'initial', 'none', etc.), then we bail out here -
+    //  can't do anything.
+    if (!TP.regex.CSS_UNIT.test(aValue)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    targetPropName = TP.ifInvalid(targetProperty, 'left');
+    targetPropName = targetPropName.toLowerCase();
+
+    styleObj = TP.elementGetStyleObj(anElement);
+
+    //  Capture the inline 'style' for the target property (note that we're
+    //  *not* interested in the computed style here - just if any value has been
+    //  placed directly in the target property on the 'style' object, either by
+    //  JavaScript or by using the 'style' attribute).
+    //  Note that if no value has been specified by either of these mechanisms,
+    //  this value will be null (or the empty String).
+    elementCurrentStyleVal = styleObj[targetPropName];
+
+    //  Set the target property on element to the supplied value (or 0, if the
+    //  value isn't valid).
+    styleObj[targetPropName] = aValue || 0;
+
+    //  Grab the computed style for the element.
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    //  We wrap this in a try...catch, since sometimes Mozilla throws an
+    //  exception when attempting to get the computed value, especially on the
+    //  'body' element.
+    try {
+        //  Get the value in pixels by using the 'getPropertyCSSValue' call of
+        //  the computed style, asking for 'pixels' as type of the return value.
+        valueInPixels =
+            parseInt(computedStyle.getPropertyCSSValue(
+                                targetPropName).getFloatValue(
+                                    CSSPrimitiveValue.CSS_PX), 10);
+    } catch (e) {
+        //  Can't compute the value anyway, so just return 0.
+        return 0;
+    }
+
+    //  Reset the inline style back to what it was (maybe the empty String...
+    //  see above).
+    styleObj[targetPropName] = elementCurrentStyleVal;
+
+    //  If the computation returned NaN, be nice and return 0.
+    if (TP.isNaN(valueInPixels)) {
+        return 0;
+    }
+
+    if (TP.isTrue(wantsTransformed)) {
+        return TP.elementTransformCSSPixelValue(anElement,
+                                                valueInPixels,
+                                                targetPropName);
+    }
+
+    return valueInPixels;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementGetComputedStyleObj',
