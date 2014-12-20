@@ -8129,11 +8129,86 @@ function(anObj) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.isNamedNodeMap() defined in TIBETPrimitivesPlatform.js
-//  ------------------------------------------------------------------------
+
+TP.definePrimitive('isNamedNodeMap',
+function(anObj) {
+
+    /**
+     * @name isNamedNodeMap
+     * @synopsis Returns true if the object provided is a DOM named node map.
+     * @param {Object} anObj The Object to test.
+     * @example Test what's a named node map and what's not:
+     *     <code>
+     *          TP.isNamedNodeMap(TP.documentGetBody(document).attributes);
+     *          <samp>true</samp>
+     *          TP.isNamedNodeMap(TP.documentGetBody(document).childNodes);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a named node
+     *     map.
+     * @todo
+     */
+
+    return TP.isValid(anObj) &&
+            TP.isValid(anObj.getNamedItem) &&
+            TP.isValid(anObj.setNamedItem);
+});
 
 //  ------------------------------------------------------------------------
-//  TP.isNodeList() defined in TIBETPrimitivesPlatform.js
+
+TP.definePrimitive('isNodeList',
+function(anObj) {
+
+    /**
+     * @name isNodeList
+     * @synopsis Returns true if the object provided is a DOM node list (or an
+     *     Array acting like one).
+     * @description We need to supply a special version of this for IE because
+     *     node lists returned from the XML DOM are different from those
+     *     returned from the HTML DOM.
+     * @param {Object} anObj The Object to test.
+     * @example Test what's a node list and what's not:
+     *     <code>
+     *          TP.isNodeList(TP.documentGetBody(document).childNodes);
+     *          <samp>true</samp>
+     *          TP.isNodeList(TP.documentGetBody(document).attributes);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a node list.
+     * @todo
+     */
+
+    if (TP.notValid(anObj) || TP.isWindow(anObj)) {
+        return false;
+    }
+
+    //  Sometimes (i.e. the 'attributes' collection on elements), named
+    //  node maps also think that they're node lists, so if this is a
+    //  named node map, then return false
+    if (TP.isNamedNodeMap(anObj)) {
+        return false;
+    }
+
+    //  some arrays double as NodeList objects and since we augment them
+    //  them with an 'item' slot that test won't be sufficient
+    if (TP.isArray(anObj)) {
+        //  Missing the '.join' method? Assume we're a NodeList
+        if (anObj.join === undefined) {
+            return true;
+        }
+
+        return false;
+    }
+
+    //  have to watch out for other things with length, like strings and
+    //  CSSStyleDeclarations
+    return typeof(anObj) !== 'string' &&
+            anObj.length !== undefined &&
+            anObj.item !== undefined &&
+            anObj.nodeType === undefined &&
+            anObj.cssText === undefined;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('isPINode',
@@ -8447,12 +8522,79 @@ function(anObj) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.isXHR() defined in TIBETPrimitivesPlatform.js
-//  ------------------------------------------------------------------------
+
+TP.definePrimitive('isXMLNode',
+function(anObj) {
+
+    /**
+     * @name isXMLNode
+     * @synopsis Returns true if the object provided is an XML node.
+     * @param {Object} anObj The Object to test.
+     * @example Test what's an xml element and what's not:
+     *     <code>
+     *          newXMLDoc = TP.doc('<foo/>');
+     *          TP.isXMLNode(newXMLDoc.documentElement);
+     *          <samp>true</samp>
+     *          TP.isXMLNode(newXMLDoc);
+     *          <samp>true</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is an XML node.
+     * @todo
+     */
+
+    var doc;
+
+    //  Make sure its a node first.
+    if (TP.notValid(anObj) || typeof anObj.nodeType !== 'number') {
+        return false;
+    }
+
+    if (anObj.nodeType === Node.DOCUMENT_NODE) {
+        return TP.isXMLDocument(anObj);
+    }
+
+    //  If the node isn't in a document anywhere, then about the only thing we
+    //  can do is check to see if it has a tagName (i.e. it is a
+    //  Node.ELEMENT_NODE), and if that tag name is one of the HTML ones. If so,
+    //  we return false (since its really an HTML node - it may be an XHTML
+    //  node, but we can't tell that here).
+    if (TP.notValid(doc = anObj.ownerDocument)) {
+        if (TP.isValid(anObj.tagName)) {
+            return !TP.isValid(
+                        TP.HTML_401_TAGS[anObj.tagName.toLowerCase()]);
+        }
+
+        return false;
+    }
+
+    //  If its document is an XML document, then its definitely an XML node.
+    return TP.isXMLDocument(doc);
+});
 
 //  ------------------------------------------------------------------------
-//  TP.isXMLNode() defined in TIBETPrimitivesPlatform.js
-//  ------------------------------------------------------------------------
+
+TP.definePrimitive('isXHR',
+function(anObj) {
+
+    /**
+     * @name isXHR
+     * @synopsis Returns true if the object appears to be an XMLHttpRequest
+     *     instance. These are tricky little suckers that will throw exceptions
+     *     if you don't treat them nicely so this is a good check to use when
+     *     you suspect you might have an XHR.
+     * @param {Object} anObj The object to interrogate.
+     * @returns {Boolean} True if the object looks like an XHR.
+     */
+
+    try {
+        return TP.isValid(anObj) &&
+                TP.isProperty(anObj, 'responseText') &&
+                typeof anObj.send === 'function';
+    } catch (e) {
+    }
+
+    return false;
+});
 
 //  ------------------------------------------------------------------------
 //  EMPTY/NON-EMPTY
