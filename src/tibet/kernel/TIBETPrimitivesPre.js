@@ -2668,9 +2668,20 @@ function(anObj) {
                         //  and the property name to our list. This is how we
                         //  get both the object reference and the name that goes
                         //  along with it.
-                        if (!obj.fluffycat &&
-                            exclusionList.indexOf(aProp) === TP.NOT_FOUND &&
-                            !TP.isWindow(obj)) {
+
+                        //  Note that we put this in a try...catch to avoid
+                        //  problems with some environments wanting to throw an
+                        //  exception when accessing the slot that we placed on
+                        //  Function.prototype. In that case, it's very likely
+                        //  to be a non-Function constructor object, which means
+                        //  we should add it to our list.
+                        try {
+                            if (!obj.fluffycat &&
+                                exclusionList.indexOf(aProp) === TP.NOT_FOUND &&
+                                !TP.isWindow(obj)) {
+                                list.push([obj, aProp]);
+                            }
+                        } catch (e) {
                             list.push([obj, aProp]);
                         }
                     }
