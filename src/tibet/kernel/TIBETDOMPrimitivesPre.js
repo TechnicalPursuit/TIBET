@@ -16,6 +16,30 @@
 */
 
 //  ------------------------------------------------------------------------
+//  UTILITY METHODS
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$xpathResolverFunction',
+function(aPrefix) {
+
+    /**
+     * @name $$xpathResolverFunction
+     * @synopsis Resolves the supplied prefix into a matching namespace URI.
+     * @param {String} aPrefix The prefix to use to look up a namespace URI.
+     * @returns {String} The namespace URI that matches the supplied prefix.
+     */
+
+    var namespaceURI;
+
+    if (TP.notEmpty(aPrefix) &&
+        TP.isString(namespaceURI = TP.w3.Xmlns.getPrefixURI(aPrefix))) {
+        return namespaceURI;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
 //  DOCUMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 

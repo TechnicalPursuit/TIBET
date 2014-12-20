@@ -29,13 +29,173 @@
 */
 
 //  ------------------------------------------------------------------------
-//  CONSTANTS
+//  DOCUMENT PRIMITIVES
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('createDocument',
+function(aNamespace, aTagname) {
+
+    /**
+     * @name createDocument
+     * @synopsis Creates an XML document. Note that if a tag name isn't
+     *     supplied to this method, a documentElement will *not* be created
+     *     for the returned document.
+     * @param {String} aNamespace The namespace to use. Defaults to the null
+     *     namespace.
+     * @param {String} aTagname The element name to use for the document
+     *     element. Defaults to ''.
+     * @example Create an XML document, with no namespace and no document
+     *     element:
+     *     <code>
+     *          xmlDoc = TP.createDocument();
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp></samp>
+     *     </code>
+     * @example Create an XML document, with no namespace and a document
+     *     element of 'foo':
+     *     <code>
+     *          xmlDoc = TP.createDocument(null, 'foo');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp>&lt;foo xmlns=""/&gt;</samp>
+     *     </code>
+     * @example Create an XML document, with a default namespace of
+     *     'http://www.bar.com' and a document element of 'foo':
+     *     <code>
+     *          xmlDoc = TP.createDocument('http://www.bar.com', 'foo');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp>&lt;foo xmlns="http://www.bar.com"/&gt;</samp>
+     *     </code>
+     * @example Create an XML document, with a 'bar' prefixed namespace of
+     *     'http://www.bar.com' and a document element of 'foo':
+     *     <code>
+     *          xmlDoc = TP.createDocument('http://www.bar.com',
+     *          'bar:foo');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp>&lt;bar:foo xmlns:bar="http://www.bar.com"/&gt;</samp>
+     *     </code>
+     * @returns {XMLDocument} The newly created XML document.
+     * @todo
+     */
+
+    var theNamespace,
+        theTagName,
+        parts,
+
+        newDocStr;
+
+    theNamespace = aNamespace;
+    theTagName = TP.ifInvalid(aTagname, '');
+
+    //  If we were handed both a namespace and a root tag name then we
+    //  should build a document by TP.documentFromString()ing standard
+    //  XML.
+    //  This avoids a lot of problems in W3C-compliant browsers when
+    //  dealing with XML documents, namespaces, etc.
+    if (TP.notEmpty(theNamespace) && TP.notEmpty(theTagName)) {
+        parts = theTagName.split(':');
+        if (parts.getSize() > 1) {
+            newDocStr = TP.join('<', theTagName,
+                                ' xmlns:', parts.at(0), '="',
+                                theNamespace, '">',
+                                '</', theTagName, '>');
+        } else {
+            newDocStr = TP.join('<', theTagName, ' xmlns="',
+                                theNamespace,
+                                '"></', theTagName, '>');
+        }
+
+        return TP.documentFromString(newDocStr);
+    } else if (TP.isEmpty(theNamespace) && TP.notEmpty(theTagName)) {
+        newDocStr = TP.join('<', theTagName, ' xmlns="">',
+                            '</', theTagName, '>');
+
+        return TP.documentFromString(newDocStr);
+    } else if (TP.notEmpty(theTagName)) {
+        //  Otherwise, we were just handed a root tag name, so go ahead
+        //  and use that.
+        newDocStr = TP.join('<', theTagName, '></', theTagName, '>');
+
+        return TP.documentFromString(newDocStr);
+    }
+
+    //  They were both empty, so just use the 'createDocument' call.
+    return document.implementation.createDocument('', '', null);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.XML_FACTORY_DOCUMENT = TP.createDocument();
 
 //  ------------------------------------------------------------------------
-//  DOCUMENT PRIMITIVES
+
+TP.definePrimitive('documentCreateElement',
+function(aDocument, elementName, elementNS) {
+
+    /**
+     * @name documentCreateElement
+     * @synopsis Creates a new element in the document and namespace provided.
+     * @param {Document} aDocument The document that will contain the new
+     *     element.
+     * @param {String} elementName The element type.
+     * @param {String} elementNS The namespace to use.
+     * @example Create an HTML element in an HTML document:
+     *     <code>
+     *          TP.documentCreateElement(document, 'span');
+     *          <samp>[object HTMLSpanElement]</samp>
+     *     </code>
+     * @example Create an XHTML element in an XML document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString('<foo
+     *         xmlns="http://www.foo.com"/>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.documentCreateElement(xmlDoc, 'span', TP.w3.Xmlns.XHTML);
+     *          <samp>[object HTMLSpanElement]</samp>
+     *     </code>
+     * @returns {Element} The newly created Element.
+     * @raise TP.sig.InvalidDocument Raised when an invalid document is
+     *     provided to the method.
+     * @raise TP.sig.InvalidString Raised when a null or empty element name is
+     *     provided to the method.
+     * @raise TP.sig.DOMCreateException Raised when the element cannot be
+     *     created in the supplied document.
+     * @todo
+     */
+
+    var aNamespace,
+        newElement;
+
+    if (!TP.isDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    if (TP.isEmpty(elementName)) {
+        return TP.raise(this, 'TP.sig.InvalidElementType');
+    }
+
+    //  The namespace is the 'null namespace' by default.
+    aNamespace = TP.ifInvalid(elementNS, '');
+
+    try {
+        //  If it's an XML document or the namespace is SVG, create the
+        //  element using createElementNS.
+        if (TP.isXMLDocument(aDocument) || elementNS === TP.w3.Xmlns.SVG) {
+            newElement = aDocument.createElementNS(aNamespace,
+                                                    elementName);
+        } else {
+            newElement = aDocument.createElement(elementName);
+        }
+    } catch (e) {
+        return TP.raise(this, 'TP.sig.DOMCreateException',
+                        TP.ec(e));
+    }
+
+    return newElement;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentFromNode',
@@ -1013,6 +1173,49 @@ function(anAttributeNode) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('attributeGetLocalName',
+function(anAttributeNode) {
+
+    /**
+     * @name attributeGetLocalName
+     * @synopsis Returns the local name (that is, the name without the prefix)
+     *     of the supplied attribute node.
+     * @param {Attribute} anAttributeNode The attribute node to retrieve the
+     *     local name for.
+     * @example Obtain the local name for an attribute node:
+     *     <code>
+     *          attrNode =
+     *         TP.documentGetBody(document).getAttributeNode('style');
+     *          TP.attributeGetLocalName(attrNode);
+     *          <samp>style</samp>
+     *     </code>
+     * @returns {String} The local name of the supplied node.
+     * @raise TP.sig.InvalidAttributeNode Raised when a non-attribute Node has
+     *     been supplied to the method.
+     * @todo
+     */
+
+    var lname,
+        index;
+
+    if (!TP.isAttributeNode(anAttributeNode)) {
+        return TP.raise(this, 'TP.sig.InvalidAttributeNode');
+    }
+
+    //  W3C-compliant browsers make no distinction between XML and HTML
+    //  documents here. If the attribute is in an HTML document, the
+    //  'whole name' will be returned since there is no concept of
+    //  prefixes, namespaces, etc.
+    lname = anAttributeNode.localName;
+    if ((index = lname.indexOf(':')) !== -1) {
+        lname = lname.slice(index + 1);
+    }
+
+    return lname;
+});
+
+//  ------------------------------------------------------------------------
 //  ELEMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 
@@ -1106,6 +1309,88 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
         return TP.xmlElementAddContent(anElement, content,
                                             loadedFunction, shouldAwake);
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementAddNamespace',
+function(anElement, aPrefix, aURI) {
+
+    /**
+     * @name elementAddNamespace
+     * @synopsis Adds an 'xmlns:<aPrefix>' attribute to the element. Note that
+     *     'aPrefix' *must* be valid (i.e. you cannot use this mechanism to
+     *     change the default namespace - no current DOM environment supports
+     *     that). Note also that namespaces can only be added to elements in an
+     *     XML document.
+     * @param {Element} anElement The Element node to add a namespace to.
+     * @param {String} aPrefix The prefix of the namespace being added. This can
+     *     have the 'xmlns:' already prepended to it.
+     * @param {String} aURI The URI of the namespace being added.
+     * @example Add a namespace to an element in an XML document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com"/>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.elementAddNamespace(xmlDoc.documentElement,
+     *          'svg',
+     *          TP.w3.Xmlns.SVG);
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp>&lt;foo xmlns="http://www.foo.com"
+     *         xmlns:svg="http://www.w3.org/2000/svg"/&gt;</samp>
+     *     </code>
+     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     *     to the method.
+     * @raise TP.sig.InvalidXMLDocument Raised when the element supplied is not
+     *     part of an XML document.
+     * @raise TP.sig.InvalidString Raised when a null or empty prefix or URI is
+     *     provided to the method.
+     * @todo
+     */
+
+    var xmlnsAttrName,
+
+        attrs,
+        i;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (!TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidXMLDocument');
+    }
+
+    if (TP.isEmpty(aPrefix) || TP.isEmpty(aURI)) {
+        return TP.raise(this, 'TP.sig.InvalidString',
+                        'Invalid or empty prefix or URI');
+    }
+
+    //  If the 'xmlns:' part was already provided in the supplied
+    //  prefix, just use the string as is.
+    if (/xmlns:/g.test(aPrefix)) {
+        xmlnsAttrName = aPrefix;
+    } else {
+        //  Otherwise, we need to tack on the 'xmlns:' part to the
+        //  supplied prefix.
+        xmlnsAttrName = 'xmlns:' + aPrefix;
+    }
+
+    //  We need to make sure that we're not putting a namespace
+    //  definition on an element that already has one.
+    attrs = anElement.attributes;
+    for (i = 0; i < attrs.length; i++) {
+        if (attrs[i].name === xmlnsAttrName) {
+            return;
+        }
+    }
+
+    TP.elementSetAttributeInNS(anElement,
+                                xmlnsAttrName,
+                                aURI,
+                                TP.w3.Xmlns.XMLNS);
 
     return;
 });
@@ -1660,6 +1945,154 @@ function(anElement, locationPath) {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementHasAttribute',
+function(anElement, attributeName, checkAttrNSURI) {
+
+    /**
+     * @name elementHasAttribute
+     * @synopsis Returns true if the supplied element has the attribute
+     *     matching the attribute name defined on it, even if the value of that
+     *     is null.
+     * @param {Element} anElement The element to test for the existence of the
+     *     attribute.
+     * @param {String} attributeName The name of the attribute to test.
+     * @param {Boolean} checkAttrNSURI True will cause this method to be more
+     *     rigorous in its checks for prefixed attributes, and will use calls to
+     *     actually check for the attribute in that namespace.
+     *     Default is false (to keep things faster).
+     * @example Check to see if the supplied element has a particular attribute:
+     *     <code>
+     *          TP.elementHasAttribute(TP.documentGetBody(document),
+     *         'style');
+     *          <samp>true</samp>
+     *     </code>
+     * @example Check to see if the supplied element has a particular attribute
+     *     in an XML document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com"
+     *         xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
+     *         goo="moo">Hi there</foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          // Simple attribute access
+     *          TP.elementHasAttribute(xmlDoc.documentElement, 'goo');
+     *          <samp>true</samp>
+     *          // Prefixed attribute access
+     *          TP.elementHasAttribute(xmlDoc.documentElement, 'xf:bind');
+     *          <samp>true</samp>
+     *          // Prefixed attribute access without checkAttrNSURI -
+     *          // will fail
+     *          TP.elementHasAttribute(xmlDoc.documentElement,
+     *          'xforms:bind');
+     *          <samp>false</samp>
+     *          // Alternate prefix attribute access (need
+     *          // checkAttrNSURI flag)
+     *          TP.elementHasAttribute(xmlDoc.documentElement,
+     *          'xforms:bind',
+     *          true);
+     *          <samp>true</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the element has a value for the
+     *     supplied attribute.
+     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     *     to the method.
+     * @raise TP.sig.InvalidName Raised when a null or empty attribute name is
+     *     provided to the method.
+     * @todo
+     */
+
+    var qualified,
+        attr,
+
+        theAttrName;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isEmpty(attributeName)) {
+        return TP.raise(this, 'TP.sig.InvalidName');
+    }
+
+    //  If the document for the supplied element is an XML document, then we
+    //  don't need to go any further. W3C-compliant browsers do this correctly
+    //  and no CSS information needs to be applied.
+
+    if (TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
+        //  we can speed things up quite a bit if we avoid work related to
+        //  namespaces as much as possible. In this case, test to see if the
+        //  attribute name has a colon in it.
+        qualified = TP.regex.HAS_COLON.test(attributeName);
+        if (!qualified) {
+            //  Standards-based browsers do this correctly.
+            return anElement.hasAttribute(attributeName);
+        } else {
+            attr = TP.$elementGetPrefixedAttributeNode(anElement,
+                                                        attributeName,
+                                                        checkAttrNSURI);
+
+            if (TP.isAttributeNode(attr)) {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    //  If the attribute name matches one of our 'special' pclass
+    //  attributes that are stand ins for pseudo-classes, put a
+    //  'pclass:' on front of it.
+    if (TP.regex.PCLASS_CHANGE.test(attributeName)) {
+        theAttrName = 'pclass:' + attributeName;
+    } else {
+        theAttrName = attributeName;
+    }
+
+    //  Standards-based browsers do this correctly.
+    return anElement.hasAttribute(theAttrName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementGetLocalName',
+function(anElement) {
+
+    /**
+     * @name elementGetLocalName
+     * @synopsis Returns the local name (that is, the name without the prefix)
+     *     of the supplied element node.
+     * @param {Element} anElement The element node to retrieve the local name
+     *     for.
+     * @example Retrieve the 'local name' for the supplied element in an HTML
+     *     document:
+     *     <code>
+     *          TP.elementGetLocalName(TP.documentGetBody(document));
+     *          <samp>BODY</samp>
+     *     </code>
+     * @example Retrieve the 'local name' for the supplied element in an XML
+     *     document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com"/>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.elementGetLocalName(xmlDoc.documentElement);
+     *          <samp>foo</samp>
+     *     </code>
+     * @returns {String} The local name of the supplied node.
+     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     *     to the method.
+     * @todo
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    return anElement.localName;
 });
 
 //  ------------------------------------------------------------------------
@@ -3352,6 +3785,178 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementRemoveAttribute',
+function(anElement, attributeName, checkAttrNSURI) {
+
+    /**
+     * @name elementRemoveAttribute
+     * @synopsis Removes an attribute from the supplied element whose name
+     *     matches attributeName.
+     * @param {Element} anElement The element to remove the attribute from.
+     * @param {String} attributeName The name of the attribute to remove.
+     * @param {Boolean} checkAttrNSURI True will cause this method to be more
+     *     rigorous in its checks for prefixed attributes, looking via URI
+     *     rather than just prefix. Default is false (to keep things faster).
+     * @example Remove the attribute named for the supplied element in an HTML
+     *     document:
+     *     <code>
+     *          TP.elementSetAttribute(TP.documentGetBody(document), 'baz',
+     *          'bazify');
+     *          TP.elementHasAttribute(TP.documentGetBody(document), 'baz');
+     *          <samp>true</samp>
+     *          TP.elementRemoveAttribute(TP.documentGetBody(document),
+     *         'baz');
+     *          <samp>undefined</samp>
+     *          TP.elementHasAttribute(TP.documentGetBody(document), 'baz');
+     *          <samp>false</samp>
+     *     </code>
+     * @example Remove the attribute named for the supplied element in an XML
+     *     document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com"
+     *         xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
+     *         goo="moo">Hi there</foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          // Simple attribute removal
+     *          TP.elementHasAttribute(xmlDoc.documentElement, 'goo');
+     *          <samp>true</samp>
+     *          TP.elementRemoveAttribute(xmlDoc.documentElement, 'goo');
+     *          <samp>undefined</samp>
+     *          TP.elementHasAttribute(xmlDoc.documentElement, 'goo');
+     *          <samp>false</samp>
+     *          // Prefixed attribute access
+     *          TP.elementHasAttribute(xmlDoc.documentElement, 'xf:bind');
+     *          <samp>true</samp>
+     *          TP.elementRemoveAttribute(xmlDoc.documentElement,
+     *          'xf:bind');
+     *          <samp>undefined</samp>
+     *          TP.elementHasAttribute(xmlDoc.documentElement, 'xf:bind');
+     *          <samp>false</samp>
+     *          // Prefixed attribute removal without checkAttrNSURI -
+     *          // will fail
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com"
+     *         xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
+     *         goo="moo">Hi there</foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.elementHasAttribute(xmlDoc.documentElement,
+     *          'xforms:bind',
+     *          true);
+     *          <samp>true</samp>
+     *          TP.elementRemoveAttribute(xmlDoc.documentElement,
+     *          'xforms:bind');
+     *          <samp>undefined</samp>
+     *          TP.elementHasAttribute(xmlDoc.documentElement,
+     *          'xforms:bind',
+     *          true);
+     *          <samp>true</samp>
+     *          // Alternate prefix attribute access (need
+     *          // checkAttrNSURI flag)
+     *          TP.elementHasAttribute(xmlDoc.documentElement,
+     *          'xforms:bind',
+     *          true);
+     *          <samp>true</samp>
+     *          TP.elementRemoveAttribute(xmlDoc.documentElement,
+     *          'xforms:bind',
+     *          true);
+     *          <samp>undefined</samp>
+     *          TP.elementHasAttribute(xmlDoc.documentElement,
+     *          'xforms:bind',
+     *          true);
+     *          <samp>false</samp>
+     *     </code>
+     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     *     to the method.
+     * @raise TP.sig.InvalidName Raised when a null or empty attribute name is
+     *     provided to the method.
+     * @todo
+     */
+
+    var qualified,
+        attr,
+        theAttrName;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isEmpty(attributeName)) {
+        return TP.raise(this, 'TP.sig.InvalidName');
+    }
+
+    //  If the document for the supplied element is an XML document, then we
+    //  don't need to go any further. W3C-compliant browsers do this correctly
+    //  and no CSS information needs to be applied.
+    if (TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
+        //  we can speed things up quite a bit if we avoid work related to
+        //  namespaces as much as possible. In this case, test to see if the
+        //  attribute name has a colon in it.
+        qualified = TP.regex.HAS_COLON.test(attributeName);
+        if (!qualified) {
+            //  Standards-based browsers do this correctly.
+            return anElement.removeAttribute(attributeName);
+        } else {
+            attr = TP.$elementGetPrefixedAttributeNode(anElement,
+                                                        attributeName,
+                                                        checkAttrNSURI);
+
+            if (TP.isAttributeNode(attr)) {
+                //  'removeAttribute' above returns null, but
+                //  'removeAttributeNode' will return the removed attribute
+                //  node. We want to emulate the behavior above for consistency.
+                anElement.removeAttributeNode(attr);
+            }
+
+            return;
+        }
+    }
+
+    //  If the attribute name matches one of our 'special' pclass attributes
+    //  that are stand ins for pseudo-classes, put a 'pclass:' on front of it.
+    if (TP.regex.PCLASS_CHANGE.test(attributeName)) {
+        theAttrName = 'pclass:' + attributeName;
+
+        //  If it matched a pseudo-class, we go ahead and remove the attribute
+        //  we were supplied with anyway. This allows elements like HTML
+        //  checkboxes and radio buttons to remove their 'selected' and
+        //  'checked' attributes.
+        anElement.removeAttribute(theAttrName);
+    } else {
+        theAttrName = attributeName;
+    }
+
+    //  If there has been CSS processing going on in anElement's Window, then go
+    //  ahead and process any changes that removing this attribute will have
+    //  brought.
+    if (TP.isWindow(TP.nodeGetWindow(anElement))) {
+        //  Invoke the CSS attribute change machinery. Note here that we have no
+        //  new value, since we're removing the attribute.
+        TP.$elementProcessCSSAttributeChange(
+                            anElement,
+                            theAttrName,
+                            null,
+                            function() {
+
+                                //  W3C-compliant browsers do this correctly.
+                                anElement.removeAttribute(theAttrName);
+                            });
+
+        //  Update any CSS expressions for the element.
+        //TP.elementUpdateCSSExprValues(anElement);
+    } else {
+        //  Standards-based browsers do this correctly.
+        anElement.removeAttribute(theAttrName);
+    }
+
+    //  Flush any pending CSS changes.
+    TP.$elementCSSFlush(anElement);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementReplaceAttributeValue',
 function(anElement, attributeName, oldValue, newValue, checkAttrNSURI) {
 
@@ -4736,6 +5341,88 @@ function(aNode, newNode, shouldAwake) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeContainsNode',
+function(aNode, aDescendant) {
+
+    /**
+     * @name nodeContainsNode
+     * @synopsis Returns whether or not aNode is an ancestor (or the
+     *     document for) aDescendant. If aNode is a Document node, this
+     *     method will return true if aDescendant's document is aNode.
+     * @param {Node} aNode The node to check to see if aDescendant is
+     *     contained within it.
+     * @param {Node} aDescendant The node to check to see if it is contained
+     *     within aNode.
+     * @example Test to see if the document element in an XML document is
+     *     the parent of its firstChild:
+     *     <code>
+     *          xmlDoc = TP.documentFromString('<foo><bar/></foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeContainsNode(xmlDoc.documentElement,
+     *          xmlDoc.documentElement.firstChild);
+     *          <samp>true</samp>
+     *          // But the inverse isn't true:
+     *          TP.nodeContainsNode(xmlDoc.documentElement.firstChild,
+     *          xmlDoc.documentElement);
+     *          <samp>false</samp>
+     *     </code>
+     * @example Test to see if the document element in an HTML document is
+     *     the parent of the body element:
+     *     <code>
+     *          TP.nodeContainsNode(document.documentElement,
+     *          TP.documentGetBody(document));
+     *          <samp>true</samp>
+     *          // But the inverse isn't true:
+     *          TP.nodeContainsNode(TP.documentGetBody(document),
+     *          document.documentElement);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not aNode is a parent of aDescendant.
+     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     *     'collection node' is provided to the method or an invalid child
+     *     is provided.
+     * @todo
+     */
+
+    var root;
+
+    //  No child nodes for anything that isn't an element, document or document
+    //  fragment
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode',
+                            'Node not a collection Node.');
+    }
+
+    if (!TP.isNode(aDescendant)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  For documents the question is whether the child is an element and is in
+    //  the document and still attached to a viable branch of the
+    //  documentElement tree
+    if (TP.isDocument(aNode) && TP.isElement(aDescendant)) {
+        if ((TP.nodeGetDocument(aDescendant) !== aNode) ||
+            TP.notValid(aNode.documentElement)) {
+            return false;
+        }
+
+        root = aNode.documentElement;
+        if (root === aDescendant) {
+            return true;
+        }
+    }
+
+    root = TP.ifInvalid(root, aNode);
+
+    //  Otherwise, we can use the built-in 'compareDocumentPosition' method
+    //  here. Thanks to Peter-Paul Koch.
+    /* jshint bitwise:false */
+    return !!(root.compareDocumentPosition(aDescendant) & 16);
+    /* jshint bitwise:true */
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeDetach',
 function(aNode) {
 
@@ -4754,6 +5441,54 @@ function(aNode) {
 
     //  Need to do whatever TP.nodeRemoveChild() does.
     return TP.nodeRemoveChild(aNode.parentNode, aNode);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeEqualsNode',
+function(aNode, otherNode) {
+
+    /**
+     * @name nodeEqualsNode
+     * @synopsis Normalizes adjacent Text nodes on the supplied Node and its
+     *     descendants.
+     * @description This method follows the DOM Level 3 standard for checking
+     *     Nodes for equality with each other. This specification states that
+     *     two Nodes are equal if:
+     *          -   The two nodes are of the same type
+     *          -   The following string attributes are equal (they are either
+     *              both null or they have the same length and are character for
+     *              character identical):
+     *                  -   nodeName
+     *                  -   localName
+     *                  -   namespaceURI
+     *                  -   prefix
+     *                  -   nodeValue
+     *          -   The 'attributes' NamedNodeMaps are equal (they are either
+     *              both null or have the same length and for each node that
+     *              exists in one map there is a node that exists in the other
+     *              map and is equal although *not necessarily at the same
+     *              index*).
+     *          -   The 'childNodes' NodeLists are equal (they are either both
+     *              null or have the same length and contain equal nodes *at the
+     *              same index*). Note that this method normalizes these nodes
+     *              to make sure that this comparison is performed accurately.
+     * @param {Node} aNode The node to check against otherNode.
+     * @param {Node} otherNode The node to check against aNode.
+     * @returns {Boolean} Whether or not the two nodes are *equal* (not
+     *     necessarily identical).
+     * @raise TP.sig.InvalidNode Raised when either node is an invalid node.
+     * @todo
+     */
+
+    if (!TP.isNode(aNode) || !TP.isNode(otherNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  In browsers that implement the W3C's DOM Level 3 'isEqualNode' call,
+    //  we can just leverage that.
+
+    return aNode.isEqualNode(otherNode);
 });
 
 //  ------------------------------------------------------------------------
@@ -6232,7 +6967,228 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
 
 //  ------------------------------------------------------------------------
 
-//  TP.nodeEvaluateXPath is browser-specific, see TIBETDOMPrimitives[*]
+TP.definePrimitive('nodeEvaluateXPath',
+function(aNode, anXPath, resultType, logErrors) {
+
+    /**
+     * @name nodeEvaluateXPath
+     * @synopsis Returns the result of evaluating the XPath expression against
+     *     the node given.
+     * @param {Node} aNode The context node to begin querying for Nodes from.
+     * @param {String} anXPath The XPath expression to use to query the tree
+     *     starting from aNode.
+     * @param {Number} resultType The type of result desired, either
+     *     TP.NODESET or TP.FIRST_NODE.
+     * @param {Boolean} logErrors Used to turn off error notification,
+     *     particularly during operations such as string localization which
+     *     can cause recusion issues.
+     * @example Use XPath to select a set of nodes from a mixed namespace
+     *     document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString('<foo
+     *         xmlns="http://www.foo.com"><baz:bar
+     *
+     *         xmlns:baz="http://www.baz.com"><baz:moo/><goo/></baz:bar></foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeEvaluateXPath(xmlDoc, '//*');
+     *          <samp>[object Element], [object Element], [object Element],
+     *         [object Element]</samp>
+     *          Select the 'foo' node (note that XPath 1.0 doesn't
+     *          'do' default namespaces, so we have to do this another
+     *          way):
+     *          TP.nodeEvaluateXPath(xmlDoc, '//*[name() = "foo"]',
+     *         TP.FIRST_NODE);
+     *          <samp>[object Element]</samp>
+     *
+     * @example Use XPath to evaluate an expression that returns a scalar
+     *     result (IE doesn't do this natively, but TIBET works around that
+     *     limitation):
+     *     <code>
+     *          xmlDoc = TP.documentFromString('<foo><bar/></foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeEvaluateXPath(xmlDoc, '1 + 2');
+     *          <samp>3</samp>
+     *     </code>
+     * @example Use XPath to select a node that has a particular id using the
+     *     'id()' function. Normally, this won't work unless the document has
+     *     a DTD that specifies that that element should have an ID. TIBET
+     *     makes it work when 'true' is passed for the 'rewriteIDs' parameter:
+     *     <code>
+     *          xmlDoc = TP.documentFromString('<foo id="fooElem"><bar/></foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeEvaluateXPath(xmlDoc, 'id("fooElem")');
+     *          <samp></samp>
+     *          TP.nodeEvaluateXPath(xmlDoc, 'id("fooElem")', null, null,
+     *         true);
+     *          <samp></samp>
+     *     </code>
+     * @returns {Array|Node} The XPath execution result.
+     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
+     *     the method.
+     * @raise TP.sig.InvalidString Raised when a null or empty XPath
+     *     expression is provided to the method.
+     * @todo
+     */
+
+    var log,
+
+        theXPath,
+
+        doc,
+        newEvaluator,
+
+        result,
+
+        resultArr,
+        node,
+
+        msg;
+
+    TP.stop('break.xpath');
+
+    //  According to the DOM Level 3 XPath specification, aNode can only be
+    //  one of:
+    //      Document, Element, Attribute, Text, CDATASection, Comment,
+    //      ProcessingInstruction, or XPathNamespace node
+    //  Therefore, no DocumentFragments
+
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  NB: We can't use TP.isString() here, due to load ordering issues
+    //  on startup.
+    if (TP.isEmpty(anXPath)) {
+        return TP.raise(this, 'TP.sig.InvalidString');
+    }
+
+    //  if we need it we can really turn on the XPath logging here
+    TP.ifTrace() && TP.sys.hasLoaded() && TP.sys.shouldLogXPaths() ?
+        TP.trace('Querying via XPath ' + anXPath,
+                    TP.QUERY_LOG) : 0;
+
+    log = TP.ifInvalid(logErrors, true);
+
+    //  Allow the shortcut convenience that TIBET provides of specifying the
+    //  '$def:' prefix (intentionally illegal because it leads with a '$') for
+    //  elements that are in the default namespace.
+    TP.regex.XPATH_DEFAULTNS.lastIndex = 0;
+    theXPath = anXPath.replace(TP.regex.XPATH_DEFAULTNS,
+                                '*[name()="$1"]');
+
+    try {
+        doc = TP.nodeGetDocument(aNode);
+
+        //  IE11 currently does not have built-in XPath support, so we wire in
+        //  the XPathJS processor here. Note that we don't use the standard way
+        //  to do that according to the author, since a variety of assumptions
+        //  were made (like the top-level document is going to be the only
+        //  execution context).
+        if (TP.notValid(doc.evaluate)) {
+
+            if (TP.notValid(self.XPathException)) {
+
+                self.XPathException = TP.extern.XPathJS.XPathException;
+                self.XPathExpression = TP.extern.XPathJS.XPathExpression;
+                self.XPathNSResolver = TP.extern.XPathJS.XPathNSResolver;
+                self.XPathResult = TP.extern.XPathJS.XPathResult;
+                self.XPathNamespace = TP.extern.XPathJS.XPathNamespace;
+            }
+
+            newEvaluator = new TP.extern.XPathJS.XPathEvaluator();
+            doc.createExpression =
+                    function () {
+                        return newEvaluator.createExpression.apply(
+                                        newEvaluator, arguments);
+                    };
+            doc.createNSResolver =
+                    function () {
+                        return newEvaluator.createNSResolver.apply(
+                                        newEvaluator, arguments);
+                    };
+            doc.evaluate =
+                    function () {
+                        return newEvaluator.evaluate.apply(
+                                        newEvaluator, arguments);
+                    };
+        }
+
+        //  Run the XPath, using the XPathResult.ANY_TYPE so that we either
+        //  get a scalar value or an iterable set of Nodes.
+        result = doc.evaluate(
+                        theXPath,
+                        aNode,
+                        TP.$$xpathResolverFunction,
+                        XPathResult.ANY_TYPE,
+                        null);
+
+        //  If we got a value result, switch on the result type to get the
+        //  primitive value. If its not one of the primitive values, then its
+        //  a iterable node set, so we either iterate and repackage it into an
+        //  Array or just iterate once and return the first node, depending on
+        //  what our desired result type is.
+        if (TP.isValid(result)) {
+            switch (result.resultType) {
+                case XPathResult.NUMBER_TYPE:
+
+                    return result.numberValue;
+
+                case XPathResult.BOOLEAN_TYPE:
+
+                    return result.booleanValue;
+
+                case XPathResult.STRING_TYPE:
+
+                    return result.stringValue;
+
+                default:
+
+                    if (resultType === TP.NODESET) {
+                        resultArr = TP.ac();
+
+                        while (TP.isNode(node = result.iterateNext())) {
+                            resultArr.push(node);
+                        }
+
+                        return resultArr;
+                    } else if (resultType === TP.FIRST_NODE) {
+                        if (TP.isNode(node = result.iterateNext())) {
+                            return node;
+                        }
+                    } else {
+                        //  If an explicit result type wasn't specified, then
+                        //  we use the 'only node rule' - which is that if the
+                        //  result set only contains one node, we return that.
+                        //  Otherwise, we return the Array.
+                        resultArr = TP.ac();
+
+                        while (TP.isNode(node = result.iterateNext())) {
+                            resultArr.push(node);
+                        }
+
+                        if (resultArr.getSize() === 1) {
+                            return resultArr.first();
+                        }
+
+                        return resultArr;
+                    }
+            }
+        }
+    } catch (e) {
+        if (log || !TP.sys.hasLoaded()) {
+            msg = TP.join('Error evaluating XPath ', anXPath);
+            TP.ifError() ?
+                TP.error(TP.ec(e, msg), TP.QUERY_LOG) : 0;
+        }
+    }
+
+    //  return value default depends on request type
+    if (resultType === TP.NODESET) {
+        return TP.ac();
+    } else {
+        return null;
+    }
+});
 
 //  ------------------------------------------------------------------------
 
@@ -6807,7 +7763,51 @@ function(aNode, aType, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-//  TP.nodeGetDescendantElements                See Moz/IE files
+TP.definePrimitive('nodeGetDescendantElements',
+function(aNode, breadthFirst) {
+
+    /**
+     * @name nodeGetDescendantElements
+     * @synopsis Returns an Array of the children, grandchildren, and so on of
+     *     the node provided which are Element nodes.
+     * @param {Node} aNode The DOM node to operate on.
+     * @param {Boolean} breadthFirst Breadth first if true. Default is false,
+     *     meaning depth first (which is document order).
+     * @example Get all of the Element nodes under the supplied Node as a
+     *     regular JavaScript Array:
+     *     <code>
+     *          TP.nodeGetDescendantElements(document);
+     *          <samp>...Array...</samp>
+     *          TP.nodeGetDescendantElements(document, true);
+     *          <samp>...Array sorted by 'breadth-first'...</samp>
+     *     </code>
+     * @returns {Array} An Array of the Element descendants of the supplied
+     *     Node.
+     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     *     'collection node' is provided to the method.
+     * @todo
+     */
+
+    //  no child nodes for anything that isn't an element, document or document
+    //  fragment
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.raise(this,
+                        'TP.sig.InvalidNode',
+                        'Node not a collection Node.');
+    }
+
+    //  DOM-compliant document and element nodes can do this faster natively
+    //  since depth first is how their lookups work
+    if (TP.notTrue(breadthFirst) && !TP.isFragment(aNode)) {
+        //  Note how we convert the NodeList into an Array to hand back the
+        //  proper type. No additional processing is needed here.
+        return TP.ac(aNode.getElementsByTagName('*'));
+    }
+
+    //  for breadth first (or fragment nodes) we've got to use alternative
+    //  iteration
+    return TP.nodeGetDescendantsByType(aNode, Node.ELEMENT_NODE, breadthFirst);
+});
 
 //  ------------------------------------------------------------------------
 
@@ -7173,6 +8173,200 @@ function(aNode, aName) {
     }
 
     return TP.nodeGetDescendantElementsByAttribute(aNode, 'name', aName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetDocument',
+function(aNode) {
+
+    /**
+     * @name nodeGetDocument
+     * @synopsis Returns the document node containing the node provided. If the
+     *     node provided is a Document node, this function will return the node
+     *     provided.
+     * @param {Node} aNode The DOM node to operate on.
+     * @example Get the document of an element in an XML document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns:bar="http://www.bar.com"/>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeGetDocument(xmlDoc.documentElement) === xmlDoc;
+     *          <samp>true</samp>
+     *     </code>
+     * @example Get the document of an element in an HTML document:
+     *     <code>
+     *          TP.nodeGetDocument(TP.documentGetBody(document)) ===
+     *         document;
+     *          <samp>true</samp>
+     *     </code>
+     * @returns {Document} The document containing the supplied Node.
+     * @raise TP.sig.InvalidNode Raised when an invalid node is provided to the
+     *     method.
+     * @todo
+     */
+
+    var doc,
+        ancestor;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    if (aNode.nodeType === Node.DOCUMENT_NODE) {
+        return aNode;
+    }
+
+    if (TP.isDocument(doc = aNode.ownerDocument)) {
+        return doc;
+    }
+
+    //  NOTE thanks to a bug in early versions of Mozilla when you work with
+    //  cloned documents the child elements can get detached from their
+    //  ownerDocument pointers...so we iterate just in case.
+    ancestor = aNode.parentNode;
+    while (TP.isElement(ancestor) &&
+            (ancestor.nodeType !== Node.DOCUMENT_NODE)) {
+        //  NB: This assignment should *not* be moved into the looping logic. We
+        //  want 'ancestor' to remain what it is if its parent node is null.
+        //  This means it is the document itself and we want to use it below.
+        ancestor = ancestor.parentNode;
+    }
+
+    if (TP.isElement(ancestor)) {
+        return ancestor.ownerDocument;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetElementById',
+function(aNode, anID, $retryWithXPath) {
+
+    /**
+     * @name nodeGetElementById
+     * @synopsis Returns the subelement of the node provided which has the ID
+     *     given.
+     * @description This is a wrapper for ID retrieval using the standard
+     *     getElementById() call which deals with problems across XML and HTML
+     *     DOM trees between W3C-compliant browsers and IE. Note that the ID
+     *     will have ":" translated to "_" to support NS-qualified IDs.
+     * @description For HTML documents the standard getElementById call is often
+     *     sufficient, however XML documents will vary on W3C-compliant browsers
+     *     based on the namespace and whether there's an internal DTD that
+     *     defines IDREF attributes for that document. Many of TIBET's external
+     *     files are maintained in augmented XHTML files with these internal
+     *     DTDs so an XPath fallback is just extra overhead since if the ID
+     *     existed it would have been found. The $retryWithXPath attribute is
+     *     therefore used internally by metadata-related searches to avoid this
+     *     overhead. In non-XHTML XML documents this function will return null
+     *     if the element with id anID is not either the supplied node or a
+     *     child of the supplied node.
+     * @param {Node} aNode The node to search.
+     * @param {String} anID The string ID to search for.
+     * @param {Boolean} $retryWithXPath False to force ID search to skip XPath
+     *     fallbacks.
+     * @example Get the element in an XML document with 'id' of 'bar':
+     *     <code>
+     *          xmlDoc = TP.documentFromString('<foo id="bar"/>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeGetElementById(xmlDoc, 'bar');
+     *          <samp>[object Element]</samp>
+     *     </code>
+     * @example Get the element in an HTML document with 'id' of 'bar':
+     *     <code>
+     *          TP.documentGetBody(document).setAttribute('id', 'myBody');
+     *          <samp>undefined</samp>
+     *          TP.nodeGetElementById(document, 'myBody');
+     *          <samp>[object HTMLBodyElement]</samp>
+     *     </code>
+     * @returns {Element} A native element, if one is found.
+     * @raise TP.sig.InvalidNode Raised when a node that isn't a kind
+     *     'collection node' is provided to the method.
+     * @raise TP.sig.InvalidID Raised when a null or empty ID is provided to the
+     *     method.
+     * @todo
+     */
+
+    var doc,
+        id,
+
+        realID,
+        result;
+
+    //  no child nodes for anything that isn't an element, document or
+    //  document fragment
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode',
+                            'Node not a collection Node.');
+    }
+
+    //  ID has to be a valid IDREF, but we're not going to be that
+    //  strict
+    if (TP.isEmpty(anID)) {
+        return TP.raise(this, 'TP.sig.InvalidID');
+    }
+
+    //  best case we're looking for an ID in an HTML document
+    if (TP.notValid(doc = TP.nodeGetDocument(aNode))) {
+        return null;
+    }
+
+    //  one special case is the id #document, which refers to the
+    //  document element of a document. you can't find this by normal
+    //  query
+    if (anID === '#document') {
+        return doc.documentElement;
+    }
+
+    //  empty document? no location
+    if (TP.notValid(doc.documentElement)) {
+        return;
+    }
+
+    id = anID.strip(TP.regex.BARENAME);
+
+    //  for HTML documents the native getElementById() is sufficient
+    if (TP.isHTMLDocument(doc)) {
+        return doc.getElementById(id);
+    }
+
+    //  NOTE: ID replacement required to avoid problems with common ID
+    //  content such as NS-qualified elements like type names. The XML
+    //  spec says that we're limited to: [a-zA-Z_][a-zA-Z0-9.-_]*
+    TP.regex.ID_HAS_NS.lastIndex = 0;
+    realID = id.replace(TP.regex.ID_HAS_NS, '_');
+
+    //  If we still couldn't produce a valid IDREF, then return null
+    TP.regex.INVALID_ID_CHARS.lastIndex = 0;
+    if (TP.regex.INVALID_ID_CHARS.test(realID)) {
+        return null;
+    }
+
+    //  If its an XHTML document, getElementById() may work in
+    //  W3C-compliant browsers. We leverage this fact around common XML
+    //  metadata in Gecko and Webkit
+    if (TP.canInvoke(doc, 'getElementById')) {
+        if ((result = doc.getElementById(realID))) {
+            return result;
+        }
+    }
+
+    //  we force retry to false on our metadata XHTML files so we don't
+    //  search for something we're not going to find
+    if (TP.notFalse($retryWithXPath)) {
+        //  Otherwise, its XML that's not XHTML, so getElementById()
+        //  won't work (sigh...), so we need to use an XPath looking for
+        //  the first Element with that ID.
+        result = TP.nodeEvaluateXPath(
+                aNode,
+                'descendant-or-self::*[@id' + ' = "' + realID + '"]',
+                TP.FIRST_NODE);
+    }
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
@@ -8458,6 +9652,157 @@ function(aNode) {
 
         ancestor = ancestor.parentNode;
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeImportNode',
+function(aNode, otherNode) {
+
+    /**
+     * @name nodeImportNode
+     * @synopsis Imports the other node into the document of the supplied node
+           if it doesn't already belong to that document.
+     * @param {Node} aNode The node to obtain the document to import the
+     *     otherNode to.
+     * @param {Node} otherNode The node to import into the document of aNode
+     *     if necessary.
+     * @raises TP.sig.InvalidNode
+     * @returns {Node} The other node. This may be a different node than what
+           was supplied to this routine, if it was imported.
+     * @todo
+     */
+
+    var nodeDoc,
+        theNode,
+
+        prefix,
+
+        children,
+        len,
+        i;
+
+    if (!TP.isNode(aNode) || !TP.isNode(otherNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  Grab aNode's document and check to see if otherNode is in the same
+    //  document. If not, call the native 'importNode' routine.
+    nodeDoc = TP.nodeGetDocument(aNode);
+
+    if (nodeDoc !== TP.nodeGetDocument(otherNode)) {
+        theNode = nodeDoc.importNode(otherNode, true);
+    } else {
+        theNode = otherNode;
+    }
+
+    //  If aNode is an XML node, do some namespace normalization. If aNode and
+    //  theNode have the same namespace URI, then remove the 'xmlns' attribute
+    //  (or 'xmlns:<prefix>' attribute where prefix matches the node's prefix -
+    //  but *NOT* other 'xmlns:<prefix>' attributes - other nodes may need
+    //  them). This is to avoid multiple namespace nodes showing up during
+    //  serialization, which just makes things messy.
+    if (TP.isXMLNode(aNode)) {
+        if (TP.isElement(theNode)) {
+            //  If the namespaceURIs are the same, then 'theNode' doesn't need
+            //  to redefine the same namespace, so we can remove the namespace
+            //  node defining that namespace (if there is one).
+            if (aNode.namespaceURI === theNode.namespaceURI) {
+                //  use the prefix that was defined for the element, if there is
+                //  one.
+                if (TP.notEmpty(prefix = theNode.prefix)) {
+                    theNode.removeAttributeNS(TP.w3.Xmlns.XMLNS,
+                                                'xmlns:' + prefix);
+                } else {
+                    //  Otherwise, just remove the default namespace 'xmlns'
+                    //  one.
+                    theNode.removeAttributeNS(TP.w3.Xmlns.XMLNS,
+                                                'xmlns');
+                }
+            }
+        } else if (TP.isFragment(theNode)) {
+            //  theNode is a fragment. We need to do this process, but one by
+            //  one through the fragment's child elements.
+
+            children = TP.nodeGetChildElements(theNode);
+            len = children.length;
+
+            for (i = 0; i < len; i++) {
+                if (aNode.namespaceURI === children[i].namespaceURI) {
+                    if (TP.notEmpty(prefix = children[i].prefix)) {
+                        children[i].removeAttributeNS(
+                                TP.w3.Xmlns.XMLNS, 'xmlns:' + prefix);
+                    } else {
+                        children[i].removeAttributeNS(
+                                TP.w3.Xmlns.XMLNS, 'xmlns');
+                    }
+                }
+            }
+        }
+    }
+
+    return theNode;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeSwapNode',
+function(firstNode, secondNode) {
+
+    /**
+     * @name nodeSwapNode
+     * @synopsis Swaps the first node into the place where the second node is
+     *     and vice versa. Note that both Nodes supplied to this method must be
+     *     contained in the same overall Document.
+     * @param {Node} firstNode The first node to swap.
+     * @param {Node} secondNode The second node to swap.
+     * @example Swap two nodes in an XML document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString('<foo><bar/><baz/></foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeSwapNode(xmlDoc.documentElement.firstChild,
+     *          xmlDoc.documentElement.childNodes[1]);
+     *          <samp>undefined</samp>
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp>&lt;foo&gt;&lt;baz/&gt;&lt;bar/&gt;&lt;/foo&gt;</samp>
+     *     </code>
+     * @raise TP.sig.InvalidNode Raised when either node is an invalid node or
+     *     when the nodes are not contained in the same overall Document.
+     * @todo
+     */
+
+    var insertionPoint,
+        parentNode;
+
+    if (!TP.isNode(firstNode) ||
+        !TP.isNode(secondNode) ||
+        (TP.nodeGetDocument(firstNode) !==
+             TP.nodeGetDocument(secondNode))) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    insertionPoint = firstNode.nextSibling;
+
+    //  If the insertion point is the same node as the secondNode, then set the
+    //  insertion point to be the firstNode (we're switching places between two
+    //  adjacent nodes).
+    if (insertionPoint === secondNode) {
+        insertionPoint = firstNode;
+    }
+
+    parentNode = firstNode.parentNode;
+
+    //  Note here how we force awakening to 'false' in case we're dealing with
+    //  HTML nodes here.
+
+    TP.nodeReplaceChild(secondNode.parentNode,
+                        firstNode,
+                        secondNode,
+                        false);
+
+    TP.nodeInsertBefore(parentNode, secondNode, insertionPoint, false);
 
     return;
 });
