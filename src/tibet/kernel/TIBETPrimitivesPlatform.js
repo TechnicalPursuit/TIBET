@@ -655,16 +655,7 @@ TP.hc(
 
         var str;
 
-        if (TP.notEmpty(str = errorObj.message)) {
-            //  In addition to the standard property of 'message', IE also
-            //  supports 'number' (meaning an Error number). It also
-            //  supports 'description', but that's the same as 'message',
-            //  so we ignore it here.
-
-            if (TP.notEmpty(errorObj.number)) {
-                str += ' :: number: ' + errorObj.number;
-            }
-        } else {
+        if (TP.isEmpty(str = errorObj.message)) {
             //  If there's no real message, just use '[object Error]'.
             return '[object ' + (errorObj.name || 'Error') + ']';
         }
