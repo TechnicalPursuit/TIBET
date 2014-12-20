@@ -16,6 +16,50 @@
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('httpCreate',
+function(targetUrl, aRequest) {
+
+    /**
+     * @name httpCreate
+     * @synopsis Returns a platform-specific XMLHttpRequest object for use.
+     * @param {String} targetUrl The request's target URL.
+     * @returns {XMLHttpRequest}
+     */
+
+    var xhr,
+        type,
+        url;
+
+    xhr = new XMLHttpRequest();
+
+    if (TP.notValid(xhr)) {
+        return TP.httpError(
+                targetUrl, 'HTTPCreateException',
+                        TP.hc('message',
+                                'Unable to instantiate XHR object.'));
+    }
+
+    //  to support certain scenarios we need to keep track of the last
+    //  HTTP request object used for a particular URI so we associate it
+    //  here if possible
+    if (TP.isValid(targetUrl) &&
+        TP.isValid(type = TP.sys.require('TP.core.URI'))) {
+        url = TP.uc(targetUrl);
+        url.$set('lastCommObj', xhr);
+    }
+
+    //  set MIME type to 'text/plain' to avoid parsing errors on non-XML
+    if (TP.uriResultType(targetUrl) !== TP.DOM) {
+        xhr.overrideMimeType(TP.PLAIN_TEXT_ENCODED);
+    } else {
+        xhr.overrideMimeType(TP.XML_ENCODED);
+    }
+
+    return xhr;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('httpDidSucceed',
 function(httpObj) {
 
