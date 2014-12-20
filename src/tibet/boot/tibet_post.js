@@ -1376,6 +1376,14 @@ TP.sys.isSupported = function() {
         return true;
     }
 
+    if (TP.$browser === 'safari' && version >= 7) {
+        return true;
+    }
+
+    if (TP.$browser === 'opera' && version >= 39) {
+        return true;
+    }
+
     return false;
 };
 
