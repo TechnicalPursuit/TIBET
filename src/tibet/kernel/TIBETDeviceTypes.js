@@ -1255,14 +1255,6 @@ function(nativeEvent) {
             return;
     }
 
-    //  If we're on IE, and the $$handle* call didn't reset the
-    //  'lastEventName' slot to be something else (like null...), then we
-    //  replace it with a copy of the event record. This is because IE
-    //  pitches a fit if we try to keep a reference to Event objects around.
-    if (TP.sys.isUA('IE') && TP.core.Keyboard.get(lastEventName) === ev) {
-        TP.core.Keyboard.$set(lastEventName, ev.copy());
-    }
-
     return;
 });
 
@@ -2019,8 +2011,6 @@ function(normalizedEvent) {
             lastDown.$notSignaled = true;
             lastDown.$special = true;
 
-            lastDown = TP.sys.isUA('IE') ? lastDown.copy() : lastDown;
-
             TP.core.Keyboard.$set('downTimer',
                 setTimeout(
                     function() {
@@ -2714,9 +2704,7 @@ function(normalizedEvent) {
     //  cause event-level confusion. the semantics should be maintained by
     //  the application however that dblclick is "more click"
     thisRef = this;
-    theEvent = TP.sys.isUA('IE') ?
-                        normalizedEvent.copy() :
-                        normalizedEvent;
+    theEvent = normalizedEvent;
 
     TP.core.Mouse.$$clickTimer = setTimeout(
         function() {
@@ -2891,14 +2879,6 @@ function(nativeEvent) {
 
         default:
             return;
-    }
-
-    //  If we're on IE, and the $$handle* call didn't reset the
-    //  'lastEventName' slot to be something else (like null...), then we
-    //  replace it with a copy of the event record. This is because IE
-    //  pitches a fit if we try to keep a reference to Event objects around.
-    if (TP.sys.isUA('IE') && TP.core.Mouse.get(lastEventName) === ev) {
-        TP.core.Mouse.$set(lastEventName, ev.copy());
     }
 
     return;
