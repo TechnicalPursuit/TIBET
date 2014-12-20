@@ -1448,39 +1448,32 @@ if (window.onerror.failedlaunch !== true &&
         } else if (TP.boot.$$isIE()) {
             //  IE
 
-            Object.defineProperty(
-                aWindow.Event.prototype,
+            aWindow.Event.prototype.__defineGetter__(
                 'resolvedTarget',
-                {
-                    get: function() {
+                function() {
 
-                        var resolvedTarget;
+                    var resolvedTarget;
 
-                        if (TP.boot.$isValid(resolvedTarget =
-                                                    this._resolvedTarget)) {
-                            return resolvedTarget;
-                        }
-
-                        if (!TP.boot.$isElement(resolvedTarget =
-                                                TP.eventResolveTarget(this))) {
-                            return null;
-                        }
-
-                        this._resolvedTarget = resolvedTarget;
-
+                    if (TP.boot.$isValid(resolvedTarget =
+                                            this._resolvedTarget)) {
                         return resolvedTarget;
                     }
+
+                    if (!TP.boot.$isElement(resolvedTarget =
+                                                TP.eventResolveTarget(this))) {
+                        return null;
+                    }
+
+                    this._resolvedTarget = resolvedTarget;
+
+                    return resolvedTarget;
                 });
 
-            Object.defineProperty(
-                aWindow.Event.prototype,
+            aWindow.Event.prototype.__defineGetter__(
                 'wheelDelta',
-                {
-                    get: function() {
-
-                        if (this.type === 'mousewheel') {
-                            return this.detail / 120;
-                        }
+                function() {
+                    if (this.type === 'mousewheel') {
+                        return this.detail / 120;
                     }
                 });
         }
@@ -2233,31 +2226,15 @@ if (window.onerror.failedlaunch !== true &&
                                 'keyup',
                                 TP.core.Keyboard.$$handleKeyEvent);
 
-        //  On IE, the 'topmost listener' for oncut/oncopy/onpaste that gets
-        //  notified is the 'body' element. This doesn't affect the 'origin
-        //  set' that gets signaled for these signals (they're fired with
-        //  DOM_FIRING).
-        if (TP.boot.$$isIE()) {
-            TP.boot.$$addUIHandler(aDocument.body,
-                                    'cut',
-                                    TP.$$handleCut);
-            TP.boot.$$addUIHandler(aDocument.body,
-                                    'copy',
-                                    TP.$$handleCopy);
-            TP.boot.$$addUIHandler(aDocument.body,
-                                    'paste',
-                                    TP.$$handlePaste);
-        } else {
-            TP.boot.$$addUIHandler(aDocument,
-                                    'cut',
-                                    TP.$$handleCut);
-            TP.boot.$$addUIHandler(aDocument,
-                                    'copy',
-                                    TP.$$handleCopy);
-            TP.boot.$$addUIHandler(aDocument,
-                                    'paste',
-                                    TP.$$handlePaste);
-        }
+        TP.boot.$$addUIHandler(aDocument,
+                                'cut',
+                                TP.$$handleCut);
+        TP.boot.$$addUIHandler(aDocument,
+                                'copy',
+                                TP.$$handleCopy);
+        TP.boot.$$addUIHandler(aDocument,
+                                'paste',
+                                TP.$$handlePaste);
 
         TP.boot.$$addUIHandler(aDocument,
                                 'blur',
