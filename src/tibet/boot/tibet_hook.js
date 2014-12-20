@@ -1448,32 +1448,41 @@ if (window.onerror.failedlaunch !== true &&
         } else if (TP.boot.$$isIE()) {
             //  IE
 
-            aWindow.Event.prototype.__defineGetter__(
+            Object.defineProperty(
+                aWindow.Event.prototype,
                 'resolvedTarget',
-                function() {
+                {
+                    configurable: true,
+                    get: function() {
 
-                    var resolvedTarget;
+                        var resolvedTarget;
 
-                    if (TP.boot.$isValid(resolvedTarget =
-                                            this._resolvedTarget)) {
+                        if (TP.boot.$isValid(resolvedTarget =
+                                                    this._resolvedTarget)) {
+                            return resolvedTarget;
+                        }
+
+                        if (!TP.boot.$isElement(resolvedTarget =
+                                                TP.eventResolveTarget(this))) {
+                            return null;
+                        }
+
+                        this._resolvedTarget = resolvedTarget;
+
                         return resolvedTarget;
                     }
-
-                    if (!TP.boot.$isElement(resolvedTarget =
-                                                TP.eventResolveTarget(this))) {
-                        return null;
-                    }
-
-                    this._resolvedTarget = resolvedTarget;
-
-                    return resolvedTarget;
                 });
 
-            aWindow.Event.prototype.__defineGetter__(
+            Object.defineProperty(
+                aWindow.Event.prototype,
                 'wheelDelta',
-                function() {
-                    if (this.type === 'mousewheel') {
-                        return this.detail / 120;
+                {
+                    configurable: true,
+                    get: function() {
+
+                        if (this.type === 'mousewheel') {
+                            return this.detail / 120;
+                        }
                     }
                 });
         }
