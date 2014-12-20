@@ -11,7 +11,8 @@ function(aRequest) {
     /**
      * @name tagCompile
      * @synopsis Convert instances of the tag into their HTML representation.
-     * @param {TP.sig.ShellRequest} aRequest The request containing parameters.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
     var elem,
