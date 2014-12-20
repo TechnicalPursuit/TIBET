@@ -73,6 +73,7 @@
         "syn": "TechnicalPursuit/syn",
         "watch": "*",
         "xpath": "TechnicalPursuit/xpath",
+        "xpathjs": "TechnicalPursuit/xpathjs",
         "xmldom": "*"
     },
     "devDependencies": {

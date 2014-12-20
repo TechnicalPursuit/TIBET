@@ -89,6 +89,16 @@
     <script src="~lib_deps/jquery-xmlns-tpi.js" no-lint="true"/>
     <script src="TIBETCSSQueryPost.js"/>
 
+    <script src="~lib_deps/xpathjs-tpi.min.js"
+        unless="boot.unminified" no-minify="true" no-lint="true"/>
+    <script src="~lib_deps/xpathjs-tpi.js"
+        if="boot.unminified" no-lint="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.XPathJS = XPathJS;
+        ]]>
+    </script>
+
     <script src="TIBETHTTPPrimitivesPre.js"/>
     <script src="TIBETHTTPPrimitivesBase.js"/>
     <script src="TIBETHTTPPrimitivesPlatform.js"/>
