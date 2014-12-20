@@ -704,7 +704,7 @@ function(anEvent) {
     evt = TP.eventNormalize(anEvent);
 
     //  Note that we don't have a '$$' property for this property
-    return TP.ifInvalid(evt.resolvedTarget);
+    return evt.resolvedTarget;
 });
 
 //  ------------------------------------------------------------------------
