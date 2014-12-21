@@ -687,6 +687,8 @@ function(aTargetElem, nodesAdded) {
         processor.processTree(nodesAdded.at(i));
     }
 
+    TP.core.TagProcessor.signal('TP.sig.AttachProcessingComplete');
+
     return this;
 });
 
@@ -783,6 +785,8 @@ function(aTargetElem, nodesRemoved) {
                             return false;
                         });
     }
+
+    TP.core.TagProcessor.signal('TP.sig.DetachProcessingComplete');
 
     return this;
 });
