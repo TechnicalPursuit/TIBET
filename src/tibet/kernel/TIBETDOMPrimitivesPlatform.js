@@ -1270,6 +1270,282 @@ TP.hc(
 
         return null;
     },
+    'trident',
+    function(aNode, wantsXMLDeclaration, shallow) {
+
+        /**
+         * @name nodeAsString
+         * @synopsis Returns the string representation of aNode.
+         * @description This function takes in a flag as to whether the caller
+         *     wants a specific behavior as to the presence of an XML
+         *     declaration. The behavior of this function as to this flag's
+         *     state is as follows:
+         *
+         *     Flag value Existing declaration? Output ----------
+         *     --------------------- ------ Not defined Yes With declaration Not
+         *     defined No Without declaration True Yes With declaration True No
+         *     With declaration False Yes Without declaration False No Without
+         *     declaration
+         *
+         *     NOTE: This flag is only used when the supplied Node is an XML
+         *     document.
+         * @param {Node} aNode The node to transform.
+         * @param {Boolean} wantsXMLDeclaration Whether or not the caller wants
+         *     an XML declaration placed on the front of the string
+         *     representation. Default is false.
+         * @param {Boolean} shallow True to output just the node when it's an
+         *     element node so no children are represented. Default is false.
+         * @example Create an XML document with an attribute and a text node
+         *     child and generate the string representation of each construct
+         *     (with no XML declaration):
+         *     <code>
+         *          xmlDoc = TP.documentFromString(
+         *          '<foo xmlns:bar="http://www.bar.com" bar:baz="bazify">Hi
+         *         there</foo>');
+         *          <samp>[object XMLDocument]</samp>
+         *          TP.nodeAsString(xmlDoc);
+         *          <samp>&lt;foo xmlns:bar="http://www.bar.com"
+         *         bar:baz="bazify"&gt;Hi there&lt;/foo&gt;</samp>
+         *          TP.nodeAsString(xmlDoc.documentElement);
+         *          <samp>&lt;foo xmlns:bar="http://www.bar.com"
+         *         bar:baz="bazify"&gt;Hi there&lt;/foo&gt;</samp>
+         *          TP.nodeAsString(xmlDoc.documentElement.attributes[1]);
+         *          <samp>bazify</samp>
+         *          TP.nodeAsString(xmlDoc.documentElement.firstChild);
+         *          <samp>Hi there</samp>
+         *     </code>
+         * @example Create an XML document with an attribute and a text node
+         *     child and generate the string representation of each construct
+         *     (with an XML declaration):
+         *     <code>
+         *          xmlDoc = TP.documentFromString(
+         *          '<foo xmlns:bar="http://www.bar.com" bar:baz="bazify">Hi
+         *         there</foo>');
+         *          <samp>[object XMLDocument]</samp>
+         *          TP.nodeAsString(xmlDoc, true);
+         *          <samp>&lt;?xml version="1.0"?&gt;&lt;foo
+         *         xmlns:bar="http://www.bar.com" bar:baz="bazify"&gt;Hi
+         *         there&lt;/foo&gt;</samp>
+         *          TP.nodeAsString(xmlDoc.documentElement, true);
+         *          <samp>&lt;foo xmlns:bar="http://www.bar.com"
+         *         bar:baz="bazify"&gt;Hi there&lt;/foo&gt;</samp>
+         *     </code>
+         * @example Create an XML document with a namespaced root node, add two
+         *     'null namespaced' children to it and generate the string
+         *     representation:
+         *     <code>
+         *          xmlDoc = TP.documentFromString(
+         *          '<foo xmlns="http://www.foo.com"/>');
+         *          <samp>[object XMLDocument]</samp>
+         *          TP.nodeAppendChild(
+         *          xmlDoc.documentElement,
+         *          TP.documentCreateElement(xmlDoc, 'bar', null));
+         *          <samp>[object Element]</samp>
+         *          TP.nodeAppendChild(
+         *          xmlDoc.documentElement,
+         *          TP.documentCreateElement(xmlDoc, 'baz', ''));
+         *          <samp>[object Element]</samp>
+         *          TP.nodeAsString(xmlDoc, true);
+         *          <samp>&lt;foo xmlns="http://www.foo.com"&gt;&lt;bar
+         *         xmlns=""/&gt;&lt;baz xmlns=""/&gt;&lt;/foo&gt;</samp>
+         *     </code>
+         * @example Create a document fragment in an XML document, append some
+         *     <code>
+         *          elements to it, and generate its string representation:
+         *          xmlDoc = TP.documentFromString(
+         *          '<foo xmlns:bar="http://www.bar.com" bar:baz="bazify">Hi
+         *         there</foo>');
+         *          <samp>[object XMLDocument]</samp>
+         *          docFrag = TP.documentCreateFragment(xmlDoc);
+         *          TP.nodeAppendChild(
+         *          docFrag,
+         *          TP.documentCreateElement(xmlDoc, 'span',
+         *         TP.w3.Xmlns.XHTML));
+         *          TP.nodeAppendChld(
+         *          docFrag,
+         *          TP.documentCreateElement(xmlDoc, 'span',
+         *         TP.w3.Xmlns.XHTML));
+         *          TP.nodeAsString(docFrag);
+         *          <samp>&lt;span
+         *         xmlns="http://www.w3.org/1999/xhtml"/&gt;&lt;span
+         *         xmlns="http://www.w3.org/1999/xhtml"/&gt;</samp>
+         *     </code>
+         * @example Generate a string representation of an HTML document:
+         *     <code>
+         *          TP.nodeAsString(document);
+         *          <samp>...HTML output...</samp>
+         *     </code>
+         * @example Generate a string representation of an HTML element:
+         *     <code>
+         *          TP.nodeAsString(TP.documentGetBody(document));
+         *          <samp>...HTML output...</samp>
+         *     </code>
+         * @returns {String} The String produced by 'rendering' the supplied
+         *     node.
+         * @raise TP.sig.InvalidNode Raised when an invalid node is provided to
+         *     the method.
+         * @raise TP.sig.SerializationException Raised when the serialization
+         *     machinery encounters an error serializing the node.
+         * @raise TP.sig.UnsupportedOperation Raised when a Node is supplied
+         *     that this method doesn't know how to generate a string
+         *     representation of. These include Nodes of type:
+         *     Node.ENTITY_REFERENCE_NODE Node.ENTITY_NODE
+         *     Node.NOTATION_NODE
+         * @todo
+         */
+
+        var node,
+            str,
+            i;
+
+        if (!TP.isNode(aNode)) {
+            return TP.raise(this, 'TP.sig.InvalidNode');
+        }
+
+        node = shallow ? TP.nodeCloneNode(aNode, false) : aNode;
+
+        //  depending on the node type we can optimize this call a bit
+        switch (node.nodeType) {
+            case Node.ATTRIBUTE_NODE:
+
+                return node.name + '="' + node.value + '"';
+
+            case Node.TEXT_NODE:
+
+                return node.data;
+
+            case Node.CDATA_SECTION_NODE:
+
+                return '<![CDATA[' + node.data + ']]>';
+
+            case Node.DOCUMENT_FRAGMENT_NODE:
+
+                //  IE11 has a bug where the XMLSerializer only serializes the
+                //  first node in a DocumentFragment. To fix this, we just
+                //  recurse and concat.
+                str = '';
+                for (i = 0; i < node.childNodes.length; i++) {
+                    str += TP.nodeAsString(node.childNodes[i]);
+                }
+
+                //  If the node was originally an HTML node, then we need to
+                //  make sure its return value is HTML
+                if (TP.isHTMLNode(node)) {
+                    return TP.stringAsHTMLString(str);
+                } else {
+                    return str;
+                }
+
+                break;
+
+            case Node.PROCESSING_INSTRUCTION_NODE:
+
+                return '<?' + node.target + ' ' + node.data + '?>';
+
+            case Node.COMMENT_NODE:
+
+                return '<!--' + node.data + '-->';
+
+            case Node.ENTITY_REFERENCE_NODE:
+
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
+                break;
+
+            case Node.ENTITY_NODE:
+
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
+                break;
+
+            case Node.DOCUMENT_TYPE_NODE:
+
+                return '<!DOCTYPE ' + node.name +
+                        ' PUBLIC ' + node.publicId + ' ' + node.systemId + '>';
+
+            case Node.NOTATION_NODE:
+
+                TP.raise(this, 'TP.sig.UnsupportedOperation');
+                break;
+
+                /* eslint-disable no-fallthrough */
+
+            case Node.DOCUMENT_NODE:
+
+                /* jshint -W086 */
+
+                //  No document element? Return the empty string.
+                if (TP.notValid(node.documentElement)) {
+                    return '';
+                }
+
+                //  Note here how we don't break, but continue falling
+                //  through...
+
+            case Node.ELEMENT_NODE:
+
+                //  Note here how we don't break, but continue falling
+                //  through...
+
+            default:
+
+                /* eslint-enable no-fallthrough */
+
+                //  Try to serialize the node. If it fails, report an error.
+                try {
+                    str = (new XMLSerializer()).serializeToString(node);
+
+                    //  NB: we check for a space after the 'xml' part here
+                    //  to avoid finding PIs. We only want the XML
+                    //  declaration.
+
+                    //  If we wanted a declaration, the supplied Node was an
+                    //  XML document, and there isn't a declaration, then
+                    //  prepend one.
+                    if (wantsXMLDeclaration &&
+                        (TP.isXMLDocument(node) ||
+                             TP.isXMLDocument(node.parentNode))) {
+                        if (!str.startsWith('<?xml ')) {
+                            str = TP.XML_10_HEADER + '\n' + str;
+                        }
+                    } else {
+                        //  Otherwise, if we didn't want a declaration, but
+                        //  there was one, slice the header off.
+                        if (str.startsWith('<?xml ')) {
+                            str = str.slice(str.indexOf('?>') + 2);
+                        }
+                    }
+                } catch (e) {
+                    //  work around another Mozilla bug/trap
+                    if (/restricted URI/.test(TP.str(e))) {
+                        if (TP.isElement(node)) {
+                            str = TP.elementGetOuterContent(node);
+                        } else if (TP.isDocument(node)) {
+                            str = TP.elementGetOuterContent(
+                                                node.documentElement);
+                        } else {
+                            str = node.innerHTML;
+                        }
+                    } else {
+                        TP.raise(this, 'TP.sig.SerializationException',
+                                    TP.ec(e));
+                        str = 'Serialization failed.';
+                    }
+                }
+
+                /* jshint +W086 */
+
+                //  If the node was originally an HTML node, then we need to
+                //  make sure its return value is HTML
+                if (TP.isHTMLNode(node)) {
+                    return TP.stringAsHTMLString(str);
+                } else {
+                    return str;
+                }
+
+                break;
+        }
+
+        return null;
+    },
     TP.DEFAULT,
     function(aNode, wantsXMLDeclaration, shallow) {
 
