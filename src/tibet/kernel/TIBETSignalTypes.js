@@ -583,6 +583,16 @@ TP.core.ResizeMonitor.Type.defineAttribute(
     });
 
 //  ========================================================================
+//  TAG PROCESSING SIGNALS
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('ProcessingComplete');
+
+TP.sig.ProcessingComplete.defineSubtype('CompileProcessingComplete');
+TP.sig.ProcessingComplete.defineSubtype('AttachProcessingComplete');
+TP.sig.ProcessingComplete.defineSubtype('DetachProcessingComplete');
+
+//  ========================================================================
 //  APP SIGNALS
 //  ========================================================================
 

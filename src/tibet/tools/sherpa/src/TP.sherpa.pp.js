@@ -149,7 +149,8 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromError',
 function(anObject, optFormat) {
 
-    var stack;
+    var stackStr,
+        stackEntries;
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
@@ -159,18 +160,19 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    stack = '';
-    if (TP.sys.shouldLogStack()) {
-        stack = '<br/>' +
-                TP.getStackInfo(anObject).collect(
-                    function(infoPiece) {
-                        return TP.sherpa.pp.fromString(infoPiece);
-                    }).join('<br/>');
+    stackStr = '';
+    if (TP.sys.shouldLogStack() &&
+        TP.notEmpty(stackEntries = TP.getStackInfo(anObject))) {
+        stackStr = '<br/>' +
+                    stackEntries.collect(
+                        function(infoPiece) {
+                            return infoPiece.asEscapedXML();
+                        }).join('<br/>');
     }
 
     return '<span class="sherpa_pp Error">' +
             this.fromString(anObject.message) +
-            stack +
+            stackStr +
             '</span>';
 });
 

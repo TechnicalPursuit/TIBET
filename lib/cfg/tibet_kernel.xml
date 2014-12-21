@@ -31,8 +31,10 @@
         <![CDATA[
         //  Fixes for Q running under IE11.
         //  https://connect.microsoft.com/IE/feedback/details/801823/
-        window.setImmediate = undefined;
-        window.MessageChannel = undefined;
+        if (TP.$browser === 'ie') {
+            window.setImmediate = undefined;
+            window.MessageChannel = undefined;
+        }
         ]]>
     </script>
 

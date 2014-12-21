@@ -1493,6 +1493,10 @@ TP.hc(
                 try {
                     str = (new XMLSerializer()).serializeToString(node);
 
+                    //  IE's XMLSerializer insists on putting a space before the
+                    //  close of an 'empty' tag: <foo />. We don't want that.
+                    str = str.replace(/ \/>/g, '/>');
+
                     //  NB: we check for a space after the 'xml' part here
                     //  to avoid finding PIs. We only want the XML
                     //  declaration.

@@ -260,7 +260,9 @@ function(aRequest) {
     var elem,
         elemWin,
 
-        homeURL;
+        homeURL,
+
+        setContentFunc;
 
     //  If the Sherpa is configured to be on (and we've actually loaded the
     //  Sherpa code), then exit here - the Sherpa does some special things to
@@ -286,12 +288,18 @@ function(aRequest) {
                                 TP.sys.cfg('tibet.blankpage')));
 
 
-    //  Set the content of this Window to the home URL content, but do so in a
-    //  timeout giving the current attaching process time to finish. Otherwise,
-    //  we end up in race conditions and potential browser crashes.
-    (function() {
-        TP.wrap(elemWin).setContent(homeURL);
-    }).fork(100);
+    (setContentFunc = function(aSignal) {
+        setContentFunc.ignore(
+            TP.wrap(elemWin.document), 'TP.sig.DOMContentLoaded');
+
+        //  Set the content of this Window to the Sherpa content, but do so in a
+        //  timeout giving the current attaching process time to finish.
+        //  Otherwise, we end up in race conditions.
+        (function() {
+            TP.wrap(elemWin).setContent(homeURL);
+        }).fork(100);
+
+    }).observe(TP.wrap(elemWin.document), 'TP.sig.DOMContentLoaded');
 
     return;
 });
