@@ -27,6 +27,15 @@
     <script src="TIBETRegistration.js"/>
     <script src="TIBETFoundation.js"/>
 
+    <script>
+        <![CDATA[
+        //  Fixes for Q running under IE11.
+        //  https://connect.microsoft.com/IE/feedback/details/801823/
+        window.setImmediate = undefined;
+        window.MessageChannel = undefined;
+        ]]>
+    </script>
+
     <script src="~lib_deps/q-tpi.min.js"
         unless="boot.unminified" no-minify="true" no-lint="true"/>
     <script src="~lib_deps/q-tpi.js"
