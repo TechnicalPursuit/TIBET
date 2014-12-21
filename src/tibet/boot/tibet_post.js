@@ -11185,7 +11185,8 @@ TP.boot.launch = function(options) {
 
     //  warn about unsupported platforms but don't halt the boot process
     if (!TP.sys.isSupported()) {
-        TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent, TP.FATAL);
+        TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent,
+                        TP.SEVERE);
         return;
     }
 
