@@ -26,8 +26,11 @@
   text-decoration: underline;
 }
 
-p.hint {
+.startup p.hint {
     margin-top: 50px;
-    font-size: 100%;
-    text-align: center;
+    font-size: 108%;
+}
+
+.startup code {
+    font-size: 108%;
 }
