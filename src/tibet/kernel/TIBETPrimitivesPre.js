@@ -2662,12 +2662,17 @@ function(anObj) {
                         obj = TP.global[aProp];
 
                         //  If the slot we defined on Function.prototype isn't
-                        //  there and the property is not in our exclusion list
-                        //  above, and it's not a slot corresponding to a Window
-                        //  (like iframe Windows are), then add both the object
-                        //  and the property name to our list. This is how we
-                        //  get both the object reference and the name that goes
-                        //  along with it.
+                        //  there and the property is:
+                        //
+                        //  - not in our exclusion list above
+                        //  - it's not a slot corresponding to a Window (like
+                        //  iframe Windows are)
+                        //  - it's not a Number (believe it or not, on some
+                        //  platforms, it will be... Chrome...)
+                        //
+                        //  then add both the object and the property name to
+                        //  our list. This is how we get both the object
+                        //  reference and the name that goes along with it.
 
                         //  Note that we put this in a try...catch to avoid
                         //  problems with some environments wanting to throw an
@@ -2678,7 +2683,8 @@ function(anObj) {
                         try {
                             if (!obj.fluffycat &&
                                 exclusionList.indexOf(aProp) === TP.NOT_FOUND &&
-                                !TP.isWindow(obj)) {
+                                !TP.isWindow(obj) &&
+                                !TP.isNumber(obj)) {
                                 list.push([obj, aProp]);
                             }
                         } catch (e) {
