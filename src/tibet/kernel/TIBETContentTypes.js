@@ -401,7 +401,7 @@ function(aPath) {
     //  Need at least a path to test.
     if (TP.isEmpty(path = aPath)) {
         return TP.raise(this, 'TP.sig.InvalidPath',
-                        'Unable to create an empty path.');
+                        'Unable to create an path from empty spec.');
     }
 
     //  Note that we only allow numeric ACP expressions in paths
