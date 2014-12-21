@@ -1419,11 +1419,6 @@ TP.hc(
 
             case Node.DOCUMENT_FRAGMENT_NODE:
 
-                //  You can't run XPaths on document fragments on Mozilla,
-                //  so the null namespace 'workaround' that we use below for
-                //  Elements and Documents won't work anyway. Therefore, for
-                //  document fragments, we just shortstop the process here
-                //  and create a String from it the best we can.
                 try {
                     str = (new XMLSerializer()).serializeToString(node);
                 } catch (e) {
