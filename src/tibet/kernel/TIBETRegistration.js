@@ -128,14 +128,19 @@ function(anID, regOnly, nodeContext) {
         }
     }
 
-    //  Note that we only look up Windows if no node context was supplied. If
-    //  one was supplied, then we don't bother looking for windows. In fact, if
-    //  the name we're looking for also matches a Window slot, and that points
-    //  to a Window (i.e. 'content'), that value will be returned.
-    if (TP.regex.VALID_WINDOWNAME.test(id) && TP.notValid(nodeContext)) {
-        //  we'll also consider windows to be "registered" objects by
-        //  id/name, but we filter with a regex so we don't waste time here
-        if ((inst = TP.sys.getWindowById(id))) {
+    //  Note that we check first to see if an Element has the ID (if a node
+    //  context was supplied. If one was supplied, then we don't bother looking
+    //  for windows. In fact, if the name we're looking for also matches a
+    //  Window slot, and that points to a Window (i.e. 'content' in HTML5
+    //  Window objects), that value will be returned and we don't want that..
+
+    //  we'll also consider windows to be "registered" objects by
+    //  id/name, but we filter with a regex so we don't waste time here
+    if (TP.regex.VALID_WINDOWNAME.test(id)) {
+        if (TP.isNode(nodeContext)) {
+            inst = TP.nodeGetElementById(nodeContext, id);
+        }
+        if (TP.notValid(inst) && TP.isWindow(inst = TP.sys.getWindowById(id))) {
             return TP.tpwin(inst);
         }
     }
