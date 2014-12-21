@@ -1384,6 +1384,10 @@ TP.sys.isSupported = function() {
         return true;
     }
 
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        return true;
+    }
+
     return false;
 };
 
