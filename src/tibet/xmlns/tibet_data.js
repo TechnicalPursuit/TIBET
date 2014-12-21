@@ -71,7 +71,7 @@ function(aRequest) {
         }
 
         //  Normalize the node to try to get the best representation
-        elem.normalize();
+        TP.nodeNormalize(elem);
 
         cdatas = TP.nodeGetDescendantsByType(elem, Node.CDATA_SECTION_NODE);
 

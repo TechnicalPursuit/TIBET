@@ -6248,11 +6248,34 @@ function(aNode) {
      * @raise TP.sig.InvalidNode Raised when the node is an invalid node.
      */
 
+    var normalizeFunc;
+
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
-    aNode.normalize();
+    //  IE11 has a bug when normalizing nodes with dashes ('-') in them
+    //  https://connect.microsoft.com/IE/feedback/details/832750
+    if (TP.sys.isUA('IE')) {
+        normalizeFunc = function(node) {
+            if (!node) {
+                return;
+            }
+            if (node.nodeType === 3) {
+                while (node.nextSibling && node.nextSibling.nodeType === 3) {
+                node.nodeValue += node.nextSibling.nodeValue;
+                node.parentNode.removeChild(node.nextSibling);
+                }
+            } else {
+                normalizeFunc(node.firstChild);
+            }
+            normalizeFunc(node.nextSibling);
+        };
+
+        normalizeFunc(aNode);
+    } else {
+        aNode.normalize();
+    }
 
     return aNode;
 });

@@ -1802,6 +1802,8 @@ function(aRequest) {
         }
     }
 
+    TP.nodeNormalize(node);
+
     //  get the list ready. NOTE NOTE NOTE that we convert into an array so
     //  that we can be sure that we process each original child regardless
     //  of how the desugaring process may alter the original node.
