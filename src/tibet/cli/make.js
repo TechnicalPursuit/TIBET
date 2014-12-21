@@ -48,7 +48,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * the command line.
  * @type {Number}
  */
-Cmd.TIMEOUT = 30000;
+Cmd.TIMEOUT = 60000;
 
 
 //  ---
