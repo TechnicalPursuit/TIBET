@@ -1751,7 +1751,7 @@ TP.definePrimitive('elementCopyAttributes',
 function(fromElement, toElement) {
 
     /**
-     * @name elementCopyXMLNSAttributes
+     * @name elementCopyAttributes
      * @synopsis Copies all attributes from fromElement to toElement.
      * @param {Element} fromElement The source element.
      * @param {Element} toElement The target element.
