@@ -10289,9 +10289,7 @@ function(aNode) {
     //  Process the tree of markup
     processor.processTree(aNode);
 
-    (function() {
-        TP.core.TagProcessor.signal('TP.sig.AttachProcessingComplete');
-    }).fork(100);
+    TP.core.TagProcessor.signal('TP.sig.AttachProcessingComplete');
 
     return;
 });
