@@ -3816,7 +3816,11 @@ function() {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    return TP.ac(node.options);
+    //  For some reason, on IE, the 'options' Array doesn't work properly. It
+    //  returns the native node of the receiver.
+
+    //  So we query by CSS instead.
+    return TP.byCSS('option', node);
 });
 
 //  ------------------------------------------------------------------------
