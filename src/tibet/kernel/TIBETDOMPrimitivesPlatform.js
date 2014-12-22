@@ -279,7 +279,11 @@ TP.hc(
 
             xmlDoc,
 
-            errorRecord;
+            errorRecord,
+
+            activeXDoc,
+            activeXBody,
+            regularBody;
 
         report = TP.ifInvalid(shouldReport, false);
 
@@ -329,6 +333,20 @@ TP.hc(
             }
 
             return null;
+        }
+
+        //  Unfortunately, IE's DOMParser removes attributes from the '<body>'
+        //  element (if there is one). So, to counter this, we use the 'old
+        //  ActiveX way' to parse the document and copy the attributes from the
+        //  body over from one to the other.
+        if (/<body/.test(aString)) {
+            activeXDoc = TP.boot.$documentFromStringIE(str);
+            //  NB: This is the easiest way to do this, given that it might very
+            //  well be in the XHTML namespace.
+            activeXBody = activeXDoc.selectSingleNode(
+                                            '//*[local-name() = "body"]');
+            regularBody = xmlDoc.getElementsByTagName('body')[0];
+            TP.elementCopyAttributes(activeXBody, regularBody);
         }
 
         //  Need to replace the '<root>' element that we used for XMLNS
