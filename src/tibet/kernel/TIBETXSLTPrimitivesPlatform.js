@@ -725,6 +725,12 @@ TP.hc(
                             paramName = kvPair.first();
                             paramValue = TP.ifInvalid(kvPair.last(), '');
 
+                            //  We can't have parameter names that start with
+                            //  '$' - that conflicts with XSLT variables.
+                            if (/^\$/.test(paramName)) {
+                                return;
+                            }
+
                             processor.setParameter(
                                         null,
                                         paramName,
@@ -1171,9 +1177,17 @@ TP.hc(
                 paramHash.perform(
                     function(kvPair) {
 
-                        var paramValue;
+                        var paramName,
+                            paramValue;
 
-                        paramValue = kvPair.last();
+                        paramName = kvPair.first();
+                        paramValue = TP.ifInvalid(kvPair.last(), '');
+
+                        //  We can't have parameter names that start with '$' -
+                        //  that conflicts with XSLT variables.
+                        if (/^\$/.test(paramName)) {
+                            return;
+                        }
 
                         //  if the paramValue isn't a Node, then we try to
                         //  use its asString() value, followed by its
@@ -1185,16 +1199,15 @@ TP.hc(
                                     kvPair.first(), paramValue.asString());
                             } else if (TP.canInvoke(paramValue, 'valueOf')) {
                                 processor.addParameter(
-                                    kvPair.first(), paramValue.valueOf());
+                                    paramName, paramValue.valueOf());
                             } else {
                                 processor.addParameter(
-                                    kvPair.first(), paramValue);
+                                    paramName, paramValue);
                             }
                         } else {
                             //  otherwise, its a Node, so just use its value
                             //  directly
-                            processor.addParameter(
-                                    kvPair.first(), paramValue);
+                            processor.addParameter(paramName, paramValue);
                         }
                     });
             }
@@ -1352,6 +1365,12 @@ TP.hc(
 
                             paramName = kvPair.first();
                             paramValue = TP.ifInvalid(kvPair.last(), '');
+
+                            //  We can't have parameter names that start with
+                            //  '$' - that conflicts with XSLT variables.
+                            if (/^\$/.test(paramName)) {
+                                return;
+                            }
 
                             //  Webkit-based browsers have a long-standing bug
                             //  with using Nodes as parameters... sigh
