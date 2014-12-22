@@ -1030,7 +1030,12 @@ TP.hc(
                                 'html',
                                 TP.w3.Xmlns.XHTML);
 
-        node = inputNode;
+        if (!TP.isDocument(inputNode)) {
+            node = TP.createDocument();
+            node.appendChild(TP.nodeCloneNode(inputNode, true));
+        } else {
+            node = inputNode;
+        }
 
         //  default the hash value so we can use it without testing later
         hash = '0';
