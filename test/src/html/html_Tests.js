@@ -857,7 +857,7 @@ function() {
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
         value = tpElem.get('value');
         test.assert.isEqualTo(
-            value.strip(/ xml:base=".+"/),
+            value.strip(/ xml:base=".+?"/).strip(/ xmlns:xml=".+?"/),
             '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
 
         //  XMLElement
@@ -989,7 +989,7 @@ function() {
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
         value = tpElem.get('value');
         test.assert.isEqualTo(
-            value.strip(/ xml:base=".+"/),
+            value.strip(/ xml:base=".+?"/).strip(/ xmlns:xml=".+?"/),
             '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
 
         //  XMLElement
