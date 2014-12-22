@@ -1725,6 +1725,12 @@ TP.hc(
                     str = 'Serialization failed.';
                 }
 
+                //  IE's XMLSerializer insists on putting a space before the
+                //  close of an 'empty' tag: <foo />. We don't want that and we
+                //  need to remain consistent between platforms, so we change
+                //  those here as well.
+                str = str.replace(/ \/>/g, '/>');
+
                 //  If the node was originally an HTML node, then we need to
                 //  make sure its return value is HTML
                 if (TP.isHTMLNode(node)) {
@@ -1789,6 +1795,12 @@ TP.hc(
                 //  Try to serialize the node. If it fails, report an error.
                 try {
                     str = (new XMLSerializer()).serializeToString(node);
+
+                    //  IE's XMLSerializer insists on putting a space before the
+                    //  close of an 'empty' tag: <foo />. We don't want that and
+                    //  we need to remain consistent between platforms, so we
+                    //  change those here as well.
+                    str = str.replace(/ \/>/g, '/>');
 
                     //  NB: we check for a space after the 'xml' part here
                     //  to avoid finding PIs. We only want the XML
