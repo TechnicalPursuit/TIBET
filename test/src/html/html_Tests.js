@@ -115,9 +115,9 @@ function() {
 
         tpElem = TP.byOID('span');
 
-        tpElem.set('content', '<h6>Hi</h6>');
+        tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, '<h6>Hi</h6>');
+        test.assert.isEqualTo(content, '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
 
         tpElem.get('nativeNode').innerHTML = '';
     });
@@ -207,9 +207,9 @@ function() {
 
         tpElem = TP.byOID('div');
 
-        tpElem.set('content', '<h6>Hi</h6>');
+        tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, '<h6>Hi</h6>');
+        test.assert.isEqualTo(content, '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
 
         tpElem.get('nativeNode').innerHTML = '';
     });
@@ -294,7 +294,7 @@ function() {
         tpElem = TP.byOID('input_text');
 
         //  Markup String (won't alter content)
-        tpElem.set('content', '<h6>Hi</h6>');
+        tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
         test.assert.isNull(content);
     });
@@ -384,9 +384,9 @@ function() {
 
         tpElem = TP.byOID('textarea');
 
-        tpElem.set('content', '<h6>Hi</h6>');
+        tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, '<h6>Hi</h6>');
+        test.assert.isEqualTo(content, '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
 
         tpElem.get('nativeNode').innerHTML = '';
     });
@@ -480,9 +480,9 @@ function() {
 
         tpElem = TP.byOID('select_single');
 
-        tpElem.set('content', '<h6>Hi</h6>');
+        tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, '<h6>Hi</h6>');
+        test.assert.isEqualTo(content, '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
 
         tpElem.get('nativeNode').innerHTML = '<option id="select_single_1" value="foo">Dog</option><option id="select_single_2" value="bar">Cat</option><option id="select_single_3" value="baz">Fish</option>';
     });
@@ -576,9 +576,9 @@ function() {
 
         tpElem = TP.byOID('select_multiple');
 
-        tpElem.set('content', '<h6>Hi</h6>');
+        tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
-        test.assert.isEqualTo(content, '<h6>Hi</h6>');
+        test.assert.isEqualTo(content, '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
 
         tpElem.get('nativeNode').innerHTML = '<option id="select_multiple_1" value="foo">Red</option><option id="select_multiple_2" value="bar">Blue</option><option id="select_multiple_3" value="baz">Yellow</option>';
     });
@@ -663,7 +663,7 @@ function() {
         tpElem = TP.byOID('input_radio_3');
 
         //  Markup String (won't alter content)
-        tpElem.set('content', '<h6>Hi</h6>');
+        tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
         test.assert.isNull(content);
     });
@@ -748,7 +748,7 @@ function() {
         tpElem = TP.byOID('input_checkbox_3');
 
         //  Markup String (won't alter content)
-        tpElem.set('content', '<h6>Hi</h6>');
+        tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
         test.assert.isNull(content);
     });
