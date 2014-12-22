@@ -350,7 +350,7 @@ function() {
 
         testRep = TP.uc('~lib_tst/src/tibet/formatting/google_results_template.xml#totalTemplate').transform(googleDogData);
 
-        correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br />[object Object], [object Object], [object Object], [object Object]</span>';
+        correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br/>[object Object], [object Object], [object Object], [object Object]</span>';
 
         this.assert.isEqualTo(
             testRep,
@@ -362,7 +362,7 @@ function() {
         //  Same test, but as a formatting expression.
         testRep = '{{value .% ~lib_tst/src/tibet/formatting/google_results_template.xml#totalTemplate}}'.transform(googleDogData);
 
-        correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br />[object Object], [object Object], [object Object], [object Object]</span>';
+        correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br/>[object Object], [object Object], [object Object], [object Object]</span>';
 
         this.assert.isEqualTo(
             testRep,
