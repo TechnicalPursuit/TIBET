@@ -1179,7 +1179,9 @@ function(nativeEvent) {
         case 'keydown':
 
             //  suppress dups for IE...we manage repeat differently
-            if (TP.sys.isUA('IE')) {
+            //  Note that we only do this if the event is not synthetic
+            //  (otherwise it causes problems with our test harness).
+            if (TP.sys.isUA('IE') && !ev.synthetic) {
                 lastEvent = TP.core.Keyboard.get('lastDown');
                 if (TP.isEvent(lastEvent) &&
                     TP.eventIsDuplicate(lastEvent, ev)) {
@@ -1210,7 +1212,9 @@ function(nativeEvent) {
         case 'keypress':
 
             //  suppress dups for IE...we manage repeat differently
-            if (TP.sys.isUA('IE')) {
+            //  Note that we only do this if the event is not synthetic
+            //  (otherwise it causes problems with our test harness).
+            if (TP.sys.isUA('IE') && !ev.synthetic) {
                 lastEvent = TP.core.Keyboard.get('lastPress');
                 if (TP.isEvent(lastEvent) &&
                     TP.eventIsDuplicate(lastEvent, ev)) {
@@ -1232,7 +1236,9 @@ function(nativeEvent) {
         case 'keyup':
 
             //  suppress dups for IE...we manage repeat differently
-            if (TP.sys.isUA('IE')) {
+            //  Note that we only do this if the event is not synthetic
+            //  (otherwise it causes problems with our test harness).
+            if (TP.sys.isUA('IE') && !ev.synthetic) {
                 lastEvent = TP.core.Keyboard.get('lastUp');
                 if (TP.isEvent(lastEvent) &&
                     TP.eventIsDuplicate(lastEvent, ev)) {
