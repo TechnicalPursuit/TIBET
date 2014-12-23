@@ -494,9 +494,7 @@ function() {
                 TP.sys.uiwin(true).focus();
 
                 seq = test.getDriver().startSequence();
-
-                seq.click(TP.byId('fooField'));
-                seq.sendKeys('ABCDE');
+                seq.sendKeys('ABCDE', TP.byId('fooField'));
                 seq.perform();
             },
             function(error) {
@@ -517,9 +515,7 @@ function() {
                 var seq;
 
                 seq = test.getDriver().startSequence();
-
-                seq.click(TP.byId('barField'));
-                seq.sendKeys('A');
+                seq.sendKeys('A', TP.byId('barField'));
                 seq.perform();
             },
             function(error) {
@@ -542,9 +538,7 @@ function() {
                 var seq;
 
                 seq = test.getDriver().startSequence();
-
-                seq.click(TP.byId('bazField'));
-                seq.sendKeys('A');
+                seq.sendKeys('A', TP.byId('bazField'));
                 seq.perform();
             },
             function(error) {
