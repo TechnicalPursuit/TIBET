@@ -10289,9 +10289,7 @@ function(aNode) {
     //  Process the tree of markup
     processor.processTree(aNode);
 
-    (function() {
-        TP.core.TagProcessor.signal('TP.sig.AttachProcessingComplete');
-    }).fork(100);
+    TP.core.TagProcessor.signal('TP.sig.AttachProcessingComplete');
 
     return;
 });
@@ -12028,6 +12026,10 @@ function(aRequest) {
         return;
     }
 
+    //  It's best to remove ourself (the actual PI) from the content before
+    //  processing to avoid any problems with the XSLT engines.
+    TP.nodeRemoveChild(node.parentNode, node);
+
     //  If we got an XSLT TP.core.Node, do the transform and get the result.
     if (TP.isKindOf(styleTPDoc, 'TP.core.XSLDocumentNode')) {
         resultNode = TP.node(
@@ -12047,9 +12049,6 @@ function(aRequest) {
     //  Go ahead and replace the document element with the native node of
     //  the newly transformed content.
     doc.replaceChild(resultNode, docElem);
-
-    //  Now, remove the PI from the document.
-    node.parentNode.removeChild(node);
 
     TP.ifInfo() ?
         TP.sys.logTransform(

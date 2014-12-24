@@ -5371,7 +5371,8 @@ function(that) {
         return false;
     }
 
-    return this.toString() === that.toString();
+    return this.toString().replace(/^function \(/, 'function(') ===
+            that.toString().replace(/^function \(/, 'function(');
 });
 
 //  ------------------------------------------------------------------------

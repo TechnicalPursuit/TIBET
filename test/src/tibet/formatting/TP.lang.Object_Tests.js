@@ -350,7 +350,7 @@ function() {
 
         testRep = TP.uc('~lib_tst/src/tibet/formatting/google_results_template.xml#totalTemplate').transform(googleDogData);
 
-        correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br />[object Object], [object Object], [object Object], [object Object]</span>';
+        correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br/>[object Object], [object Object], [object Object], [object Object]</span>';
 
         this.assert.isEqualTo(
             testRep,
@@ -362,7 +362,7 @@ function() {
         //  Same test, but as a formatting expression.
         testRep = '{{value .% ~lib_tst/src/tibet/formatting/google_results_template.xml#totalTemplate}}'.transform(googleDogData);
 
-        correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br />[object Object], [object Object], [object Object], [object Object]</span>';
+        correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br/>[object Object], [object Object], [object Object], [object Object]</span>';
 
         this.assert.isEqualTo(
             testRep,
@@ -409,7 +409,13 @@ function() {
 
         testRep = TP.uc('~lib_xsl/tp_xmlarrs2xhtmltable.xsl').transform(dataDoc);
 
-        correctRep = '<html:table xmlns:html="http://www.w3.org/1999/xhtml" style="border: solid 1px black; border-spacing: 0; border-collapse: collapse"><html:th style="background-color: gray; color: white; border: solid 1px black">1</html:th><html:td style="border: solid 1px black">2</html:td><html:td style="border: solid 1px black">3</html:td><html:td style="border: solid 1px black">4</html:td><html:td style="border: solid 1px black">5</html:td><html:td style="border: solid 1px black">6</html:td></html:table>';
+        //  If we're running in IE, the output will be slightly different - but
+        //  it's still correct.
+        if (TP.sys.isUA('IE')) {
+            correctRep = '<html:table xmlns:html="http://www.w3.org/1999/xhtml" style="border: 1px solid black; border-image: none; border-collapse: collapse; border-spacing: 0;"><html:th style="border: 1px solid black; border-image: none; color: white; background-color: gray;">1</html:th><html:td style="border: 1px solid black; border-image: none;">2</html:td><html:td style="border: 1px solid black; border-image: none;">3</html:td><html:td style="border: 1px solid black; border-image: none;">4</html:td><html:td style="border: 1px solid black; border-image: none;">5</html:td><html:td style="border: 1px solid black; border-image: none;">6</html:td></html:table>';
+        } else {
+            correctRep = '<html:table xmlns:html="http://www.w3.org/1999/xhtml" style="border: solid 1px black; border-spacing: 0; border-collapse: collapse"><html:th style="background-color: gray; color: white; border: solid 1px black">1</html:th><html:td style="border: solid 1px black">2</html:td><html:td style="border: solid 1px black">3</html:td><html:td style="border: solid 1px black">4</html:td><html:td style="border: solid 1px black">5</html:td><html:td style="border: solid 1px black">6</html:td></html:table>';
+        }
 
         //  Strip non-essential whitespace before comparing
         testRep = testRep.strip(/\n/g).replace(/>\s+</g,'><');

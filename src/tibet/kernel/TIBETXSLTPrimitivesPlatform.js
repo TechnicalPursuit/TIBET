@@ -725,6 +725,12 @@ TP.hc(
                             paramName = kvPair.first();
                             paramValue = TP.ifInvalid(kvPair.last(), '');
 
+                            //  We can't have parameter names that start with
+                            //  '$' - that conflicts with XSLT variables.
+                            if (/^\$/.test(paramName)) {
+                                return;
+                            }
+
                             processor.setParameter(
                                         null,
                                         paramName,
@@ -945,6 +951,8 @@ TP.hc(
             i,
 
             freeThreadedStyleDoc,
+            newNSNode,
+            attrNode,
 
             xslTemplate,
             processor,
@@ -1028,7 +1036,12 @@ TP.hc(
                                 'html',
                                 TP.w3.Xmlns.XHTML);
 
-        node = inputNode;
+        if (!TP.isDocument(inputNode)) {
+            node = TP.createDocument();
+            node.appendChild(TP.nodeCloneNode(inputNode, true));
+        } else {
+            node = inputNode;
+        }
 
         //  default the hash value so we can use it without testing later
         hash = '0';
@@ -1091,7 +1104,31 @@ TP.hc(
 
             //  Load the style document's XML into the free-threaded
             //  document.
-            freeThreadedStyleDoc.loadXML(styleDoc.documentElement.xml);
+            freeThreadedStyleDoc.loadXML(TP.str(styleDoc.documentElement));
+
+            //  Unfortunately, the XMLSerializer used above in the 'TP.str()'
+            //  call has a bug that it will move namespace nodes off of the
+            //  document element and propagate it onto the elements that
+            //  actually use it in the markup. This is bad for XSLT, since it
+            //  uses prefixes *inside* the actual markup generation and needs
+            //  those namespaces defined on the document element.
+            //  Therefore, we use 'ActiveX DOM' calls to make copy those
+            //  'xmlns:' attributes back on the processor document's document
+            //  element.
+            for (i = 0; i < styleDoc.documentElement.attributes.length; i++) {
+                attrNode = styleDoc.documentElement.attributes[i];
+                if (attrNode.namespaceURI !== TP.w3.Xmlns.XMLNS) {
+                    continue;
+                }
+
+                newNSNode = freeThreadedStyleDoc.createNode(
+                                        Node.ATTRIBUTE_NODE,
+                                        attrNode.name,
+                                        TP.w3.Xmlns.XMLNS);
+                newNSNode.nodeValue = attrNode.value;
+
+                freeThreadedStyleDoc.documentElement.setAttributeNode(newNSNode);
+            }
 
             //  attempt to get the latest and greatest version possible
             versions = TP.IE_XSL_TEMPLATE_VERSIONS;
@@ -1140,9 +1177,17 @@ TP.hc(
                 paramHash.perform(
                     function(kvPair) {
 
-                        var paramValue;
+                        var paramName,
+                            paramValue;
 
-                        paramValue = kvPair.last();
+                        paramName = kvPair.first();
+                        paramValue = TP.ifInvalid(kvPair.last(), '');
+
+                        //  We can't have parameter names that start with '$' -
+                        //  that conflicts with XSLT variables.
+                        if (/^\$/.test(paramName)) {
+                            return;
+                        }
 
                         //  if the paramValue isn't a Node, then we try to
                         //  use its asString() value, followed by its
@@ -1154,16 +1199,15 @@ TP.hc(
                                     kvPair.first(), paramValue.asString());
                             } else if (TP.canInvoke(paramValue, 'valueOf')) {
                                 processor.addParameter(
-                                    kvPair.first(), paramValue.valueOf());
+                                    paramName, paramValue.valueOf());
                             } else {
                                 processor.addParameter(
-                                    kvPair.first(), paramValue);
+                                    paramName, paramValue);
                             }
                         } else {
                             //  otherwise, its a Node, so just use its value
                             //  directly
-                            processor.addParameter(
-                                    kvPair.first(), paramValue);
+                            processor.addParameter(paramName, paramValue);
                         }
                     });
             }
@@ -1321,6 +1365,12 @@ TP.hc(
 
                             paramName = kvPair.first();
                             paramValue = TP.ifInvalid(kvPair.last(), '');
+
+                            //  We can't have parameter names that start with
+                            //  '$' - that conflicts with XSLT variables.
+                            if (/^\$/.test(paramName)) {
+                                return;
+                            }
 
                             //  Webkit-based browsers have a long-standing bug
                             //  with using Nodes as parameters... sigh

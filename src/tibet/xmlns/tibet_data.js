@@ -88,11 +88,11 @@ function(aRequest) {
             }
         } else {
             //  Otherwise, if the first child element is an XML element
-            children = elem.children;
-            if (TP.isXMLNode(children[0])) {
+            children = TP.nodeGetChildElements(elem);
+            if (TP.isXMLNode(children.first())) {
 
                 //  Stringify the XML.
-                resourceStr = TP.str(children[0]);
+                resourceStr = TP.str(children.first());
 
                 //  Create a TP.core.DocumentNode wrapper around it and set it
                 //  as the local URI's resource.

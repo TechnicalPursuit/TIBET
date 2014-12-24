@@ -1747,13 +1747,68 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementCopyAttributes',
+function(fromElement, toElement) {
+
+    /**
+     * @name elementCopyAttributes
+     * @synopsis Copies all attributes from fromElement to toElement.
+     * @param {Element} fromElement The source element.
+     * @param {Element} toElement The target element.
+     * @raise TP.sig.InvalidElement Raised when an invalid element is provided
+     *     to the method.
+     * @todo
+     */
+
+    var len,
+        i,
+
+        fromNS,
+        fromAttr;
+
+    if (!TP.isElement(fromElement) || !TP.isElement(toElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    len = fromElement.attributes.length;
+
+    //  Loop over each attribute on the element. The 'xmlns' (or 'xmlns:...')
+    //  attributes will be exposed here because this is the DOM, not XPath
+    for (i = 0; i < len; i++) {
+        fromAttr = fromElement.attributes[i];
+
+        //  The 'namespace namespace' is defined by the W3C as
+        //  'http://www.w3.org/2000/xmlns/'. We check for that and don't copy
+        //  the attribute this way for namespace attributes. The call at the end
+        //  of this routine will do that properly.
+        if ((fromNS = fromAttr.namespaceURI) === TP.w3.Xmlns.XMLNS) {
+            continue;
+        }
+
+        if (TP.notEmpty(fromNS)) {
+            toElement.setAttributeNS(fromNS,
+                                        fromAttr.name,
+                                        fromAttr.value);
+        } else {
+            toElement.setAttribute(fromAttr.name,
+                                    fromAttr.value);
+        }
+    }
+
+    //  Copy over any namespace attributes.
+    TP.elementCopyXMLNSAttributes(fromElement, toElement);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementCopyXMLNSAttributes',
 function(fromElement, toElement) {
 
     /**
      * @name elementCopyXMLNSAttributes
-     * @synopsis Copies any 'xmlns:' attributes from fromElement to toElement
-     *     across a pair of elements.
+     * @synopsis Copies any 'xmlns:' attributes from fromElement to toElement.
      * @description This method copies *only prefixed* namespaces. It will not
      *     copy the default namespace from fromElement. This method will also
      *     copy attributes between elements in different documents.
@@ -5484,6 +5539,11 @@ function(aNode, otherNode) {
     if (!TP.isNode(aNode) || !TP.isNode(otherNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
+
+    //  Normalize the nodes before comparing them - this will collapse Text
+    //  nodes so that we get an accurate count of child nodes.
+    TP.nodeNormalize(aNode);
+    TP.nodeNormalize(otherNode);
 
     //  In browsers that implement the W3C's DOM Level 3 'isEqualNode' call,
     //  we can just leverage that.

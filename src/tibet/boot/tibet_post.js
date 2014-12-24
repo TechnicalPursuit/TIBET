@@ -4445,14 +4445,9 @@ TP.boot.$documentFromStringIE = function(aString, prohibitDTD) {
     var xmlDoc,
 
         successfulParse,
-        parseErrorObj,
-        prohibit;
+        parseErrorObj;
 
-    xmlDoc = TP.boot.$documentCreate();
-
-    prohibit = (prohibitDTD == null) ? false : prohibitDTD;
-
-    xmlDoc.setProperty('ProhibitDTD', prohibit);
+    xmlDoc = TP.boot.$activeXDocumentCreateIE();
 
     successfulParse = xmlDoc.loadXML(aString);
 

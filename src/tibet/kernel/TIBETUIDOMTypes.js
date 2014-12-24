@@ -670,6 +670,15 @@ function(aTargetElem, nodesAdded) {
     for (i = 0; i < len; i++) {
         node = nodesAdded.at(i);
 
+        //  It seems weird that the node might be detached since it was 'added',
+        //  but the way that mutation observers work (they trigger this code) is
+        //  that the node might have been added and then removed all before the
+        //  'mutation records' are processed. We need to make sure the DOM node
+        //  is still attached.
+        if (TP.nodeIsDetached(node)) {
+            continue;
+        }
+
         //  If the node is an Element and it has an attribute of
         //  'tibet:noawaken', then skip processing it.
         if (TP.isElement(node) &&
@@ -740,6 +749,11 @@ function(aTargetElem, nodesRemoved) {
     for (i = 0; i < len; i++) {
 
         node = nodesRemoved.at(i);
+
+        //  If the node is already detached, then just move on here.
+        if (TP.nodeIsDetached(node)) {
+            continue;
+        }
 
         //  Initially we're set to process this markup.
         shouldProcess = true;
