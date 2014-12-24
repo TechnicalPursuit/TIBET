@@ -111,9 +111,8 @@ TDS.logFilter = function(req, res) {
 
 /**
  * Processes command execution requests by passing the argument list to the
- * TIBET command. For the most part this is "ok" given that the command list
- * is constrained, however commands are extensible so it's possible this could
- * open a security hole. You shouldn't enable this without authentication.
+ * TIBET command. This option is disabled by default and must be specifically
+ * activated.
  *
  * You can test whether it works by using URLs of the form:
  * url = TP.uc('~/tds/cli?cmd=echo&argv0=fluff&--testing=123&--no-color');
@@ -309,10 +308,38 @@ TDS.watcher = function(options) {
     var root,
         changedFileName,
         writeSSEHead,
-        writeSSEData;
+        writeSSEData,
+        pattern,
+        ignore,
+        escaper;
 
     changedFileName = '';
     root = path.resolve(TDS.expandPath(TDS.getcfg('tds.watch_root')));
+
+    // Helper function for escaping regex metacharacters for patterns. NOTE that
+    // we need to take "ignore format" things like path/* and make it path/.* or
+    // the regex will fail.
+    escaper = function(str) {
+        return str.replace(
+            /\*/g, '\.\*').replace(
+            /\./g, '\\.').replace(
+            /\//g, '\\/');
+    };
+
+    // Build a pattern we can use to test against ignore files.
+    ignore = TDS.getcfg('tds.watch.ignore');
+    if (ignore) {
+
+        pattern = ignore.reduce(function(str, item) {
+            return str ? str + '|' + escaper(item) : escaper(item);
+        }, '');
+
+        try {
+            pattern = new RegExp(pattern);
+        } catch (e) {
+            return console.log('Error creating RegExp: ' + e.message);
+        }
+    }
 
     // TODO: control this via a flag (and perhaps a command-line API)
 
@@ -337,6 +364,12 @@ TDS.watcher = function(options) {
                 changedFileName = fileName;
             }
 
+            if (changedFileName && pattern) {
+                if (pattern.test(changedFileName)) {
+                    changedFileName = '';
+                }
+            }
+
             // Normalize the file name. We need to send it to the client as if
             // it were rooted from the launch root.
             changedFileName = changedFileName.replace(TDS.getAppHead(), '');
@@ -351,6 +384,7 @@ TDS.watcher = function(options) {
                 'Connection': 'keep-alive'
             });
 
+        // TODO: make this interval configurable.
         res.write('retry: 1000\n');
 
         if (cb) {
@@ -380,6 +414,8 @@ TDS.watcher = function(options) {
 
             if (changedFileName !== '') {
                 eventName = TDS.getcfg('tds.watch_event');
+                console.log('Announcing file system change to: ' +
+                    changedFileName);
             } else {
                 eventName = '';
             }

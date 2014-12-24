@@ -31,6 +31,9 @@
  *  --tds.dav_root <string>     // Directory mounted for webdav.
  *  --tds.dav_uri  <string>     // URL path for webdav routing.
  *
+ *  --tds.patch_root <string>   // Directory root for patchable source.
+ *  --tds.patch_uri <string>    // URL path for patch handler.
+ *
  *  --tds.watch_root <string>   // Directory mounted for watch.
  *  --tds.watch_uri  <string>   // URL path for file watcher.
  */

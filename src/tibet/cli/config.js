@@ -146,6 +146,12 @@ Cmd.prototype.execute = function() {
         return;
     }
 
+    // Output arrays in array form rather than object form.
+    if (Array.isArray(cfg)) {
+        this.info(JSON.stringify(cfg));
+        return;
+    }
+
     // Object.keys will throw for anything other than Object/Array...
     try {
         str = '{\n';
@@ -156,7 +162,11 @@ Cmd.prototype.execute = function() {
             str += '\t"~lib": "' + CLI.getLibRoot() + '",\n';
         }
         Object.keys(cfg).sort().forEach(function(key) {
-            str += '\t"' + key.replace(/_/g, '.') + '": "' + cfg[key] + '",\n';
+            str += '\t"' + key.replace(/_/g, '.') + '": ' +
+            // TODO: if this is a nested object from tibet.json etc. we'll dump
+            // the entire subtree. Probably should come up with a routine to
+            // "flatten" the keys out for output purposes.
+                JSON.stringify(cfg[key]) + ',\n';
         });
         str = str.slice(0, -2);
 
