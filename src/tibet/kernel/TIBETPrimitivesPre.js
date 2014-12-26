@@ -2614,26 +2614,21 @@ function(anObj) {
      *     object.
      */
 
-    var name,
+    var exclusionList,
+        list;
 
-        exclusionList,
-        list,
-
-        i,
-        len,
-        item;
-
-    if (TP.notValid(anObj)) {
+    if (anObj === null || anObj === undefined) {
         return;
+    }
+
+    if (TP.sys.$$nonFunctionConstructors) {
+        return anObj.$$nonFunctionConstructorObjectName;
     }
 
     //  The object is created by non Function constructors and has an object
     //  name for us to use.
-    if ((name = anObj.$$nonFunctionConstructorObjectName)) {
-        return name;
-    }
 
-    //  We keep a pre-built list we can scan quickly to cut down on overhead.
+    //  We keep a pre-built list for reflection & other purposes.
     list = TP.sys.$$nonFunctionConstructors;
     if (TP.notValid(list)) {
 
@@ -2685,9 +2680,16 @@ function(anObj) {
                                 exclusionList.indexOf(aProp) === TP.NOT_FOUND &&
                                 !TP.isWindow(obj) &&
                                 !TP.isNumber(obj)) {
+
+                                //  Add it to the list and also instrument the
+                                //  name onto the object so that we can use it
+                                //  above.
                                 list.push([obj, aProp]);
+                                obj.$$nonFunctionConstructorObjectName = aProp;
                             }
                         } catch (e) {
+                            //  Must've had a problem instrumenting the name
+                            //  onto the object so just add it to the list.
                             list.push([obj, aProp]);
                         }
                     }
@@ -2698,17 +2700,6 @@ function(anObj) {
 
         //  Cache the list.
         TP.sys.$$nonFunctionConstructors = list;
-    }
-
-    //  Iterate over the list, looking for the name. Note that we can't use a
-    //  key/value hash here since it's the name that we're looking for - we have
-    //  the object reference.
-    len = list.length;
-    for (i = 0; i < len; i++) {
-        item = list[i];
-        if (anObj === item[0]) {
-            return item[1];
-        }
     }
 
     return;
