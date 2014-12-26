@@ -690,6 +690,8 @@ TP.REQUIRED = function() {return;};
 //  for native nodes
 TP.EVENT_IDS = 'eventIds';
 TP.GLOBAL_ID = 'globalID';
+TP.SHOULD_SIGNAL_CHANGE = 'shouldSignalChange';
+TP.SHOULD_SUSPEND_SIGNALING = 'shouldSuspendSignaling';
 TP.WRAPPER = 'wrapper';
 
 //  meta owners and their target objects

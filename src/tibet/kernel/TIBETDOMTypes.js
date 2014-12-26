@@ -10922,7 +10922,7 @@ function(aSignal) {
 
     //  re-enabling all notification
     if (TP.notValid(aSignal)) {
-        this.removeAttribute('tibet:signalingSuspend');
+        delete this.getNativeNode()[TP.SHOULD_SUSPEND_SIGNALING];
     }
 
     return TP.resume(this, aSignal);
@@ -11248,24 +11248,23 @@ function(aFlag) {
 
     if (TP.isBoolean(aFlag)) {
         if (TP.notTrue(aFlag)) {
-            TP.elementRemoveAttribute(natElem, 'tibet:shouldSignalChange');
+            delete natElem[TP.SHOULD_SIGNAL_CHANGE];
+
             return false;
         } else {
-            TP.elementSetAttribute(
-                    natElem, 'tibet:shouldSignalChange', true, true);
+            natElem[TP.SHOULD_SIGNAL_CHANGE] = true;
+
             return true;
         }
     }
 
     //  when suspended is true we always return false which allows an
     //  override to succeed
-    if (TP.elementGetAttribute(natElem,
-                                'tibet:signalingSuspend') === 'true') {
+    if (natElem[TP.SHOULD_SUSPEND_SIGNALING] === true) {
         return false;
     }
 
-    return TP.elementGetAttribute(natElem, 'tibet:shouldSignalChange') ===
-                    'true';
+    return natElem[TP.SHOULD_SIGNAL_CHANGE] === true;
 });
 
 //  ------------------------------------------------------------------------
@@ -11283,7 +11282,7 @@ function(aSignal) {
 
     //  turning off all notifications
     if (TP.notValid(aSignal)) {
-        this.setAttribute('tibet:signalingSuspend', 'true');
+        this.getNativeNode()[TP.SHOULD_SUSPEND_SIGNALING] = true;
     }
 
     return TP.suspend(this, aSignal);
