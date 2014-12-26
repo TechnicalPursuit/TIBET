@@ -1174,11 +1174,15 @@ TP.hc(
 
             //  apply any parameters provided to the processor itself
             if (TP.notEmpty(paramHash)) {
+
                 paramHash.perform(
                     function(kvPair) {
 
                         var paramName,
-                            paramValue;
+                            paramValue,
+
+                            activeXNodeDoc,
+                            activeXNodeValue;
 
                         paramName = kvPair.first();
                         paramValue = TP.ifInvalid(kvPair.last(), '');
@@ -1205,9 +1209,15 @@ TP.hc(
                                     paramName, paramValue);
                             }
                         } else {
-                            //  otherwise, its a Node, so just use its value
-                            //  directly
-                            processor.addParameter(paramName, paramValue);
+                            //  otherwise, its a Node, so we need to stringify
+                            //  it, recreate it as an ActiveX document and then
+                            //  get the first child node of that as the value to
+                            //  use.
+                            activeXNodeDoc = TP.boot.$documentFromStringIE(
+                                                            TP.str(paramValue));
+                            activeXNodeValue = activeXNodeDoc.childNodes[0];
+
+                            processor.addParameter(paramName, activeXNodeValue);
                         }
                     });
             }
