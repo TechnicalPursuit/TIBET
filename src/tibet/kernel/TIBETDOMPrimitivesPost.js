@@ -7169,31 +7169,41 @@ function(aNode, anXPath, resultType, logErrors) {
         //  execution context).
         if (TP.notValid(doc.evaluate)) {
 
-            if (TP.notValid(self.XPathException)) {
+            //  If the IE XPath functions and constants haven't been set up yet,
+            //  do so here.
+            if (TP.notValid(TP.$$xpathForIE_Evaluate)) {
 
-                self.XPathException = TP.extern.XPathJS.XPathException;
-                self.XPathExpression = TP.extern.XPathJS.XPathExpression;
-                self.XPathNSResolver = TP.extern.XPathJS.XPathNSResolver;
-                self.XPathResult = TP.extern.XPathJS.XPathResult;
-                self.XPathNamespace = TP.extern.XPathJS.XPathNamespace;
+                if (TP.notValid(self.XPathException)) {
+                    self.XPathException = TP.extern.XPathJS.XPathException;
+                    self.XPathExpression = TP.extern.XPathJS.XPathExpression;
+                    self.XPathNSResolver = TP.extern.XPathJS.XPathNSResolver;
+                    self.XPathResult = TP.extern.XPathJS.XPathResult;
+                    self.XPathNamespace = TP.extern.XPathJS.XPathNamespace;
+                }
+
+                newEvaluator = new TP.extern.XPathJS.XPathEvaluator();
+                TP.$$xpathForIE_CreateExpression =
+                        function () {
+                            return newEvaluator.createExpression.apply(
+                                            newEvaluator, arguments);
+                        };
+                TP.$$xpathForIE_CreateNSResolver =
+                        function () {
+                            return newEvaluator.createNSResolver.apply(
+                                            newEvaluator, arguments);
+                        };
+                TP.$$xpathForIE_Evaluate =
+                        function () {
+                            return newEvaluator.evaluate.apply(
+                                            newEvaluator, arguments);
+                        };
             }
 
-            newEvaluator = new TP.extern.XPathJS.XPathEvaluator();
-            doc.createExpression =
-                    function () {
-                        return newEvaluator.createExpression.apply(
-                                        newEvaluator, arguments);
-                    };
-            doc.createNSResolver =
-                    function () {
-                        return newEvaluator.createNSResolver.apply(
-                                        newEvaluator, arguments);
-                    };
-            doc.evaluate =
-                    function () {
-                        return newEvaluator.evaluate.apply(
-                                        newEvaluator, arguments);
-                    };
+            //  Wire the XPath functions onto the document so they can be
+            //  called.
+            doc.createExpression = TP.$$xpathForIE_CreateExpression;
+            doc.createNSResolver = TP.$$xpathForIE_CreateNSResolver;
+            doc.evaluate = TP.$$xpathForIE_Evaluate;
         }
 
         //  Run the XPath, using the XPathResult.ANY_TYPE so that we either
