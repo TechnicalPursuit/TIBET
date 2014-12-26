@@ -1251,6 +1251,7 @@ Package.prototype.getArgumentPrimitive = function(value) {
 Package.prototype.getcfg = function(property) {
     var name,
         value,
+        parts,
         keys,
         cfg,
         pkg;
@@ -1267,8 +1268,21 @@ Package.prototype.getcfg = function(property) {
 
     // Secondary check is for prefixed lookups.
     if (/\./.test(property)) {
+        // Simple conversions from dotted to underscore should be checked first.
         name = property.replace(/\./g, '_');
         value = this.cfg[name];
+
+        // If the converted value isn't correct then we attempt to drill down
+        // into the configuration data directly.
+        if (notValid(value)) {
+            parts = property.split('.');
+            name = parts.shift();
+            value = this.tibet[name];
+            while (parts.length > 0 && isValid(value)) {
+                name = parts.shift();
+                value = value[name];
+            }
+        }
         return value;
     }
 
