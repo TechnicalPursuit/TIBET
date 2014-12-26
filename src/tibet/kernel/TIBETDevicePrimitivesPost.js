@@ -1422,7 +1422,7 @@ function(anElement, invalidateIdCache) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.notValid(eventIdArray = anElement.eventIds) ||
+    if (TP.notValid(eventIdArray = anElement[TP.EVENT_IDS]) ||
             TP.isTrue(invalidateIdCache)) {
         eventIdArray = TP.ac();
 
@@ -1494,7 +1494,7 @@ function(anElement, invalidateIdCache) {
         eventIdArray.isOriginSet(true);
 
         //  Cache the eventIdArray on anElement
-        anElement.eventIds = eventIdArray;
+        anElement[TP.EVENT_IDS] = eventIdArray;
     }
 
     return eventIdArray;

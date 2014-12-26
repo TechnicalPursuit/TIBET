@@ -1884,7 +1884,11 @@ function(anObject, assignIfAbsent) {
     if (TP.isElement(obj)) {
         //  If the element doesn't have a cached value for its globalID
         //  slot then we compute one
-        globalID = TP.elementGetAttribute(obj, TP.GLOBAL_ID_ATTR, true);
+
+        //  if we have a value, encode and return it. Note here how we have put
+        //  the slot directly on the element for speed and to avoid markup
+        //  clutter.
+        globalID = obj[TP.GLOBAL_ID];
         if (TP.notEmpty(globalID)) {
             return encodeURI(globalID);
         }
@@ -1907,8 +1911,9 @@ function(anObject, assignIfAbsent) {
             if (TP.notEmpty(prefix)) {
                 globalID = prefix.replace(/#.+/, '#' + localID);
                 if (assign) {
-                    TP.elementSetAttribute(
-                            obj, TP.GLOBAL_ID_ATTR, globalID, true);
+                    //  Note here how we put the slot directly on the element
+                    //  for speed and to avoid markup clutter.
+                    obj[TP.GLOBAL_ID] = globalID;
                 }
                 return globalID;
             }
@@ -1974,20 +1979,13 @@ function(anObject, assignIfAbsent) {
                                 root, TP.GLOBAL_DOCID_ATTR, loc, true);
                     }
 
-                    //  Remove all of the 'tibet:globalID' attributes from any
+                    //  Remove all TP.GLOBAL_ID and TP.EVENT_IDs slots from any
                     //  elements in the document that have them - this will
                     //  cause them to reset
-                    TP.nodeEvaluateCSS(obj,
-                            '*[' +
-                            TP.GLOBAL_ID_ATTR.replace(':', '|') +
-                            ']').forEach(
-                            function(anElem) {
-                                TP.elementRemoveAttribute(
-                                    anElem, TP.GLOBAL_ID_ATTR, true);
-                            });
                     TP.ac(obj.getElementsByTagName('*')).forEach(
                             function(anElem) {
-                                delete anElem.eventIds;
+                                delete anElem[TP.EVENT_IDS];
+                                delete anElem[TP.GLOBAL_ID];
                             });
                 } else {
                     loc = id;

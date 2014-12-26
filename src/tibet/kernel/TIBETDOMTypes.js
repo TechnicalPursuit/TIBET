@@ -11064,7 +11064,9 @@ function(anID) {
 
     if (TP.notEmpty(docID = TP.gid(TP.nodeGetDocument(natNode), true))) {
         globalID = docID.replace(/#.+/, '#' + id);
-        TP.elementSetAttribute(natNode, TP.GLOBAL_ID_ATTR, globalID, true);
+        //  Note here how we put the slot directly on the element for speed and
+        //  to avoid markup clutter.
+        natNode[TP.GLOBAL_ID] = globalID;
     }
 
     if (wasRegistered) {

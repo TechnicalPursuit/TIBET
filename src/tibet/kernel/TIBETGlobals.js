@@ -688,6 +688,8 @@ TP.AFTER = 'after';
 TP.REQUIRED = function() {return;};
 
 //  for native nodes
+TP.EVENT_IDS = 'eventIds';
+TP.GLOBAL_ID = 'globalID';
 TP.WRAPPER = 'wrapper';
 
 //  meta owners and their target objects
@@ -1274,7 +1276,6 @@ TP.BASE_AWARE_PREFIX = 'BASE_AWARE_PREFIX';
 TP.XML_EXTENSIONS = ['xml', 'xhtml', 'tsh', 'xsl', 'xsd'];
 
 //  XML attributes
-TP.GLOBAL_ID_ATTR = 'tibet:globalID';
 TP.GLOBAL_DOCID_ATTR = 'tibet:globalDocID';
 
 //  XML Headers
