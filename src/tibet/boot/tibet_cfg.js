@@ -385,22 +385,8 @@ TP.sys.setcfg('tibet.jsonp_frame', 'JSONP');
 
 
 //  ---
-//  local cache
+//  misc flags
 //  ---
-
-//  what type of caching refresh model are we using? versioned is default.
-//  alternative values are: 'versioned', 'incremental', 'stale', or 'fresh'.
-//  In versioned mode the cache configuration is driven by version-string
-//  checks between the cache and the package tag's version attribute. In
-//  incremental mode the version string isn't used, instead each file is
-//  updated based on Last-Modified information if available. In stale mode
-//  the entire cache is considered to be invalid and all files are updated.
-//  In fresh mode all files are considered valid and used regardless of
-//  their current state relative to their master copies.
-TP.sys.setcfg('boot.cachemode', 'versioned');
-
-//  is the local cache enabled for import?
-TP.sys.setcfg('boot.localcache', true);
 
 //  are we currently running 'offline' or 'online'? this setting along with
 //  the environment setting helps determine how the rewrite call looks up
