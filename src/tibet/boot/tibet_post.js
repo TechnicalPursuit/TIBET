@@ -244,7 +244,7 @@ TP.sys.hasPackage = function(aPackageFile, aConfig) {
 };
 
 //  ============================================================================
-//  Stdio Hooks
+//  STDIO Hooks
 //  ============================================================================
 
 /*
@@ -282,6 +282,7 @@ TP.boot.STDERR_ALERT = function(msg, obj, level) {
 
     TP.boot.STDERR_LOG(msg, obj, level);
     TP.boot.$alert(msg);
+
     return;
 };
 
@@ -298,9 +299,11 @@ TP.boot.STDERR_BREAK = function(msg, obj, level) {
      */
 
     TP.boot.STDERR_LOG(msg, obj, level);
+
     /* eslint-disable no-debugger */
     debugger;
     /* eslint-enable no-debugger */
+
     return;
 };
 
@@ -323,7 +326,7 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
 
     switch (arguments.length) {
         case 1:
-            // object/string to log
+            //  object/string to log
             break;
         case 2:
             //  object/string + either an annotation/context or log level
@@ -355,8 +358,8 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
 
     log = msg;
 
-    // If there's annotation data we need to consider that, or relay it as
-    // context data if it's an arguments array.
+    //  If there's annotation data we need to consider that, or relay it as
+    //  context data if it's an arguments array.
     if (TP.boot.$isValid(ann)) {
         if (TP.boot.$isArgumentArray(ann)) {
             ctx = ann;
@@ -387,6 +390,7 @@ TP.boot.STDERR_NOTIFY = function(msg, obj, level) {
 
     TP.boot.STDERR_LOG(msg, obj, level);
     TP.boot.$notify(msg);
+
     return;
 };
 
@@ -491,7 +495,7 @@ TP.boot.STDOUT_LOG = function(msg, obj, level) {
 
     switch (arguments.length) {
         case 1:
-            // object/string to log
+            //  object/string to log
             break;
         case 2:
             //  object/string + either an annotation/context or log level
@@ -518,8 +522,8 @@ TP.boot.STDOUT_LOG = function(msg, obj, level) {
 
     log = msg;
 
-    // If there's annotation data we need to consider that, or relay it as
-    // context data if it's an arguments array.
+    //  If there's annotation data we need to consider that, or relay it as
+    //  context data if it's an arguments array.
     if (TP.boot.$isValid(ann)) {
         if (TP.boot.$isArgumentArray(ann)) {
             ctx = ann;
@@ -548,6 +552,7 @@ TP.boot.STDOUT_NOTIFY = function(msg, obj, level) {
 
     TP.boot.STDOUT_LOG(msg, obj, level);
     TP.boot.$notify(msg);
+
     return;
 };
 
@@ -582,11 +587,11 @@ TP.boot.$$log = function(argList, aLogLevel) {
     var level,
         message;
 
-    // Get level in numeric form so we can test leveling below.
+    //  Get level in numeric form so we can test leveling below.
     level = TP.ifInvalid(aLogLevel, TP.INFO);
     level = TP.boot[level];
 
-    // TODO: Convert argument list into a single message object we can output.
+    //  TODO: Convert argument list into a single message object we can output.
     message = argList[0];
 
     if ((level >= TP.boot.ERROR) && (level < TP.boot.SYSTEM)) {
@@ -645,7 +650,7 @@ window.onerror = function(msg, url, line, column, errorObj) {
         //  that logging a FATAL error will also terminate the boot process.
         TP.boot.$stderr(str, TP.FATAL);
     } catch (e) {
-        // don't let log errors trigger recursion, but don't bury them either.
+        //  don't let log errors trigger recursion, but don't bury them either.
         top.console.error('Error logging onerror: ' + e.message);
         top.console.error(str || msg);
     }
@@ -746,7 +751,7 @@ TP.$$assignBrowserUI = function(aString) {
 //  capture default value for the browser, we'll adjust below.
 TP.$browser = navigator.userAgent;
 
-// convert all characters to lowercase to simplify certain tests
+//  convert all characters to lowercase to simplify certain tests
 TP.$agent = navigator.userAgent.toLowerCase();
 
 //  get major and minor version info as defined by the navigator object, we
@@ -933,7 +938,6 @@ if (TP.$agent.indexOf('chrome/') !== -1) {
     }
 } else if (TP.$agent.indexOf('msie') !== -1) {
     //  This is only for old versions of IE that TIBET doesn't support (IE < 11)
-
     //  some browsers may lie, but they won't have ActiveXObject support
     if (TP.global.ActiveXObject != null) {
         TP.$browser = 'ie';
@@ -1538,11 +1542,10 @@ TP.sys.getScheme = function() {
 //  ============================================================================
 
 /**
- * @HTTP protocol support primitives. These provide the foundation for the
- *     HTTP-based content operations specific to booting. Full-featured versions
- *     ofthese are also found in the TIBET kernel, which adds support for a
- *     number ofmore advanced features.
- * @todo
+ *  HTTP protocol support primitives. These provide the foundation for the
+ *  HTTP-based content operations specific to booting. Full-featured versions of
+ *  these are also found in the TIBET kernel, which adds support for a number of
+ *  more advanced features.
  */
 
 //  ----------------------------------------------------------------------------
@@ -1628,8 +1631,7 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
         httpObj.setRequestHeader('Cache-control', 'no-cache');
         httpObj.setRequestHeader('Cache-control', 'no-store');
 
-        httpObj.setRequestHeader(
-                'X-Requested-With', 'XMLHttpRequest');
+        httpObj.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
         if (callHeaders != null) {
             len = callHeaders.length;
@@ -1851,8 +1853,8 @@ TP.boot.$uriExpandPath = function(aPath) {
     }
 
     if (aPath.indexOf('/') === 0) {
-        // Launch root doesn't include a trailing slash, so avoid possible
-        // recursion via uriJoinPaths and just concatenate.
+        //  Launch root doesn't include a trailing slash, so avoid possible
+        //  recursion via uriJoinPaths and just concatenate.
         return TP.sys.getLaunchRoot() + aPath;
     }
 
@@ -1914,7 +1916,7 @@ TP.boot.$uriExpandPath = function(aPath) {
         path = TP.boot.$uriExpandPath(path);
     }
 
-    // remove any relative segments before caching
+    //  remove any relative segments before caching
     path = TP.boot.$uriCollapsePath(path);
 
     //  Cache the expanded value so we don't do this work again.
@@ -1969,7 +1971,7 @@ TP.boot.$uriInLocalFormat = function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
-// Cache for TIBET Formatted URIs. We look these up a lot during booting.
+//  Cache for TIBET Formatted URIs. We look these up a lot during booting.
 TP.boot.$$tibetURIS = {};
 
 //  ----------------------------------------------------------------------------
@@ -1987,7 +1989,7 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
 
     var path;
 
-    // Don't try to do this until we've computed the proper root paths.
+    //  Don't try to do this until we've computed the proper root paths.
     if (!TP.boot.$$approot || !TP.boot.$$libroot) {
       return aPath;
     }
@@ -1997,8 +1999,8 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
         return path;
     }
 
-    // TODO: best to replace with a better list derived from reflection on the
-    // sys.cfg path.* properties.
+    //  TODO: best to replace with a better list derived from reflection on the
+    //  sys.cfg path.* properties.
     path = aPath.replace(TP.boot.$uriExpandPath('~app_cfg'), '~app_cfg');
     path = path.replace(TP.boot.$uriExpandPath('~lib_cfg'), '~lib_cfg');
     path = path.replace(TP.boot.$uriExpandPath('~app_src'), '~app_src');
@@ -2580,10 +2582,9 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
 //  ============================================================================
 
 /**
- * @Provides methods for determining the true location of a URL. These are
- *     used when redirection of a URL may be occuring. HTTP versions of these
- *     functions rely on the Location header values in 3xx return code results.
- * @todo
+ *  Provides methods for determining the true location of a URL. These are used
+ *  when redirection of a URL may be occuring. HTTP versions of these functions
+ *  rely on the Location header values in 3xx return code results.
  */
 
 //  ----------------------------------------------------------------------------
@@ -2668,10 +2669,9 @@ TP.boot.$uriLocationHttp = function(targetUrl) {
 //  ============================================================================
 
 /**
- * @Informational methods providing data such as last-modified-date. This is
- *     useful when trying to determine whether a resource should be reloaded, or
- *     in determining whether a generated resource is older than its source.
- * @todo
+ *  Informational methods providing data such as last-modified-date. This is
+ *  useful when trying to determine whether a resource should be reloaded, or in
+ *  determining whether a generated resource is older than its source.
  */
 
 //  ----------------------------------------------------------------------------
@@ -2937,10 +2937,10 @@ TP.boot.$uriCurrent = function(targetUrl, sourceUrl) {
 //  ============================================================================
 
 /*
-Any time we are provided with a URL we check for its existence using
-an appropriate mechanism. Both Mozilla and IE provide utilities for this
-purpose at the file system level. Likewise, both provide an HTTP interface
-which can be used to test for resource existence. This avoids 404's etc.
+Any time we are provided with a URL we check for its existence using an
+appropriate mechanism. Both Mozilla and IE provide utilities for this purpose at
+the file system level. Likewise, both provide an HTTP interface which can be
+used to test for resource existence. This avoids 404's etc.
 */
 
 //  ----------------------------------------------------------------------------
@@ -3129,30 +3129,24 @@ system or the net and produce XML documents which can be manipulated.
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
-        isPackage) {
+TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isPackage) {
+
     /**
      * @name $uriLoad
      * @summary Loads the content of a targetUrl, returning that content as
-     *     either XML or text depending on the desired resultType. The work to
-     *     load the content may include checking TIBET's client-side cache based
-     *     on targetType and isCacheable values.
+     *     either XML or text depending on the desired resultType.
      * @param {String} targetUrl URL of the target resource.
      * @param {TP.DOM|TP.TEXT} resultType Result as a DOM node or TEXT.
      * @param {String} targetType The nature of the target, 'source' or
      *     'manifest' are common values here.
-     * @param {Boolean} isCacheable True if the content may be in the cache, and
-     *     should be cached when loaded.
      * @param {Boolean} isPackage True if the resource being imported is a
-     *     package-level resource. This can impact cache storage logic.
+     *     package-level resource.
      * @return {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      * @todo
      */
 
-    var logpath,
-        result,
-        lastmod;
+    var result;
 
     if (targetUrl == null) {
         TP.boot.$stderr('InvalidURI');
@@ -3162,112 +3156,6 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
 
     //  compute common result type from input and targetUrl extension.
     resultType = TP.boot.$uriResultType(targetUrl, resultType);
-
-    //  clear our cache lookup flag
-    TP.boot.$loadCached = false;
-
-    //  if the cache is active and being requested then we need to check
-    //  there before going over the wire/to the file system (with one or two
-    //  caveats based on the source preference).
-    if (TP.sys.cfg('boot.localcache') && (isCacheable === true)) {
-
-        logpath = TP.boot.$uriInTIBETFormat(targetUrl);
-
-        switch (TP.sys.cfg('import.source')) {
-            case 'marked':
-
-                //  NOTE we fall through on purpose here...if the import
-                //  mode is marked but this node is listed as cacheable then
-                //  it must not be marked. in that case we fall through,
-                //  check the cache and proceed based on our findings.
-
-            case 'local':
-
-                //  check cache before anything else, and no..we don't
-                //  care about Last-Modified date, if we find the data
-                //  we use it.
-                TP.$BOOT_STORAGE.get(
-                    targetUrl,
-                    function(content) {
-
-                        if (TP.boot.$isValid(content)) {
-                            //  map content to outer scoped var for
-                            //  reference after exit
-                            result = TP.boot.$uriResult(content,
-                                                            resultType);
-
-                            //  flag that we got the data from the cache
-                            TP.boot.$loadCached = true;
-                        }
-                    });
-
-                //  if we found data then because we're set for 'local' mode
-                //  we can return the data directly without checking dates
-                if (TP.boot.$loadCached) {
-                    if (TP.sys.cfg('debug.cache')) {
-                        TP.boot.$stdout('Loaded ' + logpath +
-                                        ' from cache.', TP.DEBUG);
-                    }
-
-                    return result;
-                }
-
-                break;
-
-            case 'modified':
-
-                //  modification dates are almost impossible to gather from
-                //  non-HTTP urls so we don't support this approach except
-                //  for urls with either an http or https scheme.
-                if (/^http/.test(targetUrl)) {
-                    //  depends on whether we can find a Last-Modified date
-                    //  and some cached data for the targetUrl
-                    TP.$BOOT_STORAGE.get(
-                        targetUrl + '_lastmodified',
-                        function(content) {
-
-                            if (TP.boot.$isValid(content)) {
-                                //  map content to outer scoped var for
-                                //  reference after exit
-                                lastmod = content;
-                            }
-                        });
-
-                    //  if we found a modified date for the data we'll rely
-                    //  on the uriLoad HTTP variant to use a 304-aware call
-                    //  when it sees a last modified date and to return
-                    //  cached data in response to a 304.
-                    if (lastmod) {
-                        if (TP.sys.cfg('debug.cache')) {
-                            TP.boot.$stdout('Found ' + logpath +
-                                        ' date ' + lastmod, TP.DEBUG);
-                        }
-
-                        //  NOTE that we'll have to rely on this routine to
-                        //  cache the data when it's checking 304 states.
-                        return TP.boot.$uriLoadCommonHttp(
-                                            targetUrl,
-                                            resultType,
-                                            lastmod,
-                                            isCacheable,
-                                            isPackage);
-                    } else {
-                        if (TP.sys.cfg('debug.cache')) {
-                            TP.boot.$stdout('No modified date for ' +
-                                            logpath, TP.DEBUG);
-                        }
-                    }
-                }
-
-                break;
-
-            default:
-
-                //  don't care about cache, being forced to go remote
-
-                break;
-        }
-    }
 
     if (targetUrl.toLowerCase().indexOf('file') === 0) {
         if (TP.sys.isUA('IE')) {
@@ -3281,15 +3169,10 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isCacheable,
             result = TP.boot.$uriLoadCommonFile(targetUrl, resultType);
         }
     } else {
-        //  NOTE that when we don't access cache data we don't provide a
-        //  last modified date here so the HTTP calls don't check for 304.
-        //  We do pass along a modified value for cacheable so the HTTP
-        //  response can be saved in the cache if appropriate however.
         result = TP.boot.$uriLoadCommonHttp(
                 targetUrl,
                 resultType,
                 null,
-                TP.sys.cfg('boot.localcache') && (isCacheable === true),
                 isPackage);
     }
 
@@ -3501,7 +3384,8 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
-                                        isCacheable, isPackage) {
+                                        isPackage) {
+
     /**
      * @name $uriLoadCommonHttp
      * @summary Loads (reads and produces an XML document for) targetUrl.
@@ -3510,10 +3394,8 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
      * @param {String} lastModified An optional Last-Modified header value used
      *     along with 304 checking to minimize overhead for HTTP calls whose
      *     content is cached but needs to be refreshed.
-     * @param {Boolean} isCacheable True if the content may be in the cache, and
-     *     should be cached when loaded.
      * @param {Boolean} isPackage True if the resource being imported is a
-     *     package-level resource. This can impact cache storage logic.
+     *     package-level resource.
      * @return {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      * @todo
@@ -3521,16 +3403,7 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
 
     var logpath,
         httpObj,
-        result,
-        headers,
-        lastmod,
-        response,
-        chunks,
-        len,
-        i,
-        chunk,
-        chunkName,
-        cnameRegex;
+        headers;
 
     resultType = TP.boot.$uriResultType(targetUrl, resultType);
 
@@ -3552,146 +3425,9 @@ TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
         logpath = TP.boot.$uriInTIBETFormat(targetUrl);
 
         if (httpObj.status === 200) {
-
-            //  if we did a= last-modified check and got a 200 we need to
-            //  update our cache with both the date and the content since we
-            //  got back new content, not a 304 saying the cache was fine
-            if (lastModified) {
-                if (TP.sys.cfg('debug.cache')) {
-                    TP.boot.$stdout('Loaded ' + logpath + ' from origin.',
-                                    TP.DEBUG);
-                }
-
-                lastmod = httpObj.getResponseHeader('Last-Modified');
-                if (TP.sys.cfg('debug.cache')) {
-                    TP.boot.$stdout('Refreshed ' + logpath +
-                                    ' to ' + lastmod, TP.DEBUG);
-                }
-
-                TP.$BOOT_STORAGE.set(
-                        targetUrl + '_lastmodified',
-                        lastmod,
-                        TP.NOOP);
-            }
-
-            //  if we're either working from a existing resource with a valid
-            //  last-modified date or a new cachable resource then we want to
-            //  save the result to the cache
-            if (lastModified || isCacheable) {
-                //  one additional check here, at least for the short-term,
-                //  is that we only want to store javascript files that have
-                //  been compressed...otherwise the cache will fill up.
-                if (/\.js$/.test(logpath) !== true ||
-                    logpath.indexOf(
-                         TP.sys.cfg('pack.extension') + '.js') !==
-                                                             TP.NOT_FOUND) {
-                    if (TP.sys.cfg('debug.cache')) {
-                        TP.boot.$stdout('Storing ' +
-                                        logpath +
-                                        ' to cache.', TP.DEBUG);
-                    }
-
-                    response = httpObj.responseText;
-
-                    TP.$BOOT_STORAGE.set(
-                            targetUrl,
-                            response,
-                            TP.NOOP);
-
-                    //  code might be loading in packaged form, but we also
-                    //  want to update the individual chunks so we can
-                    //  support smaller-grained incremental updates.
-                    if (isPackage && TP.sys.cfg('import.chunks')) {
-                        if (TP.sys.cfg('debug.cache')) {
-                            TP.boot.$stdout('Checking ' +
-                                            logpath +
-                                            ' for chunks.', TP.DEBUG);
-                        }
-
-                        chunks = response.split(
-                                        TP.sys.cfg('boot.uichunked'));
-
-                        len = chunks.length;
-                        if (len > 1) {
-                            cnameRegex = /\/\/\t(.*)/;
-
-                            for (i = 0; i < len; i++) {
-                                chunk = chunks[i];
-                                if (!cnameRegex.test(chunk)) {
-                                    continue;
-                                }
-
-                                chunkName = chunk.match(/\/\/\t(.*)/)[1];
-                                if (chunkName &&
-                                    (chunkName !== 'inline source')) {
-                                    if (TP.sys.cfg('debug.cache')) {
-                                        TP.boot.$stdout(
-                                        'Storing ' +
-                                        TP.boot.$uriInTIBETFormat(
-                                                            chunkName) +
-                                        ' to cache.', TP.DEBUG);
-                                    }
-
-                                    TP.$BOOT_STORAGE.set(
-                                            chunkName,
-                                            chunk,
-                                            TP.NOOP);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
             return TP.boot.$uriResult(httpObj.responseText, resultType);
         } else if (httpObj.status === 304) {
-            //  if we did a last-modified check and got a 304 then we want
-            //  to return the data we find in the cache
-            TP.$BOOT_STORAGE.get(
-                targetUrl,
-                function(content) {
-
-                    if (TP.boot.$isValid(content)) {
-                        //  map content to our enclosing var for
-                        //  reference, packaging it property for type
-                        result = TP.boot.$uriResult(content, resultType);
-
-                        //  flag that we got the data from the cache
-                        TP.boot.$loadCached = true;
-
-                        if (TP.sys.cfg('debug.cache')) {
-                            TP.boot.$stdout('Loaded ' +
-                                            logpath +
-                                            ' from cache.', TP.DEBUG);
-                        }
-                    } else {
-                        if (TP.sys.cfg('debug.cache')) {
-                            //  a bit of a problem...had a last-modified
-                            //  stamp but no data? ouch.
-                            TP.boot.$stdout('Missing ' +
-                                            logpath +
-                                            ' in cache.', TP.DEBUG);
-                        }
-
-                        //  at a minimum clear the old data so we don't do
-                        //  this more than once...
-                        TP.$BOOT_STORAGE.set(
-                                targetUrl + '_lastmodified',
-                                null,
-                                TP.NOOP);
-
-                        TP.$BOOT_STORAGE.set(
-                                targetUrl,
-                                null,
-                                TP.NOOP);
-                    }
-                });
-
-            //  if we found data then because we're set for 'local' mode
-            //  we can return the data directly without checking dates
-            if (TP.boot.$loadCached) {
-                return result;
-            }
+            return null;
         } else if (httpObj.status === 0) {
             if (/^chrome-extension/.test(targetUrl) &&
                 httpObj.responseText != null) {
@@ -4213,6 +3949,16 @@ TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$documentGetElementById = function(xmldoc, id) {
+
+    /**
+     * @name $documentGetElementById
+     * @summary Returns a descendant element of the document provided which has
+     *     the ID given.
+     * @param {XMLDocument} xmldoc The document to query.
+     * @param {String} id The ID of the element to find.
+     * @return {Element} The found element or undefined.
+     */
+
     return xmldoc.querySelector('*[id="' + id + '"]');
 };
 
@@ -4472,13 +4218,7 @@ TP.boot.$nodeAsString = function(aNode) {
      * @return {String} The String representation of the supplied Node.
      */
 
-    if (TP.sys.isUA('IE')) {
-        return TP.boot.$nodeAsStringIE(aNode);
-    } else {
-        return TP.boot.$nodeAsStringCommon(aNode);
-    }
-
-    return '';
+    return TP.boot.$nodeAsStringCommon(aNode);
 };
 
 //  ----------------------------------------------------------------------------
@@ -4505,24 +4245,6 @@ TP.boot.$nodeAsStringCommon = function(aNode) {
     } catch (e) {
         return '';
     }
-};
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.$nodeAsStringIE = function(aNode) {
-
-    /**
-     * @name $nodeAsStringIE
-     * @summary Returns the string representation of aNode.
-     * @param {Node} aNode The node to transform.
-     * @return {String} The String representation of the supplied Node.
-     */
-
-    if (aNode != null && aNode.xml != null) {
-        return aNode.xml;
-    }
-
-    return '';
 };
 
 //  ============================================================================
@@ -4839,12 +4561,12 @@ TP.windowIsInstrumented = function(nativeWindow) {
 //  ============================================================================
 
 /*
-The simple DHTML primitives needed to manage startup processes like showing
-a simple progress bar or displaying a console-style output log.
+The simple DHTML primitives needed to manage startup processes like showing a
+simple progress bar or displaying a console-style output log.
 
 NOTE that these are trivial and not likely to work in all circumstances, but
-then again they're only intended to get us through the initial boot
-sequence.  After that the versions in the kernel take over.
+then again they're only intended to get us through the initial boot sequence.
+After that the versions in the kernel take over.
 */
 
 //  ----------------------------------------------------------------------------
@@ -4859,7 +4581,6 @@ TP.boot.$elementAddClass = function(anElement, aClassname) {
      * @param {String} aClassname The CSS class name to add.
      * @raises InvalidElement,InvalidString
      * @return {Element} The element the supplied class was added to.
-     * @todo
      */
 
     var cls;
@@ -4886,6 +4607,15 @@ TP.boot.$elementAddClass = function(anElement, aClassname) {
 
 TP.boot.$elementHasClass = function(anElement, aClassname) {
 
+    /**
+     * @name $elementHasClass
+     * @synopsis Returns true if the element has the CSS class name specified.
+     * @param {Element} anElement The element to test.
+     * @param {String} className The CSS class name to test for.
+     * @raises TP.sig.InvalidElement
+     * @returns {Boolean} Whether or not the element has the supplied CSS class.
+     */
+
     var re,
         cls;
 
@@ -4907,9 +4637,14 @@ TP.boot.$elementHasClass = function(anElement, aClassname) {
 TP.boot.$elementReplaceClass = function(anElement, aPattern, aClassname) {
 
     /**
-     * @name $elementReplaceClass
-     * @param {RegExp|String} aPattern A string (used as a literal pattern) or a
-     *     regular expression to match against existing class names.
+     * @name elementReplaceClass
+     * @synopsis Replaces the old CSS class name in anElement's 'className' CSS
+     *     class list with the new CSS class name.
+     * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
+     * @param {String} oldClassName The CSS class name to replace.
+     * @param {String} newClassName The CSS class name to replace it with.
+     * @raises TP.sig.InvalidElement,TP.sig.InvalidString
+     * @returns {Element} The element.
      */
 
     var re,
@@ -4928,17 +4663,19 @@ TP.boot.$elementReplaceClass = function(anElement, aPattern, aClassname) {
 
     cls = anElement.className;
 
-    // If pattern doesn't match this is a simple add operation.
+    //  If pattern doesn't match this is a simple add operation.
     if (!re.test(cls)) {
         return TP.boot.$elementAddClass(anElement, aClassname);
     }
 
-    // Find/remove the matching classname chunk(s)
+    //  Find/remove the matching classname chunk(s)
     parts = cls.split(' ');
-    parts = parts.filter(function(part) {
-        return !re.test(part) && part !== aClassname;
-    });
+    parts = parts.filter(
+                function(part) {
+                    return !re.test(part) && part !== aClassname;
+                });
     parts.push(aClassname);
+
     anElement.className = parts.join(' ');
 
     return anElement;
@@ -4997,16 +4734,16 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
         val,
         type;
 
-    // Try this, but know that you may get 'object' for things that aren't
-    // primitive values for String, Number, etc.
+    //  Try this, but know that you may get 'object' for things that aren't
+    //  primitive values for String, Number, etc.
     type = typeof(anObject);
 
     switch (type) {
         case 'string':
 
-            // Bit of a hack here, but we don't really want rafts of html
-            // showing up in the log and certain types of request failures etc.
-            // are full of 'target: ' where the target was a document.
+            //  Bit of a hack here, but we don't really want rafts of html
+            //  showing up in the log and certain types of request failures etc.
+            //  are full of 'target: ' where the target was a document.
             if (/<!DOCTYPE html><html/.test(anObject)) {
                 str = anObject.replace(/\n/g, '__NEWLINE__');
                 str = str.replace(/<!DOCTYPE html><html(.*)?<\/html>/g,
@@ -5023,7 +4760,7 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
             }
             break;
         case 'number':
-            // isNaN lies: isNaN({}) => true. Welcome to JavaScript.
+            //  isNaN lies: isNaN({}) => true. Welcome to JavaScript.
             if (isNaN(anObject) && anObject.constructor === Number) {
                 return 'NaN';
             } else {
@@ -5085,7 +4822,7 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
             }
 
             if (anObject instanceof TP.boot.Annotation) {
-                // TODO: Do we want the object portion here as well?
+                //  TODO: Do we want the object portion here as well?
                 str = anObject.message;
                 if (shouldEscape === true) {
                     return TP.boot.$xmlEscape(str);
@@ -5098,9 +4835,9 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
                 return TP.boot.$xmlEscape(TP.boot.$nodeAsString(anObject));
             }
 
-            // isNaN lies: isNaN({}) => true. Welcome to JavaScript. Oh...but it
-            // gets better. If you run isNaN on the wrong thing it'll throw an
-            // exception about being unable to convert to a primitive.
+            //  isNaN lies: isNaN({}) => true. Welcome to JavaScript. Oh...but
+            //  it gets better. If you run isNaN on the wrong thing it'll throw
+            //  an exception about being unable to convert to a primitive.
             try {
                 if (isNaN(anObject) && anObject.constructor === Number) {
                     return 'NaN';
@@ -5112,9 +4849,9 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
             break;
     }
 
-    // For now we don't drill deeper than one level. Not all objects will
-    // respond well to a simple string + obj form so call the root toString if
-    // there's an exception ala 'Cannot convert object to primitive value'.
+    //  For now we don't drill deeper than one level. Not all objects will
+    //  respond well to a simple string + obj form so call the root toString if
+    //  there's an exception ala 'Cannot convert object to primitive value'.
     if (depth && depth > 0) {
         if (anObject.getName) {
             return anObject.getName();
@@ -5144,7 +4881,7 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
 
     if (anObject instanceof Array) {
 
-        // Could use map() here but this works consistently.
+        //  Could use map() here but this works consistently.
         len = anObject.length;
         for (i = 0; i < len; i++) {
             arr.push(TP.boot.$dump(anObject[i], aSeparator, shouldEscape, 1));
@@ -5159,7 +4896,7 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
                 keys = Object.keys(anObject);
             } catch (e) {
                 try {
-                    // Some objects don't even like Object.keys....sigh...
+                    //  Some objects don't even like Object.keys....sigh...
                     return Object.prototype.toString.call(anObject);
                 } catch (e2) {
                     return '[object Object]';
@@ -5193,6 +4930,15 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$xmlEscape = function(aString) {
+
+    /**
+     * @name $xmlEscape
+     * @synopsis Converts the supplied String into a String where any XML
+     *     entities have been converted into their escaped equivalent (i.e. have
+     *     been "entitified")
+     * @param {String} aString The String to escape.
+     * @returns {String} The receiver with escaped XML entities.
+     */
 
     var result;
 
@@ -5283,6 +5029,18 @@ TP.boot.$lpad = function(obj, length, padChar) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$quoted = function(aString) {
+
+    /**
+     * @name $quoted
+     * @synopsis Returns the supplied String as a quoted String with embedded
+     *     quotes escaped. The quote character used is a single quote in keeping
+     *     with TIBET coding standards which use single quoted strings for
+     *     JavaScript and double quoted strings for *ML.
+     * @param {String} aString The String to quote.
+     * @returns {String} The string as a quoted string.
+     * @todo
+     */
+
     return '\'' + aString.replace(/'/g, '\\\'') + '\'';
 };
 
@@ -5690,18 +5448,21 @@ TP.boot.$flushLog = function(force) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$scrollLog = function() {
+
     TP.boot.$scrollUIBuffer();
 };
 
 //  ----------------------------------------------------------------------------
 
 TP.boot.$clearLog = function() {
+
     TP.boot.$clearUIBuffer();
 };
 
 //  ----------------------------------------------------------------------------
 
 TP.boot.$$logReporter = function(entry, options) {
+
     var level,
         console,
         sep,
@@ -5723,7 +5484,7 @@ TP.boot.$$logReporter = function(entry, options) {
 
     level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
-    // Track the highest non-system logging level we've seen.
+    //  Track the highest non-system logging level we've seen.
     if (level > TP.boot.$$logpeak && level < TP.boot.SYSTEM) {
         TP.boot.$$logpeak = level;
     }
@@ -5739,9 +5500,10 @@ TP.boot.$$logReporter = function(entry, options) {
     sep = TP.boot.$isValid(options.separator) ? options.separator : '\n';
     console = TP.boot.$isValid(options.console) ? options.console : false;
 
-    // If the object is an annotation we've got to process it. Note that we
-    // double the separator around object dumps to help offset key/value dump
-    // data from the surrounding log headings. This helps dumped data stand out.
+    //  If the object is an annotation we've got to process it. Note that we
+    //  double the separator around object dumps to help offset key/value dump
+    //  data from the surrounding log headings. This helps dumped data stand
+    //  out.
     if (obj instanceof TP.boot.Annotation) {
         str = sep + TP.boot.$dump(obj.message, sep, esc) +
             sep + sep + TP.boot.$dump(obj.object, sep, esc) + sep;
@@ -5762,7 +5524,7 @@ TP.boot.$$logReporter = function(entry, options) {
         str = esc ? TP.boot.$xmlEscape(obj) : obj;
     }
 
-    // Output format is;
+    //  Output format is;
     //
     //      time   delta    log level  message
     //
@@ -5803,7 +5565,7 @@ TP.boot.$consoleReporter = function(entry, options) {
     var msg,
         level;
 
-    // Ignore attempts to log the entry to the console more than once.
+    //  Ignore attempts to log the entry to the console more than once.
     if (entry && entry.usedConsole) {
         return;
     }
@@ -5859,8 +5621,8 @@ TP.boot.$bootuiReporter = function(entry, options) {
         css,
         level;
 
-    // If we've never output we have to "catch up" as it were and process each
-    // of any queued entries to this point.
+    //  If we've never output we have to "catch up" as it were and process each
+    //  of any queued entries to this point.
     if (!TP.boot.$consoleConfigured) {
 
         elem = TP.boot.$getBootLogElement();
@@ -5920,9 +5682,9 @@ TP.boot.$bootuiReporter = function(entry, options) {
         break;
     }
 
-    // Logging is usually the last step in a boot stoppage. If that's happening
-    // we want to ensure we set any UI to 'done' which should help ensure that
-    // it has scrollbars etc.
+    //  Logging is usually the last step in a boot stoppage. If that's happening
+    //  we want to ensure we set any UI to 'done' which should help ensure that
+    //  it has scrollbars etc.
     try {
         if (TP.boot.shouldStop()) {
             elem = TP.boot.$getBootLogElement();
@@ -5931,7 +5693,7 @@ TP.boot.$bootuiReporter = function(entry, options) {
             }
         }
     } catch (e) {
-        // this one we'll ignore.
+        //  this one we'll ignore.
     }
 };
 
@@ -5942,12 +5704,13 @@ TP.boot.$phantomReporter = function(entry, options) {
     var msg,
         level;
 
-    // Ignore attempts to log the entry to the console more than once.
+    //  Ignore attempts to log the entry to the console more than once.
     if (entry && entry.usedConsole) {
-        // TODO: this may not be needed. Found a "flush" issue in the code
-        // specific to the TP.shell() command's failure hook that may fix it
-        // in which case we can remove this line.
-        console.log('');    // force a flush of the console.
+        //  TODO: this may not be needed. Found a "flush" issue in the code
+        //  specific to the TP.shell() command's failure hook that may fix it
+        //  in which case we can remove this line.
+        console.log('');    //  force a flush of the console.
+
         return;
     }
 
@@ -5996,6 +5759,7 @@ TP.boot.$phantomReporter = function(entry, options) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$silentReporter = function() {
+
     return;
 };
 
@@ -6021,12 +5785,12 @@ TP.boot.$style = function(aString, aStyle) {
             parts.forEach(function(style) {
                 color = TP.boot.$$theme[style];
 
-                // Do we have a mapping for this color in our theme?
+                //  Do we have a mapping for this color in our theme?
                 if (TP.boot.$notValid(color)) {
                     return;
                 }
 
-                // If we had a color mapping in the theme, find the codes.
+                //  If we had a color mapping in the theme, find the codes.
                 codes = styles[color];
                 if (TP.boot.$notValid(codes)) {
                     return;
@@ -6036,13 +5800,13 @@ TP.boot.$style = function(aString, aStyle) {
             });
         } else {
 
-            // Do we have a mapping for this color in our theme?
+            //  Do we have a mapping for this color in our theme?
             color = TP.boot.$$theme[aStyle];
             if (TP.boot.$notValid(color)) {
                 return aString;
             }
 
-            // If we had a color mapping in the theme, find the codes.
+            //  If we had a color mapping in the theme, find the codes.
             codes = styles[color];
             if (TP.boot.$notValid(codes)) {
                 return aString;
@@ -6125,7 +5889,7 @@ TP.boot.Log.getStringForLevel = function(aLogLevel) {
      * @todo
      */
 
-    // If inbound data is TP.INFO etc it's already a string...
+    //  If inbound data is TP.INFO etc it's already a string...
     if (typeof aLogLevel === 'string') {
         return aLogLevel.toUpperCase();
     }
@@ -6148,7 +5912,7 @@ TP.boot.Log.getStringForLevel = function(aLogLevel) {
         case TP.boot.SYSTEM:
             return 'SYSTEM';
         default:
-            // Cap others at SYSTEM
+            //  Cap others at SYSTEM
             return 'SYSTEM';
     }
 };
@@ -6192,7 +5956,7 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
     var info,
         level;
 
-    // Non-errors are never fatal.
+    //  Non-errors are never fatal.
     if (!TP.boot.Log.isErrorLevel(aLevel)) {
         return false;
     }
@@ -6208,13 +5972,13 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
         return true;
     }
 
-    // Too many small things can add up to be fatal.
+    //  Too many small things can add up to be fatal.
     if (TP.boot.$$errors > TP.sys.cfg('boot.error_max')) {
         TP.boot.$$stop = 'boot.error_max exceeded.';
         return true;
     }
 
-    // Some stages mark any error as being fatal (rendering for example).
+    //  Some stages mark any error as being fatal (rendering for example).
     info = TP.boot.$getStageInfo(aStage);
     if (TP.boot.$isValid(info) && info.fatal) {
         if (TP.sys.cfg('boot.fatalistic')) {
@@ -6323,8 +6087,8 @@ TP.boot.Log.prototype.asXMLString = function() {
 
 TP.boot.Log.prototype.flush = function() {
 
-    // TODO: send report the list of nodes so it can optimize by using a single
-    // fragment for the injection.
+    //  TODO: send report the list of nodes so it can optimize by using a single
+    //  fragment for the injection.
     while (this.index < this.messages.length) {
         this.report(this.messages[this.index]);
     }
@@ -6403,6 +6167,7 @@ TP.boot.Log.prototype.last = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
+
     /**
      * @name log
      * @summary Creates a new log entry. The entry will include a timestamp as
@@ -6460,35 +6225,35 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
         TP.boot.$$warnings += 1;
     }
 
-    // Call this first, so any reporter will be aware that the boot is about to
-    // terminate.
+    //  Call this first, so any reporter will be aware that the boot is about to
+    //  terminate.
     if (TP.boot.Log.isFatalCondition(level)) {
 
-        // Flush anything queued during pre-config completion.
+        //  Flush anything queued during pre-config completion.
         this.flush();
 
         TP.boot.$flushLog(true);
 
-        // Default to $$stop reason, otherwise output a generic message.
+        //  Default to $$stop reason, otherwise output a generic message.
         if (TP.boot.$isEmpty(TP.boot.$$stop)) {
             TP.boot.$$stop = 'unspecified fatal condition';
         }
         msg = TP.boot.$$stop;
 
-        // Queue to allow any other pending messages to clear.
+        //  Queue to allow any other pending messages to clear.
         setTimeout(function() {
             try {
                 TP.boot.$setStage('stopped', 'Boot terminated: ' + msg);
             } catch (e) {
-                // Ignore if we broke that, we're stopping.
+                //  Ignore if we broke that, we're stopping.
             }
         }, 0);
     }
 
-    // Until we've fully configured we don't output (unless we hit a fatal
-    // warning above. That way we know the full boot log is going to the same
-    // reporter, not a header to one and the rest to another if the user has
-    // overridden the default setting.
+    //  Until we've fully configured we don't output (unless we hit a fatal
+    //  warning above. That way we know the full boot log is going to the same
+    //  reporter, not a header to one and the rest to another if the user has
+    //  overridden the default setting.
 
     if (TP.boot.$hasReachedStage('expanding')) {
         this.flush();
@@ -6502,7 +6267,8 @@ TP.boot.Log.prototype.log = function(anObject, aLogName, aLogLevel) {
 TP.boot.Log.prototype.report = function(entry) {
 
     /**
-     * Writes a log entry using the currently configured reporter.
+     * @name report
+     * @summary Writes a log entry using the currently configured reporter.
      * @param {Object} entry A boot log entry object.
      */
 
@@ -6511,12 +6277,12 @@ TP.boot.Log.prototype.report = function(entry) {
         reporterName,
         reporter;
 
-    // incrementing our index ensures we don't try to report this entry again
-    // during a flush() call.
+    //  incrementing our index ensures we don't try to report this entry again
+    //  during a flush() call.
     this.index = this.index + 1;
 
-    // Always log errors entering the boot log to the console, while respecting
-    // any limit set. The default limit is TP.boot.ERROR.
+    //  Always log errors entering the boot log to the console, while respecting
+    //  any limit set. The default limit is TP.boot.ERROR.
     limit = TP.boot[TP.sys.cfg('log.console_threshold')];
     level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
@@ -6533,10 +6299,10 @@ TP.boot.Log.prototype.report = function(entry) {
     reporterName = '$' + reporterName + 'Reporter';
     reporter = TP.boot[reporterName];
 
-    // If the reporter provided isn't real we'll again default to the console.
+    //  If the reporter provided isn't real we'll again default to the console.
     if (TP.boot.$notValid(reporter)) {
-        // Fake a warning and log to the native console, then output the
-        // original if we haven't already.
+        //  Fake a warning and log to the native console, then output the
+        //  original if we haven't already.
         TP.boot.$consoleReporter(
             [new Date(), TP.BOOT_LOG, TP.boot.WARN,
                 'Logging reporter \'' + reporter + '\' not found.']);
@@ -6547,9 +6313,10 @@ TP.boot.Log.prototype.report = function(entry) {
         TP.boot[reporterName](entry);
     } catch (e) {
 
-        // One special case here is failed file launches due to security issues.
-        // The goal in that case is to let the rest of the system do this
-        // without spamming the error log with all the security warnings.
+        //  One special case here is failed file launches due to security
+        //  issues.
+        //  The goal in that case is to let the rest of the system do this
+        //  without spamming the error log with all the security warnings.
         if (window.location.protocol.indexOf('file') === 0) {
             if (/[sS]ecurity|[bB]locked/.test(e.message)) {
                 TP.boot.$consoleReporter(entry);
@@ -6557,11 +6324,11 @@ TP.boot.Log.prototype.report = function(entry) {
             }
         }
 
-        // If we don't count these the cycle can continue without respecting
-        // boot.error_max.
+        //  If we don't count these the cycle can continue without respecting
+        //  boot.error_max.
         TP.boot.$$errors += 1;
 
-        // Can you tell we really want you to see these messages yet? ;)
+        //  Can you tell we really want you to see these messages yet? ;)
         TP.boot.$consoleReporter(
             [new Date(), TP.BOOT_LOG, TP.boot.ERROR,
                 'Error in reporter \'' + reporterName + '\': ' + e.message]);
@@ -6766,12 +6533,13 @@ TP.boot.$getBootSubheadElement = function() {
 TP.boot.$getUIElement = function(varargs) {
 
     /**
-     * Locates and returns an element based on the ID or IDs provided as
-     * arguments.
+     * @name $getUIElement
+     * @summary Locates and returns an element based on the ID or IDs provided
+     *     as arguments.
      * @param {String} varargs One or more arguments containing string IDs.
      */
 
-    // TODO: work with access paths as well.
+    //  TODO: work with access paths as well.
 
     var ids,
         i,
@@ -6782,8 +6550,8 @@ TP.boot.$getUIElement = function(varargs) {
 
     root = document;
 
-    // Don't assume we don't have access path components in the list of
-    // arguments. Split them so we build a full-descent path.
+    //  Don't assume we don't have access path components in the list of
+    //  arguments. Split them so we build a full-descent path.
     ids = [];
     len = arguments.length;
     for (i = 0; i < len; i++) {
@@ -6798,18 +6566,18 @@ TP.boot.$getUIElement = function(varargs) {
             return;
         }
 
-        // If we're out of ids we're at the end, even if that's an IFRAME.
+        //  If we're out of ids we're at the end, even if that's an IFRAME.
         if (i === len - 1) {
             return elem;
         }
 
         if (elem.contentWindow) {
-            // If we're holding an IFRAME we need to drill down into that via
-            // its content document.
+            //  If we're holding an IFRAME we need to drill down into that via
+            //  its content document.
             root = elem.contentWindow.document;
         } else {
-            // Standard element. That's a problem since they don't have a
-            // getElementById call...
+            //  Standard element. That's a problem since they don't have a
+            //  getElementById call...
             return;
         }
     }
@@ -6818,18 +6586,22 @@ TP.boot.$getUIElement = function(varargs) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.getUIBoot = function() {
+
     var id;
 
     id = TP.sys.cfg('boot.uiboot');
+
     return TP.boot.$getUIElement(id);
 };
 
 //  ----------------------------------------------------------------------------
 
 TP.boot.getUIRoot = function() {
+
     var id;
 
     id = TP.sys.cfg('tibet.uiroot');
+
     return TP.boot.$getUIElement(id);
 };
 
@@ -6858,6 +6630,7 @@ TP.boot.$releaseUIElements = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$computeLogBufferSize = function(force) {
+
     var level,
         size;
 
@@ -6872,7 +6645,7 @@ TP.boot.$computeLogBufferSize = function(force) {
         level = TP.boot.$$loglevel;
 
         switch (level) {
-            case 0:         // trace
+            case 0:         //  trace
                 size = size * 2;
                 break;
             case 1:         //  info
@@ -6898,6 +6671,7 @@ TP.boot.$computeLogBufferSize = function(force) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$flushUIBuffer = function(force) {
+
     var elem,
         buffer,
         bufSize;
@@ -6928,6 +6702,7 @@ TP.boot.$flushUIBuffer = function(force) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$clearUIBuffer = function() {
+
     var elem;
 
     elem = TP.boot.$getBootLogElement();
@@ -6943,6 +6718,7 @@ TP.boot.$clearUIBuffer = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$scrollUIBuffer = function() {
+
     var elem;
 
     elem = TP.boot.$getBootLogElement();
@@ -6958,6 +6734,7 @@ TP.boot.$scrollUIBuffer = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$displayImage = function(aUrl) {
+
     var elem;
 
     elem = TP.boot.$getBootImageElement();
@@ -6973,8 +6750,10 @@ TP.boot.$displayImage = function(aUrl) {
 TP.boot.$displayMessage = function(aString, flush) {
 
     /**
-     * Adds aString to the current boot log display, if available. This method
-     * is the low-level method responsible for adding to the boot UI output.
+     * @name $displayMessage
+     * @summary Adds aString to the current boot log display, if available. This
+     *     method is the low-level method responsible for adding to the boot UI
+     *     output.
      * @param {String} aString The string of content to be added.
      * @param {Boolean} flush True to flush the log prior to output.
      * @return {Node} The node appended to the UI.
@@ -7054,11 +6833,11 @@ TP.boot.$displayMessage = function(aString, flush) {
         msgNode = TP.boot.$nodeAppendChild(buffer, msgNode);
     }
 
-    // TODO: verify if we need to keep the flush flag. Without it content shows
-    // up in the boot UI which may not flush properly.
+    //  TODO: verify if we need to keep the flush flag. Without it content shows
+    //  up in the boot UI which may not flush properly.
 
-    // If asked, flush the brand new message, even if it's now the only one in
-    // the buffer. (This is true for errors/system output by default).
+    //  If asked, flush the brand new message, even if it's now the only one in
+    //  the buffer. (This is true for errors/system output by default).
     //if (flush) {
         TP.boot.$flushUIBuffer(true);
         TP.boot.$scrollUIBuffer();
@@ -7096,7 +6875,7 @@ TP.boot.$displayProgress = function() {
         percent = Math.round(index / workload * 100);
     }
 
-    // Don't go further if we'd be setting same value.
+    //  Don't go further if we'd be setting same value.
     if (percent === TP.boot.$$percent) {
         return;
     }
@@ -7106,7 +6885,7 @@ TP.boot.$displayProgress = function() {
     TP.boot.$elementReplaceClass(elem, /log-/, TP.boot.$$logcss);
 
     if (percent === 100) {
-        // Avoid issues with margin etc, rely on right: 0;
+        //  Avoid issues with margin etc, rely on right: 0;
         elem.style.width = 'auto';
         elem.style.right = 0;
     } else {
@@ -7119,6 +6898,7 @@ TP.boot.$displayProgress = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$displayStage = function(aString) {
+
     var elem;
 
     elem = TP.boot.$getBootHeadElement();
@@ -7132,6 +6912,7 @@ TP.boot.$displayStage = function(aString) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$displayStatus = function(aString) {
+
     var elem;
 
     elem = TP.boot.$getBootSubheadElement();
@@ -7147,13 +6928,14 @@ TP.boot.$displayStatus = function(aString) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.hideUIBoot = function() {
+
     var elem,
         id;
 
     id = TP.sys.cfg('boot.uiboot');
 
-    // If the boot and root ui are the same ignore this request. It has to be
-    // done by manipulating the uiroot instead.
+    //  If the boot and root ui are the same ignore this request. It has to be
+    //  done by manipulating the uiroot instead.
     if (id === TP.sys.cfg('tibet.uiroot')) {
         return;
     }
@@ -7163,8 +6945,9 @@ TP.boot.hideUIBoot = function() {
         if (TP.boot.$isValid(elem.frameElement)) {
             elem = elem.frameElement;
         }
-        // NOTE we use display: none here so that devtools etc. will properly
-        // find elements when using inspect element.
+
+        //  NOTE we use display: none here so that devtools etc. will properly
+        //  find elements when using inspect element.
         elem.style.display = 'none';
     }
 
@@ -7174,6 +6957,7 @@ TP.boot.hideUIBoot = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.hideUIRoot = function() {
+
     var elem,
         id;
 
@@ -7214,7 +6998,7 @@ TP.sys.showBootLog = function(reporter, level) {
         return;
     }
 
-    // By default dump the entire log.
+    //  By default dump the entire log.
     lvl = TP.boot.$isValid(level) ? level : TP.DEBUG;
     lvl = typeof lvl === 'string' ? TP.boot[lvl] : lvl;
 
@@ -7234,6 +7018,13 @@ TP.sys.showBootLog = function(reporter, level) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.showUIBoot = function() {
+
+    /**
+     * @name showUIBoot
+     * @synopsis Displays the current tibet.uiboot element in the
+     *     application's main window.
+     */
+
     var elem,
         id;
 
@@ -7244,8 +7035,8 @@ TP.boot.showUIBoot = function() {
         if (TP.boot.$isValid(elem.frameElement)) {
             elem = elem.frameElement;
         }
-        // Be sure to activate the log. That's the essential UI for having shown
-        // the boot UI.
+        //  Be sure to activate the log. That's the essential UI for having
+        //  shown the boot UI.
         TP.boot.$elementAddClass(elem.contentDocument.body, 'showlog');
 
         elem.style.display = 'block';
@@ -7262,7 +7053,6 @@ TP.boot.showUIRoot = function() {
      * @name showUIRoot
      * @synopsis Displays the current tibet.uiroot element in the
      *     application's main window.
-     * @return {null}
      */
 
     var elem,
@@ -7292,7 +7082,6 @@ TP.boot.toggleUI = function() {
     /**
      * @name toggleUI
      * @synopsis Toggles the UI between UIRoot and UIBoot.
-     * @return {null}
      */
 
     var elem,
@@ -7661,6 +7450,7 @@ TP.boot.$getBootStats = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$getStage = function() {
+
     return TP.boot.$$stage;
 };
 
@@ -7671,6 +7461,7 @@ TP.boot.$getStageInfo = function(aStage) {
     var stage;
 
     stage = aStage || TP.boot.$$stage;
+
     return TP.boot.$$stages[stage];
 };
 
@@ -7710,26 +7501,26 @@ TP.boot.$setStage = function(aStage, aReason) {
         sub,
         image;
 
-    // Once we're stopped that's it, ignore further updates.
+    //  Once we're stopped that's it, ignore further updates.
     if (TP.boot.$$stage === 'stopped') {
         return;
     }
 
-    // Verify the stage is one we recognize.
+    //  Verify the stage is one we recognize.
     info = TP.boot.$getStageInfo(aStage);
     if (TP.boot.$notValid(info)) {
         TP.boot.$stderr('Invalid boot stage: ' + aStage);
         return;
     }
 
-    // Ignore requests to 'go backwards' or to set the same stage.
+    //  Ignore requests to 'go backwards' or to set the same stage.
     if (TP.boot.$$stageorder.indexOf(aStage) <
         TP.boot.$$stageorder.indexOf(TP.boot.$$stage)) {
         return;
     }
 
-    // Update the current stage now that we know we're valid. We capture the
-    // prior stage so we can output summary data for it below.
+    //  Update the current stage now that we know we're valid. We capture the
+    //  prior stage so we can output summary data for it below.
     prior = TP.boot.$$stage;
     TP.boot.$$stage = aStage;
 
@@ -7753,8 +7544,8 @@ TP.boot.$setStage = function(aStage, aReason) {
     //TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
     TP.boot.$stdout('', TP.SYSTEM);
 
-    // Capture the time we reached this stage. this is key for reporting the
-    // time spent in the current (now prior) stage below.
+    //  Capture the time we reached this stage. this is key for reporting the
+    //  time spent in the current (now prior) stage below.
     info.entered = new Date();
 
     head = info.head;
@@ -7769,8 +7560,9 @@ TP.boot.$setStage = function(aStage, aReason) {
 
     image = info.image;
     if (TP.boot.$notEmpty(image)) {
-        // Image is provided as a TIBET URL, ~lib_img etc. so we need to replace
-        // that with the proper prefix before setting as the img element's src.
+        //  Image is provided as a TIBET URL, ~lib_img etc. so we need to
+        //  replace that with the proper prefix before setting as the img
+        //  element's src.
 
         if (image.charAt(0) === '~') {
             image = TP.boot.$uriExpandPath(image);
@@ -7778,13 +7570,13 @@ TP.boot.$setStage = function(aStage, aReason) {
         TP.boot.$displayImage(image);
     }
 
-    // If the stage has a 'hook' function run it.
+    //  If the stage has a 'hook' function run it.
     if (typeof info.hook === 'function') {
         info.hook(aStage, aReason);
     }
 
-    // One last thing is dealing with the termination phases, started and
-    // stopped. Each needs some special handling.
+    //  One last thing is dealing with the termination phases, started and
+    //  stopped. Each needs some special handling.
 
     if (TP.boot.$$stage === 'liftoff') {
 
@@ -7816,6 +7608,7 @@ TP.boot.$setStage = function(aStage, aReason) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$getNextStage = function(aStage) {
+
     var stage,
         index;
 
@@ -7832,6 +7625,7 @@ TP.boot.$getNextStage = function(aStage) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$getPriorStage = function(aStage) {
+
     var stage,
         index;
 
@@ -7849,9 +7643,10 @@ TP.boot.$getPriorStage = function(aStage) {
 TP.boot.$getStageTime = function(aStage, startStage) {
 
     /**
-     * Returns the amount of time a stage took relative to the startStage or the
-     * prior stage. If the stage isn't complete this method returns a rough time
-     * based on the time of the call.
+     * @name $getStageTime
+     * @summary Returns the amount of time a stage took relative to the
+     *     startStage or the prior stage. If the stage isn't complete this
+     *     method returns a rough time based on the time of the call.
      * @param {String} aStage The stage to report on. Defaults to current stage.
      * @param {String} startStage The stage to compute from. Defaults to the
      *     stage prior to aStage.
@@ -7872,8 +7667,8 @@ TP.boot.$getStageTime = function(aStage, startStage) {
     //  alternative start stage. this is due to the fact we store entered times
     //  in each stage, not elapsed times.
 
-    // Default the stage setting, then capture the next stage or current time
-    // data as the time we'll use for the largest of the two time values.
+    //  Default the stage setting, then capture the next stage or current time
+    //  data as the time we'll use for the largest of the two time values.
     stage = aStage || TP.boot.$$stage;
     next = TP.boot.$getNextStage(stage);
     stageinfo = TP.boot.$getStageInfo(next);
@@ -7885,8 +7680,8 @@ TP.boot.$getStageTime = function(aStage, startStage) {
         stagetime = stageinfo.entered;
     }
 
-    // Default the start stage to the current stage. Again, this is done since
-    // our start time is captured in stage info, not elapsed or end time.
+    //  Default the start stage to the current stage. Again, this is done since
+    //  our start time is captured in stage info, not elapsed or end time.
     start = startStage || stage;
     startinfo = TP.boot.$getStageInfo(start);
     if (TP.boot.$notValid(startinfo)) {
@@ -7897,7 +7692,7 @@ TP.boot.$getStageTime = function(aStage, startStage) {
         starttime = startinfo.entered;
     }
 
-    // Simple value is current - start in milliseconds.
+    //  Simple value is current - start in milliseconds.
     elapsed = Math.abs(stagetime.getTime() - starttime.getTime());
 
     return elapsed;
@@ -7908,11 +7703,12 @@ TP.boot.$getStageTime = function(aStage, startStage) {
 //  ============================================================================
 
 TP.boot.$getArgumentPrimitive = function(value) {
+
     if (TP.boot.$notValid(value)) {
         return value;
     }
 
-    // Try to convert to number, boolean, regex,
+    //  Try to convert to number, boolean, regex,
     if (TP.boot.NUMBER_REGEX.test(value)) {
         return 1 * value;
     } else if (TP.boot.BOOLEAN_REGEX.test(value)) {
@@ -7949,7 +7745,7 @@ TP.boot.getURLArguments = function(url) {
         params,
         args;
 
-    // Process any hash portion of the URL string.
+    //  Process any hash portion of the URL string.
     if (!/#/.test(url)) {
         return {};
     }
@@ -7996,15 +7792,15 @@ TP.boot.getURLBookmark = function(url) {
 
     var hash;
 
-    // Process the hash portion of the URL string.
+    //  Process the hash portion of the URL string.
     if (!/#/.test(url)) {
         return;
     }
     hash = url.slice(url.indexOf('#'));
 
-    // Any part of the hash which is formatted to match server-side parameter
-    // syntax will be treated as client-side parameters. The bookmark portion of
-    // the hash must be non-empty.
+    //  Any part of the hash which is formatted to match server-side parameter
+    //  syntax will be treated as client-side parameters. The bookmark portion
+    //  of the hash must be non-empty.
     if (/&/.test(hash)) {
         hash = hash.slice(0, hash.indexOf('&'));
     }
@@ -8017,12 +7813,12 @@ TP.boot.getURLBookmark = function(url) {
 //  ============================================================================
 
 /*
-TIBET is "dual path" oriented, meaning it thinks in terms of an "app root"
-and a "lib root" so that your code and the TIBET code can vary independently
-without too many maintenance issues. Using separate paths for APP and LIB
-code lets you either share a codebase, or point your application to a new
-release of TIBET for testing without altering directory structures, making
-extra copies, or other typical approaches.
+TIBET is "dual path" oriented, meaning it thinks in terms of an "app root" and a
+"lib root" so that your code and the TIBET code can vary independently without
+too many maintenance issues. Using separate paths for APP and LIB code lets you
+either share a codebase, or point your application to a new release of TIBET for
+testing without altering directory structures, making extra copies, or other
+typical approaches.
 */
 
 //  ----------------------------------------------------------------------------
@@ -8050,13 +7846,13 @@ TP.boot.$getAppHead = function() {
         return TP.boot.$$apphead;
     }
 
-    // Compute from the window location. This presumes window is a real slot
-    // (which means it won't work on Node.js etc by default).
+    //  Compute from the window location. This presumes window is a real slot
+    //  (which means it won't work on Node.js etc by default).
     path = decodeURI(window.location.toString());
     path = path.split(/[#?]/)[0];
 
-    // From a semantic viewpoint the app head can't be inside the library
-    // area, it has to be above it, typically where we'd think of app root
+    //  From a semantic viewpoint the app head can't be inside the library
+    //  area, it has to be above it, typically where we'd think of app root
     keys = [TP.sys.cfg('boot.tibetdir'), TP.sys.cfg('boot.tibetinf')];
     len = keys.length;
     for (i = 0; i < len; i++) {
@@ -8067,8 +7863,8 @@ TP.boot.$getAppHead = function() {
         }
     }
 
-    // Didn't find a typical project library location on the path. Check to see
-    // if we're _in_ the library.
+    //  Didn't find a typical project library location on the path. Check to see
+    //  if we're _in_ the library.
     lib = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibetlib');
     if (path.indexOf('/' + lib + '/') !== -1) {
         TP.boot.$$apphead = path.slice(0,
@@ -8076,8 +7872,8 @@ TP.boot.$getAppHead = function() {
         return TP.boot.$$apphead;
     }
 
-    // Should have found boot.tibetlib but just in case we can just use an
-    // offset from the current window location (minus noise for # etc.)
+    //  Should have found boot.tibetlib but just in case we can just use an
+    //  offset from the current window location (minus noise for # etc.)
     offset = TP.sys.getcfg('path.head_offset');
     if (TP.boot.$notEmpty(offset)) {
         TP.boot.$$apphead = TP.boot.$uriCollapsePath(
@@ -8085,8 +7881,8 @@ TP.boot.$getAppHead = function() {
         return TP.boot.$$apphead;
     }
 
-    // If we're not launching from somewhere below the typical library root we
-    // try to work from the last portion of the path prior to any hash value.
+    //  If we're not launching from somewhere below the typical library root we
+    //  try to work from the last portion of the path prior to any hash value.
     parts = path.split('/');
     if (parts[parts.length - 1].match(/\./)) {
         parts.length = parts.length - 1;
@@ -8125,9 +7921,10 @@ TP.boot.$getAppRoot = function() {
         return TP.boot.$setAppRoot(root);
     }
 
-    // If app root isn't going to match up with app head it's going to typically
-    // be set via launch parameters, url parameters, or via tibet.json. We can
-    // set it initially here and it'll be reset once those are processed.
+    //  If app root isn't going to match up with app head it's going to
+    //  typically be set via launch parameters, url parameters, or via
+    //  tibet.json. We can set it initially here and it'll be reset once those
+    //  are processed.
     return TP.boot.$setAppRoot(TP.boot.$getAppHead());
 };
 
@@ -8167,8 +7964,8 @@ TP.boot.$getLibRoot = function() {
         return TP.boot.$setLibRoot(root);
     }
 
-    // Default starting point is the current window location minus any fragment
-    // and file reference.
+    //  Default starting point is the current window location minus any fragment
+    //  and file reference.
     loc = decodeURI(window.location.toString());
     root = loc.split(/[#?]/)[0];
 
@@ -8179,74 +7976,80 @@ TP.boot.$getLibRoot = function() {
     root = parts.join('/');
 
     comp = TP.sys.cfg('boot.libcomp');
+
     switch (comp) {
-    case 'apphead':
-        // force to match app_head.
-        return TP.boot.$setLibRoot(TP.boot.$getAppHead());
 
-    case 'approot':
-        // force to match app_root.
-        return TP.boot.$setLibRoot(TP.boot.$getAppRoot());
+        case 'apphead':
+            //  force to match app_head.
+            return TP.boot.$setLibRoot(TP.boot.$getAppHead());
 
-    case 'frozen':
-        // frozen applications typically have TIBET-INF/tibet in them
-        path = TP.boot.$uriJoinPaths(
-                TP.boot.$uriJoinPaths(root, TP.sys.cfg('boot.tibetinf')),
-                TP.sys.cfg('boot.tibetlib'));
-        return TP.boot.$setLibRoot(path);
+        case 'approot':
+            //  force to match app_root.
+            return TP.boot.$setLibRoot(TP.boot.$getAppRoot());
 
-    case 'indexed':
-        // find location match using a string index on window location.
-        test = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibetlib');
-        if (TP.boot.$notEmpty(test)) {
-            ndx = root.lastIndexOf(test);
-            if (ndx !== -1) {
-                ndx += test.length + 1;
-                path = root.slice(0, ndx);
-                return TP.boot.$setLibRoot(path);
+        case 'frozen':
+            //  frozen applications typically have TIBET-INF/tibet in them
+            path = TP.boot.$uriJoinPaths(
+                    TP.boot.$uriJoinPaths(root, TP.sys.cfg('boot.tibetinf')),
+                    TP.sys.cfg('boot.tibetlib'));
+
+            return TP.boot.$setLibRoot(path);
+
+        case 'indexed':
+            //  find location match using a string index on window location.
+            test = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibetlib');
+            if (TP.boot.$notEmpty(test)) {
+                ndx = root.lastIndexOf(test);
+                if (ndx !== -1) {
+                    ndx += test.length + 1;
+                    path = root.slice(0, ndx);
+
+                    return TP.boot.$setLibRoot(path);
+                }
             }
-        }
-        break;
+            break;
 
-    case 'location':
-        // force to last 'collection' in the window location.
-        return TP.boot.$setLibRoot(root);
+        case 'location':
+            //  force to last 'collection' in the window location.
+            return TP.boot.$setLibRoot(root);
 
-    case 'tibetdir':
-        // npmdir applications typically have node_modules/tibet in them
-        path = TP.boot.$uriJoinPaths(
-                TP.boot.$uriJoinPaths(root, TP.sys.cfg('boot.tibetdir')),
-                TP.sys.cfg('boot.tibetlib'));
-        return TP.boot.$setLibRoot(path);
+        case 'tibetdir':
+            //  npmdir applications typically have node_modules/tibet in them
+            path = TP.boot.$uriJoinPaths(
+                    TP.boot.$uriJoinPaths(root, TP.sys.cfg('boot.tibetdir')),
+                    TP.sys.cfg('boot.tibetlib'));
 
-        /* eslint-disable no-fallthrough */
-    case 'script':
-        void(0);
-        /* falls through */
-    default:
-        /* eslint-enable no-fallthrough */
+            return TP.boot.$setLibRoot(path);
 
-        // Find script tags and turn into an array instead of collection.
-        scripts = Array.prototype.slice.call(
-            document.getElementsByTagName('script'), 0);
-        len = scripts.length;
-        for (i = 0; i < len; i++) {
-            if (/tibet_init/.test(scripts[i].src)) {
-                path = scripts[i].src;
-                break;
+            /* eslint-disable no-fallthrough */
+        case 'script':
+            void(0);
+            /* falls through */
+        default:
+            /* eslint-enable no-fallthrough */
+
+            //  Find script tags and turn into an array instead of collection.
+            scripts = Array.prototype.slice.call(
+                document.getElementsByTagName('script'), 0);
+            len = scripts.length;
+            for (i = 0; i < len; i++) {
+                if (/tibet_init/.test(scripts[i].src)) {
+                    path = scripts[i].src;
+                    break;
+                }
             }
-        }
 
-        // Combine current path with the src path in case of relative path
-        // specification (common) and we should end up with a workable offset.
-        if (TP.boot.$notEmpty(path)) {
-            return TP.boot.$setLibRoot(
-                TP.boot.$uriCollapsePath(
-                    TP.boot.$uriJoinPaths(TP.boot.$uriJoinPaths(root, path),
-                    TP.sys.cfg('boot.initoffset'))));
-        }
+            //  Combine current path with the src path in case of relative path
+            //  specification (common) and we should end up with a workable
+            //  offset.
+            if (TP.boot.$notEmpty(path)) {
+                return TP.boot.$setLibRoot(
+                    TP.boot.$uriCollapsePath(
+                        TP.boot.$uriJoinPaths(TP.boot.$uriJoinPaths(root, path),
+                        TP.sys.cfg('boot.initoffset'))));
+            }
 
-        break;
+            break;
     }
 
     if (TP.boot.$isValid(TP.boot.$$libroot)) {
@@ -8255,7 +8058,7 @@ TP.boot.$getLibRoot = function() {
 
     TP.boot.shouldStop('unable to compute lib_root');
     TP.boot.$stderr('TP.boot.$getLibRoot() unable to find/compute libroot.',
-                   TP.FATAL);
+                       TP.FATAL);
 };
 
 //  ----------------------------------------------------------------------------
@@ -8377,7 +8180,7 @@ TP.boot.$configurePackage = function() {
         xml,
         err;
 
-    // First phase is about giving boot.profile precedence over boot.package.
+    //  First phase is about giving boot.profile precedence over boot.package.
     profile = TP.sys.cfg('boot.profile');
     if (TP.boot.$isEmpty(profile)) {
         TP.boot.$stdout('Empty boot.profile. Checking for boot.package.',
@@ -8398,12 +8201,12 @@ TP.boot.$configurePackage = function() {
         TP.boot.$stdout('Found boot.profile. Using: ' + profile, TP.DEBUG);
     }
 
-    // Second phase is processing any boot.profile if found to update any
-    // boot.package and boot.config values contained in the profile.
+    //  Second phase is processing any boot.profile if found to update any
+    //  boot.package and boot.config values contained in the profile.
     if (TP.boot.$notEmpty(profile)) {
 
-        // If we see # it's a package#config description. Split and update the
-        // proper elements as needed.
+        //  If we see # it's a package#config description. Split and update the
+        //  proper elements as needed.
         if (/#/.test(profile)) {
             parts = profile.split('#');
             package = parts[0];
@@ -8411,17 +8214,17 @@ TP.boot.$configurePackage = function() {
             config = TP.sys.cfg('boot.config');
             if (config !== parts[1]) {
 
-                // If the existing config isn't empty we're about to change it.
-                // Don't do that without writing a warning to the logs.
+                //  If the existing config isn't empty we're about to change it.
+                //  Don't do that without writing a warning to the logs.
                 if (TP.boot.$notEmpty(config)) {
                     TP.boot.$stdout(
                         'Overriding boot.config (' + config +
                         ') with profile#config: ' + parts[1], TP.WARN);
                 }
 
-                // Configuration mismatch. We'll go with the one on the
-                // profile...because we're in an IF whose condition is that
-                // there was no boot.package spec'd to go with boot.config.
+                //  Configuration mismatch. We'll go with the one on the
+                //  profile...because we're in an IF whose condition is that
+                //  there was no boot.package spec'd to go with boot.config.
                 TP.sys.setcfg('boot.config', parts[1]);
             }
         } else {
@@ -8429,19 +8232,20 @@ TP.boot.$configurePackage = function() {
         }
     }
 
-    // Packages should always be .xml files. If we're defaulting from user input
-    // tho we don't assume they added that to either profile or package name.
+    //  Packages should always be .xml files. If we're defaulting from user
+    //  input though we don't assume they added that to either profile or
+    //  package name.
     if (/\.xml$/.test(package) !== true) {
         package += '.xml';
     }
 
-    // If the package spec isn't absolute we need to join it with a
-    // directory or other prefix so we can find the actual resource.
+    //  If the package spec isn't absolute we need to join it with a
+    //  directory or other prefix so we can find the actual resource.
     if (!TP.boot.$uriIsAbsolute(package)) {
         package = TP.boot.$uriJoinPaths('~app_cfg', package);
     }
 
-    // Warn if we're overriding package info
+    //  Warn if we're overriding package info
     if (package !== TP.sys.cfg('boot.package') &&
         TP.boot.$notEmpty(TP.sys.cfg('boot.package'))) {
         TP.boot.$stdout(
@@ -8452,7 +8256,7 @@ TP.boot.$configurePackage = function() {
     file = TP.boot.$uriExpandPath(package);
     TP.boot.$stdout('Loading package: ' + file, TP.DEBUG);
 
-    xml = TP.boot.$uriLoad(file, TP.DOM, 'manifest', false);
+    xml = TP.boot.$uriLoad(file, TP.DOM, 'manifest');
     if (xml) {
         TP.boot.$$bootxml = xml;
         TP.boot.$$bootfile = file;
@@ -8483,9 +8287,9 @@ TP.boot.$configureBootstrap = function() {
         obj,
         logpath;
 
-    // Launch parameters can be provided directly to the launch command such
-    // that the bootstrap file isn't needed. If that's the case we can skip
-    // loading the file and cut out one more HTTP call.
+    //  Launch parameters can be provided directly to the launch command such
+    //  that the bootstrap file isn't needed. If that's the case we can skip
+    //  loading the file and cut out one more HTTP call.
     if (TP.sys.cfg('boot.notibetfile')) {
         return;
     }
@@ -8508,8 +8312,8 @@ TP.boot.$configureBootstrap = function() {
         return;
     }
 
-    // Process the values in the tibet_file to push them into the system
-    // configuration.
+    //  Process the values in the tibet_file to push them into the system
+    //  configuration.
     TP.boot.$configureOptions(obj);
 
     return;
@@ -8579,361 +8383,50 @@ TP.boot.$configureEnvironment = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$configureLocalCache = function(shouldWarn) {
-
-    /**
-     * @name $configureLocalCache
-     * @summary Configures local cache storage if boot.localcache is true.
-     * @description The local cache is used heavily during booting to optimize
-     *     load times and HTTP access overhead, but is also leveraged by TIBET's
-     *     content processing pipeline for storing processed markup and style
-     *     data. NOTE that this method may alter the value of the
-     *     boot.localcache flag if no cache-capable infrastructure can be
-     *     found/accessed in the current browser.
-     * @param {Boolean} shouldWarn Should warnings be output? Normally true, but
-     *     since this routine is called more than once we turn them off in some
-     *     circumstances.
-     * @return {null}
-     */
-
-    var pname,
-        version,
-        msg;
-
-    //  if the cache is off then there's no real work to do, we check that
-    //  flag anywhere we might be doing cache-related work.
-    if (!TP.sys.cfg('boot.localcache')) {
-        return;
-    }
-
-    //  configure storage in whatever form we can so we can support
-    //  the localcache requirement(s). NOTE that this won't access DOM
-    //  storage unless booting from HTTP due to oversight on the part of the
-    //  various browser implementers.
-    TP.boot.$setupDOMStorage();
-
-    if (TP.boot.$notValid(TP.$BOOT_STORAGE)) {
-        if (shouldWarn !== false) {
-            //  should have been able to configure cache, particularly when
-            //  we're trying to launch over HTTP (since DOM Storage should
-            //  be there), so record failure when HTTP-based as an error.
-            msg = 'Unable to configure storage, disabling local cache.';
-
-            if (TP.sys.isHTTPBased()) {
-                TP.boot.$stderr(msg);
-            } else {
-                //  file-based launches are often restricted from accessing
-                //  DOM storage, but we can get to the file system so it's
-                //  unlikely to have a huge impact.
-                TP.boot.$stdout(msg, TP.WARN);
-            }
-        }
-
-        //  force the cache control flag to false so we don't try to use the
-        //  cache anywhere else.
-        TP.sys.setcfg('boot.localcache', false);
-
-        return;
-    }
-
-    //  how the cache is actually leveraged and updated is a factor of the
-    //  cache mode, which can be "versioned" (leveraging a version string
-    //  check), "synchronized" (use Last-Modified data), "manual" (refresh
-    //  nodes that are specifically marked), "stale" (where the cache is
-    //  effectively forced to update completely), and "fresh" where the
-    //  cache is presumed to be correct regardless of its true state).
-    switch (TP.sys.cfg('boot.cachemode')) {
-        case 'versioned':
-
-            TP.boot.$stdout('Configuring \'versioned\' local cache.',
-                TP.DEBUG);
-
-            //  versioned caches check the package's version as defined in
-            //  the root manifest file against the cached version for the
-            //  application. the result of that comparison drive how the
-            //  various cache detail flags are set.
-            pname = TP.sys.cfg('project.name');
-            version = TP.sys.cfg('project.version');
-
-            TP.$BOOT_STORAGE.get(
-                pname + '_cache_version',
-                function(content) {
-
-                    TP.boot.$configureVersionedCache(content, version);
-                });
-
-            break;
-
-        case 'synchronized':
-
-            TP.boot.$stdout('Configuring \'synchronized\' local cache.',
-                            TP.DEBUG);
-
-            //  a synchronized cache means we update every file based on
-            //  Last-Modified data to keep the cache synchronized with any
-            //  changes on the server.
-            TP.sys.setcfg('import.source', 'modified');
-
-            break;
-
-        case 'manual':
-
-            TP.boot.$stdout('Configuring \'manual\' local cache.',
-                TP.DEBUG);
-
-            //  a manual cache means the manifest nodes to update will be
-            //  marked manually as needing a refresh. This approach provides
-            //  the most control but is harder to maintain for developers.
-            TP.sys.setcfg('import.source', 'marked');
-
-            break;
-
-        case 'stale':
-
-            TP.boot.$stdout('Configuring \'stale\' local cache.',
-                TP.DEBUG);
-
-            //  a stale cache means we don't even want to consider metadata
-            //  regarding Last-Modified dates for source. all flags are set
-            //  to force full refresh of the cache to occur.
-            TP.sys.setcfg('import.source', 'remote');
-
-            //  If the user said that the cache is 'stale', then just empty
-            //  it in preparation for reloading.
-            TP.$BOOT_STORAGE.removeAll(TP.NOOP);
-
-            break;
-
-        case 'fresh':
-
-            TP.boot.$stdout('Configuring \'fresh\' local cache.',
-                TP.DEBUG);
-
-            //  cache is considered current without checks of any kind.
-            TP.sys.setcfg('import.manifests', true);
-            TP.sys.setcfg('import.metadata', true);
-            TP.sys.setcfg('import.source', 'local');
-
-            break;
-
-        default:
-
-            //  invalid cache mode, treat like an invalid cache
-            TP.boot.$stderr('Invalid local cache mode: ' +
-                TP.sys.cfg('boot.cachemode'), TP.ERROR);
-            TP.boot.$stdout('Disabling local cache.', TP.WARN);
-
-            TP.sys.setcfg('boot.localcache', false);
-
-            break;
-    }
-
-    return;
-};
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.$configureVersionedCache = function(cacheVersion, rootVersion) {
-
-    /**
-     * @name $configureVersionedCache
-     * @summary Configures cache import properties based on comparison of the
-     *     version strings provided. The cache version is typically read from
-     *     the local cache using the current application name while the
-     *     rootVersion is read from the tibet.xml file.
-     * @description The comparison of version strings is usually done using a
-     *     common format of major.minor.build.patch. The level at which the
-     *     version string first changes defines the nature of the overall cache
-     *     update that will be performed.
-     *
-     *     Since there are four components to a version string there are four
-     *     types of cache update which can be configured by manipulating the
-     *     version string. A major update invalidates the entire cache,
-     *     effectively mirroring a "stale" cache setting. A minor update tries
-     *     to preserve as much of the cache as possible while updating with the
-     *     latest content (mirroring a "synchronized" cache). A build update
-     *     implies a primarily configuration-related change in which individual
-     *     files to update are marked (mirroring a "manual" cache setting). A
-     *     patch update preserves all existing content and simply invalidates
-     *     the build information and presumes that one or more files won't be
-     *     found in the current cache (the patch files).
-     * @param {The} cacheVersion cached content's version string.
-     * @param {The} rootVersion root packages's version string.
-     * @return {null}
-     * @todo
-     */
-
-    var rootParts,
-        cacheParts;
-
-    // Since cache config can be async sometimes we'll see cache messaging after
-    // a 'stop', which makes things look a bit strange. Just stop.
-    if (TP.boot.shouldStop()) {
-        return;
-    }
-
-    if (!cacheVersion) {
-        TP.boot.$stdout('No local cache version string found.', TP.DEBUG);
-        TP.boot.$stdout('Simulating \'empty\' local cache.', TP.DEBUG);
-
-        //  no cache or empty version string, consider cache invalid.
-        TP.sys.setcfg('import.source', 'remote');
-
-        return;
-    }
-
-    if (!rootVersion) {
-        TP.boot.$stdout('No target version string found.', TP.DEBUG);
-        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.DEBUG);
-
-        //  no target version for the root package, consider cache valid but
-        //  check individual nodes for version/update information.
-        TP.sys.setcfg('import.source', 'marked');
-
-        return;
-    }
-
-    //  if the strings are the same, regardless of their form, then we
-    //  consider the cache to be current in all respects.
-    if (cacheVersion === rootVersion) {
-        TP.boot.$stdout('Cache and target versions match.', TP.DEBUG);
-        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.DEBUG);
-
-        TP.sys.setcfg('import.manifests', true);
-        TP.sys.setcfg('import.metadata', true);
-        TP.sys.setcfg('import.source', 'local');
-
-        return;
-    }
-
-    //  the version strings need to be 'well-formed' for remaining logic to
-    //  work properly since it relies on testing relative magnitudes.
-
-    //  if the target version isn't recognized, but it differs from the
-    //  current cached version, we consider that a "major update" since we
-    //  have no other data to go by.
-    if (!TP.TIBET_VERSION_SPLITTER.test(rootVersion)) {
-        TP.boot.$stderr('Unrecognized target version format: ' +
-                        rootVersion);
-        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.DEBUG);
-
-        TP.sys.setcfg('import.source', 'remote');
-
-        return;
-    }
-
-    //  if the root version is recognized but the cache version isn't then
-    //  we can presume this is a major update and configure the cache
-    //  accordingly.
-    if (!TP.TIBET_VERSION_SPLITTER.test(cacheVersion)) {
-        TP.boot.$stderr('Unrecognized cache version format: ' +
-                        cacheVersion);
-        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.DEBUG);
-
-        TP.sys.setcfg('import.source', 'remote');
-
-        return;
-    }
-
-    //  both versions appear to be in the right format if we got this far,
-    //  so the next stage is to split them and start comparing chunks to
-    //  determine the nature of the update
-    cacheParts = TP.TIBET_VERSION_SPLITTER.match(cacheVersion);
-    rootParts = TP.TIBET_VERSION_SPLITTER.match(rootVersion);
-
-    if (rootParts[1] > cacheParts[1]) {
-        //  major update
-        TP.boot.$stderr(TP.boot.$join('Major version change from ',
-                        cacheParts[1], ' to ', rootParts[1]));
-
-        TP.boot.$stdout('Simulating \'stale\' local cache.', TP.DEBUG);
-
-        TP.sys.setcfg('import.source', 'remote');
-
-        return;
-    }
-
-    if (rootParts[2] > cacheParts[2]) {
-        //  minor update
-        TP.boot.$stderr(TP.boot.$join('Minor version change from ',
-                        cacheParts[2], ' to ', rootParts[2]));
-
-        TP.boot.$stdout('Simulating \'synchronized\' local cache.',
-            TP.DEBUG);
-
-        TP.sys.setcfg('import.source', 'modified');
-
-        return;
-    }
-
-    if (rootParts[3] > cacheParts[3]) {
-        //  build update
-        TP.boot.$stderr(TP.boot.$join('Build version change from ',
-                        cacheParts[3], ' to ', rootParts[3]));
-
-        TP.boot.$stdout('Simulating \'manual\' local cache.', TP.DEBUG);
-
-        TP.sys.setcfg('import.source', 'marked');
-
-        return;
-    }
-
-    if (rootParts[4] > cacheParts[4]) {
-        //  build update
-        TP.boot.$stderr(TP.boot.$join('Patch version change from ',
-                        cacheParts[4], ' to ', rootParts[4]));
-
-        TP.boot.$stdout('Simulating \'fresh\' local cache.', TP.DEBUG);
-
-        TP.sys.setcfg('import.source', 'local');
-
-        return;
-    }
-
-/*
-    //  regardless of how the prior step went, be sure we store the version
-    //  we'll be caching as a result of this launch.
-    TP.$BOOT_STORAGE.set(pname + '_cache_version', version, TP.NOOP);
-*/
-
-    return;
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.$configureOptions = function(anObject) {
 
-    Object.keys(anObject).forEach(function(key) {
-        var value;
+    Object.keys(anObject).forEach(
+            function(key) {
+                var value;
 
-        value = anObject[key];
-        // If the value isn't a primitive we assume the key is a prefix and that
-        // we need to nest the data appropriately.
-        if (Object.prototype.toString.call(value) === '[object Object]') {
-            Object.keys(value).forEach(function(subkey) {
-                var name;
+                value = anObject[key];
+                //  If the value isn't a primitive we assume the key is a prefix
+                //  and that we need to nest the data appropriately.
+                if (Object.prototype.toString.call(value) ===
+                    '[object Object]') {
 
-                name = key + '.' + subkey;
-                TP.sys.setcfg(name, value[subkey]);
+                    Object.keys(value).forEach(
+                            function(subkey) {
+                                var name;
 
-                TP.boot.$stdout('$configureOption ' + name + ' = ' +
-                    value[subkey], TP.DEBUG);
+                                name = key + '.' + subkey;
+                                TP.sys.setcfg(name, value[subkey]);
 
-                // Update cached values as needed.
-                if (name === 'path.app_root') {
-                    TP.boot.$stdout('Overriding path.app_root cache with: ' +
-                        value[subkey], TP.DEBUG);
-                    TP.boot.$$approot = TP.boot.$uriExpandPath(value[subkey]);
-                } else if (name === 'path.lib_root') {
-                    TP.boot.$stdout('Overriding path.lib_root cache with: ' +
-                        value[subkey], TP.DEBUG);
-                    TP.boot.$$libroot = TP.boot.$uriExpandPath(value[subkey]);
+                                TP.boot.$stdout('$configureOption ' + name +
+                                                ' = ' + value[subkey],
+                                                TP.DEBUG);
+
+                                //  Update cached values as needed.
+                                if (name === 'path.app_root') {
+                                    TP.boot.$stdout(
+                                    'Overriding path.app_root cache with: ' +
+                                    value[subkey],
+                                    TP.DEBUG);
+                                    TP.boot.$$approot =
+                                        TP.boot.$uriExpandPath(value[subkey]);
+                                } else if (name === 'path.lib_root') {
+                                    TP.boot.$stdout(
+                                    'Overriding path.lib_root cache with: ' +
+                                    value[subkey],
+                                    TP.DEBUG);
+                                    TP.boot.$$libroot =
+                                        TP.boot.$uriExpandPath(value[subkey]);
+                                }
+                            });
+                } else {
+                    TP.sys.setcfg(key, value);
                 }
             });
-        } else {
-            TP.sys.setcfg(key, value);
-        }
-    });
 };
 
 //  ----------------------------------------------------------------------------
@@ -8961,12 +8454,12 @@ TP.boot.$$configureOverrides = function(options, activate) {
 
     keys = Object.keys(options);
 
-    // If we've been here already then merge in any new values being provided.
+    //  If we've been here already then merge in any new values being provided.
     overrides = TP.sys.overrides;
     if (TP.boot.$isValid(overrides)) {
-        // Two key phases here are launch() params and URL values. URL values
-        // come second (so we can honor boot.nourlargs from launch()) but do
-        // outrank launch parameters when they exist so we just map over.
+        //  Two key phases here are launch() params and URL values. URL values
+        //  come second (so we can honor boot.nourlargs from launch()) but do
+        //  outrank launch parameters when they exist so we just map over.
         keys.forEach(function(key) {
             var value = options[key];
 
@@ -8982,7 +8475,7 @@ TP.boot.$$configureOverrides = function(options, activate) {
         });
     }
 
-    // Set the actual configuration values for anything we've been provided
+    //  Set the actual configuration values for anything we've been provided
     keys.forEach(function(key) {
         var value = options[key];
 
@@ -9050,7 +8543,6 @@ TP.boot.$configureTarget = function() {
 
     /**
      * @name $configureTarget
-     * @return {null}
      */
 
     var doc,
@@ -9076,7 +8568,6 @@ TP.boot.$configureUI = function() {
 
     /**
      * @name $configureUI
-     * @return {null}
      */
 
     var show,
@@ -9101,7 +8592,7 @@ TP.boot.$updateDependentVars = function() {
 
     var level;
 
-    // Logging level drives how the UI looks, so it needs to be updated.
+    //  Logging level drives how the UI looks, so it needs to be updated.
     level = TP.sys.cfg('boot.level');
     if (typeof level === 'string') {
         if (level.toUpperCase() in TP.boot) {
@@ -9118,7 +8609,7 @@ TP.boot.$updateDependentVars = function() {
     }
 
     if (level < TP.boot.ALL || level > TP.boot.OFF) {
-        // Reset and warn.
+        //  Reset and warn.
         TP.sys.setcfg('boot.level', TP.WARN, false, true);
         TP.boot.$$loglevel = TP.boot.WARN;
         TP.boot.$computeLogBufferSize();
@@ -9128,7 +8619,7 @@ TP.boot.$updateDependentVars = function() {
         TP.boot.$$loglevel = level;
     }
 
-    // Debugging and verbosity flags control visible output in the logs.
+    //  Debugging and verbosity flags control visible output in the logs.
     TP.$DEBUG = TP.sys.cfg('tibet.$debug', false);
     TP.$VERBOSE = TP.sys.cfg('tibet.$verbose', false);
     TP.$$DEBUG = TP.sys.cfg('tibet.$$debug', false);
@@ -9146,7 +8637,7 @@ TP.boot.$updateDependentVars = function() {
     //  two from a node filtering perspective
     TP.sys.setcfg('boot.phasetwo', TP.sys.cfg('boot.twophase') === false);
 
-    // Reconfigure the color scheme based on any updates to the log colors.
+    //  Reconfigure the color scheme based on any updates to the log colors.
     TP.boot.$$theme = {
         trace: TP.sys.cfg('log.color.trace'),
         info: TP.sys.cfg('log.color.info'),
@@ -9365,142 +8856,6 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
 };
 
 //  ============================================================================
-//  LOCAL STORAGE
-//  ============================================================================
-
-/*
-*/
-
-//  ----------------------------------------------------------------------------
-
-TP.$BOOT_STORAGE = null;
-TP.$BOOT_STORAGE_TYPE = null;
-TP.$BOOT_STORAGE_NAME = '$BOOT_STORAGE';
-
-TP.$BOOT_STORAGE_LOCALSTORAGE = 1;
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.$escapeStorageName = function(aName) {
-
-    return aName.replace(/_/g, '__').replace(/ /g, '_s');
-};
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.$initializeLocalStorage = function() {
-
-    /**
-     * @name $initializeLocalStorage
-     * @summary Initializes the 'local' storage mechanism (found on IE8, Safari
-     *     4, and Firefox 3.5) and returns a storage wrapper object to be able
-     *     to get/set/remove/removeAll objects from the storage.
-     * @return {Object|null} The storage 'wrapper' object or null if the
-     *     storage couldn't be initialized.
-     */
-
-    var internalStore,
-            storageObj;
-
-    internalStore = window.localStorage;
-
-    if (TP.boot.$notValid(internalStore)) {
-        return null;
-    }
-
-    storageObj =
-    {
-        internalStore: internalStore,
-
-        //  10MB limit on IE, 5MB limit on Moz / Safari
-        size: TP.sys.isUA('IE') ? 10 * 1024 * 1024 : 5 * 1024 * 1024,
-
-        _formatKey: function(aKey) {
-
-                    return TP.boot.$escapeStorageName(TP.$BOOT_STORAGE_NAME) +
-                            '_' +
-                            TP.boot.$escapeStorageName(aKey);
-                },
-
-        get: function(aKey, aCallbackFunction) {
-
-                    var theKey;
-
-                    theKey = this._formatKey(aKey);
-
-                    aCallbackFunction(this.internalStore.getItem(theKey),
-                                        aKey);
-
-                    return this.internalStore.getItem(theKey);
-                },
-
-        set: function(aKey, aValue, aCallbackFunction) {
-
-                    var theKey;
-
-                    theKey = this._formatKey(aKey);
-
-                    try {
-                        this.internalStore.setItem(theKey, aValue);
-                    } catch (e) {
-                        if (/maximum size reached/.test(e.message)) {
-                            //  turn off the cache
-                            TP.sys.setcfg('boot.localcache', false);
-                        }
-
-                        TP.boot.$stderr('Storage Error: ' + e.message + '.',
-                                        TP.boot.$ec(e));
-                    }
-
-                    aCallbackFunction(aValue, aKey);
-                },
-
-        remove: function(aKey, aCallbackFunction) {
-
-                    var theKey,
-                            currentValue;
-
-                    theKey = this._formatKey(aKey);
-
-                    currentValue = this.internalStore.getItem(theKey);
-                    this.internalStore.removeItem(theKey);
-
-                    aCallbackFunction(currentValue, aKey);
-                },
-        removeAll: function(aCallbackFunction) {
-
-                    this.internalStore.clear();
-
-                    aCallbackFunction();
-                }
-    };
-
-    TP.$BOOT_STORAGE = storageObj;
-    TP.$BOOT_STORAGE_TYPE = TP.$BOOT_STORAGE_LOCALSTORAGE;
-
-    return storageObj;
-};
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.$setupDOMStorage = function() {
-
-    /**
-     * @name $setupDOMStorage
-     * @summary Sets up the 'dom storage' - that is, the storage mechanism that
-     *     allows TIBET to cache itself locally into a programmer-controlled
-     *     cache.
-     * @return {Boolean} Whether or not the dom storage could be set up.
-     */
-
-    if (TP.boot.$isValid(TP.$BOOT_STORAGE)) {
-        return true;
-    }
-
-    return TP.boot.$isValid(TP.boot.$initializeLocalStorage());
-};
-
-//  ============================================================================
 //  IMPORT FUNCTIONS
 //  ============================================================================
 
@@ -9640,7 +8995,7 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
      * @param {Boolean} shouldThrow True to cause errors to throw a native Error
      *     so outer catch blocks will trigger.
      * @param {Boolean} isPackage True if the resource being imported is a
-     *     package-level resource. This can impact cache storage logic.
+     *     package-level resource.
      * @return {HTMLElement} The new 'script' element that was created to
      *     import the code.
      * @todo
@@ -9659,8 +9014,8 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
 
     //  we pass actual responsibility for locating the source text to the
     //  uriLoad call, but we need to tell it that we're looking for source
-    //  code so that it can make the proper decisions about cache lookup
-    src = TP.boot.$uriLoad(targetUrl, TP.TEXT, 'source', true, isPackage);
+    //  code.
+    src = TP.boot.$uriLoad(targetUrl, TP.TEXT, 'source', isPackage);
     if (src == null) {
         if (shouldThrow === true) {
             throw new Error(msg + targetUrl + '.');
@@ -9675,8 +9030,7 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
         return null;
     }
 
-    return TP.boot.$sourceImport(src, null, targetUrl,
-                                    aCallback, shouldThrow);
+    return TP.boot.$sourceImport(src, null, targetUrl, aCallback, shouldThrow);
 };
 
 //  ----------------------------------------------------------------------------
@@ -9717,6 +9071,7 @@ TP.boot.$$importComplete = function() {
     //  if we've been 'importing' and the list is now empty then we're
     //  done with whatever phase we've been processing
     stage = TP.boot.$getStage();
+
     if (stage === 'import_phase_one' || stage === 'import_phase_two') {
 
         //  if TIBET has already started then this import was being done
@@ -9836,12 +9191,10 @@ TP.boot.$importComponents = function(loadSync) {
         image,
         logpackage,
         logpath,
-        source,
-        cache;
+        source;
 
     TP.boot.$loadNode = null;
     TP.boot.$loadPath = null;
-    TP.boot.$loadCached = null;
 
     if (TP.boot.shouldStop()) {
         return;
@@ -9960,7 +9313,7 @@ TP.boot.$importComponents = function(loadSync) {
         //  an overly complex callback function when we've got to go over
         //  the wire to get the actual source before we can import.
         TP.boot.$stdout('Loading ' + (srcpath ? srcpath : logpath),
-            TP.DEBUG);
+                        TP.DEBUG);
 
         //  trigger the appropriate "will" hook
         if (srcpath) {
@@ -9977,11 +9330,11 @@ TP.boot.$importComponents = function(loadSync) {
         TP.sys.setcfg('load.config',
                         nd.getAttribute('load_config') || '');
 
-        //  In some sense the rest of this is all about getting the source
-        //  code to import, either inlined, from the local cache, or from
-        //  the original location, in either condensed or commented format.
-        //  Once the source is available we can then treat it consistently
-        //  by invoking the sourceImport call to do the actual work.
+        //  In some sense the rest of this is all about getting the source code
+        //  to import, either inlined, or from the original location, in either
+        //  condensed or commented format.
+        //  Once the source is available we can then treat it consistently by
+        //  invoking the sourceImport call to do the actual work.
 
         if ((srcpath = nd.getAttribute('src')) != null) {
             //  debuggers like Firebuggy have issues with script nodes that
@@ -10037,20 +9390,7 @@ TP.boot.$importComponents = function(loadSync) {
                 return;
             }
 
-            //  if source is local, remote, or modified no node-specific
-            //  data is necessary to determine cacheability, but when we're
-            //  in marked mode we have to look at the node to see if it's
-            //  listed for refresh or not.
-            cache = true;
-            if (TP.sys.cfg('import.source') === 'marked') {
-                //  TODO:   do we want to use a different attribute name
-                //  here? or perhaps require a version string match?
-                if (nd.getAttribute('refresh') !== 'true') {
-                    cache = false;
-                }
-            }
-            source = TP.boot.$uriLoad(TP.boot.$loadPath, TP.TEXT,
-                                        'source', cache);
+            source = TP.boot.$uriLoad(TP.boot.$loadPath, TP.TEXT, 'source');
         } else {
             source = '';
 
@@ -10068,8 +9408,7 @@ TP.boot.$importComponents = function(loadSync) {
             }
         }
 
-        //  if we were handling inline code or code we found in the cache
-        //  then we can import it directly now.
+        //  if we were handling inline code then we can import it directly now.
         try {
             TP.boot.$sourceImport(source, null, TP.boot.$loadPath);
         } catch (e) {
@@ -10145,15 +9484,15 @@ TP.boot.$$importPhase = function() {
         config,
         nodelist;
 
-    // Get the list of filtered nodes by listing the assets. This action causes
-    // whatever config is in place to be used to filter the expanded package.
+    //  Get the list of filtered nodes by listing the assets. This action causes
+    //  whatever config is in place to be used to filter the expanded package.
 
     package = TP.boot.$$bootfile;
     config = TP.sys.cfg('boot.config');
 
     nodelist = TP.boot.$listPackageAssets(package, config);
 
-    // remaining list is our workload for actual importing
+    //  remaining list is our workload for actual importing
     TP.boot.$stdout('Importing ' + nodelist.length + ' components.',
                    TP.SYSTEM);
 
@@ -10245,19 +9584,16 @@ TP.boot.$config = function() {
     //  configuration that will ultimately drive what we load.
     TP.boot.$configureBootstrap();
 
-    // Update any cached variable content. We do this each time we've read in
-    // new configuration values regardless of their source.
+    //  Update any cached variable content. We do this each time we've read in
+    //  new configuration values regardless of their source.
     TP.boot.$updateDependentVars();
 
     //  find and initially process the boot package/config we'll be booting.
     TP.boot.$configurePackage();
 
-    // Update any cached variable content. We do this each time we've read in
-    // new configuration values regardless of their source.
+    //  Update any cached variable content. We do this each time we've read in
+    //  new configuration values regardless of their source.
     TP.boot.$updateDependentVars();
-
-    //  setup any local cache storage and adjust settings for import/export
-    TP.boot.$configureLocalCache();
 
     //  ensure we know what the proper package config value is going to be
     TP.boot.$configureTarget();
@@ -10304,7 +9640,7 @@ TP.boot.$expand = function() {
     config = TP.sys.cfg('boot.config');
 
     TP.boot.$stdout('Expanding package#config: ' + file + '#' + config,
-                   TP.DEBUG);
+                    TP.DEBUG);
     TP.boot.$expandPackage(file, config);
 
     return;
@@ -10324,6 +9660,7 @@ TP.boot.$$paths = {};
 
 TP.boot.$$assets_list = null;
 
+//  ----------------------------------------------------------------------------
 
 /**
  * Expands a single package configuration, resolving any embedded package
@@ -10365,7 +9702,7 @@ TP.boot.$expandConfig = function(anElement) {
 
                     key = TP.boot.$getCurrentPackage() + '#' + ref;
                     if (TP.boot.$$configs.indexOf(key) !== -1) {
-                        // A duplicate/circular reference of some type.
+                        //  A duplicate/circular reference of some type.
                         TP.boot.$stderr(
                             'Ignoring duplicate reference to: ' + key);
                         break;
@@ -10425,8 +9762,8 @@ TP.boot.$expandConfig = function(anElement) {
 
                     break;
               case 'img':
-                    // similar to default case but we need to avoid messing with
-                    // data urls.
+                    //  similar to default case but we need to avoid messing
+                    //  with data urls.
                     src = child.getAttribute('src');
                     if (TP.boot.$notEmpty(src) && src.indexOf('data:') !== 0) {
                         src = TP.boot.$getFullPath(child, src);
@@ -10446,7 +9783,7 @@ TP.boot.$expandConfig = function(anElement) {
 
                     key = src + '#' + config;
                     if (TP.boot.$$configs.indexOf(key) !== -1) {
-                        // A duplicate/circular reference of some type.
+                        //  A duplicate/circular reference of some type.
                         TP.boot.$stderr(
                             'Ignoring duplicate reference to: ' + key);
                         break;
@@ -10518,22 +9855,26 @@ TP.boot.$expandConfig = function(anElement) {
     });
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Expands a package, resolving any embedded package references and virtual
- * paths which might be included.
- * @param {String} aPath The path to the package manifest file to be processed.
- * @param {String} aConfig The config ID within the package to be expanded.
- * @return {Document} An xml document containing the expanded configuration.
- */
 TP.boot.$expandPackage = function(aPath, aConfig) {
 
-    var expanded,   // The expanded path equivalent.
-        doc,        // The xml DOM document object after parse.
-        config,     // The ultimate config ID being used.
-        node,       // Result of searching for our config by ID.
-        package,    // The package node from the XML doc.
-        msg;        // Error message construction variable.
+    /**
+     * @name $expandPackage
+     * @summary Expands a package, resolving any embedded package references and
+     *     virtual paths which might be included.
+     * @param {String} aPath The path to the package manifest file to be
+     *     processed.
+     * @param {String} aConfig The config ID within the package to be expanded.
+     * @return {Document} An xml document containing the expanded configuration.
+     */
+
+    var expanded,   //  The expanded path equivalent.
+        doc,        //  The xml DOM document object after parse.
+        config,     //  The ultimate config ID being used.
+        node,       //  Result of searching for our config by ID.
+        package,    //  The package node from the XML doc.
+        msg;        //  Error message construction variable.
 
     expanded = TP.boot.$isEmpty(aPath) ? TP.sys.cfg('boot.package') : aPath;
     expanded = TP.boot.$expandPath(expanded);
@@ -10541,12 +9882,12 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
     TP.boot.$pushPackage(expanded);
 
     try {
-        // If we've been through this package once before we can skip reading
-        // and parsing the XML and jump directly to processing the config.
+        //  If we've been through this package once before we can skip reading
+        //  and parsing the XML and jump directly to processing the config.
         doc = TP.boot.$$packages[expanded];
         if (!doc) {
 
-            doc = TP.boot.$uriLoad(expanded, TP.DOM, 'manifest', true);
+            doc = TP.boot.$uriLoad(expanded, TP.DOM, 'manifest');
             if (!doc) {
                 throw new Error('Unable to read package: ' + expanded);
             }
@@ -10554,13 +9895,13 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
             TP.boot.$$packages[expanded] = doc;
         }
 
-        // If the package isn't valid stop right here.
+        //  If the package isn't valid stop right here.
         package = doc.getElementsByTagName('package')[0];
         if (TP.boot.$notValid(package)) {
             return;
         }
 
-        // Verify package has a name and version, otherwise it's not valid.
+        //  Verify package has a name and version, otherwise it's not valid.
         if (TP.boot.$isEmpty(package.getAttribute('name'))) {
             throw new Error('Missing name on package: ' +
                 TP.boot.$nodeAsString(package));
@@ -10578,8 +9919,8 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
                 TP.boot.$getCurrentPackage() + '#' + config);
         }
 
-        // Note that this may ultimately result in calls back into this routine
-        // if the config in question has embedded package references.
+        //  Note that this may ultimately result in calls back into this routine
+        //  if the config in question has embedded package references.
         TP.boot.$expandConfig(node);
     } catch (e) {
         msg = e.message;
@@ -10591,25 +9932,28 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
     return doc;
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Expands a TIBET virtual path to its equivalent non-virtual path.
- * @param {String} aPath The path to be expanded.
- * @return {String} The fully-expanded path value.
- */
 TP.boot.$expandPath = function(aPath) {
+
+    /**
+     * @name $expandPath
+     * @summary Expands a TIBET virtual path to its equivalent non-virtual path.
+     * @param {String} aPath The path to be expanded.
+     * @return {String} The fully-expanded path value.
+     */
 
     var path,
         parts,
         virtual;
 
-    // If we've done this one before just return it.
+    //  If we've done this one before just return it.
     path = TP.boot.$$paths[aPath];
     if (path) {
         return path;
     }
 
-    // TIBET virtual paths all start with '~'
+    //  TIBET virtual paths all start with '~'
     if (aPath.indexOf('~') === 0) {
 
         if (aPath === '~') {
@@ -10625,7 +9969,7 @@ TP.boot.$expandPath = function(aPath) {
             parts = aPath.split('/');
             virtual = parts.shift();
 
-            // If the path was ~/...something it's app_root prefixed.
+            //  If the path was ~/...something it's app_root prefixed.
             if (virtual === '~') {
                 path = TP.boot.$getAppHead();
             } else if (virtual === '~app' ||
@@ -10636,7 +9980,7 @@ TP.boot.$expandPath = function(aPath) {
                        virtual === '~lib_root') {
                 path = TP.boot.$getLibRoot();
             } else {
-                // Keys are of the form: path.app_root etc. so adjust.
+                //  Keys are of the form: path.app_root etc. so adjust.
                 path = TP.sys.cfg('path.' + virtual.slice(1));
                 if (!path) {
                     throw new Error('Virtual path not found: ' + virtual);
@@ -10647,8 +9991,8 @@ TP.boot.$expandPath = function(aPath) {
             path = parts.join('/');
         }
 
-        // Paths can expand into other virtual paths, so keep going until we
-        // no longer get back a virtual path.
+        //  Paths can expand into other virtual paths, so keep going until we no
+        //  longer get back a virtual path.
         if (path.indexOf('~') === 0) {
             if (path === aPath) {
                 throw new Error('Virtual path is circular: ' + path);
@@ -10661,23 +10005,26 @@ TP.boot.$expandPath = function(aPath) {
         path = aPath;
     }
 
-    // Cache the result so we avoid doing any path more than once.
+    //  Cache the result so we avoid doing any path more than once.
     TP.boot.$$paths[aPath] = path;
 
     return path;
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Looks up a configuration reference and provides its value. This routine is
- * specifically concerned with expanding embedded property references from
- * TIBET's setcfg/getcfg operations. For command-line processing the values
- * should be provided to the instance when it is created.
- * @param {String} aRef A potential property value reference to expand.
- * @return {String} The expanded value, or the original string value.
- */
 TP.boot.$expandReference = function(aRef) {
 
+    /**
+     * @name $expandReference
+     * @summary Looks up a configuration reference and provides its value. This
+     *     routine is specifically concerned with expanding embedded property
+     *     references from TIBET's setcfg/getcfg operations. For command-line
+     *     processing the values should be provided to the instance when it is
+     *     created.
+     * @param {String} aRef A potential property value reference to expand.
+     * @return {String} The expanded value, or the original string value.
+     */
     var ref;
 
     if (aRef && aRef.indexOf('{') === 0) {
@@ -10692,22 +10039,31 @@ TP.boot.$expandReference = function(aRef) {
     }
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Returns the file name of the currently processing package.
- * @return {string} The package file name.
- */
 TP.boot.$getCurrentPackage = function() {
+
+    /**
+     * @name $getCurrentPackage
+     * @summary Returns the file name of the currently processing package.
+     * @return {string} The package file name.
+     */
+
     return TP.boot.$$packageStack[0];
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Returns the default configuration from the package document provided.
- * @param {Document} aPackageDoc The XML package document to use for defaulting.
- * @return {String} The configuration ID which is the default.
- */
 TP.boot.$getDefaultConfig = function(aPackageDoc) {
+
+    /**
+     * @name $getDefaultConfig
+     * @summary Returns the default configuration from the package document
+     *     provided.
+     * @param {Document} aPackageDoc The XML package document to use for
+     *     defaulting.
+     * @return {String} The configuration ID which is the default.
+     */
 
     var package;
 
@@ -10715,19 +10071,25 @@ TP.boot.$getDefaultConfig = function(aPackageDoc) {
     if (TP.boot.$notValid(package)) {
         throw new Error('<package> tag missing.');
     }
-    // TODO: make this default of 'base' a constant?
+
+    //  TODO: make this default of 'base' a constant?
     return package.getAttribute('default') || 'base';
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Returns a full path by using any basedir information in anElement and
- * blending it with any virtual or relative path information from aPath.
- * @param {Element} anElement The element from which to begin basedir lookups.
- * @param {String} aPath The path to resolve into a full path.
- * @return {string} The fully-expanded path.
- */
 TP.boot.$getFullPath = function(anElement, aPath) {
+
+    /**
+     * @name $getFullPath
+     * @summary Returns a full path by using any basedir information in
+     *     anElement and blending it with any virtual or relative path
+     *     information from aPath.
+     * @param {Element} anElement The element from which to begin basedir
+     *     lookups.
+     * @param {String} aPath The path to resolve into a full path.
+     * @return {string} The fully-expanded path.
+     */
 
     var elem,
         base;
@@ -10754,24 +10116,28 @@ TP.boot.$getFullPath = function(anElement, aPath) {
     }
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Returns true if the element's tag name passes any asset-type filtering which
- * is in place. Asset filtering is done via tag name.
- * @param {Element} anElement The element to filter.
- */
 TP.boot.$ifAssetPassed = function(anElement) {
+
+    /**
+     * @name $ifAssetPassed
+     * @summary Returns true if the element's tag name passes any asset-type
+     *     filtering which is in place. Asset filtering is done via tag name.
+     * @param {Element} anElement The element to filter.
+     */
+
     var tag,
         result;
 
     tag = anElement.tagName;
 
-    // No assets option? Not filtering.
+    //  No assets option? Not filtering.
     if (TP.boot.$isEmpty(TP.sys.cfg('boot.assets'))) {
         return true;
     }
 
-    // Can't traverse if we don't always clear these two.
+    //  Can't traverse if we don't always clear these two.
     if (tag === 'package' || tag === 'config') {
         return true;
     }
@@ -10785,14 +10151,14 @@ TP.boot.$ifAssetPassed = function(anElement) {
     return result;
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- */
 TP.boot.$ifUnlessPassedLite = function(anElement) {
 
     /**
-     * Tests if and unless conditions on the node, returning true if the node
-     * passes and should be retained based on those conditions.
+     * @name $ifUnlessPassedLite
+     * @summary Tests if and unless conditions on the node, returning true if
+     *     the node passes and should be retained based on those conditions.
      * @param {Node} anElement The element to test.
      * @return {Boolean} True if the element passes the filtering tests.
      */
@@ -10808,10 +10174,14 @@ TP.boot.$ifUnlessPassedLite = function(anElement) {
     //  process any unless="a b c" entries on the element
     condition = anElement.getAttribute('unless');
     if (TP.boot.$notEmpty(condition)) {
+
         conditions = condition.split(' ');
+
         for (i = 0; i < conditions.length; i++) {
+
             key = conditions[i].trim();
             condition = TP.sys.cfg(key);
+
             if (condition === true) {
                 invalid = true;
                 break;
@@ -10822,12 +10192,17 @@ TP.boot.$ifUnlessPassedLite = function(anElement) {
     //  process any if="a b c" entries on the element
     condition = anElement.getAttribute('if');
     if (TP.boot.$notEmpty(condition)) {
+
         conditions = condition.split(' ');
+
         for (i = 0; i < conditions.length; i++) {
+
             key = conditions[i].trim();
 
             condition = TP.sys.cfg(key);
+
             if (TP.boot.$notValid(condition) || condition === false) {
+
                 invalid = true;
                 break;
             }
@@ -10837,133 +10212,145 @@ TP.boot.$ifUnlessPassedLite = function(anElement) {
     return !invalid;
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Lists assets from a package configuration. The assets will be concatenated
- * into aList if the list is provided (aList is used during recursive calls from
- * within this routine to build up the list).
- * @param {Element} anElement The config element to begin listing from.
- * @param {Array.<>} aList The array of asset descriptions to expand upon.
- * @return {Array.<>} The asset array.
- */
 TP.boot.$listConfigAssets = function(anElement, aList) {
+
+    /**
+     * @name $listConfigAssets
+     * @summary Lists assets from a package configuration. The assets will be
+     *     concatenated into aList if the list is provided (aList is used during
+     *     recursive calls from within this routine to build up the list).
+     * @param {Element} anElement The config element to begin listing from.
+     * @param {Array.<>} aList The array of asset descriptions to expand upon.
+     * @return {Array.<>} The asset array.
+     */
 
     var list,
         result;
 
-    // If aList is empty we're starting fresh which means we need a fresh
-    // asset-uniquing dictionary.
+    //  If aList is empty we're starting fresh which means we need a fresh
+    //  asset-uniquing dictionary.
     if (TP.boot.$notValid(aList)) {
         TP.boot.$$assets = {};
     }
     result = aList || [];
 
-    // Don't assume the config itself shouldn't be filtered.
+    //  Don't assume the config itself shouldn't be filtered.
     if (!TP.boot.$ifUnlessPassed(anElement)) {
         return result;
     }
 
     list = Array.prototype.slice.call(anElement.childNodes, 0);
-    list.forEach(function(child) {
+    list.forEach(
+            function(child) {
 
-        var ref,
-            src,
-            config;
+                var ref,
+                    src,
+                    config;
 
-        if (child.nodeType === 1) {
+                if (child.nodeType === 1) {
 
-            if (!TP.boot.$ifUnlessPassed(child)) {
-                return;
-            }
-
-            if (!TP.boot.$ifAssetPassed(child)) {
-                return;
-            }
-
-            switch (child.tagName) {
-                case 'config':
-                    ref = child.getAttribute('ref');
-
-                    config = TP.boot.$documentGetElementById(
-                        anElement.ownerDocument, ref);
-                    if (TP.boot.$notValid(config)) {
-                        throw new Error('<config> not found: ' + ref);
-                    }
-                    TP.boot.$listConfigAssets(config, result);
-                    break;
-                case 'echo':
-                    // Shouldn't exist, these should have been converted into
-                    // <script> tags calling TP.boot.$stdout.
-                    break;
-                case 'package':
-                    src = child.getAttribute('src');
-                    config = child.getAttribute('config');
-
-                    if (TP.boot.$isEmpty(src)) {
-                        throw new Error('<package> missing src: ' +
-                            TP.boot.$nodeAsString(child));
+                    if (!TP.boot.$ifUnlessPassed(child)) {
+                        return;
                     }
 
-                    TP.boot.$listPackageAssets(src, config, result);
-                    break;
-                case 'property':
-                    child.setAttribute('load_package',
-                        TP.boot.$getCurrentPackage());
-                    child.setAttribute('load_config',
-                        anElement.getAttribute('id'));
-                    result.push(child);
-                    break;
-                case 'img':
-                    /* falls through */
-                case 'script':
-                    /* falls through */
-                case 'style':
-                    /* falls through */
-                case 'template':
-                    /* falls through */
-                default:
-                    src = child.getAttribute('src') ||
-                        child.getAttribute('href');
-                    if (TP.boot.$notEmpty(src)) {
-                        // Unique the things we push by checking and caching
-                        // entries as we go.
-                        if (TP.boot.$notValid(TP.boot.$$assets[src])) {
-                            TP.boot.$$assets[src] = src;
+                    if (!TP.boot.$ifAssetPassed(child)) {
+                        return;
+                    }
+
+                    switch (child.tagName) {
+                        case 'config':
+                            ref = child.getAttribute('ref');
+
+                            config = TP.boot.$documentGetElementById(
+                                anElement.ownerDocument, ref);
+                            if (TP.boot.$notValid(config)) {
+                                throw new Error('<config> not found: ' + ref);
+                            }
+                            TP.boot.$listConfigAssets(config, result);
+                            break;
+                        case 'echo':
+                            //  Shouldn't exist, these should have been
+                            //  converted into <script> tags calling
+                            //  TP.boot.$stdout.
+                            break;
+                        case 'package':
+                            src = child.getAttribute('src');
+                            config = child.getAttribute('config');
+
+                            if (TP.boot.$isEmpty(src)) {
+                                throw new Error('<package> missing src: ' +
+                                    TP.boot.$nodeAsString(child));
+                            }
+
+                            TP.boot.$listPackageAssets(src, config, result);
+                            break;
+                        case 'property':
                             child.setAttribute('load_package',
                                 TP.boot.$getCurrentPackage());
                             child.setAttribute('load_config',
                                 anElement.getAttribute('id'));
                             result.push(child);
-                        } else {
-                            TP.boot.$stdout('Skipping duplicate asset: ' + src,
-                                           TP.WARN);
-                        }
-                    } else {
-                        child.setAttribute('load_package',
-                            TP.boot.$getCurrentPackage());
-                        child.setAttribute('load_config',
-                            anElement.getAttribute('id'));
-                        result.push(child);
+                            break;
+                        case 'img':
+                            /* falls through */
+                        case 'script':
+                            /* falls through */
+                        case 'style':
+                            /* falls through */
+                        case 'template':
+                            /* falls through */
+                        default:
+                            src = child.getAttribute('src') ||
+                                child.getAttribute('href');
+                            if (TP.boot.$notEmpty(src)) {
+                                //  Unique the things we push by checking and
+                                //  caching entries as we go.
+                                if (TP.boot.$notValid(TP.boot.$$assets[src])) {
+                                    TP.boot.$$assets[src] = src;
+
+                                    child.setAttribute('load_package',
+                                        TP.boot.$getCurrentPackage());
+                                    child.setAttribute('load_config',
+                                        anElement.getAttribute('id'));
+
+                                    result.push(child);
+                                } else {
+                                    TP.boot.$stdout(
+                                            'Skipping duplicate asset: ' + src,
+                                            TP.WARN);
+                                }
+                            } else {
+                                child.setAttribute('load_package',
+                                    TP.boot.$getCurrentPackage());
+                                child.setAttribute('load_config',
+                                    anElement.getAttribute('id'));
+                                result.push(child);
+                            }
+                            break;
                     }
-                    break;
-            }
-        }
+                }
     });
 
     return result;
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Lists assets from a package configuration. The assets will be concatenated
- * into aList if the list is provided (aList is used during recursive calls from
- * within this routine to build up the list).
- * @param {string} aPath The path to the package manifest to list.
- * @param {string} aConfig The ID of the config in the package to list.
- * @param {Array.<>} aList The array of asset descriptions to expand upon.
- * @return {Array.<>} The asset array.
- */
 TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
+
+    /**
+     * @name $listPackageAssets
+     * @summary Lists assets from a package configuration. The assets will be
+     *     concatenated into aList if the list is provided (aList is used
+     *     during recursive calls from within this routine to build up the
+     *     list).
+     * @param {string} aPath The path to the package manifest to list.
+     * @param {string} aConfig The ID of the config in the package to list.
+     * @param {Array.<>} aList The array of asset descriptions to expand upon.
+     * @return {Array.<>} The asset array.
+     */
 
     var path,
         config,
@@ -10982,7 +10369,7 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
             throw new Error('Can not list unexpanded package: ' + aPath);
         }
 
-        // Determine the configuration we'll be listing.
+        //  Determine the configuration we'll be listing.
         if (TP.boot.$isEmpty(aConfig)) {
             config = TP.boot.$getDefaultConfig(doc);
         } else {
@@ -10994,8 +10381,8 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
             throw new Error('<config> not found: ' + path + '#' + config);
         }
 
-        // If aList is empty we're starting fresh which means we need a fresh
-        // asset-uniquing dictionary.
+        //  If aList is empty we're starting fresh which means we need a fresh
+        //  asset-uniquing dictionary.
         if (!aList) {
             TP.boot.$$assets = {};
         }
@@ -11008,24 +10395,32 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
     return result;
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Pops an entry off the current stack of packages which are being processed as
- * part of an expansion.
- */
 TP.boot.$popPackage = function() {
+
+    /**
+     * @name popPackage
+     * @summary Pops an entry off the current stack of packages which are being
+     *     processed as part of an expansion.
+     */
+
     return TP.boot.$$packageStack.shift();
 };
 
+//  ----------------------------------------------------------------------------
 
-/**
- * Pushes a package path onto the currently processing package name stack.
- * @param {string} aPath The package's full path.
- */
 TP.boot.$pushPackage = function(aPath) {
+
+    /**
+     * @name $pushPackage
+     * @summary Pushes a package path onto the currently processing package name
+     *     stack.
+     * @param {string} aPath The package's full path.
+     */
+
     TP.boot.$$packageStack.unshift(aPath);
 };
-
 
 //  ----------------------------------------------------------------------------
 //  ----------------------------------------------------------------------------
@@ -11034,7 +10429,7 @@ TP.boot.$pushPackage = function(aPath) {
 
 TP.boot.$import = function() {
 
-    // Clear script dictionary. This will be used to unique across all imports.
+    //  Clear script dictionary. This will be used to unique across all imports.
     TP.boot.$$scripts = {};
 
     TP.boot.$$totalwork = 0;
@@ -11117,7 +10512,7 @@ TP.boot.launch = function(options) {
         TP.boot.$setStage('prelaunch');
     } catch (e) {
         if (window.location.protocol.indexOf('file') === 0) {
-            // File launch issue.
+            //  File launch issue.
             if (TP.sys.isUA('chrome')) {
                 TP.boot.$stderr(
                     'File launch aborted. ' +
@@ -11140,16 +10535,16 @@ TP.boot.launch = function(options) {
         }
     }
 
-    // If the browser is considered obsolete we can stop right now.
+    //  If the browser is considered obsolete we can stop right now.
     if (TP.sys.isObsolete()) {
         TP.boot.$stderr('Obsolete browser/platform: ' + TP.$agent +
             '. Boot sequence terminated.', TP.FATAL);
         return;
     }
 
-    // If the initial coded launch options didn't tell us to ignore the URL
-    // we'll process it for any overrides and update based on any changes. The
-    // argument 'true' here tells the system to activate override checking.
+    //  If the initial coded launch options didn't tell us to ignore the URL
+    //  we'll process it for any overrides and update based on any changes. The
+    //  argument 'true' here tells the system to activate override checking.
     if (TP.sys.cfg('boot.nourlargs') !== true) {
         TP.boot.$$configureOverrides(
             TP.boot.getURLArguments(top.location.toString()), true);
@@ -11159,7 +10554,8 @@ TP.boot.launch = function(options) {
     //  Regardless of any ignore URL arg settings avoid cycling when the
     //  login page was the first page into the user interface (double-click,
     //  bookmark, shortcut, etc.)
-// TODO: rename 'L' property to be more unique
+
+//  TODO: rename 'L' property to be more unique
     nologin = /\?L=false/.test(window.location.toString());
     TP.sys.setcfg('boot.uselogin', !nologin);
 
@@ -11185,8 +10581,8 @@ TP.boot.launch = function(options) {
         return;
     }
 
-    // configure the UI root. Once this is confirmed (which may require async
-    // processing) the rest of the boot sequence will continue.
+    //  configure the UI root. Once this is confirmed (which may require async
+    //  processing) the rest of the boot sequence will continue.
     TP.boot.$uiRootConfig();
 };
 
@@ -11200,7 +10596,6 @@ TP.boot.main = function() {
      *     purpose of this function is to hide any boot-time display content
      *     and then invoke the TP.sys.activate method to cause the system to
      *     initialize.
-     * @return {null}
      */
 
     var elem;
@@ -11212,18 +10607,21 @@ TP.boot.main = function() {
 
     if (TP.boot.shouldStop()) {
         TP.boot.$flushLog(true);
+
         return;
     }
 
     if (TP.sys.cfg('boot.pause')) {
         TP.boot.$setStage('paused');
         TP.boot.$displayStatus('Paused via boot.pause setting.');
+
         return;
     }
 
     if (TP.boot.$$logpeak > TP.boot.WARN && TP.sys.cfg('boot.pause_on_error')) {
         TP.boot.$setStage('paused');
         TP.boot.$displayStatus('Paused via boot.pause_on_error w/boot errors.');
+
         return;
     }
 
@@ -11292,9 +10690,10 @@ TP.boot.$stageAction = function() {
             TP.boot.$activate();
             break;
         case 'import_paused':
-            // Happens in two-phase booting when waiting for login to return us
-            // a hook file to trigger the second phase of the boot process.
-            // TODO: is there a 'user accessible' trigger we want to add here?
+            //  Happens in two-phase booting when waiting for login to return us
+            //  a hook file to trigger the second phase of the boot process.
+
+            //  TODO: is there a 'user accessible' trigger we want to add here?
             break;
         default:
             break;
@@ -11310,7 +10709,6 @@ TP.boot.$uiRootConfig = function() {
      * @summary Confirms a UIROOT can be found, and configures one it necessary.
      *     Configuration requires asynchronous loading so this routine is the
      *     first half of a pair of routines, the other being $uiRootReady.
-     * @todo
      */
 
     var uiRootID,
@@ -11322,12 +10720,12 @@ TP.boot.$uiRootConfig = function() {
         iFrameWrapper,
         elemDoc;
 
-    // Look for the designated (or default) UI root frame.
+    //  Look for the designated (or default) UI root frame.
     uiRootID = TP.sys.cfg('tibet.uiroot') || 'UIROOT';
     uiFrame = TP.boot.$getUIElement(uiRootID);
 
-    // If the frame is found this is simple and synchronous. Just invoke the
-    // second stage routine directly.
+    //  If the frame is found this is simple and synchronous. Just invoke the
+    //  second stage routine directly.
     if (TP.boot.$isValid(uiFrame)) {
         TP.boot.$uiRootReady();
         return;
@@ -11336,8 +10734,8 @@ TP.boot.$uiRootConfig = function() {
     TP.boot.$stdout('Unable to locate ' + uiRootID + ', generating it.',
         TP.DEBUG);
 
-    // TODO: Verify we need this instead of just body.appendChild. We used
-    // to have to work around a bug in IE.
+    //  TODO: Verify we need this instead of just body.appendChild. We used
+    //  to have to work around a bug in IE.
     lastBodyChildren = document.body.children;
     lastBodyChild = lastBodyChildren[lastBodyChildren.length - 1];
 
@@ -11409,7 +10807,6 @@ TP.boot.$uiRootReady = function() {
      * @name $uiRootReady
      * @summary Called to complete the process of launching a new TIBET
      *     application once the UI root frame is loaded.
-     * @todo
      */
 
     var uiRootID,
@@ -11462,7 +10859,6 @@ TP.boot.$uiRootReady = function() {
 
     return;
 };
-
 
 //  ============================================================================
 //  Export

@@ -136,11 +136,6 @@ TP.boot.defineMethod('$uriSaveMozFile', TP.boot.$uriSaveMozFile);
 TP.boot.defineMethod('$uriSaveWebkitFile', TP.boot.$uriSaveWebkitFile);
 TP.boot.defineMethod('$uriSaveHttp', TP.boot.$uriSaveHttp);
 
-TP.boot.defineMethod('$escapeStorageName', TP.boot.$escapeStorageName);
-TP.boot.defineMethod('$initializeLocalStorage',
-                                        TP.boot.$initializeLocalStorage);
-TP.boot.defineMethod('$setupDOMStorage', TP.boot.$setupDOMStorage);
-
 TP.boot.defineMethod('$documentCreate', TP.boot.$documentCreate);
 TP.boot.defineMethod('$activeXDocumentCreateIE',
                                         TP.boot.$activeXDocumentCreateIE);
@@ -157,7 +152,6 @@ TP.boot.defineMethod('$documentFromStringIE',
 
 TP.boot.defineMethod('$nodeAsString', TP.boot.$nodeAsString);
 TP.boot.defineMethod('$nodeAsStringCommon', TP.boot.$nodeAsStringCommon);
-TP.boot.defineMethod('$nodeAsStringIE', TP.boot.$nodeAsStringIE);
 
 TP.sys.defineMethod('getWindowById', TP.sys.getWindowById);
 TP.definePrimitive('windowIsInstrumented', TP.windowIsInstrumented);
@@ -197,10 +191,6 @@ TP.boot.defineMethod('$setLibRoot', TP.boot.$setLibRoot);
 
 TP.boot.defineMethod('$configureEnvironment',
                                     TP.boot.$configureEnvironment);
-TP.boot.defineMethod('$configureLocalCache',
-                                    TP.boot.$configureLocalCache);
-TP.boot.defineMethod('$configureVersionedCache',
-                                    TP.boot.$configureVersionedCache);
 
 TP.boot.defineMethod('$ifUnlessPassed', TP.boot.$ifUnlessPassed);
 TP.boot.defineMethod('$getElementCount', TP.boot.$getElementCount);
