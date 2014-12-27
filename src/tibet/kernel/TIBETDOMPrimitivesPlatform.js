@@ -143,6 +143,8 @@ TP.hc(
 
             str,
 
+            defs,
+
             xmlDoc,
 
             errorElement,
@@ -177,15 +179,17 @@ TP.hc(
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
         //  'auto-qualification'
-        if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns'))) {
+        if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns')) &&
+            TP.notEmpty(defs = TP.w3.Xmlns.get('XMLNSDefs'))) {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
-                str + ' ' + TP.w3.Xmlns.get('XMLNSDefs') + '>$&</root>');
+                str + ' ' + defs + '>$&</root>');
         } else {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
                 str + '>$&</root>');
         }
+
 
         xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
 
@@ -277,6 +281,8 @@ TP.hc(
 
             str,
 
+            defs,
+
             xmlDoc,
 
             errorRecord,
@@ -312,10 +318,11 @@ TP.hc(
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
         //  'auto-qualification'
-        if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns'))) {
+        if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns')) &&
+            TP.notEmpty(defs = TP.w3.Xmlns.get('XMLNSDefs'))) {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
-                str + ' ' + TP.w3.Xmlns.get('XMLNSDefs') + '>$&</root>');
+                str + ' ' + defs + '>$&</root>');
         } else {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
@@ -395,6 +402,8 @@ TP.hc(
 
             str,
 
+            defs,
+
             xmlDoc,
 
             errorElement,
@@ -428,10 +437,11 @@ TP.hc(
 
         //  if TIBET has the 'TP.w3.Xmlns' type loaded, we leverage XMLNS
         //  'auto-qualification'
-        if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns'))) {
+        if (TP.isType(TP.sys.getTypeByName('TP.w3.Xmlns')) &&
+            TP.notEmpty(defs = TP.w3.Xmlns.get('XMLNSDefs'))) {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
-                str + ' ' + TP.w3.Xmlns.get('XMLNSDefs') + '>$&</root>');
+                str + ' ' + defs + '>$&</root>');
         } else {
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
