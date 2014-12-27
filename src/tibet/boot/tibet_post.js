@@ -723,9 +723,11 @@ TP.$$assignBrowser = function(aString) {
     parts = aString.split('.');
 
     TP.$browserIdent = aString;
-    TP.$browserMajor = (parts[0] == null) ? 0 : parts[0];
-    TP.$browserMinor = (parts[1] == null) ? 0 : parts[1];
-    TP.$browserBuild = (parts[2] == null) ? 0 : parts[2];
+
+    TP.$browserMajor = parseInt((parts[0] == null) ? 0 : parts[0], 10);
+    TP.$browserMinor = parseInt((parts[1] == null) ? 0 : parts[1], 10);
+    TP.$browserBuild = parseInt((parts[2] == null) ? 0 : parts[2], 10);
+
     TP.$browserPatch = (parts[3] == null) ? 0 : parts[3];
 };
 
@@ -740,9 +742,11 @@ TP.$$assignBrowserUI = function(aString) {
     parts = str.split('.');
 
     TP.$browserUIIdent = aString;
-    TP.$browserUIMajor = (parts[0] == null) ? 0 : parts[0];
-    TP.$browserUIMinor = (parts[1] == null) ? 0 : parts[1];
-    TP.$browserUIBuild = (parts[2] == null) ? 0 : parts[2];
+
+    TP.$browserUIMajor = parseInt((parts[0] == null) ? 0 : parts[0], 10);
+    TP.$browserUIMinor = parseInt((parts[1] == null) ? 0 : parts[1], 10);
+    TP.$browserUIBuild = parseInt((parts[2] == null) ? 0 : parts[2], 10);
+
     TP.$browserUIPatch = (parts[3] == null) ? 0 : parts[3];
 };
 
@@ -1364,27 +1368,23 @@ TP.sys.isSupported = function() {
      *     executing browser.
      */
 
-    var version;
-
-    version = parseInt(TP.$browserMajor, 10);
-
-    if (TP.$browser === 'ie' && version >= 11) {
+    if (TP.$browser === 'ie' && TP.$browserMajor >= 11) {
         return true;
     }
 
-    if (TP.$browser === 'chrome' && version >= 39) {
+    if (TP.$browser === 'chrome' && TP.$browserMajor >= 39) {
         return true;
     }
 
-    if (TP.$browser === 'firefox' && version >= 34) {
+    if (TP.$browser === 'firefox' && TP.$browserMajor >= 34) {
         return true;
     }
 
-    if (TP.$browser === 'safari' && version >= 7) {
+    if (TP.$browser === 'safari' && TP.$browserMajor >= 7) {
         return true;
     }
 
-    if (TP.$browser === 'opera' && version >= 39) {
+    if (TP.$browser === 'opera' && TP.$browserMajor >= 39) {
         return true;
     }
 
