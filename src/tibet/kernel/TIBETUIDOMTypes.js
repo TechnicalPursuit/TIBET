@@ -458,10 +458,8 @@ function(aTargetElem, anEvent) {
             bindingsMap = bindingsType.getKeyBindingsXML();
 
             if (TP.isXMLDocument(bindingsMap)) {
-                bindingEntry = TP.nodeEvaluateXPath(
-                            bindingsMap,
-                            'descendant-or-self::*[@id = "' + keyname + '"]',
-                            TP.FIRST_NODE);
+                bindingEntry = bindingsMap.querySelector(
+                                        '*[id="' + keyname + '"]');
 
                 //  If there's an entry for this key binding, then try to get
                 //  the signal name it has.
@@ -1093,12 +1091,7 @@ function(anEvent) {
                 //  this key in some form.
                 if (TP.isXMLDocument(bindingsMap)) {
                     return TP.isElement(
-                            TP.nodeEvaluateXPath(
-                                bindingsMap,
-                                'descendant-or-self::*[@id = "' +
-                                        keyname +
-                                        '"]',
-                                TP.FIRST_NODE));
+                        bindingsMap.querySelector('*[id="' + keyname + '"]'));
                 }
             }
     }

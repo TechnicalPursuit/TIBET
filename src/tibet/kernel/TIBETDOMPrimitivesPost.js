@@ -8336,7 +8336,7 @@ function(aNode) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetElementById',
-function(aNode, anID, $retryWithXPath) {
+function(aNode, anID, retryWithPath) {
 
     /**
      * @name nodeGetElementById
@@ -8359,8 +8359,8 @@ function(aNode, anID, $retryWithXPath) {
      *     child of the supplied node.
      * @param {Node} aNode The node to search.
      * @param {String} anID The string ID to search for.
-     * @param {Boolean} $retryWithXPath False to force ID search to skip XPath
-     *     fallbacks.
+     * @param {Boolean} retryWithPath False to force ID search to skip 'path
+     *     query' fallbacks.
      * @example Get the element in an XML document with 'id' of 'bar':
      *     <code>
      *          xmlDoc = TP.documentFromString('<foo id="bar"/>');
@@ -8449,14 +8449,12 @@ function(aNode, anID, $retryWithXPath) {
 
     //  we force retry to false on our metadata XHTML files so we don't
     //  search for something we're not going to find
-    if (TP.notFalse($retryWithXPath)) {
-        //  Otherwise, its XML that's not XHTML, so getElementById()
-        //  won't work (sigh...), so we need to use an XPath looking for
-        //  the first Element with that ID.
-        result = TP.nodeEvaluateXPath(
-                aNode,
-                'descendant-or-self::*[@id' + ' = "' + realID + '"]',
-                TP.FIRST_NODE);
+    if (TP.notFalse(retryWithPath)) {
+
+        //  Otherwise, its XML that's not XHTML, so getElementById() won't work
+        //  (sigh...), but modern browsers actually support querySelector() on
+        //  XML nodes.
+        result = aNode.querySelector('*[id="' + realID + '"]');
     }
 
     return result;
