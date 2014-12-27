@@ -5226,9 +5226,9 @@ TP.boot.Annotation.prototype.asHTMLString = function() {
 
     return TP.boot.$join(
             '<span class="TP_boot_Annotation">',
-            '<span data-name="object">', TP.htmlstr(this.object), '<\/span>',
-            '<span data-name="message">', TP.htmlstr(this.message), '<\/span>',
-            '<\/span>');
+            '<span data-name="object">', TP.htmlstr(this.object), '</span>',
+            '<span data-name="message">', TP.htmlstr(this.message), '</span>',
+            '</span>');
 };
 
 //  ----------------------------------------------------------------------------
@@ -6021,8 +6021,8 @@ TP.boot.Log.prototype.asHTMLString = function() {
     return TP.boot.$join(
         '<span class="TP_boot_Log">',
             '<span data-name="messages">', TP.htmlstr(this.messages),
-            '<\/span>',
-        '<\/span>');
+            '</span>',
+        '</span>');
 };
 
 //  ----------------------------------------------------------------------------
