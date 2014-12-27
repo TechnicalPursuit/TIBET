@@ -7930,8 +7930,6 @@ function(anObj) {
      * @todo
      */
 
-    var testElem;
-
     //  Check to make sure its some sort of DOCUMENT_NODE first.
     if (TP.notValid(anObj) || anObj.nodeType !== Node.DOCUMENT_NODE) {
         return false;
@@ -7970,28 +7968,11 @@ function(anObj) {
         return false;
     }
 
-    //  Now the problem is that, since the DOM for both XML and XHTML
-    //  Document objects are so similar, we need a more in-depth test. We
-    //  try to insert a piece of markup via 'innerHTML'. This markup is
-    //  intentionally 'malformed' from an XML perspective (which will cause
-    //  the call to throw an exception), but not from an HTML perspective.
-
-    testElem = anObj.createElement('span');
-    if (TP.isElement(anObj.body)) {
-        anObj.body.appendChild(testElem);
-    } else {
-        anObj.documentElement.appendChild(testElem);
-    }
-
-    try {
-        testElem.innerHTML = '<p>This has no closing tag';
-
-        anObj.isXHTML = false;
-    } catch (e) {
-        anObj.isXHTML = true;
-    } finally {
-        testElem.parentNode.removeChild(testElem);
-    }
+    //  Last check is to see if the '.tagName' property preserves case
+    //  sensitivity. If it doesn't, then it's HTML not XHTML.
+    anObj.isXHTML = (anObj.createElement('foo').tagName === 'FOO') ?
+                    false :
+                    true;
 
     return !anObj.isXHTML;
 });
@@ -8382,8 +8363,6 @@ function(anObj) {
      *     document.
      */
 
-    var testElem;
-
     //  Check to make sure its some sort of DOCUMENT_NODE first.
     if (TP.notValid(anObj) || anObj.nodeType !== Node.DOCUMENT_NODE) {
         return false;
@@ -8423,28 +8402,11 @@ function(anObj) {
         return false;
     }
 
-    //  Now the problem is that, since the DOM for both XML and XHTML
-    //  Document objects are so similar, we need a more in-depth test. We
-    //  try to insert a piece of markup via 'innerHTML'. This markup is
-    //  intentionally 'malformed' from an XML perspective (which will cause
-    //  the call to throw an exception), but not from an HTML perspective.
-
-    testElem = anObj.createElement('span');
-    if (TP.isElement(anObj.body)) {
-        anObj.body.appendChild(testElem);
-    } else {
-        anObj.documentElement.appendChild(testElem);
-    }
-
-    try {
-        testElem.innerHTML = '<p>This has no closing tag';
-
-        anObj.isXHTML = false;
-    } catch (e) {
-        anObj.isXHTML = true;
-    } finally {
-        testElem.parentNode.removeChild(testElem);
-    }
+    //  Last check is to see if the '.tagName' property preserves case
+    //  sensitivity. If it doesn't, then it's HTML not XHTML.
+    anObj.isXHTML = (anObj.createElement('foo').tagName === 'FOO') ?
+                    false :
+                    true;
 
     return anObj.isXHTML;
 });
