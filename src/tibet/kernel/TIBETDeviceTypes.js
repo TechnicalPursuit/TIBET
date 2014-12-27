@@ -1560,7 +1560,7 @@ function(anEvent) {
     //  un'shift'ed code.
     if (shift) {
         path = TP.join(
-                '//*[@id="_', key, '_shifted"]',
+                '//*[@keycode="_', key, '_shifted"]',
                 '[(@platform="', TP.$platform,
                     '" and @browser="', TP.$browser, '")',
                 ' or (@browser="', TP.$browser, '")',
@@ -1572,7 +1572,7 @@ function(anEvent) {
         if (!TP.isElement(elem)) {
 
             path = TP.join(
-                    '//*[@id="_', key, '"]',
+                    '//*[@keycode="_', key, '"]',
                     '[(@platform="', TP.$platform,
                         '" and @browser="', TP.$browser, '")',
                     ' or (@browser="', TP.$browser, '")',
@@ -1584,7 +1584,7 @@ function(anEvent) {
     } else {
 
         path = TP.join(
-                '//*[@id="_', key, '"]',
+                '//*[@keycode="_', key, '"]',
                 '[(@platform="', TP.$platform,
                     '" and @browser="', TP.$browser, '")',
                 ' or (@browser="', TP.$browser, '")',
@@ -1700,7 +1700,7 @@ function(keyNameOrGlyph) {
         elem = elems.first();
     }
 
-    if (TP.notEmpty(keyCode = TP.elementGetAttribute(elem, 'id'))) {
+    if (TP.notEmpty(keyCode = TP.elementGetAttribute(elem, 'keycode'))) {
         //  Slice off the '_' and make it a Number
         return keyCode.slice(1).asNumber();
     }
@@ -1768,7 +1768,7 @@ function(normalizedEvent) {
             //  again for the un'shift'ed code.
             if (shift) {
                 path = TP.join(
-                        '//*[@id="_', key, '_shifted"]',
+                        '//*[@keycode="_', key, '_shifted"]',
                         '[(@platform="', TP.$platform,
                             '" and @browser="', TP.$browser, '")',
                         ' or (@browser="', TP.$browser, '")',
@@ -1780,7 +1780,7 @@ function(normalizedEvent) {
                 if (TP.isEmpty(elems)) {
 
                     path = TP.join(
-                            '//*[@id="_', key, '"]',
+                            '//*[@keycode="_', key, '"]',
                             '[(@platform="', TP.$platform,
                                 '" and @browser="', TP.$browser, '")',
                             ' or (@browser="', TP.$browser, '")',
@@ -1792,7 +1792,7 @@ function(normalizedEvent) {
             } else {
 
                 path = TP.join(
-                        '//*[@id="_', key, '"]',
+                        '//*[@keycode="_', key, '"]',
                         '[(@platform="', TP.$platform,
                             '" and @browser="', TP.$browser, '")',
                         ' or (@browser="', TP.$browser, '")',
@@ -1831,7 +1831,7 @@ function(normalizedEvent) {
                 //  want to see. In other words, we'll never generate
                 //  'Shift_Asterisk'...
                 if (shift && TP.elementGetAttribute(
-                                    elem, 'id').endsWith('_shifted')) {
+                                    elem, 'keycode').endsWith('_shifted')) {
                     shift = false;
                 }
 
