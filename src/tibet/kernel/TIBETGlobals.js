@@ -2355,11 +2355,6 @@ TP.regex.TSH_VARSUB_EXTENDED = /\$\{([A-Z_$]{1}[A-Z0-9_$]*)\}/g;
 // pseudo-acp plus format string means potentially transformable string
 TP.regex.TRANSFORMABLE = /[$#%@]\{|`.+`/;
 
-TP.regex.CALL_STACK_FORMAT = /(.*) \((.*)\)/;
-TP.regex.CALL_STACK_ID = /Function\$[0-9a-z]*($|([\s]))/g;  //  needs reset
-
-TP.regex.CALL_STACK_ENTRY_SPLITTER = /(.+)@(.+):(\d+):(\d+)/;
-
 TP.regex.CAMEL_CASE = /([-\s_]([a-z]))/g;       //  needs reset
 TP.regex.TITLE_CASE = /([-\s_]([a-z]))/g;       //  needs reset
 TP.regex.WORD_BOUNDARIES = /[-\s_]/g;           //  needs reset
@@ -2375,6 +2370,12 @@ TP.regex.PERCENTAGE = /^-?\d+%$/i;
 // needs reset
 TP.regex.NON_UTF8_CHARS =
 /[\xC2-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}|[\xF0-\xF4][\x80-\xBF]{3}/g;
+
+//  call stack formatting
+TP.regex.CALL_STACK_FORMAT = /(.*) \((.*)\)/;
+TP.regex.CALL_STACK_ID = /Function\$[0-9a-z]*($|([\s]))/g;  //  needs reset
+
+TP.regex.CALL_STACK_ENTRY_SPLITTER = /(.+)@(.+):(\d+):(\d+)/;
 
 //  ---
 //  testing
