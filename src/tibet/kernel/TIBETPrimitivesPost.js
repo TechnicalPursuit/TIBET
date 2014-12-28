@@ -4549,6 +4549,15 @@ function(anObject) {
 
     //  Then check to see if it's constructor can respond to 'getName()'
     type = anObject.constructor;
+
+    //  Some objects lie - they will report their constructor as Object, but
+    //  they're really something else
+    if (type === Object) {
+        if (TP.isNamedNodeMap(anObject)) {
+            return 'NamedNodeMap';
+        }
+    }
+
     if (TP.canInvoke(type, 'getName')) {
         return type.getName();
     }
