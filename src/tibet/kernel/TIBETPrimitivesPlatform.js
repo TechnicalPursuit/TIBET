@@ -1360,6 +1360,10 @@ TP.hc(
             return str;
         }
 
+        if (TP.isInvalidDate(anObject)) {
+            return 'InvalidDate';
+        }
+
         //  Sometimes isNaN() will throw if it can't convert to a Number
         //  NB: DO NOT move this line above the 'toString()' line. NaN is a
         //  weird value and won't test properly.
@@ -1493,6 +1497,10 @@ TP.hc(
             }
 
             return str;
+        }
+
+        if (TP.isInvalidDate(anObject)) {
+            return 'InvalidDate';
         }
 
         //  Sometimes isNaN() will throw if it can't convert to a Number
@@ -1629,6 +1637,10 @@ TP.hc(
             }
 
             return str;
+        }
+
+        if (TP.isInvalidDate(anObject)) {
+            return 'InvalidDate';
         }
 
         //  Sometimes isNaN() will throw if it can't convert to a Number
