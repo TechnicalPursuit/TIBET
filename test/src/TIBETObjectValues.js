@@ -65,7 +65,7 @@ function(aRequest) {
         functionVal,
 
         nanVal,
-        notADate,
+        invalidDateVal,
 
         nativeTypeVal,
 
@@ -176,7 +176,7 @@ function(aRequest) {
     functionVal = function () {return 'fluffy';};
 
     nanVal = NaN;
-    notADate = new Date('fluffy');
+    invalidDateVal = new Date('fluffy');
 
     nativeTypeVal = Array;
 
@@ -214,7 +214,9 @@ function(aRequest) {
     styleDeclVal = styleRuleVal.style;
 
     errorVal = new Error('There was an error');
-    eventVal = TP.core.Mouse.get('lastOver');
+    eventVal = TP.documentCreateEvent(
+                    TP.sys.uidoc(true), TP.ac('type','mouseover'));
+
     xhrVal = new XMLHttpRequest();
 
     tibetTypeVal = TP.sys.require('TP.core.Node');
@@ -319,16 +321,16 @@ function(aRequest) {
 
     objValues = TP.hc(
     TP.NULL,                    nullVal,                //  null
-    'String',                   stringVal,              //  String
-    'Number',                   numberVal,              //  Number
-    'Boolean',                  booleanVal,             //  Boolean
-    'RegExp',                   regexpVal,              //  RegExp
-    'Date',                     dateVal,                //  Date
     'Array',                    arrayVal,               //  Array
-    'Object',                   objectVal,              //  Object
+    'Boolean',                  booleanVal,             //  Boolean
+    'Date',                     dateVal,                //  Date
     'Function',                 functionVal,            //  Function
+    'InvalidDate',              invalidDateVal,         //  not a Date
     'NaN',                      nanVal,                 //  NaN
-    'NotADate',                 notADate,               //  not a Date
+    'Number',                   numberVal,              //  Number
+    'RegExp',                   regexpVal,              //  RegExp
+    'Object',                   objectVal,              //  Object
+    'String',                   stringVal,              //  String
 
     'NativeType',               nativeTypeVal,          //  NativeType
 
@@ -342,11 +344,11 @@ function(aRequest) {
     'XMLElement',               xmlElementVal,          //  XMLElement
 
     'AttributeNode',            attrNodeVal,            //  Attribute Node
-    'TextNode',                 textNodeVal,            //  Text Node
     'CDATASectionNode',         cdataSectionNodeVal,    //  Text Node
-    'PINode',                   piNodeVal,              //  PI Node
     'CommentNode',              commentNodeVal,         //  Comment Node
     'DocumentFragmentNode',     documentFragmentNodeVal,//  Document Fragment Node
+    'PINode',                   piNodeVal,              //  PI Node
+    'TextNode',                 textNodeVal,            //  Text Node
 
     'NodeList',                 nodeListVal,            //  NodeList
     'NamedNodeMap',             namedNodeMapVal,        //  NamedNodeMap
@@ -360,6 +362,7 @@ function(aRequest) {
     'XHR',                      xhrVal,                 //  XHR
 
     'TIBETType',                tibetTypeVal,           //  TIBET type
+
     'TP.lang.Object',           tibetObjectVal,         //  TP.lang.Object
     'TP.lang.Hash',             tibetHashVal,           //  TP.lang.Hash
     'TP.sig.Signal',            tibetSignalVal,         //  TP.sig.Signal
@@ -440,6 +443,7 @@ function(aRequest) {
         functionVal,
 
         nanVal,
+        invalidDateVal,
 
         nativeTypeVal,
 
@@ -524,6 +528,7 @@ function(aRequest) {
         tibetBrowserType,
 
         tpBootAnnotation,
+        tpAnnotation,
 
         objTypes;
 
@@ -547,6 +552,7 @@ function(aRequest) {
     functionVal = TP.ac(Function, Object);
 
     nanVal = TP.ac(Number, Object);
+    invalidDateVal = TP.ac(Date, Object);
 
     nativeTypeVal = TP.ac(Function, Object);
 
@@ -639,18 +645,20 @@ function(aRequest) {
     tibetBrowserType = TP.ac(TP.meta.core.Browser, TP.lang.Object, TP.lang.RootObject, Object);
 
     tpBootAnnotation = TP.ac(TP.boot.Annotation, Object);
+    tpAnnotation = TP.ac(TP.core.Annotation, TP.lang.Object, TP.lang.RootObject, Object);
 
     objTypes = TP.hc(
     TP.NULL,                    nullVal,                //  null
-    'String',                   stringVal,              //  String
-    'Number',                   numberVal,              //  Number
-    'Boolean',                  booleanVal,             //  Boolean
-    'RegExp',                   regexpVal,              //  RegExp
-    'Date',                     dateVal,                //  Date
     'Array',                    arrayVal,               //  Array
-    'Object',                   objectVal,              //  Object
+    'Boolean',                  booleanVal,             //  Boolean
+    'Date',                     dateVal,                //  Date
     'Function',                 functionVal,            //  Function
+    'InvalidDate',              invalidDateVal,         //  not a Date
     'NaN',                      nanVal,                 //  NaN
+    'Number',                   numberVal,              //  Number
+    'RegExp',                   regexpVal,              //  RegExp
+    'Object',                   objectVal,              //  Object
+    'String',                   stringVal,              //  String
 
     'NativeType',               nativeTypeVal,            //  NativeType
 
@@ -664,11 +672,11 @@ function(aRequest) {
     'XMLElement',               xmlElementVal,          //  XMLElement
 
     'AttributeNode',            attrNodeVal,            //  Attribute Node
-    'TextNode',                 textNodeVal,            //  Text Node
     'CDATASectionNode',         cdataSectionNodeVal,    //  Text Node
-    'PINode',                   piNodeVal,              //  PI Node
     'CommentNode',              commentNodeVal,         //  Comment Node
     'DocumentFragmentNode',     documentFragmentNodeVal,//  Document Fragment Node
+    'PINode',                   piNodeVal,              //  PI Node
+    'TextNode',                 textNodeVal,            //  Text Node
 
     'NodeList',                 nodeListVal,            //  NodeList
     'NamedNodeMap',             namedNodeMapVal,        //  NamedNodeMap
@@ -682,6 +690,7 @@ function(aRequest) {
     'XHR',                      xhrVal,                 //  XHR
 
     'TIBETType',                tibetTypeVal,           //  TIBET type
+
     'TP.lang.Object',           tibetObjectVal,         //  TP.lang.Object
     'TP.lang.Hash',             tibetHashVal,           //  TP.lang.Hash
     'TP.sig.Signal',            tibetSignalVal,         //  TP.sig.Signal
@@ -733,7 +742,8 @@ function(aRequest) {
     'TP.core.Job',              tibetJob,               //  TP.core.Job
     'TP.core.Browser_TYPE',     tibetBrowserType,       //  TP.core.Browser type
 
-    'TP.boot.Annotation',       tpBootAnnotation        //  TP.boot.Annotation
+    'TP.boot.Annotation',       tpBootAnnotation,       //  TP.boot.Annotation
+    'TP.core.Annotation',       tpAnnotation            //  TP.core.Annotation
     );
 
     //  In order to get an 'undefined' value into our hash, we have to play some
