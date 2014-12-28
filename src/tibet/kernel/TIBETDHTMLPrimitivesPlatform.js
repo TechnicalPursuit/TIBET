@@ -871,8 +871,6 @@ TP.hc(
 
                 evt.pageX = TP.ifKeyInvalid(spec, 'pageX', 0);
                 evt.pageY = TP.ifKeyInvalid(spec, 'pageY', 0);
-                evt.offsetX = TP.ifKeyInvalid(spec, 'offsetX', 0);
-                evt.offsetY = TP.ifKeyInvalid(spec, 'offsetY', 0);
 
                 break;
 
@@ -896,8 +894,6 @@ TP.hc(
 
                 evt.pageX = TP.ifKeyInvalid(spec, 'pageX', 0);
                 evt.pageY = TP.ifKeyInvalid(spec, 'pageY', 0);
-                evt.offsetX = TP.ifKeyInvalid(spec, 'offsetX', 0);
-                evt.offsetY = TP.ifKeyInvalid(spec, 'offsetY', 0);
 
                 break;
 
