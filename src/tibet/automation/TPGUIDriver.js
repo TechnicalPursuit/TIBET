@@ -88,7 +88,7 @@ function() {
         entry = entries.at(i);
 
         //  Make sure that the entry has a key
-        if (TP.isEmpty(keyCode = TP.elementGetAttribute(entry, 'id'))) {
+        if (TP.isEmpty(keyCode = TP.elementGetAttribute(entry, 'keycode'))) {
             continue;
         }
 
