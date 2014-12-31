@@ -36,11 +36,14 @@
         <![CDATA[
         //  Because our automation system uses Promises in conjunction with Syn,
         //  we have to define an alternate version of Syn's 'schedule' call that
-        //  uses a timeout to call the GUI thread to run between event dispatches.
+        //  knows that synchronization of all behavior is handled by our internal
+        //  Promise code. Therefore, here we just invoke the function.
+        //  Note that we *must* do this *before* Syn loads, which is why we do
+        //  this here - it's just how Syn works.
         Syn = {
             'schedule' :
                 function (fn, ms) {
-                    setTimeout(fn, TP.sys.cfg('test.anti_starve_timeout'));
+                return fn();
                 }
             };
         ]]>
