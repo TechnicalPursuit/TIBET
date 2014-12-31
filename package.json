@@ -34,6 +34,7 @@
         "man": "./man"
     },
     "dependencies": {
+        "bluebird": "TechnicalPursuit/bluebird",
         "body-parser": "*",
         "browserify": "*",
         "chalk": "*",

@@ -131,6 +131,7 @@ targets.build_deps = function(make) {
     }
 
     targets.rollup_codemirror().then(
+        targets.rollup_bluebird).then(
         targets.rollup_d3).then(
         targets.rollup_diff).then(
         targets.rollup_forge).then(
@@ -147,6 +148,27 @@ targets.build_deps = function(make) {
         function() {
             targets.build_deps.reject();
         });
+};
+
+/**
+ */
+targets.rollup_bluebird = function(make) {
+    var npmdir;
+
+    sh.exec('npm update bluebird');
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'bluebird'));
+
+    //  Install uglify-js manually:
+    //  https://github.com/petkaantonov/bluebird/issues/422
+    sh.exec('npm install uglify-js');
+
+    sh.exec('npm install -d');
+    sh.exec('cp -f js/browser/bluebird.js  ../../deps/bluebird-tpi.js');
+    sh.exec('cp -f js/browser/bluebird.min.js  ../../deps/bluebird-tpi.min.js');
+
+    targets.rollup_bluebird.resolve();
 };
 
 /**
