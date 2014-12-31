@@ -1404,8 +1404,6 @@ function(target, type, args, callback, currentElement) {
         finalTarget = currentElement;
     }
 
-    doc = TP.nodeGetDocument(finalTarget);
-
     //  The three parameters are:
     //      1. The type of operation, used in the switch below.
     //      2. The target of the operation. This could be an Element specified
@@ -1467,7 +1465,7 @@ function(target, type, args, callback, currentElement) {
                 TP.extern.syn.key.options(args, 'mousedown'),
                 finalTarget);
 
-            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
+            callback();
 
         break;
 
@@ -1480,7 +1478,7 @@ function(target, type, args, callback, currentElement) {
                 TP.extern.syn.key.options(args, 'mouseup'),
                 finalTarget);
 
-            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
+            callback();
 
         break;
 
@@ -1493,7 +1491,7 @@ function(target, type, args, callback, currentElement) {
                 TP.extern.syn.key.options(args, 'keydown'),
                 finalTarget);
 
-            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
+            callback();
 
         break;
 
@@ -1506,16 +1504,18 @@ function(target, type, args, callback, currentElement) {
                 TP.extern.syn.key.options(args, 'keyup'),
                 finalTarget);
 
-            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
+            callback();
 
         break;
 
         case 'sendevent':
 
+            doc = TP.nodeGetDocument(finalTarget);
             newEvent = TP.documentCreateEvent(doc, args);
+
             finalTarget.dispatchEvent(newEvent);
 
-            setTimeout(callback, TP.sys.cfg('test.anti_starve_timeout'));
+            callback();
 
         break;
 
