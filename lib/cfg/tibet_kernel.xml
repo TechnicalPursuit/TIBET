@@ -37,7 +37,7 @@
         TP.extern.Promise = Promise;
         TP.extern.Promise.construct = function(fn) {
             return new Promise(fn);
-        }
+        };
         ]]>
     </script>
 
