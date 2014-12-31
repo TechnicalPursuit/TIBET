@@ -64,10 +64,6 @@ function() {
                 elem3 = TP.byId('focusTestField3');
                 elem4 = TP.byId('focusTestField4');
 
-                //  Due to the way the markup is written here, the tab order for
-                //  this test is:
-                //      1 - 2 - 3 - 4
-
                 //  The first focused element in this file will be the <body>
                 //  Test that theory.
                 focusedElem = driver.getFocusedElement();
@@ -77,6 +73,14 @@ function() {
                 //  until it is shown that there is user interaction. Therefore,
                 //  we focus the first element manually.
                 elem1.focus();
+                //  ---
+
+                //  Due to the way the markup is written here, the tab order for
+                //  this test is:
+                //      1 - 2 - 3 - 4
+
+                //  ---
+
 
                 //  Prove that.
                 focusedElem = driver.getFocusedElement();
@@ -204,15 +208,18 @@ function() {
                 elem3 = TP.byId('focusTestField3');
                 elem4 = TP.byId('focusTestField4');
 
-                //  Due to the way the markup is written here, the tab order for
-                //  this test is:
-                //      2 - 4 - 1 - 3
 
                 //  The first focused element in this file will be elem2,
                 //  because it has an 'autofocus="true"' attribute.
                 //  Test that theory.
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, elem2);
+
+                //  ---
+
+                //  Due to the way the markup is written here, the tab order for
+                //  this test is:
+                //      2 - 4 - 1 - 3
 
                 //  ---
 
@@ -1038,8 +1045,10 @@ function() {
                 test.assert.isIdenticalTo(focusedElem, elem1);
 
                 //  ---
+
                 //  The tab sequence for this test file is:
                 //  1 - 2 - 4 - 5 - 6 - 7 - 8 - 3
+
                 //  ---
 
                 //  Use a Tab to go to elem2
@@ -1357,8 +1366,10 @@ function() {
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
 
                 //  ---
+
                 //  The tab sequence for this test file is:
                 //  1 - 2 - 4 - 5 - 6 - 7 - 8 - 4 (wrap) - 5 - 6
+
                 //  ---
 
                 //  Some browsers aggressively optimize by not shifting focus
@@ -1694,10 +1705,12 @@ function() {
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
 
                 //  ---
+
                 //  The tab sequence for this test file is:
                 //  3 (highest non-nested) - 1 - 2 - 8 (highest in gooGroup) -
                 //  4 - 5 - 7 (highest in booGroup)- 6 - 8 (highest in gooGroup)
                 //  - 4 (wrap) - 5
+
                 //  ---
 
                 //  Use a Tab to go to elem3
