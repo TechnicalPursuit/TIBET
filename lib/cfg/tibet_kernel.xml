@@ -27,24 +27,17 @@
     <script src="TIBETRegistration.js"/>
     <script src="TIBETFoundation.js"/>
 
-    <script>
-        <![CDATA[
-        //  Fixes for Q running under IE11.
-        //  https://connect.microsoft.com/IE/feedback/details/801823/
-        if (TP.$browser === 'ie') {
-            window.setImmediate = undefined;
-            window.MessageChannel = undefined;
-        }
-        ]]>
-    </script>
-
-    <script src="~lib_deps/q-tpi.min.js"
+    <script src="~lib_deps/bluebird-tpi.min.js"
         unless="boot.unminified" no-minify="true" no-lint="true"/>
-    <script src="~lib_deps/q-tpi.js"
+    <script src="~lib_deps/bluebird-tpi.js"
         if="boot.unminified" no-lint="true"/>
     <script>
         <![CDATA[
-        (Q.Promise.resolve()).constructor[TP.NAME] = 'Promise';
+        Promise[TP.NAME] = 'Promise';
+        TP.extern.Promise = Promise;
+        TP.extern.Promise.construct = function(fn) {
+            return new Promise(fn);
+        }
         ]]>
     </script>
 

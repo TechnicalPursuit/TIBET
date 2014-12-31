@@ -11,8 +11,7 @@
 /**
  */
 
-/* global Q:true,
-          AssertionFailed:true,
+/* global AssertionFailed:true,
           $STATUS:true
 */
 
@@ -437,7 +436,7 @@ function(target, options) {
     if (TP.notValid(suites)) {
         TP.sys.logTest('0..0');
         TP.sys.logTest('# PASS: 0 pass, 0 fail, 0 skip, 0 todo, 0 errors.');
-        return Q.Promise.resolve();
+        return TP.extern.Promise.resolve();
     }
 
     keys = suites.getKeys();
@@ -589,7 +588,7 @@ function(target, options) {
                         //  TODO: early exit?
                         void(0);
                     });
-            }, Q.Promise.resolve());
+            }, TP.extern.Promise.resolve());
 
     TP.sys.setcfg('test.running', true);
 
@@ -1216,7 +1215,7 @@ function(options) {
     //  Protect against running twice while we already have a pending promise.
     if (this.isActive()) {
         this.error(new Error('InvalidOperation'));
-        return Q.Promise.resolve();
+        return TP.extern.Promise.resolve();
     }
 
     //  Make sure to clear out any previous state.
@@ -1270,7 +1269,7 @@ function(options) {
         TP.sys.logTest('# pass: 0 pass, 0 fail, ' +
             this.get('statistics').at('skipped') + ' skip, 0 todo, 0 errors.');
 
-        return Q.Promise.resolve();
+        return TP.extern.Promise.resolve();
     }
 
     //  Filter for exclusivity. We might get more than one if authoring was off
@@ -1306,7 +1305,7 @@ function(options) {
     //  methods, then generate a resolved one here. This will be the Promise
     //  that 'starts things off' below.
     if (TP.notValid(firstPromise = suite.$get('$internalPromise'))) {
-        firstPromise = Q.Promise.resolve();
+        firstPromise = TP.extern.Promise.resolve();
         suite.$set('$internalPromise', firstPromise);
     }
 
@@ -1539,7 +1538,7 @@ function(onFulfilled, onRejected) {
     //  First, see if there's an existing internal promise. If not, create one
     //  and set the internal promise to be that.
     if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
-        internalPromise = Q.Promise.resolve();
+        internalPromise = TP.extern.Promise.resolve();
         this.$set('$internalPromise', internalPromise);
     }
 
@@ -1565,7 +1564,7 @@ function(onFulfilled, onRejected) {
     //  or a simple one that rejects with the reason
     if (!TP.isCallable(_errback = onRejected)) {
         _errback = function(reason) {
-            return Q.reject(reason);
+            return TP.extern.Promise.reject(reason);
         };
     }
 
@@ -1582,7 +1581,7 @@ function(onFulfilled, onRejected) {
             //  promise'. This will be used as the 'last promise' (see above)
             //  for any nested 'then()' statements *inside* of the fulfillment
             //  handler.
-            subPromise = Q.Promise.resolve();
+            subPromise = TP.extern.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
             //  Protect the callback in a try...catch to make sure that any
@@ -1590,7 +1589,7 @@ function(onFulfilled, onRejected) {
             try {
                 maybe = _callback(result);
             } catch (e) {
-                maybe = Q.reject(e);
+                maybe = TP.extern.Promise.reject(e);
             }
 
             //  The fulfillment handler will have set the 'new promise' that it
@@ -1620,7 +1619,7 @@ function(onFulfilled, onRejected) {
             //  All of the same stuff above, except we're dealing with the
             //  rejection handler.
 
-            subPromise = Q.Promise.resolve();
+            subPromise = TP.extern.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
             //  Protect the errback in a try...catch to make sure that any
@@ -1629,7 +1628,7 @@ function(onFulfilled, onRejected) {
             try {
                 maybe = _errback(reason);
             } catch (e) {
-                maybe = Q.reject(e);
+                maybe = TP.extern.Promise.reject(e);
             }
 
             subReturnPromise = thisArg.$get('$currentPromise');
@@ -1668,7 +1667,9 @@ function() {
 
     this.thenPromise(
         function(resolver, rejector) {
-            setTimeout(resolver, TP.sys.cfg('test.anti_starve_timeout'));
+            return TP.extern.Promise.delay(
+                        TP.sys.cfg('test.anti_starve_timeout')).then(
+                                                        resolver, rejector);
         });
 
     return this;
@@ -1697,7 +1698,7 @@ function(aFunction) {
     //  First, see if there's an existing internal promise. If not, create one
     //  and set the internal promise to be that.
     if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
-        internalPromise = Q.Promise.resolve();
+        internalPromise = TP.extern.Promise.resolve();
         this.$set('$internalPromise', internalPromise);
     }
 
@@ -1711,7 +1712,7 @@ function(aFunction) {
 
     /* eslint-disable new-cap */
     //  Execute the supplied Function and wrap a Promise around the result.
-    subPromise = Q.Promise(aFunction);
+    subPromise = TP.extern.Promise.construct(aFunction);
     /* eslint-enable new-cap */
 
     //  'then' onto our last promise, chaining on the promise we just
@@ -1746,7 +1747,7 @@ function(timeoutMS) {
 
     this.thenPromise(
         function(resolver, rejector) {
-            setTimeout(resolver, timeoutMS);
+            return TP.extern.Promise.delay(timeoutMS).then(resolver, rejector);
         });
 
     return this;
@@ -2148,7 +2149,7 @@ function(options) {
     //  Protect against running twice while we already have a pending promise.
     if (this.isActive()) {
         this.error(new Error('InvalidOperation'));
-        return Q.Promise.resolve();
+        return TP.extern.Promise.resolve();
     }
 
     //  Make sure to clear out any previous state and update from our options
@@ -2164,7 +2165,7 @@ function(options) {
     testcase = this;
 
    /* eslint-disable new-cap */
-    promise = Q.Promise(function(resolver, rejector) {
+    promise = TP.extern.Promise.construct(function(resolver, rejector) {
         var internalPromise,
             maybe;
 
@@ -2346,7 +2347,7 @@ function(onFulfilled, onRejected) {
     //  First, see if there's an existing internal promise. If not, create one
     //  and set the internal promise to be that.
     if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
-        internalPromise = Q.Promise.resolve();
+        internalPromise = TP.extern.Promise.resolve();
         this.$set('$internalPromise', internalPromise);
     }
 
@@ -2372,7 +2373,7 @@ function(onFulfilled, onRejected) {
     //  or a simple one that rejects with the reason
     if (!TP.isCallable(_errback = onRejected)) {
         _errback = function(reason) {
-            return Q.reject(reason);
+            return TP.extern.Promise.reject(reason);
         };
     }
 
@@ -2389,7 +2390,7 @@ function(onFulfilled, onRejected) {
             //  promise'. This will be used as the 'last promise' (see above)
             //  for any nested 'then()' statements *inside* of the fulfillment
             //  handler.
-            subPromise = Q.Promise.resolve();
+            subPromise = TP.extern.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
             //  Protect the callback in a try...catch to make sure that any
@@ -2397,7 +2398,7 @@ function(onFulfilled, onRejected) {
             try {
                 maybe = _callback(result);
             } catch (e) {
-                maybe = Q.reject(e);
+                maybe = TP.extern.Promise.reject(e);
             }
 
             //  The fulfillment handler will have set the 'new promise' that it
@@ -2427,7 +2428,7 @@ function(onFulfilled, onRejected) {
             //  All of the same stuff above, except we're dealing with the
             //  rejection handler.
 
-            subPromise = Q.Promise.resolve();
+            subPromise = TP.extern.Promise.resolve();
             thisArg.$set('$currentPromise', subPromise);
 
             //  Protect the errback in a try...catch to make sure that any
@@ -2436,7 +2437,7 @@ function(onFulfilled, onRejected) {
             try {
                 maybe = _errback(reason);
             } catch (e) {
-                maybe = Q.reject(e);
+                maybe = TP.extern.Promise.reject(e);
             }
 
             subReturnPromise = thisArg.$get('$currentPromise');
@@ -2475,7 +2476,9 @@ function() {
 
     this.thenPromise(
         function(resolver, rejector) {
-            setTimeout(resolver, TP.sys.cfg('test.anti_starve_timeout'));
+            return TP.extern.Promise.delay(
+                        TP.sys.cfg('test.anti_starve_timeout')).then(
+                                                        resolver, rejector);
         });
 
     return this;
@@ -2504,7 +2507,7 @@ function(aFunction) {
     //  First, see if there's an existing internal promise. If not, create one
     //  and set the internal promise to be that.
     if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
-        internalPromise = Q.Promise.resolve();
+        internalPromise = TP.extern.Promise.resolve();
         this.$set('$internalPromise', internalPromise);
     }
 
@@ -2518,7 +2521,7 @@ function(aFunction) {
 
     //  Execute the supplied Function and wrap a Promise around the result.
     /* eslint-disable new-cap */
-    subPromise = Q.Promise(aFunction);
+    subPromise = TP.extern.Promise.construct(aFunction);
     /* eslint-enable new-cap */
 
     //  'then' onto our last promise, chaining on the promise we just
@@ -2553,7 +2556,7 @@ function(timeoutMS) {
 
     this.thenPromise(
         function(resolver, rejector) {
-            setTimeout(resolver, timeoutMS);
+            return TP.extern.Promise.delay(timeoutMS).then(resolver, rejector);
         });
 
     return this;
