@@ -8,9 +8,6 @@
  */
 //  ========================================================================
 
-/* global Q:true
-*/
-
 /* eslint-disable no-script-url */
 
 //  ========================================================================
@@ -1435,7 +1432,7 @@ function() {
                     var now,
 
                         pouchPromise,
-                        qPromise;
+                        promise;
 
                     now = Date.now();
 
@@ -1453,9 +1450,9 @@ function() {
                                 }
                         });
 
-                    qPromise = new Q(pouchPromise);
+                    promise = TP.extern.Promise.resolve(pouchPromise);
 
-                    return qPromise;
+                    return promise;
                 });
         });
 
@@ -1630,13 +1627,13 @@ function() {
             this.then(
                 function() {
                     var pouchPromise,
-                        qPromise;
+                        promise;
 
                     pouchPromise = TP.extern.PouchDB.destroy('pouch_test');
 
-                    qPromise = new Q(pouchPromise);
+                    promise = TP.extern.Promise.resolve(pouchPromise);
 
-                    return qPromise;
+                    return promise;
                 });
         });
 });
@@ -2349,7 +2346,7 @@ function() {
                     var now,
 
                         pouchPromise,
-                        qPromise;
+                        promise;
 
                     now = Date.now();
 
@@ -2367,9 +2364,9 @@ function() {
                                 }
                         });
 
-                    qPromise = new Q(pouchPromise);
+                    promise = TP.extern.Promise.resolve(pouchPromise);
 
-                    return qPromise;
+                    return promise;
                 });
         });
 
@@ -2509,13 +2506,13 @@ function() {
             this.then(
                 function() {
                     var pouchPromise,
-                        qPromise;
+                        promise;
 
                     pouchPromise = TP.extern.PouchDB.destroy('pouch_test');
 
-                    qPromise = new Q(pouchPromise);
+                    promise = TP.extern.Promise.resolve(pouchPromise);
 
-                    return qPromise;
+                    return promise;
                 });
         });
 });
