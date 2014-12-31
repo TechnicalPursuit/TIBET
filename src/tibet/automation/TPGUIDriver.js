@@ -1278,49 +1278,67 @@ function() {
      * @return {TP.gui.Sequence} The receiver.
      */
 
-    var sequenceEntries,
-        driver,
+    var provider,
 
-        thisArg,
+        thisArg;
 
-        len,
-        i;
-
-    sequenceEntries = this.get('sequenceEntries');
-    driver = this.get('driver');
+    provider = this.get('driver').get('promiseProvider');
 
     thisArg = this;
 
-    //  'Expand' any targets in the sequence entries
-    sequenceEntries = this.$expandSequenceEntries(sequenceEntries);
+    //  'Then' a Function onto our internal Promise that will itself return a
+    //  Promise when called upon. That Promise will execute set up a 'work'
+    //  callback function that executes each entry in the sequence and then
+    //  resolves the Promise after executing the last entry.
+    provider.then(
+        function() {
+            var promise;
 
-    //  Loop over each entry in the sequence, build a Promise (within a
-    //  closured Function to store some iteration state) to execute the sequence
-    //  step and chain that Promise onto the promise that the driver is using.
-    len = sequenceEntries.getSize();
-    for (i = 0; i < len; i++) {
+            promise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
 
-        /* eslint-disable no-loop-func */
-        (function() {
-            var func;
+                    var sequenceEntries,
 
-            func = function() {
-                var seqEntry,
-                    promise;
+                        driver,
 
-                seqEntry = sequenceEntries.at(func.index);
+                        count,
+                        workFunc;
 
-                /* eslint-disable new-cap */
-                promise = Q.Promise(
-                    function(resolver, rejector) {
-                        var currentElement;
+                    sequenceEntries = thisArg.get('sequenceEntries');
+                    driver = thisArg.get('driver');
+
+                    //  'Expand' any event targets in the sequence entries
+                    sequenceEntries = thisArg.$expandSequenceEntries(
+                                                        sequenceEntries);
+
+                    //  Set up the work function that will process a single
+                    //  entry and then supply a callback that will call back the
+                    //  work function, but only after a delay to give the GUI a
+                    //  chance to refresh.
+                    count = 0;
+                    workFunc = function () {
+
+                        var seqEntry,
+                            currentElement,
+
+                            workCallback;
+
+                        //  If the count equals the number of entries, then
+                        //  we're done here and we can resolve the Promise.
+                        if (count === sequenceEntries.getSize()) {
+                            return resolver();
+                        }
+
+                        seqEntry = sequenceEntries.at(count);
+                        count++;
 
                         //  If it's an 'exec', then we're just executing a
                         //  Function. Execute it and then make sure to call the
                         //  resolver.
                         if (seqEntry.at(0) === 'exec') {
                             seqEntry.at(1)();
-                            resolver();
+
+                            return workFunc();
                         } else {
 
                             //  If we can't determine a focused element, call
@@ -1331,29 +1349,33 @@ function() {
                                     'No current Element for the GUI Driver.');
                             }
 
+                            //  We fork() the work function here to give the GUI
+                            //  a chance to refresh before we manipulate it.
+                            //  Note that the return value from fork() is the
+                            //  timeout used to schedule it - but the callback
+                            //  handed to $performGUISequenceStep() expects a
+                            //  Function object, therefore we have to wrap it.
+                            workCallback =
+                                function() {
+                                    workFunc.fork(
+                                        TP.sys.cfg('test.anti_starve_timeout'));
+                                };
+
+                            //  Execute the individual sequence step entry.
                             thisArg.$performGUISequenceStep(
-                                        seqEntry.at(1),
-                                        seqEntry.at(0),
-                                        seqEntry.at(2),
-                                        resolver,
-                                        currentElement);
+                                seqEntry.at(1),
+                                seqEntry.at(0),
+                                seqEntry.at(2),
+                                workCallback,
+                                currentElement);
                         }
-                    });
-                /* eslint-enable new-cap */
+                    };
 
-                return promise;
-            };
+                    workFunc();
+                });
 
-            func.index = i;
-
-            driver.get('promiseProvider').then(func);
-
-            //  Based on 'empirical data' (ha), it's best to wait for about 50ms
-            //  to give most browsers a chance to 'settle down' after the event.
-            driver.get('promiseProvider').thenWait(50);
-        }());
-        /* eslint-enable no-loop-func */
-    }
+            return promise;
+        });
 
     return this;
 });
