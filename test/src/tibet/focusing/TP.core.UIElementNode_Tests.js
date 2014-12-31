@@ -69,10 +69,17 @@ function() {
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
 
-                //  Some browsers aggressively optimize by not shifting focus
-                //  until it is shown that there is user interaction. Therefore,
-                //  we focus the first element manually.
-                elem1.focus();
+                if (TP.sys.isUA('IE')) {
+                    //  IE, unfortunately, doesn't *really* focus the 'body'
+                    //  element when the window is focused, even though it
+                    //  reports it as the focused element. So we have to 'type'
+                    //  a [Tab] key to force it to really recognize that it's
+                    //  the body that is focused.
+                    driver.startSequence().
+                            sendKeys('[Tab]').
+                            perform();
+                }
+
                 //  ---
 
                 //  Due to the way the markup is written here, the tab order for
@@ -81,10 +88,17 @@ function() {
 
                 //  ---
 
+                //  Use Tab to go to elem1
+                driver.startSequence().
+                        sendKeys('[Tab]').
+                        perform();
 
                 //  Prove that.
-                focusedElem = driver.getFocusedElement();
-                test.assert.isIdenticalTo(focusedElem, elem1);
+                test.then(
+                    function() {
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem1);
+                    });
 
                 //  ---
 
@@ -1394,6 +1408,17 @@ function() {
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
 
+                if (TP.sys.isUA('IE')) {
+                    //  IE, unfortunately, doesn't *really* focus the 'body'
+                    //  element when the window is focused, even though it
+                    //  reports it as the focused element. So we have to 'type'
+                    //  a [Tab] key to force it to really recognize that it's
+                    //  the body that is focused.
+                    driver.startSequence().
+                            sendKeys('[Tab]').
+                            perform();
+                }
+
                 //  ---
 
                 //  The tab sequence for this test file is:
@@ -1401,14 +1426,17 @@ function() {
 
                 //  ---
 
-                //  Some browsers aggressively optimize by not shifting focus
-                //  until it is shown that there is user interaction. Therefore,
-                //  we focus the first element manually.
-                elem1.focus();
+                //  Use a Tab to go to elem1
+                driver.startSequence().
+                        sendKeys('[Tab]').
+                        perform();
 
                 //  Prove that.
-                focusedElem = driver.getFocusedElement();
-                test.assert.isIdenticalTo(focusedElem, elem1);
+                test.then(
+                    function() {
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(focusedElem, elem1);
+                    });
 
                 //  ---
 
@@ -1732,6 +1760,17 @@ function() {
 
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
+
+                if (TP.sys.isUA('IE')) {
+                    //  IE, unfortunately, doesn't *really* focus the 'body'
+                    //  element when the window is focused, even though it
+                    //  reports it as the focused element. So we have to 'type'
+                    //  a [Tab] key to force it to really recognize that it's
+                    //  the body that is focused.
+                    driver.startSequence().
+                            sendKeys('[Tab]').
+                            perform();
+                }
 
                 //  ---
 
@@ -2238,10 +2277,16 @@ function() {
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
 
-                //  Some browsers aggressively optimize by not shifting focus
-                //  until it is shown that there is user interaction. Therefore,
-                //  we focus the body element manually.
-                bodyElem.focus();
+                if (TP.sys.isUA('IE')) {
+                    //  IE, unfortunately, doesn't *really* focus the 'body'
+                    //  element when the window is focused, even though it
+                    //  reports it as the focused element. So we have to 'type'
+                    //  a [Tab] key to force it to really recognize that it's
+                    //  the body that is focused.
+                    driver.startSequence().
+                            sendKeys('[Tab]').
+                            perform();
+                }
 
                 //  ---
 
