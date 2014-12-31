@@ -8,8 +8,7 @@
  */
 //  ------------------------------------------------------------------------
 
-/* global Q:true,
-          AssertionFailed:true
+/* global AssertionFailed:true
 */
 
 /* eslint-disable new-cap */
@@ -82,7 +81,7 @@ function() {
 TP.core.Resource.describe('core.Resource local suite',
 function() {
     this.it('passes async via resolver', function() {
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 resolver();
             }, 1000);
@@ -90,7 +89,7 @@ function() {
     });
 
     this.it('fails async via rejector', function() {
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 rejector();
             }, 1000);
@@ -99,7 +98,7 @@ function() {
 
     this.it('passes async via test.pass', function() {
         var test = this;
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -109,7 +108,7 @@ function() {
 
     this.it('fails async via test.fail', function() {
         var test = this;
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.fail();
                 rejector();
@@ -119,7 +118,7 @@ function() {
 
     this.it('fails async via timeout', function() {
         var test = this;
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 console.log('# say something to keep idle timer happy');
             }, 3000);
@@ -131,14 +130,14 @@ function() {
     });
 
     this.it('passes sync via resolver', function() {
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             //  Don't really need a promise, but we can use them anyway :)
             resolver();
         });
     });
 
     this.it('fails sync via rejector', function() {
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             //  Don't really need a promise, but we can use them anyway :)
             rejector();
         });
@@ -225,7 +224,7 @@ TP.core.Resource.Inst.describe('getTriggerSignals',
 function() {
     this.it('wastes time', function() {
         var test = this;
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -234,7 +233,7 @@ function() {
     });
     this.it('wastes more time', function() {
         var test = this;
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -243,7 +242,7 @@ function() {
     });
     this.it('wastes more and more time', function() {
         var test = this;
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -252,7 +251,7 @@ function() {
     });
     this.it('wastes some more time', function() {
         var test = this;
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -261,7 +260,7 @@ function() {
     });
     this.it('wastes yet more time', function() {
         var test = this;
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 test.pass();
                 resolver();
@@ -270,7 +269,7 @@ function() {
     });
     this.it('should trigger suite timeout', function() {
         var test = this;
-        return Q.Promise(function(resolver, rejector) {
+        return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
                 // Fail since really this shouldn't run.
                 test.fail();
