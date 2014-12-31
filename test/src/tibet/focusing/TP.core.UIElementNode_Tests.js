@@ -208,6 +208,11 @@ function() {
                 elem3 = TP.byId('focusTestField3');
                 elem4 = TP.byId('focusTestField4');
 
+                if (TP.sys.isUA('IE')) {
+                    //  IE won't autofocus in our test environment, even though
+                    //  it should, so we force it here.
+                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                }
 
                 //  The first focused element in this file will be elem2,
                 //  because it has an 'autofocus="true"' attribute.
@@ -356,6 +361,12 @@ function() {
                 elem2 = TP.byId('focusTestField2');
                 elem3 = TP.byId('focusTestField3');
                 elem4 = TP.byId('focusTestField4');
+
+                if (TP.sys.isUA('IE')) {
+                    //  IE won't autofocus in our test environment, even though
+                    //  it should, so we force it here.
+                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                }
 
                 //  The first focused element in this file will be elem3,
                 //  because it has an 'autofocus="true"' attribute.
@@ -577,6 +588,12 @@ function() {
                 //  In this test, the 'fooGroup' does *not* wrap (since it
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
+
+                if (TP.sys.isUA('IE')) {
+                    //  IE won't autofocus in our test environment, even though
+                    //  it should, so we force it here.
+                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                }
 
                 //  The first focused element in this file will be elem1,
                 //  because it has an 'autofocus="true"' attribute.
@@ -801,6 +818,12 @@ function() {
                 //  In this test, the 'fooGroup' does *not* wrap (since it
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
+
+                if (TP.sys.isUA('IE')) {
+                    //  IE won't autofocus in our test environment, even though
+                    //  it should, so we force it here.
+                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                }
 
                 //  The first focused element in this file will be elem2,
                 //  because a) it's group, fooGroup, has an 'autofocus="true"'
@@ -1036,6 +1059,12 @@ function() {
                 elem6 = TP.byId('focusTestField6');
                 elem7 = TP.byId('focusTestField7');
                 elem8 = TP.byId('focusTestField8');
+
+                if (TP.sys.isUA('IE')) {
+                    //  IE won't autofocus in our test environment, even though
+                    //  it should, so we force it here.
+                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                }
 
                 //  The first focused element in this file will be elem1,
                 //  because a) it's group, fooGroup, has an 'autofocus="true"'
