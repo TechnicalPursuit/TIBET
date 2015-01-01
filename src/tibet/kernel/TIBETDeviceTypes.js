@@ -839,27 +839,37 @@ function(singletonName, normalizedEvent, aSignal) {
         return;
     }
 
-    if (TP.isElement(targetElem =
-                        TP.eventGetResolvedTarget(normalizedEvent))) {
-        fname = 'handlePeer' + TP.escapeTypeName(
-                                TP.DOM_SIGNAL_TYPE_MAP.at(
-                                        TP.eventGetType(normalizedEvent)));
+    //  Sometimes this method is invoked for a synthetic event (like updating
+    //  the modifier keys or a TIBET drag event). The normalized event object
+    //  will have the real platform event in it (i.e. keydown) which should
+    //  *not* be dispatched to the handlePeer* call in the case of a synthetic
+    //  event.
+    //  Therefore, we check here to make sure that the singleton name matches
+    //  the real event name before calling handlePeer*
+    if (singletonName === TP.eventGetType(normalizedEvent)) {
 
-        elemType = TP.wrap(targetElem).getType();
+        if (TP.isElement(targetElem =
+                            TP.eventGetResolvedTarget(normalizedEvent))) {
+            fname = 'handlePeer' + TP.escapeTypeName(
+                                    TP.DOM_SIGNAL_TYPE_MAP.at(
+                                            TP.eventGetType(normalizedEvent)));
 
-        //  Message the type for the element that is 'responsible' for
-        //  this event. It's native control sent this event and we need
-        //  to let the type know about it.
-        if (TP.canInvoke(elemType, fname)) {
-            elemType[fname](targetElem, normalizedEvent);
-        }
+            elemType = TP.wrap(targetElem).getType();
 
-        //  If the native event was prevented, then we should just bail out
-        //  here.
-        //  NB: 'defaultPrevented' is a DOM Level 3 property, which seems to
-        //  be well supported on TIBET's target browser environments.
-        if (normalizedEvent.defaultPrevented === true) {
-            return;
+            //  Message the type for the element that is 'responsible' for
+            //  this event. It's native control sent this event and we need
+            //  to let the type know about it.
+            if (TP.canInvoke(elemType, fname)) {
+                elemType[fname](targetElem, normalizedEvent);
+            }
+
+            //  If the native event was prevented, then we should just bail out
+            //  here.
+            //  NB: 'defaultPrevented' is a DOM Level 3 property, which seems to
+            //  be well supported on TIBET's target browser environments.
+            if (normalizedEvent.defaultPrevented === true) {
+                return;
+            }
         }
     }
 
