@@ -391,6 +391,40 @@ function(name) {
 //  REFLECTION - PART IV
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('computeCommonSupertype',
+function(otherType) {
+
+    /**
+     * @name computeCommonSupertype
+     * @synopsis Finds the common supertype of both the receiver and the
+     *     supplied type object.
+     * @param {TP.lang.RootObject} otherType The other type to use to compare.
+     * @returns {TP.lang.RootObject|null} The common supertype or null if there
+     *     is no common supertype (a *very* rare occurrence).
+     */
+
+    var thisSupers,
+        otherSupers,
+
+        i,
+        j;
+
+    thisSupers = this.getSupertypes();
+    otherSupers = otherType.getSupertypes();
+
+    for (i = 0; i < thisSupers.getSize(); i++) {
+        for (j = 0; j < otherSupers.getSize(); j++) {
+            if (thisSupers.at(i) === otherSupers.at(j)) {
+                return thisSupers.at(i);
+            }
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('getLocalName',
 function() {
 
