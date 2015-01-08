@@ -2319,8 +2319,6 @@ function(aTypeName) {
 
         controller = controllerType.construct();
         this.set('controller', controller);
-
-        controller.set('uri', this);
     }
 
     return controller;

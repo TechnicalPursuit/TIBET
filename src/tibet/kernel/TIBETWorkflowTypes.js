@@ -6412,9 +6412,6 @@ TP.core.Controller.defineSubtype('URIController');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  the URI associated with the controller
-TP.core.URIController.Inst.defineAttribute('uri');
-
 //  the window this URI's contents are currently displayed in. This may shift
 //  as the responder chain gets recomputed throughout the course of the
 //  application if the same URI is displayed in multiple windows.
