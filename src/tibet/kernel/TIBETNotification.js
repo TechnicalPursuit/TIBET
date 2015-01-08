@@ -7015,15 +7015,33 @@ function(aDocument) {
         return this;
     }
 
+    //  Note that 'observer' and 'obs' are the same object here - we use 'obs'
+    //  inside the callback to avoid a closure.
     observer = new MutationObserver(
-                    function(mutationRecords) {
+                    function(mutationRecords, obs) {
                         var len,
-                            i;
+                            i,
+
+                            record;
 
                         len = mutationRecords.length;
                         for (i = 0; i < len; i++) {
-                            this.handleMutationEvent(mutationRecords.at(i));
+                            record = mutationRecords[i];
+
+                            //  For some reason, MutationObserver mutation
+                            //  records are *not* uniqued, at least in Webkit-
+                            //  based browsers. Therefore we mark them as such
+                            //  and don't process them again.
+                            //  https://bugs.webkit.org/show_bug.cgi?id=103916
+                            if (!record.handled) {
+                                this.handleMutationEvent(record);
+                                record.handled = true;
+                            }
                         }
+
+                        //  Try to empty the observer's queue in a (maybe vain)
+                        //  attempt to get rid of extra mutation records.
+                        obs.takeRecords();
                     }.bind(this));
 
     observer.observe(
@@ -7061,6 +7079,11 @@ function(aDocument) {
     observerKey = TP.id(aDocument);
 
     if (TP.isValid(observer = this.get('observers').at(observerKey))) {
+
+        //  Try to empty the observer's queue in a (maybe vain) attempt to get
+        //  rid of extra mutation records.
+        observer.takeRecords();
+
         observer.disconnect();
     }
 
