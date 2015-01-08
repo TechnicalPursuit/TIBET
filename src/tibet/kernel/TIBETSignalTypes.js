@@ -2217,9 +2217,12 @@ function(normalizedEvent) {
     //  Call to supertype to set the event.
     this.callNextMethod();
 
-    //  This is fake, but needed because TP.sig.DOMMouseHover signals reuse
-    //  mouse move signals.
-    normalizedEvent.$$type = 'mousehover';
+    //  Make sure normalizedEvent is real - sometimes it's a null.
+    if (TP.isEvent(normalizedEvent)) {
+        //  This is fake, but needed because TP.sig.DOMMouseHover signals reuse
+        //  mouse move signals.
+        normalizedEvent.$$type = 'mousehover';
+    }
 
     return this;
 });
