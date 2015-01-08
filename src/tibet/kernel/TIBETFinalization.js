@@ -483,6 +483,9 @@ function() {
                     'TP.sig.AppStart',
                     TP.hc('ApplicationType', appType,
                             'ApplicationTag', elem));
+
+                //  Make sure to null out 'elem' to avoid a leak.
+                elem = null;
             }).afterUnwind();
         /* eslint-enable no-wrap-func */
     });
