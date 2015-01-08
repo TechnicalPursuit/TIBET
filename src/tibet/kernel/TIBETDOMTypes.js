@@ -784,6 +784,44 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @name tagDetachDOM
+     * @synopsis Performs any 'detach' logic when the node is detached from its
+     *     owning document.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        id,
+
+        uri;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isNode(node = aRequest.at('node'))) {
+        return;
+    }
+
+    id = TP.gid(node);
+
+    if (TP.isURI(uri = TP.core.URI.getInstanceById(id))) {
+        uri.clearCaches();
+        TP.core.URI.removeInstance(uri);
+    }
+
+    //  Setting this to null is better for many VMs than using 'delete'.
+    node[TP.WRAPPER] = null;
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
