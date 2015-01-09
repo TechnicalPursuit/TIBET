@@ -702,9 +702,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     docElem = aDocument.documentElement;
 
-    //  Clear out the document's existing content.
-    TP.nodeEmptyContent(aDocument);
-
     //  Manually invoke the mutation removal event machinery. This won't happen
     //  automatically, since by emptying the content of the document above, we
     //  blew away the Mutation Observer registration.
@@ -716,6 +713,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                     removedNodes: TP.ac(docElem)
                 });
     }
+
+    //  Clear out the document's existing content.
+    TP.nodeEmptyContent(aDocument);
 
     //  Append the new child in
     TP.nodeAppendChild(aDocument, nodeContent, awakenContent);
