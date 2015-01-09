@@ -2399,10 +2399,12 @@ function(aResource) {
     //  Finally, append the whole fragment under the receiver element
     TP.nodeAppendChild(elem, bodyFragment, false);
 
-    //  TODO: This is a hack - needs cleanup
     //  Bubble any xmlns attributes upward to avoid markup clutter.
     TP.elementBubbleXMLNSAttributes(elem);
 
+    //  TODO: This is a hack - needs cleanup - and this approach leaks.
+
+/*
     this.getNativeNode().ondblclick = function(evt) {
         var tnContainer,
             textNode,
@@ -2432,6 +2434,7 @@ function(aResource) {
             TP.uc(updatePath).setResource(newText);
         };
     };
+*/
 
     return this;
 });
