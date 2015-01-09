@@ -67,46 +67,21 @@ function(aWindow) {
     //  assign our codebase window to the var we'll close around
     tibetWin = window;
 
-    dclListener = function(anEvent) {
+    //  Note that, because this method is called from the hook file which might,
+    //  itself, be being processed as part of a load cycle, we need to make sure
+    //  that the window doesn't already have these handlers installed.
 
-                    if (anEvent.target !== aWindow.document) {
-                        if (TP.$$DEBUG) {
-                            TP.boot.$stdout(
-                                'Ignoring DOMContentLoaded from target: ' +
-                                anEvent.target + '.', TP.DEBUG);
-                        }
-                        return;
-                    }
+    //  Therefore, to maximize symmetry for these methods, and to make sure they
+    //  don't get registered multiple times we go ahead and put the slots on the
+    //  window for both and don't install them if they're already installed.
 
-                    //  NOTE that this signal is only triggered in
-                    //  response to a location change. altering the DOM
-                    //  of the document element won't trigger it.
-                    if (TP.$$DEBUG) {
-                        TP.boot.$stdout('DOMContentLoaded at: ' +
-                            TP.str(anEvent.target), TP.DEBUG);
-                    }
-
-
-                    //  remove so we don't trigger again due to
-                    //  processDocumentLoaded invocation(s)
-                    aWindow.removeEventListener(
-                            'DOMContentLoaded',
-                            dclListener,
-                            false);
-
-                    //  writing handler is false, we're the location
-                    //  handler
-                    tibetWin.TP.$$processDocumentLoaded(aWindow);
-                };
-
-    aWindow.addEventListener('DOMContentLoaded', dclListener, false);
-
-    unloadListener = function(anEvent) {
+    if (TP.notValid(aWindow.dclListener)) {
+        dclListener = function(anEvent) {
 
                         if (anEvent.target !== aWindow.document) {
                             if (TP.$$DEBUG) {
                                 TP.boot.$stdout(
-                                    'Ignoring DOMContentUnloaded from target: ' +
+                                    'Ignoring DOMContentLoaded from target: ' +
                                     anEvent.target + '.', TP.DEBUG);
                             }
                             return;
@@ -116,19 +91,62 @@ function(aWindow) {
                         //  response to a location change. altering the DOM
                         //  of the document element won't trigger it.
                         if (TP.$$DEBUG) {
-                            TP.boot.$stdout('DOMContentUnloaded at: ' +
+                            TP.boot.$stdout('DOMContentLoaded at: ' +
                                 TP.str(anEvent.target), TP.DEBUG);
                         }
 
+
+                        //  remove so we don't trigger again due to
+                        //  processDocumentLoaded invocation(s)
                         aWindow.removeEventListener(
-                                'unload',
-                                unloadListener,
+                                'DOMContentLoaded',
+                                dclListener,
                                 false);
 
-                        tibetWin.TP.$$processDocumentUnloaded(aWindow);
-                    };
+                        //  writing handler is false, we're the location
+                        //  handler
+                        tibetWin.TP.$$processDocumentLoaded(aWindow);
 
-    aWindow.addEventListener('unload', unloadListener, false);
+                        aWindow.dclListener = null;
+                    };
+        aWindow.dclListener = dclListener;
+
+        aWindow.addEventListener('DOMContentLoaded', dclListener, false);
+    }
+
+    if (TP.notValid(aWindow.unloadListener)) {
+        unloadListener = function(anEvent) {
+
+                            if (anEvent.target !== aWindow.document) {
+                                if (TP.$$DEBUG) {
+                                    TP.boot.$stdout(
+                                        'Ignoring unload from target: ' +
+                                        anEvent.target + '.', TP.DEBUG);
+                                }
+                                return;
+                            }
+
+                            //  NOTE that this signal is only triggered in
+                            //  response to a location change. altering the DOM
+                            //  of the document element won't trigger it.
+                            if (TP.$$DEBUG) {
+                                TP.boot.$stdout('unload at: ' +
+                                    TP.str(anEvent.target), TP.DEBUG);
+                            }
+
+                            aWindow.removeEventListener(
+                                    'unload',
+                                    unloadListener,
+                                    false);
+
+                            tibetWin.TP.$$processDocumentUnloaded(aWindow);
+
+                            aWindow.unloadListener = null;
+                        };
+        aWindow.unloadListener = unloadListener;
+
+        aWindow.addEventListener('unload', unloadListener, false);
+    }
 
     return this;
 });
