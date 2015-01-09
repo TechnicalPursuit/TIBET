@@ -599,6 +599,31 @@ function(aSignal, aHandler) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Keyboard.Type.defineMethod('resetEventData',
+function() {
+
+    /**
+     * @name resetEventData
+     * @synopsis Resets any event data cached by the receiver. It is important
+     *     to call this when the GUI is flushed between page refreshes to avoid
+     *     having obsolete references to old DOM structures.
+     */
+
+    this.set('lastDown', null);
+    this.set('lastPress', null);
+    this.set('lastUp', null);
+
+    this.get('keyup').setEvent(null);
+    this.get('keydown').setEvent(null);
+    this.get('keypress').setEvent(null);
+
+    this.get('modifierkeychange').setEvent(null);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Keyboard.Type.defineMethod('getShortcutData',
 function(aSignal, shouldBuild) {
 
@@ -2481,6 +2506,58 @@ function() {
 
     this.$set('draghover',
             TP.sys.require('TP.sig.DOMDragHover').construct(null, true));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Mouse.Type.defineMethod('resetEventData',
+function() {
+
+    /**
+     * @name resetEventData
+     * @synopsis Resets any event data cached by the receiver. It is important
+     *     to call this when the GUI is flushed between page refreshes to avoid
+     *     having obsolete references to old DOM structures.
+     */
+
+    this.set('lastDown', null);
+    this.set('lastMove', null);
+    this.set('lastUp', null);
+
+    this.set('lastOver', null);
+    this.set('lastOut', null);
+
+    this.set('lastClick', null);
+    this.set('lastDblClick', null);
+
+    this.set('lastContextMenu', null);
+    this.set('lastMouseWheel', null);
+
+    this.get('mousedown').setEvent(null);
+    this.get('mousemove').setEvent(null);
+    this.get('mouseup').setEvent(null);
+
+    this.get('mouseover').setEvent(null);
+    this.get('mouseout').setEvent(null);
+
+    this.get('click').setEvent(null);
+    this.get('dblclick').setEvent(null);
+    this.get('contextmenu').setEvent(null);
+
+    this.get('mousewheel').setEvent(null);
+
+    this.get('mousehover').setEvent(null);
+
+    this.get('dragdown').setEvent(null);
+    this.get('dragmove').setEvent(null);
+    this.get('dragup').setEvent(null);
+
+    this.get('dragover').setEvent(null);
+    this.get('dragout').setEvent(null);
+
+    this.get('draghover').setEvent(null);
 
     return;
 });
