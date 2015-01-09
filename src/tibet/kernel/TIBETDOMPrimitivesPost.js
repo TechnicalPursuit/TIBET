@@ -695,16 +695,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  required to make it work.
     if (hasWindow) {
 
-        //  Filter any elements that are in the document of the window we are
-        //  unloading out of the $focus_stack.
-        $focus_stack = $focus_stack.reject(
-                        function(aTPElem) {
-                            if (aTPElem.getNativeDocument() === aDocument) {
-                                return true;
-                            }
-
-                            return false;
-                        });
         newEvent = aDocument.createEvent('Event');
         newEvent.initEvent('unload', true, true);
         aDocument.dispatchEvent(newEvent);
