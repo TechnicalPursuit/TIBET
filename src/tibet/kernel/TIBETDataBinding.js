@@ -2273,6 +2273,11 @@ function(aResource) {
                     scopeNum++;
                 }
 
+                //  Have the child destroy it's current bindings (before we
+                //  change its scope).
+                childTPElem.rebuild(
+                        TP.hc('shouldDefine', false, 'shouldDestroy', true));
+
                 //  Have to adjust for the fact that XPaths are 1-based.
                 if (isXMLResource) {
                     childTPElem.setAttribute(
@@ -2282,8 +2287,11 @@ function(aResource) {
                                     'bind:scope', '[' + scopeNum + ']');
                 }
 
-                //  Have the child rebuild it's bindings.
-                childTPElem.rebuild();
+                //  Have the child define it's bindings now that its scope has
+                //  been changed.
+                childTPElem.rebuild(
+                        TP.hc('shouldDefine', true, 'shouldDestroy', false));
+
                 //  Bubble any xmlns attributes upward to avoid markup clutter.
                 TP.elementBubbleXMLNSAttributes(elemChildElements.at(i));
 
