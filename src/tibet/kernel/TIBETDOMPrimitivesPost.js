@@ -738,7 +738,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                     //  'DOMContentLoaded' event from the document as per
                     //  standard browser behavior..
 
-                    //  This will eventually signal TP.sig.DOMContentLoaded
+                    //  This will eventually signal TP.sig.DOMContentLoaded via
+                    //  the TP.$$processDocumentLoaded() call.
                     newEvent = aDocument.createEvent('HTMLEvents');
                     newEvent.initEvent('DOMContentLoaded', true, true);
                     aDocument.dispatchEvent(newEvent);
