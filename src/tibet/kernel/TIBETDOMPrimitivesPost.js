@@ -691,8 +691,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     TP.core.Window.$$isDocumentWriting = true;
 
     //  If we have a window, then create and dispatch an 'unload' event.
-    //  Note how this is dispatched from the 'defaultView' (i.e. the window)
-    //  as per standard browser behavior.
+    //  Note how this is dispatched from the window's document, which is
+    //  required to make it work.
     if (hasWindow) {
 
         //  Filter any elements that are in the document of the window we are
@@ -705,10 +705,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
                             return false;
                         });
-
-        newEvent = aDocument.createEvent('HTMLEvents');
+        newEvent = aDocument.createEvent('Event');
         newEvent.initEvent('unload', true, true);
-        aDocument.defaultView.dispatchEvent(newEvent);
+        aDocument.dispatchEvent(newEvent);
     }
 
     docElem = aDocument.documentElement;
