@@ -2227,6 +2227,8 @@ function(aResource) {
 
                 //  Have the child rebuild it's bindings.
                 childTPElem.rebuild();
+                //  Bubble any xmlns attributes upward to avoid markup clutter.
+                TP.elementBubbleXMLNSAttributes(elemChildElements.at(i));
 
                 boundCount++;
             }
@@ -2333,6 +2335,8 @@ function(aResource) {
     TP.nodeAppendChild(elem, bodyFragment, false);
 
     //  TODO: This is a hack - needs cleanup
+    //  Bubble any xmlns attributes upward to avoid markup clutter.
+    TP.elementBubbleXMLNSAttributes(elem);
 
     this.getNativeNode().ondblclick = function(evt) {
         var tnContainer,
