@@ -3907,6 +3907,22 @@ function(aDataSource, aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('unregister',
+function() {
+
+    /**
+     * @name unregister
+     * @synopsis Unregisters the receiver from the overall TP.core.URI registry.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    TP.core.URI.removeInstance(this);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('updateHeaders',
 function(headerData) {
 
