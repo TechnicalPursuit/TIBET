@@ -8308,6 +8308,11 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
                         return false;
                     });
 
+    //  Clear any event data to avoid memory leaks for events that are holding
+    //  onto DOM structures that might have been present in this window.
+    TP.core.Keyboard.resetEventData();
+    TP.core.Mouse.resetEventData();
+
     //  clear the 'backhack' slots from the window info. This means that if
     //  we load new content into the same window, these will be starting
     //  fresh. Note that, if we're closing the window, the window's entire
