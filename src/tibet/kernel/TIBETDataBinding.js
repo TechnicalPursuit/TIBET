@@ -893,7 +893,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName) {
 
     /**
-     * @name defineBinding
+     * @name destroyBinding
      * @synopsis Adds a binding to the supplied target object.
      * @param {Object} target The target object to define the binding on.
      * @param {String} targetAttributeName The target attribute name.

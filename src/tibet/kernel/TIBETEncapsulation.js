@@ -113,7 +113,7 @@ function(aFilter, undefNotNull) {
      *     based on a filtering function, or on unique object ID. One special
      *     consideration is whether invalid values (null and undefined) should
      *     be considered "equal" for purposes of this uniquing process.
-     * @param {Function} aFilter A function which accepts and object and returns
+     * @param {Function} aFilter A function which accepts an object and returns
      *     the value to compare for uniqueness.
      * @param {Boolean} undefNotNull True to have undefined values compare
      *     differently than nulls for uniquing purposes.
