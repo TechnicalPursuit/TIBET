@@ -2046,9 +2046,7 @@ function(normalizedEvent) {
             //  press event notification so the timeout coordinates with
             //  press properly.
             lastDown = TP.core.Keyboard.get('lastDown');
-            if (TP.notValid(lastDown)) {
-                //  shouldn't happen, lastDown is set in root handler
-                //  function before it invokes this routine
+            if (!TP.isEvent(lastDown)) {
                 return;
             }
 
@@ -2290,7 +2288,7 @@ TP.core.Mouse.Type.defineAttribute(
 
             //  make sure we've got a last move to work from
             lastMove = TP.core.Mouse.$get('lastMove');
-            if (lastMove === null) {
+            if (!TP.isEvent(lastMove)) {
                 return;
             }
 
@@ -2311,7 +2309,9 @@ TP.core.Mouse.Type.defineAttribute(
             //  we use the 'lastOver' to obtain the repeat value, if it has
             //  one. We don't want to pick up repeat values from every
             //  element we go over, in case we're in drag mode.
-            lastOver = TP.core.Mouse.$get('lastOver');
+            if (!TP.isEvent(lastOver = TP.core.Mouse.$get('lastOver'))) {
+                return;
+            }
 
             hoverRepeat = TP.sys.cfg('mouse.hover_repeat');
 
@@ -2344,7 +2344,7 @@ TP.core.Mouse.Type.defineAttribute(
                         //  If there was no 'last move' native event that we can
                         //  leverage, then we can't do much so we exit here and
                         //  don't reschedule the timer.
-                        if (priorMove === null) {
+                        if (!TP.isEvent(priorMove)) {
                             return;
                         }
 
@@ -2758,7 +2758,7 @@ function(normalizedEvent) {
 
     //  if we can't compute a distance from the last mousedown then we
     //  assume this is a valid click event
-    if (TP.notValid(lastDown)) {
+    if (!TP.isEvent(lastDown)) {
         this.invokeObservers('click', normalizedEvent);
 
         return;
@@ -3026,11 +3026,12 @@ function(normalizedEvent) {
             //  correct targeting is performed and so that the proper kind
             //  of signal type, etc. is selected. We can do this by copying
             //  the 'last down' event and setting its 'event type'.
-            dragDownEvent = this.get('lastDown').copy();
-            TP.eventSetType(dragDownEvent, 'dragdown');
-
-            this.invokeObservers('dragdown', dragDownEvent);
-            this.$set('$sentDragDown', true);
+            if (TP.isEvent(dragDownEvent = this.get('lastDown'))) {
+                dragDownEvent = dragDownEvent.copy();
+                TP.eventSetType(dragDownEvent, 'dragdown');
+                this.invokeObservers('dragdown', dragDownEvent);
+                this.$set('$sentDragDown', true);
+            }
         }
 
         TP.eventSetType(normalizedEvent, 'dragmove');
@@ -3233,7 +3234,10 @@ function(normalizedEvent) {
     if (this.$get('leftDown') ||
         this.$get('rightDown') ||
         this.$get('middleDown')) {
-        lastDown = this.get('lastDown');
+        if (!TP.isEvent(lastDown = this.get('lastDown'))) {
+            return false;
+        }
+
         distance = TP.computeDistance(lastDown, normalizedEvent);
 
         //  Initially, set the drag pixel distance to the value from the
