@@ -1262,6 +1262,7 @@ TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineAttribute('bindInfos');
 TP.core.ElementNode.Inst.defineAttribute('sugaredExprs');
 
 //  ------------------------------------------------------------------------
