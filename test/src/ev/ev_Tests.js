@@ -314,8 +314,6 @@ function() {
             function(result) {
                 TP.sys.uiwin(true).focus();
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         click(TP.byId('fooDiv')).
                         perform();
@@ -326,14 +324,13 @@ function() {
                                                     'multisignal_singleorigin');
                         test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
 
-                        //  Remove the attribute in preparation for the next test.
+                        //  Remove the attribute in preparation for the next
+                        //  test.
                         TP.elementRemoveAttribute(TP.byId('testResults'),
                                                     'multisignal_singleorigin',
                                                     true);
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         doubleClick(TP.byId('fooDiv')).
                         perform();
@@ -398,7 +395,6 @@ function() {
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
             });
-
     });
 
     //  ---
@@ -417,8 +413,6 @@ function() {
             function(result) {
                 TP.sys.uiwin(true).focus();
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         click(TP.byId('fooDiv')).
                         perform();
@@ -430,8 +424,6 @@ function() {
                         test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         doubleClick(TP.byId('bazDiv')).
                         perform();
@@ -499,22 +491,18 @@ function() {
             function(result) {
                 TP.sys.uiwin(true).focus();
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         sendKeys('ABCDE', TP.byId('fooField')).
                         perform();
 
                 test.then(
                     function(result) {
-                        //  Default was being prevented - the field shouldn't have any
-                        //  content.
+                        //  Default was being prevented - the field shouldn't
+                        //  have any content.
                         test.refute.isEqualTo(TP.byId('fooField').value, 'ABCDE');
                         test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMKeyPress');
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         sendKeys('A', TP.byId('barField')).
                         perform();
@@ -529,8 +517,6 @@ function() {
                         test.assert.didSignal(TP.byId('barField'), 'TP.sig.DOMKeyPress');
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         sendKeys('A', TP.byId('bazField')).
                         perform();
@@ -830,8 +816,6 @@ function() {
             function(result) {
                 TP.sys.uiwin(true).focus();
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         click(TP.byId('setSalaryButton')).
                         perform();
@@ -862,8 +846,6 @@ function() {
                                 'TP.sig.ValueChange');
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         click(TP.byId('setSSNButton')).
                         perform();
@@ -946,7 +928,6 @@ function() {
             });
 
     });
-
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
