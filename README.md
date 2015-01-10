@@ -1,124 +1,195 @@
-# TIBET v5.0.0
+# TIBET
 
-    TIBET 5.0 is a markup-centric, mobile-ready, zero-reload web platform
-    that makes web development more scalable, maintainable, and efficient.
-
-### TIBET is markup-centric.
-Tags are the focal point of development in TIBET. In TIBET, tags are
-smart macros, macros you create, combine, and connect to create web
-applications of any scope and complexity.
-
-With TIBET a small team using JavaScript can support a much larger team
-using <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Semantic-Tags"
-target="_blank">semantic markup</a>, significantly scaling your
-development while improving maintainability.
-
-### TIBET is mobile-ready.
-TIBET is designed to run offline, sync online, and limit reliance
-on networks, servers, or anything else your users may not have access to
-when they need your application.
-
-TIBET works <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Loader#wiki-zero"
-target="_blank">with or without a server</a>, providing you with a foundation
-that lets you minimize load on your servers and networks, improving scalability
-and efficiency.
-
-### TIBET is zero-reload.
-The TIBET platform is engineered to eliminate reload cycles. With TIBET's <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/Home#wiki-tools"
-target="_blank">interactive tools</a> the changes you make to your
-JavaScript, HTML, and CSS are reflected instantly.
-
-Without the disruption of hundreds of reload cycles per day your
-development process flows, creating the opportunity for unprecedented
-creativity and productivity.
+TIBET is a seamless front-end framework blending the best features of today's
+modern JavaScript modules with a powerful set of interactive development tools.
 
 # Installation
 
-1. Install Node.js version 0.10 or greater from <a href="http://nodejs.org"
+### Install Node.js
+
+TIBET relies on Node.js and npm for command line tooling and to integrate some
+of today's best JavaScript modules. To install TIBET properly first make sure
+you have Node.js version 0.10 or greater from <a href="http://nodejs.org"
    target="_blank">nodejs.org</a>.
-2. Install TIBET globally using the `npm` command installed via node:<br/>
+
+### Installing TIBET via npm
+
+TIBET should be installed globally using `npm install` with the -g flag:<br/>
 <pre>
-  npm install -g tibet
+    npm install -g tibet
 </pre>
 
-TIBET will self-test to confirm a successful installation.
+That's it. You should now have the latest stable release of TIBET
+installed.
 
-# Quick Start
+Jump to the <a href="#nextsteps">Next Steps</a> section for how to proceed.
 
-1. Create an application using `tibet clone tibet` replacing {name} with your
-   app name:
+### Installing TIBET via Git
+
+##### Uninstall an npm-installed version of TIBET
+
+If you have already installed TIBET via npm you need to first remove that
+installation to avoid conflicts with your Git-based installation:
+
 <pre>
-  tibet clone tibet {name}
+    npm uninstall -g tibet
 </pre>
 
-2. Navigate to your application directory and start the server via
-`npm start`:
-<pre>
-  cd {name}
-  npm start
-</pre>
-3. Open your new application's home page (<a
-   href="http://0.0.0.0:1407/index.html" target="_blank">index.html</a>) in an
-HTML5 web browser.
+##### Create a Fork
 
-Congratulations! You're running a new TIBET application with the <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Immersive-Development-Environment-(IDE)"
-target="_blank">TIBET IDE</a> installed.
+If you are going to install TIBET via Git we recommend that you first create a
+fork of TIBET so you can manage updates in a stable, predictable fashion.
+
+Follow these instructions: <a target="_blank" href="https://help.github.com/articles/fork-a-repo/">create
+your own fork</a>.
+
+##### Clone your Fork
+
+<pre>
+    git clone {{your_fork_repo_url}}
+</pre>
+
+##### Initialize your Fork
+
+Once your fork has been cloned move into the new fork directory and install the
+package dependencies:
+
+<pre>
+    cd {{your_fork_repo_directory}}
+    npm install .
+</pre>
+
+##### Link TIBET's CLI globally
+
+With your fork initialized you'll need to link the repository so that the
+`tibet` command will function properly:
+
+<pre>
+    npm link .
+</pre>
+<br/>
+Congratulations, you should now be able to use the `tibet` command while working
+with your own fork of TIBET.
+
+# Next Steps
+
+Once you have TIBET installed the `tibet` command gives you access to a wide
+range of tools to help streamline your development workflow.
+
+### Help
+
+You can get help on the `tibet` command and its options via `tibet help`:
+
+    $ tibet help [command]
+
+    Usage: tibet <command> <options>
+
+    The tibet command can invoke TIBET built-ins, custom commands,
+    tibet makefile.js targets, grunt targets, or gulp targets based
+    on your project configuration and your specific customizations.
+
+    <command> built-ins include:
+
+        cache clone config context echo freeze help init lint
+        make package quickstart reflect rollup start test thaw
+        tsh version
+
+    Project <commands> include:
+
+        sample
+
+    makefile.js targets include:
+
+	    build checkup clean rollup
+
+    <options> always include:
+
+        --help         display command help text
+        --usage        display command usage summary
+        --color        colorize the log output [true]
+        --verbose      work with verbose output [false]
+        --debug        turn on debugging output [false]
+        --stack        display stack with error [false]
+
+    Configure default parameters via 'tibet config'.
+
+    tibet@v5.0.0-dev.7 /Users/ss/.nvm/v0.10.28/bin/tibet
+</pre>
+
+### Quickstart
+
+The `tibet quickstart` command will output version-specific instructions on how
+to clone, initialize, and start your first TIBET application.
+
+<pre>
+    $ tibet quickstart
+
+    Welcome to TIBET! This quickstart content is intended to get you up and running
+    with a minimum of overhead so we'll be working with a limited set of commands
+    and using their default options. Once you're done, check out the development wiki
+    at https://github.com/TechnicalPursuit/TIBET/wiki to dive deeper into TIBET.
+
+    CREATE A NEW PROJECT
+
+    The 'tibet clone' command is your first step in creating a TIBET project.
+
+    Before using clone navigate to a directory to hold your new project content
+    and select a name for your new project. The name will be used as a directory
+    name so it should be a valid directory name on your platform.
+
+    Type 'tibet clone {appname}', replacing {appname} with your project name:
+
+        $ tibet clone test
+        TIBET dna 'default' cloned to test as app 'test'.
+
+    INITIALIZE THE PROJECT
+
+    With your new project in place you need to initialize it to install any code
+    dependencies specific to the template you cloned (we used the default here).
+    Navigate to your project and then type 'tibet init' to initialize it:
+
+        $ cd test
+        $ tibet init
+        Initializing new default project...
+        installing project dependencies via `npm install`.
+        Project initialized successfully.
+
+    START THE DEMO SERVER
+
+    The 'default' template used by clone includes a simple Node.js-based HTTP
+    server we call the TIBET Development Server or TDS. By default the TDS will
+    use port 1407 so assuming that port isn't busy on your system you can start
+    the server using 'tibet start' without any parameters:
+
+        $ tibet start
+        Starting server at http://0.0.0.0:1407/index.html
+
+    Congratulations! Your new TIBET project is running. Open the web address
+    for your project in an HTML5 browser and you should see text directing you
+    on how to take the next step in your TIBET journey.
+
+    For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.
+
+</pre>
+
+### More...
+
+The <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Getting-Started"
+target="_blank">Getting Started Guide</a> is the best place to continue your
+journey with TIBET.
+
 
 # Documentation
 
 The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
-target="_blank">TIBET Wiki</a> provides conceptual, design, and use-case
-documentation for TIBET.
+target="_blank">TIBET Wiki</a> provides extensive tutorials, screencasts,
+whitepapers, and other conceptual and design documentation for TIBET.
 
-Detailed API documentation is generated from within TIBET itself
-via the `:man` command.
+API documentation is generated from within TIBET itself via `tibet reflect` at
+the command line and via `:reflect` from within the TIBET shell/Sherpa.
 
-For more information on TIBET and TPI products and services see <a
-href="http://www.technicalpursuit.com" target="_blank">www.technicalpursuit.com</a>.
-
-# App Templates
-
-You can combine TIBET with any HTTP-accessible server, or with no (aka
-'zero') server.
-
-##### Offline / Standalone
-
-You can boot TIBET from the file system, localStorage, or IndexedDB.
-Creating standalone tablet or Chromebook-based applications? We've got
-templates for that.
-
-##### Online / Web
-
-Have a current web server? You can pair TIBET with Apache, Node.js,
-Rails3 or whatever HTTP-accessible web server you might have. Or you can use the
-<a href="https://github.com/TechnicalPursuit/TIBET/wiki/The-TIBET-Server"
-target="_blank">TIBET Server</a>.
-
-##### Direct-to-Database (D2D)
-
-Want to shake things up? Try pairing TIBET with an HTTP-accessible
-database in what we call a Direct-to-Database (D2D) design. Apache
-CouchDB template provided :).
-
-##### DNA / Custom
-
-The full list of built-in application templates can be listed using:
-
-    tibet list dna
-
-Use the `tibet clone` command to clone any available template to
-create your application. Add your own content to the dna directory to
-support custom templates.
-
-# Help
-
-You can get help on the `tibet` command and its options by entering:
-
-    tibet help [command]
+For information on TIBET-related services see <a href="http://www.technicalpursuit.com" target="_blank">www.technicalpursuit.com</a>.
 
 # Feedback
 
