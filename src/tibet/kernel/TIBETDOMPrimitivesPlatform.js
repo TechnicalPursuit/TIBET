@@ -1285,6 +1285,12 @@ TP.hc(
 
                 /* jshint +W086 */
 
+                //  IE's XMLSerializer insists on putting a space before the
+                //  close of an 'empty' tag: <foo />. We don't want that and we
+                //  need to remain consistent between platforms, so we change
+                //  those here as well.
+                str = str.replace(/ \/>/g, '/>');
+
                 //  If the node was originally an HTML node, then we need to
                 //  make sure its return value is HTML
                 if (TP.isHTMLNode(node)) {
