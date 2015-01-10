@@ -231,6 +231,18 @@ function() {
 
     testDataLoc = '~lib_tst/src/tibet/tagprocessor/testmarkup.xml';
 
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unregister the URI to avoid a memory leak (this will also
+            //  unregister the 'sub URIs' that we create here).
+            TP.uc(testDataLoc).unregister();
+        });
+
+    //  ---
+
     this.it('\'all nodes\' - no mutation', function(test, options) {
 
         var loadURI;
@@ -378,12 +390,18 @@ function() {
 TP.core.TagProcessor.Inst.describe('TP.core.TagProcessor Inst core functionality suite',
 function() {
 
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
     //  ---
 
     this.before(
         function() {
             this.getDriver().showTestGUI();
         });
+
+    //  ---
 
     this.after(
         function() {
@@ -431,6 +449,12 @@ function() {
                     TP.byId('image4'),
                     'src',
                     TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
@@ -460,6 +484,12 @@ function() {
                     TP.core.Color.fromString(
                         tpElem.getComputedStyleProperty('backgroundColor')),
                     TP.core.Color.fromString('blue'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 });
@@ -470,6 +500,12 @@ function() {
 
 TP.xi.Element.Type.describe('TP.xi.Element Type processing',
 function() {
+
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
+    //  ---
 
     this.it('whole file inclusion', function(test, options) {
 
@@ -546,6 +582,12 @@ function() {
                 //  This comes from the second XInclude with a more complex
                 //  XPointer expression.
                 test.assert.isElement(TP.byId('partialParagraph'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

@@ -99,7 +99,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barButton.TP.sig.DOMClick');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -175,7 +179,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#testDiv.TP.sig.DOMContentLoaded');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -262,7 +270,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_F2_Up');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -355,7 +367,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazDiv.TP.sig.DOMClick');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -441,7 +457,11 @@ function() {
                             'ANY.TP.sig.DOMClick');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -563,7 +583,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazField.TP.sig.DOMKeyPress');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -683,7 +707,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Z_Up');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -764,7 +792,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -882,7 +914,11 @@ function() {
                             'urn:tibet:empObject#tibet(person.SSN).TP.sig.ValueChange');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {

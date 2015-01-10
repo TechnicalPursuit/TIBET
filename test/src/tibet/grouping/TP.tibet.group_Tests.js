@@ -15,6 +15,10 @@
 TP.tibet.group.Inst.describe('TP.tibet.group: registration',
 function() {
 
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
     //  ---
 
     this.it('Explicit simple query with body context', function(test, options) {
@@ -54,6 +58,12 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('bar'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -95,6 +105,12 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('foo', 'bar', 'baz'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -155,6 +171,12 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('goo'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -225,6 +247,11 @@ function() {
                         groupMembers,
                         TP.ac('maz', 'moofy', 'moogy'));
 
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -280,6 +307,12 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('gar', 'gaz'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -312,6 +345,12 @@ function() {
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('gooGroup', 'fooGroup'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -350,6 +389,12 @@ function() {
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('mooGroup'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -388,6 +433,12 @@ function() {
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('mooGroup', 'nooGroup'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -456,6 +507,12 @@ function() {
                         TP.ac('booGroup', 'fooGroup'));
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'mooGroup');
                 test.assert.isNull(tpElem.getNextGroupName());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -523,6 +580,12 @@ function() {
                         TP.ac('booGroup', 'fooGroup'));
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'mooGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'gooGroup');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -563,6 +626,12 @@ function() {
                                 tpElem.getGroupChainNames(),
                                 TP.ac('fooGroup'));
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

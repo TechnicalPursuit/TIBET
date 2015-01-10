@@ -114,6 +114,9 @@ function() {
         //  Unload the current page by setting it to the blank
         test.getDriver().setLocation(unloadURI);
 
+        //  Unregister the URI to avoid a memory leak
+        loadURI.unregister();
+
         test.then(
             function() {
                 var interestMapKeys;
@@ -180,6 +183,9 @@ function() {
 
         //  Unload the current page by setting it to the blank
         test.getDriver().setLocation(unloadURI);
+
+        //  Unregister the URI to avoid a memory leak
+        loadURI.unregister();
 
         test.then(
             function() {
