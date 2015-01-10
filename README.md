@@ -9,8 +9,20 @@ modern JavaScript modules with a powerful set of interactive development tools.
 
 TIBET relies on Node.js and npm for command line tooling and to integrate some
 of today's best JavaScript modules. To install TIBET properly first make sure
-you have Node.js version 0.10 or greater from <a href="http://nodejs.org"
+you have Node.js version 0.10 or greater.
+
+To install Node.js follow the instructions at <a href="http://nodejs.org"
    target="_blank">nodejs.org</a>.
+
+### Install PhantomJS (optional)
+
+A few commands in the TIBET CLI rely on PhantomJS to operate properly (test,
+tsh, reflect). <em>You can skip this step for now if you like</em>, those
+commands will simply prompt you to install PhantomJS if you run them
+without PhantomJS installed.
+
+To install PhantomJS follow the instructions at <a
+target="_blank" href="http://phantomjs.org">http://phantomjs.org</a>.
 
 ### Installing TIBET via npm
 
@@ -26,7 +38,7 @@ Jump to the <a href="#nextsteps">Next Steps</a> section for how to proceed.
 
 ### Installing TIBET via Git
 
-##### Uninstall an npm-installed version of TIBET
+##### Uninstall any npm-installed version of TIBET
 
 If you have already installed TIBET via npm you need to first remove that
 installation to avoid conflicts with your Git-based installation:
@@ -59,17 +71,27 @@ package dependencies:
     npm install .
 </pre>
 
-##### Link TIBET's CLI globally
+##### Link TIBET via npm
 
-With your fork initialized you'll need to link the repository so that the
-`tibet` command will function properly:
+With your fork initialized you'll need to link the repository via `npm link` so
+that the `tibet` command will function properly:
 
 <pre>
     npm link .
 </pre>
 <br/>
-Congratulations, you should now be able to use the `tibet` command while working
-with your own fork of TIBET.
+You should now be able to use the `tibet` command which is necessary for the
+next step in our process.
+
+##### Build TIBET
+
+At this point you have downloaded the TIBET source code via Git as well as
+all the NPM modules listed in the TIBET repository's package.json file. Now it's
+time to assemble a working set of those dependencies so TIBET can use them.
+
+<pre>
+    tibet build_all
+</pre>
 
 # Next Steps
 
