@@ -587,7 +587,10 @@ function(anInstance) {
      * @returns {TP.core.URI} The receiver.
      */
 
-    var dict;
+    var dict,
+
+        subURIs,
+        i;
 
     if (!TP.canInvoke(anInstance, 'getID')) {
         return this.raise('TP.sig.InvalidURI');
@@ -596,6 +599,14 @@ function(anInstance) {
     //  update our instance registry by removing the instance, finding it's key
     //  under the fully-expanded URI ID.
     dict = this.$get('instances');
+
+    //  If the URI has sub URIs we need to remove them too.
+    if (TP.notEmpty(subURIs = anInstance.getSubURIs())) {
+        for (i = 0; i < subURIs.getSize(); i++) {
+            this.removeInstance(subURIs.at(i));
+        }
+    }
+
     dict.removeKey(anInstance.getLocation());
 
     return this;
@@ -2319,8 +2330,6 @@ function(aTypeName) {
 
         controller = controllerType.construct();
         this.set('controller', controller);
-
-        controller.set('uri', this);
     }
 
     return controller;
@@ -3894,6 +3903,22 @@ function(aDataSource, aRequest) {
     //  If the routine was invoked synchronously then the data will have
     //  been placed in the subrequest.
     return subrequest.get('result');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('unregister',
+function() {
+
+    /**
+     * @name unregister
+     * @synopsis Unregisters the receiver from the overall TP.core.URI registry.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    TP.core.URI.removeInstance(this);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

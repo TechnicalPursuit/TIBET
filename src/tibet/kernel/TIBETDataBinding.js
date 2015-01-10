@@ -893,7 +893,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName) {
 
     /**
-     * @name defineBinding
+     * @name destroyBinding
      * @synopsis Adds a binding to the supplied target object.
      * @param {Object} target The target object to define the binding on.
      * @param {String} targetAttributeName The target attribute name.
@@ -1262,6 +1262,7 @@ TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineAttribute('bindInfos');
 TP.core.ElementNode.Inst.defineAttribute('sugaredExprs');
 
 //  ------------------------------------------------------------------------
@@ -1760,8 +1761,9 @@ function(aSignalOrHash) {
                         this.getNativeNode(), '*:repeat', TP.w3.Xmlns.BIND);
 
     if (TP.notEmpty(repeatAttrs)) {
+
         //  It's a repeat - rebuild it's dependencies and return.
-        this.rebuildRepeat();
+        this.rebuildRepeat(aSignalOrHash);
 
         return this;
     }
@@ -1984,16 +1986,35 @@ function(aSignalOrHash) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('rebuildRepeat',
-function() {
+function(aSignalOrHash) {
 
     /**
      * @name rebuildRepeat
      * @synopsis Rebuilds any bindings for the receiver's descendant content
      *     that is bound.
+     * @param {TP.sig.DOMRebuild|TP.lang.Hash} aSignalOrHash An optional signal
+     *     which triggered this action or hash supplied by the caller. This
+     *     object should include the following keys:
+     *          'deep'          ->      a value of true causes all descendant
+     *                                  nodes to rebuild their bindings. If this
+     *                                  value isn't supplied, this method
+     *                                  defaults this setting to true.
+     *          'shouldDefine'  ->      a value of true causes this method to
+     *                                  define bindings when rebuilding them. If
+     *                                  this value isn't supplied, this method
+     *                                  defaults this setting to true.
+     *          'shouldDestroy' ->      a value of true causes this method to
+     *                                  destroy bindings when rebuilding them.
+     *                                  If this value isn't supplied, this
+     *                                  method defaults this setting to true.
      * @returns {TP.core.ElementNode} The receiver.
      */
 
-    var childrenFragment,
+    var info,
+        shouldDefine,
+        shouldDestroy,
+
+        childrenFragment,
 
         repeatAttrs,
 
@@ -2005,65 +2026,101 @@ function() {
         obsURI,
         oldObsURI;
 
-    //  If there is no children content already captured, then capture it.
-    if (TP.notValid(childrenFragment = this.get('repeatContent'))) {
+    info = TP.isValid(aSignalOrHash) ? aSignalOrHash : TP.hc();
 
-        //  Grab the childNodes of the receiver as a DocumentFragment. NOTE:
-        //  This *removes* these child nodes from the receiver.
-        childrenFragment = TP.nodeListAsFragment(
-                                this.getNativeNode().childNodes);
+    shouldDefine = info.atIfInvalid('shouldDefine', true);
+    shouldDestroy = info.atIfInvalid('shouldDestroy', true);
 
-        //  Make sure to define the attribute or TIBET will warn ;-).
-        this.defineAttribute('repeatContent');
+    oldObsURI = this.getAttribute('oldObsURI');
 
-        //  Store our repeat content away for use later.
-        this.set('repeatContent', childrenFragment);
+    if (shouldDestroy) {
+        var i,
+            elem,
+            elemChildElements,
+            childTPElem;
+
+        elem = this.getNativeNode();
+
+        //  Grab the child *Elements* under the receiver - there might already
+        //  be some drawn by a previous refresh of this element.
+        elemChildElements = TP.nodeGetChildElements(elem);
+
+        for (i = 0; i < elemChildElements.getSize(); i++) {
+            childTPElem = TP.wrap(elemChildElements.at(i));
+
+            //  Obviously, only destroy the binding if the child is a bound
+            //  element.
+            if (childTPElem.isBoundElement()) {
+                childTPElem.rebuild(
+                        TP.hc('shouldDefine', false, 'shouldDestroy', true));
+            }
+        }
+
+        //  Destroy the binding for the overall repeatValue
+        if (TP.notEmpty(oldObsURI)) {
+            this.destroyBinding('repeatValue', TP.uc(oldObsURI), 'value');
+        }
     }
 
-    repeatAttrs = TP.elementGetAttributeNodesInNS(
-                        this.getNativeNode(), '*:repeat', TP.w3.Xmlns.BIND);
+    if (shouldDefine) {
 
-    //  Obtain the binding scope values by walking the DOM tree.
-    scopeVals = this.getBindingScopeValues();
+        //  If there is no children content already captured, then capture it.
+        if (TP.notValid(childrenFragment = this.get('repeatContent'))) {
 
-    //  Start with the value of our 'bind:repeat' attribute, concatenate that
-    //  onto the Array of scope values and expand them. This should produce a
-    //  valid URI that represents the collection of data that we, as a repeat,
-    //  represent.
-    repeatVal = repeatAttrs[0].value;
-    allVals = scopeVals.concat(repeatVal);
-    fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
+            //  Grab the childNodes of the receiver as a DocumentFragment.
+            //  NOTE: This *removes* these child nodes from the receiver.
+            childrenFragment = TP.nodeListAsFragment(
+                                    this.getNativeNode().childNodes);
 
-    //  Create a URI from that fully expanded value.
-    obsURI = TP.uc(fullyExpandedVal);
+            //  Make sure to define the attribute or TIBET will warn ;-).
+            this.defineAttribute('repeatContent');
 
-    //  If we weren't able to compute a real URI from the fully expanded URI
-    //  value, then raise an exception and return here.
-    if (!TP.isURI(fullyExpandedVal)) {
-        this.raise('TP.sig.InvalidURI');
+            //  Store our repeat content away for use later.
+            this.set('repeatContent', childrenFragment);
+        }
 
-        return this;
-    }
+        repeatAttrs = TP.elementGetAttributeNodesInNS(
+                            this.getNativeNode(), '*:repeat', TP.w3.Xmlns.BIND);
 
-    if (TP.notEmpty(oldObsURI = this.getAttribute('oldObsURI'))) {
-        this.destroyBinding('repeatValue', TP.uc(oldObsURI), 'value');
-    }
+        //  Obtain the binding scope values by walking the DOM tree.
+        scopeVals = this.getBindingScopeValues();
 
-    //  Now, define a binding that binds that URI's 'value' to our 'repeatValue'
-    //  aspect. When that collection changes, we will get notified by the
-    //  binding machinery calling 'set("repeatValue", ...)' on us, thereby
-    //  invoking our 'setRepeatValue()' method below.
-    this.defineBinding('repeatValue', obsURI, 'value');
+        //  Start with the value of our 'bind:repeat' attribute, concatenate
+        //  that onto the Array of scope values and expand them. This should
+        //  produce a valid URI that represents the collection of data that we,
+        //  as a repeat, represent.
+        repeatVal = repeatAttrs[0].value;
+        allVals = scopeVals.concat(repeatVal);
+        fullyExpandedVal = TP.uriJoinFragments.apply(TP, allVals);
 
-    this.setAttribute('oldObsURI', obsURI.asString());
+        //  Create a URI from that fully expanded value.
+        obsURI = TP.uc(fullyExpandedVal);
 
-    //  If we have real resource data and either had an old URI or we're not a
-    //  primary URI, then we won't have gotten notified from the main URI since
-    //  it didn't change, but we did, so we need to manually call refresh.
-    if (TP.notEmpty(obsURI.getResource()) &&
-        (TP.notEmpty(oldObsURI) || !obsURI.isPrimaryURI())) {
+        //  If we weren't able to compute a real URI from the fully expanded URI
+        //  value, then raise an exception and return here.
+        if (!TP.isURI(fullyExpandedVal)) {
+            this.raise('TP.sig.InvalidURI');
 
-        this.refreshRepeat(obsURI.getResource());
+            return this;
+        }
+
+        //  Now, define a binding that binds that URI's 'value' to our
+        //  'repeatValue' aspect. When that collection changes, we will get
+        //  notified by the binding machinery calling 'set("repeatValue", ...)'
+        //  on us, thereby invoking our 'setRepeatValue()' method below.
+        this.defineBinding('repeatValue', obsURI, 'value');
+
+        this.setAttribute('oldObsURI', obsURI.asString());
+
+        //  If we have real resource data and either had an old URI or we're not
+        //  a primary URI, then we won't have gotten notified from the main URI
+        //  since it didn't change, but we did, so we need to manually call
+        //  refresh.
+        if (TP.notEmpty(obsURI.getResource()) &&
+            (TP.notEmpty(oldObsURI) || !obsURI.isPrimaryURI())) {
+
+            this.refreshRepeat(obsURI.getResource());
+        }
     }
 
     return this;
@@ -2216,6 +2273,11 @@ function(aResource) {
                     scopeNum++;
                 }
 
+                //  Have the child destroy it's current bindings (before we
+                //  change its scope).
+                childTPElem.rebuild(
+                        TP.hc('shouldDefine', false, 'shouldDestroy', true));
+
                 //  Have to adjust for the fact that XPaths are 1-based.
                 if (isXMLResource) {
                     childTPElem.setAttribute(
@@ -2225,8 +2287,13 @@ function(aResource) {
                                     'bind:scope', '[' + scopeNum + ']');
                 }
 
-                //  Have the child rebuild it's bindings.
-                childTPElem.rebuild();
+                //  Have the child define it's bindings now that its scope has
+                //  been changed.
+                childTPElem.rebuild(
+                        TP.hc('shouldDefine', true, 'shouldDestroy', false));
+
+                //  Bubble any xmlns attributes upward to avoid markup clutter.
+                TP.elementBubbleXMLNSAttributes(elemChildElements.at(i));
 
                 boundCount++;
             }
@@ -2332,8 +2399,12 @@ function(aResource) {
     //  Finally, append the whole fragment under the receiver element
     TP.nodeAppendChild(elem, bodyFragment, false);
 
-    //  TODO: This is a hack - needs cleanup
+    //  Bubble any xmlns attributes upward to avoid markup clutter.
+    TP.elementBubbleXMLNSAttributes(elem);
 
+    //  TODO: This is a hack - needs cleanup - and this approach leaks.
+
+/*
     this.getNativeNode().ondblclick = function(evt) {
         var tnContainer,
             textNode,
@@ -2363,6 +2434,7 @@ function(aResource) {
             TP.uc(updatePath).setResource(newText);
         };
     };
+*/
 
     return this;
 });

@@ -1198,6 +1198,9 @@ function(options) {
         this.$set('mslimit', options.at('suite_timeout'));
     }
 
+    this.$set('$internalPromise', null);
+    this.$set('$currentPromise', null);
+
     return this;
 });
 
@@ -2100,6 +2103,9 @@ function(options) {
 
     this.$set('msstart', null);
     this.$set('msend', null);
+
+    this.$set('$internalPromise', null);
+    this.$set('$currentPromise', null);
 
     asserter = this.getSuite().get('asserter');
     asserter.$set('currentTestCase', this);

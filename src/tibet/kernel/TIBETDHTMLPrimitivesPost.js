@@ -8120,8 +8120,10 @@ function(aWindow) {
      * @raises TP.sig.InvalidWindow
      */
 
-    var winLoadFuncs,
+    var allElems,
         i,
+
+        winLoadFuncs,
         len;
 
     TP.stop('break.document_loaded');
@@ -8139,6 +8141,17 @@ function(aWindow) {
 
     //  instrument it so we're sure it has some basic TIBET features
     TP.core.Window.instrument(aWindow);
+
+    //  Go to every element in the document and try to bubble its namespaces
+    if (TP.notEmpty(allElems = aWindow.document.getElementsByTagName('*'))) {
+        for (i = 0; i < allElems.length; i++) {
+            TP.elementBubbleXMLNSAttributes(allElems[i]);
+        }
+    }
+
+    //  Add common namespaces to the document element to further reduce
+    //  namespace clutter.
+    TP.w3.Xmlns.addCommonNamespacesTo(aWindow.document.documentElement);
 
     //  update ACL content if possible so that subsequent CSS processing and
     //  awakening can work with an awareness of the ACL context
@@ -8307,6 +8320,11 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
 
                         return false;
                     });
+
+    //  Clear any event data to avoid memory leaks for events that are holding
+    //  onto DOM structures that might have been present in this window.
+    TP.core.Keyboard.resetEventData();
+    TP.core.Mouse.resetEventData();
 
     //  clear the 'backhack' slots from the window info. This means that if
     //  we load new content into the same window, these will be starting

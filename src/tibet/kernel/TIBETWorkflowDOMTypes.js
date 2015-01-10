@@ -737,12 +737,12 @@ TP.core.TagProcessor.Type.defineConstant(
 TP.core.TagProcessor.Type.defineConstant(
     'DETACH_PHASES',
     TP.ac(
-    'TP.core.DetachDOMPhase',
-    'TP.core.DetachEventsPhase',
+    'TP.core.DetachStylePhase',
     'TP.core.DetachDataPhase',
-    'TP.core.DetachInfoPhase',
     'TP.core.DetachBindsPhase',
-    'TP.core.DetachStylePhase'
+    'TP.core.DetachInfoPhase',
+    'TP.core.DetachEventsPhase',
+    'TP.core.DetachDOMPhase'
     ));
 
 //  A set of phase types used when 'compiling' or transforming content from one

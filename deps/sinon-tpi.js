@@ -1,5 +1,5 @@
 /**
- * Sinon.JS 1.10.3, 2014/08/28
+ * Sinon.JS 1.10.3, 2014/12/31
  *
  * @author Christian Johansen (christian@cjohansen.no)
  * @author Contributors: https://github.com/cjohansen/Sinon.JS/blob/master/AUTHORS
@@ -388,11 +388,22 @@ define.amd = {};
             return matcher === object;
         }
 
+        if (typeof(matcher) === "undefined") {
+            return typeof(object) === "undefined";
+        }
+
+        if (matcher === null) {
+            return object === null;
+        }
+
         if (getClass(object) === "Array" && getClass(matcher) === "Array") {
             return arrayContains(object, matcher);
         }
 
         if (matcher && typeof matcher === "object") {
+            if (matcher === object) {
+                return true;
+            }
             var prop;
             for (prop in matcher) {
                 var value = object[prop];
@@ -400,7 +411,11 @@ define.amd = {};
                         typeof object.getAttribute === "function") {
                     value = object.getAttribute(prop);
                 }
-                if (typeof value === "undefined" || !match(value, matcher[prop])) {
+                if (matcher[prop] === null || typeof matcher[prop] === 'undefined') {
+                    if (value !== matcher[prop]) {
+                        return false;
+                    }
+                } else if (typeof  value === "undefined" || !match(value, matcher[prop])) {
                     return false;
                 }
             }
@@ -487,6 +502,7 @@ define.amd = {};
 
     function ascii(f, object, processed, indent) {
         if (typeof object === "string") {
+            if (object.length === 0) { return "(empty string)"; }
             var qs = f.quoteStrings;
             var quote = typeof qs !== "boolean" || qs;
             return processed || quote ? '"' + object + '"' : object;
@@ -598,7 +614,8 @@ define.amd = {};
         }
 
         var formatted = "<" + tagName + (pairs.length > 0 ? " " : "");
-        var content = element.innerHTML;
+        // SVG elements have undefined innerHTML
+        var content = element.innerHTML || '';
 
         if (content.length > 20) {
             content = content.substr(0, 20) + "[...]";

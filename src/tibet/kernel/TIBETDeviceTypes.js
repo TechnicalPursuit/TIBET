@@ -599,6 +599,31 @@ function(aSignal, aHandler) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Keyboard.Type.defineMethod('resetEventData',
+function() {
+
+    /**
+     * @name resetEventData
+     * @synopsis Resets any event data cached by the receiver. It is important
+     *     to call this when the GUI is flushed between page refreshes to avoid
+     *     having obsolete references to old DOM structures.
+     */
+
+    this.set('lastDown', null);
+    this.set('lastPress', null);
+    this.set('lastUp', null);
+
+    this.get('keyup').setEvent(null);
+    this.get('keydown').setEvent(null);
+    this.get('keypress').setEvent(null);
+
+    this.get('modifierkeychange').setEvent(null);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Keyboard.Type.defineMethod('getShortcutData',
 function(aSignal, shouldBuild) {
 
@@ -839,27 +864,37 @@ function(singletonName, normalizedEvent, aSignal) {
         return;
     }
 
-    if (TP.isElement(targetElem =
-                        TP.eventGetResolvedTarget(normalizedEvent))) {
-        fname = 'handlePeer' + TP.escapeTypeName(
-                                TP.DOM_SIGNAL_TYPE_MAP.at(
-                                        TP.eventGetType(normalizedEvent)));
+    //  Sometimes this method is invoked for a synthetic event (like updating
+    //  the modifier keys or a TIBET drag event). The normalized event object
+    //  will have the real platform event in it (i.e. keydown) which should
+    //  *not* be dispatched to the handlePeer* call in the case of a synthetic
+    //  event.
+    //  Therefore, we check here to make sure that the singleton name matches
+    //  the real event name before calling handlePeer*
+    if (singletonName === TP.eventGetType(normalizedEvent)) {
 
-        elemType = TP.wrap(targetElem).getType();
+        if (TP.isElement(targetElem =
+                            TP.eventGetResolvedTarget(normalizedEvent))) {
+            fname = 'handlePeer' + TP.escapeTypeName(
+                                    TP.DOM_SIGNAL_TYPE_MAP.at(
+                                            TP.eventGetType(normalizedEvent)));
 
-        //  Message the type for the element that is 'responsible' for
-        //  this event. It's native control sent this event and we need
-        //  to let the type know about it.
-        if (TP.canInvoke(elemType, fname)) {
-            elemType[fname](targetElem, normalizedEvent);
-        }
+            elemType = TP.wrap(targetElem).getType();
 
-        //  If the native event was prevented, then we should just bail out
-        //  here.
-        //  NB: 'defaultPrevented' is a DOM Level 3 property, which seems to
-        //  be well supported on TIBET's target browser environments.
-        if (normalizedEvent.defaultPrevented === true) {
-            return;
+            //  Message the type for the element that is 'responsible' for
+            //  this event. It's native control sent this event and we need
+            //  to let the type know about it.
+            if (TP.canInvoke(elemType, fname)) {
+                elemType[fname](targetElem, normalizedEvent);
+            }
+
+            //  If the native event was prevented, then we should just bail out
+            //  here.
+            //  NB: 'defaultPrevented' is a DOM Level 3 property, which seems to
+            //  be well supported on TIBET's target browser environments.
+            if (normalizedEvent.defaultPrevented === true) {
+                return;
+            }
         }
     }
 
@@ -2011,9 +2046,7 @@ function(normalizedEvent) {
             //  press event notification so the timeout coordinates with
             //  press properly.
             lastDown = TP.core.Keyboard.get('lastDown');
-            if (TP.notValid(lastDown)) {
-                //  shouldn't happen, lastDown is set in root handler
-                //  function before it invokes this routine
+            if (!TP.isEvent(lastDown)) {
                 return;
             }
 
@@ -2255,7 +2288,7 @@ TP.core.Mouse.Type.defineAttribute(
 
             //  make sure we've got a last move to work from
             lastMove = TP.core.Mouse.$get('lastMove');
-            if (lastMove === null) {
+            if (!TP.isEvent(lastMove)) {
                 return;
             }
 
@@ -2276,7 +2309,9 @@ TP.core.Mouse.Type.defineAttribute(
             //  we use the 'lastOver' to obtain the repeat value, if it has
             //  one. We don't want to pick up repeat values from every
             //  element we go over, in case we're in drag mode.
-            lastOver = TP.core.Mouse.$get('lastOver');
+            if (!TP.isEvent(lastOver = TP.core.Mouse.$get('lastOver'))) {
+                return;
+            }
 
             hoverRepeat = TP.sys.cfg('mouse.hover_repeat');
 
@@ -2309,7 +2344,7 @@ TP.core.Mouse.Type.defineAttribute(
                         //  If there was no 'last move' native event that we can
                         //  leverage, then we can't do much so we exit here and
                         //  don't reschedule the timer.
-                        if (priorMove === null) {
+                        if (!TP.isEvent(priorMove)) {
                             return;
                         }
 
@@ -2471,6 +2506,58 @@ function() {
 
     this.$set('draghover',
             TP.sys.require('TP.sig.DOMDragHover').construct(null, true));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Mouse.Type.defineMethod('resetEventData',
+function() {
+
+    /**
+     * @name resetEventData
+     * @synopsis Resets any event data cached by the receiver. It is important
+     *     to call this when the GUI is flushed between page refreshes to avoid
+     *     having obsolete references to old DOM structures.
+     */
+
+    this.set('lastDown', null);
+    this.set('lastMove', null);
+    this.set('lastUp', null);
+
+    this.set('lastOver', null);
+    this.set('lastOut', null);
+
+    this.set('lastClick', null);
+    this.set('lastDblClick', null);
+
+    this.set('lastContextMenu', null);
+    this.set('lastMouseWheel', null);
+
+    this.get('mousedown').setEvent(null);
+    this.get('mousemove').setEvent(null);
+    this.get('mouseup').setEvent(null);
+
+    this.get('mouseover').setEvent(null);
+    this.get('mouseout').setEvent(null);
+
+    this.get('click').setEvent(null);
+    this.get('dblclick').setEvent(null);
+    this.get('contextmenu').setEvent(null);
+
+    this.get('mousewheel').setEvent(null);
+
+    this.get('mousehover').setEvent(null);
+
+    this.get('dragdown').setEvent(null);
+    this.get('dragmove').setEvent(null);
+    this.get('dragup').setEvent(null);
+
+    this.get('dragover').setEvent(null);
+    this.get('dragout').setEvent(null);
+
+    this.get('draghover').setEvent(null);
 
     return;
 });
@@ -2671,7 +2758,7 @@ function(normalizedEvent) {
 
     //  if we can't compute a distance from the last mousedown then we
     //  assume this is a valid click event
-    if (TP.notValid(lastDown)) {
+    if (!TP.isEvent(lastDown)) {
         this.invokeObservers('click', normalizedEvent);
 
         return;
@@ -2939,11 +3026,12 @@ function(normalizedEvent) {
             //  correct targeting is performed and so that the proper kind
             //  of signal type, etc. is selected. We can do this by copying
             //  the 'last down' event and setting its 'event type'.
-            dragDownEvent = this.get('lastDown').copy();
-            TP.eventSetType(dragDownEvent, 'dragdown');
-
-            this.invokeObservers('dragdown', dragDownEvent);
-            this.$set('$sentDragDown', true);
+            if (TP.isEvent(dragDownEvent = this.get('lastDown'))) {
+                dragDownEvent = dragDownEvent.copy();
+                TP.eventSetType(dragDownEvent, 'dragdown');
+                this.invokeObservers('dragdown', dragDownEvent);
+                this.$set('$sentDragDown', true);
+            }
         }
 
         TP.eventSetType(normalizedEvent, 'dragmove');
@@ -3146,7 +3234,10 @@ function(normalizedEvent) {
     if (this.$get('leftDown') ||
         this.$get('rightDown') ||
         this.$get('middleDown')) {
-        lastDown = this.get('lastDown');
+        if (!TP.isEvent(lastDown = this.get('lastDown'))) {
+            return false;
+        }
+
         distance = TP.computeDistance(lastDown, normalizedEvent);
 
         //  Initially, set the drag pixel distance to the value from the

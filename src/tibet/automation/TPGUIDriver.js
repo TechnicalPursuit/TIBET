@@ -467,6 +467,7 @@ function(aURI, aWindow) {
                                 //  it - but the TP.ONLOAD property on the
                                 //  request expects a Function object, therefore
                                 //  we have to wrap it.
+
                                 onloadFunc =
                                     function() {
                                         resolver.fork(100);
@@ -1326,6 +1327,9 @@ function() {
                         //  If the count equals the number of entries, then
                         //  we're done here and we can resolve the Promise.
                         if (count === sequenceEntries.getSize()) {
+
+                            sequenceEntries = null;
+
                             return resolver();
                         }
 
@@ -1345,6 +1349,9 @@ function() {
                             //  the error callback and exit.
                             if (!TP.isElement(
                                 currentElement = driver.getFocusedElement())) {
+
+                                sequenceEntries = null;
+
                                 return rejector(
                                     'No current Element for the GUI Driver.');
                             }

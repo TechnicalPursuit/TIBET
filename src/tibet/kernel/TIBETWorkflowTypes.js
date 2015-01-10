@@ -318,9 +318,6 @@ function(anID) {
 //  strictly required except for signal-based invocation
 TP.core.Resource.Inst.defineAttribute('registered', false);
 
-//  the resource's current request list
-TP.core.Resource.Inst.defineAttribute('requests');
-
 //  these default to the values installed on the type, but can be altered
 //  at the instance level
 TP.core.Resource.Inst.defineAttribute('triggerOrigins');
@@ -357,9 +354,6 @@ function(resourceID) {
     //  our public name is our resource ID
     this.setID(resourceID);
 
-    //  get our request hash set up
-    this.$set('requests', TP.hc());
-
     //  try to locate a matching vcard
 
     return this;
@@ -378,35 +372,12 @@ function(aRequest) {
      * @returns {TP.core.Resource} The receiver.
      */
 
-    //  keep track of the fact that we're working on this request
-    this.addRequest(aRequest);
-
     //  make sure the request can get back to us as the resource which
     //  responded to the request
     aRequest.set('responder', this);
 
     //  set the request's status code so we keep observers informed
     aRequest.isActive(true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Resource.Inst.defineMethod('addRequest',
-function(aRequest) {
-
-    /**
-     * @name addRequest
-     * @synopsis Adds the request to the resource's request list for the
-     *     duration of processing. If the receiver isn't 'idle' this method will
-     *     fail.
-     * @param {TP.sig.Request} aRequest The request to process.
-     * @raises TP.sig.InvalidRequest
-     * @returns {TP.core.Resource} The receiver.
-     */
-
-    this.get('requests').atPut(aRequest.getRequestID(), aRequest);
 
     return this;
 });
@@ -955,31 +926,6 @@ function() {
 
     //  update our internal registration flag
     this.isRegistered(true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Resource.Inst.defineMethod('removeRequest',
-function(aRequest) {
-
-    /**
-     * @name removeRequest
-     * @synopsis Removes the request from the resource's list of currently
-     *     active requests.
-     * @param {TP.sig.Request} aRequest
-     * @raises TP.sig.InvalidRequest
-     * @returns {TP.core.Resource} The receiver.
-     */
-
-    //  make sure it can respond properly
-    if (!TP.canInvoke(aRequest, 'getRequestID')) {
-        return this.raise('TP.sig.InvalidRequest');
-    }
-
-    //  remove the request using its ID
-    this.get('requests').removeKey(aRequest.getRequestID());
 
     return this;
 });
@@ -6411,9 +6357,6 @@ TP.core.Controller.defineSubtype('URIController');
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
-
-//  the URI associated with the controller
-TP.core.URIController.Inst.defineAttribute('uri');
 
 //  the window this URI's contents are currently displayed in. This may shift
 //  as the responder chain gets recomputed throughout the course of the

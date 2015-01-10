@@ -98,18 +98,24 @@ function(anID, regOnly, nodeContext) {
         return inst;
     }
 
-    //  If a TIBET URN can be made from the ID and it has a real resource
-    //  object, then return that.
+    //  If the ID starts with a TIBET URN scheme and it has a real resource
+    //  object, then return that. Note here how we use 'getInstanceById' on the
+    //  TP.core.URI type rather than 'TP.uc()' - that call will always create an
+    //  instance *and register it* if it doesn't exist.
     if (TP.regex.TIBET_URN.test(id)) {
-        if (TP.isValid(inst = TP.uc(id).getResource())) {
-            return inst;
+        if (TP.isURI(url = TP.core.URI.getInstanceById(id))) {
+            if (TP.isValid(inst = url.getResource())) {
+                return inst;
+            }
         }
     }
 
     //  Try to make a TIBET URN from the ID and, if it has a real resource
-    //  object, then return that.
-    if (TP.regex.TIBET_URN.test(TP.TIBET_URN_PREFIX + id)) {
-        if (TP.isValid(inst = TP.uc(TP.TIBET_URN_PREFIX + id).getResource())) {
+    //  object, then return that. Note here how we use 'getInstanceById' on the
+    //  TP.core.URI type rather than 'TP.uc()' - that call will always create an
+    //  instance *and register it* if it doesn't exist.
+    if (TP.isURI(url = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id))) {
+        if (TP.isValid(inst = url.getResource())) {
             return inst;
         }
     }
@@ -171,7 +177,7 @@ function(anID, regOnly, nodeContext) {
             //  not to re-invoke getObjectById without at least altering the
             //  actual ID being requested or we'll recurse
             inst = url.getResource(TP.hc('async', false,
-                                        'resultType', TP.WRAP));
+                                            'resultType', TP.WRAP));
 
             if (TP.isNode(inst)) {
                 //  try to force types to come in for creation

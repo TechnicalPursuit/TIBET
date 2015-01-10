@@ -23,11 +23,6 @@
                 constructed.
 */
 
-/* JSHint checking */
-
-/* global $focus_stack:true
-*/
-
 //  ------------------------------------------------------------------------
 //  DOCUMENT PRIMITIVES
 //  ------------------------------------------------------------------------
@@ -648,9 +643,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         oldScript,
         newScript,
 
-        onloadTimer,
-
-        allElems;
+        onloadTimer;
 
     if (!TP.isXMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -691,30 +684,16 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     TP.core.Window.$$isDocumentWriting = true;
 
     //  If we have a window, then create and dispatch an 'unload' event.
-    //  Note how this is dispatched from the 'defaultView' (i.e. the window)
-    //  as per standard browser behavior.
+    //  Note how this is dispatched from the window's document, which is
+    //  required to make it work.
     if (hasWindow) {
 
-        //  Filter any elements that are in the document of the window we are
-        //  unloading out of the $focus_stack.
-        $focus_stack = $focus_stack.reject(
-                        function(aTPElem) {
-                            if (aTPElem.getNativeDocument() === aDocument) {
-                                return true;
-                            }
-
-                            return false;
-                        });
-
-        newEvent = aDocument.createEvent('HTMLEvents');
+        newEvent = aDocument.createEvent('Event');
         newEvent.initEvent('unload', true, true);
-        aDocument.defaultView.dispatchEvent(newEvent);
+        aDocument.dispatchEvent(newEvent);
     }
 
     docElem = aDocument.documentElement;
-
-    //  Clear out the document's existing content.
-    TP.nodeEmptyContent(aDocument);
 
     //  Manually invoke the mutation removal event machinery. This won't happen
     //  automatically, since by emptying the content of the document above, we
@@ -727,6 +706,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                     removedNodes: TP.ac(docElem)
                 });
     }
+
+    //  Clear out the document's existing content.
+    TP.nodeEmptyContent(aDocument);
 
     //  Append the new child in
     TP.nodeAppendChild(aDocument, nodeContent, awakenContent);
@@ -749,7 +731,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                     //  'DOMContentLoaded' event from the document as per
                     //  standard browser behavior..
 
-                    //  This will eventually signal TP.sig.DOMContentLoaded
+                    //  This will eventually signal TP.sig.DOMContentLoaded via
+                    //  the TP.$$processDocumentLoaded() call.
                     newEvent = aDocument.createEvent('HTMLEvents');
                     newEvent.initEvent('DOMContentLoaded', true, true);
                     aDocument.dispatchEvent(newEvent);
@@ -857,17 +840,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                                 false);
         }
     }
-
-    //  Go to every element in the document and try to bubble its namespaces
-    if (TP.notEmpty(allElems = aDocument.getElementsByTagName('*'))) {
-        for (i = 0; i < allElems.length; i++) {
-            TP.elementBubbleXMLNSAttributes(allElems[i]);
-        }
-    }
-
-    //  Add common namespaces to the document element to further reduce
-    //  namespace clutter.
-    TP.w3.Xmlns.addCommonNamespacesTo(aDocument.documentElement);
 
     //  If we didn't find at least one script element with a 'src', then
     //  manually invoke the 'all content is loaded' function.
