@@ -7038,10 +7038,6 @@ function(aDocument) {
                                 record.handled = true;
                             }
                         }
-
-                        //  Try to empty the observer's queue in a (maybe vain)
-                        //  attempt to get rid of extra mutation records.
-                        obs.takeRecords();
                     }.bind(this));
 
     observer.observe(
