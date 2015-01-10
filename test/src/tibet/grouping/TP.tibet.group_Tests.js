@@ -23,7 +23,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping1.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -69,7 +69,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping2.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -110,7 +110,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping3.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -170,7 +170,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping4.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -240,7 +240,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping5.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -295,7 +295,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping6.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -327,7 +327,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping7.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -365,7 +365,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping8.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -403,7 +403,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping9.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -470,7 +470,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping10.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -540,7 +540,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping11.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {

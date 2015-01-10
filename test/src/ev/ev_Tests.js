@@ -52,7 +52,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents1.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -130,7 +130,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents2.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -205,7 +205,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents3.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -295,7 +295,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents4.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -394,7 +394,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents5.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -472,7 +472,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents6.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -599,7 +599,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents7.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -716,7 +716,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents8.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -791,7 +791,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents9.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(

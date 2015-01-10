@@ -41,7 +41,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing1.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -199,7 +199,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing2.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -353,7 +353,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing3.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -576,7 +576,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing4.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -806,7 +806,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing5.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -1043,7 +1043,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing6.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -1374,7 +1374,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing7.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -1727,7 +1727,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing8.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -2083,7 +2083,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/Focusing9.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -2240,7 +2240,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/focusing/FocusingStack1.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(

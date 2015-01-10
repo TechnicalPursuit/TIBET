@@ -237,7 +237,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#nochange');
 
-        this.getDriver().fetchResource(loadURI, TP.DOM);
+        test.getDriver().fetchResource(loadURI, TP.DOM);
 
         test.then(
             function(result) {
@@ -271,7 +271,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#attrchange');
 
-        this.getDriver().fetchResource(loadURI, TP.DOM);
+        test.getDriver().fetchResource(loadURI, TP.DOM);
 
         test.then(
             function(result) {
@@ -296,7 +296,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#moreattrchange');
 
-        this.getDriver().fetchResource(loadURI, TP.DOM);
+        test.getDriver().fetchResource(loadURI, TP.DOM);
 
         test.then(
             function(result) {
@@ -323,7 +323,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#contentchange');
 
-        this.getDriver().fetchResource(loadURI, TP.DOM);
+        test.getDriver().fetchResource(loadURI, TP.DOM);
 
         test.then(
             function(result) {
@@ -349,7 +349,7 @@ function() {
 
         loadURI = TP.uc(testDataLoc + '#morecontentchange');
 
-        this.getDriver().fetchResource(loadURI, TP.DOM);
+        test.getDriver().fetchResource(loadURI, TP.DOM);
 
         test.then(
             function(result) {
@@ -398,7 +398,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XMLBaseTest1.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -440,7 +440,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL1.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -477,7 +477,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
 
-        this.getDriver().fetchResource(loadURI, TP.DOM);
+        test.getDriver().fetchResource(loadURI, TP.DOM);
 
         test.then(
             function(result) {
@@ -534,7 +534,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude2.xml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
