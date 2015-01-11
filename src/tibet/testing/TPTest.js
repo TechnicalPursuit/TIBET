@@ -1221,9 +1221,6 @@ function(options) {
         return TP.extern.Promise.resolve();
     }
 
-    //  Make sure to clear out any previous state.
-    this.reset(options);
-
     return this.runTestCases(options);
 });
 
@@ -1249,14 +1246,17 @@ function(options) {
         nextPromise,
         firstPromise;
 
-    //  Output a small 'suite header'
-    TP.sys.logTest('#', TP.DEBUG);
-    TP.sys.logTest('# ' + this.get('suiteOwner').getID() + '.describe(' + this.getSuiteName() + ')', TP.DEBUG);
-
-    params = TP.hc(options);
-
     //  Make sure to clear out any previous state.
     this.reset(options);
+
+    //  Output a small 'suite header'
+    TP.sys.logTest('#', TP.DEBUG);
+    TP.sys.logTest('# ' + this.get('suiteOwner').getID() +
+                            '.describe(' + this.getSuiteName() +
+                            ')',
+                    TP.DEBUG);
+
+    params = TP.hc(options);
 
     caselist = this.getCaseList(options);
 
