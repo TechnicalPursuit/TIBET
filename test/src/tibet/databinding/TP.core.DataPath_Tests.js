@@ -853,20 +853,21 @@ function() {
         path3,
         path4;
 
-    this.before(function() {
-        model1 = TP.json2js(
-            '[' +
-                '{"fname":"bill", "lname":"edney", "aliases":["billy", "willy", "eds"]},' +
-                '{"fname":"scott", "lname":"shattuck"},' +
-                '{"fname":"jim", "lname":"bowery"},' +
-                '{"fname":"another", "lname":"hacker"}' +
-            ']');
+    this.before(
+        function() {
+            model1 = TP.json2js(
+                '[' +
+                    '{"fname":"bill", "lname":"edney", "aliases":["billy", "willy", "eds"]},' +
+                    '{"fname":"scott", "lname":"shattuck"},' +
+                    '{"fname":"jim", "lname":"bowery"},' +
+                    '{"fname":"another", "lname":"hacker"}' +
+                ']');
 
-        path1 = TP.apc('0.fname');
-        path2 = TP.apc('[0,2].fname');
-        path3 = TP.apc('0.aliases[1:2]');
-        path4 = TP.apc('0.aliases[:-1]');
-    });
+            path1 = TP.apc('0.fname');
+            path2 = TP.apc('[0,2].fname');
+            path3 = TP.apc('0.aliases[1:2]');
+            path4 = TP.apc('0.aliases[:-1]');
+        });
 
     this.it('tail results get', function(test, options) {
         var val;
