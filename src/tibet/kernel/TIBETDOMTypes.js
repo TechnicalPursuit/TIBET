@@ -8764,7 +8764,8 @@ function(aRequest) {
         //  Process the tree of markup
         processor.processTree(node, request);
 
-        TP.core.TagProcessor.signal('TP.sig.CompileProcessingComplete');
+        //  Signal from the node that compile processing is complete.
+        TP.signal(TP.gid(node), 'TP.sig.CompileProcessingComplete');
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
@@ -9128,9 +9129,11 @@ function(aRequest) {
             aRequest.fail(request.getFaultText(), request.getFaultCode());
             return;
         }
-    }
 
-    TP.core.TagProcessor.signal('TP.sig.CompileProcessingComplete');
+        //  Signal from the node that compile processing is complete.
+        TP.signal(TP.gid(childNodes.at(i)),
+                    'TP.sig.CompileProcessingComplete');
+    }
 
     return this;
 });
@@ -10327,7 +10330,8 @@ function(aNode) {
     //  Process the tree of markup
     processor.processTree(aNode);
 
-    TP.core.TagProcessor.signal('TP.sig.AttachProcessingComplete');
+    //  Signal from the node that attach processing is complete.
+    TP.signal(TP.gid(aNode), 'TP.sig.AttachProcessingComplete');
 
     return;
 });
