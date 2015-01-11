@@ -1278,9 +1278,11 @@ function(options) {
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
     if (!params.at('ignore_only')) {
-        wantsOnly = caselist.some(function(test) {
-            return test.isExclusive();
-        });
+        wantsOnly = caselist.some(
+                function(test) {
+                    return test.isExclusive();
+                });
+
         if (wantsOnly) {
             TP.sys.logTest('# filtering for exclusive test cases.',
                             TP.WARN);
