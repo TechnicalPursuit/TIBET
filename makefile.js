@@ -160,11 +160,6 @@ targets.rollup_bluebird = function(make) {
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'bluebird'));
 
-    //  Install uglify-js manually:
-    //  https://github.com/petkaantonov/bluebird/issues/422
-    sh.exec('npm install uglify-js');
-
-    sh.exec('npm install -d');
     sh.exec('cp -f js/browser/bluebird.js  ../../deps/bluebird-tpi.js');
     sh.exec('cp -f js/browser/bluebird.min.js  ../../deps/bluebird-tpi.min.js');
 
