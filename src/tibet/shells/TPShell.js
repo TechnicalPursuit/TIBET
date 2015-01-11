@@ -25,7 +25,6 @@
 TP.definePrimitive('shell',
 function(aRequest) {
 
-
     /**
      * @name shell
      * @synopsis A wrapper for constructing and firing a TP.sig.ShellRequest.
@@ -238,7 +237,12 @@ function(aRequest) {
     }
     successHandler = function (aSignal) {
         shell.detachSTDIO();
+
+        //  Note that we have to ignore *both* of the handlers so that when one
+        //  of them gets executed, the other one is removed and doesn't leak.
         successHandler.ignore(request, 'TP.sig.ShellRequestSucceeded');
+        failureHandler.ignore(request, 'TP.sig.ShellRequestFailed');
+
         success(aSignal, stdioResults);
     };
     successHandler.observe(request, 'TP.sig.ShellRequestSucceeded');
@@ -255,7 +259,12 @@ function(aRequest) {
     }
     failureHandler = function (aSignal) {
         shell.detachSTDIO();
+
+        //  Note that we have to ignore *both* of the handlers so that when one
+        //  of them gets executed, the other one is removed and doesn't leak.
+        successHandler.ignore(request, 'TP.sig.ShellRequestSucceeded');
         failureHandler.ignore(request, 'TP.sig.ShellRequestFailed');
+
         failure(aSignal, stdioResults);
     };
     failureHandler.observe(request, 'TP.sig.ShellRequestFailed');
