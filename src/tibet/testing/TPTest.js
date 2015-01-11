@@ -1828,6 +1828,9 @@ TP.test.Case.Inst.defineAttribute('$currentPromise');
  */
 TP.test.Case.Inst.defineAttribute('$internalExpect');
 
+TP.test.Case.Inst.defineAttribute('$resolver');
+TP.test.Case.Inst.defineAttribute('$rejector');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -2178,8 +2181,8 @@ function(options) {
         //  Capture references to the resolve/reject operations we can use from
         //  the test case itself. Do this first so any errors below will still
         //  be able to depend on these hooks being in place.
-        testcase.$resolver = resolver;
-        testcase.$rejector = rejector;
+        testcase.set('$resolver', resolver);
+        testcase.set('$rejector', rejector);
 
         if (testcase.isSkipped() && !params.at('ignore_skip')) {
             TP.sys.logTest('ok - ' + testcase.getCaseName() + ' # SKIP');
