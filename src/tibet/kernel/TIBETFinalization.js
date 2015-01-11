@@ -532,6 +532,7 @@ function() {
         //  set up keyboard toggle to show/hide the boot UI
         (function () {
             TP.boot.toggleUI();
+            TP.boot.$scrollLog();
         }).observe(TP.core.Keyboard, toggleKey);
         /* eslint-enable no-wrap-func */
     }
