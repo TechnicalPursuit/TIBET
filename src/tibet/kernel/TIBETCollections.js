@@ -5404,12 +5404,19 @@ function(attributeName) {
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
-        //  Note here how we grab all of the arguments passed into this method,
-        //  shove ourself onto the front and invoke with an apply(). This is
-        //  because executeGet() takes varargs (in case the path is
+        //  Note here how, if we were given more than 1 arguments, we grab all
+        //  of the arguments supplied, make ourself the first argument and
+        //  invoke with an apply(). Otherwise, we make an Array that has this
+        //  object's 'path parameters' as the last argument. In both cases, this
+        //  is because executeGet() takes varargs (in case the path is
         //  parameterized).
-        args = TP.args(arguments);
-        args.atPut(0, this);
+        if (arguments.length > 1) {
+            args = TP.args(arguments);
+            args.atPut(0, this);
+        } else {
+            args = TP.ac(this, this.getPathParameters());
+        }
+
         return path.executeGet.apply(path, args);
     }
 
@@ -5822,12 +5829,20 @@ function(attributeName, attributeValue, shouldSignal) {
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
-        //  Note here how we grab all of the arguments passed into this method,
-        //  shove ourself onto the front and invoke with an apply(). This is
-        //  because executeSet() takes varargs (in case the path is
+        //  Note here how, if we were given more than 3 arguments, we grab all
+        //  of the arguments supplied, make ourself the first argument and
+        //  invoke with an apply(). Otherwise, we make an Array that has this
+        //  object's 'path parameters' as the last argument. In both cases, this
+        //  is because executeSet() takes varargs (in case the path is
         //  parameterized).
-        args = TP.args(arguments);
-        args.atPut(0, this);
+        if (arguments.length > 3) {
+            args = TP.args(arguments);
+            args.atPut(0, this);
+        } else {
+            args = TP.ac(this, attributeValue, shouldSignal,
+                            this.getPathParameters());
+        }
+
         return path.executeSet.apply(path, args);
     }
 

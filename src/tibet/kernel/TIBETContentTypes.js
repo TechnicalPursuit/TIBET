@@ -2122,7 +2122,18 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  path data structures are set up properly.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
     if (traversalLevel === 0) {
-        oldVal = this.executeGet(targetObj);
+
+        if (TP.regex.HAS_ACP.test(this.get('srcPath'))) {
+            //  Grab the arguments and slice the first three off (since they're
+            //  targetObj, attributeValue and shouldSignal which we already
+            //  have).
+            args = TP.args(arguments, 3);
+
+            args.unshift(targetObj);
+            oldVal = this.executeGet.apply(this, args);
+        } else {
+            oldVal = this.executeGet(targetObj);
+        }
 
         //  If the old value is equal to the value that we're setting, then
         //  there is nothing to do here and we exit. This is important to avoid
@@ -3454,7 +3465,16 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return this.raise('TP.sig.InvalidPath');
     }
 
-    oldVal = this.executeGet(targetObj);
+    if (TP.regex.HAS_ACP.test(this.get('srcPath'))) {
+        //  Grab the arguments and slice the first three off (since they're
+        //  targetObj, attributeValue and shouldSignal which we already have).
+        args = TP.args(arguments, 3);
+
+        args.unshift(targetObj);
+        oldVal = this.executeGet.apply(this, args);
+    } else {
+        oldVal = this.executeGet(targetObj);
+    }
 
     //  If the old value is equal to the value that we're setting, then there
     //  is nothing to do here and we exit. This is important to avoid endless
