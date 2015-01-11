@@ -7176,6 +7176,8 @@ function(aNode, anXPath, resultType, logErrors) {
             doc.createExpression = TP.$$xpathForIE_CreateExpression;
             doc.createNSResolver = TP.$$xpathForIE_CreateNSResolver;
             doc.evaluate = TP.$$xpathForIE_Evaluate;
+
+            doc.installedEval = true;
         }
 
         //  Run the XPath, using the XPathResult.ANY_TYPE so that we either
@@ -7186,6 +7188,16 @@ function(aNode, anXPath, resultType, logErrors) {
                         TP.$$xpathResolverFunction,
                         XPathResult.ANY_TYPE,
                         null);
+
+        //  If we installed the evaluate() statement with the 'XPath for IE'
+        //  shim above, then we need to remove it so that we don't leak massive
+        //  amounts of DOM memory.
+        if (doc.installedEval === true) {
+            doc.createExpression = null;
+            doc.createNSResolver = null;
+            doc.evaluate = null;
+            doc.installedEval = null;
+        }
 
         //  If we got a value result, switch on the result type to get the
         //  primitive value. If its not one of the primitive values, then its
