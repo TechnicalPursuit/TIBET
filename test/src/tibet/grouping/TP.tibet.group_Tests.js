@@ -15,6 +15,10 @@
 TP.tibet.group.Inst.describe('TP.tibet.group: registration',
 function() {
 
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
     //  ---
 
     this.it('Explicit simple query with body context', function(test, options) {
@@ -23,7 +27,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping1.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -54,6 +58,12 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('bar'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -69,7 +79,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping2.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -95,6 +105,12 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('foo', 'bar', 'baz'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -110,7 +126,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping3.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -155,6 +171,12 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('goo'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -170,7 +192,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping4.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -225,6 +247,11 @@ function() {
                         groupMembers,
                         TP.ac('maz', 'moofy', 'moogy'));
 
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -240,7 +267,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping5.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -280,6 +307,12 @@ function() {
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('gar', 'gaz'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -295,7 +328,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping6.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -312,6 +345,12 @@ function() {
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('gooGroup', 'fooGroup'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -327,7 +366,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping7.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -350,6 +389,12 @@ function() {
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('mooGroup'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -365,7 +410,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping8.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -388,6 +433,12 @@ function() {
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('mooGroup', 'nooGroup'));
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -403,7 +454,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping9.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -456,6 +507,12 @@ function() {
                         TP.ac('booGroup', 'fooGroup'));
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'mooGroup');
                 test.assert.isNull(tpElem.getNextGroupName());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -470,7 +527,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping10.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -523,6 +580,12 @@ function() {
                         TP.ac('booGroup', 'fooGroup'));
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'mooGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'gooGroup');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -540,7 +603,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping11.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -563,6 +626,12 @@ function() {
                                 tpElem.getGroupChainNames(),
                                 TP.ac('fooGroup'));
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

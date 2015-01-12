@@ -99,6 +99,10 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: simple binds',
 function() {
 
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
     this.before(
         function() {
             this.getDriver().showTestGUI();
@@ -127,7 +131,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind1.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -181,6 +185,12 @@ function() {
 
                 //  firstNameField is just another text field - same logic
                 //  should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -196,7 +206,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind2.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -363,6 +373,12 @@ function() {
                             TP.val(modelObj.get('/person/color')),
                             'red, blue');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -378,7 +394,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind3.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -545,6 +561,12 @@ function() {
                             TP.val(modelObj.get('/person/color')),
                             'red, blue');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -560,7 +582,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind4.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -727,6 +749,12 @@ function() {
                             TP.val(modelObj.get('/person/color')),
                             'red, blue');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -742,7 +770,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind5.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -909,6 +937,12 @@ function() {
                             TP.val(modelObj.get('/person/color')),
                             'red, blue');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -924,7 +958,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind6.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -978,6 +1012,12 @@ function() {
 
                 //  firstNameField is just another text field - same logic
                 //  should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -993,7 +1033,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind7.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1160,6 +1200,12 @@ function() {
                             TP.val(modelObj.get('person.color')),
                             TP.ac('red', 'blue'));
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1175,7 +1221,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind8.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1342,6 +1388,12 @@ function() {
                             TP.val(modelObj.get('person.color')),
                             TP.ac('red', 'blue'));
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1357,7 +1409,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind9.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1524,6 +1576,12 @@ function() {
                             TP.val(modelObj.get('person.color')),
                             TP.ac('red', 'blue'));
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1539,7 +1597,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind10.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1706,6 +1764,12 @@ function() {
                             TP.val(modelObj.get('person.color')),
                             TP.ac('red', 'blue'));
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1719,20 +1783,32 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: numerically indexed binds',
 function() {
 
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
+
+    //  ---
+
     this.before(
         function() {
             this.getDriver().showTestGUI();
         });
+
+    //  ---
 
     this.after(
         function() {
             this.getDriver().showTestLog();
         });
 
+    //  ---
+
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
         });
+
+    //  ---
 
     this.afterEach(
         function() {
@@ -1840,6 +1916,12 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1855,7 +1937,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind12.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1948,6 +2030,12 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1963,7 +2051,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind13.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -2056,6 +2144,12 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2071,7 +2165,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind14.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -2164,6 +2258,12 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2176,6 +2276,10 @@ function() {
 
 TP.bind.XMLNS.Type.describe('bind: bind repeats',
 function() {
+
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
     this.before(
         function() {
@@ -2205,7 +2309,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind15.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -2286,6 +2390,12 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2301,7 +2411,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind16.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -2462,6 +2572,10 @@ function() {
 
                 //  All of the others are just other text fields - same logic
                 //  should work
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2477,7 +2591,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind17.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -2560,6 +2674,10 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2575,7 +2693,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind18.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -2736,6 +2854,10 @@ function() {
 
                 //  All of the others are just other text fields - same logic
                 //  should work
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2751,7 +2873,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind19.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -2884,6 +3006,10 @@ function() {
                             TP.byOID('firstNameField2').get('value'),
                             'Billy');
                     });
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2899,7 +3025,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind20.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3090,6 +3216,10 @@ function() {
                             TP.byOID('addressCityField22').get('value'),
                             'Middle Of Nowhere');
                     });
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3105,7 +3235,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind21.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3238,6 +3368,10 @@ function() {
                             TP.byOID('firstNameField1').get('value'),
                             'Billy');
                     });
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3253,7 +3387,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind22.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3444,6 +3578,10 @@ function() {
                             TP.byOID('addressCityField11').get('value'),
                             'Middle Of Nowhere');
                     });
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3456,6 +3594,10 @@ function() {
 
 TP.bind.XMLNS.Type.describe('bind: static tables',
 function() {
+
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
     this.before(
         function() {
@@ -3475,7 +3617,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind23.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3513,6 +3655,12 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(dataCells.at(7)),
                     'Professional');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3528,7 +3676,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind24.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3565,6 +3713,12 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(dataCells.at(7)),
                     'Professional');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3577,6 +3731,10 @@ function() {
 
 TP.bind.XMLNS.Type.describe('bind: inline bind expressions',
 function() {
+
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
     this.before(
         function() {
@@ -3596,7 +3754,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind25.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3634,6 +3792,12 @@ function() {
                             TP.val(modelObj.get('/people/person[1]/color')),
                             'purple');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3649,7 +3813,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind26.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3687,6 +3851,12 @@ function() {
                             TP.val(modelObj.get('/people/person[2]/color')),
                             'yellow');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3702,7 +3872,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind27.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3740,6 +3910,12 @@ function() {
                             TP.val(modelObj.get('/people/person[3]/color')),
                             'orange');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3755,7 +3931,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind28.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3793,6 +3969,12 @@ function() {
                             TP.val(modelObj.get('/people/person[4]/color')),
                             'blue');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3808,7 +3990,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind29.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3862,6 +4044,12 @@ function() {
                             TP.val(modelObj.get('/people/person[1]/color')),
                             'purple');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3877,7 +4065,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind30.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -3932,6 +4120,12 @@ function() {
                             TP.val(modelObj.get('/people/person[2]/color')),
                             'yellow');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3947,7 +4141,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind31.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4001,6 +4195,12 @@ function() {
                             TP.val(modelObj.get('/people/person[3]/color')),
                             'orange');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4016,7 +4216,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind32.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4070,6 +4270,12 @@ function() {
                             TP.val(modelObj.get('/people/person[4]/color')),
                             'blue');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4085,7 +4291,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind33.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4123,6 +4329,12 @@ function() {
                             TP.val(modelObj.get('people[0].color')),
                             'purple');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4138,7 +4350,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind34.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4176,6 +4388,12 @@ function() {
                             TP.val(modelObj.get('people[1].color')),
                             'yellow');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4191,7 +4409,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind35.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4229,6 +4447,12 @@ function() {
                             TP.val(modelObj.get('people[2].color')),
                             'orange');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4244,7 +4468,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind36.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4282,6 +4506,12 @@ function() {
                             TP.val(modelObj.get('people[3].color')),
                             'blue');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4297,7 +4527,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind37.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4351,6 +4581,12 @@ function() {
                             TP.val(modelObj.get('people[0].color')),
                             'purple');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4366,7 +4602,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind38.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4421,6 +4657,12 @@ function() {
                             TP.val(modelObj.get('people[1].color')),
                             'yellow');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4436,7 +4678,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind39.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4490,6 +4732,12 @@ function() {
                             TP.val(modelObj.get('people[2].color')),
                             'orange');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4505,7 +4753,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/bind/Bind40.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -4559,6 +4807,12 @@ function() {
                             TP.val(modelObj.get('people[3].color')),
                             'blue');
                     });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

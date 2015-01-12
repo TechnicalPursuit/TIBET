@@ -142,7 +142,10 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    var elem;
+    var elem,
+
+        localHref,
+        localURI;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -150,7 +153,19 @@ function(aRequest) {
         return;
     }
 
-    //  TODO: Should we clear our local resource?
+    //  If we're not empty, then we use our child content as our 'local'
+    //  resource's content and ignore any 'remote' URI attribute.
+    if (TP.notEmpty(elem.childNodes)) {
+
+        if (TP.notEmpty(localHref = TP.elementGetAttribute(elem, 'local'))) {
+            if (!TP.isURI(localURI = TP.uc(localHref))) {
+                //  Raise an exception
+                return this.raise('TP.sig.InvalidURI');
+            }
+        }
+
+        localURI.unregister();
+    }
 
     return;
 });

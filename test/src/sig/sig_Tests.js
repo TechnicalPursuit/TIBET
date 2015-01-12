@@ -51,7 +51,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/sig/Sig1.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -111,7 +111,11 @@ function() {
                     TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooButton.TP.sig.DOMClick');
             });
 
-        this.getDriver().setLocation(unloadURI);
+        //  Unload the current page by setting it to the blank
+        test.getDriver().setLocation(unloadURI);
+
+        //  Unregister the URI to avoid a memory leak
+        loadURI.unregister();
 
         test.then(
             function() {
@@ -133,7 +137,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/sig/Sig2.xhtml');
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -177,7 +181,11 @@ function() {
                     TP.sys.getUICanvasPath() + loadURI.getLocation() + '#dispatchButton.TP.sig.DOMClick');
             });
 
-        this.getDriver().setLocation(unloadURI);
+        //  Unload the current page by setting it to the blank
+        test.getDriver().setLocation(unloadURI);
+
+        //  Unregister the URI to avoid a memory leak
+        loadURI.unregister();
 
         test.then(
             function() {

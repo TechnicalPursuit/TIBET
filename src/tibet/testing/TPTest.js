@@ -1221,9 +1221,6 @@ function(options) {
         return TP.extern.Promise.resolve();
     }
 
-    //  Make sure to clear out any previous state.
-    this.reset(options);
-
     return this.runTestCases(options);
 });
 
@@ -1249,14 +1246,17 @@ function(options) {
         nextPromise,
         firstPromise;
 
-    //  Output a small 'suite header'
-    TP.sys.logTest('#', TP.DEBUG);
-    TP.sys.logTest('# ' + this.get('suiteOwner').getID() + '.describe(' + this.getSuiteName() + ')', TP.DEBUG);
-
-    params = TP.hc(options);
-
     //  Make sure to clear out any previous state.
     this.reset(options);
+
+    //  Output a small 'suite header'
+    TP.sys.logTest('#', TP.DEBUG);
+    TP.sys.logTest('# ' + this.get('suiteOwner').getID() +
+                            '.describe(' + this.getSuiteName() +
+                            ')',
+                    TP.DEBUG);
+
+    params = TP.hc(options);
 
     caselist = this.getCaseList(options);
 
@@ -1278,9 +1278,11 @@ function(options) {
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
     if (!params.at('ignore_only')) {
-        wantsOnly = caselist.some(function(test) {
-            return test.isExclusive();
-        });
+        wantsOnly = caselist.some(
+                function(test) {
+                    return test.isExclusive();
+                });
+
         if (wantsOnly) {
             TP.sys.logTest('# filtering for exclusive test cases.',
                             TP.WARN);
@@ -1828,6 +1830,9 @@ TP.test.Case.Inst.defineAttribute('$currentPromise');
  */
 TP.test.Case.Inst.defineAttribute('$internalExpect');
 
+TP.test.Case.Inst.defineAttribute('$resolver');
+TP.test.Case.Inst.defineAttribute('$rejector');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -2093,11 +2098,7 @@ function() {
 TP.test.Case.Inst.defineMethod('reset',
 function(options) {
 
-    var asserter,
-        refuter,
-
-        thisArg,
-        drivers;
+    var drivers;
 
     this.callNextMethod();
 
@@ -2107,26 +2108,23 @@ function(options) {
     this.$set('$internalPromise', null);
     this.$set('$currentPromise', null);
 
-    asserter = this.getSuite().get('asserter');
-    asserter.$set('currentTestCase', this);
-    this.$set('assert', asserter);
+    this.$set('$resolver', null);
+    this.$set('$rejector', null);
 
-    refuter = this.getSuite().get('refuter');
-    refuter.$set('currentTestCase', this);
-    this.$set('refute', refuter);
+    this.$set('assert', null);
+    this.$set('refute', null);
 
     if (options && options.at('case_timeout')) {
         this.$set('mslimit', options.at('case_timeout'));
     }
 
     //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
-    //  'thenWait()' API to our drivers.
-    thisArg = this;
-
+    //  'thenWait()' API to our drivers, but we need to reset the reference here
+    //  to avoid leaks.
     drivers = this.getSuite().$get('drivers');
     drivers.getKeys().perform(
             function(driverKey) {
-                drivers.at(driverKey).set('promiseProvider', thisArg);
+                drivers.at(driverKey).set('promiseProvider', null);
             });
 
     return this;
@@ -2172,14 +2170,37 @@ function(options) {
 
    /* eslint-disable new-cap */
     promise = TP.extern.Promise.construct(function(resolver, rejector) {
-        var internalPromise,
+        var asserter,
+            refuter,
+
+            drivers,
+
+            internalPromise,
             maybe;
+
+        //  Set up state for the testcase case
+        asserter = testcase.getSuite().get('asserter');
+        asserter.$set('currentTestCase', testcase);
+        testcase.$set('assert', asserter);
+
+        refuter = testcase.getSuite().get('refuter');
+        refuter.$set('currentTestCase', testcase);
+        testcase.$set('refute', refuter);
+
+        //  The testcase provides a 'then()', 'thenAllowGUIRefresh()',
+        //  'thenPromise()' and 'thenWait()' API to our drivers, so we need to
+        //  reset the reference here to it each time.
+        drivers = testcase.getSuite().$get('drivers');
+        drivers.getKeys().perform(
+                function(driverKey) {
+                    drivers.at(driverKey).set('promiseProvider', testcase);
+                });
 
         //  Capture references to the resolve/reject operations we can use from
         //  the test case itself. Do this first so any errors below will still
         //  be able to depend on these hooks being in place.
-        testcase.$resolver = resolver;
-        testcase.$rejector = rejector;
+        testcase.set('$resolver', resolver);
+        testcase.set('$rejector', rejector);
 
         if (testcase.isSkipped() && !params.at('ignore_skip')) {
             TP.sys.logTest('ok - ' + testcase.getCaseName() + ' # SKIP');

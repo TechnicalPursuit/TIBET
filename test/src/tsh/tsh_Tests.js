@@ -4863,6 +4863,8 @@ function() {
                 test.assert.isEqualTo(
                         testResult.get('html|body').at(0),
                         resultElem.get('html|body').at(0));
+
+                TP.uc(locStr).unregister();
             });
 
         server.respond();
@@ -4908,6 +4910,7 @@ function() {
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -4951,6 +4954,7 @@ function() {
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -4996,6 +5000,7 @@ function() {
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5042,6 +5047,7 @@ function() {
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5088,6 +5094,7 @@ function() {
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5138,6 +5145,7 @@ function() {
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5181,6 +5189,7 @@ function() {
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5230,6 +5239,7 @@ function() {
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5321,6 +5331,8 @@ function() {
                         'Edney',
                         TP.sc('Expected: ', '"Edney"',
                                 ' and got instead: ', obj.at('lastName'), '.'));
+
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5350,6 +5362,8 @@ function() {
                 testResult.hasKey('_date_modified'),
                 TP.sc('Expected that result would have a key of \'_date_modified\'',
                         ' and it doesn\'t'));
+
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5385,6 +5399,8 @@ function() {
                     testResult.hasKey('rows'),
                     TP.sc('Expected that result would have a key of \'rows\' and',
                             ' it doesn\'t'));
+
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5446,6 +5462,8 @@ function() {
                         'Shattuck',
                         TP.sc('Expected: ', '"Shattuck"',
                                 ' and got instead: ', obj.at('lastName'), '.'));
+
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5513,6 +5531,8 @@ function() {
                                 'Hacker',
                                 TP.sc('Expected: ', '"Hacker"',
                                         ' and got instead: ', obj.at('lastName'), '.'));
+
+                        TP.uc(locStr).unregister();
                     });
             });
         });
@@ -5540,6 +5560,8 @@ function() {
                 test.assert.isValid(
                     testResult.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
+
+                    TP.uc(locStr).unregister();
             });
     });
 
@@ -5565,6 +5587,8 @@ function() {
                 test.assert.isValid(
                     testResult.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
+
+                    TP.uc(locStr).unregister();
             });
     });
 
@@ -5663,6 +5687,8 @@ function() {
                         TP.sc('Expected: ', '"Edney"',
                                 ' and got instead: ',
                                 obj.at('lastName'), '.'));
+
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5692,6 +5718,8 @@ function() {
                     testResult.hasKey('date_modified'),
                     TP.sc('Expected that result would have a key of',
                             ' \'date_modified\' and it doesn\'t'));
+
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5727,6 +5755,8 @@ function() {
                     testResult.hasKey('rows'),
                     TP.sc('Expected that result would have a key of \'rows\' and',
                             ' it doesn\'t'));
+
+                TP.uc(locStr).unregister();
             });
     });
 
@@ -5785,6 +5815,8 @@ function() {
                                 'Shattuck',
                                 TP.sc('Expected: ', '"Shattuck"',
                                         ' and got instead: ', testResult.at('lastName'), '.'));
+
+                        TP.uc(locStr).unregister();
                     });
             });
     });
@@ -5849,6 +5881,8 @@ function() {
                                 'Hacker',
                                 TP.sc('Expected: ', '"Hacker"',
                                         ' and got instead: ', testResult.at('lastName'), '.'));
+
+                        TP.uc(locStr).unregister();
                     });
             });
         });
@@ -5876,6 +5910,8 @@ function() {
                 test.assert.isValid(
                     testResult.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
+
+                    TP.uc(locStr).unregister();
             });
     });
 
@@ -5901,6 +5937,8 @@ function() {
                 test.assert.isValid(
                     testResult.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
+
+                    TP.uc(locStr).unregister();
             });
     });
 

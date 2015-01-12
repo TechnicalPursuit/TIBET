@@ -1192,6 +1192,8 @@ function() {
                 test.assert.isEqualTo(
                         aResult.get('html|body').at(0),
                         resultElem.get('html|body').at(0));
+
+                TP.uc(locStr).unregister();
             });
 
         url.getResource(request);
@@ -1251,6 +1253,8 @@ function() {
                 test.assert.isValid(
                     aResult,
                     TP.sc('Expected valid result but got none.'));
+
+                    TP.uc(locStr).unregister();
             });
 
         url.getResource(request);
@@ -1337,6 +1341,8 @@ function() {
                 'Edney',
                 TP.sc('Expected: ', '"Edney"',
                         ' and got instead: ', obj.at('lastName'), '.'));
+
+        url.unregister();
     });
 
     //  ---
@@ -1368,6 +1374,8 @@ function() {
             obj.hasKey('_date_modified'),
             TP.sc('Expected that result would have a key of \'_date_modified\'',
                     ' and it doesn\'t'));
+
+        url.unregister();
     });
 
     //  ---
@@ -1406,6 +1414,8 @@ function() {
             obj.hasKey('rows'),
             TP.sc('Expected that result would have a key of \'rows\' and',
                     ' it doesn\'t'));
+
+        url.unregister();
     });
 
     //  ---
@@ -1509,6 +1519,8 @@ function() {
                                             ' and got instead: ',
                                             result.at('lastName'), '.'));
 
+                            url.unregister();
+
                             resolver();
                         });
 
@@ -1556,6 +1568,8 @@ function() {
                                 result.hasKey('date_modified'),
                                 TP.sc('Expected that result would have a key of',
                                         ' \'date_modified\' and it doesn\'t'));
+
+                            url.unregister();
 
                             resolver();
                         });
@@ -1610,6 +1624,8 @@ function() {
                                 result.hasKey('rows'),
                                 TP.sc('Expected that result would have a key of \'rows\' and',
                                         ' it doesn\'t'));
+
+                            url.unregister();
 
                             resolver();
                         });
@@ -1808,6 +1824,8 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from PUT');
 
+                        url.unregister();
+
                         resolver();
                     });
 
@@ -1860,6 +1878,8 @@ function() {
                                 getStatusCode(this), 200);
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from POST');
+
+                        url.unregister();
 
                         resolver();
                     });
@@ -1915,6 +1935,8 @@ function() {
                                 getStatusCode(this), 200);
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from FORM POST');
+
+                        url.unregister();
 
                         resolver();
                     });
@@ -1973,6 +1995,8 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from MULTIPART FORM TEXT POST');
 
+                        url.unregister();
+
                         resolver();
                     });
 
@@ -2029,6 +2053,8 @@ function() {
                                 getStatusCode(this), 200);
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from MULTIPART FORM XML POST');
+
+                        url.unregister();
 
                         resolver();
                     });
@@ -2091,6 +2117,8 @@ function() {
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from MULTIPART RELATED MIXED POST');
 
+                        url.unregister();
+
                         resolver();
                     });
 
@@ -2139,6 +2167,8 @@ function() {
                                 getStatusCode(this), 200);
                         test.assert.isEqualTo(
                                 getResponseText(this), 'OK from DELETE');
+
+                        url.unregister();
 
                         resolver();
                     });
@@ -2211,6 +2241,8 @@ function() {
                 'Shattuck',
                 TP.sc('Expected: ', '"Shattuck"',
                         ' and got instead: ', obj.at('lastName'), '.'));
+
+        url.unregister();
     });
 
     this.it('LocalDBURL: Set resource using POST (computed id means CREATE)', function(test, options) {
@@ -2261,6 +2293,8 @@ function() {
                 'Hacker',
                 TP.sc('Expected: ', '"Hacker"',
                         ' and got instead: ', obj.at('lastName'), '.'));
+
+        url.unregister();
     });
 
     this.it('LocalDBURL: Delete resource using DELETE (supplied id means DELETE if found)', function(test, options) {
@@ -2294,6 +2328,8 @@ function() {
         this.refute.isValid(
             obj,
             TP.sc('Expected that result would not be valid'));
+
+        url.unregister();
     });
 
     this.it('LocalDBURL: Delete all documents in db using DELETE (no supplied id means DELETE entire db)', function(test, options) {
@@ -2327,6 +2363,8 @@ function() {
         this.refute.isValid(
             obj,
             TP.sc('Expected that result would not be valid'));
+
+        url.unregister();
     });
 });
 
@@ -2396,6 +2434,8 @@ function() {
                     test.assert.isValid(
                         result.at('ok'),
                         TP.sc('Expected a result with an \'ok\' property'));
+
+                    url.unregister();
                 });
 
             url.save(pouchRequest);
@@ -2428,6 +2468,8 @@ function() {
                     test.assert.isValid(
                         result.at('ok'),
                         TP.sc('Expected a result with an \'ok\' property'));
+
+                    url.unregister();
                 });
 
             url.save(pouchRequest);
@@ -2460,6 +2502,7 @@ function() {
                         result.at('ok'),
                         TP.sc('Expected a result with an \'ok\' property'));
 
+                    url.unregister();
                 });
 
             url.nuke(pouchRequest);
@@ -2492,6 +2535,8 @@ function() {
                     test.assert.isValid(
                         result.at('ok'),
                         TP.sc('Expected a result with an \'ok\' property'));
+
+                    url.unregister();
                 });
 
             url.nuke(pouchRequest);

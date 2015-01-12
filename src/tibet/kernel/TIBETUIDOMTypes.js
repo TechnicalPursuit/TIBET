@@ -691,10 +691,11 @@ function(aTargetElem, nodesAdded) {
             continue;
         }
 
-        processor.processTree(nodesAdded.at(i));
-    }
+        processor.processTree(node);
 
-    TP.core.TagProcessor.signal('TP.sig.AttachProcessingComplete');
+        //  Signal from the node that attach processing is complete.
+        TP.signal(TP.gid(node), 'TP.sig.AttachProcessingComplete');
+    }
 
     return this;
 });
@@ -780,6 +781,9 @@ function(aTargetElem, nodesRemoved) {
             focusStackCheckElems = focusStackCheckElems.concat(
                                 TP.nodeGetDescendantElements(node, '*'));
         }
+
+        //  Signal from the node that detach processing is complete.
+        TP.signal(TP.gid(node), 'TP.sig.DetachProcessingComplete');
     }
 
     //  Filter any elements that are in the document of the nodes we are
@@ -797,8 +801,6 @@ function(aTargetElem, nodesRemoved) {
                             return false;
                         });
     }
-
-    TP.core.TagProcessor.signal('TP.sig.DetachProcessingComplete');
 
     return this;
 });

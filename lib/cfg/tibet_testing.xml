@@ -37,6 +37,8 @@
 <config id="tests">
     <config ref="commonvalues"/>
 
+    <config ref="lifecycle"/>
+
     <config ref="tagprocessor"/>
     <config ref="databinding"/>
     <config ref="focusing"/>
@@ -65,6 +67,10 @@
 
 <config id="commonvalues">
     <script src="~lib_tst/src/TIBETObjectValues.js" />
+</config>
+
+<config id="lifecycle">
+    <script src="~lib_tst/src/tibet/lifecycle/TP.LoadUnload_Tests.js" />
 </config>
 
 <config id="tagprocessor">

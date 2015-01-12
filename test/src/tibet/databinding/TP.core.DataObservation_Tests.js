@@ -1143,15 +1143,15 @@ function() {
 TP.lang.Object.Type.describe('Markup level binding',
 function() {
 
-    var testDataLoc,
-        loadURI;
+    var loadURI,
+        unloadURI;
 
-    testDataLoc = '~lib_tst/src/tibet/databinding/Observation1.xhtml';
-    loadURI = TP.uc(testDataLoc);
+    loadURI = TP.uc('~lib_tst/src/tibet/databinding/Observation1.xhtml');
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
     this.it('change notification - concrete reference, simple aspect', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1184,12 +1184,18 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - virtual reference, simple aspect', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1229,12 +1235,18 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - URI reference, simple aspect', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1274,12 +1286,18 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - concrete reference, simple aspect with attributes', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1329,12 +1347,18 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@valid').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - virtual reference, simple aspect with attributes', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1390,12 +1414,18 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@valid').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - URI reference, simple aspect with attributes', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1452,12 +1482,18 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@valid').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - concrete reference, TIBET path aspect', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1494,12 +1530,18 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - virtual reference, TIBET path aspect', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1541,12 +1583,18 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - URI reference, TIBET path aspect', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1589,12 +1637,18 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - concrete reference, TIBET path aspect with attributes', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1652,12 +1706,18 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@valid').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - virtual reference, TIBET path aspect with attributes', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1721,12 +1781,18 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@valid').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - URI reference, TIBET path aspect with attributes', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1791,12 +1857,18 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@valid').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - concrete reference, XML path aspect', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1833,12 +1905,18 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - virtual reference, XML path aspect', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1881,12 +1959,18 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - URI reference, XML path aspect', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1929,12 +2013,18 @@ function() {
                 test.assert.isEqualTo(
                             42,
                             salaryField.get('value').asNumber());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - concrete reference, XML path aspect with attributes', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -1991,12 +2081,18 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@valid').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - virtual reference, XML path aspect with attributes', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -2059,12 +2155,18 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@valid').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 
     this.it('change notification - URI reference, XML path aspect with attributes', function(test, options) {
 
-        this.getDriver().setLocation(loadURI);
+        test.getDriver().setLocation(loadURI);
 
         test.then(
             function() {
@@ -2128,6 +2230,12 @@ function() {
                 test.assert.isEqualTo(
                             true,
                             salaryField.get('@valid').asBoolean());
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
             });
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');

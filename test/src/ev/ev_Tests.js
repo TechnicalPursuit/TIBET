@@ -52,7 +52,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents1.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -99,7 +99,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barButton.TP.sig.DOMClick');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -130,7 +134,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents2.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -175,7 +179,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#testDiv.TP.sig.DOMContentLoaded');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -205,7 +213,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents3.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -262,7 +270,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_F2_Up');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -295,15 +307,13 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents4.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 TP.sys.uiwin(true).focus();
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         click(TP.byId('fooDiv')).
                         perform();
@@ -314,14 +324,13 @@ function() {
                                                     'multisignal_singleorigin');
                         test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
 
-                        //  Remove the attribute in preparation for the next test.
+                        //  Remove the attribute in preparation for the next
+                        //  test.
                         TP.elementRemoveAttribute(TP.byId('testResults'),
                                                     'multisignal_singleorigin',
                                                     true);
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         doubleClick(TP.byId('fooDiv')).
                         perform();
@@ -355,7 +364,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazDiv.TP.sig.DOMClick');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -382,7 +395,6 @@ function() {
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
             });
-
     });
 
     //  ---
@@ -394,15 +406,13 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents5.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 TP.sys.uiwin(true).focus();
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         click(TP.byId('fooDiv')).
                         perform();
@@ -414,8 +424,6 @@ function() {
                         test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         doubleClick(TP.byId('bazDiv')).
                         perform();
@@ -441,7 +449,11 @@ function() {
                             'ANY.TP.sig.DOMClick');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -472,29 +484,25 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents6.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 TP.sys.uiwin(true).focus();
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         sendKeys('ABCDE', TP.byId('fooField')).
                         perform();
 
                 test.then(
                     function(result) {
-                        //  Default was being prevented - the field shouldn't have any
-                        //  content.
+                        //  Default was being prevented - the field shouldn't
+                        //  have any content.
                         test.refute.isEqualTo(TP.byId('fooField').value, 'ABCDE');
                         test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMKeyPress');
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         sendKeys('A', TP.byId('barField')).
                         perform();
@@ -509,8 +517,6 @@ function() {
                         test.assert.didSignal(TP.byId('barField'), 'TP.sig.DOMKeyPress');
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         sendKeys('A', TP.byId('bazField')).
                         perform();
@@ -563,7 +569,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazField.TP.sig.DOMKeyPress');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -599,7 +609,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents7.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -683,7 +693,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Z_Up');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -716,7 +730,7 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents8.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
@@ -764,7 +778,11 @@ function() {
                             TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -791,15 +809,13 @@ function() {
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents9.xhtml');
 
-        driver = this.getDriver();
+        driver = test.getDriver();
         driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 TP.sys.uiwin(true).focus();
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         click(TP.byId('setSalaryButton')).
                         perform();
@@ -830,8 +846,6 @@ function() {
                                 'TP.sig.ValueChange');
                     });
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
                 driver.startSequence().
                         click(TP.byId('setSSNButton')).
                         perform();
@@ -882,7 +896,11 @@ function() {
                             'urn:tibet:empObject#tibet(person.SSN).TP.sig.ValueChange');
                     });
 
+                //  Unload the current page by setting it to the blank
                 driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
 
                 test.then(
                     function() {
@@ -910,7 +928,6 @@ function() {
             });
 
     });
-
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================

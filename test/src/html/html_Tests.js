@@ -15,20 +15,37 @@
 TP.html.XMLNS.Type.describe('html: set content of standard elements',
 function() {
 
-    var testData;
+    var loadURI,
+        unloadURI,
 
-    this.before(function() {
-        var testDataLoc,
-            loadURI;
+        testData;
 
-        TP.$$setupCommonObjectValues();
-        testData = TP.$$commonObjectValues;
+    loadURI = TP.uc('~lib_tst/src/html/HTMLContent.xhtml');
 
-        testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
-        loadURI = TP.uc(testDataLoc);
+    unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
-        this.getDriver().setLocation(loadURI);
-    });
+    //  ---
+
+    this.before(
+        function() {
+
+            TP.$$setupCommonObjectValues();
+            testData = TP.$$commonObjectValues;
+
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
 
     //  ---
 

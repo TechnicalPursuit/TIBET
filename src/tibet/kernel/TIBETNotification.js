@@ -3848,6 +3848,7 @@ function(aHandlerEntry) {
         id,
         phase,
         handlerID,
+        handler,
         removals;
 
     map = TP.sig.SignalMap.INTERESTS;
@@ -3908,6 +3909,13 @@ function(aHandlerEntry) {
     entry = null;
 
     handlerID = aHandlerEntry.handler;
+
+    //  If the handle points to a registered Function, unregister it from
+    //  the common URI registry.
+    if (/Function\$\w+/.test(handlerID)) {
+        handler = TP.uc('urn:tibet:' + handlerID);
+        handler.unregister();
+    }
 
     //  some handler entries have id's and some are inline functions. we use
     //  the handler attribute to hold this data just as in XML Events
@@ -4160,6 +4168,9 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
         handlerID,
         entry,
+
+        handler,
+
         list,
         item,
         i;
@@ -4245,6 +4256,13 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
                                         return item.remove !== true;
                                     });
             }
+        }
+
+        //  If the handle points to a registered Function, unregister it from
+        //  the common URI registry.
+        if (/Function\$\w+/.test(handlerID)) {
+            handler = TP.uc('urn:tibet:' + handlerID);
+            handler.unregister();
         }
     }
 
