@@ -1991,7 +1991,7 @@ function(elemOrId, anAspect, aValue, nodeContext) {
                 }
             } else {
                 //  TODO:   warn?
-                void(0);
+                void 0;
             }
         }
     } else {
@@ -2008,7 +2008,7 @@ function(elemOrId, anAspect, aValue, nodeContext) {
             }
         } else {
             //  TODO:   warn?
-            void(0);
+            void 0;
         }
     }
 

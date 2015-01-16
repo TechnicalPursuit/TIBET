@@ -4605,7 +4605,7 @@ function(anElement, attrName, oldValue, newValue) {
     //  replacing, we're removing
     if (TP.isEmpty(newValue)) {
         //  TODO: Code here??
-        void(0);
+        void 0;
     }
 
     //  If there was no prior value, then just set the attribute to the new
@@ -9043,7 +9043,7 @@ function(aWindow) {
                 (anEvent.target === this)) {
                 anEvent.preventDefault();
             }
-        },false);
+        }, false);
 
     return;
 });

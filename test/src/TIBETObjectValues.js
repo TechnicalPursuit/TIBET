@@ -215,7 +215,7 @@ function(aRequest) {
 
     errorVal = new Error('There was an error');
     eventVal = TP.documentCreateEvent(
-                    TP.sys.uidoc(true), TP.ac('type','mouseover'));
+                    TP.sys.uidoc(true), TP.ac('type', 'mouseover'));
 
     xhrVal = new XMLHttpRequest();
 

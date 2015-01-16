@@ -1012,7 +1012,7 @@ function(source, shell, sibling, request) {
 
                         if (block < 0) {
                             //  TODO:   raise? too many closing delimiters
-                            void(0);
+                            void 0;
                         }
                     }
 
@@ -1062,7 +1062,7 @@ function(source, shell, sibling, request) {
                             //  within a block we have a potential error.
                             if (block > 0) {
                                 //  TODO:   raise?
-                                void(0);
+                                void 0;
                             }
 
                             //  splice the token into the pipe attribute so
@@ -1093,7 +1093,7 @@ function(source, shell, sibling, request) {
                     //  a potentially missing/unbalanced set of delimiters
 
                     //  TODO:   raise?
-                    void(0);
+                    void 0;
                 }
 
                 //  close the overall command/src tag

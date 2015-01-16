@@ -338,7 +338,7 @@ theRequest) {
     //  If the object is an Array, then just skip to the bottom of the
     //  method.
     if (TP.isArray(anObject)) {
-        void(0);
+        void 0;
     } else if (TP.isTrue(shouldAutoWrap) && TP.isTrue(theRequest.at('repeat'))) {
         //  Otherwise, if we're autowrapping and repeating, the object that
         //  will be handed to the iteration mechanism will be [key,value]

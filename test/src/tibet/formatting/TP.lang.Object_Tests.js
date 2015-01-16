@@ -134,7 +134,7 @@ function() {
 
         //  ---
 
-        testElem = TP.ac(1, 2 ,TP.hc('foo', 'bar')).as('TP.core.XMLRPCNode');
+        testElem = TP.ac(1, 2, TP.hc('foo', 'bar')).as('TP.core.XMLRPCNode');
 
         //  Need to generate an ID for elements for reporting purposes.
         TP.elemGenID(testElem, true);
@@ -191,7 +191,7 @@ function() {
 
         //  ---
 
-        testRep = TP.ac(1,2,3).as(
+        testRep = TP.ac(1, 2, 3).as(
                     'The item at: {{$INDEX}} is: {{value}} ', TP.hc('repeat', true));
 
         correctRep =
@@ -206,7 +206,7 @@ function() {
 
         //  'value' is optional
 
-        testRep = TP.hc('foo','bar').as('It is: {{value.foo}}');
+        testRep = TP.hc('foo', 'bar').as('It is: {{value.foo}}');
 
         correctRep = 'It is: bar';
 
@@ -215,7 +215,7 @@ function() {
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
 
-        testRep = TP.hc('foo','bar').as('It is: {{foo}}');
+        testRep = TP.hc('foo', 'bar').as('It is: {{foo}}');
 
         correctRep = 'It is: bar';
 
@@ -226,7 +226,7 @@ function() {
 
         //  ---
 
-        testRep = TP.hc('foo',TP.hc('bar', 'baz')).as('It is: {{foo.bar}}');
+        testRep = TP.hc('foo', TP.hc('bar', 'baz')).as('It is: {{foo.bar}}');
 
         correctRep = 'It is: baz';
 
@@ -325,7 +325,7 @@ function() {
         'This is a row value: {{value}} for row #: {{$INDEX}}\n'.compile(
             'myTemplate', true);
 
-        testRep = TP.ac(1,2,3).as('myTemplate', TP.hc('repeat', true));
+        testRep = TP.ac(1, 2, 3).as('myTemplate', TP.hc('repeat', true));
 
         correctRep = 'This is a row value: 1 for row #: 0\nThis is a row value: 2 for row #: 1\nThis is a row value: 3 for row #: 2\n';
 
@@ -403,7 +403,7 @@ function() {
 
         //  ---
 
-        data = TP.ac(1,2,3,4,5,6);
+        data = TP.ac(1, 2, 3, 4, 5, 6);
 
         dataDoc = TP.doc('<dataroot>' + data.asXMLString() + '</dataroot>');
 
@@ -418,7 +418,7 @@ function() {
         }
 
         //  Strip non-essential whitespace before comparing
-        testRep = testRep.strip(/\n/g).replace(/>\s+</g,'><');
+        testRep = testRep.strip(/\n/g).replace(/>\s+</g, '><');
 
         this.assert.isEqualTo(
             testRep,
@@ -452,7 +452,7 @@ function() {
 
         testRep = TP.ac(1, 2, 'that\'s cool').as('html:ul',
                      TP.hc('repeat', true,
-                            'infos', TP.ac(TP.hc('$attrInfo','baz="goo"'))));
+                            'infos', TP.ac(TP.hc('$attrInfo', 'baz="goo"'))));
 
         correctRep = '<html:ul>' +
                         '<html:li baz="goo">1</html:li>' +

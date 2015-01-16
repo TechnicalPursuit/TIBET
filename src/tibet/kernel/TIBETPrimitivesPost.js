@@ -2092,7 +2092,7 @@ function(anObject, assignIfAbsent) {
             obj.$$globalID = globalID;
             if (TP.isDocument(doc = obj.document) &&
                     TP.isElement(root = doc.documentElement)) {
-                void(0);
+                void 0;
             }
         }
 
@@ -2471,7 +2471,7 @@ function(anObject, assignIfAbsent) {
      * @todo
      */
 
-    if (anObject === void(0)) {
+    if (anObject === void 0) {
         return 'undefined';
     }
 
@@ -2513,7 +2513,7 @@ function(anObject) {
      * @returns {String} A string "name".
      */
 
-    if (anObject === void(0)) {
+    if (anObject === void 0) {
         return 'undefined';
     }
 
@@ -2880,7 +2880,7 @@ function(anObject) {
 
         rules;
 
-    if (anObject === void(0)) {
+    if (anObject === void 0) {
         return 'undefined';
     }
 
@@ -2894,7 +2894,7 @@ function(anObject) {
         try {
             return anObject.asHTMLString();
         } catch (e) {
-            void(0);
+            void 0;
         }
     }
 
@@ -3050,7 +3050,7 @@ function(anObject) {
 
         rules;
 
-    if (anObject === void(0)) {
+    if (anObject === void 0) {
         return 'undefined';
     }
 
@@ -3064,7 +3064,7 @@ function(anObject) {
         try {
             return anObject.asJSONSource();
         } catch (e) {
-            void(0);
+            void 0;
         }
     }
 
@@ -3605,7 +3605,7 @@ function(anObject, verbose) {
 
             return str;
         } catch (e) {
-            void(0);
+            void 0;
         }
     }
 

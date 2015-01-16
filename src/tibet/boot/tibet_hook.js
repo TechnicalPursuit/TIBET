@@ -385,7 +385,7 @@ TP.boot.$isTrue = function(aValue) {
         return false;
     }
 
-    return (typeof(aValue) === 'boolean' && aValue.valueOf() === true);
+    return (typeof aValue === 'boolean' && aValue.valueOf() === true);
 };
 
 //  ------------------------------------------------------------------------
@@ -753,7 +753,7 @@ if (window.onerror.failedlaunch !== true &&
          * @return {Element}
          */
 
-        if (typeof(anID) === 'string') {
+        if (typeof anID === 'string') {
             return document.getElementById(anID);
         }
 
@@ -1211,7 +1211,7 @@ if (window.onerror.failedlaunch !== true &&
                     out,
                     ndx;
 
-                if (typeof(aString) !== 'string') {
+                if (typeof aString !== 'string') {
                     return TP.boot.$raise(this, 'InvalidParameter');
                 }
 
@@ -1762,7 +1762,7 @@ if (window.onerror.failedlaunch !== true &&
             origin;
 
         //  string origins are used without alteration so check that first
-        if (typeof(orig) === 'string' && orig !== '') {
+        if (typeof orig === 'string' && orig !== '') {
             return orig;
         }
 
@@ -1848,7 +1848,7 @@ if (window.onerror.failedlaunch !== true &&
          */
 
         try {
-            if (origin == null || typeof(origin) === 'string') {
+            if (origin == null || typeof origin === 'string') {
                 window.status = 'origin: ' + origin + '::' +
                                 origin +
                                 ' signal: ' + signal;
@@ -1922,10 +1922,10 @@ if (window.onerror.failedlaunch !== true &&
 
         //  if the origin is a string then we'll check first for an
         //  origin-specific handler for the signal
-        if (typeof(origin) === 'string') {
+        if (typeof origin === 'string') {
             oStr = origin.charAt(0).toUpperCase() + origin.slice(1);
             fName = '$handle' + oStr + signal;
-            if (typeof(self[fName]) === 'function') {
+            if (typeof self[fName] === 'function') {
                 try {
                     retval = self[fName](oStr, signal, elem, args, policy);
                 } catch (e) {
@@ -1937,7 +1937,7 @@ if (window.onerror.failedlaunch !== true &&
 
         //  next we try to find a signal-specific handler to run
         fName = '$handle' + signal;
-        if (typeof(self[fName]) === 'function') {
+        if (typeof self[fName] === 'function') {
             try {
                 retval = self[fName](origin, signal, elem, args, policy);
             } catch (e) {
@@ -2127,7 +2127,7 @@ if (window.onerror.failedlaunch !== true &&
                     //  Hide the body so that we can do style processing
                     //  without having it flicker around.
                     //  document.body.style.visibility = 'hidden';
-                        void(0);
+                        void 0;
                     }
 
                     //  We don't do this on Mozilla in lieu of the logic in
@@ -2350,11 +2350,11 @@ if (window.onerror.failedlaunch !== true &&
 
         //  if the page itself defined an init() function then we'll call it
         try {
-            if (typeof(self.init) === 'function') {
+            if (typeof self.init === 'function') {
                 init();
             }
         } catch (e) {
-            if (typeof(self.init) === 'function') {
+            if (typeof self.init === 'function') {
                 tWin = $$findTIBET();
                 tWin.console.log('ERROR in init(): ' + e.message);
             }
@@ -2637,7 +2637,7 @@ if (window.onerror.failedlaunch !== true &&
 
     if (window.onerror.failedlaunch === true) {
         //  we're done. the script already blew up with a file launch issue.
-        void(0);
+        void 0;
     } else if ($$findTIBET() == null) {
         //  we're in a page containing tibet_hook.js, but we can't find TIBET,
         //  which means it hasn't booted yet...so let's try to fix that :)

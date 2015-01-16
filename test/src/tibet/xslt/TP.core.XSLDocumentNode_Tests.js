@@ -31,7 +31,7 @@ function() {
                     str,
                     result;
 
-                data = TP.ac(1,2,3,4,5,6);
+                data = TP.ac(1, 2, 3, 4, 5, 6);
                 elem = TP.elem('<dataroot>' +
                                 data.asXMLString() +
                                 '</dataroot>');
@@ -82,7 +82,7 @@ function() {
                 //  By default, this sheet handles Arrays represented as XML-RPC
                 //  nodes, so we get that here.
 
-                data = TP.ac(1,2,3,4,5,6);
+                data = TP.ac(1, 2, 3, 4, 5, 6);
                 elem = data.as('TP.core.XMLRPCNode');
 
                 str = tpXSLTDoc.transform(elem);
@@ -129,7 +129,7 @@ function() {
                 //  it uses to get the data, so let's output this as our
                 //  'standard XML representation' and then use that.
 
-                data = TP.ac(1,2,3,4,5,6);
+                data = TP.ac(1, 2, 3, 4, 5, 6);
                 elem = data.as('TP.core.XMLRPCNode');
 
                 //  NB: These should match <xsl:param> elements in the XSLT
@@ -174,7 +174,7 @@ function() {
                     str,
                     result;
 
-                data = TP.ac(1,2,3,4,5,6);
+                data = TP.ac(1, 2, 3, 4, 5, 6);
 
                 //  NB: These should match <xsl:param> elements in the XSLT
                 xslParams = TP.hc('sourceElem',

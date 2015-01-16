@@ -586,7 +586,7 @@ function(target, options) {
                         //  the chain remains unbroken...unless we're doing an
                         //  early exit etc.
                         //  TODO: early exit?
-                        void(0);
+                        void 0;
                     });
             }, TP.extern.Promise.resolve());
 

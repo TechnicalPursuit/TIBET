@@ -499,7 +499,7 @@
         }
 
         // If we have a level verify we should continue processing it.
-        if (level !== void(0) && PhantomTSH.level > level) {
+        if (level !== void 0 && PhantomTSH.level > level) {
             return;
         }
 
@@ -509,7 +509,7 @@
 
         // If color is explicit we go with that, otherwise we check the content
         // to see if it matches a typical output format from TIBET itself.
-        if (color !== void(0)) {
+        if (color !== void 0) {
             msg = PhantomTSH.color(msg, color);
         } else {
             if (/^TRACE/i.test(msg)) {
@@ -653,9 +653,9 @@
             PhantomTSH.usage();
         }
 
-        if (argv.level !== void(0)) {
+        if (argv.level !== void 0) {
             level = PhantomTSH.LEVELS[argv.level.toUpperCase()];
-            if (level !== void(0)) {
+            if (level !== void 0) {
                 PhantomTSH.level = level;
             } else {
                 PhantomTSH.level = PhantomTSH.DEFAULT_LEVEL;
@@ -748,7 +748,7 @@
             }
 
             // If we have a level verify we should continue processing it.
-            if (level !== void(0) && PhantomTSH.level > level) {
+            if (level !== void 0 && PhantomTSH.level > level) {
                 return;
             }
             str = msg;

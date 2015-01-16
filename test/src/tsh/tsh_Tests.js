@@ -833,7 +833,7 @@ function() {
         shellDriver.execShellTest(test, inputVal);
     });
 
-    this.it('x',function(test, options) {
+    this.it('x', function(test, options) {
 
         //  Use the variable in an expression by itself
         inputVal = 'x';
@@ -852,7 +852,7 @@ function() {
             });
     });
 
-    this.it('{{x}}',function(test, options) {
+    this.it('{{x}}', function(test, options) {
 
         //  Use the variable in a formatting expression by itself
         inputVal = '{{x}}';
@@ -4067,7 +4067,7 @@ function() {
             inputVal,
             correctResult;
 
-        foo = TP.ac(1,2,3);
+        foo = TP.ac(1, 2, 3);
         TP.sys.registerObject(foo, 'FOO', true);
 
         inputVal = 'urn:tibet:FOO';
@@ -4092,7 +4092,7 @@ function() {
             inputVal,
             correctResult;
 
-        foo = TP.ac(1,2,3);
+        foo = TP.ac(1, 2, 3);
         TP.sys.registerObject(foo, 'FOO', true);
 
         inputVal = 'tibet:///urn:tibet:FOO';

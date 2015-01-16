@@ -146,7 +146,7 @@ function(target) {
         this.blur();
     } else {
         //  No existing target
-        void(0);
+        void 0;
     }
 
     this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target));

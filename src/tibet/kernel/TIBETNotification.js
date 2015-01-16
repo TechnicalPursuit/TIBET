@@ -3809,7 +3809,7 @@ function(aHandlerEntry, quiet) {
     } else if (handlerID.startsWith('#')) {
         //  local document ID reference, should have been converted to a
         //  global ID but TP.byOID() will default to TP.sys.getUICanvas()
-        void(0);
+        void 0;
     }
 
     if (TP.isValid(handlerID)) {
@@ -5576,7 +5576,7 @@ function(anOrigin, aSignal, aPayload, aType) {
         if (isSpoofed) {
             //  Leave 'type' at the current value. 'signame' will be set
             //  to the next value at the top of the loop.
-            void(0);
+            void 0;
         } else {
             type = type.getSupertype();
         }
@@ -5635,7 +5635,7 @@ function(anOrigin, aSignal, aHandler) {
                     inst.shouldSignalChange(true);
                 };
                 */
-                void(0);
+                void 0;
             }
         }
 
@@ -5691,7 +5691,7 @@ function(anOrigin, aSignal, aHandler) {
                     inst.shouldSignalChange(true);
                 };
                 */
-                void(0);
+                void 0;
             }
         }
 

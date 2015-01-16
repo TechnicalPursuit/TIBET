@@ -581,7 +581,7 @@ function(anObject, optFormat) {
 
     getLogLevelName = function(aLogLevel) {
 
-        switch(aLogLevel) {
+        switch (aLogLevel) {
             case TP.boot.TRACE:
                 return 'trace';
             case TP.boot.DEBUG:

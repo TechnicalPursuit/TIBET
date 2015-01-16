@@ -146,7 +146,7 @@ function(params, windowContext) {
             //  Passed all of our tests, so add it.
             arr.push(key);
         } catch (e) {
-            void(0);
+            void 0;
         }
     }
     /* eslint-enable guard-for-in */
@@ -614,7 +614,7 @@ function(aFlag) {
         try {
             end = func.caller.$end;
         } catch (e) {
-            void(0);
+            void 0;
         }
     }
 
@@ -661,7 +661,7 @@ function(aFlag) {
         try {
             start = func.caller.$start;
         } catch (e) {
-            void(0);
+            void 0;
         }
     }
 
@@ -1595,7 +1595,7 @@ function(anObject, aType) {
             return true;
         }
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     //  check for spoofing hook and use it if found
@@ -3912,7 +3912,7 @@ function() {
     try {
         this.$$format_asDumpString = true;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     /* jshint -W009 */
@@ -3938,7 +3938,7 @@ function() {
     try {
         delete this.$$format_asDumpString;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     return str;
@@ -4040,7 +4040,7 @@ function() {
     try {
         this.$$format_asPrettyString = true;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     /* jshint -W009 */
@@ -4070,7 +4070,7 @@ function() {
     try {
         delete this.$$format_asPrettyString;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     return str;
@@ -4778,7 +4778,7 @@ function() {
     try {
         this.$$format_asJSONSource = true;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     str = TP.js2json(this);
@@ -4787,7 +4787,7 @@ function() {
     try {
         delete this.$$format_asJSONSource;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     return str;
@@ -4835,7 +4835,7 @@ function(aFilterName) {
     try {
         this.$$format_asSource = true;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     keys = this.getKeys(aFilterName);
@@ -4857,7 +4857,7 @@ function(aFilterName) {
     try {
         delete this.$$format_asSource;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     return TP.join('{', arr.join(', '), '}');
@@ -6790,7 +6790,7 @@ function(callingContext) {
             /* eslint-enable no-debugger */
             /* jshint +W087 */
         } catch (e) {
-            void(0);
+            void 0;
         }
     }
 
@@ -7707,7 +7707,7 @@ function(keyCriteria, selectionCriteria) {
     var dict,
         list;
 
-    switch (typeof(keyCriteria)) {
+    switch (typeof keyCriteria) {
         case 'number':
 
             list = TP.ac();
@@ -7964,7 +7964,7 @@ function(attributeName, attributeValue) {
                     item[attributeName] = attributeValue;
                     return item[attributeName];
                 } catch (e) {
-                    void(0);
+                    void 0;
                 }
             }
         });

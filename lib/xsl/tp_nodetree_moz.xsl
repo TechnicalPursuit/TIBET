@@ -100,7 +100,7 @@
 							span.replaceChild(document.createTextNode(symbol),span.childNodes.item(0));
 					}
 					]]>
-				</xsl:comment>        
+				</xsl:comment>
 				</script>
 			</head>
 			<body>
@@ -128,7 +128,7 @@
 					<xsl:call-template name="text-only"></xsl:call-template>
 				</xsl:when>
 				<xsl:when test="*|comment()|processing-instruction()">
-					<a href="javascript:void(0)" onclick="switchNode(this);return false" class="parent-element">
+					<a href="javascript:void 0" onclick="switchNode(this);return false" class="parent-element">
 						<span class="switch">-</span>
 						<xsl:text>&lt;</xsl:text>
 						<span class="element">

@@ -1580,7 +1580,7 @@ function(aRequest) {
 
                             if (TP.nodeContainsNode(cmdRoot, newnode)) {
                                 //  Descendant of detached root - error
-                                void(0);
+                                void 0;
                             } else {
                                 //  newnode is a replacement root
 
@@ -1601,7 +1601,7 @@ function(aRequest) {
                             //  root is not detached - is newnode detached?
                             if (TP.nodeIsDetached(newnode, rootDoc)) {
                                 //  TODO
-                                void(0);
+                                void 0;
                             } else {
                                 //  neither cmdRoot or newnode is detached
 
@@ -2691,7 +2691,7 @@ function(aRequest) {
 
         name = method.slice('execute'.length);
 
-        str = ':' + name.slice(0,1)[0].toLowerCase() + name.slice(1);
+        str = ':' + name.slice(0, 1)[0].toLowerCase() + name.slice(1);
 
         if (TP.isFunction(func) && TP.notEmpty(func.$$abstract)) {
             str += ' - ' + func.$$abstract;
@@ -3258,7 +3258,7 @@ function(command, abstract, usage, description) {
     } else {
         // TODO: turn this on once we finish up all the commands.
         TP.warn('Defining help for non-existent shell command: ' + command);
-        void(0);
+        void 0;
     }
 
     return method;

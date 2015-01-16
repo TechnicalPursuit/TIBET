@@ -173,7 +173,7 @@ function(aRequest) {
 
         //  TODO:
         //  clear it before we 'return' from errors etc.
-        void(0);
+        void 0;
     }
 
     //  target URI is the key piece of data, without that we can't run since

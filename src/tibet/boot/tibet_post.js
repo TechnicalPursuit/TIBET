@@ -110,7 +110,7 @@ TP.sys.hasFeature = function(aFeatureName, retest) {
     }
 
     //  If a test function was found, run it and get the value.
-    if (typeof(testFunc = TP.sys.$featureTests[aFeatureName]) === 'function') {
+    if (typeof (testFunc = TP.sys.$featureTests[aFeatureName]) === 'function') {
         testVal = testFunc();
     } else if (aFeatureName.slice(0, 4) === 'dom-') {
         //  Otherwise, if the test name started with 'dom-', then its a 'DOM
@@ -769,7 +769,7 @@ if (TP.$versions.length > 1) {
     TP.$minor = 0;
 }
 
-delete(TP.$versions);
+delete TP.$versions;
 
 //  ----------------------------------------------------------------------------
 //  Platform (OS) - seems this is accurate enough for supported browsers.
@@ -1885,7 +1885,7 @@ TP.boot.$uriExpandPath = function(aPath) {
             //  NOTE we resolve these variables via the configuration data
             value = TP.sys.cfg('path.' + variable);
 
-            if (typeof(value) === 'string') {
+            if (typeof value === 'string') {
                 //  one issue here is that we may have a variable value
                 //  that starts with or ends with a '/' since they're
                 //  parts of paths, but we don't want to alter that
@@ -3879,7 +3879,7 @@ TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
         len,
         i;
 
-    if (versionNumber != null && typeof(versionNumber) === 'number') {
+    if (versionNumber != null && typeof versionNumber === 'number') {
         //  asked for a specific version...
         switch (versionNumber) {
             case 2:
@@ -4335,7 +4335,7 @@ TP.sys.getWindowById = function(anID, aWindow) {
         case 'uicanvas':
         case 'UICANVAS':
 
-            if (typeof(TP.sys.getUICanvas) === 'function') {
+            if (typeof TP.sys.getUICanvas === 'function') {
                 //  This call will recurse back into this method, but with
                 //  the real window name.
                 return TP.sys.getUICanvas(true);
@@ -4362,7 +4362,7 @@ TP.sys.getWindowById = function(anID, aWindow) {
     }
 
     //  not a string? might be a window already
-    if (typeof(anID) !== 'string') {
+    if (typeof anID !== 'string') {
         if (TP.boot.$isWindow(anID)) {
             return anID;
         }
@@ -4404,14 +4404,14 @@ TP.sys.getWindowById = function(anID, aWindow) {
             id = parts[3] || 'uicanvas';
 
             if (id.toLowerCase() === 'uicanvas') {
-                if (typeof(TP.sys.getUICanvas) === 'function') {
+                if (typeof TP.sys.getUICanvas === 'function') {
                     return TP.sys.getUICanvas();
                 }
                 return;
             }
 
             if (id.toLowerCase() === 'uiroot') {
-                if (typeof(TP.sys.getUIRoot) === 'function') {
+                if (typeof TP.sys.getUIRoot === 'function') {
                     return TP.sys.getUIRoot();
                 }
 
@@ -4514,7 +4514,7 @@ TP.sys.getWindowById = function(anID, aWindow) {
     opener = cWin.opener;
     if (opener != null &&
         opener !== cWin &&
-        typeof(TP.windowIsInstrumented) === 'function') {
+        typeof TP.windowIsInstrumented === 'function') {
         if (!TP.windowIsInstrumented(opener)) {
             opener.TP.sys = TP.sys;
         }
@@ -4545,7 +4545,7 @@ TP.windowIsInstrumented = function(nativeWindow) {
     }
 
     //  check out the window...might not be a window ;)
-    if (typeof(nativeWindow.location) === 'undefined') {
+    if (typeof nativeWindow.location === 'undefined') {
         return false;
     }
 
@@ -4736,7 +4736,7 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
 
     //  Try this, but know that you may get 'object' for things that aren't
     //  primitive values for String, Number, etc.
-    type = typeof(anObject);
+    type = typeof anObject;
 
     switch (type) {
         case 'string':
@@ -4843,7 +4843,7 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
                     return 'NaN';
                 }
             } catch (e) {
-                void(0);
+                void 0;
             }
 
             break;
@@ -5097,7 +5097,7 @@ TP.boot.$str = function(anObject, aSeparator) {
 
         try {
             //  try to get decent string from Error objects
-            if (typeof(anObject.message) === 'string') {
+            if (typeof anObject.message === 'string') {
                 return anObject.message;
             } else {
                 return TP.boot.$dump(anObject, aSeparator || ', ');
@@ -5137,7 +5137,7 @@ TP.boot.$trim = function(aString) {
     i = str.length;
 
     while (ws.test(str.charAt(--i))) {
-        void(0);
+        void 0;
     }
 
     return str.slice(0, i + 1);
@@ -8023,7 +8023,7 @@ TP.boot.$getLibRoot = function() {
 
             /* eslint-disable no-fallthrough */
         case 'script':
-            void(0);
+            void 0;
             /* falls through */
         default:
             /* eslint-enable no-fallthrough */
@@ -8975,7 +8975,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     }
 
     //  if we were successful then invoke the callback function
-    if (typeof(aCallback) === 'function') {
+    if (typeof aCallback === 'function') {
         aCallback(result, $STATUS !== 0);
     }
 
@@ -9125,7 +9125,7 @@ TP.boot.$$importComplete = function() {
                         }
                     } else {
                         //debugger;
-                        void(0);
+                        void 0;
                     }
 
                     //  if we didn't find a phase two page waiting for us
@@ -9154,7 +9154,7 @@ TP.boot.$$importComplete = function() {
         TP.boot.$stderr = TP.boot.STDERR_NULL;
     } else {
         //debugger;
-        void(0);
+        void 0;
     }
 
     return;
@@ -9457,7 +9457,7 @@ TP.boot.$importComponents = function(loadSync) {
 
     } else {
         //  unsupported tag name, for now we'll just ignore it
-        void(0);
+        void 0;
     }
 
     //  reset the script setting
@@ -10567,7 +10567,7 @@ TP.boot.launch = function(options) {
     if (window.$$tibet !== null && window.$$tibet !== window) {
         //  make sure the user sees this
         TP.boot.$stderr('Found existing TIBET image in ' +
-            (typeof(window.$$tibet.getFullName) === 'function') ?
+            (typeof window.$$tibet.getFullName === 'function') ?
                 window.$$tibet.getFullName() :
                 window.$$tibet.name +
                 '. Boot sequence terminated.', TP.FATAL);

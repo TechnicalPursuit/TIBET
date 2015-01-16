@@ -104,7 +104,7 @@ function() {
     try {
         this.$$format_asHTMLString = true;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     //  perform a simple conversion based on filtering rule if any
@@ -129,7 +129,7 @@ function() {
     try {
         delete this.$$format_asHTMLString;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     return arr.join('');
@@ -242,7 +242,7 @@ function(aFilterName) {
     try {
         this.$$format_asXMLString = true;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     //  perform a simple conversion based on filtering rule if any
@@ -261,7 +261,7 @@ function(aFilterName) {
     try {
         delete this.$$format_asXMLString;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     return arr.join('');

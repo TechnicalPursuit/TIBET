@@ -1756,6 +1756,7 @@ function(aRequest) {
 
     if (TP.isEmpty(tileID)) {
         //  Fail - shouldn't get here
+        void 0;
     } else {
         tileID = tileID.replace(/\$/g, '_');
 

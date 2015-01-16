@@ -902,7 +902,7 @@ function(job, params) {
     } else {
         //  No 'to' or 'by' - can't proceed from here.
         //  TODO: Raise an exception
-        void(0);
+        void 0;
     }
 
     params.atPut('from', fromAsNumber);

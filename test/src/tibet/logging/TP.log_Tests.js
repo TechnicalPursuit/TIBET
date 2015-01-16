@@ -85,19 +85,19 @@ function() {
         this.refute.isValid(root.getParent());
     });
 
-    this.it('ensures root does not inherit appenders',function(test, options) {
+    this.it('ensures root does not inherit appenders', function(test, options) {
         this.assert.isFalse(root.inheritsAppenders());
     });
 
-    this.it('ensures root does not inherit filters',function(test, options) {
+    this.it('ensures root does not inherit filters', function(test, options) {
         this.assert.isFalse(root.inheritsFilters());
     });
 
-    this.it('ensures root has a default appender',function(test, options) {
+    this.it('ensures root has a default appender', function(test, options) {
         this.refute.isEmpty(root.getAppenders());
     });
 
-    this.it('ensures root has no default filters',function(test, options) {
+    this.it('ensures root has no default filters', function(test, options) {
         this.assert.isEmpty(root.getFilters());
     });
 });

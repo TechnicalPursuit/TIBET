@@ -727,7 +727,7 @@ function() {
         path = TP.apc('[2:]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37, 'hi'));
+        this.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6', '7', '8'), 'c'), 37, 'hi'));
     });
 
     this.it('slicing get #4', function(test, options) {
@@ -747,7 +747,7 @@ function() {
         path = TP.apc('[:-2]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac('one', 'two', TP.ac('a', TP.ac('6','7','8'), 'c')));
+        this.assert.isEqualTo(val, TP.ac('one', 'two', TP.ac('a', TP.ac('6', '7', '8'), 'c')));
     });
 
     this.it('slicing get #6', function(test, options) {
@@ -757,7 +757,7 @@ function() {
         path = TP.apc('[2:-1]');
         val = path.executeGet(slicingResultsModel);
 
-        this.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6','7','8'), 'c'), 37));
+        this.assert.isEqualTo(val, TP.ac(TP.ac('a', TP.ac('6', '7', '8'), 'c'), 37));
     });
 
     this.it('slicing get #7', function(test, options) {

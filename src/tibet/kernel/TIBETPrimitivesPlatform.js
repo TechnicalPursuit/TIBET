@@ -230,7 +230,7 @@ TP.hc(
             //  If the privilege status is already ENABLE, then skip all of
             //  the rest of this and don't abuse the user with dialog boxes
             if (TP.PRIVILEGE_FLAGS.at(privilegedOp) === 'ENABLE') {
-                void(0);
+                void 0;
             } else {
                 //  We obtained permission, but is it 'PROMPT' or 'ENABLE'??
 

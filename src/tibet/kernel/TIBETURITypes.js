@@ -8263,7 +8263,7 @@ function(aSignal) {
     if (TP.isNode(dat = aSignal.getPayload().at('body'))) {
         //  remove content wrapper by grabbing first child
         //dat = TP.nodeCloneNode(dat.firstChild, true);
-        void(0);
+        void 0;
     }
 
     TP.ifTrace() ?
@@ -8708,7 +8708,7 @@ function(aURI, aRequest) {
 
             //  fall through past outer IF/ELSE so we can process the map
             //  in one place regardless of how it was acquired/built
-            void(0);
+            void 0;
         }
     } else {    //  map not found -- first time for this URI/profile pair
         map = TP.ifInvalid(TP.core.URI.$getURIMapForKey(url, entry, key),

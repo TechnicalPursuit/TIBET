@@ -872,7 +872,7 @@ TP.boot.$isNumber = function(value) {
 
     // Sadly, some edge case things might not pass this, but they don't tend to
     // show up during boot processing.
-    return typeof(value) === 'number' && !isNaN(value);
+    return typeof value === 'number' && !isNaN(value);
 };
 
 //  ----------------------------------------------------------------------------
@@ -885,7 +885,7 @@ TP.boot.$isString = function(value) {
      * @return {Boolean} True if the value is a string.
      */
 
-    return typeof(value) === 'string' || value.constructor === String;
+    return typeof value === 'string' || value.constructor === String;
 };
 
 //  ----------------------------------------------------------------------------
@@ -987,7 +987,7 @@ TP.sys.defineGlobal = function(aName, aValue, force) {
     //  when this is converted to a hash during finalization
     TP.sys.$globals.push(aName);
 
-    wasUndefined = (typeof(TP.global[aName]) === 'undefined');
+    wasUndefined = (typeof TP.global[aName] === 'undefined');
 
     //  if the slot was truly undefined, then we go ahead and do a
     //  'defineProperty' here. Note that we don't otherwise, since it may be
@@ -1177,7 +1177,7 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         } else {
             //  no key but a prefix, return all for that prefix
             arr = [];
-            if (typeof(aHash.getKeys) === 'function') {
+            if (typeof aHash.getKeys === 'function') {
                 keys = aHash.getKeys();
                 len = keys.length;
                 for (i = 0; i < len; i++) {
@@ -1299,7 +1299,7 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
 
         if (shouldSignal !== false &&
             TP.sys.hasStarted() &&
-            typeof(window.$signal) === 'function') {
+            typeof window.$signal === 'function') {
             window.$signal(TP.sys, aKey + 'Change', aKey);
         }
 

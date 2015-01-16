@@ -4770,7 +4770,7 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
     //  alert('got to did blur');
-        void(0);
+        void 0;
     }
 
     return;
@@ -4790,7 +4790,7 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
     //  alert('got to did focus');
-        void(0);
+        void 0;
     }
 
     return;
@@ -4809,7 +4809,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        void(0);
+        void 0;
 
         /*
         TP.ifInfo() ?
@@ -4836,7 +4836,7 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        void(0);
+        void 0;
 
         /*
         TP.ifInfo() ?

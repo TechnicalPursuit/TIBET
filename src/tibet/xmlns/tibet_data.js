@@ -522,7 +522,7 @@ function() {
             }
         } else {
             //  TP.info('signame: ' + aSignal.getSignalName(), TP.LOG);
-            void(0);
+            void 0;
         }
     }.bind(this);
 

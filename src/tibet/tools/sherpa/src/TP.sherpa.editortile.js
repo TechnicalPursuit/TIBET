@@ -260,7 +260,7 @@ function() {
     targetTPElement = TP.$$currentFocus;
 
     groups = TP.hc();
-    groups.atPut('Special', TP.ac('Generator','Markup'));
+    groups.atPut('Special', TP.ac('Generator', 'Markup'));
     groups.atPut('CSS Rules', TP.ac('Applied Rules'));
     groups.atPut('CSS Properties', TP.CSS_ALL_PROPERTIES);
     groups.atPut('DOM Properties', Object.keys(targetTPElement.getNativeNode()));

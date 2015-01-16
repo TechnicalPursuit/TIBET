@@ -506,6 +506,7 @@ function() {
         TP.elementShow(TP.byId('UIROOT', top));
     } else if (TP.sys.cfg('tibet.sherpa') === true) {
         //  TODO: Make the appropriate GUI window show for the Sherpa, etc.
+        void 0;
     }
 
     return this;
@@ -528,6 +529,7 @@ function() {
         TP.elementShow(TP.byId('UIBOOT', top));
     } else if (TP.sys.cfg('tibet.sherpa') === true) {
         //  TODO: Make the appropriate log window show for the Sherpa, etc.
+        void 0;
     }
 
     return this;
@@ -950,7 +952,7 @@ function(entries) {
 
         if (TP.isNode(targets)) {
             //  The target is already a Node
-            void(0);
+            void 0;
         } else if (TP.isKindOf(targets, TP.core.Node)) {
             targets = TP.unwrap(targets);
         } else if (targets.isAccessPath()) {

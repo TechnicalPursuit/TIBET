@@ -2222,7 +2222,7 @@ function(aPrompt, aCSSClass) {
 
     } else {
         //  TODO:   what do we want to do here?
-        void(0);
+        void 0;
     }
 
     //  Set the left of the cmdline's input div to the width of the prompt div

@@ -143,7 +143,7 @@ TDS.cli = function(options) {
             var value;
 
             if (key === 'cmd') {
-                void(0);    // skip
+                void 0;    // skip
             } else {
                 value = req.query[key];
 
@@ -352,13 +352,13 @@ TDS.watcher = function(options) {
         function (fileName, curr, prev) {
             if (typeof fileName === 'object' && prev === null && curr === null) {
                 // Finished walking the tree
-                void(0);
+                void 0;
             } else if (prev === null) {
                 // fileName is a new file
-                void(0);
+                void 0;
             } else if (curr.nlink === 0) {
                 // fileName was removed
-                void(0);
+                void 0;
             } else {
                 // fileName was changed
                 changedFileName = fileName;

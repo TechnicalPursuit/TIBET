@@ -391,7 +391,7 @@ function(attributeName, attributeValue, shouldSignal, allowUndef) {
         //  exists, but we need to know if we're being asked to change it
 
         //  for 'change' testing we demand equivalent types
-        if (typeof(oldVal) === typeof(newVal)) {
+        if (typeof oldVal === typeof newVal) {
             /* jshint eqeqeq:false */
             /* eslint-disable eqeqeq */
             if (oldVal == newVal) {
@@ -470,7 +470,7 @@ function(attributeName, attributeValue, shouldSignal) {
         oldVal = this[attr];
 
         if (TP.isDefined(oldVal)) {
-            if (typeof(oldVal) === typeof(newVal)) {
+            if (typeof oldVal === typeof newVal) {
                 /* jshint eqeqeq:false */
                 /* eslint-disable eqeqeq */
                 if (oldVal == newVal) {
@@ -1437,7 +1437,7 @@ function() {
         } else {
             //  TP.raise(newinst, 'TP.sig.DuplicateKey',
             //              arguments[i]);
-            void(0);
+            void 0;
         }
     }
 

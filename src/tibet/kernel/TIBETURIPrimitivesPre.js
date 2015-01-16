@@ -1945,7 +1945,7 @@ function(targetUrl, filePrefix, fileSuffix) {
 
         name = TP.uriJoinPaths(root, TP.join(TP.genID(prefix), '.', suffix));
     } catch (e) {
-        void(0);
+        void 0;
     } finally {
         TP.OID_PREFIX = origPrefix;
     }

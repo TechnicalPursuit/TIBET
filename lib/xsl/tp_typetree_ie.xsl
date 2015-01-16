@@ -93,10 +93,10 @@
 			<xsl:choose>
 				<xsl:when test="*">
 					<xsl:variable name="typeName" select="@id" />
-					<a href="javascript: void(0)" onclick="switchNode(this); return false" class="parent-element">
+					<a href="javascript: void 0" onclick="switchNode(this); return false" class="parent-element">
 						<span class="switch">-</span>
 					</a>
-					<a class="uor_table_link" href="javascript: void(0)" onclick="top.tibet.$shell(':reflect &quot;{$typeName}&quot;.asType()',true,false,null,&quot;TSH&quot;)">
+					<a class="uor_table_link" href="javascript: void 0" onclick="top.tibet.$shell(':reflect &quot;{$typeName}&quot;.asType()',true,false,null,&quot;TSH&quot;)">
 						<xsl:value-of select="@id"/>
 					</a>
 					<div>

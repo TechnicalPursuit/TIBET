@@ -130,7 +130,7 @@ function() {
 
         var foo;
 
-        foo = TP.ac(1,2,3);
+        foo = TP.ac(1, 2, 3);
         TP.sys.registerObject(foo, 'FOO', true);
 
         this.assert.isIdenticalTo(
@@ -1079,7 +1079,7 @@ function() {
 
         var foo;
 
-        foo = TP.ac(1,2,3);
+        foo = TP.ac(1, 2, 3);
         TP.sys.registerObject(foo, 'FOO', true);
 
         this.assert.isIdenticalTo(
@@ -2017,7 +2017,7 @@ function() {
             url;
 
         locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_XML_TEST';
-        testBody = TP.elem(TP.xmlstr(TP.hc('foo','bar','baz','goo')));
+        testBody = TP.elem(TP.xmlstr(TP.hc('foo', 'bar', 'baz', 'goo')));
 
         server.respondWith(
             TP.HTTP_POST,

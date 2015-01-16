@@ -1977,7 +1977,7 @@ function(aSignalOrHash) {
     if (TP.isTrue(info.at('deep'))) {
         //  TODO: Send 'rebuild' to *shallow children* elements with 'bind:'
         //  attributes if the 'deep' flag is specified.
-        void(0);
+        void 0;
     }
 
     return this;
@@ -2014,6 +2014,13 @@ function(aSignalOrHash) {
         shouldDefine,
         shouldDestroy,
 
+        oldObsURI,
+
+        elem,
+        elemChildElements,
+        i,
+        childTPElem,
+
         childrenFragment,
 
         repeatAttrs,
@@ -2023,8 +2030,7 @@ function(aSignalOrHash) {
         allVals,
         fullyExpandedVal,
 
-        obsURI,
-        oldObsURI;
+        obsURI;
 
     info = TP.isValid(aSignalOrHash) ? aSignalOrHash : TP.hc();
 
@@ -2034,10 +2040,6 @@ function(aSignalOrHash) {
     oldObsURI = this.getAttribute('oldObsURI');
 
     if (shouldDestroy) {
-        var i,
-            elem,
-            elemChildElements,
-            childTPElem;
 
         elem = this.getNativeNode();
 
@@ -2552,7 +2554,7 @@ function(aSignalOrHash) {
 
     if (TP.isTrue(aSignalOrHash.at('deep'))) {
         //this.$refreshBoundRoots(aSignalOrHash);
-        void(0);
+        void 0;
     }
 
     return this;

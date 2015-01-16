@@ -236,7 +236,7 @@ function(aValue, aFacet) {
     }
 
     day1 = parseInt(m1.at(this.get('DAY_INDEX')), 10);
-    day2 = parseInt(m2.at(this.get('DAY_INDEX')) , 10);
+    day2 = parseInt(m2.at(this.get('DAY_INDEX')), 10);
 
     if (day1 > day2) {
         return false;

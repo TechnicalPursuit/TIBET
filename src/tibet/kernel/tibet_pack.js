@@ -564,7 +564,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
                                         src.charAt(i + 1) === quote) {
                                         //  don't add the backslash as we don't
                                         //  want it encoded
-                                        void(0);
+                                        void 0;
                                     } else {
                                         attr += c;
                                     }

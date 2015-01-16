@@ -121,7 +121,7 @@ function(aRequest) {
     if (TP.isString(stdio)) {
         stdio = TP.core.Resource.getResourceById(stdio);
     } else if (TP.canInvoke(stdio, ['notify', 'stdin', 'stdout', 'stderr'])) {
-        void(0);
+        void 0;
     }
 
     silent = TP.ifInvalid(params.at('cmdSilent'), false);
@@ -2796,7 +2796,7 @@ function(aRequest, allForms) {
                         expandedVal = val;
                     } else if (val.charAt(0) === '`') {
                         //  We leave 'val' alone here and let it get expanded.
-                        void(0);
+                        void 0;
                     } else {
                         val = val.unquoted();
                     }

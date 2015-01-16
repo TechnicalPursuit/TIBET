@@ -1655,7 +1655,7 @@ function(aRequest) {
                     //  non-terminal path, drop through and update context
                     //  so we keep looping upward. presumably we'll
                     //  terminate at either an absolute path or a source...
-                    void(0);
+                    void 0;
                 }
             }
         } else {
@@ -1686,7 +1686,7 @@ function(aRequest) {
                 //  past the isBound test...must have a bind:info reference
                 //  so we'll fall through and let the next context element
                 //  provide more information
-                void(0);
+                void 0;
             }
         }
 

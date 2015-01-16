@@ -302,7 +302,7 @@ TP.test.Employee.Inst.defineAttribute(
         {
             'value': 'f',
             'valid': {
-                'enumeration': TP.ac('m','f')
+                'enumeration': TP.ac('m', 'f')
             },
             'required': true
         },

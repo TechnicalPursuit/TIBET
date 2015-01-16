@@ -128,7 +128,7 @@
 					<xsl:call-template name="text-only"/>
 				</xsl:when>
 				<xsl:when test="*|comment()|processing-instruction()">
-					<a href="javascript:void(0)" onclick="switchNode(this);return false" class="parent-element">
+					<a href="javascript:void 0" onclick="switchNode(this);return false" class="parent-element">
 						<span class="switch">-</span>
 						<xsl:text>&lt;</xsl:text>
 						<span class="element">
@@ -212,7 +212,7 @@
 			</li>
 		</xsl:if>
 	</xsl:template>
-	
+
 	<xsl:template name="text-only">
 		<xsl:choose>
 			<xsl:when test="string-length(normalize-space(.))">
@@ -231,7 +231,7 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
+
 	<xsl:template name="namespace-node">
 		<xsl:if test="name() != 'xml'">
 			<span class="namespace-key">

@@ -3412,7 +3412,7 @@ function(anElement, attributeName, checkAttrNSURI) {
             //  we're supposed to look for. basically we're forced into the
             //  same logic as if the flag were false...all we can do is fall
             //  through and go by prefix alone
-            void(0);
+            void 0;
         }
     }
 
@@ -10320,7 +10320,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                     //  skip cycles on returned node, descend into
                     //  children by dropping out of here without a
                     //  return or continue call.
-                    void(0);
+                    void 0;
                 } else if (TP.isValid(ret)) {
                     TP.ifWarn() ?
                         TP.warn('Unrecognized traversal return value: ' +

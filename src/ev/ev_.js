@@ -251,7 +251,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
             handler = TP.gid(elem, true);
         } else {
             //  not empty, but not found. perhaps "external" so we'll allow
-            void(0);
+            void 0;
         }
     }
 

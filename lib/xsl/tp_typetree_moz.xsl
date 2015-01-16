@@ -42,7 +42,7 @@
 						font-family: "Lucida Typewriter","Lucida Console", Courier, monospace;
 						padding-right: 5px;
 					}
-					
+
 					a.parent-element
 					{
 						text-decoration: none;
@@ -93,7 +93,7 @@
 			<xsl:choose>
 				<xsl:when test="*">
 					<xsl:variable name="typeName" select="@id" />
-					<a href="javascript: void(0)" onclick="switchNode(this); return false" class="parent-element">
+					<a href="javascript: void 0" onclick="switchNode(this); return false" class="parent-element">
 						<span class="switch">-</span>
 					</a>
 					<a class="uor_table_link" href="javascript: parent.$shell(':reflect &quot;{$typeName}&quot;.asType()',true,false,null,&quot;TSH&quot;)">

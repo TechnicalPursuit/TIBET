@@ -1215,7 +1215,7 @@ function(REQUEST$$, CMDTYPE$$) {
                     }
                 } else {
                     //  TODO: Had a token, but it's not an identifier?
-                    void(0);
+                    void 0;
                 }
             } else if (this.isAccessPath(TOKENS$$)) {
                 //  Set a flag we can check later to see that this command has
@@ -1236,7 +1236,7 @@ function(REQUEST$$, CMDTYPE$$) {
             } else {
                 //  fall through and let the EXEC$$ code try to invoke the
                 //  proper method on the RESULT$$ of the expression.
-                void(0);
+                void 0;
             }
 
             break;
@@ -1336,7 +1336,7 @@ function(REQUEST$$, CMDTYPE$$) {
                     TP.nodeSetTextContent($NODE, $SCRIPT);
                 } else {
                     //  multi-token content...fall through
-                    void(0);
+                    void 0;
                 }
             } else {
                 //  if we're not the target of a pipe life is easy, we're

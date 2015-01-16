@@ -1402,7 +1402,7 @@ function() {
         test.assert.isNull(value);
 
         //  Array
-        tpElem.set('value', TP.ac('foo','bar','baz'));
+        tpElem.set('value', TP.ac('foo', 'bar', 'baz'));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'foo');
 
@@ -1543,7 +1543,7 @@ function() {
         test.assert.isEmpty(value);
 
         //  Array
-        tpElem.set('value', TP.ac('foo','bar','baz'));
+        tpElem.set('value', TP.ac('foo', 'bar', 'baz'));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
 
@@ -1679,7 +1679,7 @@ function() {
         test.assert.isNull(value);
 
         //  Array
-        tpElem.set('value', TP.ac('foo','bar','baz'));
+        tpElem.set('value', TP.ac('foo', 'bar', 'baz'));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'foo');
 
@@ -1820,7 +1820,7 @@ function() {
         test.assert.isEmpty(value);
 
         //  Array
-        tpElem.set('value', TP.ac('foo','bar','baz'));
+        tpElem.set('value', TP.ac('foo', 'bar', 'baz'));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
 

@@ -3267,7 +3267,7 @@ function(anInterface, anObject) {
         } else {
             if (TP.owns(target, fname) && TP.$$isDNU(target[fname])) {
                 try {
-                    delete(target[fname]);
+                    delete target[fname];
                     count++;
                 } catch (e) {
                     TP.ifWarn() ?
@@ -4106,7 +4106,7 @@ function(resolution, propName, targetObject, forInstances) {
             } else {
                 //  TODO: Raise an exception - type name doesn't point to a
                 //  valid type.
-                void(0);
+                void 0;
             }
         } else if (TP.isString(resolution)) {
             //  The resolution is a String, which means it should've just been a
@@ -4123,7 +4123,7 @@ function(resolution, propName, targetObject, forInstances) {
             } else {
                 //  TODO: Raise an exception - type name doesn't point to a
                 //  valid type.
-                void(0);
+                void 0;
             }
         } else if (TP.isType(resolutionType = resolution) &&
                     resolutionType !== mainType) {
@@ -4140,7 +4140,7 @@ function(resolution, propName, targetObject, forInstances) {
         } else {
             //  TODO: Raise an exception - type name doesn't point to a valid
             //  type.
-            void(0);
+            void 0;
         }
 
         //  If the resolution type value is not a method, then it's an
@@ -4545,7 +4545,7 @@ function(aList) {
         it = aList.at(i);
 
         if (TP.owns(this, it)) {
-            delete(this[it]);
+            delete this[it];
         }
     }
 
@@ -4596,7 +4596,7 @@ function(aList) {
         it = aList.at(i);
 
         if (TP.owns(proto, it)) {
-            delete(proto[it]);
+            delete proto[it];
         }
     }
 
@@ -4629,7 +4629,7 @@ function(aList) {
         it = aList.at(i);
 
         if (TP.owns(proto, it)) {
-            delete(proto[it]);
+            delete proto[it];
         }
     }
 
@@ -4659,7 +4659,7 @@ function(aList) {
         it = aList.at(i);
 
         if (TP.owns(this, it)) {
-            delete(this[it]);
+            delete this[it];
         }
     }
 
@@ -4689,7 +4689,7 @@ function(aList) {
         it = aList.at(i);
 
         if (TP.owns(this, it)) {
-            delete(this[it]);
+            delete this[it];
         }
     }
 

@@ -1309,7 +1309,7 @@ function(anElement) {
         if (!TP.isElement(styleElem =
                 TP.documentAddStyleElement(TP.nodeGetDocument(anElement)))) {
             //  TODO: Raise an exception and return
-            void(0);
+            void 0;
         }
 
         //  Uniquely identify the 'pseudo inline style element'

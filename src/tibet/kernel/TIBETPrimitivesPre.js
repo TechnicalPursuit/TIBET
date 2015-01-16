@@ -380,11 +380,11 @@ TP.isFunction = function(anObj) {
      * @description Perhaps the most glaring example of why we've encapsulated
      *     so heavily in TIBET. Most libraries use typeof == 'function' and call
      *     it a day. Unfortunately many of IE's DOM-associated functions don't
-     *     return 'function' in response to a typeof() call and Mozilla is
+     *     return 'function' in response to a typeof call and Mozilla is
      *     confused about RegExp objects and typeof (it returns "function"). So
-     *     there are at least two cases where typeof() will lie to you with
+     *     there are at least two cases where typeo) will lie to you with
      *     Function checks. Dates have similar issues, as do Numbers. Our
-     *     advice? Don't use typeof() unless you're certain of what you're
+     *     advice? Don't use typeof unless you're certain of what you're
      *     really testing against and you're only interested in knowing what the
      *     primitive type (in ECMA-standard terms) of the object is.
      * @param {Object} anObj The Object to test.
@@ -3997,7 +3997,7 @@ function(methodName, methodBody) {
         if (TP.isMethod(existingMethod = target[methodName]) &&
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
-            void(0);
+            void 0;
         } else {
             TP.defineMethodSlot(
                     target,
@@ -4017,7 +4017,7 @@ function(methodName, methodBody) {
         if (TP.isMethod(existingMethod = target[methodName]) &&
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
-            void(0);
+            void 0;
         } else {
             TP.defineMethodSlot(
                     target,
@@ -4091,7 +4091,7 @@ function(methodName, methodBody) {
     if (TP.isMethod(existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
         //  Empty block
-        void(0);
+        void 0;
     } else {
 
         TP.defineMethodSlot(
@@ -7292,7 +7292,7 @@ function(anObj) {
     }
 
     //  if it says so, then it is (a primitive one)
-    if (typeof(anObj) === 'boolean') {
+    if (typeof anObj === 'boolean') {
         return true;
     }
 
@@ -7317,7 +7317,7 @@ function(anObj) {
      */
 
     //  all dates report object as their primitive type (but so does null)
-    if (TP.notValid(anObj) || typeof(anObj) !== 'object') {
+    if (TP.notValid(anObj) || typeof anObj !== 'object') {
         return false;
     }
 
@@ -7352,10 +7352,10 @@ function(anObj) {
      *     test since our semantic usage of isNumber is based on testing
      *     parseInt results to see if a user has entered a valid numeric value
      *     or if data from a service is numeric.
-     * @description The obvious question is why not use typeof() == "number"?
-     *     Well, because typeof(NaN) == "number" will return true and, in our
-     *     minds anyway, NaN is explicitly by name Not A Number. At the very
-     *     least you won't want to do math with it or try to save it to a
+     * @description The obvious question is why not use typeof anObj ==
+     *     "number"? Well, because typeof NaN == "number" will return true and,
+     *     in our minds anyway, NaN is explicitly by name Not A Number. At the
+     *     very least you won't want to do math with it or try to save it to a
      *     numeric column in a database. Sure, the spec says the behavior here
      *     is correct. We didn't say it was a bug, it's just lousy semantics so
      *     we made it work the way we, and other developers, assumed it would
@@ -7381,13 +7381,13 @@ function(anObj) {
      * @todo
      */
 
-    //  We have to check NaN first, since typeof(NaN) is considered to be
+    //  We have to check NaN first, since typeof NaN is considered to be
     //  'number' and we kinda think NotANumber is Not a Number ;)
     if (TP.isNaN(anObj)) {
         return false;
     }
 
-    if (typeof(anObj) === 'number') {
+    if (typeof anObj === 'number') {
         return true;
     }
 
@@ -7409,7 +7409,7 @@ function(anObj) {
 
     //  most regexp tests are done when we're trying to tell the difference
     //  between what might be a regex or a string, so check that first
-    if (typeof(anObj) === 'string') {
+    if (typeof anObj === 'string') {
         return false;
     }
 
@@ -7433,7 +7433,7 @@ function(anObj) {
      */
 
     //  all dates report object as their primitive type (but so does null)
-    if (TP.notValid(anObj) || typeof(anObj) !== 'object') {
+    if (TP.notValid(anObj) || typeof anObj !== 'object') {
         return false;
     }
 
@@ -7538,7 +7538,7 @@ function(anObj, includeScannedGlobals) {
 
     //  typeof lies about certain edge cases and is indiscriminate in most
     //  others, but for our purposes here it's sufficient
-    switch (typeof(anObj)) {
+    switch (typeof anObj) {
         case 'boolean':
         case 'number':
             //  somewhat nonsensical, but yeah
@@ -8180,7 +8180,7 @@ function(anObj) {
 
     //  have to watch out for other things with length, like strings and
     //  CSSStyleDeclarations
-    return typeof(anObj) !== 'string' &&
+    return typeof anObj !== 'string' &&
             anObj.length !== undefined &&
             anObj.item !== undefined &&
             anObj.nodeType === undefined &&
@@ -8641,7 +8641,7 @@ function(anObj) {
         return true;
     }
 
-    type = typeof(anObj);
+    type = typeof anObj;
 
     //  have to be careful here because of IE and its failure to support
     //  toString() on certain node objects
@@ -9179,7 +9179,7 @@ function(verbose) {
     try {
         this.$$format_asString = true;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     /* jshint -W009 */
@@ -9205,7 +9205,7 @@ function(verbose) {
     try {
         delete this.$$format_asString;
     } catch (e) {
-        void(0);
+        void 0;
     }
 
     return str;

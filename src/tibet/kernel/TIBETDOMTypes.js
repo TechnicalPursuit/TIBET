@@ -2591,7 +2591,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  val exists either as null or other defined value. the ==
         //  test should be adequate since we're getting a value from the
         //  model which is typically a string/number/boolean.
-        if (typeof(val) === typeof(attributeValue)) {
+        if (typeof val === typeof attributeValue) {
             if (val === attributeValue) {
                 //  if new value is a match then no change is needed
                 return this;
@@ -9299,7 +9299,7 @@ function(mimeType) {
     if (TP.notEmpty(openingTag = TP.regex.OPENING_TAG.exec(str).at(0))) {
         if (!/xmlns=/.test(openingTag)) {
             updatedOpeningTag =
-                        TP.regex.OPENING_TAG.exec(str).at(0).slice(0,-1) +
+                        TP.regex.OPENING_TAG.exec(str).at(0).slice(0, -1) +
                         ' xmlns="' + TP.w3.Xmlns.XHTML + '">';
             str = str.replace(openingTag, updatedOpeningTag);
         }

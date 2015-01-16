@@ -1909,7 +1909,7 @@ function() {
     var type,
         percent;
 
-    type = typeof(this.limit);
+    type = typeof this.limit;
 
     switch (type) {
         case 'string':
@@ -1973,7 +1973,7 @@ function() {
         return this.$limitms;
     }
 
-    type = typeof(this.limit);
+    type = typeof this.limit;
 
     switch (type) {
         case 'number':
@@ -2067,7 +2067,7 @@ function() {
         active;
 
     limit = this.limit;
-    type = typeof(limit);
+    type = typeof limit;
 
     switch (type) {
         case 'number':
@@ -2220,7 +2220,7 @@ function() {
     this.isActive(true);
 
     delay = this.$get('delay');
-    type = typeof(delay);
+    type = typeof delay;
 
     switch (type) {
         case 'string':
@@ -2288,7 +2288,7 @@ function(aDelay) {
     var type;
 
     this.$set('delay', aDelay);
-    type = typeof(aDelay);
+    type = typeof aDelay;
 
     switch (type) {
         case 'string':
@@ -2344,7 +2344,7 @@ function(anInterval) {
     var type;
 
     this.$set('interval', anInterval);
-    type = typeof(anInterval);
+    type = typeof anInterval;
 
     switch (type) {
         case 'string':
@@ -2412,7 +2412,7 @@ function(aLimit) {
     var type;
 
     this.$set('limit', aLimit);
-    type = typeof(aLimit);
+    type = typeof aLimit;
 
     switch (type) {
         case 'string':
@@ -2718,7 +2718,7 @@ function() {
         } else {
             //  no-op, we have an interval and it should be telling the work
             //  to occur. Note that we shouldn't really end up here.
-            void(0);
+            void 0;
         }
 
         return this;
@@ -2728,7 +2728,7 @@ function() {
     //  is the one the original job defined...we'll adjust it later for
     //  latency to try to keep the job on target
     interval = this.interval;
-    switch (typeof(interval)) {
+    switch (typeof interval) {
         case 'function':
 
             interval = interval(this, this.parameters);
@@ -3092,7 +3092,7 @@ function() {
             //  when limit is a function it's hard to say what we should
             //  compute based on since we have no way to know how close the
             //  job is to being done, so we don't try :)
-            void(0);
+            void 0;
         }
     }
 
@@ -3256,7 +3256,7 @@ function() {
             } else {
                 //  no-op. already have an interval and it'll call back when
                 //  it's ready
-                void(0);
+                void 0;
             }
         } else {
             //  re-queue via the iterate call for the next interval

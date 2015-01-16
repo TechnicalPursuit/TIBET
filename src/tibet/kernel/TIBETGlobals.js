@@ -242,7 +242,7 @@ TP.isNamespace = function(namespaceObj) {
         return false;
     }
 
-    return (typeof(namespaceObj.$$isNamespace) !== 'undefined');
+    return (typeof namespaceObj.$$isNamespace !== 'undefined');
 };
 
 //  Manual setup
@@ -567,6 +567,8 @@ TP.sys.$$windowCount = 0;
 //  requestAnimationFrame CONSTANTS
 //  ------------------------------------------------------------------------
 
+/* eslint-disable no-multi-spaces */
+
 //  Define our own versions of these functions on Window, since they could be
 //  platform dependent and putting them on other objects seems to not work.
 window.requestAnimFrame =
@@ -580,6 +582,8 @@ window.cancelAnimFrame =
         window.webkitCancelAnimationFrame ||
         window.mozCancelAnimationFrame    ||
         window.msCancelAnimationFrame;
+
+/* eslint-enable no-multi-spaces */
 
 //  ------------------------------------------------------------------------
 //  "TP" CONSTANTS

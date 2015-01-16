@@ -414,7 +414,7 @@ function(aMode) {
 
     centerElem = TP.byId('center');
 
-    switch(aMode) {
+    switch (aMode) {
         case 'h_split_bottom':
 
             TP.elementRemoveClass(centerElem, 'v-split-left');
@@ -1268,6 +1268,7 @@ function(uniqueID, dataRecord) {
 
     } else {
         //  Print an error
+        void 0;
     }
 
     this.teardownInputMark();

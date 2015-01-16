@@ -3204,7 +3204,7 @@ function(aKey) {
             'Attempt to replace/remove method: ' + k);
     }
 
-    delete(this[aKey]);
+    delete this[aKey];
 
     this.changed('value', TP.DELETE);
 
@@ -3256,7 +3256,7 @@ function(aKeyArray) {
             }
 
             changed = true;
-            delete(thisref[aKey]);
+            delete thisref[aKey];
         });
 
     if (changed) {
@@ -6890,7 +6890,7 @@ function() {
     len = keys.getSize();
 
     for (i = 0; i < len; i++) {
-        delete(hash[keys[i]]);
+        delete hash[keys[i]];
     }
 
     keys.empty();

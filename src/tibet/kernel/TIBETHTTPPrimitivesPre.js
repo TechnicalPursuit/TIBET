@@ -896,7 +896,7 @@ function(targetUrl, aRequest, httpObj) {
             TP.sys.cfg('tibet.simple_cors_only')) {
                 //  targetUrl needs privileges but we're configured for 'simple
                 //  CORS' only, which disallows custom 'X-' headers.
-                void(0);
+                void 0;
         } else {
             headers.atPut('X-Requested-With', 'XMLHttpRequest');
         }
