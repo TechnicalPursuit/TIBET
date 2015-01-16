@@ -7,8 +7,8 @@ modern JavaScript modules with a powerful set of interactive development tools.
 
 ### Install Node.js
 
-TIBET relies on Node.js and npm for command line tooling and to integrate some
-of today's best JavaScript modules. To install TIBET properly first make sure
+TIBET relies on Node.js and npm for command line tooling and integration of
+today's best JavaScript modules. To install TIBET properly first make sure
 you have Node.js version 0.10 or greater.
 
 To install Node.js follow the instructions at <a href="http://nodejs.org"
@@ -81,7 +81,7 @@ that the `tibet` command will function properly:
 </pre>
 <br/>
 You should now be able to use the `tibet` command which is necessary for the
-next step in our process.
+final step in our process.
 
 ##### Build TIBET
 
@@ -92,6 +92,8 @@ time to assemble a working set of those dependencies so TIBET can use them.
 <pre>
     tibet build_all
 </pre>
+<br/>
+Once you've built all of TIBET's rollups your installation is complete.
 
 # Next Steps
 
