@@ -8727,6 +8727,8 @@ function(aRequest) {
 
         processor,
 
+        nodeGID,
+
         type;
 
     TP.stop('break.content_process');
@@ -8761,11 +8763,15 @@ function(aRequest) {
         processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                         TP.core.TagProcessor.COMPILE_PHASES);
 
+        //  Capture this before processing - processing this node might very
+        //  well detach it.
+        nodeGID = TP.gid(node);
+
         //  Process the tree of markup
         processor.processTree(node, request);
 
         //  Signal from the node that compile processing is complete.
-        TP.signal(TP.gid(node), 'TP.sig.CompileProcessingComplete');
+        TP.signal(nodeGID, 'TP.sig.CompileProcessingComplete');
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
@@ -9104,7 +9110,9 @@ function(aRequest) {
 
         childNodes,
         len,
-        i;
+        i,
+
+        nodeGID;
 
     TP.stop('break.content_process');
 
@@ -9122,6 +9130,11 @@ function(aRequest) {
 
     //  Process each child that we have.
     for (i = 0; i < len; i++) {
+
+        //  Capture this before processing - processing this node might very
+        //  well detach it.
+        nodeGID = TP.gid(childNodes.at(i));
+
         processor.processTree(childNodes.at(i), request);
 
         //  If the shell request failed then our enclosing request has failed.
@@ -9131,8 +9144,7 @@ function(aRequest) {
         }
 
         //  Signal from the node that compile processing is complete.
-        TP.signal(TP.gid(childNodes.at(i)),
-                    'TP.sig.CompileProcessingComplete');
+        TP.signal(nodeGID, 'TP.sig.CompileProcessingComplete');
     }
 
     return this;
