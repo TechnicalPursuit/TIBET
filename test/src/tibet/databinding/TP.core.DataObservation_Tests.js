@@ -1149,6 +1149,19 @@ function() {
     loadURI = TP.uc('~lib_tst/src/tibet/databinding/Observation1.xhtml');
     unloadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
 
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
+
+    //  ---
+
     this.it('change notification - concrete reference, simple aspect', function(test, options) {
 
         test.getDriver().setLocation(loadURI);
@@ -1173,6 +1186,8 @@ function() {
                 test.assert.isEqualTo(
                             modelObj.get('salary'),
                             salaryField.get('value').asNumber());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value', modelObj, 'salary');
@@ -1223,6 +1238,8 @@ function() {
                 test.assert.isEqualTo(
                             modelObj.get('salary'),
                             salaryField.get('value').asNumber());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding(
@@ -1275,6 +1292,8 @@ function() {
                 test.assert.isEqualTo(
                             modelObj.get('salary'),
                             salaryField.get('value').asNumber());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value', modelURI, 'salary');
@@ -1330,6 +1349,9 @@ function() {
                 test.assert.isEqualTo(
                             modelObj.get('salaryValid'),
                             salaryField.get('@valid').asBoolean());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value', modelObj, 'salary');
@@ -1397,6 +1419,9 @@ function() {
                 test.assert.isEqualTo(
                             modelObj.get('salaryValid'),
                             salaryField.get('@valid').asBoolean());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value', 'CurrentEmployee', 'salary');
@@ -1466,6 +1491,9 @@ function() {
                             modelObj.get('salaryValid'),
                             salaryField.get('@valid').asBoolean());
 
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
+
                 //  Destroy the binding
                 salaryField.destroyBinding('value', modelURI, 'salary');
                 salaryField.destroyBinding('@valid', modelURI, 'salaryValid');
@@ -1517,6 +1545,8 @@ function() {
                 test.assert.isEqualTo(
                             modelObj.get('emp.salary'),
                             salaryField.get('value').asNumber());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
@@ -1571,6 +1601,8 @@ function() {
                             modelObj.get('emp.salary'),
                             salaryField.get('value').asNumber());
 
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             'CurrentEmployee',
@@ -1624,6 +1656,8 @@ function() {
                 test.assert.isEqualTo(
                             modelObj.get('emp.salary'),
                             salaryField.get('value').asNumber());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
@@ -1685,6 +1719,9 @@ function() {
                 test.assert.isEqualTo(
                             modelObj.get('emp.salaryValid'),
                             salaryField.get('@valid').asBoolean());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
@@ -1760,6 +1797,9 @@ function() {
                 test.assert.isEqualTo(
                             modelObj.get('emp.salaryValid'),
                             salaryField.get('@valid').asBoolean());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
@@ -1837,6 +1877,9 @@ function() {
                             modelObj.get('emp.salaryValid'),
                             salaryField.get('@valid').asBoolean());
 
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
+
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             modelURI,
@@ -1893,6 +1936,8 @@ function() {
                             TP.val(modelObj.get('/emp/salary')).asNumber(),
                             salaryField.get('value').asNumber());
 
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             modelObj,
@@ -1947,6 +1992,8 @@ function() {
                             TP.val(modelObj.get('/emp/salary')).asNumber(),
                             salaryField.get('value').asNumber());
 
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             'CurrentEmployee',
@@ -2000,6 +2047,8 @@ function() {
                 test.assert.isEqualTo(
                             TP.val(modelObj.get('/emp/salary')).asNumber(),
                             salaryField.get('value').asNumber());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
@@ -2060,6 +2109,9 @@ function() {
                 test.assert.isEqualTo(
                         TP.val(modelObj.get('/emp/salary/@valid')).asBoolean(),
                         salaryField.get('@valid').asBoolean());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
@@ -2135,6 +2187,9 @@ function() {
                         TP.val(modelObj.get('/emp/salary/@valid')).asBoolean(),
                         salaryField.get('@valid').asBoolean());
 
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
+
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             'CurrentEmployee',
@@ -2209,6 +2264,9 @@ function() {
                 test.assert.isEqualTo(
                         TP.val(modelObj.get('/emp/salary/@valid')).asBoolean(),
                         salaryField.get('@valid').asBoolean());
+
+                test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
+                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
