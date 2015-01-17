@@ -1849,13 +1849,16 @@ function(aTarget, aSignal) {
                         if (value === signalName) {
                             return true;
                         }
+
+                        if (/Change$/.test(value)) {
+                            sigNames = TP.sig.Change.getSubtypeNames(true);
+                        }
+                    } else if (TP.isKindOf(value, TP.sig.Signal)) {
+                        sigNames = value.getSignalNames();
                     }
 
-                    if (TP.isKindOf(value, TP.sig.Signal)) {
-                        sigNames = value.getSignalNames();
-                        if (sigNames.contains(signalName)) {
-                            return true;
-                        }
+                    if (sigNames.contains(signalName)) {
+                        return true;
                     }
 
                     return false;
