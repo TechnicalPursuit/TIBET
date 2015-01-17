@@ -95,7 +95,8 @@ function(aName) {
                         //  drawer will be immediate.
                         TP.elementAddClass(drawerElement, 'no_transition');
 
-                        TP.byOID('SherpaHUD').setAttribute('hidden', false);
+                        TP.byOID('SherpaHUD', TP.win('UIROOT')).setAttribute(
+                                                                'hidden', false);
 
                 }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 

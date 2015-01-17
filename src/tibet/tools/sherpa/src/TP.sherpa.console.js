@@ -97,7 +97,7 @@ function() {
         //  Set up the consoleOutput element by putting it in the previously
         //  used 'content' element that is currently displaying a 'busy' panel.
 
-        contentTPElem = TP.byOID('content');
+        contentTPElem = TP.byOID('content', this.getNativeWindow());
 
         consoleOutputTPElem = contentTPElem.addContent(
                             TP.xhtmlnode('<div id="SherpaConsoleOutput"/>'));
@@ -296,9 +296,9 @@ function(beHidden) {
             TP.core.Keyboard,
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
-        TP.byOID('content').hide();
+        TP.byOID('content', this.getNativeWindow()).hide();
     } else {
-        TP.byOID('content').show();
+        TP.byOID('content', this.getNativeWindow()).show();
 
         consoleInput = this.get('consoleInput');
         consoleInput.focus();
@@ -412,7 +412,7 @@ function(aMode) {
 
     var centerElem;
 
-    centerElem = TP.byId('center');
+    centerElem = TP.byId('center', this.getNativeWindow());
 
     switch (aMode) {
         case 'h_split_bottom':

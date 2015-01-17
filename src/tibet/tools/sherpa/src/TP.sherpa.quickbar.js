@@ -328,7 +328,7 @@ function() {
 
     var detailTile;
 
-    if (TP.notValid(detailTile = TP.byOID('detailTile'))) {
+    if (TP.notValid(detailTile = TP.byOID('detailTile', this.getNativeWindow()))) {
         detailTile = TP.byOID('Sherpa').makeTile('detailTile');
     }
 

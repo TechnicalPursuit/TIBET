@@ -135,7 +135,7 @@ val = 'TP.tibet.helloworld.defineMethod(\'tshCompile\',' + val + ');';
                     //TP.$$currentFocus.setContent('<tibet:helloworld/>');
 
                     focusElem = TP.unwrap(TP.$$currentFocus);
-                    TP.byOID('SherpaHalo').blur();
+                    TP.byOID('SherpaHalo', TP.win('UIROOT.SHERPA_FRAME')).blur();
 
                     TP.$$currentFocus =
                         TP.wrap(
@@ -145,7 +145,7 @@ val = 'TP.tibet.helloworld.defineMethod(\'tshCompile\',' + val + ');';
                                 focusElem,
                                 false));
 
-                    TP.byOID('SherpaHalo').focusOn(TP.$$currentFocus);
+                    TP.byOID('SherpaHalo', TP.win('UIROOT.SHERPA_FRAME')).focusOn(TP.$$currentFocus);
                 }
             }
         } else if (TP.elementGetAttribute(elem, 'id', true) === 'pushButton') {
