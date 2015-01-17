@@ -128,7 +128,11 @@ function(aCondition, aComment, aFaultString) {
     //  and alter the fault string message.
     if (this.get('isRefuter')) {
         condition = !aCondition;
-        faultStr = aFaultString.replace(/to be/, 'to not be');
+        if (TP.isString(aFaultString)) {
+            faultStr = aFaultString.replace(/to be/, 'to not be');
+        } else {
+            faultStr = aFaultString;
+        }
     } else {
         condition = aCondition;
         faultStr = aFaultString;
