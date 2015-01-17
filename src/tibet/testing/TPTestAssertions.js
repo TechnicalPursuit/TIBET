@@ -1857,7 +1857,8 @@ function(aTarget, aSignal) {
                         sigNames = value.getSignalNames();
                     }
 
-                    if (sigNames.contains(signalName)) {
+                    if (TP.notEmpty(sigNames) &&
+                        sigNames.contains(signalName)) {
                         return true;
                     }
 
