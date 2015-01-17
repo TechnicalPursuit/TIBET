@@ -107,6 +107,10 @@ function() {
                             function(anIFrameElem) {
                                 TP.elementHide(anIFrameElem);
                             });
+
+        //  Set the ui canvas to be the first screen
+        //  TODO: Should this be made into a variable, cfg or otherwise?
+        TP.sys.setUICanvas('UIROOT.SCREEN_0');
     }
 
     /*
