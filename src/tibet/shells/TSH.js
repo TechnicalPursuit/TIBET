@@ -85,10 +85,9 @@
  *     case we've use them as somewhat primary tokens.
  *
  *
- *      @   &commat;    Load/execute TSH script file. This is analoguous to the
- *                      Oracle command line's use of as a way of loading a SQL
- *                      file and running it. In our case however the file must
- *                      be a valid file containing... more TSH :).
+ *      @   &commat;    Dereferencing operator. Used to force the shell to treat
+ *                      a variable's content object as a target during redirect
+ *                      operations rather than the variable name itself.
  *
  *      \   &bsol;      Escape character. Used to escape the first command
  *                      character from shell processing so you can enter lines
@@ -2036,7 +2035,7 @@ function(aRequest) {
 
     //  NB: We supply 'false' as the default value if 'tsh:repeat' wasn't
     //  specified.
-    repeat = this.getArgument(aRequest, 'tsh:repeat', false, true);
+    repeat = this.getArgument(aRequest, 'tsh:repeat', false);
 
     /* eslint-disable no-loop-func */
 
@@ -2183,8 +2182,9 @@ function(aRequest) {
      * Provides reflection data dependent on the object and parameters provided.
      * There are a lot of variations of output based on the nature of the object
      * being reflected upon. An empty set of arguments returns the type list. A
-     * namespace without arguments provides types on that namespace. A root (TP
-     * or APP) typically lists namespaces/types found below that root. A type
+     * namespace without arguments provides types on that namespace. The APP
+     * root typically lists namespaces found below that root. TP will list
+     * any namespaces and primitives available for further reflection. A type
      * will normally default to listing type, instance, and local methods. An
      * instance will typically default to local and instance method listings.
      * The ultimate goal is to support exploration and filtering across the
@@ -2193,14 +2193,16 @@ function(aRequest) {
      */
 
     var arg0,
-        types,
+        flag,
         obj,
+        filter,
         result;
 
-    types = this.getArgument(aRequest, 'tsh:types', false, true);
+    arg0 = this.getArgument(aRequest, 'ARG0');
 
-    if (!this.hasArguments(aRequest) || TP.isTrue(types)) {
-        // No arguments means reflect the type list.
+    //  No arguments of any kind, or an empty arg0 coupled with the --types
+    //  flag. Dump the type list and exit.
+    if (!this.hasArguments(aRequest) || TP.isEmpty(arg0)) {
         result = TP.sys.getTypes().getValues().collect(function(type) {
             return TP.name(type);
         });
@@ -2217,20 +2219,35 @@ function(aRequest) {
         return aRequest.complete();
     }
 
-    arg0 = this.getArgument(aRequest, 'ARG0');
-    if (TP.notEmpty(arg0)) {
-        obj = this.resolveObjectReference(arg0, aRequest);
-        if (TP.notValid(obj)) {
-            aRequest.stderr('Unable to resolve object reference: ' + arg0);
-            aRequest.fail();
-            return;
-        }
+    //  If we have no argument but flags our only option is to dump usage.
+    if (TP.isEmpty(arg0)) {
+        aRequest.stdout(
+            'Usage: :reflect [spec] [--filter <filter>] [--owners]'
+        );
+        return aRequest.complete();
     }
 
+    obj = this.resolveObjectReference(arg0, aRequest);
+    if (TP.isValid(obj)) {
+        //  If we resolve the object reference our goal is to provide
+        //  reflection data appropriate to the nature of that object.
 
-    aRequest.complete();
+        //  Namespace objects should return their type lists.
+        if (TP.isNamespace(obj)) {
 
-    return;
+            return aRequest.complete();
+        }
+
+
+        return aRequest.complete();
+    }
+
+    //  TODO:
+    //  Not all input values are intended as full object references.
+    //  When we get anything we can't resolve we try to treat it as
+    //  a string to match within the context of our metadata.
+
+    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------

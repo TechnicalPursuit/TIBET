@@ -168,7 +168,7 @@ Cmd.prototype.execute = function() {
     if (CLI.inProject(Cmd) || CLI.inLibrary()) {
         cmds = this.getCommands(CLI.expandPath('~app_cmd'));
         if (cmds.length > 0) {
-            this.info('\n<command> extensions include:\n');
+            this.info('\nProject <commands> include:\n');
             this.logCommands(cmds);
         }
     }
@@ -237,7 +237,7 @@ Cmd.prototype.executeForCommand = function(command) {
     }
 
     if (!sh.test('-f', file)) {
-        this.error('Command \'' + command + '\' not found: ' + file);
+        this.error('Command \'' + command + '\' not found.');
         return 1;
     }
 

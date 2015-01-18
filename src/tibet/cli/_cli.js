@@ -553,7 +553,7 @@ CLI.getMakeTargets = function() {
     fullpath = this.expandPath(this.MAKE_FILE);
 
     if (!sh.test('-f', fullpath)) {
-        this.debug('project make file not found: ' + fullpath);
+        this.debug('Project make file not found: ' + fullpath);
         return;
     }
 
