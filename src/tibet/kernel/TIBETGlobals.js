@@ -2422,6 +2422,7 @@ TP.regex.EMPTY_TAG_END = /\/>/;
 //  DOCTYPEs, etc. in front of the 'first element markup'.
 TP.regex.OPENING_TAG = new RegExp(
     '<(' + TP.XML_NAME + ')([^<>"\']+|' + TP.XML_ATTRVAL + ')*>');
+TP.regex.CLOSED_TAG = /(<([^>]*?)\/>)$/;
 TP.regex.CLOSING_TAG = /(<\/([^>]*?)>)$/;
 
 TP.regex.OPENING_TAG_NAME = new RegExp('<((' + TP.XML_NAMECHAR + ')+)');
