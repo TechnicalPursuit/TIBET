@@ -3256,9 +3256,9 @@ function(command, abstract, usage, description) {
         method.$$usage = usage;
         method.$$description = description;
     } else {
-        // TODO: turn this on once we finish up all the commands.
-        TP.warn('Defining help for non-existent shell command: ' + command);
-        void 0;
+        if (TP.sys.cfg('tsh.warn_extra_help')) {
+            TP.warn('Defining help for non-existent shell command: ' + command);
+        }
     }
 
     return method;
