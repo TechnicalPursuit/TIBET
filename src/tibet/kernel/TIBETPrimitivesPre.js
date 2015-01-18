@@ -2707,6 +2707,63 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isPlainObject',
+function(anObj) {
+
+    /**
+     * @name isPlainObject
+     * @synopsis Returns true if the object provided is a 'plain JavaScript
+     *     Object' - that is, created via 'new Object()' or '{}'.
+     * @param {Object} anObj The Object to test.
+     * @example Test what's a type and what's not:
+     *     <code>
+     *          anObj = new Object();
+     *          TP.isPlainObject(anObj);
+     *          <samp>true</samp>
+     *          anObj = {};
+     *          TP.isPlainObject(anObj);
+     *          <samp>true</samp>
+     *          anObj = true;
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = 42;
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = '';
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = [];
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = TP.lang.Object.construct();
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a Type.
+     * @todo
+     */
+
+    //  Based on jQuery 2.X isPlainObject with additional checks for TIBET
+    //  objects.
+
+    if (anObj[TP.TYPE] ||
+        typeof anObj !== 'object' ||
+        anObj.nodeType ||
+        TP.isWindow(anObj)) {
+        return false;
+    }
+
+    if (anObj.constructor && !TP.ObjectProto.hasOwnProperty.call(
+                                anObj.constructor.prototype,
+                                'isPrototypeOf')) {
+        return false;
+    }
+
+    return true;
+}, false, 'TP.isPlainObject');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isType',
 function(anObj) {
 
@@ -4163,7 +4220,8 @@ function(target, name, value, track, owner) {
     if (TP.notValid(value)) {
         desc = TP.DEFAULT_DESCRIPTOR;
         val = undefined;
-    } else if (!value.hasOwnProperty('value')) {
+    } else if (!TP.isPlainObject(value)) {
+        //  Not a descriptor, so create one.
         desc = {'value': value};
         val = value;
     } else {
@@ -4227,7 +4285,8 @@ function(target, name, value, track, owner) {
     if (TP.notValid(value)) {
         desc = TP.DEFAULT_DESCRIPTOR;
         val = undefined;
-    } else if (!value.hasOwnProperty('value')) {
+    } else if (!TP.isPlainObject(value)) {
+        //  Not a descriptor, so create one.
         desc = {'value': value};
         val = value;
     } else {
