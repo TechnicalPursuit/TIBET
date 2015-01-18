@@ -104,7 +104,8 @@ range of tools to help streamline your development workflow.
 
 You can get help on the `tibet` command and its options via `tibet help`:
 
-    $ tibet help [command]
+<pre>
+    $ tibet help
 
     Usage: tibet <command> <options>
 
