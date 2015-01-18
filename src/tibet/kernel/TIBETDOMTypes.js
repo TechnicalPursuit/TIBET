@@ -9279,6 +9279,11 @@ function(mimeType) {
         uri = this.getResourceURI(mime);
     }
 
+    if (!TP.isURI(uri)) {
+        return this.raise('InvalidURI',
+            'Unable to locate resource URI for ' + this.asString());
+    }
+
     src = uri.getLocation();
 
     //  Grab the receiver's content registered under the supplied MIME type.
