@@ -138,70 +138,6 @@ function(aURI, content) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Type.defineMethod('fromObject',
-function(anObject) {
-
-    /**
-     * @name fromObject
-     * @synopsis Returns a TP.core.JSONContent-formatted string containing the
-     *     data in the object provided.
-     * @returns {String} A properly formatted TP.core.JSONContent string.
-     */
-
-    return TP.js2json(anObject);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.JSONContent.Type.defineMethod('fromNode',
-function(aNode) {
-
-    /**
-     * @name fromNode
-     * @synopsis Returns a TP.core.JSONContent-formatted string built from the
-     *     node.
-     * @returns {String} A properly formatted TP.core.JSONContent string.
-     */
-
-    return TP.xml2json(aNode);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.JSONContent.Type.defineMethod('fromTP_core_Node',
-function(aNode) {
-
-    /**
-     * @name fromTP_core_Node
-     * @synopsis Returns a TP.core.JSONContent-formatted string built from the
-     *     node.
-     * @returns {String} A properly formatted TP.core.JSONContent string.
-     */
-
-    return TP.xml2json(aNode.getNativeNode());
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.JSONContent.Type.defineMethod('reconstitute',
-function(aString) {
-
-    /**
-     * @name reconstitute
-     * @synopsis Returns the object(s) represented by the given
-     *     TP.core.JSONContent string.
-     * @description If the string isn't valid TP.core.JSONContent this method
-     *     returns null.
-     * @param {String} aString A TP.core.JSONContent formatted string.
-     * @returns {Object} The object representation of the TP.core.JSONContent
-     *     string.
-     */
-
-    return TP.json2js(aString);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.JSONContent.Type.defineMethod('validate',
 function(anObject) {
 
@@ -236,9 +172,6 @@ function(anObject) {
 //  The JSON content's JavaScript representation
 TP.core.JSONContent.Inst.defineAttribute('data');
 
-//  The original JSON string value, if there was one.
-TP.core.JSONContent.Inst.defineAttribute('json');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -265,10 +198,6 @@ function(data) {
         if (TP.notValid(jsonData)) {
             return;
         }
-
-        //  Save the original string responsible for our content data.
-        this.$set('json', data);
-
     } else {
         jsonData = data;
     }
