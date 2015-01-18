@@ -266,7 +266,7 @@ function(data) {
             return;
         }
 
-        // Save the original string responsible for our content data.
+        //  Save the original string responsible for our content data.
         this.$set('json', data);
 
     } else {
@@ -305,6 +305,35 @@ function() {
      */
 
     return this.asJSONSource();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('set',
+function(attributeName, attributeValue, shouldSignal) {
+
+    /**
+     * @name set
+     * @synopsis Sets the value of the named attribute to the value provided. If
+     *     no value is provided the value null is used.
+     * @description This is overridden from its supertype to automatically check
+     *     facets after the value is set.
+     * @param {String|TP.core.AccessPath} attributeName The name of the
+     *     attribute to set.
+     * @param {Object} attributeValue The value to set.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {Object} The receiver.
+     * @todo
+     */
+
+    var retVal;
+
+    retVal = this.callNextMethod();
+
+    this.checkFacets(attributeName);
+
+    return retVal;
 });
 
 //  ========================================================================

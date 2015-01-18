@@ -259,6 +259,181 @@ function() {
 });
 
 //  ========================================================================
+//  JSON Test Suite
+//  ========================================================================
+
+//  ========================================================================
+//  TP.test.SimpleJSONContentType
+//  ========================================================================
+
+/**
+ * @type {TP.test.SimpleJSONContentType}
+ * @synopsis A simple type to test JSON content.
+ * @description Note that TP.core.JSONContent automatically checks facets and
+ *     sets their value when its set() call is made. Therefore, the 'manual
+ *     facet setting' and 'individual aspect facet checking' tests are skipped
+ *     here.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.defineSubtype('test.SimpleJSONContentType');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.test.SimpleJSONContentType.Inst.defineAttribute(
+        'lastName',
+        {
+            'value': TP.tpc('data.lastName'),
+            'valid': {
+                'dataType': String
+            }
+        });
+
+TP.test.SimpleJSONContentType.Inst.defineAttribute(
+        'firstName',
+        {
+            'value': TP.tpc('data.firstName'),
+            'valid': {
+                'dataType': String
+            }
+        });
+
+TP.test.SimpleJSONContentType.Inst.defineAttribute(
+        'age',
+        {
+            'value': TP.tpc('data.age'),
+            'valid': {
+                'dataType': Number
+            }
+        });
+
+TP.test.SimpleJSONContentType.Inst.defineAttribute(
+        'SSN',
+        {
+            'value': TP.tpc('data.SSN'),
+            'valid': {
+                'dataType': 'TP.test.SSN'
+            },
+            'required': true
+        });
+
+//  ========================================================================
+//  JSON Test Suite
+//  ========================================================================
+
+TP.lang.Object.Inst.describe('JSON content validation',
+function() {
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
+
+    this.it('JSON content direct validation', function(test, options) {
+
+        var testObj;
+
+        testObj = TP.test.SimpleJSONContentType.construct(
+                    TP.json2js(
+                    '{' +
+                    '"lastName":"Edney",' +
+                    '"firstName":"Bill",' +
+                    '"age":48,' +
+                    '"SSN":"555-55-5555"' +
+                    '}'));
+
+        test.assert.isTrue(TP.validate(testObj, TP.test.SimpleJSONContentType));
+
+        testObj = TP.test.SimpleJSONContentType.construct(
+                    TP.json2js(
+                    '{' +
+                    '"lastName":"Edney",' +
+                    '"firstName":"Bill",' +
+                    '"age":48,' +
+                    '"SSN":"555-55--555"' +
+                    '}'));
+
+        test.assert.isFalse(TP.validate(testObj, TP.test.SimpleJSONContentType));
+    });
+
+    //  ---
+
+    this.it('JSON content validation using facets - using instance-level setter', function(test, options) {
+
+        var testObj;
+
+        testObj = TP.test.SimpleJSONContentType.construct(
+                    TP.json2js(
+                    '{' +
+                    '"lastName":"Edney",' +
+                    '"firstName":"Bill",' +
+                    '"age":48' +
+                    '}'));
+
+        testObj.shouldSignalChange(true);
+
+        testObj.set('SSN', '555-55-5555');
+
+        test.assert.didSignal(testObj, 'SSNChange');
+        test.assert.didSignal(testObj, 'TP.sig.StructureChange');
+
+        test.assert.didSignal(testObj, 'SSNValidChange');
+        test.assert.didSignal(testObj, 'TP.sig.ValidChange');
+
+        test.assert.didSignal(testObj, 'SSNRequiredChange');
+        test.assert.didSignal(testObj, 'TP.sig.RequiredChange');
+    });
+
+    //  ---
+
+    this.it('JSON content validation using facets - using local-level setter', function(test, options) {
+
+        var testObj,
+
+            ranLocalHandler;
+
+        testObj = TP.test.SimpleJSONContentType.construct(
+                    TP.json2js(
+                    '{' +
+                    '"lastName":"Edney",' +
+                    '"firstName":"Bill",' +
+                    '"age":48' +
+                    '}'));
+
+        testObj.shouldSignalChange(true);
+
+        ranLocalHandler = false;
+
+        testObj.defineMethod('setSSNRequired',
+            function(value) {
+                ranLocalHandler = true;
+                this.$setFacet('SSN', TP.REQUIRED, true);
+            });
+
+        testObj.set('SSN', '555-55-5555');
+
+        test.assert.didSignal(testObj, 'SSNChange');
+        test.assert.didSignal(testObj, 'TP.sig.StructureChange');
+
+        test.assert.didSignal(testObj, 'SSNValidChange');
+        test.assert.didSignal(testObj, 'TP.sig.ValidChange');
+
+        test.assert.didSignal(testObj, 'SSNRequiredChange');
+        test.assert.didSignal(testObj, 'TP.sig.RequiredChange');
+
+        test.assert.isTrue(ranLocalHandler);
+    });
+});
+
+//  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
 
