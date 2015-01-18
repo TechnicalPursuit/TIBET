@@ -9298,10 +9298,16 @@ function(mimeType) {
 
     if (TP.notEmpty(openingTag = TP.regex.OPENING_TAG.exec(str).at(0))) {
         if (!/xmlns=/.test(openingTag)) {
-            updatedOpeningTag =
-                        TP.regex.OPENING_TAG.exec(str).at(0).slice(0, -1) +
-                        ' xmlns="' + TP.w3.Xmlns.XHTML + '">';
-            str = str.replace(openingTag, updatedOpeningTag);
+            // Watch out for <blah/> vs <blah> here...
+            if (TP.regex.CLOSED_TAG.match(str)) {
+                str = str.slice(0, -2) +
+                    ' xmlns="' + TP.w3.Xmlns.XHTML + '"/>';
+            } else {
+                updatedOpeningTag =
+                    TP.regex.OPENING_TAG.exec(str).at(0).slice(0, -1) +
+                    ' xmlns="' + TP.w3.Xmlns.XHTML + '">';
+                str = str.replace(openingTag, updatedOpeningTag);
+            }
         }
     }
 
