@@ -1326,12 +1326,12 @@ function() {
 
                 modelObj = TP.lang.Object.construct();
                 modelObj.defineAttribute('salary');
-                modelObj.defineAttribute('salaryValid');
+                modelObj.defineAttribute('salaryInRange');
 
                 salaryField = TP.byOID('salaryField');
 
                 salaryField.defineBinding('value', modelObj, 'salary');
-                salaryField.defineBinding('@valid', modelObj, 'salaryValid');
+                salaryField.defineBinding('@inrange', modelObj, 'salaryInRange');
 
                 //  Set the value of 'salary' on the model object. The binding
                 //  should cause the value of 'salary' on the field to update.
@@ -1341,24 +1341,23 @@ function() {
                             modelObj.get('salary'),
                             salaryField.get('value').asNumber());
 
-                //  Set the value of 'salaryValid' on the model object. The
+                //  Set the value of 'salaryInRange' on the model object. The
                 //  binding should cause the value of 'salary' on the field to
                 //  update.
-                modelObj.set('salaryValid', true);
+                modelObj.set('salaryInRange', true);
 
                 test.assert.isEqualTo(
-                            modelObj.get('salaryValid'),
-                            salaryField.get('@valid').asBoolean());
+                            modelObj.get('salaryInRange'),
+                            salaryField.get('@inrange').asBoolean());
 
                 test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
-                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value', modelObj, 'salary');
-                salaryField.destroyBinding('@valid', modelObj, 'salaryValid');
+                salaryField.destroyBinding('@inrange', modelObj, 'salaryInRange');
 
                 modelObj.set('salary', 45);
-                modelObj.set('salaryValid', false);
+                modelObj.set('salaryInRange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
@@ -1368,7 +1367,7 @@ function() {
 
                 test.assert.isEqualTo(
                             true,
-                            salaryField.get('@valid').asBoolean());
+                            salaryField.get('@inrange').asBoolean());
 
                 //  Unload the current page by setting it to the blank
                 test.getDriver().setLocation(unloadURI);
@@ -1390,7 +1389,7 @@ function() {
 
                 modelObj = TP.lang.Object.construct();
                 modelObj.defineAttribute('salary');
-                modelObj.defineAttribute('salaryValid');
+                modelObj.defineAttribute('salaryInRange');
 
                 //  This sets the ID of the object and registers it with an
                 //  accompanying 'urn:tibet' URN (which will allow the
@@ -1401,7 +1400,7 @@ function() {
                 salaryField = TP.byOID('salaryField');
 
                 salaryField.defineBinding('value', 'CurrentEmployee', 'salary');
-                salaryField.defineBinding('@valid', 'CurrentEmployee', 'salaryValid');
+                salaryField.defineBinding('@inrange', 'CurrentEmployee', 'salaryInRange');
 
                 //  Set the value of 'salary' on the model object. The binding
                 //  should cause the value of 'salary' on the field to update.
@@ -1411,24 +1410,23 @@ function() {
                             modelObj.get('salary'),
                             salaryField.get('value').asNumber());
 
-                //  Set the value of 'salaryValid' on the model object. The
+                //  Set the value of 'salaryInRange' on the model object. The
                 //  binding should cause the value of 'salary' on the field to
                 //  update.
-                modelObj.set('salaryValid', true);
+                modelObj.set('salaryInRange', true);
 
                 test.assert.isEqualTo(
-                            modelObj.get('salaryValid'),
-                            salaryField.get('@valid').asBoolean());
+                            modelObj.get('salaryInRange'),
+                            salaryField.get('@inrange').asBoolean());
 
                 test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
-                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value', 'CurrentEmployee', 'salary');
-                salaryField.destroyBinding('@valid', 'CurrentEmployee', 'salaryValid');
+                salaryField.destroyBinding('@inrange', 'CurrentEmployee', 'salaryInRange');
 
                 modelObj.set('salary', 45);
-                modelObj.set('salaryValid', false);
+                modelObj.set('salaryInRange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
@@ -1438,7 +1436,7 @@ function() {
 
                 test.assert.isEqualTo(
                             true,
-                            salaryField.get('@valid').asBoolean());
+                            salaryField.get('@inrange').asBoolean());
 
                 //  Unload the current page by setting it to the blank
                 test.getDriver().setLocation(unloadURI);
@@ -1461,7 +1459,7 @@ function() {
 
                 modelObj = TP.lang.Object.construct();
                 modelObj.defineAttribute('salary');
-                modelObj.defineAttribute('salaryValid');
+                modelObj.defineAttribute('salaryInRange');
 
                 modelURI = TP.uc('urn:tibet:testdata');
                 //  This automatically sets the ID of modelObj to
@@ -1472,7 +1470,7 @@ function() {
                 salaryField = TP.byOID('salaryField');
 
                 salaryField.defineBinding('value', modelURI, 'salary');
-                salaryField.defineBinding('@valid', modelURI, 'salaryValid');
+                salaryField.defineBinding('@inrange', modelURI, 'salaryInRange');
 
                 //  Set the value of 'salary' on the model object. The binding
                 //  should cause the value of 'salary' on the field to update.
@@ -1482,24 +1480,23 @@ function() {
                             modelObj.get('salary'),
                             salaryField.get('value').asNumber());
 
-                //  Set the value of 'salaryValid' on the model object. The
+                //  Set the value of 'salaryInRange' on the model object. The
                 //  binding should cause the value of 'salary' on the field to
                 //  update.
-                modelObj.set('salaryValid', true);
+                modelObj.set('salaryInRange', true);
 
                 test.assert.isEqualTo(
-                            modelObj.get('salaryValid'),
-                            salaryField.get('@valid').asBoolean());
+                            modelObj.get('salaryInRange'),
+                            salaryField.get('@inrange').asBoolean());
 
                 test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
-                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value', modelURI, 'salary');
-                salaryField.destroyBinding('@valid', modelURI, 'salaryValid');
+                salaryField.destroyBinding('@inrange', modelURI, 'salaryInRange');
 
                 modelObj.set('salary', 45);
-                modelObj.set('salaryValid', false);
+                modelObj.set('salaryInRange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
@@ -1509,7 +1506,7 @@ function() {
 
                 test.assert.isEqualTo(
                             true,
-                            salaryField.get('@valid').asBoolean());
+                            salaryField.get('@inrange').asBoolean());
 
                 //  Unload the current page by setting it to the blank
                 test.getDriver().setLocation(unloadURI);
@@ -1691,7 +1688,7 @@ function() {
                     salaryField;
 
                 modelObj = TP.json2js(
-                                '{"emp":{"salary":50000,"salaryValid":null}}');
+                                '{"emp":{"salary":50000,"salaryInRange":false}}');
 
                 salaryField = TP.byOID('salaryField');
 
@@ -1699,9 +1696,9 @@ function() {
                                             modelObj,
                                             TP.apc('emp.salary'));
 
-                salaryField.defineBinding('@valid',
+                salaryField.defineBinding('@inrange',
                                             modelObj,
-                                            TP.apc('emp.salaryValid'));
+                                            TP.apc('emp.salaryInRange'));
 
                 //  Set the value of 'salary' on the model object. The binding
                 //  should cause the value of 'salary' on the field to update.
@@ -1711,28 +1708,27 @@ function() {
                             modelObj.get('emp.salary'),
                             salaryField.get('value').asNumber());
 
-                //  Set the value of 'salaryValid' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
+                //  Set the value of 'salaryInRange' on the model object. The
+                //  binding should cause the value of '@inrange' on the field to
                 //  update.
-                modelObj.set('emp.salaryValid', true);
+                modelObj.set('emp.salaryInRange', true);
 
                 test.assert.isEqualTo(
-                            modelObj.get('emp.salaryValid'),
-                            salaryField.get('@valid').asBoolean());
+                            modelObj.get('emp.salaryInRange'),
+                            salaryField.get('@inrange').asBoolean());
 
                 test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
-                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             modelObj,
                                             TP.apc('emp.salary'));
-                salaryField.destroyBinding('@valid',
+                salaryField.destroyBinding('@inrange',
                                             modelObj,
-                                            TP.apc('emp.salaryValid'));
+                                            TP.apc('emp.salaryInRange'));
 
                 modelObj.set('emp.salary', 45);
-                modelObj.set('emp.salaryValid', false);
+                modelObj.set('emp.salaryInRange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
@@ -1742,7 +1738,7 @@ function() {
 
                 test.assert.isEqualTo(
                             true,
-                            salaryField.get('@valid').asBoolean());
+                            salaryField.get('@inrange').asBoolean());
 
                 //  Unload the current page by setting it to the blank
                 test.getDriver().setLocation(unloadURI);
@@ -1763,7 +1759,7 @@ function() {
                     salaryField;
 
                 modelObj = TP.json2js(
-                                '{"emp":{"salary":50000,"salaryValid":null}}');
+                                '{"emp":{"salary":50000,"salaryInRange":null}}');
 
                 //  This sets the ID of the object and registers it with an
                 //  accompanying 'urn:tibet' URN (which will allow the
@@ -1777,9 +1773,9 @@ function() {
                                             'CurrentEmployee',
                                             TP.apc('emp.salary'));
 
-                salaryField.defineBinding('@valid',
+                salaryField.defineBinding('@inrange',
                                             'CurrentEmployee',
-                                            TP.apc('emp.salaryValid'));
+                                            TP.apc('emp.salaryInRange'));
 
                 //  Set the value of 'salary' on the model object. The binding
                 //  should cause the value of 'salary' on the field to update.
@@ -1789,28 +1785,27 @@ function() {
                             modelObj.get('emp.salary'),
                             salaryField.get('value').asNumber());
 
-                //  Set the value of 'salaryValid' on the model object. The
-                //  binding should cause the value of 'salary' on the field to
+                //  Set the value of 'salaryInRange' on the model object. The
+                //  binding should cause the value of '@inrange' on the field to
                 //  update.
-                modelObj.set('emp.salaryValid', true);
+                modelObj.set('emp.salaryInRange', true);
 
                 test.assert.isEqualTo(
-                            modelObj.get('emp.salaryValid'),
-                            salaryField.get('@valid').asBoolean());
+                            modelObj.get('emp.salaryInRange'),
+                            salaryField.get('@inrange').asBoolean());
 
                 test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
-                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             'CurrentEmployee',
                                             TP.apc('emp.salary'));
-                salaryField.destroyBinding('@valid',
+                salaryField.destroyBinding('@inrange',
                                             'CurrentEmployee',
-                                            TP.apc('emp.salaryValid'));
+                                            TP.apc('emp.salaryInRange'));
 
                 modelObj.set('emp.salary', 45);
-                modelObj.set('emp.salaryValid', false);
+                modelObj.set('emp.salaryInRange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
@@ -1820,7 +1815,7 @@ function() {
 
                 test.assert.isEqualTo(
                             true,
-                            salaryField.get('@valid').asBoolean());
+                            salaryField.get('@inrange').asBoolean());
 
                 //  Unload the current page by setting it to the blank
                 test.getDriver().setLocation(unloadURI);
@@ -1842,7 +1837,7 @@ function() {
                     salaryField;
 
                 modelObj = TP.json2js(
-                                '{"emp":{"salary":50000,"salaryValid":null}}');
+                                '{"emp":{"salary":50000,"salaryInRange":null}}');
 
                 modelURI = TP.uc('urn:tibet:testdata');
                 //  This automatically sets the ID of modelObj to
@@ -1856,9 +1851,9 @@ function() {
                                             modelURI,
                                             TP.apc('emp.salary'));
 
-                salaryField.defineBinding('@valid',
+                salaryField.defineBinding('@inrange',
                                             modelURI,
-                                            TP.apc('emp.salaryValid'));
+                                            TP.apc('emp.salaryInRange'));
 
                 //  Set the value of 'salary' on the model object. The binding
                 //  should cause the value of 'salary' on the field to update.
@@ -1868,28 +1863,27 @@ function() {
                             modelObj.get('emp.salary'),
                             salaryField.get('value').asNumber());
 
-                //  Set the value of 'salaryValid' on the model object. The
+                //  Set the value of 'salaryInRange' on the model object. The
                 //  binding should cause the value of 'salary' on the field to
                 //  update.
-                modelObj.set('emp.salaryValid', true);
+                modelObj.set('emp.salaryInRange', true);
 
                 test.assert.isEqualTo(
-                            modelObj.get('emp.salaryValid'),
-                            salaryField.get('@valid').asBoolean());
+                            modelObj.get('emp.salaryInRange'),
+                            salaryField.get('@inrange').asBoolean());
 
                 test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
-                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             modelURI,
                                             TP.apc('emp.salary'));
-                salaryField.destroyBinding('@valid',
+                salaryField.destroyBinding('@inrange',
                                             modelURI,
-                                            TP.apc('emp.salaryValid'));
+                                            TP.apc('emp.salaryInRange'));
 
                 modelObj.set('emp.salary', 45);
-                modelObj.set('emp.salaryValid', false);
+                modelObj.set('emp.salaryInRange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
@@ -1899,7 +1893,7 @@ function() {
 
                 test.assert.isEqualTo(
                             true,
-                            salaryField.get('@valid').asBoolean());
+                            salaryField.get('@inrange').asBoolean());
 
                 //  Unload the current page by setting it to the blank
                 test.getDriver().setLocation(unloadURI);
@@ -2081,7 +2075,8 @@ function() {
                 var modelObj,
                     salaryField;
 
-                modelObj = TP.tpdoc('<emp><salary valid="">50000</salary></emp>');
+                modelObj = TP.tpdoc(
+                            '<emp><salary inrange="false">50000</salary></emp>');
 
                 salaryField = TP.byOID('salaryField');
 
@@ -2089,9 +2084,9 @@ function() {
                                             modelObj,
                                             TP.apc('/emp/salary'));
 
-                salaryField.defineBinding('@valid',
+                salaryField.defineBinding('@inrange',
                                             modelObj,
-                                            TP.apc('/emp/salary/@valid'));
+                                            TP.apc('/emp/salary/@inrange'));
 
                 //  Set the value of 'salary' on the model object. The binding
                 //  should cause the value of 'salary' on the field to update.
@@ -2101,28 +2096,27 @@ function() {
                             TP.val(modelObj.get('/emp/salary')).asNumber(),
                             salaryField.get('value').asNumber());
 
-                //  Set the value of 'salaryValid' on the model object. The
+                //  Set the value of 'salaryInRange' on the model object. The
                 //  binding should cause the value of 'salary' on the field to
                 //  update.
-                modelObj.set('/emp/salary/@valid', true);
+                modelObj.set('/emp/salary/@inrange', true);
 
                 test.assert.isEqualTo(
-                        TP.val(modelObj.get('/emp/salary/@valid')).asBoolean(),
-                        salaryField.get('@valid').asBoolean());
+                        TP.val(modelObj.get('/emp/salary/@inrange')).asBoolean(),
+                        salaryField.get('@inrange').asBoolean());
 
                 test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
-                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             modelObj,
                                             TP.apc('/emp/salary'));
-                salaryField.destroyBinding('@valid',
+                salaryField.destroyBinding('@inrange',
                                             modelObj,
-                                            TP.apc('/emp/salary/@valid'));
+                                            TP.apc('/emp/salary/@inrange'));
 
                 modelObj.set('/emp/salary', 45);
-                modelObj.set('/emp/salary/@valid', false);
+                modelObj.set('/emp/salary/@inrange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
@@ -2132,7 +2126,7 @@ function() {
 
                 test.assert.isEqualTo(
                             true,
-                            salaryField.get('@valid').asBoolean());
+                            salaryField.get('@inrange').asBoolean());
 
                 //  Unload the current page by setting it to the blank
                 test.getDriver().setLocation(unloadURI);
@@ -2152,7 +2146,8 @@ function() {
                 var modelObj,
                     salaryField;
 
-                modelObj = TP.tpdoc('<emp><salary valid="">50000</salary></emp>');
+                modelObj = TP.tpdoc(
+                            '<emp><salary inrange="false">50000</salary></emp>');
 
                 //  This sets the ID of the object and registers it with an
                 //  accompanying 'urn:tibet' URN (which will allow the
@@ -2166,9 +2161,9 @@ function() {
                                             'CurrentEmployee',
                                             TP.apc('/emp/salary'));
 
-                salaryField.defineBinding('@valid',
+                salaryField.defineBinding('@inrange',
                                             'CurrentEmployee',
-                                            TP.apc('/emp/salary/@valid'));
+                                            TP.apc('/emp/salary/@inrange'));
 
                 //  Set the value of 'salary' on the model object. The binding
                 //  should cause the value of 'salary' on the field to update.
@@ -2178,28 +2173,27 @@ function() {
                             TP.val(modelObj.get('/emp/salary')).asNumber(),
                             salaryField.get('value').asNumber());
 
-                //  Set the value of 'salaryValid' on the model object. The
+                //  Set the value of 'salaryInRange' on the model object. The
                 //  binding should cause the value of 'salary' on the field to
                 //  update.
-                modelObj.set('/emp/salary/@valid', true);
+                modelObj.set('/emp/salary/@inrange', true);
 
                 test.assert.isEqualTo(
-                        TP.val(modelObj.get('/emp/salary/@valid')).asBoolean(),
-                        salaryField.get('@valid').asBoolean());
+                        TP.val(modelObj.get('/emp/salary/@inrange')).asBoolean(),
+                        salaryField.get('@inrange').asBoolean());
 
                 test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
-                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             'CurrentEmployee',
                                             TP.apc('/emp/salary'));
-                salaryField.destroyBinding('@valid',
+                salaryField.destroyBinding('@inrange',
                                             'CurrentEmployee',
-                                            TP.apc('/emp/salary/@valid'));
+                                            TP.apc('/emp/salary/@inrange'));
 
                 modelObj.set('/emp/salary', 45);
-                modelObj.set('/emp/salary/@valid', false);
+                modelObj.set('/emp/salary/@inrange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
@@ -2209,7 +2203,7 @@ function() {
 
                 test.assert.isEqualTo(
                             true,
-                            salaryField.get('@valid').asBoolean());
+                            salaryField.get('@inrange').asBoolean());
 
                 //  Unload the current page by setting it to the blank
                 test.getDriver().setLocation(unloadURI);
@@ -2230,7 +2224,8 @@ function() {
                     modelURI,
                     salaryField;
 
-                modelObj = TP.tpdoc('<emp><salary valid="">50000</salary></emp>');
+                modelObj = TP.tpdoc(
+                            '<emp><salary inrange="false">50000</salary></emp>');
 
                 modelURI = TP.uc('urn:tibet:testdata');
                 //  This automatically sets the ID of modelObj to
@@ -2244,9 +2239,9 @@ function() {
                                             modelURI,
                                             TP.apc('/emp/salary'));
 
-                salaryField.defineBinding('@valid',
+                salaryField.defineBinding('@inrange',
                                             modelURI,
-                                            TP.apc('/emp/salary/@valid'));
+                                            TP.apc('/emp/salary/@inrange'));
 
                 //  Set the value of 'salary' on the model object. The binding
                 //  should cause the value of 'salary' on the field to update.
@@ -2256,28 +2251,27 @@ function() {
                             TP.val(modelObj.get('/emp/salary')).asNumber(),
                             salaryField.get('value').asNumber());
 
-                //  Set the value of 'salaryValid' on the model object. The
+                //  Set the value of 'salaryInRange' on the model object. The
                 //  binding should cause the value of 'salary' on the field to
                 //  update.
-                modelObj.set('/emp/salary/@valid', true);
+                modelObj.set('/emp/salary/@inrange', true);
 
                 test.assert.isEqualTo(
-                        TP.val(modelObj.get('/emp/salary/@valid')).asBoolean(),
-                        salaryField.get('@valid').asBoolean());
+                        TP.val(modelObj.get('/emp/salary/@inrange')).asBoolean(),
+                        salaryField.get('@inrange').asBoolean());
 
                 test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
-                test.assert.didSignal(modelObj, 'TP.sig.ValidChange');
 
                 //  Destroy the binding
                 salaryField.destroyBinding('value',
                                             modelURI,
                                             TP.apc('/emp/salary'));
-                salaryField.destroyBinding('@valid',
+                salaryField.destroyBinding('@inrange',
                                             modelURI,
-                                            TP.apc('/emp/salary/@valid'));
+                                            TP.apc('/emp/salary/@inrange'));
 
                 modelObj.set('/emp/salary', 45);
-                modelObj.set('/emp/salary/@valid', false);
+                modelObj.set('/emp/salary/@inrange', false);
 
                 //  Because there is now no binding between these two, the field
                 //  should still have the value of 42 set above.
@@ -2287,7 +2281,7 @@ function() {
 
                 test.assert.isEqualTo(
                             true,
-                            salaryField.get('@valid').asBoolean());
+                            salaryField.get('@inrange').asBoolean());
 
                 //  Unload the current page by setting it to the blank
                 test.getDriver().setLocation(unloadURI);
