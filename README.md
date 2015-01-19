@@ -95,6 +95,7 @@ time to assemble a working set of those dependencies so TIBET can use them.
 <br/>
 Once you've built all of TIBET's rollups your installation is complete.
 
+<a name="nextsteps" href="#"></a>
 # Next Steps
 
 Once you have TIBET installed the `tibet` command gives you access to a wide
@@ -125,7 +126,7 @@ You can get help on the `tibet` command and its options via `tibet help`:
 
     makefile.js targets include:
 
-	    build checkup clean rollup
+        build checkup clean rollup
 
     <options> always include:
 
