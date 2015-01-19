@@ -11,8 +11,8 @@ web front-ends and applications. These conventions help structure your work,
 help keep your code organized, and help TIBET's tools assist you more.
 
 Designed specifically for large-scale Enterprise and Government-class web
-application development, TIBET is more like Smalltalk than Scheme, bringing
-advanced OO support and immersive development tooling to JavaScript.
+applications, TIBET is more like Smalltalk than Scheme, bringing tag-driven
+development, advanced OO, and immersive development tools to JavaScript.
 
 # Installation
 
