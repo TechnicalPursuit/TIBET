@@ -34,7 +34,7 @@ TIBET should be installed globally using `npm install` with the -g flag:<br/>
 That's it. You should now have the latest stable release of TIBET
 installed.
 
-Jump to the <a href="#nextsteps">Next Steps</a> section for how to proceed.
+Jump to the <a href="#next-steps">Next Steps</a> section for how to proceed.
 
 ### Installing TIBET via Git
 
@@ -95,7 +95,6 @@ time to assemble a working set of those dependencies so TIBET can use them.
 <br/>
 Once you've built all of TIBET's rollups your installation is complete.
 
-<a name="nextsteps" href="#"></a>
 # Next Steps
 
 Once you have TIBET installed the `tibet` command gives you access to a wide
