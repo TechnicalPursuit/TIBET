@@ -358,7 +358,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('TP.core.CompiledTag');
+TP.core.UIElementNode.defineSubtype('TP.core.CompiledTag');
 
 //  ------------------------------------------------------------------------
 
@@ -403,13 +403,17 @@ function(aRequest) {
  * inheritance root for templated tags by mixing in TemplatedNode properly.
  */
 
-TP.core.ElementNode.defineSubtype('TP.core.TemplatedTag');
+TP.core.UIElementNode.defineSubtype('TP.core.TemplatedTag');
 
 //  ------------------------------------------------------------------------
 
 // Mix in templating behavior, resolving compile in favor of templating.
 TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
-TP.core.TemplatedTag.resolveTrait('tagCompile', TP.core.TemplatedNode);
+TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+TP.core.TemplatedTag.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.core.UIElementNode);
 TP.core.TemplatedTag.finalizeTraits();
 
 
