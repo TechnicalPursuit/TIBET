@@ -3,6 +3,17 @@
 TIBET is a seamless front-end framework blending the best features of today's
 modern JavaScript modules with a powerful set of interactive development tools.
 
+TIBET is a true framework in that TIBET code calls you, not the other way around
+as you may expect if you've used most JavaScript libraries.
+
+Like Rails, TIBET offers a convention-over-configuration approach to building
+web front-ends and applications. These conventions help structure your work,
+help keep your code organized, and help TIBET's tools assist you more.
+
+Designed specifically for large-scale Enterprise and Government-class web
+application development, TIBET is more like Smalltalk than Scheme, bringing
+advanced OO support and immersive development tooling to JavaScript.
+
 # Installation
 
 ### Install Node.js
@@ -34,7 +45,7 @@ TIBET should be installed globally using `npm install` with the -g flag:<br/>
 That's it. You should now have the latest stable release of TIBET
 installed.
 
-Skip ahead to the Next Steps section for how to proceed.
+Jump to the <a href="#nextsteps">Next Steps</a> section for how to proceed.
 
 ### Installing TIBET via Git
 
@@ -95,7 +106,7 @@ time to assemble a working set of those dependencies so TIBET can use them.
 <br/>
 Once you've built all of TIBET's rollups your installation is complete.
 
-<a name="next-steps" href="#"></a>
+<a name="nextsteps" href="#"></a>
 # Next Steps
 
 Once you have TIBET installed the `tibet` command gives you access to a wide
