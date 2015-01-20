@@ -91,22 +91,32 @@ function(forceDefinition) {
 
     //  Process simple types
 
-    //  Note that we don't want to have TP.wrap()ed 'simpleType' nodes since
-    //  we've already got a type named 'TP.xs.simpleType' and its not a node
-    //  type.
     if (TP.notEmpty(schemaElems =
                     TP.nodeGetElementsByTagName(node, 'simpleType'))) {
-        TP.xs.simpleType.defineTypesFromElements(schemaElems, forceDefinition);
+
+        //  Wrap the elems to get their wrapped equivalent
+        schemaElems = TP.wrap(schemaElems);
+
+        //  Loop over them and define the type they represent.
+        schemaElems.perform(
+                function(aTPElement) {
+                    aTPElement.defineType(forceDefinition);
+                });
     }
 
     //  Process complex types
 
-    //  Note that we don't want to have TP.wrap()ed 'complexType' nodes
-    //  since we've already got a type named 'TP.xs.complexType' and its not
-    //  a node type.
     if (TP.notEmpty(schemaElems =
                     TP.nodeGetElementsByTagName(node, 'complexType'))) {
-        TP.xs.complexType.defineTypesFromElements(schemaElems, forceDefinition);
+
+        //  Wrap the elems to get their wrapped equivalent
+        schemaElems = TP.wrap(schemaElems);
+
+        //  Loop over them and define the type they represent.
+        schemaElems.perform(
+                function(aTPElement) {
+                    aTPElement.defineType(forceDefinition);
+                });
     }
 
     return this;

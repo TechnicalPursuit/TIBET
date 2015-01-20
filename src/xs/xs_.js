@@ -115,7 +115,8 @@ function(aValue, aNode) {
 
         if (TP.isAttributeNode(attr = TP.nodeEvaluateXPath(
                 node,
-                './ancestor-or-self::*/@*[name() = "xsi:noNamespaceSchemaLocation"]',
+                './ancestor-or-self::*/' +
+                    '@*[name() = "xsi:noNamespaceSchemaLocation"]',
                 TP.FIRST_NODE))) {
             url = attr.value;
         }
