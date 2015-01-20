@@ -32,8 +32,8 @@ function(forceDefinition) {
      *     that name in the system.
      * @param {Boolean} forceDefinition Whether or not type definition should be
      *     forced even if the type already exists.
-     * @returns {TP.lang.RootObject.<TP.xs.complexType>} The receiver.
-     * @todo
+     * @returns {TP.lang.RootObject.<TP.xs.XMLSchemaComplexCompositeType>} The
+     *     newly defined type (or the existing type if it already exists).
      */
 
     var elem,
@@ -57,7 +57,9 @@ function(forceDefinition) {
         }
     }
 
-    return this;
+    return type;
+});
+
 });
 
 //  ------------------------------------------------------------------------
