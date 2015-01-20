@@ -1340,9 +1340,7 @@ function(anEvent) {
     //  account disabled elements and will look for a target element
     //  with the appropriate 'enabling attribute', if possible.
     if (TP.isElement(targetElem = TP.eventGetResolvedTarget(anEvent))) {
-        fname = 'handlePeer' + TP.escapeTypeName(
-                                TP.DOM_SIGNAL_TYPE_MAP.at(
-                                        TP.eventGetType(anEvent)));
+        fname = 'on' + TP.eventGetType(anEvent);
 
         elemType = TP.wrap(targetElem).getType();
 

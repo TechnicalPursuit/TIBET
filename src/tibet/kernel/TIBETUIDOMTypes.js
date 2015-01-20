@@ -304,11 +304,11 @@ function(mimeType, themeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMBlur',
+TP.core.UIElementNode.Type.defineMethod('onblur',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMBlur
+     * @name onblur
      * @synopsis Handles a 'blur' native event that was dispatched against the
      *     supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
@@ -345,11 +345,11 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMFocus',
+TP.core.UIElementNode.Type.defineMethod('onfocus',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMFocus
+     * @name onfocus
      * @synopsis Handles a 'focus' native event that was dispatched against the
      *     supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
@@ -386,11 +386,11 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMKeyDown',
+TP.core.UIElementNode.Type.defineMethod('onkeydown',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMKeyDown
+     * @name onkeydown
      * @synopsis Handles a 'keydown' native event that was dispatched against
      *     the supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
@@ -491,11 +491,11 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMKeyUp',
+TP.core.UIElementNode.Type.defineMethod('onkeyup',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMKeyUp
+     * @name onkeyup
      * @synopsis Handles a 'keyup' native event that was dispatched against the
      *     supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
@@ -543,11 +543,11 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMMouseDown',
+TP.core.UIElementNode.Type.defineMethod('onmousedown',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMMouseDown
+     * @name onmousedown
      * @synopsis Handles a 'mousedown' native event that was dispatched against
      *     the supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
@@ -589,11 +589,11 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMMouseUp',
+TP.core.UIElementNode.Type.defineMethod('onmouseup',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMMouseUp
+     * @name onmouseup
      * @synopsis Handles a 'mouseup' native event that was dispatched against
      *     the supplied native element.
      * @param {HTMLElement} aTargetElem The target element computed for this
@@ -628,11 +628,11 @@ function(aTargetElem, anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMNodesAdded',
+TP.core.UIElementNode.Type.defineMethod('mutationAddedNodes',
 function(aTargetElem, nodesAdded) {
 
     /**
-     * @name handlePeerTP_sig_DOMNodesAdded
+     * @name mutationAddedNodes
      * @synopsis Handles a 'nodes added' synthetic 'event' that was dispatched
      *     against the supplied native element.
      * @description This method is usually activated as the result of a 'DOM
@@ -702,11 +702,11 @@ function(aTargetElem, nodesAdded) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMNodesRemoved',
+TP.core.UIElementNode.Type.defineMethod('mutationRemovedNodes',
 function(aTargetElem, nodesRemoved) {
 
     /**
-     * @name handlePeerTP_sig_DOMNodesRemoved
+     * @name mutationRemovedNodes
      * @synopsis Handles a 'nodes removed' synthetic 'event' that was dispatched
      *     against the supplied native element.
      * @description This method is usually activated as the result of a 'DOM
@@ -4120,7 +4120,7 @@ function() {
     //  interaction.
 
     //  This will invoke the entire chain of events of blurring. See the
-    //  'handlePeerTP_sig_DOMBlur' method as the starting point.
+    //  'onblur' method as the starting point.
     if (TP.canInvoke(node, 'blur')) {
         node.blur();
     }
@@ -4162,7 +4162,7 @@ function(moveAction) {
     //  other user interaction.
 
     //  This will invoke the entire chain of events of focusing. See the
-    //  'handlePeerTP_sig_DOMFocus' method as the starting point.
+    //  'onfocus' method as the starting point.
     if (TP.canInvoke(node, 'focus')) {
         node.focus();
     }

@@ -7160,7 +7160,7 @@ function(aMutationRecord) {
 
     switch (mutationType) {
         case 'attributes':
-            fname = 'handlePeerTP_sig_DOMAttrChanged';
+            fname = 'mutationChangedAttribute';
 
             if (!TP.isElement(targetNode = aMutationRecord.target)) {
                 return this.raise('TP.sig.InvalidElement');
@@ -7197,7 +7197,7 @@ function(aMutationRecord) {
             }
 
             if (TP.notEmpty(addedNodes)) {
-                fname = 'handlePeerTP_sig_DOMNodesAdded';
+                fname = 'mutationAddedNodes';
 
                 if (TP.canInvoke(targetType, fname)) {
                     targetType[fname](targetNode, addedNodes);
@@ -7210,7 +7210,7 @@ function(aMutationRecord) {
             }
 
             if (TP.notEmpty(removedNodes)) {
-                fname = 'handlePeerTP_sig_DOMNodesRemoved';
+                fname = 'mutationRemovedNodes';
 
                 if (TP.canInvoke(targetType, fname)) {
                     targetType[fname](targetNode, removedNodes);
@@ -7320,8 +7320,8 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
         }
 
         if (TP.notEmpty(matchingNodes) &&
-            TP.canInvoke(queryObserver, 'handlePeerTP_sig_AddFilteredNodes')) {
-            queryObserver.handlePeerTP_sig_AddFilteredNodes(matchingNodes);
+            TP.canInvoke(queryObserver, 'mutationAddedFilteredNodes')) {
+            queryObserver.mutationAddedFilteredNodes(matchingNodes);
         }
     }
 
@@ -7335,8 +7335,8 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
 
         if (TP.notEmpty(matchingNodes) &&
             TP.canInvoke(
-                    queryObserver, 'handlePeerTP_sig_RemoveFilteredNodes')) {
-            queryObserver.handlePeerTP_sig_RemoveFilteredNodes(matchingNodes);
+                    queryObserver, 'mutationRemovedFilteredNodes')) {
+            queryObserver.mutationRemovedFilteredNodes(matchingNodes);
         }
     }
 

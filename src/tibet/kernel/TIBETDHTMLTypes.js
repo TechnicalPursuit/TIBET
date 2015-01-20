@@ -3430,11 +3430,11 @@ TP.core.UIElementNode.Type.defineAttribute('currentDNDItem');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('handlePeerTP_sig_DOMDragDown',
+TP.core.UIElementNode.Type.defineMethod('ondragdown',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMDragDown
+     * @name ondragdown
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.

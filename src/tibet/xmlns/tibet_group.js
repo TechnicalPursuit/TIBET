@@ -70,8 +70,8 @@ function(aRequest) {
     //  register a query or a query context here - we want to know about all
     //  added or removed nodes.
 
-    //  Note that this calls our 'handlePeerTP_sig_AddFilteredNodes' and
-    //  'handlePeerTP_sig_RemoveFilteredNodes' methods below with just the nodes
+    //  Note that this calls our 'mutationAddedFilteredNodes' and
+    //  'mutationRemovedFilteredNodes' methods below with just the nodes
     //  that got added or removed.
     TP.core.MutationSignalSource.addSubtreeQuery(elem);
 
@@ -309,11 +309,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.group.Inst.defineMethod('handlePeerTP_sig_AddFilteredNodes',
+TP.tibet.group.Inst.defineMethod('mutationAddedFilteredNodes',
 function(addedNodes) {
 
     /**
-     * @name handlePeerTP_sig_AddFilteredNodes
+     * @name mutationAddedFilteredNodes
      * @synopsis Handles when nodes got added to the DOM we're in, filtered by
      *     the query that we registered with the MutationSignalSource.
      * @param {Array} addedNodes The Array of nodes that got added to the DOM,
@@ -348,11 +348,11 @@ function(addedNodes) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.group.Inst.defineMethod('handlePeerTP_sig_RemoveFilteredNodes',
+TP.tibet.group.Inst.defineMethod('mutationRemovedFilteredNodes',
 function(removedNodes) {
 
     /**
-     * @name handlePeerTP_sig_AddFilteredNodes
+     * @name mutationRemovedFilteredNodes
      * @synopsis Handles when nodes got added to the DOM we're in, filtered by
      *     the query that we registered with the MutationSignalSource.
      * @param {Array} removedNodes The Array of nodes that got removed from the

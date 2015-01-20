@@ -867,17 +867,15 @@ function(singletonName, normalizedEvent, aSignal) {
     //  Sometimes this method is invoked for a synthetic event (like updating
     //  the modifier keys or a TIBET drag event). The normalized event object
     //  will have the real platform event in it (i.e. keydown) which should
-    //  *not* be dispatched to the handlePeer* call in the case of a synthetic
+    //  *not* be dispatched to the on* call in the case of a synthetic
     //  event.
     //  Therefore, we check here to make sure that the singleton name matches
-    //  the real event name before calling handlePeer*
+    //  the real event name before calling on*
     if (singletonName === TP.eventGetType(normalizedEvent)) {
 
         if (TP.isElement(targetElem =
                             TP.eventGetResolvedTarget(normalizedEvent))) {
-            fname = 'handlePeer' + TP.escapeTypeName(
-                                    TP.DOM_SIGNAL_TYPE_MAP.at(
-                                            TP.eventGetType(normalizedEvent)));
+            fname = 'on' + TP.eventGetType(normalizedEvent);
 
             elemType = TP.wrap(targetElem).getType();
 
@@ -2609,9 +2607,7 @@ function(singletonName, normalizedEvent, aSignal) {
 
     if (TP.isElement(targetElem =
                         TP.eventGetResolvedTarget(normalizedEvent))) {
-        fname = 'handlePeer' + TP.escapeTypeName(
-                                TP.DOM_SIGNAL_TYPE_MAP.at(
-                                        TP.eventGetType(normalizedEvent)));
+        fname = 'on' + TP.eventGetType(normalizedEvent);
 
         elemType = TP.wrap(targetElem).getType();
 

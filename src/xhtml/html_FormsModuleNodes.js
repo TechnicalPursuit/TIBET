@@ -923,11 +923,11 @@ function(aNodeOrId) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.input.Type.defineMethod('handlePeerTP_sig_DOMChange',
+TP.html.input.Type.defineMethod('onchange',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMChange
+     * @name onchange
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
@@ -3668,11 +3668,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.html.select.Type.defineMethod('handlePeerTP_sig_DOMChange',
+TP.html.select.Type.defineMethod('onchange',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMChange
+     * @name onchange
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
@@ -4509,11 +4509,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.html.textarea.Type.defineMethod('handlePeerTP_sig_DOMChange',
+TP.html.textarea.Type.defineMethod('onchange',
 function(aTargetElem, anEvent) {
 
     /**
-     * @name handlePeerTP_sig_DOMChange
+     * @name onchange
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
