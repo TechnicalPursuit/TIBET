@@ -2394,8 +2394,8 @@ TP.regex.TEST_FUNCTION = /test[a-zA-Z0-9$_'"]+/;
 TP.XML_NCNAME = '[A-Za-z_]|[^\\x00-\\x7F]';
 TP.XML_NCNAMECHAR = '[A-Za-z0-9_.-]|[^\\x00-\\x7F]';
 
-TP.XML_IDREF = new RegExp(
-        TP.XML_NCNAME + '(' + TP.XML_NCNAMECHAR + ')*');
+TP.regex.XML_IDREF = new RegExp(
+                        TP.XML_NCNAME + '(' + TP.XML_NCNAMECHAR + ')*');
 
 TP.XML_NAMESTART = '[A-Za-z_:]|[^\\x00-\\x7F]';
 TP.XML_NAMECHAR = '[A-Za-z0-9_:.-]|[^\\x00-\\x7F]';
