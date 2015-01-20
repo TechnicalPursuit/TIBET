@@ -816,6 +816,11 @@ TP.sys.setcfg('css.process_styles', false);
 //  return 'undefined' instead (which is then tested for).
 TP.sys.setcfg('tsh.ignore_eval_errors', false);
 
+//  should we warn about help entries for commands we can't find? this is
+//  currently false as we complete our command set. it can be changed to true
+//  once the initial command set is complete.
+TP.sys.setcfg('tsh.warn_extra_help', false);
+
 //  ---
 //  debug/error handling
 //  ---

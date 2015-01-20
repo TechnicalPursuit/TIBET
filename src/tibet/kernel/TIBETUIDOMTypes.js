@@ -823,15 +823,18 @@ function() {
         xml;
 
     if (TP.notValid(url = this.getResourceURI(TP.ietf.Mime.XML,
-                                                 '_keybindings'))) {
-        //  We couldn't find a map entry, so we 'mark' this type as not having
-        //  key bindings. This avoids a lot of per-keystroke lookup.
+                                                 '_keybindings',
+                                                 false))) {
+        // Mark the type slot so we don't try again. The load failed.
         this.set('keyBindingsXML', TP.NOT_FOUND);
 
         return this;
     }
 
     if (TP.notValid(xml = url.getNativeNode(TP.hc('async', false)))) {
+        // Mark the type slot so we don't try again. The load failed.
+        this.set('keyBindingsXML', TP.NOT_FOUND);
+
         return this.raise('TP.sig.InvalidKeymap');
     }
 

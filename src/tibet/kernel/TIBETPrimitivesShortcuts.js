@@ -2277,6 +2277,59 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('interface',
+function(anObject, aFilter, aDiscriminator) {
+
+    /**
+     * @name interface
+     * @synopsis Returns the interface of anObject, optionally filtered by the
+     *     discriminator provided.
+     * @param {Object} anObject The object to reflect upon.
+     * @param {Object|String} aFilter An object containing getInterface filter
+     *     properties or a name of one of the keys registered under
+     *     TP.SLOT_FILTERS. The default is 'unique_methods'.
+     * @param {String|RegExp} aDiscriminator A 'filter' function or a pattern
+     *     used to filter the list of returned keys.
+     * @returns {Array} An array of filtered property keys.
+     */
+
+    var arr,
+        obj,
+        i;
+
+    if (TP.notValid(anObject)) {
+        return TP.ac();
+    }
+
+    if (TP.canInvoke(anObject, 'getInterface')) {
+        arr = anObject.getInterface(aFilter);
+    } else {
+        arr = TP.ac();
+        obj = anObject;
+
+        do {
+            arr.push(Object.keys(obj));
+            obj = Object.getPrototypeOf(obj);
+        } while (obj);
+
+        arr = Array.prototype.concat.apply([], arr);
+        arr = arr.filter(
+            function(aKey) {
+                return !TP.regex.INTERNAL_SLOT.test(aKey);
+            });
+    }
+
+    if (TP.isFunction(aDiscriminator)) {
+        return arr.select(aDiscriminator).sort();
+    } else if (TP.isValid(aDiscriminator)) {
+        return arr.grep(aDiscriminator).sort();
+    } else {
+        return arr.sort();
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('link',
 function(anObject, aMessage, aTitle, aCommand) {
 
@@ -2589,60 +2642,6 @@ function(anObject) {
 
     //  worst case we just produce our dump representation
     return TP.dump(anObject);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('reflect',
-function(anObject, aFilter, aDiscriminator) {
-
-    /**
-     * @name reflect
-     * @synopsis Returns the interface of anObject, optionally filtered by the
-     *     scope provided. The default scope is 'every'.
-     * @param {Object} anObject The object to reflect upon.
-     * @param {Object|String} aFilter An object containing filter properties or
-     *     a name of one of the keys registered under TP.SLOT_FILTERS. The
-     *     default is 'unique_methods'.
-     * @param {String|RegExp} aDiscriminator A filtering expression to remove
-     *     keys not matching the pattern or string.
-     * @returns {Array} An array of filtered property keys.
-     * @todo
-     */
-
-    var arr,
-        obj,
-        i;
-
-    if (TP.notValid(anObject)) {
-        return TP.ac();
-    }
-
-    if (TP.canInvoke(anObject, 'getInterface')) {
-        arr = anObject.getInterface(aFilter);
-    } else {
-        arr = TP.ac();
-        obj = anObject;
-
-        do {
-            arr.push(Object.keys(obj));
-            obj = Object.getPrototypeOf(obj);
-        } while (obj);
-
-        arr = Array.prototype.concat.apply([], arr);
-        arr = arr.filter(
-            function(aKey) {
-                return !TP.regex.INTERNAL_SLOT.test(aKey);
-            });
-    }
-
-    if (TP.isFunction(aDiscriminator)) {
-        return arr.select(aDiscriminator).sort();
-    } else if (TP.isValid(aDiscriminator)) {
-        return arr.grep(aDiscriminator).sort();
-    } else {
-        return arr.sort();
-    }
 });
 
 //  ------------------------------------------------------------------------

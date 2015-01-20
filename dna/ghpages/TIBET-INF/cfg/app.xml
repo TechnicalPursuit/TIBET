@@ -4,7 +4,6 @@
     name="{{appname}}" default="base" basedir="~app_src">
 
 <config id="base" if="boot.phasetwo">
-    <property name="APP.{{appname}}.app.xhtml_uri" value="~app_src/tags/APP.{{appname}}.app.xhtml"/>
     <config ref="app_img"/>
 </config>
 
@@ -18,9 +17,8 @@
 </config>
 
 <config id="app_img">
+    <script src="~app_src/APP.{{appname}}.js" />
     <script src="~app_src/tags/APP.{{appname}}.app.js" />
-    <script src="~app_src/tags/APP.{{appname}}.compiled.js" />
-    <script src="~app_src/tags/APP.{{appname}}.templated.js" />
 </config>
 
 <config id="test" if="boot.phasetwo">

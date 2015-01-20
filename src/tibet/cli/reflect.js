@@ -69,9 +69,9 @@ Cmd.prototype.HELP =
  */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['types', 'methods'],
-        'string': ['match'],
-        'default': {}
+        'boolean': ['owners'],
+        'string': ['filter'],
+        'default': {'filter': 'unique_methods'}
     },
     Parent.prototype.PARSE_OPTIONS);
 
@@ -79,11 +79,20 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet reflect [target] [--match <pattern>] [--types] [--methods]';
+Cmd.prototype.USAGE =
+    'tibet reflect [target] [--filter <filter>] [--owners]';
 
 //  ---
 //  Instance Methods
 //  ---
+
+/**
+ * Perform phantom startup announcement as appropriate for the (sub)command.
+ */
+Cmd.prototype.announce = function() {
+    this.log('# Booting TIBET via PhantomJS...');
+};
+
 
 /**
  * Performs any final processing of the argument list prior to execution.

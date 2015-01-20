@@ -348,6 +348,76 @@ function(aRequest) {
 });
 
 //  ========================================================================
+//  TP.core.CompiledTag
+//  ========================================================================
+
+/**
+ * @type {TP.core.CompiledTag}
+ * @synopsis A common supertype for compiled UI tags.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.defineSubtype('TP.core.CompiledTag');
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompiledTag.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @name tagCompile
+     * @synopsis Convert instances of the tag into their HTML representation.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        newElem;
+
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    // NOTE that we produce output which prompts for overriding and providing a
+    // proper implementation here.
+    newElem = TP.xhtmlnode(
+        '<a onclick="alert(\'Update tagCompile!\')" href="#" tibet:tag="' +
+            this.getTagName() + '">' +
+            '&lt;' + this.getTagName() + '/&gt;' +
+            '</a>');
+
+    TP.elementReplaceWith(elem, newElem);
+
+    return;
+});
+
+
+//  ========================================================================
+//  TP.core.TemplatedTag
+//  ========================================================================
+
+/**
+ * @type {TP.core.TemplatedTag}
+ * @synopsis A common supertype for templated UI tags. This type provides an
+ * inheritance root for templated tags by mixing in TemplatedNode properly.
+ */
+
+TP.core.UIElementNode.defineSubtype('TP.core.TemplatedTag');
+
+//  ------------------------------------------------------------------------
+
+// Mix in templating behavior, resolving compile in favor of templating.
+TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
+TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+TP.core.TemplatedTag.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.core.UIElementNode);
+TP.core.TemplatedTag.finalizeTraits();
+
+
+//  ========================================================================
 //  TP.core.TemplatedApplicationTag
 //  ========================================================================
 
@@ -367,6 +437,7 @@ TP.core.TemplatedApplicationTag.addTraits(TP.core.TemplatedNode);
 
 /* Resolve the traits since they're available without instance creation. */
 TP.core.TemplatedApplicationTag.finalizeTraits();
+
 
 //  ------------------------------------------------------------------------
 //  end

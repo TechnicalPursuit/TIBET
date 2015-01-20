@@ -107,6 +107,14 @@ Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <s
 //  ---
 
 /**
+ * Perform phantom startup announcement as appropriate for the (sub)command.
+ */
+Cmd.prototype.announce = function() {
+    this.log('# Booting TIBET via PhantomJS...');
+};
+
+
+/**
  * Performs any final processing of the argument list prior to execution.
  * @param {Array.<String>} arglist The argument list to finalize.
  * @return {Array.<String>} The finalized argument list.

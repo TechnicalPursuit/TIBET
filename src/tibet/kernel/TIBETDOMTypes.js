@@ -9279,6 +9279,11 @@ function(mimeType) {
         uri = this.getResourceURI(mime);
     }
 
+    if (!TP.isURI(uri)) {
+        return this.raise('InvalidURI',
+            'Unable to locate resource URI for ' + this.asString());
+    }
+
     src = uri.getLocation();
 
     //  Grab the receiver's content registered under the supplied MIME type.
@@ -9298,10 +9303,16 @@ function(mimeType) {
 
     if (TP.notEmpty(openingTag = TP.regex.OPENING_TAG.exec(str).at(0))) {
         if (!/xmlns=/.test(openingTag)) {
-            updatedOpeningTag =
-                        TP.regex.OPENING_TAG.exec(str).at(0).slice(0, -1) +
-                        ' xmlns="' + TP.w3.Xmlns.XHTML + '">';
-            str = str.replace(openingTag, updatedOpeningTag);
+            // Watch out for <blah/> vs <blah> here...
+            if (TP.regex.CLOSED_TAG.match(str)) {
+                str = str.slice(0, -2) +
+                    ' xmlns="' + TP.w3.Xmlns.XHTML + '"/>';
+            } else {
+                updatedOpeningTag =
+                    TP.regex.OPENING_TAG.exec(str).at(0).slice(0, -1) +
+                    ' xmlns="' + TP.w3.Xmlns.XHTML + '">';
+                str = str.replace(openingTag, updatedOpeningTag);
+            }
         }
     }
 
@@ -9345,7 +9356,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('getResourceURI',
-function(mimeType, qualifier) {
+function(mimeType, qualifier, fallback) {
 
     /**
      * @name getResourceURI
@@ -9359,6 +9370,8 @@ function(mimeType, qualifier) {
      *     This is used to locate viable extensions based on the
      *     TP.ietf.Mime.INFO dictionary.
      * @param {String} qualifier An optional qualifier.
+     * @param {Boolean} fallback Should the uri fall back on default values if
+     *     no specific configuration mapping is found. Defaults to true.
      * @raises TP.sig.InvalidParameter
      * @returns {TP.core.URI} The computed resource URI.
      */
@@ -9370,7 +9383,7 @@ function(mimeType, qualifier) {
 
     if (TP.notValid(mimeType)) {
         return this.raise('TP.sig.InvalidParameter',
-                            'Must supply a valid TP.ietf.Mime reference.');
+            'Must supply a valid TP.ietf.Mime reference.');
     }
 
     if (TP.isEmpty(extensions = TP.ietf.Mime.getExtensions(mimeType))) {
@@ -9382,9 +9395,9 @@ function(mimeType, qualifier) {
     //  By default, the qualifier is empty.
     qual = TP.ifEmpty(qualifier, '');
 
-    //  Find the first match in the configuration data for our typename,
-    //  optional qualifier and one of the extensions used by the supplied MIME
-    //  type.
+    //  First check is for a configured path which indicates the resource isn't
+    //  likely to be in a default location. We combine the typename, qualifier,
+    //  and extension, checking each possible one.
     extensions.perform(
         function(ext) {
 
@@ -9400,6 +9413,16 @@ function(mimeType, qualifier) {
                 return TP.BREAK;
             }
     });
+
+    //  If we didn't find a configured path our next option is to try to default
+    //  based on convention. In this variant we have to rely on a canonical
+    //  extension since we can't be guessing repeatedly or querying and
+    //  triggering 404's.
+    if (TP.isEmpty(url) && TP.notFalse(fallback)) {
+        url = TP.join(
+            this.$srcPath.slice(0, this.$srcPath.lastIndexOf('/')),
+            '/', typeName, qual, '.', extensions.at(0));
+    }
 
     return TP.uc(url);
 });
