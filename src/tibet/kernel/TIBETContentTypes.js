@@ -2194,7 +2194,7 @@ TP.core.SimpleTIBETPath.defineSubtype('ComplexTIBETPath');
 
 //  avoid binding and apply issues by creating our alias as a wrapper
 TP.definePrimitive('tpc',
-function(aPath) {
+function(aPath, shouldCollapse) {
 
     /**
      * @name tpc
