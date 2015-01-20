@@ -822,6 +822,10 @@ function(result, options) {
         drivers.getKeys().perform(
                 function(driverKey) {
                     drivers.at(driverKey).set('promiseProvider', thisArg);
+                    if (driverKey === 'gui') {
+                        drivers.at(driverKey).set('windowContext',
+                                                    TP.sys.getUICanvas());
+                    }
                 });
 
         try {
@@ -879,6 +883,10 @@ function(result, options) {
         drivers.getKeys().perform(
                 function(driverKey) {
                     drivers.at(driverKey).set('promiseProvider', thisArg);
+                    if (driverKey === 'gui') {
+                        drivers.at(driverKey).set('windowContext',
+                                                    TP.sys.getUICanvas());
+                    }
                 });
 
         try {
@@ -1042,8 +1050,7 @@ function(target, suiteName, suiteFunc) {
     this.$set('drivers', TP.hc());
 
     if (TP.sys.getTypeByName('TP.gui.Driver')) {
-        this.$get('drivers').atPut(
-                'gui', TP.gui.Driver.construct(TP.sys.getUICanvas()));
+        this.$get('drivers').atPut('gui', TP.gui.Driver.construct());
     }
 
     return this;
@@ -2125,6 +2132,9 @@ function(options) {
     drivers.getKeys().perform(
             function(driverKey) {
                 drivers.at(driverKey).set('promiseProvider', null);
+                if (driverKey === 'gui') {
+                    drivers.at(driverKey).set('windowContext', null);
+                }
             });
 
     return this;
@@ -2194,6 +2204,10 @@ function(options) {
         drivers.getKeys().perform(
                 function(driverKey) {
                     drivers.at(driverKey).set('promiseProvider', testcase);
+                    if (driverKey === 'gui') {
+                        drivers.at(driverKey).set('windowContext',
+                                                    TP.sys.getUICanvas());
+                    }
                 });
 
         //  Capture references to the resolve/reject operations we can use from
