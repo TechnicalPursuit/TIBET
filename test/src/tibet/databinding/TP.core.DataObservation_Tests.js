@@ -600,9 +600,11 @@ function() {
 
         //  These paths assume a root instance property of 'data'
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
-                'lastName', {'value': TP.apc('public_info.lastName')});
+                'lastName',
+                {'value': TP.apc('privateData.public_info.lastName')});
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
-                'firstName', {'value': TP.apc('public_info.firstName')});
+                'firstName',
+                {'value': TP.apc('privateData.public_info.firstName')});
 
         //  ---
 
@@ -677,7 +679,7 @@ function() {
             };
 
         newEmployee = TP.test.ComplexPathEmployee.construct();
-        newEmployee.set('data',
+        newEmployee.set('privateData',
                 TP.json2js('{"public_info":{"lastName":"", "firstName":""}}'));
 
         aspectObsFunction.observe(newEmployee, 'FirstNameChange');
