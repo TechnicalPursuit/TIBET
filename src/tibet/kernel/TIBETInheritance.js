@@ -7016,6 +7016,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Inst.defineMethod('getRepresentedType',
+function() {
+
+    /**
+     * @name getRepresentedType
+     * @synopsis Returns a type that this object might be 'representing'. This
+     *     is used in places like TIBET's XMLSchema support to return the type
+     *     that the element containing the schema is describing to the system.
+     *     The default implementation here returns null.
+     */
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Inst.defineMethod('isRecyclable',
 function(aFlag) {
 

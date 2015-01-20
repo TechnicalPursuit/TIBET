@@ -60,6 +60,42 @@ function(forceDefinition) {
     return type;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.xs.simpleType.Inst.defineMethod('getRepresentedType',
+function() {
+
+    /**
+     * @name getRepresentedType
+     * @synopsis Returns a type that this object might be 'representing'. This
+     *     is used in here to return the type that the receiver is describing to
+     *     the system.
+     * @returns {TP.lang.RootObject.<TP.xs.XMLSchemaSimpleCompositeType>} The
+     *     type being represented by the receiver.
+     */
+
+    var node,
+        typeName,
+
+        type;
+
+    node = this.getNativeNode();
+
+    if (TP.isEmpty(typeName = TP.elementGetAttribute(node, 'name'))) {
+        return this.raise('TP.sig.InvalidName');
+    }
+
+    //  If we can't get a type name with the value of our 'name' attribute, call
+    //  our 'defineType()' method to try to define it and then see if we can get
+    //  a valid type.
+    if (!TP.isType(type = TP.sys.getTypeByName(typeName))) {
+
+        if (!TP.isType(type = this.defineType())) {
+            return this.raise('TP.sig.InvalidType');
+        }
+    }
+
+    return type;
 });
 
 //  ------------------------------------------------------------------------
