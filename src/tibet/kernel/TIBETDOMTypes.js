@@ -14706,7 +14706,7 @@ TP.xsl.Element.defineSubtype('stylesheet');
 
 TP.xsl.Element.defineSubtype('import');
 
-TP.xsl['import'].Type.set('uriAttrs', TP.ac('href'));
+TP.xsl.import.Type.set('uriAttrs', TP.ac('href'));
 
 //  ------------------------------------------------------------------------
 //  xsl:include

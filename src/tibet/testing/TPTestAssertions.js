@@ -1858,23 +1858,19 @@ function(aTarget, aSignal) {
                             sigNames = TP.ac('TP.sig.ReadonlyChange',
                                                 'TP.sig.FacetChange',
                                                 'TP.sig.Change');
-                        }
-                        else if (/^\w+RelevantChange$/.test(value)) {
+                        } else if (/^\w+RelevantChange$/.test(value)) {
                             sigNames = TP.ac('TP.sig.RelevantChange',
                                                 'TP.sig.FacetChange',
                                                 'TP.sig.Change');
-                        }
-                        else if (/^\w+RequiredChange$/.test(value)) {
+                        } else if (/^\w+RequiredChange$/.test(value)) {
                             sigNames = TP.ac('TP.sig.RequiredChange',
                                                 'TP.sig.FacetChange',
                                                 'TP.sig.Change');
-                        }
-                        else if (/^\w+ValidChange$/.test(value)) {
+                        } else if (/^\w+ValidChange$/.test(value)) {
                             sigNames = TP.ac('TP.sig.ValidChange',
                                                 'TP.sig.FacetChange',
                                                 'TP.sig.Change');
-                        }
-                        else if (/^\w+Change$/.test(value)) {
+                        } else if (/^\w+Change$/.test(value)) {
                             sigNames = TP.ac('TP.sig.StructureChange',
                                                 'TP.sig.ValueChange',
                                                 'TP.sig.FacetChange',

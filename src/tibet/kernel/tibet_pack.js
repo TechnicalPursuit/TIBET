@@ -353,8 +353,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
 
         if (keywords.indexOf('__' + str + '__') > 0) {
             return 'keyword';
-        }
-        else if (reserved.indexOf('__' + str + '__') > 0) {
+        } else if (reserved.indexOf('__' + str + '__') > 0) {
             return 'reserved';
         }
 
@@ -430,8 +429,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
 
             i += 1;
             c = src.charAt(i);
-        }
-        else if (identHead.test(c) ||
+        } else if (identHead.test(c) ||
                 (tsh && (c === '~' ||
                          c === '#' ||
                         (c === '.' && src.charAt(i + 1) === '/') ||

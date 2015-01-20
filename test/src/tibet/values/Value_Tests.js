@@ -446,10 +446,12 @@ function() {
 
     //  ---
 
+    /* eslint-disable no-script-url */
     this.it('local id of: TP.core.JSURI', function(test, options) {
         test.assert.isEqualTo(TP.lid(testData.at('TP.core.JSURI')),
                                 'javascript:alert("hi")');
     });
+    /* eslint-enable no-script-url */
 
     //  ---
 

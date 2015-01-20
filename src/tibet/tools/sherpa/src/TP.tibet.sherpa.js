@@ -62,6 +62,7 @@ function(aRequest) {
                     TP.sys.registerObject(newSherpa);
                 });
 
+    /* eslint-disable no-wrap-func */
     (setContentFunc = function(aSignal) {
         setContentFunc.ignore(
             TP.wrap(elemWin.document), 'TP.sig.DOMContentLoaded');
@@ -74,6 +75,7 @@ function(aRequest) {
         }).fork(100);
 
     }).observe(TP.wrap(elemWin.document), 'TP.sig.DOMContentLoaded');
+    /* eslint-enable no-wrap-func */
 
     return this.callNextMethod();
 });

@@ -4111,11 +4111,10 @@ function() {
             });
     });
 
+    /* eslint-disable no-script-url */
     this.it('javascript:TP', function(test, options) {
 
-        /* eslint-disable no-script-url */
         inputVal = 'javascript:TP';
-        /* eslint-enable no-script-url */
 
         correctResult = TP;
         shellDriver.execShellTest(
@@ -4130,6 +4129,7 @@ function() {
                                 ' should be: "', correctResult, '".'));
             });
     });
+    /* eslint-enable no-script-url */
 
     this.it('tibet:///javascript:TP', function(test, options) {
 
@@ -4148,11 +4148,10 @@ function() {
             });
     });
 
+    /* eslint-disable no-script-url */
     this.it('javascript:top.UIROOT.$$globalID', function(test, options) {
 
-        /* eslint-disable no-script-url */
         inputVal = 'javascript:top.UIROOT.$$globalID';
-        /* eslint-enable no-script-url */
         correctResult = TP.$$topWindowName + '.UIROOT';
 
         shellDriver.execShellTest(
@@ -4167,6 +4166,7 @@ function() {
                                 ' should be: "', correctResult, '".'));
             });
     });
+    /* eslint-enable no-script-url */
 
     this.it('tibet:///javascript:top.UIROOT.$$globalID',
             function(test, options) {

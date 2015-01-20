@@ -295,9 +295,11 @@ function(aRequest) {
         //  Set the content of this Window to the Sherpa content, but do so in a
         //  timeout giving the current attaching process time to finish.
         //  Otherwise, we end up in race conditions.
+        /* eslint-disable no-wrap-func */
         (function() {
             TP.wrap(elemWin).setContent(homeURL);
         }).fork(100);
+        /* eslint-enable no-wrap-func */
 
     }).observe(TP.wrap(elemWin.document), 'TP.sig.DOMContentLoaded');
 
