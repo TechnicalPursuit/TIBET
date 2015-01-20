@@ -19,7 +19,7 @@ function() {
         win;
 
     loadURI = TP.uc(TP.sys.cfg('tibet.blankpage'));
-    win = TP.win(TP.sys.cfg('tibet.uibuffer') + '.UIROOT');
+    win = TP.win(TP.sys.cfg('tibet.uicanvas'));
 
     //  ---
 

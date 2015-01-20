@@ -3954,16 +3954,13 @@ function() {
         //  Set up a temporary reference to the top-level window name
         TP.$$topWindowName = TP.sys.cfg('tibet.uibuffer');
 
-        win = TP.win(TP.$$topWindowName + '.UIROOT');
-
-        //  Make sure there's a window named 'UIROOT' under a window named by
-        //  the name in TP.$$topWindowName
+        //  Draw some test content into the current UI canvas.
+        TP.$$uiCanvasName = TP.sys.cfg('tibet.uicanvas');
+        win = TP.win(TP.$$uiCanvasName);
         if (!TP.isWindow(win)) {
             //  Couldn't find the window - fail the request and return
             this.fail(
-                TP.sc('Couldn\'t find window named "',
-                        TP.$$topWindowName,
-                        '.UIROOT"'));
+                TP.sc('Couldn\'t find window named "', TP.$$uiCanvasName));
 
             return;
         }
@@ -4799,6 +4796,7 @@ function() {
 
             //  Set up a temporary reference to the top-level window name
             delete TP.$$topWindowName;
+            delete TP.$$uiCanvasName;
 
             backgroundElem = TP.byId('top_background');
             TP.nodeDetach(backgroundElem);
