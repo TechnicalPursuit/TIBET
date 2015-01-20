@@ -104,23 +104,23 @@ function(aURI, content) {
 });
 
 //  ========================================================================
-//  TP.core.JSONContent
+//  TP.core.Content
 //  ========================================================================
 
 /**
- * @type {TP.core.JSONContent}
- * @synopsis A content handler specific to the TP.core.JSONContent format.
+ * @type {TP.core.Content}
+ * @synopsis A content handler specific to the TP.core.Content format.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:JSONContent');
+TP.lang.Object.defineSubtype('core.Content');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Type.defineMethod('constructContentObject',
+TP.core.Content.Type.defineMethod('constructContentObject',
 function(aURI, content) {
 
     /**
@@ -136,6 +136,255 @@ function(aURI, content) {
     return this.construct(content);
 });
 
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  The content's JavaScript representation
+TP.core.Content.Inst.defineAttribute('data');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('init',
+function(data) {
+
+    /**
+     * @name init
+     * @synopsis Returns a newly constructed Object from inbound JSON content.
+     * @param {Object} data The string to use for data.
+     * @returns {TP.core.Content} A new instance.
+     */
+
+    this.callNextMethod();
+
+    this.set('data', data);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('getData',
+function() {
+
+    /**
+     * @name getData
+     * @synopsis Returns the underlying data object.
+     * @returns {Object} The receiver's underlying data object.
+     */
+
+    return this.$get('data');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('getPathSource',
+function() {
+
+    /**
+     * @name getPathSource
+     * @synopsis Return the current source object being used by the executeGet()
+     *     and executeSet() methods. At this level, this method returns the
+     *     underlying data object.
+     * @returns {Object} The object used as the current path source object.
+     */
+
+    return this.$get('data');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('handleChange',
+function(aSignal) {
+
+    /**
+     * @name handleChange
+     * @synopsis Handles changes to the receiver's resource.
+     * @description URIs listen for changes to their resource and invoke this
+     *     method when it changes. The supplied signal could have a
+     *     TP.CHANGE_PATHS property in its payload, which is an Array of path
+     *     Strings that referenced the resource at some point. If this property
+     *     is present, those paths are compared against any fragments of 'sub
+     *     URIs' of the receiver and, if a match is made, a Change is signaled
+     *     with that sub URI. In either case, this URI will signal an overall
+     *     Change from itself for the 'whole resource'.
+     * @param {TP.sig.Change} aSignal The signal indicating a change has
+     *     happened in the resource.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    var sigName,
+        payload,
+
+        aspect,
+        action,
+
+        pathAspectAliases,
+        aliasesLen,
+
+        description,
+
+        k,
+
+        aspectName,
+        aspectSigName;
+
+    payload = aSignal.getPayload();
+
+    aspect = payload.at('aspect');
+
+    action = payload.at('action');
+    switch (action) {
+        case TP.CREATE:
+        case TP.DELETE:
+
+            //  CREATE or DELETE means a 'structural change' in the
+            //  data.
+            sigName = 'TP.sig.StructureChange';
+            break;
+
+        case TP.UPDATE:
+
+            //  UPDATE means just a value changed.
+            sigName = 'TP.sig.ValueChange';
+    }
+
+    pathAspectAliases = this.getAccessPathAliases(aspect);
+
+    description = payload.copy();
+
+    //  If we found any path aliases, then loop over them and dispatch
+    //  using their aspect name.
+    if (TP.isValid(pathAspectAliases)) {
+        aliasesLen = pathAspectAliases.getSize();
+
+        for (k = 0; k < aliasesLen; k++) {
+            aspectName = pathAspectAliases.at(k);
+
+            description.atPut('aspect', aspectName);
+
+            aspectSigName = aspectName.asStartUpper() + 'Change';
+
+            //  Note that we force the firing policy here. This allows
+            //  observers of a generic Change to see 'aspect'Change
+            //  notifications, even if those 'aspect'Change signals
+            //  haven't been defined as being subtypes of Change.
+
+            //  Also note how we supply either 'TP.sig.Change' (the top
+            //  level for simple attribute changes) or
+            //  'TP.sig.StructureChange' (the top level for structural
+            //  changes, mostly used in 'path'ed attributes) as the
+            //  default signal type here so that undefined aspect
+            //  signals will use that type.
+            TP.signal(this, aspectSigName, description,
+                        TP.INHERITANCE_FIRING, sigName);
+        }
+    } else {
+        //  Otherwise send the generic signal.
+        TP.signal(this, sigName, description);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('set',
+function(attributeName, attributeValue, shouldSignal) {
+
+    /**
+     * @name set
+     * @synopsis Sets the value of the named attribute to the value provided. If
+     *     no value is provided the value null is used.
+     * @description This is overridden from its supertype to automatically check
+     *     facets after the value is set.
+     * @param {String|TP.core.AccessPath} attributeName The name of the
+     *     attribute to set.
+     * @param {Object} attributeValue The value to set.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {TP.core.Content} The receiver.
+     * @todo
+     */
+
+    var retVal;
+
+    retVal = this.callNextMethod();
+
+    this.checkFacets(attributeName);
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('setData',
+function(aDataObject) {
+
+    /**
+     * @name setData
+     * @synopsis Sets the receiver's data object to the supplied object.
+     * @param {Object} aDataObject The object to set the receiver's internal
+     *     data to.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var oldDataObject;
+
+    if (TP.isValid(oldDataObject = this.get('data'))) {
+        this.ignore(oldDataObject, 'Change');
+    }
+
+    this.$set('data', aDataObject);
+
+    this.observe(aDataObject, 'Change');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('shouldSignalChange',
+function(aFlag) {
+
+    /**
+     * @name shouldSignalChange
+     * @synopsis Defines whether the receiver should actively signal change
+     *     notifications.
+     * @description In general objects do not signal changes when no observers
+     *     exist. This flag is triggered by observe where the signal being
+     *     observed is a form of Change signal to "arm" the object for change
+     *     notification. You can also manipulate it during multi-step
+     *     manipulations to signal only when a series of changes has been
+     *     completed.
+     * @param {Boolean} aFlag true/false signaling status.
+     * @returns {Boolean} The current status.
+     */
+
+    if (TP.isBoolean(aFlag)) {
+        this.get('data').shouldSignalChange(aFlag);
+    }
+
+    return this.callNextMethod();
+});
+
+//  ========================================================================
+//  TP.core.JSONContent
+//  ========================================================================
+
+/**
+ * @type {TP.core.JSONContent}
+ * @synopsis A content handler specific to the TP.core.JSONContent format.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.defineSubtype('core.JSONContent');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.core.JSONContent.Type.defineMethod('validate',
@@ -156,21 +405,16 @@ function(anObject) {
         anObj = anObject;
     }
 
+    //  First, check to make sure that it's even valid JSON. If it is, then call
+    //  next method to check facets, etc.
     str = TP.json(anObj);
 
     if (TP.isValid(TP.json2js(str))) {
-        return this.callNextMethod(anObj);
+        return this.callNextMethod();
     }
 
     return false;
 });
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  The JSON content's JavaScript representation
-TP.core.JSONContent.Inst.defineAttribute('data');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -183,18 +427,16 @@ function(data) {
      * @name init
      * @synopsis Returns a newly constructed Object from inbound JSON content.
      * @param {Object} data The string to use for data.
-     * @returns {Object} A new instance.
+     * @returns {TP.core.JSONContent} A new instance.
      */
 
     var jsonData;
-
-    this.callNextMethod();
 
     //  If a String was handed in, it's probably JSON - try to convert it.
     if (TP.isString(data) && TP.notEmpty(data)) {
         jsonData = TP.json2js(data);
 
-        // TP.json2js will raise for us.
+        //  TP.json2js will raise for us.
         if (TP.notValid(jsonData)) {
             return;
         }
@@ -202,9 +444,7 @@ function(data) {
         jsonData = data;
     }
 
-    this.$set('data', jsonData);
-
-    return this;
+    return this.callNextMethod(jsonData);
 });
 
 //  ------------------------------------------------------------------------
@@ -229,40 +469,121 @@ TP.core.JSONContent.Inst.defineMethod('asString',
 function() {
 
     /**
-     * Returns the common string representation of the receiver.
+     * @name asString
+     * @synopsis Returns the common string representation of the receiver.
      * @returns {String} The content object in string form.
      */
 
     return this.asJSONSource();
 });
 
+//  ========================================================================
+//  TP.core.XMLContent
+//  ========================================================================
+
+/**
+ * @type {TP.core.XMLContent}
+ * @synopsis A content handler specific to the TP.core.XMLContent format.
+ */
+
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Inst.defineMethod('set',
-function(attributeName, attributeValue, shouldSignal) {
+TP.core.Content.defineSubtype('core.XMLContent');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Type.defineMethod('validate',
+function(anObject) {
 
     /**
-     * @name set
-     * @synopsis Sets the value of the named attribute to the value provided. If
-     *     no value is provided the value null is used.
-     * @description This is overridden from its supertype to automatically check
-     *     facets after the value is set.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
-     *     attribute to set.
-     * @param {Object} attributeValue The value to set.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
-     * @returns {Object} The receiver.
-     * @todo
+     * @name validate
+     * @synopsis Returns true if the string parameter is valid
+     *     TP.core.XMLContent.
+     * @param {Object} anObject The object to test.
+     * @returns {Boolean} True if the object can be validated.
      */
 
-    var retVal;
+    var anObj,
+        str;
 
-    retVal = this.callNextMethod();
+    if (TP.notValid(anObj = anObject.get('data'))) {
+        anObj = anObject;
+    }
 
-    this.checkFacets(attributeName);
+    //  First, check to make sure that it's even valid XML. If it is, then call
+    //  next method to check facets, etc.
+    str = TP.str(anObj);
 
-    return retVal;
+    if (TP.isNode(TP.node(str))) {
+        return this.callNextMethod();
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('init',
+function(data) {
+
+    /**
+     * @name init
+     * @synopsis Returns a newly constructed Object from inbound JSON content.
+     * @param {Object} data The string to use for data.
+     * @returns {Object} A new instance.
+     */
+
+    var xmlData;
+
+    //  If a String was handed in, it's probably XML - try to convert it.
+    if (TP.isString(data) && TP.notEmpty(data)) {
+
+        //  TP.tpdoc() will raise for us if we supply 'true' as the 3rd
+        //  parameter.
+        xmlData = TP.tpdoc(data, null, true);
+
+        if (TP.notValid(xmlData, null, true)) {
+            return;
+        }
+    } else {
+        xmlData = data;
+    }
+
+    return this.callNextMethod(xmlData);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('asXMLString',
+function() {
+
+    /**
+     * @name asXMLString
+     * @synopsis Returns an XML string representation of the receiver.
+     * @returns {String} An XML-formatted string.
+     */
+
+    //  Callers will be interested in our data, not the 'data' structure
+    //  itself.
+    return TP.str(this.get('data'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * @name asString
+     * @synopsis Returns the common string representation of the receiver.
+     * @returns {String} The content object in string form.
+     */
+
+    return this.asXMLString();
 });
 
 //  ========================================================================
