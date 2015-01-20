@@ -3794,7 +3794,7 @@ function() {
 
         //  If we have unresolved traits, bail out here.
         if (TP.notEmpty(unresolvedTraits)) {
-            errStr = 'TYPE: ' + TP.name(mainType) + ' TYPE-LEVEL:\n';
+            errStr = 'TARGET: ' + TP.name(mainType) + ' TYPE-LEVEL:\n';
 
             unresolvedTraits.sort().perform(
                     function(kvPair) {
@@ -3917,7 +3917,7 @@ function() {
 
         //  If we have unresolved traits, bail out here.
         if (TP.notEmpty(unresolvedTraits)) {
-            errStr = 'TYPE: ' + TP.name(mainType) + ' INSTANCE-LEVEL\n';
+            errStr = 'TARGET: ' + TP.name(mainType) + ' INSTANCE-LEVEL\n';
 
             unresolvedTraits.sort().perform(
                     function(kvPair) {
