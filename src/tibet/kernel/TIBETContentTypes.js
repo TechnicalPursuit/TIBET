@@ -1657,23 +1657,20 @@ function(targetObj) {
                     //  default signal type here so that undefined aspect
                     //  signals will use that type.
                     TP.signal(targetObj, aspectSigName, description,
-                                TP.INHERITANCE_FIRING,
-                                pathAction === TP.UPDATE ?
-                                                'TP.sig.Change' :
-                                                'TP.sig.StructureChange');
+                                TP.INHERITANCE_FIRING, sigName);
                 }
+            } else {
+                //  Otherwise send the generic signal.
+                description = TP.hc(
+                                'aspect', pathKeys.at(i),
+                                'address', pathEntry.at('address'),
+                                'action', pathAction,
+                                'target', targetObj,
+                                'facet', 'value',
+                                TP.CHANGE_PATHS, changedPaths);
+
+                TP.signal(targetObj, sigName, description);
             }
-
-            //  Now, send the generic signal.
-            description = TP.hc(
-                            'aspect', pathKeys.at(i),
-                            'address', pathEntry.at('address'),
-                            'action', pathAction,
-                            'target', targetObj,
-                            'facet', 'value',
-                            TP.CHANGE_PATHS, changedPaths);
-
-            TP.signal(targetObj, sigName, description);
         }
     }
 
