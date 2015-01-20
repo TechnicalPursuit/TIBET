@@ -3795,7 +3795,8 @@ function(aHandlerEntry, quiet) {
                     //  object ourselves, otherwise we presume the developer
                     //  has registered it themselves, or will when they're
                     //  ready
-                    TP.sys.registerObject(win.$$handler);
+                    TP.sys.registerObject(win.$$handler, handlerID,
+                                            true, false);
                 } catch (e) {
                     TP.ifError() ?
                         TP.error(
@@ -4089,7 +4090,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
             //  ensure we're looking at the same handler instance, not
             //  just the same ID by updating the registration
-            TP.sys.registerObject(aHandler, handlerID, true);
+            TP.sys.registerObject(aHandler, handlerID, true, false);
 
             return;
         }
@@ -4103,7 +4104,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
             //  ensure we're looking at the same handler instance, not
             //  just the same ID by updating the registration
-            TP.sys.registerObject(aHandler, handlerID, true);
+            TP.sys.registerObject(aHandler, handlerID, true, false);
 
             return;
         }
@@ -4125,7 +4126,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     entry.handler = handlerID;
 
     //  register the object so it can be found during notification
-    TP.sys.registerObject(aHandler);
+    TP.sys.registerObject(aHandler, handlerID, true, false);
 
     root.listeners.push(entry);
 
@@ -4659,7 +4660,7 @@ aSigEntry, checkTarget) {
                     //  that so that the suspended function can be
                     //  acquired by the developer for debugging
                     if (TP.sys.shouldRegisterLoggers()) {
-                        TP.sys.registerObject(handler, null, true);
+                        TP.sys.registerObject(handler, null, true, false);
                     }
                 }
             }
