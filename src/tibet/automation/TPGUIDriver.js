@@ -396,13 +396,13 @@ function(aURI, aWindow) {
                 tpDoc,
                 tpBody;
 
-            tpWin = TP.ifInvalid(aWindow, TP.sys.getUICanvas());
+            tpWin = TP.ifInvalid(aWindow, this.get('windowContext'));
 
             tpDoc = tpWin.getDocument();
             tpBody = tpDoc.getBody();
 
             tpBody.setContent(result);
-        },
+        }.bind(this),
         function(error) {
             TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),
                             TP.Log.ERROR);
@@ -449,7 +449,7 @@ function(aURI, aWindow) {
 
                 promise;
 
-            tpWin = TP.ifInvalid(aWindow, TP.sys.getUICanvas());
+            tpWin = TP.ifInvalid(aWindow, this.get('windowContext'));
 
             tpDoc = tpWin.getDocument();
 
@@ -480,7 +480,7 @@ function(aURI, aWindow) {
                             });
 
             return promise;
-        },
+        }.bind(this),
         function(error) {
             TP.sys.logTest('Couldn\'t get resource: ' + aURI.getLocation(),
                             TP.log.ERROR);
