@@ -2757,7 +2757,10 @@ TP.regex.ATTRIBUTE_ENDS = /@\w+$/;
 TP.regex.ATTRIBUTE_ALL = /^@\*/;
 
 //  Detect starts with #, followed by word characters
-TP.regex.BARENAME = /^#\w+$/;
+TP.regex.BARENAME = new RegExp(
+                        '^#(' +
+                        '(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + ')*' +
+                        ')$');
 
 TP.regex.DOCUMENT_ID = /#document$/;
 TP.regex.ELEMENT_ID = /(.*)#(.*)/;
