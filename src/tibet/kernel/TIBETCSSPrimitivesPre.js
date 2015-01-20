@@ -470,7 +470,7 @@ function(m/*, tx, ty, tz*/) {
         r[i] = [];
 
         for (j = 0; j < 4; j++) {
-            r[i][j] = m[i][j] + (j === 3 ? + arguments[1 + i] || 0 : 0);
+            r[i][j] = m[i][j] + (j === 3 ? arguments[1 + i] || 0 : 0);
         }
     }
 
