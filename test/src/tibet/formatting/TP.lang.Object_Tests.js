@@ -371,7 +371,7 @@ function() {
 
         //  ---
 
-        testRep = TP.uc('~lib_tst/src/tibet/formatting/google_results_template.xml#rowTemplate').transform(googleDogData.get('data.responseData.results.0'));
+        testRep = TP.uc('~lib_tst/src/tibet/formatting/google_results_template.xml#rowTemplate').transform(googleDogData.get('responseData.results.0'));
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="rowTemplate"><tr class="googleResultRow"><td>http://en.wikipedia.org/wiki/Dog</td><td><b>Dog</b> - Wikipedia, the free encyclopedia</td><td>The domestic <b>dog</b> (Canis lupus familiaris) is a subspecies of the gray wolf (Canis lupus), a member of the Canidae family of the mammalian order Carnivora.</td></tr></span>';
 

@@ -10855,16 +10855,16 @@ function(attributeName) {
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
         //  Note here how, if we were given more than 1 arguments, we grab all
-        //  of the arguments supplied, make ourself the first argument and
-        //  invoke with an apply(). Otherwise, we make an Array that has this
-        //  object's 'path parameters' as the last argument. In both cases, this
-        //  is because executeGet() takes varargs (in case the path is
-        //  parameterized).
+        //  of the arguments supplied, make our path source the first argument
+        //  and invoke with an apply(). Otherwise, we make an Array that has our
+        //  path source and our 'path parameters' as the last argument. In both
+        //  cases, this is because executeGet() takes varargs (in case the path
+        //  is parameterized).
         if (arguments.length > 1) {
             args = TP.args(arguments);
-            args.atPut(0, this);
+            args.atPut(0, this.getPathSource());
         } else {
-            args = TP.ac(this, this.getPathParameters());
+            args = TP.ac(this.getPathSource(), this.getPathParameters());
         }
 
         //  Make sure to TP.wrap() the return value for consistent results
@@ -11095,16 +11095,16 @@ function(attributeName, attributeValue, shouldSignal) {
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
         //  Note here how, if we were given more than 3 arguments, we grab all
-        //  of the arguments supplied, make ourself the first argument and
-        //  invoke with an apply(). Otherwise, we make an Array that has this
-        //  object's 'path parameters' as the last argument. In both cases, this
-        //  is because executeSet() takes varargs (in case the path is
-        //  parameterized).
+        //  of the arguments supplied, make our path source the first argument
+        //  and invoke with an apply(). Otherwise, we make an Array that has our
+        //  path source and our 'path parameters' as the last argument. In both
+        //  cases, this is because executeGet() takes varargs (in case the path
+        //  is parameterized).
         if (arguments.length > 3) {
             args = TP.args(arguments);
-            args.atPut(0, this);
+            args.atPut(0, this.getPathSource());
         } else {
-            args = TP.ac(this, attributeValue, shouldSignal,
+            args = TP.ac(this.getPathSource(), attributeValue, shouldSignal,
                             this.getPathParameters());
         }
 
@@ -12387,16 +12387,16 @@ function(attributeName) {
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
         //  Note here how, if we were given more than 1 arguments, we grab all
-        //  of the arguments supplied, make ourself the first argument and
-        //  invoke with an apply(). Otherwise, we make an Array that has this
-        //  object's 'path parameters' as the last argument. In both cases, this
-        //  is because executeGet() takes varargs (in case the path is
-        //  parameterized).
+        //  of the arguments supplied, make our path source the first argument
+        //  and invoke with an apply(). Otherwise, we make an Array that has our
+        //  path source and our 'path parameters' as the last argument. In both
+        //  cases, this is because executeGet() takes varargs (in case the path
+        //  is parameterized).
         if (arguments.length > 1) {
             args = TP.args(arguments);
-            args.atPut(0, this);
+            args.atPut(0, this.getPathSource());
         } else {
-            args = TP.ac(this, this.getPathParameters());
+            args = TP.ac(this.getPathSource(), this.getPathParameters());
         }
 
         //  Make sure to TP.wrap() the return value for consistent results

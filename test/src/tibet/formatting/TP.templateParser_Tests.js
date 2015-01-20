@@ -43,7 +43,7 @@ function() {
 
         //  ---
 
-        templateStr = 'Hi there {{data.firstName}} {{data.lastName}}. You are {{data.age}} years old';
+        templateStr = 'Hi there {{firstName}} {{lastName}}. You are {{age}} years old';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -55,7 +55,7 @@ function() {
                ],
                [
                   'value',
-                  'data.firstName'
+                  'firstName'
                ],
                [
                   'text',
@@ -63,7 +63,7 @@ function() {
                ],
                [
                   'value',
-                  'data.lastName'
+                  'lastName'
                ],
                [
                   'text',
@@ -71,7 +71,7 @@ function() {
                ],
                [
                   'value',
-                  'data.age'
+                  'age'
                ],
                [
                   'text',
@@ -132,7 +132,7 @@ function() {
 
         //  ---
 
-        templateStr = 'The second item is: {{data.1}} and the other two are: {{data[0,2]}}';
+        templateStr = 'The second item is: {{1}} and the other two are: {{data[0,2]}}';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -144,7 +144,7 @@ function() {
                ],
                [
                   'value',
-                  'data.1'
+                  '1'
                ],
                [
                   'text',
@@ -163,7 +163,7 @@ function() {
 
         //  ---
 
-        templateStr = 'Hi there {{data.firstName}} {{data.lastName}}. Your phone number is {{data.phone .% @{@@@-@@@@}}}.';
+        templateStr = 'Hi there {{firstName}} {{lastName}}. Your phone number is {{phone .% @{@@@-@@@@}}}.';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -175,7 +175,7 @@ function() {
                ],
                [
                   'value',
-                  'data.firstName'
+                  'firstName'
                ],
                [
                   'text',
@@ -183,7 +183,7 @@ function() {
                ],
                [
                   'value',
-                  'data.lastName'
+                  'lastName'
                ],
                [
                   'text',
@@ -191,7 +191,7 @@ function() {
                ],
                [
                   'value',
-                  'data.phone .% @{@@@-@@@@}'
+                  'phone .% @{@@@-@@@@}'
                ],
                [
                   'text',
@@ -206,7 +206,7 @@ function() {
 
         //  ---
 
-        templateStr = 'Hi there {{data.firstName}} {{data.lastName}}. Your salary is {{data.salary .% $#{#,###.00}}}.';
+        templateStr = 'Hi there {{firstName}} {{lastName}}. Your salary is {{salary .% $#{#,###.00}}}.';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -218,7 +218,7 @@ function() {
                ],
                [
                   'value',
-                  'data.firstName'
+                  'firstName'
                ],
                [
                   'text',
@@ -226,7 +226,7 @@ function() {
                ],
                [
                   'value',
-                  'data.lastName'
+                  'lastName'
                ],
                [
                   'text',
@@ -234,7 +234,7 @@ function() {
                ],
                [
                   'value',
-                  'data.salary .% $#{#,###.00}'
+                  'salary .% $#{#,###.00}'
                ],
                [
                   'text',
@@ -379,7 +379,7 @@ function() {
         //  ---
 
         //  'with' statement - JSON path
-        templateStr = 'Hi there {{:with data}} {{firstName}} {{lastName}} {{/:with}}. You are {{data.age}} years old';
+        templateStr = 'Hi there {{:with data}} {{firstName}} {{lastName}} {{/:with}}. You are {{age}} years old';
 
         testRep = TP.$templateParser.parse(templateStr);
 
@@ -421,7 +421,7 @@ function() {
                ],
                [
                   'value',
-                  'data.age'
+                  'age'
                ],
                [
                   'text',

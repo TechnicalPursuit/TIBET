@@ -286,7 +286,7 @@ TP.core.JSONContent.defineSubtype('test.SimpleJSONContentType');
 TP.test.SimpleJSONContentType.Inst.defineAttribute(
         'lastName',
         {
-            'value': TP.tpc('data.lastName'),
+            'value': TP.tpc('lastName'),
             'valid': {
                 'dataType': String
             }
@@ -295,7 +295,7 @@ TP.test.SimpleJSONContentType.Inst.defineAttribute(
 TP.test.SimpleJSONContentType.Inst.defineAttribute(
         'firstName',
         {
-            'value': TP.tpc('data.firstName'),
+            'value': TP.tpc('firstName'),
             'valid': {
                 'dataType': String
             }
@@ -304,7 +304,7 @@ TP.test.SimpleJSONContentType.Inst.defineAttribute(
 TP.test.SimpleJSONContentType.Inst.defineAttribute(
         'age',
         {
-            'value': TP.tpc('data.age'),
+            'value': TP.tpc('age'),
             'valid': {
                 'dataType': Number
             }
@@ -313,7 +313,7 @@ TP.test.SimpleJSONContentType.Inst.defineAttribute(
 TP.test.SimpleJSONContentType.Inst.defineAttribute(
         'SSN',
         {
-            'value': TP.tpc('data.SSN'),
+            'value': TP.tpc('SSN'),
             'valid': {
                 'dataType': 'TP.test.SSN'
             },

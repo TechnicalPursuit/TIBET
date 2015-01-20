@@ -600,9 +600,9 @@ function() {
 
         //  These paths assume a root instance property of 'data'
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
-                'lastName', {'value': TP.apc('data.public_info.lastName')});
+                'lastName', {'value': TP.apc('public_info.lastName')});
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
-                'firstName', {'value': TP.apc('data.public_info.firstName')});
+                'firstName', {'value': TP.apc('public_info.firstName')});
 
         //  ---
 

@@ -5678,7 +5678,7 @@ function() {
 
 TP.w3.DTDInfo.Inst.defineAttribute(
         'elements',
-        {'value': TP.apc('data.element', true)});
+        {'value': TP.apc('element', true)});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
