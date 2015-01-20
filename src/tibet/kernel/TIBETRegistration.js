@@ -383,7 +383,7 @@ function(anObj, anID) {
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('registerObject',
-function(anObj, anID, forceRegistration) {
+function(anObj, anID, forceRegistration, observeResource) {
 
     /**
      * @name registerObject
@@ -391,8 +391,11 @@ function(anObj, anID, forceRegistration) {
      * @param {Object} anObj The object to register.
      * @param {String} anID An optional ID to use instead of the object's
      *     internal ID.
-     * @param {Boolean} forceRegistration True to skip type-level checks and
-     *     force the object to be registered.
+     * @param {Boolean} forceRegistration Whether or not to skip type-level
+     *     checks and force the object to be registered. The default is false.
+     * @param {Boolean} observeResource Whether or not the URI used to register
+     *     the supplied object should observe it for changes. The default is
+     *     true.
      * @returns {Boolean} Whether or not the object was registered.
      * @todo
      */
@@ -451,8 +454,12 @@ function(anObj, anID, forceRegistration) {
         return false;
     }
 
-    //  Create a TIBET URN to store the object
-    TP.uc(TP.TIBET_URN_PREFIX + id).setResource(anObj);
+    //  Create a TIBET URN to store the object - make sure to pass along the
+    //  'observeResource' flag (which we default to true if one wasn't
+    //  supplied).
+    TP.uc(TP.TIBET_URN_PREFIX + id).setResource(
+                anObj,
+                TP.hc('observeResource', TP.ifInvalid(observeResource, true)));
 
     if (TP.isValid(obj)) {
         id.signal('TP.sig.IdentityChange');
