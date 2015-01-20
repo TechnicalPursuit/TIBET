@@ -6612,7 +6612,7 @@ function(aspectName, facetList) {
         //  the facet value could be a computed value).
         if (TP.isValid(result = this.getFacetValueFor(aspectName, facetName))) {
 
-            //  We got a valid valid - set it.
+            //  We got a valid value - set it.
             this.setFacet(aspectName, facetName, result);
         }
     }

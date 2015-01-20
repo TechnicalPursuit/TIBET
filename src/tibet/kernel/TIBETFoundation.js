@@ -1850,8 +1850,8 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         str;
 
     try {
-        // The boot system will set a file reference in certain cases to help
-        // ensure we report the proper origin.
+        //  The boot system will set a file reference in certain cases to help
+        //  ensure we report the proper origin.
         file = TP.boot.$$onerrorFile;
         path = TP.notValid(file) ? url : file;
 
@@ -1862,15 +1862,15 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
             str += '\nSTACK:\n' + TP.getStackInfo(errorObj).join('\n');
         }
 
-        // If we're still booting errors that are uncaught are considered FATAL.
+        //  If we're still booting errors that are uncaught are considered FATAL.
         if (!TP.sys.hasStarted()) {
             TP.fatal(str);
         } else {
-            // Uncaught errors are severe relative to those we raise/catch.
+            //  Uncaught errors are severe relative to those we raise/catch.
             TP.ifSevere() ? TP.severe(str, TP.LOG) : 0;
         }
     } catch (e) {
-        // don't let log errors trigger recursion, but don't bury them either.
+        //  don't let log errors trigger recursion, but don't bury them either.
         top.console.error('Error logging onerror: ' + e.message);
         top.console.error(str || msg);
     }
@@ -1880,12 +1880,12 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         TP.sys.$launchDebugger(arguments);
     }
 
-    // NOTE we use this construct because declaring this as a global causes
-    // ESLint to freak out about an unused variable on line 28 even if we
-    // encapsulate it in no-unused-vars directives.
+    //  NOTE we use this construct because declaring this as a global causes
+    //  ESLint to freak out about an unused variable on line 28 even if we
+    //  encapsulate it in no-unused-vars directives.
 
     /* eslint-disable no-undef */
-    $STATUS = TP.FAILED;            // jshint ignore:line
+    $STATUS = TP.FAILED;            //  jshint ignore:line
     /* eslint-enable no-undef */
 
     return TP.sys.shouldCaptureErrors();
