@@ -1854,8 +1854,31 @@ function(aTarget, aSignal) {
                             return true;
                         }
 
-                        if (/Change$/.test(value)) {
-                            sigNames = TP.sig.Change.getSubtypeNames(true);
+                        if (/^\w+ReadonlyChange$/.test(value)) {
+                            sigNames = TP.ac('TP.sig.ReadonlyChange',
+                                                'TP.sig.FacetChange',
+                                                'TP.sig.Change');
+                        }
+                        else if (/^\w+RelevantChange$/.test(value)) {
+                            sigNames = TP.ac('TP.sig.RelevantChange',
+                                                'TP.sig.FacetChange',
+                                                'TP.sig.Change');
+                        }
+                        else if (/^\w+RequiredChange$/.test(value)) {
+                            sigNames = TP.ac('TP.sig.RequiredChange',
+                                                'TP.sig.FacetChange',
+                                                'TP.sig.Change');
+                        }
+                        else if (/^\w+ValidChange$/.test(value)) {
+                            sigNames = TP.ac('TP.sig.ValidChange',
+                                                'TP.sig.FacetChange',
+                                                'TP.sig.Change');
+                        }
+                        else if (/^\w+Change$/.test(value)) {
+                            sigNames = TP.ac('TP.sig.StructureChange',
+                                                'TP.sig.ValueChange',
+                                                'TP.sig.FacetChange',
+                                                'TP.sig.Change');
                         }
                     } else if (TP.isKindOf(value, TP.sig.Signal)) {
                         sigNames = value.getSignalNames();
