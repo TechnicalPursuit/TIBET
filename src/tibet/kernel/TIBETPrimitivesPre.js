@@ -1955,7 +1955,10 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
                     anItem.value.isAccessPath &&
                     anItem.value.isAccessPath()) {
 
-                    itemkey = anItem.value.asString();
+                    //  Note here how we pass 'false' for the 'non verbose'
+                    //  String representation of the path (that is, the version
+                    //  that was actually authored by the user).
+                    itemkey = anItem.value.asString(false);
 
                     pathinfo = TP.sys.$$meta_pathinfo.at(
                                             tname + '_' + itemTrack);
