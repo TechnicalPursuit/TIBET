@@ -434,6 +434,192 @@ function() {
 });
 
 //  ========================================================================
+//  XML Test Suite
+//  ========================================================================
+
+//  ========================================================================
+//  TP.test.SimpleXMLContentType
+//  ========================================================================
+
+/**
+ * @type {TP.test.SimpleXMLContentType}
+ * @synopsis A simple type to test XML content.
+ * @description Note that TP.core.XMLContent automatically checks facets and
+ *     sets their value when its set() call is made. Therefore, the 'manual
+ *     facet setting' and 'individual aspect facet checking' tests are skipped
+ *     here.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.defineSubtype('test.SimpleXMLContentType');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.test.SimpleXMLContentType.Inst.defineAttribute(
+        'lastName',
+        {
+            'value': TP.xpc('/emp/lastName', true).set('extractWith', 'value'),
+            'valid': {
+                'dataType': String
+            }
+        });
+
+TP.test.SimpleXMLContentType.Inst.defineAttribute(
+        'firstName',
+        {
+            'value': TP.xpc('/emp/firstName', true).set('extractWith', 'value'),
+            'valid': {
+                'dataType': String
+            }
+        });
+
+TP.test.SimpleXMLContentType.Inst.defineAttribute(
+        'age',
+        {
+            'value': TP.xpc('/emp/age', true).set('extractWith', 'value'),
+            'valid': {
+                'dataType': Number
+            }
+        });
+
+TP.test.SimpleXMLContentType.Inst.defineAttribute(
+        'SSN',
+        {
+            'value': TP.xpc('/emp/SSN', true).set('extractWith', 'value').
+                                                set('shouldMake', true),
+            'valid': {
+                'dataType': 'TP.test.SSN'
+            },
+            'required': true
+        });
+
+//  ========================================================================
+//  XML Test Suite
+//  ========================================================================
+
+TP.lang.Object.Inst.describe('XML content validation',
+function() {
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
+
+    this.it('XML content direct validation', function(test, options) {
+
+        var testObj;
+
+        testObj = TP.test.SimpleXMLContentType.construct(
+            '<emp>' +
+                '<lastName>Edney</lastName>' +
+                '<firstName>Bill</firstName>' +
+                '<age>48</age>' +
+                '<SSN>555-55-5555</SSN>' +
+            '</emp>');
+
+        test.assert.isTrue(TP.validate(testObj, TP.test.SimpleXMLContentType));
+
+        testObj = TP.test.SimpleXMLContentType.construct(
+            '<emp>' +
+                '<lastName>Edney</lastName>' +
+                '<firstName>Bill</firstName>' +
+                '<age>48</age>' +
+                '<SSN>555-55--555</SSN>' +
+            '</emp>');
+
+        test.assert.isFalse(TP.validate(testObj, TP.test.SimpleXMLContentType));
+    });
+
+    //  ---
+
+    this.it('XML content validation using facets - using instance-level setter', function(test, options) {
+
+        var testObj;
+
+        testObj = TP.test.SimpleXMLContentType.construct(
+            '<emp>' +
+                '<lastName>Edney</lastName>' +
+                '<firstName>Bill</firstName>' +
+                '<age>48</age>' +
+            '</emp>');
+
+        testObj.shouldSignalChange(true);
+
+        //  We don't actually have any markup representing SSN in our model, but
+        //  since we configured the 'SSN path' above to 'make' markup as it
+        //  goes, this will build an <SSN>555-55-5555</SSN> element.
+        testObj.set('SSN', '555-55-5555');
+
+        test.assert.didSignal(testObj, 'SSNChange');
+        //  Since we built markup, it's TP.sig.StructureChange, not just
+        //  TP.sig.ValueChange
+        test.assert.didSignal(testObj, 'TP.sig.StructureChange');
+
+        test.assert.didSignal(testObj, 'SSNValidChange');
+        test.assert.didSignal(testObj, 'TP.sig.ValidChange');
+
+        test.assert.didSignal(testObj, 'SSNRequiredChange');
+        test.assert.didSignal(testObj, 'TP.sig.RequiredChange');
+
+        testObj.shouldSignalChange(false);
+    });
+
+    //  ---
+
+    this.it('XML content validation using facets - using local-level setter', function(test, options) {
+
+        var testObj,
+
+            ranLocalHandler;
+
+        testObj = TP.test.SimpleXMLContentType.construct(
+            '<emp>' +
+                '<lastName>Edney</lastName>' +
+                '<firstName>Bill</firstName>' +
+                '<age>48</age>' +
+                '<SSN/>' +
+            '</emp>');
+
+        testObj.shouldSignalChange(true);
+
+        ranLocalHandler = false;
+
+        testObj.defineMethod('setSSNRequired',
+            function(value) {
+                ranLocalHandler = true;
+                this.$setFacet('SSN', TP.REQUIRED, true);
+            });
+
+        //  We actually have markup representing SSN in our model so this will
+        //  just set it's content
+        testObj.set('SSN', '555-55-5555');
+
+        test.assert.didSignal(testObj, 'SSNChange');
+        //  Since we didn't build markup, it's TP.sig.ValueChange, not
+        //  TP.sig.StructureChange
+        test.assert.didSignal(testObj, 'TP.sig.ValueChange');
+
+        test.assert.didSignal(testObj, 'SSNValidChange');
+        test.assert.didSignal(testObj, 'TP.sig.ValidChange');
+
+        test.assert.didSignal(testObj, 'SSNRequiredChange');
+        test.assert.didSignal(testObj, 'TP.sig.RequiredChange');
+
+        test.assert.isTrue(ranLocalHandler);
+
+        testObj.shouldSignalChange(false);
+    });
+});
+
+//  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
 
