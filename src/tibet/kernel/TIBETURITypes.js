@@ -4528,6 +4528,7 @@ function(aResource, aRequest) {
 
     var url,
 
+        request,
         resource,
 
         hasID,
@@ -4544,6 +4545,8 @@ function(aResource, aRequest) {
     if ((url = this.getPrimaryURI()) !== this) {
         return url.$setPrimaryResource(aResource, aRequest);
     }
+
+    request = TP.request(aRequest);
 
     //  If the resource doesn't already have a user-set ID (i.e. it's ID is the
     //  same as it's OID), we're going to set it to our 'name'.
@@ -4565,8 +4568,12 @@ function(aResource, aRequest) {
     //  for future use.
     this.$set('resource', aResource);
 
-    //  Observe the new resource object for changes.
-    this.observe(aResource, 'Change');
+    //  If the request doesn't have an 'observeResource' property (or it isn't
+    //  set to true), then observe the resource.
+    if (TP.notFalse(request.at('observeResource'))) {
+        //  Observe the new resource object for changes.
+        this.observe(aResource, 'Change');
+    }
 
     //  Once we have a value, in any form, we're both dirty and loaded from a
     //  state perspective.
