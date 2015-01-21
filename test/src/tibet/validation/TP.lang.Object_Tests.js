@@ -620,6 +620,132 @@ function() {
 });
 
 //  ========================================================================
+//  TP.test.Employee
+//  ========================================================================
+
+/**
+ * @type {TP.test.Employee}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('test.Employee');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.test.Employee.Inst.defineAttribute(
+        'lastname',
+        {
+            'valid': {
+                'dataType': 'TP.tibet.alpha'    //  Defined as XML Schema type
+            },
+            'required': true
+        });
+
+TP.test.Employee.Inst.defineAttribute(
+        'firstname',
+        {
+            'valid': {
+                'dataType': 'TP.tibet.alpha'    //  Defined as XML Schema type
+            },
+            'required': true
+        });
+
+TP.test.Employee.Inst.defineAttribute(
+        'age',
+        {
+            'valid': {
+                'dataType': 'xs:decimal'
+            },
+            'required': true
+        });
+
+TP.test.Employee.Inst.defineAttribute(
+        'address',
+        {
+            'valid': {
+                'dataType': 'TP.tibet.address'  //  Defined as JSON Schema type
+            },
+            'required': true
+        });
+
+TP.test.Employee.Inst.defineAttribute(
+        'gender',
+        {
+            'valid': {
+                'dataType': 'TP.tibet.gender'   //  Defined as JSON Schema type
+            },
+            'required': true
+        });
+
+TP.test.Employee.Inst.defineAttribute(
+        'SSN',
+        {
+            'valid': {
+                'dataType': 'TP.test.SSN'
+            },
+            'required': true
+        });
+
+//  ========================================================================
+//  External Schema Test Suite
+//  ========================================================================
+
+TP.lang.Object.Inst.describe('External schema validation',
+function() {
+
+    this.before(
+        function() {
+            var xmlSchemaTPDoc,
+                jsonSchemaContent;
+
+            xmlSchemaTPDoc = TP.uc('~lib_lib/xs/tibet_common_types.xsd').
+                                            getResource(TP.hc('async', false));
+            xmlSchemaTPDoc.getDocumentElement().defineTypes();
+
+            jsonSchemaContent = TP.uc('~lib_lib/json/tibet_common_types.json').
+                                            getResource(TP.hc('async', false));
+            jsonSchemaContent.defineTypes();
+        });
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
+
+    this.it('object-level direct validation with external schema', function(test, options) {
+
+        var testObj;
+
+        testObj = TP.test.Employee.construct();
+        testObj.set('lastname', 'Edney');
+        testObj.set('firstname', 'Bill');
+
+        testObj.set('address',
+                    TP.hc('street_address', '111 Main St.',
+                            'city', 'Anytown',
+                            'state', 'Anystate'));
+
+        testObj.set('age', 48);
+        testObj.set('gender', 'male');
+        testObj.set('SSN', '555-55-5555');
+
+        test.assert.isTrue(TP.validate(testObj, TP.test.Employee));
+
+        testObj.set('SSN', '555-55--555');
+
+        test.assert.isFalse(TP.validate(testObj, TP.test.Employee));
+    });
+});
+
+//  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
 
