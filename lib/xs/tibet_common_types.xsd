@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-<!-- 
+<!--
 An XML Schema file containing the mostly commonly used, simply defined, data
 types.
 -->
