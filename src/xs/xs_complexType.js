@@ -22,16 +22,12 @@ TP.core.ElementNode.defineSubtype('xs:complexType');
 //  ------------------------------------------------------------------------
 
 TP.xs.complexType.Inst.defineMethod('defineType',
-function(forceDefinition) {
+function() {
 
     /**
-     * @name defineTypesFromElements
-     * @synopsis Defines TIBET types from the XML Schema data found in the
-     *     supplied set of 'type elements'. If the forceDefinition flag is true,
-     *     this method will define the type even if there is already a type of
-     *     that name in the system.
-     * @param {Boolean} forceDefinition Whether or not type definition should be
-     *     forced even if the type already exists.
+     * @name defineType
+     * @synopsis Defines a TIBET type from the XML Schema data found in the
+     *     receiver's schema node.
      * @returns {TP.lang.RootObject.<TP.xs.XMLSchemaComplexCompositeType>} The
      *     newly defined type (or the existing type if it already exists).
      */
@@ -39,11 +35,16 @@ function(forceDefinition) {
     var elem,
 
         typeName,
+
+        forceDefinition,
         type;
 
     elem = this.getNativeNode();
 
     if (TP.notEmpty(typeName = TP.elementGetAttribute(elem, 'name'))) {
+
+        forceDefinition =
+            TP.bc(TP.elementGetAttribute(elem, 'tibet:redefine', true));
 
         if (TP.isTrue(forceDefinition) ||
             TP.notValid(type = TP.sys.require(typeName))) {
