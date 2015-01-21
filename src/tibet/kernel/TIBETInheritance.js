@@ -5052,13 +5052,8 @@ function(anObject, constraints) {
             case 'dataType':
 
                 //  If the constraint is 'dataType', then try to obtain a JS or
-                //  TIBET type object given a number of different ways - URI,
-                //  String, etc.
+                //  TIBET type object
                 if (!TP.isType(constraint)) {
-                    if (TP.isURI(constraint)) {
-                        constraint = TP.uc(constraint).getResource();
-                    }
-
                     if (TP.isString(constraint)) {
                         constraint = TP.sys.getTypeByName(constraint);
                     }
@@ -5075,7 +5070,12 @@ function(anObject, constraints) {
                     if (!result) {
                         break;
                     }
+                } else {
+                    this.raise('TP.sig.InvalidType',
+                                'Unable to find type: ' + constraint);
                 }
+
+                break;
         }
     }
 
