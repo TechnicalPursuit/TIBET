@@ -6716,7 +6716,9 @@ function(aspectName, facetName) {
      */
 
     var facetSetting,
-        facetValue;
+        facetValue,
+
+        val;
 
     //  First, make sure that the aspect has a facet named by the facetName. If
     //  not, just return null
@@ -6732,10 +6734,28 @@ function(aspectName, facetName) {
 
         case TP.VALID:
 
+            //  If facetSetting is a POJO with a 'value' slot, then that's the
+            //  value to use, otherwise we do a 'get' of the aspectName
+            if (TP.isValid(facetValue = facetSetting.value)) {
+                if (TP.isBoolean(facetSetting)) {
+                    val = facetValue;
+                } else if (TP.isArray(facetSetting)) {
+                    val = facetValue;
+                } else if (facetValue.isAccessPath()) {
+                    val = facetValue.executeGet(this);
+                } else if (TP.isString(facetValue) &&
+                            TP.isMethod(this[facetValue])) {
+                    val = this[facetValue]();
+                } else if (TP.isString(facetValue)) {
+                    val = facetValue;
+                }
+            } else  {
+                val = this.get(aspectName);
+            }
+
             //  The validity facet is computed by a method, since it is a more
             //  complex calculation than any of the other facets.
-            facetValue = this.getType().validateConstraintsOn(
-                                this.get(aspectName), facetSetting);
+            facetValue = this.getType().validateConstraintsOn(val, facetSetting);
 
         break;
 
