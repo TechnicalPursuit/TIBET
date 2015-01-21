@@ -35,6 +35,11 @@ function(aValue) {
     var schemaNode,
         retVal;
 
+    if (TP.notValid(aValue)) {
+        return this.raise('TP.sig.InvalidParameter',
+                            'No object provided to validate');
+    }
+
     if (TP.notValid(schemaNode = this.get('schemaNode'))) {
         return this.raise('TP.sig.InvalidNode',
                             'No schema definition node provided');
