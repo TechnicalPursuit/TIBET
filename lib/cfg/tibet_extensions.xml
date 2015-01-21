@@ -14,6 +14,7 @@
     <config ref="parsers"/>
     <config ref="local_storage"/>
     <config ref="pouchdb_storage"/>
+    <config ref="json_schema"/>
     <config ref="workflow"/>
     <config ref="shells"/>
 </config>
@@ -76,6 +77,24 @@
 
     <script src="./storage/pouchdb/TP.core.PouchDBURL.js"/>
     <script src="./storage/pouchdb/TP.core.PouchDBURLHandler.js"/>
+</config>
+
+<config id="json_schema">
+
+    <script src="~lib_deps/jjv-tpi.min.js"
+        unless="boot.unminified" no-minify="true" no-lint="true"/>
+
+    <script src="~lib_deps/jjv-tpi.js"
+        if="boot.unminified" no-lint="true"/>
+
+    <script>
+        <![CDATA[
+        TP.extern.jjv = jjv();
+        ]]>
+    </script>
+
+    <script src="./json/TPJSONSchemaType.js"/>
+
 </config>
 
 <config id="workflow">
