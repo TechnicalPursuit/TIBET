@@ -5076,6 +5076,11 @@ function(anObject, constraints) {
                 }
 
                 break;
+
+            default:
+
+                //  Right now, we don't check any other constraints.
+                return true;
         }
     }
 
