@@ -4931,7 +4931,15 @@ function(anObject, aspectNames) {
     //  No aspect names supplied - use all of the aspects of the supplied
     //  object.
     if (TP.isEmpty(aspectNames)) {
+
         aspectsToCheck = anObject.getKeys();
+
+        //  We want to filter out slots holding facet values
+        aspectsToCheck = aspectsToCheck.reject(
+                            function(aspectName) {
+                                return TP.regex.FACET_SLOT_NAME_MATCH.test(
+                                                                    aspectName);
+                            });
     } else {
         aspectsToCheck = aspectNames;
     }

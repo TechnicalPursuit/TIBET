@@ -2230,6 +2230,10 @@ TP.regex.JS_IDENTIFIER = /^[a-zA-Z_$]{1}[a-zA-Z0-9_$]*$/;
 TP.regex.JS_ASSIGNMENT =
     /(^|;|\s+)([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)(\s*=[^=])/g; // needs reset
 
+//  matching facet slot names
+TP.regex.FACET_SLOT_NAME_MATCH = new RegExp('\\$(\\w+)_(' +
+                                            TP.FACET_NAMES.join('|') +
+                                            ')');
 //  ---
 //  character testing
 //  ---
