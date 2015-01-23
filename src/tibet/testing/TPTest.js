@@ -1247,7 +1247,9 @@ function(options) {
         statistics,
         result,
         suite,
-        maybe,
+
+        beforeMaybe,
+
         params,
         wantsOnly,
         nextPromise,
@@ -1311,7 +1313,7 @@ function(options) {
 
     //  Run any 'before' hook for the suite. Note that this may generate a
     //  Promise that will be in '$internalPromise'.
-    maybe = suite.executeBefore(null, options);
+    beforeMaybe = suite.executeBefore(null, options);
 
     //  If a Promise hasn't been generated on-the-fly by any of the 'before'
     //  methods, then generate a resolved one here. This will be the Promise
@@ -1323,10 +1325,10 @@ function(options) {
 
     //  If a Promise was also *returned* from executing 'before', then chain it
     //  on the first Promise and reset the '$internalPromise' reference.
-    if (TP.canInvoke(maybe, 'then')) {
+    if (TP.canInvoke(beforeMaybe, 'then')) {
         nextPromise = firstPromise.then(
                             function() {
-                                return maybe;
+                                return beforeMaybe;
                             });
         suite.$set('$internalPromise', nextPromise);
     }
@@ -1340,12 +1342,13 @@ function(options) {
 
                 return chain.then(
                     function(obj) {
-                        var maybe,
+                        var beforeEachMaybe,
                             lastPromise,
                             promise;
 
                         //  This may add to the '$internalPromise'
-                        maybe = suite.executeBeforeEach(current, obj, options);
+                        beforeEachMaybe = suite.executeBeforeEach(
+                                                    current, obj, options);
 
                         //  A last promise can be obtained which means that
                         //  'beforeEach' must've generated one.
@@ -1355,10 +1358,10 @@ function(options) {
                             //  If a Promise was also *returned* from executing
                             //  'beforeEach', then chain it onto the last
                             //  promise.
-                            if (TP.canInvoke(maybe, 'then')) {
+                            if (TP.canInvoke(beforeEachMaybe, 'then')) {
                                 promise = lastPromise.then(
                                         function() {
-                                            return maybe;
+                                            return beforeEachMaybe;
                                         }).then(
                                         function() {
                                             return current.run(TP.hc(options));
@@ -1372,8 +1375,8 @@ function(options) {
                             }
                         } else {
                             //  Returned Promise, no last promise
-                            if (TP.canInvoke(maybe, 'then')) {
-                                promise = maybe.then(
+                            if (TP.canInvoke(beforeEachMaybe, 'then')) {
+                                promise = beforeEachMaybe.then(
                                         function() {
                                             return current.run(TP.hc(options));
                                         });
@@ -1385,7 +1388,8 @@ function(options) {
 
                         return promise.then(
                             function(obj) {
-                                var lastPromise;
+                                var afterEachMaybe,
+                                    lastPromise;
 
                                 //  Clear out *the currently executing Case's*
                                 //  built-in Promise. Then, if the 'after each'
@@ -1393,7 +1397,7 @@ function(options) {
                                 //  return it.
                                 current.$set('$internalPromise', null);
 
-                                maybe = suite.executeAfterEach(
+                                afterEachMaybe = suite.executeAfterEach(
                                             current, obj, options);
 
                                 //  A last promise can be obtained which means
@@ -1404,19 +1408,19 @@ function(options) {
                                     //  If a Promise was also *returned* from
                                     //  executing 'afterEach', then chain it
                                     //  onto the last promise.
-                                    if (TP.canInvoke(maybe, 'then')) {
+                                    if (TP.canInvoke(afterEachMaybe, 'then')) {
                                         return lastPromise.then(
                                                 function() {
-                                                    return maybe;
+                                                    return afterEachMaybe;
                                                 });
                                     } else {
                                         //  No returned Promise, just a last
                                         //  promise.
                                         return lastPromise;
                                     }
-                                } else if (TP.canInvoke(maybe, 'then')) {
+                                } else if (TP.canInvoke(afterEachMaybe, 'then')) {
                                     //  Returned Promise, no last promise
-                                    return maybe;
+                                    return afterEachMaybe;
                                 }
                             }, function(err) {
                                 current.$set('$internalPromise', null);
@@ -1435,7 +1439,8 @@ function(options) {
     //  'Finally' action for our caselist promise chain, run the 'after' hook.
     return result.then(
         function(obj) {
-            var lastPromise;
+            var afterMaybe,
+                lastPromise;
 
             //  Clear out our built-in Promise. Then, if the 'after' method
             //  schedules one, we'll check for it and return it.
@@ -1444,7 +1449,7 @@ function(options) {
             try {
                 //  Run any 'after' hook for the suite. Note that this may
                 //  generate a Promise that will be in '$internalPromise'.
-                maybe = suite.executeAfter(obj, options);
+                afterMaybe = suite.executeAfter(obj, options);
             } finally {
                 //  Output summary
 
@@ -1455,10 +1460,10 @@ function(options) {
 
                     //  If a Promise was also *returned* from executing 'after',
                     //  then chain it on the last Promise.
-                    if (TP.canInvoke(maybe, 'then')) {
+                    if (TP.canInvoke(afterMaybe, 'then')) {
                         return lastPromise.then(
                                         function() {
-                                            return maybe;
+                                            return afterMaybe;
                                         }).then(
                                         function() {
                                             suite.report(options);
@@ -1470,9 +1475,9 @@ function(options) {
                                             suite.report(options);
                                         });
                     }
-                } else if (TP.canInvoke(maybe, 'then')) {
+                } else if (TP.canInvoke(afterMaybe, 'then')) {
                     //  Returned Promise, no last promise
-                    return maybe.then(
+                    return afterMaybe.then(
                                     function() {
                                         suite.report(options);
                                     });
