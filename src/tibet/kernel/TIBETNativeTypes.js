@@ -4863,6 +4863,10 @@ function(aSource) {
             return '';
         }
 
+        if (sourceInteger.isNegative()) {
+            leftPart = '-' + leftPart;
+        }
+
         //  Put the two halves back together, using the decimal point
         //  character as determined by the Number type (which will use any
         //  locale information if it is loaded).
@@ -4888,6 +4892,11 @@ function(aSource) {
     }
 
     //  In any case, return just formatting the sourceInteger
+
+    if (sourceInteger.isNegative()) {
+        return '-' + patParts.at(0).overlayInteger(sourceInteger, TP.LEFT);
+    }
+
     return patParts.at(0).overlayInteger(sourceInteger, TP.LEFT);
 });
 
