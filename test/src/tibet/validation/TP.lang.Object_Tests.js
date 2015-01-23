@@ -87,6 +87,34 @@ TP.test.SimpleTestType.Inst.defineAttribute(
         });
 
 //  ========================================================================
+//  TP.test.ComplexTestType
+//  ========================================================================
+
+TP.test.SimpleTestType.defineSubtype('test.ComplexTestType');
+
+//  Redefinition from its supertype
+TP.test.ComplexTestType.Inst.defineAttribute(
+        'age',
+        {
+            'valid': {
+                'dataType': Number,
+                'minValue': 1,
+                'maxValue': 120,
+                'minLength': 1,
+                'maxLength': 3
+            }
+        });
+
+TP.test.ComplexTestType.Inst.defineAttribute(
+        'gender',
+        {
+            'valid': {
+                'dataType': String,
+                'enumeration': TP.ac('male', 'female')
+            }
+        });
+
+//  ========================================================================
 //  TP.test.SimpleTestTypeWithSetter
 //  ========================================================================
 
@@ -115,6 +143,39 @@ function(attributeName, attributeValue, shouldSignal) {
 TP.lang.Object.Inst.describe('Object level validation',
 function() {
 
+    var usingDebugger,
+        oldLogLevel;
+
+    this.before(
+        function() {
+            //  For now, we turn off triggering the debugger because we know
+            //  that this test case has a XInclude that points to a file
+            //  that won't be found - that part of this test is testing
+            //  'xi:fallback' element.
+            usingDebugger = TP.sys.shouldUseDebugger();
+            TP.sys.shouldUseDebugger(false);
+
+            //  Same for log level
+            oldLogLevel = TP.getLogLevel();
+            TP.setLogLevel(TP.SEVERE);
+
+            //  Suspend raising (since we know - and want - some of these
+            //  validations to fail).
+            TP.raise.$suspended = true;
+        });
+
+    this.after(
+        function() {
+            //  Put log level back to what it was
+            TP.setLogLevel(oldLogLevel);
+
+            //  Put the debugger setting back to what it was
+            TP.sys.shouldUseDebugger(usingDebugger);
+
+            //  Unsuspend raising
+            TP.raise.$suspended = false;
+        });
+
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
@@ -127,7 +188,7 @@ function() {
 
     //  ---
 
-    this.it('object-level direct validation', function(test, options) {
+    this.it('object-level direct validation - simple type', function(test, options) {
 
         var testObj;
 
@@ -146,6 +207,42 @@ function() {
         testObj.set('SSN', '555-55--555');
 
         test.assert.isFalse(TP.validate(testObj, TP.test.SimpleTestType));
+    });
+
+    //  ---
+
+    this.it('object-level direct validation - complex type', function(test, options) {
+
+        var testObj;
+
+        testObj = TP.test.ComplexTestType.construct();
+        testObj.set('lastName', 'Edney');
+        testObj.set('firstName', 'Bill');
+        testObj.set('SSN', '555-55-5555');
+        testObj.set('gender', 'male');
+
+        //  No age - no validity checks are possible
+        test.assert.isFalse(TP.validate(testObj, TP.test.ComplexTestType));
+
+        //  Set age to -1 - will violate the 'minValue' constraint
+        testObj.set('age', -1);
+        test.assert.isFalse(TP.validate(testObj, TP.test.ComplexTestType));
+
+        //  Set age to 121 - will violate the 'maxValue' constraint
+        testObj.set('age', 121);
+        test.assert.isFalse(TP.validate(testObj, TP.test.ComplexTestType));
+
+        //  Set age to 48 - should pass
+        testObj.set('age', 48);
+        test.assert.isTrue(TP.validate(testObj, TP.test.ComplexTestType));
+
+        //  Set gender to 'unknown' - should fail
+        testObj.set('gender', 'unknown');
+        test.assert.isFalse(TP.validate(testObj, TP.test.ComplexTestType));
+
+        //  Set gender to 'female' - should pass
+        testObj.set('gender', 'female');
+        test.assert.isTrue(TP.validate(testObj, TP.test.ComplexTestType));
     });
 
     //  ---

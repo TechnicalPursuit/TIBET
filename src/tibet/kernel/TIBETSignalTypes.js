@@ -2549,6 +2549,7 @@ TP.sig.ERROR.defineSubtype('MissingOverride');
 
 TP.sig.ERROR.defineSubtype('InvalidAccessMode');
 TP.sig.ERROR.defineSubtype('InvalidCollection');
+TP.sig.ERROR.defineSubtype('InvalidConstraint');
 TP.sig.ERROR.defineSubtype('InvalidContext');
 TP.sig.ERROR.defineSubtype('InvalidDirectory');
 TP.sig.ERROR.defineSubtype('InvalidFrame');
