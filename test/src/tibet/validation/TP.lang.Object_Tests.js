@@ -424,6 +424,39 @@ TP.test.SimpleJSONContentType.Inst.defineAttribute(
 TP.lang.Object.Inst.describe('JSON content validation',
 function() {
 
+    var usingDebugger,
+        oldLogLevel;
+
+    this.before(
+        function() {
+            //  For now, we turn off triggering the debugger because we know
+            //  that this test case has a XInclude that points to a file
+            //  that won't be found - that part of this test is testing
+            //  'xi:fallback' element.
+            usingDebugger = TP.sys.shouldUseDebugger();
+            TP.sys.shouldUseDebugger(false);
+
+            //  Same for log level
+            oldLogLevel = TP.getLogLevel();
+            TP.setLogLevel(TP.SEVERE);
+
+            //  Suspend raising (since we know - and want - some of these
+            //  validations to fail).
+            TP.raise.$suspended = true;
+        });
+
+    this.after(
+        function() {
+            //  Put log level back to what it was
+            TP.setLogLevel(oldLogLevel);
+
+            //  Put the debugger setting back to what it was
+            TP.sys.shouldUseDebugger(usingDebugger);
+
+            //  Unsuspend raising
+            TP.raise.$suspended = false;
+        });
+
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
@@ -599,6 +632,39 @@ TP.test.SimpleXMLContentType.Inst.defineAttribute(
 
 TP.lang.Object.Inst.describe('XML content validation',
 function() {
+
+    var usingDebugger,
+        oldLogLevel;
+
+    this.before(
+        function() {
+            //  For now, we turn off triggering the debugger because we know
+            //  that this test case has a XInclude that points to a file
+            //  that won't be found - that part of this test is testing
+            //  'xi:fallback' element.
+            usingDebugger = TP.sys.shouldUseDebugger();
+            TP.sys.shouldUseDebugger(false);
+
+            //  Same for log level
+            oldLogLevel = TP.getLogLevel();
+            TP.setLogLevel(TP.SEVERE);
+
+            //  Suspend raising (since we know - and want - some of these
+            //  validations to fail).
+            TP.raise.$suspended = true;
+        });
+
+    this.after(
+        function() {
+            //  Put log level back to what it was
+            TP.setLogLevel(oldLogLevel);
+
+            //  Put the debugger setting back to what it was
+            TP.sys.shouldUseDebugger(usingDebugger);
+
+            //  Unsuspend raising
+            TP.raise.$suspended = false;
+        });
 
     this.beforeEach(
         function() {
@@ -793,10 +859,28 @@ TP.test.Employee.Inst.defineAttribute(
 TP.lang.Object.Inst.describe('External schema validation',
 function() {
 
+    var usingDebugger,
+        oldLogLevel;
+
     this.before(
         function() {
             var xmlSchemaTPDoc,
                 jsonSchemaContent;
+
+            //  For now, we turn off triggering the debugger because we know
+            //  that this test case has a XInclude that points to a file
+            //  that won't be found - that part of this test is testing
+            //  'xi:fallback' element.
+            usingDebugger = TP.sys.shouldUseDebugger();
+            TP.sys.shouldUseDebugger(false);
+
+            //  Same for log level
+            oldLogLevel = TP.getLogLevel();
+            TP.setLogLevel(TP.SEVERE);
+
+            //  Suspend raising (since we know - and want - some of these
+            //  validations to fail).
+            TP.raise.$suspended = true;
 
             xmlSchemaTPDoc = TP.uc('~lib_lib/xs/tibet_common_types.xsd').
                                             getResource(TP.hc('async', false));
@@ -805,6 +889,18 @@ function() {
             jsonSchemaContent = TP.uc('~lib_lib/json/tibet_common_types.json').
                                             getResource(TP.hc('async', false));
             jsonSchemaContent.defineTypes();
+        });
+
+    this.after(
+        function() {
+            //  Put log level back to what it was
+            TP.setLogLevel(oldLogLevel);
+
+            //  Put the debugger setting back to what it was
+            TP.sys.shouldUseDebugger(usingDebugger);
+
+            //  Unsuspend raising
+            TP.raise.$suspended = false;
         });
 
     this.beforeEach(
