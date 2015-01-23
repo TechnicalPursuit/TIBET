@@ -2034,6 +2034,99 @@ function(suite, caseName, caseFunc) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Case.Inst.defineMethod('getFiredSignals',
+function(wantsRequests) {
+
+    /**
+     * Returns an Array of the signals fired using the TP.signal spy since it
+     *     was last reset.
+     * @param {Boolean} wantsRequests Whether or not to return all of the
+     *     signals, including TP.sig.Requests, fired since the spy was last
+     *     reset. The default is false.
+     * @return {Array} A list of the signals fired using the TP.signal spy.
+     */
+
+    //  If the caller wants TP.sig.Requests as well (false by default), then we
+    //  hand back all of the invocations of 'TP.signal'.
+    if (wantsRequests) {
+        return TP.signal.args;
+    }
+
+    //  Normally, though, they're interested in just non-TP.sig.Request signals
+    return TP.signal.args.reject(
+                function(entry) {
+                    return /TP\.sig\.Request/.test(entry.first());
+                });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('getFiredSignalInfo',
+function(signalIndex, wantsRequests) {
+
+    /**
+     * Returns a hash of information about the signal at signalIndex within the
+     *     Array of signals fired using the TP.signal spy since it was last
+     *     reset.
+     * @param {Boolean} wantsRequests Whether or not to return all of the
+     *     signal names, including those of TP.sig.Requests, fired since the spy
+     *     was last reset. The default is false.
+     * @return {TP.lang.Hash} A hash of information about the signal at the
+     *     given index.
+     */
+
+    var sigEntry,
+        info,
+
+        sigType;
+
+    sigEntry = this.getFiredSignals(wantsRequests).at(signalIndex);
+    if (!TP.isArray(sigEntry)) {
+        return null;
+    }
+
+    info = TP.hc();
+
+    info.atPut('origin', TP.id(sigEntry.at(0)));
+    info.atPut('signame', TP.str(sigEntry.at(1)));
+    info.atPut('payload', sigEntry.at(2));
+    info.atPut('policy', TP.str(sigEntry.at(3)));
+
+    if (!TP.isType(sigType = TP.sys.getTypeByName(info.at('signame')))) {
+        sigType = TP.sys.getTypeByName(TP.str(sigEntry.at(4)));
+    }
+
+    info.atPut('sigtype', sigType);
+
+    if (TP.isType(sigType)) {
+        info.atPut('sigtypesupers', sigType.getSupertypeNames());
+    }
+
+    return info;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('getFiredSignalNames',
+function(wantsRequests) {
+
+    /**
+     * Returns an Array of the names of the signals fired using the TP.signal
+     *     spy since it was last reset.
+     * @param {Boolean} wantsRequests Whether or not to return all of the
+     *     signal names, including those of TP.sig.Requests, fired since the spy
+     *     was last reset. The default is false.
+     * @return {Array} A list of the signal names fired using the TP.signal spy.
+     */
+
+    return this.getFiredSignals(wantsRequests).collect(
+                function(entry) {
+                    return entry.at(1);
+                });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Case.Inst.defineMethod('only',
 function() {
 
