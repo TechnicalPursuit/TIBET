@@ -2066,7 +2066,7 @@ function(wantsRequests) {
 
 //  ------------------------------------------------------------------------
 
-TP.test.Case.Inst.defineMethod('getFiredSignalInfo',
+TP.test.Case.Inst.defineMethod('getFiredSignalAt',
 function(signalIndex, wantsRequests) {
 
     /**
