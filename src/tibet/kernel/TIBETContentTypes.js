@@ -743,6 +743,12 @@ function(aPath) {
                         'Unable to create an path from empty spec.');
     }
 
+    //  If the path is a composite path, then create one and let it handle
+    //  creation of its subpaths.
+    if (TP.regex.COMPOSITE_PATH.test(aPath)) {
+        return TP.core.CompositePath;
+    }
+
     //  Note that we only allow numeric ACP expressions in paths
     if (TP.regex.HAS_ACP.test(path)) {
 
@@ -1735,6 +1741,171 @@ function(targetObj) {
     }
 
     return this;
+});
+
+//  ========================================================================
+//  TP.core.CompositePath
+//  ========================================================================
+
+TP.core.AccessPath.defineSubtype('CompositePath');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  The set of paths that this composite path holds. It chains them together to
+//  get or set a value when executing.
+TP.core.CompositePath.Inst.defineAttribute('paths');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CompositePath.Inst.defineMethod('init',
+function(aPath, shouldCollapse) {
+
+    /**
+     * @name init
+     * @synopsis Initialize the instance.
+     * @param {String} aPath The String to build the instance from.
+     * @param {Boolean} shouldCollapse Whether or not this path should
+     *     'collapse' its results - i.e. if its a collection with only one
+     *     item, it will just return that item. The default is false. Note that
+     *     this type configures it's 'last path' with this flag.
+     * @returns {TP.core.CompositePath} The receiver.
+     */
+
+    var pathStrs,
+        i,
+
+        paths;
+
+    this.callNextMethod('value', shouldCollapse);
+
+    //  Split along '.(' or ').' and then convert the results by stripping off
+    //  any extraneous '(' or ')' (which will sometimes occur on the 'start' or
+    //  'end' values).
+    pathStrs = aPath.split(/(\.\(|\)\.)/).convert(
+                    function(item) {
+                        return item.strip(/^\(/).strip(/\)$/);
+                    });
+
+    //  Create the set of subpaths that we will use by iterating over the path
+    //  strings that we extracted. Note that the 'odd' positions will contain
+    //  the '.(' or ').' that we split on, so we skip those by incrementing by
+    //  2.
+    paths = TP.ac();
+    for (i = 0; i < pathStrs.getSize(); i += 2) {
+        paths.push(TP.apc(pathStrs.at(i), true));
+    }
+
+    //  Configure the 'last path' to honor the shouldCollapse flag.
+    paths.last().set('shouldCollapse', shouldCollapse);
+
+    this.set('paths', paths);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompositePath.Inst.defineMethod('executeGet',
+function(targetObj, varargs) {
+
+    /**
+     * @name executeGet
+     * @synopsis Returns the result of executing the path in a 'get' fashion -
+     *     i.e. with the intent of retrieving data from the supplied target
+     *     object.
+     * @param {targetObj} Object The object to execute the receiver against to
+     *     get data.
+     * @param {Array} varargs The arguments to execute the get with. The
+     *     first argument should be the object to execute the receiver against
+     *     to retrieve data. Any remaining arguments will be used as values for
+     *     a templated substitution in the path itself.
+     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @returns {Object} The result of executing a 'get' against the target
+     *     object using the receiver.
+     */
+
+    var paths,
+        i,
+        retVal;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  The initial return value is the object itself.
+    retVal = targetObj;
+
+    //  Iterate over this object's subpaths.
+    paths = this.get('paths');
+    for (i = 0; i < paths.getSize(); i++) {
+
+        //  If it's null or undefined, don't try to message it - just exit here.
+        if (TP.notValid(retVal)) {
+            break;
+        }
+
+        //  Execute the 'get()' and reassign the return value.
+        retVal = retVal.get(paths.at(i));
+    }
+
+    return this.processFinalValue(retVal, targetObj);
+});
+
+//  -----------------------------------------------------------------------
+
+TP.core.CompositePath.Inst.defineMethod('executeSet',
+function(targetObj, attributeValue, shouldSignal, varargs) {
+
+    /**
+     * @name executeSet
+     * @synopsis Executes the path in a 'set' fashion - i.e. with the intent of
+     *     setting the supplied data into the supplied target object.
+     * @param {targetObj} Object The object to execute the receiver against to
+     *     set data.
+     * @param {attributeValue} Object The object to use as the value to set
+     *     into the target object.
+     * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
+     *     targetObj.shouldSignalChange().
+     * @param {Array} varargs Any remaining arguments will be used as values
+     *     for a templated substitution in the path itself.
+     * @raises TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @returns {Object} The result of executing a 'set' against the target
+     *     object using the receiver.
+     */
+
+    var paths,
+        i,
+        retVal;
+
+    if (TP.notValid(targetObj)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  The initial return value is the object itself.
+    retVal = targetObj;
+
+    //  Iterate over this object's subpaths, except the last one, and perform a
+    //  'get()'.
+    paths = this.get('paths');
+    for (i = 0; i < paths.getSize() - 1; i++) {
+
+        //  If it's null or undefined, don't try to message it - just exit here.
+        if (TP.notValid(retVal)) {
+            break;
+        }
+
+        //  Execute the 'get()' and reassign the return value.
+        retVal = retVal.get(paths.at(i));
+    }
+
+    //  Execute the 'set()' and reassign the return value.
+    retVal = retVal.set(paths.last(), attributeValue, shouldSignal);
+
+    return retVal;
 });
 
 //  ========================================================================

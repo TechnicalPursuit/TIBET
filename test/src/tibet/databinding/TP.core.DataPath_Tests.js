@@ -294,6 +294,208 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType composite Paths',
+function() {
+
+    var path;
+
+    this.it('Composite path with TIBET Simple Paths', function(test, options) {
+        path = TP.apc('foo.(bar).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('(bar).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(bar)');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+    });
+
+    this.it('Composite path with TIBET Simple paths and embedded TIBET Complex Paths', function(test, options) {
+        path = TP.apc('foo.(foo.hi).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(2.1).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(foo.hi[boo,moo]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(foo.hi[boo,moo].gar).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(2[1,2]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.([0:2]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.([0:]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.([:2]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.([-1:]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.([:-1]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.([0:2].fname).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(0.aliases[:-1]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+    });
+
+    this.it('Composite path with TIBET Simple paths and embedded XPath Paths', function(test, options) {
+        path = TP.apc('foo.(/author).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(./author).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(/author/lname).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(/author/lname|author/fname).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(/author/lname@foo).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(/author/lname@foo|/author/fname@foo).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(//*).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(//author).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(.//author).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(book[/bookstore/@specialty=@style]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(author/*).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(author/first-name).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(bookstore//title).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(bookstore/*/title).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(*/*).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(/bookstore//book/excerpt//author).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(./*[@foo]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(./@foo).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(bookstore/@foo).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(bookstore/@foo/bar).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(./bookstore[name][2]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(@*).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(@foo:*).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(*/bar[@foo]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(/goo/bar[@foo]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(/goo/bar[@foo="baz"]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(//foo[text()=../../following-sibling::*//foo/text()]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(./foo:*).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+    });
+
+    this.it('Composite path with TIBET Simple paths and embedded CSS Paths', function(test, options) {
+        path = TP.apc('foo.(.myclass).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag mytag).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(myns|mytag).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(.myclass .myclass).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(.myclass.myclass).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag:visited).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag + mysibling).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(myparent > mytag).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag ~ mysibling).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag[myattr]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag[myattr="myval"]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag[myattr*="myval"]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag[myattr^="myval"]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag[myattr$="myval"]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag[myattr~="myval"]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag[myattr|="myval"]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag:not([myattr])).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(mytag[myattr="myval"][myattr^="myval"]).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+
+        path = TP.apc('foo.(myparent > *, #myid).baz');
+        this.assert.isKindOf(path, TP.core.CompositePath);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AccessPath.Type.describe('TP.core.AccessPath getConcreteType TIBET Paths emdedded in XPointers',
 function() {
 
