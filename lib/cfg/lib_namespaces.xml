@@ -378,6 +378,8 @@
     <!--    base types for xs: support -->
     <script src="xs/TPXMLSchemaType.js"/>
     <script src="xs/TPXMLSchemaCompositeType.js"/>
+    <script src="xs/TPXMLSchemaSimpleCompositeType.js"/>
+    <script src="xs/TPXMLSchemaComplexCompositeType.js"/>
 
     <script src="xs/xs_simpleType.js"/>
     <script src="xs/xs_complexType.js"/>

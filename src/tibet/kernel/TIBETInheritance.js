@@ -4931,7 +4931,15 @@ function(anObject, aspectNames) {
     //  No aspect names supplied - use all of the aspects of the supplied
     //  object.
     if (TP.isEmpty(aspectNames)) {
+
         aspectsToCheck = anObject.getKeys();
+
+        //  We want to filter out slots holding facet values
+        aspectsToCheck = aspectsToCheck.reject(
+                            function(aspectName) {
+                                return TP.regex.FACET_SLOT_NAME_MATCH.test(
+                                                                    aspectName);
+                            });
     } else {
         aspectsToCheck = aspectNames;
     }
@@ -4986,9 +4994,13 @@ function(anObject, constraints) {
      * @param {Object} constraints The POJO object containing 1...n validity
      *     constraints. These include:
                dataType (JS/TIBET type object, String resolved to JS/TIBET type
-                            object, URI resolved to JS/TIBET type object)
+                            object)
                enumeration (Array, comma-separated String, AccessPath)
-               fractionDigits (Number, String, AccessPath to either)
+               equal (Object that can be compared, AccessPath)
+               fractionDigits (Number or object that can be 'asNumber'ed,
+                                AccessPath)
+               length (Number or object that can be 'asNumber'ed,
+                                AccessPath)
                maxExclusive (Number or object that can be 'asNumber'ed,
                                 AccessPath)
                maxInclusive (Number or object that can be 'asNumber'ed,
@@ -5004,26 +5016,19 @@ function(anObject, constraints) {
                minLength (Number or object that can be 'asNumber'ed,
                                 AccessPath)
                minValue (Number or object that can be 'asNumber'ed, AccessPath)
+               notEqual (Object that can be compared, AccessPath)
                pattern (RegExp, AccessPath)
                totalDigits (Number or object that can be 'asNumber'ed,
                                 AccessPath)
-               whitespace
-
-               equal (Object that can be compared, AccessPath)
-               notEqual (Object that can be compared, AccessPath)
-               unique
-               moreThan (Number or object that can be 'asNumber'ed, AccessPath)
-               lessThan (Number or object that can be 'asNumber'ed, AccessPath)
-
-               maxSelected (Number or object that can be 'asNumber'ed,
-                            AccessPath)
-               minSelected (Number or object that can be 'asNumber'ed,
-                            AccessPath)
      * @returns {Boolean} Whether or not the object passed the supplied validity
      *     constraints.
      */
 
-    var constraintNames,
+    var result,
+
+        constraintNames,
+
+        errors,
 
         len,
         i,
@@ -5031,14 +5036,14 @@ function(anObject, constraints) {
         constraintName,
         constraint,
 
-        result;
-
-    //  Set the initial result to false.
-    result = false;
+        num,
+        str;
 
     //  Get all of the keys from the literal POJO object. This will be the names
     //  of all of our constraints.
     constraintNames = TP.keys(constraints);
+
+    errors = TP.ac();
 
     len = constraintNames.getSize();
     for (i = 0; i < len; i++) {
@@ -5047,18 +5052,20 @@ function(anObject, constraints) {
         constraintName = constraintNames.at(i);
         constraint = constraints[constraintName];
 
+        if (constraint.isAccessPath()) {
+            constraint = constraint.executeGet(anObject);
+        }
+
+        //  Set the initial result to false.
+        result = false;
+
         switch (constraintName) {
 
             case 'dataType':
 
                 //  If the constraint is 'dataType', then try to obtain a JS or
-                //  TIBET type object given a number of different ways - URI,
-                //  String, etc.
+                //  TIBET type object
                 if (!TP.isType(constraint)) {
-                    if (TP.isURI(constraint)) {
-                        constraint = TP.uc(constraint).getResource();
-                    }
-
                     if (TP.isString(constraint)) {
                         constraint = TP.sys.getTypeByName(constraint);
                     }
@@ -5066,17 +5073,322 @@ function(anObject, constraints) {
 
                 //  If we successfully got a type, then validate the supplied
                 //  object with it.
-                if (TP.isType(constraint)) {
+                if (!TP.isType(constraint)) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Unable to find type: ' + constraint);
+                } else {
                     result = constraint.validate(anObject);
+                }
 
-                    //  If the result was false, then there's no need to proceed
-                    //  (all tests must pass). So just break and then we'll
-                    //  return false.
-                    if (!result) {
-                        break;
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' is not of type: ', TP.name(constraint)));
+                }
+
+                break;
+
+            case 'enumeration':
+
+                if (!TP.isArray(constraint)) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid enumeration: ' + constraint);
+                } else {
+                    result = constraint.contains(anObject);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' does not have one of the following values: ',
+                                TP.join(constraint)));
+                }
+
+                break;
+
+            case 'equal':
+
+                if (!TP.isValid(constraint)) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid object: ' + constraint);
+                } else {
+                    result = (TP.val(anObject) === constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' is not equal to: ',
+                                TP.str(constraint)));
+                }
+
+                break;
+
+            case 'fractionDigits':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+
+                    //  this is supposed to work on the "value space" meaning
+                    //  that trailing zeros aren't significant so we want to
+                    //  work from a number first...
+                    if (!TP.isNaN(num = parseFloat(anObject))) {
+                        str = num.fraction().asString().split('.').last();
+                        result = (str.getSize() <= constraint);
                     }
                 }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' does not have a fractional number of digits',
+                                ' equal to: ', constraint));
+                }
+
+                break;
+
+            case 'length':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+                    result = (TP.size(anObject) === constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' does not have a size matching: ',
+                                constraint));
+                }
+
+                break;
+
+            case 'maxExclusive':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+                    num = TP.nc(anObject);
+                    result = (num < constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' has a value (exclusive) greater than: ',
+                                constraint));
+                }
+
+                break;
+
+            case 'maxInclusive':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+                    num = TP.nc(anObject);
+                    result = (num <= constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' has a value (inclusive) greater than: ',
+                                constraint));
+                }
+
+                break;
+
+            case 'maxLength':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+                    result = (TP.size(TP.str(anObject)) <= constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' has a length greater than: ',
+                                constraint));
+                }
+
+                break;
+
+            case 'maxValue':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+                    result = (TP.nc(anObject) <= constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' has a value greater than: ',
+                                constraint));
+                }
+
+                break;
+
+            case 'minExclusive':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+                    num = TP.nc(anObject);
+                    result = (num > constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' has a value (exclusive) less than: ',
+                                constraint));
+                }
+
+                break;
+
+            case 'minInclusive':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+                    num = TP.nc(anObject);
+                    result = (num >= constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' has a value (inclusive) less than: ',
+                                constraint));
+                }
+
+                break;
+
+            case 'minLength':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+                    result = (TP.size(TP.str(anObject)) >= constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' has a length less than: ',
+                                constraint));
+                }
+
+                break;
+
+            case 'minValue':
+
+                if (!TP.isNumber(constraint = constraint.asNumber())) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+                    result = (TP.nc(anObject) >= constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' has a value less than: ',
+                                constraint));
+                }
+
+                break;
+
+            case 'notEqual':
+
+                if (!TP.isValid(constraint)) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid object: ' + constraint);
+                } else {
+                    result = (TP.val(anObject) !== constraint);
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' is equal to: ',
+                                TP.str(constraint)));
+                }
+
+                break;
+
+            case 'pattern':
+
+                if (!TP.isRegExp(constraint)) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid RegExp: ' + constraint);
+                } else {
+                    result = constraint.test(TP.str(anObject));
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' should match pattern: ',
+                                TP.str(constraint)));
+                }
+
+                break;
+
+            case 'totalDigits':
+
+                if (!TP.isNumber(constraint)) {
+                    this.raise('TP.sig.InvalidConstraint',
+                                'Invalid number: ' + constraint);
+                } else {
+
+                    //  this is supposed to work on the "value space" meaning
+                    //  that trailing zeros aren't significant so we want to
+                    //  work from a number first...
+                    if (!TP.isNaN(num = parseFloat(anObject))) {
+                        str = num.asString();
+                        result = (str.getSize() <= constraint);
+                    }
+                }
+
+                if (!result) {
+                    errors.push(
+                        TP.sc('Object: "', anObject, '"',
+                                ' does not have a total number of digits',
+                                ' equal to: ', constraint));
+                }
+
+                break;
+
+            default:
+
+                //  Right now, we don't check any other constraints.
+                return true;
         }
+    }
+
+    //  If there were errors, report them and return false
+    if (TP.notEmpty(errors)) {
+
+        this.raise('TP.sig.InvalidObject', TP.sc('Errors: ', TP.json(errors)));
+
+        return false;
     }
 
     return result;
@@ -6711,7 +7023,9 @@ function(aspectName, facetName) {
      */
 
     var facetSetting,
-        facetValue;
+        facetValue,
+
+        val;
 
     //  First, make sure that the aspect has a facet named by the facetName. If
     //  not, just return null
@@ -6727,10 +7041,28 @@ function(aspectName, facetName) {
 
         case TP.VALID:
 
+            //  If facetSetting is a POJO with a 'value' slot, then that's the
+            //  value to use, otherwise we do a 'get' of the aspectName
+            if (TP.isValid(facetValue = facetSetting.value)) {
+                if (TP.isBoolean(facetSetting)) {
+                    val = facetValue;
+                } else if (TP.isArray(facetSetting)) {
+                    val = facetValue;
+                } else if (facetValue.isAccessPath()) {
+                    val = facetValue.executeGet(this);
+                } else if (TP.isString(facetValue) &&
+                            TP.isMethod(this[facetValue])) {
+                    val = this[facetValue]();
+                } else if (TP.isString(facetValue)) {
+                    val = facetValue;
+                }
+            } else  {
+                val = this.get(aspectName);
+            }
+
             //  The validity facet is computed by a method, since it is a more
             //  complex calculation than any of the other facets.
-            facetValue = this.getType().validateConstraintsOn(
-                                this.get(aspectName), facetSetting);
+            facetValue = this.getType().validateConstraintsOn(val, facetSetting);
 
         break;
 
@@ -7012,6 +7344,22 @@ function() {
      */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Inst.defineMethod('getRepresentedType',
+function() {
+
+    /**
+     * @name getRepresentedType
+     * @synopsis Returns a type that this object might be 'representing'. This
+     *     is used in places like TIBET's XMLSchema support to return the type
+     *     that the element containing the schema is describing to the system.
+     *     The default implementation here returns null.
+     */
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------

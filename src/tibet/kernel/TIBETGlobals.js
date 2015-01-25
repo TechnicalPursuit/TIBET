@@ -2230,6 +2230,10 @@ TP.regex.JS_IDENTIFIER = /^[a-zA-Z_$]{1}[a-zA-Z0-9_$]*$/;
 TP.regex.JS_ASSIGNMENT =
     /(^|;|\s+)([a-zA-Z_$]{1}[a-zA-Z0-9_$]*)(\s*=[^=])/g; // needs reset
 
+//  matching facet slot names
+TP.regex.FACET_SLOT_NAME_MATCH = new RegExp('\\$(\\w+)_(' +
+                                            TP.FACET_NAMES.join('|') +
+                                            ')');
 //  ---
 //  character testing
 //  ---
@@ -2346,7 +2350,7 @@ TP.regex.ACP_NUMERIC = /\{\{(\d+)\}\}/g;   //  needs reset
 
 //  0-n non-'\' characters followed by 0-n whitespace, followed by '.%',
 //  followed by 0-n whitespace, followed by 1-n any characters
-TP.regex.ACP_FORMAT = /([^\\]*)\s*\.%\s*(.+)/;
+TP.regex.ACP_FORMAT = /([^\\]*?)\s*\.%\s*(.+)/;
 
 TP.regex.INLINE_BINDING_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
 
@@ -2395,8 +2399,8 @@ TP.regex.TEST_FUNCTION = /test[a-zA-Z0-9$_'"]+/;
 TP.XML_NCNAME = '[A-Za-z_]|[^\\x00-\\x7F]';
 TP.XML_NCNAMECHAR = '[A-Za-z0-9_.-]|[^\\x00-\\x7F]';
 
-TP.XML_IDREF = new RegExp(
-        TP.XML_NCNAME + '(' + TP.XML_NCNAMECHAR + ')*');
+TP.regex.XML_IDREF = new RegExp(
+                        TP.XML_NCNAME + '(' + TP.XML_NCNAMECHAR + ')*');
 
 TP.XML_NAMESTART = '[A-Za-z_:]|[^\\x00-\\x7F]';
 TP.XML_NAMECHAR = '[A-Za-z0-9_:.-]|[^\\x00-\\x7F]';
@@ -2758,7 +2762,10 @@ TP.regex.ATTRIBUTE_ENDS = /@\w+$/;
 TP.regex.ATTRIBUTE_ALL = /^@\*/;
 
 //  Detect starts with #, followed by word characters
-TP.regex.BARENAME = /^#\w+$/;
+TP.regex.BARENAME = new RegExp(
+                        '^#(' +
+                        '(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + ')*' +
+                        ')$');
 
 TP.regex.DOCUMENT_ID = /#document$/;
 TP.regex.ELEMENT_ID = /(.*)#(.*)/;

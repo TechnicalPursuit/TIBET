@@ -135,6 +135,7 @@ targets.build_deps = function(make) {
         targets.rollup_d3).then(
         targets.rollup_diff).then(
         targets.rollup_forge).then(
+        targets.rollup_jjv).then(
         targets.rollup_jquery).then(
         targets.rollup_pouchdb).then(
         targets.rollup_q).then(
@@ -243,6 +244,22 @@ targets.rollup_forge = function(make) {
     sh.exec('cp -f js/forge.min.js ../../deps/forge-tpi.min.js');
 
     targets.rollup_forge.resolve();
+};
+
+/**
+ */
+targets.rollup_jjv = function(make) {
+    var npmdir;
+
+    sh.exec('npm update jjv');
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'jjv'));
+    sh.exec('npm install -d');
+    sh.exec('cp -f lib/jjv.js  ../../deps/jjv-tpi.js');
+    sh.exec('cp -f build/jjv.min.js  ../../deps/jjv-tpi.min.js');
+
+    targets.rollup_jjv.resolve();
 };
 
 /**

@@ -2532,8 +2532,13 @@ function() {
     //  NOTE that we rely on the initial parse operation to populate any
     //  fragment portion, otherwise we'd be recomputing.
     frag = this.$get('fragment');
+
     if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(frag))) {
         return results.at(2);
+    }
+
+    if (TP.regex.XML_IDREF.test(frag)) {
+        return frag;
     }
 
     return '';

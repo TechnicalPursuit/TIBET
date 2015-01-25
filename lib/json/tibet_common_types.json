@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "definitions": {
+    "address": {
+      "name": "TP.tibet.address",
+      "type": "object",
+      "properties": {
+        "street_address": { "type": "string" },
+        "city":           { "type": "string" },
+        "state":          { "type": "string" }
+      },
+      "required": ["street_address", "city", "state"]
+    },
+    "gender": {
+      "name": "TP.tibet.gender",
+      "type": "string",
+      "enum": ["male", "female"]
+    }
+  }
+}

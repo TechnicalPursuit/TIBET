@@ -477,6 +477,66 @@ function() {
     return this.asJSONSource();
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('defineTypes',
+function() {
+
+    /**
+     * @name defineTypes
+     * @synopsis Defines any JSON Schema types defined by the data of the
+     *     receiver.
+     * @returns {TP.core.JSONContent} The receiver.
+     */
+
+    var data,
+        definitions;
+
+    if (TP.isEmpty(data = this.get('data'))) {
+        return this.raise('TP.sig.InvalidValue',
+                            'JSON content is empty.');
+    }
+
+    if (TP.notValid(definitions = data.at('definitions'))) {
+        return this.raise('TP.sig.InvalidContext',
+                            'JSON content is not JSON Schema.');
+    }
+
+    //  Iterate over each definition found in the 'definitions' hash
+    definitions.perform(
+        function(kvPair) {
+            var defName,
+                schema,
+
+                typeName,
+                type;
+
+            defName = kvPair.first();
+            schema = kvPair.last();
+
+            //  If the schema entry doesn't have a separate 'name' entry, then
+            //  use the definition name.
+            if (TP.isEmpty(typeName = schema.at('name'))) {
+                typeName = defName;
+            }
+
+            //  Make sure that the typeName has a namespace.
+            if (!/\./.test(typeName)) {
+                typeName = 'TP.json.' + typeName;
+            }
+
+            //  If the system doesn't have a type by that name, then define one
+            //  as a subtype of TP.json.JSONSchemaType.
+            if (!TP.isType(type = TP.sys.getTypeByName(typeName))) {
+                type = TP.json.JSONSchemaType.defineSubtype(typeName);
+            }
+
+            type.set('schema', schema);
+        });
+
+    return this;
+});
+
 //  ========================================================================
 //  TP.core.XMLContent
 //  ========================================================================
@@ -1878,8 +1938,9 @@ function(targetObj, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  This kind of path won't work against XML
-    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+    //  This kind of path won't work against native XML (but will against
+    //  wrapped XML).
+    if (TP.isNode(targetObj)) {
         return this.raise('TP.sig.InvalidPath');
     }
 
@@ -1959,8 +2020,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  This kind of path won't work against XML
-    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+    //  This kind of path won't work against native XML (but will against
+    //  wrapped XML).
+    if (TP.isNode(targetObj)) {
         return this.raise('TP.sig.InvalidPath');
     }
 
@@ -2297,8 +2359,9 @@ function(targetObj, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  This kind of path won't work against XML
-    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+    //  This kind of path won't work against native XML (but will against
+    //  wrapped XML).
+    if (TP.isNode(targetObj)) {
         return this.raise('TP.sig.InvalidPath');
     }
 
@@ -2367,8 +2430,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  This kind of path won't work against XML
-    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+    //  This kind of path won't work against native XML (but will against
+    //  wrapped XML).
+    if (TP.isNode(targetObj)) {
         return this.raise('TP.sig.InvalidPath');
     }
 

@@ -1247,7 +1247,9 @@ function(options) {
         statistics,
         result,
         suite,
-        maybe,
+
+        beforeMaybe,
+
         params,
         wantsOnly,
         nextPromise,
@@ -1311,7 +1313,7 @@ function(options) {
 
     //  Run any 'before' hook for the suite. Note that this may generate a
     //  Promise that will be in '$internalPromise'.
-    maybe = suite.executeBefore(null, options);
+    beforeMaybe = suite.executeBefore(null, options);
 
     //  If a Promise hasn't been generated on-the-fly by any of the 'before'
     //  methods, then generate a resolved one here. This will be the Promise
@@ -1323,10 +1325,10 @@ function(options) {
 
     //  If a Promise was also *returned* from executing 'before', then chain it
     //  on the first Promise and reset the '$internalPromise' reference.
-    if (TP.canInvoke(maybe, 'then')) {
+    if (TP.canInvoke(beforeMaybe, 'then')) {
         nextPromise = firstPromise.then(
                             function() {
-                                return maybe;
+                                return beforeMaybe;
                             });
         suite.$set('$internalPromise', nextPromise);
     }
@@ -1340,12 +1342,13 @@ function(options) {
 
                 return chain.then(
                     function(obj) {
-                        var maybe,
+                        var beforeEachMaybe,
                             lastPromise,
                             promise;
 
                         //  This may add to the '$internalPromise'
-                        maybe = suite.executeBeforeEach(current, obj, options);
+                        beforeEachMaybe = suite.executeBeforeEach(
+                                                    current, obj, options);
 
                         //  A last promise can be obtained which means that
                         //  'beforeEach' must've generated one.
@@ -1355,10 +1358,10 @@ function(options) {
                             //  If a Promise was also *returned* from executing
                             //  'beforeEach', then chain it onto the last
                             //  promise.
-                            if (TP.canInvoke(maybe, 'then')) {
+                            if (TP.canInvoke(beforeEachMaybe, 'then')) {
                                 promise = lastPromise.then(
                                         function() {
-                                            return maybe;
+                                            return beforeEachMaybe;
                                         }).then(
                                         function() {
                                             return current.run(TP.hc(options));
@@ -1372,8 +1375,8 @@ function(options) {
                             }
                         } else {
                             //  Returned Promise, no last promise
-                            if (TP.canInvoke(maybe, 'then')) {
-                                promise = maybe.then(
+                            if (TP.canInvoke(beforeEachMaybe, 'then')) {
+                                promise = beforeEachMaybe.then(
                                         function() {
                                             return current.run(TP.hc(options));
                                         });
@@ -1385,7 +1388,8 @@ function(options) {
 
                         return promise.then(
                             function(obj) {
-                                var lastPromise;
+                                var afterEachMaybe,
+                                    lastPromise;
 
                                 //  Clear out *the currently executing Case's*
                                 //  built-in Promise. Then, if the 'after each'
@@ -1393,7 +1397,7 @@ function(options) {
                                 //  return it.
                                 current.$set('$internalPromise', null);
 
-                                maybe = suite.executeAfterEach(
+                                afterEachMaybe = suite.executeAfterEach(
                                             current, obj, options);
 
                                 //  A last promise can be obtained which means
@@ -1404,19 +1408,19 @@ function(options) {
                                     //  If a Promise was also *returned* from
                                     //  executing 'afterEach', then chain it
                                     //  onto the last promise.
-                                    if (TP.canInvoke(maybe, 'then')) {
+                                    if (TP.canInvoke(afterEachMaybe, 'then')) {
                                         return lastPromise.then(
                                                 function() {
-                                                    return maybe;
+                                                    return afterEachMaybe;
                                                 });
                                     } else {
                                         //  No returned Promise, just a last
                                         //  promise.
                                         return lastPromise;
                                     }
-                                } else if (TP.canInvoke(maybe, 'then')) {
+                                } else if (TP.canInvoke(afterEachMaybe, 'then')) {
                                     //  Returned Promise, no last promise
-                                    return maybe;
+                                    return afterEachMaybe;
                                 }
                             }, function(err) {
                                 current.$set('$internalPromise', null);
@@ -1435,7 +1439,8 @@ function(options) {
     //  'Finally' action for our caselist promise chain, run the 'after' hook.
     return result.then(
         function(obj) {
-            var lastPromise;
+            var afterMaybe,
+                lastPromise;
 
             //  Clear out our built-in Promise. Then, if the 'after' method
             //  schedules one, we'll check for it and return it.
@@ -1444,7 +1449,7 @@ function(options) {
             try {
                 //  Run any 'after' hook for the suite. Note that this may
                 //  generate a Promise that will be in '$internalPromise'.
-                maybe = suite.executeAfter(obj, options);
+                afterMaybe = suite.executeAfter(obj, options);
             } finally {
                 //  Output summary
 
@@ -1455,10 +1460,10 @@ function(options) {
 
                     //  If a Promise was also *returned* from executing 'after',
                     //  then chain it on the last Promise.
-                    if (TP.canInvoke(maybe, 'then')) {
+                    if (TP.canInvoke(afterMaybe, 'then')) {
                         return lastPromise.then(
                                         function() {
-                                            return maybe;
+                                            return afterMaybe;
                                         }).then(
                                         function() {
                                             suite.report(options);
@@ -1470,9 +1475,9 @@ function(options) {
                                             suite.report(options);
                                         });
                     }
-                } else if (TP.canInvoke(maybe, 'then')) {
+                } else if (TP.canInvoke(afterMaybe, 'then')) {
                     //  Returned Promise, no last promise
-                    return maybe.then(
+                    return afterMaybe.then(
                                     function() {
                                         suite.report(options);
                                     });
@@ -2030,6 +2035,99 @@ function(suite, caseName, caseFunc) {
     this.$set('caseFunc', caseFunc);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('getFiredSignals',
+function(wantsRequests) {
+
+    /**
+     * Returns an Array of the signals fired using the TP.signal spy since it
+     *     was last reset.
+     * @param {Boolean} wantsRequests Whether or not to return all of the
+     *     signals, including TP.sig.Requests, fired since the spy was last
+     *     reset. The default is false.
+     * @return {Array} A list of the signals fired using the TP.signal spy.
+     */
+
+    //  If the caller wants TP.sig.Requests as well (false by default), then we
+    //  hand back all of the invocations of 'TP.signal'.
+    if (wantsRequests) {
+        return TP.signal.args;
+    }
+
+    //  Normally, though, they're interested in just non-TP.sig.Request signals
+    return TP.signal.args.reject(
+                function(entry) {
+                    return /TP\.sig\.Request/.test(entry.first());
+                });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('getFiredSignalAt',
+function(signalIndex, wantsRequests) {
+
+    /**
+     * Returns a hash of information about the signal at signalIndex within the
+     *     Array of signals fired using the TP.signal spy since it was last
+     *     reset.
+     * @param {Boolean} wantsRequests Whether or not to return all of the
+     *     signal names, including those of TP.sig.Requests, fired since the spy
+     *     was last reset. The default is false.
+     * @return {TP.lang.Hash} A hash of information about the signal at the
+     *     given index.
+     */
+
+    var sigEntry,
+        info,
+
+        sigType;
+
+    sigEntry = this.getFiredSignals(wantsRequests).at(signalIndex);
+    if (!TP.isArray(sigEntry)) {
+        return null;
+    }
+
+    info = TP.hc();
+
+    info.atPut('origin', TP.id(sigEntry.at(0)));
+    info.atPut('signame', TP.str(sigEntry.at(1)));
+    info.atPut('payload', sigEntry.at(2));
+    info.atPut('policy', TP.str(sigEntry.at(3)));
+
+    if (!TP.isType(sigType = TP.sys.getTypeByName(info.at('signame')))) {
+        sigType = TP.sys.getTypeByName(TP.str(sigEntry.at(4)));
+    }
+
+    info.atPut('sigtype', sigType);
+
+    if (TP.isType(sigType)) {
+        info.atPut('sigtypesupers', sigType.getSupertypeNames());
+    }
+
+    return info;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('getFiredSignalNames',
+function(wantsRequests) {
+
+    /**
+     * Returns an Array of the names of the signals fired using the TP.signal
+     *     spy since it was last reset.
+     * @param {Boolean} wantsRequests Whether or not to return all of the
+     *     signal names, including those of TP.sig.Requests, fired since the spy
+     *     was last reset. The default is false.
+     * @return {Array} A list of the signal names fired using the TP.signal spy.
+     */
+
+    return this.getFiredSignals(wantsRequests).collect(
+                function(entry) {
+                    return entry.at(1);
+                });
 });
 
 //  ------------------------------------------------------------------------
