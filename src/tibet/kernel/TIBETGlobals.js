@@ -2729,7 +2729,7 @@ TP.regex.PATH_EXPR = /(^|\s+)(.+?)($|\s+)/g; // needs reset
 
 //  any of these symbols -
 //  '|', '@', '#', ':', '/', '&', '=', '<', '>', '.', '[', '('
-TP.regex.NON_SIMPLE_PATH = /[|@#:\/&=><\\.\\[\\(]/;
+TP.regex.NON_SIMPLE_PATH = /[|@#:\/&=><\.\[\(]/;
 
 //  force the colon to have numbers on either side to avoid collisions with
 //  prefixed XPath expressions
