@@ -1938,8 +1938,9 @@ function(targetObj, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  This kind of path won't work against XML
-    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+    //  This kind of path won't work against native XML (but will against
+    //  wrapped XML).
+    if (TP.isNode(targetObj)) {
         return this.raise('TP.sig.InvalidPath');
     }
 
@@ -2019,8 +2020,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  This kind of path won't work against XML
-    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+    //  This kind of path won't work against native XML (but will against
+    //  wrapped XML).
+    if (TP.isNode(targetObj)) {
         return this.raise('TP.sig.InvalidPath');
     }
 
@@ -2357,8 +2359,9 @@ function(targetObj, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  This kind of path won't work against XML
-    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+    //  This kind of path won't work against native XML (but will against
+    //  wrapped XML).
+    if (TP.isNode(targetObj)) {
         return this.raise('TP.sig.InvalidPath');
     }
 
@@ -2427,8 +2430,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  This kind of path won't work against XML
-    if (TP.isNode(targetObj) || TP.isKindOf(targetObj, TP.core.Node)) {
+    //  This kind of path won't work against native XML (but will against
+    //  wrapped XML).
+    if (TP.isNode(targetObj)) {
         return this.raise('TP.sig.InvalidPath');
     }
 
