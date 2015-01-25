@@ -2267,74 +2267,45 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineHandler',
-function(aHandlerName, aHandler, aPolicy) {
-    var match,
+function(aHandlerName, aHandler) {
+
+    /**
+     * @name defineHandler
+     * @synopsis Defines a new event handler, essentially a method with a very
+     *     specific naming convention. Handler names are always defined in the
+     *     format: handle{Signal}[From{Origin}][When{State] which allows the
+     *     system to dispatch based on signal, source, and state.
+     * @param {String} aHandlerName The handler name in proper format, but
+     *     optionally leaving off the 'handle' prefix.
+     * @param {Function} aHandler The function body for the event handler.
+     */
+
+    var name,
+        match,
         handler,
-        policy,
         signal,
         origin,
-        state,
-        handlers,
-        existing;
+        state;
 
-    // Most of this is about the name. It has to match our handler name pattern.
-    match = TP.regex.ON_HANDLER_NAME.exec(aHandlerName);
+    if (!TP.isString(aHandlerName)) {
+        return this.raise('InvalidHandlerName', aHandlerName);
+    }
 
+    // Prepend 'handle' if the string doesn't start with that.
+    if (/^handle[A-Z]/.test(aHandlerName)) {
+        name = aHandlerName;
+    } else {
+        name = 'handle' + aHandlerName.asTitleCase();
+    }
+
+    // The resulting handler name has to match the handler name pattern.
+    match = TP.regex.SPLIT_HANDLER_NAME.exec(name);
     if (TP.notValid(match)) {
         return this.raise('InvalidHandlerName', aHandlerName);
     }
 
-    policy = aPolicy;
-    signal = match[1];
-    origin = TP.ifEmpty(match[3], TP.ANY);
-    state = TP.ifEmpty(match[5], TP.ANY);
-
-    if (origin !== TP.ANY) {
-        // Origin is in title case in the method name but needs to have that set
-        // to an initial lowercase letter for ID matching during signaling.
-        origin = origin.split('');
-        origin[0] = origin[0].toLowerCase();
-        origin = origin.join('');
-    }
-
-    // Standard notification doesn't include state checks, so wrap the intended
-    // handler here if state is being constrained and use that as the handler.
-    if (state !== TP.ANY) {
-        handler = function() {
-
-            // TODO: replace false here with a state check. current app state
-            // must match for the handler to be invoked.
-            /* eslint-disable no-constant-condition */
-            if (false) {
-                return;
-            }
-            /* eslint-enable no-constant-condition */
-            aHandler.apply(this, arguments);
-        }.bind(this);
-    } else {
-        handler = aHandler;
-    }
-
-    // We track handlers locally on each object.
-    if (TP.owns(this, '$$handlers')) {
-        handlers = this.get('$$handlers');
-    }
-
-    if (TP.notValid(handlers)) {
-        handlers = TP.hc();
-        this.$set('$$handlers', handlers, false);
-    } else {
-        // Remove any prior observation. We only want one.
-        existing = handlers.at(aHandlerName);
-        if (TP.isValid(existing)) {
-            TP.ignore(origin, signal, existing);
-        }
-    }
-
-    // Each object only gets one handler per unique name.
-    handlers.atPut(aHandlerName, handler);
-
-    TP.observe(origin, signal, handler, policy);
+    // Simple method definition.
+    this.defineMethod(name, aHandler);
 });
 
 //  ------------------------------------------------------------------------

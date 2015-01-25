@@ -362,6 +362,15 @@ function(aRequest) {
 
 TP.core.UIElementNode.defineSubtype('TP.core.CompiledTag');
 
+TP.core.CompiledTag.addTraits(TP.core.NonNativeUIElementNode);
+
+TP.core.CompiledTag.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.core.UIElementNode);
+
+TP.core.CompiledTag.finalizeTraits();
+
 //  ------------------------------------------------------------------------
 
 TP.core.CompiledTag.Type.defineMethod('tagCompile',
@@ -411,11 +420,15 @@ TP.core.UIElementNode.defineSubtype('TP.core.TemplatedTag');
 
 // Mix in templating behavior, resolving compile in favor of templating.
 TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
+TP.core.TemplatedTag.addTraits(TP.core.NonNativeUIElementNode);
+
 TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+
 TP.core.TemplatedTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
                 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
+
 TP.core.TemplatedTag.finalizeTraits();
 
 

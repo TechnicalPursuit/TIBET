@@ -2180,12 +2180,12 @@ function(aRequest) {
 
     /**
      * Provides reflection data dependent on the object and parameters provided.
-     * There are a lot of variations of output based on the nature of the object
-     * being reflected upon. An empty set of arguments returns the type list. A
-     * namespace without arguments provides types on that namespace. The APP
-     * root typically lists namespaces found below that root. TP will list
-     * any namespaces and primitives available for further reflection. A type
-     * will normally default to listing type, instance, and local methods. An
+     * The output is based on the nature of the object being reflected upon. An
+     * empty set of arguments returns the type list. A standard namespace
+     * without arguments provides types on that namespace. The APP root
+     * typically lists namespaces found below that root. TP will list any
+     * namespaces and primitives available for further reflection. A type will
+     * normally default to listing type, instance, and local methods. An
      * instance will typically default to local and instance method listings.
      * The ultimate goal is to support exploration and filtering across the
      * metadata from types to methods to method owners.
@@ -2222,7 +2222,7 @@ function(aRequest) {
     //  If we have no argument but flags our only option is to dump usage.
     if (TP.isEmpty(arg0)) {
         aRequest.stdout(
-            'Usage: :reflect [spec] [--filter <filter>] [--owners]'
+            'Usage: :reflect [spec] [--filter <filter>] [--owners] [--types]'
         );
         return aRequest.complete();
     }
@@ -2231,6 +2231,12 @@ function(aRequest) {
     if (TP.isValid(obj)) {
         //  If we resolve the object reference our goal is to provide
         //  reflection data appropriate to the nature of that object.
+
+        if (obj === TP) {
+            void 0;
+        } else if (obj === APP) {
+            void 0;
+        }
 
         //  Namespace objects should return their type lists.
         if (TP.isNamespace(obj)) {
