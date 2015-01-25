@@ -818,9 +818,12 @@ function(aPath) {
     }
 
     //  If there is no 'path punctuation' (only JS identifer characters), or
-    //  it's a simple numeric path like '[2]', that means it's a 'simple path'.
+    //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
+    //  path'.
     //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.JS_IDENTIFIER.test(path) || /^\[\d+\]$/.test(path)) {
+    if (TP.regex.JS_IDENTIFIER.test(path) ||
+        TP.regex.ONLY_NUM.test(path) ||
+        /^\[\d+\]$/.test(path)) {
         return TP.core.SimpleTIBETPath;
     }
 
@@ -2439,9 +2442,12 @@ function(aPath, shouldCollapse) {
      */
 
     //  If there is no 'path punctuation' (only JS identifer characters), or
-    //  it's a simple numeric path like '[2]', that means it's a 'simple path'.
+    //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
+    //  path'.
     //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.JS_IDENTIFIER.test(aPath) || /^\[\d+\]$/.test(aPath)) {
+    if (TP.regex.JS_IDENTIFIER.test(aPath) ||
+        TP.regex.ONLY_NUM.test(aPath) ||
+        /^\[\d+\]$/.test(aPath)) {
         return TP.core.SimpleTIBETPath.construct.apply(
                         TP.core.SimpleTIBETPath, arguments);
     }
