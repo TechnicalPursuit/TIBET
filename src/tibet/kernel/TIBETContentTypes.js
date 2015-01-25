@@ -811,10 +811,10 @@ function(aPath) {
         return TP.core.SimpleXMLPath;
     }
 
-    //  If there is no 'path punctuation' (only word characters), that means
-    //  it's all alphanumeric characters, which means it's a 'simple path'.
+    //  If there is no 'path punctuation' (only JS identifer characters), or
+    //  it's a simple numeric path like '[2]', that means it's a 'simple path'.
     //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.ONLY_WORD.test(path) || /^\[\d+\]$/.test(path)) {
+    if (TP.regex.JS_IDENTIFIER.test(path) || /^\[\d+\]$/.test(path)) {
         return TP.core.SimpleTIBETPath;
     }
 
@@ -2267,10 +2267,10 @@ function(aPath, shouldCollapse) {
      *     instance.
      */
 
-    //  If there is no 'path punctuation' (only word characters), that means
-    //  it's all alphanumeric characters, which means it's a 'simple path'.
+    //  If there is no 'path punctuation' (only JS identifer characters), or
+    //  it's a simple numeric path like '[2]', that means it's a 'simple path'.
     //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.ONLY_WORD.test(aPath) || /^\[\d+\]$/.test(aPath)) {
+    if (TP.regex.JS_IDENTIFIER.test(aPath) || /^\[\d+\]$/.test(aPath)) {
         return TP.core.SimpleTIBETPath.construct.apply(
                         TP.core.SimpleTIBETPath, arguments);
     }
