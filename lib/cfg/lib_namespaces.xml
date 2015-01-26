@@ -164,109 +164,109 @@
     <script src="xctrls/xctrls_label/xctrls_label.js"/>
 
     <script src="xctrls/xctrls_accordionbox/xctrls_accordionbox.js"/>
-    <property name="TP.xctrls.accordionbox.css_uri" value="~TP.xctrls.accordionbox/xctrls_accordionbox.css"/>
-    <property name="TP.xctrls.accordionbox.xhtml_uri" value="~TP.xctrls.accordionbox/xctrls_accordionbox.xhtml"/>
+    <property name="path.TP.xctrls.accordionbox.css" value="~TP.xctrls.accordionbox/xctrls_accordionbox.css"/>
+    <property name="path.TP.xctrls.accordionbox.xhtml" value="~TP.xctrls.accordionbox/xctrls_accordionbox.xhtml"/>
 
     <script src="xctrls/xctrls_accordionitem/xctrls_accordionitem.js"/>
-    <property name="TP.xctrls.accordionitem.xsl_uri" value="~TP.xctrls.accordionitem/xctrls_accordionitem.xsl"/>
+    <property name="path.TP.xctrls.accordionitem.xsl" value="~TP.xctrls.accordionitem/xctrls_accordionitem.xsl"/>
 
     <script src="xctrls/xctrls_button/xctrls_button.js"/>
-    <property name="TP.xctrls.button.css_uri" value="~TP.xctrls.button/xctrls_button.css"/>
-    <property name="TP.xctrls.button.xhtml_uri" value="~TP.xctrls.button/xctrls_button.xhtml"/>
-    <property name="TP.xctrls.button.css_white_uri" value="~TP.xctrls.XMLNS/themes/white/xctrls_button.css"/>
+    <property name="path.TP.xctrls.button.css" value="~TP.xctrls.button/xctrls_button.css"/>
+    <property name="path.TP.xctrls.button.xhtml" value="~TP.xctrls.button/xctrls_button.xhtml"/>
+    <property name="path.TP.xctrls.button.css.white" value="~TP.xctrls.XMLNS/themes/white/xctrls_button.css"/>
 
     <script src="xctrls/xctrls_checkitem/xctrls_checkitem.js"/>
-    <property name="TP.xctrls.checkitem.css_uri" value="~TP.xctrls.checkitem/xctrls_checkitem.css"/>
-    <property name="TP.xctrls.checkitem.xhtml_uri" value="~TP.xctrls.checkitem/xctrls_checkitem.xhtml"/>
+    <property name="path.TP.xctrls.checkitem.css" value="~TP.xctrls.checkitem/xctrls_checkitem.css"/>
+    <property name="path.TP.xctrls.checkitem.xhtml" value="~TP.xctrls.checkitem/xctrls_checkitem.xhtml"/>
 
     <script src="xctrls/xctrls_radioitem/xctrls_radioitem.js"/>
-    <property name="TP.xctrls.radioitem.css_uri" value="~TP.xctrls.radioitem/xctrls_radioitem.css"/>
-    <property name="TP.xctrls.radioitem.xhtml_uri" value="~TP.xctrls.radioitem/xctrls_radioitem.xhtml"/>
+    <property name="path.TP.xctrls.radioitem.css" value="~TP.xctrls.radioitem/xctrls_radioitem.css"/>
+    <property name="path.TP.xctrls.radioitem.xhtml" value="~TP.xctrls.radioitem/xctrls_radioitem.xhtml"/>
 
     <script src="xctrls/xctrls_textitem/xctrls_textitem.js"/>
-    <property name="TP.xctrls.textitem.css_uri" value="~TP.xctrls.textitem/xctrls_textitem.css"/>
-    <property name="TP.xctrls.textitem.xhtml_uri" value="~TP.xctrls.textitem/xctrls_textitem.xhtml"/>
+    <property name="path.TP.xctrls.textitem.css" value="~TP.xctrls.textitem/xctrls_textitem.css"/>
+    <property name="path.TP.xctrls.textitem.xhtml" value="~TP.xctrls.textitem/xctrls_textitem.xhtml"/>
 
     <script src="xctrls/xctrls_chart/xctrls_chart.js"/>
-    <property name="TP.xctrls.chart.css_uri" value="~TP.xctrls.chart/xctrls_chart.css"/>
+    <property name="path.TP.xctrls.chart.css" value="~TP.xctrls.chart/xctrls_chart.css"/>
     <script src="xctrls/xctrls_chart/xctrls_barchart.js"/>
 
     <script src="xctrls/xctrls_clipbox/xctrls_clipbox.js"/>
-    <property name="TP.xctrls.clipbox.css_uri" value="~TP.xctrls.clipbox/xctrls_clipbox.css"/>
+    <property name="path.TP.xctrls.clipbox.css" value="~TP.xctrls.clipbox/xctrls_clipbox.css"/>
 
     <script src="xctrls/xctrls_curtain/xctrls_curtain.js"/>
-    <property name="TP.xctrls.curtain.css_uri" value="~TP.xctrls.curtain/xctrls_curtain.css"/>
-    <property name="TP.xctrls.curtain.xhtml_uri" value="~TP.xctrls.curtain/xctrls_curtain.xhtml"/>
+    <property name="path.TP.xctrls.curtain.css" value="~TP.xctrls.curtain/xctrls_curtain.css"/>
+    <property name="path.TP.xctrls.curtain.xhtml" value="~TP.xctrls.curtain/xctrls_curtain.xhtml"/>
 
     <script src="xctrls/xctrls_dialog/xctrls_dialog.js"/>
-    <property name="TP.xctrls.dialog.css_uri" value="~TP.xctrls.dialog/xctrls_dialog.css"/>
-    <property name="TP.xctrls.dialog.xsl_uri" value="~TP.xctrls.dialog/xctrls_dialog.xsl"/>
-    <property name="TP.xctrls.dialog.css_white_uri" value="~TP.xctrls.XMLNS/themes/white/xctrls_dialog.css"/>
+    <property name="path.TP.xctrls.dialog.css" value="~TP.xctrls.dialog/xctrls_dialog.css"/>
+    <property name="path.TP.xctrls.dialog.xsl" value="~TP.xctrls.dialog/xctrls_dialog.xsl"/>
+    <property name="path.TP.xctrls.dialog.css.white" value="~TP.xctrls.XMLNS/themes/white/xctrls_dialog.css"/>
 
     <script src="xctrls/xctrls_drawerbox/xctrls_drawerbox.js"/>
-    <property name="TP.xctrls.drawerbox.css_uri" value="~TP.xctrls.drawerbox/xctrls_drawerbox.css"/>
-    <property name="TP.xctrls.drawerbox.xhtml_uri" value="~TP.xctrls.drawerbox/xctrls_drawerbox.xhtml"/>
+    <property name="path.TP.xctrls.drawerbox.css" value="~TP.xctrls.drawerbox/xctrls_drawerbox.css"/>
+    <property name="path.TP.xctrls.drawerbox.xhtml" value="~TP.xctrls.drawerbox/xctrls_drawerbox.xhtml"/>
 
     <script src="xctrls/xctrls_codeeditor/xctrls_codeeditor.js"/>
-    <property name="TP.xctrls.codeeditor.css_uri" value="~TP.xctrls.codeeditor/xctrls_codeeditor.css"/>
+    <property name="path.TP.xctrls.codeeditor.css" value="~TP.xctrls.codeeditor/xctrls_codeeditor.css"/>
 
     <script src="xctrls/xctrls_listbox/xctrls_listbox.js"/>
-    <property name="TP.xctrls.listbox.css_uri" value="~TP.xctrls.listbox/xctrls_listbox.css"/>
-    <property name="TP.xctrls.listbox.xhtml_uri" value="~TP.xctrls.listbox/xctrls_listbox.xhtml"/>
+    <property name="path.TP.xctrls.listbox.css" value="~TP.xctrls.listbox/xctrls_listbox.css"/>
+    <property name="path.TP.xctrls.listbox.xhtml" value="~TP.xctrls.listbox/xctrls_listbox.xhtml"/>
 
     <script src="xctrls/xctrls_log/xctrls_log.js"/>
-    <property name="TP.xctrls.log.css_uri" value="~TP.xctrls.log/xctrls_log.css"/>
-    <property name="TP.xctrls.log.xhtml_uri" value="~TP.xctrls.log/xctrls_log.xhtml"/>
-    <property name="TP.xctrls.log.css_white_uri" value="~TP.xctrls.XMLNS/themes/white/xctrls_log.css"/>
+    <property name="path.TP.xctrls.log.css" value="~TP.xctrls.log/xctrls_log.css"/>
+    <property name="path.TP.xctrls.log.xhtml" value="~TP.xctrls.log/xctrls_log.xhtml"/>
+    <property name="path.TP.xctrls.log.css.white" value="~TP.xctrls.XMLNS/themes/white/xctrls_log.css"/>
 
     <script src="xctrls/xctrls_notifier/xctrls_notifier.js"/>
-    <property name="TP.xctrls.notifier.css_uri" value="~TP.xctrls.notifier/xctrls_notifier.css"/>
-    <property name="TP.xctrls.notifier.xhtml_uri" value="~TP.xctrls.notifier/xctrls_notifier.xhtml"/>
+    <property name="path.TP.xctrls.notifier.css" value="~TP.xctrls.notifier/xctrls_notifier.css"/>
+    <property name="path.TP.xctrls.notifier.xhtml" value="~TP.xctrls.notifier/xctrls_notifier.xhtml"/>
 
     <script src="xctrls/xctrls_tabbar/xctrls_tabbar.js"/>
-    <property name="TP.xctrls.tabbar.css_uri" value="~TP.xctrls.tabbar/xctrls_tabbar.css"/>
-    <property name="TP.xctrls.tabbar.xhtml_uri" value="~TP.xctrls.tabbar/xctrls_tabbar.xhtml"/>
+    <property name="path.TP.xctrls.tabbar.css" value="~TP.xctrls.tabbar/xctrls_tabbar.css"/>
+    <property name="path.TP.xctrls.tabbar.xhtml" value="~TP.xctrls.tabbar/xctrls_tabbar.xhtml"/>
 
     <script src="xctrls/xctrls_tabbox/xctrls_tabbox.js"/>
-    <property name="TP.xctrls.tabbox.css_uri" value="~TP.xctrls.tabbox/xctrls_tabbox.css"/>
-    <property name="TP.xctrls.tabbox.xsl_uri" value="~TP.xctrls.tabbox/xctrls_tabbox.xsl"/>
+    <property name="path.TP.xctrls.tabbox.css" value="~TP.xctrls.tabbox/xctrls_tabbox.css"/>
+    <property name="path.TP.xctrls.tabbox.xsl" value="~TP.xctrls.tabbox/xctrls_tabbox.xsl"/>
 
     <script src="xctrls/xctrls_scrollbox/xctrls_scrollbox.js"/>
-    <property name="TP.xctrls.scrollbox.css_uri" value="~TP.xctrls.scrollbox/xctrls_scrollbox.css"/>
-    <property name="TP.xctrls.scrollbox.xhtml_uri" value="~TP.xctrls.scrollbox/xctrls_scrollbox.xhtml"/>
+    <property name="path.TP.xctrls.scrollbox.css" value="~TP.xctrls.scrollbox/xctrls_scrollbox.css"/>
+    <property name="path.TP.xctrls.scrollbox.xhtml" value="~TP.xctrls.scrollbox/xctrls_scrollbox.xhtml"/>
 
     <script src="xctrls/xctrls_slidebar/xctrls_slidebar.js"/>
-    <property name="TP.xctrls.slidebar.css_uri" value="~TP.xctrls.slidebar/xctrls_slidebar.css"/>
-    <property name="TP.xctrls.slidebar.xhtml_uri" value="~TP.xctrls.slidebar/xctrls_slidebar.xhtml"/>
+    <property name="path.TP.xctrls.slidebar.css" value="~TP.xctrls.slidebar/xctrls_slidebar.css"/>
+    <property name="path.TP.xctrls.slidebar.xhtml" value="~TP.xctrls.slidebar/xctrls_slidebar.xhtml"/>
 
     <script src="xctrls/xctrls_splitbar/xctrls_splitbar.js"/>
-    <property name="TP.xctrls.splitbar.css_uri" value="~TP.xctrls.splitbar/xctrls_splitbar.css"/>
-    <property name="TP.xctrls.splitbar.xhtml_uri" value="~TP.xctrls.splitbar/xctrls_splitbar.xhtml"/>
+    <property name="path.TP.xctrls.splitbar.css" value="~TP.xctrls.splitbar/xctrls_splitbar.css"/>
+    <property name="path.TP.xctrls.splitbar.xhtml" value="~TP.xctrls.splitbar/xctrls_splitbar.xhtml"/>
 
     <script src="xctrls/xctrls_splitbox/xctrls_splitbox.js"/>
-    <property name="TP.xctrls.splitbox.css_uri" value="~TP.xctrls.splitbox/xctrls_splitbox.css"/>
-    <property name="TP.xctrls.splitbox.xhtml_uri" value="~TP.xctrls.splitbox/xctrls_splitbox.xhtml"/>
+    <property name="path.TP.xctrls.splitbox.css" value="~TP.xctrls.splitbox/xctrls_splitbox.css"/>
+    <property name="path.TP.xctrls.splitbox.xhtml" value="~TP.xctrls.splitbox/xctrls_splitbox.xhtml"/>
 
     <script src="xctrls/xctrls_textinput/xctrls_textinput.js"/>
-    <property name="TP.xctrls.textinput.css_uri" value="~TP.xctrls.textinput/xctrls_textinput.css"/>
-    <property name="TP.xctrls.textinput.xhtml_uri" value="~TP.xctrls.textinput/xctrls_textinput.xhtml"/>
+    <property name="path.TP.xctrls.textinput.css" value="~TP.xctrls.textinput/xctrls_textinput.css"/>
+    <property name="path.TP.xctrls.textinput.xhtml" value="~TP.xctrls.textinput/xctrls_textinput.xhtml"/>
 
 
     <script src="xctrls/xctrls_barcode/xctrls_barcode.js"/>
 
     <script src="xctrls/xctrls_richtext/xctrls_richtext.js"/>
-    <property name="TP.xctrls.richtext.css_uri" value="~TP.xctrls.richtext/xctrls_richtext.css"/>
-    <property name="TP.xctrls.richtext.xhtml_uri" value="~TP.xctrls.richtext/xctrls_richtext.xhtml"/>
+    <property name="path.TP.xctrls.richtext.css" value="~TP.xctrls.richtext/xctrls_richtext.css"/>
+    <property name="path.TP.xctrls.richtext.xhtml" value="~TP.xctrls.richtext/xctrls_richtext.xhtml"/>
 
     <script src="xctrls/xctrls_map/TPMapUtils.js"/>
     <script src="xctrls/xctrls_map/xctrls_map.js"/>
-    <property name="TP.xctrls.map.css_uri" value="~TP.xctrls.map/xctrls_map.css"/>
+    <property name="path.TP.xctrls.map.css" value="~TP.xctrls.map/xctrls_map.css"/>
 
     <script src="xctrls/xctrls_map/xctrls_googlemap.js"/>
     <script src="xctrls/xctrls_map/xctrls_yahoomap.js"/>
 
-    <property name="TP.xctrls.toolbar.css_uri" value="~TP.xctrls.toolbar/xctrls_toolbar.css"/>
-    <property name="TP.xctrls.toolbar.xhtml_uri" value="~TP.xctrls.toolbar/xctrls_toolbar.xhtml"/>
+    <property name="path.TP.xctrls.toolbar.css" value="~TP.xctrls.toolbar/xctrls_toolbar.css"/>
+    <property name="path.TP.xctrls.toolbar.xhtml" value="~TP.xctrls.toolbar/xctrls_toolbar.xhtml"/>
 
 </config>
 

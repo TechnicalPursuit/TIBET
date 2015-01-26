@@ -289,7 +289,7 @@ function(mimeType, themeName) {
             var cfgKey,
                 value;
 
-            cfgKey = typeName + '.' + ext + '_' + themeName + '_uri';
+            cfgKey = 'path.' + typeName + '.' + ext + '.' + themeName;
             value = TP.sys.cfg(cfgKey);
 
             if (TP.notEmpty(value)) {

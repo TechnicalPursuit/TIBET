@@ -66,10 +66,10 @@ function() {
     allIFrames = TP.byCSS('sherpa|screen > iframe', this.getNativeWindow());
 
     screen0Loc = TP.ifEmpty(
-                        TP.sys.cfg('sherpa.screen_0_uri'),
+                        TP.sys.cfg('path.sherpa.screen_0'),
                         TP.sys.cfg('project.homepage'));
 
-    //  If a specific URL isn't specified for 'sherpa.screen_0_uri', then load
+    //  If a specific URL isn't specified for 'path.sherpa.screen_0', then load
     //  the project root page into screen_0 and put some markup in there that
     //  will render the core app tag content.
     if (TP.notEmpty(screen0Loc)) {

@@ -13,8 +13,8 @@
         ]]>
     </script-->
 
-    <property name="TP.tsh.console.css_uri" value="~tdc_root/css/TP.tsh.console.css"/>
-    <property name="TP.tsh.console.xhtml_uri" value="~tdc_root/xhtml/TP.tsh.console.xhtml"/>
+    <property name="path.TP.tsh.console.css" value="~tdc_root/css/TP.tsh.console.css"/>
+    <property name="path.TP.tsh.console.xhtml" value="~tdc_root/xhtml/TP.tsh.console.xhtml"/>
 </config>
 
 </package>
