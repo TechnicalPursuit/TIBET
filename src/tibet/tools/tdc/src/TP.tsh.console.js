@@ -2538,7 +2538,7 @@ function(aRequest) {
                         'stats', '_ | _ | _',
                         'resulttype', '');
 
-    inputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
+    inputStr = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
                         '#xpath1(//*[@name="inputText"])').transform(
                             inputData);
 
@@ -2660,7 +2660,7 @@ function(anObject, aRequest) {
         }
     }
 
-    outputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
+    outputStr = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
                         '#xpath1(//*[@name="outputText"])').transform(
                             outputData);
 
@@ -2673,7 +2673,7 @@ function(anObject, aRequest) {
         outputData.atPut('output',
                 TP.boot.$dump(outputData.at('output'), '', true));
 
-        outputStr = TP.uc(TP.sys.cfg('TP.tsh.console.xhtml_uri') +
+        outputStr = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
                         '#xpath1(//*[@name="outputText"])').transform(
                             outputData);
     }

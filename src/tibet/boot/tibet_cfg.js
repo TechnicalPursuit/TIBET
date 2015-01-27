@@ -1254,7 +1254,7 @@ TP.sys.setcfg('sherpa.toggle_on', 'TP.sig.DOM_Alt_Up_Up');
 //  the initial location to load into screen_0 in the Sherpa. Note that this
 //  might be the same as 'project.homepage', but the Sherpa contains machinery
 //  to manually replace 'tibet:root' with the current app's app tag.
-TP.sys.setcfg('sherpa.screen_0_uri', '~app_html/home.xhtml');
+TP.sys.setcfg('path.sherpa.screen_0', '~app_html/home.xhtml');
 
 //  ---
 //  tds support

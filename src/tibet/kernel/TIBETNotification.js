@@ -303,45 +303,70 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Type.defineMethod('getHandlerName',
-function(anOrigin, wantsFullName, aSignal) {
+function(anOrigin, wantsFullName, aSignal, aState) {
 
     /**
      * @name getHandlerName
-     * @synopsis Computes and returns the handler name.
-     * @param {String} anOrigin An origin global ID that should be used as part
-     *     of the handler computation for 'origin targeted' signal handling.
-     *     Defaults to the empty String.
+     * @synopsis Computes and returns the standard handler name defined by the
+     *     origin and signal combination. If no signal is provided the
+     *     receiver's signal name is used as a default. Handler names follow a
+     *     convention of 'handle' + signalName + 'From' + origin + 'When' +
+     *     state. The state defaults to the current application controller
+     *     state value.
+     * @param {String} anOrigin An origin ID that should be used as part
+     *     of the handler computation.
      * @param {Boolean} wantsFullName Whether or not to use the signal's 'full
      *     name' when computing the handler name. Defaults to false.
+     * @param {TP.core.Signal} aSignal The signal instance to respond to.
+     * @param {String} aState The application state to use. Defaults to the
+     *     current application controller state.
      * @returns {String}
      * @todo
      */
 
-    var origID,
-
+    var origin,
         signame,
+        statename,
         handlerName;
 
-    origID = TP.ifInvalid(anOrigin, '');
-
+    //  Ask the inbound signal what signal name it should be using.
     if (TP.isKindOf(aSignal, TP.sig.Signal)) {
+        signame = aSignal.getSignalName();
+    } else if (TP.canInvoke(aSignal, 'getSignalName')) {
         signame = aSignal.getSignalName();
     } else {
         signame = this.getSignalName();
     }
 
-    if (/^TP\.sig\./.test(signame)) {
+    //  We can do short versions if they match either TP.sig. or APP.sig. for
+    //  prefixing, otherwise only a full name can be matched. Also make sure
+    //  that all handlerName values start with 'handle'.
+    if (TP.regex.SIGNAL_PREFIX.test(signame)) {
         if (TP.notTrue(wantsFullName)) {
-            handlerName = 'handle' +
-                            origID +
-                            signame.slice(7).asTitleCase();
+            if (signame.startsWith('TP.')) {
+                handlerName = 'handle' +
+                    signame.slice(7).asTitleCase();
+            } else {
+                // APP.sig. is 8 chars, not 7 :)
+                handlerName = 'handle' +
+                    signame.slice(8).asTitleCase();
+            }
         } else {
-            handlerName = 'handle' + origID + TP.escapeTypeName(signame);
+            handlerName = 'handle' + TP.escapeTypeName(signame);
         }
     } else {
         handlerName = 'handle' +
-                        origID +
-                        TP.escapeTypeName(signame).asTitleCase();
+            TP.escapeTypeName(signame).asTitleCase();
+    }
+
+    //  Add optional From clause for origin filtering.
+    if (TP.notEmpty(anOrigin)) {
+        handlerName += 'From' + TP.gid(anOrigin);
+    }
+
+    //  Add optional When clause for state filtering.
+    if (TP.notEmpty(aState)) {
+        handlerName += 'When' + TP.str(aState);
     }
 
     return handlerName;
@@ -492,6 +517,10 @@ TP.sig.Signal.Inst.defineAttribute('payload');
 //  flag for reusability of the signal. this starts off false, and is
 //  usually cleared by the isRecyclable call when a signal is done firing
 TP.sig.Signal.Inst.defineAttribute('recyclable', false);
+
+//  the computed responder chain for the signal. used by policies which leverage
+//  responder chains for context during signal firing.
+TP.sig.Signal.Inst.defineAttribute('responderChain');
 
 //  the pseudo-name for this signal, used for handler matching. when this is
 //  empty/null it will default to the receiving signal's type name.
@@ -1297,6 +1326,31 @@ function() {
      */
 
     return this.$get('elapsed') || NaN;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('getFirstResponder',
+function() {
+
+    /**
+     * @name getFirstResponder
+     * @synopsis Returns the first responder as computed by the receiver. For
+     *     events originating in the DOM this is typically the object
+     *     responsible for the event target. For non-DOM events the responder
+     *     will typically default to the current controller instance, either a
+     *     URI controller, App controller, or other type.
+     * @returns {Object} The first responder as computed by the receiver.
+     */
+
+    var targetElem;
+
+    if (!TP.isElement(targetElem = this.getTarget())) {
+        // TODO: add support for controller chain lookup here.
+        return null;
+    }
+
+    return TP.wrap(targetElem);
 });
 
 //  ------------------------------------------------------------------------
@@ -3126,19 +3180,17 @@ function(aSignal, startResponder, isCapturing) {
 
     /**
      * @name $computeResponderChain
-     * @synopsis Computes the 'responder chain' for the supplied signal (which
-     *     should be a subtype of TP.sig.ResponderSignal) starting at the
-     *     startResponder.
-     * @param {TP.sig.ResponderSignal} aSignal The signal to compute the
-     *     responder chain for.
-     * @param {Object} startResponder The responder to start the traversal from.
+     * @synopsis Computes the 'responder chain' for the supplied signal. All
+     *     signals have a responder chain of sorts although signals with an
+     *     originating DOM element tend to have more interesting ones since
+     *     they include one or more DOM elements starting at the event target.
+     * @param {TP.sig.Signal} aSignal The signal to compute the chain for.
+     * @param {Object} startResponder The responder to start the traversal.
      * @param {Boolean} isCapturing Whether or not we're computing for a
-     *     'capturing' chain. If that's the case, we reverse our results so that
-     *     the startResponder (if it is a responder for the signal) is at the
-     *     end of the chain.
+     *     'capturing' chain. If that's the case, we reverse our result so the
+     *     outer-most responder is first in the returned list.
      * @returns {Array} The chain of responders as computed from the supplied
      *     startResponder.
-     * @todo
      */
 
     var responders,
@@ -5208,17 +5260,14 @@ function(originSet, aSignal, aPayload, aType) {
 
     var sig,
         signame,
-
-        targetResponder,
-
+        firstResponder,
         respChain,
-
         i;
 
     TP.stop('break.signal_responderfiring');
 
     if (TP.notValid(aSignal)) {
-        return TP.sig.SignalMap.raise('TP.sig.InvalidResponderSignal');
+        return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
     }
 
     //  get a valid signal instance configured
@@ -5232,26 +5281,26 @@ function(originSet, aSignal, aPayload, aType) {
         signame = TP.ANY;
     }
 
-    //  get the target responder
-    targetResponder = sig.getTargetResponder();
+    //  get the first responder prior to looping since we'll be doing checks
+    //  against this in the loop.
+    firstResponder = sig.getFirstResponder();
 
     //  compute a responder chain. note here how we pass 'true' to tell the
     //  computation algorithm that we're computing for the 'capturing'
     //  phase.
     if (TP.notEmpty(respChain = TP.sig.SignalMap.$computeResponderChain(
-                                        sig, targetResponder, true))) {
-        //  populate the currently computed onto the signal. this allows
-        //  handlers to access and manipulate the chain should they so
-        //  desire.
-        sig.set('currentChain', respChain);
+                                        sig, firstResponder, true))) {
+        //  store the currently computed chain with the signal instance so
+        //  handlers can access/alter it as needed.
+        sig.set('responderChain', respChain);
 
-        //  if the targetResponder itself is the last responder (because we
+        //  if the firstResponder itself is the last responder (because we
         //  passed 'true' above for 'capturing' phase, the responder chain
         //  Array will have been reverse()ed), then shift it off of there.
 
         //  We don't run its handler in capturing mode, but only in bubbling
         //  mode (after setting the phase to TP.AT_TARGET)
-        if (TP.unwrap(respChain.last()) === TP.unwrap(targetResponder)) {
+        if (TP.unwrap(respChain.last()) === TP.unwrap(firstResponder)) {
             respChain.shift();
         }
 
@@ -5262,7 +5311,7 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  NB: We do *not* cache the responder chain size, but check it
         //  each time through the loop in case a handler has added or
-        //  removed a responder.
+        //  removed a responder during firing.
         for (i = 0; i < respChain.getSize(); i++) {
             //  be sure to update the signal with the current origin as we
             //  traverse the responders
@@ -5282,17 +5331,17 @@ function(originSet, aSignal, aPayload, aType) {
     //  Recompute the responder chain again -- this time, passing 'false' as
     //  the parameter that determines whether we're capturing or not.
     if (TP.notEmpty(respChain = TP.sig.SignalMap.$computeResponderChain(
-                                        sig, targetResponder, false))) {
-        //  populate the currently computed onto the signal. this allows
-        //  handlers to access and manipulate the chain should they so
-        //  desire.
-        sig.set('currentChain', respChain);
+                                        sig, firstResponder, false))) {
 
-        //  if the targetResponder itself is the current responder (in
+        //  store the currently computed chain with the signal instance so
+        //  handlers can access/alter it as needed.
+        sig.set('responderChain', respChain);
+
+        //  if the firstResponder itself is the current responder (in
         //  'bubbling phase' it should always be the first one, if its a
         //  valid responder), then set the phase to TP.AT_TARGET and
         //  execute the handler.
-        if (TP.unwrap(respChain.first()) === TP.unwrap(targetResponder)) {
+        if (TP.unwrap(respChain.first()) === TP.unwrap(firstResponder)) {
             sig.setPhase(TP.AT_TARGET);
 
             //  be sure to update the signal with the origin
@@ -5342,7 +5391,7 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  reset the signal's origin so we don't confuse things in the final
     //  notification process by making it the original target ID
-    sig.setOrigin(targetResponder);
+    sig.setOrigin(firstResponder);
 
     return sig;
 });

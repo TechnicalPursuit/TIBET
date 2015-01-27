@@ -156,7 +156,7 @@ function(target) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleSherpaHUDHiddenChange',
+TP.sherpa.halo.Inst.defineMethod('handleHiddenChangeFromSherpaHUD',
 function(aSignal) {
 
     /**

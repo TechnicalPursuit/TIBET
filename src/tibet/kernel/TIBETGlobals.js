@@ -2208,6 +2208,7 @@ TP.regex.NATIVE_TYPENAME = /^[A-Z]+[A-Za-z0-9]+/;
 TP.regex.NATIVE_TYPENAME_MATCH = /^\[object/;
 TP.regex.NATIVE_TYPENAME_EXTRACT = / (.*)\]/;
 
+TP.regex.VALID_ROOTNAME = /^(TP|APP)\.[a-zA-Z]([a-zA-Z0-9_])+/;
 TP.regex.VALID_TYPENAME = /^[a-zA-Z]([-a-zA-Z0-9_.:]){2,}$/;
 TP.regex.VALID_WINDOWNAME = /^[a-zA-Z]([-a-zA-Z0-9_](\.)*){1,}$/;
 
@@ -2312,11 +2313,12 @@ TP.regex.UP_END = /[Uu]p$/;
 TP.regex.KEY_EVENT = /^key|DOMKey|_(?:Up|Down|Press)$/;
 TP.regex.MOUSE_EVENT = /^mouse|DOMMouse|DOMClick|DOMDblClick/;
 
+TP.regex.SIGNAL_PREFIX = /^(TP|APP)\.sig\./;
 TP.regex.HANDLER_NAME = /^handle([-_a-zA-Z0-9]+)$/;
 
 /* eslint-disable max-len */
-TP.regex.ON_HANDLER_NAME =
-    /^on([A-Z0-9][a-zA-Z0-9_]*?)(Of([A-Z][a-zA-Z0-9_]*?))*?(When([A-Z][a-zA-Z0-9_]*?))*?$/;
+TP.regex.SPLIT_HANDLER_NAME =
+    /^handle([A-Z0-9][a-zA-Z0-9_]*?)(From([A-Z][a-zA-Z0-9_]*?))*?(When([A-Z][a-zA-Z0-9_]*?))*?$/;
 /* eslint-enable max-len */
 
 //  ---

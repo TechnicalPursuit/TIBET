@@ -25,34 +25,34 @@
     <script src="./src/UIElementNodeAdditions.js"/>
 
     <script src="./src/TP.sherpa.halo.js"/>
-    <property name="TP.sherpa.halo.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.halo.xhtml"/>
-    <property name="TP.sherpa.halo.css_uri" value="~ide_root/css/TP.sherpa.halo.css"/>
+    <property name="path.TP.sherpa.halo.template" value="~ide_root/xhtml/TP.sherpa.halo.xhtml"/>
+    <property name="path.TP.sherpa.halo.style" value="~ide_root/css/TP.sherpa.halo.css"/>
 
     <script src="./src/TP.sherpa.console.js"/>
-    <property name="TP.sherpa.console.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.console.xhtml"/>
-    <property name="TP.sherpa.console.css_uri" value="~ide_root/css/TP.sherpa.console.css"/>
+    <property name="path.TP.sherpa.console.template" value="~ide_root/xhtml/TP.sherpa.console.xhtml"/>
+    <property name="path.TP.sherpa.console.style" value="~ide_root/css/TP.sherpa.console.css"/>
 
     <script src="./src/TP.sherpa.logview.js"/>
-    <property name="TP.sherpa.logview.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.logview.xhtml"/>
-    <property name="TP.sherpa.logview.css_uri" value="~ide_root/css/TP.sherpa.logview.css"/>
+    <property name="path.TP.sherpa.logview.template" value="~ide_root/xhtml/TP.sherpa.logview.xhtml"/>
+    <property name="path.TP.sherpa.logview.style" value="~ide_root/css/TP.sherpa.logview.css"/>
 
     <script src="./src/TP.sherpa.hud.js"/>
-    <property name="TP.sherpa.hud.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.hud.xhtml"/>
-    <property name="TP.sherpa.hud.css_uri" value="~ide_root/css/TP.sherpa.hud.css"/>
+    <property name="path.TP.sherpa.hud.template" value="~ide_root/xhtml/TP.sherpa.hud.xhtml"/>
+    <property name="path.TP.sherpa.hud.style" value="~ide_root/css/TP.sherpa.hud.css"/>
 
     <script src="./src/TP.sherpa.world.js"/>
-    <property name="TP.sherpa.world.css_uri" value="~ide_root/css/TP.sherpa.world.css"/>
+    <property name="path.TP.sherpa.world.style" value="~ide_root/css/TP.sherpa.world.css"/>
 
     <script src="./src/TP.sherpa.screen.js"/>
-    <property name="TP.sherpa.screen.css_uri" value="~ide_root/css/TP.sherpa.screen.css"/>
+    <property name="path.TP.sherpa.screen.style" value="~ide_root/css/TP.sherpa.screen.css"/>
 
     <script src="./src/TP.sherpa.tile.js"/>
-    <property name="TP.sherpa.tile.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.tile.xhtml"/>
-    <property name="TP.sherpa.tile.css_uri" value="~ide_root/css/TP.sherpa.tile.css"/>
+    <property name="path.TP.sherpa.tile.template" value="~ide_root/xhtml/TP.sherpa.tile.xhtml"/>
+    <property name="path.TP.sherpa.tile.style" value="~ide_root/css/TP.sherpa.tile.css"/>
 
     <script src="./src/TP.sherpa.editortile.js"/>
-    <property name="TP.sherpa.editortile.xhtml_uri" value="~ide_root/xhtml/TP.sherpa.editortile.xhtml"/>
-    <property name="TP.sherpa.editortile.css_uri" value="~ide_root/css/TP.sherpa.editortile.css"/>
+    <property name="path.TP.sherpa.editortile.template" value="~ide_root/xhtml/TP.sherpa.editortile.xhtml"/>
+    <property name="path.TP.sherpa.editortile.style" value="~ide_root/css/TP.sherpa.editortile.css"/>
 
 </config>
 

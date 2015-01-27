@@ -244,7 +244,7 @@ function(aSignal) {
 //  Handlers for signals from other widgets
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('handleSherpaHUDHiddenChange',
+TP.sherpa.console.Inst.defineMethod('handleHiddenChangeFromSherpaHUD',
 function(aSignal) {
 
     /**
@@ -345,7 +345,8 @@ function() {
                             TP.win('UIROOT.SHERPA_FRAME').document);
 
     logviewTPElem = TP.wrap(sherpaFrameBody).addContent(
-                    TP.sherpa.logview.getResourceMarkup(TP.ietf.Mime.XHTML));
+                    TP.sherpa.logview.getResourceElement('template',
+                        TP.ietf.Mime.XHTML));
 
     logviewTPElem.setup();
 

@@ -40,7 +40,7 @@ node_modules/tibet/lib/dat/uris_next.xml
 node_modules/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
 
 node_modules/tibet/lib/json/html401_strict.json
-node_modules/tibet/lib/dat/TP.core.UIElementNode_keybindings.xml
+node_modules/tibet/lib/dat/TP.core.UIElementNode.keybindings.xml
 
 node_modules/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
 node_modules/tibet/src/tibet/tools/tdc/css/TP.tsh.console.css

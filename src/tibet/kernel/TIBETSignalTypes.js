@@ -622,37 +622,6 @@ TP.sig.ResponderSignal.Type.defineAttribute('bubbling', true);
 TP.sig.ResponderSignal.Type.defineAttribute('cancelable', true);
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.Inst.defineAttribute('currentChain');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.sig.ResponderSignal.Inst.defineMethod('getTargetResponder',
-function() {
-
-    /**
-     * @name getTargetResponder
-     * @synopsis Returns the 'target responder' as computed by the receiver.
-     *     This will be the object that the responder chain computation
-     *     machinery will use as a starting point.
-     * @returns {Object} The object that the chain computation machinery should
-     *     use as a starting point.
-     */
-
-    var targetElem;
-
-    if (!TP.isElement(targetElem = this.getTarget())) {
-        return null;
-    }
-
-    return TP.wrap(targetElem);
-});
-
-//  ------------------------------------------------------------------------
 //  Responder Notification Signals
 //  ------------------------------------------------------------------------
 

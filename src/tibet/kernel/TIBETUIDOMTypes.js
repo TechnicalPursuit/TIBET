@@ -39,7 +39,7 @@ TP.core.UIElementNode.isAbstract(true);
 TP.core.UIElementNode.Type.defineAttribute('keyBindingsURI');
 
 //  The XML document holding the key bindings
-TP.core.UIElementNode.Type.defineAttribute('keyBindingsXML');
+TP.core.UIElementNode.Type.defineAttribute('keyBindingsMap');
 
 //  The TP.core.UIElementNode that focus is moving to.
 TP.core.UIElementNode.Type.defineAttribute('$focusingTPElement');
@@ -101,7 +101,8 @@ function(aDocument) {
 
     //  Couldn't find that CSS style sheet, so we ask ourself to compute a
     //  'resource URI' for the sheet using the CSS mime type.
-    if (TP.notValid(styleURI = this.getResourceURI(TP.ietf.Mime.CSS))) {
+    styleURI = this.getResourceURI('style', TP.ietf.Mime.CSS);
+    if (TP.notValid(styleURI)) {
         return this;
     }
 
@@ -119,35 +120,24 @@ function(aDocument) {
     TP.elementSetAttribute(styleElem, 'id', ourID);
 
 
-    //  Then, we add the particular "theme" stylesheets - this should be a
-    //  set of stylesheets that correspond to the individual themes in the
-    //  document, 1 per control (i.e. you might have multiple themes in one
-    //  document).
+    // TODO: eventually remove what's below and tie it into the setCurrentTheme
+    // and setContent methods when those alter either the theme or the UICANVAS
+    // document body.
 
-    //  Find any elements in the document that have a 'data-theme'
-    //  attribute.
-    themeElems = TP.byCSS('*[data-theme]', aDocument);
-
-    //  Loop over them, extracting the value for that attribute and try to
-    //  compute a 'theme URI'. If a URI can be computed (and the
-    //  corresponding style sheet is not already present) then load a style
-    //  sheet for that URI.
-    len = themeElems.getSize();
-    for (i = 0; i < len; i++) {
-        themeName = TP.elementGetAttribute(themeElems.at(i), 'data-theme');
+    themeName = TP.sys.getApplication().getCurrentTheme();
+    if (TP.notEmpty(themeName)) {
 
         themeID = ourID + '_' + themeName;
 
         //  We don't want more than one occurrence of the same theme
         //  stylesheet in our document.
         if (TP.isElement(TP.byId(themeID, aDocument))) {
-            continue;
+            return this;
         }
 
         //  Couldn't find that CSS style sheet, so we ask ourself to compute
         //  a 'resource URI' for the sheet using the CSS mime type.
-        if (TP.notValid(styleURI =
-                            this.getThemeURI(TP.ietf.Mime.CSS, themeName))) {
+        if (TP.notValid(styleURI = this.getThemeURI(TP.ietf.Mime.CSS))) {
             return this;
         }
 
@@ -196,24 +186,24 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('getKeyBindingsXML',
+TP.core.UIElementNode.Type.defineMethod('getKeyBindingsMap',
 function() {
 
     /**
-     * @name getKeyBindingsXML
-     * @synopsis Returns this type's 'key bindings' XML map or it's supertype's
+     * @name getKeyBindingsMap
+     * @synopsis Returns this type's 'key bindings' map or it's supertype's
      *     if this type does not have a map.
-     * @description This method returns an XML map that maps keynames (as
+     * @description This method returns a map that maps keynames (as
      *     computed by the standard TIBET keyname computation) to signal names.
      *     If a matching signal name is found in the map, that signal is fired
      *     with the currently focused element as the target.
-     * @returns {XMLDocument|null} The key bindings XML map or null.
+     * @returns {XMLDocument|null} The key bindings map or null.
      */
 
     var bindingsXML;
 
     //  If we found the map, we're good to go.
-    if (TP.isXMLDocument(bindingsXML = this.$get('keyBindingsXML'))) {
+    if (TP.isXMLDocument(bindingsXML = this.$get('keyBindingsMap'))) {
         return bindingsXML;
     }
 
@@ -226,7 +216,7 @@ function() {
 
         this.loadKeyBindings();
 
-        if (TP.isXMLDocument(bindingsXML = this.$get('keyBindingsXML'))) {
+        if (TP.isXMLDocument(bindingsXML = this.$get('keyBindingsMap'))) {
             return bindingsXML;
         }
     }
@@ -234,7 +224,7 @@ function() {
     //  If we couldn't find a map in any case, call up to our supertype. This
     //  allows keymaps to be shared down the inheritance chain.
     if (this !== TP.core.UIElementNode) {
-        return this.getSupertype().getKeyBindingsXML();
+        return this.getSupertype().getKeyBindingsMap();
     }
 
     return null;
@@ -242,13 +232,44 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('getStyleURI',
+function(mimeType) {
+
+    /**
+     * @name getStyleURI
+     * @synopsis Returns a stylesheet URI for the receiver.
+     * @param {String} mimeType The mimeType for the resource being looked up.
+     * @returns {TP.core.URI} The computed resource URI.
+     */
+
+    var uri;
+
+    uri = this.$get('styleURI');
+    if (TP.notEmpty(uri)) {
+        if (uri === TP.NO_RESULT) {
+            return;
+        }
+
+        return TP.uc(uri);
+    }
+
+    uri = this.computeResourceURI('style', mimeType);
+    if (TP.isValid(uri)) {
+        return TP.uc(uri);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Type.defineMethod('getThemeURI',
-function(mimeType, themeName) {
+function(mimeType) {
 
     /**
      * @name getThemeURI
      * @synopsis Returns a 'theme' URI for the receiving type, given its load
-     *     path, and the supplied mimeType and themeName.
+     *     path, the supplied mimeType and the current application theme.
      * @description This method computes a theme URI for the receiver by using
      *     the 'load path' of this type and appending the type name
      *     (transforming ':' to '_') and the supplied theme name and extension
@@ -256,14 +277,12 @@ function(mimeType, themeName) {
      * @param {String} mimeType The mimeType for the resource being looked up.
      *     This is used to locate viable extensions based on the
      *     TP.ietf.Mime.INFO dictionary.
-     * @param {String} themeName The name of the theme being looked up.
-     * @raises TP.sig.InvalidParameter
      * @returns {TP.core.URI} The computed theme URI.
-     * @todo
      */
 
     var extensions,
         typeName,
+        themeName,
         url;
 
     if (TP.notValid(mimeType)) {
@@ -271,9 +290,9 @@ function(mimeType, themeName) {
                             'Must supply a valid TP.ietf.Mime reference.');
     }
 
-    if (TP.notValid(themeName)) {
-        return this.raise('TP.sig.InvalidParameter',
-                            'Must supply a valid theme name.');
+    themeName = TP.sys.getApplication().getCurrentTheme();
+    if (TP.isEmpty(themeName)) {
+        return;
     }
 
     if (TP.isEmpty(extensions = TP.ietf.Mime.getExtensions(mimeType))) {
@@ -289,7 +308,7 @@ function(mimeType, themeName) {
             var cfgKey,
                 value;
 
-            cfgKey = typeName + '.' + ext + '_' + themeName + '_uri';
+            cfgKey = 'path.' + typeName + '.' + ext + '.' + themeName;
             value = TP.sys.cfg(cfgKey);
 
             if (TP.notEmpty(value)) {
@@ -455,7 +474,7 @@ function(aTargetElem, anEvent) {
 
             //  Grab the bindings type bindings map and try to see if there is
             //  an entry for the particular keyname
-            bindingsMap = bindingsType.getKeyBindingsXML();
+            bindingsMap = bindingsType.getKeyBindingsMap();
 
             if (TP.isXMLDocument(bindingsMap)) {
                 bindingEntry = bindingsMap.querySelector(
@@ -822,18 +841,16 @@ function() {
     var url,
         xml;
 
-    if (TP.notValid(url = this.getResourceURI(TP.ietf.Mime.XML,
-                                                 '_keybindings',
-                                                 false))) {
+    url = this.getResourceURI('keybindings', TP.ietf.Mime.XML);
+    if (TP.notValid(url)) {
         // Mark the type slot so we don't try again. The load failed.
-        this.set('keyBindingsXML', TP.NOT_FOUND);
-
+        this.set('keyBindingsMap', TP.NOT_FOUND);
         return this;
     }
 
     if (TP.notValid(xml = url.getNativeNode(TP.hc('async', false)))) {
         // Mark the type slot so we don't try again. The load failed.
-        this.set('keyBindingsXML', TP.NOT_FOUND);
+        this.set('keyBindingsMap', TP.NOT_FOUND);
 
         return this.raise('TP.sig.InvalidKeymap');
     }
@@ -841,7 +858,7 @@ function() {
     this.set('keyBindingsURI', url);
 
     //  cache the XML for speed in other lookups
-    this.set('keyBindingsXML', xml);
+    this.set('keyBindingsMap', xml);
 
     return this;
 });
@@ -1090,7 +1107,7 @@ function(anEvent) {
 
                 //  Grab the bindings type bindings map and try to see if there
                 //  is an entry for the particular keyname
-                bindingsMap = bindingsType.getKeyBindingsXML();
+                bindingsMap = bindingsType.getKeyBindingsMap();
 
                 //  If there's an entry for this key binding, then we handle
                 //  this key in some form.
