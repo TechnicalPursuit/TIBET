@@ -1853,6 +1853,12 @@ function(targetObj, varargs) {
 
         //  Execute the 'get()' and reassign the return value.
         retVal = retVal.get(paths.at(i));
+
+        //  If the return value is a callable Function, then call it and
+        //  reassign the return value to the result.
+        if (TP.isCallable(retVal)) {
+            retVal = retVal(targetObj);
+        }
     }
 
     return this.processFinalValue(retVal, targetObj);
@@ -1903,6 +1909,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         //  Execute the 'get()' and reassign the return value.
         retVal = retVal.get(paths.at(i));
+
+        //  If the return value is a callable Function, then call it and
+        //  reassign the return value to the result.
+        if (TP.isCallable(retVal)) {
+            retVal = retVal(targetObj);
+        }
     }
 
     //  Execute the 'set()' and reassign the return value.
