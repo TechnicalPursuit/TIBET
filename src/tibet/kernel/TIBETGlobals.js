@@ -625,7 +625,7 @@ TP.INSTC = '$$Inst';
 
 TP.LOAD_NODE = '$loadNode';
 TP.LOAD_PATH = '$loadPath';
-TP.SRC_PATH = '$srcPath';
+TP.SOURCE_PATH = '$srcPath';
 
 TP.BUILTIN_LOAD_NODE = TP.boot.$documentFromString(
     '<script></script>').childNodes[0];

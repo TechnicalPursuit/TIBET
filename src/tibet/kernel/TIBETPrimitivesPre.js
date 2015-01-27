@@ -1888,14 +1888,14 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
     // source path is any path specified by the rollup logic, or the load path
     // if that value isn't found (meaning we're not loading a resource bundle.
-    spath = TP.boot[TP.SRC_PATH] || lpath;
+    spath = TP.boot[TP.SOURCE_PATH] || lpath;
 
     switch (itemClass) {
         case TP.METHOD:
 
             anItem[TP.LOAD_NODE] = node;
             anItem[TP.LOAD_PATH] = lpath;
-            anItem[TP.SRC_PATH] = spath;
+            anItem[TP.SOURCE_PATH] = spath;
 
             tname = targetType.getName();
             gname = tname + '_' + itemTrack + '_' + iname;
@@ -1933,7 +1933,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         case TP.ATTRIBUTE:
 
             anItem[TP.LOAD_PATH] = lpath;
-            anItem[TP.SRC_PATH] = spath;
+            anItem[TP.SOURCE_PATH] = spath;
 
             tname = targetType.getName();
             gname = tname + '_' + itemTrack + '_' + iname;
@@ -1984,7 +1984,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
             anItem[TP.LOAD_NODE] = node;
             anItem[TP.LOAD_PATH] = lpath;
-            anItem[TP.SRC_PATH] = spath;
+            anItem[TP.SOURCE_PATH] = spath;
 
             //  don't overlay information we've already collected
             if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
@@ -6465,7 +6465,7 @@ function(anObject) {
         return;
     }
 
-    return anObject[TP.SRC_PATH];
+    return anObject[TP.SOURCE_PATH];
 });
 
 //  ------------------------------------------------------------------------
