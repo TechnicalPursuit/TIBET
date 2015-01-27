@@ -203,7 +203,7 @@ function(tokenList, templateName, sourceVarNames) {
             inlineCount,
 
             ignoreNull,
-            functionOrFormattedValue,
+            formattedValue,
 
             generators,
             commands,
@@ -225,11 +225,9 @@ function(tokenList, templateName, sourceVarNames) {
 
     ignoreNull = 'return TP.isNull(result) ? \'\' : result;';
 
-    functionOrFormattedValue = function (argName, argFormat, isRepeating) {
-        //  Returns an expression that will test the argName and, if it is a
-        //  Function, executes the function. Otherwise, the expression will
-        //  return the value formatted according to the supplied format, and
-        //  whether it's a repeating format.
+    formattedValue = function (argName, argFormat, isRepeating) {
+        //  Returns an expression that will return the value formatted according
+        //  to the supplied format, and whether it's a repeating format.
 
         var retVal;
 
@@ -239,24 +237,21 @@ function(tokenList, templateName, sourceVarNames) {
             if (isRepeating) {
 
                 //  It's a repeating format
-                retVal = 'TP.isFunction(arg) ? arg() : ' +
-                            '(TP.format(TP.ifInvalid(arg, ' +
+                retVal = '(TP.format(TP.ifInvalid(arg, ' +
                                         '\'{{' + argName + '}}\'),' +
                                 ' "' + argFormat + '", ' +
                                 'params.atPut(\'repeat\', true)))';
             } else {
 
                 //  It's a non-repeating format
-                retVal = 'TP.isFunction(arg) ? arg() : ' +
-                            '(TP.format(TP.ifInvalid(arg, ' +
+                retVal = '(TP.format(TP.ifInvalid(arg, ' +
                                         '\'{{' + argName + '}}\'),' +
                                 ' "' + argFormat + '", params))';
             }
         } else {
 
             //  No format - just the value 'formatted' as a String
-            retVal = 'TP.isFunction(arg) ? arg() : ' +
-                        '(TP.format(TP.ifInvalid(arg, ' +
+            retVal = '(TP.format(TP.ifInvalid(arg, ' +
                                         '\'{{' + argName + '}}\'),' +
                                 ' "' + 'String' + '", " "))';
         }
@@ -401,8 +396,9 @@ function(tokenList, templateName, sourceVarNames) {
                 valueGet +
                 generators.defineUndefined(varName) +
                 ' var arg = (' + generators.escapedIdentifier(varName) + ');' +
+                ' arg = TP.isCallable(arg) ? arg(params) : arg;' +
                 ' var result = ' +
-                functionOrFormattedValue(varName, formatName, isRepeating) + '; ' +
+                formattedValue(varName, formatName, isRepeating) + '; ' +
                 ignoreNull +
                 '}()';
         }
