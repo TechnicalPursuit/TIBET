@@ -623,6 +623,265 @@ function() {
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
     });
+
+    this.it('Meta objects \'as\' method using variables in a non-iterating context', function(test, options) {
+
+        var templateStr,
+            srcObj,
+
+            testRep,
+            correctRep,
+
+            dataElem;
+
+        //  ---
+
+        templateStr = 'The item is: {{$INPUT .% String}}';
+        srcObj = TP.hc('lastName', 'Edney');
+
+        testRep = templateStr.transform(srcObj);
+
+        correctRep = 'The item is: lastName => Edney';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$_ .% String}}';
+        srcObj = TP.hc('lastName', 'Edney');
+
+        testRep = templateStr.transform(srcObj);
+
+        correctRep = 'The item is: lastName => Edney';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG .% String}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: <foo><baz bar="moo"/></foo>';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$FUNC .% String}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$FUNC',
+                                                    function() {
+                                                        return TP.str(dataElem);
+                                                    }));
+
+        correctRep = 'The item is: <foo><baz bar="moo"/></foo>';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{:with $TAG}}{{localName}}{{/:with}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: foo';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{:with $TAG}}{{./*[@bar] .% {{localName}}}}{{/:with}}';
+
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: baz';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{:with $TAG}}{{(./*[@bar]).localName}}{{/:with}}';
+
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: baz';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{:with $TAG}}{{(./*[@bar]).localName .% String}}{{/:with}}';
+
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: baz';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG.localName}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: foo';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG.localName .% String}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: foo';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG .% {{./*[@bar] .% {{localName}}}}}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: baz';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG .% {{./*[@bar]}}}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = /The item is: <baz bar="moo"(.*?)\/>/;
+
+        this.assert.matches(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG .% {{./*[@bar] .% String}}}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = /The item is: <baz bar="moo"(.*?)\/>/;
+
+        this.assert.matches(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG.(./*[@bar])}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = /The item is: <baz bar="moo"(.*?)\/>/;
+
+        this.assert.matches(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG.(./*[@bar]) .% String}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = /The item is: <baz bar="moo"(.*?)\/>/;
+
+        this.assert.matches(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG.(./*[@bar]).localName}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: baz';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$TAG.(./*[@bar]).localName .% String}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: baz';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+    });
+
+    this.it('Meta objects \'as\' method using variables in a iterating context', function(test, options) {
+        test.pass();
+    });
 });
 
 //  ========================================================================

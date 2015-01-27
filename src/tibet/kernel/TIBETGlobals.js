@@ -2371,6 +2371,7 @@ TP.regex.WORD_BOUNDARIES = /[-\s_]/g;           //  needs reset
 
 TP.regex.WHITESPACE = /\s+/;
 TP.regex.ONLY_WORD = /^\w+$/;
+TP.regex.ONLY_NUM = /^\d+$/;
 
 TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 
@@ -2723,6 +2724,9 @@ TP.CHANGE_PATHS = 'paths';
 //  path detection and values
 //  ---
 
+//  One or more access paths separated by '.(' and ').'
+TP.regex.COMPOSITE_PATH = /(^|\.)\((.+?)\)(\.|$)/;
+
 TP.regex.ANY_POINTER = /(\w+)\((.*)\)/;
 
 //  one or more of any characters with optional preceding or following
@@ -2731,7 +2735,7 @@ TP.regex.PATH_EXPR = /(^|\s+)(.+?)($|\s+)/g; // needs reset
 
 //  any of these symbols -
 //  '|', '@', '#', ':', '/', '&', '=', '<', '>', '.', '[', '('
-TP.regex.NON_SIMPLE_PATH = /[|@#:\/&=><\\.\\[\\(]/;
+TP.regex.NON_SIMPLE_PATH = /[|@#:\/&=><\.\[\(]/;
 
 //  force the colon to have numbers on either side to avoid collisions with
 //  prefixed XPath expressions
