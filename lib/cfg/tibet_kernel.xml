@@ -174,7 +174,8 @@
     <!-- NB: These must come before TIBETDHTMLTypes -->
     <script src="TIBETDOMTypes.js"/>
     <script src="TIBETUIDOMTypes.js"/>
-    <property name="path.TP.core.UIElementNode_keybindings.xml" value="~lib_dat/TP.core.UIElementNode_keybindings.xml"/>
+    <property name="path.TP.core.UIElementNode.keybindings"
+        value="~lib_dat/TP.core.UIElementNode.keybindings.xml"/>
 
     <script src="TIBETDHTMLTypes.js"/>
     <script src="TIBETGraphicsTypes.js"/>
