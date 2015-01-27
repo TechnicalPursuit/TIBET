@@ -848,6 +848,8 @@ function(aDataSource, transformParams) {
         params = TP.hc();
     }
 
+    //  Supply the dataSource as $INPUT. This will be used in both iterating
+    //  and non-iterating contexts.
     params.atPut('$INPUT', dataSource);
 
     //  It's not a collection OR it is a collection, but the caller has not
@@ -855,11 +857,17 @@ function(aDataSource, transformParams) {
     if (!TP.isCollection(dataSource) || TP.notTrue(params.at('repeat'))) {
         try {
 
+            //  In a non-iterating context, '$_' is an alias for $INPUT
+            params.atPut('$_', dataSource);
+
             retVal = this(dataSource, params);
 
             //  In case any nested templates messed with the $INPUT, restore it
             //  to the value we set before template execution.
             params.atPut('$INPUT', dataSource);
+
+            //  In a non-iterating context, '$_' is an alias for $INPUT
+            params.atPut('$_', dataSource);
 
             //  Make sure to return the primitive String
             return '' + retVal;
@@ -905,6 +913,15 @@ function(aDataSource, transformParams) {
         //  Make the current index available
         params.atPut('$INDEX', i);
 
+        //  In an iterating context, '$#' is an alias for $INDEX
+        params.atPut('$#', i);
+
+        //  Make the current item available
+        params.atPut('$ITEM', source.at(i));
+
+        //  In an iterating context, '$_' is an alias for $ITEM
+        params.atPut('$_', source.at(i));
+
         try {
             val = this(source.at(i), params);
         } catch (e) {
@@ -917,8 +934,14 @@ function(aDataSource, transformParams) {
     }
 
     //  In case any nested templates messed with the $INPUT, restore it to the
-    //  value we set before template execution.
+    //  value we set before template execution and clear the others.
+
     params.atPut('$INPUT', dataSource);
+
+    params.atPut('$INDEX', null);
+    params.atPut('$#', null);
+    params.atPut('$ITEM', null);
+    params.atPut('$_', null);
 
     return arr.join('');
 });
