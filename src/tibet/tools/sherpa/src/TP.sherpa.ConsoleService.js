@@ -446,7 +446,7 @@ TP.sherpa.ConsoleService.Inst.defineMethod(
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleTP_sig_HaloDidFocus',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleHaloDidFocus',
 function(aSignal) {
 
     //this.show();
@@ -460,7 +460,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleTP_sig_HaloDidBlur',
+TP.sherpa.ConsoleService.Inst.defineMethod('handleHaloDidBlur',
 function(aSignal) {
 
     //this.hide();
@@ -578,7 +578,7 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyPress',
 function(aSignal) {
 
     /**
-     * @name handleTP_sig_DOMKeyPress
+     * @name handleDOMKeyPress
      * @synopsis Handles notifications of keypress events. If the key is one the
      *     console maps then the default action is overidden.
      * @param {DOMKeyPress} aSignal The TIBET signal which triggered this

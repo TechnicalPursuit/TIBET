@@ -3170,7 +3170,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('handleTP_sig_FileChangedEvent',
+TP.core.TSH.Inst.defineMethod('handleFileChangedEvent',
 function(aSignal) {
 
     var payload,

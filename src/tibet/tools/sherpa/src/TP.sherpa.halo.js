@@ -173,11 +173,11 @@ function(aSignal) {
 //  Mouse Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleTP_sig_DOMClick',
+TP.sherpa.halo.Inst.defineMethod('handleDOMClick',
 function(aSignal) {
 
     /**
-     * @name handleTP_sig_DOMClick
+     * @name handleDOMClick
      * @synopsis Handles notifications of mouse click events.
      * @param {DOMClick} aSignal The TIBET signal which triggered this method.
      */

@@ -1121,7 +1121,7 @@ TP.core.ConsoleService.Inst.defineMethod('handleDOMKeyPress',
 function(aSignal) {
 
     /**
-     * @name handleTP_sig_DOMKeyPress
+     * @name handleDOMKeyPress
      * @synopsis Handles notifications of keypress events. If the key is one the
      *     console maps then the default action is overidden.
      * @param {DOMKeyPress} aSignal The TIBET signal which triggered this

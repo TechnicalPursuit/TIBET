@@ -59,7 +59,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineMethod('handleTP_sig_HaloDidFocus',
+TP.sherpa.editortile.Inst.defineMethod('handleHaloDidFocus',
 function(aSignal) {
 
     //this.show();
@@ -69,7 +69,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineMethod('handleTP_sig_HaloDidBlur',
+TP.sherpa.editortile.Inst.defineMethod('handleHaloDidBlur',
 function(aSignal) {
 
     //this.hide();
@@ -79,7 +79,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineMethod('handleTP_sig_DOMClick',
+TP.sherpa.editortile.Inst.defineMethod('handleDOMClick',
 function(aSignal) {
 
     var headers,

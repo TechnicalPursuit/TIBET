@@ -49,7 +49,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tile.Inst.defineMethod('handleTP_sig_DOMClick',
+TP.sherpa.tile.Inst.defineMethod('handleDOMClick',
 function(aSignal) {
 
     var natNode,

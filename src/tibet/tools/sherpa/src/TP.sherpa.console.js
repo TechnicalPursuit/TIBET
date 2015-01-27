@@ -231,7 +231,7 @@ function() {
 //  Event Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('handleTP_sig_DOM_Shift_Up__TP_sig_DOM_Shift_Up',
+TP.sherpa.console.Inst.defineMethod('handleDOMShiftUp__DOMShiftUp',
 function(aSignal) {
 
     this.focusInput();

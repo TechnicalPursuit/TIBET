@@ -343,14 +343,9 @@ function(anOrigin, wantsFullName, aSignal, aState) {
     //  that all handlerName values start with 'handle'.
     if (TP.regex.SIGNAL_PREFIX.test(signame)) {
         if (TP.notTrue(wantsFullName)) {
-            if (signame.startsWith('TP.')) {
-                handlerName = 'handle' +
-                    signame.slice(7).asTitleCase();
-            } else {
-                // APP.sig. is 8 chars, not 7 :)
-                handlerName = 'handle' +
-                    signame.slice(8).asTitleCase();
-            }
+            // Contracting will remove any prefixing in splits between key
+            // sequences or other signal chains.
+            handlerName = 'handle' + TP.contractSignalName(signame);
         } else {
             handlerName = 'handle' + TP.escapeTypeName(signame);
         }
@@ -367,6 +362,13 @@ function(anOrigin, wantsFullName, aSignal, aState) {
     //  Add optional When clause for state filtering.
     if (TP.notEmpty(aState)) {
         handlerName += 'When' + TP.str(aState);
+    }
+
+    if (TP.notTrue(wantsFullName)) {
+        // Strip out any embedded underscores as one aspect of having a more
+        // compact name.
+        handlerName = handlerName.replace(/__/g, '@@').replace(
+                /_/g, '').replace(/@@/g, '__');
     }
 
     return handlerName;
