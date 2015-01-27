@@ -9998,9 +9998,19 @@ function(mimeType) {
      * @returns {TP.core.URI} The computed resource URI.
      */
 
-    var name,
+    var uri,
+        name,
         key,
         value;
+
+    uri = this.$get('keybindingsURI');
+    if (TP.notEmpty(uri)) {
+        if (uri === TP.NO_RESULT) {
+            return;
+        }
+
+        return TP.uc(uri);
+    }
 
     name = this.getResourceTypeName();
     key = 'path.' + name + '.keybindings';
