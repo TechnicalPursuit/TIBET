@@ -6426,6 +6426,30 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('objectGetSourceCollectionPath',
+function(anObject) {
+
+    /**
+     * @name objectGetSourceCollectionPath
+     * @synopsis Returns the 'collection' path to the original source file,
+     *     before any bundling or rollup processing, where the object resides
+     *     (that is, the path minus the most specific part).
+     * @param {Object} anObject The object to query.
+     * @returns {String} The source collection path where the receiver can be
+     *     found.
+     */
+
+    var path;
+
+    if (TP.notValid(path = TP.objectGetSourcePath(anObject))) {
+        return;
+    }
+
+    return path.slice(0, path.lastIndexOf('/'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('objectGetSourcePath',
 function(anObject) {
 
