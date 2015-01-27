@@ -9242,6 +9242,8 @@ function(resource, mimeType) {
      */
 
     var type,
+        uri,
+        location,
         ext,
         namespace,
         mime,
@@ -9256,13 +9258,28 @@ function(resource, mimeType) {
             'Must supply a valid resource name.');
     }
 
+    name = this.getResourceTypeName();
+
     //  If we're set to leverage namespaced CSS or namespaced templates, etc.
     //  then we delegate our answer to the namespace object for the receiver. If
     //  we're in a rollup state the namespace object should handle that fact.
     if (TP.isTrue(this.get('namespaced' + resource.asTitleCase()))) {
         type = this.getNamespaceObject();
         if (TP.canInvoke(type, 'getResourceURI')) {
-            return type.getResourceURI(resource, mimeType);
+            uri = type.getResourceURI(resource, mimeType);
+
+            // Depending on resource type we adjust shared template URIs to use
+            // a slice. For now we'll do this for XHTML and XML templates.
+            if (TP.isURI(uri)) {
+                mime = uri.getMIMEType();
+                if (mime === TP.ietf.Mime.XHTML || mime === TP.ietf.Mime.XML) {
+                    location = uri.getLocation();
+                    location += '#' + TP.escapeTypeName(name);
+                    uri = TP.uc(location);
+                }
+            }
+
+            return uri;
         }
     }
 
@@ -9310,7 +9327,6 @@ function(resource, mimeType) {
     }
 
     //  Not doing a rollup? See if we have an explicit mapping for our resource.
-    name = this.getResourceTypeName();
     key = 'path.' + name + '.' + resource.toLowerCase();
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
@@ -9319,7 +9335,7 @@ function(resource, mimeType) {
 
     //  If we couldn't compute a URI, default it to the receiver's load
     //  location and use the extension computed earlier.
-    return TP.objectGetLoadCollectionPath(this) +
+    return TP.objectGetSourceCollectionPath(this) +
         '/' + this.getName() + '.' + ext;
 });
 
@@ -10201,9 +10217,9 @@ function(resource, mimeType) {
      *     resource and mimeType. This method is used to look up template,
      *     style, theme, and other resource URIs by leveraging methods on the
      *     receiver specific to each resource/mime requirement.
-     * @param {String} resource The resource name. Typically template, style,
-     *     theme, etc. but it could be essentially anything except the word
-     *     'resource' (since that would trigger a recursion).
+     * @param {String} resource The resource name. Typically 'template',
+     *     'style', 'theme', etc. but it could be essentially anything except
+     *     the word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
      *     This is used to locate viable extensions based on the data in TIBET's
      *     TP.ietf.Mime.INFO dictionary.
