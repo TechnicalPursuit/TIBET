@@ -4283,6 +4283,66 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.OOTests.describe('Inheritance - Auto resolution',
+function() {
+
+    this.before(
+        function() {
+            //  From the canonical description of C3 linearization
+            //  http://en.wikipedia.org/wiki/C3_linearization
+
+            TP.lang.Object.defineSubtype('test.O');
+
+            TP.test.O.defineSubtype('test.A');
+            TP.test.O.defineSubtype('test.B');
+            TP.test.O.defineSubtype('test.C');
+            TP.test.O.defineSubtype('test.D');
+            TP.test.O.defineSubtype('test.E');
+
+            TP.test.A.defineSubtype('test.K1');
+            TP.test.K1.addTraits(TP.test.B);
+            TP.test.K1.addTraits(TP.test.C);
+
+            TP.test.D.defineSubtype('test.K2');
+            TP.test.K2.addTraits(TP.test.B);
+            TP.test.K2.addTraits(TP.test.E);
+
+            TP.test.D.defineSubtype('test.K3');
+            TP.test.K3.addTraits(TP.test.A);
+
+            TP.test.K1.defineSubtype('test.Z');
+            TP.test.Z.addTraits(TP.test.K2);
+            TP.test.Z.addTraits(TP.test.K3);
+        });
+
+    //  ---
+
+    this.it('Inheritance - C3 linearization', function(test, options) {
+        var val;
+
+        val = TP.test.Z.computeC3Linearization();
+
+        test.assert.isEqualTo(
+            val,
+            TP.ac('TP.test.Z',
+                    'TP.test.K1',
+                    'TP.test.K2',
+                    'TP.test.K3',
+                    'TP.test.D',
+                    'TP.test.A',
+                    'TP.test.B',
+                    'TP.test.C',
+                    'TP.test.E',
+                    'TP.test.O',
+                    'TP.lang.Object',
+                    'TP.lang.RootObject',
+                    'Object'));
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
 TP.OOTests.describe('Inheritance - addTraits',
 function() {
 
