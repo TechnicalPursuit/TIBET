@@ -57,7 +57,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         template,
         str;
 
-    tagName = this.getTagName();
+    tagName = this.getCanonicalName();
 
     if (TP.isTrue(shouldAutoWrap) && TP.isTrue(theRequest.at('repeat'))) {
         if (TP.isArray(anObject)) {
@@ -241,7 +241,7 @@ theRequest) {
         //  pairs, so we can use that fact to generate item tags around each
         //  one.
 
-        tagName = this.getTagName();
+        tagName = this.getCanonicalName();
 
         //  Build a template by joining the tag name with an invocation
         //  of the itemFormat for both the key and the value.

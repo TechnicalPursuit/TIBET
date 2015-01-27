@@ -2481,14 +2481,14 @@ function(declarationName, declarationValue, affectedElements) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.Type.defineMethod('getTagName',
+TP.core.XMLNamespace.Type.defineMethod('getCanonicalName',
 function() {
 
     /**
-     * @name getTagName
-     * @synopsis Returns the receiver's tag name. For namespace types, this is
-     *     the tag prefix (usually corresponding to the tag type's namespace)
-     *     followed by a colon (':').
+     * @name getCanonicalName
+     * @synopsis Returns the receiver's canonical tag name. For namespace types,
+     *     this is the tag prefix (usually corresponding to the tag type's
+     *     namespace) followed by a colon (':').
      * @returns {String} The receiver's tag name.
      */
 

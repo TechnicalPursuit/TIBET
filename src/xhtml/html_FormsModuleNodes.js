@@ -856,7 +856,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         template,
         str;
 
-    tagName = this.getTagName();
+    tagName = this.getCanonicalName();
 
     //  We use the abstract 'TP.html.input' type here for 'item formatting'.
     //  It will taste the object its receiving and return the 'correct
@@ -3222,7 +3222,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         template,
         str;
 
-    tagName = this.getTagName();
+    tagName = this.getCanonicalName();
 
     if (TP.isFalse(shouldAutoWrap)) {
         if (TP.isTrue(theRequest.at('repeat'))) {

@@ -9384,9 +9384,9 @@ function(anObject, aRequest) {
      */
 
     return TP.join(
-            '<', this.getTagName(), '>',
+            '<', this.getCanonicalName(), '>',
                     TP.str(anObject),
-            '</', this.getTagName(), '>');
+            '</', this.getCanonicalName(), '>');
 });
 
 //  ------------------------------------------------------------------------
@@ -9419,9 +9419,9 @@ function(anObject, aRequest) {
     }
 
     return TP.join(
-            '<', this.getTagName(), '>',
+            '<', this.getCanonicalName(), '>',
                     val,
-            '</', this.getTagName(), '>');
+            '</', this.getCanonicalName(), '>');
 });
 
 //  ------------------------------------------------------------------------
@@ -9441,9 +9441,9 @@ function(anObject, aRequest) {
      */
 
     return TP.join(
-            '<', this.getTagName(), '>',
+            '<', this.getCanonicalName(), '>',
                     TP.str(anObject),
-            '</', this.getTagName(), '>');
+            '</', this.getCanonicalName(), '>');
 });
 
 //  ------------------------------------------------------------------------
@@ -9542,7 +9542,7 @@ function(anObject, aRequest) {
         theRequest.atPut('currentLevel', theRequest.at('currentLevel') + 1);
     }
 
-    tagName = this.getTagName();
+    tagName = this.getCanonicalName();
 
     //  Note that for these configuration parameters, 'levelInfo' very well
     //  maybe be an empty TP.lang.Hash.
@@ -9674,9 +9674,9 @@ function(anObject, aRequest) {
     }
 
     return TP.join(
-            '<', this.getTagName(), '>',
+            '<', this.getCanonicalName(), '>',
                     val,
-            '</', this.getTagName(), '>');
+            '</', this.getCanonicalName(), '>');
 });
 
 //  ------------------------------------------------------------------------
@@ -9740,7 +9740,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         template,
         str;
 
-    tagName = this.getTagName();
+    tagName = this.getCanonicalName();
 
     //  If we're not auto-wrapping, then just do an 'as' with the object.
     if (TP.isFalse(shouldAutoWrap)) {
@@ -10308,16 +10308,16 @@ function(resource, mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getTagName',
+TP.core.ElementNode.Type.defineMethod('getCanonicalName',
 function() {
 
     /**
-     * @name getTagName
-     * @synopsis Returns the receiver's tag name. For elements types, this is
-     *     the tag prefix (usually corresponding to the tag type's namespace)
-     *     followed by a colon (':') followed by the tag's 'local name' (usually
-     *     corresponding to the tag type's name).
-     * @returns {String} The receiver's tag name.
+     * @name getCanonicalName
+     * @synopsis Returns the receiver's canonical tag name. For elements types,
+     * this is the tag prefix (usually corresponding to the tag type's
+     * namespace) followed by a colon (':') followed by the tag's 'local name'
+     * (usually corresponding to the tag type's name).
+     * @returns {String} The receiver's canonical name.
      */
 
     return this.get('nsPrefix') + ':' + this.get('localName');
@@ -11046,6 +11046,21 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getCanonicalName',
+function() {
+
+    /**
+     * @name getCanonicalName
+     * @synopsis Returns a string containing the receiving node's canonical
+     *     name, the canonical namespace prefix and local name combination.
+     * @returns {String} The receiver's tag name.
+     */
+
+    return TP.elementGetCanonicalName(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getChangeAction',
 function(locationPath) {
 
@@ -11068,6 +11083,21 @@ function(locationPath) {
                             locationPath);
 
     return action;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getFullName',
+function() {
+
+    /**
+     * @name getFullName
+     * @synopsis Returns a string containing the receiving node's full
+     *     name, the actual namespace prefix and local name combination.
+     * @returns {String} The receiver's tag name.
+     */
+
+    return TP.elementGetFullName(this.getNativeNode());
 });
 
 //  ------------------------------------------------------------------------
@@ -15262,7 +15292,7 @@ function(aRequest) {
                     TP.elementGetAttribute(elem, 'tsh:generator', true))) {
         TP.elementRemoveAttribute(elem, 'tsh:generator', true);
 
-        if (genName === this.getTagName()) {
+        if (genName === this.getCanonicalName()) {
             return;
         }
     }

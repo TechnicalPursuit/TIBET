@@ -398,8 +398,8 @@ function(aRequest) {
     // proper implementation here.
     newElem = TP.xhtmlnode(
         '<a onclick="alert(\'Update tagCompile!\')" href="#" tibet:tag="' +
-            this.getTagName() + '">' +
-            '&lt;' + this.getTagName() + '/&gt;' +
+            this.getCanonicalName() + '">' +
+            '&lt;' + this.getCanonicalName() + '/&gt;' +
             '</a>');
 
     TP.elementReplaceWith(elem, newElem);

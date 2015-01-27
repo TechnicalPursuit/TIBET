@@ -1980,7 +1980,7 @@ function(aRequest) {
                 'Unable to get root node for: ' + src);
         }
 
-        if (TP.qname(node) !== this.getTagName()) {
+        if (TP.qname(node) !== this.getCanonicalName()) {
             return this.scriptFail(
                 aRequest,
                 'Invalid (!tsh:script) root node for: ' + src);

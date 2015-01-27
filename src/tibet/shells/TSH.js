@@ -1128,7 +1128,7 @@ function(aRequest) {
             //  NOTE that type names here are presumed to be namespace types
             //  so the resulting tag name is expected to be of the form
             //  prefix:script where prefix is the default prefix.
-            tagname = nstype.getTagName() + 'script';
+            tagname = nstype.getCanonicalName() + 'script';
         }
 
         tagtype = TP.sys.require(tagname);
