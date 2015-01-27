@@ -17,6 +17,21 @@
 
 TP.sherpa.Element.defineSubtype('sherpa:hud');
 
+TP.sherpa.hud.addTraits(TP.core.TemplatedNode);
+
+TP.sherpa.hud.Type.resolveTraits(
+        TP.ac('getTemplateURI', 'tagCompile'),
+        TP.core.TemplatedNode);
+
+TP.sherpa.hud.Inst.resolveTraits(
+        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
+                'removeAttribute', 'select', 'signal'),
+        TP.xctrls.Element);
+
+TP.sherpa.hud.Inst.resolveTraits(
+        TP.ac('haloCanBlur', 'haloCanFocus'),
+        TP.sherpa.hud);
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -136,6 +151,14 @@ function() {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+//  Finalization
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hud.finalizeTraits();
+
+//  ========================================================================
+//  TP.sherpa.huddrawer
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.defineSubtype('sherpa:huddrawer');

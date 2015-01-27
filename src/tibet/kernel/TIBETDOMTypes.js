@@ -9199,6 +9199,132 @@ TP.core.ElementNode.Type.defineAttribute('template');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('computeResourceURI',
+function(resource, mimeType) {
+
+    /**
+     * @name computeResourceURI
+     * @synopsis Computes a resource URI using information including a resource
+     *     "name" and mime type (for use in determining potential extensions).
+     *     This routine is leveraged by getResourceURI-invoked methods which
+     *     need to compute default file paths such as getTemplateURI and
+     *     getStyleURI.
+     * @discussion There are a couple of concerns regarding resources. First, we
+     *     might be in a "rollup" state where tags which normally have their own
+     *     file/uri need to use a uri path from a rolled up production file.
+     *     Second, tags in a namespace may be sharing a namespace-level
+     *     resource file (which is a form of limited rollup). Finally we might
+     *     be using a specific resource file for the tag but it could be in any
+     *     number of formats from XSL to JS to XHTML to SVG and so on.
+     *
+     *     To help avoid 404's this method relies on a combination of config
+     *     flag and attribute settings which let you control the computation of
+     *     a resource URI explicitly for each element type.
+     *
+     *     The config flag values are always of the form 'path' + typeName +
+     *     '.{{resource}}'. If that value is set it should be a URI and it will
+     *     be used as-is UNLESS the extension has a rollup setting. For example,
+     *     if the extension would be xhtml and xhtml.resource.rollup="{{uri}}"
+     *     is set the specified rollup URI will be returned. NOTE the rollup
+     *     setting is typically managed by the TIBET CLI as part of packaging.
+     *
+     *     Attributes which help control this method allow you to define whether
+     *     the type should defer to a namespace-level resource and which mime
+     *     extension should be used. For example, if you set the type attribute
+     *     namespaced{{resource}} to true the receiver will delegate to the
+     *     namespace. If you set {{resource}}Extension that extension will be
+     *     used regardless of any value implied via the mimeType parameter.
+     * @param {String} resource The resource name. Typically template, style,
+     *     theme, etc. but it could be essentially anything except the word
+     *     'resource' (since that would trigger a recursion).
+     * @param {String} mimeType The mimeType for the resource being looked up.
+     * @return {String} A properly computed URL in string form.
+     */
+
+    var type,
+        ext,
+        namespace,
+        mime,
+        extensions,
+        name,
+        key,
+        value;
+
+    if (!TP.isString(resource) || TP.isEmpty(resource) ||
+            resource === 'resource') {
+        return this.raise('TP.sig.InvalidParameter',
+            'Must supply a valid resource name.');
+    }
+
+    //  If we're set to leverage namespaced CSS or namespaced templates, etc.
+    //  then we delegate our answer to the namespace object for the receiver. If
+    //  we're in a rollup state the namespace object should handle that fact.
+    if (TP.isTrue(this.get('namespaced' + resource.asTitleCase()))) {
+        type = this.getNamespaceObject();
+        if (TP.canInvoke(type, 'getResourceURI')) {
+            return type.getResourceURI(resource, mimeType);
+        }
+    }
+
+    //  If we have an explicit mapping for an extension we will avoid worrying
+    //  about any mime type extension list and just rely on the explicit one.
+    ext = this.get(resource.toLowerCase() + 'Extension');
+    if (TP.isEmpty(ext)) {
+
+        //  Without an explicit extension we'll drop back to mime type and see
+        //  if we can leverage that.
+        mime = TP.ifInvalid(this.get(resource.toLowerCase() + 'Mime'),
+                mimeType);
+        if (TP.isEmpty(mime)) {
+            switch (resource.toLowerCase()) {
+                case 'template':
+                    mime = TP.ietf.Mime.XHTML;
+                    break;
+                case 'style':
+                    mime = TP.ietf.Mime.CSS;
+                    break;
+                case 'theme':
+                    mime = TP.ietf.Mime.CSS;
+                    break;
+                default:
+                    mime = TP.ietf.Mime.XML;
+                    break;
+            }
+        }
+
+        // Once we have a mime type we can fetch the extensions and default to
+        // the first one (the canonical one based on convention).
+        extensions = TP.ietf.Mime.getExtensions(mime);
+        if (TP.notEmpty(extensions)) {
+            ext = extensions.at(0);
+        }
+    }
+
+    //  With an extension we can now check to see if we're supposed to use
+    //  rollup resources for that extension. If so it'll be a config flag
+    //  pointing to the URI we should use.
+    key = ext + '.' + resource.toLowerCase() + '.rollup';
+    value = TP.sys.cfg(key);
+    if (TP.notEmpty(value)) {
+        return value;
+    }
+
+    //  Not doing a rollup? See if we have an explicit mapping for our resource.
+    name = this.getResourceTypeName();
+    key = 'path.' + name + '.' + resource.toLowerCase();
+    value = TP.sys.cfg(key);
+    if (TP.notEmpty(value)) {
+        return value;
+    }
+
+    //  If we couldn't compute a URI, default it to the receiver's load
+    //  location and use the extension computed earlier.
+    return TP.objectGetLoadCollectionPath(this) +
+        '/' + this.getName() + '.' + ext;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('constructContentObject',
 function(aURI, content) {
 
@@ -9219,291 +9345,6 @@ function(aURI, content) {
     }
 
     return this.construct(contentObj);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Type.defineMethod('getResourceMarkup',
-function(mimeType) {
-
-    /**
-     * @name addResourceContentTo
-     * @synopsis Adds the content registered with the receiver under the MIME
-     *     type as the last child of the element supplied.
-     * @param {String} mimeType The MIME type of the content to add. This
-     *     parameter is optional.
-     * @returns {TP.core.ElementNode} The wrapped element containing the
-     *     content.
-     */
-
-    var mime,
-        mimeTypes,
-        uri,
-        src,
-
-        str,
-        openingTag,
-        updatedOpeningTag,
-
-        doc,
-        elem,
-
-        newTPElem;
-
-    if (TP.isEmpty(mime = mimeType)) {
-        //  Otherwise, try to poke at the resource URI with a set of MIME
-        //  types and see if there are any matches. Note that this Array is
-        //  constructed in order with the most common types first and least
-        //  common last.
-        mimeTypes = TP.ac(TP.ietf.Mime.XHTML,
-                            TP.ietf.Mime.XML,
-                            TP.ietf.Mime.XSLT);
-
-        mimeTypes.perform(
-                function(aMIMEType) {
-                    if (TP.isURI(uri = this.getResourceURI(aMIMEType))) {
-                        mime = aMIMEType;
-                        return TP.BREAK;
-                    }
-                }.bind(this));
-
-        //  If we couldn't compute a URI, default it to XHTML in the receiver's
-        //  load location (assuming js and xhtml are in the same directory);
-        if (!TP.isURI(uri)) {
-            uri = TP.uc(TP.objectGetLoadCollectionPath(this) +
-                        '/' +
-                        this.getName() +
-                        '.xhtml');
-        }
-    } else {
-        uri = this.getResourceURI(mime);
-    }
-
-    if (!TP.isURI(uri)) {
-        return this.raise('InvalidURI',
-            'Unable to locate resource URI for ' + this.asString());
-    }
-
-    src = uri.getLocation();
-
-    //  Grab the receiver's content registered under the supplied MIME type.
-    //  Note how this is done synchronously.
-    //  Also note how we get a *String* as opposed to a DOM node. This is done
-    //  so that we can check the markup and add a default namespace as a
-    //  convenience for markup authors.
-
-    str = uri.getResourceText(TP.hc('async', false));
-
-    //  If the markup author didn't provide a default namespace, we'll try to
-    //  default it here by rewriting the opening tag.
-
-    //  TODO: This should not be hardcoded to assume the default namespace is
-    //  XHTML - we should at least be trying to look it up based on the file
-    //  extension.
-
-    if (TP.notEmpty(openingTag = TP.regex.OPENING_TAG.exec(str).at(0))) {
-        if (!/xmlns=/.test(openingTag)) {
-            // Watch out for <blah/> vs <blah> here...
-            if (TP.regex.CLOSED_TAG.match(str)) {
-                str = str.slice(0, -2) +
-                    ' xmlns="' + TP.w3.Xmlns.XHTML + '"/>';
-            } else {
-                updatedOpeningTag =
-                    TP.regex.OPENING_TAG.exec(str).at(0).slice(0, -1) +
-                    ' xmlns="' + TP.w3.Xmlns.XHTML + '">';
-                str = str.replace(openingTag, updatedOpeningTag);
-            }
-        }
-    }
-
-    doc = TP.documentFromString(str, null, true);
-
-    //  Make sure that the resource had real markup that could be built as such.
-    if (!TP.isDocument(doc) || !TP.isElement(elem = doc.documentElement)) {
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    if (TP.notEmpty(src)) {
-        TP.elementSetAttribute(elem, 'tibet:src', src, true);
-    }
-
-    if (TP.notEmpty(mime)) {
-        TP.elementSetAttribute(elem, 'tibet:type', mime, true);
-    }
-
-    newTPElem = TP.wrap(elem);
-
-    return newTPElem;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Type.defineMethod('getResourceTypeName',
-function() {
-
-    /**
-     * @name getResourceTypeName
-     * @synopsis Returns the resource type name for this type. The resource type
-     *     name is used when computing resource paths for this type. It is
-     *     usually the type name, but can be some other unique identifier.
-     * @returns {String} The resource type name for the receiver.
-     */
-
-    return this.getName();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Type.defineMethod('getResourceURI',
-function(mimeType, qualifier, fallback) {
-
-    /**
-     * @name getResourceURI
-     * @synopsis Returns a resource URI for the receiving type, given its load
-     *     path and the supplied mimeType.
-     * @description This method computes a resource URI for the receiver by
-     *     using the 'load path' of this type, obtaining the type name and
-     *     (after transforming ':' to '_'), appending it, any optional qualifier
-     *     and the supplied extension onto the end of it.
-     * @param {String} mimeType The mimeType for the resource being looked up.
-     *     This is used to locate viable extensions based on the
-     *     TP.ietf.Mime.INFO dictionary.
-     * @param {String} qualifier An optional qualifier.
-     * @param {Boolean} fallback Should the uri fall back on default values if
-     *     no specific configuration mapping is found. Defaults to true.
-     * @raises TP.sig.InvalidParameter
-     * @returns {TP.core.URI} The computed resource URI.
-     */
-
-    var extensions,
-        typeName,
-        qual,
-        url;
-
-    if (TP.notValid(mimeType)) {
-        return this.raise('TP.sig.InvalidParameter',
-            'Must supply a valid TP.ietf.Mime reference.');
-    }
-
-    if (TP.isEmpty(extensions = TP.ietf.Mime.getExtensions(mimeType))) {
-        return;
-    }
-
-    typeName = this.getResourceTypeName();
-
-    //  By default, the qualifier is empty.
-    qual = TP.ifEmpty(qualifier, '');
-
-    //  First check is for a configured path which indicates the resource isn't
-    //  likely to be in a default location. We combine the typename, qualifier,
-    //  and extension, checking each possible one.
-    extensions.perform(
-        function(ext) {
-
-            var cfgKey,
-                value;
-
-            cfgKey = typeName + qual + '.' + ext + '_uri';
-            value = TP.sys.cfg(cfgKey);
-
-            if (TP.notEmpty(value)) {
-                url = value;
-
-                return TP.BREAK;
-            }
-    });
-
-    //  If we didn't find a configured path our next option is to try to default
-    //  based on convention. In this variant we have to rely on a canonical
-    //  extension since we can't be guessing repeatedly or querying and
-    //  triggering 404's.
-    if (TP.isEmpty(url) && TP.notFalse(fallback)) {
-        url = TP.join(
-            this.$srcPath.slice(0, this.$srcPath.lastIndexOf('/')),
-            '/', typeName, qual, '.', extensions.at(0));
-    }
-
-    return TP.uc(url);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Type.defineMethod('guessContentTypeAndLocation',
-function(anElement) {
-
-    /**
-     * @name guessContentTypeAndLocation
-     * @synopsis Retrieves (and caches on the receiver) the MIME type and
-     *     location of the receiver's content.
-     * @description This method guesses the receiver's content type and
-     *     location, if the receiver has external content. It then populates
-     *     that information on the 'tibet:src' and 'tibet:type' attributes.
-     * @param {Element|TP.core.ElementNode} anElement The element to guess the
-     *     type and location for.
-     * @returns {TP.core.ElementNode} The receiver.
-     */
-
-    var elem,
-        src,
-
-        mime,
-        uri,
-        mimeTypes;
-
-    //  Make sure that we were supplied a real Element (or TP.core.ElementNode)
-    if (!TP.isElement(elem = TP.unwrap(anElement))) {
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    //  The source attribute can be provided or computed from configuration
-    //  data. When it's not provided we need to know whether to look for an
-    //  XSLT or XHTML file when the markup type is XML of some form.
-    src = TP.elementGetAttribute(elem, 'tibet:src', true);
-    if (TP.isEmpty(src)) {
-        //  If a MIME type was explicitly defined by the targeted element, then
-        //  get its resource URI and use that as the source.
-        if (TP.notEmpty(
-                mime = TP.elementGetAttribute(elem, 'tibet:type', true))) {
-            uri = this.getResourceURI(mime);
-
-            if (TP.isURI(uri)) {
-                src = uri.getLocation();
-            }
-        } else {
-            //  Otherwise, try to poke at the resource URI with a set of MIME
-            //  types and see if there are any matches. Note that this Array is
-            //  constructed in order with the most common types first and least
-            //  common last.
-            mimeTypes = TP.ac(TP.ietf.Mime.XHTML,
-                                TP.ietf.Mime.XML,
-                                TP.ietf.Mime.XSLT);
-
-            mimeTypes.perform(
-                    function(aMIMEType) {
-
-                        uri = this.getResourceURI(aMIMEType);
-
-                        if (TP.isURI(uri)) {
-                            src = uri.getLocation();
-                            mime = aMIMEType;
-
-                            return TP.BREAK;
-                        }
-                    }.bind(this));
-        }
-    }
-
-    if (TP.notEmpty(src)) {
-        TP.elementSetAttribute(elem, 'tibet:src', src, true);
-    }
-
-    if (TP.notEmpty(mime)) {
-        TP.elementSetAttribute(elem, 'tibet:type', mime, true);
-    }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -9928,64 +9769,6 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getItemTagName',
-function(anObject, formatArgs) {
-
-    /**
-     * @name getItemTagName
-     * @synopsis Returns the 'default item tag name' for use it the
-     *     fromArray()/fromObject() methods.
-     * @param {Object} anObject The Object of content to wrap in markup.
-     * @param {TP.lang.Hash} formatArgs The 'formatting arguments' used by this
-     *     machinery to generate item markup.
-     * @returns {String} The item tag name.
-     * @todo
-     */
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Type.defineMethod('getNativeObserver',
-function(aSignal) {
-
-    /**
-     * @name getNativeObserver
-     * @synopsis Attempts to extract the actual observer of the signal from the
-     *     supplied signal. This is very useful in cases where the target of the
-     *     signal has been set to a type.
-     * @param {The} aSignal signal to attempt to extract the observer from.
-     * @returns {Object} The native observer.
-     */
-
-    var listener,
-        id,
-        inst;
-
-    listener = aSignal.get('listener');
-    if (TP.notValid(listener)) {
-        return null;
-    }
-
-    if (TP.isEmpty(id = TP.elementGetAttribute(listener, 'observer'))) {
-        id = TP.elementGetAttribute(listener, 'ev:observer', true);
-        if (TP.isEmpty(id)) {
-            return;
-        }
-    }
-
-    inst = TP.byOID(id);
-    if (TP.notValid(inst)) {
-        return this.raise('TP.sig.InvalidHandler',
-                            'Unable to construct handler instance');
-    }
-
-    return inst;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Type.defineMethod('getConcreteType',
 function(aNode) {
 
@@ -10184,6 +9967,93 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('getItemTagName',
+function(anObject, formatArgs) {
+
+    /**
+     * @name getItemTagName
+     * @synopsis Returns the 'default item tag name' for use it the
+     *     fromArray()/fromObject() methods.
+     * @param {Object} anObject The Object of content to wrap in markup.
+     * @param {TP.lang.Hash} formatArgs The 'formatting arguments' used by this
+     *     machinery to generate item markup.
+     * @returns {String} The item tag name.
+     * @todo
+     */
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('getKeybindingsURI',
+function(mimeType) {
+
+    /**
+     * @name getKeybindingsURI
+     * @synopsis Returns a keybinding map file URI for the receiver. This method
+     *     will only return a valid URI if one is found via configuration
+     *     settings. There is no default/fallback logic for key mapping.
+     * @param {String} mimeType The mimeType for the resource being looked up.
+     * @returns {TP.core.URI} The computed resource URI.
+     */
+
+    var name,
+        key,
+        value;
+
+    name = this.getResourceTypeName();
+    key = 'path.' + name + '.keybindings';
+    value = TP.sys.cfg(key);
+
+    if (TP.notEmpty(value)) {
+        return TP.uc(value);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('getNativeObserver',
+function(aSignal) {
+
+    /**
+     * @name getNativeObserver
+     * @synopsis Attempts to extract the actual observer of the signal from the
+     *     supplied signal. This is very useful in cases where the target of the
+     *     signal has been set to a type.
+     * @param {The} aSignal signal to attempt to extract the observer from.
+     * @returns {Object} The native observer.
+     */
+
+    var listener,
+        id,
+        inst;
+
+    listener = aSignal.get('listener');
+    if (TP.notValid(listener)) {
+        return null;
+    }
+
+    if (TP.isEmpty(id = TP.elementGetAttribute(listener, 'observer'))) {
+        id = TP.elementGetAttribute(listener, 'ev:observer', true);
+        if (TP.isEmpty(id)) {
+            return;
+        }
+    }
+
+    inst = TP.byOID(id);
+    if (TP.notValid(inst)) {
+        return this.raise('TP.sig.InvalidHandler',
+                            'Unable to construct handler instance');
+    }
+
+    return inst;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('getQueryPath',
 function(wantsDeep) {
 
@@ -10218,6 +10088,200 @@ function(wantsDeep) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('getResourceElement',
+function(resource, mimeType) {
+
+    /**
+     * @name getResourceElement
+     * @synopsis Returns a resource element wrapper specific to the resource and
+     *     mime type provided. This routine leverages getResourceURI to locate
+     *     the source URI and then loads and wraps its content as needed.
+     * @param {String} resource The resource name. Typically template, style,
+     *     theme, etc. but it could be essentially anything except the word
+     *     'resource' (since that would trigger a recursion).
+     * @param {String} mimeType The mimeType for the resource being looked up.
+     * @returns {TP.core.ElementNode} The wrapped element containing the
+     *     content.
+     */
+
+    var uri,
+        src,
+        str,
+        doc,
+        openingTag,
+        updatedOpeningTag,
+        elem;
+
+    uri = this.getResourceURI(resource, mimeType);
+
+    if (!TP.isURI(uri)) {
+        return this.raise('InvalidURI',
+            'Unable to locate resource URI for ' + this.asString());
+    }
+
+    src = uri.getLocation();
+
+    //  Grab the receiver's content for processing. We do this synchronously
+    //  here and we also get it in string form so we can process the markup and
+    //  add default namespace as needed to make authoring more convenient.
+    str = uri.getResourceText(TP.hc('async', false));
+
+    //  If the markup author didn't provide a default namespace, we'll try to
+    //  default it here by rewriting the opening tag.
+    if (TP.notEmpty(openingTag = TP.regex.OPENING_TAG.exec(str).at(0))) {
+        //  TODO: This should not be hardcoded to assume the default namespace
+        //  is XHTML - we should at least be trying to look it up based on the
+        //  file extension.
+
+        if (!/xmlns=/.test(openingTag)) {
+            // Watch out for <blah/> vs <blah> here...
+            if (TP.regex.CLOSED_TAG.match(str)) {
+                str = str.slice(0, -2) +
+                    ' xmlns="' + TP.w3.Xmlns.XHTML + '"/>';
+            } else {
+                updatedOpeningTag =
+                    TP.regex.OPENING_TAG.exec(str).at(0).slice(0, -1) +
+                    ' xmlns="' + TP.w3.Xmlns.XHTML + '">';
+                str = str.replace(openingTag, updatedOpeningTag);
+            }
+        }
+    }
+
+    doc = TP.documentFromString(str, null, true);
+
+    //  Make sure that the resource had real markup that could be built as such.
+    if (!TP.isDocument(doc) || !TP.isElement(elem = doc.documentElement)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  If we were able to load a real document from the source URI stamp that
+    //  path on the resulting element so we have it for reference.
+    if (TP.notEmpty(src)) {
+        TP.elementSetAttribute(elem, 'tibet:src', src, true);
+    }
+
+    return TP.wrap(elem);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('getResourceTypeName',
+function() {
+
+    /**
+     * @name getResourceTypeName
+     * @synopsis Returns the resource type name for this type. The resource type
+     *     name is used when computing resource paths for this type. It is
+     *     usually the type name, but can be some other unique identifier.
+     * @returns {String} The resource type name for the receiver.
+     */
+
+    return this.getName();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('getResourceURI',
+function(resource, mimeType) {
+
+    /**
+     * @name getResourceURI
+     * @synopsis Returns a resource URI specific to the receiver for the named
+     *     resource and mimeType. This method is used to look up template,
+     *     style, theme, and other resource URIs by leveraging methods on the
+     *     receiver specific to each resource/mime requirement.
+     * @param {String} resource The resource name. Typically template, style,
+     *     theme, etc. but it could be essentially anything except the word
+     *     'resource' (since that would trigger a recursion).
+     * @param {String} mimeType The mimeType for the resource being looked up.
+     *     This is used to locate viable extensions based on the data in TIBET's
+     *     TP.ietf.Mime.INFO dictionary.
+     * @returns {TP.core.URI} The computed resource URI.
+     */
+
+    var method,
+        uri,
+        extensions,
+        len,
+        i,
+        ext,
+        typeName,
+        key,
+        value;
+
+    if (!TP.isString(resource) || TP.isEmpty(resource) ||
+            resource === 'resource') {
+        return this.raise('TP.sig.InvalidParameter',
+            'Must supply a valid resource name.');
+    }
+
+    //  If we can build a getter for the resource in question we'll rely on that
+    //  method to do the right thing for that resource.
+    method = 'get' + resource.asTitleCase() + 'URI';
+    if (TP.canInvoke(this, method)) {
+        uri = this[method](mimeType);
+    } else {
+        uri = this.get(resource.toLowerCase() + 'URI');
+    }
+
+    // For resource methods there are a lot of default versions which return
+    // null so we don't assume we're done here unless we got a real value
+    // that's not TP.NO_RESULT. That value is used to say "stop".
+    if (TP.notEmpty(uri)) {
+        if (uri === TP.NO_RESULT) {
+            return;
+        }
+
+        return uri;
+    }
+
+    // Extensions are typically ordered from canonical to least-likely so we
+    // loop here trying to find a method specific to the MIME extension.
+    if (TP.notEmpty(mimeType) &&
+            TP.notEmpty(extensions = TP.ietf.Mime.getExtensions(mimeType))) {
+
+        len = extensions.length;
+        for (i = 0; i < len; i++) {
+            ext = extensions.at(i);
+
+            // The word resource would trigger a recursion so mask off that one.
+            if (ext === 'resource') {
+                return;
+            }
+
+            method = 'get' + ext.asTitleCase() + 'URI';
+            if (TP.canInvoke(this, method)) {
+                uri = this[method]();
+            } else {
+                uri = this.get(ext.toLowerCase() + 'URI');
+            }
+
+            if (TP.notEmpty(uri)) {
+                if (uri === TP.NO_RESULT) {
+                    return;
+                }
+
+                return uri;
+            }
+        }
+    }
+
+    // Final option if no method is found is to create a configuration key and
+    // see if there's a mapping under that key.
+    typeName = this.getResourceTypeName();
+    key = 'path.' + typeName + '.' + resource.toLowerCase();
+    value = TP.sys.cfg(key);
+
+    if (TP.notEmpty(value)) {
+        return TP.uc(value);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('getTagName',
 function() {
 
@@ -10231,6 +10295,85 @@ function() {
      */
 
     return this.get('nsPrefix') + ':' + this.get('localName');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('guessContentTypeAndLocation',
+function(anElement) {
+
+    /**
+     * @name guessContentTypeAndLocation
+     * @synopsis Retrieves (and caches on the receiver) the MIME type and
+     *     location of the receiver's content.
+     * @description This method guesses the receiver's content type and
+     *     location, if the receiver has external content. It then populates
+     *     that information on the 'tibet:src' and 'tibet:mime' attributes.
+     * @param {Element|TP.core.ElementNode} anElement The element to guess the
+     *     type and location for.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+        src,
+
+        mime,
+        uri,
+        mimeTypes;
+
+    //  Make sure that we were supplied a real Element (or TP.core.ElementNode)
+    if (!TP.isElement(elem = TP.unwrap(anElement))) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  The source attribute can be provided or computed from configuration
+    //  data. When it's not provided we need to know whether to look for an
+    //  XSLT or XHTML file when the markup type is XML of some form.
+    src = TP.elementGetAttribute(elem, 'tibet:src', true);
+    if (TP.isEmpty(src)) {
+        //  If a MIME type was explicitly defined by the targeted element, then
+        //  get its resource URI and use that as the source.
+        if (TP.notEmpty(
+                mime = TP.elementGetAttribute(elem, 'tibet:mime', true))) {
+            uri = this.getResourceURI('template', mime);
+
+            if (TP.isURI(uri)) {
+                src = uri.getLocation();
+            }
+        } else {
+            //  Otherwise, try to poke at the resource URI with a set of MIME
+            //  types and see if there are any matches. Note that this Array is
+            //  constructed in order with the most common types first and least
+            //  common last.
+            mimeTypes = TP.ac(TP.ietf.Mime.XHTML,
+                                TP.ietf.Mime.XML,
+                                TP.ietf.Mime.XSLT);
+
+            mimeTypes.perform(
+                    function(aMIMEType) {
+
+                        uri = this.getResourceURI('template', aMIMEType);
+
+                        if (TP.isURI(uri)) {
+                            src = uri.getLocation();
+                            mime = aMIMEType;
+
+                            return TP.BREAK;
+                        }
+                    }.bind(this));
+        }
+    }
+
+    if (TP.notEmpty(src)) {
+        TP.elementSetAttribute(elem, 'tibet:src', src, true);
+    }
+
+    if (TP.notEmpty(mime)) {
+        TP.elementSetAttribute(elem, 'tibet:mime', mime, true);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -15025,6 +15168,38 @@ TP.core.TemplatedNode.Type.defineAttribute('wantsTemplateWrapper');
 
 //  ------------------------------------------------------------------------
 
+TP.core.TemplatedNode.Type.defineMethod('getTemplateURI',
+function(mimeType) {
+
+    /**
+     * @name getTemplateURI
+     * @synopsis Returns a template URI for the receiver. For templated nodes
+     *     this routine should always return a valid URI.
+     * @param {String} mimeType The mimeType for the resource being looked up.
+     * @returns {TP.core.URI} The computed resource URI.
+     */
+
+    var uri;
+
+    uri = this.$get('templateURI');
+    if (TP.notEmpty(uri)) {
+        if (uri === TP.NO_RESULT) {
+            return;
+        }
+
+        return TP.uc(uri);
+    }
+
+    uri = this.computeResourceURI('template', mimeType);
+    if (TP.isValid(uri)) {
+        return TP.uc(uri);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TemplatedNode.Type.defineMethod('tagCompile',
 function(aRequest) {
 
@@ -15107,10 +15282,10 @@ function(aRequest) {
 
         //  We didn't need a template wrapper - just fetch the resource content
         //  as indicated by the MIME type that should be in the element's
-        //  'tibet:type' attribute (if missing, the MIME type will be guessed).
+        //  'tibet:mime' attribute (if missing, the MIME type will be guessed).
         replacement = TP.unwrap(
-                this.getResourceMarkup(
-                    TP.elementGetAttribute(elem, 'tibet:type', true)));
+            this.getResourceElement('template',
+                TP.elementGetAttribute(elem, 'tibet:mime', true)));
     }
 
     //  Replace the original element in the DOM so processing will continue in

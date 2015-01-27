@@ -440,6 +440,26 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('getNamespaceObject',
+function() {
+
+    /**
+     * @name getNamespaceObject
+     * @synopsis Returns the namespace object of the receiver. For example, the
+     * namespace object for TP.lang.RootObject is TP.lang etc.
+     * @returns {String} The receiver's namespace object.
+     */
+
+    var name;
+
+    name = this.getName();
+    name = name.slice(0, name.lastIndexOf('.'));
+
+    return TP.sys.getObjectById(name);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('getNamespacePrefix',
 function() {
 

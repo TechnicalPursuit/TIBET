@@ -364,6 +364,10 @@ TP.core.UIElementNode.defineSubtype('TP.core.CompiledTag');
 
 TP.core.CompiledTag.addTraits(TP.core.NonNativeUIElementNode);
 
+TP.core.CompiledTag.Type.resolveTraits(
+        TP.ac('getStyleURI'),
+        TP.core.UIElementNode);
+
 TP.core.CompiledTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
                 'removeAttribute', 'select', 'signal'),
@@ -422,7 +426,9 @@ TP.core.UIElementNode.defineSubtype('TP.core.TemplatedTag');
 TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
 TP.core.TemplatedTag.addTraits(TP.core.NonNativeUIElementNode);
 
-TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+TP.core.TemplatedTag.Type.resolveTraits(
+        TP.ac('getStyleURI', 'getTemplateURI', 'tagCompile'),
+        TP.core.TemplatedNode);
 
 TP.core.TemplatedTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
@@ -450,9 +456,11 @@ TP.core.ApplicationTag.defineSubtype('TP.core.TemplatedApplicationTag');
 /* Mix in templating behavior */
 TP.core.TemplatedApplicationTag.addTraits(TP.core.TemplatedNode);
 
-/* Resolve the traits since they're available without instance creation. */
-TP.core.TemplatedApplicationTag.finalizeTraits();
+TP.core.TemplatedApplicationTag.Type.resolveTraits(
+        TP.ac('getStyleURI', 'getTemplateURI'),
+        TP.core.TemplatedNode);
 
+TP.core.TemplatedApplicationTag.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end

@@ -251,7 +251,8 @@ function(anID) {
     sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
 
     tileTPElem = TP.wrap(sherpaFrameBody).addContent(
-                    TP.sherpa.tile.getResourceMarkup(TP.ietf.Mime.XHTML));
+                    TP.sherpa.tile.getResourceElement('template',
+                        TP.ietf.Mime.XHTML));
 
     tileTPElem.setID(anID);
     tileTPElem.setup();
@@ -270,7 +271,8 @@ function(anID) {
     sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
 
     tileTPElem = TP.wrap(sherpaFrameBody).addContent(
-                    TP.sherpa.editortile.getResourceMarkup(TP.ietf.Mime.XHTML));
+                    TP.sherpa.editortile.getResourceElement('template',
+                        TP.ietf.Mime.XHTML));
 
     tileTPElem.setID(anID);
     tileTPElem.setup();
@@ -294,7 +296,8 @@ function() {
 
     consoleTPElem =
             TP.wrap(sherpaSouthDrawer).addContent(
-                TP.sherpa.console.getResourceMarkup(TP.ietf.Mime.XHTML));
+                TP.sherpa.console.getResourceElement('template',
+                    TP.ietf.Mime.XHTML));
 
     consoleTPElem.setup();
 
@@ -321,7 +324,8 @@ function() {
     sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
 
     haloTPElem = TP.wrap(sherpaFrameBody).addContent(
-                    TP.sherpa.halo.getResourceMarkup(TP.ietf.Mime.XHTML));
+                    TP.sherpa.halo.getResourceElement('template',
+                        TP.ietf.Mime.XHTML));
 
     haloTPElem.setup();
     haloTPElem.observe(TP.byOID('SherpaHUD', this.get('vWin')),
@@ -341,7 +345,8 @@ function() {
     sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
 
     hudTPElem = TP.wrap(sherpaFrameBody).addContent(
-                    TP.sherpa.hud.getResourceMarkup(TP.ietf.Mime.XHTML));
+                    TP.sherpa.hud.getResourceElement('template',
+                        TP.ietf.Mime.XHTML));
 
     hudTPElem.setup();
 

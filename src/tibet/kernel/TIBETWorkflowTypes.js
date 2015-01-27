@@ -5823,6 +5823,12 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineAttribute('currentTheme');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -5864,6 +5870,34 @@ function() {
     TP.boot.showUIRoot();
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('getCurrentTheme',
+function() {
+
+    /**
+     * @name getCurrentTheme
+     * @synopsis Returns the current UI theme. The value here is taken from any
+     *     setting data-theme attribute on the current UICANVAS body element, or
+     *     the value of the application's currentTheme attribute. The value
+     *     returned by this method is used as part of computations for loading
+     *     CSS style sheets.
+     * @return {String} The name of the current UI theme.
+     */
+
+    var doc,
+        body,
+        theme;
+
+    doc = TP.sys.getUICanvas().getNativeDocument();
+    body = TP.documentGetBody(doc);
+    theme = TP.elementGetAttribute(body, 'data-theme');
+
+    theme = TP.ifEmpty(theme, this.$get('currentTheme'));
+
+    return TP.ifEmpty(theme, '');
 });
 
 //  ------------------------------------------------------------------------

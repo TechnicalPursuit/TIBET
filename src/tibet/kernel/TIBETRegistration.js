@@ -81,7 +81,8 @@ function(anID, regOnly, nodeContext) {
         key,
         index,
         type,
-        reg;
+        reg,
+        obj;
 
     TP.stop('break.gobi');
 
@@ -94,8 +95,30 @@ function(anID, regOnly, nodeContext) {
     //  doesn't like it when you try to alter a non-null parameter value
     id = TP.str(anID);
 
-    if (TP.isType(inst = TP.sys.getTypeByName(id))) {
-        return inst;
+    //  if we're not told differently don't stop with registered objects
+    reg = TP.notValid(regOnly) ? false : regOnly;
+
+    if (TP.regex.VALID_TYPENAME.test(id)) {
+        //  check for type names as our second priority. note the flag here
+        //  is controlled by whether we're checking registrations only.
+        //  what that's implying in this case is that we'll only return the
+        //  type if it's already loaded when we're asked to stop with
+        //  registration checks only (reg = true means fault = false)
+        if (TP.isValid(inst = TP.sys.getTypeByName(id, !reg))) {
+            return inst;
+        } else if (TP.regex.VALID_ROOTNAME.test(id)) {
+            parts = id.split('.');
+            obj = parts[0] === 'TP' ? TP : APP;
+            parts.shift();
+            while (TP.isValid(obj) && parts.length) {
+                key = parts.shift();
+                obj = obj[key];
+            }
+
+            if (TP.isValid(obj)) {
+                return obj;
+            }
+        }
     }
 
     //  If the ID starts with a TIBET URN scheme and it has a real resource
@@ -120,19 +143,6 @@ function(anID, regOnly, nodeContext) {
         }
     }
 
-    //  if we're not told differently don't stop with registered objects
-    reg = TP.notValid(regOnly) ? false : regOnly;
-
-    if (TP.regex.VALID_TYPENAME.test(id)) {
-        //  check for type names as our second priority. note the flag here
-        //  is controlled by whether we're checking registrations only.
-        //  what that's implying in this case is that we'll only return the
-        //  type if it's already loaded when we're asked to stop with
-        //  registration checks only (reg = true means fault = false)
-        if (TP.isValid(inst = TP.sys.getTypeByName(id, !reg))) {
-            return inst;
-        }
-    }
 
     //  Note that we check first to see if an Element has the ID (if a node
     //  context was supplied. If one was supplied, then we don't bother looking

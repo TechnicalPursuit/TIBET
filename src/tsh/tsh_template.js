@@ -646,7 +646,7 @@ function(aRequest) {
 
     //  Templates can be of three basic types: JS (aka "string"), XSLT, or XML
     //  (aka "content").
-    if (TP.isEmpty(type = TP.elementGetAttribute(elem, 'tibet:type', true))) {
+    if (TP.isEmpty(type = TP.elementGetAttribute(elem, 'tibet:mime', true))) {
         type = TP.ietf.Mime.XML;
     }
 

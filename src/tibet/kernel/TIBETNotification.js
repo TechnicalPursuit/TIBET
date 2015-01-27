@@ -329,6 +329,7 @@ function(anOrigin, wantsFullName, aSignal, aState) {
         statename,
         handlerName;
 
+    //  Ask the inbound signal what signal name it should be using.
     if (TP.isKindOf(aSignal, TP.sig.Signal)) {
         signame = aSignal.getSignalName();
     } else if (TP.canInvoke(aSignal, 'getSignalName')) {
@@ -337,8 +338,9 @@ function(anOrigin, wantsFullName, aSignal, aState) {
         signame = this.getSignalName();
     }
 
-    // We can do short versions if they match either TP.sig. or APP.sig. for
-    // prefixing, otherwise only a full name can be matched.
+    //  We can do short versions if they match either TP.sig. or APP.sig. for
+    //  prefixing, otherwise only a full name can be matched. Also make sure
+    //  that all handlerName values start with 'handle'.
     if (TP.regex.SIGNAL_PREFIX.test(signame)) {
         if (TP.notTrue(wantsFullName)) {
             if (signame.startsWith('TP.')) {
@@ -357,10 +359,12 @@ function(anOrigin, wantsFullName, aSignal, aState) {
             TP.escapeTypeName(signame).asTitleCase();
     }
 
+    //  Add optional From clause for origin filtering.
     if (TP.notEmpty(anOrigin)) {
         handlerName += 'From' + TP.gid(anOrigin);
     }
 
+    //  Add optional When clause for state filtering.
     if (TP.notEmpty(aState)) {
         handlerName += 'When' + TP.str(aState);
     }
