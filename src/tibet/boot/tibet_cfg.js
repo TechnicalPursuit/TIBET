@@ -1489,11 +1489,11 @@ TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
 //  when using non-native XPaths (containing extension functions typically)
 //  we need to load the external XPath parser. Since that component is based
 //  on a non-TIBET type we can't use TIBET's autoloader so we need a path
-TP.sys.setcfg('xpath.parser_path', '~lib_deps/xpath-tpi.js');
+TP.sys.setcfg('path.xpath.parser', '~lib_deps/xpath-tpi.js');
 
 //  when using XSLT templates we use a boilerplate XSLT file to keep from
 //  requiring a lot of bulk in the templates themselves.
-TP.sys.setcfg('xslt.boilerplate_path',
+TP.sys.setcfg('path.xslt.boilerplate',
     '~lib_src/tsh/xsl/tsh_template_template.xsl');
 
 //  ----------------------------------------------------------------------------
