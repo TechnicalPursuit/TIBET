@@ -399,6 +399,11 @@ TP.sys.setcfg('tibet.offline', false);
 //  should we disallow custom 'X-' headers such as X-Requested-With for XHRs.
 TP.sys.setcfg('tibet.simple_cors_only', false);
 
+//  should we 'auto resolve' traits?
+TP.sys.setcfg('tibet.traits.resolve', true);
+
+//  should we warn when traits are 'auto resolved'?
+TP.sys.setcfg('tibet.traits.warn', false);
 
 //  ---
 //  importer
