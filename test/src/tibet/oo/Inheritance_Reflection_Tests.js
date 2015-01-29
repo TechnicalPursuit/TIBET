@@ -4347,6 +4347,7 @@ TP.OOTests.describe('Inheritance - addTraits',
 function() {
 
     var shouldThrowSetting,
+        autoResolveSetting,
         func;
 
     this.before(
@@ -4362,6 +4363,9 @@ function() {
 
             shouldThrowSetting = TP.sys.shouldThrowExceptions();
             TP.sys.shouldThrowExceptions(false);
+
+            autoResolveSetting = TP.sys.get('tibet.traits.resolve');
+            TP.sys.setcfg('tibet.traits.resolve', false);
         });
 
     //  ---
@@ -4860,7 +4864,72 @@ function() {
             TP.sc('The count for the inline count',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
+    });
 
+    //  ---
+
+    this.it('TIBET instance addTraits - conflicted traits - automatic resolution', function(test, options) {
+
+        var obj,
+
+            val,
+            correctVal,
+
+            oldLogLevel,
+
+            inlineCount;
+
+        //  For this particular test, we undo the behavior we have in the
+        //  before() / after() and turn trait autoresolution on
+
+        TP.sys.setcfg('tibet.traits.resolve', true);
+
+        //  ---
+
+        //  Diamond Definition
+        TP.lang.Object.defineSubtype('test.Diamond');
+
+        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from Equality by way
+        //  of Magnitude and 'smaller' (TP.REQUIRED), 'greater' & 'between' from
+        //  Magnitude directly. We also picked up a real implementation of
+        //  'equals' from TP.test.Color.
+        //  But now we have a conflict over 'getRgb' between TP.test.Color and
+        //  TP.test.RGBData
+        TP.test.Diamond.addTraits(
+            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Diamond.Inst.defineMethod('smaller', function() {});
+
+        //  Since auto resolution is turned on, if an instance is made at this
+        //  point, it will automatically resolve any conflicts and the instance
+        //  will be real. This should've resolved the conflict in favor of the
+        //  'TP.test.Color' type.
+        obj = TP.test.Diamond.construct();
+
+        this.assert.isValid(
+            obj,
+            TP.sc('This instance of "TP.test.Diamond" should be valid'));
+
+        //  ---
+
+        //  Set the test count and invoke the 'resolved' method
+        TP.OOTests.set('colorGetRGBCount', 0);
+
+        obj.getRgb();
+
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  Turn auto resolution back off
+        TP.sys.setcfg('tibet.traits.resolve', false);
     });
 
     //  ---
@@ -5025,6 +5094,10 @@ function() {
     this.after(
         function() {
             TP.OOTests.commonAfter();
+
+            TP.sys.shouldThrowExceptions(shouldThrowSetting);
+
+            TP.sys.setcfg('tibet.traits.resolve', autoResolveSetting);
     });
 });
 

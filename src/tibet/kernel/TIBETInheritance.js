@@ -3918,7 +3918,8 @@ function() {
         typeResolutions,
         instResolutions,
 
-        unresolvedTraits,
+        unresolvedTypeTraits,
+        unresolvedInstTraits,
 
         errStr;
 
@@ -3937,8 +3938,9 @@ function() {
 
     //  Type-side
 
+    unresolvedTypeTraits = TP.hc();
+
     if (TP.notEmpty(typeResolutions)) {
-        unresolvedTraits = TP.hc();
 
         keys = typeResolutions.getKeys();
         keys.forEach(
@@ -3973,7 +3975,7 @@ function() {
 
                                 if (TP.notValid(
                                         traitSources =
-                                            unresolvedTraits.at(propName))) {
+                                            unresolvedTypeTraits.at(propName))) {
 
                                     traitSources = TP.ac();
 
@@ -3981,7 +3983,7 @@ function() {
                                     //  the Array into the 'unresolved traits'
                                     //  hash.
                                     traitSources.push(entry.at('resolvesTo'));
-                                    unresolvedTraits.atPut(propName,
+                                    unresolvedTypeTraits.atPut(propName,
                                                             traitSources);
 
                                     //  Remove the 'resolvesTo' key - we no
@@ -3999,55 +4001,17 @@ function() {
                 }
 
                 if (TP.notValid(entry.at('resolvesTo'))) {
-                    if (TP.notValid(unresolvedTraits.at(propName))) {
-                        unresolvedTraits.atPut(propName, TP.ac());
-                        unresolvedTraits.at(propName).push(TP.REQUIRED);
+                    if (TP.notValid(unresolvedTypeTraits.at(propName))) {
+                        unresolvedTypeTraits.atPut(propName, TP.ac());
+                        unresolvedTypeTraits.at(propName).push(TP.REQUIRED);
                     }
                 }
             });
 
         //  If we have unresolved traits, bail out here.
-        if (TP.notEmpty(unresolvedTraits)) {
-            errStr = 'TARGET: ' + TP.name(mainType) + ' TYPE-LEVEL:\n';
-
-            unresolvedTraits.sort().perform(
-                    function(kvPair) {
-                        var propName,
-                            sources;
-
-                        propName = kvPair.first();
-
-                        errStr += 'CONFLICTED PROPERTY: ' +
-                                    propName +
-                                    ' :: PROBLEM: ';
-
-                        if (TP.isArray(sources = kvPair.last())) {
-                            errStr += 'conflicted between: ' +
-                                sources.collect(
-                                    function(aType) {
-                                        var val;
-
-                                        val = aType.getPrototype()[propName];
-
-                                        if (TP.isMethod(val)) {
-                                            //  Important for reporting purposes
-                                            //  to actually find the owner.
-                                            return TP.name(val[TP.OWNER]);
-                                        }
-
-                                        return TP.name(aType);
-                                    });
-                        } else {
-                            errStr += sources;
-                        }
-
-                        errStr += ' \n';
-                    });
-
-            errStr += '\nUse resolveTrait[s] to repair.';
-
-            return this.raise('TP.sig.InvalidInstantiation',
-                                TP.sc('Unresolved instance traits: ', errStr));
+        if (TP.notEmpty(unresolvedTypeTraits)) {
+            typeResolutions = this.$resolveConflictedTraits(
+                                mainType, unresolvedTypeTraits, TP.TYPE_TRACK);
         }
     }
 
@@ -4056,8 +4020,9 @@ function() {
     //  The resolutions that apply to 'instance side' properties.
     instResolutions = this.get('$traitsInstResolutions');
 
+    unresolvedInstTraits = TP.hc();
+
     if (TP.notEmpty(instResolutions)) {
-        unresolvedTraits = TP.hc();
 
         mainTypeTarget = mainType.getInstPrototype();
 
@@ -4095,7 +4060,7 @@ function() {
 
                                 if (TP.notValid(
                                         traitSources =
-                                            unresolvedTraits.at(propName))) {
+                                            unresolvedInstTraits.at(propName))) {
 
                                     traitSources = TP.ac();
 
@@ -4103,7 +4068,7 @@ function() {
                                     //  the Array into the 'unresolved traits'
                                     //  hash.
                                     traitSources.push(entry.at('resolvesTo'));
-                                    unresolvedTraits.atPut(propName,
+                                    unresolvedInstTraits.atPut(propName,
                                                             traitSources);
 
                                     //  Remove the 'resolvesTo' key - we no
@@ -4122,55 +4087,17 @@ function() {
                 }
 
                 if (TP.notValid(entry.at('resolvesTo'))) {
-                    if (TP.notValid(unresolvedTraits.at(propName))) {
-                        unresolvedTraits.atPut(propName, TP.ac());
-                        unresolvedTraits.at(propName).push(TP.REQUIRED);
+                    if (TP.notValid(unresolvedInstTraits.at(propName))) {
+                        unresolvedInstTraits.atPut(propName, TP.ac());
+                        unresolvedInstTraits.at(propName).push(TP.REQUIRED);
                     }
                 }
             });
 
         //  If we have unresolved traits, bail out here.
-        if (TP.notEmpty(unresolvedTraits)) {
-            errStr = 'TARGET: ' + TP.name(mainType) + ' INSTANCE-LEVEL\n';
-
-            unresolvedTraits.sort().perform(
-                    function(kvPair) {
-                        var propName,
-                            sources;
-
-                        propName = kvPair.first();
-
-                        errStr += 'CONFLICTED PROPERTY: ' +
-                                    propName +
-                                    ' :: PROBLEM: ';
-
-                        if (TP.isArray(sources = kvPair.last())) {
-                            errStr += 'conflicted between: ' +
-                                sources.collect(
-                                    function(aType) {
-                                        var val;
-
-                                        val = aType.getInstPrototype()[propName];
-
-                                        if (TP.isMethod(val)) {
-                                            //  Important for reporting purposes
-                                            //  to actually find the owner.
-                                            return TP.name(val[TP.OWNER]);
-                                        }
-
-                                        return TP.name(aType);
-                                    });
-                        } else {
-                            errStr += sources;
-                        }
-
-                        errStr += ' \n';
-                    });
-
-            errStr += '\nUse resolveTrait[s] to repair.';
-
-            return this.raise('TP.sig.InvalidInstantiation',
-                                TP.sc('Unresolved instance traits: ', errStr));
+        if (TP.notEmpty(unresolvedInstTraits)) {
+            instResolutions = this.$resolveConflictedTraits(
+                                mainType, unresolvedInstTraits, TP.INST_TRACK);
         }
     }
 
@@ -4179,48 +4106,58 @@ function() {
 
     //  Type-side
 
-    keys = typeResolutions.getKeys();
-    keys.forEach(
-        function(propName) {
-            var resolution;
+    if (TP.notEmpty(typeResolutions)) {
+        keys = typeResolutions.getKeys();
+        keys.forEach(
+            function(propName) {
+                var resolution;
 
-            resolution = typeResolutions.at(propName).at('resolvesTo');
+                resolution = typeResolutions.at(propName).at('resolvesTo');
 
-            //  Note here how we do *not* install a slot if it already
-            //  represented on the receiving object (this.Type) unless the
-            //  value for that slot is TP.REQUIRED.
-            if (TP.isType(resolution) &&
-                 this.Type[propName] !== TP.REQUIRED &&
-                 resolution.Type[propName] === this.Type[propName]) {
-                return;
-            }
+                //  Note here how we do *not* install a slot if it already
+                //  represented on the receiving object (this.Type) unless the
+                //  value for that slot is TP.REQUIRED.
+                if (TP.isType(resolution) &&
+                     this.Type[propName] !== TP.REQUIRED &&
+                     resolution.Type[propName] === this.Type[propName]) {
+                    return;
+                }
 
-            this.$populateTraitedSlot(resolution, propName, this.Type, false);
-        }.bind(this));
+                this.$populateTraitedSlot(resolution, propName, this.Type, false);
+            }.bind(this));
+
+        unresolvedTypeTraits.empty();
+    }
 
     //  Instance-side
 
-    keys = instResolutions.getKeys();
-    keys.forEach(
-        function(propName) {
-            var resolution;
+    if (TP.notEmpty(instResolutions)) {
+        keys = instResolutions.getKeys();
+        keys.forEach(
+            function(propName) {
+                var resolution;
 
-            resolution = instResolutions.at(propName).at('resolvesTo');
+                resolution = instResolutions.at(propName).at('resolvesTo');
 
-            //  Note here how we do *not* install a slot if it already
-            //  represented on the receiving object (this.Inst) unless the
-            //  value for that slot is TP.REQUIRED.
-            if (TP.isType(resolution) &&
-                 this.Inst[propName] !== TP.REQUIRED &&
-                 resolution.Inst[propName] === this.Inst[propName]) {
-                return;
-            }
+                //  Note here how we do *not* install a slot if it already
+                //  represented on the receiving object (this.Inst) unless the
+                //  value for that slot is TP.REQUIRED.
+                if (TP.isType(resolution) &&
+                     this.Inst[propName] !== TP.REQUIRED &&
+                     resolution.Inst[propName] === this.Inst[propName]) {
+                    return;
+                }
 
-            this.$populateTraitedSlot(resolution, propName, this.Inst, true);
-        }.bind(this));
+                this.$populateTraitedSlot(resolution, propName, this.Inst, true);
+            }.bind(this));
 
-    //  The traits are resolved - we're done. No going back ;-).
-    this.set('$traitsResolved', true);
+        unresolvedInstTraits.empty();
+    }
+
+    if (TP.isEmpty(unresolvedTypeTraits) && TP.isEmpty(unresolvedInstTraits)) {
+        //  The traits are resolved - we're done. No going back ;-).
+        this.set('$traitsResolved', true);
+    }
 
     return this;
 });
@@ -4454,6 +4391,205 @@ function(resolution, propName, targetObject, forInstances) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('$resolveConflictedTraits',
+function(targetType, conflictedTraits, track) {
+
+    /**
+     * @name $resolveConflictedTraits
+     * @synopsis Processes the supplied hash of conflicted traits.
+     * @description If auto-resolution is turned on, it will try to resolve the
+     *     conflicts. If it cannot, an error will be raised. If auto-resolution
+     *     is not turned on, an error will be raised straightaway.
+     * @param {TP.lang.RootObject} targetType The type object that the
+     *     conflicted property was found on.
+     * @param {TP.lang.Hash} conflictedTraits A hash of the conflicted traits.
+     *     The keys in this hash are the property names that were conflicted and
+     *     the values are a list of the computed possible sources of trait
+     *     resolution, usually a type object.
+     * @param {Constants} track The track, either TP.TYPE_TRACK or
+     *     TP.INST_TRACK, that the conflicted property was found on.
+     * @returns {TP.lang.Hash} A Hash of properly-resolved traits.
+     */
+
+    var unresolvedTraits,
+        resolutions,
+        c3TypeList,
+        errStr;
+
+    if (TP.isTrue(TP.sys.cfg('tibet.traits.resolve'))) {
+
+        //  There still may be conflicts that we can't handle via
+        //  auto-resolution, so we keep a hash for ones that we couldn't
+        //  auto resolve.
+        unresolvedTraits = TP.hc();
+
+        //  The real computed resolutions
+        resolutions = TP.hc();
+
+        //  Compute the C3 linearization for the target type
+        c3TypeList = targetType.computeC3Linearization();
+
+        //  Iterate over the unprocessed conflicts and try to auto-resolve them.
+        conflictedTraits.sort().perform(
+                function(kvPair) {
+                    var propName,
+                        sources,
+                        candidateTypes,
+                        resolvedType,
+
+                        i,
+                        candidateIndex,
+                        lowestIndex;
+
+                    propName = kvPair.first();
+
+                    resolvedType = null;
+
+                    if (TP.isArray(sources = kvPair.last())) {
+                        candidateTypes = sources.collect(
+                            function(aType) {
+                                var proto,
+                                    val;
+
+                                if (track === TP.TYPE_TRACK) {
+                                    proto = aType.getPrototype();
+                                } else {
+                                    proto = aType.getInstPrototype();
+                                }
+
+                                val = proto[propName];
+
+                                if (TP.isMethod(val)) {
+                                    //  Important for processing purposes
+                                    //  to actually find the owner.
+                                    return val[TP.OWNER];
+                                }
+
+                                return aType;
+                            });
+
+                        lowestIndex = c3TypeList.getSize() - 1;
+
+                        //  If we got real candidate types for the conflicts,
+                        //  then try to resolve using them.
+                        if (TP.notEmpty(candidateTypes)) {
+
+                            //  Iterate over the candidate types and find the
+                            //  one with the *lowest* index in c3TypeList. The
+                            //  C3 list is sorted from *most* specific to
+                            //  *least* specific - therefore, the one with the
+                            //  lowest index is the one
+                            //  we want.
+                            for (i = 0; i < candidateTypes.getSize(); i++) {
+                                candidateIndex =
+                                    c3TypeList.indexOf(
+                                                candidateTypes.at(i).getName());
+                                lowestIndex = lowestIndex.min(candidateIndex);
+                            }
+
+                            //  Try to get a matching type for the type name we
+                            //  computed.
+                            resolvedType = TP.sys.getTypeByName(
+                                                c3TypeList.at(lowestIndex));
+                        }
+                    }
+
+                    //  If the conflicted traits didn't have any sources or we
+                    //  couldn't get a type for the name that we computed, then
+                    //  add that to the hash that's keeping track of unresolved
+                    //  traits
+                    if (!TP.isType(resolvedType)) {
+                        unresolvedTraits.atPut(propName, kvPair.last());
+                    } else {
+
+                        //  Otherwise, add it to the list of resolutions.
+                        resolutions.atPut(
+                                propName, TP.hc('resolvesTo', resolvedType));
+
+                        //  If we're warn()ing when we auto resolve, then do so
+                        //  here.
+                        if (TP.isTrue(TP.sys.cfg('tibet.traits.warn'))) {
+
+                            TP.ifWarn() ?
+                                TP.warn('AUTO RESOLVING CONFLICTED' +
+                                        ' ' + track.toUpperCase() + '-LEVEL' +
+                                        ' PROPERTY: ' + propName +
+                                        ' ON TARGET: ' + TP.name(targetType) +
+                                        ' TO TYPE: ' + TP.name(resolvedType),
+                                        TP.LOG) : 0;
+                                    }
+                        }
+                });
+    } else {
+
+        //  Otherwise, we're not auto-resolving, so just set unresolved traits
+        //  to conflicted traits.
+        unresolvedTraits = conflictedTraits;
+    }
+
+    if (TP.notEmpty(unresolvedTraits)) {
+
+        errStr = 'TARGET: ' + TP.name(targetType) + ' ' +
+                    track.toUpperCase() + '-LEVEL:\n';
+
+        unresolvedTraits.sort().perform(
+                function(kvPair) {
+                    var propName,
+                        sources;
+
+                    propName = kvPair.first();
+
+                    errStr += 'CONFLICTED PROPERTY: ' +
+                                propName +
+                                ' :: PROBLEM: ';
+
+                    if (TP.isArray(sources = kvPair.last())) {
+                        errStr += 'conflicted between: ' +
+                            sources.collect(
+                                function(aType) {
+                                    var proto,
+                                        val;
+
+                                    if (track === TP.TYPE_TRACK) {
+                                        proto = aType.getPrototype();
+                                    } else {
+                                        proto = aType.getInstPrototype();
+                                    }
+
+                                    val = proto[propName];
+
+                                    if (TP.isMethod(val)) {
+                                        //  Important for reporting purposes
+                                        //  to actually find the owner.
+                                        return TP.name(val[TP.OWNER]);
+                                    }
+
+                                    return TP.name(aType);
+                                });
+                    } else {
+                        errStr += sources;
+                    }
+
+                    errStr += ' \n';
+                });
+
+        errStr += '\nUse resolveTrait[s] to repair' +
+                    ' or turn on trait auto-resolution';
+
+        if (track === TP.TYPE_TRACK) {
+            return this.raise('TP.sig.InvalidInstantiation',
+                                TP.sc('Unresolved type traits: ', errStr));
+        } else {
+            return this.raise('TP.sig.InvalidInstantiation',
+                                TP.sc('Unresolved instance traits: ', errStr));
+        }
+    }
+
+    return resolutions;
 });
 
 //  ------------------------------------------------------------------------
