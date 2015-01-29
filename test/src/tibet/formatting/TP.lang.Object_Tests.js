@@ -682,8 +682,8 @@ function() {
         dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
 
         testRep = templateStr.transform(null, TP.hc('$FUNC',
-                                                    function() {
-                                                        return TP.str(dataElem);
+                                                    function(params) {
+                                                        return dataElem;
                                                     }));
 
         correctRep = 'The item is: <foo><baz bar="moo"/></foo>';
@@ -870,6 +870,23 @@ function() {
         dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
 
         testRep = templateStr.transform(null, TP.hc('$TAG', dataElem));
+
+        correctRep = 'The item is: baz';
+
+        this.assert.isEqualTo(
+            testRep,
+            correctRep,
+            TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
+
+        //  ---
+
+        templateStr = 'The item is: {{$FUNC.(./*[@bar]).localName}}';
+        dataElem = TP.tpelem('<foo><baz bar="moo"/></foo>');
+
+        testRep = templateStr.transform(null, TP.hc('$FUNC',
+                                                    function(params) {
+                                                        return dataElem;
+                                                    }));
 
         correctRep = 'The item is: baz';
 
