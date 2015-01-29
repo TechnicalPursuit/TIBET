@@ -4283,7 +4283,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Inheritance - Auto resolution',
+TP.OOTests.describe('Inheritance - C3 linearization',
 function() {
 
     this.before(
