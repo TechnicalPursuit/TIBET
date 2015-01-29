@@ -3494,7 +3494,9 @@ function() {
                 if (!candidate) {
                     TP.raise(this,
                             'TP.sig.InheritanceException',
-                            'Inconsistent hierarchy');
+                            'Inconsistent hierarchy: ' +
+                                TP.json(nonEmptySeqs));
+                    break;
                 }
 
                 results.push(candidate);
