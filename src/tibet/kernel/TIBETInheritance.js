@@ -3372,24 +3372,26 @@ function() {
     //  NOTE: This code is adapted from:
     //          https://github.com/silas/node-c3
 
-    //  It has been reformatted and slightly altered to conform to TIBET coding
-    //  guidelines.
+    //  It has been reformatted and altered for clarity and to conform to TIBET
+    //  coding guidelines.
 
     var c3,
 
         tnames,
 
         traits,
-        result,
+        resolver,
         i,
 
         j,
-        traitType;
+        traitType,
+
+        finalResult;
 
     function C3(name) {
         this.name = name;
-        this.map = {};
-        this.map[name] = [];
+        this.typeMap = {};
+        this.typeMap[name] = [];
     }
 
     c3 = function(name) {
@@ -3408,15 +3410,15 @@ function() {
             TP.raise(this, 'TP.sig.InvalidName');
         }
 
-        if (!this.map.hasOwnProperty(parentName)) {
-            this.map[parentName] = [];
+        if (!this.typeMap.hasOwnProperty(parentName)) {
+            this.typeMap[parentName] = [];
         }
 
-        if (!this.map.hasOwnProperty(name)) {
-            this.map[name] = [];
+        if (!this.typeMap.hasOwnProperty(name)) {
+            this.typeMap[name] = [];
         }
 
-        ref = this.map[name];
+        ref = this.typeMap[name];
 
         //  wje: Unlike the original code, TIBET will sometimes produce a
         //  duplicate parent and we don't really care. We simply return and
@@ -3427,27 +3429,29 @@ function() {
             return this;
         }
 
-        this.map[name].push(parentName);
+        this.typeMap[name].push(parentName);
 
         return this;
     };
 
-    C3.prototype.run = function() {
+    C3.prototype.compute = function() {
 
         var thisArg,
-            map,
+            processMap,
 
             notHead,
             empty,
             merge,
-            run;
+            run,
+
+            runResult;
 
         thisArg = this;
-        map = {};
+        processMap = {};
 
-        Object.keys(thisArg.map).forEach(
+        Object.keys(thisArg.typeMap).forEach(
                 function(n) {
-                    map[n] = thisArg.map[n].slice();
+                    processMap[n] = thisArg.typeMap[n].slice();
                 });
 
         notHead = function(l, c) {
@@ -3504,22 +3508,36 @@ function() {
         };
 
         run = function (name) {
-            return merge([[name]].concat(
-                                    map[name].map(run)).concat(
-                                    [map[name]]));
+            var mergeResult;
+
+            mergeResult = merge([[name]].concat(processMap[name].map(run)));
+            mergeResult = mergeResult.concat(processMap[name]);
+
+            return mergeResult;
         };
 
-        return run(this.name);
+        runResult = run(this.name);
+
+        return runResult;
     };
 
     //  Start with ourself
-    result = c3(this.getName());
+    resolver = c3(this.getName());
 
     //  Recursively populate the resolver
-    this.$populateC3Resolver(result);
+    this.$populateC3Resolver(resolver);
 
     //  Return the result of running the algorithm
-    return result.run();
+    finalResult = resolver.compute();
+
+    //  Because we allow duplicate parents, there will be further entries after
+    //  'Object' in our list (all duplicated parents). We slice them off, ending
+    //  our list with 'Object'.
+    if (finalResult.contains('Object')) {
+        finalResult = finalResult.slice(0, finalResult.indexOf('Object') + 1);
+    }
+
+    return finalResult;
 });
 
 //  ------------------------------------------------------------------------
