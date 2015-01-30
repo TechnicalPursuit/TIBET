@@ -2450,9 +2450,9 @@ function(options) {
                 //  to be the computed value for time remaining in the test
                 //  suite.
                 if (timeout !== testcase.getTimeout()) {
-                    testcase.fail('Test suite timed out.', TP.TIMED_OUT);
+                    testcase.fail('Test suite timed out', TP.TIMED_OUT);
                 } else {
-                    testcase.fail('Test case timed out.', TP.TIMED_OUT);
+                    testcase.fail('Test case timed out', TP.TIMED_OUT);
                 }
             } else {
                 testcase.error(err);
