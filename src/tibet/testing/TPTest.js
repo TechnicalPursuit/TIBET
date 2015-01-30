@@ -2443,7 +2443,7 @@ function(options) {
         function(err) {
             if (err instanceof AssertionFailed) {
                 testcase.fail(err);
-            } else if (/Timed out/.test(err)) {
+            } else if (err instanceof TP.extern.Promise.TimeoutError) {
                 //  Determine from the message whether it was the case itself or
                 //  the overall suite that failed. How will we know? If the
                 //  timeout value isn't === the timeout for a test case it had
