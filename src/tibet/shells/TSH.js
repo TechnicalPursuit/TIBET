@@ -2175,13 +2175,194 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TSH.Inst.defineMethod('executeMan',
+function(aRequest) {
+
+    /**
+     */
+
+    aRequest.stdout('Not yet implemented.');
+
+    return aRequest.complete();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeDoclint',
+function(aRequest) {
+
+    /**
+     */
+
+    var methods,
+        results;
+
+    results = [];
+
+    methods = TP.sys.getMetadata('methods');
+    methods.perform(function(item) {
+        var name,
+            func,
+            lines,
+            line,
+            text,
+            result,
+            fParams,
+            cParams;
+
+        name = item.at(0);
+        func = item.at(1);
+        lines = func.getCommentLines();
+
+        if (TP.notValid(lines)) {
+            text = func.toString();
+            if (!TP.regex.NATIVE_CODE.test(text)) {
+                // No comment and not native code.
+                TP.regex.UNDERSCORES.index = 0;
+                results.push({
+                    name: name.replace(TP.regex.UNDERSCORES, '.'),
+                    errors: ['missing comment']
+                });
+            }
+        } else if (lines.length === 0) {
+            results.push({
+                name: name.replace(TP.regex.UNDERSCORES, '.'),
+                errors: ['empty comment']
+            });
+        } else {
+            // Comment. Question is, is it viable?
+            //  Check the name...
+            line = lines.detect(function(line) {
+                return line.startsWith('@name ');
+            });
+
+            if (TP.notValid(line)) {
+                result = TP.ifInvalid(result,
+                    {name: name, errors: []});
+                result.errors.push('no @name');
+            } else {
+                //  TODO:   "aliased" primitives fail this test. Maybe we can
+                //  fix by noting that the named one is identical.
+
+                // Name here is full name so we need to slice off the last part
+                // of that to check against.
+                line = line.split(' ').last();
+                if (name.split('_').last() !== line) {
+                    result = TP.ifInvalid(result,
+                        {name: name, errors: []});
+                    result.errors.push('@name is ' + line);
+                }
+            }
+
+            //  Check the parameters...
+            cParams = lines.filter(function(line) {
+                return line.startsWith('@param');
+            });
+
+            cParams = cParams.map(function(param) {
+                var type,
+                    pname,
+                    needName;
+
+                param = param.slice('@param '.length);
+
+                //  Check for parameter type references...
+                if (param.indexOf('{') !== 0) {
+                    // Apparently not formatted with a type for the param.
+                    result = TP.ifInvalid(result,
+                        {name: name, errors: []});
+                    result.errors.push('missing type for param ');
+                    needName = true;
+                } else {
+                    type = param.slice(1, param.indexOf('}'));
+                    param = param.slice(param.indexOf('}') + 1).trim();
+                }
+
+                //  Param name should be next non-whitespace sequence...or the
+                //  content of ['s before any = for signifying a default value.
+                if (param.charAt(0) === '[') {
+                    pname = param.slice(1,
+                        param.indexOf(']')).split('=').first();
+                } else {
+                    pname = param.split(' ').first();
+                }
+
+                // If we flagged a missing type we need to push the name.
+                if (needName) {
+                    result.errors.atPut(result.errors.length - 1,
+                        result.errors.last() + 'pname');
+                }
+
+                return pname;
+            });
+
+            fParams = func.getParameterNames();
+
+            //  Order matters here so loop over the function signature and make
+            //  sure that a) all items are accounted for, and b) the order of
+            //  the items (not including "nested properties") is consistent.
+            fParams.forEach(function(pname) {
+                var next;
+
+                //  TODO: if we have a missing one early in the list the result
+                //  is the remaining ones, esp the final one, will say missing
+                //  when it might actually be there...but it's been rotated out.
+
+                //  Get the next param from the comment, skipping any nested
+                //  names (those with period in them).
+                next = cParams.shift();
+                if (TP.notValid(next)) {
+                    // Out of parameters...
+                    result = TP.ifInvalid(result,
+                        {name: name, errors: []});
+                    result.errors.push('param ' + pname + ' missing');
+                    return;
+                }
+
+                while (next && next.indexOf('.') !== TP.NOT_FOUND) {
+                    next = cParams.shift();
+                }
+
+                if (pname !== next) {
+                    result = TP.ifInvalid(result,
+                        {name: name, errors: []});
+                    result.errors.push('param ' + pname + ' mismatch');
+                }
+            });
+
+            if (result) {
+                results.push(result);
+            }
+
+            //  TODO:   cross-check function source against:
+            //  @fires
+            //  @throws
+            //  @exception
+            //  @listens
+            //  @return
+            //  @ignore
+            //  @deprecated
+            //  etc :)
+        }
+    });
+
+    results = results.map(function(result) {
+        return result.name + ': ' + result.errors.join(', ');
+    });
+
+    return aRequest.complete(results);
+});
+
+
+//  ------------------------------------------------------------------------
+
 TP.core.TSH.Inst.defineMethod('executeReflect',
 function(aRequest) {
 
     /**
      * Provides reflection data dependent on the object and parameters provided.
      * The output is based on the nature of the object being reflected upon. An
-     * empty set of arguments returns the type list. A standard namespace
+     * empty set of arguments returns usage data. A standard namespace
      * without arguments provides types on that namespace. The APP root
      * typically lists namespaces found below that root. TP will list any
      * namespaces and primitives available for further reflection. A type will
@@ -2195,55 +2376,88 @@ function(aRequest) {
     var arg0,
         flag,
         obj,
+        types,
+        column,
+        methods,
+        owners,
         filter,
         result;
 
-    arg0 = this.getArgument(aRequest, 'ARG0');
+    //  No arguments means we dump usage. Need at least a flag to list
+    //  something like types.
+    if (!this.hasArguments(aRequest)) {
+        aRequest.stdout(
+            'Usage: :reflect [target] [--filter <filter>]  [--types] [--methods] [--owners] [--column]'
+        );
+        return aRequest.complete();
+    }
 
-    //  No arguments of any kind, or an empty arg0 coupled with the --types
-    //  flag. Dump the type list and exit.
-    if (!this.hasArguments(aRequest) || TP.isEmpty(arg0)) {
-        result = TP.sys.getTypes().getValues().collect(function(type) {
-            return TP.name(type);
-        });
+    arg0 = this.getArgument(aRequest, 'ARG0');
+    if (TP.isString(arg0)) {
+        arg0 = arg0.unquoted();
+    }
+
+    filter = this.getArgument(aRequest, 'tsh:filter');
+    if (TP.isString(filter)) {
+        filter = filter.unquoted();
+    }
+
+    column = this.getArgument(aRequest, 'tsh:column', false);
+    types = this.getArgument(aRequest, 'tsh:types', false);
+    methods = this.getArgument(aRequest, 'tsh:methods', false);
+    owners = this.getArgument(aRequest, 'tsh:owners', false);
+
+
+    //  No specification for an object means we need a flag of some kind saying
+    //  what we should list (types vs. methods).
+    if (TP.isEmpty(arg0)) {
+
+        if (types) {
+            result = TP.sys.getTypes().getValues().collect(function(type) {
+                return TP.name(type);
+            });
+        } else if (methods) {
+            result = TP.sys.getMetadata('methods').getKeys();
+        }
 
         result = result.filter(function(item) {
             return /(^TP\.|^APP\.)/.test(item);
         });
         result.sort();
 
-        result.forEach(function(item) {
-            aRequest.stdout(item);
-        });
-
-        return aRequest.complete();
-    }
-
-    //  If we have no argument but flags our only option is to dump usage.
-    if (TP.isEmpty(arg0)) {
-        aRequest.stdout(
-            'Usage: :reflect [spec] [--filter <filter>] [--owners] [--types]'
-        );
-        return aRequest.complete();
-    }
-
-    obj = this.resolveObjectReference(arg0, aRequest);
-    if (TP.isValid(obj)) {
-        //  If we resolve the object reference our goal is to provide
-        //  reflection data appropriate to the nature of that object.
-
-        if (obj === TP) {
-            void 0;
-        } else if (obj === APP) {
-            void 0;
-        }
-
-        //  Namespace objects should return their type lists.
-        if (TP.isNamespace(obj)) {
+        if (column) {
+            result.forEach(function(item) {
+                aRequest.stdout(item);
+            });
 
             return aRequest.complete();
         }
 
+        return aRequest.complete(result);
+    }
+
+    //  First attempt to resolve the target as a specific object name.
+    obj = this.resolveObjectReference(arg0, aRequest);
+
+    if (TP.isValid(obj)) {
+        //  If we resolve the object reference our goal is to provide
+        //  reflection data appropriate to the nature of that object.
+
+        //  Namespace objects should return their type lists.
+        if (TP.isNamespace(obj)) {
+            return aRequest.complete('namespace');
+        } else if (TP.isType(obj)) {
+            return aRequest.complete('type');
+        } else if (TP.isFunction(obj)) {
+            return aRequest.complete('method');
+        } else {
+            return aRequest.complete(TP.tname(obj));
+        }
+
+        if (TP.notEmpty(filter)) {
+            keys = TP.interface(obj, filter);
+            aRequest.stdout(keys);
+        }
 
         return aRequest.complete();
     }
@@ -2251,7 +2465,8 @@ function(aRequest) {
     //  TODO:
     //  Not all input values are intended as full object references.
     //  When we get anything we can't resolve we try to treat it as
-    //  a string to match within the context of our metadata.
+    //  a string to match within the context of our metadata provided we have
+    //  flag values that give us some raw data to filter.
 
     return aRequest.complete();
 });
